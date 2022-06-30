@@ -7,6 +7,7 @@ import d3 from 'd3';
 import {schema} from './schema';
 import {ajax} from './ajax';
 import {welcomeText} from './localization/welcome';
+import {f} from './functools';
 
 // TODO: make this type safe
 // TODO: delegate some DOM work to React
@@ -44,12 +45,12 @@ export function makeTreeMap(container) {
   );
 
   const getTreeData = ajax('/barvis/taxon_bar/', {headers: {Accept: 'application/json'}})
-    .then(({data})=>data);
+    .then(({data}) => data);
 
   Promise.all([getTreeData, getGenusRankID]).then(function buildFromData([
-    data,
-    genusRankID
-  ]) {
+                                                                           data,
+                                                                           genusRankID
+                                                                         ]) {
     const tree = buildTree(data);
     const root = tree[0];
     const thres = tree[1];
@@ -59,9 +60,7 @@ export function makeTreeMap(container) {
       makeName = (d) =>
         (function recur(d) {
           return d.parent ? recur(d.parent) + ' ' + d.name : '';
-        })(d.parent) +
-        ' ' +
-        d.count;
+        })(d.parent)
     else
       makeName = function (d) {
         const name =
@@ -75,7 +74,7 @@ export function makeTreeMap(container) {
 
         name === '' &&
         console.error('empty name for', d, 'with rankId', d.rankId);
-        return name + ' ' + d.count;
+        return name;
       };
 
     div
@@ -95,12 +94,22 @@ export function makeTreeMap(container) {
         return d.children ? null : color(d.name);
       });
 
+    container.addEventListener('mouseover', ({target}) =>
+      f.maybe(target.closest('.node')?.getAttribute('title'),
+        (textContent) => title.textContent = textContent)
+    )
+
     $('<p>', {
-      title: welcomeText('taxonTilesDescription',thres),
+      title: welcomeText('taxonTilesDescription', thres),
       class: 'absolute top-3 left-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
     })
       .text(welcomeText('taxonTiles'))
       .appendTo(div[0])
+
+    const title = $('<p>', {
+      class: 'absolute top-3 right-3 bg-white dark:bg-black py-0 px-2 opacity-80 border',
+    })
+      .appendTo(div[0])[0]
 
   });
 }
@@ -129,7 +138,7 @@ function buildTree(data) {
   _.each(data, function ([id, rankId, parentId, name, count]) {
     const node = {id, rankId, parentId, name, count, children: []};
 
-    if(parentId === null) roots.push(node);
+    if (parentId === null) roots.push(node);
     nodes[id] = node;
     histo[count] ??= 0;
     histo[count] += 1;
