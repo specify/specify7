@@ -184,12 +184,16 @@ function postProcessRows(
            */
           cell.type === 'Label' && typeof cell.labelForCellId === 'undefined'
             ? typeof row[index + 1]?.id === 'string' &&
-              // Don't do this for plugins, as they may already have a label
+              /*
+               * Don't do this for plugins, as they may already have a label.
+               * Don't do this for checkboxes because of this issue:
+               * https://github.com/specify/specify7/issues/1780
+               */
               f.var(
                 row[index + 1],
                 (cell) =>
                   cell.type !== 'Field' ||
-                  cell.fieldDefinition.type !== 'Plugin'
+                  !['Plugin', 'Checkbox'].includes(cell.fieldDefinition.type)
               ) &&
               typeof initialLabelsForCells[defined(row[index + 1].id)] ===
                 'undefined'

@@ -230,6 +230,7 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
   subview: 'SubView',
   panel: 'Panel',
   command: 'Command',
+  blank: 'Blank',
 };
 
 /**
