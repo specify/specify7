@@ -362,6 +362,17 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       ? undefined
       : [...defined(up.relatedModel?.getScopingPath()), up.name.toLowerCase()];
   }
+
+  /**
+   * Instead of serializing the entire object, return a string.
+   * Serializing entire object is not advisable as it has relationships to
+   * other tables resulting in entire data model getting serialized (which
+   * would result in 2.3mb of wasted space)
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public toJSON(): string {
+    return `[object ${this.name}]`;
+  }
 }
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(

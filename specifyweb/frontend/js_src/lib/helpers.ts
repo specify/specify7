@@ -291,7 +291,7 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
  * A wrapper for JSON.stringify that can handle recursive objects
  *
  * Most of the time this in not needed. It is needed when serializing
- * DOM elements, or unknown data type (i.e, in error messages)
+ * unknown data type (i.e, in error messages)
  */
 export function jsonStringify(
   object: unknown,

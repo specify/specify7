@@ -26,7 +26,7 @@ import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
-import { consoleLog } from './splashscreen';
+import { consoleLog } from '../interceptlogs';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 
