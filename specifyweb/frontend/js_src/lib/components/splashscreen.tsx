@@ -8,6 +8,7 @@ import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { Contexts } from './contexts';
 import { SetCssVariables } from './preferenceshooks';
+import { jsonStringify } from '../helpers';
 
 if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
 
@@ -85,7 +86,7 @@ export function entrypoint(
             : typeof value === 'undefined'
             ? 'undefined'
             : typeof value === 'object'
-            ? JSON.stringify(value, null)
+            ? jsonStringify(value)
             : value
         ),
         type: logType,

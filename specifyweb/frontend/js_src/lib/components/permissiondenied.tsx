@@ -32,6 +32,7 @@ import { Button } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
+import { jsonStringify } from '../helpers';
 
 type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
@@ -333,7 +334,7 @@ export function formatPermissionsError(
       <FormatPermissionError error={error} url={url} />,
       [
         `Permission denied when fetching from ${url}`,
-        `Response: ${JSON.stringify(error, null, '\t')}`,
+        `Response: ${jsonStringify(error, '\t')}`,
       ].join('\n'),
     ] as const;
   else return undefined;

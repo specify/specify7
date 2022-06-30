@@ -4,9 +4,9 @@
  * @module
  */
 
+import type { KeysToLowerCase } from './datamodelutils';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import { KeysToLowerCase } from './datamodelutils';
 
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
@@ -286,3 +286,29 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
         : value,
     ])
   ) as unknown as KeysToLowerCase<OBJECT>;
+
+/**
+ * A wrapper for JSON.stringify that can handle recursive objects
+ *
+ * Most of the time this in not needed. It is needed when serializing
+ * DOM elements, or unknown data type (i.e, in error messages)
+ */
+export function jsonStringify(
+  object: unknown,
+  space: undefined | number | string = undefined
+): string {
+  const cache: Set<unknown> = new Set();
+  return JSON.stringify(
+    object,
+    (_key, value) => {
+      if (typeof value === 'object' && value !== null)
+        if (cache.has(value)) return '[Circular]';
+        else {
+          cache.add(value);
+          return value;
+        }
+      else return value;
+    },
+    space
+  );
+}

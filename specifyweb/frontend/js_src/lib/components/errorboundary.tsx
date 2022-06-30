@@ -9,7 +9,7 @@ import React from 'react';
 
 import { Http } from '../ajax';
 import { breakpoint } from '../assert';
-import { removeKey } from '../helpers';
+import { jsonStringify, removeKey } from '../helpers';
 import { commonText } from '../localization/common';
 import { getOperationPermissions, getTablePermissions } from '../permissions';
 import { getRawUserPreferences } from '../preferencesutils';
@@ -226,7 +226,7 @@ export class ErrorBoundary extends React.Component<
  * The stack trace is about 83KB in size
  */
 const produceStackTrace = (message: unknown): string =>
-  JSON.stringify({
+  jsonStringify({
     message,
     userInformation,
     systemInformation: getSystemInfo(),
@@ -292,13 +292,14 @@ function formatError(
       errorMessage.push(statusText);
       copiableMessage.push(error);
     } else {
+      const serialized = jsonStringify(error, 4);
       errorObject.push(
         <p className="raw" key="raw">
-          {JSON.stringify(error, null, 4)}
+          {serialized}
         </p>
       );
-      errorMessage.push(JSON.stringify(error, null, 4));
-      copiableMessage.push(JSON.stringify(error, null, 4));
+      errorMessage.push(serialized);
+      copiableMessage.push(serialized);
     }
   } else {
     const message = (error as string | undefined)?.toString() ?? '';
@@ -324,7 +325,7 @@ function formatError(
 function formatErrorResponse(error: string): JSX.Element {
   try {
     const json = JSON.parse(error);
-    return <pre>{JSON.stringify(json, null, 2)}</pre>;
+    return <pre>{jsonStringify(json, 2)}</pre>;
   } catch {
     // Failed parsing error message as JSON
   }
