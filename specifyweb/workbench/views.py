@@ -489,24 +489,26 @@ def dataset(request, ds_id: str) -> http.HttpResponse:
 
             if 'uploadplan' in attrs:
                 plan = attrs['uploadplan']
-                try:
-                    validate(plan, upload_plan_schema.schema)
-                except ValidationError as e:
-                    return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
 
                 if ds.uploaderstatus != None:
                     return http.HttpResponse('dataset in use by uploader', status=409)
                 if ds.was_uploaded():
                     return http.HttpResponse('dataset has been uploaded. changing upload plan not allowed.', status=400)
 
-                new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
-                if new_cols:
-                    ncols = len(ds.columns)
-                    ds.columns += list(new_cols)
-                    for i, row in enumerate(ds.data):
-                        ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
+                if plan is not None:
+                    try:
+                        validate(plan, upload_plan_schema.schema)
+                    except ValidationError as e:
+                        return http.HttpResponse(f"upload plan is invalid: {e}", status=400)
 
-                ds.uploadplan = json.dumps(plan)
+                    new_cols = upload_plan_schema.parse_plan(request.specify_collection, plan).get_cols() - set(ds.columns)
+                    if new_cols:
+                        ncols = len(ds.columns)
+                        ds.columns += list(new_cols)
+                        for i, row in enumerate(ds.data):
+                            ds.data[i] = row[:ncols] + [""]*len(new_cols) + row[ncols:]
+
+                ds.uploadplan = json.dumps(plan) if plan is not None else None
                 ds.rowresults = None
                 ds.uploadresult = None
 
