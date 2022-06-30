@@ -184,6 +184,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
      */
     if (!isInitialized.current) {
       isInitialized.current = true;
+      isSettingInitialMoment.current = false;
       return;
     }
     if (typeof moment === 'undefined') {
