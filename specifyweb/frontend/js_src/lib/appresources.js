@@ -180,7 +180,8 @@ const ResourceDataView = Backbone.View.extend({
                     download: this.model.get('name') + fileExtFor(this.model)
                 }).appendTo(toolbar);
 
-                const editArea = $('<div class="border border-brand-300 flex-1">').appendTo(this.el);
+                // TODO: overscroll-none does not seem to work here. Investigate
+                const editArea = $('<div class="border border-brand-300 flex-1 overscroll-none">').appendTo(this.el);
                 const editor = ace.edit(editArea[0]);
                 editor.setReadOnly(!hasToolPermission('resources',this.model.isNew() ? 'create' : 'update'));
                 this.editor = editor;

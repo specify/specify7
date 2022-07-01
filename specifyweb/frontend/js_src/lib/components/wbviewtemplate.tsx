@@ -187,7 +187,7 @@ function WbView({
         </Button.Small>
       </div>
       <div className="gap-x-4 flex flex-1 overflow-hidden">
-        <section className="wb-spreadsheet flex-1 overflow-hidden" />
+        <section className="wb-spreadsheet overscroll-none flex-1 overflow-hidden" />
         <aside className="wb-uploaded-view-wrapper hidden" aria-live="polite" />
       </div>
       <div
