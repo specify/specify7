@@ -209,21 +209,64 @@ export function AutoGrowTextArea({
 }: Parameters<typeof Textarea>[0] & {
   readonly containerClassName?: string;
 }): JSX.Element {
+  const [textArea, setTextArea] = React.useState<HTMLTextAreaElement | null>(
+    null
+  );
+  const [shadow, setShadow] = React.useState<HTMLDivElement | null>(null);
+  /*
+   * If user manually resized the textarea, need to keep the shadow in sync
+   * Fixes https://github.com/specify/specify7/issues/1783
+   * Can't simply convert auto growing textarea into a regular one on the fly
+   * because that interrupts the resize operation
+   */
+  React.useEffect(() => {
+    if (textArea === null || shadow === null) return undefined;
+    const observer = new ResizeObserver(() => {
+      shadow.style.height = textArea.style.height;
+      shadow.style.width = textArea.style.width;
+    });
+    observer.observe(textArea);
+    return (): void => observer.disconnect();
+  }, [textArea, shadow]);
   return (
-    <div className={`grid ${containerClassName ?? ''}`}>
+    <div
+      className={`
+        relative min-h-[theme(spacing.16)] overflow-hidden
+        ${containerClassName ?? ''}
+      `}
+    >
       {/*
        * Shadow a textarea with a div, allowing it to autoGrow. Source:
        * https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
        */}
       <div
-        className={`textarea-shadow print:hidden invisible
-                  whitespace-pre-wrap [grid-area:1/1/2/2] ${className.textArea}`}
+        className={`
+          textarea-shadow print:hidden invisible whitespace-pre-wrap
+          [grid-area:1/1/2/2] ${className.textArea}
+        `}
+        ref={setShadow}
       >
         {`${props.value?.toString() ?? ''} `}
       </div>
       <Textarea
         {...props}
-        className={`[grid-area:1/1/2/2] ${props.className ?? ''}`}
+        className={`
+          h-full top-0 [grid-area:1/1/2/2] absolute
+          ${props.className ?? ''}
+        `}
+        forwardRef={(textArea): void => {
+          setTextArea(textArea);
+          if (typeof props.forwardRef === 'function')
+            props.forwardRef(textArea);
+          else if (
+            typeof props.forwardRef === 'object' &&
+            props.forwardRef !== null &&
+            'current' in props.forwardRef
+          )
+            /* TODO: improve typing to make this editable */
+            // @ts-expect-error Modifying a read-only property
+            props.forwardRef.current = textArea;
+        }}
       />
     </div>
   );
