@@ -2,12 +2,13 @@
  * A wrapper for Backbone's routing API
  */
 
-import { Backbone } from '../backbone';
-import { showDialog } from './legacydialog';
-import { commonText } from '../localization/common';
-import { isExternalUrl } from '../ajax';
-import { Button } from './basic';
 import React from 'react';
+
+import { isExternalUrl } from '../ajax';
+import { Backbone } from '../backbone';
+import { commonText } from '../localization/common';
+import { Button } from './basic';
+import { showDialog } from './legacydialog';
 
 /**
  * We introduce a sequence variable that is incremented and passed in
@@ -213,7 +214,7 @@ export function navigate(
   } = {}
 ): void {
   const cont = (): void => {
-    clearUnloadProtect();
+    if (options.trigger !== false) clearUnloadProtect();
 
     if (isExternalUrl(url)) window.location.assign(url);
     else {
