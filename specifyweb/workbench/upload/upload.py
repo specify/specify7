@@ -177,6 +177,7 @@ def do_upload(
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
+            _cache = cache.copy() if cache and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
                 bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
@@ -184,9 +185,10 @@ def do_upload(
                 results.append(result)
                 if progress is not None:
                     progress(len(results), total)
+                logger.info(f"finished row {len(results)}, cache size: {cache and len(cache)}")
                 if result.contains_failure():
+                    cache = _cache
                     raise Rollback("failed row")
-                logger.info(f"finished row {len(results)}")
 
         toc = time.perf_counter()
         logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
