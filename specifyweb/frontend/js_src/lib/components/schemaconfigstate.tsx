@@ -13,7 +13,7 @@ import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { hasToolPermission } from '../permissions';
 import { formatUrl } from '../querystring';
-import { getModel } from '../schema';
+import { getModel, schema } from '../schema';
 import {
   filterFormatters,
   getItemType,
@@ -22,6 +22,7 @@ import {
 } from '../schemaconfighelper';
 import type { Actions } from '../schemaconfigreducer';
 import type { IR, RA, RR } from '../types';
+import { defined } from '../types';
 import {
   Button,
   className,
@@ -315,6 +316,9 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, { name }]) => name === items[itemId].pickListName
     )?.[0];
+    const maxLength = defined(
+      schema.models.SpLocaleItemStr.getField('text')
+    ).length;
     return (
       <Container.Full>
         <header className="gap-x-2 flex">
@@ -371,6 +375,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
                 isReadOnly={isReadOnly}
+                maxLength={maxLength}
               />
             </Label.Generic>
             <Label.Generic>
@@ -386,6 +391,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
                 isReadOnly={isReadOnly}
+                maxLength={maxLength}
               />
             </Label.Generic>
             <Label.Generic>
@@ -491,6 +497,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   })
                 }
                 isReadOnly={isReadOnly}
+                maxLength={maxLength}
               />
             </Label.Generic>
             <Label.Generic>
@@ -506,6 +513,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                     value,
                   })
                 }
+                maxLength={maxLength}
               />
             </Label.Generic>
             <Label.Generic>
