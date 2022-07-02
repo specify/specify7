@@ -53,7 +53,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     entrypoint === 'main'
       ? /*
          * Using async import to avoid circular dependency
-         * TODO: find a better solution
+         * REFACTOR: find a better solution
          */
         import('./ajax').then(async ({ ajax }) => {
           const startTime = Date.now();

@@ -117,7 +117,7 @@ const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
-// TODO: reduce this once everything is using React. Can move things into tailwind.config.js
+// REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   /*
    * Most fields in Specify are rendered on top of var(--form-background). For
@@ -597,7 +597,7 @@ export const Select = wrap<
     }`,
     ...withHandleBlur(props.onBlur),
     /*
-     * TODO: don't set event listener if both onValueChange and onValuesChange
+     * REFACTOR: don't set event listener if both onValueChange and onValuesChange
      *   are undefined
      */
     onChange(event): void {
@@ -702,7 +702,7 @@ const button = (name: string, className: string) =>
     type: 'button',
   });
 /*
- * TODO: if onClick===undefined, button should be disabled, but only if expicily
+ * FEATURE: if onClick===undefined, button should be disabled, but only if expicily
  *   provided
  */
 export const Button = {

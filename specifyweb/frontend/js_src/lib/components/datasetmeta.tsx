@@ -39,7 +39,7 @@ async function fetchAgent(url: string): Promise<JSX.Element> {
   ));
 }
 
-// TODO: allow exporting/importing the mapping
+// FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
   dataset,
   getRowCount = (): number => dataset.rows.length,
@@ -127,8 +127,8 @@ export function DataSetMeta({
             value={name}
             onValueChange={setName}
             required
-            // TODO: increase the limit. See https://github.com/specify/specify7/issues/1203
-            maxLength={64}
+            // FEATURE: increase the limit. See https://github.com/specify/specify7/issues/1203
+            maxLength={schema.models.RecordSet.getField('name')!.length}
           />
         </Label.Generic>
         <Label.Generic>
@@ -265,10 +265,7 @@ function ChangeOwner({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue
-            form={id('form')}
-            disabled={newOwner === undefined}
-          >
+          <Submit.Blue form={id('form')} disabled={newOwner === undefined}>
             {wbText('changeOwner')}
           </Submit.Blue>
         </>

@@ -15,7 +15,7 @@ import type { dialogIconTriggers } from './basic';
 export const iconClassName = 'w-6 h-6';
 
 /*
- * TODO: remove this once everything moved to react
+ * REFACTOR: remove this once everything moved to react
  * For usage in non-jsx components
  */
 export const legacyNonJsxIcons = {

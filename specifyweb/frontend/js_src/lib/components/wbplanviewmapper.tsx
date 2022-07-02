@@ -158,7 +158,7 @@ export function WbPlanViewMapper(props: {
   // Reposition suggestions box if it doesn't fit
   function repositionSuggestionBox(): void {
     /*
-     * TODO: replace this with this hack:
+     * REFACTOR: replace this with this hack?
      *   https://stackoverflow.com/questions/9364203/position-fixed-div-is-not-fixed-when-parent-rotates-or-translates
      *   alternatively, I may get away with not setting "top" at all and just
      *   letting browser do the positioning (while still having position:fixed)

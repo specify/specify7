@@ -5,8 +5,8 @@
 @tailwind base;
 
 /*
- * TODO: get rid of most global styles once everything is using React components
- * TODO: remove most usages of !important after global styles are removed
+ * REFACTOR: get rid of most global styles once everything is using React components
+ * REFACTOR: remove most usages of !important after global styles are removed
  */
 @layer base {
 
@@ -215,7 +215,7 @@
     @apply bg-gray-200 dark:bg-neutral-700 rounded;
   }
 
-  /* TODO: Can combine the next two selectors using :is() */
+  /* REFACTOR: Can combine the next two selectors using :is() */
   progress::-webkit-progress-value {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
@@ -358,7 +358,7 @@
 /*
  * Workaround for https://github.com/Leaflet/Leaflet/issues/6986
  * This can be removed after updating Leaflet to 1.8.0
- * TODO: remove this after updating Leaflet
+ * REFACTOR: remove this after updating Leaflet
  */
 .leaflet-container :focus {
   outline: revert !important;

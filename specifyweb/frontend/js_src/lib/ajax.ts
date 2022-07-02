@@ -22,9 +22,9 @@ export const isExternalUrl = (url: string): boolean =>
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-// TODO: add a central place for all API endpoint definitions
+// REFACTOR: add a central place for all API endpoint definitions
 
-// TODO: make all back-end endpoints accept JSON
+// FEATURE: make all back-end endpoints accept JSON
 /**
  * Convert JSON object to FormData.
  * Some endpoints accept form data rather than stringified JSON.
@@ -174,7 +174,7 @@ export function handleResponse<RESPONSE_TYPE = string>({
   readonly strict: boolean;
   readonly text: string;
 }): AjaxResponseObject<RESPONSE_TYPE> {
-  // TODO: silence all errors if the page begun reloading
+  // BUG: silence all errors if the page begun reloading
   try {
     if (expectedResponseCodes.includes(response.status)) {
       if (response.ok && accept === 'application/json') {

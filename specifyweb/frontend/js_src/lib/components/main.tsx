@@ -44,7 +44,7 @@ export type MenuItem = Omit<UserTool, 'groupLabel' | 'basePath'> & {
 };
 
 /*
- * TODO: move UI logic out of .ts files and into .tsx (e.i., fetching data
+ * REFACTOR: move UI logic out of .ts files and into .tsx (e.i., fetching data
  *  should be done in .tsx files so that a Loading Dialog can be displayed)
  */
 

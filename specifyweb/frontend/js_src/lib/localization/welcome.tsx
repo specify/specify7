@@ -121,9 +121,8 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
   },
-  // TODO:
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
-    'ru-ru': 'DB Creation Date:',
+    'ru-ru': 'Дата создания базы данных:',
   },
 });

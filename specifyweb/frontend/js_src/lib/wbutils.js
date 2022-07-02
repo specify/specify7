@@ -972,7 +972,7 @@ export const WBUtils = Backbone.View.extend({
       );
       handleClose();
     };
-    // TODO: remember these two options
+    // FEATURE: remember these two options
     let includeSymbols = false;
     let applyToAll = true;
 

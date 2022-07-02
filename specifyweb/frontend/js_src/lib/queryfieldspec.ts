@@ -107,7 +107,7 @@ export class QueryFieldSpec {
     return {
       tableList,
       /*
-       * TODO: test removing toLowerCase here.
+       * TEST: test removing toLowerCase here.
        *  May fix https://github.com/specify/specify7/issues/724
        */
       stringId: [tableList, toLowerCase(this.table.name), fieldName].join('.'),

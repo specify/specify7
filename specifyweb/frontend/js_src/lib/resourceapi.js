@@ -68,7 +68,7 @@ function eventHandlerForToOne(related, field) {
         constructor() {
             this.specifyModel = this.constructor.specifyModel;
             this.dependentResources = {};   // references to related objects referred to by field in this resource
-            Backbone.Model.apply(this, arguments); // TODO: check if this is necessary
+            Backbone.Model.apply(this, arguments); // TEST: check if this is necessary
         },
         initialize(attributes, options) {
             this.noBusinessRules = options && options.noBusinessRules;
@@ -76,7 +76,6 @@ function eventHandlerForToOne(related, field) {
 
             // if initialized with some attributes that include a resource_uri,
             // assume that represents all the fields for the resource
-            // TODO: if dependent resources are not yet fetched, this should be false
             if (attributes && _(attributes).has('resource_uri')) this.populated = true;
 
             // the resource needs to be saved if any of its fields change
@@ -184,7 +183,7 @@ function eventHandlerForToOne(related, field) {
             oldRelated && oldRelated.off("all", null, this);
 
             related.on('all', eventHandlerForToOne(related, field), this);
-            related.parent = this;  // TODO: this doesn't belong here
+            related.parent = this;  // REFACTOR: this doesn't belong here
 
             switch (field.type) {
             case 'one-to-one':
@@ -193,7 +192,7 @@ function eventHandlerForToOne(related, field) {
                 break;
             case 'zero-to-one':
                 this.dependentResources[field.name.toLowerCase()] = related;
-                related.set(field.otherSideName, this.url()); // TODO: this logic belongs somewhere else. up probably
+                related.set(field.otherSideName, this.url()); // REFACTOR: this logic belongs somewhere else. up probably
                 break;
             default:
                 throw new Error("setDependentToOne: unhandled field type: " + field.type);
@@ -226,7 +225,7 @@ function eventHandlerForToOne(related, field) {
                    * Don't trigger unload protect if value changed from
                    * string to numberr (back-end sends certain numeric fields
                    * as strings. Front-end converts those to numbers)
-                   * TODO: this logic should be moved to this.parse()
+                   * REFACTOR: this logic should be moved to this.parse()
                    */
                   typeof oldValue === 'string' &&
                   typeof newValue === 'number' &&
@@ -288,7 +287,7 @@ function eventHandlerForToOne(related, field) {
             return [fieldName, value];
         },
         _handleInlineDataOrResource(value, fieldName) {
-            // TODO: check type of value
+            // BUG: check type of value
             const field = this.specifyModel.getField(fieldName);
             const relatedModel = field.relatedModel;
 
@@ -309,7 +308,7 @@ function eventHandlerForToOne(related, field) {
                 this.trigger('change', this);
                 return undefined;
             case 'many-to-one':
-                if (!value) { // TODO: tighten up this check.
+                if (!value) { // BUG: tighten up this check.
                     // the FK is null, or not a URI or inlined resource at any rate
                     field.isDependent() && this.storeDependent(field, null);
                     return value;
@@ -369,7 +368,7 @@ function eventHandlerForToOne(related, field) {
         async rget(fieldName, prePop) {
             return this.getRelated(fieldName, {prePop: prePop});
         },
-        // TODO: remove the need for this
+        // REFACTOR: remove the need for this
         // Like "rget", but returns native promise
         async rgetPromise(fieldName, prePop = true) {
             return this.getRelated(fieldName, {prePop: prePop})
@@ -482,7 +481,7 @@ function eventHandlerForToOne(related, field) {
                 }
 
                 // if this resource is not yet persisted, the related object can't point to it yet
-                if (this.isNew()) return undefined; // TODO: this seems iffy
+                if (this.isNew()) return undefined; // TEST: this seems iffy
 
                 var collection = new related.ToOneCollection({ field: field.getReverse(), related: this, limit: 1 });
 
@@ -564,7 +563,7 @@ function eventHandlerForToOne(related, field) {
             else
                 return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
                     this._fetch = null;
-                    // TODO: consider doing this.needsSaved=false here
+                    // BUG: consider doing this.needsSaved=false here
                     return this;
                 });
         },

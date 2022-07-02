@@ -192,7 +192,7 @@ export type MappingActions =
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
     ...state,
-    // TODO: replace setState calls in reducers with useCachedState hooks
+    // REFACTOR: replace setState calls in reducers with useCachedState hooks
     showMappingView: setCache(
       'wbPlanViewUi',
       'showMappingView',

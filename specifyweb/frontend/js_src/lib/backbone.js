@@ -19,7 +19,7 @@ import BackboneBase from 'backbone';
     var nameProp = '__name__';
     var newExtend = function(protoProps, classProps) {
         if (protoProps && protoProps.hasOwnProperty(nameProp)) {
-            // TODO: check that name is a valid identifier
+            // BUG: check that name is a valid identifier
             var name = protoProps[nameProp];
             // wrap constructor from protoProps if supplied or 'this' (thi function we are extending)
             var constructor = protoProps.hasOwnProperty('constructor') ? protoProps.constructor : this;

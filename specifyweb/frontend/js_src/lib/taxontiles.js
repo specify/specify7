@@ -9,8 +9,8 @@ import {ajax} from './ajax';
 import {welcomeText} from './localization/welcome';
 import {f} from './functools';
 
-// TODO: make this type safe
-// TODO: delegate some DOM work to React
+// REFACTOR: make this type safe
+// REFACTOR: delegate some DOM work to React
 export function makeTreeMap(container) {
   container.classList.add('h-[473px]', 'w-full');
 
@@ -20,7 +20,7 @@ export function makeTreeMap(container) {
     .treemap()
     .size([container.clientWidth, container.clientHeight])
     .sort(function (a, b) {
-      // TODO: use sortFunction here
+      // REFACTOR: use sortFunction here
       return b.id - a.id;
     })
     .value(function (d) {

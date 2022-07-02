@@ -236,7 +236,7 @@ export const unParseQueryFields = (
                * results
                */
               isDisplay: commonData.isDisplay && index === 0,
-              // TODO: add missing nullable fields here
+              // REFACTOR: add missing nullable fields here
             } as unknown as SerializedResource<SpQueryField>)
         );
     }

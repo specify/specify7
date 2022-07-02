@@ -106,7 +106,7 @@ function ErrorDialog({
           </Label.ForCheckbox>
           <Button.Red
             onClick={(): void =>
-              // TODO: use loading() here after everything is using React
+              // REFACTOR: use loading() here after everything is using React
               legacyLoadingContext(
                 (clearCacheOnException
                   ? clearCache()
@@ -182,7 +182,7 @@ export class ErrorBoundary extends React.Component<
     errorInfo: { readonly componentStack: string }
   ): void {
     /*
-     * TODO: remove this line once everything is using React.
+     * REFACTOR: remove this line once everything is using React.
      *   That is because unload protect should get removed when component
      *   is unRendered due to crash (though need to verify that).
      *   Also, once error bounders are used all over the place, a crash in one

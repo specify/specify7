@@ -86,7 +86,7 @@ export const PickListSortType = {
 };
 
 /*
- * TODO: make sure pick lists items are sorted properly everywhere (i.e, in the
+ * TEST: make sure pick lists items are sorted properly everywhere (i.e, in the
  *   workbench)
  */
 export const getPickListItems = (

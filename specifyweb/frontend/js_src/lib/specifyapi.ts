@@ -15,7 +15,7 @@ export const globalEvents = eventListener<{
   newResource: SpecifyResource<AnySchema>;
 }>();
 
-// TODO: consider replacing this wtih Query Builder
+// FEATURE: consider replacing this with Query Builder
 export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
   templateResource: SpecifyResource<SCHEMA>,
   forceCollection: number | undefined

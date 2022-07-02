@@ -269,7 +269,7 @@ export function AutoGrowTextArea({
             props.forwardRef !== null &&
             'current' in props.forwardRef
           )
-            /* TODO: improve typing to make this editable */
+            /* REFACTOR: improve typing to make this editable */
             // @ts-expect-error Modifying a read-only property
             props.forwardRef.current = textArea;
         }}

@@ -964,7 +964,7 @@ const WBView = Backbone.View.extend({
           ({ physicalCol }) => this.physicalColToMappingCol(physicalCol) !== -1
         )
         .sort(
-          // TODO: use sortFunction here
+          // REFACTOR: use sortFunction here
           ({ visualRow: visualRowLeft }, { visualRow: visualRowRight }) =>
             visualRowLeft > visualRowRight
         )
@@ -1045,7 +1045,7 @@ const WBView = Backbone.View.extend({
          */
         this.hot?.toPhysicalRow(visualRowStart + index) ??
         visualRowStart + index
-      // TODO: use sortFunction here
+      // REFACTOR: use sortFunction here
     ).sort();
 
     this.flushIndexedCellData = true;
@@ -1062,7 +1062,7 @@ const WBView = Backbone.View.extend({
       this.hot.toPhysicalRow(visualRowStart + index)
     )
       .filter((physicalRow) => physicalRow < this.cellMeta.length)
-      // TODO: use sortFunction here
+      // REFACTOR: use sortFunction here
       .sort()
       .reverse();
 
@@ -1907,7 +1907,7 @@ const WBView = Backbone.View.extend({
       ),
     });
   },
-  // TODO: disable the button if there is nothing to upload
+  // BUG: disable the button if there is nothing to upload
   upload(event) {
     const mode = $(event.currentTarget).is('.wb-upload')
       ? 'upload'
@@ -2605,7 +2605,7 @@ export function loadDataset(
   refreshInitiatorAborted = false
 ) {
   legacyLoadingContext(
-    // TODO: intercept 403 (if dataset has been transfered to another user)
+    // BUG: intercept 403 (if dataset has been transferred to another user)
     ajax(
       `/api/workbench/dataset/${id}/`,
       { headers: { Accept: 'application/json' } },

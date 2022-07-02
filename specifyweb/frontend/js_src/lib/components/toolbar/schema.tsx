@@ -80,8 +80,8 @@ const booleanFormatter = (value: boolean): string =>
   fieldFormat(undefined, parser(), value);
 
 /*
- * TODO: add sorting by column headers
- * TODO: adapt this page for printing
+ * FEATURE: add sorting by column headers
+ * FEATURE: adapt this page for printing
  */
 export function DataModelView({
   model: initialModel,

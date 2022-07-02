@@ -168,7 +168,7 @@ entrypoint('chooseCollection', () => (
       availableCollections: JSON.parse(
         parseDjangoDump('available-collections')
       ),
-      // TODO: store this on the front-end
+      // REFACTOR: store this on the front-end?
       initialValue: parseDjangoDump('initial-value'),
       nextUrl: parseDjangoDump('next-url'),
     }}

@@ -1,4 +1,4 @@
-// TODO: get rid of this once everything is using React
+// REFACTOR: get rid of this once everything is using React
 import type jQuery from 'jquery';
 import React from 'react';
 

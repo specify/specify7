@@ -61,7 +61,7 @@ import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
-// TODO: allow editing linkages with external accounts
+// FEATURE: allow editing linkages with external accounts
 export function SecurityUser({
   user,
   initialCollection,
@@ -380,10 +380,7 @@ export function SecurityUser({
                   form={formElement}
                   canAddAnother={Array.isArray(userAgents)}
                   onSaving={(): undefined | false => {
-                    if (
-                      userResource.isNew() &&
-                      password === undefined
-                    ) {
+                    if (userResource.isNew() && password === undefined) {
                       setState({
                         type: 'SetPasswordDialog',
                       });

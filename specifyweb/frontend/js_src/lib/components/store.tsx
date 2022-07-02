@@ -1,5 +1,5 @@
 /** Still work in progress */
-// TODO: remove these comments
+// REFACTOR: remove these comments
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 

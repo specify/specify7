@@ -217,7 +217,7 @@ export const uploadFile = async (
  * A temporary workaround for mimeTypes for `.docx` and `.xlsx` files being
  * longer than the length limit on the `Attachment.mimeType` field.
  * See: https://github.com/specify/specify7/issues/1141
- * TODO: remove this once that issue is fixed
+ * REFACTOR: remove this once that issue is fixed
  */
 function fixMimeType(originalMimeType: string): string {
   const maxLength = defined(

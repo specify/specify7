@@ -251,7 +251,7 @@ function UserToolsColumn({
                     : '/specify/task/',
               }))
               .map(({ task, title, basePath, view, isOverlay }) => {
-                // TODO: simplify all of this
+                // REFACTOR: simplify all of this
                 const isExternalLink =
                   typeof view === 'string' &&
                   basePath !== '/' &&
@@ -332,7 +332,7 @@ export function UserTools({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      {/* TODO: get rid of usages of "px" units in the header */}
+      {/* REFACTOR: get rid of usages of "px" units in the header */}
       <Button.Small
         className={`max-w-[110px] overflow-hidden whitespace-nowrap
           text-overflow-ellipsis normal-case`}

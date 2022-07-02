@@ -14,7 +14,7 @@ import type { RA } from './types';
 import { keysToLowerCase, removeKey } from './helpers';
 
 /*
- * TODO: experiment with an object singleton:
+ * REFACTOR: experiment with an object singleton:
  * There is only ever one instance of a record with the same table name
  * and id. Any changes in one place propagate to all the other places where
  * that record is used. Record is only fetched once and updates are kept track

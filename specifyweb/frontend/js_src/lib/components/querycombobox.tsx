@@ -269,7 +269,7 @@ export function QueryComboBox({
    * with resource URL, not resource object itself. Since the URL of a related
    * resource does not change on save, QueryComboBox is left displaying a stale
    * resource.
-   * TODO: get rid of the need for this
+   * REFACTOR: get rid of the need for this
    */
   const [version, setVersion] = React.useState(0);
   React.useEffect(
@@ -278,7 +278,7 @@ export function QueryComboBox({
     [resource]
   );
 
-  // TODO: fetch this from the back-end
+  // REFACTOR: fetch this from the back-end
   const [formatted] = useAsyncState<{
     readonly label: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -449,7 +449,7 @@ export function QueryComboBox({
                         body: keysToLowerCase({
                           ...query,
                           collectionId: forceCollection ?? relatedCollectionId,
-                          // TODO: allow customizing these arbitrary limits
+                          // REFACTOR: allow customizing these arbitrary limits
                           limit: 1000,
                         }),
                       })
@@ -459,7 +459,7 @@ export function QueryComboBox({
                    * If there are multiple search fields and both returns the
                    * same record, it may be presented in results twice. Would
                    * be fixed by using OR queries
-                   * TODO: refactor to use OR queries across fields once
+                   * REFACTOR: refactor to use OR queries across fields once
                    *   supported
                    */
                   responses

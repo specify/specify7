@@ -146,7 +146,7 @@ function ViewRecords({
           onAdd={undefined}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
           /*
-           * TODO: make fetching more efficient when fetching last query item
+           * BUG: make fetching more efficient when fetching last query item
            *   (don't fetch all intermediate results)
            */
           onSlide={(index): void =>
@@ -422,7 +422,7 @@ export function QueryResultsTable({
         ) : undefined}
       </div>
       <div
-        // TODO: turn this into a reusable table component
+        // REFACTOR: turn this into a reusable table component
         role="table"
         className={`grid-table overflow-auto
           auto-rows-min rounded

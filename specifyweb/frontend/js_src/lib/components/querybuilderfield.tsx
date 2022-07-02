@@ -42,7 +42,7 @@ import {
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
 
-// TODO: split this component into smaller components
+// REFACTOR: split this component into smaller components
 export function QueryLine({
   baseTableName,
   field,

@@ -173,7 +173,7 @@ export type LocalityPinFields = {
  */
 export const MAX_TO_MANY_INDEX = 10;
 
-// TODO: allow configuring this
+// FEATURE: allow configuring this
 /**
  * NOTE:
  * Leaflet map on the Locality form and the CO Lifemapper badge is going

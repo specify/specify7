@@ -142,7 +142,7 @@ function RepairTree({
       onClick={handleClick}
       title={commonText('repairTree')}
       confirmationMessage={commonText('treeRepairComplete')}
-      // TODO: handle this sort of thing though the routing library
+      // REFACTOR: handle this sort of thing though the routing library
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }

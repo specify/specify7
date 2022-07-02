@@ -106,7 +106,7 @@ function MakeDwca({
           )
         }
       >
-        {/* TODO: replace these with resource pickers */}
+        {/* FEATURE: replace these with resource pickers */}
         <Label.Generic>
           {commonText('dwcaDefinition')}
           <Input.Text

@@ -19,7 +19,7 @@ import { useUnloadProtect } from './navigation';
 import { NO_CLONE } from './resourceview';
 
 /*
- * TODO: move this logic into ResourceView, so that <form> and button is
+ * REFACTOR: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
  */
 /**

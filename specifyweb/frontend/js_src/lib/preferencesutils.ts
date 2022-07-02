@@ -180,7 +180,7 @@ function requestPreferencesSync(): void {
   }
 }
 
-// TODO: if prefs where updated by a different tab, this would overwrite them
+// BUG: if prefs where updated by a different tab, this would overwrite them
 async function syncPreferences(): Promise<void> {
   await preferencesPromise;
   isSyncPending = false;

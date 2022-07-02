@@ -190,28 +190,32 @@ export function ExpressSearchView(): JSX.Element {
             filterArray(results)
               .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
-                let model = defined(getModel(tableResult.definition.root));
-                let idFieldIndex = 0;
-                // TODO: decide if this code is needed
-                // (it is responsible for deciding whether express search on
-                // "Taxon CollectionObject" links out to Taxon records rather
-                // than CollectionObject
-                /*const fieldSpecs = tableResult.definition.fieldSpecs.map(
-                  ({ stringId, isRelationship }) =>
-                    QueryFieldSpec.fromStringId(stringId, isRelationship)
-                );
-                if (tableResult.definition.link !== null) {
-                  idFieldIndex = fieldSpecs.length - 1;
-                  const relationship = defined(
-                    fieldSpecs.slice(-1)[0]?.getField()
-                  );
-                  if (relationship.isRelationship)
-                    model = relationship.relatedModel;
-                  // If field is TaxonID
-                  else if (relationship === relationship.model.idField)
-                    model = relationship.model;
-                  else throw new Error('Unable to extract relationship');
-                }*/
+                const model = defined(getModel(tableResult.definition.root));
+                const idFieldIndex = 0;
+                /*
+                 * FEATURE: decide if this code is needed
+                 * It is responsible for deciding whether express search on
+                 * "Taxon CollectionObject" links out to Taxon records rather
+                 * than CollectionObject
+                 */
+                /*
+                 *Const fieldSpecs = tableResult.definition.fieldSpecs.map(
+                 *({ stringId, isRelationship }) =>
+                 *  QueryFieldSpec.fromStringId(stringId, isRelationship)
+                 *);
+                 *if (tableResult.definition.link !== null) {
+                 *idFieldIndex = fieldSpecs.length - 1;
+                 *const relationship = defined(
+                 *  fieldSpecs.slice(-1)[0]?.getField()
+                 *);
+                 *if (relationship.isRelationship)
+                 *  model = relationship.relatedModel;
+                 * // If field is TaxonID
+                 *else if (relationship === relationship.model.idField)
+                 *  model = relationship.model;
+                 *else throw new Error('Unable to extract relationship');
+                 *}
+                 */
 
                 return {
                   model,

@@ -569,7 +569,7 @@ define([
         });
 
         asyncTest('getResourceAndField', function() {
-            // TODO: write this
+            // TEST: write this
             expect(0);
             start();
         });

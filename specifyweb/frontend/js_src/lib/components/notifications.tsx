@@ -233,7 +233,7 @@ function NotificationComponent({
       <div className="flex flex-col gap-2">
         {
           /*
-           * TODO: when clicking on a dataset link in dataset transferred
+           * BUG: when clicking on a dataset link in dataset transferred
            *   notification, the dialog does not close. Need to fix that. But,
            *   the dialog should still remain open when clicking on a new tab
            *   link

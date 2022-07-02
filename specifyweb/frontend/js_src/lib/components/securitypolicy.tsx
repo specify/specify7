@@ -336,7 +336,7 @@ export function SecurityPoliciesWrapper({
 }
 
 /*
- * TODO: extend the checks for redundant policies and policies that don't have
+ * FEATURE: extend the checks for redundant policies and policies that don't have
  *   any effect (i.e, /permissions/user/roles/ has no effect unless
  *   /permission/roles/ is read)
  */

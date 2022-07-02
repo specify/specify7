@@ -52,7 +52,7 @@ export function SubView({
         return parentResource
           .rgetCollection(relationship.name)
           .then((collection) => {
-            // TODO: check if this can ever happen
+            // TEST: check if this can ever happen
             if (collection === null)
               return new relationship.relatedModel.DependentCollection({
                 related: parentResource,
@@ -115,7 +115,7 @@ export function SubView({
               /*
                * If value changed since begun fetching, don't update the
                * collection to prevent a race condition.
-               * TODO: simplify this
+               * REFACTOR: simplify this
                */
               versionRef.current === localVersionRef
                 ? setCollection(collection)

@@ -167,10 +167,7 @@ export function InteractionDialog({
         missing = [...missing, ...entries.slice(offsetIndex)];
     }
     if (prepsData.length === 0) {
-      if (
-        recordSet === undefined &&
-        typeof itemCollection === 'object'
-      ) {
+      if (recordSet === undefined && typeof itemCollection === 'object') {
         const item = new itemCollection.model.specifyModel.Resource();
         f.maybe(toTable(item, 'LoanPreparation'), (loanPreparation) => {
           loanPreparation.set('quantityReturned', 0);
@@ -226,7 +223,7 @@ export function InteractionDialog({
       action={action}
       itemCollection={itemCollection}
       onClose={handleClose}
-      // TODO: make this readOnly if don't have necessary permissions
+      // BUG: make this readOnly if don't have necessary permissions
       isReadOnly={false}
     />
   ) : (

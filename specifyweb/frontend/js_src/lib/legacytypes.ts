@@ -13,10 +13,10 @@ import type { Collection, SpecifyModel } from './specifymodel';
 import type { IR, RA } from './types';
 
 /*
- * TODO: need to improve the typing to handle the following:
+ * FEATURE: need to improve the typing to handle the following:
  *    Dynamic references
  *    Discrimination of union types
- * TODO: Phase out usages of SpecifyResource in favor of SerializedResource
+ * REFACTOR: Phase out usages of SpecifyResource in favor of SerializedResource
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly id: number;

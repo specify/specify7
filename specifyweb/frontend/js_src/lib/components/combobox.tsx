@@ -74,8 +74,8 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   );
 
   /*
-   * TODO: test if can add items to PickListTypes.FIELD
-   * TODO: make other pick list types editable
+   * TEST: test if can add items to PickListTypes.FIELD
+   * FEATURE: make other pick list types editable
    */
   const mode =
     // Only PickListTypes.ITEMS pick lists are editable
@@ -107,7 +107,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     <Input.Text
       disabled
       value={commonText('loading')}
-      // TODO: required has no effect while disabled. Need a better solution
+      // BUG: required has no effect while disabled. Need a better solution
       required={props.isRequired}
     />
   );

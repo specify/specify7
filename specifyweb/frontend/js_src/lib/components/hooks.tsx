@@ -473,7 +473,7 @@ export function useResourceValue<
   // Parse value and update saveBlockers
   const updateValue = React.useCallback(
     /*
-     * TODO: disable @typescript-eslint/no-inferrable-types and set
+     * REFACTOR: disable @typescript-eslint/no-inferrable-types and set
      *   type explicitly as @typescript-eslint/strict-boolean-expressions can't
      *   infer implicit types
      */
@@ -525,7 +525,7 @@ export function useResourceValue<
       resource.set(field.name, formattedValue as never, {
         /*
          * Don't trigger the save blocker for this trivial change
-         * TODO: move this logic into ResourceBase.set
+         * REFACTOR: move this logic into ResourceBase.set
          */
         silent: formattedValue === null && resource.get(field.name) === '',
       });

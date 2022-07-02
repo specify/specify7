@@ -127,7 +127,7 @@ function QueryResultCell({
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
-  // TODO: move this hook into parent for performance reasons
+  // REFACTOR: move this hook into parent for performance reasons
   const formatted = React.useMemo<string | number | undefined | JSX.Element>(
     () =>
       typeof value !== 'object' &&

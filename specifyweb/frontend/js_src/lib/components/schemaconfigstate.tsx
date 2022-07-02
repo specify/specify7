@@ -309,7 +309,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     ).map((group) =>
       group
         .map(({ name }) => name)
-        // TODO: use sortFunction
+        // REFACTOR: use sortFunction
         .sort()
         .map((name) => [name, name] as const)
     );
@@ -609,7 +609,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
                   value: items[itemId].webLinkName,
                   values: { '': webLinks },
                 },
-                // TODO: replace with a Query Combo Box?
+                // REFACTOR: replace with a Query Combo Box?
                 pickList: {
                   label: commonText('pickList'),
                   value: items[itemId].pickListName,

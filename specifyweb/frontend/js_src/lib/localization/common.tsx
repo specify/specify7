@@ -575,7 +575,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Произошла неожиданная ошибка',
   },
   errorBoundaryDialogText: {
-    // TODO: display this message for recoverable errors:
+    // FEATURE: display this message for recoverable errors:
     // 'en-us': `We're sorry, it seems you have encountered an error in Specify 7
     //   that we may not be aware of. You can press the back button and try again
     //   or go to the home page`,

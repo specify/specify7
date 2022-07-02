@@ -33,7 +33,7 @@ import {goTo} from './components/navigation';
 import {shouldUseDarkMode} from './components/preferenceshooks';
 import {parseXml} from './ajax';
 
-// TODO: rewrite to React
+// REFACTOR: rewrite to React
 
 const SaveButtonView = createBackboneView(SaveButton);
 const DeleteButtonView = createBackboneView(DeleteButton);
@@ -180,7 +180,7 @@ const ResourceDataView = Backbone.View.extend({
                     download: this.model.get('name') + fileExtFor(this.model)
                 }).appendTo(toolbar);
 
-                // TODO: overscroll-none does not seem to work here. Investigate
+                // BUG: overscroll-none does not seem to work here. Investigate
                 const editArea = $('<div class="border border-brand-300 flex-1 overscroll-none">').appendTo(this.el);
                 const editor = ace.edit(editArea[0]);
                 editor.setReadOnly(!hasToolPermission('resources',this.model.isNew() ? 'create' : 'update'));

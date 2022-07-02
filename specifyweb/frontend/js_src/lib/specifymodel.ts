@@ -107,7 +107,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   /* eslint-enable @typescript-eslint/method-signature-style */
 };
 
-// TODO: tighten up schema field types (use literals / enums)
+// FEATURE: tighten up schema field types (use literals / enums)
 export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   /** Java classname of the Specify 6 ORM object */
   public readonly longName: string;
@@ -271,7 +271,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    */
 
   /*
-   * TODO: replace this with a direct access on indexed fields dict for static
+   * REFACTOR: replace this with a direct access on indexed fields dict for static
    *   references
    */
   public getField(

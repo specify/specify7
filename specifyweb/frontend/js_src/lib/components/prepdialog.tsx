@@ -69,7 +69,7 @@ export function PrepDialog({
       const loanPreparation = toTable(preparation, 'LoanPreparation');
       if (loanPreparation === undefined) return;
       const resolved = loanPreparation.get('quantityResolved') ?? 0;
-      // @ts-expect-error TODO: make this algorithm immutable
+      // @ts-expect-error REFACTOR: make this algorithm immutable
       indexed[0].available -= loanPreparation.get('quantity') - resolved;
     });
     return mutatedPreparations as Preparations;

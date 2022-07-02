@@ -359,7 +359,7 @@ export const formatLocalityData = (
   viewUrl?: string,
   hideRedundant = false
 ): string =>
-  // TODO: turn this into React, or React.render_to_string
+  // REFACTOR: turn this into React, or React.render_to_string
   [
     ...Object.entries(localityData)
       .filter(

@@ -97,7 +97,7 @@ export function WbStatus({
     unuploading: wbText('wbStatusUnuploadDialogTitle'),
   }[state.status.uploaderstatus.operation];
 
-  // TODO display upload progress in the title if tab not focused
+  // FEATURE: display upload progress in the title if tab not focused
   useTitle(title);
 
   const mappedOperation = {

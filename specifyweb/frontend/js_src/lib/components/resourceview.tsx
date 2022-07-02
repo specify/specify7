@@ -62,9 +62,6 @@ export const RESTRICT_ADDING: Set<keyof Tables> = new Set([
  */
 export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
   ...RESTRICT_ADDING,
-  // TODO: remove these two after #124 is fixed
-  'Permit',
-  'RepositoryAgreement',
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);

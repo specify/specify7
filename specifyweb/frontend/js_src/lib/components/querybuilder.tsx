@@ -151,7 +151,7 @@ export function QueryBuilder({
     });
     /*
      * Wait for new query to propagate before re running it
-     * TODO: check if this still works after updating to React 18
+     * TEST: check if this still works after updating to React 18
      */
     globalThis.setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
   }
@@ -264,7 +264,6 @@ export function QueryBuilder({
                 : queryText('queryTaskTitle', query.name)}
             </H2>
             <span className="flex-1 ml-2" />
-            {/* TODO: make this button visible even for embedded queries */}
             {!isScrolledTop && (
               <Button.Small
                 onClick={(): void =>

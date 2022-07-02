@@ -280,7 +280,7 @@ export class Relationship extends FieldBase {
    * eg CollectionObject.determinations.
    */
   public isDependent(): boolean {
-    // TODO: move this into SchemaExtras.ts
+    // REFACTOR: move this into SchemaExtras.ts
     return this.model.name == 'CollectionObject' &&
       this.name == 'collectingEvent'
       ? schema.embeddedCollectingEvent

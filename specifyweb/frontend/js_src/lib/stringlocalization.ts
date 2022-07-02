@@ -3,7 +3,7 @@
  *
  * This is needed as some .xml files depend on it
  *
- * TODO: reduce reliance on this
+ * REFACTOR: reduce reliance on this
  */
 
 import { mappedFind } from './helpers';

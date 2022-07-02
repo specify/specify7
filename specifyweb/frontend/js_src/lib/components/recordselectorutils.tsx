@@ -103,7 +103,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   // Fetch records if needed
   React.useEffect(() => {
     /*
-     * TODO: make this more efficient (if going to the last record,
+     * BUG: make this more efficient (if going to the last record,
      *   don't need to fetch all records in between)
      */
     if (

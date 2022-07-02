@@ -5,10 +5,10 @@
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
-// TODO: evaluate usages of arbitrary values in class names
-// TODO: consider changing defaults for values (i.e ring-1)
-// TODO: add col-span-{n} and col-span-[full-1]
-// TODO: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
+// REFACTOR: evaluate usages of arbitrary values in class names
+// REFACTOR: consider changing defaults for values (i.e ring-1)
+// REFACTOR: add col-span-{n} and col-span-[full-1]
+// REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
 //    instead of grid-template-columns:repeat(n,1fr)
 // eslint-disable-next-line unicorn/prefer-module
 module.exports = {

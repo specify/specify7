@@ -78,7 +78,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 <Button.Red
                   onClick={(): void => {
                     /*
-                     * TODO: move this into ResourceApi.js
+                     * REFACTOR: move this into ResourceApi.js
                      */
                     // @ts-expect-error Changing a read-only parameter
                     resource.needsSaved = false;

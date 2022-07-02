@@ -16,14 +16,14 @@ let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
 ) => void;
 /*
- * TODO: this is hacky, and it happened at least 2 times that setError was
+ * BUG: this is hacky, and it happened at least 2 times that setError was
  *   undefined. Come up with a cleaner solution
  */
 export const displayError: typeof setError = (error) => setError(error);
 
 /*
  * For usage in non-react components only
- * TODO: remove this once everything is using react
+ * REFACTOR: remove this once everything is using react
  */
 let legacyContext: (promise: Promise<unknown>) => void;
 export const legacyLoadingContext = (promise: Promise<unknown>) =>

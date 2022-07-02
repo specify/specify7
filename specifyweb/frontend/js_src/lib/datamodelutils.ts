@@ -105,7 +105,7 @@ export type CommonFields = {
   readonly resource_uri: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly recordset_info?: RecordSetInfo;
-  // TODO: This field is undefined for newly created resources. Improve typing
+  // BUG: This field is undefined for newly created resources. Improve typing
   readonly id: number;
 };
 

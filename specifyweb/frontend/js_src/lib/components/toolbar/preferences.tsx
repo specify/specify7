@@ -91,7 +91,7 @@ function Preferences({
         }
       >
         <div className="relative flex gap-6 overflow-y-auto">
-          {/* TODO: highlight link that corresponds to current section */}
+          {/* FEATURE: highlight link that corresponds to current section */}
           <aside
             className={`min-w-fit sticky top-0 flex flex-col flex-1 divide-y-4
              divide-[color:var(--form-background)]`}

@@ -157,7 +157,7 @@ export function UserRoles({
                   {role.name}
                 </Label.ForCheckbox>
                 <DataEntry.Edit
-                  // TODO: trigger unload protect
+                  // BUG: trigger unload protect
                   onClick={(): void => handleOpenRole(collectionId, role.id)}
                 />
               </li>

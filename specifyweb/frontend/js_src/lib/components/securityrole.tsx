@@ -132,7 +132,7 @@ export function RoleView({
                           userId !== userInformation.id &&
                           !hasTablePermission('SpecifyUser', 'read')
                         }
-                        // TODO: trigger unload protect
+                        // BUG: trigger unload protect
                         onClick={(): void => handleOpenUser(userId)}
                       >
                         {userName}

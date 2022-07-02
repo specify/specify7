@@ -99,7 +99,7 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-// TODO: reduce amount of items that have requiresReload=true
+// FEATURE: reduce amount of items that have requiresReload=true
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -364,7 +364,7 @@ export const preferenceDefinitions = {
             defaultValue: 'default',
             renderer: WelcomePageModePreferenceItem,
           }),
-          // TODO: allow selecting attachments
+          // FEATURE: allow selecting attachments
           source: defineItem<string>({
             title: '',
             requiresReload: false,
@@ -740,7 +740,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: 'first',
-            // TODO: define pick list values as IR<> instead of RA<>
+            // REFACTOR: define pick list values as IR<> instead of RA<>
             values: [
               {
                 value: 'first',
@@ -940,7 +940,7 @@ export const preferenceDefinitions = {
             /**
              * This used to be checked by default but was temporary disabled
              * because of https://github.com/specify/specify7/issues/1719.
-             * TODO: Need to reEnable after that issue is fixed
+             * BUG: Need to reEnable after that issue is fixed
              */
             defaultValue: false,
             type: 'java.lang.Boolean',

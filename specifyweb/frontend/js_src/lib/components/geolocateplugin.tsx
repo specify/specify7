@@ -19,7 +19,7 @@ import { useCachedState } from './statecache';
 const defaultWidth = 947;
 const defaultHeight = 779;
 
-// TODO: merge this with GeoLocate code in the WB once WB is using react
+// REFACTOR: merge this with GeoLocate code in the WB once WB is using react
 function GeoLocate({
   resource,
   onClose: handleClose,
@@ -125,7 +125,7 @@ function GeoLocate({
         setHeight(container.clientHeight);
       }}
       buttons={commonText('close')}
-      // TODO: consider adding a hook to remember dialog size and position
+      // REFACTOR: consider adding a hook to remember dialog size and position
       forwardRef={{
         container(container): void {
           if (container === null) return;
