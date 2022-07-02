@@ -1,5 +1,5 @@
 /**
- * LocalStorage and SessionStorage front-end cache
+ * LocalStorage front-end cache
  *
  * Mostly used for remembering user preferences (last used leaflet map or WB
  * Column sort order), but can also be used to store results of computationally
@@ -18,39 +18,14 @@
 
 import type { CacheDefinitions } from './cachedefinitions';
 import { eventListener } from './events';
-import { removeKey } from './helpers';
 import type { R } from './types';
-
-/** Determines how persistent bucket's storage would be */
-export type BucketType =
-  // Persistent across sessions
-  | 'localStorage'
-  // Persistent only during a single session
-  | 'sessionStorage';
 
 type BucketData = {
   // A dictionary of cache records
   records: R<{
-    /*
-     * The amount of times a particular cache value was used.
-     * This was needed for the automatic cache trimming algorithm when cache size
-     * was growing close to the limit. Since data model is no longer stored
-     * in localStorage, there is lots of space available and this is no longer
-     * needed.
-     * It remains mostly for analytical purposes to help track how many times
-     * a given page has been rendered
-     */
-    useCount: number;
     // The value that is stored in a particular cache record
     value: unknown;
-    /*
-     * Optional string identifying a version of a cache value
-     * when calling .get() with a version specified, it is compared to
-     * record's version. if versions do not much, record is deleted
-     */
-    version?: string;
   }>;
-  type: BucketType;
 };
 
 /** The data structure that would store all the buckets */
@@ -83,11 +58,7 @@ function commitToStorage(): void {
   if (globalThis.localStorage === undefined) return;
 
   Object.entries(buckets)
-    .filter(
-      ([, bucketData]) =>
-        bucketData.type === 'localStorage' &&
-        Object.keys(bucketData.records).length > 0
-    )
+    .filter(([, bucketData]) => Object.keys(bucketData.records).length > 0)
     .forEach(([bucketName]) => commitBucketToStorage(bucketName));
 }
 
@@ -100,162 +71,41 @@ function commitBucketToStorage(bucketName: string): void {
 }
 
 /** Tries to fetch a bucket from localStorage */
-function fetchBucket(
-  // The name of the bucket to fetch
-  bucketName: string
-): BucketData | false {
-  /*
-   * {boolean} False if bucket does not exist
-   * {object} bucket content if bucket exists
-   *
-   */
-  if (
-    globalThis.localStorage === undefined ||
-    globalThis.sessionStorage === undefined
-  )
-    return false;
+function fetchBucket(bucketName: string): void {
+  if (globalThis.localStorage === undefined) return;
 
   const fullBucketName = `${cachePrefix}${bucketName}`;
+  const data = globalThis.localStorage.getItem(fullBucketName);
 
-  const data =
-    globalThis.localStorage.getItem(fullBucketName) ??
-    globalThis.sessionStorage.getItem(fullBucketName);
-
-  if (data === null) return false;
-  buckets[bucketName] = JSON.parse(data) as BucketData;
-  return buckets[bucketName];
+  if (data !== null) buckets[bucketName] = JSON.parse(data) as BucketData;
 }
 
 /**
  * Get value of cacheName in the bucketName
  * Bucket names and cache names are defined in CacheDefinitions
  */
-export const getCache: {
-  // Overload with a default value
-  <
-    BUCKET_NAME extends string & keyof CacheDefinitions,
-    CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
-  >(
-    bucketName: BUCKET_NAME,
-    cacheName: CACHE_NAME,
-    props: {
-      readonly version?: string;
-      readonly defaultSetOptions?: SetOptions;
-      readonly defaultValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME];
-    }
-  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME];
-  // Overload without a default value (returns T|undefined)
-  <
-    BUCKET_NAME extends string & keyof CacheDefinitions,
-    CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
-  >(
-    bucketName: BUCKET_NAME,
-    cacheName: CACHE_NAME,
-    props?: {
-      readonly version?: string;
-      readonly defaultSetOptions?: SetOptions;
-    }
-  ): CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined;
-} = <
+export const getCache = <
   BUCKET_NAME extends string & keyof CacheDefinitions,
   CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
 >(
   bucketName: BUCKET_NAME,
-  cacheName: CACHE_NAME,
-  props?: {
-    readonly version?: string;
-    readonly defaultSetOptions?: SetOptions;
-    readonly defaultValue?: CacheDefinitions[BUCKET_NAME][CACHE_NAME];
-  }
-) =>
-  genericGet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(
-    bucketName,
-    cacheName,
-    props
-  );
+  cacheName: CACHE_NAME
+): CacheDefinitions[BUCKET_NAME][CACHE_NAME] =>
+  genericGet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(bucketName, cacheName);
 
 /** Get value of cacheName in the bucketName */
-// Overload with defaultValue
-function genericGet<T>(
+function genericGet<TYPE>(
   // The name of the bucket
   bucketName: string,
   // The name of the cache
-  cacheName: string,
-  props: {
-    version?: string;
-    defaultValue: T;
-    defaultSetOptions?: SetOptions;
-  }
-): T;
-// Overload without defaultValue (returns T|undefined)
-function genericGet<T = never>(
-  // The name of the bucket
-  bucketName: string,
-  // The name of the cache
-  cacheName: string,
-  props?:
-    | {
-        version?: string;
-        defaultSetOptions?: SetOptions;
-      }
-    | undefined
-): T | undefined;
-function genericGet<T>(
-  // The name of the bucket
-  bucketName: string,
-  // The name of the cache
-  cacheName: string,
-  {
-    version,
-    defaultSetOptions,
-    defaultValue,
-  }: {
-    readonly version?: string;
-    readonly defaultSetOptions?: SetOptions;
-    readonly defaultValue?: T;
-  } = {}
-): T | undefined {
-  /*
-   * {boolean} False on error
-   * {mixed} value stored under cacheName on success
-   */
+  cacheName: string
+): TYPE {
   if (!eventListenerIsInitialized) initialize();
 
-  if (
-    (buckets[bucketName] === undefined && !Boolean(fetchBucket(bucketName))) ||
-    buckets[bucketName].records[cacheName] === undefined
-  ) {
-    if (defaultValue === undefined) return undefined;
-    genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
-  }
+  if (buckets[bucketName] === undefined) fetchBucket(bucketName);
 
-  // If cache version is specified, and it doesn't match, clear the record
-  if (
-    typeof version === 'string' &&
-    buckets[bucketName].records[cacheName].version !== version
-  ) {
-    console.warn(`Deleted cache key ${cacheName} due to version mismatch`);
-    buckets[bucketName].records = removeKey(
-      buckets[bucketName].records,
-      cacheName
-    );
-    if (defaultValue === undefined) return undefined;
-    genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
-  }
-
-  buckets[bucketName].records[cacheName].useCount += 1;
-  return buckets[bucketName].records[cacheName].value as T;
+  return buckets[bucketName]?.records[cacheName]?.value as TYPE;
 }
-
-type SetOptions = {
-  /*
-   * Which storage type to use. If localStorage - use persistent storage
-   * If sessionStorage - data does not persist beyond the page reload
-   */
-  readonly bucketType?: BucketType;
-  // Version of this record (used for invalidating older cache)
-  readonly version?: string;
-};
 
 export const setCache = <
   BUCKET_NAME extends string & keyof CacheDefinitions,
@@ -263,14 +113,12 @@ export const setCache = <
 >(
   bucketName: BUCKET_NAME,
   cacheName: CACHE_NAME,
-  cacheValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME],
-  setOptions?: SetOptions
+  cacheValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]
 ) =>
   genericSet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(
     bucketName,
     cacheName,
-    cacheValue,
-    setOptions
+    cacheValue
   );
 
 export const cacheEvents = eventListener<{ change: undefined }>();
@@ -281,8 +129,7 @@ function genericSet<T>(
   // The name of the cache
   cacheName: string,
   // The value of the cache record. Can be any serializable value
-  cacheValue: T,
-  { bucketType = 'localStorage', version = undefined }: SetOptions = {}
+  cacheValue: T
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
@@ -291,14 +138,11 @@ function genericSet<T>(
     return cacheValue;
 
   buckets[bucketName] ??= {
-    type: bucketType,
     records: {},
   };
 
   buckets[bucketName].records[cacheName] = {
     value: cacheValue,
-    useCount: 0,
-    ...(typeof version === 'string' ? { version } : {}),
   };
 
   cacheEvents.trigger('change');

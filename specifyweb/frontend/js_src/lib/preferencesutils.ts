@@ -64,7 +64,7 @@ let preferences: {
 } =
   process.env.NODE_ENV === 'test'
     ? {}
-    : getCache('userPreferences', 'cached', { defaultValue: {} });
+    : getCache('userPreferences', 'cached') ?? {};
 export type UserPreferences = typeof preferences;
 export const getRawUserPreferences = () => preferences;
 
@@ -216,7 +216,7 @@ let userResource: ResourceWithData = undefined!;
 let defaultPreferences: UserPreferences =
   process.env.NODE_ENV === 'test'
     ? {}
-    : getCache('userPreferences', 'defaultCached', { defaultValue: {} });
+    : getCache('userPreferences', 'defaultCached') ?? {};
 
 function updatePreferences(resource: ResourceWithData): ResourceWithData {
   userResource = resource;

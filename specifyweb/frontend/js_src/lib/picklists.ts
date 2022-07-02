@@ -74,7 +74,7 @@ let frontEndPickLists: {
   };
 };
 
-export function getFrontEndPickLists(): frontEndPickLists {
+export function getFrontEndPickLists(): typeof frontEndPickLists {
   if (typeof frontEndPickLists === undefined) defineFrontEndPickLists();
   return frontEndPickLists;
 }

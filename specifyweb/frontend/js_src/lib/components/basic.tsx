@@ -500,10 +500,11 @@ export const Input = {
           const initialType = input.type;
           input.type = 'text';
           try {
-            // @ts-expect-error globalThis.clipboardData does not have typings
-            const value = (
-              event.clipboardData ?? globalThis.clipboardData
-            ).getData('text/plain');
+            const value =
+              // @ts-expect-error globalThis.clipboardData does not have typings
+              (event.clipboardData ?? globalThis.clipboardData).getData(
+                'text/plain'
+              );
             handleDatePaste(value);
           } catch (error: unknown) {
             console.error(error);

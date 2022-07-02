@@ -110,12 +110,8 @@ export const getDefaultMappingState = ({
   readonly mustMatchPreferences: IR<boolean>;
 }): MappingState => ({
   type: 'MappingState',
-  showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields', {
-    defaultValue: false,
-  }),
-  showMappingView: getCache('wbPlanViewUi', 'showMappingView', {
-    defaultValue: true,
-  }),
+  showHiddenFields: getCache('wbPlanViewUi', 'showHiddenFields') ?? false,
+  showMappingView: getCache('wbPlanViewUi', 'showMappingView') ?? true,
   mappingView: ['0'],
   mappingsAreValidated: false,
   validationResults: [],

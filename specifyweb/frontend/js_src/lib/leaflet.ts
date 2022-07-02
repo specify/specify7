@@ -192,12 +192,14 @@ function rememberSelectedOverlays(
   };
 
   Object.keys(layers)
-    .filter((layerName) =>
-      getCache(
-        'leaflet',
-        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
-        { defaultValue: defaultOverlays[layerName] ?? false }
-      )
+    .filter(
+      (layerName) =>
+        getCache(
+          'leaflet',
+          `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const
+        ) ??
+        defaultOverlays[layerName] ??
+        false
     )
     .forEach((layerName) => layers[layerName].addTo(map));
 

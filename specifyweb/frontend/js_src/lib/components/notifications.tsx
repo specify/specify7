@@ -2,13 +2,13 @@ import React from 'react';
 
 import { ajax, formData, ping } from '../ajax';
 import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { sortFunction } from '../helpers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -38,13 +38,13 @@ export function Notifications(): JSX.Element {
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     const handler = (): void => {
-      globalThis.clearTimeout(timeout);
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
       pullInterval = INITIAL_INTERVAL;
       if (document.visibilityState === 'visible') doFetch();
     };
     document.addEventListener('visibilitychange', handler);
 
-    let timeout: number | undefined = undefined;
+    let timeout: NodeJS.Timeout | undefined = undefined;
 
     function doFetch(): void {
       /*
@@ -116,7 +116,7 @@ export function Notifications(): JSX.Element {
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
-      globalThis.clearTimeout(timeout);
+      if (timeout !== undefined) globalThis.clearTimeout(timeout);
     };
   }, [isOpen]);
 

@@ -39,29 +39,26 @@ export type SearchPreferences = {
   };
 };
 
-const CACHE_VERSION = '1';
+const defaultSearchPreferences = {
+  navigation: {
+    direction: 'columnFirst',
+  },
+  search: {
+    fullMatch: true,
+    caseSensitive: true,
+    useRegex: false,
+    liveUpdate: true,
+  },
+  replace: {
+    replaceMode: 'replaceAll',
+  },
+};
 
 /**
  * Fetch cached search config or create a new one
  */
 export const getInitialSearchPreferences = (): SearchPreferences =>
-  getCache('workbench', 'searchProperties', {
-    defaultValue: {
-      navigation: {
-        direction: 'columnFirst',
-      },
-      search: {
-        fullMatch: true,
-        caseSensitive: true,
-        useRegex: false,
-        liveUpdate: true,
-      },
-      replace: {
-        replaceMode: 'replaceAll',
-      },
-    },
-    version: CACHE_VERSION,
-  });
+  getCache('workbench', 'searchProperties') ?? defaultSearchPreferences;
 
 function CheckboxLine({
   children: label,
@@ -204,9 +201,7 @@ export function WbAdvancedSearch({
 
   React.useEffect(() => {
     handleChange(searchPreferences);
-    setCache('workbench', 'searchProperties', searchPreferences, {
-      version: CACHE_VERSION,
-    });
+    setCache('workbench', 'searchProperties', searchPreferences);
   }, [searchPreferences]);
 
   return (
