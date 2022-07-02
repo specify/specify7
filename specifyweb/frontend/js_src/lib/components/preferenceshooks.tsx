@@ -66,7 +66,7 @@ export function usePref<
 }
 
 function useMedia(query: string): boolean {
-  const media = React.useMemo(() => window.matchMedia(query), [query]);
+  const media = React.useMemo(() => globalThis.matchMedia(query), [query]);
   const eventsTarget = React.useMemo(
     () => eventListener<{ change: undefined }>(media),
     [media]
@@ -98,7 +98,7 @@ export function useTransitionDuration(): number {
 const shouldReduceMotion = (): boolean =>
   f.var(getUserPref('general', 'ui', 'reduceMotion'), (pref) =>
     pref === 'system'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
       : pref === 'reduce'
   );
 
@@ -122,7 +122,7 @@ export function useReducedTransparency(): boolean {
 export const shouldUseDarkMode = (): boolean =>
   f.var(getUserPref('general', 'ui', 'theme'), (theme) =>
     theme === 'system'
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? globalThis.matchMedia('(prefers-color-scheme: dark)').matches
       : theme === 'dark'
   );
 

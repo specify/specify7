@@ -320,7 +320,7 @@ const WBView = Backbone.View.extend({
       this.wbutils.toggleCellTypes('invalidCells', 'remove');
 
     this.flushIndexedCellData = true;
-    window.addEventListener('resize', this.handleResize);
+    globalThis.addEventListener('resize', this.handleResize);
 
     return this;
   },
@@ -605,7 +605,7 @@ const WBView = Backbone.View.extend({
     this.uploadedView?.handleClose();
     this.wbstatus?.();
     this.stopLiveValidation();
-    window.removeEventListener('resize', this.handleResize);
+    globalThis.removeEventListener('resize', this.handleResize);
     document.body.classList.remove('overflow-x-hidden');
     Backbone.View.prototype.remove.call(this);
   },
@@ -1242,11 +1242,11 @@ const WBView = Backbone.View.extend({
     );
 
     // Make sure box is overflowing horizontally
-    if (window.innerWidth > cellContainerBoundingBox.right + oneRem * 2) return;
+    if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2) return;
 
     this.hotCommentsContainer.style.setProperty(
       '--offset-right',
-      `${Math.round(window.innerWidth - cellContainerBoundingBox.x)}px`
+      `${Math.round(globalThis.innerWidth - cellContainerBoundingBox.x)}px`
     );
     this.hotCommentsContainer.classList.add(
       'right-[var(--offset-right)]',
@@ -2040,7 +2040,7 @@ const WBView = Backbone.View.extend({
     const filename = wbName.endsWith('.csv') ? wbName : `${wbName}.csv`;
     const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
+    a.href = globalThis.URL.createObjectURL(blob);
     a.setAttribute('download', filename);
     a.click();
   },

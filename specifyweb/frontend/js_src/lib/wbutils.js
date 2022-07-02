@@ -709,7 +709,7 @@ export const WBUtils = Backbone.View.extend({
       this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
 
     const handleDelete = () => {
-      window.removeEventListener('message', handleGeolocateResult, false);
+      globalThis.removeEventListener('message', handleGeolocateResult, false);
       event.target.ariaPressed = false;
       this.geoLocateDialog.remove();
       this.geoLocateDialog = undefined;
@@ -793,7 +793,7 @@ export const WBUtils = Backbone.View.extend({
       if (selection.length === 1) handleDelete();
     };
 
-    window.addEventListener('message', handleGeolocateResult, false);
+    globalThis.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
     if (this.geoMapDialog !== undefined) {

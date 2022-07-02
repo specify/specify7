@@ -190,8 +190,7 @@ export function Main({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return menuItems === undefined ||
-    userTools === undefined ? null : (
+  return menuItems === undefined || userTools === undefined ? null : (
     <>
       <Button.Small
         className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only z-10"
@@ -274,7 +273,7 @@ export function Main({
           className={{
             container: `${dialogClassNames.narrowContainer}`,
           }}
-          onClose={(): void => window.location.assign('/accounts/logout/')}
+          onClose={(): void => globalThis.location.assign('/accounts/logout/')}
           buttons={
             <Button.DialogClose component={Button.Red}>
               {commonText('logOut')}

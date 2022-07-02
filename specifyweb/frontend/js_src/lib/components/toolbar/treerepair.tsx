@@ -167,7 +167,7 @@ export function EditTreeDefinition({
           canAddAnother={false}
           dialog="modal"
           onClose={handleClose}
-          onSaved={(): void => window.location.reload()}
+          onSaved={(): void => globalThis.location.reload()}
           onDeleted={undefined}
           isSubForm={false}
           isDependent={false}

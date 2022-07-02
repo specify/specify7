@@ -82,7 +82,7 @@ function TreeView<SCHEMA extends AnyTree>({
   function updateConformation(value: Conformations | undefined): void {
     if (typeof value === 'object') {
       const encoded = serializeConformation(value);
-      pushUrl(formatUrl(window.location.href, { conformation: encoded }));
+      pushUrl(formatUrl(globalThis.location.href, { conformation: encoded }));
       setConformation(encoded);
     } else setConformation('');
   }
@@ -391,7 +391,7 @@ function EditTreeRank({
           canAddAnother={false}
           dialog="modal"
           onClose={handleClose}
-          onSaved={(): void => window.location.reload()}
+          onSaved={(): void => globalThis.location.reload()}
           onDeleted={undefined}
           isSubForm={false}
           isDependent={false}
@@ -419,8 +419,7 @@ export function TreeViewWrapper({
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  if (treeName === undefined || !isTreeModel(treeName))
-    return <NotFoundView />;
+  if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
   return (
     <ProtectedTree treeName={treeName} action="read">
       {typeof treeDefinition === 'object' ? (

@@ -140,7 +140,7 @@ function ChooseCollection({
               onClick={(): void =>
                 loading(
                   ping('/accounts/logout').then(() =>
-                    window.location.assign(
+                    globalThis.location.assign(
                       formatUrl('/accounts/logout/', { next: data.nextUrl })
                     )
                   )

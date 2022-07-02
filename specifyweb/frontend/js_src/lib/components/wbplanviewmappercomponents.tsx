@@ -135,10 +135,10 @@ export function MappingView({
     (mappingViewParent: HTMLElement | null) => void
   >(
     (mappingViewParent) => {
-      if (ResizeObserver === undefined || mappingViewParent === null)
+      if (globalThis.ResizeObserver === undefined || mappingViewParent === null)
         return undefined;
 
-      const resizeObserver = new ResizeObserver(() =>
+      const resizeObserver = new globalThis.ResizeObserver(() =>
         mappingViewParent.offsetHeight > 0
           ? setMappingViewHeight(mappingViewParent.offsetHeight)
           : undefined

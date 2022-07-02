@@ -214,10 +214,14 @@ export function PermissionError({
   return typeof error === 'object' ? (
     <Dialog
       header={commonText('permissionDeniedError')}
-      onClose={handleClose || ((): void => window.location.assign('/specify/'))}
+      onClose={
+        handleClose || ((): void => globalThis.location.assign('/specify/'))
+      }
       buttons={
         <>
-          <Button.Red onClick={(): void => window.location.assign('/specify/')}>
+          <Button.Red
+            onClick={(): void => globalThis.location.assign('/specify/')}
+          >
             {commonText('goToHomepage')}
           </Button.Red>
           {typeof handleClose === 'function' && (
@@ -235,8 +239,8 @@ export function PermissionError({
       header={commonText('sessionTimeOutDialogHeader')}
       forceToTop={true}
       onClose={(): void =>
-        window.location.assign(
-          formatUrl('/accounts/login/', { next: window.location.href })
+        globalThis.location.assign(
+          formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
       buttons={commonText('logIn')}

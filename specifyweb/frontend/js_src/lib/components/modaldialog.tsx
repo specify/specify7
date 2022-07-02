@@ -231,10 +231,17 @@ export function Dialog({
 
   // Resize listener
   React.useEffect(() => {
-    if (!isOpen || container === null || handleResize === undefined)
+    if (
+      !isOpen ||
+      container === null ||
+      handleResize === undefined ||
+      globalThis.ResizeObserver === undefined
+    )
       return undefined;
 
-    const observer = new ResizeObserver(() => handleResize?.(container));
+    const observer = new globalThis.ResizeObserver(() =>
+      handleResize?.(container)
+    );
     observer.observe(container);
 
     return (): void => observer.disconnect();

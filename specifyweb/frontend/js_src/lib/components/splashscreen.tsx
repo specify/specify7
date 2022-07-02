@@ -57,7 +57,7 @@ export function entrypoint(
   if (process.env.NODE_ENV === 'test') return;
   console.group('Specify App Starting');
   unlockInitialContext(name);
-  window.addEventListener('load', () => {
+  globalThis.addEventListener('load', () => {
     const root = document.getElementById('root');
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)

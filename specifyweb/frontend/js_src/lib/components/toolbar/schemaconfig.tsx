@@ -143,7 +143,7 @@ function SchemaConfigWrapper({
       onClose={handleClose}
       onSave={(language): void =>
         // Reload the page after schema changes
-        window.location.assign(
+        globalThis.location.assign(
           formatUrl('/specify/task/schema-config/', { language })
         )
       }

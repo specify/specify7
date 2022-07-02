@@ -19,7 +19,7 @@
 `
 import { regenerate } from './tests/updatedatamodel';
 // Call this function from the console once front-end is loaded
-window.regenerateSchema = (): void => {
+globalThis.regenerateSchema = (): void => {
   document.body.textContent = regenerate();
 };
 `;

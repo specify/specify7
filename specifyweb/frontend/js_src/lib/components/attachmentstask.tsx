@@ -107,7 +107,7 @@ export function AttachmentCell({
   React.useEffect(() => {
     if (isPreviewPending && typeof originalUrl === 'string') {
       handleNoPreviewPending();
-      window.open(originalUrl, '_blank');
+      globalThis.open(originalUrl, '_blank');
     }
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
 
@@ -125,8 +125,7 @@ export function AttachmentCell({
       {typeof attachment === 'object' && (
         <>
           {typeof handleViewRecord === 'function' &&
-            (model === undefined ||
-              hasTablePermission(model.name, 'read')) && (
+            (model === undefined || hasTablePermission(model.name, 'read')) && (
               <Button.LikeLink
                 className="absolute top-0 left-0"
                 title={model?.label}
@@ -196,9 +195,7 @@ export function AttachmentCell({
              * remember that and open the link as soon as loaded.
              * In the meanwhile, display a loading screen
              */
-            originalUrl === undefined
-              ? handlePreviewPending()
-              : undefined
+            originalUrl === undefined ? handlePreviewPending() : undefined
           }
         >
           <img

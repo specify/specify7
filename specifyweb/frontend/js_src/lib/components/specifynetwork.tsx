@@ -196,7 +196,7 @@ function SpecifyNetwork({
   );
 
   const handleClick = React.useCallback((): void => {
-    const childWindow = window.open(getLink(), '_blank') ?? undefined;
+    const childWindow = globalThis.open(getLink(), '_blank') ?? undefined;
     if (!childWindow) {
       handleFailure();
       return;
@@ -206,7 +206,7 @@ function SpecifyNetwork({
      * the Specify Network page can retrieve information even after the form
      * is closed, for as long as the browser tab is open
      */
-    window.addEventListener('message', messageHandler);
+    globalThis.addEventListener('message', messageHandler);
   }, [getLink, messageHandler, handleFailure]);
 
   // If link was clicked before resource was fully loaded, show loading message

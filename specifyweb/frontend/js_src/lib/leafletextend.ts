@@ -90,7 +90,7 @@ L.Control.PrintMap = L.Control.extend({
     L.DomEvent.on(button, 'click', (event) => {
       L.DomEvent.stopPropagation(event);
       L.DomEvent.preventDefault(event);
-      window.print();
+      globalThis.print();
     });
 
     // @ts-expect-error

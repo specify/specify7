@@ -239,7 +239,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         <Dialog
           header={formsText('saveConflictDialogHeader')}
           buttons={
-            <Button.Red onClick={(): void => window.location.reload()}>
+            <Button.Red onClick={(): void => globalThis.location.reload()}>
               {commonText('close')}
             </Button.Red>
           }

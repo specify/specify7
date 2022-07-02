@@ -38,7 +38,7 @@ export function Notifications(): JSX.Element {
   React.useEffect(() => {
     let pullInterval = INITIAL_INTERVAL;
     const handler = (): void => {
-      window.clearTimeout(timeout);
+      globalThis.clearTimeout(timeout);
       pullInterval = INITIAL_INTERVAL;
       if (document.visibilityState === 'visible') doFetch();
     };
@@ -104,7 +104,7 @@ export function Notifications(): JSX.Element {
           timeout =
             document.visibilityState === 'hidden'
               ? undefined
-              : window.setTimeout(doFetch, pullInterval);
+              : globalThis.setTimeout(doFetch, pullInterval);
           return undefined;
         })
         .catch(console.error);
@@ -116,7 +116,7 @@ export function Notifications(): JSX.Element {
     return (): void => {
       document.removeEventListener('visibilitychange', handler);
       destructorCalled = true;
-      window.clearTimeout(timeout);
+      globalThis.clearTimeout(timeout);
     };
   }, [isOpen]);
 

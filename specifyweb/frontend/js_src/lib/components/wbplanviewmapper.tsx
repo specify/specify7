@@ -208,7 +208,10 @@ export function WbPlanViewMapper(props: {
     listOfMappings,
   ]);
 
-  React.useEffect(() => listen(window, 'resize', repositionSuggestionBox), []);
+  React.useEffect(
+    () => listen(globalThis, 'resize', repositionSuggestionBox),
+    []
+  );
 
   // Fetch automapper suggestions when opening a custom select element
   React.useEffect(() => {

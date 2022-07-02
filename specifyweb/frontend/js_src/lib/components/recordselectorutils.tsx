@@ -42,7 +42,7 @@ const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
 
 function setQueryParameter(queryParameter: string, index: number): void {
   const parameters = { [queryParameter]: index.toString() };
-  pushUrl(formatUrl(window.location.href, parameters));
+  pushUrl(formatUrl(globalThis.location.href, parameters));
 }
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -333,9 +333,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
-    ids.map((id) =>
-      id === undefined ? undefined : new model.Resource({ id })
-    )
+    ids.map((id) => (id === undefined ? undefined : new model.Resource({ id })))
   );
 
   const previousIds = React.useRef(ids);
@@ -483,9 +481,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 typeof handleRemove === 'function' &&
                 canRemove ? (
                   <DataEntry.Remove
-                    disabled={
-                      resource === undefined || mode === 'view'
-                    }
+                    disabled={resource === undefined || mode === 'view'}
                     onClick={(): void => handleRemove('minusButton')}
                     title={
                       typeof urlContext === 'number'

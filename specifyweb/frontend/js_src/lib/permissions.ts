@@ -368,12 +368,9 @@ export const fetchUserPermissions = async (
               ...derivedPermissions,
               [collection]: derived,
             };
-            if (
-              process.env.NODE_ENV !== 'production' &&
-              typeof window === 'object'
-            ) {
+            if (process.env.NODE_ENV !== 'production') {
               // @ts-expect-error Declaring a global object
-              window._permissions = {
+              globalThis._permissions = {
                 table: tablePermissions,
                 operations: operationPermissions,
                 derived: derivedPermissions,

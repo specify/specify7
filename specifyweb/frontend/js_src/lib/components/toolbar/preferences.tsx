@@ -85,7 +85,7 @@ function Preferences({
         onSubmit={(): void =>
           loading(
             awaitPrefsSynced().then(() =>
-              needsRestart ? window.location.assign('/') : handleClose()
+              needsRestart ? globalThis.location.assign('/') : handleClose()
             )
           )
         }

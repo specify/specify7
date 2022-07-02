@@ -220,8 +220,13 @@ export function AutoGrowTextArea({
    * because that interrupts the resize operation
    */
   React.useEffect(() => {
-    if (textArea === null || shadow === null) return undefined;
-    const observer = new ResizeObserver(() => {
+    if (
+      textArea === null ||
+      shadow === null ||
+      globalThis.ResizeObserver === undefined
+    )
+      return undefined;
+    const observer = new globalThis.ResizeObserver(() => {
       shadow.style.height = textArea.style.height;
       shadow.style.width = textArea.style.width;
     });

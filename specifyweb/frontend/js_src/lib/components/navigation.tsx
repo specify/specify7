@@ -25,9 +25,7 @@ const sequenceFromState = (state?: State): number =>
   typeof state?.sequence === 'number' ? state.sequence : 0;
 
 // If the page is reloaded, the sequence needs to be set from the stored state.
-let sequence = sequenceFromState(
-  typeof window === 'object' ? window.history.state : undefined
-);
+let sequence = sequenceFromState(globalThis.history?.state);
 
 type Blocker = {
   readonly key: unknown;
@@ -49,10 +47,10 @@ export function addUnloadProtect(
 
 function changeOnBeforeUnloadHandler(handler?: () => string): void {
   if (typeof onBeforeUnloadHandler === 'function')
-    window.removeEventListener('onbeforeunload', onBeforeUnloadHandler);
+    globalThis.removeEventListener('onbeforeunload', onBeforeUnloadHandler);
   onBeforeUnloadHandler = handler;
   if (typeof handler === 'function')
-    window.addEventListener('onbeforeunload', handler);
+    globalThis.addEventListener('onbeforeunload', handler);
 }
 
 export function removeUnloadProtect(removalKey: unknown): void {
@@ -73,18 +71,18 @@ export function clearUnloadProtect(): void {
 }
 
 /**
- * We are going to extend the window.history object to automatically
+ * We are going to extend the globalThis.history object to automatically
  * increment and store the sequence value on all pushState invocations.
  */
 
 function getSequence() {
-  return sequenceFromState(window.history.state);
+  return sequenceFromState(globalThis.history.state);
 }
 
 const pushState: History['pushState'] = function (state: State, title, url) {
   sequence += 1;
   state.sequence = sequence;
-  window.history.pushState(state, title, url);
+  globalThis.history.pushState(state, title, url);
 };
 
 const replaceState: History['replaceState'] = function (
@@ -93,7 +91,7 @@ const replaceState: History['replaceState'] = function (
   url
 ) {
   state.sequence = sequence;
-  window.history.replaceState(state, title, url);
+  globalThis.history.replaceState(state, title, url);
 };
 
 // @ts-expect-error
@@ -103,11 +101,11 @@ Backbone.history.history = Object.setPrototypeOf(
     pushState,
     replaceState,
   },
-  typeof window === 'object' ? window.history : null!
+  globalThis?.history
 );
 
 // @ts-expect-error
-export const history = Backbone.history.history as typeof window.history;
+export const history = Backbone.history.history as typeof globalThis.history;
 
 /**
  * Make the Backbone routing mechanisms ignore queryparams in urls
@@ -128,7 +126,7 @@ const checkUrl = Backbone.history.checkUrl;
 Backbone.history.checkUrl = function (event: any) {
   const poppedSequence = sequenceFromState(event.originalEvent.state);
   /*
-   * If a popstate is canceled, we use window.history.go to return
+   * If a popstate is canceled, we use globalThis.history.go to return
    * to previous point in the history, which results another
    * popstate event where the sequence is the current sequence.
    */
@@ -145,7 +143,7 @@ Backbone.history.checkUrl = function (event: any) {
    * another popstate event with the current sequence, which is
    * ignored above.
    */
-  const cancel = (): void => window.history.go(sequence - poppedSequence);
+  const cancel = (): void => globalThis.history.go(sequence - poppedSequence);
 
   confirmNavigation((): void => {
     /*
@@ -216,11 +214,11 @@ export function navigate(
   const cont = (): void => {
     if (options.trigger !== false) clearUnloadProtect();
 
-    if (isExternalUrl(url)) window.location.assign(url);
+    if (isExternalUrl(url)) globalThis.location.assign(url);
     else {
       const origin =
-        window.location.origin ||
-        `${window.location.protocol}//${window.location.host}`;
+        globalThis.location.origin ||
+        `${globalThis.location.protocol}//${globalThis.location.host}`;
       const strippedUrl = url
         .replace(new RegExp(`^${origin}`), '')
         .replace(/^\/specify/, '');
@@ -241,15 +239,15 @@ export const startNavigation = (): void =>
 export const goTo = (url: string): void => navigate(url, { trigger: true });
 
 // Leak goTo function in development for quicker development
-if (process.env.NODE_ENV !== 'production' && typeof window === 'object')
+if (process.env.NODE_ENV !== 'production')
   // @ts-expect-error Creating a global value
-  window._goTo = goTo;
+  globalThis._goTo = goTo;
 
 export const pushUrl = (url: string): void =>
   navigate(url, { trigger: false, replace: true });
 
 export const getCurrentUrl = (): string =>
-  `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  `${globalThis.location.pathname}${globalThis.location.search}${globalThis.location.hash}`;
 
 export function useUnloadProtect(
   isEnabled: boolean,

@@ -56,7 +56,7 @@ function Login({
         onChange={(language): void =>
           loading(
             handleLanguageChange(language).then((): void =>
-              window.location.reload()
+              globalThis.location.reload()
             )
           )
         }

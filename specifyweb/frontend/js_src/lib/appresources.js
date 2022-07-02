@@ -172,7 +172,7 @@ const ResourceDataView = Backbone.View.extend({
                 }
 
                 const blob = new Blob([this.appresourceData.get('data')], {type: this.model.get('mimetype') || ""});
-                const url = (window.URL || window.webkitURL).createObjectURL(blob);
+                const url = (globalThis.URL || globalThis.webkitURL).createObjectURL(blob);
                 $(`<a class="button">
                     ${commonText('download')}
                 </a>`).attr({
@@ -436,15 +436,15 @@ const AppResourcesView = Backbone.View.extend({
 
 function getStoredToggleState(resourceModel, levelKey) {
     const key = `AppResource.visibleDirs.${resourceModel.name}.${userInformation.id}`;
-    const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
+    const toggleStates = JSON.parse(globalThis.localStorage.getItem(key) || "{}");
     return !!toggleStates[levelKey];
 }
 
 function setStoredToggleState(resourceModel, levelKey, state) {
     const key = `AppResource.visibleDirs.${resourceModel.name}.${userInformation.id}`;
-    const toggleStates = JSON.parse(window.localStorage.getItem(key) || "{}");
+    const toggleStates = JSON.parse(globalThis.localStorage.getItem(key) || "{}");
     toggleStates[levelKey] = state;
-    window.localStorage.setItem(key, JSON.stringify(toggleStates));
+    globalThis.localStorage.setItem(key, JSON.stringify(toggleStates));
 }
 
 const GlobalResourcesView = Backbone.View.extend({

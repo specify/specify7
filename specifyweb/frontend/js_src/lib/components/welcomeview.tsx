@@ -113,7 +113,7 @@ function AboutDialog({
                 welcomeText('isaNumber'),
                 getSystemInfo().isa_number ?? commonText('notApplicable'),
               ],
-              [welcomeText('browser'), window.navigator.userAgent],
+              [welcomeText('browser'), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
                 <th scope="row" className="whitespace-nowrap justify-end">

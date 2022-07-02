@@ -74,13 +74,13 @@ let eventListenerIsInitialized = false;
 
 /** Set's an event listener that runs commitToStorage before a page unload */
 function initialize(): void {
-  window.addEventListener?.('beforeunload', commitToStorage);
+  globalThis.addEventListener?.('beforeunload', commitToStorage);
   eventListenerIsInitialized = true;
 }
 
 /** Commits persistent cache buckets to localStorage */
 function commitToStorage(): void {
-  if (localStorage  === undefined) return;
+  if (globalThis.localStorage === undefined) return;
 
   Object.entries(buckets)
     .filter(
@@ -93,7 +93,7 @@ function commitToStorage(): void {
 
 /** Commits a single cache bucket to localStorage */
 function commitBucketToStorage(bucketName: string): void {
-  localStorage.setItem(
+  globalThis.localStorage.setItem(
     `${cachePrefix}${bucketName}`,
     JSON.stringify(buckets[bucketName])
   );
@@ -110,16 +110,16 @@ function fetchBucket(
    *
    */
   if (
-    localStorage  === undefined ||
-    sessionStorage  === undefined
+    globalThis.localStorage === undefined ||
+    globalThis.sessionStorage === undefined
   )
     return false;
 
   const fullBucketName = `${cachePrefix}${bucketName}`;
 
   const data =
-    localStorage.getItem(fullBucketName) ??
-    sessionStorage.getItem(fullBucketName);
+    globalThis.localStorage.getItem(fullBucketName) ??
+    globalThis.sessionStorage.getItem(fullBucketName);
 
   if (data === null) return false;
   buckets[bucketName] = JSON.parse(data) as BucketData;
@@ -222,11 +222,10 @@ function genericGet<T>(
   if (!eventListenerIsInitialized) initialize();
 
   if (
-    (buckets[bucketName]  === undefined &&
-      !Boolean(fetchBucket(bucketName))) ||
-    buckets[bucketName].records[cacheName]  === undefined
+    (buckets[bucketName] === undefined && !Boolean(fetchBucket(bucketName))) ||
+    buckets[bucketName].records[cacheName] === undefined
   ) {
-    if (defaultValue  === undefined) return undefined;
+    if (defaultValue === undefined) return undefined;
     genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
@@ -240,7 +239,7 @@ function genericGet<T>(
       buckets[bucketName].records,
       cacheName
     );
-    if (defaultValue  === undefined) return undefined;
+    if (defaultValue === undefined) return undefined;
     genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 

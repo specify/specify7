@@ -334,7 +334,7 @@ export function Autocomplete<T>({
 
     handleScroll({ target: null });
 
-    return listen(window, 'scroll', handleScroll, true);
+    return listen(globalThis, 'scroll', handleScroll, true);
   }, [showList, input, isInDialog, autoGrowAutoComplete]);
 
   const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');

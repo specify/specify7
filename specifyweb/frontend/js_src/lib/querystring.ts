@@ -21,8 +21,7 @@ export function formatUrl(
     : urlObject.toString();
 }
 
-const getUrl = (): string =>
-  typeof window === 'object' ? window.location.href : 'http://localhost/';
+const getUrl = (): string => globalThis?.location.href ?? 'http://localhost/';
 
 export const parseUrl = (url: string = getUrl()): IR<string> =>
   Object.fromEntries(new URL(url, getUrl()).searchParams);

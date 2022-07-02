@@ -28,7 +28,7 @@ export const formatLifemapperViewPageRequest = (
   formatUrl(`${snServer}/api/v1/frontend/`, {
     occId: occurrenceGuid,
     nameStr: speciesName,
-    origin: window.location.origin,
+    origin: globalThis.location.origin,
   });
 
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>

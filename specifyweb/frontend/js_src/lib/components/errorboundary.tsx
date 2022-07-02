@@ -111,7 +111,7 @@ function ErrorDialog({
                 (clearCacheOnException
                   ? clearCache()
                   : Promise.resolve(undefined)
-                ).then(() => window.location.assign('/specify/'))
+                ).then(() => globalThis.location.assign('/specify/'))
               )
             }
           >
@@ -232,7 +232,7 @@ const produceStackTrace = (message: unknown): string =>
     userInformation,
     systemInformation: getSystemInfo(),
     schema: removeKey(schema, 'models'),
-    href: window.location.href,
+    href: globalThis.location.href,
     consoleLog,
     // Network log and page load telemetry
     eventLog: performance.getEntries(),

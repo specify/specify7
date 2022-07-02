@@ -12,9 +12,12 @@ export const isExternalUrl = (url: string): boolean =>
    * router context.
    */
   url.startsWith('blob:') ||
-  new URL(url, window.location.origin).pathname.startsWith('/accounts/') ||
-  new URL(url, window.location.origin).pathname.startsWith('/documentation/') ||
-  new URL(url, window.location.origin).origin !== window.location.origin;
+  new URL(url, globalThis.location.origin).pathname.startsWith('/accounts/') ||
+  new URL(url, globalThis.location.origin).pathname.startsWith(
+    '/documentation/'
+  ) ||
+  new URL(url, globalThis.location.origin).origin !==
+    globalThis.location.origin;
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);

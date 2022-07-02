@@ -270,7 +270,8 @@ function UserToolsColumn({
                       }
                       onClick={(event): void => {
                         if (typeof view === 'string') {
-                          if (basePath === '/') window.location.assign(view);
+                          if (basePath === '/')
+                            globalThis.location.assign(view);
                           else handleClose();
                           return;
                         }

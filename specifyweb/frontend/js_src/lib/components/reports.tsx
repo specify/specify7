@@ -316,7 +316,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
   );
 
   const missingAttachments: string[] = [];
-  const badImageUrl = `"${window.location.origin}/images/unknown.png"`;
+  const badImageUrl = `"${globalThis.location.origin}/images/unknown.png"`;
   Object.entries(fileNames).forEach(([fileName, imageExpressions]) => {
     const attachment = indexedAttachments[fileName];
     const imageUrl =
@@ -569,8 +569,7 @@ function RecordSets({
   );
   React.useEffect(
     () =>
-      query !== undefined &&
-      (tableId === undefined || tableId < 0)
+      query !== undefined && (tableId === undefined || tableId < 0)
         ? error("Couldn't determine table id for report")
         : undefined,
     [tableId, query]
@@ -763,7 +762,7 @@ function RunReport({
 }): JSX.Element {
   const reportWindowContext = useId('report-window')('');
   React.useEffect(
-    () => void window.open('', reportWindowContext),
+    () => void globalThis.open('', reportWindowContext),
     [reportWindowContext, handleClose]
   );
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);

@@ -90,8 +90,8 @@ function GeoLocate({
       );
     }
 
-    window.addEventListener('message', listener);
-    return (): void => window.removeEventListener('message', listener);
+    globalThis.addEventListener('message', listener);
+    return (): void => globalThis.removeEventListener('message', listener);
   }, [loading, data, handleClose, resource]);
 
   const [width = defaultWidth, setWidth] = useCachedState({

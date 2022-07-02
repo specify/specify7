@@ -80,8 +80,8 @@ export const switchCollection = (
         body: collection.toString(),
       }).then(() =>
         typeof nextUrl === 'string'
-          ? window.location.assign(nextUrl)
-          : window.location.reload()
+          ? globalThis.location.assign(nextUrl)
+          : globalThis.location.reload()
       ),
     cancelCallback
   );

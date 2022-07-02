@@ -203,7 +203,7 @@ export function getRelativeDate(date: Readonly<Date>): string {
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const compareStrings = new Intl.Collator(
-  typeof window === 'object' ? window.navigator.language : 'en-us',
+  globalThis.navigator?.language ?? 'en-us',
   {
     sensitivity: 'base',
     caseFirst: 'upper',
