@@ -225,7 +225,7 @@ var enabled = true;
             if (other.cid === resource.cid) return false;
             var otherVal = other.get(valueField);
             if (valueIsToOne && typeof otherVal != 'undefined' && !(_.isString(otherVal))) {
-                return parseInt(otherVal.id, 10) === parseInt(valueId, 10);
+                return Number.parseInt(otherVal.id) === Number.parseInt(valueId);
             } else {
                 return value === otherVal;
             }
@@ -300,7 +300,7 @@ export function enableBusinessRules(e) {
  */
 function flippedPromise() {
   const promise = new Promise((resolve) =>
-      setTimeout(() => {
+      globalThis.setTimeout(() => {
           promise.resolve = resolve;
       }, 0)
   );
@@ -308,4 +308,4 @@ function flippedPromise() {
 }
 
 const resoleFlippedPromise = (promise, ...args) =>
-  setTimeout(()=>promise.resolve(...args), 0);
+  globalThis.setTimeout(()=>promise.resolve(...args), 0);

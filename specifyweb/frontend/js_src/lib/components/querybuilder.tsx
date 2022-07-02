@@ -153,7 +153,7 @@ export function QueryBuilder({
      * Wait for new query to propagate before re running it
      * TODO: check if this still works after updating to React 18
      */
-    setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
+    globalThis.setTimeout(() => dispatch({ type: 'RunQueryAction' }), 0);
   }
 
   const getMappedFieldsBind = getMappedFields.bind(undefined, state.fields);

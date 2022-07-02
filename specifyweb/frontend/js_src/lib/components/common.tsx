@@ -294,7 +294,7 @@ export function CopyButton({
       onClick={(): void =>
         void copyTextToClipboard(text).then((): void => {
           handleCopied();
-          setTimeout(handleNotCopied, copyMessageTimeout);
+          globalThis.setTimeout(handleNotCopied, copyMessageTimeout);
         })
       }
     >

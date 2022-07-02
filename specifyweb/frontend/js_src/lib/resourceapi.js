@@ -257,7 +257,7 @@ function eventHandlerForToOne(related, field) {
             // need to set the id right away if we have it because
             // relationships depend on it
             if ('id' in attrs) {
-                attrs.id = attrs.id && parseInt(attrs.id, 10);
+                attrs.id = attrs.id && Number.parseInt(attrs.id);
                 this.id = attrs.id;
             }
 

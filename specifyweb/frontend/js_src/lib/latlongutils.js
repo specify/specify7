@@ -178,9 +178,9 @@ function parse(str) {
             sign = match[parser.comps[0]].startsWith("-") ? -1 : 1;
             dir = match[parser.dir].toLowerCase();
             comps = _(_.initial(parser.comps)).map(
-                function(j) { return Math.abs(parseInt(match[j], 10)); }
+                function(j) { return Math.abs(Number.parseInt(match[j])); }
             );
-            comps.push(Math.abs(parseFloat(match[_.last(parser.comps)])));
+            comps.push(Math.abs(Number.parseFloat(match[_.last(parser.comps)])));
             result = makeLatLong(sign, comps, dir);
             if (result) return result; // We got one!
         }

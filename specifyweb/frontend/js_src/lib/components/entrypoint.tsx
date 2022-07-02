@@ -57,9 +57,12 @@ function Root(): JSX.Element | null {
   );
   React.useEffect(() => {
     if (timeoutRef.current !== undefined)
-      clearTimeout(timeoutRef.current);
+      globalThis.clearTimeout(timeoutRef.current);
     if (!isContextLoaded)
-      timeoutRef.current = setTimeout(setShowLoadingScreen, LOADING_TIMEOUT);
+      timeoutRef.current = globalThis.setTimeout(
+        setShowLoadingScreen,
+        LOADING_TIMEOUT
+      );
   }, [isContextLoaded, setShowLoadingScreen]);
 
   React.useEffect(() => {

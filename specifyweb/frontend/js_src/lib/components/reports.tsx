@@ -774,7 +774,7 @@ function RunReport({
     container.innerHTML = form.outerHTML;
     const newForm = container.children[0] as HTMLFormElement;
     newForm.submit();
-    setTimeout(() => {
+    globalThis.setTimeout(() => {
       container.remove();
       handleClose();
     }, 0);

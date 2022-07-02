@@ -140,7 +140,7 @@ export const downloadFile = (fileName: string, text: string): Promise<void> =>
       iframe.contentWindow.document.body.append(element);
 
       element.click();
-      setTimeout(() => {
+      globalThis.setTimeout(() => {
         iframe.remove();
         resolve();
       }, 100);
@@ -186,10 +186,9 @@ export const copyTextToClipboard = async (text: string): Promise<void> =>
    * "navigator.clipboard" is only available on HTTPs origins
    * Not available over Http, unless on localhost
    */
-  (typeof navigator.clipboard === 'object'
-    ? navigator.clipboard.writeText(text).catch((error) => {
-        console.error(error);
-        return fallbackCopyTextToClipboard(text);
-      })
-    : fallbackCopyTextToClipboard(text)
+  (
+    globalThis.navigator.clipboard?.writeText(text).catch((error) => {
+      console.error(error);
+      return fallbackCopyTextToClipboard(text);
+    }) ?? fallbackCopyTextToClipboard(text)
   ).catch(console.error);

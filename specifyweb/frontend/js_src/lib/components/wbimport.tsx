@@ -145,7 +145,7 @@ class WbImport extends Component<{}, WbImportState> {
         },
       });
 
-    setTimeout(doIt, 0);
+    globalThis.setTimeout(doIt, 0);
   }
 
   doImportXLS(file: File, name: string, hasHeader: boolean) {

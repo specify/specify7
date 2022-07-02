@@ -243,7 +243,7 @@ export function Field({
       className={
         validationAttributes.type === 'number' &&
         rightAlignNumberFields &&
-        navigator.userAgent.toLowerCase().includes('webkit')
+        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
           ? `text-right ${isReadOnly ? '' : 'pr-6'}`
           : ''
       }

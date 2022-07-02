@@ -329,9 +329,9 @@ const WBView = Backbone.View.extend({
     return new Promise((resolve) =>
       /*
        * HOT and Backbone appear to conflict, unless HOT init is wrapped in
-       * setTimeout(...,0)
+       * globalThis.setTimeout(...,0)
        */
-      setTimeout(() => {
+      globalThis.setTimeout(() => {
         this.hot = new Handsontable(this.$('.wb-spreadsheet')[0], {
           data: this.data,
           columns: Array.from(
@@ -876,7 +876,7 @@ const WBView = Backbone.View.extend({
       Object.keys(oldValue ?? {}).length === 0
     )
       // HOT doesn't seem to like calling undo from inside of afterUndo
-      setTimeout(() => {
+      globalThis.setTimeout(() => {
         this.undoRedoIsHandled = true;
         this.hot.undo();
         this.undoRedoIsHandled = false;
@@ -1253,7 +1253,7 @@ const WBView = Backbone.View.extend({
       '!left-[unset]'
     );
     if (this.hotCommentsContainerRepositionCallback) {
-      clearTimeout(this.hotCommentsContainerRepositionCallback);
+      globalThis.clearTimeout(this.hotCommentsContainerRepositionCallback);
       this.hotCommentsContainerRepositionCallback = undefined;
     }
   },
@@ -1264,11 +1264,11 @@ const WBView = Backbone.View.extend({
    */
   afterOnCellMouseOut() {
     if (this.hotCommentsContainerRepositionCallback)
-      clearTimeout(this.hotCommentsContainerRepositionCallback);
+      globalThis.clearTimeout(this.hotCommentsContainerRepositionCallback);
     if (
       this.hotCommentsContainer.style.getPropertyValue('--offset-right') !== ''
     )
-      this.hotCommentsContainerRepositionCallback = setTimeout(
+      this.hotCommentsContainerRepositionCallback = globalThis.setTimeout(
         () =>
           this.hotCommentsContainer.classList.remove(
             'right-[var(--offset-right)]',
@@ -1625,7 +1625,7 @@ const WBView = Backbone.View.extend({
         header: wbText('disambiguationDialogTitle'),
         onClose: () => {
           dialog.remove();
-          clearInterval(interval);
+          globalThis.clearInterval(interval);
         },
         content,
         buttons: (
@@ -1637,7 +1637,7 @@ const WBView = Backbone.View.extend({
                 if (selected != null) {
                   doDA(selected);
                   dialog.remove();
-                  clearInterval(interval);
+                  globalThis.clearInterval(interval);
                 }
               }}
             >
@@ -1650,7 +1650,7 @@ const WBView = Backbone.View.extend({
                 if (selected != null) {
                   doAll(selected);
                   dialog.remove();
-                  clearInterval(interval);
+                  globalThis.clearInterval(interval);
                 }
               }}
             >
@@ -1675,7 +1675,7 @@ const WBView = Backbone.View.extend({
         }
       };
 
-      const interval = setInterval(updateIt, 100);
+      const interval = globalThis.setInterval(updateIt, 100);
     });
   },
 

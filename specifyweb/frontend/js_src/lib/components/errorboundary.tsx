@@ -235,7 +235,7 @@ const produceStackTrace = (message: unknown): string =>
     href: globalThis.location.href,
     consoleLog,
     // Network log and page load telemetry
-    eventLog: performance.getEntries(),
+    eventLog: globalThis.performance.getEntries(),
     tablePermissions: getTablePermissions(),
     operationPermissions: getOperationPermissions(),
     remotePrefs,

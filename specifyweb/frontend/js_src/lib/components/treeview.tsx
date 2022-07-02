@@ -239,7 +239,7 @@ function TreeView<SCHEMA extends AnyTree>({
           onRefresh={(): void => {
             // Force re-load
             setRows(undefined);
-            setTimeout(() => setRows(rows), 0);
+            globalThis.setTimeout(() => setRows(rows), 0);
           }}
           focusedRow={focusedRow}
           ranks={rankIds}
@@ -269,7 +269,7 @@ function TreeView<SCHEMA extends AnyTree>({
           event.preventDefault();
           // Unset and set focus path to trigger a useEffect hook in <TreeNode>
           setFocusPath([-1]);
-          setTimeout(
+          globalThis.setTimeout(
             () => setFocusPath(focusPath.length > 0 ? focusPath : [0]),
             0
           );

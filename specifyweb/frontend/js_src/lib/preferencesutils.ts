@@ -152,7 +152,7 @@ let isSyncing = false;
 
 export async function awaitPrefsSynced(): Promise<void> {
   if (typeof syncTimeoutInstance === 'number') {
-    clearTimeout(syncTimeoutInstance);
+    globalThis.clearTimeout(syncTimeoutInstance);
     syncTimeoutInstance = undefined;
     return syncPreferences();
   }
@@ -172,8 +172,8 @@ function requestPreferencesSync(): void {
   if (isSyncing) isSyncPending = true;
   else {
     if (typeof syncTimeoutInstance === 'number')
-      clearTimeout(syncTimeoutInstance);
-    syncTimeoutInstance = setTimeout(
+      globalThis.clearTimeout(syncTimeoutInstance);
+    syncTimeoutInstance = globalThis.setTimeout(
       (): void => void syncPreferences().catch(crash),
       syncTimeout
     );

@@ -80,7 +80,7 @@ export function WbStatus({
             );
           else {
             dispatch({ type: 'RefreshStatusAction', status });
-            setTimeout(fetchStatus, REFRESH_RATE);
+            globalThis.setTimeout(fetchStatus, REFRESH_RATE);
           }
           return undefined;
         })
