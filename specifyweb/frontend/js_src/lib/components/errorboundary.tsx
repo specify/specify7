@@ -29,6 +29,7 @@ import { usePref } from './preferenceshooks';
 import { consoleLog } from '../interceptlogs';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
+import { LANGUAGE } from '../localization/utils';
 
 type ErrorBoundaryState =
   | {
@@ -239,6 +240,11 @@ const produceStackTrace = (message: unknown): string =>
     operationPermissions: getOperationPermissions(),
     remotePrefs,
     userPreferences: getRawUserPreferences(),
+    language: LANGUAGE,
+    navigator: {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+    },
   });
 
 function formatError(
