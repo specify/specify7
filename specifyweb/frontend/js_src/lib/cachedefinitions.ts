@@ -13,7 +13,8 @@ import type { Attachment, SpQuery, Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
-import type { RA } from './types';
+import type { IR, RA } from './types';
+import { ensure } from './types';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -115,3 +116,20 @@ export type CacheDefinitions = {
     readonly institutionPoliciesExpanded: boolean;
   };
 };
+
+const cacheDefinitions = {} as unknown as CacheDefinitions;
+interface CacheValueDict extends IR<CacheValue> {}
+interface CacheValues extends RA<CacheValue> {}
+type CacheValue =
+  | boolean
+  | number
+  | null
+  | undefined
+  | string
+  | CacheValues
+  | CacheValueDict;
+/**
+ * This will trigger a TypeScript type error if any cache definition
+ * contains a value that is not JSON-Serializable.
+ */
+ensure<IR<IR<CacheValue>>>()(cacheDefinitions);
