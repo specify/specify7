@@ -101,7 +101,7 @@ export function UiField({
   );
 
   return hasAccess ? (
-    typeof data === 'undefined' ? (
+    data === undefined ? (
       <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
     ) : fieldType === 'date' ? (
       <PartialDateUi

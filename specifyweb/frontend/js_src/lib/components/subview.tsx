@@ -58,7 +58,7 @@ export function SubView({
                 related: parentResource,
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
-            if (typeof sortField === 'undefined') return collection;
+            if (sortField === undefined) return collection;
             const isReverse = sortField.startsWith('-');
             const fieldName = sortField.startsWith('-')
               ? sortField.slice(1)

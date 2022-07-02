@@ -64,12 +64,12 @@ export function useStore<
 ] {
   const [state, setState] = useAsyncState<Buckets[BUCKET_NAME][ID]>(
     React.useCallback(() => {
-      if (typeof store[bucketName] === 'undefined')
+      if (store[bucketName] === undefined)
         store[bucketName] = {
           listeners: [],
           values: {},
         };
-      if (typeof store[bucketName].values[id] === 'undefined')
+      if (store[bucketName].values[id] === undefined)
         store[bucketName].values[id] = callback(id);
       return store[bucketName].values[id];
     }, [callback, bucketName, id]),
@@ -83,10 +83,7 @@ export function useStore<
         const resolvedState = (
           isFunction(newState) ? newState(oldState) : newState
         ) as Buckets[BUCKET_NAME][ID] | undefined;
-        if (
-          typeof oldState === 'object' &&
-          typeof resolvedState === 'undefined'
-        )
+        if (typeof oldState === 'object' && resolvedState === undefined)
           deleteCallback(id, store[bucketName][id]).catch(crash);
         store[bucketName][id] = Promise.resolve(resolvedState);
         store[bucketName].listeners.forEach(f.call);
@@ -96,7 +93,7 @@ export function useStore<
     [setState, deleteCallback, bucketName, id]
   );
   React.useEffect(() => {
-    if (typeof store[bucketName] === 'undefined')
+    if (store[bucketName] === undefined)
       store[bucketName] = {
         listeners: [],
         values: {},

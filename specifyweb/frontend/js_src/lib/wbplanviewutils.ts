@@ -170,7 +170,7 @@ export function getMustMatchTables({
     .map(({ tableName }) => tableName ?? '')
     .filter(
       (tableName) =>
-        typeof getModel(tableName) === 'undefined' ||
+        getModel(tableName) === undefined ||
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
           (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
@@ -373,7 +373,7 @@ export async function fetchAutoMapperSuggestions({
     getMappedFields: getMappedFields.bind(undefined, lines),
   }).map()[lines[line].headerName];
 
-  if (typeof autoMapperResults === 'undefined') return [];
+  if (autoMapperResults === undefined) return [];
 
   return autoMapperResults
     .slice(0, MAX_SUGGESTIONS_COUNT)

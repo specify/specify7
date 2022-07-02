@@ -115,7 +115,7 @@ export function generateMappingPathPreview(
     (fieldNameFormatted?.split(' ').length === 1 &&
       !nonGenericFields.has(databaseFieldName));
   const tableNameNonEmpty =
-    typeof fieldNameFormatted === 'undefined'
+    fieldNameFormatted === undefined
       ? tableOrRankName || fieldName
       : fieldIsGeneric
       ? tableOrRankName

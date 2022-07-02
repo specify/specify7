@@ -189,7 +189,7 @@ const dataEntryButton =
         aria-label={title}
         icon={icon}
         {...props}
-        disabled={typeof props.onClick === 'undefined' || props.disabled}
+        disabled={props.onClick === undefined || props.disabled}
       />
     );
 
@@ -684,7 +684,7 @@ function DialogCloseButton({
   readonly component?: typeof Button.Gray;
 }): JSX.Element {
   const handleClose = React.useContext(DialogContext);
-  if (typeof handleClose === 'undefined')
+  if (handleClose === undefined)
     throw new Error("Dialog's handleClose prop is undefined");
   return <ButtonComponent {...props} onClick={handleClose} />;
 }

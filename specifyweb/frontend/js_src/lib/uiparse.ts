@@ -99,7 +99,7 @@ export const parsers = f.store(
       formatters: [formatter().toLowerCase, formatter().trim],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
-        typeof value === 'undefined'
+        value  === undefined
           ? ''
           : Boolean(value)
           ? queryText('yes')
@@ -300,7 +300,7 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
           Math.max(...filterArray([base[key], extra[key]])),
         ]),
       ].filter(([_key, value]) => Number.isFinite(value)),
-    ].filter(([_key, value]) => typeof value !== 'undefined')
+    ].filter(([_key, value]) => value  !== undefined)
   );
 }
 
@@ -317,7 +317,7 @@ function formatterToParser(formatter: UiFormatter): Parser {
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
       (value) =>
-        typeof value === 'undefined' || value === null ? title : undefined,
+        value  === undefined || value === null ? title : undefined,
     ],
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>
@@ -363,7 +363,7 @@ export const getValidationAttributes = (parser: Parser): IR<string> =>
           ]
             .filter(
               (attribute) =>
-                typeof parser[attribute as keyof Parser] !== 'undefined'
+                parser[attribute as keyof Parser]  !== undefined
             )
             .map((attribute) => [
               attribute,
@@ -433,7 +433,7 @@ export function parseValue(
       : undefined;
   let formattedValue: unknown;
 
-  if (typeof errorMessage === 'undefined') {
+  if (errorMessage  === undefined) {
     formattedValue = (parser.formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
       value.trim()
@@ -471,7 +471,7 @@ export function fieldFormat(
   parser: Parser | undefined,
   value: string | number | null | boolean | undefined
 ): string {
-  if (typeof value === 'undefined' || value === null) return '';
+  if (value  === undefined || value === null) return '';
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();

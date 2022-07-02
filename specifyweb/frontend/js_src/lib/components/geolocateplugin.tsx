@@ -107,7 +107,7 @@ function GeoLocate({
     staleWhileRefresh: false,
   });
 
-  return typeof data === 'undefined' ? null : data === false ? (
+  return data === undefined ? null : data === false ? (
     <Dialog
       onClose={handleClose}
       header={localityText('geographyRequiredDialogHeader')}
@@ -178,7 +178,7 @@ async function getGeoLocateData(
       });
 
   const uncertainty =
-    typeof point === 'undefined'
+    point === undefined
       ? undefined
       : resource
           .rgetPromise('geoCoordDetails')
@@ -191,7 +191,7 @@ async function getGeoLocateData(
     );
 
   return f.all({ geography, uncertainty }).then(({ geography, uncertainty }) =>
-    typeof geography === 'undefined'
+    geography === undefined
       ? undefined
       : {
           v: '1',

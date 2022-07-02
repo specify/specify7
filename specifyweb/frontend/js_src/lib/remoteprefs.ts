@@ -84,7 +84,7 @@ function parsePref(
     )
   );
   const parsed =
-    typeof parser === 'string' && typeof value !== 'undefined'
+    typeof parser === 'string' && value !== undefined
       ? parseValue(parsers()[parser] as Parser, undefined, value as string)
       : undefined;
   return (

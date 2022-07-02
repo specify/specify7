@@ -325,7 +325,7 @@ export function isValidAccuracy(
 ): latlongaccuracy is string {
   try {
     return (
-      typeof latlongaccuracy !== 'undefined' &&
+      latlongaccuracy !== undefined &&
       !Number.isNaN(Number.parseFloat(latlongaccuracy)) &&
       Number.parseFloat(latlongaccuracy) >= 1
     );
@@ -430,8 +430,8 @@ export function getMarkersFromLocalityData({
   };
 
   if (
-    typeof parsedLocalityData.latitude1 === 'undefined' ||
-    typeof parsedLocalityData.longitude1 === 'undefined'
+    parsedLocalityData.latitude1 === undefined ||
+    parsedLocalityData.longitude1 === undefined
   )
     return markers;
 
@@ -444,8 +444,8 @@ export function getMarkersFromLocalityData({
     });
 
   if (
-    typeof parsedLocalityData.latitude2 === 'undefined' ||
-    typeof parsedLocalityData.longitude2 === 'undefined'
+    parsedLocalityData.latitude2 === undefined ||
+    parsedLocalityData.longitude2 === undefined
   ) {
     // A circle
     if (isValidAccuracy(parsedLocalityData.latlongaccuracy))

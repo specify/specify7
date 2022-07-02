@@ -68,9 +68,9 @@ export function SchemaConfig({
 }): JSX.Element {
   const [state, dispatch] = React.useReducer(
     reducer,
-    typeof defaultTable === 'undefined' ||
-      typeof defaultLanguage === 'undefined'
-      ? typeof defaultLanguage === 'undefined'
+    defaultTable === undefined ||
+      defaultLanguage === undefined
+      ? defaultLanguage === undefined
         ? {
             type: 'ChooseLanguageState',
           }
@@ -94,9 +94,9 @@ export function SchemaConfig({
   React.useEffect(() => {
     if (
       state.type !== 'FetchingTableItemsState' ||
-      typeof stateLanguage === 'undefined' ||
-      typeof stateTable === 'undefined' ||
-      typeof tableId === 'undefined'
+      stateLanguage === undefined ||
+      stateTable === undefined ||
+      tableId === undefined
     )
       return undefined;
 

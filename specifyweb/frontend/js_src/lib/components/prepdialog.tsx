@@ -49,7 +49,7 @@ export function PrepDialog({
   >;
 }): JSX.Element {
   const preparations = React.useMemo(() => {
-    if (typeof itemCollection === 'undefined') return rawPreparations;
+    if (itemCollection === undefined) return rawPreparations;
     const mutatedPreparations = rawPreparations.map((item) =>
       Object.fromEntries(Object.entries(item))
     );
@@ -65,9 +65,9 @@ export function PrepDialog({
       if (!preparation.isNew()) return;
       const preparationUrl = preparation.get('preparation');
       const indexed = indexedPreparations[preparationUrl ?? ''];
-      if (typeof indexed === 'undefined') return;
+      if (indexed === undefined) return;
       const loanPreparation = toTable(preparation, 'LoanPreparation');
-      if (typeof loanPreparation === 'undefined') return;
+      if (loanPreparation === undefined) return;
       const resolved = loanPreparation.get('quantityResolved') ?? 0;
       // @ts-expect-error TODO: make this algorithm immutable
       indexed[0].available -= loanPreparation.get('quantity') - resolved;

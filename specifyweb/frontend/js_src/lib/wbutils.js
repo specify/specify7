@@ -217,7 +217,7 @@ export const WBUtils = Backbone.View.extend({
     );
 
     let cellRelativePosition;
-    if (typeof matchedCell === 'undefined') cellRelativePosition = 0;
+    if (matchedCell === undefined) cellRelativePosition = 0;
     else if (direction === 'next') cellRelativePosition = cellIsTypeCount;
     else cellRelativePosition = totalCount - cellIsTypeCount + 1;
 
@@ -233,7 +233,7 @@ export const WBUtils = Backbone.View.extend({
     )
       currentPositionElement.textContent = cellRelativePosition;
 
-    if (typeof matchedCell === 'undefined') return false;
+    if (matchedCell === undefined) return false;
 
     this.wbview.hot.selectCell(matchedCell.visualRow, matchedCell.visualCol);
 
@@ -330,7 +330,7 @@ export const WBUtils = Backbone.View.extend({
       'wb-navigation-total'
     )[0];
 
-    if (typeof this.parseSearchQuery() === 'undefined') {
+    if (this.parseSearchQuery() === undefined) {
       navigationTotalElement.textContent = '0';
       this.toggleCellTypes('searchResults', 'add');
       return;
@@ -485,7 +485,7 @@ export const WBUtils = Backbone.View.extend({
   searchFunction(initialCellValue) {
     let cellValue = initialCellValue ?? '';
 
-    if (typeof this.searchQuery === 'undefined') return false;
+    if (this.searchQuery === undefined) return false;
 
     if (!this.searchPreferences.search.caseSensitive)
       cellValue = cellValue.toLowerCase();
@@ -692,7 +692,7 @@ export const WBUtils = Backbone.View.extend({
 
   showGeoLocate(event) {
     // don't allow opening more than one window)
-    if (typeof this.geoLocateDialog !== 'undefined') {
+    if (this.geoLocateDialog !== undefined) {
       this.geoLocateDialog.remove();
       this.geoLocateDialog = undefined;
       event.target.ariaPressed = false;
@@ -703,7 +703,7 @@ export const WBUtils = Backbone.View.extend({
 
     const selection = this.getSelectedLocalities(true);
 
-    if (typeof selection === 'undefined') return;
+    if (selection === undefined) return;
 
     const getGeoLocateQueryURL = (localityIndex) =>
       this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
@@ -796,7 +796,7 @@ export const WBUtils = Backbone.View.extend({
     window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
-    if (typeof this.geoMapDialog !== 'undefined') {
+    if (this.geoMapDialog !== undefined) {
       this.geoMapDialog.remove();
       this.geoMapDialog = undefined;
       event.target.ariaPressed = false;
@@ -806,7 +806,7 @@ export const WBUtils = Backbone.View.extend({
 
     const selection = this.getSelectedLocalities(false);
 
-    if (typeof selection === 'undefined') return;
+    if (selection === undefined) return;
 
     const localityPoints = getLocalitiesDataFromSpreadsheet(
       this.localityColumns,
@@ -837,7 +837,7 @@ export const WBUtils = Backbone.View.extend({
     }).render();
   },
   showCoordinateConversion() {
-    if (typeof this.wbview.coordinateConverterView !== 'undefined') return;
+    if (this.wbview.coordinateConverterView !== undefined) return;
 
     // List of coordinate columns
     const columnsToWorkWith = Object.keys(

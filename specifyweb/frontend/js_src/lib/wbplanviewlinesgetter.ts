@@ -53,7 +53,7 @@ export function getLinesFromHeaders({
     })
   );
 
-  if (!runAutoMapper || typeof baseTableName === 'undefined') return lines;
+  if (!runAutoMapper || baseTableName === undefined) return lines;
 
   const autoMapperResults: AutoMapperResults = new AutoMapper({
     headers,

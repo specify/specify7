@@ -38,7 +38,7 @@ export const fetchLocalOccurrences = async (
           .then(({ models }) => models.find((model) => model.get('isCurrent')))
           .then((determination) => determination?.rgetPromise('taxon'))
     ));
-  if (typeof taxon === 'undefined') return [];
+  if (taxon === undefined) return [];
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 

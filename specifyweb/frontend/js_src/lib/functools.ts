@@ -99,7 +99,7 @@ export const f = {
     value: VALUE | undefined,
     callback: (value: VALUE) => RETURN
   ): RETURN | undefined =>
-    typeof value === 'undefined' ? undefined : callback(value),
+    value === undefined ? undefined : callback(value),
   /**
    * A better typed version of Array.prototype.includes
    *

@@ -250,7 +250,7 @@ function ChangeOwner({
   const [isChanged, setIsChanged] = React.useState(false);
   const loading = React.useContext(LoadingContext);
 
-  return typeof users === 'undefined' ? null : isChanged ? (
+  return users === undefined ? null : isChanged ? (
     <Dialog
       header={wbText('dataSetOwnerChangedDialogHeader')}
       onClose={(): void => goTo('/')}
@@ -267,7 +267,7 @@ function ChangeOwner({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue
             form={id('form')}
-            disabled={typeof newOwner === 'undefined'}
+            disabled={newOwner === undefined}
           >
             {wbText('changeOwner')}
           </Submit.Blue>

@@ -104,12 +104,12 @@ export function QueryFields({
                 )
           }
           onMoveUp={
-            line === 0 || typeof handleLineMove === 'undefined'
+            line === 0 || handleLineMove === undefined
               ? undefined
               : (): void => handleLineMove?.(line, 'up')
           }
           onMoveDown={
-            line + 1 === length || typeof handleLineMove === 'undefined'
+            line + 1 === length || handleLineMove === undefined
               ? undefined
               : (): void => handleLineMove?.(line, 'down')
           }

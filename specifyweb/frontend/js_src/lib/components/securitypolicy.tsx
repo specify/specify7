@@ -68,7 +68,7 @@ function SecurityPolicy({
       ...items,
       // Create an entry if policy is unknown to the front-end
       ...(typeof resourceParts[index] === 'string' &&
-      typeof items?.[resourceParts[index]] === 'undefined'
+      items?.[resourceParts[index]] === undefined
         ? {
             [resourceParts[index]]: {
               actions,
@@ -117,7 +117,7 @@ function SecurityPolicy({
                   while (true) {
                     const childResources = registryFunction(parts).slice(-1)[0];
                     if (
-                      typeof childResources === 'undefined' ||
+                      childResources === undefined ||
                       // Checking for 2, as first option is always anyResource
                       Object.keys(childResources).length !== 2
                     )
@@ -126,7 +126,7 @@ function SecurityPolicy({
                       (part) => part !== anyResource
                     );
                     if (
-                      typeof child === 'undefined' ||
+                      child === undefined ||
                       // Don't select the part if it is disabled
                       (childResources[child].actions.length > 0 &&
                         isResourceMapped(

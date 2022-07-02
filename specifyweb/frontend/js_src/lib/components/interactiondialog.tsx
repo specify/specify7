@@ -120,7 +120,7 @@ export function InteractionDialog({
           headers: { Accept: 'application/json' },
           body: {
             recordSetId: recordSet?.id ?? undefined,
-            loanNumbers: typeof recordSet === 'undefined' ? items : undefined,
+            loanNumbers: recordSet === undefined ? items : undefined,
           },
         }).then(({ data }) =>
           setState({
@@ -168,7 +168,7 @@ export function InteractionDialog({
     }
     if (prepsData.length === 0) {
       if (
-        typeof recordSet === 'undefined' &&
+        recordSet === undefined &&
         typeof itemCollection === 'object'
       ) {
         const item = new itemCollection.model.specifyModel.Resource();

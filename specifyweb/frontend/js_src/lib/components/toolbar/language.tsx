@@ -123,7 +123,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           setLanguage(language);
           prefEvents.trigger('update', definition as PreferenceItem<unknown>);
         }}
-        isReadOnly={isReadOnly || typeof languages === 'undefined'}
+        isReadOnly={isReadOnly || languages === undefined}
       />
     );
   };
@@ -186,7 +186,7 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
         languages={languages ?? { loading: commonText('loading') }}
         value={value}
         onChange={handleChange}
-        isReadOnly={isReadOnly || typeof languages === 'undefined'}
+        isReadOnly={isReadOnly || languages === undefined}
       />
     );
   };

@@ -286,7 +286,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     );
 
     // If can't find the field by name, try looking for aliases
-    if (typeof field === 'undefined') {
+    if (field === undefined) {
       if (
         unparsedName.toLowerCase() === this.idField.name.toLowerCase() ||
         unparsedName.toLowerCase() === 'id'
@@ -305,7 +305,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       splitName[0].toLowerCase() === this.name.toLowerCase()
     )
       return this.getField(splitName.slice(1).join('.'));
-    if (splitName.length === 1 || typeof field === 'undefined') return field;
+    if (splitName.length === 1 || field === undefined) return field;
     else if (field.isRelationship)
       return defined(field.relatedModel).getField(splitName.slice(1).join('.'));
     else throw new Error('Field is not a relationship');
@@ -313,7 +313,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public getLiteralField(literalName: string): LiteralField | undefined {
     const field = this.getField(literalName);
-    if (typeof field === 'undefined') return undefined;
+    if (field === undefined) return undefined;
     else if (field.isRelationship)
       error('Field is a relationship', {
         model: this,
@@ -324,7 +324,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public getRelationship(relationshipName: string): Relationship | undefined {
     const relationship = this.getField(relationshipName);
-    if (typeof relationship === 'undefined') return undefined;
+    if (relationship === undefined) return undefined;
     else if (relationship.isRelationship) return relationship;
     else throw new Error('Field is not a relationship');
   }
@@ -358,7 +358,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getScopingPath(): RA<string> | undefined {
     if (this.name === schema.orgHierarchy.slice(-1)[0]) return [];
     const up = this.getScopingRelationship();
-    return typeof up === 'undefined'
+    return up === undefined
       ? undefined
       : [...defined(up.relatedModel?.getScopingPath()), up.name.toLowerCase()];
   }

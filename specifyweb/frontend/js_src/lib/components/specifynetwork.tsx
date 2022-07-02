@@ -238,7 +238,7 @@ function SpecifyNetwork({
         rel="opener noreferrer"
         onClick={(event): void => {
           event.preventDefault();
-          if (typeof occurrenceName === 'undefined') handlePending();
+          if (occurrenceName === undefined) handlePending();
           else handleClick();
         }}
       >

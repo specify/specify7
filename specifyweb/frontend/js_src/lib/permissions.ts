@@ -323,7 +323,7 @@ export const fetchUserPermissions = async (
     })
     .then(async ({ schema }) => {
       const collection = collectionId ?? schema.domainLevelIds.collection;
-      if (typeof permissionPromises[collection] === 'undefined')
+      if (permissionPromises[collection] === undefined)
         permissionPromises[collection] =
           /*
            * If fetching permissions for a non-current collection for a super

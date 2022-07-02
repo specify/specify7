@@ -78,7 +78,7 @@ export const fetchCollection = async <
               ...filters,
               ...advancedFilters,
             }).map(([key, value]) =>
-              typeof value === 'undefined'
+              value === undefined
                 ? undefined
                 : [
                     key.toLowerCase(),

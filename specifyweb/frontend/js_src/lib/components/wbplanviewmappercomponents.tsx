@@ -135,7 +135,7 @@ export function MappingView({
     (mappingViewParent: HTMLElement | null) => void
   >(
     (mappingViewParent) => {
-      if (typeof ResizeObserver === 'undefined' || mappingViewParent === null)
+      if (ResizeObserver === undefined || mappingViewParent === null)
         return undefined;
 
       const resizeObserver = new ResizeObserver(() =>

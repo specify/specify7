@@ -129,7 +129,7 @@ export function ButtonWithConfirmation(props: {
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void =>
-          typeof props.showConfirmation === 'undefined' ||
+          props.showConfirmation === undefined ||
           props.showConfirmation()
             ? handleShow()
             : props.onConfirm()

@@ -16,13 +16,13 @@ export type RA<V> = readonly V[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
 export function defined<T>(value: T | undefined): T {
-  if (typeof value === 'undefined') error('Value is not defined');
+  if (value === undefined) error('Value is not defined');
   else return value;
 }
 
 /** Filter undefined items out of the array */
 export const filterArray = <T>(array: RA<T | undefined>): RA<T> =>
-  array.filter((item): item is T => typeof item !== 'undefined');
+  array.filter((item): item is T => item !== undefined);
 
 /** Make some keys on a record optional */
 export type PartialBy<

@@ -32,7 +32,7 @@ function LeafletDialog({
     undefined
   );
 
-  return typeof localityData === 'undefined' ? null : localityData === false ? (
+  return localityData === undefined ? null : localityData === false ? (
     <Dialog
       header={localityText('noCoordinates')}
       onClose={handleClose}
@@ -44,7 +44,7 @@ function LeafletDialog({
     <LeafletMap
       localityPoints={[localityData]}
       markerClickCallback={async (_, { target: marker }): Promise<void> =>
-        (typeof fullLocalityData.current === 'undefined'
+        (fullLocalityData.current === undefined
           ? fetchLocalityDataFromLocalityResource(locality)
           : Promise.resolve(fullLocalityData.current)
         ).then((localityData) => {

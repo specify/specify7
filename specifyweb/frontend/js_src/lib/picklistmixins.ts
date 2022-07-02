@@ -68,7 +68,7 @@ export async function fetchPickList(
     (pickLists) => pickLists[pickListName]
   );
 
-  if (typeof pickList === 'undefined') return undefined;
+  if (pickList === undefined) return undefined;
 
   const currentItems = serializeResource(pickList).pickListItems;
   if (currentItems.length === 0)

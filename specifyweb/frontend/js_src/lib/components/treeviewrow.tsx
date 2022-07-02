@@ -79,14 +79,12 @@ export function TreeRow({
   }, [isLoading, getRows, row]);
 
   // Fetch children stats
-  const isLoadingStats = displayChildren && typeof childStats === 'undefined';
+  const isLoadingStats = displayChildren && childStats === undefined;
   React.useEffect(() => {
     if (!isLoadingStats) return undefined;
 
     void getStats(row.nodeId, row.rankId).then((stats) =>
-      destructorCalled || typeof stats === 'undefined'
-        ? undefined
-        : setChildStats(stats)
+      destructorCalled || stats === undefined ? undefined : setChildStats(stats)
     );
 
     let destructorCalled = false;
@@ -97,10 +95,7 @@ export function TreeRow({
 
   // Unfold tree on search
   React.useEffect(() => {
-    if (
-      typeof conformation === 'undefined' &&
-      typeof focusPath?.[0] === 'number'
-    )
+    if (conformation === undefined && typeof focusPath?.[0] === 'number')
       handleChangeConformation([[focusPath[0]]]);
   }, [conformation, focusPath, handleChangeConformation]);
 
@@ -159,7 +154,7 @@ export function TreeRow({
               aria-controls={id('children')}
               onKeyDown={(event): void => {
                 const action = mapKey(event);
-                if (typeof action === 'undefined') return undefined;
+                if (action === undefined) return undefined;
                 else if (action === 'toggle') handleToggle(true);
                 else if (action === 'child')
                   if (row.children === 0 || isLoading) return undefined;

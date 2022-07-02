@@ -28,7 +28,7 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;
       const recordSetId = f.parseInt(parseUrl().recordsetid ?? '');
-      if (typeof recordSetId === 'undefined') return false;
+      if (recordSetId === undefined) return false;
       const recordSet = new schema.models.RecordSet.Resource({
         id: recordSetId,
       });
@@ -81,8 +81,8 @@ function QueryBuilderById({
   );
   const recordSet = useQueryRecordSet();
 
-  return typeof query === 'undefined' ||
-    typeof recordSet === 'undefined' ? null : (
+  return query === undefined ||
+    recordSet === undefined ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
@@ -115,7 +115,7 @@ function NewQuery({
 }): JSX.Element | null {
   const query = React.useMemo<SpecifyResource<SpQuery> | undefined>(() => {
     const model = getModel(tableName);
-    if (typeof model === 'undefined') {
+    if (model === undefined) {
       setCurrentComponent(<NotFoundView />);
       return undefined;
     }
@@ -123,8 +123,8 @@ function NewQuery({
   }, [tableName]);
   const recordSet = useQueryRecordSet();
 
-  return typeof query === 'undefined' ||
-    typeof recordSet === 'undefined' ? null : (
+  return query === undefined ||
+    recordSet === undefined ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
@@ -144,7 +144,7 @@ function QueryBuilderFromTree({
     true
   );
 
-  return typeof query === 'undefined' ? null : (
+  return query === undefined ? null : (
     <QueryBuilderWrapper query={query} />
   );
 }

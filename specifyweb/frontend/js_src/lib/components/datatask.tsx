@@ -144,7 +144,7 @@ async function resourceView(
 ): Promise<void> {
   const model = getModel(modelName);
 
-  if (typeof model === 'undefined') {
+  if (model === undefined) {
     setCurrentComponent(<NotFoundView />);
     return undefined;
   } else if (
@@ -238,7 +238,7 @@ async function byCatNumber(
       ).getUiFormatter();
       if (typeof formatter === 'object') {
         const formatted = formatter.format(catNumber);
-        if (typeof formatted === 'undefined')
+        if (formatted === undefined)
           error('bad catalog number:', catNumber);
         catNumber = formatted;
       }

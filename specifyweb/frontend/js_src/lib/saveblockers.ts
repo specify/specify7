@@ -87,7 +87,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
 
   public remove(key: string): void {
     const blocker = this.blockers[key];
-    if (typeof blocker === 'undefined') return;
+    if (blocker === undefined) return;
 
     this.blockers = Object.fromEntries(
       Object.entries(this.blockers).filter(([blockerKey]) => blockerKey !== key)

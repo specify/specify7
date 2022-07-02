@@ -124,7 +124,7 @@ export const getRegistriesFromPath = (
 export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
   const registries = getRegistriesFromPath(resourceParts);
   return registries.map((part, index) =>
-    typeof part === 'undefined'
+    part === undefined
       ? undefined
       : Object.fromEntries(
           Object.entries(part).map(([resource, data]) => [

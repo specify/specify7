@@ -111,7 +111,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           resource,
           'change',
           (): void => {
-            if (typeof resource === 'undefined') return undefined;
+            if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
                 setFormatted(title ?? '');
@@ -147,7 +147,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
   const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
   const title = `${
-    typeof resource === 'undefined'
+    resource === undefined
       ? ''
       : resource.isNew()
       ? commonText('newResourceTitle', resource.specifyModel.label)
@@ -198,7 +198,7 @@ export const augmentMode = (
   isNew: boolean,
   tableName: keyof Tables | undefined
 ): FormMode =>
-  typeof tableName === 'undefined'
+  tableName === undefined
     ? 'view'
     : initialMode === 'edit'
     ? hasTablePermission(tableName, isNew ? 'create' : 'update')
@@ -533,7 +533,7 @@ export function ShowResource({
   );
 
   return typeof recordSet === 'object' ? (
-    typeof recordSetItemIndex === 'undefined' ? null : (
+    recordSetItemIndex === undefined ? null : (
       <RecordSetView
         dialog={false}
         mode="edit"

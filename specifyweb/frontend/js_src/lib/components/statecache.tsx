@@ -54,7 +54,7 @@ export function useCachedState<
     [bucketName, cacheName]
   );
 
-  const isUndefined = typeof state === 'undefined';
+  const isUndefined = state === undefined;
   React.useEffect(() => {
     if (isUndefined || staleWhileRefresh)
       (isFunction(defaultValue)

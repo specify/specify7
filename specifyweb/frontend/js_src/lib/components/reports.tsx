@@ -323,7 +323,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
       typeof attachment === 'object' && attachmentsAvailable()
         ? `"${defined(formatAttachmentUrl(attachment, undefined))}"`
         : badImageUrl;
-    if (typeof attachment === 'undefined') missingAttachments.push(fileName);
+    if (attachment === undefined) missingAttachments.push(fileName);
     imageExpressions.forEach((image) => {
       image.textContent = imageUrl;
     });
@@ -345,7 +345,7 @@ function FixImagesDialog({
   const [index, setIndex] = React.useState<number | undefined>(undefined);
 
   const loading = React.useContext(LoadingContext);
-  return typeof index === 'undefined' ? (
+  return index === undefined ? (
     <Dialog
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       header={formsText('reportProblemsDialogTitle')}
@@ -569,8 +569,8 @@ function RecordSets({
   );
   React.useEffect(
     () =>
-      typeof query !== 'undefined' &&
-      (typeof tableId === 'undefined' || tableId < 0)
+      query !== undefined &&
+      (tableId === undefined || tableId < 0)
         ? error("Couldn't determine table id for report")
         : undefined,
     [tableId, query]

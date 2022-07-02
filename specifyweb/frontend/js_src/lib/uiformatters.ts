@@ -47,9 +47,9 @@ export const fetchContext =
                         const FieldClass =
                           fieldMapper[
                             (getParsedAttribute(field, 'type') ??
-                              '') as keyof typeof fieldMapper
+                              '') as keyof fieldMapper
                           ];
-                        if (typeof FieldClass === 'undefined') return undefined;
+                        if (typeof FieldClass === undefined) return undefined;
                         return new FieldClass({
                           size:
                             f.parseInt(
@@ -119,7 +119,7 @@ export class UiFormatter {
 
   public format(value: string): string | undefined {
     const parsed = this.parse(value);
-    return typeof parsed === 'undefined'
+    return parsed === undefined
       ? undefined
       : this.canonicalize(parsed);
   }

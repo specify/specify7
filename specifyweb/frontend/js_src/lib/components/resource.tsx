@@ -129,9 +129,9 @@ export async function getResourceAndField(
 
   return getResource.then((resource) => {
     const field = model.specifyModel.getField(fieldName ?? '');
-    if (typeof field === 'undefined')
+    if (field === undefined)
       console.error(`Unknown field ${fieldName ?? ''}`, { resource });
-    else if (typeof resource === 'undefined' || resource === null)
+    else if (resource === undefined || resource === null)
       /*
        * Actually this probably shouldn't be an error. it can
        * happen, for instance, in the collectors list if

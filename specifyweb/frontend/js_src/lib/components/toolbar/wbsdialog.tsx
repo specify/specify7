@@ -174,7 +174,7 @@ function DataSets({
     defaultValue: defaultSearchConfig,
     staleWhileRefresh: false,
   });
-  if (typeof sortConfig === 'undefined') return null;
+  if (sortConfig === undefined) return null;
 
   const datasets = Array.isArray(unsortedDatasets)
     ? Array.from(unsortedDatasets).sort(
@@ -242,7 +242,7 @@ function DataSets({
                     <td className="overflow-x-auto">
                       <Link.Default
                         href={`/specify/workbench/${dataset.id}/`}
-                        {...(typeof handleDataSetSelect === 'undefined'
+                        {...(handleDataSetSelect === undefined
                           ? {
                               className: 'font-bold',
                             }

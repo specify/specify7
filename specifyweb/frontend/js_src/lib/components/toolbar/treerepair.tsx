@@ -87,7 +87,7 @@ export function TreeSelectDialog({
                               : undefined
                           }`}
                           onClick={(event): void => {
-                            if (typeof handleClick === 'undefined') return;
+                            if (handleClick === undefined) return;
                             event.preventDefault();
                             loading(
                               Promise.resolve(handleClick(treeName)).then(() =>
@@ -133,7 +133,7 @@ function RepairTree({
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
     const { tree } = parseUrl();
-    if (typeof tree === 'undefined') return;
+    if (tree === undefined) return;
     loading(handleClick(tree).then(handleClose));
   }, [loading, handleClose]);
   return (

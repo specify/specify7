@@ -43,7 +43,7 @@ export function interceptLogs(): void {
         message: args.map((value) =>
           typeof value === 'function'
             ? value.toString()
-            : typeof value === 'undefined'
+            : value === undefined
             ? 'undefined'
             : typeof value === 'object'
             ? jsonStringify(value)

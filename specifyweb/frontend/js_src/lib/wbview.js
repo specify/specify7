@@ -154,7 +154,7 @@ const WBView = Backbone.View.extend({
       dataset: this.dataset,
       el: this.el,
       getRowCount: () =>
-        typeof this.hot === 'undefined'
+        this.hot === undefined
           ? this.dataset.rows.length
           : this.hot.countRows() - this.hot.countEmptyRows(true),
     });
@@ -344,7 +344,7 @@ const WBView = Backbone.View.extend({
           ),
           colHeaders: (physicalCol) => {
             const tableIcon = this.mappings?.mappedHeaders?.[physicalCol];
-            const isMapped = typeof tableIcon !== 'undefined';
+            const isMapped = tableIcon !== undefined;
             const mappingCol = this.physicalColToMappingCol(physicalCol);
             const tableName =
               this.mappings?.tableNames[mappingCol] ??
@@ -446,7 +446,7 @@ const WBView = Backbone.View.extend({
                         ];
 
                       if (
-                        typeof createdRecords === 'undefined' ||
+                        createdRecords === undefined ||
                         !this.getCellMeta(physicalRow, physicalCol, 'isNew')
                       ) {
                         wrapper.textContent = wbText(
@@ -646,7 +646,7 @@ const WBView = Backbone.View.extend({
 
     this.mappings.defaultValues = Object.fromEntries(
       Object.entries(
-        typeof this.mappings.lines === 'undefined'
+        this.mappings.lines === undefined
           ? {}
           : extractDefaultValues(
               this.mappings.lines,
@@ -660,7 +660,7 @@ const WBView = Backbone.View.extend({
 
     this.hot.updateSettings({
       columns: (index) =>
-        typeof this.mappings.defaultValues[index] === 'undefined'
+        this.mappings.defaultValues[index] === undefined
           ? {}
           : { placeholder: this.mappings.defaultValues[index] },
     });
@@ -682,7 +682,7 @@ const WBView = Backbone.View.extend({
             typeof pickList === 'string'
               ? await fetchPickList(pickList)
               : undefined;
-          if (typeof definition === 'undefined') return undefined;
+          if (definition === undefined) return undefined;
           const serialized = serializeResource(definition);
           return {
             physicalCol: this.dataset.columns.indexOf(headerName),
@@ -775,7 +775,7 @@ const WBView = Backbone.View.extend({
    * cases
    * */
   afterRenderer(td, visualRow, visualCol, property, _value) {
-    if (typeof this.hot === 'undefined') {
+    if (this.hot === undefined) {
       td.classList.add('text-gray-500');
       return;
     }
@@ -798,9 +798,9 @@ const WBView = Backbone.View.extend({
         visualRow,
         visualCol
       );
-    if (typeof this.mappings?.mappedHeaders?.[physicalCol] === 'undefined')
+    if (this.mappings?.mappedHeaders?.[physicalCol] === undefined)
       td.classList.add('text-gray-500');
-    if (typeof this.mappings?.coordinateColumns?.[physicalCol] !== 'undefined')
+    if (this.mappings?.coordinateColumns?.[physicalCol] !== undefined)
       td.classList.add('wb-coordinate-cell');
   },
   // Make HOT use defaultValues for validation if cell is empty
@@ -810,7 +810,7 @@ const WBView = Backbone.View.extend({
     const visualCol = this.hot.propToCol(property);
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
 
-    return typeof this.mappings?.defaultValues[physicalCol] === 'undefined'
+    return this.mappings?.defaultValues[physicalCol] === undefined
       ? value
       : this.mappings.defaultValues[physicalCol];
   },
@@ -990,8 +990,7 @@ const WBView = Backbone.View.extend({
         newValue,
       }) => {
         if (
-          typeof this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
-          'undefined'
+          this.getCellMeta(physicalRow, physicalCol, 'originalValue') === undefined
         )
           this.setCellMeta(
             physicalRow,
@@ -1005,7 +1004,7 @@ const WBView = Backbone.View.extend({
         });
         if (
           this.wbutils.searchPreferences.search.liveUpdate &&
-          typeof this.wbutils.searchQuery !== 'undefined'
+          this.wbutils.searchQuery !== undefined
         )
           this.updateCellMeta(
             physicalRow,
@@ -1109,10 +1108,10 @@ const WBView = Backbone.View.extend({
               )?.rankId,
               groupIndex,
             }))
-            .find(({ rankId }) => typeof rankId !== 'undefined'),
+            .find(({ rankId }) => rankId !== undefined),
         }))
         // Filter out columns that aren't tree ranks
-        .filter(({ rankGroup }) => typeof rankGroup !== 'undefined')
+        .filter(({ rankGroup }) => rankGroup !== undefined)
         /*
          * Filter out columns that didn't change
          * In the end, there should only be 0 or 1 columns
@@ -1123,7 +1122,7 @@ const WBView = Backbone.View.extend({
             ({ column }) => column === visualCol
           );
           return (
-            typeof deltaColumnState === 'undefined' ||
+            deltaColumnState === undefined ||
             deltaColumnState.sortOrder !== sortOrder
           );
         });
@@ -1131,12 +1130,12 @@ const WBView = Backbone.View.extend({
     let changedTreeColumn = findTreeColumns(newSortConfig, currentSortConfig);
     let newSortOrderIsUnset = false;
 
-    if (typeof changedTreeColumn === 'undefined') {
+    if (changedTreeColumn === undefined) {
       changedTreeColumn = findTreeColumns(currentSortConfig, newSortConfig);
       newSortOrderIsUnset = true;
     }
 
-    if (typeof changedTreeColumn === 'undefined') return true;
+    if (changedTreeColumn === undefined) return true;
 
     /*
      * Filter out columns with higher rank than the changed column
@@ -1190,13 +1189,13 @@ const WBView = Backbone.View.extend({
       !this.uploadedView &&
       !this.coordinateConverterView &&
       // An ugly fix for jQuery's dialogs conflicting with HOT
-      (typeof dropIndex !== 'undefined' || this.hotIsReady === false)
+      (dropIndex !== undefined || this.hotIsReady === false)
     );
   },
   // Save new visualOrder on the back end
   afterColumnMove(_columnIndexes, _finalIndex, dropIndex) {
     // An ugly fix for jQuery's dialogs conflicting with HOT
-    if (typeof dropIndex === 'undefined' || !this.hotIsReady) return;
+    if (dropIndex === undefined || !this.hotIsReady) return;
 
     this.flushIndexedCellData = true;
 
@@ -1341,7 +1340,7 @@ const WBView = Backbone.View.extend({
       'originalValue'
     );
     const cellValueChanged =
-      typeof originalCellValue !== 'undefined' &&
+      originalCellValue !== undefined &&
       (originalCellValue?.toString() ?? '') !==
         (this.data[physicalRow][physicalCol]?.toString() ?? '');
     if (cellValueChanged) return true;
@@ -1684,7 +1683,7 @@ const WBView = Backbone.View.extend({
   displayUploadedView(event) {
     if (!this.dataset.rowresults) return;
 
-    if (typeof this.uploadedView !== 'undefined') {
+    if (this.uploadedView !== undefined) {
       this.uploadedView.handleClose();
       return;
     }
@@ -1719,7 +1718,7 @@ const WBView = Backbone.View.extend({
           Array.from(element.getElementsByClassName('wb-cell-navigation'))
         ),
     ]
-      .filter((element) => typeof element !== 'undefined')
+      .filter((element) => element !== undefined)
       .map((element) => [element, element.getAttribute('title')]);
 
     effects.push(() =>
@@ -2354,7 +2353,7 @@ const WBView = Backbone.View.extend({
     );
   },
   getValidationResults() {
-    if (typeof this.wbstatus !== 'undefined' || !this.mappings) return;
+    if (this.wbstatus !== undefined || !this.mappings) return;
 
     if (this.dataset.rowresults === null) {
       this.validationMode = 'off';

@@ -87,7 +87,7 @@ export function registerBlurEmitter(
   const entry = {
     listeners: oldEntry?.listeners ?? new Set(),
     emitterDestructor: emitter?.(emit) ?? listen(input, 'blur', emit),
-    isDefault: typeof emitter === 'undefined',
+    isDefault: emitter === undefined,
   };
   blurHandlers.set(input, entry);
   return (): void => {

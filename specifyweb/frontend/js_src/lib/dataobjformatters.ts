@@ -78,7 +78,7 @@ export const fetchFormatters: Promise<{
             definitions.getElementsByTagName('format'),
             (formatter) => {
               const switchElement = formatter.getElementsByTagName('switch')[0];
-              if (typeof switchElement === 'undefined') return undefined;
+              if (switchElement === undefined) return undefined;
               const isSingle =
                 getBooleanAttribute(switchElement, 'single') ?? true;
               const field = getParsedAttribute(switchElement, 'field');
@@ -204,7 +204,7 @@ export async function format<SCHEMA extends AnySchema>(
   return fields
     .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
     .every(
-      (value) => typeof value === 'undefined' || value === null || value === ''
+      (value) => value === undefined || value === null || value === ''
     )
     ? automaticFormatter ?? undefined
     : Promise.all(
@@ -264,7 +264,7 @@ export async function aggregate(
         className === collection.model.specifyModel.longName && isDefault
     );
 
-  if (typeof aggregator === 'undefined')
+  if (aggregator === undefined)
     throw new Error('Aggregator not found');
 
   if (!collection.isComplete()) console.error('Collection is incomplete');

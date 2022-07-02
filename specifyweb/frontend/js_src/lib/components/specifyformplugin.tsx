@@ -86,7 +86,7 @@ const pluginRenderers: {
     },
   }) => {
     const field = dateField ?? fieldName;
-    if (typeof field === 'undefined') {
+    if (field === undefined) {
       console.error(
         "Can't display PartialDateUi because initialize.df is not set"
       );
@@ -109,7 +109,7 @@ const pluginRenderers: {
     resource,
     pluginDefinition: { relationship },
   }) {
-    if (typeof relationship === 'undefined') {
+    if (relationship === undefined) {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
@@ -128,7 +128,7 @@ const pluginRenderers: {
           );
   },
   ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
-    if (typeof relationship === 'undefined') {
+    if (relationship === undefined) {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
@@ -196,7 +196,7 @@ const pluginRenderers: {
     isRequired,
     pluginDefinition: { relationship },
   }) {
-    if (typeof relationship === 'undefined') {
+    if (relationship === undefined) {
       console.error(
         "Can't display HostTaxonPlugin because initialize.relname is not set"
       );

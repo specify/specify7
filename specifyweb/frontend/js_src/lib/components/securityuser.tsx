@@ -382,7 +382,7 @@ export function SecurityUser({
                   onSaving={(): undefined | false => {
                     if (
                       userResource.isNew() &&
-                      typeof password === 'undefined'
+                      password === undefined
                     ) {
                       setState({
                         type: 'SetPasswordDialog',
@@ -391,7 +391,7 @@ export function SecurityUser({
                     }
                     return undefined;
                   }}
-                  disabled={!changesMade || typeof userAgents === 'undefined'}
+                  disabled={!changesMade || userAgents === undefined}
                   saveRequired={isChanged}
                   onSaved={({ newResource }): void =>
                     loading(

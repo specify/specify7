@@ -68,7 +68,7 @@ function TableResults({
   return (
     <section className="flex flex-col gap-1">
       <H3>{header}</H3>
-      {typeof queryResults === 'undefined' ? (
+      {queryResults === undefined ? (
         <p aria-live="polite">{commonText('running')}</p>
       ) : Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText('noMatches')}</p>

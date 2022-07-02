@@ -121,12 +121,12 @@ function SchemaConfigWrapper({
     true
   );
 
-  return typeof languages === 'undefined' ||
-    typeof tables === 'undefined' ||
-    typeof formatters === 'undefined' ||
-    typeof aggregators === 'undefined' ||
-    typeof loadedWebLinks === 'undefined' ||
-    typeof uiFormatters === 'undefined' ? null : (
+  return languages === undefined ||
+    tables === undefined ||
+    formatters === undefined ||
+    aggregators === undefined ||
+    loadedWebLinks === undefined ||
+    uiFormatters === undefined ? null : (
     <SchemaConfig
       languages={languages}
       tables={tables}

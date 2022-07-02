@@ -51,7 +51,7 @@ export function findRequiredMissingFields(
 ): MappingPath[] {
   const model = defined(getModel(tableName));
 
-  if (typeof mappings === 'undefined') return [];
+  if (mappings === undefined) return [];
 
   const mappingEntries = group(
     mappings.map((line) => [line[0], line.slice(1)] as const)

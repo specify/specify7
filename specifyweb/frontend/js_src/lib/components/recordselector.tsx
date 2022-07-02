@@ -216,7 +216,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     ),
     index,
     totalCount,
-    isLoading: typeof records[index] === 'undefined',
+    isLoading: records[index] === undefined,
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:

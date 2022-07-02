@@ -190,8 +190,8 @@ export function Main({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return typeof menuItems === 'undefined' ||
-    typeof userTools === 'undefined' ? null : (
+  return menuItems === undefined ||
+    userTools === undefined ? null : (
     <>
       <Button.Small
         className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only z-10"

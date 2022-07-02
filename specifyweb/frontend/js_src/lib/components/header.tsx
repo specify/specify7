@@ -178,7 +178,7 @@ export function CollectionSelector(): JSX.Element {
         })
       }
     >
-      {typeof collections === 'undefined' && (
+      {collections === undefined && (
         <option disabled>{commonText('loading')}</option>
       )}
       {sortedCollections?.map(({ id, collectionName }) => (

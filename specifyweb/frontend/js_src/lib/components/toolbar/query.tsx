@@ -96,7 +96,7 @@ function QueryList({
     staleWhileRefresh: true,
   });
 
-  if (typeof sortConfig === 'undefined') return null;
+  if (sortConfig === undefined) return null;
 
   // TODO: use sortFunction
   const queries = Array.from(unsortedQueries).sort(

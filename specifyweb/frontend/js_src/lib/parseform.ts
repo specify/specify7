@@ -182,7 +182,7 @@ function postProcessRows(
            * If a Label without a labelForCellId attribute precedes a field with an
            * ID, but no label, associate the label with that field
            */
-          cell.type === 'Label' && typeof cell.labelForCellId === 'undefined'
+          cell.type === 'Label' && cell.labelForCellId === undefined
             ? typeof row[index + 1]?.id === 'string' &&
               /*
                * Don't do this for plugins, as they may already have a label.
@@ -195,8 +195,7 @@ function postProcessRows(
                   cell.type !== 'Field' ||
                   !['Plugin', 'Checkbox'].includes(cell.fieldDefinition.type)
               ) &&
-              typeof initialLabelsForCells[defined(row[index + 1].id)] ===
-                'undefined'
+              initialLabelsForCells[defined(row[index + 1].id)] === undefined
               ? {
                   // Assocate label with a field that follows it
                   ...cell,
@@ -204,8 +203,7 @@ function postProcessRows(
                 }
               : newColumns.length === 1 &&
                 typeof row[rowIndex + 1]?.id === 'string' &&
-                typeof initialLabelsForCells[defined(row[rowIndex + 1].id)] ===
-                  'undefined'
+                initialLabelsForCells[defined(row[rowIndex + 1].id)] === undefined
               ? {
                   /*
                    * Similar, but associate label with cell in next row, if
@@ -303,7 +301,7 @@ function postProcessRows(
     columns: newColumns,
     rows: newRows.map((row) =>
       row.map((cell) =>
-        typeof cell.id === 'undefined' ||
+        cell.id === undefined ||
         typeof labelsForCells[cell.id] === 'object'
           ? cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
             ? {
@@ -387,7 +385,7 @@ export function processViewDefinition(
       formType.toLowerCase()
     );
   });
-  if (typeof altView === 'undefined' || typeof viewDefinition === 'undefined') {
+  if (altView === undefined || viewDefinition === undefined) {
     console.error('No altView for defaultType:', formType);
     altView = altViews[0];
     viewDefinition = viewDefinitions[altView.viewdef];

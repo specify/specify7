@@ -69,7 +69,7 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   React.useEffect(() => {
     const resource = toTreeTable(props.model);
     if (
-      typeof resource === 'undefined' ||
+      resource === undefined ||
       !hasTreeAccess(resource.specifyModel.name, 'read')
     )
       return undefined;

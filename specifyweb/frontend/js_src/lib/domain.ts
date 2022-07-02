@@ -19,7 +19,7 @@ import type { RA } from './types';
  */
 globalEvents.on('newResource', (resource) => {
   const domainField = resource.specifyModel.getScopingRelationship();
-  if (typeof domainField === 'undefined') return;
+  if (domainField === undefined) return;
 
   const domainFieldName =
     domainField.name as keyof typeof schema.domainLevelIds;
@@ -40,10 +40,10 @@ globalEvents.on('newResource', (resource) => {
 
   // Need to make sure parentResource isn't null to fix issue introduced by 8abf5d5
   if (!hasTablePermission(capitalize(domainFieldName), 'read')) return;
-  if (typeof parentResource === 'undefined') return;
+  if (parentResource === undefined) return;
 
   const collectionObject = toTable(resource, 'CollectionObject');
-  if (typeof collectionObject === 'undefined') return;
+  if (collectionObject === undefined) return;
 
   const colId = parentResource.get('id');
   if (

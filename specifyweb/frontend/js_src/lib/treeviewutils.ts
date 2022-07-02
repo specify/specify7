@@ -103,7 +103,7 @@ export interface Conformation extends Readonly<[number, ...Conformations]> {}
 export function deserializeConformation(
   conformation: string | undefined
 ): Conformations | undefined {
-  if (typeof conformation === 'undefined') return undefined;
+  if (conformation === undefined) return undefined;
   const serialized = conformation
     .replace(/([^~])~/g, '$1,~')
     .replaceAll('~', '[')
@@ -166,8 +166,8 @@ const keyMapper = {
 export function mapKey(
   event: React.KeyboardEvent<HTMLButtonElement>
 ): KeyAction | undefined {
-  const action = keyMapper[event.key as keyof typeof keyMapper];
-  if (typeof action === 'undefined') return undefined;
+  const action = keyMapper[event.key as keyof keyMapper];
+  if (typeof action === undefined) return undefined;
 
   event.preventDefault();
   event.stopPropagation();

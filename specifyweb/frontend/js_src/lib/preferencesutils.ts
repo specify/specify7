@@ -33,7 +33,7 @@ export const getPrefDefinition = <
       f.var(
         defaultPreferences[category]?.[subcategory]?.[item],
         (defaultValue) =>
-          typeof defaultValue === 'undefined'
+          defaultValue === undefined
             ? definition
             : replaceKey(definition, 'defaultValue', defaultValue)
       )

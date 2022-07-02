@@ -46,10 +46,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
   const disableButtons =
-    typeof focusedRow === 'undefined' || typeof currentAction === 'string';
-  return typeof currentAction === 'undefined' ||
-    typeof actionRow === 'undefined' ||
-    typeof focusedRow === 'undefined' ||
+    focusedRow === undefined || typeof currentAction === 'string';
+  return currentAction === undefined ||
+    actionRow === undefined ||
+    focusedRow === undefined ||
     currentAction === 'add' ||
     currentAction === 'edit' ? (
     <menu className="contents">
@@ -83,7 +83,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           }
           tableName={tableName}
           onRefresh={handleRefresh}
-          disabled={typeof focusedRow === 'undefined'}
+          disabled={focusedRow === undefined}
         />
       </li>
       {hasTablePermission(tableName, 'create') && (
@@ -95,7 +95,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             tableName={tableName}
             onRefresh={handleRefresh}
             disabled={
-              typeof focusedRow === 'undefined' ||
+              focusedRow === undefined ||
               typeof focusedRow.acceptedId === 'number' ||
               // Forbid adding children to the lowest rank
               ranks.slice(-1)[0] === focusedRow.rankId
@@ -197,7 +197,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   return (
     <>
       <Button.Small
-        disabled={typeof nodeId === 'undefined' || disabled}
+        disabled={nodeId === undefined || disabled}
         onClick={handleToggle}
         aria-pressed={isOpen}
       >

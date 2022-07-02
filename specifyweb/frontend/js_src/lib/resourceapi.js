@@ -374,7 +374,7 @@ function eventHandlerForToOne(related, field) {
         async rgetPromise(fieldName, prePop = true) {
             return this.getRelated(fieldName, {prePop: prePop})
               // getRelated may return either undefined or null (yuk)
-              .then(data=>typeof data === 'undefined' ? null : data);
+              .then(data=>data === undefined ? null : data);
         },
         // Duplicate definition for purposes of better typing:
         async rgetCollection(fieldName) {
@@ -611,7 +611,7 @@ function eventHandlerForToOne(related, field) {
     }, {
         fromUri(uri, options) {
             const parsed = parseResourceUrl(uri);
-            if (typeof parsed === 'undefined') return undefined;
+            if (parsed === undefined) return undefined;
             const [tableName, id] = parsed;
             const model = new schema.models[tableName].Resource(
                { id },

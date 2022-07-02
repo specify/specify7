@@ -71,7 +71,7 @@ export function findArrayDivergencePoint<T>(
     mappedFind(Object.entries(source), ([index, sourceValue]) => {
       const searchValue = search[Number(index)];
 
-      if (typeof searchValue === 'undefined') return Number(index);
+      if (searchValue === undefined) return Number(index);
       else if (sourceValue === searchValue) return undefined;
       else return -1;
     }) ?? searchLength - 1
@@ -176,7 +176,7 @@ export function mappedFind<ITEM, RETURN_TYPE>(
   let value = undefined;
   array.some((item, index) => {
     value = callback(item, index);
-    return typeof value !== 'undefined';
+    return value !== undefined;
   });
   return value;
 }

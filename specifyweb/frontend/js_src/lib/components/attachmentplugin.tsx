@@ -85,7 +85,7 @@ export function AttachmentPlugin({
             .then((attachment) => {
               if (typeof resource === 'object')
                 attachment?.set('tableID', resource.specifyModel.tableId);
-              if (typeof attachment === 'undefined')
+              if (attachment === undefined)
                 setState({ type: 'Unavailable' });
               else {
                 handleUploadComplete?.(attachment);
@@ -104,7 +104,7 @@ export function AttachmentPlugin({
 
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 
-  return typeof state === 'undefined' ? (
+  return state === undefined ? (
     <>{commonText('loading')}</>
   ) : state.type === 'Unavailable' ? (
     <div>{formsText('attachmentServerUnavailable')}</div>

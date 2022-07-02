@@ -20,7 +20,7 @@ import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
 import type { IR, R } from '../types';
 import { filterArray } from '../types';
 
-if (typeof process.argv[1] === 'undefined')
+if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
 
 // CONFIGURATION
@@ -207,7 +207,7 @@ type Dictionary = IR<Key>;
       );
 
       Array.from(fileContent.matchAll(regex)).forEach(({ groups, index }) => {
-        if (typeof groups === 'undefined' || typeof index === 'undefined')
+        if (groups === undefined || index === undefined)
           return;
 
         const parameters = groups.parameters;

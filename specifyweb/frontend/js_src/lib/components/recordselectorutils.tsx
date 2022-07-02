@@ -110,7 +110,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       isLazy &&
       collection.related?.isNew() !== true &&
       !collection.isComplete() &&
-      typeof collection.models[index] === 'undefined'
+      collection.models[index] === undefined
     )
       collection
         .fetch()
@@ -334,7 +334,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
     ids.map((id) =>
-      typeof id === 'undefined' ? undefined : new model.Resource({ id })
+      id === undefined ? undefined : new model.Resource({ id })
     )
   );
 
@@ -342,7 +342,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   React.useEffect(() => {
     setRecords((records) =>
       ids.map((id, index) =>
-        typeof id === 'undefined'
+        id === undefined
           ? undefined
           : (records[index]?.id === id ? records[index] : undefined) ??
             new model.Resource({ id })
@@ -484,7 +484,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 canRemove ? (
                   <DataEntry.Remove
                     disabled={
-                      typeof resource === 'undefined' || mode === 'view'
+                      resource === undefined || mode === 'view'
                     }
                     onClick={(): void => handleRemove('minusButton')}
                     title={
@@ -646,7 +646,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const currentRecordId = ids[index];
   const previousIndex = React.useRef<number>(index);
   React.useEffect(() => {
-    if (typeof currentRecordId === 'undefined')
+    if (currentRecordId === undefined)
       fetchItems(
         recordSet.id,
         // If new index is smaller (i.e, going back), fetch previous 20 IDs
@@ -710,7 +710,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
       };
     });
 
-  return totalCount === 0 && typeof newResource === 'undefined' ? (
+  return totalCount === 0 && newResource === undefined ? (
     <LoadingScreen />
   ) : (
     <>
@@ -753,7 +753,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         }
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-          (typeof newResource === 'undefined' || totalCount !== 0)
+          (newResource === undefined || totalCount !== 0)
             ? (_index, source): void => {
                 if (typeof newResource === 'object')
                   setItems({ totalCount, ids, newResource: undefined, index });

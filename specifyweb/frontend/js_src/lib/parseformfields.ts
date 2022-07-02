@@ -100,7 +100,7 @@ const processFieldType: {
       type: 'TextArea',
       ...withStringDefault(cell),
       rows:
-        typeof rows === 'undefined'
+        rows === undefined
           ? getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
             'textareabrief'
             ? 1
@@ -159,7 +159,7 @@ export function parseFormField(
   getProperty: (name: string) => string | undefined
 ): FormFieldDefinition {
   let uiType = getParsedAttribute(cell, 'uiType');
-  if (typeof uiType === 'undefined') {
+  if (uiType === undefined) {
     console.error('field is missing uiType', cell);
     uiType = 'text';
   }
@@ -169,7 +169,7 @@ export function parseFormField(
     uiType.toLowerCase() === 'dsptextfield';
 
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];
-  if (typeof parser === 'undefined') {
+  if (parser === undefined) {
     console.error('unknown field uiType', { uiType, cell });
     parser = processFieldType.Text;
   }

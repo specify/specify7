@@ -209,7 +209,7 @@ export function SecurityInstitution({
                           <Button.LikeLink
                             onClick={handleOpenUser?.bind(undefined, user.id)}
                             disabled={
-                              typeof handleOpenUser === 'undefined' ||
+                              handleOpenUser === undefined ||
                               (user.id !== userInformation.id &&
                                 !hasTablePermission('SpecifyUser', 'read'))
                             }
@@ -241,7 +241,7 @@ export function SecurityInstitution({
               ) : (
                 commonText('loading')
               )}
-              {typeof users === 'object' && typeof admins === 'undefined' && (
+              {typeof users === 'object' && admins === undefined && (
                 <p>{adminText('loadingAdmins')}</p>
               )}
             </section>

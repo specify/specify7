@@ -80,7 +80,7 @@ function initialize(): void {
 
 /** Commits persistent cache buckets to localStorage */
 function commitToStorage(): void {
-  if (typeof localStorage === 'undefined') return;
+  if (localStorage  === undefined) return;
 
   Object.entries(buckets)
     .filter(
@@ -110,8 +110,8 @@ function fetchBucket(
    *
    */
   if (
-    typeof localStorage === 'undefined' ||
-    typeof sessionStorage === 'undefined'
+    localStorage  === undefined ||
+    sessionStorage  === undefined
   )
     return false;
 
@@ -222,11 +222,11 @@ function genericGet<T>(
   if (!eventListenerIsInitialized) initialize();
 
   if (
-    (typeof buckets[bucketName] === 'undefined' &&
+    (buckets[bucketName]  === undefined &&
       !Boolean(fetchBucket(bucketName))) ||
-    typeof buckets[bucketName].records[cacheName] === 'undefined'
+    buckets[bucketName].records[cacheName]  === undefined
   ) {
-    if (typeof defaultValue === 'undefined') return undefined;
+    if (defaultValue  === undefined) return undefined;
     genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
@@ -240,7 +240,7 @@ function genericGet<T>(
       buckets[bucketName].records,
       cacheName
     );
-    if (typeof defaultValue === 'undefined') return undefined;
+    if (defaultValue  === undefined) return undefined;
     genericSet(bucketName, cacheName, defaultValue, defaultSetOptions);
   }
 
@@ -287,7 +287,7 @@ function genericSet<T>(
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
-  if (typeof buckets[bucketName] === 'undefined') fetchBucket(bucketName);
+  if (buckets[bucketName] === undefined) fetchBucket(bucketName);
   if (buckets[bucketName]?.records[cacheName]?.value === cacheValue)
     return cacheValue;
 

@@ -217,7 +217,7 @@ const ResourceDataView = Backbone.View.extend({
                         editor.clearSelection();
                     }
                     const validationResults = this.validateResource(value);
-                    if(typeof validationResults === 'undefined')
+                    if(validationResults  === undefined)
                         this.clearValidationResults();
                     else
                         this.showValidationResults(validationResults);

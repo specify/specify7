@@ -114,7 +114,7 @@ function Preferences({
                   id={id(category)}
                 >
                   <h3 className="text-2xl">{title}</h3>
-                  {typeof description !== 'undefined' && <p>{description}</p>}
+                  {description !== undefined && <p>{description}</p>}
                   {subCategories.map(
                     ([
                       subcategory,
@@ -158,9 +158,7 @@ function Preferences({
                             </Button.Small>
                           </div>
                         </div>
-                        {typeof description !== 'undefined' && (
-                          <p>{description}</p>
-                        )}
+                        {description !== undefined && <p>{description}</p>}
                         {items.map(([name, item]) => {
                           const canEdit =
                             item.visible !== 'adminsOnly' ||
@@ -187,7 +185,7 @@ function Preferences({
                                 >
                                   {item.title}
                                 </p>
-                                {typeof item.description !== 'undefined' && (
+                                {item.description !== undefined && (
                                   <p className="flex justify-end flex-1 text-right text-gray-500">
                                     {item.description}
                                   </p>

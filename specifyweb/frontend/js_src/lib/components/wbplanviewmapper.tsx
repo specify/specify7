@@ -168,7 +168,7 @@ export function WbPlanViewMapper(props: {
      *   letting browser do the positioning (while still having position:fixed)
      */
     if (
-      typeof state.autoMapperSuggestions === 'undefined' ||
+      state.autoMapperSuggestions === undefined ||
       state.autoMapperSuggestions.length === 0
     )
       return;
@@ -213,10 +213,10 @@ export function WbPlanViewMapper(props: {
   // Fetch automapper suggestions when opening a custom select element
   React.useEffect(() => {
     if (
-      typeof state.openSelectElement === 'undefined' ||
-      typeof state.lines[state.openSelectElement.line].mappingPath[
+      state.openSelectElement === undefined ||
+      state.lines[state.openSelectElement.line].mappingPath[
         state.openSelectElement.index
-      ] === 'undefined'
+      ] === undefined
     )
       return undefined;
 

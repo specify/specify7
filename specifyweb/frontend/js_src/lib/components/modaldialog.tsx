@@ -202,7 +202,7 @@ export function Dialog({
   }, [isOpen, forceToTop]);
 
   React.useEffect(() => {
-    if (forceToTop || modal || !isOpen || typeof zIndex === 'undefined')
+    if (forceToTop || modal || !isOpen || zIndex === undefined)
       return undefined;
 
     dialogIndexes.add(zIndex);
@@ -217,7 +217,7 @@ export function Dialog({
       forceToTop ||
       modal ||
       !isOpen ||
-      typeof zIndex === 'undefined' ||
+      zIndex === undefined ||
       container === null
         ? undefined
         : listen(container, 'click', () =>
@@ -231,7 +231,7 @@ export function Dialog({
 
   // Resize listener
   React.useEffect(() => {
-    if (!isOpen || container === null || typeof handleResize === 'undefined')
+    if (!isOpen || container === null || handleResize === undefined)
       return undefined;
 
     const observer = new ResizeObserver(() => handleResize?.(container));
@@ -407,7 +407,7 @@ export function Dialog({
         >
           {children}
         </div>
-        {typeof buttons !== 'undefined' && (
+        {buttons !== undefined && (
           <div
             className={`gap-x-2 flex ${buttonContainerClassName}`}
             ref={setButtonContainer}

@@ -56,7 +56,7 @@ export function HostTaxonPlugin({
     ),
     false
   );
-  return typeof rightSideCollection === 'undefined' ? (
+  return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox

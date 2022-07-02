@@ -138,7 +138,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         >
           {isLoading ? (
             <li>{commonText('loading')}</li>
-          ) : typeof results === 'undefined' ? undefined : results.length ===
+          ) : results === undefined ? undefined : results.length ===
             0 ? (
             <li>{commonText('noResults')}</li>
           ) : (

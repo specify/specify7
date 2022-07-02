@@ -121,7 +121,7 @@ const fetchPaleoData = async (
       const latitude = locality?.get('latitude1') ?? undefined;
       const longitude = locality?.get('longitude1') ?? undefined;
 
-      if (typeof latitude === 'undefined' || typeof longitude === 'undefined')
+      if (latitude === undefined || longitude === undefined)
         return { type: 'NoDataState' };
 
       /*

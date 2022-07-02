@@ -91,7 +91,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    if (typeof addedResource.current === 'undefined') return;
+    if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
@@ -128,7 +128,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
   const children =
-    typeof viewDefinition === 'undefined' ? (
+    viewDefinition === undefined ? (
       commonText('loading')
     ) : resources.length === 0 ? (
       <p>{formsText('noData')}</p>

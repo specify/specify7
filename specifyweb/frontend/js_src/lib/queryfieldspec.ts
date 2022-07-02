@@ -286,7 +286,7 @@ export class QueryFieldSpec {
           : fieldName || anyTreeRank;
       fieldSpec.joinPath = filterArray([
         ...fieldSpec.joinPath,
-        typeof field === 'undefined'
+        field === undefined
           ? parsedField ??
             // If no field provided, use fullName
             (fieldSpec.joinPath.slice(-1)[0]?.isRelationship &&

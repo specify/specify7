@@ -226,7 +226,7 @@ export function CollectionOneToManyPlugin({
                         aria-label={commonText('remove')}
                         icon="trash"
                         onClick={(): void => {
-                          if (typeof data === 'undefined') return;
+                          if (data === undefined) return;
                           resource
                             .getDependentResource(`${data.side}SideRels`)
                             ?.remove(relationship);

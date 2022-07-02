@@ -153,7 +153,7 @@ function QueryResultCell({
     >
       {value === null
         ? undefined
-        : typeof fieldSpec === 'undefined' || typeof value === 'object'
+        : fieldSpec === undefined || typeof value === 'object'
         ? value
         : formatted}
     </span>
@@ -259,7 +259,7 @@ function QueryResult({
             key={index}
             value={formattedValues?.[index] ?? value}
             fieldSpec={
-              typeof formattedValues?.[index] === 'undefined'
+              formattedValues?.[index] === undefined
                 ? fieldSpecs[index]
                 : undefined
             }

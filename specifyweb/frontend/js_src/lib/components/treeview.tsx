@@ -147,7 +147,7 @@ function TreeView<SCHEMA extends AnyTree>({
     'synonymColor'
   );
 
-  return typeof rows === 'undefined' ? null : (
+  return rows === undefined ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
         <TableIcon name={table.name} />
@@ -353,7 +353,7 @@ function TreeView<SCHEMA extends AnyTree>({
               }
               onAction={(action): void => {
                 if (action === 'next')
-                  if (typeof rows[index + 1] === 'undefined') return undefined;
+                  if (rows[index + 1] === undefined) return undefined;
                   else setFocusPath([rows[index + 1].nodeId]);
                 else if (action === 'previous' && index > 0)
                   setFocusPath([rows[index - 1].nodeId]);
@@ -419,7 +419,7 @@ export function TreeViewWrapper({
       ? caseInsensitiveHash(treeDefinitions, treeName)
       : undefined;
 
-  if (typeof treeName === 'undefined' || !isTreeModel(treeName))
+  if (treeName === undefined || !isTreeModel(treeName))
     return <NotFoundView />;
   return (
     <ProtectedTree treeName={treeName} action="read">

@@ -53,7 +53,7 @@ const fetchForms = f.store(
                 getView(getAttribute(view, 'view') ?? '').then<
                   FormEntry | undefined
                 >((form) => {
-                  if (typeof form === 'undefined') return undefined;
+                  if (form === undefined) return undefined;
                   const modelName = parseClassName(form.class) as keyof Tables;
                   const model = defined(getModel(modelName));
 

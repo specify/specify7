@@ -56,7 +56,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
         {commonText('delete')}
       </Button.Gray>
       {isOpen ? (
-        typeof blockers === 'undefined' ? (
+        blockers === undefined ? (
           <Dialog
             header={commonText('loading')}
             className={{ container: dialogClassNames.narrowContainer }}

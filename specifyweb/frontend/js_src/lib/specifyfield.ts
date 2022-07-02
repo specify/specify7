@@ -166,7 +166,7 @@ abstract class FieldBase {
   // Returns the description of the field from the schema config.
   public getLocalizedDesc(): string | undefined {
     const description = this.localization.desc;
-    return description === null || typeof description === 'undefined'
+    return description === null || description === undefined
       ? undefined
       : unescape(description);
   }

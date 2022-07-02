@@ -423,7 +423,7 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
     const iframeDocument =
       iframeRef.current.contentDocument ??
       iframeRef.current.contentWindow?.document;
-    if (typeof iframeDocument === 'undefined') return;
+    if (iframeDocument === undefined) return;
     iframeDocument.body.innerHTML = error;
   }, [error]);
 

@@ -88,7 +88,7 @@ async function recursiveResourceResolve(
 
   const [currentPart, nextPart] = getNextMappingPathPart(mappingPath);
 
-  if (typeof resource === 'undefined' || resource === null) return [];
+  if (resource === undefined || resource === null) return [];
 
   if (
     typeof filterFunction === 'function' &&
@@ -133,7 +133,7 @@ async function recursiveResourceResolve(
     const currentRank = tableRanks.find(
       ({ rankId }) => rankId === resource.get('rankId')
     );
-    if (typeof currentRank === 'undefined')
+    if (currentRank === undefined)
       throw new Error('Failed to fetch tree name');
     const currentRankName = formatTreeRank(currentRank.name);
     return [
@@ -236,7 +236,7 @@ export async function fetchLocalityDataFromLocalityResource(
 
   const localityData = formatLocalityDataObject(results.flat());
 
-  return typeof filterFunction === 'undefined' || localityData === false
+  return filterFunction === undefined || localityData === false
     ? localityData
     : deflateLocalityData(localityData);
 }

@@ -99,7 +99,7 @@ function QueryInputField({
    */
   React.useEffect(() => {
     if (
-      typeof validationAttributes.maxLength !== 'undefined' &&
+      validationAttributes.maxLength !== undefined &&
       value.length > Number.parseInt(validationAttributes.maxLength) &&
       inputRef.current?.checkValidity() === true
     )
@@ -117,7 +117,7 @@ function QueryInputField({
     name: fieldName,
     title: label,
     'aria-label': label,
-    disabled: typeof handleChange === 'undefined',
+    disabled: handleChange === undefined,
     onChange: ({
       target,
     }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void =>
@@ -535,7 +535,7 @@ export function QueryLineFilter({
   );
 
   const Component = queryFieldFilters[filter.type].component;
-  return typeof Component === 'undefined' ? null : (
+  return Component === undefined ? null : (
     <React.Fragment>
       {mappingElementDivider}
       <Component

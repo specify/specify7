@@ -58,14 +58,14 @@ export function SecurityImportExport({
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
           <Button.Blue
-            disabled={typeof roles === 'undefined'}
+            disabled={roles === undefined}
             onClick={handleOpen}
           >
             {commonText('import')}
           </Button.Blue>
         )}
       <Button.Blue
-        disabled={typeof roles === 'undefined'}
+        disabled={roles === undefined}
         onClick={(): void =>
           loading(
             downloadFile(
@@ -90,7 +90,7 @@ export function SecurityImportExport({
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Submit.Green
-                disabled={typeof newRoles === 'undefined'}
+                disabled={newRoles === undefined}
                 form={id('form')}
               >
                 {commonText('import')}
@@ -121,7 +121,7 @@ export function SecurityImportExport({
               Object.entries(newRoles).map(([category, roles]) => (
                 <section key={category}>
                   <H3>{categoryLabels[category]}</H3>
-                  {typeof roles === 'undefined' || roles.length === 0 ? (
+                  {roles === undefined || roles.length === 0 ? (
                     adminText('none')
                   ) : (
                     <Ul>

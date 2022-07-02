@@ -482,7 +482,7 @@ export class AutoMapper {
     readonly isTreeRank?: boolean;
   }): void {
     if (mode === 'shortcutsAndTableSynonyms') {
-      if (typeof fieldName !== 'undefined') return;
+      if (fieldName  !== undefined) return;
 
       const tableDefinitionData = autoMapperDefinitions.shortcuts[tableName];
 
@@ -526,7 +526,7 @@ export class AutoMapper {
 
     if (
       mode !== 'shortcutsAndTableSynonyms' ||
-      typeof tableSynonyms === 'undefined'
+      tableSynonyms  === undefined
     )
       return [];
 
@@ -766,7 +766,7 @@ export class AutoMapper {
                         const match =
                           regularExpression.exec(lowercaseHeaderName);
 
-                        if (match === null || typeof match[1] === 'undefined')
+                        if (match === null || match[1]  === undefined)
                           return false;
 
                         toManyIndex = Number(match[1]);

@@ -427,7 +427,7 @@ export function useResourceValue<
   const [ignoreError, handleIgnoreError, handleDontIgnoreError] =
     useBooleanState();
   React.useEffect(() => {
-    if (typeof field === 'undefined') return;
+    if (field === undefined) return;
     const getBlockers = (): RA<string> =>
       resource.saveBlockers
         ?.blockersForField(field.name)
@@ -435,7 +435,7 @@ export function useResourceValue<
         .map(({ reason }) => reason) ?? [];
     blockers.current = getBlockers();
     resourceOn(resource, 'blockersChanged', (): void => {
-      if (typeof field === 'undefined') return;
+      if (field === undefined) return;
       blockers.current = getBlockers();
       handleDontIgnoreError();
       // Report validity only if not focused
@@ -452,7 +452,7 @@ export function useResourceValue<
   ]);
   React.useEffect(
     () =>
-      input === null || typeof field === 'undefined'
+      input === null || field === undefined
         ? undefined
         : registerBlurListener(input, (): void => {
             // Don't report the same error twice
@@ -486,7 +486,7 @@ export function useResourceValue<
        */
       setInput(inputRef.current);
 
-      if (typeof parser.type === 'undefined') return;
+      if (parser.type === undefined) return;
 
       /*
        * If updateValue is called from the onChange event handler and field is
@@ -516,7 +516,7 @@ export function useResourceValue<
             parsedValue
           : formattedValue) as T
       );
-      if (typeof field === 'undefined') return;
+      if (field === undefined) return;
       const key = `parseError:${field.name.toLowerCase()}`;
       if (parseResults.isValid) resource.saveBlockers?.remove(key);
       else resource.saveBlockers?.add(key, field.name, parseResults.reason);
@@ -546,7 +546,7 @@ export function useResourceValue<
 
   // Listen for resource update. Set parser. Set default value
   React.useEffect(() => {
-    if (typeof field === 'undefined') return;
+    if (field === undefined) return;
 
     /*
      * Disable parser when validation is disabled. This is useful in search
@@ -566,7 +566,7 @@ export function useResourceValue<
     setParser(parser);
 
     if (
-      typeof parser.value !== 'undefined' &&
+      parser.value !== undefined &&
       /*
        * Even if resource is new, some values may be prepopulated (i.e, by
        * PrepDialog). This is a crude check to see if form's default value

@@ -344,7 +344,7 @@ export function QueryResultsTable({
       .then((newResults) => [...currentResults, ...newResults])
       .then((combinedResults): void => {
         setResults(combinedResults);
-        if (typeof index === 'undefined' || index < combinedResults.length)
+        if (index === undefined || index < combinedResults.length)
           handleFetched();
         else fetchMore(index, combinedResults);
       })
@@ -398,7 +398,7 @@ export function QueryResultsTable({
                 createRecordSet
               )
             ) : undefined}
-            {typeof handleSelected === 'undefined' && (
+            {handleSelected === undefined && (
               <ViewRecords
                 selectedRows={selectedRows}
                 results={results}
@@ -675,7 +675,7 @@ export function QueryResultsWrapper({
     model,
   ]);
 
-  return typeof props === 'undefined' ? (
+  return props === undefined ? (
     queryRunCount === 0 ? null : (
       <div className="snap-start flex-1">{loadingGif}</div>
     )

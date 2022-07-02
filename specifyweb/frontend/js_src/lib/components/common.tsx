@@ -71,7 +71,7 @@ export function TableIcon({
       ? undefined
       : tableLabel ?? getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
-  const ariaHidden = typeof resolvedTableLabel === 'undefined';
+  const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')
     return (
       <span

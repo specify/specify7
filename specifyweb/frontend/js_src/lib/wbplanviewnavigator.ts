@@ -104,7 +104,7 @@ function navigator({
   } = recursivePayload ?? {};
 
   const next = callbacks.getNextDirection(model);
-  if (typeof next === 'undefined') return;
+  if (next === undefined) return;
 
   const childrenAreToManyElements =
     relationshipIsToMany(parentRelationship) &&
@@ -411,7 +411,7 @@ export function getMappingLineData({
                     (generateFieldData === 'all' ||
                       field.name === internalState.parsedDefaultValue[0]) &&
                     (!field.isRelationship ||
-                      typeof parentRelationship === 'undefined' ||
+                      parentRelationship === undefined ||
                       (!isCircularRelationship(parentRelationship, field) &&
                         /*
                          * Hide nested -to-many relationships as they are not

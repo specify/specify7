@@ -156,9 +156,9 @@ export const uploadFile = async (
         }
       ).then(({ data }) => {
         if (
-          typeof data.attachmentlocation === 'undefined' ||
-          typeof data.token === 'undefined' ||
-          typeof settings === 'undefined'
+          data.attachmentlocation === undefined ||
+          data.token === undefined ||
+          settings === undefined
         )
           return undefined;
 
@@ -223,7 +223,7 @@ function fixMimeType(originalMimeType: string): string {
   const maxLength = defined(
     schema.models.Attachment.getLiteralField('mimeType')
   ).length;
-  if (typeof maxLength === 'undefined' || originalMimeType.length < maxLength)
+  if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
   else {
     const mimeType = 'application/octet-stream';

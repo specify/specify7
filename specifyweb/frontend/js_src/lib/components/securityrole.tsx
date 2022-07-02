@@ -65,7 +65,7 @@ export function RoleView({
 }): JSX.Element {
   const [role, setRole] = useTriggerState(initialRole);
   const changesMade =
-    typeof role.id === 'undefined' ||
+    role.id === undefined ||
     JSON.stringify(initialRole) !== JSON.stringify(role);
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
@@ -204,8 +204,7 @@ export function RoleView({
         hasPermission(permissionName, 'delete', collectionId) ? (
           <Button.Red
             disabled={
-              typeof userRoles === 'undefined' &&
-              typeof handleAddUser === 'function'
+              userRoles === undefined && typeof handleAddUser === 'function'
             }
             onClick={
               userRoles?.length === 0

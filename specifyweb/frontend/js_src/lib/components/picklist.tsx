@@ -120,7 +120,7 @@ export function PickListComboBox(
 
   const currentValue = props.items?.find((item) => item.value === value);
   const isExistingValue =
-    typeof props.items === 'undefined' || typeof currentValue === 'object';
+    props.items === undefined || typeof currentValue === 'object';
 
   const autocompleteItems = React.useMemo(
     () =>
@@ -137,7 +137,7 @@ export function PickListComboBox(
     ? props.onAdd
     : undefined;
 
-  const isDisabled = props.isDisabled || typeof props.items === 'undefined';
+  const isDisabled = props.isDisabled || props.items === undefined;
   const isRequired =
     ('required' in validationAttributes || props.isRequired) &&
     props.mode !== 'search';
@@ -145,7 +145,7 @@ export function PickListComboBox(
 
   return (
     <>
-      {typeof handleAdd === 'undefined' || isDisabled ? (
+      {handleAdd === undefined || isDisabled ? (
         <Select
           id={props.id}
           // "null" value is represented as an empty string

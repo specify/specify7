@@ -200,7 +200,7 @@ function serializeModel<SCHEMA extends AnySchema>(
         let camelFieldName = fields.find(
           (fieldName) => fieldName.toLowerCase() === lowercaseFieldName
         );
-        if (typeof camelFieldName === 'undefined') {
+        if (camelFieldName === undefined) {
           camelFieldName = lowercaseFieldName;
           if (!specialFields.has(lowercaseFieldName))
             console.warn(
@@ -211,7 +211,7 @@ function serializeModel<SCHEMA extends AnySchema>(
         if (typeof value === 'object' && value !== null) {
           const field = model.getField(lowercaseFieldName);
           const tableName =
-            typeof field === 'undefined' || !field.isRelationship
+            field === undefined || !field.isRelationship
               ? undefined
               : field.relatedModel.name;
           return [

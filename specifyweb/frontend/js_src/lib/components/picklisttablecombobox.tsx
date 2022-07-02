@@ -49,7 +49,7 @@ export function PickListTableComboBox(
       items={items}
       onAdd={undefined}
       pickList={undefined}
-      isDisabled={typeof pickLists === 'undefined' || items.length === 0}
+      isDisabled={pickLists === undefined || items.length === 0}
     />
   );
 }

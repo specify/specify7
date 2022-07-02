@@ -110,7 +110,7 @@ export function QueryComboBox({
     React.useCallback(() => {
       const treeResource = toTreeTable(resource);
       if (
-        typeof treeResource === 'undefined' ||
+        treeResource === undefined ||
         !hasTreeAccess(treeResource.specifyModel.name, 'read')
       )
         return false;
@@ -206,7 +206,7 @@ export function QueryComboBox({
       const relatedModel =
         initialRelatedModel ??
         (field?.isRelationship === true ? field.relatedModel : undefined);
-      if (typeof relatedModel === 'undefined') return false;
+      if (relatedModel === undefined) return false;
 
       const typeSearch =
         typeof initialTypeSearch === 'object'
@@ -216,7 +216,7 @@ export function QueryComboBox({
                 ? `[name="${initialTypeSearch}"]`
                 : `[tableid="${relatedModel.tableId}"]`
             );
-      if (typeof typeSearch === 'undefined') return false;
+      if (typeSearch === undefined) return false;
 
       const searchFieldsNames =
         typeSearch === null
@@ -254,9 +254,9 @@ export function QueryComboBox({
   );
 
   const isLoaded =
-    typeof treeData !== 'undefined' &&
-    typeof collectionRelationships !== 'undefined' &&
-    typeof typeSearch !== 'undefined';
+    treeData !== undefined &&
+    collectionRelationships !== undefined &&
+    typeSearch !== undefined;
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
     field?.name,
@@ -296,7 +296,7 @@ export function QueryComboBox({
           ? resource
               .rgetPromise<string, AnySchema>(field?.name ?? '')
               .then((resource) =>
-                typeof resource === 'undefined' || resource === null
+                resource === undefined || resource === null
                   ? {
                       label: '',
                       resource: undefined,
@@ -516,8 +516,8 @@ export function QueryComboBox({
               !isLoaded ||
               mode === 'view' ||
               formType === 'formTable' ||
-              typeof typeSearch === 'undefined' ||
-              typeof formatted === 'undefined'
+              typeSearch === undefined ||
+              formatted === undefined
             }
             {...getValidationAttributes(parser)}
             {...props}
@@ -526,13 +526,13 @@ export function QueryComboBox({
       </Autocomplete>
       <span className="print:hidden contents">
         {formType === 'formTable' ? undefined : mode === 'view' ? (
-          typeof formatted?.resource === 'undefined' ||
+          formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
             <DataEntry.View
               aria-pressed={state.type === 'ViewResourceState'}
               disabled={
-                typeof formatted?.resource === 'undefined' ||
-                typeof collectionRelationships === 'undefined'
+                formatted?.resource === undefined ||
+                collectionRelationships === undefined
               }
               onClick={handleOpenRelated}
               className="ml-1"
@@ -543,12 +543,12 @@ export function QueryComboBox({
             <DataEntry.Edit
               aria-pressed={state.type === 'ViewResourceState'}
               disabled={
-                typeof formatted?.resource === 'undefined' ||
-                typeof collectionRelationships === 'undefined'
+                formatted?.resource === undefined ||
+                collectionRelationships === undefined
               }
               onClick={handleOpenRelated}
             />
-            {typeof field === 'undefined' ||
+            {field === undefined ||
             !field.isRelationship ||
             (!RESTRICT_ADDING.has(field.relatedModel.name) &&
               hasTablePermission(field.relatedModel.name, 'create')) ? (
@@ -570,7 +570,7 @@ export function QueryComboBox({
             ) : undefined}
             {hasCloneButton && (
               <DataEntry.Clone
-                disabled={typeof formatted?.resource === 'undefined'}
+                disabled={formatted?.resource === undefined}
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })

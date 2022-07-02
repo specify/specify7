@@ -268,7 +268,7 @@ export function CollectionAccess({
                 '/permissions/policies/user',
                 'update',
                 collectionId
-              ) || typeof userPolicies === 'undefined'
+              ) || userPolicies === undefined
             }
             onValueChange={(): void =>
               handleChange(
@@ -328,7 +328,7 @@ export function UserIdentityProviders({
 }: {
   readonly identityProviders: IR<boolean> | undefined;
 }): JSX.Element | null {
-  return typeof identityProviders === 'undefined' ||
+  return identityProviders === undefined ||
     Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
       <legend>{adminText('externalIdentityProviders')}</legend>

@@ -39,7 +39,7 @@ export function hijackBackboneAjax<T>(
  * can be handled consistently in a single place
  */
 Backbone.ajax = function (request): JQueryXHR {
-  if (typeof request === 'undefined') throw new Error('Undefined Request');
+  if (request === undefined) throw new Error('Undefined Request');
   const url = defined(request.url);
   const requestCallbackCopy = requestCallback;
   return promiseToXhr(

@@ -197,7 +197,7 @@ export function QueryBuilder({
   return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
-        typeof state.openedElement.index === 'undefined'
+        state.openedElement.index === undefined
           ? undefined
           : (event): void =>
               (event.target as HTMLElement).closest(

@@ -83,7 +83,7 @@ export function AttachmentCell({
   const [thumbnail] = useAsyncState(
     React.useCallback(
       () =>
-        typeof attachment === 'undefined'
+        attachment === undefined
           ? undefined
           : fetchThumbnail(attachment, previewSize),
       [attachment]
@@ -125,13 +125,13 @@ export function AttachmentCell({
       {typeof attachment === 'object' && (
         <>
           {typeof handleViewRecord === 'function' &&
-            (typeof model === 'undefined' ||
+            (model === undefined ||
               hasTablePermission(model.name, 'read')) && (
               <Button.LikeLink
                 className="absolute top-0 left-0"
                 title={model?.label}
                 onClick={(): void =>
-                  typeof model === 'undefined'
+                  model === undefined
                     ? handleMetaToggle()
                     : loading(
                         fetchRelated(
@@ -196,7 +196,7 @@ export function AttachmentCell({
              * remember that and open the link as soon as loaded.
              * In the meanwhile, display a loading screen
              */
-            typeof originalUrl === 'undefined'
+            originalUrl === undefined
               ? handlePreviewPending()
               : undefined
           }

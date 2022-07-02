@@ -154,7 +154,7 @@ const cellRenderers: {
       false
     );
 
-    if (typeof relationship === 'undefined') return null;
+    if (relationship === undefined) return null;
     else if (relationship.type === 'many-to-many') {
       // ResourceApi does not support .rget() on a many-to-many
       console.error('Many-to-many relationships are not supported');
@@ -167,8 +167,8 @@ const cellRenderers: {
       )
     ) {
       if (
-        typeof interactionCollection === 'undefined' ||
-        typeof actualFormType === 'undefined'
+        interactionCollection === undefined ||
+        actualFormType === undefined
       )
         return null;
       else if (interactionCollection === false || actualFormType === 'form')

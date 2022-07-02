@@ -126,7 +126,7 @@ const fieldRenderers: {
       ),
       false
     );
-    return typeof data === 'undefined' ? null : (
+    return data === undefined ? null : (
       <ComboBox
         id={id}
         model={resource}

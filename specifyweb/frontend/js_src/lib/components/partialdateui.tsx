@@ -38,7 +38,7 @@ export type PartialDatePrecision = keyof typeof precisions;
  */
 function parseMonthYear(value: string): ReturnType<typeof dayjs> | undefined {
   const parsed = /(\d{2})\D(\d{4})/.exec(value)?.slice(1);
-  if (typeof parsed === 'undefined') return undefined;
+  if (parsed === undefined) return undefined;
   const [month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1));
 }
@@ -107,12 +107,12 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     (moment: ReturnType<typeof dayjs> | undefined) => {
       const value = resource.get(dateField) ?? undefined;
       const newMoment =
-        typeof value === 'undefined'
+        value === undefined
           ? undefined
           : dayjs(value, databaseDateFormat, true);
 
-      return typeof moment === 'undefined' ||
-        typeof newMoment === 'undefined' ||
+      return moment === undefined ||
+        newMoment === undefined ||
         moment.toJSON() !== newMoment.toJSON()
         ? newMoment
         : moment;
@@ -188,7 +188,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         typeof resource.get(dateField) === 'string';
       return;
     }
-    if (typeof moment === 'undefined') {
+    if (moment === undefined) {
       resource.set(dateField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
@@ -282,7 +282,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               resource.saveBlockers?.remove(`invaliddate:${dateField}`);
             }}
             onBlur={(): void => {
-              if (typeof moment === 'undefined') return;
+              if (moment === undefined) return;
               let newMoment = dayjs(moment);
               if (precision === 'year' || precision === 'month-year')
                 newMoment = newMoment.date(1);

@@ -171,7 +171,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
     false
   );
   const isShowingOldResource =
-    typeof loadedResource === 'undefined' &&
+    loadedResource === undefined &&
     typeof oldResourceRef.current === 'object';
   const resolvedResource = loadedResource ?? oldResourceRef.current;
   const formIsLoaded =

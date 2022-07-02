@@ -140,7 +140,7 @@ export function QueryLine({
       const newFilters = hasParser
         ? field.filters.map((filter) => {
             const filterType =
-              typeof fieldType === 'undefined' ||
+              fieldType === undefined ||
               queryFieldFilters[filter.type].types?.includes(fieldType) ===
                 false
                 ? 'any'
@@ -285,7 +285,7 @@ export function QueryLine({
                     className={`aria-handled print:hidden
                       ${isFieldComplete ? '' : 'invisible'}
                     `}
-                    disabled={typeof handleChange === 'undefined'}
+                    disabled={handleChange === undefined}
                     onClick={(): void =>
                       handleFilterChange(field.filters.length, {
                         type: 'any',
@@ -313,7 +313,7 @@ export function QueryLine({
                     variant={className.redButton}
                     title={commonText('remove')}
                     aria-label={commonText('remove')}
-                    disabled={typeof handleChange === 'undefined'}
+                    disabled={handleChange === undefined}
                     onClick={(): void => handleFilterChange(index, undefined)}
                   >
                     {icons.trash}
@@ -330,7 +330,7 @@ export function QueryLine({
                       : className.grayButton
                   }
                   className="aria-handled"
-                  disabled={typeof handleFilterChange === 'undefined'}
+                  disabled={handleFilterChange === undefined}
                   onClick={(): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],
@@ -354,13 +354,12 @@ export function QueryLine({
                   }
                   value={filter.type}
                   className={customSelectElementBackground}
-                  disabled={typeof handleFilterChange === 'undefined'}
+                  disabled={handleFilterChange === undefined}
                   onChange={({ target }): void => {
                     const newFilter = (target as HTMLSelectElement)
                       .value as QueryFieldFilter;
                     const startValue =
-                      typeof queryFieldFilters[newFilter].component ===
-                      'undefined'
+                      queryFieldFilters[newFilter].component === undefined
                         ? ''
                         : filter.type === 'any' &&
                           filtersWithDefaultValue.has(newFilter) &&
@@ -433,7 +432,7 @@ export function QueryLine({
           variant={
             field.isDisplay ? className.greenButton : className.grayButton
           }
-          disabled={typeof handleChange === 'undefined'}
+          disabled={handleChange === undefined}
           onClick={(): void =>
             handleChange?.({
               ...field,
@@ -460,7 +459,7 @@ export function QueryLine({
               ? queryText('descendingSort')
               : queryText('sort')
           }
-          disabled={typeof handleChange === 'undefined'}
+          disabled={handleChange === undefined}
           onClick={(): void =>
             handleChange?.({
               ...field,
@@ -480,7 +479,7 @@ export function QueryLine({
         <Button.Small
           title={queryText('moveUp')}
           aria-label={queryText('moveUp')}
-          disabled={typeof handleMoveUp === 'undefined'}
+          disabled={handleMoveUp === undefined}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
@@ -488,7 +487,7 @@ export function QueryLine({
         <Button.Small
           title={queryText('moveDown')}
           aria-label={queryText('moveDown')}
-          disabled={typeof handleMoveDown === 'undefined'}
+          disabled={handleMoveDown === undefined}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}

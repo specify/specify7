@@ -83,7 +83,7 @@ export function WebLinkButton({
       );
       const title =
         definition?.querySelector(':scope > desc')?.textContent ?? '';
-      if (typeof definition === 'undefined')
+      if (definition === undefined)
         console.error("Couldn't determine weblink", {
           resource,
           fieldName,
@@ -105,7 +105,7 @@ export function WebLinkButton({
   }>({ url: undefined, isExternal: false });
 
   React.useEffect(() => {
-    if (typeof data === 'undefined') return;
+    if (data === undefined) return;
 
     async function buildUrl(): Promise<string> {
       const template =

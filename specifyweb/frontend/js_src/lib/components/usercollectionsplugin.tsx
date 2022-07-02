@@ -106,12 +106,12 @@ export function UserCollectionsPlugin({
         className="w-fit"
         disabled={
           // Admin users have access to all collections
-          typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
+          user === undefined || user.get('isAdmin') || user.isNew()
         }
         title={
           user.get('isAdmin')
             ? adminText('notAvailableOnAdmins')
-            : typeof user === 'undefined'
+            : user === undefined
             ? commonText('loading')
             : user.isNew()
             ? adminText('saveUserFirst')
