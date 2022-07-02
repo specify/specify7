@@ -8,6 +8,15 @@ import type { KeysToLowerCase } from './datamodelutils';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
 
+/**
+ * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
+ * can use `Object.entries(dict).find(()=>...)[KEY]`.
+ * Same for `VALUE`, instead of 0.
+ * It is easier to read and less error-prone.
+ */
+export const KEY = 0;
+export const VALUE = 1;
+
 export const capitalize = <T extends string>(string: T): Capitalize<T> =>
   (string.charAt(0).toUpperCase() + string.slice(1)) as Capitalize<T>;
 
@@ -105,7 +114,7 @@ export const caseInsensitiveHash = <
 ): DICTIONARY[KEY] =>
   Object.entries(dictionary).find(
     ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
-  )?.[1] as DICTIONARY[KEY];
+  )?.[VALUE] as DICTIONARY[KEY];
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =

@@ -4,7 +4,7 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
-import { group, removeKey, sortFunction } from './helpers';
+import { group, KEY, removeKey, sortFunction, VALUE } from './helpers';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
@@ -97,7 +97,7 @@ export function parseQueryFields(
                     Object.entries(queryFieldFilters).find(
                       ([_, { id }]) => id === field.operStart
                     )
-                  )[0],
+                  )[KEY],
               isNot,
               startValue,
             },
@@ -228,7 +228,7 @@ export const unParseQueryFields = (
                       Object.entries(queryFieldFilters).find(
                         ([name]) => name === type
                       )
-                    )[1].id,
+                    )[VALUE].id,
               startValue,
               isNot,
               /*

@@ -6,6 +6,7 @@ import type { Tables } from './datamodel';
 import { f } from './functools';
 import {
   group,
+  KEY,
   lowerToHuman,
   replaceItem,
   replaceKey,
@@ -408,7 +409,7 @@ export const compressPermissionQuery = (
           if (f.has(toolTables(), model.name)) {
             const toolName = Object.entries(toolDefinitions()).find(
               ([_name, { tables }]) => f.includes(tables, model.name)
-            )?.[0];
+            )?.[KEY];
             if (typeof toolName === 'string') {
               tools[toolName] ??= {};
               tools[toolName][item.action] = {

@@ -8,7 +8,7 @@ import type {
   Tables,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { sortFunction, split } from '../helpers';
+import { KEY, sortFunction, split } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { hasToolPermission } from '../permissions';
@@ -315,7 +315,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithParameters>({
     );
     const currentPickListId = Object.entries(table.dataModel.pickLists).find(
       ([_id, { name }]) => name === items[itemId].pickListName
-    )?.[0];
+    )?.[KEY];
     const maxLength = defined(
       schema.models.SpLocaleItemStr.getField('text')
     ).length;

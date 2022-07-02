@@ -9,7 +9,7 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 import { ajax, Http } from './ajax';
 import { getCache, setCache } from './cache';
 import { legacyNonJsxIcons } from './components/icons';
-import { capitalize } from './helpers';
+import { capitalize, KEY } from './helpers';
 import {
   cachableUrl,
   contextUnlockedPromise,
@@ -182,7 +182,7 @@ function rememberSelectedOverlays(
   const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
     const layerName = Object.entries(layers).find(
       ([_, layerObject]) => layerObject === layer
-    )?.[0];
+    )?.[KEY];
     if (typeof layerName === 'string')
       setCache(
         'leaflet',

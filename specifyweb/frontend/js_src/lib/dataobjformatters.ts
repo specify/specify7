@@ -9,6 +9,7 @@ import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
+  KEY,
   sortFunction,
 } from './helpers';
 import {
@@ -164,7 +165,7 @@ export async function format<SCHEMA extends AnySchema>(
   ) ??
     formatters
       .filter(({ className }) => className === resource.specifyModel.longName)
-      .sort(sortFunction(({ isDefault }) => isDefault, true))?.[0] ?? {
+      .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY] ?? {
       // If formatter does not exist, generate one on the fly
       isDefault: true,
       switchFieldName: undefined,
@@ -203,9 +204,7 @@ export async function format<SCHEMA extends AnySchema>(
    */
   return fields
     .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
-    .every(
-      (value) => value === undefined || value === null || value === ''
-    )
+    .every((value) => value === undefined || value === null || value === '')
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map(
@@ -264,8 +263,7 @@ export async function aggregate(
         className === collection.model.specifyModel.longName && isDefault
     );
 
-  if (aggregator === undefined)
-    throw new Error('Aggregator not found');
+  if (aggregator === undefined) throw new Error('Aggregator not found');
 
   if (!collection.isComplete()) console.error('Collection is incomplete');
 

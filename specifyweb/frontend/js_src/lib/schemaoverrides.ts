@@ -10,6 +10,7 @@
 import type { Tables } from './datamodel';
 import type { TableFields } from './datamodelutils';
 import type { IR, RR } from './types';
+import { VALUE } from './helpers';
 
 export type TableConfigOverwrite =
   /*
@@ -211,7 +212,7 @@ export const getTableOverwrite = (
   tableOverwrites[tableName] ??
   Object.entries(endsWithTableOverwrites).find(([label]) =>
     tableName.endsWith(label)
-  )?.[1];
+  )?.[VALUE];
 
 export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
@@ -228,7 +229,7 @@ export const getFieldOverwrite = (
   fieldOverwrites.common?.[fieldName] ??
   Object.entries(endsWithFieldOverwrites[tableName] ?? {}).find(([key]) =>
     fieldName.endsWith(key)
-  )?.[1] ??
+  )?.[VALUE] ??
   Object.entries(endsWithFieldOverwrites.common ?? {}).find(([key]) =>
     fieldName.endsWith(key)
-  )?.[1];
+  )?.[VALUE];

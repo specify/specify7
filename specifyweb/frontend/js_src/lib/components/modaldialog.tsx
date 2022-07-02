@@ -18,6 +18,7 @@ import {
   useReducedTransparency,
   useTransitionDuration,
 } from './preferenceshooks';
+import { KEY } from '../helpers';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -286,7 +287,7 @@ export function Dialog({
           className !== '' &&
           typeof buttonContainer.getElementsByClassName(className)[0] ===
             'object'
-      )?.[0] ?? 'none'
+      )?.[KEY] ?? 'none'
     );
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
