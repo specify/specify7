@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from 'react-modal';
 
 import type { getEntrypointName } from '../initialcontext';
 import { unlockInitialContext } from '../initialcontext';
+import { interceptLogs } from '../interceptlogs';
 import { commonText } from '../localization/common';
 import { Contexts } from './contexts';
 import { SetCssVariables } from './preferenceshooks';
-import { interceptLogs } from '../interceptlogs';
 
 if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
 
@@ -62,7 +61,6 @@ export function entrypoint(
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)
       throw new Error('Unable to find root element');
-    Modal.setAppElement(root);
     root.setAttribute(
       'class',
       `flex flex-col h-screen overflow-hidden bg-[color:var(--background)]

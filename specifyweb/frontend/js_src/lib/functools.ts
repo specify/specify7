@@ -75,18 +75,6 @@ export const f = {
     (secondValue: unknown): boolean =>
       secondValue !== value,
   /**
-   * If need to support internationalization, consider using localeCompare
-   *
-   * Example of case-insensitive comparison:
-   * ```js
-   * a.localeCompare(b, LANGUAGE, { sensitivity: 'base' })
-   * ```
-   */
-  looseEqual:
-    (value: string) =>
-    (secondValue: string): boolean =>
-      value.toString() == secondValue.toLowerCase(),
-  /**
    * Call the second argument with the first if not undefined.
    * Else return undefined
    * Can replace undefined case with an alternative branch using nullish
@@ -98,8 +86,7 @@ export const f = {
   maybe: <VALUE, RETURN>(
     value: VALUE | undefined,
     callback: (value: VALUE) => RETURN
-  ): RETURN | undefined =>
-    value === undefined ? undefined : callback(value),
+  ): RETURN | undefined => (value === undefined ? undefined : callback(value)),
   /**
    * A better typed version of Array.prototype.includes
    *

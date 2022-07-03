@@ -19,6 +19,7 @@ import {
   useTransitionDuration,
 } from './preferenceshooks';
 import { KEY } from '../helpers';
+import { commonText } from '../localization/common';
 
 // This must be accompanied by a label since loading bar is hidden from screen readers
 export const loadingBar = (
@@ -366,12 +367,21 @@ export function Dialog({
       aria={{
         labelledby: id('header'),
         describedby: id('content'),
+        modal,
       }}
       id={isFullScreen ? id('full-screen') : undefined}
       onRequestClose={handleClose}
       bodyOpenClassName={null}
       htmlOpenClassName={null}
-      ariaHideApp={modal}
+      /*
+       * Adding aria-hidden to #root is a legacy solution. Modern solution
+       * involves displaying an element with [role="dialog"][aria-modal="true"],
+       * which react-modal library already does. See more:
+       * https://www.w3.org/WAI/ARIA/apg/example-index/dialog-modal/dialog.html#:~:text=Notes%20on%20aria%2Dmodal%20and%20aria%2Dhidden
+       * Additionally, aria-hidden has a drawback of hiding the <h1> element,
+       * which causes another accessibility problem.
+       */
+      ariaHideApp={false}
       contentRef={(container): void => {
         // Save to state so that React.useEffect hooks are reRun
         setContainer(container ?? null);
@@ -393,6 +403,13 @@ export function Dialog({
           {typeof defaultIcon === 'object' && showIcon
             ? defaultIcon
             : dialogIcons[iconType]}
+          {
+            /**
+             * If dialog is a modal, the logo (which is <h1>) is hidden, thus the
+             * page is missing an <h1> element.
+             */
+            modal && <h1 className="sr-only">{commonText('specifySeven')}</h1>
+          }
           <h2 className={headerClassName} id={id('header')}>
             {header}
           </h2>
