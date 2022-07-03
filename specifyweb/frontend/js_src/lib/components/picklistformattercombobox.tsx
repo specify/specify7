@@ -5,7 +5,7 @@ import { getModel } from '../schema';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { PickListTypes } from '../picklistmixins';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
 import { resourceOn } from '../resource';
@@ -35,7 +35,12 @@ export function PickListFormatterComboBox(
       resourceOn(props.resource, 'change:tableName change:type', (): void => {
         if (props.resource.get('type') !== PickListTypes.TABLE)
           props.resource.set('formatter', null as never);
-        fetchItems().then(setItems).catch(crash);
+        fetchItems()
+          .then(setItems)
+          .catch((error) => {
+            setItems(undefined);
+            fail(error);
+          });
       }),
     [props.resource, fetchItems, setItems]
   );
@@ -46,9 +51,7 @@ export function PickListFormatterComboBox(
       items={items}
       onAdd={undefined}
       pickList={undefined}
-      isDisabled={
-        props.isDisabled || items === undefined || items.length === 0
-      }
+      isDisabled={props.isDisabled || items === undefined || items.length === 0}
     />
   );
 }

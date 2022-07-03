@@ -17,7 +17,7 @@ import { AppTitle } from './common';
 import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { crash } from './errorboundary';
+import { crash, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
@@ -114,7 +114,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
                 setFormatted(title ?? '');
                 return undefined;
               })
-              .catch(crash);
+              .catch(fail);
           },
           true
         )

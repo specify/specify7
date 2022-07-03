@@ -36,7 +36,7 @@ import {
 import { useCollection } from './collection';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { OrderPicker } from './preferencesrenderers';
@@ -420,7 +420,7 @@ function Gallery({
       containerRef.current !== null &&
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? handleFetchMore().catch(crash)
+        ? handleFetchMore().catch(fail)
         : undefined,
     [handleFetchMore]
   );
@@ -430,7 +430,7 @@ function Gallery({
       // Fetch attachments while scroll bar is not visible
       void (containerRef.current?.scrollHeight ===
       containerRef.current?.clientHeight
-        ? fillPage().catch(crash)
+        ? fillPage().catch(fail)
         : undefined),
     [fillPage, attachments]
   );

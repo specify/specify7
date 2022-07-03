@@ -31,7 +31,7 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import {
   RecordSetCreated,
@@ -226,7 +226,10 @@ function CreateRecordSet({
                   recordSet: deserializeResource(recordSet),
                 })
               )
-              .catch(crash);
+              .catch((error) => {
+                setState({ type: 'Main' });
+                fail(error);
+              });
             return false;
           }}
           onSaved={f.never}
@@ -345,7 +348,7 @@ export function QueryResultsTable({
           handleFetched();
         else fetchMore(index, combinedResults);
       })
-      .catch(crash);
+      .catch(fail);
   }
 
   React.useEffect(fetchMore, []);
@@ -659,7 +662,7 @@ export function QueryResultsWrapper({
           extraButtons,
         })
       )
-      .catch(crash);
+      .catch(fail);
   }, [
     fields,
     baseTableName,

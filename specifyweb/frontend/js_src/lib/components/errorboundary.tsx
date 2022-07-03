@@ -30,16 +30,19 @@ import { consoleLog } from '../interceptlogs';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 import { LANGUAGE } from '../localization/utils';
+import { State } from 'typesafe-reducer';
 
 type ErrorBoundaryState =
-  | {
-      readonly hasError: false;
-    }
-  | {
-      readonly hasError: true;
-      readonly error: Error;
-      readonly errorInfo: { componentStack: string };
-    };
+  | State<'Main'>
+  | State<
+      'Error',
+      {
+        hasError: true;
+        error: Error;
+        errorInfo: { componentStack: string };
+      }
+    >
+  | State<'Silenced'>;
 
 export const supportLink =
   process.env.NODE_ENV === 'test' ? (
@@ -56,12 +59,13 @@ function ErrorDialog({
   copiableMessage,
   // Error dialog is only closable in Development
   onClose: handleClose,
+  dismissable = false,
 }: {
   readonly children: React.ReactNode;
   readonly copiableMessage: string;
-  readonly title?: string;
   readonly header?: string;
   readonly onClose?: () => void;
+  readonly dismissable?: boolean;
 }): JSX.Element {
   const [canDismiss] = usePref(
     'general',
@@ -117,7 +121,9 @@ function ErrorDialog({
           >
             {commonText('goToHomepage')}
           </Button.Red>
-          {(canDismiss || process.env.NODE_ENV !== 'production') &&
+          {(canDismiss ||
+            dismissable ||
+            process.env.NODE_ENV === 'production') &&
             typeof handleClose === 'function' && (
               <Button.Blue onClick={handleClose}>[DEV] dismiss</Button.Blue>
             )}
@@ -140,9 +146,17 @@ function ErrorDialog({
   );
 }
 
+/** Display an error message. Can be dismissed */
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+export const fail = (error: Error): void => showError(error, true);
+
+/** Display an error message. Can only be dismissed if has user preference set */
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+export const crash = (error: Error): void => showError(error, false);
+
 /** Spawn a modal error dialog based on an error object */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-export function crash(error: Error): void {
+function showError(error: Error, dismissable: boolean): void {
   if (
     Object.getOwnPropertyDescriptor(error ?? {}, 'handledBy')?.value ===
     handleAjaxError
@@ -153,7 +167,11 @@ export function crash(error: Error): void {
   console.error(errorMessage);
   breakpoint();
   displayError(({ onClose: handleClose }) => (
-    <ErrorDialog onClose={handleClose} copiableMessage={copiableMessage}>
+    <ErrorDialog
+      onClose={handleClose}
+      copiableMessage={copiableMessage}
+      dismissable={dismissable}
+    >
       {errorObject}
     </ErrorDialog>
   ));
@@ -170,11 +188,12 @@ export class ErrorBoundary extends React.Component<
      * crash the whole application
      */
     readonly silentErrors?: boolean;
+    readonly dismissable?: boolean;
   },
   ErrorBoundaryState
 > {
   public state: ErrorBoundaryState = {
-    hasError: false,
+    type: 'Main',
   };
 
   public componentDidCatch(
@@ -191,16 +210,22 @@ export class ErrorBoundary extends React.Component<
     clearUnloadProtect();
     console.error(error.toString());
     this.setState({
-      hasError: true,
+      type: 'Error',
       error,
       errorInfo,
     });
   }
 
   public render(): JSX.Element | null {
-    return this.state.hasError ? (
-      this.props.silentErrors === true &&
-      process.env.NODE_ENV === 'production' ? null : (
+    if (
+      (this.state.type === 'Error' &&
+        this.props.silentErrors === true &&
+        process.env.NODE_ENV === 'production') ||
+      this.state.type === 'Silenced'
+    )
+      return null;
+    else
+      return this.state.type === 'Error' ? (
         <ErrorDialog
           copiableMessage={produceStackTrace({
             message: this.state.error?.toString(),
@@ -211,15 +236,16 @@ export class ErrorBoundary extends React.Component<
               'details'
             )?.value,
           })}
+          dismissable={this.props.dismissable}
+          onClose={(): void => this.setState({ type: 'Silenced' })}
         >
           {this.state.error?.toString()}
           <br />
           {this.state.errorInfo.componentStack}
         </ErrorDialog>
-      )
-    ) : (
-      this.props.children
-    );
+      ) : (
+        this.props.children
+      );
   }
 }
 

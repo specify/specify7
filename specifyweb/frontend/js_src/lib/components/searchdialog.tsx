@@ -16,7 +16,7 @@ import { queryCbxExtendedSearch } from '../specifyapi';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { Button, className, Form, Link, Submit, Ul } from './basic';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { ProtectedAction } from './permissiondenied';
@@ -121,7 +121,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               )
             )
-            .catch(crash)
+            .catch(fail)
             .finally(handleLoaded);
         }}
       >

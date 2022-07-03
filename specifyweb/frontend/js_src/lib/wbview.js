@@ -288,7 +288,7 @@ const WBView = Backbone.View.extend({
             this.hot.updateSettings({
               manualColumnMove: this.dataset.visualorder,
             });
-          this.fetchSortConfig().catch(crash);
+          this.fetchSortConfig();
           this.wbutils.findLocalityColumns();
           this.identifyCoordinateColumns();
           this.identifyTreeRanks();
@@ -299,7 +299,7 @@ const WBView = Backbone.View.extend({
           this.hotCommentsContainer =
             document.getElementsByClassName('htComments')[0];
         })
-      );
+      ).catch(crash);
 
     legacyLoadingContext(
       this.initHot().then(() => {
@@ -752,7 +752,7 @@ const WBView = Backbone.View.extend({
         }, {})
     );
   },
-  async fetchSortConfig() {
+  fetchSortConfig() {
     if (!this.hot) return;
     const sortConfig = getCache(
       'workBenchSortConfig',

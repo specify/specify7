@@ -11,7 +11,7 @@ import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { TableIcon } from './common';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
 
@@ -121,7 +121,7 @@ export function SubView({
                 ? setCollection(collection)
                 : undefined
             )
-            .catch(crash);
+            .catch(fail);
         },
         true
       ),
@@ -153,7 +153,7 @@ export function SubView({
           </span>
         </Button.BorderedGray>
       )}
-      {typeof collection === 'object' && isOpen && (
+      {typeof collection === 'object' && isOpen ? (
         <IntegratedRecordSelector
           viewName={viewName}
           formType={formType}
@@ -182,7 +182,7 @@ export function SubView({
           onClose={handleClose}
           sortField={sortField}
         />
-      )}
+      ) : undefined}
     </SubViewContext.Provider>
   );
 }

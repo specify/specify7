@@ -23,7 +23,7 @@ import { hasTablePermission } from '../permissions';
 import { toTable } from '../specifymodel';
 import { AttachmentCell } from './attachmentstask';
 import { Progress } from './basic';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
@@ -85,8 +85,7 @@ export function AttachmentPlugin({
             .then((attachment) => {
               if (typeof resource === 'object')
                 attachment?.set('tableID', resource.specifyModel.tableId);
-              if (attachment === undefined)
-                setState({ type: 'Unavailable' });
+              if (attachment === undefined) setState({ type: 'Unavailable' });
               else {
                 handleUploadComplete?.(attachment);
                 resource?.set('attachment', attachment as never);
@@ -96,7 +95,10 @@ export function AttachmentPlugin({
                 });
               }
             })
-            .catch(crash)
+            .catch((error) => {
+              setState({ type: 'Unavailable' });
+              fail(error);
+            })
             .finally(() => setUploadProgress(undefined))
         : undefined,
     [setState, state, resource, handleUploadComplete]

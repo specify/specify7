@@ -5,7 +5,7 @@ import { hasTablePermission, hasToolPermission } from '../permissions';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import {
   ProtectedTable,
   TablePermissionDenied,
@@ -69,7 +69,7 @@ export function task(): void {
           ),
         })
         .then(({ wbView: { loadDataset } }) => loadDataset(Number.parseInt(id)))
-        .catch(crash)
+        .catch(fail)
   );
 
   router.route('workbench-import/', 'workbench-import', async () =>
@@ -83,7 +83,7 @@ export function task(): void {
       .then(({ WbPlanViewWrapper }) =>
         setCurrentComponent(<WbPlanViewWrapper dataSetId={dataSetId} />)
       )
-      .catch(crash);
+      .catch(fail);
   });
 
   const appResources = async (type: 'appResources' | 'viewSets', id?: string) =>

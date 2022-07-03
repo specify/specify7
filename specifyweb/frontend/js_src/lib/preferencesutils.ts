@@ -4,7 +4,7 @@
 
 import { ajax, Http, ping } from './ajax';
 import { cacheEvents, getCache, setCache } from './cache';
-import { crash } from './components/errorboundary';
+import { fail } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
 import type { Preferences } from './components/preferences';
 import { preferenceDefinitions } from './components/preferences';
@@ -171,7 +171,7 @@ function requestPreferencesSync(): void {
     if (typeof syncTimeoutInstance === 'number')
       globalThis.clearTimeout(syncTimeoutInstance);
     syncTimeoutInstance = globalThis.setTimeout(
-      (): void => void syncPreferences().catch(crash),
+      (): void => void syncPreferences().catch(fail),
       syncTimeout
     );
   }
@@ -196,7 +196,7 @@ async function syncPreferences(): Promise<void> {
     }
   ).then(() => {
     // If there were additional changes while syncing
-    if (isSyncPending) syncPreferences().catch(crash);
+    if (isSyncPending) syncPreferences().catch(fail);
     else {
       isSyncing = false;
       prefEvents.trigger('synchronized');

@@ -13,7 +13,7 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../types';
 import { Select } from '../basic';
-import { crash, supportLink } from '../errorboundary';
+import { fail, supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
 import type { PreferenceItem, PreferenceItemComponent } from '../preferences';
@@ -119,7 +119,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            * This is why it has an independent state and manually triggers
            * save button
            */
-          handleLanguageChange(language).catch(crash);
+          handleLanguageChange(language).catch(fail);
           setLanguage(language);
           prefEvents.trigger('update', definition as PreferenceItem<unknown>);
         }}

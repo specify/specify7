@@ -12,7 +12,7 @@ import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
 import { FormContext, LoadingContext } from './contexts';
-import { crash } from './errorboundary';
+import { fail } from './errorboundary';
 import { useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
@@ -173,10 +173,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
   React.useEffect(
+    // FEATURE: if form save fails, should make the error message dismissable (if safe)
     () => listen(form, 'submit', (event) => loading(handleSubmit(event))),
     [loading, form, handleSubmit]
   );
 
+  // FEATURE: these buttons should use var(--brand-color), rather than orange
   const ButtonComponent = saveBlocked ? Button.Red : Button.Orange;
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
   // Don't allow cloning the resource if it changed
@@ -190,7 +192,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               className={saveBlocked ? '!cursor-not-allowed' : undefined}
               disabled={isSaving || isChanged}
               onClick={(event): void =>
-                void handleSubmit(event, 'clone').catch(crash)
+                void handleSubmit(event, 'clone').catch(fail)
               }
             >
               {formsText('clone')}
@@ -200,7 +202,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             className={saveBlocked ? '!cursor-not-allowed' : undefined}
             disabled={isSaving || isChanged}
             onClick={(event): void =>
-              void handleSubmit(event, 'addAnother').catch(crash)
+              void handleSubmit(event, 'addAnother').catch(fail)
             }
           >
             {formsText('addAnother')}

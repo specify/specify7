@@ -1,5 +1,5 @@
 import { fetchCollection } from './collection';
-import { crash } from './components/errorboundary';
+import { fail } from './components/errorboundary';
 import type { CollectionObject } from './datamodel';
 import type { AnySchema } from './datamodelutils';
 import { f } from './functools';
@@ -64,7 +64,7 @@ globalEvents.on('newResource', (resource) => {
       .then((preparations) =>
         preparations.add(new schema.models.Preparation.Resource())
       )
-      .catch(crash);
+      .catch(fail);
 
   if (
     getCollectionPref('CO_CREATE_DET', colId) &&
@@ -75,7 +75,7 @@ globalEvents.on('newResource', (resource) => {
       .then((determinations) =>
         determinations.add(new schema.models.Determination.Resource())
       )
-      .catch(crash);
+      .catch(fail);
 });
 
 const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
