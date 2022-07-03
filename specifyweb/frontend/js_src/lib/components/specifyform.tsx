@@ -186,9 +186,13 @@ export function RenderForm<SCHEMA extends AnySchema>({
     'definition',
     'flexibleColumnWidth'
   );
+  const [language] = usePref('form', 'schema', 'language');
   return (
     <FormLoadingContext.Provider value={isAlreadyLoading || showLoading}>
-      <div className={`overflow-auto ${showLoading ? 'relative' : ''}`}>
+      <div
+        className={`overflow-auto ${showLoading ? 'relative' : ''}`}
+        lang={language}
+      >
         {showLoading && (
           <div
             className={`${
