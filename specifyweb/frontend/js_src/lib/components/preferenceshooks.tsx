@@ -7,7 +7,7 @@ import React from 'react';
 
 import { eventListener } from '../events';
 import { f } from '../functools';
-import { getUserPref, setPref } from '../preferencesutils';
+import { getPrefDefinition, getUserPref, setPref } from '../preferencesutils';
 import { MILLISECONDS } from './internationalization';
 import type {
   preferenceDefinitions,
@@ -46,7 +46,13 @@ export function usePref<
   const currentPref = React.useRef(pref);
   React.useEffect(
     () =>
-      prefEvents.on('update', () => {
+      prefEvents.on('update', (definition) => {
+        if (
+          definition !== undefined &&
+          // Ignore changes to other prefs
+          definition !== getPrefDefinition(category, subcategory, item)
+        )
+          return;
         const newValue = getUserPref(category, subcategory, item);
         if (newValue === currentPref.current) return;
         setLocalPref(newValue);

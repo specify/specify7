@@ -3,7 +3,7 @@
  */
 
 import { ajax, Http, ping } from './ajax';
-import { getCache, setCache } from './cache';
+import { cacheEvents, getCache, setCache } from './cache';
 import { crash } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';
 import type { Preferences } from './components/preferences';
@@ -53,8 +53,6 @@ export const getUserPref = <
   defaultPreferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
-// FEATURE: listen to changes to localStorage from another tab
-//   cacheEvents.on('userPreferences','default')
 let preferences: {
   [CATEGORY in keyof Preferences]?: {
     [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
@@ -139,8 +137,7 @@ export function setPref<
   }
 
   prefEvents.trigger('update', definition);
-  if (process.env.NODE_ENV !== 'test')
-    setCache('userPreferences', 'cached', { ...preferences });
+  if (process.env.NODE_ENV !== 'test') commitToCache();
   requestPreferencesSync();
 }
 
@@ -180,7 +177,6 @@ function requestPreferencesSync(): void {
   }
 }
 
-// BUG: if prefs where updated by a different tab, this would overwrite them
 async function syncPreferences(): Promise<void> {
   await preferencesPromise;
   isSyncPending = false;
@@ -217,17 +213,6 @@ let defaultPreferences: UserPreferences =
   process.env.NODE_ENV === 'test'
     ? {}
     : getCache('userPreferences', 'defaultCached') ?? {};
-
-function updatePreferences(resource: ResourceWithData): ResourceWithData {
-  userResource = resource;
-  preferences = JSON.parse(userResource.data ?? '{}');
-  prefEvents.trigger('update', undefined);
-  if (process.env.NODE_ENV !== 'test') {
-    setCache('userPreferences', 'cached', { ...preferences });
-    setCache('userPreferences', 'defaultCached', defaultPreferences);
-  }
-  return userResource;
-}
 
 type UserResource = {
   readonly id: number;
@@ -305,8 +290,37 @@ export const preferencesPromise = contextUnlockedPromise.then(
           })
           .then(({ items, defaultItems }) => {
             defaultPreferences = defaultItems;
-            updatePreferences(items);
+            initializePreferences(items);
             return items;
           })
       : foreverFetch<ResourceWithData>()
 );
+
+function initializePreferences(resource: ResourceWithData): ResourceWithData {
+  userResource = resource;
+  preferences = JSON.parse(userResource.data ?? '{}');
+  prefEvents.trigger('update', undefined);
+  if (process.env.NODE_ENV !== 'test') {
+    commitToCache();
+    setCache('userPreferences', 'defaultCached', defaultPreferences);
+  }
+
+  registerChangeListener();
+  return userResource;
+}
+
+const commitToCache = (): void =>
+  // Need to create a shallow copy of the resource since it can get mutated
+  void setCache('userPreferences', 'cached', { ...preferences });
+
+/** Listen for changes to preferences in another tab */
+const registerChangeListener = (): void =>
+  void cacheEvents.on('change', ({ category, key }) => {
+    if (category !== 'userPreferences') return;
+    if (key === 'cached')
+      preferences = getCache('userPreferences', 'cached') ?? preferences;
+    else if (key === 'defaultCached')
+      defaultPreferences =
+        getCache('userPreferences', 'defaultCached') ?? defaultPreferences;
+    prefEvents.trigger('update', undefined);
+  });
