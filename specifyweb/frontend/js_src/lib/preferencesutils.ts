@@ -138,7 +138,7 @@ export function setPref<
 
   prefEvents.trigger('update', definition);
   if (process.env.NODE_ENV !== 'test')
-    setCache('userPreferences', 'cached', preferences);
+    setCache('userPreferences', 'cached', { ...preferences });
   requestPreferencesSync();
 }
 
@@ -221,7 +221,7 @@ function updatePreferences(resource: ResourceWithData): ResourceWithData {
   preferences = JSON.parse(userResource.data ?? '{}');
   prefEvents.trigger('update', undefined);
   if (process.env.NODE_ENV !== 'test') {
-    setCache('userPreferences', 'cached', preferences);
+    setCache('userPreferences', 'cached', { ...preferences });
     setCache('userPreferences', 'defaultCached', defaultPreferences);
   }
   return userResource;

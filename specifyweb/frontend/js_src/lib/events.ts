@@ -18,7 +18,9 @@ export const eventListener = <TYPE extends IR<unknown>>(
     immediate = false
   ): () => void {
     const handler = (event: Event) =>
-      callback((event as CustomEvent).detail as TYPE[EVENT_NAME]);
+      callback(
+        ((event as CustomEvent).detail ?? undefined) as TYPE[EVENT_NAME]
+      );
     eventTarget.addEventListener(eventName, handler);
     if (immediate) callback(undefined as TYPE[EVENT_NAME]);
     return (): void => eventTarget.removeEventListener(eventName, handler);
