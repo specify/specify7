@@ -27,7 +27,7 @@ export const welcomeText = createDictionary({
     'en-us': (count: number) =>
       `Showing Taxa with ${count} or more Collection Objects`,
     'ru-ru': (count: number) =>
-      `Показаны таксоны с ${count} или более экземплярами`,
+      `Показаны таксоны с ${count} или более коллекционными объектами`,
   },
   fullAddress: {
     'en-us': (

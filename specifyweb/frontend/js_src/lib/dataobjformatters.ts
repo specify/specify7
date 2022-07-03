@@ -53,11 +53,6 @@ export type Aggregator = {
   readonly isDefault: boolean;
   readonly separator: string;
   readonly format: string;
-  /*
-   * Readonly ending: string;
-   * readonly count: string;
-   * readonly orderFieldName: string | undefined;
-   */
 };
 
 export const fetchFormatters: Promise<{

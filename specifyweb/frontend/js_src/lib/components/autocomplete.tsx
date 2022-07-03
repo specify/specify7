@@ -334,6 +334,7 @@ export function Autocomplete<T>({
 
     handleScroll({ target: null });
 
+    // REFACTOR: consider using IntersectionObserver and ResizeObserver here
     return listen(globalThis, 'scroll', handleScroll, true);
   }, [showList, input, isInDialog, autoGrowAutoComplete]);
 

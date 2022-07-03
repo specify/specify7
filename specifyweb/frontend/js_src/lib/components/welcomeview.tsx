@@ -6,7 +6,7 @@ import { welcomeText } from '../localization/welcome';
 import { hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
-import { makeTreeMap } from '../taxontiles';
+import { TaxonTiles } from './taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
@@ -167,16 +167,7 @@ function AboutSpecify(): JSX.Element {
 export function WelcomeView(): JSX.Element {
   useTitle(welcomeText('pageTitle'));
 
-  const refTaxonTilesContainer = React.useRef<HTMLDivElement | null>(null);
   const [mode] = usePref('welcomePage', 'general', 'mode');
-
-  React.useEffect(
-    () =>
-      mode === 'taxonTiles' && refTaxonTilesContainer.current !== null
-        ? makeTreeMap(refTaxonTilesContainer.current)
-        : undefined,
-    [mode]
-  );
 
   return (
     <div
@@ -189,8 +180,7 @@ export function WelcomeView(): JSX.Element {
           mode === 'embeddedWebpage' ? 'h-5/6' : ''
         }`}
       >
-        <div ref={refTaxonTilesContainer} />
-        {mode === 'taxonTiles' ? undefined : <WelcomeScreenContent />}
+        {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
       </div>
       <AboutSpecify />
     </div>

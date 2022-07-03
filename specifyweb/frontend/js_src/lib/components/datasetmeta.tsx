@@ -109,9 +109,9 @@ export function DataSetMeta({
                         expectedResponseCodes: [Http.NO_CONTENT],
                       }
                     ).then(() => {
-                      // @ts-expect-error Modifying readonly value
+                      // @ts-expect-error Modifying readOnly value
                       dataset.name = uniqueName;
-                      // @ts-expect-error Modifying readonly value
+                      // @ts-expect-error Modifying readOnly value
                       dataset.remarks = remarks.trim();
                       return uniqueName;
                     })

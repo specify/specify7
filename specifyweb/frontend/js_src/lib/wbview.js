@@ -507,7 +507,7 @@ const WBView = Backbone.View.extend({
                   },
                   remove_row: {
                     disabled: () => {
-                      // If readonly
+                      // If readOnly
                       if (
                         this.uploadedView ||
                         this.coordinateConverterView ||
@@ -1320,7 +1320,7 @@ const WBView = Backbone.View.extend({
   },
   // Figuring out if a cell was modified is more complicated then it might seem
   isCellModified(physicalRow, physicalCol) {
-    // For now, only readonly picklists are validated on the front-end
+    // For now, only readOnly picklists are validated on the front-end
     const hasFrontEndValidationErrors = this.getCellMeta(
       physicalRow,
       physicalCol,
