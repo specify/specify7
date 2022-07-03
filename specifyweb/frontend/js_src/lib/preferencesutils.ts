@@ -53,6 +53,8 @@ export const getUserPref = <
   defaultPreferences[category]?.[subcategory]?.[item] ??
   getPrefDefinition(category, subcategory, item).defaultValue;
 
+// FEATURE: listen to changes to localStorage from another tab
+//   cacheEvents.on('userPreferences','default')
 let preferences: {
   [CATEGORY in keyof Preferences]?: {
     [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
