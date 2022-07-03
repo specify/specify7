@@ -32,7 +32,11 @@ import { supportsBackdropBlur } from './modaldialog';
 import { pushUrl } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTree } from './permissiondenied';
-import { usePref, useReducedTransparency } from './preferenceshooks';
+import {
+  useHighContrast,
+  usePref,
+  useReducedTransparency,
+} from './preferenceshooks';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { useCachedState } from './statecache';
@@ -136,6 +140,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
   const reduceTransparency = useReducedTransparency();
+  const highContrast = useHighContrast();
   const [treeAccentColor] = usePref(
     'treeEditor',
     treeToPref[tableName],
@@ -247,9 +252,11 @@ function TreeView<SCHEMA extends AnyTree>({
       </header>
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
-          overflow-auto shadow-md shadow-gray-500 content-start
-          bg-gradient-to-bl from-[var(--edge-color)] rounded p-2 pt-0
-          via-[var(--middle-color)] to-[var(--edge-color)] outline-none`}
+          overflow-auto shadow-md shadow-gray-500 content-start rounded p-2 pt-0
+          outline-none
+          from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
+          ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
+        `}
         style={
           {
             '--cols': treeDefinitionItems.length,

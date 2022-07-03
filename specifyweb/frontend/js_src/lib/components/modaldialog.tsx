@@ -14,6 +14,7 @@ import { LoadingContext } from './contexts';
 import { useId, useTitle } from './hooks';
 import { dialogIcons } from './icons';
 import {
+  useHighContrast,
   usePref,
   useReducedTransparency,
   useTransitionDuration,
@@ -319,6 +320,7 @@ export function Dialog({
   );
 
   const transitionDuration = useTransitionDuration();
+  const highContrast = useHighContrast();
 
   return (
     <Modal
@@ -343,7 +345,7 @@ export function Dialog({
         text-neutral-900 overflow-x-hidden duration-0
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
-          reduceTransparency
+          reduceTransparency || highContrast
             ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && modal
             ? supportsBackdropBlur

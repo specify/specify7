@@ -179,6 +179,31 @@ export const preferenceDefinitions = {
               },
             ],
           }),
+          contrast: defineItem<'system' | 'more' | 'less' | 'noPreference'>({
+            title: preferencesText('contrast'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'system',
+            values: [
+              {
+                value: 'system',
+                title: preferencesText('system'),
+                description: preferencesText('inheritOsSettings'),
+              },
+              {
+                value: 'more',
+                title: preferencesText('increase'),
+              },
+              {
+                value: 'less',
+                title: preferencesText('reduce'),
+              },
+              {
+                value: 'noPreference',
+                title: preferencesText('noPreference'),
+              },
+            ],
+          }),
           fontSize: defineItem<number>({
             title: preferencesText('fontSize'),
             requiresReload: false,

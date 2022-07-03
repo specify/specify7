@@ -91,6 +91,12 @@ export function useReducedMotion(): boolean {
   return pref === 'system' ? media : pref === 'reduce';
 }
 
+export function useHighContrast(): boolean {
+  const [pref] = usePref('general', 'ui', 'contrast');
+  const media = useMedia('(prefers-contrast: more)');
+  return pref === 'system' ? media : pref === 'more';
+}
+
 const defaultTransitionDuration = 100;
 
 export function useTransitionDuration(): number {
@@ -155,6 +161,12 @@ export function SetCssVariables(): null {
   React.useEffect(
     () => document.body.classList[darkMode ? 'add' : 'remove']('dark'),
     [darkMode]
+  );
+
+  const highContrast = useHighContrast();
+  React.useEffect(
+    () => document.body.classList[highContrast ? 'add' : 'remove']('contrast'),
+    [highContrast]
   );
 
   const [version, setVersion] = React.useState(0);

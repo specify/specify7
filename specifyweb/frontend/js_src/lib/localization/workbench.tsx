@@ -801,16 +801,16 @@ export const wbText = createDictionary({
       <>
         This Data Set doesn&apos;t have any columns.
         <br />
-        Press the &quot;Add New Column&quot; button at the bottom of the screen
-        to add new columns.
+        Press the &quot;Add New Column&quot; button below the mapping lines to
+        add new columns.
       </>
     ),
     'ru-ru': (
       <>
         В этом наборе данных нет столбцов.
         <br />
-        Нажмите кнопку &quot;Добавить новый столбец&quot; кнопка внизу экрана
-        чтобы добавить новые столбцы.
+        Нажмите кнопку &quot;Добавить новый столбец&quot; под строками
+        сопоставления, чтобы добавить новые столбцы.
       </>
     ),
   },

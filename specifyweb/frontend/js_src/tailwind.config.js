@@ -75,8 +75,8 @@ module.exports = {
       },
       keyframes: {
         'hue-rotate': {
-          '0%': { filter: 'hue-rotate(0deg)' },
-          '100%': { filter: 'hue-rotate(360deg)' },
+          '0%': {filter: 'hue-rotate(0deg)'},
+          '100%': {filter: 'hue-rotate(360deg)'},
         }
       },
       animation: {
@@ -92,6 +92,6 @@ module.exports = {
   ...(process.env.NODE_ENV === 'production'
     ? {}
     : {
-        safelist: [{ pattern: /./ }],
-      }),
+      safelist: [{pattern: /./}],
+    }),
 };

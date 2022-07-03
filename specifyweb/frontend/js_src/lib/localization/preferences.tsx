@@ -62,6 +62,14 @@ export const preferencesText = createDictionary({
     'ru-ru': `Отключить ли полупрозрачный фон для пользовательского интерфейса,
       когда это возможно (например, заголовки таблиц в просмотрщике деревьев)`,
   },
+  contrast: {
+    'en-us': 'Contrast',
+    'ru-ru': 'Контраст',
+  },
+  increase: {
+    'en-us': 'Increase',
+    'ru-ru': 'Увеличить',
+  },
   reduce: {
     'en-us': 'Reduce',
     'ru-ru': 'Уменьшать',
@@ -413,7 +421,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Таблица',
   },
   minSpareRows: {
-    'en-us': 'Number of blank rows at the bottom',
+    'en-us': 'Number of blank rows at the end',
     'ru-ru': 'Количество пустых строк внизу',
   },
   autoWrapCols: {
