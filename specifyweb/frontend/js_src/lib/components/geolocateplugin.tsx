@@ -95,14 +95,14 @@ function GeoLocate({
   }, [loading, data, handleClose, resource]);
 
   const [width = defaultWidth, setWidth] = useCachedState({
-    bucketName: 'geoLocate',
-    cacheName: 'width',
+    category: 'geoLocate',
+    key: 'width',
     defaultValue: defaultWidth,
     staleWhileRefresh: false,
   });
   const [height = defaultHeight, setHeight] = useCachedState({
-    bucketName: 'geoLocate',
-    cacheName: 'height',
+    category: 'geoLocate',
+    key: 'height',
     defaultValue: defaultHeight,
     staleWhileRefresh: false,
   });

@@ -1,5 +1,5 @@
 /**
- * Typings for the cache buckets
+ * Typings for the cache categories
  *
  * @module
  */

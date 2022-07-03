@@ -94,15 +94,16 @@ const replaceState: History['replaceState'] = function (
   globalThis.history.replaceState(state, title, url);
 };
 
-// @ts-expect-error
-Backbone.history.history = Object.setPrototypeOf(
-  {
-    sequence: getSequence,
-    pushState,
-    replaceState,
-  },
-  globalThis?.history
-);
+if ('history' in globalThis)
+  // @ts-expect-error
+  Backbone.history.history = Object.setPrototypeOf(
+    {
+      sequence: getSequence,
+      pushState,
+      replaceState,
+    },
+    globalThis.history
+  );
 
 // @ts-expect-error
 export const history = Backbone.history.history as typeof globalThis.history;

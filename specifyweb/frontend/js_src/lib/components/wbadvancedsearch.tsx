@@ -52,7 +52,7 @@ const defaultSearchPreferences = {
   replace: {
     replaceMode: 'replaceAll',
   },
-};
+} as const;
 
 /**
  * Fetch cached search config or create a new one

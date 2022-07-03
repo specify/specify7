@@ -90,8 +90,8 @@ function QueryList({
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
-    bucketName: 'sortConfig',
-    cacheName: 'listOfQueries',
+    category: 'sortConfig',
+    key: 'listOfQueries',
     defaultValue: defaultSortConfig,
     staleWhileRefresh: true,
   });

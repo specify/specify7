@@ -79,8 +79,8 @@ export function BaseTableSelection({
   readonly headers: RA<string>;
 }): JSX.Element {
   const [showHiddenTables = true, setShowHiddenTables] = useCachedState({
-    bucketName: 'wbPlanViewUi',
-    cacheName: 'showHiddenTables',
+    category: 'wbPlanViewUi',
+    key: 'showHiddenTables',
     defaultValue: true,
     staleWhileRefresh: false,
   });

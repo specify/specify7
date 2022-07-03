@@ -22,8 +22,8 @@ export function PrintOnSave({
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
   const [value, setValue] = useCachedState({
-    bucketName: 'forms',
-    cacheName: 'printOnSave',
+    category: 'forms',
+    key: 'printOnSave',
     defaultValue: defaultValue ?? false,
     staleWhileRefresh: false,
   });

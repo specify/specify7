@@ -126,8 +126,8 @@ export function MappingView({
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
     useCachedState({
-      bucketName: 'wbPlanViewUi',
-      cacheName: 'mappingViewHeight',
+      category: 'wbPlanViewUi',
+      key: 'mappingViewHeight',
       defaultValue,
       staleWhileRefresh: false,
     });

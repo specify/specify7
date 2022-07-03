@@ -122,8 +122,8 @@ function ChooseBaseTable({
   readonly onBack: () => void;
 }): JSX.Element {
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState({
-    bucketName: 'schemaConfig',
-    cacheName: 'showHiddenTables',
+    category: 'schemaConfig',
+    key: 'showHiddenTables',
     defaultValue: false,
     staleWhileRefresh: false,
   });

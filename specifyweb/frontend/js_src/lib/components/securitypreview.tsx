@@ -413,14 +413,14 @@ export function PreviewPermissions({
     false
   );
   const [isCollapsed = false, setCollapsed] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'previewCollapsed',
+    category: 'securityTool',
+    key: 'previewCollapsed',
     defaultValue: false,
     staleWhileRefresh: false,
   });
   const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'advancedPreviewCollapsed',
+    category: 'securityTool',
+    key: 'advancedPreviewCollapsed',
     defaultValue: false,
     staleWhileRefresh: false,
   });

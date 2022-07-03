@@ -2,9 +2,9 @@ import React from 'react';
 
 import { cacheEvents, getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
+import { f } from '../functools';
 import { isFunction } from '../types';
 import { crash } from './errorboundary';
-import { f } from '../functools';
 
 type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
 
@@ -21,11 +21,11 @@ type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
  * Can display some sort of loading message while the value is undefined
  */
 export function useCachedState<
-  BUCKET_NAME extends string & keyof CacheDefinitions,
-  CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY]
 >({
-  bucketName,
-  cacheName,
+  category,
+  key,
   defaultValue,
   /**
    * A concept borrowed from Vercel's SWR,
@@ -34,24 +34,22 @@ export function useCachedState<
    */
   staleWhileRefresh,
 }: {
-  readonly bucketName: BUCKET_NAME;
-  readonly cacheName: CACHE_NAME;
-  readonly defaultValue?: DefaultValue<
-    CacheDefinitions[BUCKET_NAME][CACHE_NAME]
-  >;
+  readonly category: CATEGORY;
+  readonly key: KEY;
+  readonly defaultValue?: DefaultValue<CacheDefinitions[CATEGORY][KEY]>;
   readonly staleWhileRefresh: boolean;
 }): [
-  value: CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined,
-  setValue: (newValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]) => void
+  value: CacheDefinitions[CATEGORY][KEY] | undefined,
+  setValue: (newValue: CacheDefinitions[CATEGORY][KEY]) => void
 ] {
   const [state, setState] = React.useState<
-    CacheDefinitions[BUCKET_NAME][CACHE_NAME] | undefined
-  >(() => getCache(bucketName, cacheName));
+    CacheDefinitions[CATEGORY][KEY] | undefined
+  >(() => getCache(category, key));
 
   const setCachedState = React.useCallback(
-    (newValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]) =>
-      setState(setCache(bucketName, cacheName, newValue)),
-    [bucketName, cacheName]
+    (newValue: CacheDefinitions[CATEGORY][KEY]) =>
+      setState(setCache(category, key, newValue)),
+    [category, key]
   );
 
   const isUndefined = state === undefined;
@@ -61,20 +59,18 @@ export function useCachedState<
         ? Promise.resolve(defaultValue())
         : Promise.resolve(defaultValue)
       )
-        .then((value) =>
-          f.maybe(value,setCachedState)
-        )
+        .then((value) => f.maybe(value, setCachedState))
         .catch(crash);
   }, [isUndefined, defaultValue, setCachedState, staleWhileRefresh]);
 
   React.useEffect(
     () =>
       cacheEvents.on('change', () =>
-        f.maybe(getCache(bucketName, cacheName), (newValue) =>
+        f.maybe(getCache(category, key), (newValue) =>
           state === newValue ? undefined : setCachedState(newValue)
         )
       ),
-    [state, bucketName, cacheName, setCachedState]
+    [state, category, key, setCachedState]
   );
 
   return [state, setCachedState];

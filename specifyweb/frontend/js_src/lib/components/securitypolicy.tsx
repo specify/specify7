@@ -369,8 +369,8 @@ export function SecurityPolicies({
   }, [policies]);
 
   const [orientation = 'vertical'] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'policiesLayout',
+    category: 'securityTool',
+    key: 'policiesLayout',
     defaultValue: 'vertical',
     staleWhileRefresh: false,
   });

@@ -89,8 +89,8 @@ export function QueryBuilder({
   const [triedToSave, handleTriedToSave] = useBooleanState();
 
   const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
-    bucketName: 'queryBuilder',
-    cacheName: 'showHiddenFields',
+    category: 'queryBuilder',
+    key: 'showHiddenFields',
     defaultValue: false,
     staleWhileRefresh: false,
   });

@@ -69,8 +69,8 @@ function ErrorDialog({
     'allowDismissingErrors'
   );
   const [clearCacheOnException = false, setClearCache] = useCachedState({
-    bucketName: 'general',
-    cacheName: 'clearCacheOnException',
+    category: 'general',
+    key: 'clearCacheOnException',
     defaultValue: false,
     staleWhileRefresh: false,
   });

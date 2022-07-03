@@ -64,15 +64,15 @@ function TreeView<SCHEMA extends AnyTree>({
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
   const [collapsedRanks, setCollapsedRanks] = useCachedState({
-    bucketName: 'tree',
-    cacheName: `collapsedRanks${tableName}`,
+    category: 'tree',
+    key: `collapsedRanks${tableName}`,
     defaultValue: defaultCacheValue,
     staleWhileRefresh: false,
   });
 
   const [rawConformation, setConformation] = useCachedState({
-    bucketName: 'tree',
-    cacheName: `conformation${tableName}`,
+    category: 'tree',
+    key: `conformation${tableName}`,
     defaultValue: undefined,
     staleWhileRefresh: false,
   });

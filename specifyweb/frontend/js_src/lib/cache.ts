@@ -20,26 +20,28 @@ import type { CacheDefinitions } from './cachedefinitions';
 import { eventListener } from './events';
 import type { R } from './types';
 
-type BucketData = {
-  // A dictionary of cache records
-  records: R<{
-    // The value that is stored in a particular cache record
-    value: unknown;
-  }>;
-};
-
-/** The data structure that would store all the buckets */
-const buckets: R<BucketData> = {};
+/** The data structure that would store all the cache */
+const cache: R<unknown> = {};
 
 /**
- * The prefix that would be given to all bucketNames when they are committed
+ * The prefix that would be given to all cache keys when they are committed
  * to localStorage.
  *
  * It is used to avoid collisions with other applications when running Specify 7
  * in development on localhost as well as to differentiate the localStorage
  * usages by this component from other components and third party libraries.
  */
-const cachePrefix = 'specify7-';
+const cachePrefix = 'specify7';
+const formatKey = (category: string, key: string): string =>
+  [cachePrefix, category, key].join('-');
+
+function parseKey(
+  formattedKey: string
+): Readonly<[string, string]> | undefined {
+  const parts = formattedKey.split('-');
+  if (parts.length !== 3 || parts[0] !== cachePrefix) return undefined;
+  return [parts[1], parts[2]];
+}
 
 /**
  * Indicates whether initialize() was run. If not, runs it on the next call
@@ -47,105 +49,99 @@ const cachePrefix = 'specify7-';
  */
 let eventListenerIsInitialized = false;
 
-/** Set's an event listener that runs commitToStorage before a page unload */
+/** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.addEventListener?.('beforeunload', commitToStorage);
+  globalThis.addEventListener?.(
+    'storage',
+    ({ storageArea, key: formattedKey, newValue }) => {
+      // "key" is null only when running `localStorage.clear()`
+      if (storageArea !== globalThis.localStorage || formattedKey === null)
+        return;
+      const parsedKey = parseKey(formattedKey);
+      if (parsedKey === undefined || newValue === null) return;
+      /*
+       * Safe to assume only JSON values would be in localStorage, as that's
+       * what genericSet() does
+       */
+      const parsedValue = JSON.parse(newValue);
+      const [category, key] = parsedKey;
+      genericSet(category, key, parsedValue);
+    }
+  );
   eventListenerIsInitialized = true;
 }
 
-/** Commits persistent cache buckets to localStorage */
-function commitToStorage(): void {
+/** Tries to fetch a cache from localStorage */
+function fetchBucket(formattedKey: string): void {
   if (globalThis.localStorage === undefined) return;
 
-  Object.entries(buckets)
-    .filter(([, bucketData]) => Object.keys(bucketData.records).length > 0)
-    .forEach(([bucketName]) => commitBucketToStorage(bucketName));
-}
+  const data = globalThis.localStorage.getItem(formattedKey);
 
-/** Commits a single cache bucket to localStorage */
-function commitBucketToStorage(bucketName: string): void {
-  globalThis.localStorage.setItem(
-    `${cachePrefix}${bucketName}`,
-    JSON.stringify(buckets[bucketName])
-  );
-}
-
-/** Tries to fetch a bucket from localStorage */
-function fetchBucket(bucketName: string): void {
-  if (globalThis.localStorage === undefined) return;
-
-  const fullBucketName = `${cachePrefix}${bucketName}`;
-  const data = globalThis.localStorage.getItem(fullBucketName);
-
-  if (data !== null) buckets[bucketName] = JSON.parse(data) as BucketData;
+  if (data !== null) cache[formattedKey] = JSON.parse(data);
 }
 
 /**
- * Get value of cacheName in the bucketName
- * Bucket names and cache names are defined in CacheDefinitions
+ * Get value of cache key in a category.
+ *
+ * Category names and key names are defined in CacheDefinitions
  */
 export const getCache = <
-  BUCKET_NAME extends string & keyof CacheDefinitions,
-  CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY]
 >(
-  bucketName: BUCKET_NAME,
-  cacheName: CACHE_NAME
-): CacheDefinitions[BUCKET_NAME][CACHE_NAME] =>
-  genericGet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(bucketName, cacheName);
+  category: CATEGORY,
+  key: KEY
+): CacheDefinitions[CATEGORY][KEY] | undefined =>
+  genericGet<CacheDefinitions[CATEGORY][KEY]>(category, key);
 
-/** Get value of cacheName in the bucketName */
+/** Get value of cache key in a category */
 function genericGet<TYPE>(
   // The name of the bucket
-  bucketName: string,
+  category: string,
   // The name of the cache
-  cacheName: string
-): TYPE {
+  key: string
+): TYPE | undefined {
   if (!eventListenerIsInitialized) initialize();
 
-  if (buckets[bucketName] === undefined) fetchBucket(bucketName);
+  const formattedKey = formatKey(category, key);
+  if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
 
-  return buckets[bucketName]?.records[cacheName]?.value as TYPE;
+  return cache[formattedKey] as TYPE | undefined;
 }
 
 export const setCache = <
-  BUCKET_NAME extends string & keyof CacheDefinitions,
-  CACHE_NAME extends string & keyof CacheDefinitions[BUCKET_NAME]
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY]
 >(
-  bucketName: BUCKET_NAME,
-  cacheName: CACHE_NAME,
-  cacheValue: CacheDefinitions[BUCKET_NAME][CACHE_NAME]
-) =>
-  genericSet<CacheDefinitions[BUCKET_NAME][CACHE_NAME]>(
-    bucketName,
-    cacheName,
-    cacheValue
-  );
+  category: CATEGORY,
+  key: KEY,
+  cacheValue: CacheDefinitions[CATEGORY][KEY]
+) => genericSet<CacheDefinitions[CATEGORY][KEY]>(category, key, cacheValue);
 
-export const cacheEvents = eventListener<{ change: undefined }>();
+export const cacheEvents = eventListener<{
+  change: { readonly category: string; readonly key: string };
+}>();
 
 function genericSet<T>(
-  // The name of the bucket
-  bucketName: string,
-  // The name of the cache
-  cacheName: string,
-  // The value of the cache record. Can be any serializable value
-  cacheValue: T
+  category: string,
+  key: string,
+  // Any serializable value
+  value: T
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
-  if (buckets[bucketName] === undefined) fetchBucket(bucketName);
-  if (buckets[bucketName]?.records[cacheName]?.value === cacheValue)
-    return cacheValue;
+  const formattedKey = formatKey(category, key);
+  if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
+  if (cache[formattedKey] === value) return value;
 
-  buckets[bucketName] ??= {
-    records: {},
-  };
+  cache[formattedKey] = value;
 
-  buckets[bucketName].records[cacheName] = {
-    value: cacheValue,
-  };
+  globalThis.localStorage.setItem(
+    formatKey(category, key),
+    JSON.stringify(value)
+  );
 
-  cacheEvents.trigger('change');
+  cacheEvents.trigger('change', { category, key });
 
-  return cacheValue;
+  return value;
 }
