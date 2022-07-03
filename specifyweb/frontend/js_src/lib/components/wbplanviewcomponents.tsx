@@ -129,8 +129,7 @@ export function ButtonWithConfirmation(props: {
       <Button.Small
         aria-haspopup="dialog"
         onClick={(): void =>
-          props.showConfirmation === undefined ||
-          props.showConfirmation()
+          props.showConfirmation === undefined || props.showConfirmation()
             ? handleShow()
             : props.onConfirm()
         }
@@ -239,7 +238,11 @@ export function MappingLineComponent({
 
   const isComplete = lineData.slice(-1)[0].customSelectType === 'OPTIONS_LIST';
   return (
-    <li className="contents" aria-label={headerName} aria-current={isFocused}>
+    <li
+      className="contents"
+      aria-labelledby={id('header')}
+      aria-current={isFocused}
+    >
       <div className="print:hidden border-t-gray-500 py-2 border-t">
         <Button.Small
           className="w-full h-full p-2"
@@ -272,7 +275,7 @@ export function MappingLineComponent({
         onKeyDown={({ key }): void => handleKeyDown(key)}
         ref={lineRef}
         title={wbText('columnMapping')}
-        aria-labelledby={id('header')}
+        aria-label={wbText('columnMapping')}
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
@@ -309,7 +312,7 @@ const fieldGroupLabels = {
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
 export const mappingElementDivider = (
-  <span className={mappingElementDividerClassName} aria-label=",">
+  <span className={mappingElementDividerClassName} aria-hidden={true}>
     {icons.arrowRight}
   </span>
 );

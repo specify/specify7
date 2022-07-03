@@ -240,8 +240,7 @@ export function Icon({
   if (optionLabel === '0') return tableIconUndefined;
   else if (!isRelationship && (isPreview || !isEnabled))
     return tableIconSelected;
-  else if (!isRelationship || tableName === undefined)
-    return tableIconEmpty;
+  else if (!isRelationship || tableName === undefined) return tableIconEmpty;
   else return <TableIcon name={tableName} />;
 }
 
@@ -348,7 +347,6 @@ function OptionGroup({
       className={`bg-[color:var(--custom-select-b1)] flex flex-col
         custom-select-group-${camelToKebab(selectGroupName ?? '')}`}
       role="group"
-      aria-label={selectGroupLabel}
     >
       {typeof selectGroupLabel === 'string' && (
         <header

@@ -246,15 +246,13 @@ export const DataEntry = {
       colSpan: number;
       align: string;
       visible: boolean;
-      ariaLabel: string | undefined;
     }
   >(
     'DataEntry.Cell',
     'div',
     'flex flex-col',
-    ({ colSpan, align, visible, ariaLabel, ...props }) => ({
+    ({ colSpan, align, visible, ...props }) => ({
       ...props,
-      'aria-label': props['aria-label'] ?? ariaLabel,
       style: {
         visibility: visible ? undefined : 'hidden',
         gridColumn:
@@ -637,8 +635,10 @@ export const Link = {
     children: (
       <>
         {props.children}
-        <span className="sr-only">{commonText('opensInNewTab')}</span>
-        <span title={commonText('opensInNewTab')}>{icons.externalLink}</span>
+        <span title={commonText('opensInNewTab')}>
+          <span className="sr-only">{commonText('opensInNewTab')}</span>
+          {icons.externalLink}
+        </span>
       </>
     ),
   })),

@@ -7,7 +7,6 @@ import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from './generateformdefinitions';
-import { commonText } from './localization/common';
 import type { ParsedFormDefinition } from './parseform';
 import { schema } from './schema';
 import type { IR } from './types';
@@ -38,7 +37,7 @@ export const webOnlyViews = f.store(() =>
             colSpan: 1,
             align: 'left',
             visible: true,
-            ariaLabel: commonText('attachments'),
+            ariaLabel: undefined,
           },
         ],
       ],

@@ -201,25 +201,22 @@ export function TreeRow({
                         }`
                       : undefined
                   }
-                  aria-label={
-                    typeof row.acceptedId === 'number'
-                      ? `${treeText('acceptedName')} ${
-                          row.acceptedName ?? row.acceptedId
-                        }`
-                      : undefined
-                  }
                 >
                   {row.name}
+                  {typeof row.acceptedId === 'number' && (
+                    <span className="sr-only">
+                      <br />
+                      {`${treeText('acceptedName')} ${
+                        row.acceptedName ?? row.acceptedId
+                      }`}
+                    </span>
+                  )}
                 </span>
                 {typeof nodeStats === 'object' &&
                   f.var(
                     formatTreeStats(nodeStats, row.children === 0),
                     ({ title, text }) => (
-                      <span
-                        className="text-gray-500"
-                        title={title}
-                        aria-label={title}
-                      >
+                      <span className="text-gray-500" title={title}>
                         {text}
                       </span>
                     )

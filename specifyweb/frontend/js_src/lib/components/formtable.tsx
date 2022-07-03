@@ -164,7 +164,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                 align="center"
                 title={title}
                 visible={true}
-                ariaLabel={undefined}
               >
                 {(cell.type === 'Field' || cell.type === 'SubView') &&
                 typeof cell.fieldName === 'string' ? (
@@ -223,7 +222,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                     }
                     align="left"
                     visible={true}
-                    ariaLabel={undefined}
                     tabIndex={-1}
                   >
                     <SpecifyForm
@@ -260,7 +258,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                         colSpan={colSpan}
                         align={align}
                         visible={visible}
-                        ariaLabel={undefined}
                       >
                         <FormCell
                           align={align}

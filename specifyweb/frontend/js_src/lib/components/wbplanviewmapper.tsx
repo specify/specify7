@@ -560,10 +560,10 @@ export function WbPlanViewMapper(props: {
                   previewOption: {
                     optionName: 'mappingOptions',
                     optionLabel: (
-                      <span
-                        aria-label={wbText('mappingOptions')}
-                        title={wbText('mappingOptions')}
-                      >
+                      <span title={wbText('mappingOptions')}>
+                        <span className="sr-only">
+                          {wbText('mappingOptions')}
+                        </span>
                         {icons.cog}
                       </span>
                     ),

@@ -48,10 +48,7 @@ export function Layout(props: {
           {props.buttonsRight}
         </div>
       </header>
-      <div
-        className="gap-y-4 flex flex-col flex-1 overflow-hidden"
-        aria-labelledby={id('name')}
-      >
+      <div className="gap-y-4 flex flex-col flex-1 overflow-hidden">
         {props.children}
       </div>
       {props.footer}

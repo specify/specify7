@@ -79,7 +79,7 @@ export function TableIcon({
         role={role}
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}
-        aria-label={resolvedTableLabel}
+        aria-label={typeof role === 'string' ? resolvedTableLabel : undefined}
         aria-hidden={ariaHidden}
       />
     );
@@ -146,16 +146,14 @@ export function SortIndicator<FIELD_NAMES extends string>({
 }): JSX.Element {
   const isSorted = sortConfig.sortField === fieldName;
   return (
-    <span
-      className="text-brand-300"
-      aria-label={
-        isSorted
-          ? sortConfig.ascending
+    <span className="text-brand-300">
+      {isSorted && (
+        <span className="sr-only">
+          {sortConfig.ascending
             ? commonText('ascending')
-            : commonText('descending')
-          : undefined
-      }
-    >
+            : commonText('descending')}
+        </span>
+      )}
       {isSorted
         ? sortConfig.ascending
           ? icons.chevronUp

@@ -44,12 +44,10 @@ import { ResourceView } from './resourceview';
 
 function TableHeaderCell({
   fieldSpec,
-  ariaLabel,
   sortConfig,
   onSortChange: handleSortChange,
 }: {
   readonly fieldSpec: QueryFieldSpec | undefined;
-  readonly ariaLabel?: string;
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
 }): JSX.Element {
@@ -67,10 +65,9 @@ function TableHeaderCell({
     ) : undefined;
   return (
     <div
-      role="columnheader"
+      role={typeof content === 'object' ? `columnheader` : 'cell'}
       className="w-full min-w-max bg-brand-100 dark:bg-brand-500 border-b
         border-gray-500 p-1 [inset-block-start:_0] sticky [z-index:2]"
-      aria-label={ariaLabel}
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
@@ -455,13 +452,11 @@ export function QueryResultsTable({
                 <>
                   <TableHeaderCell
                     fieldSpec={undefined}
-                    ariaLabel={commonText('selectRecord')}
                     sortConfig={undefined}
                     onSortChange={undefined}
                   />
                   <TableHeaderCell
                     fieldSpec={undefined}
-                    ariaLabel={commonText('viewRecord')}
                     sortConfig={undefined}
                     onSortChange={undefined}
                   />

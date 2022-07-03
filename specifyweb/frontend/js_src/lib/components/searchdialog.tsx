@@ -138,8 +138,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         >
           {isLoading ? (
             <li>{commonText('loading')}</li>
-          ) : results === undefined ? undefined : results.length ===
-            0 ? (
+          ) : results === undefined ? undefined : results.length === 0 ? (
             <li>{commonText('noResults')}</li>
           ) : (
             <>
@@ -162,7 +161,12 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 </li>
               ))}
               {results.length === resourceLimit && (
-                <li aria-label={formsText('additionalResultsOmitted')}>...</li>
+                <li>
+                  <span className="sr-only">
+                    {formsText('additionalResultsOmitted')}
+                  </span>
+                  {'...'}
+                </li>
               )}
             </>
           )}

@@ -171,8 +171,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
     false
   );
   const isShowingOldResource =
-    loadedResource === undefined &&
-    typeof oldResourceRef.current === 'object';
+    loadedResource === undefined && typeof oldResourceRef.current === 'object';
   const resolvedResource = loadedResource ?? oldResourceRef.current;
   const formIsLoaded =
     typeof viewDefinition === 'object' && typeof resolvedResource === 'object';
@@ -231,14 +230,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
                 )}
                 {cells.map(
                   (
-                    {
-                      colSpan,
-                      align,
-                      visible,
-                      id: cellId,
-                      ariaLabel,
-                      ...cellData
-                    },
+                    { colSpan, align, visible, id: cellId, ...cellData },
                     index
                   ) => (
                     <DataEntry.Cell
@@ -246,11 +238,6 @@ export function RenderForm<SCHEMA extends AnySchema>({
                       colSpan={colSpan}
                       align={align}
                       visible={visible}
-                      ariaLabel={
-                        viewDefinition?.formType === 'formTable'
-                          ? undefined
-                          : ariaLabel
-                      }
                     >
                       <FormCell
                         align={align}

@@ -32,12 +32,12 @@ import {
   Ul,
 } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
+import { icons } from './icons';
 import type { MenuItem, UserTool } from './main';
 import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { usePref } from './preferenceshooks';
 import { createBackboneView } from './reactbackboneextend';
-import { icons } from './icons';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -72,7 +72,7 @@ export function HeaderItems({
     <nav
       className={`xl:m-0 lg:justify-center flex flex-row flex-wrap flex-1
         order-2 -mt-2 px-2`}
-      aria-label="primary"
+      aria-label={commonText('primary')}
     >
       {menuItems.map(({ task, title, icon, view, isOverlay }) => (
         <Link.Default

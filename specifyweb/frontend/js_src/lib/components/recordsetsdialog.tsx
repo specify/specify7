@@ -74,7 +74,6 @@ function Row({
       </td>
       <td
         title={commonText('recordCount')}
-        aria-label={count?.toString()}
         className="tabular-nums justify-end"
       >
         {typeof count === 'number' ? `(${formatNumber(count)})` : undefined}
