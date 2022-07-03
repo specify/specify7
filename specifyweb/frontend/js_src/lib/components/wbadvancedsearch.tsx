@@ -13,6 +13,7 @@ import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { getCache, setCache } from '../cache';
+import { ErrorBoundary } from './errorboundary';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -205,7 +206,7 @@ export function WbAdvancedSearch({
   }, [searchPreferences]);
 
   return (
-    <>
+    <ErrorBoundary dismissable>
       <Button.Small
         aria-haspopup="dialog"
         aria-pressed={isOpen}
@@ -222,6 +223,6 @@ export function WbAdvancedSearch({
           onChange={setSearchPreferences}
         />
       )}
-    </>
+    </ErrorBoundary>
   );
 }

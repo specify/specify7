@@ -13,6 +13,7 @@ import { Dialog } from './modaldialog';
 import { toTable, toTables } from '../specifymodel';
 import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissions';
+import { ErrorBoundary } from './errorboundary';
 
 type States =
   | State<'MainState'>
@@ -40,7 +41,7 @@ export function PaleoLocationMapPlugin({
   return hasTablePermission('CollectingEvent', 'read') &&
     hasTablePermission('Locality', 'read') &&
     hasTablePermission('PaleoContext', 'read') ? (
-    <>
+    <ErrorBoundary dismissable>
       <Button.Small
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
@@ -86,7 +87,7 @@ export function PaleoLocationMapPlugin({
           />
         </Dialog>
       )}
-    </>
+    </ErrorBoundary>
   ) : null;
 }
 

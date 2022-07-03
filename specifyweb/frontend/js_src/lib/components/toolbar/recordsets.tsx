@@ -8,6 +8,7 @@ import { userInformation } from '../../userinfo';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
 import { RecordSetsDialog } from '../recordsetsdialog';
+import { ErrorBoundary } from '../errorboundary';
 
 export const menuItem: MenuItem = {
   task: 'recordsets',
@@ -17,7 +18,11 @@ export const menuItem: MenuItem = {
   enabled: () =>
     getUserPref('header', 'menu', 'showRecordSets') &&
     hasToolPermission('recordSets', 'read'),
-  view: ({ onClose: handleClose }) => <RecordSetDialog onClose={handleClose} />,
+  view: ({ onClose: handleClose }) => (
+    <ErrorBoundary dismissable>
+      <RecordSetDialog onClose={handleClose} />
+    </ErrorBoundary>
+  ),
 };
 
 // Create a separate component to fix https://github.com/specify/specify7/issues/1453

@@ -13,6 +13,7 @@ import { LoadingContext } from '../contexts';
 import { useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
+import { ErrorBoundary } from '../errorboundary';
 
 const liftGetResource = async (
   name: string,
@@ -156,6 +157,10 @@ export const userTool: UserTool = {
   title: commonText('makeDwca'),
   enabled: () => hasPermission('/export/dwca', 'execute'),
   isOverlay: true,
-  view: ({ onClose: handleClose }) => <MakeDwca onClose={handleClose} />,
+  view: ({ onClose: handleClose }) => (
+    <ErrorBoundary dismissable>
+      <MakeDwca onClose={handleClose} />
+    </ErrorBoundary>
+  ),
   groupLabel: commonText('export'),
 };

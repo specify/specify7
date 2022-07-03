@@ -5,7 +5,7 @@ import { hasTablePermission, hasToolPermission } from '../permissions';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
-import { fail } from './errorboundary';
+import { ErrorBoundary, fail } from './errorboundary';
 import {
   ProtectedTable,
   TablePermissionDenied,
@@ -15,7 +15,11 @@ import {
 export function task(): void {
   router.route('', 'welcome', async () =>
     import('./welcomeview').then(({ WelcomeView }) =>
-      setCurrentComponent(<WelcomeView />)
+      setCurrentComponent(
+        <ErrorBoundary dismissable>
+          <WelcomeView />
+        </ErrorBoundary>
+      )
     )
   );
   router.route('express_search/', 'esearch', async () =>

@@ -44,6 +44,7 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
+import { ErrorBoundary } from './errorboundary';
 
 export function QueryBuilder({
   query: queryResource,
@@ -283,11 +284,13 @@ export function QueryBuilder({
                     action="create"
                   >
                     <ProtectedTable tableName="LoanPreparation" action="read">
-                      <QueryLoanReturn
-                        fields={state.fields}
-                        queryResource={queryResource}
-                        getQueryFieldRecords={getQueryFieldRecords}
-                      />
+                      <ErrorBoundary dismissable>
+                        <QueryLoanReturn
+                          fields={state.fields}
+                          queryResource={queryResource}
+                          getQueryFieldRecords={getQueryFieldRecords}
+                        />
+                      </ErrorBoundary>
                     </ProtectedTable>
                   </ProtectedTable>
                 </ProtectedTable>

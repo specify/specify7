@@ -8,6 +8,7 @@ import { Ul } from './basic';
 import { useReadyEffect } from './hooks';
 import { QueryLine } from './querybuilderfield';
 import type { MappingPath } from './wbplanviewmapper';
+import { ErrorBoundary } from './errorboundary';
 
 export function QueryFields({
   baseTableName,
@@ -80,46 +81,48 @@ export function QueryFields({
   return (
     <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
-        <QueryLine
-          key={field.id}
-          fieldHash={`${line}_${length}`}
-          baseTableName={baseTableName}
-          field={field}
-          enforceLengthLimit={enforceLengthLimit}
-          onChange={handleChangeField?.bind(undefined, line)}
-          onMappingChange={handleMappingChange?.bind(undefined, line)}
-          onRemove={handleRemoveField?.bind(undefined, line)}
-          onOpen={handleOpen?.bind(undefined, line)}
-          onClose={handleClose}
-          onLineFocus={(target): void =>
-            (target === 'previous' && line === 0) ||
-            (target === 'next' && line + 1 >= length)
-              ? undefined
-              : handleLineFocus?.(
-                  target === 'previous'
-                    ? line - 1
-                    : target === 'current'
-                    ? line
-                    : line + 1
-                )
-          }
-          onMoveUp={
-            line === 0 || handleLineMove === undefined
-              ? undefined
-              : (): void => handleLineMove?.(line, 'up')
-          }
-          onMoveDown={
-            line + 1 === length || handleLineMove === undefined
-              ? undefined
-              : (): void => handleLineMove?.(line, 'down')
-          }
-          showHiddenFields={showHiddenFields}
-          isFocused={openedElement?.line === line}
-          openedElement={
-            openedElement?.line === line ? openedElement?.index : undefined
-          }
-          getMappedFields={getMappedFields}
-        />
+        <ErrorBoundary dismissable>
+          <QueryLine
+            key={field.id}
+            fieldHash={`${line}_${length}`}
+            baseTableName={baseTableName}
+            field={field}
+            enforceLengthLimit={enforceLengthLimit}
+            onChange={handleChangeField?.bind(undefined, line)}
+            onMappingChange={handleMappingChange?.bind(undefined, line)}
+            onRemove={handleRemoveField?.bind(undefined, line)}
+            onOpen={handleOpen?.bind(undefined, line)}
+            onClose={handleClose}
+            onLineFocus={(target): void =>
+              (target === 'previous' && line === 0) ||
+              (target === 'next' && line + 1 >= length)
+                ? undefined
+                : handleLineFocus?.(
+                    target === 'previous'
+                      ? line - 1
+                      : target === 'current'
+                      ? line
+                      : line + 1
+                  )
+            }
+            onMoveUp={
+              line === 0 || handleLineMove === undefined
+                ? undefined
+                : (): void => handleLineMove?.(line, 'up')
+            }
+            onMoveDown={
+              line + 1 === length || handleLineMove === undefined
+                ? undefined
+                : (): void => handleLineMove?.(line, 'down')
+            }
+            showHiddenFields={showHiddenFields}
+            isFocused={openedElement?.line === line}
+            openedElement={
+              openedElement?.line === line ? openedElement?.index : undefined
+            }
+            getMappedFields={getMappedFields}
+          />
+        </ErrorBoundary>
       ))}
     </Ul>
   );

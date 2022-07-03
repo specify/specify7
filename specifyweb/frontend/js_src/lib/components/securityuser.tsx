@@ -60,6 +60,7 @@ import {
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
+import { ErrorBoundary } from './errorboundary';
 
 // FEATURE: allow editing linkages with external accounts
 export function SecurityUser({
@@ -176,18 +177,20 @@ export function SecurityUser({
                       {adminText('accountSetupOptions')}
                     </h4>
                     <div className="flex items-center gap-2">
-                      {canSetPassword && (
-                        <PasswordPlugin
-                          onSet={setPassword}
-                          isNew={userResource.isNew()}
-                        />
-                      )}
-                      {canCreateInviteLink && (
-                        <UserInviteLinkPlugin
-                          user={user}
-                          identityProviders={identityProviders}
-                        />
-                      )}
+                      <ErrorBoundary dismissable>
+                        {canSetPassword && (
+                          <PasswordPlugin
+                            onSet={setPassword}
+                            isNew={userResource.isNew()}
+                          />
+                        )}
+                        {canCreateInviteLink && (
+                          <UserInviteLinkPlugin
+                            user={user}
+                            identityProviders={identityProviders}
+                          />
+                        )}
+                      </ErrorBoundary>
                     </div>
                   </section>
                 ) : undefined}
@@ -197,6 +200,7 @@ export function SecurityUser({
                       {schema.models.Institution.label}
                     </h4>
                     <div className="flex flex-col gap-2">
+                      <ErrorBoundary dismissable>
                       <SetSuperAdmin
                         institutionPolicies={institutionPolicies}
                         isSuperAdmin={isSuperAdmin}
@@ -229,14 +233,17 @@ export function SecurityUser({
                             </SecurityPoliciesWrapper>
                           )
                       }
+                      </ErrorBoundary>
                     </div>
                   </section>
                 )}
-                {hasPermission('/admin/user/oic_providers', 'read') && (
-                  <UserIdentityProviders
-                    identityProviders={identityProviders}
-                  />
-                )}
+                <ErrorBoundary dismissable>
+                  {hasPermission('/admin/user/oic_providers', 'read') && (
+                    <UserIdentityProviders
+                      identityProviders={identityProviders}
+                    />
+                  )}
+                </ErrorBoundary>
                 <SetCollection
                   collectionId={collectionId}
                   collections={collections}
@@ -320,20 +327,24 @@ export function SecurityUser({
                         ) : undefined
                       }
                       {typeof userResource.id === 'number' && (
-                        <PreviewPermissions
-                          userId={userResource.id}
-                          userVersion={version}
-                          collectionId={collectionId}
-                          changesMade={previewAffected}
-                          onOpenRole={(roleId): void =>
-                            handleOpenRole(collectionId, roleId)
-                          }
-                        />
+                        <ErrorBoundary dismissable>
+                          <PreviewPermissions
+                            userId={userResource.id}
+                            userVersion={version}
+                            collectionId={collectionId}
+                            changesMade={previewAffected}
+                            onOpenRole={(roleId): void =>
+                              handleOpenRole(collectionId, roleId)
+                            }
+                          />
+                        </ErrorBoundary>
                       )}
                     </>
                   )}
                 </SetPermissionContext>
-                <LegacyPermissions userResource={userResource} mode={mode} />
+                <ErrorBoundary dismissable>
+                  <LegacyPermissions userResource={userResource} mode={mode} />
+                </ErrorBoundary>
               </>,
               '-mx-4 p-4 pt-0 flex-1 gap-8'
             )}

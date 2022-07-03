@@ -31,7 +31,7 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { fail } from './errorboundary';
+import { ErrorBoundary, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import {
   RecordSetCreated,
@@ -683,7 +683,9 @@ export function QueryResultsWrapper({
         typeof handleSelected === 'function' ? 'max-h-[70vh]' : ''
       }`}
     >
-      <QueryResultsTable {...props} onSelected={handleSelected} />
+      <ErrorBoundary dismissable>
+        <QueryResultsTable {...props} onSelected={handleSelected} />
+      </ErrorBoundary>
     </div>
   );
 }

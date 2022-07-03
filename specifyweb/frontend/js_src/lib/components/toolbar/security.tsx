@@ -29,6 +29,7 @@ import { SecurityCollection } from '../securitycollection';
 import { SecurityInstitution } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { SecurityUser } from '../securityuser';
+import { ErrorBoundary } from '../errorboundary';
 
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));
@@ -147,88 +148,92 @@ export function SecurityPanel(): JSX.Element | null {
             </ul>
           </section>
         </aside>
-        {state.type === 'InstitutionState' &&
-        typeof institution === 'object' ? (
-          <SecurityInstitution
-            institution={institution}
-            collections={availableCollections}
-            users={users}
-            libraryRoles={libraryRoles}
-            onChangeLibraryRoles={(newState): void =>
-              setLibraryRoles(
-                typeof newState === 'function'
-                  ? newState(defined(libraryRoles))
-                  : newState
-              )
-            }
-            onOpenUser={
-              typeof users === 'object'
-                ? (userId): void =>
-                    setState({
-                      type: 'UserState',
-                      user:
-                        typeof userId === 'number'
-                          ? users[userId]
-                          : addMissingFields('SpecifyUser', {}),
-                      initialCollection: undefined,
-                    })
-                : undefined
-            }
-          />
-        ) : undefined}
-        {state.type === 'CollectionState' && (
-          <SetPermissionContext collectionId={state.collectionId}>
-            <SecurityCollection
-              collection={defined(
-                availableCollections.find(({ id }) => id === state.collectionId)
-              )}
+        <ErrorBoundary dismissable>
+          {state.type === 'InstitutionState' &&
+          typeof institution === 'object' ? (
+            <SecurityInstitution
+              institution={institution}
               collections={availableCollections}
-              initialRoleId={state.initialRole}
+              users={users}
               libraryRoles={libraryRoles}
-              onOpenUser={(userId): void =>
+              onChangeLibraryRoles={(newState): void =>
+                setLibraryRoles(
+                  typeof newState === 'function'
+                    ? newState(defined(libraryRoles))
+                    : newState
+                )
+              }
+              onOpenUser={
+                typeof users === 'object'
+                  ? (userId): void =>
+                      setState({
+                        type: 'UserState',
+                        user:
+                          typeof userId === 'number'
+                            ? users[userId]
+                            : addMissingFields('SpecifyUser', {}),
+                        initialCollection: undefined,
+                      })
+                  : undefined
+              }
+            />
+          ) : undefined}
+          {state.type === 'CollectionState' && (
+            <SetPermissionContext collectionId={state.collectionId}>
+              <SecurityCollection
+                collection={defined(
+                  availableCollections.find(
+                    ({ id }) => id === state.collectionId
+                  )
+                )}
+                collections={availableCollections}
+                initialRoleId={state.initialRole}
+                libraryRoles={libraryRoles}
+                onOpenUser={(userId): void =>
+                  setState({
+                    type: 'UserState',
+                    user:
+                      typeof userId === 'number'
+                        ? defined(users)[userId]
+                        : addMissingFields('SpecifyUser', {}),
+                    initialCollection: state.collectionId,
+                  })
+                }
+              />
+            </SetPermissionContext>
+          )}
+          {state.type === 'UserState' && typeof users === 'object' ? (
+            <SecurityUser
+              user={state.user}
+              collections={availableCollections}
+              initialCollection={state.initialCollection}
+              onClose={(): void => setState({ type: 'MainState' })}
+              onDelete={(): void => {
+                setUsers(removeKey(users, state.user.id.toString()));
+                setState({ type: 'MainState' });
+              }}
+              onSave={(changedUser, newUser): void => {
+                setUsers({
+                  ...users,
+                  [changedUser.id.toString()]: changedUser,
+                });
+                if (typeof newUser === 'object')
+                  setState({
+                    type: 'UserState',
+                    initialCollection: state.initialCollection,
+                    user: newUser,
+                  });
+              }}
+              onOpenRole={(collectionId, roleId): void =>
                 setState({
-                  type: 'UserState',
-                  user:
-                    typeof userId === 'number'
-                      ? defined(users)[userId]
-                      : addMissingFields('SpecifyUser', {}),
-                  initialCollection: state.collectionId,
+                  type: 'CollectionState',
+                  collectionId,
+                  initialRole: roleId,
                 })
               }
             />
-          </SetPermissionContext>
-        )}
-        {state.type === 'UserState' && typeof users === 'object' ? (
-          <SecurityUser
-            user={state.user}
-            collections={availableCollections}
-            initialCollection={state.initialCollection}
-            onClose={(): void => setState({ type: 'MainState' })}
-            onDelete={(): void => {
-              setUsers(removeKey(users, state.user.id.toString()));
-              setState({ type: 'MainState' });
-            }}
-            onSave={(changedUser, newUser): void => {
-              setUsers({
-                ...users,
-                [changedUser.id.toString()]: changedUser,
-              });
-              if (typeof newUser === 'object')
-                setState({
-                  type: 'UserState',
-                  initialCollection: state.initialCollection,
-                  user: newUser,
-                });
-            }}
-            onOpenRole={(collectionId, roleId): void =>
-              setState({
-                type: 'CollectionState',
-                collectionId,
-                initialRole: roleId,
-              })
-            }
-          />
-        ) : undefined}
+          ) : undefined}
+        </ErrorBoundary>
       </div>
     </Container.FullGray>
   );

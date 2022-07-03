@@ -16,6 +16,7 @@ import {
 import { defined } from '../../types';
 import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
+import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import type {
@@ -108,108 +109,109 @@ function Preferences({
                 category,
                 { title, description = undefined, subCategories },
               ]) => (
-                <Container.Center
-                  key={category}
-                  className="gap-8 overflow-y-visible"
-                  id={id(category)}
-                >
-                  <h3 className="text-2xl">{title}</h3>
-                  {description !== undefined && <p>{description}</p>}
-                  {subCategories.map(
-                    ([
-                      subcategory,
-                      { title, description = undefined, items },
-                    ]) => (
-                      <section
-                        key={subcategory}
-                        className="flex flex-col gap-4"
-                      >
-                        <div className="flex items-center">
-                          <span className="flex-1" />
-                          <h4
-                            className={`${className.headerGray} text-xl text-center`}
-                          >
-                            {title}
-                          </h4>
-                          <div className="flex justify-end flex-1">
-                            <Button.Small
-                              onClick={(): void =>
-                                items.forEach(([name]) =>
-                                  setPref(
-                                    category,
-                                    subcategory,
-                                    name,
-                                    /*
-                                     * Need to get default value via this
-                                     * function as defaults may be changed
-                                     */
-                                    defined(
-                                      getPrefDefinition(
-                                        category,
-                                        subcategory,
-                                        name
-                                      )
-                                    ).defaultValue
+                <ErrorBoundary dismissable key={category}>
+                  <Container.Center
+                    className="gap-8 overflow-y-visible"
+                    id={id(category)}
+                  >
+                    <h3 className="text-2xl">{title}</h3>
+                    {description !== undefined && <p>{description}</p>}
+                    {subCategories.map(
+                      ([
+                        subcategory,
+                        { title, description = undefined, items },
+                      ]) => (
+                        <section
+                          key={subcategory}
+                          className="flex flex-col gap-4"
+                        >
+                          <div className="flex items-center">
+                            <span className="flex-1" />
+                            <h4
+                              className={`${className.headerGray} text-xl text-center`}
+                            >
+                              {title}
+                            </h4>
+                            <div className="flex justify-end flex-1">
+                              <Button.Small
+                                onClick={(): void =>
+                                  items.forEach(([name]) =>
+                                    setPref(
+                                      category,
+                                      subcategory,
+                                      name,
+                                      /*
+                                       * Need to get default value via this
+                                       * function as defaults may be changed
+                                       */
+                                      defined(
+                                        getPrefDefinition(
+                                          category,
+                                          subcategory,
+                                          name
+                                        )
+                                      ).defaultValue
+                                    )
                                   )
-                                )
-                              }
-                            >
-                              {preferencesText('reset')}
-                            </Button.Small>
-                          </div>
-                        </div>
-                        {description !== undefined && <p>{description}</p>}
-                        {items.map(([name, item]) => {
-                          const canEdit =
-                            item.visible !== 'adminsOnly' ||
-                            hasPermission(
-                              '/preferences/user',
-                              'edit_protected'
-                            );
-                          return (
-                            <label
-                              key={name}
-                              className={`flex items-start gap-2 ${
-                                canEdit ? '' : '!cursor-not-allowed'
-                              }`}
-                              title={
-                                canEdit
-                                  ? undefined
-                                  : preferencesText('adminsOnlyPreference')
-                              }
-                            >
-                              <div className="flex flex-col flex-1 gap-2">
-                                <p
-                                  className={`flex items-center justify-end flex-1
-                              text-right min-h-[theme(spacing.8)]`}
-                                >
-                                  {item.title}
-                                </p>
-                                {item.description !== undefined && (
-                                  <p className="flex justify-end flex-1 text-right text-gray-500">
-                                    {item.description}
-                                  </p>
-                                )}
-                              </div>
-                              <div
-                                className={`flex flex-col justify-center flex-1 gap-2
-                            min-h-[theme(spacing.8)]`}
+                                }
                               >
-                                <Item
-                                  item={item}
-                                  category={category}
-                                  subcategory={subcategory}
-                                  name={name}
-                                  isReadOnly={!canEdit}
-                                />
-                              </div>
-                            </label>
-                          );
-                        })}
-                      </section>
-                    )
-                  )}
-                </Container.Center>
+                                {preferencesText('reset')}
+                              </Button.Small>
+                            </div>
+                          </div>
+                          {description !== undefined && <p>{description}</p>}
+                          {items.map(([name, item]) => {
+                            const canEdit =
+                              item.visible !== 'adminsOnly' ||
+                              hasPermission(
+                                '/preferences/user',
+                                'edit_protected'
+                              );
+                            return (
+                              <label
+                                key={name}
+                                className={`flex items-start gap-2 ${
+                                  canEdit ? '' : '!cursor-not-allowed'
+                                }`}
+                                title={
+                                  canEdit
+                                    ? undefined
+                                    : preferencesText('adminsOnlyPreference')
+                                }
+                              >
+                                <div className="flex flex-col flex-1 gap-2">
+                                  <p
+                                    className={`flex items-center justify-end flex-1
+                              text-right min-h-[theme(spacing.8)]`}
+                                  >
+                                    {item.title}
+                                  </p>
+                                  {item.description !== undefined && (
+                                    <p className="flex justify-end flex-1 text-right text-gray-500">
+                                      {item.description}
+                                    </p>
+                                  )}
+                                </div>
+                                <div
+                                  className={`flex flex-col justify-center flex-1 gap-2
+                            min-h-[theme(spacing.8)]`}
+                                >
+                                  <Item
+                                    item={item}
+                                    category={category}
+                                    subcategory={subcategory}
+                                    name={name}
+                                    isReadOnly={!canEdit}
+                                  />
+                                </div>
+                              </label>
+                            );
+                          })}
+                        </section>
+                      )
+                    )}
+                  </Container.Center>
+                </ErrorBoundary>
               )
             )}
           </div>
@@ -247,13 +249,18 @@ function Item({
     subcategory as 'ui',
     name as 'theme'
   );
-  return (
+  const children = (
     <Renderer
       definition={item}
       value={value}
       onChange={setValue}
       isReadOnly={isReadOnly}
     />
+  );
+  return 'renderer' in item ? (
+    <ErrorBoundary dismissable>{children}</ErrorBoundary>
+  ) : (
+    children
   );
 }
 

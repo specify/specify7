@@ -9,6 +9,7 @@ import { Button, Link } from './basic';
 import { useBooleanState } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { ErrorBoundary } from './errorboundary';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -177,16 +178,18 @@ export function Notifications(): JSX.Element {
            */}
           <p>{commonText('mostRecentNotificationsTop')}</p>
           {notifications.map((notification, index) => (
-            <NotificationComponent
-              key={index}
-              notification={notification}
-              onDelete={(promise): void => {
-                freezeFetchPromise.current = promise;
-                setNotifications(
-                  notifications.filter((item) => item !== notification)
-                );
-              }}
-            />
+            <ErrorBoundary dismissable>
+              <NotificationComponent
+                key={index}
+                notification={notification}
+                onDelete={(promise): void => {
+                  freezeFetchPromise.current = promise;
+                  setNotifications(
+                    notifications.filter((item) => item !== notification)
+                  );
+                }}
+              />
+            </ErrorBoundary>
           ))}
         </Dialog>
       )}

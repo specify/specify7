@@ -17,6 +17,7 @@ import { defined, filterArray } from '../types';
 import { Container, H3 } from './basic';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
+import { ErrorBoundary } from './errorboundary';
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
@@ -81,42 +82,44 @@ function TableResults({
             >
               {caption}
             </summary>
-            <QueryResultsTable
-              fieldSpecs={tableResults.fieldSpecs.map(
-                ({ stringId, isRelationship }) =>
-                  QueryFieldSpec.fromStringId(stringId, isRelationship)
-              )}
-              hasIdField={true}
-              totalCount={tableResults.totalCount}
-              model={model}
-              label={model.label}
-              initialData={tableResults.results}
-              fetchResults={async (
-                offset: number
-              ): Promise<RA<RA<string | number>>> =>
-                ajax<IR<QueryTableResult> | QueryTableResult>(
-                  formatUrl(ajaxUrl, {
-                    name: model.name,
-                    // The URL may already have a "name" parameter
-                    ...parseUrl(ajaxUrl),
-                    offset: offset.toString(),
-                  }),
-                  {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    headers: { Accept: 'application/json' },
-                  }
-                ).then(
-                  ({ data }) =>
-                    (model.name in data
-                      ? (data as IR<QueryTableResult>)[model.name]
-                      : (data as QueryTableResult)
-                    ).results
-                )
-              }
-              createRecordSet={undefined}
-              extraButtons={undefined}
-              tableClassName="max-h-[70vh]"
-            />
+            <ErrorBoundary dismissable>
+              <QueryResultsTable
+                fieldSpecs={tableResults.fieldSpecs.map(
+                  ({ stringId, isRelationship }) =>
+                    QueryFieldSpec.fromStringId(stringId, isRelationship)
+                )}
+                hasIdField={true}
+                totalCount={tableResults.totalCount}
+                model={model}
+                label={model.label}
+                initialData={tableResults.results}
+                fetchResults={async (
+                  offset: number
+                ): Promise<RA<RA<string | number>>> =>
+                  ajax<IR<QueryTableResult> | QueryTableResult>(
+                    formatUrl(ajaxUrl, {
+                      name: model.name,
+                      // The URL may already have a "name" parameter
+                      ...parseUrl(ajaxUrl),
+                      offset: offset.toString(),
+                    }),
+                    {
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      headers: { Accept: 'application/json' },
+                    }
+                  ).then(
+                    ({ data }) =>
+                      (model.name in data
+                        ? (data as IR<QueryTableResult>)[model.name]
+                        : (data as QueryTableResult)
+                      ).results
+                  )
+                }
+                createRecordSet={undefined}
+                extraButtons={undefined}
+                tableClassName="max-h-[70vh]"
+              />
+            </ErrorBoundary>
           </details>
         ))
       )}

@@ -15,6 +15,7 @@ import { Dialog } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
 import { ReportsView } from './reports';
 import { ShowLoansCommand } from './showtranscommand';
+import { ErrorBoundary } from './errorboundary';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
@@ -59,7 +60,9 @@ const commandRenderers: {
           </Button.Small>
         )}
         {showLoans && (
-          <ShowLoansCommand resource={resource} onClose={handleHide} />
+          <ErrorBoundary dismissable>
+            <ShowLoansCommand resource={resource} onClose={handleHide} />
+          </ErrorBoundary>
         )}
       </>
     );

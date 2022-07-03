@@ -45,6 +45,7 @@ import { usePref } from './preferenceshooks';
 import { queryFieldFilters } from './querybuilderfieldfilter';
 import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
+import { ErrorBoundary } from './errorboundary';
 
 export function ReportsView({
   // If resource ID is provided, model must be too
@@ -108,12 +109,14 @@ export function ReportsView({
 
   return typeof appResources === 'object' && attachmentSettings === true ? (
     typeof selectedReport === 'object' ? (
-      <Report
-        appResource={selectedReport}
-        onClose={handleClose}
-        resourceId={resourceId}
-        model={model}
-      />
+      <ErrorBoundary dismissable>
+        <Report
+          appResource={selectedReport}
+          onClose={handleClose}
+          resourceId={resourceId}
+          model={model}
+        />
+      </ErrorBoundary>
     ) : (
       <Dialog
         icon={<span className="text-blue-500">{icons.documentReport}</span>}

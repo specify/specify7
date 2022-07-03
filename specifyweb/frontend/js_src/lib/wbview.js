@@ -82,6 +82,7 @@ const defaultMetaValues = Object.freeze([
   undefined,
 ]);
 
+// REFACTOR: when rewriting to React, add ErrorBoundaries for these two:
 const WbUploadedView = createBackboneView(WbUploaded);
 const WbStatusView = createBackboneView(WbStatus);
 

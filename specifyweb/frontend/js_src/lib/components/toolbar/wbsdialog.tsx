@@ -26,6 +26,7 @@ import { goTo } from '../navigation';
 import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
 import { getUserPref } from '../../preferencesutils';
+import { ErrorBoundary } from '../errorboundary';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -329,6 +330,8 @@ export const menuItem: MenuItem = {
   isOverlay: true,
   enabled: () => getUserPref('header', 'menu', 'showWorkBench'),
   view: ({ onClose: handleClose }) => (
-    <WbsDialog onClose={handleClose} showTemplates={false} />
+    <ErrorBoundary dismissable>
+      <WbsDialog onClose={handleClose} showTemplates={false} />
+    </ErrorBoundary>
   ),
 };

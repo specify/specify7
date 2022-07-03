@@ -70,7 +70,7 @@ export function LeafletPlugin({
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
   return (
-    <>
+    <ErrorBoundary dismissable>
       <Button.Small
         id={id}
         onClick={handleToggle}
@@ -80,6 +80,6 @@ export function LeafletPlugin({
         {localityText('showMap')}
       </Button.Small>
       {isOpen && <LeafletDialog locality={locality} onClose={handleClose} />}
-    </>
+    </ErrorBoundary>
   );
 }

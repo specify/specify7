@@ -27,6 +27,7 @@ import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { ReportsView } from './reports';
+import { ErrorBoundary } from './errorboundary';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -280,10 +281,12 @@ export function InteractionsDialog({
   const [entries] = useAsyncState(fetchEntries, true);
 
   return typeof entries === 'object' ? (
-    <Interactions
-      onClose={handleClose}
-      urlParameter={urlParameter}
-      entries={entries}
-    />
+    <ErrorBoundary dismissable>
+      <Interactions
+        onClose={handleClose}
+        urlParameter={urlParameter}
+        entries={entries}
+      />
+    </ErrorBoundary>
   ) : null;
 }

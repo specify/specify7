@@ -9,6 +9,7 @@ import { commonText } from '../../localization/common';
 import { hasPermission } from '../../permissions';
 import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
+import { ErrorBoundary } from '../errorboundary';
 import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -63,6 +64,10 @@ export const userTool: UserTool = {
   title: commonText('updateExportFeed'),
   enabled: () => hasPermission('/export/feed', 'force_update'),
   isOverlay: true,
-  view: ({ onClose: handleClose }) => <ForceUpdateFeed onClose={handleClose} />,
+  view: ({ onClose: handleClose }) => (
+    <ErrorBoundary dismissable>
+      <ForceUpdateFeed onClose={handleClose} />
+    </ErrorBoundary>
+  ),
   groupLabel: commonText('export'),
 };

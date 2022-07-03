@@ -6,11 +6,14 @@
  */
 
 import React from 'react';
+import type { State } from 'typesafe-reducer';
 
 import { Http } from '../ajax';
 import { breakpoint } from '../assert';
 import { jsonStringify, removeKey } from '../helpers';
+import { consoleLog } from '../interceptlogs';
 import { commonText } from '../localization/common';
+import { LANGUAGE } from '../localization/utils';
 import { getOperationPermissions, getTablePermissions } from '../permissions';
 import { getRawUserPreferences } from '../preferencesutils';
 import { remotePrefs } from '../remoteprefs';
@@ -26,11 +29,8 @@ import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
-import { consoleLog } from '../interceptlogs';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
-import { LANGUAGE } from '../localization/utils';
-import { State } from 'typesafe-reducer';
 
 type ErrorBoundaryState =
   | State<'Main'>
@@ -179,7 +179,7 @@ function showError(error: Error, dismissable: boolean): void {
 
 export class ErrorBoundary extends React.Component<
   {
-    readonly children: JSX.Element | null;
+    readonly children: React.ReactNode;
     /*
      * Can wrap a component in an <ErrorBoundary> with silentErrors
      * to silence all errors from it (on error, the component is quietly
@@ -216,7 +216,7 @@ export class ErrorBoundary extends React.Component<
     });
   }
 
-  public render(): JSX.Element | null {
+  public render(): React.ReactNode {
     if (
       (this.state.type === 'Error' &&
         this.props.silentErrors === true &&
@@ -244,7 +244,7 @@ export class ErrorBoundary extends React.Component<
           {this.state.errorInfo.componentStack}
         </ErrorDialog>
       ) : (
-        this.props.children
+        this.props.children ?? null
       );
   }
 }

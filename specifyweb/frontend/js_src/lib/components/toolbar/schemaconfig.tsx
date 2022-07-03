@@ -27,6 +27,7 @@ import type {
 import { SchemaConfig } from '../schemaconfig';
 import { webLinks } from '../weblinkbutton';
 import { useSchemaLanguages } from './language';
+import { ErrorBoundary } from '../errorboundary';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -67,7 +68,7 @@ function SchemaConfigWrapper({
   const { language: defaultLanguage, table: defaultTable } = parseUrl();
 
   useTitle(commonText('schemaConfig'));
-  const languages = useSchemaLanguages();
+  const languages = useSchemaLanguages(true);
   const [tables] = useAsyncState<IR<SerializedResource<SpLocaleContainer>>>(
     React.useCallback(async () => {
       return fetchCollection('SpLocaleContainer', {
@@ -156,7 +157,9 @@ export const userTool: UserTool = {
   title: commonText('schemaConfig'),
   isOverlay: true,
   view: ({ onClose: handleClose }) => (
-    <SchemaConfigWrapper onClose={handleClose} />
+    <ErrorBoundary dismissable>
+      <SchemaConfigWrapper onClose={handleClose} />
+    </ErrorBoundary>
   ),
   enabled: () => hasToolPermission('schemaConfig', 'read'),
   groupLabel: commonText('customization'),

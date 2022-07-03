@@ -128,7 +128,9 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     );
   };
 
-export function useSchemaLanguages(): IR<string> | undefined {
+export function useSchemaLanguages(
+  loadingScreen: boolean
+): IR<string> | undefined {
   const [languages] = useAsyncState<IR<string>>(
     React.useCallback(
       async () =>
@@ -169,7 +171,7 @@ export function useSchemaLanguages(): IR<string> | undefined {
           ),
       []
     ),
-    true
+    loadingScreen
   );
   return languages;
 }
@@ -180,7 +182,7 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     onChange: handleChange,
     isReadOnly,
   }) {
-    const languages = useSchemaLanguages();
+    const languages = useSchemaLanguages(false);
     return (
       <LanguageSelection<string>
         languages={languages ?? { loading: commonText('loading') }}

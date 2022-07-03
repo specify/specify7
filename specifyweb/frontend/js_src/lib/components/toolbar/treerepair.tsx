@@ -23,6 +23,7 @@ import { icons } from '../icons';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import { ResourceView } from '../resourceview';
+import { ErrorBoundary } from '../errorboundary';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -158,7 +159,7 @@ export function EditTreeDefinition({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
-    <>
+    <ErrorBoundary dismissable>
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
@@ -173,7 +174,7 @@ export function EditTreeDefinition({
           isDependent={false}
         />
       )}
-    </>
+    </ErrorBoundary>
   );
 }
 

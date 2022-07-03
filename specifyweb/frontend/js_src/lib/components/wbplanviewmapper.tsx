@@ -52,6 +52,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { ErrorBoundary } from './errorboundary';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -586,64 +587,67 @@ export function WbPlanViewMapper(props: {
             : lineData;
 
           return (
-            <MappingLineComponent
-              key={line}
-              headerName={headerName}
-              isReadOnly={props.isReadOnly}
-              isFocused={line === state.focusedLine}
-              onFocus={(): void =>
-                dispatch({
-                  type: 'FocusLineAction',
-                  line,
-                })
-              }
-              // Same key bindings as in QueryBuilder
-              onKeyDown={(key): void => {
-                const openSelectElement =
-                  state.openSelectElement?.line === line
-                    ? state.openSelectElement.index
-                    : undefined;
-
-                if (typeof openSelectElement === 'number') {
-                  if (key === 'ArrowLeft')
-                    if (openSelectElement > 0)
-                      handleOpen(openSelectElement - 1);
-                    else
-                      dispatch({
-                        type: 'CloseSelectElementAction',
-                      });
-                  else if (key === 'ArrowRight')
-                    if (openSelectElement + 1 < fullLineData.length)
-                      handleOpen(openSelectElement + 1);
-                    else
-                      dispatch({
-                        type: 'CloseSelectElementAction',
-                      });
-
-                  return;
+            <ErrorBoundary dismissable>
+              <MappingLineComponent
+                key={line}
+                headerName={headerName}
+                isReadOnly={props.isReadOnly}
+                isFocused={line === state.focusedLine}
+                onFocus={(): void =>
+                  dispatch({
+                    type: 'FocusLineAction',
+                    line,
+                  })
                 }
+                // Same key bindings as in QueryBuilder
+                onKeyDown={(key): void => {
+                  const openSelectElement =
+                    state.openSelectElement?.line === line
+                      ? state.openSelectElement.index
+                      : undefined;
 
-                if (key === 'ArrowLeft') handleOpen(fullLineData.length - 1);
-                else if (key === 'ArrowRight' || key === 'Enter') handleOpen(0);
-                else if (key === 'ArrowUp' && line > 0)
+                  if (typeof openSelectElement === 'number') {
+                    if (key === 'ArrowLeft')
+                      if (openSelectElement > 0)
+                        handleOpen(openSelectElement - 1);
+                      else
+                        dispatch({
+                          type: 'CloseSelectElementAction',
+                        });
+                    else if (key === 'ArrowRight')
+                      if (openSelectElement + 1 < fullLineData.length)
+                        handleOpen(openSelectElement + 1);
+                      else
+                        dispatch({
+                          type: 'CloseSelectElementAction',
+                        });
+
+                    return;
+                  }
+
+                  if (key === 'ArrowLeft') handleOpen(fullLineData.length - 1);
+                  else if (key === 'ArrowRight' || key === 'Enter')
+                    handleOpen(0);
+                  else if (key === 'ArrowUp' && line > 0)
+                    dispatch({
+                      type: 'FocusLineAction',
+                      line: line - 1,
+                    });
+                  else if (key === 'ArrowDown' && line + 1 < state.lines.length)
+                    dispatch({
+                      type: 'FocusLineAction',
+                      line: line + 1,
+                    });
+                }}
+                onClearMapping={(): void =>
                   dispatch({
-                    type: 'FocusLineAction',
-                    line: line - 1,
-                  });
-                else if (key === 'ArrowDown' && line + 1 < state.lines.length)
-                  dispatch({
-                    type: 'FocusLineAction',
-                    line: line + 1,
-                  });
-              }}
-              onClearMapping={(): void =>
-                dispatch({
-                  type: 'ClearMappingLineAction',
-                  line,
-                })
-              }
-              lineData={fullLineData}
-            />
+                    type: 'ClearMappingLineAction',
+                    line,
+                  })
+                }
+                lineData={fullLineData}
+              />
+            </ErrorBoundary>
           );
         })}
       </Ul>

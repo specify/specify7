@@ -12,6 +12,7 @@ import { getValidationAttributes } from '../uiparse';
 import { Input, Textarea } from './basic';
 import { ComboBox } from './combobox';
 import { AutoGrowTextArea } from './common';
+import { ErrorBoundary } from './errorboundary';
 import { useAsyncState, useResourceValue } from './hooks';
 import { usePref } from './preferenceshooks';
 import { QueryComboBox } from './querycombobox';
@@ -38,25 +39,29 @@ const fieldRenderers: {
     fieldName,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
-    return printOnSave ? (
-      hasPermission('/report', 'execute') ? (
-        <PrintOnSave
-          id={id}
-          fieldName={fieldName}
-          model={resource.specifyModel}
-          text={label}
-          defaultValue={defaultValue}
-        />
-      ) : null
-    ) : (
-      <SpecifyFormCheckbox
-        id={id}
-        resource={resource}
-        fieldName={defined(fieldName)}
-        defaultValue={defaultValue}
-        isReadOnly={mode === 'view'}
-        text={label}
-      />
+    return (
+      <ErrorBoundary dismissable>
+        {printOnSave ? (
+          hasPermission('/report', 'execute') ? (
+            <PrintOnSave
+              id={id}
+              fieldName={fieldName}
+              model={resource.specifyModel}
+              text={label}
+              defaultValue={defaultValue}
+            />
+          ) : null
+        ) : (
+          <SpecifyFormCheckbox
+            id={id}
+            resource={resource}
+            fieldName={defined(fieldName)}
+            defaultValue={defaultValue}
+            isReadOnly={mode === 'view'}
+            text={label}
+          />
+        )}
+      </ErrorBoundary>
     );
   },
   TextArea({
@@ -93,18 +98,20 @@ const fieldRenderers: {
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
 
     return (
-      <Component
-        {...validationAttributes}
-        forwardRef={validationRef}
-        id={id}
-        name={fieldName}
-        value={value?.toString() ?? ''}
-        onValueChange={(value): void => updateValue(value, false)}
-        onBlur={(): void => updateValue(value?.toString() ?? '')}
-        rows={rows}
-        isReadOnly={mode === 'view'}
-        required={'required' in validationAttributes && mode !== 'search'}
-      />
+      <ErrorBoundary dismissable>
+        <Component
+          {...validationAttributes}
+          forwardRef={validationRef}
+          id={id}
+          name={fieldName}
+          value={value?.toString() ?? ''}
+          onValueChange={(value): void => updateValue(value, false)}
+          onBlur={(): void => updateValue(value?.toString() ?? '')}
+          rows={rows}
+          isReadOnly={mode === 'view'}
+          required={'required' in validationAttributes && mode !== 'search'}
+        />
+      </ErrorBoundary>
     );
   },
   ComboBox({
@@ -126,20 +133,24 @@ const fieldRenderers: {
       ),
       false
     );
-    return data === undefined ? null : (
-      <ComboBox
-        id={id}
-        model={resource}
-        resource={data === false ? resource : data.resource}
-        field={data === false ? undefined : data.field}
-        fieldName={fieldName}
-        pickListName={pickList}
-        defaultValue={defaultValue}
-        mode={mode}
-        isRequired={isRequired}
-        isDisabled={false}
-        formType={formType}
-      />
+    return (
+      <ErrorBoundary dismissable>
+        {data === undefined ? undefined : (
+          <ComboBox
+            id={id}
+            model={resource}
+            resource={data === false ? resource : data.resource}
+            field={data === false ? undefined : data.field}
+            fieldName={fieldName}
+            pickListName={pickList}
+            defaultValue={defaultValue}
+            mode={mode}
+            isRequired={isRequired}
+            isDisabled={false}
+            formType={formType}
+          />
+        )}
+      </ErrorBoundary>
     );
   },
   QueryComboBox({
@@ -180,22 +191,24 @@ const fieldRenderers: {
     fieldDefinition: { defaultValue, min, max, step },
   }) {
     return (
-      <UiField
-        id={id}
-        resource={resource}
-        mode={mode}
-        fieldName={fieldName}
-        parser={React.useMemo<Parser>(
-          () => ({
-            value: defaultValue,
-            min,
-            max,
-            step,
-            required: isRequired,
-          }),
-          [defaultValue, min, max, step, isRequired]
-        )}
-      />
+      <ErrorBoundary dismissable>
+        <UiField
+          id={id}
+          resource={resource}
+          mode={mode}
+          fieldName={fieldName}
+          parser={React.useMemo<Parser>(
+            () => ({
+              value: defaultValue,
+              min,
+              max,
+              step,
+              required: isRequired,
+            }),
+            [defaultValue, min, max, step, isRequired]
+          )}
+        />
+      </ErrorBoundary>
     );
   },
   Plugin: UiPlugin,

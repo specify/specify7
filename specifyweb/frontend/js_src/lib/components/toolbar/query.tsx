@@ -35,6 +35,7 @@ import {
   TableIcon,
 } from '../common';
 import { LoadingContext } from '../contexts';
+import { ErrorBoundary } from '../errorboundary';
 import { downloadFile, FilePicker, fileToText } from '../filepicker';
 import { useAsyncState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
@@ -387,11 +388,13 @@ export const menuItem: MenuItem = {
     (hasToolPermission('queryBuilder', 'read') || canRunQuery()) &&
     getUserPref('header', 'menu', 'showQueries'),
   view: ({ onClose: handleClose }) => (
-    <QueryToolbarItem
-      onClose={handleClose}
-      getQuerySelectUrl={undefined}
-      isReadOnly={false}
-    />
+    <ErrorBoundary dismissable>
+      <QueryToolbarItem
+        onClose={handleClose}
+        getQuerySelectUrl={undefined}
+        isReadOnly={false}
+      />
+    </ErrorBoundary>
   ),
 };
 

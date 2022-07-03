@@ -36,7 +36,7 @@ import {
 import { useCollection } from './collection';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
-import { fail } from './errorboundary';
+import { ErrorBoundary, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { OrderPicker } from './preferencesrenderers';
@@ -465,17 +465,19 @@ function Gallery({
           : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
-        <ResourceView
-          resource={viewRecord}
-          dialog="modal"
-          onClose={(): void => setViewRecord(undefined)}
-          onDeleted={undefined}
-          onSaved={undefined}
-          canAddAnother={false}
-          isSubForm={false}
-          mode="edit"
-          isDependent={false}
-        />
+        <ErrorBoundary dismissable>
+          <ResourceView
+            resource={viewRecord}
+            dialog="modal"
+            onClose={(): void => setViewRecord(undefined)}
+            onDeleted={undefined}
+            onSaved={undefined}
+            canAddAnother={false}
+            isSubForm={false}
+            mode="edit"
+            isDependent={false}
+          />
+        </ErrorBoundary>
       )}
     </>
   );

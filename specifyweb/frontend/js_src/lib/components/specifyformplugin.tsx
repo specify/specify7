@@ -24,6 +24,7 @@ import { Dialog } from './modaldialog';
 import { PaleoLocationMapPlugin } from './paleolocationplugin';
 import { PartialDateUi } from './partialdateui';
 import { WebLinkButton } from './weblinkbutton';
+import { ErrorBoundary } from './errorboundary';
 
 function WrongTable({
   resource,
@@ -93,16 +94,18 @@ const pluginRenderers: {
       return null;
     } else
       return (
-        <PartialDateUi
-          resource={resource}
-          id={id}
-          isReadOnly={mode === 'view'}
-          defaultValue={defaultValue}
-          defaultPrecision={defaultPrecision}
-          precisionField={precisionField}
-          dateField={field}
-          canChangePrecision={formType === 'form'}
-        />
+        <ErrorBoundary dismissable>
+          <PartialDateUi
+            resource={resource}
+            id={id}
+            isReadOnly={mode === 'view'}
+            defaultValue={defaultValue}
+            defaultPrecision={defaultPrecision}
+            precisionField={precisionField}
+            dateField={field}
+            canChangePrecision={formType === 'form'}
+          />
+        </ErrorBoundary>
       );
   },
   CollectionRelOneToManyPlugin({
@@ -119,10 +122,12 @@ const pluginRenderers: {
         !hasTablePermission('CollectionRelType', 'read')
         ? null
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <CollectionOneToManyPlugin
-              resource={collectionObject}
-              relationship={relationship}
-            />
+            <ErrorBoundary dismissable>
+              <CollectionOneToManyPlugin
+                resource={collectionObject}
+                relationship={relationship}
+              />
+            </ErrorBoundary>
           )) ?? (
             <WrongTable resource={resource} allowedTable="CollectionObject" />
           );
@@ -139,10 +144,12 @@ const pluginRenderers: {
         !hasTablePermission('CollectionRelType', 'read')
         ? null
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <CollectionOneToOnePlugin
-              resource={collectionObject}
-              relationship={relationship}
-            />
+            <ErrorBoundary dismissable>
+              <CollectionOneToOnePlugin
+                resource={collectionObject}
+                relationship={relationship}
+              />
+            </ErrorBoundary>
           )) ?? (
             <WrongTable resource={resource} allowedTable="CollectionObject" />
           );
@@ -150,7 +157,9 @@ const pluginRenderers: {
   LocalityGeoRef({ resource }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <GeoLocatePlugin resource={locality} />
+        <ErrorBoundary dismissable>
+          <GeoLocatePlugin resource={locality} />
+        </ErrorBoundary>
       )) ?? <WrongTable resource={resource} allowedTable="Locality" />
     );
   },
@@ -163,15 +172,17 @@ const pluginRenderers: {
     id,
   }) {
     return (
-      <WebLinkButton
-        resource={resource}
-        fieldName={fieldName}
-        webLink={webLink}
-        icon={icon}
-        formType={formType}
-        mode={mode}
-        id={id}
-      />
+      <ErrorBoundary dismissable>
+        <WebLinkButton
+          resource={resource}
+          fieldName={fieldName}
+          webLink={webLink}
+          icon={icon}
+          formType={formType}
+          mode={mode}
+          id={id}
+        />
+      </ErrorBoundary>
     );
   },
   AttachmentPlugin({ resource, mode, id, fieldName }) {

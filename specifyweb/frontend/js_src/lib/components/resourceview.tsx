@@ -17,7 +17,7 @@ import { AppTitle } from './common';
 import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { crash, fail } from './errorboundary';
+import { crash, ErrorBoundary, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
@@ -339,11 +339,13 @@ export function ResourceView<SCHEMA extends AnySchema>({
           typeof resource === 'object' &&
           !resource.isNew() &&
           hasTablePermission(resource.specifyModel.name, 'delete') ? (
-            <DeleteButton
-              resource={resource}
-              deletionMessage={deletionMessage}
-              onDeleted={handleDelete}
-            />
+            <ErrorBoundary dismissable>
+              <DeleteButton
+                resource={resource}
+                deletionMessage={deletionMessage}
+                onDeleted={handleDelete}
+              />
+            </ErrorBoundary>
           ) : undefined;
         if (dialog === false) {
           const formattedChildren = (

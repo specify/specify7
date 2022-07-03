@@ -43,6 +43,7 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { ErrorBoundary } from './errorboundary';
 
 const defaultCacheValue = [] as const;
 
@@ -238,17 +239,19 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeText('editRanks')}
         </Button.Small>
         <span className="flex-1 -ml-2" />
-        <TreeViewActions<SCHEMA>
-          tableName={tableName}
-          focusRef={toolbarButtonRef}
-          onRefresh={(): void => {
-            // Force re-load
-            setRows(undefined);
-            globalThis.setTimeout(() => setRows(rows), 0);
-          }}
-          focusedRow={focusedRow}
-          ranks={rankIds}
-        />
+        <ErrorBoundary dismissable>
+          <TreeViewActions<SCHEMA>
+            tableName={tableName}
+            focusRef={toolbarButtonRef}
+            onRefresh={(): void => {
+              // Force re-load
+              setRows(undefined);
+              globalThis.setTimeout(() => setRows(rows), 0);
+            }}
+            focusedRow={focusedRow}
+            ranks={rankIds}
+          />
+        </ErrorBoundary>
       </header>
       <div
         className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
