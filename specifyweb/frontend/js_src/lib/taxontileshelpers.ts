@@ -1,6 +1,8 @@
-import d3 from 'd3';
-import { filterArray, RA, RR } from './types';
+import * as d3 from 'd3';
+
 import { index, sortFunction } from './helpers';
+import type { RA, RR } from './types';
+import { filterArray } from './types';
 
 type Node = {
   readonly id: number;
@@ -21,14 +23,14 @@ export function pairNodes(nodes: RA<Node>): RA<PairedNode> {
   pairedNodes.forEach((node) => {
     if (typeof node?.parentId !== 'number') return;
     const parent = indexedCells[node.parentId];
-    if (typeof parent === 'object') parent.children.push(node);
+    if (typeof parent === 'object') parent.children?.push(node);
     else console.warn('Taxon node with missing parent', { node });
   });
 
   return pairedNodes;
 }
 
-type PairedNode = Node & { children: PairedNode[] };
+type PairedNode = Node & { children: PairedNode[] | undefined };
 
 /**
  * Limit the number of tree squares to ~1000.
@@ -57,9 +59,9 @@ function calculateThreshold(nodes: RA<PairedNode>): number {
   let count = 0;
   let threshold = Number.POSITIVE_INFINITY;
   for (const [childrenCount, nodeCount] of counts) {
+    threshold = Number.parseInt(childrenCount);
     count += nodeCount;
     if (count >= TILE_LIMIT) break;
-    threshold = Number.parseInt(childrenCount);
   }
   return threshold;
 }
@@ -89,7 +91,7 @@ function pullUp(node: PairedNode, threshold: number): number {
   const children = [];
   let thisCount = node.count;
   let totalCount = node.count;
-  node.children.forEach((child) => {
+  node.children?.forEach((child) => {
     const childCount = pullUp(child, threshold);
     totalCount += childCount;
     // Absorb children below the threshold
@@ -106,60 +108,57 @@ function pullUp(node: PairedNode, threshold: number): number {
   return totalCount;
 }
 
-export function makeTreeMap(container: HTMLElement, root: PairedNode) {
-  const treeMap = d3.layout
+export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
+  const root = d3
+    .hierarchy(rawRoot)
+    .sum(({ count }) => count)
+    .sort(sortFunction(({ data }) => data.id));
+
+  const svg = d3.select(container);
+
+  d3
     .treemap()
+    .tile(d3.treemapBinary)
     .size([container.clientWidth, container.clientHeight])
-    .sort(sortFunction(({ id }) => id))
-    .value(({ count }) => count);
+    .round(true)(root);
 
-  const color = d3.scale.category20c();
-  const chart = d3
-    .select(container)
-    .selectAll('.node')
-    // FIXME: refactor this
-    .data(treeMap.nodes(root).filter((node) => !Array.isArray(node.children)))
+  const color = d3.scaleOrdinal(d3.schemeSet2);
+  return svg
+    .selectAll('rect')
+    .data(root.leaves())
     .enter()
-    .append('div')
-    .attr('class', 'node')
-    .call(position)
-    .attr('class', 'node border dark:border-neutral-700 absolute opacity-80')
-    // FIXME: refactor this
-    .style('background', (node) =>
-      Array.isArray(node.children) ? null : color(node.name)
-    );
-
-  return chart;
+    .append('rect')
+    .attr('x', (d) => nodeRead(d, 'x0'))
+    .attr('y', (d) => nodeRead(d, 'y0'))
+    .attr('width', (d) => nodeRead(d, 'x1') - nodeRead(d, 'x0'))
+    .attr('height', (d) => nodeRead(d, 'y1') - nodeRead(d, 'y0'))
+    .attr('class', 'stroke stroke-black dark:stroke-neutral-700')
+    .attr('fill', ({ data }) => color(data.name));
 }
+
+/** Fix for incorrect typing for d3.HierarchyNode */
+const nodeRead = (
+  node: d3.HierarchyNode<PairedNode>,
+  key: 'x0' | 'x1' | 'y0' | 'y1'
+): number => (node as unknown as Record<typeof key, number>)[key];
 
 export const getTitleGenerator =
-  (genusRankId: number | undefined): ((node: MapNode) => string) =>
+  (
+    genusRankId: number | undefined
+  ): ((node: d3.HierarchyNode<PairedNode>) => string) =>
   (node) =>
     filterArray(recurseTreeTiles(node, genusRankId) ?? []).join(' ') ||
-    node.name;
-
-type MapNode = {
-  readonly name: string;
-  readonly parent: MapNode;
-  readonly rankId: number;
-  readonly children: RA<MapNode | undefined>;
-};
+    node.data.name;
 
 const recurseTreeTiles = (
-  node: MapNode,
+  node: d3.HierarchyNode<PairedNode>,
   genusRankId: number | undefined
 ): RA<string | undefined> | undefined =>
-  genusRankId === undefined || node.rankId >= genusRankId
+  genusRankId === undefined || node.data.rankId >= genusRankId
     ? [
-        ...(recurseTreeTiles(node.parent, genusRankId) ?? []),
-        Array.isArray(node.children) ? node.name : undefined,
+        ...(node.parent === null
+          ? []
+          : recurseTreeTiles(node.parent, genusRankId) ?? []),
+        Array.isArray(node.children) ? node.data.name : undefined,
       ]
     : undefined;
-
-// FIXME: refactor this
-function position() {
-  this.style('left', (node) => `${node.x}px`)
-    .style('top', (node) => `${node.y}px`)
-    .style('width', (node) => `${Math.max(0, node.dx - 1)}px`)
-    .style('height', (node) => `${Math.max(0, node.dy - 1)}px`);
-}

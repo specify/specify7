@@ -75,7 +75,7 @@ let frontEndPickLists: {
 };
 
 export function getFrontEndPickLists(): typeof frontEndPickLists {
-  if (typeof frontEndPickLists === undefined) defineFrontEndPickLists();
+  if (frontEndPickLists === undefined) defineFrontEndPickLists();
   return frontEndPickLists;
 }
 

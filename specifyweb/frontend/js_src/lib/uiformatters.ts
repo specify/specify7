@@ -49,7 +49,7 @@ export const fetchContext =
                             (getParsedAttribute(field, 'type') ??
                               '') as keyof typeof fieldMapper
                           ];
-                        if (typeof FieldClass === undefined) return undefined;
+                        if (FieldClass === undefined) return undefined;
                         return new FieldClass({
                           size:
                             f.parseInt(

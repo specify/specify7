@@ -167,7 +167,7 @@ export function mapKey(
   event: React.KeyboardEvent<HTMLButtonElement>
 ): KeyAction | undefined {
   const action = keyMapper[event.key as keyof typeof keyMapper];
-  if (typeof action === undefined) return undefined;
+  if (action === undefined) return undefined;
 
   event.preventDefault();
   event.stopPropagation();

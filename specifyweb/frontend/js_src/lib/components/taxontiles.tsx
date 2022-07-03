@@ -2,18 +2,18 @@ import React from 'react';
 
 import { ajax } from '../ajax';
 import { welcomeText } from '../localization/welcome';
-import { getTreeDefinitionItems, treeRanksPromise } from '../treedefinitions';
-import type { RA } from '../types';
-import { useAsyncState } from './hooks';
 import {
   getTitleGenerator,
   makeTreeMap,
   mergeNodes,
   pairNodes,
 } from '../taxontileshelpers';
+import { getTreeDefinitionItems, treeRanksPromise } from '../treedefinitions';
+import type { RA } from '../types';
+import { useAsyncState } from './hooks';
 
 export function TaxonTiles(): JSX.Element {
-  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
+  const [container, setContainer] = React.useState<SVGElement | null>(null);
   const genusRankId = useGenusRankId();
   const treeData = useTreeData();
 
@@ -31,9 +31,9 @@ export function TaxonTiles(): JSX.Element {
     const chart = makeTreeMap(container, treeData.root);
     chart
       .attr('title', titleGenerator)
-      .on('mouseover', (node) => setTitle(titleGenerator(node)));
+      .on('mouseover', (_event, node) => setTitle(titleGenerator(node)));
     setTitle(treeData.root.name);
-    // FIXME: add a chart destructor
+    return () => void chart.remove();
   }, [container, genusRankId, treeData]);
 
   return (
@@ -53,7 +53,10 @@ export function TaxonTiles(): JSX.Element {
           {title}
         </p>
       )}
-      <div ref={setContainer} className="relative flex-1 w-full" />
+      <svg
+        ref={setContainer}
+        className="dark:bg-neutral-700 flex-1 w-full bg-black"
+      />
     </div>
   );
 }
@@ -93,12 +96,12 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
           headers: { Accept: 'application/json' },
         })
           .then(({ data }) =>
-            data.map((cell) => ({
-              id: cell[0],
-              rankId: cell[1],
-              parentId: cell[2],
-              name: cell[3],
-              count: cell[4],
+            data.map(([id, rankId, parentId, name, count]) => ({
+              id,
+              rankId,
+              parentId,
+              name,
+              count,
             }))
           )
           .then(pairNodes)

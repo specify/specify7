@@ -111,6 +111,13 @@ export function useDarkMode(): boolean {
   return theme === 'system' ? media : theme === 'dark';
 }
 
+export const shouldUseDarkMode = (): boolean =>
+  f.var(getUserPref('general', 'ui', 'theme'), (theme) =>
+    theme === 'system'
+      ? globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+      : theme === 'dark'
+  );
+
 export function useReducedTransparency(): boolean {
   const [reduceTransparency] = usePref('general', 'ui', 'reduceTransparency');
   const media = useMedia('(prefers-reduced-transparency: reduce)');
@@ -118,13 +125,6 @@ export function useReducedTransparency(): boolean {
     ? media
     : reduceTransparency === 'reduce';
 }
-
-export const shouldUseDarkMode = (): boolean =>
-  f.var(getUserPref('general', 'ui', 'theme'), (theme) =>
-    theme === 'system'
-      ? globalThis.matchMedia('(prefers-color-scheme: dark)').matches
-      : theme === 'dark'
-  );
 
 export function SetCssVariables(): null {
   const transitionDuration = useTransitionDuration();
