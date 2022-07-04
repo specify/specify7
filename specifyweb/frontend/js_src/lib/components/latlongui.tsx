@@ -60,7 +60,9 @@ function Coordinate({
             ''
         );
         handleChange(
-          resource.get(coordinateTextField) ?? resource.get(coordinateField)
+          resource.get(coordinateTextField) ??
+            resource.get(coordinateField) ??
+            ''
         );
       },
       // Update parent's Preview column with initial values on first render

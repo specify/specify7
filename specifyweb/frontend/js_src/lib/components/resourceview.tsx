@@ -1,6 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { getCache } from '../cache';
 import { fetchCollection } from '../collection';
 import type { RecordSet, Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
@@ -18,6 +19,7 @@ import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash, ErrorBoundary, fail } from './errorboundary';
+import { FormPreferences } from './formpreferences';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo, pushUrl } from './navigation';
@@ -27,7 +29,6 @@ import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
-import { getCache } from '../cache';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -81,12 +82,13 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isSubForm: boolean;
   readonly children: (props: {
     readonly formElement: HTMLFormElement | null;
-    readonly title: string;
-    readonly formatted: string;
+    readonly formPreferences: JSX.Element;
     readonly form: (
       children: JSX.Element | undefined,
       className?: string
     ) => JSX.Element;
+    readonly title: string;
+    readonly formatted: string;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
@@ -154,6 +156,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     formatted: tableNameInTitle ? title : formatted,
     title,
     formElement: form,
+    formPreferences: <FormPreferences resource={resource} />,
     form: (children, className) =>
       isSubForm ? (
         <>
@@ -290,8 +293,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
       isSubForm={isSubForm}
     >
       {({
-        form,
         formElement,
+        formPreferences,
+        form,
         title,
         formatted,
         specifyNetworkBadge,
@@ -345,6 +349,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
               />
             </ErrorBoundary>
           ) : undefined;
+        const headerContent = (
+          <>
+            {specifyNetworkBadge}
+            {formPreferences}
+          </>
+        );
         if (dialog === false) {
           const formattedChildren = (
             <>
@@ -361,18 +371,19 @@ export function ResourceView<SCHEMA extends AnySchema>({
               ) : undefined}
             </>
           );
+          const headerComponents = headerButtons?.(headerContent) ?? (
+            <>
+              <span className="flex-1 -ml-2" />
+              {headerContent}
+            </>
+          );
           return isSubForm ? (
             <DataEntry.SubForm>
               <DataEntry.SubFormHeader>
                 <DataEntry.SubFormTitle>
                   {titleOverride ?? title}
                 </DataEntry.SubFormTitle>
-                {headerButtons?.(specifyNetworkBadge) ?? (
-                  <>
-                    <span className="flex-1 -ml-2" />
-                    {specifyNetworkBadge}
-                  </>
-                )}
+                {headerComponents}
               </DataEntry.SubFormHeader>
               {formattedChildren}
             </DataEntry.SubForm>
@@ -382,12 +393,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 <DataEntry.Header>
                   <AppTitle title={titleOverride ?? formatted} type="form" />
                   <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
-                  {headerButtons?.(specifyNetworkBadge) ?? (
-                    <>
-                      <span className="flex-1 -ml-4" />
-                      {specifyNetworkBadge}
-                    </>
-                  )}
+                  {headerComponents}
                 </DataEntry.Header>
                 {formattedChildren}
               </Container.Center>
@@ -414,7 +420,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                     <>
                       <DataEntry.Visit resource={resource} />
                       <span className="flex-1 -ml-4" />
-                      {specifyNetworkBadge}
+                      {headerContent}
                     </>
                   )}
                   {!isSubForm && (
