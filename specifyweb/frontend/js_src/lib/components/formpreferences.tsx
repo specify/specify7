@@ -6,6 +6,7 @@ import { commonText } from '../localization/common';
 import { Button } from './basic';
 import { FormAutoNumbering } from './formautonumbering';
 import { CarryForwardButton } from './formcarryforward';
+import { FormDefinition } from './formdefinition';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
@@ -49,6 +50,7 @@ function PreferencesDialog({
       <div className="flex flex-wrap gap-2">
         <CarryForwardButton model={resource.specifyModel} />
         <FormAutoNumbering resource={resource} />
+        <FormDefinition model={resource.specifyModel} />
       </div>
     </Dialog>
   );

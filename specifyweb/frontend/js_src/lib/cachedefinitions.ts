@@ -32,7 +32,10 @@ export type CacheDefinitions = {
     readonly autoNumbering: {
       readonly [TABLE_NAME in keyof Tables]?: RA<
         TableFields<Tables[TABLE_NAME]>
-        >;
+      >;
+    };
+    readonly useCustomForm: {
+      readonly [TABLE_NAME in keyof Tables]?: boolean;
     };
     readonly carryForwardShowHidden: boolean;
   };

@@ -546,10 +546,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Scroll wheel zoom',
     'ru-ru': 'Колесо прокрутки может масштабировать',
   },
-  definition: {
-    'en-us': 'Definition',
-    'ru-ru': 'Схема',
-  },
   flexibleColumnWidth: {
     'en-us': 'Flexible column width',
     'ru-ru': 'Гибкая ширина столбцов',

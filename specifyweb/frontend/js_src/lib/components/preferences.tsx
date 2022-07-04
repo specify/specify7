@@ -519,7 +519,7 @@ export const preferenceDefinitions = {
         },
       },
       definition: {
-        title: preferencesText('definition'),
+        title: commonText('formDefinition'),
         items: {
           flexibleColumnWidth: defineItem<boolean>({
             title: preferencesText('flexibleColumnWidth'),

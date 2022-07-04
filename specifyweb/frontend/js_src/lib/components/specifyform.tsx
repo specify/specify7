@@ -22,6 +22,7 @@ import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
 import { loadingGif } from './queryresultstable';
 import { FormCell } from './specifyformcell';
+import { useCachedState } from './statecache';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -46,6 +47,13 @@ export function useViewDefinition({
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
+  const [globalConfig = {}] = useCachedState({
+    category: 'forms',
+    key: 'useCustomForm',
+    defaultValue: {},
+    staleWhileRefresh: false,
+  });
+  const useCustomForm = globalConfig[model.name] ?? true;
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(
       async () =>
@@ -56,7 +64,8 @@ export function useViewDefinition({
               formType,
               mode,
             }
-          : getView(
+          : useCustomForm
+          ? getView(
               viewName === originalAttachmentsView
                 ? 'ObjectAttachment'
                 : viewName
@@ -83,8 +92,9 @@ export function useViewDefinition({
                         model,
                       })
                     ) ?? autoGenerateViewDefinition(model, formType, mode)
-              ),
-      [viewName, formType, mode, model]
+              )
+          : autoGenerateViewDefinition(model, formType, mode),
+      [useCustomForm, viewName, formType, mode, model]
     ),
     false
   );
