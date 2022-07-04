@@ -36,15 +36,20 @@ export type SchemaLocalization = {
 };
 
 const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
-  fields: FIELD_TYPE[],
+  fields: RA<FIELD_TYPE>,
   frontEndFields: RA<FIELD_TYPE>
-): RA<FIELD_TYPE> => [
-  ...fields.sort(sortFunction(({ label }) => label ?? '')),
-  ...frontEndFields.map((field) => {
-    field.overrides.isReadOnly = true;
-    return field;
-  }),
-];
+): RA<FIELD_TYPE> =>
+  [
+    ...fields,
+    ...frontEndFields.map((field) => {
+      field.overrides.isReadOnly = true;
+      return field;
+    }),
+    /*
+     * The sort order defined here affects the order of fields in the
+     * WbPlanView, Query builder, Schema Config and all other places
+     */
+  ].sort(sortFunction(({ label }) => label ?? ''));
 
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>

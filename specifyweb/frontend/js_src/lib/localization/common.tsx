@@ -1153,4 +1153,8 @@ export const commonText = createDictionary({
     'en-us': 'Primary',
     'ru-ru': 'Основной',
   },
+  revealHiddenFormFields: {
+    'en-us': 'Reveal Hidden Form Fields',
+    'ru-ru': 'Показать скрытые поля формы',
+  },
 });

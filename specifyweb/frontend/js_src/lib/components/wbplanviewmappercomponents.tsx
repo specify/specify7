@@ -52,7 +52,7 @@ export function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        {wbText('revealHiddenFormFields')}
+        {commonText('revealHiddenFormFields')}
       </Label.ForCheckbox>
     </div>
   );

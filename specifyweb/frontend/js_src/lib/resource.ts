@@ -1,17 +1,22 @@
 import { ajax, Http, ping } from './ajax';
+import { businessRuleDefs } from './businessruledefs';
+import { getCache } from './cache';
 import type { Tables } from './datamodel';
 import type {
   AnySchema,
   SerializedModel,
   SerializedResource,
+  TableFields,
 } from './datamodelutils';
 import { addMissingFields, serializeResource } from './datamodelutils';
 import { f } from './functools';
+import { keysToLowerCase, removeKey } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { formatUrl } from './querystring';
-import { getModel } from './schema';
+import { getModel, schema } from './schema';
+import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
-import { keysToLowerCase, removeKey } from './helpers';
+import { defined } from './types';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -197,3 +202,38 @@ export function resourceOn(
 /** Extract model name from a Java class name */
 export const parseClassName = (className: string): string =>
   className.split('.').slice(-1)[0];
+
+export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
+  const fieldsToClone = getFieldsToClone(model);
+  const uniqueFields = getUniqueFields(model);
+  return model.fields
+    .map(({ name }) => name)
+    .filter(
+      (fieldName) =>
+        uniqueFields.includes(fieldName) || !fieldsToClone.includes(fieldName)
+    );
+}
+
+const getFieldsToClone = (model: SpecifyModel): RA<string> =>
+  getCache('forms', 'carryForward')?.[model.name] ??
+  model.fields.map(({ name }) => name);
+
+// REFACTOR: move this into businessRuleDefs.ts
+const businessRules = businessRuleDefs as {
+  readonly [TABLE_NAME in keyof Tables]?: {
+    readonly uniqueIn?: {
+      readonly [FIELD_NAME in Lowercase<TableFields<Tables[TABLE_NAME]>>]?:
+        | Lowercase<keyof Tables>
+        | unknown;
+    };
+  };
+};
+
+export const getUniqueFields = (model: SpecifyModel): RA<string> =>
+  Object.entries(businessRules[model.name]?.uniqueIn ?? {})
+    .filter(
+      ([_fieldName, uniquenessRules]) =>
+        typeof uniquenessRules === 'string' &&
+        uniquenessRules in schema.domainLevelIds
+    )
+    .map(([fieldName]) => defined(model.getField(fieldName)).name) ?? [];

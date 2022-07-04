@@ -655,4 +655,16 @@ export const formsText = createDictionary({
     'en-us': 'Remove from Record Set',
     'ru-ru': 'Удалить из набора записей',
   },
+  carryForward: {
+    'en-us': 'Carry Forward',
+    'ru-ru': 'Настройки клонирования',
+  },
+  carryForwardDescription: {
+    'en-us': 'Fields to carry forward on clone',
+    'ru-ru': 'Поля для переноса при клонировании',
+  },
+  carryForwardUniqueField: {
+    'en-us': 'This field must be unique. It can not be carried over',
+    'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
+  },
 });

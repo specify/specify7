@@ -3,13 +3,16 @@ import {Backbone} from './backbone';
 
 import {assert} from './assert';
 import {globalEvents} from './specifyapi';
-import {getResourceViewUrl, parseResourceUrl} from './resource';
+import {
+    getFieldsToNotClone,
+    getResourceViewUrl,
+    parseResourceUrl
+} from './resource';
 import {getResourceAndField} from './components/resource';
 import {hijackBackboneAjax} from './startapp';
 import {Http} from './ajax';
 import {schema} from './schema';
 import {formatUrl} from './querystring';
-import {businessRuleDefs} from './businessruledefs';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -109,13 +112,10 @@ function eventHandlerForToOne(related, field) {
             var newResource = Backbone.Model.prototype.clone.call(self);
             delete newResource.id;
             delete newResource.attributes.id;
-
-            // Don't clone unique fields
-            Object.entries(businessRuleDefs[this.specifyModel.name]?.uniqueIn ?? {})
-              .map(([fieldName, uniquenessRules])=>
-                 uniquenessRules in schema.domainLevelIds
-                   ? delete newResource.attributes[fieldName.toLowerCase()]
-                   : undefined
+            
+            getFieldsToNotClone(this.specifyModel)
+              .map((fieldName)=>
+                 delete newResource.attributes[fieldName.toLowerCase()]
               );
 
             newResource.needsSaved = self.needsSaved;

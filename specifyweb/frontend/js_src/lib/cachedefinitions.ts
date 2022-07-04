@@ -10,7 +10,7 @@ import type { State } from 'typesafe-reducer';
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { Attachment, SpQuery, Tables } from './datamodel';
-import type { AnyTree } from './datamodelutils';
+import type { AnyTree, TableFields } from './datamodelutils';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
 import type { IR, RA, RR } from './types';
@@ -24,6 +24,12 @@ export type CacheDefinitions = {
   readonly forms: {
     /** Print label on form save */
     readonly printOnSave: Partial<RR<keyof Tables, boolean>>;
+    readonly carryForward: {
+      readonly [TABLE_NAME in keyof Tables]?: RA<
+        TableFields<Tables[TABLE_NAME]>
+      >;
+    };
+    readonly carryForwardShowHidden: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */

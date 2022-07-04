@@ -20,7 +20,7 @@ export function Slider({
   readonly value: number;
   readonly count: number;
   readonly onChange: (newValue: number) => void;
-}): JSX.Element {
+}): JSX.Element | null {
   const [pendingValue, setPendingValue] = React.useState<number>(value);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   React.useEffect(
@@ -30,12 +30,8 @@ export function Slider({
         : setPendingValue(value),
     [value]
   );
-  return (
-    <div
-      className={`gap-x-2 print:hidden flex justify-center ${
-        count === 0 ? 'invisible' : ''
-      }`}
-    >
+  return count > 0 ? (
+    <div className="gap-x-2 print:hidden flex justify-center">
       <Button.Small
         aria-label={formsText('firstRecord')}
         title={formsText('firstRecord')}
@@ -102,7 +98,7 @@ export function Slider({
         ≫
       </Button.Small>
     </div>
-  );
+  ) : null;
 }
 
 function Search<SCHEMA extends AnySchema>({

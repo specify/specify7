@@ -6,7 +6,6 @@ import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
-import { wbText } from '../localization/workbench';
 import { hasPermission, hasToolPermission } from '../permissions';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import {
@@ -465,7 +464,7 @@ export function QueryBuilder({
                   checked={showHiddenFields}
                   onValueChange={setShowHiddenFields}
                 />
-                {wbText('revealHiddenFormFields')}
+                {commonText('revealHiddenFormFields')}
               </Label.ForCheckbox>
               <span className="flex-1 -ml-2" />
               {hasPermission('/querybuilder/query', 'execute') && (

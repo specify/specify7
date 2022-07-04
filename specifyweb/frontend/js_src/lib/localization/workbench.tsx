@@ -665,10 +665,6 @@ export const wbText = createDictionary({
     'en-us': 'Add New Column',
     'ru-ru': 'Добавить новую колонку',
   },
-  revealHiddenFormFields: {
-    'en-us': 'Reveal Hidden Form Fields',
-    'ru-ru': 'Показать скрытые поля формы',
-  },
   validationFailedDialogHeader: {
     'en-us': 'Validation found missing mappings:',
     'ru-ru': 'Проверка обнаружила недостающие сопоставления:',

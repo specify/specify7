@@ -7,20 +7,20 @@ import { Button } from './basic';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
+import { CarryForwardButton } from './formcarryforward';
 
 export function FormPreferences({
   resource,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
-}): JSX.Element {
+}): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  return (
+  return typeof resource === 'object' ? (
     <>
       <Button.Small
         title={commonText('preferences')}
         aria-label={commonText('preferences')}
         onClick={handleToggle}
-        disabled={resource === undefined}
       >
         {icons.cog}
       </Button.Small>
@@ -28,7 +28,7 @@ export function FormPreferences({
         <PreferencesDialog resource={resource} onClose={handleClose} />
       ) : undefined}
     </>
-  );
+  ) : null;
 }
 
 function PreferencesDialog({
@@ -45,7 +45,7 @@ function PreferencesDialog({
       buttons={commonText('close')}
       modal={false}
     >
-      <span />
+      <CarryForwardButton model={resource.specifyModel} />
     </Dialog>
   );
 }
