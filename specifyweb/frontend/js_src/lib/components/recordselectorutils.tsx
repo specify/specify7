@@ -33,6 +33,7 @@ import { Dialog, LoadingScreen } from './modaldialog';
 import { pushUrl } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
+import { EditRecordSet } from './recordsetsdialog';
 import { augmentMode, ResourceView } from './resourceview';
 
 const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
@@ -292,6 +293,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   model,
   viewName,
   title = model.label,
+  headerButtons,
   dialog,
   isDependent,
   mode,
@@ -312,6 +314,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
   readonly defaultIndex?: number;
   readonly title: string | undefined;
+  readonly headerButtons?: JSX.Element;
   readonly dialog: false | 'modal' | 'nonModal';
   readonly isDependent: boolean;
   readonly mode: FormMode;
@@ -339,12 +342,15 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const previousIds = React.useRef(ids);
   React.useEffect(() => {
     setRecords((records) =>
-      ids.map((id, index) =>
-        id === undefined
-          ? undefined
-          : (records[index]?.id === id ? records[index] : undefined) ??
-            new model.Resource({ id })
-      )
+      ids.map((id, index) => {
+        if (id === undefined) return undefined;
+        else if (records[index]?.id === id) return records[index];
+        else {
+          const resource = new model.Resource({ id });
+          if (typeof urlContext === 'number') resource.recordsetid = urlContext;
+          return resource;
+        }
+      })
     );
 
     return (): void => {
@@ -452,6 +458,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             title={title}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
+                {headerButtons}
                 <DataEntry.Visit
                   resource={
                     !isDependent && dialog !== false ? resource : undefined
@@ -577,7 +584,8 @@ const fetchItems = async (
 
         ids.length === 0
           ? /*
-             * Creating a sparse array of correct length here
+             * Creating a sparse array of correct length here. Can't use
+             * Array.from({ length: totalCount }) because it creates a dense array
              */
             new Array(totalCount)
           : /*
@@ -714,6 +722,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         {...rest}
         ids={ids}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
+        headerButtons={<EditRecordSetButton recordSet={recordSet} />}
         isDependent={false}
         newResource={newResource}
         dialog={dialog}
@@ -808,6 +817,26 @@ export function RecordSet<SCHEMA extends AnySchema>({
         >
           {formsText('duplicateRecordSetItemDialogText')}
         </Dialog>
+      )}
+    </>
+  );
+}
+
+function EditRecordSetButton({
+  recordSet,
+}: {
+  readonly recordSet: SpecifyResource<RecordSetSchema>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <EditRecordSet
+          recordSet={recordSet}
+          onClose={handleClose}
+          isReadOnly={false}
+        />
       )}
     </>
   );

@@ -16,7 +16,7 @@ import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
 import { TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
-import { useAsyncState } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
@@ -130,7 +130,6 @@ export function RecordSetsDialog({
     | State<'MainState'>
     | State<'CreateState'>
     | State<'EditState', { recordSet: SpecifyResource<RecordSet> }>
-    | State<'QueryState', { recordSet: SpecifyResource<RecordSet> }>
   >({ type: 'MainState' });
 
   return typeof data === 'object' ? (
@@ -215,78 +214,106 @@ export function RecordSetsDialog({
           })
         }
       />
-    ) : state.type === 'EditState' ? (
-      <ResourceView
-        dialog="modal"
-        resource={state.recordSet}
-        mode={
-          isReadOnly ||
-          (!state.recordSet.isNew() &&
-            !hasToolPermission('recordSets', 'update'))
-            ? 'view'
-            : 'edit'
-        }
-        onDeleted={undefined}
-        onSaved={(): void =>
-          goTo(
-            getResourceViewUrl(
-              getModelById(state.recordSet.get('dbTableId')).name,
-              undefined,
-              state.recordSet.id
-            )
-          )
-        }
-        onClose={handleClose}
-        deletionMessage={formsText(
-          'recordSetDeletionWarning',
-          state.recordSet.get('name')
-        )}
-        canAddAnother={false}
-        isSubForm={false}
-        extraButtons={
-          hasToolPermission('queryBuilder', 'read') &&
-          !state.recordSet.isNew() ? (
-            <>
-              <span className="flex-1 -ml-2" />
-              <Button.Blue
-                onClick={(): void =>
-                  setState({
-                    type: 'QueryState',
-                    recordSet: state.recordSet,
-                  })
-                }
-              >
-                {commonText('query')}
-              </Button.Blue>
-            </>
-          ) : undefined
-        }
-        isDependent={false}
-      />
-    ) : state.type === 'QueryState' ? (
-      <QueryToolbarItem
+    ) : (
+      <EditRecordSet
+        recordSet={state.recordSet}
         isReadOnly={isReadOnly}
         onClose={handleClose}
-        getQuerySelectUrl={(query): string =>
-          formatUrl(`/specify/query/${query.id}/`, {
-            recordSetId: state.recordSet.id.toString(),
-          })
-        }
-        spQueryFilter={{
-          specifyUser: userInformation.id,
-          contextTableId: state.recordSet.get('dbTableId'),
-        }}
-        onNewQuery={(): void =>
-          goTo(
-            formatUrl(
-              `/specify/query/new/${getModelById(
-                state.recordSet.get('dbTableId')
-              ).name.toLowerCase()}/`,
-              { recordSetId: state.recordSet.id.toString() }
-            )
-          )
-        }
       />
-    ) : null
+    )
   ) : null;
+}
+
+export function EditRecordSet({
+  recordSet,
+  isReadOnly,
+  onClose: handleClose,
+}: {
+  readonly recordSet: SpecifyResource<RecordSet>;
+  readonly isReadOnly: boolean;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
+  return isQuerying ? (
+    <QueryRecordSet
+      recordSet={recordSet}
+      isReadOnly={isReadOnly}
+      onClose={handleCloseQuery}
+    />
+  ) : (
+    <ResourceView
+      dialog="modal"
+      resource={recordSet}
+      mode={
+        isReadOnly ||
+        (!recordSet.isNew() && !hasToolPermission('recordSets', 'update'))
+          ? 'view'
+          : 'edit'
+      }
+      onDeleted={undefined}
+      onSaved={(): void =>
+        goTo(
+          getResourceViewUrl(
+            getModelById(recordSet.get('dbTableId')).name,
+            undefined,
+            recordSet.id
+          )
+        )
+      }
+      onClose={handleClose}
+      deletionMessage={formsText(
+        'recordSetDeletionWarning',
+        recordSet.get('name')
+      )}
+      canAddAnother={false}
+      isSubForm={false}
+      extraButtons={
+        hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
+          <>
+            <span className="flex-1 -ml-2" />
+            <Button.Blue onClick={handleOpenQuery}>
+              {commonText('query')}
+            </Button.Blue>
+          </>
+        ) : undefined
+      }
+      isDependent={false}
+    />
+  );
+}
+
+function QueryRecordSet({
+  recordSet,
+  isReadOnly,
+  onClose: handleClose,
+}: {
+  readonly recordSet: SpecifyResource<RecordSet>;
+  readonly isReadOnly: boolean;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <QueryToolbarItem
+      isReadOnly={isReadOnly}
+      onClose={handleClose}
+      getQuerySelectUrl={(query): string =>
+        formatUrl(`/specify/query/${query.id}/`, {
+          recordSetId: recordSet.id.toString(),
+        })
+      }
+      spQueryFilter={{
+        specifyUser: userInformation.id,
+        contextTableId: recordSet.get('dbTableId'),
+      }}
+      onNewQuery={(): void =>
+        goTo(
+          formatUrl(
+            `/specify/query/new/${getModelById(
+              recordSet.get('dbTableId')
+            ).name.toLowerCase()}/`,
+            { recordSetId: recordSet.id.toString() }
+          )
+        )
+      }
+    />
+  );
 }

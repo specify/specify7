@@ -50,20 +50,24 @@ function PreferencesDialog({
       buttons={commonText('close')}
       modal={false}
     >
-      <H3>{formsText('formConfiguration')}</H3>
-      <div className="flex flex-wrap gap-2">
-        <CarryForwardButton model={resource.specifyModel} />
-        <FormAutoNumbering resource={resource} />
-        <FormDefinition model={resource.specifyModel} />
+      <div className="flex flex-col gap-2 pb-2">
+        <H3>{formsText('formConfiguration')}</H3>
+        <div className="flex flex-wrap gap-2">
+          <CarryForwardButton model={resource.specifyModel} />
+          <FormAutoNumbering resource={resource} />
+          <FormDefinition model={resource.specifyModel} />
+        </div>
       </div>
-      <ProtectedTool tool="auditLog" action="read">
-        <ProtectedAction resource="/querybuilder/query" action="execute">
-          <H3>{formsText('recordInformation')}</H3>
-          <div className="flex flex-wrap gap-2">
-            <RecordHistory resource={resource} />
-          </div>
-        </ProtectedAction>
-      </ProtectedTool>
+      <div className="flex flex-col gap-2 pb-2">
+        <ProtectedTool tool="auditLog" action="read">
+          <ProtectedAction resource="/querybuilder/query" action="execute">
+            <H3>{formsText('recordInformation')}</H3>
+            <div className="flex flex-wrap gap-2">
+              <RecordHistory resource={resource} />
+            </div>
+          </ProtectedAction>
+        </ProtectedTool>
+      </div>
     </Dialog>
   );
 }
