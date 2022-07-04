@@ -13,7 +13,7 @@ import type { Attachment, SpQuery, Tables } from './datamodel';
 import type { AnyTree } from './datamodelutils';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
-import type { IR, RA } from './types';
+import type { IR, RA, RR } from './types';
 import { ensure } from './types';
 
 /** The types of cached values are defined here */
@@ -23,7 +23,7 @@ export type CacheDefinitions = {
   };
   readonly forms: {
     /** Print label on form save */
-    readonly printOnSave: boolean;
+    readonly printOnSave: Partial<RR<keyof Tables, boolean>>;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */
@@ -121,8 +121,11 @@ export type CacheDefinitions = {
 };
 
 const cacheDefinitions = {} as unknown as CacheDefinitions;
+
 interface CacheValueDict extends IR<CacheValue> {}
+
 interface CacheValues extends RA<CacheValue> {}
+
 type CacheValue =
   | boolean
   | number

@@ -27,6 +27,7 @@ import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
+import { getCache } from '../cache';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -80,7 +81,6 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isSubForm: boolean;
   readonly children: (props: {
     readonly formElement: HTMLFormElement | null;
-    readonly formMeta: FormMeta;
     readonly title: string;
     readonly formatted: string;
     readonly form: (
@@ -124,7 +124,6 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
   const formMeta = React.useState<FormMeta>({
-    printOnSave: undefined,
     triedToSubmit: false,
   });
 
@@ -155,7 +154,6 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     formatted: tableNameInTitle ? title : formatted,
     title,
     formElement: form,
-    formMeta: formMeta[0],
     form: (children, className) =>
       isSubForm ? (
         <>
@@ -294,7 +292,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
       {({
         form,
         formElement,
-        formMeta,
         title,
         formatted,
         specifyNetworkBadge,
@@ -311,14 +308,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
               }
               onSaving={handleSaving}
-              onSaved={(payload): void =>
-                formMeta.printOnSave === true && payload.wasChanged
-                  ? setState({
-                      type: 'Report',
-                      onDone: () => handleSaved(payload),
-                    })
-                  : handleSaved(payload)
-              }
+              onSaved={(payload): void => {
+                const printOnSave = getCache('forms', 'printOnSave') ?? false;
+                if (printOnSave && payload.wasChanged)
+                  setState({
+                    type: 'Report',
+                    onDone: () => handleSaved(payload),
+                  });
+                else handleSaved(payload);
+              }}
             />
           ) : undefined;
         const report =

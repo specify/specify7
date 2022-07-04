@@ -121,8 +121,6 @@ export const ErrorContext = React.createContext<
 ErrorContext.displayName = 'ErrorContext';
 
 export type FormMeta = {
-  // Undefined if form does not have a printOnSave button
-  readonly printOnSave: undefined | boolean;
   /*
    * Whether user tried to submit a form. This causes deferred save blockers
    * to appear
@@ -141,7 +139,6 @@ export const FormContext = React.createContext<
   >
 >([
   {
-    printOnSave: false,
     triedToSubmit: false,
   },
   undefined,

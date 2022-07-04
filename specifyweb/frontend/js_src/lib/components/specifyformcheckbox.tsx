@@ -5,7 +5,6 @@ import type { SpecifyResource } from '../legacytypes';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Label } from './basic';
 import { useResourceValue } from './hooks';
-import { FormContext } from './contexts';
 import { useCachedState } from './statecache';
 
 export function PrintOnSave({
@@ -21,27 +20,30 @@ export function PrintOnSave({
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
-  const [value, setValue] = useCachedState({
+  const [tables, setTables] = useCachedState({
     category: 'forms',
     key: 'printOnSave',
-    defaultValue: defaultValue ?? false,
+    defaultValue: {},
     staleWhileRefresh: false,
   });
-  const [, setFormMeta] = React.useContext(FormContext);
-  React.useEffect(
-    () =>
-      setFormMeta?.((meta) => ({
-        ...meta,
-        printOnSave: value,
-      })),
-    [value, setFormMeta]
-  );
+  /*
+   * Need to check for object explicitly, because this cache key stored
+   * boolean in the past
+   */
+  const entry = typeof tables === 'object' ? tables[model.name] : undefined;
+  const checked =
+    entry === true || (entry === undefined && defaultValue === true);
   const input = (
     <Input.Checkbox
       id={id}
       name={fieldName}
-      checked={value ?? false}
-      onValueChange={setValue}
+      checked={checked}
+      onValueChange={(checked): void =>
+        setTables({
+          ...(typeof tables === 'object' ? tables : {}),
+          [model.name]: checked,
+        })
+      }
     />
   );
   return typeof text === 'string' ? (
