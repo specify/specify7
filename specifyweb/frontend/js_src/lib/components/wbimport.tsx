@@ -4,356 +4,106 @@
  * @module
  */
 
-import Papa from 'papaparse';
-import React, { Component } from 'react';
-import ImportXLSWorker from 'worker-loader!../wbimportxls.worker';
+import React from 'react';
 
-import { ajax, Http } from '../ajax';
 import { encodings } from '../encodings';
 import { wbText } from '../localization/workbench';
-import type { IR } from '../types';
-import { uniquifyHeaders } from '../wbplanviewheaderhelper';
-import { f } from '../functools';
-import { uniquifyDataSetName } from '../wbuniquifyname';
+import type { RA } from '../types';
+import {
+  createDataSet,
+  extractFileName,
+  extractHeader,
+  getMaxDataSetLength,
+  inferDataSetType,
+  parseCsv,
+  parseXls,
+  wbImportPreviewSize,
+} from '../wbimporthelpers';
 import { Button, Container, H2, H3, Input, Select } from './basic';
+import { LoadingContext } from './contexts';
 import { FilePicker } from './filepicker';
-import { useTitle } from './hooks';
-import type { Dataset } from './wbplanview';
-import { goTo } from './navigation';
+import { useAsyncState, useTitle, useTriggerState } from './hooks';
+import { loadingGif } from './queryresultstable';
+import { useCachedState } from './statecache';
 
-const PREVIEW_SIZE = 100;
+export function WbImportView(): JSX.Element {
+  useTitle(wbText('importDataSet'));
 
-type FileType = 'csv' | 'xls';
+  const [file, setFile] = React.useState<File | undefined>();
 
-type ChooseFileState = { type: 'ChooseFileState' };
-
-type PreviewFileState = {
-  type: 'PreviewFileState';
-  preview: string[][];
-  file: File;
-  encoding: string;
-  datasetName: string;
-  hasHeader: boolean;
-  fileType: FileType;
-};
-
-type BadFileState = {
-  type: 'BadFileState';
-  file: File;
-  encoding: string;
-  fileType: FileType;
-};
-
-type LoadingFileState = {
-  type: 'LoadingFileState';
-  file: File;
-  fileType: FileType;
-  datasetName: string;
-};
-
-type WbImportState =
-  | ChooseFileState
-  | PreviewFileState
-  | BadFileState
-  | LoadingFileState;
-
-type EncodingAction = { type: 'EncodingAction'; encoding: string };
-
-type FileSelectedAction = {
-  type: 'FileSelectedAction';
-  file: File;
-  fileType: FileType;
-};
-
-type GotPreviewAction = {
-  type: 'GotPreviewAction';
-  preview: string[][];
-  file: File;
-  fileType: FileType;
-};
-
-type BadImportFileAction = {
-  type: 'BadImportFileAction';
-  file: File;
-  fileType: FileType;
-};
-
-type ToggleHeaderAction = { type: 'ToggleHeaderAction' };
-
-type SetDataSetNameAction = { type: 'SetDataSetNameAction'; value: string };
-
-type DoImportAction = { type: 'DoImportAction' };
-
-type Action =
-  | EncodingAction
-  | FileSelectedAction
-  | GotPreviewAction
-  | BadImportFileAction
-  | ToggleHeaderAction
-  | SetDataSetNameAction
-  | DoImportAction;
-
-type HandleAction = (action: Action) => void;
-
-class WbImport extends Component<{}, WbImportState> {
-  constructor(props: any) {
-    super(props);
-    this.state = { type: 'ChooseFileState' };
-  }
-
-  generateCSVPreview(file: File, encoding: string) {
-    Papa.parse(file, {
-      encoding,
-      preview: PREVIEW_SIZE,
-      skipEmptyLines: true,
-      complete: ({ data }) => {
-        const maxWidth = Math.max(...data.map((row) => row.length));
-        data.forEach((row) =>
-          row.push(...Array.from({ length: maxWidth - row.length }).fill(''))
-        );
-        this.update(
-          data.length > 0
-            ? { type: 'GotPreviewAction', preview: data, file, fileType: 'csv' }
-            : { type: 'BadImportFileAction', file, fileType: 'csv' }
-        );
-      },
-    });
-  }
-
-  generateXLSPreview(file: File) {
-    const worker = new ImportXLSWorker();
-    worker.postMessage({ file, previewSize: PREVIEW_SIZE });
-    worker.onmessage = ({ data }) =>
-      this.update(
-        data.length > 0
-          ? { type: 'GotPreviewAction', preview: data, file, fileType: 'xls' }
-          : { type: 'BadImportFileAction', file, fileType: 'xls' }
-      );
-    worker.addEventListener('error', () =>
-      this.update({ type: 'BadImportFileAction', file, fileType: 'xls' })
-    );
-  }
-
-  doImportCSV(file: File, name: string, hasHeader: boolean, encoding: string) {
-    const doIt = () =>
-      Papa.parse(file, {
-        encoding,
-        skipEmptyLines: true,
-        complete: ({ data }) => {
-          const { rows, header } = extractHeader(data, hasHeader);
-          this.createDataset(name, header, rows, file.name);
-        },
-      });
-
-    globalThis.setTimeout(doIt, 0);
-  }
-
-  doImportXLS(file: File, name: string, hasHeader: boolean) {
-    const worker = new ImportXLSWorker();
-    worker.postMessage({ file, previewSize: null });
-    worker.onmessage = ({ data }) => {
-      const { rows, header } = extractHeader(data, hasHeader);
-      this.createDataset(name, header, rows, file.name);
-    };
-  }
-
-  createDataset(
-    name: string,
-    header: string[],
-    data: string[][],
-    filename: string
-  ) {
-    uniquifyDataSetName(name)
-      .then(async (name) =>
-        ajax<Dataset>(
-          '/api/workbench/dataset/',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-            },
-            body: {
-              name,
-              importedfilename: filename,
-              columns: header,
-              rows: data,
-            },
-          },
-          { expectedResponseCodes: [Http.CREATED] }
-        )
-      )
-      .then(({ data: { id } }) => goTo(`/workbench/${id}/`));
-  }
-
-  update(action: Action) {
-    const setState = (s: WbImportState) => {
-      this.setState(s);
-    };
-
-    switch (action.type) {
-      case 'EncodingAction':
-        if ('encoding' in this.state && this.state.fileType === 'csv') {
-          setState({ ...this.state, encoding: action.encoding });
-          this.generateCSVPreview(this.state.file, this.state.encoding);
-        }
-        break;
-
-      case 'FileSelectedAction':
-        if (action.fileType === 'csv')
-          this.generateCSVPreview(
-            action.file,
-            'encoding' in this.state ? this.state.encoding : 'utf-8'
-          );
-        else this.generateXLSPreview(action.file);
-        break;
-
-      case 'GotPreviewAction':
-        setState({
-          type: 'PreviewFileState',
-          preview: action.preview,
-          file: action.file,
-          fileType: action.fileType,
-          // Remove extension
-          datasetName: action.file.name.replace(/\.[^.]*$/, ''),
-          encoding: 'encoding' in this.state ? this.state.encoding : 'utf-8',
-          hasHeader: true,
-        });
-        break;
-
-      case 'BadImportFileAction':
-        setState({
-          type: 'BadFileState',
-          file: action.file,
-          fileType: action.fileType,
-          encoding: 'encoding' in this.state ? this.state.encoding : 'utf-8',
-        });
-        break;
-
-      case 'ToggleHeaderAction':
-        if (this.state.type === 'PreviewFileState')
-          setState({ ...this.state, hasHeader: !this.state.hasHeader });
-        break;
-
-      case 'SetDataSetNameAction':
-        if (this.state.type === 'PreviewFileState')
-          setState({ ...this.state, datasetName: action.value });
-        break;
-
-      case 'DoImportAction':
-        if (this.state.type !== 'PreviewFileState') break;
-        if (this.state.fileType === 'csv') {
-          setState({
-            type: 'LoadingFileState',
-            file: this.state.file,
-            fileType: this.state.fileType,
-            datasetName: this.state.datasetName,
-          });
-          this.doImportCSV(
-            this.state.file,
-            this.state.datasetName,
-            this.state.hasHeader,
-            this.state.encoding
-          );
-        } else {
-          setState({
-            type: 'LoadingFileState',
-            file: this.state.file,
-            fileType: this.state.fileType,
-            datasetName: this.state.datasetName,
-          });
-          this.doImportXLS(
-            this.state.file,
-            this.state.datasetName,
-            this.state.hasHeader
-          );
-        }
-        break;
-
-      default:
-        assertExhaustive(action);
-    }
-  }
-
-  render() {
-    const update = (action: Action) => this.update(action);
-
-    let rows;
-    let ui;
-    let preview;
-    switch (this.state.type) {
-      case 'ChooseFileState':
-        rows = <ChooseFile update={update} />;
-        break;
-
-      case 'PreviewFileState':
-        rows = (
-          <>
-            <ChooseFile update={update} />
-            {this.state.fileType === 'csv' && (
-              <ChooseEncoding encoding={this.state.encoding} update={update} />
-            )}
-            <ChooseName name={this.state.datasetName} update={update} />
-            <ToggleHeader hasHeader={this.state.hasHeader} update={update} />
-          </>
-        );
-        ui = (
-          <div>
-            <DoImportButton update={update} />
-          </div>
-        );
-        preview = (
-          <Preview data={this.state.preview} hasHeader={this.state.hasHeader} />
-        );
-        break;
-
-      case 'BadFileState':
-        rows = (
-          <>
-            <ChooseFile update={update} />
-            {this.state.fileType === 'csv' && (
-              <ChooseEncoding encoding={this.state.encoding} update={update} />
-            )}
-            <p role="alert">{wbText('corruptFile', this.state.file.name)}</p>
-          </>
-        );
-        break;
-
-      case 'LoadingFileState':
-        break;
-
-      default:
-        assertExhaustive(this.state);
-    }
-
-    return (
-      <Container.Full>
-        <div className="gap-y-2 flex flex-col">
-          <H2>{wbText('wbImportHeader')}</H2>
-          <div className="w-96 grid items-center grid-cols-2 gap-2">{rows}</div>
-          {ui}
-        </div>
-        {preview}
-      </Container.Full>
-    );
-  }
+  return (
+    <Container.Full>
+      <H2>{wbText('wbImportHeader')}</H2>
+      <div className="w-96">
+        <FilePicker
+          onSelected={setFile}
+          acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
+        />
+      </div>
+      {typeof file === 'object' && <FilePicked file={file} />}
+    </Container.Full>
+  );
 }
 
-function ChooseEncoding(props: {
-  encoding: string | null;
-  update: HandleAction;
-}) {
+function FilePicked({ file }: { readonly file: File }): JSX.Element {
+  const fileType = inferDataSetType(file);
+
+  return fileType === 'csv' ? (
+    <CsvPicked file={file} />
+  ) : (
+    <XlsPicked file={file} />
+  );
+}
+
+function CsvPicked({ file }: { readonly file: File }): JSX.Element {
+  const [encoding, setEncoding] = React.useState<string>('utf-8');
+  const preview = useCsvPreview(file, encoding);
+  const loading = React.useContext(LoadingContext);
+  return (
+    <Layout
+      fileName={file.name}
+      preview={preview}
+      onImport={(dataSetName, hasHeader): void =>
+        loading(
+          parseCsv(file, encoding).then(async (data) =>
+            createDataSet({ dataSetName, fileName: file.name, hasHeader, data })
+          )
+        )
+      }
+    >
+      <ChooseEncoding encoding={encoding} onChange={setEncoding} />
+    </Layout>
+  );
+}
+
+function useCsvPreview(
+  file: File,
+  encoding: string
+): RA<RA<string>> | string | undefined {
+  const [preview] = useAsyncState<RA<RA<string>> | string>(
+    React.useCallback(
+      async () =>
+        parseCsv(file, encoding, wbImportPreviewSize).catch(
+          (error) => error.message
+        ),
+      [file, encoding]
+    ),
+    false
+  );
+  return preview;
+}
+
+function ChooseEncoding({
+  encoding,
+  onChange: handleChange,
+}: {
+  readonly encoding: string;
+  readonly onChange: (encoding: string) => void;
+}): JSX.Element {
   return (
     <label className="contents">
       {wbText('characterEncoding')}
-      <Select
-        onValueChange={(value): void =>
-          props.update({
-            type: 'EncodingAction',
-            encoding: value,
-          })
-        }
-        value={props.encoding ?? ''}
-      >
+      <Select onValueChange={handleChange} value={encoding ?? ''}>
         {encodings.map((encoding: string) => (
           <option key={encoding}>{encoding}</option>
         ))}
@@ -362,42 +112,107 @@ function ChooseEncoding(props: {
   );
 }
 
-const fileMimeMapper: IR<FileType> = {
-  'text/csv': 'csv',
-  'text/tab-separated-values': 'csv',
-  'text/plain': 'csv',
-  'application/vnd.ms-excel': 'xls',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xls',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.template': 'xls',
-  'application/vnd.ms-excel.sheet.macroEnabled.12': 'xls',
-  'application/vnd.ms-excel.template.macroEnabled.12': 'xls',
-  'application/vnd.ms-excel.addin.macroEnabled.12': 'xls',
-  'application/vnd.ms-excel.sheet.binary.macroEnabled.12': 'xls',
-};
+function Layout({
+  fileName,
+  preview,
+  children,
+  onImport: handleImport,
+}: {
+  readonly fileName: string;
+  readonly preview: RA<RA<string>> | string | undefined;
+  readonly children?: JSX.Element;
+  readonly onImport: (dataSetName: string, hasHeader: boolean) => void;
+}): JSX.Element {
+  const [dataSetName, setDataSetName] = useTriggerState(
+    extractFileName(fileName)
+  );
+  const [hasHeader = true, setHasHeader] = useCachedState({
+    category: 'wbImport',
+    key: 'hasHeader',
+    defaultValue: true,
+    staleWhileRefresh: false,
+  });
+  return typeof preview === 'string' ? (
+    <BadImport error={preview} />
+  ) : Array.isArray(preview) ? (
+    <>
+      <div className="w-96 grid items-center grid-cols-2 gap-2">
+        {children}
+        <ChooseName name={dataSetName} onChange={setDataSetName} />
+        <ToggleHeader hasHeader={hasHeader} onChange={setHasHeader} />
+        <Button.Gray
+          onClick={(): void => handleImport(dataSetName, hasHeader)}
+          className="col-span-full justify-center text-center"
+        >
+          {wbText('importFile')}
+        </Button.Gray>
+      </div>
+      <Preview preview={preview} hasHeader={hasHeader} />
+    </>
+  ) : (
+    loadingGif
+  );
+}
 
-function ChooseFile(props: { update: HandleAction }) {
+function ChooseName({
+  name,
+  onChange: handleChange,
+}: {
+  readonly name: string;
+  readonly onChange: (name: string) => void;
+}): JSX.Element {
   return (
-    <FilePicker
-      onSelected={(file) =>
-        props.update({
-          type: 'FileSelectedAction',
-          file,
-          fileType: fileMimeMapper[file.type] ?? 'xls',
-        })
-      }
-      acceptedFormats={['.csv', '.tsv', '.txt', '.xls', '.xlsx']}
-    />
+    <label className="contents">
+      {wbText('chooseDataSetName')}
+      <Input.Text
+        spellCheck={true}
+        value={name}
+        required
+        maxLength={getMaxDataSetLength()}
+        onValueChange={handleChange}
+      />
+    </label>
+  );
+}
+
+function ToggleHeader({
+  hasHeader,
+  onChange: handleChange,
+}: {
+  readonly hasHeader: boolean;
+  readonly onChange: (hasHeader: boolean) => void;
+}): JSX.Element {
+  return (
+    <label className="contents">
+      {wbText('firstRowIsHeader')}
+      <span>
+        <Input.Checkbox
+          onChange={(): void => handleChange(!hasHeader)}
+          checked={hasHeader}
+        />
+      </span>
+    </label>
+  );
+}
+
+function BadImport({ error }: { readonly error: string }): JSX.Element {
+  return (
+    <p role="alert">
+      {wbText('errorImporting')}
+      <br />
+      {error}
+    </p>
   );
 }
 
 function Preview({
-  data,
+  preview,
   hasHeader,
 }: {
-  data: string[][];
-  hasHeader: boolean;
-}) {
-  const { rows, header } = extractHeader(data, hasHeader);
+  readonly preview: RA<RA<string>>;
+  readonly hasHeader: boolean;
+}): JSX.Element {
+  const { rows, header } = extractHeader(preview, hasHeader);
 
   return (
     <div>
@@ -434,72 +249,32 @@ function Preview({
   );
 }
 
-function ChooseName({
-  name,
-  update,
-}: {
-  readonly name: string;
-  readonly update: HandleAction;
-}): JSX.Element {
+function XlsPicked({ file }: { readonly file: File }): JSX.Element {
+  const preview = useXlsPreview(file);
+  const loading = React.useContext(LoadingContext);
   return (
-    <label className="contents">
-      {wbText('chooseDataSetName')}
-      <Input.Text
-        spellCheck={true}
-        value={name}
-        required
-        maxLength={256}
-        onValueChange={(value) =>
-          update({
-            type: 'SetDataSetNameAction',
-            value,
-          })
-        }
-      />
-    </label>
+    <Layout
+      preview={preview}
+      fileName={file.name}
+      onImport={(dataSetName, hasHeader): void =>
+        loading(
+          parseXls(file).then(async (data) =>
+            createDataSet({ dataSetName, fileName: file.name, hasHeader, data })
+          )
+        )
+      }
+    />
   );
 }
 
-function ToggleHeader(props: { hasHeader: boolean; update: HandleAction }) {
-  return (
-    <label className="contents">
-      {wbText('firstRowIsHeader')}
-      <span>
-        <Input.Checkbox
-          onChange={(): void => props.update({ type: 'ToggleHeaderAction' })}
-          checked={props.hasHeader}
-        />
-      </span>
-    </label>
+function useXlsPreview(file: File): RA<RA<string>> | string | undefined {
+  const [preview] = useAsyncState<RA<RA<string>> | string>(
+    React.useCallback(
+      async () =>
+        parseXls(file, wbImportPreviewSize).catch((error) => error.message),
+      [file]
+    ),
+    false
   );
-}
-
-function DoImportButton(props: { update: HandleAction }) {
-  return (
-    <Button.Small
-      onClick={(): void => props.update({ type: 'DoImportAction' })}
-    >
-      {wbText('importFile')}
-    </Button.Small>
-  );
-}
-
-function extractHeader(
-  data: string[][],
-  headerInData: boolean
-): { rows: string[][]; header: string[] } {
-  const header = headerInData
-    ? uniquifyHeaders(data[0].map(f.trim))
-    : Array.from(data[0], (_, index) => wbText('columnName', index + 1));
-  const rows = headerInData ? data.slice(1) : data;
-  return { rows, header: Array.from(header) };
-}
-
-function assertExhaustive(x: never): never {
-  throw new Error(`Non-exhaustive switch. Unhandled case:${x}`);
-}
-
-export function WbImportView() {
-  useTitle(wbText('importDataSet'));
-  return <WbImport />;
+  return preview;
 }

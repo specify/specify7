@@ -540,6 +540,10 @@ export const wbText = createDictionary({
     'en-us': 'Preview Dataset',
     'ru-ru': 'Предварительный просмотр набора данных',
   },
+  errorImporting: {
+    'en-us': 'The following error(s) occurred while importing the file:',
+    'ru-ru': 'При импорте файла произошли следующие ошибки:',
+  },
   corruptFile: {
     'en-us': (fileName: string) =>
       `The file ${fileName} is corrupt or contains no data!`,

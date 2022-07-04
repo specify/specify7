@@ -95,7 +95,8 @@ export function FilePicker({
               ? 'bg-white dark:bg-neutral-700 ring ring-brand-200 dark:ring-brand-400'
               : ''
           }
-          ${isFocused ? '!ring ring-blue-500' : ''} col-span-full`}
+          ${isFocused ? '!ring ring-blue-500' : ''}
+        `}
       >
         <span>
           {commonText('filePickerMessage')}

@@ -21,6 +21,7 @@ import { mergeParsers, parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
 import { className } from './basic';
 import { FormContext, LoadingContext } from './contexts';
+import { crash } from './errorboundary';
 
 const idStore: R<number> = {};
 
@@ -228,7 +229,9 @@ export function useAsyncState<T>(
   React.useEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
-    const wrapped = loadingScreen ? loading : f.id;
+    const wrapped = loadingScreen
+      ? loading
+      : (promise: Promise<unknown>): void => void promise.catch(crash);
     void wrapped(
       Promise.resolve(callback()).then((newState) =>
         destructorCalled ? undefined : setState(newState)

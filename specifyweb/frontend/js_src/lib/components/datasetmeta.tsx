@@ -6,26 +6,27 @@ import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
+import { hasTablePermission } from '../permissions';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { f } from '../functools';
 import { uniquifyDataSetName } from '../wbuniquifyname';
 import { Button, Form, Input, Label, Link, Select, Submit } from './basic';
+import { AutoGrowTextArea, TableIcon } from './common';
+import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
+import { icons } from './icons';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
+import { goTo } from './navigation';
 import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { LoadingContext } from './contexts';
-import { hasTablePermission } from '../permissions';
-import { AutoGrowTextArea, TableIcon } from './common';
-import { goTo } from './navigation';
-import { icons } from './icons';
+import { getMaxDataSetLength } from '../wbimporthelpers';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
@@ -127,8 +128,7 @@ export function DataSetMeta({
             value={name}
             onValueChange={setName}
             required
-            // FEATURE: increase the limit. See https://github.com/specify/specify7/issues/1203
-            maxLength={schema.models.RecordSet.getField('name')!.length}
+            maxLength={getMaxDataSetLength()}
           />
         </Label.Generic>
         <Label.Generic>

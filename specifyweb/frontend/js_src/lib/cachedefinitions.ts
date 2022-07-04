@@ -34,6 +34,9 @@ export type CacheDefinitions = {
     readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
   };
+  readonly wbImport: {
+    readonly hasHeader: boolean;
+  };
   readonly queryBuilder: {
     /** Whether to show fields hidden in schema in the query builder */
     readonly showHiddenFields: boolean;
