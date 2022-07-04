@@ -3,13 +3,16 @@ import React from 'react';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
-import { Button } from './basic';
+import { formsText } from '../localization/forms';
+import { Button, H3 } from './basic';
 import { FormAutoNumbering } from './formautonumbering';
 import { CarryForwardButton } from './formcarryforward';
 import { FormDefinition } from './formdefinition';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
+import { ProtectedAction, ProtectedTool } from './permissiondenied';
+import { RecordHistory } from './recordhistory';
 
 export function FormPreferences({
   resource,
@@ -47,11 +50,20 @@ function PreferencesDialog({
       buttons={commonText('close')}
       modal={false}
     >
+      <H3>{formsText('formConfiguration')}</H3>
       <div className="flex flex-wrap gap-2">
         <CarryForwardButton model={resource.specifyModel} />
         <FormAutoNumbering resource={resource} />
         <FormDefinition model={resource.specifyModel} />
       </div>
+      <ProtectedTool tool="auditLog" action="read">
+        <ProtectedAction resource="/querybuilder/query" action="execute">
+          <H3>{formsText('recordInformation')}</H3>
+          <div className="flex flex-wrap gap-2">
+            <RecordHistory resource={resource} />
+          </div>
+        </ProtectedAction>
+      </ProtectedTool>
     </Dialog>
   );
 }

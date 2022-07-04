@@ -13,8 +13,7 @@ import {
   smoothScroll,
   unParseQueryFields,
 } from '../querybuilderutils';
-import { schema } from '../schema';
-import type { SpecifyModel } from '../specifymodel';
+import { getModelById, schema } from '../schema';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
 import { defined } from '../types';
 import { getMappingLineData } from '../wbplanviewnavigator';
@@ -49,14 +48,14 @@ export function QueryBuilder({
   query: queryResource,
   isReadOnly,
   recordSet,
-  model,
+  isEmbedded = false,
   // If present, this callback is called when a query result is selected
   onSelected: handleSelected,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly isReadOnly: boolean;
-  readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
+  readonly isEmbedded?: boolean;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
@@ -64,11 +63,10 @@ export function QueryBuilder({
     true
   );
 
-  const isEmbedded = typeof handleSelected === 'function';
-
   const [query, setQuery] = useResource(queryResource);
   const [originalQueryFields] = React.useState(query.fields ?? []);
 
+  const model = defined(getModelById(query.contextTableId));
   const [state, dispatch] = React.useReducer(
     reducer,
     {
@@ -251,81 +249,87 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        {!isEmbedded && (
-          <header className="gap-x-2 whitespace-nowrap flex items-center">
-            <TableIcon name={model.name} />
-            <H2 className="overflow-x-auto">
-              {typeof recordSet === 'object'
-                ? queryText(
-                    'queryRecordSetTitle',
-                    query.name,
-                    recordSet.get('name')
-                  )
-                : queryText('queryTaskTitle', query.name)}
-            </H2>
-            <span className="flex-1 ml-2" />
-            {!isScrolledTop && (
-              <Button.Small
-                onClick={(): void =>
-                  containerRef.current === null
-                    ? undefined
-                    : smoothScroll(containerRef.current, 0)
-                }
-              >
-                {queryText('editQuery')}
-              </Button.Small>
-            )}
-            {state.baseTableName === 'LoanPreparation' && (
-              <ProtectedAction resource="/querybuilder/query" action="execute">
-                <ProtectedTable tableName="Loan" action="update">
-                  <ProtectedTable
-                    tableName="LoanReturnPreparation"
-                    action="create"
-                  >
-                    <ProtectedTable tableName="LoanPreparation" action="read">
-                      <ErrorBoundary dismissable>
-                        <QueryLoanReturn
-                          fields={state.fields}
-                          queryResource={queryResource}
-                          getQueryFieldRecords={getQueryFieldRecords}
-                        />
-                      </ErrorBoundary>
+        {
+          /* FEATURE: For embedded queries, add a button to open query in new tab */
+          !isEmbedded && (
+            <header className="gap-x-2 whitespace-nowrap flex items-center">
+              <TableIcon name={model.name} />
+              <H2 className="overflow-x-auto">
+                {typeof recordSet === 'object'
+                  ? queryText(
+                      'queryRecordSetTitle',
+                      query.name,
+                      recordSet.get('name')
+                    )
+                  : queryText('queryTaskTitle', query.name)}
+              </H2>
+              <span className="flex-1 ml-2" />
+              {!isScrolledTop && (
+                <Button.Small
+                  onClick={(): void =>
+                    containerRef.current === null
+                      ? undefined
+                      : smoothScroll(containerRef.current, 0)
+                  }
+                >
+                  {queryText('editQuery')}
+                </Button.Small>
+              )}
+              {state.baseTableName === 'LoanPreparation' && (
+                <ProtectedAction
+                  resource="/querybuilder/query"
+                  action="execute"
+                >
+                  <ProtectedTable tableName="Loan" action="update">
+                    <ProtectedTable
+                      tableName="LoanReturnPreparation"
+                      action="create"
+                    >
+                      <ProtectedTable tableName="LoanPreparation" action="read">
+                        <ErrorBoundary dismissable>
+                          <QueryLoanReturn
+                            fields={state.fields}
+                            queryResource={queryResource}
+                            getQueryFieldRecords={getQueryFieldRecords}
+                          />
+                        </ErrorBoundary>
+                      </ProtectedTable>
                     </ProtectedTable>
                   </ProtectedTable>
-                </ProtectedTable>
-              </ProtectedAction>
-            )}
-            {hasToolPermission(
-              'queryBuilder',
-              queryResource.isNew() ? 'create' : 'update'
-            ) && (
-              <SaveQueryButtons
-                isReadOnly={isReadOnly}
-                queryResource={queryResource}
-                fields={state.fields}
-                isValid={(): boolean =>
-                  formRef.current?.reportValidity() ?? false
-                }
-                saveRequired={saveRequired}
-                unsetUnloadProtect={unsetUnloadProtect}
-                getQueryFieldRecords={getQueryFieldRecords}
-                onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
-                onTriedToSave={(): boolean => {
-                  handleTriedToSave();
-                  const fieldLengthLimit =
-                    defined(
-                      schema.models.SpQueryField.getLiteralField('startValue')
-                    ).length ?? Number.POSITIVE_INFINITY;
-                  return state.fields.every((field) =>
-                    field.filters.every(
-                      ({ startValue }) => startValue.length < fieldLengthLimit
-                    )
-                  );
-                }}
-              />
-            )}
-          </header>
-        )}
+                </ProtectedAction>
+              )}
+              {hasToolPermission(
+                'queryBuilder',
+                queryResource.isNew() ? 'create' : 'update'
+              ) && (
+                <SaveQueryButtons
+                  isReadOnly={isReadOnly}
+                  queryResource={queryResource}
+                  fields={state.fields}
+                  isValid={(): boolean =>
+                    formRef.current?.reportValidity() ?? false
+                  }
+                  saveRequired={saveRequired}
+                  unsetUnloadProtect={unsetUnloadProtect}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                  onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+                  onTriedToSave={(): boolean => {
+                    handleTriedToSave();
+                    const fieldLengthLimit =
+                      defined(
+                        schema.models.SpQueryField.getLiteralField('startValue')
+                      ).length ?? Number.POSITIVE_INFINITY;
+                    return state.fields.every((field) =>
+                      field.filters.every(
+                        ({ startValue }) => startValue.length < fieldLengthLimit
+                      )
+                    );
+                  }}
+                />
+              )}
+            </header>
+          )
+        }
         <div
           className={`gap-y-4 grid flex-1 overflow-y-auto grid-cols-1
             ${stickyScrolling ? 'snap-y snap-proximity' : ''}

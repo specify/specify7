@@ -15,7 +15,6 @@ import { getModel, schema } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel } from '../treedefinitions';
-import { defined } from '../types';
 import { userInformation } from '../userinfo';
 import { useAsyncState } from './hooks';
 import { NotFoundView } from './notfoundview';
@@ -56,7 +55,6 @@ function QueryBuilderWrapper({
         !canRunQuery() &&
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
       }
-      model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
   ) : null;
@@ -81,8 +79,7 @@ function QueryBuilderById({
   );
   const recordSet = useQueryRecordSet();
 
-  return query === undefined ||
-    recordSet === undefined ? null : (
+  return query === undefined || recordSet === undefined ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
@@ -123,8 +120,7 @@ function NewQuery({
   }, [tableName]);
   const recordSet = useQueryRecordSet();
 
-  return query === undefined ||
-    recordSet === undefined ? null : (
+  return query === undefined || recordSet === undefined ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
@@ -144,9 +140,7 @@ function QueryBuilderFromTree({
     true
   );
 
-  return query === undefined ? null : (
-    <QueryBuilderWrapper query={query} />
-  );
+  return query === undefined ? null : <QueryBuilderWrapper query={query} />;
 }
 
 export function task(): void {

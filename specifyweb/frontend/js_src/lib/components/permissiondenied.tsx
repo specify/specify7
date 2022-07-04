@@ -6,6 +6,7 @@ import type { AnyTree, SerializedModel } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
+import { jsonStringify } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { getOperationPermissions, tableActions } from '../permissions';
@@ -32,7 +33,6 @@ import { Button } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
-import { jsonStringify } from '../helpers';
 
 type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
@@ -78,10 +78,10 @@ export function ProtectedTool({
 }: {
   readonly tool: keyof ReturnType<typeof toolDefinitions>;
   readonly action: typeof tableActions[number];
-  readonly children: JSX.Element;
+  readonly children: React.ReactNode;
 }): JSX.Element {
   return hasToolPermission(tool, action) ? (
-    children
+    <>{children}</>
   ) : (
     <ToolPermissionDenied tool={tool} action={action} />
   );
@@ -127,10 +127,10 @@ export function ProtectedAction<
   readonly resource: RESOURCE;
   readonly action: string &
     keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE];
-  readonly children: JSX.Element;
+  readonly children: React.ReactNode;
 }): JSX.Element {
   return hasPermission(resource, action) ? (
-    children
+    <>{children}</>
   ) : (
     <PermissionDenied resource={resource} action={action} />
   );
@@ -170,10 +170,10 @@ export function ProtectedTable({
 }: {
   readonly tableName: keyof Tables;
   readonly action: typeof tableActions[number];
-  readonly children: JSX.Element;
+  readonly children: React.ReactNode;
 }): JSX.Element {
   return hasTablePermission(tableName, action) ? (
-    children
+    <>{children}</>
   ) : (
     <TablePermissionDenied tableName={tableName} action={action} />
   );
@@ -333,15 +333,15 @@ export function formatPermissionsError(
 
   const error = parsed?.NoMatchingRuleException;
 
-  if (typeof error === 'object')
-    return [
-      <FormatPermissionError error={error} url={url} />,
-      [
-        `Permission denied when fetching from ${url}`,
-        `Response: ${jsonStringify(error, '\t')}`,
-      ].join('\n'),
-    ] as const;
-  else return undefined;
+  return typeof error === 'object'
+    ? ([
+        <FormatPermissionError error={error} url={url} />,
+        [
+          `Permission denied when fetching from ${url}`,
+          `Response: ${jsonStringify(error, '\t')}`,
+        ].join('\n'),
+      ] as const)
+    : undefined;
 }
 
 function CollectionName({

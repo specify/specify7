@@ -679,4 +679,22 @@ export const formsText = createDictionary({
     'en-us': 'Use Auto Generated Form',
     'ru-ru': 'Использовать автоматическую схему формы',
   },
+  historyOfEdits: {
+    'en-us': 'History of edits',
+    'ru-ru': 'История изменений',
+  },
+  historyOfEditsQueryName: {
+    'en-us': (formattedRecord: string) =>
+      `History of edits for "${formattedRecord}"`,
+    'ru-ru': (formattedRecord: string) =>
+      `История изменений для "${formattedRecord}"`,
+  },
+  formConfiguration: {
+    'en-us': 'Form Configuration',
+    'ru-ru': 'Конфигурация формы',
+  },
+  recordInformation: {
+    'en-us': 'Record Information',
+    'ru-ru': 'Информация об объекте',
+  },
 });

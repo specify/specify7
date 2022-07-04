@@ -528,7 +528,7 @@ function ReportForRecord({
             }
       )
     );
-    const newField = QueryFieldSpec.fromPath([model.name, model.idField.name])
+    const newField = QueryFieldSpec.fromPath(model.name, [model.idField.name])
       .toSpQueryField()
       .set('operStart', queryFieldFilters.equal.id)
       .set('startValue', resourceId.toString())

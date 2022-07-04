@@ -69,10 +69,10 @@ export function UiField({
         hasAccess && typeof data === 'object' && typeof fieldName === 'string'
           ? 'models' in data.resource
             ? aggregate(data.resource as unknown as Collection<AnySchema>)
-            : QueryFieldSpec.fromPath([
+            : QueryFieldSpec.fromPath(
                 resource.specifyModel.name,
-                ...fieldName.split('.'),
-              ]).joinPath.some(
+                fieldName.split('.')
+              ).joinPath.some(
                 (field) => field.isRelationship && relationshipIsToMany(field)
               )
             ? data.resource.rgetCollection(data.field.name).then(aggregate)

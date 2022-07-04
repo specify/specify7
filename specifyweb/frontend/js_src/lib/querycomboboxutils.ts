@@ -42,10 +42,10 @@ export function makeComboBoxQuery({
   const searchAlgorithm = isTreeTable
     ? 'contains'
     : getUserPref('form', 'queryComboBox', 'searchAlgorithm');
-  const searchField = QueryFieldSpec.fromPath([
+  const searchField = QueryFieldSpec.fromPath(
     relatedModel.name,
-    ...fieldName.split('.'),
-  ])
+    fieldName.split('.')
+  )
     .toSpQueryField()
     .set('isDisplay', false)
     .set(
@@ -64,7 +64,7 @@ export function makeComboBoxQuery({
         : queryFieldFilters.startsWith.id
     );
 
-  const displayField = QueryFieldSpec.fromPath([relatedModel.name])
+  const displayField = QueryFieldSpec.fromPath(relatedModel.name, [])
     .toSpQueryField()
     .set('isDisplay', true)
     .set('sortType', flippedSortTypes.ascending);

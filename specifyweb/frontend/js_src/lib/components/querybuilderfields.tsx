@@ -81,9 +81,8 @@ export function QueryFields({
   return (
     <Ul className="flex-1 overflow-y-auto" forwardRef={fieldsContainerRef}>
       {fields.map((field, line, { length }) => (
-        <ErrorBoundary dismissable>
+        <ErrorBoundary dismissable key={field.id}>
           <QueryLine
-            key={field.id}
             fieldHash={`${line}_${length}`}
             baseTableName={baseTableName}
             field={field}

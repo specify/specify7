@@ -4,7 +4,7 @@
 
 import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
-import type { SpQueryField } from './datamodel';
+import type { SpQueryField, Tables } from './datamodel';
 import { f } from './functools';
 import { capitalize, replaceItem, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
@@ -191,8 +191,10 @@ export class QueryFieldSpec {
     return [this.baseTable.tableId, ...rest].join(',');
   }
 
-  public static fromPath(pathIn: RA<string>): QueryFieldSpec {
-    const [baseTableName, ...path] = Array.from(pathIn);
+  public static fromPath(
+    baseTableName: keyof Tables,
+    path: RA<string>
+  ): QueryFieldSpec {
     const rootTable = defined(getModel(baseTableName));
     const fieldSpec = new QueryFieldSpec(defined(getModel(baseTableName)));
 

@@ -239,8 +239,8 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       <QueryBuilder
         query={query}
         isReadOnly={false}
-        model={model}
         recordSet={undefined}
+        isEmbedded={true}
         onSelected={handleSelected}
       />
     </Dialog>

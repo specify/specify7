@@ -119,7 +119,7 @@ export const queryFieldsToFieldSpecs = (
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map((field) => [
       field,
-      QueryFieldSpec.fromPath([baseTableName, ...field.mappingPath]),
+      QueryFieldSpec.fromPath(baseTableName, field.mappingPath),
     ]);
 
 const auditLogMappingPaths = [

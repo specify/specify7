@@ -19,8 +19,10 @@ function makeField(
   path: string,
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
-  const pathArray = [schema.models.CollectionObject.name, ...path.split('.')];
-  const field = QueryFieldSpec.fromPath(pathArray)
+  const field = QueryFieldSpec.fromPath(
+    schema.models.CollectionObject.name,
+    path.split('.')
+  )
     .toSpQueryField()
     .set('sortType', flippedSortTypes.none);
 
