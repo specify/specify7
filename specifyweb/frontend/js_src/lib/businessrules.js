@@ -3,11 +3,12 @@
 import _ from 'underscore';
 import {globalEvents} from './specifyapi';
 import {SaveBlockers} from './saveblockers';
-import {treeBusinessRules} from './treebusinessrules';
+import {initializeTreeRecord, treeBusinessRules} from './treebusinessrules';
 import {businessRuleDefs} from './businessruledefs';
 
 import {formsText} from './localization/forms';
 import {formatList} from './components/internationalization';
+import {isTreeResource} from './treedefinitions';
 
 var enabled = true;
 
@@ -20,7 +21,8 @@ var enabled = true;
         mgr = resource.businessRuleMgr = new BusinessRuleMgr(resource);
         mgr.setupEvents();
         resource.saveBlockers = new SaveBlockers(resource);
-        mgr.isTreeNode && treeBusinessRules.init(resource);
+        if(isTreeResource(resource))
+            initializeTreeRecord(resource);
         mgr.doCustomInit();
     };
 
@@ -30,7 +32,6 @@ var enabled = true;
         this.pending = Promise.resolve(null);
         this.fieldChangePromises = {};
         this.watchers = {};
-        this.isTreeNode = treeBusinessRules.isTreeNode(this.resource);
     }
 
     _(BusinessRuleMgr.prototype).extend({
@@ -45,8 +46,8 @@ var enabled = true;
         },
 
         invokeRule: function(ruleName, fieldName, args) {
-            var resource = this.resource;
             var promise = this._invokeRule(ruleName, fieldName, args);
+            // var resource = this.resource;
             // var msg = 'BR ' + ruleName + (fieldName ? '[' + fieldName + '] ': ' ') + 'finished on';
             // promise.then(function(result) { console.debug(msg, resource, {args: args, result: result}); });
             return promise;
@@ -105,7 +106,8 @@ var enabled = true;
                 this.checkUnique(fieldName)
             ];
 
-            this.isTreeNode && checks.push(treeBusinessRules.run(this.resource, fieldName));
+            if(isTreeResource(this.resource))
+                checks.push(treeBusinessRules(this.resource, fieldName));
 
             Promise.all(checks).then(function(results) {
                 // Only process these results if the change has not been superseded.

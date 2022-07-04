@@ -72,6 +72,26 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
           ? SpecifyResource<Exclude<VALUE, null>>
           : never | Exclude<VALUE, AnySchema>
       >;
+  getRelated<
+    FIELD_NAME extends
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent'],
+    VALUE = (IR<never> &
+      SCHEMA['toOneDependent'] &
+      SCHEMA['toOneIndependent'])[FIELD_NAME]
+  >(
+    fieldName: FIELD_NAME,
+    options?: {
+      readonly prePop?: boolean;
+      readonly noBusinessRules?: boolean;
+    }
+  ): [VALUE] extends [never]
+    ? never
+    : Promise<
+        VALUE extends AnySchema
+          ? SpecifyResource<Exclude<VALUE, null>>
+          : never | Exclude<VALUE, AnySchema>
+      >;
   // Case-insensitive fetch of a -to-many resource
   rgetCollection<
     FIELD_NAME extends keyof (SCHEMA['toManyDependent'] &
