@@ -4,6 +4,7 @@
  */
 
 import { error } from './assert';
+import { getCache } from './cache';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import { f } from './functools';
@@ -13,7 +14,6 @@ import { formsText } from './localization/forms';
 import { queryText } from './localization/query';
 import { getPickListItems } from './picklistmixins';
 import { getPickLists, monthPickListName } from './picklists';
-import { getUserPref } from './preferencesutils';
 import { parseRelativeDate } from './relativedate';
 import type { Input } from './saveblockers';
 import type {
@@ -99,7 +99,7 @@ export const parsers = f.store(
       formatters: [formatter().toLowerCase, formatter().trim],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
-        value  === undefined
+        value === undefined
           ? ''
           : Boolean(value)
           ? queryText('yes')
@@ -272,7 +272,9 @@ export function resolveParser(
     // Don't make checkboxes required
     required: fullField.isRequired === true && parser.type !== 'checkbox',
     maxLength: fullField.length,
-    ...(typeof formatter === 'object' ? formatterToParser(formatter) : {}),
+    ...(typeof formatter === 'object'
+      ? formatterToParser(field, formatter)
+      : {}),
   });
 }
 
@@ -300,33 +302,41 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
           Math.max(...filterArray([base[key], extra[key]])),
         ]),
       ].filter(([_key, value]) => Number.isFinite(value)),
-    ].filter(([_key, value]) => value  !== undefined)
+    ].filter(([_key, value]) => value !== undefined)
   );
 }
 
-function formatterToParser(formatter: UiFormatter): Parser {
+function formatterToParser(
+  field: Partial<LiteralField | Relationship>,
+  formatter: UiFormatter
+): Parser {
   const regExpString = formatter.parseRegexp();
   const title = formsText(
     'requiredFormat',
     formatter.pattern() ?? formatter.valueOrWild()
   );
 
+  const autoNumberingConfig = getCache('forms', 'autoNumbering') ?? {};
+  const modelName = field.model?.name;
+  const autoNumberingFields =
+    typeof modelName === 'string'
+      ? (autoNumberingConfig[modelName] as RA<string>)
+      : undefined;
+  const canAutoNumber =
+    formatter.canAutonumber() &&
+    autoNumberingFields?.includes(field.name ?? '') !== false;
+
   return {
     pattern: regExpString === null ? undefined : new RegExp(regExpString),
     title,
     formatters: [stringGuard(formatter.parse.bind(formatter))],
     validators: [
-      (value) =>
-        value  === undefined || value === null ? title : undefined,
+      (value) => (value === undefined || value === null ? title : undefined),
     ],
     placeholder: formatter.pattern() ?? undefined,
     parser: (value: unknown): string =>
       formatter.canonicalize(value as RA<string>),
-    value:
-      formatter.canAutonumber() &&
-      getUserPref('form', 'behavior', 'autoNumbering')
-        ? formatter.valueOrWild()
-        : undefined,
+    value: canAutoNumber ? formatter.valueOrWild() : undefined,
   };
 }
 
@@ -362,8 +372,7 @@ export const getValidationAttributes = (parser: Parser): IR<string> =>
             'type',
           ]
             .filter(
-              (attribute) =>
-                parser[attribute as keyof Parser]  !== undefined
+              (attribute) => parser[attribute as keyof Parser] !== undefined
             )
             .map((attribute) => [
               attribute,
@@ -433,7 +442,7 @@ export function parseValue(
       : undefined;
   let formattedValue: unknown;
 
-  if (errorMessage  === undefined) {
+  if (errorMessage === undefined) {
     formattedValue = (parser.formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
       value.trim()
@@ -471,7 +480,7 @@ export function fieldFormat(
   parser: Parser | undefined,
   value: string | number | null | boolean | undefined
 ): string {
-  if (value  === undefined || value === null) return '';
+  if (value === undefined || value === null) return '';
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();

@@ -8,8 +8,8 @@ import { getUniqueFields } from '../resource';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { Button, H3, Input, Label, Ul } from './basic';
-import { useBooleanState } from './hooks';
+import { Button, Form, H3, Input, Label, Submit, Ul } from './basic';
+import {useBooleanState, useId} from './hooks';
 import { Dialog } from './modaldialog';
 import { useCachedState } from './statecache';
 
@@ -83,6 +83,7 @@ function CarryForwardConfig({
     ({ overrides }) => !overrides.isHidden || showHiddenFields
   );
 
+  const id = useId('form-carry-forward');
   return (
     <Dialog
       header={formsText('carryForwardDescription')}
@@ -101,33 +102,37 @@ function CarryForwardConfig({
           >
             {formsText('deselectAll')}
           </Button.Green>
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
+          <Submit.Blue onClick={handleClose} form={id('form')}>
+            {commonText('close')}
+          </Submit.Blue>
         </>
       }
     >
-      <div className="flex flex-col flex-1 gap-2 overflow-y-auto">
-        <H3>{commonText('fields')}</H3>
-        <CarryForwardCategory
-          fields={literalFields}
-          uniqueFields={uniqueFields}
-          carryForward={config}
-          onChange={handleChange}
-        />
-        <h3>{commonText('relationships')}</h3>
-        <CarryForwardCategory
-          fields={relationships}
-          uniqueFields={uniqueFields}
-          carryForward={config}
-          onChange={handleChange}
-        />
-      </div>
-      <Label.ForCheckbox className="dark:border-neutral-700 pt-2 border-t">
-        <Input.Checkbox
-          checked={showHiddenFields}
-          onValueChange={setShowHiddenFields}
-        />
-        {commonText('revealHiddenFormFields')}
-      </Label.ForCheckbox>
+      <Form id={id('form')} onSubmit={handleClose}>
+        <div className="flex flex-col flex-1 gap-2 overflow-y-auto">
+          <H3>{commonText('fields')}</H3>
+          <CarryForwardCategory
+            fields={literalFields}
+            uniqueFields={uniqueFields}
+            carryForward={config}
+            onChange={handleChange}
+          />
+          <h3>{commonText('relationships')}</h3>
+          <CarryForwardCategory
+            fields={relationships}
+            uniqueFields={uniqueFields}
+            carryForward={config}
+            onChange={handleChange}
+          />
+        </div>
+        <Label.ForCheckbox className="dark:border-neutral-700 pt-2 border-t">
+          <Input.Checkbox
+            checked={showHiddenFields}
+            onValueChange={setShowHiddenFields}
+          />
+          {commonText('revealHiddenFormFields')}
+        </Label.ForCheckbox>
+      </Form>
     </Dialog>
   );
 }

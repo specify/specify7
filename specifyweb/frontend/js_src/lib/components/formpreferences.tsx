@@ -4,10 +4,11 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { Button } from './basic';
+import { FormAutoNumbering } from './formautonumbering';
+import { CarryForwardButton } from './formcarryforward';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
-import { CarryForwardButton } from './formcarryforward';
 
 export function FormPreferences({
   resource,
@@ -45,7 +46,10 @@ function PreferencesDialog({
       buttons={commonText('close')}
       modal={false}
     >
-      <CarryForwardButton model={resource.specifyModel} />
+      <div className="flex flex-wrap gap-2">
+        <CarryForwardButton model={resource.specifyModel} />
+        <FormAutoNumbering resource={resource} />
+      </div>
     </Dialog>
   );
 }

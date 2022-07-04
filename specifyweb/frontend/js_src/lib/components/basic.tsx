@@ -326,6 +326,11 @@ export const ErrorMessage = wrap(
     role: 'alert',
   }
 );
+/**
+ * Forms are used throughout for accessibility and usability reasons (helps
+ * screen readers describe the page, allows for submitting the form with the
+ * ENTER key, helps browsers with auto complete)
+ */
 export const Form = wrap(
   'Form',
   'form',

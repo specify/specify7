@@ -29,6 +29,11 @@ export type CacheDefinitions = {
         TableFields<Tables[TABLE_NAME]>
       >;
     };
+    readonly autoNumbering: {
+      readonly [TABLE_NAME in keyof Tables]?: RA<
+        TableFields<Tables[TABLE_NAME]>
+        >;
+    };
     readonly carryForwardShowHidden: boolean;
   };
   readonly wbPlanViewUi: {

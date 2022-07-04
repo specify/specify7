@@ -667,4 +667,8 @@ export const formsText = createDictionary({
     'en-us': 'This field must be unique. It can not be carried over',
     'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
   },
+  autoNumbering: {
+    'en-us': 'Auto Numbering',
+    'ru-ru': 'Автонумерация',
+  },
 });

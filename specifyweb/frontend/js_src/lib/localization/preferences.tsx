@@ -340,17 +340,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Behavior',
     'ru-ru': 'Поведение',
   },
-  enableAutoNumbering: {
-    'en-us': 'Enable auto numbering',
-    'ru-ru': 'Включить автоматическую нумерацию',
-  },
-  enableAutoNumberingDescription: {
-    'en-us': `If field has a formatter, whose placeholder value was used, the
-      placeholder would be replaced with the auto numbered value`,
-    'ru-ru': `Если поле имеет средство форматирования, значение заполнителя
-      которого было использовано, заполнитель будет заменен значением с
-      автоматической нумерацией`,
-  },
   noRestrictionsMode: {
     'en-us': 'No restrictions mode',
     'ru-ru': 'Режим без ограничений',

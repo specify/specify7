@@ -487,14 +487,6 @@ export const preferenceDefinitions = {
       behavior: {
         title: preferencesText('behavior'),
         items: {
-          autoNumbering: defineItem<boolean>({
-            title: preferencesText('enableAutoNumbering'),
-            description: preferencesText('enableAutoNumberingDescription'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
           textAreaAutoGrow: defineItem<boolean>({
             title: preferencesText('textAreaAutoGrow'),
             requiresReload: false,
