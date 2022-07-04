@@ -48,9 +48,7 @@ function Coordinate({
     const handleChange = (coordinate: string): void =>
       handleChanged(
         coordinate,
-        (
-          (fieldType === 'Lat' ? Lat : Long).parse(coordinate) as Parsed | null
-        )?.format(step)
+        (fieldType === 'Lat' ? Lat : Long).parse(coordinate)?.format(step)
       );
     const textDestructor = resourceOn(
       resource,

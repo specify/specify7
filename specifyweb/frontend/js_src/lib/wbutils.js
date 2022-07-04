@@ -1004,7 +1004,7 @@ export const WBUtils = Backbone.View.extend({
             const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(
               originalValue
             );
-            if (coordinate)
+            if (typeof coordinate === 'object')
               value = includeSymbolsFunction(
                 stripCardinalDirections(
                   coordinate[conversionFunctionName]().format()

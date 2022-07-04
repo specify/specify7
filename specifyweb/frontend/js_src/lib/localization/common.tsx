@@ -937,10 +937,6 @@ export const commonText = createDictionary({
     'en-us': 'Browse in Forms',
     'ru-ru': 'Открыть записи',
   },
-  selectRecord: {
-    'en-us': 'Select Record',
-    'ru-ru': 'Выбрать Элемент',
-  },
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',

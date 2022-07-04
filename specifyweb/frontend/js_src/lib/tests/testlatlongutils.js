@@ -1,9 +1,9 @@
 import _ from 'underscore';
 
 import QUnit from 'qunit';
-const assert = QUnit.assert;
-
 import * as latlongutils from '../latlongutils';
+
+const assert = QUnit.assert;
 
 export function testLatLongUtils() {
     QUnit.module('latlongutils.parse');
@@ -31,22 +31,22 @@ export function testLatLongUtils() {
         '0 01 S': [-1, 0, 1, latlongutils.Lat],
         '0 01 W': [-1, 0, 1, latlongutils.Long],
         '0': [1, 0, latlongutils.Coord],
-        '': null,
-        ' ': null,
-        'foobar': null,
-        '180:00:01': null,
-        '-90:05 S': null
+        '': undefined,
+        ' ': undefined,
+        'foobar': undefined,
+        '180:00:01': undefined,
+        '-90:05 S': undefined
     }, function(value, key) {
         var type = value && value.pop();
         QUnit.test(key + ' is ' + (type && type.name), function() {
             var result = parse(key);
-            if (_.isNull(value)) {
-                assert.equal(result, null);
+            if (value === undefined) {
+                assert.equal(result, undefined);
                 return;
             }
-            assert.notEqual(result, null);
+            assert.notEqual(result, undefined);
             assert.ok(result instanceof type);
-            assert.deepEqual([result._sign].concat(result._components), value);
+            assert.deepEqual([result.sign, ...result.components], value);
         });
     });
 
@@ -59,9 +59,9 @@ export function testLatLongUtils() {
     }, function(value, key) {
         QUnit.test(key, function() {
             var result = parse(key).toDegs();
-            assert.equal(result._components.length, value.length - 1);
-            assert.equal(result._sign, value[0]);
-            assert.equal(Math.round(result._components.pop() * 1e9), Math.round(value.pop() * 1e9));
+            assert.equal(result.components.length, value.length - 1);
+            assert.equal(result.sign, value[0]);
+            assert.equal(Math.round(result.components.pop() * 1e9), Math.round(value.pop() * 1e9));
         });
     });
 
@@ -77,8 +77,8 @@ export function testLatLongUtils() {
         QUnit.test(key, function() {
             var coord = new latlongutils.Coord(parseFloat(key));
             var result = coord.toDegsMinsSecs();
-            assert.equal(result._components.length, value.length - 1);
-            assert.equal(result._sign, value[0]);
+            assert.equal(result.components.length, value.length - 1);
+            assert.equal(result.sign, value[0]);
             while(result.length) {
                 assert.equal(Math.round(result.pop() * 1e3), Math.round(value.pop() * 1e3));
             }
@@ -94,8 +94,8 @@ export function testLatLongUtils() {
         QUnit.test(key, function() {
             var coord = new latlongutils.Coord(parseFloat(key));
             var result = coord.toDegsMins();
-            assert.equal(result._components.length, value.length - 1);
-            assert.equal(result._sign, value[0]);
+            assert.equal(result.components.length, value.length - 1);
+            assert.equal(result.sign, value[0]);
             while(result.length) {
                 assert.equal(Math.round(result.pop() * 1e3), Math.round(value.pop() * 1e3));
             }
@@ -114,8 +114,8 @@ export function testLatLongUtils() {
     }, function(value, key) {
         QUnit.test(key, function() {
             var coord = new latlongutils.Coord();
-            coord._sign = value.shift();
-            coord._components = value;
+            coord.sign = value.shift();
+            coord.components = value;
             assert.equal(coord.format(), key);
         });
     });
@@ -153,47 +153,48 @@ export function testLatLongUtils() {
         '28° N': [1, 28, 'Lat'],
         '28° 19\' N': [1, 28, 19, 'Lat'],
         '28° 19\' 0.121" N': [1, 28, 19, 0.121, 'Lat'],
+        '  28° 19\' 0.121" N  ': [1, 28, 19, 0.121, 'Lat'],
         '115° 34\' 59.872" W': [-1, 115, 34, 59.872, 'Long'],
-        '': null,
-        ' ': null,
-        'foobar': null,
+        '': undefined,
+        ' ': undefined,
+        'foobar': undefined,
     }, function(value, key) {
         var giventype = value && value.pop();
         _(['Coord', 'Lat', 'Long']).each(function(type) {
             QUnit.test(key + ' as ' + type, function() {
                 var result = latlongutils[type].parse(key);
-                if (_.isNull(value)) {
-                    assert.equal(result, null);
+                if (value === undefined) {
+                    assert.equal(result, undefined);
                 } else if (type === 'Coord' ||
                            giventype === 'Coord' ||
                            giventype === type) {
-                    assert.deepEqual([result._sign].concat(result._components), value);
+                    assert.deepEqual([result.sign, ...result.components], value);
                 } else {
-                    assert.equal(result, null);
+                    assert.equal(result, undefined);
                 }
             });
         });
     });
 
     _.each({
-        '124:34:23 N': null,
+        '124:34:23 N': undefined,
         '124:34:23': 'Long',
-        '200:34': null,
-        '15:75': null,
-        '-124:34:23 N': null,
+        '200:34': undefined,
+        '15:75': undefined,
+        '-124:34:23 N': undefined,
         '-124:34:23': 'Long',
-        '-200.34': null,
-        '-15:75': null,
-        '90.01 N': null,
+        '-200.34': undefined,
+        '-15:75': undefined,
+        '90.01 N': undefined,
         '90.1': 'Long',
-        '90:01 N': null,
+        '90:01 N': undefined,
         '90:00:01': 'Long'
     }, function(value, key) {
-        _([null, 'Coord', 'Lat', 'Long']).each(function(type) {
+        _([undefined, 'Coord', 'Lat', 'Long']).each(function(type) {
             QUnit.test(key + ' as ' + type, function() {
                 var result = type ? latlongutils[type].parse(key) : parse(key);
-                if (_.isNull(value) || type === 'Lat') {
-                    assert.equal(result, null);
+                if (value === undefined || type === 'Lat') {
+                    assert.equal(result, undefined);
                     return;
                 }
                 assert.ok(result instanceof latlongutils[value]);

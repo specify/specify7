@@ -12,6 +12,7 @@ import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { LeafletMap } from './leaflet';
 import { Dialog } from './modaldialog';
+import { ErrorBoundary } from './errorboundary';
 
 function LeafletDialog({
   locality,
