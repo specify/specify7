@@ -43,6 +43,7 @@ import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 import { ErrorBoundary } from './errorboundary';
+import { QueryEditButton } from './toolbar/query';
 
 export function QueryBuilder({
   query: queryResource,
@@ -263,6 +264,7 @@ export function QueryBuilder({
                     )
                   : queryText('queryTaskTitle', query.name)}
               </H2>
+              {!queryResource.isNew() && <QueryEditButton query={query} />}
               <span className="flex-1 ml-2" />
               {!isScrolledTop && (
                 <Button.Small

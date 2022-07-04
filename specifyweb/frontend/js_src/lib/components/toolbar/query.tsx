@@ -37,13 +37,14 @@ import {
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
 import { downloadFile, FilePicker, fileToText } from '../filepicker';
-import { useAsyncState, useId, useTitle } from '../hooks';
+import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
 import { goTo } from '../navigation';
 import { usePref } from '../preferenceshooks';
+import { deserializeResource } from '../resource';
 import { ResourceView } from '../resourceview';
 import { useCachedState } from '../statecache';
 
@@ -83,11 +84,11 @@ const defaultSortConfig = {
 
 function QueryList({
   queries: unsortedQueries,
-  onEdit: handleEdit,
+  isReadOnly,
   getQuerySelectUrl,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>>;
-  readonly onEdit?: (query: SerializedResource<SpQuery>) => void;
+  readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element | null {
   const [sortConfig, setSortConfig] = useCachedState({
@@ -191,14 +192,32 @@ function QueryList({
               )}
             </td>
             <td className="justify-end">
-              {typeof handleEdit === 'function' && (
-                <DataEntry.Edit onClick={(): void => handleEdit(query)} />
-              )}
+              {!isReadOnly && <QueryEditButton query={query} />}
             </td>
           </tr>
         ))}
       </tbody>
     </table>
+  );
+}
+
+export function QueryEditButton({
+  query,
+}: {
+  readonly query: SerializedResource<SpQuery>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const queryResource = React.useMemo(
+    () => deserializeResource(query),
+    [query]
+  );
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <EditQueryDialog queryResource={queryResource} onClose={handleClose} />
+      )}
+    </>
   );
 }
 
@@ -233,18 +252,8 @@ function ListOfTables({
 
 type ShowQueryListState = State<'ShowQueryListState'>;
 type CreateQueryState = State<'CreateQueryState'>;
-type EditQueryState = State<
-  'EditQueryState',
-  {
-    queryModel: SpecifyResource<SpQuery>;
-  }
->;
 type ImportQueryState = State<'ImportQueryState'>;
-type States =
-  | ShowQueryListState
-  | CreateQueryState
-  | EditQueryState
-  | ImportQueryState;
+type States = ShowQueryListState | CreateQueryState | ImportQueryState;
 
 const QUERY_FETCH_LIMIT = 5000;
 
@@ -308,17 +317,7 @@ export function QueryToolbarItem({
       >
         <QueryList
           queries={queries}
-          onEdit={
-            isReadOnly
-              ? undefined
-              : (queryResource): void =>
-                  setState({
-                    type: 'EditQueryState',
-                    queryModel: new schema.models.SpQuery.Resource(
-                      queryResource
-                    ),
-                  })
-          }
+          isReadOnly={isReadOnly}
           getQuerySelectUrl={getQuerySelectUrl}
         />
       </Dialog>
@@ -359,8 +358,6 @@ export function QueryToolbarItem({
     ) : (
       <LoadingScreen />
     )
-  ) : state.type === 'EditQueryState' && !isReadOnly ? (
-    <EditQueryDialog queryResource={state.queryModel} onClose={handleClose} />
   ) : state.type === 'ImportQueryState' ? (
     <QueryImport
       onClose={(): void => setState({ type: 'ShowQueryListState' })}
