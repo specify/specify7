@@ -1,9 +1,12 @@
 import React from 'react';
 
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { toTable } from '../specifymodel';
+import { isTreeResource } from '../treedefinitions';
 import { Button, H3 } from './basic';
 import { FormAutoNumbering } from './formautonumbering';
 import { CarryForwardButton } from './formcarryforward';
@@ -12,10 +15,10 @@ import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { ProtectedAction, ProtectedTool } from './permissiondenied';
+import { PickListUsages } from './picklistusages';
+import { QueryTreeUsages } from './querytreeusages';
 import { RecordHistory } from './recordhistory';
 import { ShareRecord } from './sharerecord';
-import { isTreeResource } from '../treedefinitions';
-import { QueryTreeUsages } from './querytreeusages';
 
 export function FormPreferences({
   resource,
@@ -62,18 +65,23 @@ function PreferencesDialog({
         </div>
       </div>
       <div className="flex flex-col gap-2 pb-2">
-        <ProtectedTool tool="auditLog" action="read">
-          <ProtectedAction resource="/querybuilder/query" action="execute">
-            <H3>{formsText('recordInformation')}</H3>
-            <div className="flex flex-wrap gap-2">
+        <H3>{formsText('recordInformation')}</H3>
+        <div className="flex flex-wrap gap-2">
+          <ProtectedTool tool="auditLog" action="read">
+            <ProtectedAction resource="/querybuilder/query" action="execute">
               <RecordHistory resource={resource} />
-              {isTreeResource(resource) && (
-                <QueryTreeUsages resource={resource} />
-              )}
-            </div>
-            {!resource.isNew() && <ShareRecord resource={resource} />}
-          </ProtectedAction>
-        </ProtectedTool>
+            </ProtectedAction>
+          </ProtectedTool>
+          {isTreeResource(resource) && <QueryTreeUsages resource={resource} />}
+          <ProtectedTool tool="pickLists" action="read">
+            <ProtectedAction resource="/querybuilder/query" action="execute">
+              {f.maybe(toTable(resource, 'PickList'), (pickList) => (
+                <PickListUsages pickList={pickList} />
+              ))}
+            </ProtectedAction>
+          </ProtectedTool>
+        </div>
+        {!resource.isNew() && <ShareRecord resource={resource} />}
       </div>
     </Dialog>
   );

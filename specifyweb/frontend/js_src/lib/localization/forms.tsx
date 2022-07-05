@@ -706,4 +706,8 @@ export const formsText = createDictionary({
     'en-us': 'Find usagges',
     'ru-ru': 'Найти использование',
   },
+  usagesOfPickList: {
+    'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
+    'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
+  },
 });
