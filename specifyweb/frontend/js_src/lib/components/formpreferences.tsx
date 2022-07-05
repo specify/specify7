@@ -13,6 +13,7 @@ import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { ProtectedAction, ProtectedTool } from './permissiondenied';
 import { RecordHistory } from './recordhistory';
+import { ShareRecord } from './sharerecord';
 
 export function FormPreferences({
   resource,
@@ -65,6 +66,7 @@ function PreferencesDialog({
             <div className="flex flex-wrap gap-2">
               <RecordHistory resource={resource} />
             </div>
+            {!resource.isNew() && <ShareRecord resource={resource} />}
           </ProtectedAction>
         </ProtectedTool>
       </div>

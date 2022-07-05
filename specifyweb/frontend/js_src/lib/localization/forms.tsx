@@ -698,4 +698,8 @@ export const formsText = createDictionary({
     'en-us': 'Record Information',
     'ru-ru': 'Информация об объекте',
   },
+  shareRecord: {
+    'en-us': 'Share Record:',
+    'ru-ru': 'Поделиться объектом:',
+  },
 });
