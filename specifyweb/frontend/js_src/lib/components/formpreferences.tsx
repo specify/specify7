@@ -14,6 +14,8 @@ import { Dialog } from './modaldialog';
 import { ProtectedAction, ProtectedTool } from './permissiondenied';
 import { RecordHistory } from './recordhistory';
 import { ShareRecord } from './sharerecord';
+import { isTreeResource } from '../treedefinitions';
+import { QueryTreeUsages } from './querytreeusages';
 
 export function FormPreferences({
   resource,
@@ -65,6 +67,9 @@ function PreferencesDialog({
             <H3>{formsText('recordInformation')}</H3>
             <div className="flex flex-wrap gap-2">
               <RecordHistory resource={resource} />
+              {isTreeResource(resource) && (
+                <QueryTreeUsages resource={resource} />
+              )}
             </div>
             {!resource.isNew() && <ShareRecord resource={resource} />}
           </ProtectedAction>

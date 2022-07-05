@@ -702,4 +702,8 @@ export const formsText = createDictionary({
     'en-us': 'Share Record:',
     'ru-ru': 'Поделиться объектом:',
   },
+  findUsages: {
+    'en-us': 'Find usagges',
+    'ru-ru': 'Найти использование',
+  },
 });
