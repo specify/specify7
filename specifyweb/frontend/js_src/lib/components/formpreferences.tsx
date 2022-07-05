@@ -20,6 +20,8 @@ import { QueryTreeUsages } from './querytreeusages';
 import { RecordHistory } from './recordhistory';
 import { ShareRecord } from './sharerecord';
 import { PrintOnSave } from './specifyformcheckbox';
+import { SubViewContext } from './subview';
+import { SubViewPreferences } from './subviewpreferences';
 
 export function FormPreferences({
   resource,
@@ -50,6 +52,7 @@ function PreferencesDialog({
   readonly resource: SpecifyResource<AnySchema>;
   readonly onClose: () => void;
 }): JSX.Element {
+  const subView = React.useContext(SubViewContext);
   return (
     <Dialog
       header={resource.specifyModel.label}
@@ -72,6 +75,12 @@ function PreferencesDialog({
           defaultValue={false}
         />
       </div>
+      {typeof subView === 'object' ? (
+        <div className="flex flex-col gap-2 pb-2">
+          <H3>{formsText('recordSelectorConfiguration')}</H3>
+          <SubViewPreferences subView={subView} model={resource.specifyModel} />
+        </div>
+      ) : undefined}
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('recordInformation')}</H3>
         <div className="flex flex-wrap gap-2">

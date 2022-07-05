@@ -127,6 +127,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
+  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
       commonText('loading')

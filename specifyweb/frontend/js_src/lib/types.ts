@@ -3,6 +3,8 @@
  *
  * @module
  */
+import type React from 'react';
+
 import { error } from './assert';
 
 // Record
@@ -84,3 +86,6 @@ export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
+
+/** Extract a type from React context */
+export type ContextType<T> = T extends React.Context<infer U> ? U : never;

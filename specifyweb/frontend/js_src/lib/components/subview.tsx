@@ -12,12 +12,19 @@ import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { TableIcon } from './common';
 import { fail } from './errorboundary';
-import { useBooleanState } from './hooks';
+import { useBooleanState, useTriggerState } from './hooks';
 import { IntegratedRecordSelector } from './recordselectorutils';
 
-export const SubViewContext = React.createContext<Relationship | undefined>(
-  undefined
-);
+export const SubViewContext = React.createContext<
+  | {
+      readonly relationship: Relationship | undefined;
+      readonly formType: FormType;
+      readonly sortField: string | undefined;
+      readonly handleChangeFormType: (formType: FormType) => void;
+      readonly handleChangeSortField: (sortField: string | undefined) => void;
+    }
+  | undefined
+>(undefined);
 SubViewContext.displayName = 'SubViewContext';
 
 export function SubView({
@@ -25,11 +32,11 @@ export function SubView({
   parentResource,
   mode: initialMode,
   parentFormType,
-  formType,
+  formType: initialFormType,
   isButton,
   viewName = relationship.relatedModel.view,
   icon = relationship.relatedModel.name,
-  sortField,
+  sortField: initialSortField,
 }: {
   readonly relationship: Relationship;
   readonly parentResource: SpecifyResource<AnySchema>;
@@ -41,6 +48,8 @@ export function SubView({
   readonly viewName: string | undefined;
   readonly sortField: string | undefined;
 }): JSX.Element {
+  const [sortField, setSortField] = useTriggerState(initialSortField);
+
   const fetchCollection = React.useCallback(
     async function fetchCollection(): Promise<
       Collection<AnySchema> | undefined
@@ -128,9 +137,21 @@ export function SubView({
     [parentResource, relationship, fetchCollection]
   );
 
+  const [formType, setFormType] = useTriggerState(initialFormType);
+  const contextValue = React.useMemo(
+    () => ({
+      relationship,
+      formType,
+      sortField,
+      handleChangeFormType: setFormType,
+      handleChangeSortField: setSortField,
+    }),
+    [relationship, formType, sortField, setFormType, setSortField]
+  );
+
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(!isButton);
   return (
-    <SubViewContext.Provider value={relationship}>
+    <SubViewContext.Provider value={contextValue}>
       {isButton && (
         <Button.BorderedGray
           title={relationship.label}

@@ -375,7 +375,7 @@ export function QueryComboBox({
         )
       : setState({ type: 'ViewResourceState' });
 
-  const subViewRelationship = React.useContext(SubViewContext);
+  const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
   const pendingValueToResource = (
     relationship: Relationship

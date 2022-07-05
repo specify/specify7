@@ -78,6 +78,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly order:
+    | undefined
     | (string & keyof SCHEMA['fields'])
     | `-${string & keyof SCHEMA['fields']}`;
   readonly onChange: (
@@ -90,7 +91,9 @@ export function OrderPicker<SCHEMA extends AnySchema>({
   return (
     <Select
       value={order}
-      onValueChange={(newOrder): void => handleChange(newOrder as typeof order)}
+      onValueChange={(newOrder): void =>
+        handleChange(newOrder as Exclude<typeof order, undefined>)
+      }
       disabled={isReadOnly}
     >
       <option value="">{commonText('none')}</option>
@@ -101,7 +104,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
              * "order === name" is necessary in case Accession.timestampCreated
              * is a hidden field in the schema
              */
-            ({ overrides, name }) => !overrides.isHidden || order === name
+            ({ isHidden, name }) => !isHidden || order === name
           )
           .map(({ name, label }) => (
             <option value={name} key={name}>
@@ -111,10 +114,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
       </optgroup>
       <optgroup label={commonText('descending')}>
         {model.literalFields
-          .filter(
-            ({ overrides, name }) =>
-              !overrides.isHidden || order.slice(1) === name
-          )
+          .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
           .map(({ name, label }) => (
             <option value={`-${name}`} key={name}>
               {label}

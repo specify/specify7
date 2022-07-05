@@ -718,4 +718,16 @@ export const formsText = createDictionary({
     'en-us': 'Print label on save',
     'ru-ru': 'Печатать метку при сохранении',
   },
+  form: {
+    'en-us': 'Subform',
+    'ru-ru': 'Форма',
+  },
+  formTable: {
+    'en-us': 'Grid',
+    'ru-ru': 'Таблица',
+  },
+  recordSelectorConfiguration: {
+    'en-us': 'Subview configuration',
+    'ru-ru': 'Конфигурация подчиненной формы',
+  },
 });
