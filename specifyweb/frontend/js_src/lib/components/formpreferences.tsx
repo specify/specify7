@@ -19,6 +19,7 @@ import { PickListUsages } from './picklistusages';
 import { QueryTreeUsages } from './querytreeusages';
 import { RecordHistory } from './recordhistory';
 import { ShareRecord } from './sharerecord';
+import { PrintOnSave } from './specifyformcheckbox';
 
 export function FormPreferences({
   resource,
@@ -63,6 +64,13 @@ function PreferencesDialog({
           <FormAutoNumbering resource={resource} />
           <FormDefinition model={resource.specifyModel} />
         </div>
+        <PrintOnSave
+          model={resource.specifyModel}
+          id={undefined}
+          fieldName={undefined}
+          text={formsText('printOnSave')}
+          defaultValue={false}
+        />
       </div>
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('recordInformation')}</H3>

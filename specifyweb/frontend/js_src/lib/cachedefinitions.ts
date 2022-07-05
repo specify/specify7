@@ -34,9 +34,7 @@ export type CacheDefinitions = {
         TableFields<Tables[TABLE_NAME]>
       >;
     };
-    readonly useCustomForm: {
-      readonly [TABLE_NAME in keyof Tables]?: boolean;
-    };
+    readonly useCustomForm: Partial<RR<keyof Tables, boolean>>;
     readonly carryForwardShowHidden: boolean;
     readonly useFieldLabels: boolean;
   };

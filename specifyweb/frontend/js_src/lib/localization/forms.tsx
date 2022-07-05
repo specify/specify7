@@ -714,4 +714,8 @@ export const formsText = createDictionary({
     'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
     'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
   },
+  printOnSave: {
+    'en-us': 'Print label on save',
+    'ru-ru': 'Печатать метку при сохранении',
+  },
 });
