@@ -35,6 +35,7 @@ import {
 import { isTreeResource } from './treedefinitions';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
+import { getCache } from './cache';
 
 type FieldAlias = {
   readonly vname: string;
@@ -219,13 +220,25 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
+    const useLabels = getCache('forms', 'useFieldLabels') ?? true;
     this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
       items: {},
     };
+    if (!useLabels)
+      this.localization = {
+        ...this.localization,
+        items: Object.fromEntries(
+          Object.entries(this.localization.items).map(([fieldName, data]) => [
+            fieldName,
+            { ...data, name: fieldName },
+          ])
+        ),
+      };
+
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
       tableDefinition.idFieldName.toLowerCase()
     ] ??= {
-      name: commonText('id'),
+      name: useLabels ? commonText('id') : tableDefinition.idFieldName,
       desc: null,
       format: null,
       picklistname: null,
@@ -244,10 +257,11 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       readOnly: false,
     });
 
-    this.label =
-      typeof this.localization.name === 'string'
+    this.label = useLabels
+      ? typeof this.localization.name === 'string'
         ? unescape(this.localization.name)
-        : camelToHuman(this.name);
+        : camelToHuman(this.name)
+      : this.name;
 
     this.isHidden = this.localization.ishidden === 1;
 

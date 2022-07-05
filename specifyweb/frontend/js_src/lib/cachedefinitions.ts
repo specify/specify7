@@ -38,6 +38,7 @@ export type CacheDefinitions = {
       readonly [TABLE_NAME in keyof Tables]?: boolean;
     };
     readonly carryForwardShowHidden: boolean;
+    readonly useFieldLabels: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */

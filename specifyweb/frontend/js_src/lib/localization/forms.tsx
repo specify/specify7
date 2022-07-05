@@ -680,6 +680,10 @@ export const formsText = createDictionary({
     'en-us': 'Use Auto Generated Form',
     'ru-ru': 'Использовать автоматическую схему формы',
   },
+  useFieldLabels: {
+    'en-us': 'Use localized field labels',
+    'ru-ru': 'Использовать локализованные названия полей',
+  },
   historyOfEdits: {
     'en-us': 'History of edits',
     'ru-ru': 'История изменений',
