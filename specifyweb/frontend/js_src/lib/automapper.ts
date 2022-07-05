@@ -547,11 +547,9 @@ export class AutoMapper {
       tableSynonyms.flatMap((tableSynonym: TableSynonym) => {
         const mappingPathString = mappingPathToString(
           tableSynonym.mappingPathFilter
-        );
-        return filteredPathString
-          .toLowerCase()
-          .endsWith(mappingPathString.toLowerCase()) ||
-          filteredPathWithBaseTableString === mappingPathString
+        ).toLowerCase();
+        return filteredPathString.toLowerCase().endsWith(mappingPathString) ||
+          filteredPathWithBaseTableString.toLowerCase() === mappingPathString
           ? tableSynonym.synonyms
           : undefined;
       })
