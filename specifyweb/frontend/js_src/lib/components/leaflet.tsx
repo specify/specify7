@@ -56,7 +56,7 @@ export function LeafletMap({
       className={{
         container: isFullScreen
           ? dialogClassNames.fullScreen
-          : dialogClassNames.wideContainer,
+          : dialogClassNames.extraWideContainer,
       }}
       onResize={handleResize}
       onClose={handleClose}
