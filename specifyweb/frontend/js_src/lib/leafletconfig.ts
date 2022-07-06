@@ -121,11 +121,11 @@ export const leafletTileServers: RR<
   },
   overlays: {
     'Labels and boundaries': L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+      'https://esp.usdoj.gov/arcweb/rest/services/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 23,
         attribution:
-          'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community\n',
+          'Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community',
       }
     ),
   },
