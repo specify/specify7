@@ -30,8 +30,13 @@ def check_collection_access_against_agents(userid: int) -> None:
     if missing:
         raise MissingAgentForAccessibleCollection({'missing_for_7': missing})
 
+class ListAdminsPT(PermissionTarget):
+    resource = "/permissions/list_admins"
+    read = PermissionTargetAction()
+
 class ListAdmins(LoginRequiredMixin, View):
-    def get(self, request):
+    def get(self, request) -> http.HttpResponse:
+        check_permission_targets(None, request.specify_user.id, [ListAdminsPT.read])
         sp7_admins = models.UserPolicy.objects.filter(collection=None, resource='%', action='%')\
             .values_list("specifyuser_id", "specifyuser__name").distinct()
 
