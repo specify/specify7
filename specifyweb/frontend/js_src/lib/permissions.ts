@@ -56,6 +56,7 @@ export const operationPolicies = {
   '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
+  '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
   '/permissions/user/roles': ['read', 'update'],
   '/permissions/roles': [

@@ -93,28 +93,7 @@ export function SecurityInstitution({
       }))
     );
 
-  const [admins] = useAsyncState(
-    React.useCallback(
-      async () =>
-        ajax<{
-          readonly sp7_admins: RA<{
-            readonly userid: number;
-            readonly username: string;
-          }>;
-          readonly sp6_admins: RA<{
-            readonly userid: number;
-            readonly username: string;
-          }>;
-        }>('/permissions/list_admins/', {
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => ({
-          admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
-          legacyAdmins: new Set(data.sp6_admins.map(({ userid }) => userid)),
-        })),
-      []
-    ),
-    false
-  );
+  const admins = useAdmins();
 
   useTitle(
     state.type === 'MainState' ? institution.name ?? undefined : undefined
@@ -318,4 +297,38 @@ export function SecurityInstitution({
       )}
     </Container.Base>
   );
+}
+
+function useAdmins():
+  | {
+      readonly admins: Set<number>;
+      readonly legacyAdmins: Set<number>;
+    }
+  | undefined {
+  return useAsyncState(
+    React.useCallback(
+      async () =>
+        hasPermission('/permissions/list_admins', 'read')
+          ? ajax<{
+              readonly sp7_admins: RA<{
+                readonly userid: number;
+                readonly username: string;
+              }>;
+              readonly sp6_admins: RA<{
+                readonly userid: number;
+                readonly username: string;
+              }>;
+            }>('/permissions/list_admins/', {
+              headers: { Accept: 'application/json' },
+            }).then(({ data }) => ({
+              admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
+              legacyAdmins: new Set(
+                data.sp6_admins.map(({ userid }) => userid)
+              ),
+            }))
+          : { admins: new Set<number>(), legacyAdmins: new Set<number>() },
+      []
+    ),
+    false
+  )[0];
 }
