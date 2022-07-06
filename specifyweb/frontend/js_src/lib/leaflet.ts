@@ -138,6 +138,7 @@ export async function showLeafletMap({
 
   addMarkersToMap(
     map,
+    tileLayers.overlays,
     controlLayers,
     localityPoints.map((pointDataDict, index) =>
       getMarkersFromLocalityData({
@@ -235,6 +236,7 @@ const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
 
 export function addMarkersToMap(
   map: L.Map,
+  defaultOverlays: IR<L.TileLayer>,
   controlLayers: L.Control.Layers,
   markers: RA<MarkerGroups>,
   labels?: Partial<RR<MarkerLayerName, string>>
@@ -294,10 +296,14 @@ export function addMarkersToMap(
     )
   );
 
-  rememberSelectedOverlays(map, layerGroups, {
-    ...defaultMarkerGroupsState,
-    [preferredOverlay]: true,
-  });
+  rememberSelectedOverlays(
+    map,
+    { ...defaultOverlays, ...layerGroups },
+    {
+      ...defaultMarkerGroupsState,
+      [preferredOverlay]: true,
+    }
+  );
 
   const defaultLabels = {
     marker: localityText('occurrencePoints'),
