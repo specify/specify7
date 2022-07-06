@@ -251,7 +251,14 @@ export function RecordSetCreated({
     <Dialog
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
-      buttons={commonText('close')}
+      buttons={
+        <>
+          <Link.Blue href={`/specify/recordset/${recordSet.id}/`}>
+            {commonText('open')}
+          </Link.Blue>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+        </>
+      }
     >
       <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
         <TableIcon
