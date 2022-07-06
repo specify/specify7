@@ -354,6 +354,7 @@ export const fetchUserPermissions = async (
                   }
                 )
           ).then(({ operations, tables, derived }) => {
+            void checkRegistry();
             operationPermissions = {
               ...operationPermissions,
               [collection]: operations,
@@ -377,7 +378,6 @@ export const fetchUserPermissions = async (
                 derived: derivedPermissions,
               };
             }
-            void checkRegistry();
             return collection;
           });
       return permissionPromises[collection];
