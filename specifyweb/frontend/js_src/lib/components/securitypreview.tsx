@@ -426,7 +426,10 @@ export function PreviewPermissions({
   });
   return query === false ? null : (
     <details open={isCollapsed}>
-      <Summary className={className.headerGray} onToggle={setCollapsed}>
+      <Summary
+        className={`${className.headerGray} text-xl`}
+        onToggle={setCollapsed}
+      >
         {adminText('userPermissionPreview')}
       </Summary>
       {typeof query === 'object' ? (

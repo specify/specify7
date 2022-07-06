@@ -120,8 +120,8 @@ export const adminText = createDictionary({
     'ru-ru': 'Безопасность и аккаунты',
   },
   userRoleLibrary: {
-    'en-us': 'Role Library',
-    'ru-ru': 'Библиотека ролей пользователей:',
+    'en-us': 'Institution Library of Role Templates',
+    'ru-ru': 'Библиотека ролей пользователей',
   },
   userRoles: {
     'en-us': 'User Roles',

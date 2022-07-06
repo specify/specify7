@@ -21,7 +21,7 @@ import { SearchDialog } from './searchdialog';
 import type { UserRoles } from './securitycollection';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
-import { SecurityPolicies } from './securitypolicy';
+import { SecurityPolicies, SecurityPoliciesWrapper } from './securitypolicy';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -183,17 +183,21 @@ export function RoleView({
             )}
           </fieldset>
         ) : undefined}
-        <SecurityPolicies
+        <SecurityPoliciesWrapper
           policies={role.policies}
-          onChange={(policies): void =>
-            setRole(replaceKey(role, 'policies', policies))
-          }
           header={adminText('rolePolicies')}
-          isReadOnly={isReadOnly}
-          scope="collection"
           collapsable={false}
-          limitHeight={false}
-        />
+        >
+          <SecurityPolicies
+            policies={role.policies}
+            onChange={(policies): void =>
+              setRole(replaceKey(role, 'policies', policies))
+            }
+            isReadOnly={isReadOnly}
+            scope="collection"
+            limitHeight={false}
+          />
+        </SecurityPoliciesWrapper>
       </div>
       <div className="flex gap-2">
         {typeof role.id === 'number' &&

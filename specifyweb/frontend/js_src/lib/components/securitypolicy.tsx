@@ -263,6 +263,80 @@ function SecurityPolicy({
   );
 }
 
+export function SecurityPoliciesWrapper({
+  policies,
+  header,
+  collapsable,
+  enlargeHeader = false,
+  children,
+}: {
+  readonly policies: RA<Policy> | undefined;
+  readonly header: string;
+  readonly collapsable: boolean;
+  readonly enlargeHeader?: boolean;
+  readonly children: JSX.Element;
+}): JSX.Element {
+  const [orientation = 'vertical', setOrientation] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'policiesLayout',
+    defaultValue: 'vertical',
+    staleWhileRefresh: false,
+  });
+
+  const [isExpanded = true, setExpanded] = useCachedState({
+    bucketName: 'securityTool',
+    cacheName: 'institutionPoliciesExpanded',
+    defaultValue: true,
+    staleWhileRefresh: false,
+  });
+  const buttonTitle =
+    orientation === 'vertical'
+      ? adminText('switchToHorizontalLayout')
+      : adminText('switchToVerticalLayout');
+  const switchButton =
+    (!collapsable || isExpanded) && Array.isArray(policies) ? (
+      <Button.Small
+        variant={className.blueButton}
+        title={buttonTitle}
+        aria-label={buttonTitle}
+        onClick={(): void =>
+          setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
+        }
+      >
+        {orientation === 'horizontal'
+          ? icons.switchVertical
+          : icons.switchHorizontal}
+      </Button.Small>
+    ) : undefined;
+
+  return collapsable ? (
+    <details open={isExpanded}>
+      <Summary onToggle={setExpanded}>
+        <span
+          className={`inline-flex items-center gap-4 ${
+            collapsable ? '' : 'text-xl'
+          }`}
+        >
+          {header}
+        </span>
+        {/*
+         * There is no switchButton here as interactive elements should not
+         * be inside of <summary>
+         */}
+      </Summary>
+      <div className="flex flex-col gap-2 pt-2">{children}</div>
+    </details>
+  ) : (
+    <fieldset className="flex flex-col gap-2">
+      <div className="flex items-center gap-4">
+        <h4 className={enlargeHeader ? 'text-xl' : undefined}>{header}</h4>
+        {switchButton}
+      </div>
+      {children}
+    </fieldset>
+  );
+}
+
 /*
  * TODO: extend the checks for redundant policies and policies that don't have
  *   any effect (i.e, /permissions/user/roles/ has no effect unless
@@ -272,16 +346,12 @@ export function SecurityPolicies({
   policies,
   isReadOnly,
   onChange: handleChange,
-  header,
-  collapsable,
   scope,
   limitHeight,
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly isReadOnly: boolean;
   readonly onChange: (policies: RA<Policy>) => void;
-  readonly header: string;
-  readonly collapsable: boolean;
   readonly scope: PolicyScope;
   readonly limitHeight: boolean;
 }): JSX.Element {
@@ -300,14 +370,14 @@ export function SecurityPolicies({
     policyCountRef.current = policies?.length ?? -1;
   }, [policies]);
 
-  const [orientation = 'vertical', setOrientation] = useCachedState({
+  const [orientation = 'vertical'] = useCachedState({
     bucketName: 'securityTool',
     cacheName: 'policiesLayout',
     defaultValue: 'vertical',
     staleWhileRefresh: false,
   });
 
-  const children = Array.isArray(policies) ? (
+  return Array.isArray(policies) ? (
     <>
       <Ul
         className={`flex flex-col gap-2 overflow-auto ${
@@ -392,60 +462,6 @@ export function SecurityPolicies({
       )}
     </>
   ) : (
-    commonText('loading')
-  );
-
-  const [isExpanded = true, setExpanded] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'institutionPoliciesExpanded',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
-
-  const buttonTitle =
-    orientation === 'vertical'
-      ? adminText('switchToHorizontalLayout')
-      : adminText('switchToVerticalLayout');
-  const switchButton =
-    (!collapsable || isExpanded) && Array.isArray(policies) ? (
-      <Button.Small
-        variant={className.blueButton}
-        title={buttonTitle}
-        aria-label={buttonTitle}
-        onClick={(): void =>
-          setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
-        }
-      >
-        {orientation === 'horizontal'
-          ? icons.switchVertical
-          : icons.switchHorizontal}
-      </Button.Small>
-    ) : undefined;
-
-  return collapsable ? (
-    <details open={isExpanded}>
-      <Summary onToggle={setExpanded}>
-        <span
-          className={`inline-flex items-center gap-4 ${
-            collapsable ? '' : 'text-xl'
-          }`}
-        >
-          {header}
-        </span>
-        {/*
-         * There is no switchButton here as interactive elements should not
-         * be inside of <summary>
-         */}
-      </Summary>
-      <div className="flex flex-col gap-2 pt-2">{children}</div>
-    </details>
-  ) : (
-    <fieldset className="flex flex-col gap-2">
-      <div className="flex items-center gap-4">
-        <h4>{header}</h4>
-        {switchButton}
-      </div>
-      {children}
-    </fieldset>
+    <>{commonText('loading')}</>
   );
 }

@@ -38,7 +38,7 @@ import { ProtectedAction, ProtectedTable } from './permissiondenied';
 import { deserializeResource } from './resource';
 import { augmentMode, BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';
-import { SecurityPolicies } from './securitypolicy';
+import { SecurityPolicies, SecurityPoliciesWrapper } from './securitypolicy';
 import { PreviewPermissions } from './securitypreview';
 import {
   CollectionAccess,
@@ -213,15 +213,19 @@ export function SecurityUser({
                             '/permissions/institutional_policies/user',
                             'read'
                           ) && (
-                            <SecurityPolicies
+                            <SecurityPoliciesWrapper
                               policies={institutionPolicies}
-                              isReadOnly={!userInformation.isadmin}
-                              scope="institution"
-                              onChange={setInstitutionPolicies}
                               header={adminText('institutionPolicies')}
                               collapsable={true}
-                              limitHeight
-                            />
+                            >
+                              <SecurityPolicies
+                                policies={institutionPolicies}
+                                isReadOnly={!userInformation.isadmin}
+                                scope="institution"
+                                onChange={setInstitutionPolicies}
+                                limitHeight
+                              />
+                            </SecurityPoliciesWrapper>
                           )
                       }
                     </div>
@@ -283,31 +287,36 @@ export function SecurityUser({
                           'read',
                           collectionId
                         ) ? (
-                          <SecurityPolicies
+                          <SecurityPoliciesWrapper
                             policies={userPolicies?.[collectionId]}
-                            isReadOnly={
-                              !hasPermission(
-                                '/permissions/policies/user',
-                                'update',
-                                collectionId
-                              )
-                            }
                             header={adminText('customUserPolices')}
-                            scope="collection"
-                            onChange={(policies): void =>
-                              typeof userPolicies === 'object'
-                                ? setUserPolicies(
-                                    replaceKey(
-                                      userPolicies,
-                                      collectionId.toString(),
-                                      policies
-                                    )
-                                  )
-                                : undefined
-                            }
                             collapsable={false}
-                            limitHeight
-                          />
+                            enlargeHeader
+                          >
+                            <SecurityPolicies
+                              policies={userPolicies?.[collectionId]}
+                              isReadOnly={
+                                !hasPermission(
+                                  '/permissions/policies/user',
+                                  'update',
+                                  collectionId
+                                )
+                              }
+                              scope="collection"
+                              onChange={(policies): void =>
+                                typeof userPolicies === 'object'
+                                  ? setUserPolicies(
+                                      replaceKey(
+                                        userPolicies,
+                                        collectionId.toString(),
+                                        policies
+                                      )
+                                    )
+                                  : undefined
+                              }
+                              limitHeight
+                            />
+                          </SecurityPoliciesWrapper>
                         ) : undefined
                       }
                       {typeof userResource.id === 'number' && (
