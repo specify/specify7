@@ -162,9 +162,9 @@ export const adminText = createDictionary({
     'en-us': 'Read',
     'ru-ru': 'Читать',
   },
-  preview: {
-    'en-us': 'User Permissions Preview',
-    'ru-ru': 'Предварительный просмотр',
+  userPermissionPreview: {
+    'en-us': "User's Permission Profile (read-only)",
+    'ru-ru': 'Профиль разрешений пользователя (только чтение)',
   },
   outOfDateWarning: {
     'en-us':

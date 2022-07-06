@@ -427,7 +427,7 @@ export function PreviewPermissions({
   return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className={className.headerGray} onToggle={setCollapsed}>
-        {adminText('preview')}
+        {adminText('userPermissionPreview')}
       </Summary>
       {typeof query === 'object' ? (
         <>
@@ -453,7 +453,17 @@ export function PreviewPermissions({
                 />
               </details>
             </div>
-            <PreviewOperations query={query} onOpenRole={handleOpenRole} />
+            {/**
+             * When tree node is expanded, column width increases.
+             * If there isn't enough space for new width, the column is moved
+             * to be below the first one. From user's perspective it looks
+             * as if the column has disappeared.
+             * These classNames force the second column below the first one
+             * on all but the largest screens
+             **/}
+            <div className="xl:w-full 2xl:w-auto">
+              <PreviewOperations query={query} onOpenRole={handleOpenRole} />
+            </div>
           </div>
         </>
       ) : (
