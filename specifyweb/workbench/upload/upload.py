@@ -126,6 +126,21 @@ def do_upload_dataset(
     ds.save(update_fields=['rowresults', 'uploadresult'])
     return results
 
+def clear_disambiguation(ds: Spdataset) -> None:
+    with transaction.atomic():
+        assert not ds.was_uploaded(), "Already uploaded!"
+        ds.rowresults = None
+        ds.uploadresult = None
+        ds.save(update_fields=['rowresults', 'uploadresult'])
+
+        ncols = len(ds.columns)
+        for row in ds.data:
+            extra = json.loads(row[ncols]) if row[ncols] else None
+            if extra:
+                extra['disambiguation'] = {}
+            row[ncols] = extra and json.dumps(extra)
+        ds.save(update_fields=['data'])
+
 def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
