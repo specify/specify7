@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { ajax } from '../ajax';
+import { ajax, Http } from '../ajax';
 import { contextUnlockedPromise, foreverFetch } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';
@@ -13,7 +13,7 @@ import { getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { legacyLocalize } from '../stringlocalization';
 import type { IR, RA } from '../types';
-import { defined } from '../types';
+import { defined, filterArray } from '../types';
 import { Container, H3 } from './basic';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
@@ -130,21 +130,29 @@ export function ExpressSearchView(): JSX.Element {
   const query = parseUrl().q;
   const ajaxUrl = formatUrl('/express_search/', { q: query });
 
-  const [primaryResults] = useAsyncState<RA<RawQueryTableResult>>(
+  const [primaryResults] = useAsyncState<RA<RawQueryTableResult> | false>(
     React.useCallback(
       async () =>
-        ajax<IR<QueryTableResult>>(ajaxUrl, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) =>
-          Object.entries(data)
-            .filter(([_tableName, { totalCount }]) => totalCount > 0)
-            .map(([tableName, tableResults]) => ({
-              model: defined(getModel(tableName)),
-              caption: defined(getModel(tableName)).label,
-              tableResults,
-              ajaxUrl,
-            }))
+        ajax<IR<QueryTableResult>>(
+          ajaxUrl,
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            headers: { Accept: 'application/json' },
+          },
+          {
+            expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+          }
+        ).then(({ data, status }) =>
+          status === Http.FORBIDDEN
+            ? false
+            : Object.entries(data)
+                .filter(([_tableName, { totalCount }]) => totalCount > 0)
+                .map(([tableName, tableResults]) => ({
+                  model: defined(getModel(tableName)),
+                  caption: defined(getModel(tableName)).label,
+                  tableResults,
+                  ajaxUrl,
+                }))
         ),
       [ajaxUrl]
     ),
@@ -161,15 +169,25 @@ export function ExpressSearchView(): JSX.Element {
                   q: query,
                   name,
                 });
-                return ajax<RelatedTableResult>(ajaxUrl, {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  headers: { Accept: 'application/json' },
-                }).then(({ data }) => [ajaxUrl, data] as const);
+                return ajax<RelatedTableResult>(
+                  ajaxUrl,
+                  {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    headers: { Accept: 'application/json' },
+                  },
+                  {
+                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
+                  }
+                ).then(({ data, status }) =>
+                  status === Http.FORBIDDEN
+                    ? undefined
+                    : ([ajaxUrl, data] as const)
+                );
               })
             )
           )
           .then((results) =>
-            results
+            filterArray(results)
               .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
                 let model = defined(getModel(tableResult.definition.root));
@@ -217,10 +235,12 @@ export function ExpressSearchView(): JSX.Element {
 
   return (
     <Container.Full>
-      <TableResults
-        header={commonText('primarySearch')}
-        queryResults={primaryResults}
-      />
+      {primaryResults !== false && (
+        <TableResults
+          header={commonText('primarySearch')}
+          queryResults={primaryResults}
+        />
+      )}
       <TableResults
         header={commonText('secondarySearch')}
         queryResults={secondaryResults}
