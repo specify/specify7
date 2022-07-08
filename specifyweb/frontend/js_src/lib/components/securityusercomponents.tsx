@@ -41,18 +41,20 @@ import { UserCollectionsPlugin } from './usercollectionsplugin';
 export function SetSuperAdmin({
   institutionPolicies,
   isSuperAdmin,
+  isCurrentUser,
   allActions,
   onChange: handleChange,
 }: {
   readonly institutionPolicies: RA<Policy> | undefined;
   readonly isSuperAdmin: boolean;
+  readonly isCurrentUser: boolean;
   readonly allActions: RA<string>;
   readonly onChange: (value: RA<Policy>) => void;
 }): JSX.Element {
   return typeof institutionPolicies === 'object' ? (
     <Label.ForCheckbox>
       <Input.Checkbox
-        isReadOnly={!userInformation.isadmin}
+        isReadOnly={!userInformation.isadmin || isCurrentUser}
         onValueChange={(): void =>
           handleChange(
             isSuperAdmin

@@ -200,6 +200,7 @@ export function SecurityUser({
                       <SetSuperAdmin
                         institutionPolicies={institutionPolicies}
                         isSuperAdmin={isSuperAdmin}
+                        isCurrentUser={userResource.id === userInformation.id}
                         allActions={allActions}
                         onChange={setInstitutionPolicies}
                       />
