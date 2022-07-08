@@ -231,9 +231,10 @@ export function AutoGrowTextArea({
   return (
     <div
       className={`
-        relative min-h-[theme(spacing.16)] overflow-hidden
+        relative min-h-[calc(theme(spacing.7)*var(--rows))] overflow-hidden
         ${containerClassName ?? ''}
       `}
+      style={{ '--rows': props.rows ?? 1 } as React.CSSProperties}
     >
       {/*
        * Shadow a textarea with a div, allowing it to autoGrow. Source:
