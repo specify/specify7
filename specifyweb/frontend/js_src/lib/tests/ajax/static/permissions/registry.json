@@ -3,50 +3,46 @@
   "/admin/user/password": ["update"],
   "/admin/user/agents": ["update"],
   "/admin/user/sp6/is_admin": ["update"],
+  "/admin/user/invite_link": ["create"],
+  "/admin/user/oic_providers": ["read"],
   "/admin/user/sp6/collection_access": ["read", "update"],
   "/report": ["execute"],
   "/export/dwca": ["execute"],
   "/export/feed": ["force_update"],
   "/permissions/list_admins": ["read"],
-  "/permissions/policies/user": ["update", "read"],
-  "/permissions/user/roles": ["update", "read"],
+  "/permissions/policies/user": ["read", "update"],
+  "/permissions/user/roles": ["read", "update"],
   "/permissions/roles": [
-    "create",
     "read",
+    "create",
     "update",
     "delete",
     "copy_from_library"
   ],
-  "/permissions/library/roles": ["create", "read", "update", "delete"],
-  "/tree/mutation/taxon": [
+  "/permissions/library/roles": ["read", "create", "update", "delete"],
+  "/tree/edit/taxon": ["merge", "move", "synonymize", "desynonymize", "repair"],
+  "/tree/edit/geography": [
     "merge",
     "move",
     "synonymize",
     "desynonymize",
     "repair"
   ],
-  "/tree/mutation/geography": [
+  "/tree/edit/storage": [
     "merge",
     "move",
     "synonymize",
     "desynonymize",
     "repair"
   ],
-  "/tree/mutation/storage": [
+  "/tree/edit/geologictimeperiod": [
     "merge",
     "move",
     "synonymize",
     "desynonymize",
     "repair"
   ],
-  "/tree/mutation/geologictimeperiod": [
-    "merge",
-    "move",
-    "synonymize",
-    "desynonymize",
-    "repair"
-  ],
-  "/tree/mutation/lithostrat": [
+  "/tree/edit/lithostrat": [
     "merge",
     "move",
     "synonymize",
