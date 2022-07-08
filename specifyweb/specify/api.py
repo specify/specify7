@@ -707,7 +707,7 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
     if isinstance(obj, get_model('Preparation')):
         data['isonloan'] = obj.isonloan()
     elif isinstance(obj, get_model('Specifyuser')):
-        data['isadmin'] = obj.is_admin()
+        data['isadmin'] = obj.userpolicy_set.filter(collection=None, resource='%', action='%').exists()
     elif isinstance(obj, get_model('Collectionobject')):
         dets = data['determinations']
         currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []

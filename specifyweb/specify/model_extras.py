@@ -53,6 +53,7 @@ class Specifyuser(models.Model):
         return decrypted == password
 
     def is_admin(self):
+        "Returns true if user is a Specify 6 admin."
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
@@ -66,6 +67,7 @@ class Specifyuser(models.Model):
         return cursor.fetchone() is not None
 
     def set_admin(self):
+        "Make the user a Specify 6 admin."
         from django.db import connection, transaction
         from django.db.utils import IntegrityError
 
@@ -81,6 +83,7 @@ class Specifyuser(models.Model):
             pass
 
     def clear_admin(self):
+        "Make the user not a Specify 6 admin."
         from django.db import connection, transaction
 
         cursor = connection.cursor()
