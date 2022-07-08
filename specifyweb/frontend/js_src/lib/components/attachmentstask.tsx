@@ -202,7 +202,7 @@ export function AttachmentCell({
           }
         >
           <img
-            className="object-contain max-w-full max-h-full"
+            className="dark:border-black object-contain max-w-full max-h-full border-8 border-white"
             src={thumbnail.src}
             alt={attachment?.title || thumbnail.alt}
             style={{

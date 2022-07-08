@@ -292,7 +292,6 @@ export function SecurityUser({
                             policies={userPolicies?.[collectionId]}
                             header={adminText('customUserPolices')}
                             collapsable={false}
-                            enlargeHeader
                           >
                             <SecurityPolicies
                               policies={userPolicies?.[collectionId]}

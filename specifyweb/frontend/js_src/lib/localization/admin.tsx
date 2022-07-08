@@ -149,10 +149,9 @@ export const adminText = createDictionary({
   },
   customUserPolices: {
     'en-us':
-      'Custom Collection-level Permissions (applies to this collection only)',
+      'Custom Collection-level Policies (applies to this collection only)',
     'ru-ru': `
-      Пользовательские разрешения на уровне коллекции (применяется только к этой
-      коллекции)`,
+      Пользовательские политики на уровне коллекции (применяется только к этой коллекции)`,
   },
   role: {
     'en-us': 'Role:',
@@ -318,10 +317,9 @@ export const adminText = createDictionary({
   },
   institutionPolicies: {
     'en-us':
-      'Custom Institution-level Permissions (applies to all assigned collections)',
+      'Custom Institution-level Policies (applies to all assigned collections)',
     'ru-ru': `
-      Пользовательские разрешения на уровне учреждения (применяются ко всем
-      назначенным коллекциям)`,
+      Пользовательские политики на уровне учреждения (применяются ко всем назначенным коллекциям)`,
   },
   noAdminsErrorDialogHeader: {
     'en-us': "Can't remove Institution Admin status",

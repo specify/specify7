@@ -267,13 +267,11 @@ export function SecurityPoliciesWrapper({
   policies,
   header,
   collapsable,
-  enlargeHeader = false,
   children,
 }: {
   readonly policies: RA<Policy> | undefined;
   readonly header: string;
   readonly collapsable: boolean;
-  readonly enlargeHeader?: boolean;
   readonly children: JSX.Element;
 }): JSX.Element {
   const [orientation = 'vertical', setOrientation] = useCachedState({
@@ -329,7 +327,7 @@ export function SecurityPoliciesWrapper({
   ) : (
     <fieldset className="flex flex-col gap-2">
       <div className="flex items-center gap-4">
-        <h4 className={enlargeHeader ? 'text-xl' : undefined}>{header}</h4>
+        <h4>{header}</h4>
         {switchButton}
       </div>
       {children}

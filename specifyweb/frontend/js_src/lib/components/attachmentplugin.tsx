@@ -109,7 +109,7 @@ export function AttachmentPlugin({
   ) : state.type === 'Unavailable' ? (
     <div>{formsText('attachmentServerUnavailable')}</div>
   ) : (
-    <div className="w-72 h-72" ref={filePickerContainer} tabIndex={-1}>
+    <div ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
         mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
           <p>{formsText('noData')}</p>
@@ -142,7 +142,8 @@ export function AttachmentPlugin({
           </div>
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
-        <div className="flex items-center justify-center h-full bg-black">
+        // Padding bottom prevents the shadow from being cut off
+        <div className="flex items-center justify-center h-full pb-5">
           <AttachmentCell
             attachment={state.attachment}
             onViewRecord={undefined}
