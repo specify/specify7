@@ -1153,4 +1153,8 @@ export const commonText = createDictionary({
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
   },
+  select: {
+    'en-us': 'Select',
+    'ru-ru': 'Выбрать',
+  },
 });

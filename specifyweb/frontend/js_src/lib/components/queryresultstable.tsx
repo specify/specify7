@@ -3,7 +3,6 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
 import type { RecordSet, SpQuery, Tables } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { keysToLowerCase, removeItem } from '../helpers';
@@ -30,7 +29,6 @@ import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { SortIndicator, TableIcon } from './common';
-import { LoadingContext } from './contexts';
 import { crash } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import {
@@ -282,7 +280,7 @@ export function QueryResultsTable({
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<RA<string | number | null>> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
-  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
+  readonly onSelected?: (resource: RA<number>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined
@@ -353,7 +351,6 @@ export function QueryResultsTable({
 
   React.useEffect(fetchMore, []);
 
-  const loading = React.useContext(LoadingContext);
   const showResults =
     Array.isArray(results) &&
     fieldSpecs.length > 0 &&
@@ -398,26 +395,24 @@ export function QueryResultsTable({
                 createRecordSet
               )
             ) : undefined}
-            {typeof handleSelected === 'undefined' && (
-              <ViewRecords
-                selectedRows={selectedRows}
-                results={results}
-                model={model}
-                onFetchMore={isFetching ? undefined : fetchMore}
-                onDelete={(index): void => {
-                  setTotalCount(totalCount - 1);
-                  setResults(removeItem(results, index));
-                  setSelectedRows(
-                    new Set(
-                      Array.from(selectedRows).filter(
-                        (id) => id !== results[index][queryIdField]
-                      )
+            <ViewRecords
+              selectedRows={selectedRows}
+              results={results}
+              model={model}
+              onFetchMore={isFetching ? undefined : fetchMore}
+              onDelete={(index): void => {
+                setTotalCount(totalCount - 1);
+                setResults(removeItem(results, index));
+                setSelectedRows(
+                  new Set(
+                    Array.from(selectedRows).filter(
+                      (id) => id !== results[index][queryIdField]
                     )
-                  );
-                }}
-                totalCount={totalCount}
-              />
-            )}
+                  )
+                );
+              }}
+              totalCount={totalCount}
+            />
           </>
         ) : undefined}
       </div>
@@ -492,17 +487,6 @@ export function QueryResultsTable({
               selectedRows={selectedRows}
               onSelected={(id, isSelected, isShiftClick): void => {
                 /*
-                 * If a custom select handler is set, fetch the resource and call
-                 * the handler
-                 */
-                if (typeof handleSelected === 'function') {
-                  loading(
-                    new model.Resource({ id }).fetch().then(handleSelected)
-                  );
-                  return;
-                }
-
-                /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
                  * between the current one, and the last selected one
                  */
@@ -521,14 +505,15 @@ export function QueryResultsTable({
                       )
                     : [rowIndex]
                 ).map((rowIndex) => results[rowIndex][queryIdField] as number);
-                setSelectedRows(
-                  new Set([
-                    ...Array.from(selectedRows).filter(
-                      (id) => isSelected || !ids.includes(id)
-                    ),
-                    ...(isSelected ? ids : []),
-                  ])
-                );
+                const newSelectedRows = [
+                  ...Array.from(selectedRows).filter(
+                    (id) => isSelected || !ids.includes(id)
+                  ),
+                  ...(isSelected ? ids : []),
+                ];
+                setSelectedRows(new Set(newSelectedRows));
+                handleSelected?.(newSelectedRows);
+
                 lastSelectedRow.current = rowIndex;
               }}
             />
@@ -576,7 +561,7 @@ export function QueryResultsWrapper({
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element;
-  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
+  readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
     direction: 'ascending' | 'descending' | undefined

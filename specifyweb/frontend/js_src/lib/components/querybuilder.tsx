@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { RecordSet, SpQuery } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
 import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -17,7 +16,7 @@ import {
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
-import { defined } from '../types';
+import { defined, RA } from '../types';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
@@ -57,7 +56,7 @@ export function QueryBuilder({
   readonly isReadOnly: boolean;
   readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
-  readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
+  readonly onSelected?: (selected: RA<number>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
     React.useCallback(async () => treeRanksPromise, []),
