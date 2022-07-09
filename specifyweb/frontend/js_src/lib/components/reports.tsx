@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax, parseXml } from '../ajax';
+import { ajax } from '../ajax';
 import { error } from '../assert';
 import {
   attachmentsAvailable,
@@ -46,6 +46,7 @@ import { queryFieldFilters } from './querybuilderfieldfilter';
 import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
 import { ErrorBoundary } from './errorboundary';
+import { parseXml } from '../codemirrorlinters';
 
 export function ReportsView({
   // If resource ID is provided, model must be too

@@ -4,6 +4,7 @@ import { csrfToken } from './csrftoken';
 import { f } from './functools';
 import { sortFunction } from './helpers';
 import type { IR, PartialBy, RA } from './types';
+import { parseXml } from './codemirrorlinters';
 
 export const isExternalUrl = (url: string): boolean =>
   /*
@@ -233,23 +234,6 @@ export function handleResponse<RESPONSE_TYPE = string>({
     console.error(error);
     handleAjaxError(error, response, strict);
   }
-}
-
-export function parseXml(string: string): Document | string {
-  const parsedXml = new DOMParser().parseFromString(string, 'text/xml');
-
-  // Chrome, Safari
-  const parseError =
-    parsedXml.documentElement.getElementsByTagName('parsererror')[0];
-  if (typeof parseError === 'object')
-    return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
-  // Firefox
-  else if (parsedXml.documentElement.tagName === 'parsererror')
-    return (
-      parsedXml.documentElement.textContent ??
-      parsedXml.documentElement.innerHTML
-    ).trim();
-  else return parsedXml;
 }
 
 /**
