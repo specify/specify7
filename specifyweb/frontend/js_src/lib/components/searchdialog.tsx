@@ -227,11 +227,28 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     () => createQuery(commonText('search'), model),
     [model]
   );
+  const [selected, setSelected] = React.useState<RA<number>>([]);
   return (
     <Dialog
       header={queryText('queryBuilder')}
       onClose={handleClose}
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.Blue
+            onClick={(): void =>
+              handleSelected(
+                new model.Resource({
+                  id: selected[0],
+                })
+              )
+            }
+            disabled={selected.length !== 1}
+          >
+            {commonText('select')}
+          </Button.Blue>
+        </>
+      }
       className={{
         container: dialogClassNames.wideContainer,
       }}
@@ -241,7 +258,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
         isReadOnly={false}
         recordSet={undefined}
         isEmbedded={true}
-        onSelected={handleSelected}
+        onSelected={setSelected}
       />
     </Dialog>
   );

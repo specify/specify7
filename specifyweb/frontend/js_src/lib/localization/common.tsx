@@ -1169,4 +1169,8 @@ export const commonText = createDictionary({
     'en-us': 'Reset',
     'ru-ru': 'Сброс',
   },
+  select: {
+    'en-us': 'Select',
+    'ru-ru': 'Выбрать',
+  },
 });
