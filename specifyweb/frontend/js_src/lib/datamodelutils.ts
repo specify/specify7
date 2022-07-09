@@ -327,6 +327,8 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
         )
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
+    // REFACTOR: if resource is new, set this to undefined
+    // REFACTOR: convert all usages of this to camel case
     resource_uri:
       record.resource_uri ?? getResourceApiUrl(tableName, record.id ?? 0),
   }));

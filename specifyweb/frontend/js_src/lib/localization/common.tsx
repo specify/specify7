@@ -1161,4 +1161,12 @@ export const commonText = createDictionary({
     'en-us': 'Form Definition',
     'ru-ru': 'Схема формы',
   },
+  expandAll: {
+    'en-us': 'Expand All',
+    'ru-ru': 'Развернуть все',
+  },
+  collapseAll: {
+    'en-us': 'Collapse All',
+    'ru-ru': 'Свернуть все',
+  },
 });

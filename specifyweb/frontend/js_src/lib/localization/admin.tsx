@@ -54,17 +54,13 @@ export const adminText = createDictionary({
     'en-us': 'Select the file to be loaded into the editor.',
     'ru-ru': 'Выберите файл для загрузки в редактор.',
   },
-  globalResourcesTitle: {
-    'en-us': (resourceCount: string) =>
-      `Global <small>(${resourceCount})</small>`,
-    'ru-ru': (resourceCount: string) =>
-      `Глобальный <small>(${resourceCount})</small>`,
+  globalResources: {
+    'en-us': 'Global Resources',
+    'ru-ru': 'Глобальные ресурсы',
   },
-  disciplineResourcesTitle: {
-    'en-us': (resourceCount: string) =>
-      `Discipline <small>(${resourceCount})</small>`,
-    'ru-ru': (resourceCount: string) =>
-      `Дисциплина <small>(${resourceCount})</small>`,
+  disciplineResources: {
+    'en-us': 'Discipline Resources',
+    'ru-ru': 'Ресурсы дисциплины',
   },
   userTypes: {
     'en-us': 'User Types',
@@ -86,9 +82,9 @@ export const adminText = createDictionary({
     'en-us': 'Create New Resource File',
     'ru-ru': 'Создать новый файл ресурсов',
   },
-  newResourceName: {
-    'en-us': 'New Resource Name:',
-    'ru-ru': 'Имя нового ресурса:',
+  selectResourceTypeDialogHeader: {
+    'en-us': 'Select Resource Type',
+    'ru-ru': 'Выберите тип ресурса',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -359,5 +355,101 @@ export const adminText = createDictionary({
   accountSetupOptions: {
     'en-us': 'Account Setup Options',
     'ru-ru': 'Параметры учетной записи',
+  },
+  resources: {
+    'en-us': 'Resources',
+    'ru-ru': 'Ресурсы',
+  },
+  subCategories: {
+    'en-us': 'Sub-categories',
+    'ru-ru': 'Подкатегории',
+  },
+  addResource: {
+    'en-us': 'Add Resource',
+    'ru-ru': 'Добавить ресурс',
+  },
+  appResource: {
+    'en-us': 'App Resource',
+    'ru-ru': 'Ресурс приложения',
+  },
+  formDefinitions: {
+    'en-us': 'Form Definitions',
+    'ru-ru': 'Макеты форм',
+  },
+  selectResourceType: {
+    'en-us': 'Select Resource Type',
+    'ru-ru': 'Выберите тип ресурса',
+  },
+  label: {
+    'en-us': 'Label',
+    'ru-ru': 'Этикетка',
+  },
+  report: {
+    'en-us': 'Report',
+    'ru-ru': 'Отчет',
+  },
+  userPreferences: {
+    'en-us': 'User Preferences',
+    'ru-ru': 'Пользовательские настройки',
+  },
+  defaultUserPreferences: {
+    'en-us': 'Default User Preferences',
+    'ru-ru': 'Пользовательские настройки по умолчанию',
+  },
+  rssExportFeed: {
+    'en-us': 'RSS Export Feed',
+    'ru-ru': 'RSS-канал экспорта',
+  },
+  expressSearchConfig: {
+    'en-us': 'Express Search Config',
+    'ru-ru': 'Конфигурация быстрого поиска',
+  },
+  webLinks: {
+    'en-us': 'Web Links',
+    'ru-ru': 'Веб-ссылки',
+  },
+  uiFormatters: {
+    'en-us': 'Field formatters',
+    'ru-ru': 'Форматировщики полей',
+  },
+  dataObjectFormatters: {
+    'en-us': 'Record Formatters',
+    'ru-ru': 'Форматировщики записей',
+  },
+  searchDialogDefinitions: {
+    'en-us': 'Search Dialog Definitions',
+    'ru-ru': 'Макеты диалогового окна поиска',
+  },
+  dataEntryTables: {
+    'en-us': 'Data Entry Tables',
+    'ru-ru': 'Таблицы ввода данных',
+  },
+  interactionsTables: {
+    'en-us': 'Interactions Tables',
+    'ru-ru': 'Таблицы взаимодействий',
+  },
+  otherXmlResource: {
+    'en-us': 'Other XML Resource',
+    'ru-ru': 'Другой XML-ресурс',
+  },
+  otherJsonResource: {
+    'en-us': 'Other JSON Resource',
+    'ru-ru': 'Другой JSON-ресурс',
+  },
+  otherPropertiesResource: {
+    'en-us': 'Other Properties Resource',
+    'ru-ru': 'Другой Properties-ресурс',
+  },
+  otherAppResource: {
+    'en-us': 'Other app resource',
+    'ru-ru': 'Другой ресурс',
+  },
+  filters: {
+    'en-us': 'Filters',
+    'ru-ru': 'Фильтры',
+  },
+  leafletLayers: {
+    'en-us': 'Leaflet Layers',
+    'ru-ru': 'Слои Leaflet',
   },
 });
