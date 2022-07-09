@@ -315,7 +315,9 @@ export const DataEntry = {
   },
 };
 export const Label = {
+  // REFACTOR: rename this to Block
   Generic: wrap('Label.Generic', 'label', className.label),
+  // REFACTOR: rename this to Inline
   ForCheckbox: wrap('Label.ForCheckbox', 'label', className.labelForCheckbox),
 };
 export const ErrorMessage = wrap(
@@ -632,9 +634,26 @@ export const Select = wrap<
   })
 );
 
+/**
+ * A wrapper for wrap() to generate links that have [href] attribute required
+ */
+const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
+  name: string,
+  className: string,
+  initialProps?:
+    | TagProps<'a'>
+    | ((props: TagProps<'a'> & Readonly<EXTRA_PROPS>) => TagProps<'a'>)
+) =>
+  wrap<'a', EXTRA_PROPS & { readonly href: string }>(
+    name,
+    'a',
+    className,
+    initialProps
+  );
+
 export const Link = {
-  Default: wrap('Link.Default', 'a', className.link),
-  NewTab: wrap('Link.NewTab', 'a', className.link, (props) => ({
+  Default: linkComponent('Link.Default', className.link),
+  NewTab: linkComponent('Link.NewTab', className.link, (props) => ({
     ...props,
     target: '_blank',
     children: (
@@ -647,22 +666,23 @@ export const Link = {
       </>
     ),
   })),
-  LikeButton: wrap('Link.LikeButton', 'a', className.button),
-  Fancy: wrap('Link.Fancy', 'a', `${niceButton} ${className.fancyButton}`),
-  Gray: wrap('Link.Gray', 'a', `${niceButton} ${className.grayButton}`),
-  BorderedGray: wrap(
+  LikeButton: linkComponent('Link.LikeButton', className.button),
+  Fancy: linkComponent('Link.Fancy', `${niceButton} ${className.fancyButton}`),
+  Gray: linkComponent('Link.Gray', `${niceButton} ${className.grayButton}`),
+  BorderedGray: linkComponent(
     'Link.BorderedGray',
-    'a',
     `${niceButton} ${className.borderedGrayButton}`
   ),
-  Red: wrap('Link.Red', 'a', `${niceButton} ${className.redButton}`),
-  Blue: wrap('Link.Blue', 'a', `${niceButton} ${className.blueButton}`),
-  Orange: wrap('Link.Orange', 'a', `${niceButton} ${className.orangeButton}`),
-  Green: wrap('Link.Green', 'a', `${niceButton} ${className.greenButton}`),
+  Red: linkComponent('Link.Red', `${niceButton} ${className.redButton}`),
+  Blue: linkComponent('Link.Blue', `${niceButton} ${className.blueButton}`),
+  Orange: linkComponent(
+    'Link.Orange',
+    `${niceButton} ${className.orangeButton}`
+  ),
+  Green: linkComponent('Link.Green', `${niceButton} ${className.greenButton}`),
 
-  Icon: wrap<'a', IconProps>(
+  Icon: linkComponent<IconProps>(
     'Link.Icon',
-    'a',
     `${className.icon} rounded`,
     ({ icon, ...props }) => ({
       ...props,
