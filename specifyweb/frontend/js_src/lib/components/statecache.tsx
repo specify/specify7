@@ -36,7 +36,7 @@ export function useCachedState<
 }: {
   readonly category: CATEGORY;
   readonly key: KEY;
-  readonly defaultValue?: DefaultValue<CacheDefinitions[CATEGORY][KEY]>;
+  readonly defaultValue: DefaultValue<CacheDefinitions[CATEGORY][KEY]>;
   readonly staleWhileRefresh: boolean;
 }): [
   value: CacheDefinitions[CATEGORY][KEY] | undefined,

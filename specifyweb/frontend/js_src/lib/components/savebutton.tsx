@@ -118,7 +118,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         mode === 'save' &&
         !resource.isNew())
     ) {
-      handleIgnored();
+      handleIgnored?.();
       return;
     }
 

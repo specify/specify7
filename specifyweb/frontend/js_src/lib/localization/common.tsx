@@ -509,10 +509,6 @@ export const commonText = createDictionary({
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы объектов',
   },
-  resources: {
-    'en-us': 'Resources',
-    'ru-ru': 'Ресурсы',
-  },
   appResources: {
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
@@ -520,10 +516,6 @@ export const commonText = createDictionary({
   viewSets: {
     'en-us': 'View Sets',
     'ru-ru': 'Ресурсы для просмотров',
-  },
-  resourcesDialogHeader: {
-    'en-us': 'Choose the resource type you wish to edit:',
-    'ru-ru': 'Выберите тип ресурса, который хотите отредактировать:',
   },
   repairTree: {
     'en-us': 'Repair Tree',

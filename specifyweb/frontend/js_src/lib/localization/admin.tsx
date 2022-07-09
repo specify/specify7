@@ -29,30 +29,9 @@ export const adminText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер',
   },
-  mimetype: {
-    'en-us': 'Mimetype:',
-    'ru-ru': 'Mimetype:',
-  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
-  },
-  corruptResourceOrConflict: {
-    'en-us': `
-      This app resource appears to be corrupt but may be in the process of
-      being saved by another session. It can be deleted if that is not the
-      case.`,
-    'ru-ru': `
-      Ресурс поврежден о может быть в процессес охраняется другим сеансом.
-      Его можно удалить, если это не кейс.`,
-  },
-  resourceLoadDialogHeader: {
-    'en-us': 'Load resource file',
-    'ru-ru': 'Загрузить файл ресурсов',
-  },
-  resourceLoadDialogText: {
-    'en-us': 'Select the file to be loaded into the editor.',
-    'ru-ru': 'Выберите файл для загрузки в редактор.',
   },
   globalResources: {
     'en-us': 'Global Resources',
@@ -324,11 +303,6 @@ export const adminText = createDictionary({
   noAdminsErrorDialogText: {
     'en-us': 'There must be at least one Institution Admin in institution',
     'ru-ru': 'Должен быть хотя бы один суперадмин',
-  },
-  resourceValidationFailed: {
-    'en-us':
-      'The following errors occurred during validation of this resource:',
-    'ru-ru': 'Во время проверки этого ресурса произошли следующие ошибки:',
   },
   switchToHorizontalLayout: {
     'en-us': 'Switch to horizontal layout',

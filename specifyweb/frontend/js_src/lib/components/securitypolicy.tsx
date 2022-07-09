@@ -275,15 +275,15 @@ export function SecurityPoliciesWrapper({
   readonly children: JSX.Element;
 }): JSX.Element {
   const [orientation = 'vertical', setOrientation] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'policiesLayout',
+    category: 'securityTool',
+    key: 'policiesLayout',
     defaultValue: 'vertical',
     staleWhileRefresh: false,
   });
 
   const [isExpanded = true, setExpanded] = useCachedState({
-    bucketName: 'securityTool',
-    cacheName: 'institutionPoliciesExpanded',
+    category: 'securityTool',
+    key: 'institutionPoliciesExpanded',
     defaultValue: true,
     staleWhileRefresh: false,
   });

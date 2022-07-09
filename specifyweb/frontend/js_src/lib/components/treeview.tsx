@@ -75,10 +75,10 @@ function TreeView<SCHEMA extends AnyTree>({
     staleWhileRefresh: false,
   });
 
-  const [rawConformation, setConformation] = useCachedState({
+  const [rawConformation = '', setConformation] = useCachedState({
     category: 'tree',
     key: `conformation${tableName}`,
-    defaultValue: undefined,
+    defaultValue: '',
     staleWhileRefresh: false,
   });
   const conformation = deserializeConformation(rawConformation);

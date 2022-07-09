@@ -644,7 +644,7 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
     | TagProps<'a'>
     | ((props: TagProps<'a'> & Readonly<EXTRA_PROPS>) => TagProps<'a'>)
 ) =>
-  wrap<'a', EXTRA_PROPS & { readonly href: string }>(
+  wrap<'a', EXTRA_PROPS & { readonly href: string | undefined }>(
     name,
     'a',
     className,

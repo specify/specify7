@@ -101,9 +101,9 @@ export type Conformations = RA<Conformation>;
 export interface Conformation extends Readonly<[number, ...Conformations]> {}
 
 export function deserializeConformation(
-  conformation: string | undefined
+  conformation: string
 ): Conformations | undefined {
-  if (conformation === undefined) return undefined;
+  if (conformation === '') return undefined;
   const serialized = conformation
     .replace(/([^~])~/g, '$1,~')
     .replaceAll('~', '[')

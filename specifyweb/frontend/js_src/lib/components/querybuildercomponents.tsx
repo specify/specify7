@@ -458,7 +458,7 @@ export function QueryLoanReturn({
         }
         showConfirmation={showConfirmation}
       >
-        {queryText('returnLoan')}
+        {formsText('returnLoan')}
       </QueryButton>
       {state.type === 'Dialog' && Array.isArray(toReturn) ? (
         <Dialog

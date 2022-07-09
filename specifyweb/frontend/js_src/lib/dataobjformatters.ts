@@ -3,7 +3,8 @@
  */
 
 import { ajax } from './ajax';
-import type { AnySchema, SerializedResource } from './datamodelutils';
+import type { Tables } from './datamodel';
+import type { AnySchema } from './datamodelutils';
 import { f } from './functools';
 import {
   getAttribute,
@@ -27,7 +28,6 @@ import type { Collection } from './specifymodel';
 import type { RA } from './types';
 import { defined, filterArray } from './types';
 import { fieldFormat, resolveParser } from './uiparse';
-import { Tables } from './datamodel';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -140,11 +140,6 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
     .sort(sortFunction(({ isRequired }) => isRequired, true));
 
 export const naiveFormatter = (resource: SpecifyResource<AnySchema>): string =>
-  `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
-
-export const trivialFormatter = (
-  resource: SerializedResource<AnySchema>
-): string =>
   `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
 
 export async function format<SCHEMA extends AnySchema>(

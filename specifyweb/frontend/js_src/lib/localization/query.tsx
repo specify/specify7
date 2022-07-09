@@ -277,10 +277,6 @@ export const queryText = createDictionary({
     'en-us': 'Query Builder',
     'ru-ru': 'Конструктор запросов',
   },
-  returnLoan: {
-    'en-us': 'Return Loan',
-    'ru-ru': 'Return Loan',
-  },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных приготовлений к возвращению',
