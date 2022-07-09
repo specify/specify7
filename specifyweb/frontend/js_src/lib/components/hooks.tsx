@@ -522,12 +522,19 @@ export function useResourceValue<
       else resource.saveBlockers?.add(key, field.name, parseResults.reason);
       setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
       ignoreChangeRef.current = true;
+      /*
+       * If value changed as a result of being formatted, don't trigger
+       * unload protect
+       */
+      const formattedOnly = resource.get(field.name) === newValue;
       resource.set(field.name, formattedValue as never, {
         /*
          * Don't trigger the save blocker for this trivial change
          * TODO: move this logic into ResourceBase.set
          */
-        silent: formattedValue === null && resource.get(field.name) === '',
+        silent:
+          (formattedValue === null && resource.get(field.name) === '') ||
+          formattedOnly,
       });
       ignoreChangeRef.current = false;
     },
