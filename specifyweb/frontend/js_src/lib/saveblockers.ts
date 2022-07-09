@@ -11,15 +11,13 @@ import type { R, RA } from './types';
  * Propagate a save blocker even for independent resources, because
  * resources rendered in a subview don't have a "Save" button of their own
  */
-function triggerOnParent(resource: SpecifyResource<AnySchema>) {
-  return resource.parent?.trigger.bind(resource.parent);
-}
+const triggerOnParent = (resource: SpecifyResource<AnySchema>): void =>
+  void resource.parent?.trigger.bind(resource.parent);
 
-function triggerOnCollectionRelated(resource: SpecifyResource<AnySchema>) {
-  return resource.collection?.related?.trigger.bind(
-    resource.collection.related
-  );
-}
+const triggerOnCollectionRelated = (
+  resource: SpecifyResource<AnySchema>
+): void =>
+  void resource.collection?.related?.trigger.bind(resource.collection.related);
 
 export type Blocker = {
   readonly resource: SpecifyResource<AnySchema>;

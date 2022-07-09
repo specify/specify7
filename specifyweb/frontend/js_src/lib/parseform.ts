@@ -3,7 +3,7 @@
  * adding type safety and strictness to help resolve ambiguities
  */
 
-import { ajax, Http, parseXml } from './ajax';
+import { ajax, Http } from './ajax';
 import { error } from './assert';
 import { f } from './functools';
 import { getParsedAttribute } from './helpers';
@@ -17,6 +17,7 @@ import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
+import { parseXml } from './codemirrorlinters';
 
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
@@ -203,7 +204,8 @@ function postProcessRows(
                 }
               : newColumns.length === 1 &&
                 typeof row[rowIndex + 1]?.id === 'string' &&
-                initialLabelsForCells[defined(row[rowIndex + 1].id)] === undefined
+                initialLabelsForCells[defined(row[rowIndex + 1].id)] ===
+                  undefined
               ? {
                   /*
                    * Similar, but associate label with cell in next row, if
@@ -301,8 +303,7 @@ function postProcessRows(
     columns: newColumns,
     rows: newRows.map((row) =>
       row.map((cell) =>
-        cell.id === undefined ||
-        typeof labelsForCells[cell.id] === 'object'
+        cell.id === undefined || typeof labelsForCells[cell.id] === 'object'
           ? cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
             ? {
                 ...cell,

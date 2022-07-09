@@ -3,7 +3,7 @@
  */
 
 import { ajax } from './ajax';
-import type { AnySchema } from './datamodelutils';
+import type { AnySchema, SerializedResource } from './datamodelutils';
 import { f } from './functools';
 import {
   getAttribute,
@@ -139,6 +139,14 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
     )
     .sort(sortFunction(({ isRequired }) => isRequired, true));
 
+export const naiveFormatter = (resource: SpecifyResource<AnySchema>): string =>
+  `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
+
+export const trivialFormatter = (
+  resource: SerializedResource<AnySchema>
+): string =>
+  `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
+
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   formatterName?: string,
@@ -189,9 +197,7 @@ export async function format<SCHEMA extends AnySchema>(
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
-  const automaticFormatter = tryBest
-    ? `${resource.specifyModel.label} #${resource.id}`
-    : undefined;
+  const automaticFormatter = tryBest ? naiveFormatter(resource) : undefined;
 
   /*
    * Don't format resource if all relevant fields are empty, or formatter has
@@ -221,7 +227,7 @@ export async function format<SCHEMA extends AnySchema>(
                     (noAccessTable) =>
                       typeof noAccessTable === 'string'
                         ? tryBest
-                          ? `${schema.models[noAccessTable].label} #${resource.id}`
+                          ? naiveFormatter(resource)
                           : commonText('noPermission')
                         : (
                             resource.rgetPromise(fieldName) as Promise<

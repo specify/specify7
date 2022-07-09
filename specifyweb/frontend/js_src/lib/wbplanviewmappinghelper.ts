@@ -9,7 +9,6 @@ import { schemaBase as schema } from './schemabase';
 import type { Relationship } from './specifyfield';
 import type { R, RA } from './types';
 import type { ColumnOptions } from './uploadplanparser';
-import { pathStartsWith } from './wbplanviewutils';
 
 /**
  * Returns whether relationship is a -to-many
@@ -98,10 +97,6 @@ export type SplitMappingPath = {
   readonly mappingPath: MappingPath;
   readonly columnOptions: ColumnOptions;
 };
-
-/** Find the index of a subArray in array. On failure returns -1 */
-export const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
-  array.findIndex((_, index) => pathStartsWith(array.slice(index), subArray));
 
 /**
  * Takes array of mappings and returns the indexes of duplicate mappings

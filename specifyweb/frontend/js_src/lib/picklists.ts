@@ -48,7 +48,12 @@ const pickListSortTypes = [
   commonText('ordinal'),
 ];
 
-const userTypes = ['Manager', 'FullAccess', 'LimitedAccess', 'Guest'] as const;
+export const userTypes = [
+  'Manager',
+  'FullAccess',
+  'LimitedAccess',
+  'Guest',
+] as const;
 
 function definePicklist(
   name: string,
@@ -170,6 +175,14 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
         .set('type', PickListTypes.FIELDS)
         .set('tableName', 'preptype')
         .set('fieldName', 'name'),
+    },
+    SpAppResource: {
+      mimeType: definePicklist(
+        '_MimeType',
+        ['application/json', 'text/xml', 'jrxml/label', 'jrxml/report'].map(
+          (mimeType) => createPickListItem(mimeType, mimeType)
+        )
+      ).set('readOnly', false),
     },
   };
 

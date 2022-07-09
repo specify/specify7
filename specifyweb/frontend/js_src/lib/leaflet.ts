@@ -40,14 +40,11 @@ const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
       layerGroup,
       Object.fromEntries(
         Object.entries(
-          layers as Record<
-            string,
-            {
-              readonly endpoint: string;
-              readonly serverType: 'tileServer' | 'wms';
-              readonly layerOptions: Record<string, unknown>;
-            }
-          >
+          layers as IR<{
+            readonly endpoint: string;
+            readonly serverType: 'tileServer' | 'wms';
+            readonly layerOptions: IR<unknown>;
+          }>
         ).map(([layerName, { endpoint, serverType, layerOptions }]) => [
           layerName,
           (serverType === 'wms' ? L.tileLayer.wms : L.tileLayer)(

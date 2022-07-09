@@ -48,5 +48,21 @@ export const webOnlyViews = f.store(() =>
       'edit',
       getFieldsForAutoView(schema.models.SpecifyUser, ['password', 'userType'])
     ),
+    SpAppResource: autoGenerateViewDefinition(
+      schema.models.SpAppResource,
+      'form',
+      'edit',
+      getFieldsForAutoView(schema.models.SpAppResource, [
+        'allPermissionLevel',
+        'groupPermissionLevel',
+        'level',
+        'ownerPermissionLevel',
+        'version',
+        'group',
+        'spAppResourceDir',
+        'spAppResourceDatas',
+        'spReports',
+      ])
+    ),
   } as const)
 );

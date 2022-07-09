@@ -14,9 +14,10 @@ import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from '../wbplanviewlinesgetter';
-import { goBack, savePlan } from '../wbplanviewutils';
+import { savePlan } from '../wbplanviewutils';
 import type { UploadResult } from '../wbuploadedparser';
 import { useLiveState, useTitle } from './hooks';
+import { goTo } from './navigation';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
 import { BaseTableSelection } from './wbplanviewstate';
@@ -113,7 +114,7 @@ export function WbPlanView({
 
   return state.type === 'SelectBaseTable' ? (
     <BaseTableSelection
-      onClose={(): void => goBack(dataset.id)}
+      onClose={(): void => goTo(`/workbench/${dataset.id}/`)}
       onSelectTemplate={(uploadPlan, headers): void =>
         setState({
           type: 'MappingState',
@@ -149,14 +150,14 @@ export function WbPlanView({
           type: 'SelectBaseTable',
         })
       }
-      onSave={async (lines, mustMatchPreferences): Promise<void> => {
-        return savePlan({
+      onSave={async (lines, mustMatchPreferences): Promise<void> =>
+        savePlan({
           dataset,
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
-        });
-      }}
+        }).then(() => goTo(`/workbench/${dataset.id}/`))
+      }
     />
   );
 }

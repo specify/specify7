@@ -6,7 +6,6 @@
 
 import { ajax, Http, ping } from './ajax';
 import { AutoMapper } from './automapper';
-import { goTo } from './components/navigation';
 import type { Dataset } from './components/wbplanview';
 import type {
   AutoMapperSuggestion,
@@ -79,7 +78,7 @@ export async function savePlan({
       expectedResponseCodes: [Http.NO_CONTENT],
     }
   ).then(async () =>
-    (newlyAddedHeaders.length === 0
+    newlyAddedHeaders.length === 0
       ? Promise.resolve()
       : ajax<Dataset>(dataSetRequestUrl, {
           headers: { Accept: 'application/json' },
@@ -101,14 +100,10 @@ export async function savePlan({
             {
               expectedResponseCodes: [Http.NO_CONTENT],
             }
-          )
+          ).then(f.void)
         )
-    ).then(() => goBack(dataset.id))
   );
 }
-
-export const goBack = (dataSetId: number): void =>
-  goTo(`/workbench/${dataSetId}/`);
 
 /* Unmap headers that have a duplicate mapping path */
 export function deduplicateMappings(

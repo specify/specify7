@@ -7,6 +7,7 @@
 
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
+import { toLowerCase } from './helpers';
 import type { LocalityPinFields } from './leafletconfig';
 import { localityPinFields, requiredLocalityColumns } from './leafletconfig';
 import type { Field, LocalityData } from './leafletutils';
@@ -20,12 +21,11 @@ import type { IR, R, RA } from './types';
 import { filterArray } from './types';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import {
-  findSubArray,
   getCanonicalMappingPath,
   mappingPathToString,
   splitJoinedMappingPath,
 } from './wbplanviewmappinghelper';
-import { toLowerCase } from './helpers';
+import { pathStartsWith } from './wbplanviewutils';
 
 const addBaseTableName = (
   baseTableName: keyof Tables,
@@ -65,6 +65,10 @@ const matchLocalityPinFields = (
     .filter(
       ({ matchedPathsToRelationship }) => matchedPathsToRelationship.length > 0
     );
+
+/** Find the index of a subArray in array. On failure returns -1 */
+const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
+  array.findIndex((_, index) => pathStartsWith(array.slice(index), subArray));
 
 export type SplitMappingPathWithFieldName = SplitMappingPath & {
   readonly fieldName: string;

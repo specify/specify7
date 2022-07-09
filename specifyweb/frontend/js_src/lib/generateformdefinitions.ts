@@ -1,5 +1,5 @@
 import type { AnySchema, TableFields } from './datamodelutils';
-import { split } from './helpers';
+import { sortFunction, split } from './helpers';
 import { commonText } from './localization/common';
 import type {
   FormMode,
@@ -45,19 +45,21 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   model: SpecifyModel<SCHEMA>,
   fieldsToSkip: RA<TableFields<SCHEMA>>
 ): RA<TableFields<SCHEMA>> {
-  const baseFields = model.literalFields.filter(
-    (field) => !fieldsToSkip.includes(field.name)
-  );
+  const baseFields = model.literalFields
+    .filter((field) => !fieldsToSkip.includes(field.name))
+    .sort(sortFunction(({ isRequired }) => isRequired, true));
   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
-  const relationships = model.relationships.filter(
-    (field) =>
-      !field.isHidden &&
-      !field.isReadOnly &&
-      !fieldsToSkip.includes(field.name) &&
-      (field.isRequired || field.isDependent())
-  );
+  const relationships = model.relationships
+    .filter(
+      (field) =>
+        !field.isHidden &&
+        !field.isReadOnly &&
+        !fieldsToSkip.includes(field.name) &&
+        (field.isRequired || field.isDependent())
+    )
+    .sort(sortFunction(({ isRequired }) => isRequired, true));
   // Hide hidden fields, unless all fields are hidden
   const fields =
     filteredFields.length > 0 || relationships.length > 0

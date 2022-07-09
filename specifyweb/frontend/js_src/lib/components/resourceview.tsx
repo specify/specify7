@@ -83,10 +83,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly children: (props: {
     readonly formElement: HTMLFormElement | null;
     readonly formPreferences: JSX.Element;
-    readonly form: (
-      children: JSX.Element | undefined,
-      className?: string
-    ) => JSX.Element;
+    readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
     readonly title: string;
     readonly formatted: string;
     readonly specifyNetworkBadge: JSX.Element | undefined;
