@@ -52,7 +52,7 @@ export function PickListComboBox(
     [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
 
-  // Listen for changes to the field
+  // Listen for field value change
   React.useEffect(() => {
     void props.resource.businessRuleMgr?.checkField(props.field.name);
     return resourceOn(props.resource, `change:${props.field.name}`, (): void =>
@@ -145,7 +145,7 @@ export function PickListComboBox(
 
   return (
     <>
-      {handleAdd === undefined || isDisabled ? (
+      {props.pickList?.get('readOnly') === true || isDisabled ? (
         <Select
           id={props.id}
           // "null" value is represented as an empty string
@@ -182,13 +182,17 @@ export function PickListComboBox(
         <Autocomplete<string>
           filterItems={true}
           source={autocompleteItems}
-          onNewValue={f.var(props.pickList?.get('sizeLimit'), (sizeLimit) =>
-            typeof sizeLimit === 'number' &&
-            sizeLimit > 0 &&
-            sizeLimit <= autocompleteItems.length
-              ? undefined
-              : addNewValue
-          )}
+          onNewValue={
+            typeof props.onAdd === 'function'
+              ? f.var(props.pickList?.get('sizeLimit'), (sizeLimit) =>
+                  typeof sizeLimit === 'number' &&
+                  sizeLimit > 0 &&
+                  sizeLimit <= autocompleteItems.length
+                    ? undefined
+                    : addNewValue
+                )
+              : undefined
+          }
           onChange={({ data }): void => updateValue(data)}
           onCleared={(): void => updateValue('')}
           forwardRef={validationRef}
