@@ -313,8 +313,8 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Логотип Specify',
   },
   customImage: {
-    'en-us': 'Custom image',
-    'ru-ru': 'Произвольное изображение',
+    'en-us': 'Custom Image',
+    'ru-ru': 'Произвольное Изображение',
   },
   customImageDescription: {
     'en-us': 'A URL to an image that would be displayed on the home page:',

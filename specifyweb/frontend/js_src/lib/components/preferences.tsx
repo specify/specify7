@@ -23,7 +23,6 @@ import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
-  defaultWelcomePageImage,
   FontFamilyPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './preferencesrenderers';
@@ -370,7 +369,7 @@ export const preferenceDefinitions = {
             requiresReload: false,
             // This item is rendered inside of WelcomePageModePreferenceItem
             visible: false,
-            defaultValue: defaultWelcomePageImage,
+            defaultValue: '',
             type: 'text',
           }),
         },

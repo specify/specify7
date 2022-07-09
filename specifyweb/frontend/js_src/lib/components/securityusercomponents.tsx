@@ -116,7 +116,7 @@ export function UserRoles({
       <legend>
         <span className="text-xl">{adminText('assignedUserRoles')}</span>
       </legend>
-      <Ul className="flex flex-col gap-1">
+      <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
           ? collectionRoles[collectionId]?.map((role) => (
               <li key={role.id} className="flex items-center gap-2">
