@@ -101,7 +101,10 @@ export function useSaveBlockers({
 export function useValidationAttributes(
   field: LiteralField | Relationship
 ): IR<string> {
-  const [attributes, setAttributes] = React.useState<IR<string>>({});
+  const [attributes, setAttributes] = React.useState<IR<string>>(() => {
+    const parser = resolveParser(field);
+    return getValidationAttributes(parser);
+  });
   React.useEffect(() => {
     const parser = resolveParser(field);
     setAttributes(getValidationAttributes(parser));
