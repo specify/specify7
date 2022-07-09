@@ -262,12 +262,13 @@ export function SecurityUser({
                         collectionId={collectionId}
                         userAgents={userAgents}
                         mode={mode}
+                        isSuperAdmin={isSuperAdmin}
                       />
                       {hasPermission(
                         '/permissions/user/roles',
                         'read',
                         collectionId
-                      ) ? (
+                      ) && (
                         <UserRoles
                           collectionRoles={collectionRoles}
                           collectionId={collectionId}
@@ -275,7 +276,7 @@ export function SecurityUser({
                           onChange={setUserRoles}
                           onOpenRole={handleOpenRole}
                         />
-                      ) : undefined}
+                      )}
                       {
                         /*
                          * If user is a super admin, they have all policies, so

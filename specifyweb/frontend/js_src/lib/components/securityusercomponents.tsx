@@ -231,6 +231,7 @@ export function CollectionAccess({
   collectionId,
   userAgents,
   mode,
+  isSuperAdmin,
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
   readonly onChange: (
@@ -240,6 +241,7 @@ export function CollectionAccess({
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
   readonly mode: FormMode;
+  readonly isSuperAdmin: boolean;
 }): JSX.Element {
   const hasCollectionAccess =
     userPolicies?.[collectionId]?.some(
@@ -260,7 +262,8 @@ export function CollectionAccess({
 
   return (
     <div className="flex flex-col gap-4">
-      {hasPermission('/permissions/policies/user', 'read', collectionId) && (
+      {hasPermission('/permissions/policies/user', 'read', collectionId) &&
+      !isSuperAdmin ? (
         <Label.ForCheckbox className={className.limitedWidth}>
           <Input.Checkbox
             isReadOnly={
@@ -296,7 +299,7 @@ export function CollectionAccess({
           />
           {adminText('collectionAccess')}
         </Label.ForCheckbox>
-      )}
+      ) : undefined}
       <Label.Generic className={className.limitedWidth}>
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
@@ -310,7 +313,7 @@ export function CollectionAccess({
                 : 'edit'
             }
             formType="form"
-            isRequired={hasCollectionAccess}
+            isRequired={hasCollectionAccess || isSuperAdmin}
             relatedModel={schema.models.Agent}
             forceCollection={collectionId}
             typeSearch={undefined}
