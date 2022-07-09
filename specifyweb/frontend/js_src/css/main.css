@@ -363,3 +363,8 @@
 .leaflet-container :focus {
   outline: revert !important;
 }
+
+/* The CodeMirror editor styleds*/
+.cm-theme, .cm-editor {
+  @apply h-full;
+}
