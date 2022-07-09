@@ -351,8 +351,8 @@ export const adminText = createDictionary({
     'ru-ru': 'Исключенные институциональные политики:',
   },
   excludedInstitutionalPoliciesDescription: {
-    'en-us': `Some policies apply only on the institutional level, and so are
-      removed from these lists`,
+    'en-us': `(Some policies that apply only at the institution-level are not
+      present here at the collection-level.)`,
     'ru-ru': `Некоторые политики применяются только на институциональном уровне,
       поэтому они удалены из этих списков.`,
   },

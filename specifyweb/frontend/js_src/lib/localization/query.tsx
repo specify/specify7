@@ -65,8 +65,8 @@ export const queryText = createDictionary({
       В запросе есть незавершенные поля. Хотите удалить их?`,
   },
   queryUnloadProtectDialogText: {
-    'en-us': 'This query definition has not been saved.',
-    'ru-ru': 'Этот запрос не был сохранен.',
+    'en-us': 'The new or modified query definition has not been saved',
+    'ru-ru': 'Новый или измененный запрос не был сохранен',
   },
   recordSetToQueryDialogHeader: {
     'en-us': 'Creating a Record Set from Query',
