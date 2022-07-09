@@ -91,7 +91,8 @@ export function useAppResourceCount(
 }
 
 export function useAppResourceData(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObject>,
+  initialData: string | undefined
 ): {
   readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
   readonly setResourceData: (
@@ -108,6 +109,7 @@ export function useAppResourceData(
           : 'spViewSetObj';
       const newResource = addMissingFields('SpAppResourceData', {
         [relationshipName]: resource.id,
+        data: initialData,
       });
       const dataResource =
         typeof resource.id === 'number'
@@ -120,7 +122,7 @@ export function useAppResourceData(
           : newResource;
       initialValue.current = dataResource.data;
       return dataResource;
-    }, [resource]),
+    }, [resource, initialData]),
     true
   );
   return {

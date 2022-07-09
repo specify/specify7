@@ -12,6 +12,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
+import { getUniqueName } from '../wbuniquifyname';
 import { AppResourcesAside } from './appresourcesaside';
 import { CreateAppResource } from './appresourcescreate';
 import { AppResourceEditor } from './appresourceseditor';
@@ -62,6 +63,7 @@ function AppResourcesView({
             SpAppResource | SpViewSetObject
           >;
           readonly directory: SerializedResource<SpAppResourceDir>;
+          readonly initialData: string | undefined;
         }
       >
     | State<
@@ -83,6 +85,7 @@ function AppResourcesView({
           type: 'View',
           resource,
           directory,
+          initialData: undefined,
         };
     }
     return resource === false ? { type: 'NotFound' } : { type: 'Main' };
@@ -95,7 +98,12 @@ function AppResourcesView({
           // FEATURE: highlight current resource on the sidebar
           resources={resources}
           onOpen={(resource, directory): void =>
-            setState({ type: 'View', resource, directory })
+            setState({
+              type: 'View',
+              resource,
+              directory,
+              initialData: undefined,
+            })
           }
           onCreate={(directory): void =>
             setState({ type: 'Create', directory })
@@ -105,6 +113,7 @@ function AppResourcesView({
           <AppResourceEditor
             resource={state.resource}
             directory={state.directory}
+            initialData={state.initialData}
             onDeleted={(): void => {
               const mode = getAppResourceMode(
                 state.resource
@@ -118,6 +127,17 @@ function AppResourcesView({
               });
               setState({ type: 'Main' });
             }}
+            onClone={(appResource, directory, initialData): void =>
+              setState({
+                type: 'View',
+                resource: {
+                  ...appResource,
+                  name: getUniqueName(appResource.name, [appResource.name]),
+                },
+                directory,
+                initialData,
+              })
+            }
             onSaved={(appResource, directory): void => {
               if (typeof state.resource.id === 'number') return;
               const mode = getAppResourceMode(appResource);
@@ -128,6 +148,12 @@ function AppResourcesView({
                     ? resources.directories
                     : [...resources.directories, directory],
                 [mode]: [...resources[mode], appResource],
+              });
+              setState({
+                type: 'View',
+                resource: appResource,
+                directory,
+                initialData: undefined,
               });
             }}
           />
@@ -141,6 +167,7 @@ function AppResourcesView({
                 type: 'View',
                 resource,
                 directory: state.directory,
+                initialData: undefined,
               })
             }
           />

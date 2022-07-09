@@ -13,6 +13,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from 'codemirror';
 import React from 'react';
 
+import { jsonLinter, xmlLinter } from '../codemirrorlinters';
 import type {
   SpAppResource,
   SpAppResourceDir,
@@ -22,6 +23,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { hasToolPermission } from '../permissions';
 import { createResource } from '../resource';
 import { toTable } from '../specifymodel';
@@ -35,12 +37,11 @@ import {
   getAppResourceExtension,
   useAppResourceData,
 } from './appresourceshooks';
-import { Container, DataEntry, Form } from './basic';
-import { jsonLinter, xmlLinter } from '../codemirrorlinters';
+import { Button, Container, DataEntry, Form } from './basic';
 import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { useBooleanState } from './hooks';
+import { useBooleanState, useIsModified } from './hooks';
 import { Dialog } from './modaldialog';
 import { useDarkMode, usePref } from './preferenceshooks';
 import { deserializeResource } from './resource';
@@ -52,12 +53,20 @@ const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 export function AppResourceEditor({
   resource,
   directory,
+  initialData,
   onSaved: handleSaved,
+  onClone: handleClone,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly initialData: string | undefined;
   readonly onDeleted: () => void;
+  readonly onClone: (
+    resource: SerializedResource<SpAppResource | SpViewSetObject>,
+    directory: SerializedResource<SpAppResourceDir>,
+    initialData: string
+  ) => void;
   readonly onSaved: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
@@ -67,8 +76,12 @@ export function AppResourceEditor({
     () => deserializeResource(resource),
     [resource]
   );
-  const { resourceData, setResourceData, isChanged } =
-    useAppResourceData(resource);
+  const isModified = useIsModified(appResource);
+
+  const { resourceData, setResourceData, isChanged } = useAppResourceData(
+    resource,
+    initialData
+  );
 
   const isReadOnly = !hasToolPermission(
     'resources',
@@ -182,6 +195,26 @@ export function AppResourceEditor({
                 />
               ) : undefined}
               <span className="flex-1 -ml-2" />
+              {hasToolPermission('resources', 'create') && (
+                <Button.Orange
+                  onClick={(): void =>
+                    loading(
+                      appResource
+                        .clone()
+                        .then((appResourceClone) =>
+                          handleClone(
+                            serializeResource(appResourceClone),
+                            directory,
+                            resourceData.data ?? ''
+                          )
+                        )
+                    )
+                  }
+                  disabled={isChanged || isModified}
+                >
+                  {formsText('clone')}
+                </Button.Orange>
+              )}
               {formRef.current !== null &&
               hasToolPermission(
                 'resources',

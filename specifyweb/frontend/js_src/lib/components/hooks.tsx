@@ -635,6 +635,15 @@ export function useIsModified(
     resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew)
   );
 
+  // Recompute default value when resource changes
+  React.useEffect(
+    () =>
+      resource?.needsSaved === true && (!resource?.isNew() || !ignoreBrandNew)
+        ? handleNeedsSaving()
+        : handleSaved(),
+    [resource, ignoreBrandNew, handleNeedsSaving, handleSaved]
+  );
+
   React.useEffect(
     () =>
       typeof resource === 'object'
