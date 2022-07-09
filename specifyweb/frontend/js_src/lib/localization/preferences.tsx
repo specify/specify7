@@ -649,4 +649,24 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Автоматически прокручивать страницу до сфокусированного узла дерева',
   },
+  lineWrap: {
+    'en-us': 'Line wrap',
+    'ru-ru': 'Перенос строк',
+  },
+  indentSize: {
+    'en-us': 'Indent size',
+    'ru-ru': 'Размер отступа',
+  },
+  indentWithTab: {
+    'en-us': (
+      <span>
+        Indent with <Key>Tab</Key>
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Используйте <Key>Tab</Key> для отступа
+      </span>
+    ),
+  },
 });

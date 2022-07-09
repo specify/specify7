@@ -31,14 +31,21 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
   canAddAnother,
   form,
-  onSaving: handleSaving,
-  onSaved: handleSaved,
   disabled = false,
   saveRequired: externalSaveRequired = false,
+  onSaving: handleSaving,
+  onSaved: handleSaved,
+  onIgnored: handleIgnored,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly canAddAnother: boolean;
   readonly form: HTMLFormElement;
+  readonly disabled?: boolean;
+  /*
+   * Can enable Save button even if no save is required (i.e., when there were
+   * changes to fields that are not stored with the resource
+   */
+  readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: () => void | undefined | boolean;
   readonly onSaved?: (payload: {
@@ -46,12 +53,13 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     readonly wasNew: boolean;
     readonly wasChanged: boolean;
   }) => void;
-  readonly disabled?: boolean;
-  /*
-   * Can enable Save button even if no save is required (i.e., when there were
-   * changes to fields that are not stored with the resource
+  /**
+   * Sometimes a save button click is ignored (mostly because of a validation
+   * error). By default, this would focus the first erroring field on the form.
+   * However, if the save blocker is not caused by some field on the form,
+   * need to handle the ignored click manually.
    */
-  readonly saveRequired?: boolean;
+  readonly onIgnored?: () => void;
 }): JSX.Element {
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
@@ -109,8 +117,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         !externalSaveRequired &&
         mode === 'save' &&
         !resource.isNew())
-    )
+    ) {
+      handleIgnored();
       return;
+    }
 
     await resource.businessRuleMgr?.pending;
 

@@ -17,7 +17,6 @@ import type { IR, RA } from '../types';
 import { ensure } from '../types';
 import type { Parser } from '../uiparse';
 import { Link } from './basic';
-import { crash } from './errorboundary';
 import type { WelcomePageMode } from './preferencesrenderers';
 import {
   CollectionSortOrderPreferenceItem,
@@ -1129,6 +1128,42 @@ export const preferenceDefinitions = {
       },
     },
   },
+  appResources: {
+    title: commonText('appResources'),
+    subCategories: {
+      behavior: {
+        title: preferencesText('behavior'),
+        items: {
+          lineWrap: defineItem<boolean>({
+            title: preferencesText('lineWrap'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          indentSize: defineItem<number>({
+            title: preferencesText('indentSize'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 2,
+            parser: {
+              min: 1,
+              max: 8,
+              step: 1,
+            },
+            type: 'java.lang.Integer',
+          }),
+          indentWithTab: defineItem<boolean>({
+            title: preferencesText('indentWithTab'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
   leaflet: {
     title: commonText('geoMap'),
     subCategories: {
@@ -1203,7 +1238,7 @@ import('../schema')
         schema.models.RecordSet.label;
     })
   )
-  .catch(crash);
+  .catch(console.error);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
