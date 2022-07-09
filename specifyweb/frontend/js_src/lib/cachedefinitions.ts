@@ -15,6 +15,8 @@ import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
 import type { IR, RA, RR } from './types';
 import { ensure } from './types';
+import { AppResourcesConformation } from './components/appresourcesaside';
+import { AppResourceFilters } from './appresourcesfilters';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -130,6 +132,10 @@ export type CacheDefinitions = {
     readonly previewCollapsed: boolean;
     readonly advancedPreviewCollapsed: boolean;
     readonly institutionPoliciesExpanded: boolean;
+  };
+  readonly appResources: {
+    readonly conformation: RA<AppResourcesConformation>;
+    readonly filters: AppResourceFilters;
   };
 };
 
