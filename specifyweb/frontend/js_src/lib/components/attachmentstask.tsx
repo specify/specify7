@@ -367,7 +367,7 @@ export function AttachmentsView(): JSX.Element {
           </Select>
         </Label.ForCheckbox>
         <Label.ForCheckbox>
-          {formsText('order')}
+          {formsText('orderBy')}
           <div>
             <OrderPicker
               model={schema.models.Attachment}

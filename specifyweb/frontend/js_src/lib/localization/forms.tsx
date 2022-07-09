@@ -13,7 +13,7 @@ import { createDictionary } from './utils';
 
 export const formsText = createDictionary({
   // Attachments
-  order: {
+  orderBy: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
   },

@@ -310,8 +310,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
               }
               onSaving={handleSaving}
               onSaved={(payload): void => {
-                const printOnSave = getCache('forms', 'printOnSave') ?? false;
-                if (printOnSave && payload.wasChanged)
+                const printOnSave = getCache('forms', 'printOnSave') ?? {};
+                if (
+                  printOnSave[resource.specifyModel.name] === true &&
+                  payload.wasChanged
+                )
                   setState({
                     type: 'Report',
                     onDone: () => handleSaved(payload),

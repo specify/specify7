@@ -788,7 +788,7 @@ export const preferenceDefinitions = {
           sortOrder: defineItem<
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
           >({
-            title: formsText('order'),
+            title: formsText('orderBy'),
             description: preferencesText('collectionSortOrderDescription'),
             requiresReload: false,
             visible: true,

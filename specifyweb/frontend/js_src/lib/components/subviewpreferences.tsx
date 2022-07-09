@@ -7,6 +7,7 @@ import type { ContextType } from '../types';
 import { Label, Select } from './basic';
 import { OrderPicker } from './preferencesrenderers';
 import type { SubViewContext } from './subview';
+import { commonText } from '../localization/common';
 
 export function SubViewPreferences({
   subView,
@@ -20,6 +21,7 @@ export function SubViewPreferences({
   return (
     <>
       <Label.Generic>
+        {commonText('type')}
         <Select
           value={formType}
           onValueChange={(formType): void =>
@@ -31,11 +33,14 @@ export function SubViewPreferences({
         </Select>
       </Label.Generic>
       {/* BUG: this change does not apply untill you add/remove subview record */}
-      <OrderPicker
-        model={model}
-        order={sortField}
-        onChange={handleChangeSortField}
-      />
+      <Label.Generic>
+        {formsText('orderBy')}
+        <OrderPicker
+          model={model}
+          order={sortField}
+          onChange={handleChangeSortField}
+        />
+      </Label.Generic>
     </>
   );
 }
