@@ -122,7 +122,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
       import('./toolbar/preferences'),
       import('./toolbar/schemaconfig'),
       // Administration
-      import('./toolbar/resources'),
+      import('./toolbar/appresources'),
       import('./toolbar/security'),
       import('./toolbar/treerepair'),
       import('./toolbar/masterkey'),

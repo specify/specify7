@@ -21,6 +21,7 @@ import type { IR, RA } from '../../types';
 import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
+import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { useAvailableCollections } from '../othercollectionview';
@@ -29,7 +30,6 @@ import { SecurityCollection } from '../securitycollection';
 import { SecurityInstitution } from '../securityinstitution';
 import type { Role } from '../securityrole';
 import { SecurityUser } from '../securityuser';
-import { ErrorBoundary } from '../errorboundary';
 
 export function SecurityPanel(): JSX.Element | null {
   useTitle(adminText('securityPanel'));

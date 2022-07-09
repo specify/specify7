@@ -90,19 +90,24 @@ export function task(): void {
       .catch(fail);
   });
 
-  const appResources = async (type: 'appResources' | 'viewSets', id?: string) =>
-    import('../appresources').then((appResourcesModule) =>
+  const appResources = async (mode: 'appResources' | 'viewSets', id?: string) =>
+    import('./appresources').then(({ AppResourcesWrapper }) =>
       hasToolPermission('resources', 'read')
         ? hasTablePermission('Discipline', 'read')
           ? hasTablePermission('Collection', 'read')
-            ? hasTablePermission('SpecifyUser', 'read')
-              ? appResourcesModule[type](f.parseInt(id ?? '') ?? null)
-              : setCurrentComponent(
+            ? setCurrentComponent(
+                hasTablePermission('SpecifyUser', 'read') ? (
+                  <AppResourcesWrapper
+                    mode={mode}
+                    resourceId={f.parseInt(id ?? '')}
+                  />
+                ) : (
                   <TablePermissionDenied
                     tableName="SpecifyUser"
                     action="read"
                   />
                 )
+              )
             : setCurrentComponent(
                 <TablePermissionDenied tableName="Collection" action="read" />
               )
