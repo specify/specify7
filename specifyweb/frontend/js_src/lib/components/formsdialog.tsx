@@ -113,7 +113,7 @@ export function FormsDialog({
                   }
                 >
                   {typeof iconName === 'string' && (
-                    <TableIcon name={iconName} tableLabel={false} />
+                    <TableIcon name={iconName} label={false} />
                   )}
                   {title}
                 </Link.Default>

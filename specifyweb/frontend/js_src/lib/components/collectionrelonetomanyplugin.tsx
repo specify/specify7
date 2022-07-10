@@ -223,7 +223,6 @@ export function CollectionOneToManyPlugin({
                     {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
                         title={commonText('remove')}
-                        aria-label={commonText('remove')}
                         icon="trash"
                         onClick={(): void => {
                           if (data === undefined) return;

@@ -241,7 +241,7 @@ export function Icon({
   else if (!isRelationship && (isPreview || !isEnabled))
     return tableIconSelected;
   else if (!isRelationship || tableName === undefined) return tableIconEmpty;
-  else return <TableIcon name={tableName} />;
+  else return <TableIcon name={tableName} label />;
 }
 
 function Option({

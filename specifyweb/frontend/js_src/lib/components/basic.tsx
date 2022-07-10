@@ -186,7 +186,6 @@ const dataEntryButton =
       <Button.Icon
         className={`${className} ${props.className ?? ''}`}
         title={title}
-        aria-label={title}
         icon={icon}
         {...props}
       />
@@ -685,6 +684,7 @@ export const Link = {
     `${className.icon} rounded`,
     ({ icon, ...props }) => ({
       ...props,
+      'aria-label': props['aria-label'] ?? props.title,
       children: icons[icon],
     })
   ),

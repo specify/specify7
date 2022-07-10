@@ -17,7 +17,6 @@ import { Button, className, Textarea } from './basic';
 import { copyTextToClipboard } from './filepicker';
 import { useBooleanState, useTitle } from './hooks';
 import { icons } from './icons';
-import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
 
 const MAX_HUE = 360;
@@ -38,7 +37,7 @@ const getHue = spanNumber(
 );
 
 /** Generate an HSL color based on the first 2 characters of a string */
-export const stringToColor = (name: string) =>
+export const stringToColor = (name: string): string =>
   f.var(
     name.toLowerCase(),
     (name) =>
@@ -53,8 +52,8 @@ export const stringToColor = (name: string) =>
  */
 export function TableIcon({
   name,
-  tableLabel,
-  /*
+  label,
+  /**
    * It is highly recommended to use the same icon size everywhere, as that
    * improves consistency, thus, this should be overwritten only if it is
    * strictly necessary.
@@ -62,14 +61,21 @@ export function TableIcon({
   className = 'w-table-icon h-table-icon',
 }: {
   readonly name: string;
-  readonly tableLabel?: string | false;
+  /**
+   * Set this to false only if icon would be rendered adjacent to the table name.
+   * In all other cases, set this to true, or explicitly set the label as a
+   * string
+   */
+  readonly label: boolean | string;
   readonly className?: string;
 }): JSX.Element {
   const tableIconSource = getIcon(name);
   const resolvedTableLabel =
-    tableLabel === false
+    label === false
       ? undefined
-      : tableLabel ?? getModel(name)?.label ?? '';
+      : typeof label === 'string'
+      ? label
+      : getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')

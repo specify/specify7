@@ -206,7 +206,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                   <div role="cell" className="flex justify-center">
                     <Button.Icon
                       title={formsText('contract')}
-                      aria-label={formsText('contract')}
                       icon="chevronDown"
                       onClick={(): void =>
                         setExpandedRecords({
@@ -238,7 +237,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                   <div role="cell" className="flex justify-center">
                     <Button.Icon
                       title={commonText('expand')}
-                      aria-label={commonText('expand')}
                       icon="chevronRight"
                       onClick={(): void =>
                         setExpandedRecords({
@@ -290,7 +288,6 @@ export function FormTable<SCHEMA extends AnySchema>({
                     )) && (
                     <Button.Icon
                       title={commonText('remove')}
-                      aria-label={commonText('remove')}
                       icon="trash"
                       onClick={(): void => handleDelete(resource)}
                       disabled={

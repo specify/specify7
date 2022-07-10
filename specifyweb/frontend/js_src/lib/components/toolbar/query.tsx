@@ -176,10 +176,7 @@ function QueryList({
                 }
                 className="overflow-x-auto"
               >
-                <TableIcon
-                  name={getModelById(query.contextTableId).name}
-                  tableLabel={false}
-                />
+                <TableIcon name={getModelById(query.contextTableId).name} />
                 {query.name}
               </Link.Default>
             </td>

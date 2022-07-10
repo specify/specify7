@@ -353,7 +353,6 @@ export function LegacyPermissions({
   readonly userResource: SpecifyResource<SpecifyUser>;
   readonly mode: FormMode;
 }): JSX.Element {
-  // FIXME: check for sp6 admin status, not sp7
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{adminText('legacyPermissions')}</h4>

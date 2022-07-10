@@ -100,7 +100,7 @@ export function TreeSelectDialog({
                           }}
                           title={treeDefinition?.get('remarks') ?? undefined}
                         >
-                          <TableIcon name={treeName} tableLabel={false} />
+                          <TableIcon name={treeName} label={false} />
                           {treeDefinition?.get('name') ??
                             schema.models[treeName].label}
                         </Link.Default>

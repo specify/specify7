@@ -203,7 +203,7 @@ function DataSetName({
       {' '}
       <h2 className="gap-x-1 flex overflow-y-auto">
         {dataset.uploadplan !== null && (
-          <TableIcon name={dataset.uploadplan.baseTableName} />
+          <TableIcon name={dataset.uploadplan.baseTableName} label />
         )}
         {`${wbText('dataSet')} ${name}`}
         {dataset.uploadresult?.success === true && (

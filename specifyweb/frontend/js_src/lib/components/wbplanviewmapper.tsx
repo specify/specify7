@@ -282,7 +282,7 @@ export function WbPlanViewMapper(props: {
     <Layout
       title={
         <>
-          <TableIcon name={props.baseTableName} />
+          <TableIcon name={props.baseTableName} label />
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
           <span title={wbText('baseTable')}>
             {` (${defined(getModel(props.baseTableName)).label})`}

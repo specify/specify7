@@ -105,8 +105,7 @@ export const dialogIcons: RR<
 };
 
 export type IconProps = {
-  // Require aria-label and title attributes
-  readonly 'aria-label': string;
+  // Require title attribute
   readonly title: string;
   // Require passing one of the defined icons
   readonly icon: Icon;

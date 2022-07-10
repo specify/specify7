@@ -168,7 +168,6 @@ function Row({
             <Button.Icon
               className="return-remark w-full"
               title={formsText('remarks')}
-              aria-label={formsText('remarks')}
               aria-pressed={showRemarks}
               icon="annotation"
               onClick={handleToggle}

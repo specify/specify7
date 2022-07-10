@@ -48,19 +48,21 @@ export type PreferenceItemComponent<VALUE> = (props: {
 export type PreferenceItem<VALUE> = {
   readonly title: string | JSX.Element;
   readonly description?: string | JSX.Element;
-  // Whether app needs to be reloaded if this preference changes
+  // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
-   * Set value only on field blur, rather than as soon as the user changed it
+   * Set value only on field blur, rather than as soon as the user changed it.
+   * Fixes https://github.com/specify/specify7/issues/1555
    */
   readonly setOnBlurOnly?: boolean;
   /*
    * Whether to render this item in the Preferences Menu
    * Invisible items are usually set by components outside the preferences menu
    *
-   * If 'adminsOnly' then visible only to admin users
+   * If 'protected' then visible, but editable only if user has
+   * `Preferences -> Edit Protected` permission
    */
-  readonly visible: boolean | 'adminsOnly';
+  readonly visible: boolean | 'protected';
   readonly defaultValue: VALUE;
 } & (
   | {
@@ -300,7 +302,7 @@ export const preferenceDefinitions = {
           allowDismissingErrors: defineItem<boolean>({
             title: preferencesText('allowDismissingErrors'),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -933,7 +935,7 @@ export const preferenceDefinitions = {
               </span>
             ),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
@@ -1113,7 +1115,7 @@ export const preferenceDefinitions = {
               </span>
             ),
             requiresReload: false,
-            visible: 'adminsOnly',
+            visible: 'protected',
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),

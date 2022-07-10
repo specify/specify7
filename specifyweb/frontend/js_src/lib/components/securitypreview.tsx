@@ -182,7 +182,7 @@ function PreviewRow({
           </div>
         ))}
         <div role="cell" className="p-2">
-          <TableIcon name={tableName} tableLabel={false} />
+          <TableIcon name={tableName} label={false} />
           {schema.models[tableName].label}
         </div>
       </div>

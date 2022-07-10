@@ -263,6 +263,7 @@ export function RecordSetCreated({
       <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
         <TableIcon
           name={defined(getModelById(recordSet.get('dbTableId'))).name}
+          label
         />
         {recordSet.get('name')}
       </Link.Default>

@@ -156,7 +156,7 @@ function TreeView<SCHEMA extends AnyTree>({
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
-        <TableIcon name={table.name} />
+        <TableIcon name={table.name} label />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
         </H2>

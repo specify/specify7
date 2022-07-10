@@ -24,7 +24,7 @@ function TableResults({
 }): JSX.Element {
   return (
     <li className="gap-x-1 flex items-center">
-      <TableIcon name={tableName} />
+      <TableIcon name={tableName} label={false} />
       <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
     </li>
   );

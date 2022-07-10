@@ -95,7 +95,7 @@ export function DataModelView({
   return typeof model === 'object' ? (
     <Container.Full>
       <div className="flex items-center gap-2">
-        <TableIcon name={model.name} />
+        <TableIcon name={model.name} label={false} />
         <H2 className="text-2xl">{model.name}</H2>
       </div>
       <H3>{commonText('fields')}</H3>
@@ -164,7 +164,7 @@ export function DataModelView({
               localizedRelationshipTypes[field.type] ?? field.type,
               field.dbColumn,
               <>
-                <TableIcon name={field.relatedModel.name} tableLabel={false} />
+                <TableIcon name={field.relatedModel.name} label={false} />
                 {field.relatedModel.name}
               </>,
               field.otherSideName,
@@ -221,7 +221,7 @@ export function DataModelView({
           >
             {[
               <>
-                <TableIcon name={model.name} tableLabel={false} />
+                <TableIcon name={model.name} label={false} />
                 {model.name}
               </>,
               model.label,

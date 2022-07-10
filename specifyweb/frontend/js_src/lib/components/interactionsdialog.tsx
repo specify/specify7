@@ -226,7 +226,7 @@ function Interactions({
                   }
                 >
                   {f.maybe(icon ?? table, (icon) => (
-                    <TableIcon name={icon} tableLabel={false} />
+                    <TableIcon name={icon} label={false} />
                   ))}
                   {typeof label === 'string'
                     ? stringLocalization[

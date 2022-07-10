@@ -100,7 +100,7 @@ function SchemaConfigTables({
         {sortedTables.map((model) => (
           <li key={model.tableId}>
             <Button.LikeLink onClick={(): void => setModel(model)}>
-              <TableIcon name={model.name} tableLabel={false} />
+              <TableIcon name={model.name} label={false} />
               {model.name}
             </Button.LikeLink>
           </li>

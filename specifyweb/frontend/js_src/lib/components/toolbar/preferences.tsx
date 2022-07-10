@@ -155,14 +155,14 @@ function Preferences({
                                   )
                                 }
                               >
-                                {preferencesText('reset')}
+                                {commonText('reset')}
                               </Button.Small>
                             </div>
                           </div>
                           {description !== undefined && <p>{description}</p>}
                           {items.map(([name, item]) => {
                             const canEdit =
-                              item.visible !== 'adminsOnly' ||
+                              item.visible !== 'protected' ||
                               hasPermission(
                                 '/preferences/user',
                                 'edit_protected'

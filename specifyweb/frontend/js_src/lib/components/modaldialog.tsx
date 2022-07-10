@@ -62,7 +62,7 @@ export const dialogClassNames = {
   wideContainer: `${commonContainer} max-h-[90%] min-w-[min(40rem,90%)]`,
   extraWideContainer: `${commonContainer} max-h-[90%] min-w-[min(20rem,90%)]
     w-[min(60rem,90%)] h-[60rem]`,
-  flexContent: 'flex flex-col gap-y-2',
+  flexContent: 'flex flex-col gap-2',
 } as const;
 
 /*
@@ -340,7 +340,7 @@ export function Dialog({
       portalClassName=""
       // "overflow-x-hidden" is necessary for the "resize" handle to appear
       className={`
-        outline-none flex flex-col p-4 gap-y-2 ${containerClassName}
+        outline-none flex flex-col p-4 gap-2 ${containerClassName}
         dark:text-neutral-200 dark:border dark:border-neutral-700
         text-neutral-900 overflow-x-hidden duration-0
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}

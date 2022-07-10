@@ -68,7 +68,7 @@ function Row({
               : undefined
           }
         >
-          <TableIcon name={getModelById(recordSet.dbTableId).name} />
+          <TableIcon name={getModelById(recordSet.dbTableId).name} label />
           {recordSet.name}
         </Link.Default>
       </td>
@@ -86,7 +86,6 @@ function Row({
           <Button.Icon
             icon="cog"
             title={commonText('edit')}
-            aria-label={commonText('edit')}
             onClick={handleConfigure}
           />
         )}

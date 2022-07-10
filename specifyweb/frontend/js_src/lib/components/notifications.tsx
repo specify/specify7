@@ -217,7 +217,6 @@ function NotificationComponent({
         <Button.Icon
           icon="x"
           title={commonText('delete')}
-          aria-label={commonText('delete')}
           onClick={(): void =>
             handleDelete(
               ping(

@@ -155,13 +155,12 @@ export function AttachmentCell({
                       )
                 }
               >
-                <TableIcon name={model?.name ?? 'Attachment'} />
+                <TableIcon name={model?.name ?? 'Attachment'} label />
               </Button.LikeLink>
             )}
           <Button.Icon
             className="absolute top-0 right-0"
             title={commonText('metadata')}
-            aria-label={commonText('metadata')}
             onClick={handleMetaToggle}
             icon="informationCircle"
             aria-pressed={isMetaOpen}

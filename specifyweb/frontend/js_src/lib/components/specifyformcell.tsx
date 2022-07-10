@@ -86,13 +86,13 @@ const cellRenderers: {
       >
         {typeof forClass === 'string' ? (
           <>
-            <TableIcon name={forClass} tableLabel={false} />
+            <TableIcon name={forClass} label={false} />
             {schema.models[forClass].label}
           </>
         ) : (
           <>
             {typeof icon === 'string' && (
-              <TableIcon name={icon} tableLabel={false} />
+              <TableIcon name={icon} label={false} />
             )}
             {label}
           </>
@@ -166,10 +166,7 @@ const cellRenderers: {
         'read'
       )
     ) {
-      if (
-        interactionCollection === undefined ||
-        actualFormType === undefined
-      )
+      if (interactionCollection === undefined || actualFormType === undefined)
         return null;
       else if (interactionCollection === false || actualFormType === 'form')
         return (

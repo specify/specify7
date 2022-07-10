@@ -109,7 +109,6 @@ function ErrorDialog({
           </Label.ForCheckbox>
           <Button.Red
             onClick={(): void =>
-              // REFACTOR: use loading() here after everything is using React
               legacyLoadingContext(
                 (clearCacheOnException
                   ? clearCache()
@@ -122,7 +121,7 @@ function ErrorDialog({
           </Button.Red>
           {(canDismiss ||
             dismissable ||
-            process.env.NODE_ENV === 'production') &&
+            process.env.NODE_ENV !== 'production') &&
             typeof handleClose === 'function' && (
               <Button.Blue onClick={handleClose}>[DEV] dismiss</Button.Blue>
             )}

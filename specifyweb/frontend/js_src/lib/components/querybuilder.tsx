@@ -20,6 +20,7 @@ import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
 import { TableIcon } from './common';
+import { ErrorBoundary } from './errorboundary';
 import {
   useAsyncState,
   useBooleanState,
@@ -37,13 +38,12 @@ import {
   SaveQueryButtons,
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
+import { QueryEditButton } from './queryedit';
 import { QueryResultsWrapper } from './queryresultstable';
 import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
-import { ErrorBoundary } from './errorboundary';
-import { QueryEditButton } from './toolbar/query';
 
 export function QueryBuilder({
   query: queryResource,
@@ -254,7 +254,7 @@ export function QueryBuilder({
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
             <header className="gap-x-2 whitespace-nowrap flex items-center">
-              <TableIcon name={model.name} />
+              <TableIcon name={model.name} label />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
                   ? queryText(

@@ -167,7 +167,7 @@ export function SubView({
            * Thus, have to introduce some inconsistency here
            */}
           {parentFormType === 'form' && (
-            <TableIcon name={icon} tableLabel={undefined} className="w-8 h-8" />
+            <TableIcon name={icon} label={false} className="w-8 h-8" />
           )}
           <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
             {collection?.models.length ?? commonText('loading')}
