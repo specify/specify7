@@ -7,7 +7,7 @@ import type {
 } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
-import { parseResourceUrl, resourceOn } from '../resource';
+import { resourceOn, tableFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR } from '../types';
@@ -67,8 +67,8 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * line according to TypeScript trace analyzer)
      */
     defined(
-      parseResourceUrl(serializedResource.resource_uri?.toString() ?? '')
-    )[0] as SCHEMA['tableName']
+      tableFromUrl(serializedResource.resource_uri?.toString() ?? '')
+    ) as SCHEMA['tableName']
   ].Resource(serializedResource);
 
 /** Hook for getting save blockers for a model's field */

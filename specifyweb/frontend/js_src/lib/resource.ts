@@ -141,6 +141,9 @@ export function parseResourceUrl(
 export const idFromUrl = (url: string): number | undefined =>
   parseResourceUrl(url)?.[1];
 
+export const tableFromUrl = (url: string): keyof Tables | undefined =>
+  parseResourceUrl(url)?.[0];
+
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
  * between AnySchema and table schemas defined in datamodel.ts

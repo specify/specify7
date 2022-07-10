@@ -1,11 +1,7 @@
 import type { Tables } from './datamodel';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import {
-  getResourceApiUrl,
-  parseResourceUrl,
-  resourceToJson,
-} from './resource';
+import { getResourceApiUrl, resourceToJson, tableFromUrl } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
@@ -103,8 +99,6 @@ export type RecordSetInfo = {
 export type CommonFields = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly resource_uri: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly recordset_info?: RecordSetInfo;
   // BUG: This field is undefined for newly created resources. Improve typing
   readonly id: number;
 };
@@ -186,8 +180,7 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = defined(
     getModel(
       defined(
-        tableName ??
-          parseResourceUrl(resource.resource_uri?.toString() ?? '')?.[0]
+        tableName ?? tableFromUrl(resource.resource_uri?.toString() ?? '')
       )
     )
   );
@@ -327,8 +320,10 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
         )
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
-    // REFACTOR: if resource is new, set this to undefined
-    // REFACTOR: convert all usages of this to camel case
+    /*
+     * REFACTOR: if resource is new, set this to undefined
+     * REFACTOR: convert all usages of this to camel case
+     */
     resource_uri:
       record.resource_uri ?? getResourceApiUrl(tableName, record.id ?? 0),
   }));

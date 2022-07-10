@@ -1,5 +1,6 @@
 import React from 'react';
 
+import type { AppResourceFilters as AppResourceFiltersType } from '../appresourcesfilters';
 import {
   allAppResources,
   countAppResources,
@@ -111,13 +112,14 @@ export function AppResourcesFilters({
 }
 
 export function useFilteredAppResources(
-  initialResources: AppResources
+  initialResources: AppResources,
+  initialFilters: AppResourceFiltersType | undefined
 ): AppResources {
   const [filters = defaultAppResourceFilters] = useCachedState({
     category: 'appResources',
     key: 'filters',
-    defaultValue: defaultAppResourceFilters,
-    staleWhileRefresh: false,
+    defaultValue: initialFilters ?? defaultAppResourceFilters,
+    staleWhileRefresh: true,
   });
   return React.useMemo(
     () => filterAppResources(initialResources, filters),

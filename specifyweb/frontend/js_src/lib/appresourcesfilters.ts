@@ -1,10 +1,10 @@
 import { appResourceSubTypes } from './components/appresourcescreate';
-import { KEY, sortFunction } from './helpers';
+import type { AppResources } from './components/appresourceshooks';
+import type { SpAppResource } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
 import { f } from './functools';
-import { RA } from './types';
-import { AppResources } from './components/appresourceshooks';
-import { SerializedResource } from './datamodelutils';
-import { SpAppResource } from './datamodel';
+import { KEY, sortFunction } from './helpers';
+import type { RA } from './types';
 
 export const allAppResources = Array.from(
   Object.keys(appResourceSubTypes)
@@ -52,8 +52,10 @@ export const filterAppResources = (
 export const getAppResourceType = (
   resource: SerializedResource<SpAppResource>
 ): keyof typeof appResourceSubTypes =>
-  Object.entries(appResourceSubTypes).find(
-    ([_key, { name, mimeType }]) =>
-      (name === undefined || name === resource.name) &&
-      (mimeType === undefined || mimeType === resource.mimeType)
-  )?.[KEY] ?? 'otherAppResources';
+  resource.name === 'preferences' && (resource.mimeType ?? '') === ''
+    ? 'otherPropertiesResource'
+    : Object.entries(appResourceSubTypes).find(
+        ([_key, { name, mimeType }]) =>
+          (name === undefined || name === resource.name) &&
+          (mimeType === undefined || mimeType === resource.mimeType)
+      )?.[KEY] ?? 'otherAppResources';

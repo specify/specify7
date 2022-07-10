@@ -12,6 +12,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { schema } from '../schema';
 import type { IR, RR } from '../types';
+import { ensure } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Form, Input, Label, Link, Submit, Ul } from './basic';
 import { useId } from './hooks';
@@ -45,7 +46,13 @@ type AppResourceSubType = {
   readonly label: string;
 };
 
-export const appResourceSubTypes: IR<AppResourceSubType> = {
+/**
+ * The order of the subtypes matters. The filtering algorithm loops over these
+ * in the order they are defined to find the first subType that matches the
+ * current resource. Thus, subtypes should be sorted from the most
+ * specific to the least specific.
+ */
+export const appResourceSubTypes = {
   label: {
     mimeType: 'jrxml/label',
     name: undefined,
@@ -88,7 +95,7 @@ export const appResourceSubTypes: IR<AppResourceSubType> = {
   },
   rssExportFeed: {
     mimeType: 'text/xml',
-    name: 'leaflet-layers',
+    name: 'ExportFeed',
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
     icon: icons.upload,
@@ -178,7 +185,9 @@ export const appResourceSubTypes: IR<AppResourceSubType> = {
     icon: icons.cog,
     label: adminText('otherAppResource'),
   },
-};
+} as const;
+
+ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
 export function CreateAppResource({
   directory,

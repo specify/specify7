@@ -257,7 +257,6 @@ export function AppResourceEditor({
                             toTable(appResource, 'SpViewSetObj')?.get(
                               'resource_uri'
                             ) ?? null,
-                          recordset_info: null,
                         });
                         await appResourceData.save();
 

@@ -498,7 +498,7 @@ function QueryImport({
                           query,
                           'fields',
                           query.fields.map((field) =>
-                            replaceKey(field, 'id', undefined)
+                            replaceKey(field, 'id', null)
                           )
                         ),
                         'id'

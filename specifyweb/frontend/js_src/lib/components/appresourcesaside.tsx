@@ -1,5 +1,6 @@
 import React from 'react';
 
+import type { AppResourceFilters as AppResourceFiltersType } from '../appresourcesfilters';
 import {
   buildAppResourceConformation,
   getAppResourceMode,
@@ -31,13 +32,17 @@ export function AppResourcesAside({
   resources: initialResources,
   onOpen: handleOpen,
   onCreate: handleCreate,
+  initialFilters,
 }: {
   readonly resources: AppResources;
+  readonly initialFilters?: AppResourceFiltersType;
   readonly onOpen: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
-  readonly onCreate: (directory: SerializedResource<SpAppResourceDir>) => void;
+  readonly onCreate:
+    | ((directory: SerializedResource<SpAppResourceDir>) => void)
+    | undefined;
 }): JSX.Element {
   const [conformations = [], setConformations] = useCachedState({
     category: 'appResources',
@@ -45,7 +50,7 @@ export function AppResourcesAside({
     defaultValue: [],
     staleWhileRefresh: false,
   });
-  const resources = useFilteredAppResources(initialResources);
+  const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   return (
     <aside className={className.containerBase}>
@@ -114,7 +119,9 @@ function TreeItem({
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
-  readonly onCreate: (directory: SerializedResource<SpAppResourceDir>) => void;
+  readonly onCreate:
+    | ((directory: SerializedResource<SpAppResourceDir>) => void)
+    | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
   const conformationIndex = conformations.findIndex(
@@ -191,18 +198,23 @@ function TreeItemResources({
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
-  readonly onCreate: (directory: SerializedResource<SpAppResourceDir>) => void;
+  readonly onCreate:
+    | ((directory: SerializedResource<SpAppResourceDir>) => void)
+    | undefined;
   readonly onOpen: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
 }): JSX.Element | null {
   const { appResources, viewSets, directory } = resourcesTree;
+  const resources = [...appResources, ...viewSets];
   const canCreate =
-    hasToolPermission('resources', 'create') && typeof directory === 'object';
-  return canCreate ? (
+    hasToolPermission('resources', 'create') &&
+    typeof handleCreate === 'function';
+  return typeof directory === 'object' &&
+    (resources.length > 0 || canCreate) ? (
     <Ul role="group" aria-label={adminText('resources')} className="pl-4">
-      {[...appResources, ...viewSets].map((resource, index) => (
+      {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem
             resource={resource}
@@ -247,8 +259,8 @@ function ResourceItem({
 }): JSX.Element {
   const url =
     getAppResourceMode(resource) === 'appResources'
-      ? `/specify/appresource/${resource.id}`
-      : `/specify/viewset/${resource.id}`;
+      ? `/specify/appresources/${resource.id}/`
+      : `/specify/viewsets/${resource.id}/`;
   return (
     <Link.Default
       href={url}

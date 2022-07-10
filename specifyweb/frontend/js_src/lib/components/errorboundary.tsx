@@ -13,7 +13,6 @@ import { breakpoint } from '../assert';
 import { jsonStringify, removeKey } from '../helpers';
 import { consoleLog } from '../interceptlogs';
 import { commonText } from '../localization/common';
-import { LANGUAGE } from '../localization/utils';
 import { getOperationPermissions, getTablePermissions } from '../permissions';
 import { getRawUserPreferences } from '../preferencesutils';
 import { remotePrefs } from '../remoteprefs';
@@ -266,7 +265,6 @@ const produceStackTrace = (message: unknown): string =>
     operationPermissions: getOperationPermissions(),
     remotePrefs,
     userPreferences: getRawUserPreferences(),
-    language: LANGUAGE,
     navigator: {
       userAgent: navigator.userAgent,
       language: navigator.language,

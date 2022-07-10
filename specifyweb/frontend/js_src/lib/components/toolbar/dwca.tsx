@@ -4,134 +4,110 @@
 
 import React from 'react';
 
-import { formData, Http, ping } from '../../ajax';
+import { formData, ping } from '../../ajax';
+import type { AppResourceFilters } from '../../appresourcesfilters';
+import type { SpAppResource } from '../../datamodel';
+import type { SerializedResource } from '../../datamodelutils';
+import { f } from '../../functools';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../../permissions';
-import { formatUrl } from '../../querystring';
-import { Button, Form, Input, Label, Submit } from '../basic';
+import { toResource } from '../../specifymodel';
+import { AppResourcesAside } from '../appresourcesaside';
+import type { AppResources } from '../appresourceshooks';
+import { useAppResources } from '../appresourceshooks';
+import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
-import { useBooleanState, useId, useTitle } from '../hooks';
+import { ErrorBoundary } from '../errorboundary';
+import { useBooleanState, useTitle } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
-import { ErrorBoundary } from '../errorboundary';
-
-const liftGetResource = async (
-  name: string,
-  errorMessage: string,
-  errorField: HTMLInputElement | null
-): Promise<void> =>
-  ping(
-    formatUrl('/context/app.resource', { name }),
-    {},
-    { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-  )
-    .then((status) => {
-      if (status === Http.NOT_FOUND) throw new Error(errorMessage);
-      errorField?.setCustomValidity('');
-      return undefined;
-    })
-    // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-    .catch((error: Error) => {
-      errorField?.setCustomValidity(error.message);
-      throw error;
-    });
-
-const startExport = async (
-  definition: string,
-  metadata: string | undefined
-): Promise<void> =>
-  ping('/export/make_dwca/', {
-    method: 'POST',
-    body: formData({
-      definition,
-      ...(typeof metadata === 'string' ? { metadata } : {}),
-    }),
-  }).then(() => undefined);
 
 function MakeDwca({
   onClose: handleClose,
 }: {
   readonly onClose: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
   useTitle(commonText('makeDwca'));
-  const id = useId('make-dwca');
+  const resources = useAppResources();
 
-  const [definition, setDefinition] = React.useState<string>('');
-  const [metadata, setMetadata] = React.useState<string>('');
-  const definitionRef = React.useRef<HTMLInputElement | null>(null);
-  const metadataRef = React.useRef<HTMLInputElement | null>(null);
-  const formRef = React.useRef<HTMLFormElement | null>(null);
+  const [definition, setDefinition] = React.useState<string | undefined>(
+    undefined
+  );
 
   const loading = React.useContext(LoadingContext);
   const [isExporting, handleExporting, handleExported] = useBooleanState();
 
-  return isExporting ? (
+  return resources === undefined ? null : definition === undefined ? (
+    <PickAppResource
+      resources={resources}
+      header={commonText('chooseDwcaDialogTitle')}
+      onSelected={(definition): void => setDefinition(definition?.name)}
+      onClose={handleClose}
+    />
+  ) : isExporting ? (
     <ExportStarted onClose={handleClose} />
   ) : (
+    <>
+      <PickAppResource
+        resources={resources}
+        header={commonText('chooseMetadataResource')}
+        onSelected={(metadata): void => {
+          handleExporting();
+          loading(startExport(definition, metadata?.name).then(handleExported));
+        }}
+        onClose={(): void => setDefinition(undefined)}
+        skippable
+      />
+      ;
+    </>
+  );
+}
+
+const initialFilters: AppResourceFilters = {
+  viewSets: false,
+  appResources: ['otherXmlResource', 'otherAppResources'],
+};
+
+function PickAppResource({
+  resources,
+  header,
+  skippable = false,
+  onClose: handleClose,
+  onSelected: handleSelected,
+}: {
+  readonly resources: AppResources;
+  readonly header: string;
+  readonly skippable?: boolean;
+  readonly onSelected: (
+    appResource: SerializedResource<SpAppResource> | undefined
+  ) => void;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
     <Dialog
-      onClose={handleClose}
-      header={commonText('chooseDwcaDialogTitle')}
+      header={header}
       buttons={
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('start')}</Submit.Blue>
-        </>
+        skippable ? (
+          <>
+            <Button.DialogClose>{commonText('back')}</Button.DialogClose>
+            <Button.Blue onClick={(): void => handleSelected(undefined)}>
+              {commonText('skip')}
+            </Button.Blue>
+          </>
+        ) : (
+          commonText('back')
+        )
       }
+      onClose={handleClose}
     >
-      <Form
-        className="contents"
-        id={id('form')}
-        forwardRef={formRef}
-        onSubmit={(): void =>
-          loading(
-            Promise.all([
-              liftGetResource(
-                definition,
-                commonText('definitionResourceNotFound', definition),
-                definitionRef.current
-              ),
-              metadata === ''
-                ? metadataRef.current?.setCustomValidity('')
-                : liftGetResource(
-                    metadata,
-                    commonText('metadataResourceNotFound', metadata),
-                    metadataRef.current
-                  ),
-            ])
-              .then(async () =>
-                startExport(definition, metadata === '' ? undefined : metadata)
-              )
-              .then(handleExporting)
-              .catch(handleExported)
-              .finally(() => formRef.current?.reportValidity())
-          )
+      <AppResourcesAside
+        resources={resources}
+        onOpen={(selected): void =>
+          f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
         }
-      >
-        {/* FEATURE: replace these with resource pickers */}
-        <Label.Generic>
-          {commonText('dwcaDefinition')}
-          <Input.Text
-            value={definition}
-            onChange={({ target }): void => {
-              setDefinition(target.value);
-              target.setCustomValidity('');
-            }}
-            required
-            forwardRef={definitionRef}
-          />
-        </Label.Generic>
-        <Label.Generic>
-          {commonText('metadataResource')}
-          <Input.Text
-            value={metadata}
-            onChange={({ target }): void => {
-              setMetadata(target.value);
-              target.setCustomValidity('');
-            }}
-            forwardRef={metadataRef}
-          />
-        </Label.Generic>
-      </Form>
+        onCreate={undefined}
+        initialFilters={initialFilters}
+      />
     </Dialog>
   );
 }
@@ -151,6 +127,18 @@ function ExportStarted({
     </Dialog>
   );
 }
+
+const startExport = async (
+  definition: string,
+  metadata: string | undefined
+): Promise<void> =>
+  ping('/export/make_dwca/', {
+    method: 'POST',
+    body: formData({
+      definition,
+      ...(typeof metadata === 'string' ? { metadata } : {}),
+    }),
+  }).then(f.void);
 
 export const userTool: UserTool = {
   task: 'make-dwca',

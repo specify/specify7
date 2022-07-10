@@ -20,7 +20,7 @@ import { f } from './functools';
 import { camelToHuman } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
-import { parseClassName } from './resource';
+import { parseClassName, tableFromUrl } from './resource';
 import { ResourceBase } from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
@@ -401,6 +401,14 @@ export const toTable = <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME
 ): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
   resource.specifyModel.name === tableName ? resource : undefined;
+
+export const toResource = <TABLE_NAME extends keyof Tables>(
+  resource: SerializedResource<AnySchema>,
+  tableName: TABLE_NAME
+): SerializedResource<Tables[TABLE_NAME]> | undefined =>
+  tableFromUrl(resource.resource_uri?.toString() ?? '') === tableName
+    ? (resource as SerializedResource<Tables[TABLE_NAME]>)
+    : undefined;
 
 export const toTreeTable = (
   resource: SpecifyResource<AnySchema>

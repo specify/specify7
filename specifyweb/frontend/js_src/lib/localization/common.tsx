@@ -53,6 +53,10 @@ export const commonText = createDictionary({
     'en-us': 'Back',
     'ru-ru': 'Назад',
   },
+  skip: {
+    'en-us': 'Skip',
+    'ru-ru': 'Пропустить',
+  },
   create: {
     'en-us': 'Create',
     'ru-ru': 'Создать',
@@ -553,13 +557,9 @@ export const commonText = createDictionary({
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите DwCA',
   },
-  dwcaDefinition: {
-    'en-us': 'DwCA definition:',
-    'ru-ru': 'Определение DwCA:',
-  },
-  metadataResource: {
-    'en-us': 'Metadata resource:',
-    'ru-ru': 'Ресурс метаданных:',
+  chooseMetadataResource: {
+    'en-us': 'Choose Metadata resource',
+    'ru-ru': 'Выберите Ресурс метаданных',
   },
   // Error Boundary
   errorBoundaryDialogHeader: {
