@@ -299,7 +299,7 @@ export function SecurityInstitution({
   );
 }
 
-function useAdmins():
+export function useAdmins():
   | {
       readonly admins: Set<number>;
       readonly legacyAdmins: Set<number>;

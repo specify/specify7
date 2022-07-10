@@ -95,8 +95,10 @@ function UserCollectionsUi({
 
 export function UserCollectionsPlugin({
   user,
+  isAdmin,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
+  readonly isAdmin: boolean;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -106,12 +108,12 @@ export function UserCollectionsPlugin({
         className="w-fit"
         disabled={
           // Admin users have access to all collections
-          typeof user === 'undefined' || user.get('isAdmin') || user.isNew()
+          user === undefined || isAdmin || user.isNew()
         }
         title={
-          user.get('isAdmin')
+          isAdmin
             ? adminText('notAvailableOnAdmins')
-            : typeof user === 'undefined'
+            : user === undefined
             ? commonText('loading')
             : user.isNew()
             ? adminText('saveUserFirst')

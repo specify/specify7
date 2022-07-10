@@ -30,9 +30,11 @@ import {
   Ul,
 } from './basic';
 import { ComboBox } from './combobox';
+import { useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
 import type { RoleBase } from './securitycollection';
+import { useAdmins } from './securityinstitution';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 import type { UserAgents } from './securityuserhooks';
@@ -356,16 +358,29 @@ export function LegacyPermissions({
   readonly userResource: SpecifyResource<SpecifyUser>;
   readonly mode: FormMode;
 }): JSX.Element {
+  const admins = useAdmins();
+  const [isAdmin, setIsAdmin] = useLiveState(
+    React.useCallback(
+      () => admins?.legacyAdmins.has(userResource.id) === true,
+      [admins, userResource.id]
+    )
+  );
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
-      <div className="flex gap-2">
-        <AdminStatusPlugin user={userResource} />
-        {hasPermission('/admin/user/sp6/collection_access', 'read') &&
-        hasTablePermission('Collection', 'read') ? (
-          <UserCollectionsPlugin user={userResource} />
-        ) : undefined}
-      </div>
+      {hasPermission('/permissions/list_admins', 'read') && (
+        <div className="flex gap-2">
+          <AdminStatusPlugin
+            user={userResource}
+            isAdmin={isAdmin}
+            onChange={setIsAdmin}
+          />
+          {hasPermission('/admin/user/sp6/collection_access', 'read') &&
+          hasTablePermission('Collection', 'read') ? (
+            <UserCollectionsPlugin user={userResource} isAdmin={isAdmin} />
+          ) : undefined}
+        </div>
+      )}
       {f.var(
         defined(schema.models.SpecifyUser.getLiteralField('userType')),
         (userType) => (
