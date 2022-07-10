@@ -330,7 +330,7 @@ export function QueryLine({
                       : className.grayButton
                   }
                   className="aria-handled"
-                  disabled={typeof handleFilterChange === 'undefined'}
+                  disabled={typeof handleChange === 'undefined'}
                   onClick={(): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],
@@ -354,7 +354,7 @@ export function QueryLine({
                   }
                   value={filter.type}
                   className={customSelectElementBackground}
-                  disabled={typeof handleFilterChange === 'undefined'}
+                  disabled={typeof handleChange === 'undefined'}
                   onChange={({ target }): void => {
                     const newFilter = (target as HTMLSelectElement)
                       .value as QueryFieldFilter;
