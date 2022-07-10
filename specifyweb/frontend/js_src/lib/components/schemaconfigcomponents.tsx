@@ -3,9 +3,34 @@ import React from 'react';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import type { IR, RA } from '../types';
-import { Button, Form, Input, Label, Select, Submit } from './basic';
-import { useId } from './hooks';
-import { Dialog } from './modaldialog';
+import { Button, H2, Select } from './basic';
+import type { SchemaData } from './schemaconfigsetuphooks';
+
+export function SchemaConfigHeader({
+  languages,
+  language,
+  onBack: handleBack,
+  onSave: handleSave,
+}: {
+  readonly languages: SchemaData['languages'];
+  readonly language: string;
+  readonly onBack: () => void;
+  readonly onSave: (() => void) | undefined;
+}): JSX.Element {
+  return (
+    <header className="gap-x-2 flex">
+      <H2>
+        {commonText('schemaConfig')} (
+        {languages[language]?.replaceAll(/[()]/g, '') ?? language})
+      </H2>
+      <Button.Small onClick={handleBack}>
+        {commonText('changeBaseTable')}
+      </Button.Small>
+      <span className="flex-1 -ml-2" />
+      <Button.Small onClick={handleSave}>{commonText('save')}</Button.Small>
+    </header>
+  );
+}
 
 export function PickList({
   label,
@@ -91,67 +116,5 @@ function Values({
             </option>
           ))}
     </>
-  );
-}
-
-export function AddLanguage({
-  onClose: handleClose,
-  onGoBack: handleGoBack,
-  onAddLanguage: handleAddLanguage,
-}: {
-  readonly onClose: () => void;
-  readonly onGoBack: () => void;
-  readonly onAddLanguage: (language: string) => void;
-}): JSX.Element {
-  const id = useId('schema-config-add-language');
-  const formRef = React.useRef<HTMLFormElement | null>(null);
-  const [language, setLanguage] = React.useState<string>('');
-  const [country, setCountry] = React.useState<string>('');
-  return (
-    <Dialog
-      header={commonText('addLanguageDialogHeader')}
-      onClose={handleClose}
-      buttons={
-        <>
-          <Button.Gray onClick={handleGoBack}>{commonText('back')}</Button.Gray>
-          <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
-        </>
-      }
-    >
-      <Form
-        className="contents"
-        forwardRef={formRef}
-        id={id('form')}
-        onSubmit={(): void =>
-          handleAddLanguage(
-            `${language.toLowerCase()}${
-              country === '' ? '' : `-${country.toLowerCase()}`
-            }`
-          )
-        }
-      >
-        <Label.Generic>
-          {commonText('language')}
-          <Input.Text
-            required
-            minLength={2}
-            maxLength={2}
-            placeholder="en"
-            value={language}
-            onValueChange={setLanguage}
-          />
-        </Label.Generic>
-        <Label.Generic>
-          {commonText('country')}
-          <Input.Text
-            minLength={2}
-            maxLength={2}
-            placeholder="US"
-            value={country}
-            onValueChange={setCountry}
-          />
-        </Label.Generic>
-      </Form>
-    </Dialog>
   );
 }

@@ -1,18 +1,17 @@
 import type {
-  DataObjectFormatter,
   ItemType,
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './components/schemaconfig';
-import type { WithFieldInfo } from './components/toolbar/schemaconfig';
 import type { SpLocaleContainerItem, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { addMissingFields } from './datamodelutils';
 import type { Aggregator, Formatter } from './dataobjformatters';
 import { commonText } from './localization/common';
 import { parseClassName } from './resource';
-import type { JavaType } from './specifyfield';
+import type { JavaType, LiteralField, Relationship } from './specifyfield';
 import type { IR, RA } from './types';
+import { DataObjectFormatter } from './components/schemaconfigsetuphooks';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -103,16 +102,13 @@ export function getItemType(
 const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);
 
 export function isFormatterAvailable(
-  item: WithFieldInfo,
+  field: LiteralField | Relationship,
   formatter: ItemType
 ): boolean {
   if (formatter === 'none' || formatter === 'pickList') return true;
   else if (formatter === 'webLink')
-    return (
-      !item.dataModel.isRelationship &&
-      webLinkTypes.has(item.dataModel.type as JavaType)
-    );
-  else if (formatter === 'formatted') return !item.dataModel.isRelationship;
+    return !field.isRelationship && webLinkTypes.has(field.type);
+  else if (formatter === 'formatted') return !field.isRelationship;
   else return false;
 }
 
