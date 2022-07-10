@@ -257,7 +257,7 @@ export function mappingOptionsMenu({
           <Input.Checkbox
             checked={columnOptions.nullAllowed}
             disabled={isReadOnly}
-            onValueChange={isReadOnly ? undefined : handleToggleAllowNulls}
+            onValueChange={handleToggleAllowNulls}
           />{' '}
           {wbText('allowNullValues')}
         </Label.ForCheckbox>
@@ -270,13 +270,10 @@ export function mappingOptionsMenu({
             <Input.Checkbox
               checked={columnOptions.default !== null}
               disabled={isReadOnly}
-              onChange={
-                isReadOnly
-                  ? undefined
-                  : (): void =>
-                      handleChangeDefaultValue(
-                        columnOptions.default === null ? '' : null
-                      )
+              onChange={(): void =>
+                handleChangeDefaultValue(
+                  columnOptions.default === null ? '' : null
+                )
               }
             />{' '}
             <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
@@ -289,9 +286,7 @@ export function mappingOptionsMenu({
                 value={columnOptions.default || ''}
                 title={wbText('defaultValue')}
                 aria-labelledby={id('default-value')}
-                onValueChange={
-                  isReadOnly ? undefined : handleChangeDefaultValue
-                }
+                onValueChange={handleChangeDefaultValue}
                 disabled={isReadOnly}
               />
             </>

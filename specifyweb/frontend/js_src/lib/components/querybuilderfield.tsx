@@ -330,7 +330,7 @@ export function QueryLine({
                       : className.grayButton
                   }
                   className="aria-handled"
-                  disabled={handleFilterChange === undefined}
+                  disabled={handleChange === undefined}
                   onClick={(): void =>
                     handleFilterChange(index, {
                       ...field.filters[index],
@@ -354,7 +354,7 @@ export function QueryLine({
                   }
                   value={filter.type}
                   className={customSelectElementBackground}
-                  disabled={handleFilterChange === undefined}
+                  disabled={handleChange === undefined}
                   onChange={({ target }): void => {
                     const newFilter = (target as HTMLSelectElement)
                       .value as QueryFieldFilter;
@@ -432,13 +432,10 @@ export function QueryLine({
           variant={
             field.isDisplay ? className.greenButton : className.grayButton
           }
-          disabled={handleChange === undefined}
-          onClick={(): void =>
-            handleChange?.({
-              ...field,
-              isDisplay: !field.isDisplay,
-            })
-          }
+          onClick={handleChange?.bind(undefined, {
+            ...field,
+            isDisplay: !field.isDisplay,
+          })}
           aria-pressed={field.isDisplay}
         >
           {icons.check}
@@ -459,16 +456,13 @@ export function QueryLine({
               ? queryText('descendingSort')
               : queryText('sort')
           }
-          disabled={handleChange === undefined}
-          onClick={(): void =>
-            handleChange?.({
-              ...field,
-              sortType:
-                sortTypes[
-                  (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
-                ],
-            })
-          }
+          onClick={handleChange?.bind(undefined, {
+            ...field,
+            sortType:
+              sortTypes[
+                (sortTypes.indexOf(field.sortType) + 1) % sortTypes.length
+              ],
+          })}
         >
           {field.sortType === 'ascending'
             ? icons.arrowCircleUp
@@ -479,7 +473,6 @@ export function QueryLine({
         <Button.Small
           title={queryText('moveUp')}
           aria-label={queryText('moveUp')}
-          disabled={handleMoveUp === undefined}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
@@ -487,7 +480,6 @@ export function QueryLine({
         <Button.Small
           title={queryText('moveDown')}
           aria-label={queryText('moveDown')}
-          disabled={handleMoveDown === undefined}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}

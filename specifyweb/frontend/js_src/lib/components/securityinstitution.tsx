@@ -209,9 +209,8 @@ export function SecurityInstitution({
                           <Button.LikeLink
                             onClick={handleOpenUser?.bind(undefined, user.id)}
                             disabled={
-                              handleOpenUser === undefined ||
-                              (user.id !== userInformation.id &&
-                                !hasTablePermission('SpecifyUser', 'read'))
+                              user.id !== userInformation.id &&
+                              !hasTablePermission('SpecifyUser', 'read')
                             }
                           >
                             {`${user.name}`}

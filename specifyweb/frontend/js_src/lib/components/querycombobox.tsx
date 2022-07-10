@@ -554,7 +554,6 @@ export function QueryComboBox({
               hasTablePermission(field.relatedModel.name, 'create')) ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                disabled={field?.isRelationship !== true}
                 onClick={
                   field?.isRelationship === true
                     ? (): void =>

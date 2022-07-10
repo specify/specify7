@@ -189,7 +189,6 @@ const dataEntryButton =
         aria-label={title}
         icon={icon}
         {...props}
-        disabled={props.onClick === undefined || props.disabled}
       />
     );
 
@@ -723,9 +722,11 @@ const button = (name: string, className: string) =>
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
     }
-  >(name, 'button', className, {
+  >(name, 'button', className, (props) => ({
+    ...props,
     type: 'button',
-  });
+    disabled: props.disabled === true || props.onClick === undefined,
+  }));
 /*
  * FEATURE: if onClick===undefined, button should be disabled, but only if expicily
  *   provided

@@ -57,10 +57,7 @@ export function SecurityImportExport({
       {!isReadOnly &&
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
-          <Button.Blue
-            disabled={roles === undefined}
-            onClick={handleOpen}
-          >
+          <Button.Blue disabled={roles === undefined} onClick={handleOpen}>
             {commonText('import')}
           </Button.Blue>
         )}
@@ -89,10 +86,7 @@ export function SecurityImportExport({
           buttons={
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-              <Submit.Green
-                disabled={newRoles === undefined}
-                form={id('form')}
-              >
+              <Submit.Green disabled={newRoles === undefined} form={id('form')}>
                 {commonText('import')}
               </Submit.Green>
             </>

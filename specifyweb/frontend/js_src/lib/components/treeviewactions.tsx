@@ -107,7 +107,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           <Button.Small
             disabled={disableButtons}
-            onClick={disableButtons ? undefined : (): void => setAction('move')}
+            onClick={(): void => setAction('move')}
           >
             {commonText('move')}
           </Button.Small>
@@ -117,9 +117,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           <Button.Small
             disabled={disableButtons}
-            onClick={
-              disableButtons ? undefined : (): void => setAction('merge')
-            }
+            onClick={(): void => setAction('merge')}
           >
             {treeText('merge')}
           </Button.Small>
@@ -132,11 +130,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           <Button.Small
             disabled={disableButtons || (!isSynonym && focusedRow.children > 0)}
-            onClick={
-              disableButtons || (!isSynonym && focusedRow.children > 0)
-                ? undefined
-                : (): void =>
-                    setAction(isSynonym ? 'desynonymize' : 'synonymize')
+            onClick={(): void =>
+              setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
           >
             {isSynonym ? treeText('undoSynonymy') : treeText('synonymize')}
@@ -285,7 +280,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
         }}
         className="normal-case"
         disabled={disabled}
-        onClick={disabled ? undefined : (): void => setShowPrompt(true)}
+        onClick={(): void => setShowPrompt(true)}
         title={
           type === 'move'
             ? treeText('nodeMoveHintMessage', actionRow.fullName)
