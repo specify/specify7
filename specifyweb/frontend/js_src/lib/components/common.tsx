@@ -130,14 +130,6 @@ export const tableIconEmpty = (
   <span className="w-table-icon h-table-icon" aria-hidden={true} />
 );
 
-/** Internationalized bi-directional string comparison function */
-export const compareValues = (
-  ascending: boolean,
-  valueLeft: string | undefined,
-  valueRight: string | undefined
-): number =>
-  compareStrings(valueLeft ?? '', valueRight ?? '') * (ascending ? -1 : 1);
-
 export type SortConfig<FIELD_NAMES extends string> = {
   readonly sortField: FIELD_NAMES;
   readonly ascending: boolean;

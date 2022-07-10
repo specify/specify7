@@ -297,4 +297,8 @@ export const queryText = createDictionary({
     'en-us': 'Edit Query',
     'ru-ru': 'Редактировать запрос',
   },
+  configureQueryTables: {
+    'en-us': 'Configure visible query tables',
+    'ru-ru': 'Настроить видимые таблицы запроса',
+  },
 });

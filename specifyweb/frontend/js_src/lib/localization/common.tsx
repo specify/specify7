@@ -1161,4 +1161,24 @@ export const commonText = createDictionary({
     'en-us': 'Collapse All',
     'ru-ru': 'Свернуть все',
   },
+  moveUp: {
+    'en-us': 'Move Up',
+    'ru-ru': 'Переместить вверх',
+  },
+  moveDown: {
+    'en-us': 'Move Down',
+    'ru-ru': 'Переместить вниз',
+  },
+  selectedTables: {
+    'en-us': 'Selected Tables',
+    'ru-ru': 'Выбранные таблицы',
+  },
+  possibleTables: {
+    'en-us': 'Possible Tables',
+    'ru-ru': 'Возможные таблицы',
+  },
+  reset: {
+    'en-us': 'Reset',
+    'ru-ru': 'Сброс',
+  },
 });

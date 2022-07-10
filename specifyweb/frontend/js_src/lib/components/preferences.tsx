@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import { error } from '../assert';
 import type { Collection } from '../datamodel';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -945,6 +946,13 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+          shownTables: defineItem<RA<number>>({
+            title: '_shownTables',
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: () => <>{error('This should not get called')}</>,
           }),
         },
       },

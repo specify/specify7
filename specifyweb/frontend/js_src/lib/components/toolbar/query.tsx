@@ -3,79 +3,29 @@
  */
 
 import React from 'react';
-import type { State } from 'typesafe-reducer';
 
-import { ajax, formData, Http } from '../../ajax';
-import { error } from '../../assert';
 import type { CollectionFetchFilters } from '../../collection';
 import { fetchCollection } from '../../collection';
-import type { SpQuery, SpReport, Tables } from '../../datamodel';
+import type { SpQuery } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
-import { f } from '../../functools';
-import { removeKey, replaceKey } from '../../helpers';
-import { cachableUrl } from '../../initialcontext';
-import type { SpecifyResource } from '../../legacytypes';
+import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
-import {
-  hasPermission,
-  hasTablePermission,
-  hasToolPermission,
-} from '../../permissions';
+import { hasPermission, hasToolPermission } from '../../permissions';
 import { getUserPref } from '../../preferencesutils';
-import { getModel, getModelById, schema } from '../../schema';
+import { getModelById } from '../../schema';
 import type { RA } from '../../types';
-import { defined, filterArray } from '../../types';
 import { userInformation } from '../../userinfo';
-import { getUniqueName } from '../../wbuniquifyname';
-import { Button, DataEntry, Form, Input, Link, Submit, Ul } from '../basic';
-import {
-  AutoGrowTextArea,
-  compareValues,
-  SortIndicator,
-  TableIcon,
-} from '../common';
-import { LoadingContext } from '../contexts';
+import { Button, Link } from '../basic';
+import { SortIndicator, TableIcon } from '../common';
 import { ErrorBoundary } from '../errorboundary';
-import { downloadFile, FilePicker, fileToText } from '../filepicker';
-import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
+import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
-import { Dialog, dialogClassNames, LoadingScreen } from '../modaldialog';
-import { goTo } from '../navigation';
-import { usePref } from '../preferenceshooks';
-import { deserializeResource } from '../resource';
-import { ResourceView } from '../resourceview';
+import { Dialog } from '../modaldialog';
+import { QueryEditButton } from '../queryedit';
+import { QueryTables } from '../querytables';
 import { useCachedState } from '../statecache';
-
-const url = cachableUrl('/static/config/querybuilder.xml');
-const fetchTablesToShow = f.store(
-  async (): Promise<RA<keyof Tables>> =>
-    process.env.NODE_ENV === 'test'
-      ? []
-      : ajax<Document>(
-          url,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          { headers: { Accept: 'application/xml' } }
-        )
-          .then(({ data: document }) =>
-            f.unique(
-              filterArray(
-                Array.from(
-                  document.querySelectorAll('database > table'),
-                  (table) => getModel(table.getAttribute('name') ?? '')
-                )
-              )
-                .map(({ name }) => name)
-                // REFACTOR: use sortFunction
-                .sort()
-            )
-          )
-          .catch((error) => {
-            console.error(error);
-            return [];
-          })
-);
 
 const defaultSortConfig = {
   sortField: 'timestampCreated',
@@ -100,15 +50,13 @@ function QueryList({
 
   if (sortConfig === undefined) return null;
 
-  // REFACTOR: use sortFunction
   const queries = Array.from(unsortedQueries).sort(
-    (
-      { name: nameLeft, timestampCreated: dateCreatedLeft },
-      { name: nameRight, timestampCreated: dateCreatedRight }
-    ) =>
+    sortFunction(
       sortConfig.sortField === 'name'
-        ? compareValues(sortConfig.ascending, nameLeft, nameRight)
-        : compareValues(sortConfig.ascending, dateCreatedLeft, dateCreatedRight)
+        ? ({ name }): string => name
+        : ({ timestampCreated }): string => timestampCreated,
+      !sortConfig.ascending
+    )
   );
 
   return (
@@ -198,60 +146,6 @@ function QueryList({
   );
 }
 
-export function QueryEditButton({
-  query,
-}: {
-  readonly query: SerializedResource<SpQuery>;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const queryResource = React.useMemo(
-    () => deserializeResource(query),
-    [query]
-  );
-  return (
-    <>
-      <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
-        <EditQueryDialog queryResource={queryResource} onClose={handleClose} />
-      )}
-    </>
-  );
-}
-
-function ListOfTables({
-  tables,
-}: {
-  readonly tables: RA<keyof Tables>;
-}): JSX.Element {
-  const [isNoRestrictionMode] = usePref(
-    'queryBuilder',
-    'general',
-    'noRestrictionsMode'
-  );
-  return (
-    <Ul>
-      {(isNoRestrictionMode
-        ? Object.keys(schema.models).filter((tableName) =>
-            hasTablePermission(tableName, 'read')
-          )
-        : tables
-      ).map((tableName, index) => (
-        <li key={index}>
-          <Link.Default href={`/specify/query/new/${tableName.toLowerCase()}/`}>
-            <TableIcon name={tableName} tableLabel={false} />
-            {defined(getModel(tableName)).label}
-          </Link.Default>
-        </li>
-      ))}
-    </Ul>
-  );
-}
-
-type ShowQueryListState = State<'ShowQueryListState'>;
-type CreateQueryState = State<'CreateQueryState'>;
-type ImportQueryState = State<'ImportQueryState'>;
-type States = ShowQueryListState | CreateQueryState | ImportQueryState;
-
 const QUERY_FETCH_LIMIT = 5000;
 
 export function QueryToolbarItem({
@@ -269,8 +163,6 @@ export function QueryToolbarItem({
 }): JSX.Element | null {
   useTitle(commonText('queries'));
 
-  const [tablesToShow] = useAsyncState(fetchTablesToShow, true);
-
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>
@@ -283,95 +175,39 @@ export function QueryToolbarItem({
     true
   );
 
-  const [state, setState] = React.useState<States>({
-    type: 'ShowQueryListState',
-  });
+  const [isCreating, handleCreating] = useBooleanState();
 
-  return state.type === 'ShowQueryListState' ? (
-    Array.isArray(queries) ? (
-      <Dialog
-        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-        header={commonText('queriesDialogTitle', queries.length)}
-        onClose={handleClose}
-        buttons={
-          <>
-            <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-            {(hasToolPermission('queryBuilder', 'create') || canRunQuery()) && (
-              <Button.Blue
-                onClick={
-                  handleNewQuery ??
-                  ((): void =>
-                    setState({
-                      type: 'CreateQueryState',
-                    }))
-                }
-              >
-                {commonText('new')}
-              </Button.Blue>
-            )}
-          </>
-        }
-      >
-        <QueryList
-          queries={queries}
-          isReadOnly={isReadOnly}
-          getQuerySelectUrl={getQuerySelectUrl}
-        />
-      </Dialog>
-    ) : null
-  ) : state.type === 'CreateQueryState' ? (
-    Array.isArray(tablesToShow) ? (
-      <Dialog
-        icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-        onClose={handleClose}
-        className={{
-          container: dialogClassNames.narrowContainer,
-        }}
-        header={commonText('newQueryDialogTitle')}
-        buttons={
-          <>
-            {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
-              <Button.Green
-                onClick={(): void => setState({ type: 'ImportQueryState' })}
-              >
-                {commonText('import')}
-              </Button.Green>
-            ) : undefined}
-            <span className="flex-1 -ml-2" />
-            <Button.Gray
-              onClick={(): void => setState({ type: 'ShowQueryListState' })}
-            >
-              {commonText('cancel')}
-            </Button.Gray>
-          </>
-        }
-      >
-        <ListOfTables
-          tables={tablesToShow.filter((tableName) =>
-            hasTablePermission(tableName, 'read')
-          )}
-        />
-      </Dialog>
-    ) : (
-      <LoadingScreen />
-    )
-  ) : state.type === 'ImportQueryState' ? (
-    <QueryImport
-      onClose={(): void => setState({ type: 'ShowQueryListState' })}
+  return isCreating ? (
+    <QueryTables
       queries={queries}
+      isReadOnly={isReadOnly}
+      onClose={handleClose}
     />
-  ) : (
-    error('Invalid ToolbarQuery State type')
-  );
+  ) : Array.isArray(queries) ? (
+    <Dialog
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      header={commonText('queriesDialogTitle', queries.length)}
+      onClose={handleClose}
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          {(hasToolPermission('queryBuilder', 'create') ||
+            hasPermission('/querybuilder/query', 'execute')) && (
+            <Button.Blue onClick={handleNewQuery ?? handleCreating}>
+              {commonText('new')}
+            </Button.Blue>
+          )}
+        </>
+      }
+    >
+      <QueryList
+        queries={queries}
+        isReadOnly={isReadOnly}
+        getQuerySelectUrl={getQuerySelectUrl}
+      />
+    </Dialog>
+  ) : null;
 }
-
-export const canRunQuery = f.store(
-  () =>
-    hasPermission('/querybuilder/query', 'execute') ||
-    hasPermission('/querybuilder/query', 'export_csv') ||
-    hasPermission('/querybuilder/query', 'export_kml') ||
-    hasPermission('/querybuilder/query', 'create_recordset')
-);
 
 export const menuItem: MenuItem = {
   task: 'query',
@@ -379,7 +215,8 @@ export const menuItem: MenuItem = {
   icon: icons.documentSearch,
   isOverlay: true,
   enabled: () =>
-    (hasToolPermission('queryBuilder', 'read') || canRunQuery()) &&
+    (hasToolPermission('queryBuilder', 'read') ||
+      hasPermission('/querybuilder/query', 'execute')) &&
     getUserPref('header', 'menu', 'showQueries'),
   view: ({ onClose: handleClose }) => (
     <ErrorBoundary dismissable>
@@ -391,246 +228,3 @@ export const menuItem: MenuItem = {
     </ErrorBoundary>
   ),
 };
-
-function EditQueryDialog({
-  queryResource,
-  onClose: handleClose,
-}: {
-  readonly queryResource: SpecifyResource<SpQuery>;
-  readonly onClose: () => void;
-}): JSX.Element {
-  const [state, setState] = React.useState<
-    'default' | 'dwcaExport' | 'reportExport' | 'labelExport' | 'report'
-  >('default');
-
-  const loading = React.useContext(LoadingContext);
-  return state === 'default' ? (
-    <ResourceView
-      dialog="modal"
-      canAddAnother={false}
-      extraButtons={
-        <>
-          <span className="flex-1 -ml-2" />
-          <Button.Green
-            onClick={(): void => {
-              loading(
-                downloadFile(
-                  `${queryResource.get('name')}.json`,
-                  JSON.stringify(queryResource.toJSON(), null, '\t')
-                )
-              );
-            }}
-          >
-            {commonText('export')}
-          </Button.Green>
-        </>
-      }
-      resource={queryResource}
-      onSaved={(): void => goTo(`/query/${queryResource.id}/`)}
-      onClose={handleClose}
-      onDeleted={handleClose}
-      mode="edit"
-      isSubForm={false}
-      isDependent={false}
-    >
-      {queryResource.isNew() ? undefined : (
-        <div className="flex flex-col">
-          <p>{commonText('actions')}</p>
-          <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {commonText('exportQueryForDwca')}
-          </Button.LikeLink>
-          {hasPermission('/report', 'execute') && (
-            <>
-              <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {commonText('exportQueryAsReport')}
-              </Button.LikeLink>
-              <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {commonText('exportQueryAsLabel')}
-              </Button.LikeLink>
-            </>
-          )}
-        </div>
-      )}
-    </ResourceView>
-  ) : state === 'dwcaExport' ? (
-    <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
-  ) : state === 'reportExport' || state === 'labelExport' ? (
-    <QueryExport
-      queryResource={queryResource}
-      onClose={handleClose}
-      asLabel={state === 'labelExport'}
-    />
-  ) : (
-    error('Invalid state')
-  );
-}
-
-function QueryImport({
-  onClose: handleClose,
-  queries,
-}: {
-  readonly onClose: () => void;
-  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-}): JSX.Element {
-  const loading = React.useContext(LoadingContext);
-  return typeof queries === 'object' ? (
-    <Dialog
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      header={commonText('import')}
-      onClose={handleClose}
-      buttons={commonText('cancel')}
-    >
-      <Form>
-        <FilePicker
-          acceptedFormats={['.json']}
-          onSelected={(file): void =>
-            loading(
-              fileToText(file)
-                .then<SerializedResource<SpQuery>>(f.unary(JSON.parse))
-                .then(
-                  async (query) =>
-                    new schema.models.SpQuery.Resource(
-                      removeKey(
-                        replaceKey(
-                          query,
-                          'fields',
-                          query.fields.map((field) =>
-                            replaceKey(field, 'id', null)
-                          )
-                        ),
-                        'id'
-                      )
-                    )
-                )
-                .then((queryResource) =>
-                  queryResource.set(
-                    'name',
-                    getUniqueName(
-                      queryResource.get('name'),
-                      queries.map(({ name }) => name),
-                      defined(schema.models.SpQuery.getLiteralField('name'))
-                        .length
-                    )
-                  )
-                )
-                .then(async (queryResource) => queryResource.save())
-                .then((queryResource) =>
-                  goTo(`/specify/query/${queryResource.id}/`)
-                )
-            )
-          }
-        />
-        {/* This button is never actually clicked. */}
-        <Submit.Green disabled className="sr-only">
-          {commonText('import')}
-        </Submit.Green>
-      </Form>
-    </Dialog>
-  ) : (
-    <LoadingScreen />
-  );
-}
-
-function DwcaQueryExport({
-  queryResource,
-  onClose: handleClose,
-}: {
-  readonly queryResource: SpecifyResource<SpQuery>;
-  readonly onClose: () => void;
-}): JSX.Element | null {
-  const [exported] = useAsyncState<string>(
-    React.useCallback(
-      async () =>
-        ajax(`/export/extract_query/${queryResource.id}/`, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'text/plain' },
-        }).then(({ data: xml }) => xml),
-      [queryResource.id]
-    ),
-    true
-  );
-
-  return typeof exported === 'string' ? (
-    <Dialog
-      header={commonText('exportQueryForDwcaDialogHeader')}
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      buttons={commonText('close')}
-      onClose={handleClose}
-    >
-      <AutoGrowTextArea isReadOnly value={exported} />
-    </Dialog>
-  ) : null;
-}
-
-function QueryExport({
-  queryResource,
-  onClose: handleClose,
-  asLabel,
-}: {
-  readonly queryResource: SpecifyResource<SpQuery>;
-  readonly onClose: () => void;
-  readonly asLabel: boolean;
-}): JSX.Element {
-  const id = useId('query-export');
-  const [name, setName] = React.useState<string>('');
-  const loading = React.useContext(LoadingContext);
-
-  return (
-    <Dialog
-      header={
-        asLabel
-          ? commonText('createLabelDialogHeader')
-          : commonText('createReportDialogHeader')
-      }
-      onClose={handleClose}
-      buttons={
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
-        </>
-      }
-    >
-      <Form
-        id={id('form')}
-        onSubmit={(): void =>
-          loading(
-            ajax<SerializedResource<SpReport>>(
-              '/report_runner/create/',
-              {
-                method: 'POST',
-                body: formData({
-                  queryid: queryResource.id,
-                  mimetype: asLabel ? 'jrxml/label' : 'jrxml/report',
-                  name: name.trim(),
-                }),
-                headers: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Accept: 'application/json',
-                },
-              },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
-              .then(async ({ data: reportJson }) => {
-                const report = new schema.models.SpReport.Resource(reportJson);
-                return report.rgetPromise('appResource');
-              })
-              .then((appResource) =>
-                goTo(`/specify/appresources/${appResource.id}/`)
-              )
-          )
-        }
-      >
-        <Input.Text
-          placeholder={
-            asLabel ? commonText('labelName') : commonText('reportName')
-          }
-          required
-          value={name}
-          onValueChange={(value): void => setName(value)}
-        />
-      </Form>
-    </Dialog>
-  );
-}

@@ -291,10 +291,6 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Определяет заголовки полей, примечания по использованию и заголовки таблиц',
   },
-  reset: {
-    'en-us': 'Reset',
-    'ru-ru': 'Сброс',
-  },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
     'ru-ru': 'Показать значок в шапке',

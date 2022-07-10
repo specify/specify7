@@ -6,7 +6,7 @@ import type { AnyTree } from '../datamodelutils';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { queryText } from '../localization/query';
-import { hasToolPermission } from '../permissions';
+import { hasPermission, hasToolPermission } from '../permissions';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { parseUrl } from '../querystring';
@@ -20,7 +20,6 @@ import { useAsyncState } from './hooks';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTool, ProtectedTree } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
-import { canRunQuery } from './toolbar/query';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -52,7 +51,7 @@ function QueryBuilderWrapper({
     <QueryBuilder
       query={query}
       isReadOnly={
-        !canRunQuery() &&
+        !hasPermission('/querybuilder/query', 'execute') &&
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
       }
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
