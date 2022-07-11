@@ -156,7 +156,7 @@ export const className = {
   containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full ${formStyles}`,
   formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
-  formTitle: 'text-lg font-bold',
+  formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
   limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
   headerPrimary: 'font-semibold text-black dark:text-white',

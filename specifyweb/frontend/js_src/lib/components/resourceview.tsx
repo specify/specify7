@@ -14,7 +14,7 @@ import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissions';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, className, Container, DataEntry, Form } from './basic';
-import { AppTitle } from './common';
+import { AppTitle, TableIcon } from './common';
 import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
@@ -86,6 +86,7 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
     readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
     readonly title: string;
     readonly formatted: string;
+    readonly jsxFormatted: JSX.Element | string;
     readonly specifyNetworkBadge: JSX.Element | undefined;
   }) => JSX.Element;
 };
@@ -141,6 +142,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     );
 
   const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
+  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
   const title = `${
     resource === undefined
       ? ''
@@ -151,6 +153,17 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
   return children({
     formatted: tableNameInTitle ? title : formatted,
+    jsxFormatted:
+      formHeaderFormat === 'name' ? (
+        title
+      ) : (
+        <>
+          {typeof resource === 'object' && (
+            <TableIcon name={resource.specifyModel.name} label />
+          )}
+          {formHeaderFormat === 'full' && title}
+        </>
+      ),
     title,
     formElement: form,
     formPreferences: <FormPreferences resource={resource} />,
@@ -295,6 +308,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
         form,
         title,
         formatted,
+        jsxFormatted,
         specifyNetworkBadge,
       }): JSX.Element => {
         const saveButtonElement =
@@ -381,7 +395,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
             <DataEntry.SubForm>
               <DataEntry.SubFormHeader>
                 <DataEntry.SubFormTitle>
-                  {titleOverride ?? title}
+                  {titleOverride ?? jsxFormatted}
                 </DataEntry.SubFormTitle>
                 {headerComponents}
               </DataEntry.SubFormHeader>
@@ -392,7 +406,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
               <Container.Center className="!w-auto">
                 <DataEntry.Header>
                   <AppTitle title={titleOverride ?? formatted} type="form" />
-                  <DataEntry.Title>{titleOverride ?? title}</DataEntry.Title>
+                  <DataEntry.Title>
+                    {titleOverride ?? jsxFormatted}
+                  </DataEntry.Title>
                   {headerComponents}
                 </DataEntry.Header>
                 {formattedChildren}

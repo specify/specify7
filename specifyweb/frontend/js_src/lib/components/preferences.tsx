@@ -523,6 +523,26 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          formHeaderFormat: defineItem<'full' | 'name' | 'icon'>({
+            title: preferencesText('formHeaderFormat'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'full',
+            values: [
+              {
+                value: 'full',
+                title: preferencesText('iconAndTableName'),
+              },
+              {
+                value: 'name',
+                title: preferencesText('tableName'),
+              },
+              {
+                value: 'icon',
+                title: preferencesText('tableIcon'),
+              },
+            ],
+          }),
           makeFormDialogsModal: defineItem<boolean>({
             title: preferencesText('makeFormDialogsModal'),
             requiresReload: false,

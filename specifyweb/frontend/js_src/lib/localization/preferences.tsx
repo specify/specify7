@@ -665,4 +665,20 @@ export const preferencesText = createDictionary({
       </span>
     ),
   },
+  formHeaderFormat: {
+    'en-us': 'Form header format',
+    'ru-ru': 'Формат заголовка формы',
+  },
+  iconAndTableName: {
+    'en-us': 'Icon and table name',
+    'ru-ru': 'Иконка и название таблицы',
+  },
+  tableName: {
+    'en-us': 'Table name',
+    'ru-ru': 'Название таблицы',
+  },
+  tableIcon: {
+    'en-us': 'Table icon',
+    'ru-ru': 'Иконка таблицы',
+  },
 });
