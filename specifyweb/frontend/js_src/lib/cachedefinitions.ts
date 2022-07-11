@@ -77,6 +77,8 @@ export type CacheDefinitions = {
   } & {
     readonly /** Open nodes in a given tree */
     [key in `conformation${AnyTree['tableName']}`]: string;
+  } & {
+    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   };
   readonly workBenchSortConfig: {
     readonly /**

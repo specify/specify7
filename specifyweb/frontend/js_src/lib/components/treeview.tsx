@@ -129,7 +129,13 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const id = useId('tree-view');
 
-  const [focusPath, setFocusPath] = React.useState<RA<number>>([]);
+  // FEATURE: synchronize focus path with the URL
+  const [focusPath = [], setFocusPath] = useCachedState({
+    category: 'tree',
+    key: `focusPath${tableName}`,
+    defaultValue: [],
+    staleWhileRefresh: false,
+  });
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
