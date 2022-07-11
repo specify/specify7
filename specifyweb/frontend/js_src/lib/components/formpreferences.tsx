@@ -22,6 +22,8 @@ import { ShareRecord } from './sharerecord';
 import { PrintOnSave } from './specifyformcheckbox';
 import { SubViewContext } from './subview';
 import { SubViewPreferences } from './subviewpreferences';
+import { useCachedState } from './statecache';
+import { ReadOnlyMode } from './readonlymode';
 
 export function FormPreferences({
   resource,
@@ -29,6 +31,12 @@ export function FormPreferences({
   readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  const [isReadOnly = false] = useCachedState({
+    category: 'forms',
+    key: 'readOnlyMode',
+    defaultValue: false,
+    staleWhileRefresh: false,
+  });
   return typeof resource === 'object' ? (
     <>
       <Button.Small
@@ -37,6 +45,7 @@ export function FormPreferences({
         onClick={handleToggle}
       >
         {icons.cog}
+        {isReadOnly && commonText('readOnly')}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (
         <PreferencesDialog resource={resource} onClose={handleClose} />
@@ -66,6 +75,7 @@ function PreferencesDialog({
           <CarryForwardButton model={resource.specifyModel} />
           <FormAutoNumbering resource={resource} />
           <FormDefinition model={resource.specifyModel} />
+          <ReadOnlyMode isNew={resource.isNew()} />
         </div>
         <PrintOnSave
           model={resource.specifyModel}

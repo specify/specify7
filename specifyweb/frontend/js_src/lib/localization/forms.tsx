@@ -742,4 +742,12 @@ export const formsText = createDictionary({
     'en-us': 'Use custom settings',
     'ru-ru': 'Использовать другие настройки',
   },
+  disableReadOnly: {
+    'en-us': 'Disable read-only mode',
+    'ru-ru': 'Отключить режим только для чтения',
+  },
+  enableReadOnly: {
+    'en-us': 'Enable read-only mode',
+    'ru-ru': 'Включить режим только для чтения',
+  },
 });

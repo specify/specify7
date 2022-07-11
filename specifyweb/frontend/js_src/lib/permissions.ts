@@ -19,6 +19,7 @@ import {
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
+import { getCache } from './cache';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -383,20 +384,27 @@ export const fetchUserPermissions = async (
 
 export const fetchContext = fetchUserPermissions();
 
+const isReadOnly = getCache('forms', 'readOnlyMode') === true;
+
 /**
  * Security errors are logged so that admins can see why a particular UI
  * component is disabled or missing
  */
-export const hasTablePermission = (
+export function hasTablePermission(
   tableName: keyof Tables,
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
-): boolean =>
-  defined(tablePermissions)[collectionId][tableNameToResourceName(tableName)][
-    action
-  ]
-    ? true
-    : f.log(`No permission to ${action} ${tableName}`) ?? false;
+): boolean {
+  if (isReadOnly && action !== 'read') return false;
+  if (
+    defined(tablePermissions)[collectionId][tableNameToResourceName(tableName)][
+      action
+    ]
+  )
+    return true;
+  console.log(`No permission to ${action} ${tableName}`);
+  return false;
+}
 
 export const hasPermission = <
   RESOURCE extends keyof typeof operationPermissions[number]

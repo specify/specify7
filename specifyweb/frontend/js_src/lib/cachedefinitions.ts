@@ -7,6 +7,8 @@
 import type hot from 'handsontable';
 import type { State } from 'typesafe-reducer';
 
+import type { AppResourceFilters } from './appresourcesfilters';
+import type { AppResourcesConformation } from './components/appresourcesaside';
 import type { SortConfig } from './components/common';
 import type { SearchPreferences } from './components/wbadvancedsearch';
 import type { Attachment, SpQuery, Tables } from './datamodel';
@@ -15,8 +17,6 @@ import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
 import type { IR, RA, RR } from './types';
 import { ensure } from './types';
-import { AppResourcesConformation } from './components/appresourcesaside';
-import { AppResourceFilters } from './appresourcesfilters';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -39,6 +39,7 @@ export type CacheDefinitions = {
     readonly useCustomForm: Partial<RR<keyof Tables, boolean>>;
     readonly carryForwardShowHidden: boolean;
     readonly useFieldLabels: boolean;
+    readonly readOnlyMode: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */
