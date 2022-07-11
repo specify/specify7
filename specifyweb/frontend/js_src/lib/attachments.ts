@@ -80,7 +80,7 @@ const fetchToken = async (filename: string): Promise<string | undefined> =>
 
 export const fetchThumbnail = async (
   attachment: SerializedResource<Attachment>,
-  scale = 256
+  scale = getPref('attachment.preview_size')
 ): Promise<
   | {
       readonly src: string;

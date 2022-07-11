@@ -46,8 +46,6 @@ import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
 
-const previewSize = 123;
-
 const tablesWithAttachments = f.store(() =>
   filterArray(
     Object.keys(schema.models)
@@ -82,10 +80,7 @@ export function AttachmentCell({
 
   const [thumbnail] = useAsyncState(
     React.useCallback(
-      () =>
-        attachment === undefined
-          ? undefined
-          : fetchThumbnail(attachment, previewSize),
+      () => (attachment === undefined ? undefined : fetchThumbnail(attachment)),
       [attachment]
     ),
     false

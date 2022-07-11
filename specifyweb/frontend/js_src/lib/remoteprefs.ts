@@ -188,6 +188,12 @@ export const remotePrefsDefinitions = f.store(
         parser: 'java.lang.Boolean',
         isLegacy: true,
       },
+      'attachment.preview_size': {
+        description: 'The size in px of the generated attachment thumbnails',
+        defaultValue: 123,
+        parser: 'java.lang.Long',
+        isLegacy: true,
+      },
       // These are used on the back end only:
       'auditing.do_audits': {
         description: 'Whether Audit Log is enabled',
