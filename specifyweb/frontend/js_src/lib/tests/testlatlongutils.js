@@ -31,6 +31,8 @@ export function testLatLongUtils() {
         '0 01 S': [-1, 0, 1, latlongutils.Lat],
         '0 01 W': [-1, 0, 1, latlongutils.Long],
         '0': [1, 0, latlongutils.Coord],
+        '0 58 0': [1,0,58,0, latlongutils.Coord],
+        '-0 58 0': [-1,0,58,0, latlongutils.Coord],
         '': undefined,
         ' ': undefined,
         'foobar': undefined,
