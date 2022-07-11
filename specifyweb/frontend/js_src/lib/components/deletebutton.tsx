@@ -8,7 +8,7 @@ import { formsText } from '../localization/forms';
 import type { RA } from '../types';
 import { Button, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState, useBooleanState } from './hooks';
+import { useAsyncState, useBooleanState, useLiveState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 
@@ -21,25 +21,39 @@ import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
   deletionMessage = formsText('deleteConfirmationDialogText'),
+  deferred: initialDeferred = false,
+  component: ButtonComponent = Button.Gray,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
   readonly deletionMessage?: React.ReactNode;
+  /**
+   * As a performance optimization, can defer checking for delete blockers
+   * until the button is clicked. This is used in the tree viewer as delete
+   * button's resource can change often.
+   */
+  readonly deferred?: boolean;
+  readonly component?: typeof Button['Gray'];
   readonly onDeleted?: () => void;
 }): JSX.Element {
+  const [deferred, setDeferred] = useLiveState<boolean>(
+    React.useCallback(() => initialDeferred, [initialDeferred, resource])
+  );
   const [blockers] = useAsyncState<RA<string>>(
     React.useCallback(
       async () =>
-        ajax<RA<string>>(
-          `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
-            resource.id
-          }/`,
-          {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: { Accept: 'application/json' },
-          }
-        ).then(({ data }) => data),
-      [resource]
+        deferred
+          ? undefined
+          : ajax<RA<string>>(
+              `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+                resource.id
+              }/`,
+              {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                headers: { Accept: 'application/json' },
+              }
+            ).then(({ data }) => data),
+      [resource, deferred]
     ),
     false
   );
@@ -49,12 +63,17 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   return (
     <>
-      <Button.Gray onClick={handleOpen}>
+      <ButtonComponent
+        onClick={(): void => {
+          handleOpen();
+          setDeferred(false);
+        }}
+      >
         {Array.isArray(blockers) && blockers.length > 0
           ? icons.exclamation
           : undefined}
         {commonText('delete')}
-      </Button.Gray>
+      </ButtonComponent>
       {isOpen ? (
         blockers === undefined ? (
           <Dialog

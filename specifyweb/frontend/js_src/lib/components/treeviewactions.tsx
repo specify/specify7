@@ -13,6 +13,7 @@ import type { Row } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, Link } from './basic';
 import { LoadingContext } from './contexts';
+import { DeleteButton } from './deletebutton';
 import { useBooleanState, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
@@ -86,6 +87,16 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           disabled={focusedRow === undefined}
         />
       </li>
+      {hasTablePermission(tableName, 'delete') ? (
+        <li className="contents">
+          <NodeDeleteButton
+            disabled={disableButtons}
+            nodeId={focusedRow?.nodeId}
+            tableName={tableName}
+            onDeleted={handleRefresh}
+          />
+        </li>
+      ) : undefined}
       {hasTablePermission(tableName, 'create') && (
         <li className="contents">
           <EditRecordDialog<SCHEMA>
@@ -382,5 +393,35 @@ function ActiveAction<SCHEMA extends AnyTree>({
         </Dialog>
       ) : undefined}
     </menu>
+  );
+}
+
+function NodeDeleteButton({
+  disabled,
+  tableName,
+  nodeId,
+  onDeleted: handleDeleted,
+}: {
+  readonly disabled: boolean;
+  readonly tableName: AnyTree['tableName'];
+  readonly nodeId: number | undefined;
+  readonly onDeleted: () => void;
+}): JSX.Element {
+  const resource = React.useMemo(
+    () =>
+      typeof nodeId === 'number'
+        ? new schema.models[tableName].Resource({ id: nodeId })
+        : undefined,
+    [tableName, nodeId]
+  );
+  return disabled || resource === undefined ? (
+    <Button.Small disabled>{commonText('delete')}</Button.Small>
+  ) : (
+    <DeleteButton
+      resource={resource}
+      component={Button.Small}
+      onDeleted={handleDeleted}
+      deferred
+    />
   );
 }
