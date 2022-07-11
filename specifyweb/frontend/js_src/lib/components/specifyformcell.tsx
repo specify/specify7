@@ -53,25 +53,19 @@ const cellRenderers: {
     );
   },
   Label({ cellData: { text, labelForCellId, title }, formatId, align }) {
-    return typeof text === 'string' && text.length === 0 ? null : (
-      <label
-        htmlFor={
-          typeof labelForCellId === 'string'
-            ? formatId(labelForCellId)
-            : undefined
-        }
-        title={title}
-        style={{
-          textAlign:
-            align === 'right'
-              ? 'right'
-              : align === 'center'
-              ? 'center'
-              : undefined,
-        }}
-      >
+    const style: React.CSSProperties = {
+      textAlign:
+        align === 'right' ? 'right' : align === 'center' ? 'center' : undefined,
+    };
+    return typeof text === 'string' &&
+      text.length === 0 ? null : typeof labelForCellId === 'string' ? (
+      <label htmlFor={formatId(labelForCellId)} title={title} style={style}>
         {text}
       </label>
+    ) : (
+      <p title={title} style={style}>
+        {text}
+      </p>
     );
   },
   Separator({ cellData: { label, icon, forClass } }) {
