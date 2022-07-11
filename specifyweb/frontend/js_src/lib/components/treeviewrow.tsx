@@ -23,6 +23,7 @@ export function TreeRow({
   conformation,
   onChangeConformation: handleChangeConformation,
   focusPath,
+  actionRow,
   onFocusNode: handleFocusNode,
   onAction: handleAction,
   setFocusedRow,
@@ -44,6 +45,7 @@ export function TreeRow({
     conformation: Conformations | undefined
   ) => void;
   readonly focusPath: RA<number> | undefined;
+  readonly actionRow: Row | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
   readonly onAction: (action: Exclude<KeyAction, 'toggle' | 'child'>) => void;
   readonly setFocusedRow: (row: Row) => void;
@@ -122,6 +124,7 @@ export function TreeRow({
   const isFocused = focusPath?.length === 0;
   const parentRankId = path.slice(-1)[0]?.rankId;
   const id = useId('tree-node');
+  const isAction = actionRow === row;
   return (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -135,7 +138,13 @@ export function TreeRow({
                */
               className={`border whitespace-nowrap border-transparent aria-handled
               -mb-[12px] -ml-[5px] mt-2 rounded
-              ${isFocused ? 'outline outline-1 outline-blue-500' : ''}`}
+              ${
+                isAction
+                  ? 'outline outline-1 outline-red-500'
+                  : isFocused
+                  ? 'outline outline-1 outline-blue-500'
+                  : ''
+              }`}
               style={{
                 color:
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
@@ -280,6 +289,7 @@ export function TreeRow({
                     : []),
                 ])
               }
+              actionRow={actionRow}
               focusPath={
                 (focusPath?.[0] === 0 && index === 0) ||
                 focusPath?.[0] === childRow.nodeId

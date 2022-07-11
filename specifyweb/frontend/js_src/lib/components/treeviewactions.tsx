@@ -23,23 +23,26 @@ type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'desynonymize';
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
   focusRef,
-  onRefresh: handleRefresh,
   focusedRow,
   ranks,
+  actionRow,
+  onChange: handleChange,
+  onRefresh: handleRefresh,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly focusRef: React.MutableRefObject<HTMLElement | null>;
-  readonly onRefresh: () => void;
   readonly focusedRow: Row | undefined;
   readonly ranks: RA<number>;
+  readonly actionRow: Row | undefined;
+  readonly onChange: (row: Row | undefined) => void;
+  readonly onRefresh: () => void;
 }): JSX.Element {
-  const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
   const [currentAction, setCurrentAction] = React.useState<Action | undefined>(
     undefined
   );
 
   function setAction(action: Action | undefined): void {
-    setActionRow(typeof action === 'string' ? focusedRow : undefined);
+    handleChange(typeof action === 'string' ? focusedRow : undefined);
     setCurrentAction(action);
   }
 

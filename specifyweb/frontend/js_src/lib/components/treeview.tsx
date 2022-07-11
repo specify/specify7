@@ -133,6 +133,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );
+  const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLElement | null>(null);
@@ -250,6 +251,8 @@ function TreeView<SCHEMA extends AnyTree>({
             }}
             focusedRow={focusedRow}
             ranks={rankIds}
+            actionRow={actionRow}
+            onChange={setActionRow}
           />
         </ErrorBoundary>
       </header>
@@ -352,6 +355,7 @@ function TreeView<SCHEMA extends AnyTree>({
                     : []),
                 ])
               }
+              actionRow={actionRow}
               focusPath={
                 (focusPath[0] === 0 && index === 0) ||
                 focusPath[0] === row.nodeId
