@@ -4,13 +4,13 @@ import type { Tables } from '../datamodel';
 import { split } from '../helpers';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
-import { getModelById, schema } from '../schema';
+import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { Button, Label, Select } from './basic';
 import { Dialog } from './modaldialog';
 import { usePref } from './preferenceshooks';
-import { defaultQueryTablesConfig } from './querytables';
+import { defaultQueryTablesConfig, useQueryModels } from './querytables';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -22,26 +22,37 @@ export function QueryTablesEdit({
     'general',
     'noRestrictionsMode'
   );
-  const [rawTables, setRawTables] = usePref(
-    'queryBuilder',
-    'general',
-    'shownTables'
+  const [models, setModels] = useQueryModels();
+  return (
+    <TablesListEdit
+      isNoRestrictionMode={isNoRestrictionMode}
+      defaultTables={defaultQueryTablesConfig}
+      models={models}
+      onChange={setModels}
+      onClose={handleClose}
+    />
   );
+}
 
-  const selectedTables =
-    rawTables.length === 0
-      ? defaultQueryTablesConfig
-      : rawTables.map(getModelById).map(({ name }) => name);
-  const selectedModels: RA<SpecifyModel> = selectedTables.map(
-    (tableName) => schema.models[tableName]
-  );
-
+export function TablesListEdit({
+  isNoRestrictionMode,
+  defaultTables,
+  models: selectedModels,
+  onChange: handleRawChange,
+  onClose: handleClose,
+}: {
+  readonly isNoRestrictionMode: boolean;
+  readonly defaultTables: RA<keyof Tables>;
+  readonly models: RA<SpecifyModel>;
+  readonly onChange: (models: RA<SpecifyModel>) => void;
+  readonly onClose: () => void;
+}): JSX.Element {
   const handleChange = (models: RA<SpecifyModel>): void =>
-    setRawTables(
+    handleRawChange(
       JSON.stringify(models.map(({ name }) => name)) ===
-        JSON.stringify(defaultQueryTablesConfig)
+        JSON.stringify(defaultTables)
         ? []
-        : models.map(({ tableId }) => tableId)
+        : models
     );
 
   const [selectedSubset, setSelectedSubset] = React.useState<RA<keyof Tables>>(
@@ -117,7 +128,7 @@ export function QueryTablesEdit({
       header={queryText('configureQueryTables')}
       buttons={
         <>
-          <Button.Blue onClick={(): void => setRawTables([])}>
+          <Button.Blue onClick={(): void => handleRawChange([])}>
             {commonText('reset')}
           </Button.Blue>
           <span className="flex-1 -ml-2" />

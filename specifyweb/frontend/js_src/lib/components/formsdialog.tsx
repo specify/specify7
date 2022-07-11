@@ -18,57 +18,12 @@ import { fetchContext as fetchSchema, getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { className, Link, Ul } from './basic';
+import { className, DataEntry, Link, Ul } from './basic';
 import { TableIcon } from './common';
-import { useAsyncState } from './hooks';
+import { EditFormTables, useFormModels } from './formstablesedit';
+import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
-
-export type FormEntry = {
-  iconName: string | undefined;
-  viewUrl: string;
-  title: string;
-  table: keyof Tables;
-};
-
-const url = cachableUrl(
-  formatUrl('/context/app.resource', { name: 'DataEntryTaskInit' })
-);
-const fetchForms = f.store(
-  async (): Promise<RA<FormEntry>> =>
-    process.env.NODE_ENV === 'test'
-      ? []
-      : ajax<Document>(url, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/xml' },
-        }).then(async ({ data }) => {
-          await fetchSchema;
-          return Promise.all(
-            Array.from(
-              (data.querySelector('std') ?? data).getElementsByTagName('view')
-            )
-              // I don't think the non-sidebar items are ever used in Sp6.
-              .filter((item) => getBooleanAttribute(item, 'sideBar') ?? false)
-              .map(async (view) =>
-                getView(getAttribute(view, 'view') ?? '').then<
-                  FormEntry | undefined
-                >((form) => {
-                  if (form === undefined) return undefined;
-                  const modelName = parseClassName(form.class) as keyof Tables;
-                  const model = defined(getModel(modelName));
-
-                  return {
-                    iconName:
-                      getParsedAttribute(view, 'iconName') ?? model.name,
-                    viewUrl: getResourceViewUrl(modelName),
-                    title: getParsedAttribute(view, 'title') ?? '',
-                    table: model.name,
-                  };
-                })
-              )
-          ).then(filterArray);
-        })
-);
 
 /**
  * A dialog presenting a list of data forms
@@ -80,12 +35,18 @@ export function FormsDialog({
   readonly onSelected?: (model: SpecifyModel) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  const [forms] = useAsyncState(fetchForms, true);
+  const [models] = useFormModels();
+  const [rawForms] = useAsyncState(fetchLegacyForms, true);
+  const forms = resolveModels(models, rawForms);
+  const [isEditing, handleEditing] = useBooleanState();
 
-  return Array.isArray(forms) ? (
+  return isEditing ? (
+    <EditFormTables onClose={handleClose} />
+  ) : Array.isArray(forms) ? (
     <Dialog
       icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       header={commonText('dataEntry')}
+      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       className={{ container: dialogClassNames.narrowContainer }}
       buttons={commonText('cancel')}
       onClose={handleClose}
@@ -94,10 +55,10 @@ export function FormsDialog({
         <Ul>
           {forms
             .filter(({ table }) => hasTablePermission(table, 'create'))
-            .map(({ iconName, title, viewUrl, table }, index) => (
+            .map(({ iconName, title, table }, index) => (
               <li key={index}>
                 <Link.Default
-                  href={viewUrl}
+                  href={getResourceViewUrl(table)}
                   className={
                     typeof handleSelected === 'function'
                       ? className.navigationHandled
@@ -124,3 +85,59 @@ export function FormsDialog({
     </Dialog>
   ) : null;
 }
+
+export type FormEntry = {
+  iconName: string | undefined;
+  title: string;
+  table: keyof Tables;
+};
+
+const url = cachableUrl(
+  formatUrl('/context/app.resource', { name: 'DataEntryTaskInit' })
+);
+const fetchLegacyForms = f.store(
+  async (): Promise<RA<FormEntry>> =>
+    process.env.NODE_ENV === 'test'
+      ? []
+      : ajax<Document>(url, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/xml' },
+        }).then(async ({ data }) => {
+          await fetchSchema;
+          return Promise.all(
+            Array.from(
+              (data.querySelector('std') ?? data).getElementsByTagName('view')
+            )
+              // I don't think the non-sidebar items are ever used in Sp6.
+              .filter((item) => getBooleanAttribute(item, 'sideBar') ?? false)
+              .map(async (view) =>
+                getView(getAttribute(view, 'view') ?? '').then<
+                  FormEntry | undefined
+                >((form) => {
+                  if (form === undefined) return undefined;
+                  const modelName = parseClassName(form.class) as keyof Tables;
+                  const model = defined(getModel(modelName));
+
+                  return {
+                    iconName:
+                      getParsedAttribute(view, 'iconName') ?? model.name,
+                    title: getParsedAttribute(view, 'title') ?? '',
+                    table: model.name,
+                  };
+                })
+              )
+          ).then(filterArray);
+        })
+);
+
+const resolveModels = (
+  models: RA<SpecifyModel> | 'legacy',
+  forms: RA<FormEntry> | undefined
+): RA<FormEntry> | undefined =>
+  models === 'legacy'
+    ? forms
+    : models.map((model) => ({
+        iconName: model.name,
+        title: model.label,
+        table: model.name,
+      }));

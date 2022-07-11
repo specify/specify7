@@ -5,6 +5,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
 import { hasTablePermission, hasToolPermission } from '../permissions';
 import { getModel, getModelById } from '../schema';
+import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { filterArray } from '../types';
 import { Button, DataEntry, Link, Ul } from './basic';
@@ -68,6 +69,26 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'TreatmentEvent',
 ];
 
+export function useQueryModels(): [
+  RA<SpecifyModel>,
+  (models: RA<SpecifyModel>) => void
+] {
+  const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
+  const visibleTables =
+    tables.length === 0
+      ? filterArray(defaultQueryTablesConfig.map(getModel))
+      : tables.map(getModelById);
+  const accessibleTables = visibleTables.filter(({ name }) =>
+    hasTablePermission(name, 'read')
+  );
+  const handleChange = React.useCallback(
+    (models: RA<SpecifyModel>) =>
+      setTables(models.map((model) => model.tableId)),
+    [setTables]
+  );
+  return [accessibleTables, handleChange];
+}
+
 export function QueryTables({
   isReadOnly,
   queries,
@@ -77,11 +98,8 @@ export function QueryTables({
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [tables] = usePref('queryBuilder', 'general', 'shownTables');
-  const visibleTables =
-    tables.length === 0
-      ? filterArray(defaultQueryTablesConfig.map(getModel))
-      : tables.map(getModelById);
+  const [tables] = useQueryModels();
+
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
   return isImporting ? (
@@ -110,16 +128,14 @@ export function QueryTables({
       }
     >
       <Ul>
-        {visibleTables
-          .filter(({ name }) => hasTablePermission(name, 'read'))
-          .map(({ name, label }, index) => (
-            <li key={index}>
-              <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
-                <TableIcon name={name} label={false} />
-                {label}
-              </Link.Default>
-            </li>
-          ))}
+        {tables.map(({ name, label }, index) => (
+          <li key={index}>
+            <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
+              <TableIcon name={name} label={false} />
+              {label}
+            </Link.Default>
+          </li>
+        ))}
       </Ul>
     </Dialog>
   );

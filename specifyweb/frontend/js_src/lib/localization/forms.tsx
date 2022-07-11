@@ -730,4 +730,16 @@ export const formsText = createDictionary({
     'en-us': 'Subview configuration',
     'ru-ru': 'Конфигурация подчиненной формы',
   },
+  selectSourceOfTables: {
+    'en-us': 'Select source of tables',
+    'ru-ru': 'Выберите источник таблиц',
+  },
+  inheritLegacySettings: {
+    'en-us': 'Copy Specify 6 settings',
+    'ru-ru': 'Копировать настройки из Specify 6',
+  },
+  useCustomSettings: {
+    'en-us': 'Use custom settings',
+    'ru-ru': 'Использовать другие настройки',
+  },
 });

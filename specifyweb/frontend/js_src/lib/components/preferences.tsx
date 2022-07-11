@@ -473,6 +473,18 @@ export const preferenceDefinitions = {
   form: {
     title: commonText('forms'),
     subCategories: {
+      general: {
+        title: preferencesText('general'),
+        items: {
+          shownTables: defineItem<'legacy' | RA<number>>({
+            title: '_shownTables',
+            requiresReload: false,
+            visible: false,
+            defaultValue: 'legacy',
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+        },
+      },
       schema: {
         title: commonText('schemaConfig'),
         items: {
