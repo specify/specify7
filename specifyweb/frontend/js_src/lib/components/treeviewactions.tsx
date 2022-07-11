@@ -275,14 +275,33 @@ function ActiveAction<SCHEMA extends AnyTree>({
     );
   const isSynonym = typeof focusedRow.acceptedId === 'number';
   const isSameRecord = focusedRow.nodeId === actionRow.nodeId;
-  const disabled =
+  const title =
     type === 'move'
-      ? focusedRow.rankId >= actionRow.rankId || isSynonym || isSameRecord
+      ? treeText('nodeMoveHintMessage', actionRow.fullName)
       : type === 'merge'
-      ? isSameRecord || focusedRow.rankId > actionRow.rankId || isSynonym
+      ? treeText('mergeNodeHintMessage', actionRow.fullName)
       : type === 'synonymize'
-      ? isSameRecord || isSynonym
-      : false;
+      ? treeText('synonymizeNodeHintMessage', actionRow.fullName)
+      : treeText(
+          'desynonymizeNodeMessage',
+          actionRow.fullName,
+          focusedRow.fullName
+        );
+  let disabled: string | false = false;
+  if (type === 'move') {
+    if (isSameRecord) disabled = title;
+    else if (focusedRow.rankId >= actionRow.rankId)
+      disabled = treeText('cantMoveHere');
+    else if (isSynonym) disabled = treeText('cantMoveToSynonym');
+  } else if (type === 'merge') {
+    if (isSameRecord) disabled = title;
+    else if (focusedRow.rankId > actionRow.rankId)
+      disabled = treeText('cantMergeHere');
+    else if (isSynonym) disabled = treeText('cantMergeIntoSynonym');
+  } else if (type === 'synonymize') {
+    if (isSameRecord) disabled = title;
+    else if (isSynonym) disabled = treeText('cantSynonymizeSynonym');
+  }
   return (
     <menu className="contents">
       <Button.Small
@@ -290,24 +309,13 @@ function ActiveAction<SCHEMA extends AnyTree>({
           focusRef.current = element;
         }}
         className="normal-case"
-        disabled={disabled}
+        disabled={disabled !== false}
         onClick={(): void => setShowPrompt(true)}
-        title={
-          type === 'move'
-            ? treeText('nodeMoveHintMessage', actionRow.fullName)
-            : type === 'merge'
-            ? treeText('mergeNodeHintMessage', actionRow.fullName)
-            : type === 'synonymize'
-            ? treeText('synonymizeNodeHintMessage', actionRow.fullName)
-            : treeText(
-                'desynonymizeNodeMessage',
-                treeName,
-                actionRow.fullName,
-                focusedRow.fullName
-              )
-        }
+        title={title}
       >
-        {type === 'move'
+        {typeof disabled === 'string'
+          ? disabled
+          : type === 'move'
           ? treeText('moveNodeHere', actionRow.fullName)
           : type === 'merge'
           ? treeText('mergeNodeHere', actionRow.fullName)
@@ -386,7 +394,6 @@ function ActiveAction<SCHEMA extends AnyTree>({
               )
             : treeText(
                 'desynonymizeNodeMessage',
-                treeName,
                 actionRow.fullName,
                 focusedRow.fullName
               )}
