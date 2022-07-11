@@ -17,6 +17,9 @@ class PermissionsApiTest(ApiTests):
             resource='%',
             action='%',
         )
+        # Because the test database doesn't have specifyuser_spprincipal
+        from specifyweb.context import views
+        views.users_collections_for_sp6 = lambda cursor, userid: []
 
     def test_set_user_policies(self) -> None:
         c = Client()
@@ -368,7 +371,11 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'missing_for_7': [self.collection.id],
+                'missing_for_6': [],
+                'all_accessible_divisions': [self.division.id]
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore
@@ -419,7 +426,11 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'missing_for_7': [self.collection.id],
+                'missing_for_6': [],
+                'all_accessible_divisions': [self.division.id]
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore
@@ -481,7 +492,11 @@ class PermissionsApiTest(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content),
-            {'MissingAgentForAccessibleCollection': {'missing_for_7': [self.collection.id]}}
+            {'MissingAgentForAccessibleCollection': {
+                'missing_for_7': [self.collection.id],
+                'missing_for_6': [],
+                'all_accessible_divisions': [self.division.id]
+            }}
         )
 
         agent2 = spmodels.Agent.objects.create( # type: ignore

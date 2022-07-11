@@ -457,6 +457,8 @@ class UserApiTests(ApiTests):
     def setUp(self):
         "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOF!"
         super(UserApiTests, self).setUp()
+
+        # Because the test database doesn't have specifyuser_spprincipal
         from specifyweb.context import views
         views.users_collections_for_sp6 = lambda cursor, userid: []
 

@@ -8,27 +8,12 @@ from django.db import transaction, connection
 from django.views import View
 
 from specifyweb.specify import models as spmodels
-from specifyweb.specify.views import openapi
+from specifyweb.specify.views import openapi, check_collection_access_against_agents
 from . import models
 from .permissions import PermissionTarget, PermissionTargetAction, \
     NoAdminUsersException, check_permission_targets, registry, query
 
-Agent = getattr(spmodels, "Agent")
 Specifyuser = getattr(spmodels, "Specifyuser")
-
-def check_collection_access_against_agents(userid: int) -> None:
-    from specifyweb.context.views import users_collections_for_sp7
-    from specifyweb.specify.views import MissingAgentForAccessibleCollection
-
-    collections = users_collections_for_sp7(userid)
-    collections_with_agents = Agent.objects.select_for_update().filter(specifyuser_id=userid).values_list('division__disciplines__collections__id', flat=True)
-    missing = [
-        collection.id
-        for collection in collections
-        if collection.id not in collections_with_agents
-    ]
-    if missing:
-        raise MissingAgentForAccessibleCollection({'missing_for_7': missing})
 
 class ListAdminsPT(PermissionTarget):
     resource = "/permissions/list_admins"
