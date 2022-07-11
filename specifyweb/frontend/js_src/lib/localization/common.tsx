@@ -379,18 +379,6 @@ export const commonText = createDictionary({
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать DwC архив',
   },
-  definitionResourceNotFound: {
-    'en-us': (resourceName: string) =>
-      `Definition resource "${resourceName}" was not found.`,
-    'ru-ru': (resourceName: string) =>
-      `Ресурс определения "${resourceName}" не найден.`,
-  },
-  metadataResourceNotFound: {
-    'en-us': (resourceName: string) =>
-      `Metadata resource "${resourceName}" was not found.`,
-    'ru-ru': (resourceName: string) =>
-      `Ресурс метаданных "${resourceName}" не найден.`,
-  },
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS фид',

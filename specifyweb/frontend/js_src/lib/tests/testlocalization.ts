@@ -5,6 +5,9 @@
  *
  * Accepts optional `--verbose` argument to enable verbose output
  *
+ * @remarks
+ * Most localization errors are caught by TypeScript typing. This test only
+ * checks for errors that are not reported by TypeScript.
  */
 
 import fs from 'fs';
@@ -17,7 +20,7 @@ import type {
   Value,
 } from '../localization/utils';
 import { DEFAULT_LANGUAGE, languages } from '../localization/utils';
-import type { IR, R } from '../types';
+import type { IR, R, RR } from '../types';
 import { filterArray } from '../types';
 
 if (process.argv[1] === undefined)
@@ -41,6 +44,14 @@ const compiledLocalizationDirectory = '../localization';
 const directoriesToScan = ['./', './components', '/components/toolbar'];
 
 const extensionsToScan = ['js', 'jsx', 'ts', 'tsx', 'html'];
+
+/**
+ * Forbid certain characters in localization strings
+ * Used for catching bugs like https://github.com/specify/specify7/issues/1739
+ */
+const characterBlacklist: Partial<RR<Language, string>> = {
+  'en-us': 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
+};
 
 // Decide whether verbose mode should be turned on
 const verbose = process.argv[2] === '--verbose';
@@ -138,27 +149,32 @@ type Dictionary = IR<Key>;
 
               const entries = Object.fromEntries(
                 Object.entries(dictionary).map(([key, strings]) => {
-                  languages
-                    .filter((language) => !(language in strings))
-                    .forEach((language) =>
-                      (language === DEFAULT_LANGUAGE ? error : todo)(
-                        [
-                          `${language} localization is missing for key ${key}`,
-                          `in ${dictionaryName}`,
-                        ].join('')
-                      )
-                    );
-
                   Object.keys(strings)
                     .filter((language) => !f.includes(languages, language))
                     .forEach((language) =>
-                      warn(
+                      error(
                         [
                           `A string for an undefined language ${language} was`,
                           `found for key ${key} in ${dictionaryName}`,
                         ].join('')
                       )
                     );
+
+                  Object.entries(strings).forEach(([language, string]) =>
+                    characterBlacklist[language as Language]
+                      ?.split('')
+                      .forEach((character) =>
+                        string.toString().toLowerCase().includes(character)
+                          ? error(
+                              [
+                                `String ${dictionaryName}.${key} for language `,
+                                `${language} contains a blacklisted character `,
+                                `"${character}"`,
+                              ].join('')
+                            )
+                          : undefined
+                      )
+                  );
 
                   return [
                     key,
@@ -207,8 +223,7 @@ type Dictionary = IR<Key>;
       );
 
       Array.from(fileContent.matchAll(regex)).forEach(({ groups, index }) => {
-        if (groups === undefined || index === undefined)
-          return;
+        if (groups === undefined || index === undefined) return;
 
         const parameters = groups.parameters;
         const [rawPaddedKeyName, ...args] = parameters.split(',');
