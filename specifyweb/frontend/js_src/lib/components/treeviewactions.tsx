@@ -10,6 +10,7 @@ import { hasPermission, hasTablePermission } from '../permissions';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';
+import { checkMoveViolatesEnforced } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, Link } from './basic';
 import { LoadingContext } from './contexts';
@@ -293,7 +294,10 @@ function ActiveAction<SCHEMA extends AnyTree>({
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
-    else if (focusedRow.rankId >= actionRow.rankId)
+    else if (
+      focusedRow.rankId >= actionRow.rankId ||
+      checkMoveViolatesEnforced(tableName, focusedRow.rankId, actionRow.rankId)
+    )
       disabled = treeText('cantMoveHere');
     else if (isSynonym) disabled = treeText('cantMoveToSynonym');
   } else if (type === 'merge') {

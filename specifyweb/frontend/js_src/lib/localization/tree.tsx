@@ -68,6 +68,7 @@ export const treeText = createDictionary({
     'en-us': "Can't merge into synonyms",
     'ru-ru': 'Невозможно объединить в синонимы',
   },
+
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
     'ru-ru': 'Невозможно сделать синонимом синонима',

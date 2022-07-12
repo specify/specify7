@@ -4,9 +4,11 @@ import _ from 'underscore';
 import { ajax } from './ajax';
 import { formatNumber } from './components/internationalization';
 import { getTransitionDuration } from './components/preferenceshooks';
+import type { AnyTree } from './datamodelutils';
 import { treeText } from './localization/tree';
+import { getTreeDefinitionItems } from './treedefinitions';
 import type { RA, RR } from './types';
-import { filterArray } from './types';
+import { defined, filterArray } from './types';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -195,3 +197,30 @@ export const formatTreeStats = (
     isLeaf ? undefined : formatNumber(nodeStats.childCount),
   ]).join(', ')})`,
 });
+
+/**
+ * Check if there are any enforced ranks between current tree node parent
+ * and the proposed tree node parent.
+ * Fixes https://github.com/specify/specify7/issues/915
+ */
+export function checkMoveViolatesEnforced(
+  tableName: AnyTree['tableName'],
+  newParenRankId: number,
+  currentRankId: number
+): boolean {
+  const treeRanks = defined(getTreeDefinitionItems(tableName, true));
+  const currentRankIndex = treeRanks.findIndex(
+    ({ rankId }) => rankId === currentRankId
+  );
+  const currentParentRankIndex = currentRankIndex - 1;
+  const newParentRankIndex = treeRanks.findIndex(
+    ({ rankId }) => rankId === newParenRankId
+  );
+  /*
+   * Check for enforced ranks between children of newParentRankIndex and
+   * currentParentRankIndex
+   */
+  return treeRanks
+    .slice(newParentRankIndex + 1, currentParentRankIndex)
+    .some(({ isEnforced }) => isEnforced);
+}
