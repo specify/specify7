@@ -50,6 +50,7 @@ export function QueryBuilder({
   isReadOnly,
   recordSet,
   isEmbedded = false,
+  autoRun = false,
   // If present, this callback is called when a query result is selected
   onSelected: handleSelected,
 }: {
@@ -57,6 +58,7 @@ export function QueryBuilder({
   readonly isReadOnly: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly isEmbedded?: boolean;
+  readonly autoRun?: boolean;
   readonly onSelected?: (resource: SpecifyResource<AnySchema>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
@@ -74,6 +76,7 @@ export function QueryBuilder({
       query,
       queryResource,
       model,
+      autoRun,
     },
     getInitialState
   );
@@ -164,11 +167,14 @@ export function QueryBuilder({
     );
 
   // Scroll down to query results when pressed the "Query" button
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
-  React.useEffect(() => {
-    if (state.queryRunCount !== 0 && containerRef.current !== null)
-      smoothScroll(containerRef.current, containerRef.current.scrollHeight);
-  }, [state.queryRunCount]);
+  const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
+  React.useEffect(
+    () =>
+      state.queryRunCount !== 0 && container !== null
+        ? smoothScroll(container, container.scrollHeight)
+        : undefined,
+    [state.queryRunCount, container]
+  );
 
   useTitle(query.name);
 
@@ -269,9 +275,7 @@ export function QueryBuilder({
               {!isScrolledTop && (
                 <Button.Small
                   onClick={(): void =>
-                    containerRef.current === null
-                      ? undefined
-                      : smoothScroll(containerRef.current, 0)
+                    container === null ? undefined : smoothScroll(container, 0)
                   }
                 >
                   {queryText('editQuery')}
@@ -344,15 +348,14 @@ export function QueryBuilder({
             }
             ${isEmbedded ? '' : 'px-4 -mx-4'}
           `}
-          ref={containerRef}
+          ref={setContainer}
           onScroll={(): void =>
             /*
              * Dividing by 4 results in button appearing only once user scrolled
              * 50% past the first half of the page
              */
-            containerRef.current === null ||
-            containerRef.current.scrollTop <
-              containerRef.current.scrollHeight / 4
+            container === null ||
+            container.scrollTop < container.scrollHeight / 4
               ? handleScrollTop()
               : handleScrolledDown()
           }

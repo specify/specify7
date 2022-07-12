@@ -112,14 +112,17 @@ function ViewRecords({
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const [ids, setIds] = React.useState<RA<number>>([]);
-  React.useEffect(() => {
-    if (!isOpen) return;
-    setIds(
-      selectedRows.size === 0
-        ? (results.map((row) => row[queryIdField]) as RA<number>)
-        : Array.from(selectedRows)
-    );
-  }, [results, isOpen, selectedRows]);
+  React.useEffect(
+    () =>
+      isOpen
+        ? setIds(
+            selectedRows.size === 0
+              ? (results.map((row) => row[queryIdField]) as RA<number>)
+              : Array.from(selectedRows)
+          )
+        : undefined,
+    [results, isOpen, selectedRows]
+  );
 
   const unParseIndex = (index: number): number =>
     selectedRows.size === 0
@@ -612,7 +615,7 @@ export function QueryResultsWrapper({
     Parameters<typeof QueryResultsTable>[0] | undefined
   >(undefined);
 
-  const previousQueryRunCount = React.useRef(queryRunCount);
+  const previousQueryRunCount = React.useRef(0);
   React.useEffect(() => {
     if (queryRunCount === previousQueryRunCount.current) return;
     previousQueryRunCount.current = queryRunCount;

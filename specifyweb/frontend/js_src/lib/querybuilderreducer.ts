@@ -39,15 +39,17 @@ export const getInitialState = ({
   query,
   queryResource,
   model,
+  autoRun,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly model: SpecifyModel;
+  readonly autoRun: boolean;
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
   mappingView: ['0'],
-  queryRunCount: 0,
+  queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
   saveRequired: queryResource.isNew(),
   /*

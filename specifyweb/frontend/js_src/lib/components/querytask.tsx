@@ -40,16 +40,19 @@ function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
 
 function QueryBuilderWrapper({
   query,
+  autoRun = false,
   recordSet,
 }: {
-  query: SpecifyResource<SpQuery>;
-  recordSet?: SpecifyResource<RecordSet> | false;
+  readonly query: SpecifyResource<SpQuery>;
+  readonly autoRun?: boolean;
+  readonly recordSet?: SpecifyResource<RecordSet> | false;
 }): JSX.Element | null {
   const isLoaded = typeof useAsyncState(fetchPickLists, true)[0] === 'object';
 
   return isLoaded ? (
     <QueryBuilder
       query={query}
+      autoRun={autoRun}
       isReadOnly={
         !hasPermission('/querybuilder/query', 'execute') &&
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
@@ -139,7 +142,9 @@ function QueryBuilderFromTree({
     true
   );
 
-  return query === undefined ? null : <QueryBuilderWrapper query={query} />;
+  return query === undefined ? null : (
+    <QueryBuilderWrapper query={query} autoRun={true} />
+  );
 }
 
 export function task(): void {

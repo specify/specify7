@@ -60,6 +60,7 @@ function RecordHistoryDialog({
         isReadOnly={false}
         recordSet={undefined}
         isEmbedded={true}
+        autoRun={true}
       />
     </Dialog>
   ) : null;

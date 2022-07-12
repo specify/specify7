@@ -54,6 +54,7 @@ function PickListUsagesDialog({
         isReadOnly={false}
         recordSet={undefined}
         isEmbedded={true}
+        autoRun={true}
       />
     </Dialog>
   );
