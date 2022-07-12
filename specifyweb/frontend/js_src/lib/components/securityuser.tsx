@@ -30,6 +30,7 @@ import { Button, className, Container, DataEntry } from './basic';
 import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
+import { ErrorBoundary } from './errorboundary';
 import { useBooleanState, useIsModified, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
@@ -60,7 +61,6 @@ import {
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
-import { ErrorBoundary } from './errorboundary';
 
 // FEATURE: allow editing linkages with external accounts
 export function SecurityUser({
@@ -201,38 +201,38 @@ export function SecurityUser({
                     </h4>
                     <div className="flex flex-col gap-2">
                       <ErrorBoundary dismissable>
-                      <SetSuperAdmin
-                        institutionPolicies={institutionPolicies}
-                        isSuperAdmin={isSuperAdmin}
-                        isCurrentUser={userResource.id === userInformation.id}
-                        allActions={allActions}
-                        onChange={setInstitutionPolicies}
-                      />
-                      {
-                        /*
-                         * If user is a super admin, they have all policies, so no
-                         * sense in showing them
-                         */
-                        !isSuperAdmin &&
-                          hasDerivedPermission(
-                            '/permissions/institutional_policies/user',
-                            'read'
-                          ) && (
-                            <SecurityPoliciesWrapper
-                              policies={institutionPolicies}
-                              header={adminText('institutionPolicies')}
-                              collapsable={true}
-                            >
-                              <SecurityPolicies
+                        <SetSuperAdmin
+                          institutionPolicies={institutionPolicies}
+                          isSuperAdmin={isSuperAdmin}
+                          isCurrentUser={userResource.id === userInformation.id}
+                          allActions={allActions}
+                          onChange={setInstitutionPolicies}
+                        />
+                        {
+                          /*
+                           * If user is a super admin, they have all policies, so no
+                           * sense in showing them
+                           */
+                          !isSuperAdmin &&
+                            hasDerivedPermission(
+                              '/permissions/institutional_policies/user',
+                              'read'
+                            ) && (
+                              <SecurityPoliciesWrapper
                                 policies={institutionPolicies}
-                                isReadOnly={!userInformation.isadmin}
-                                scope="institution"
-                                onChange={setInstitutionPolicies}
-                                limitHeight
-                              />
-                            </SecurityPoliciesWrapper>
-                          )
-                      }
+                                header={adminText('institutionPolicies')}
+                                collapsable={true}
+                              >
+                                <SecurityPolicies
+                                  policies={institutionPolicies}
+                                  isReadOnly={!userInformation.isadmin}
+                                  scope="institution"
+                                  onChange={setInstitutionPolicies}
+                                  limitHeight
+                                />
+                              </SecurityPoliciesWrapper>
+                            )
+                        }
                       </ErrorBoundary>
                     </div>
                   </section>

@@ -6,7 +6,7 @@ import { queryFieldFilters } from './components/querybuilderfieldfilter';
 import type { MappingPath } from './components/wbplanviewmapper';
 import type { SpQueryField, Tables } from './datamodel';
 import { f } from './functools';
-import { capitalize, replaceItem, toLowerCase } from './helpers';
+import { capitalize, replaceItem } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
@@ -106,11 +106,7 @@ export class QueryFieldSpec {
 
     return {
       tableList,
-      /*
-       * TEST: test removing toLowerCase here.
-       *  May fix https://github.com/specify/specify7/issues/724
-       */
-      stringId: [tableList, toLowerCase(this.table.name), fieldName].join('.'),
+      stringId: [tableList, this.table.name, fieldName].join('.'),
       fieldName,
       isRelFld: this.getField()?.isRelationship === true,
     };
