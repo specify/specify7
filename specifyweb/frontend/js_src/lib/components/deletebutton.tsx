@@ -47,12 +47,14 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
+  const isBlocked = Array.isArray(blockers) && blockers.length > 0;
   return (
     <>
-      <Button.Gray onClick={handleOpen}>
-        {Array.isArray(blockers) && blockers.length > 0
-          ? icons.exclamation
-          : undefined}
+      <Button.Gray
+        onClick={handleOpen}
+        title={isBlocked ? formsText('deleteBlockedDialogHeader') : undefined}
+      >
+        {isBlocked ? icons.exclamation : undefined}
         {commonText('delete')}
       </Button.Gray>
       {isOpen ? (
