@@ -70,7 +70,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           </Dialog>
         ) : blockers.length === 0 ? (
           <Dialog
-            header={formsText('deleteConfirmationDialogHeader')}
+            header={formsText(
+              'deleteConfirmationDialogHeader',
+              resource.specifyModel.label
+            )}
             onClose={handleClose}
             className={{
               container: dialogClassNames.narrowContainer,
