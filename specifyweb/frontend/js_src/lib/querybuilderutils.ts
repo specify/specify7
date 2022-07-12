@@ -52,13 +52,6 @@ export function parseQueryFields(
           field.isRelFld ?? false
         );
 
-        // Back-end treats empty startValue as any for many filters
-        const resetToAny =
-          field.startValue === '' &&
-          Object.values(queryFieldFilters).find(
-            ({ id }) => id == field.operStart
-          )?.resetToAny === true;
-
         /*
          * SpQueryField.startValue containing fullDate may be in different formats
          * See https://github.com/specify/specify7/issues/1348
@@ -91,13 +84,11 @@ export function parseQueryFields(
             mappingPath,
             sortType: sortTypes[field.sortType],
             filter: {
-              type: resetToAny
-                ? 'any'
-                : defined(
-                    Object.entries(queryFieldFilters).find(
-                      ([_, { id }]) => id === field.operStart
-                    )
-                  )[0],
+              type: defined(
+                Object.entries(queryFieldFilters).find(
+                  ([_, { id }]) => id === field.operStart
+                )
+              )[0],
               isNot,
               startValue,
             },
@@ -182,8 +173,7 @@ export const addAuditLogFields = (
 /** Convert internal QueryField representation to SpQueryFields */
 export const unParseQueryFields = (
   baseTableName: keyof Tables,
-  fields: RA<QueryField>,
-  originalQueryFields: RA<SerializedResource<SpQueryField>>
+  fields: RA<QueryField>
 ): RA<SerializedResource<SpQueryField>> =>
   queryFieldsToFieldSpecs(baseTableName, fields).flatMap(
     ([field, fieldSpec], index) => {
@@ -193,22 +183,6 @@ export const unParseQueryFields = (
         position: index,
         isDisplay: field.isDisplay,
       };
-      /*
-       * For some filters, empty startValue is treated as "any" by Specify 6.
-       * For user convenience, Query Builder tries to reuse the original
-       * filter type if both original and new filter represents "any"
-       */
-      const originalField = originalQueryFields.find(
-        ({ stringId }) => stringId === commonData.stringId
-      );
-      const originalAnyFilter =
-        typeof originalField === 'object' &&
-        originalField.startValue === '' &&
-        Object.values(queryFieldFilters).find(
-          ({ id }) => id === originalField.operStart
-        )?.resetToAny === true
-          ? originalField.operStart
-          : undefined;
 
       const hasFilters = field.filters.some(({ type }) => type !== 'any');
       return field.filters
@@ -220,15 +194,12 @@ export const unParseQueryFields = (
           ({ type, startValue, isNot }, index) =>
             ({
               ...commonData,
-              operStart:
-                startValue === '' && typeof originalAnyFilter === 'number'
-                  ? originalAnyFilter
-                  : defined(
-                      // Back-end treats "equal" with blank startValue as "any"
-                      Object.entries(queryFieldFilters).find(
-                        ([name]) => name === type
-                      )
-                    )[1].id,
+              operStart: defined(
+                // Back-end treats "equal" with blank startValue as "any"
+                Object.entries(queryFieldFilters).find(
+                  ([name]) => name === type
+                )
+              )[1].id,
               startValue,
               isNot,
               /*
