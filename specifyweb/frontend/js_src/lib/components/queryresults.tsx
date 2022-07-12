@@ -246,7 +246,6 @@ function QueryResult({
             <Link.NewTab
               className="print:hidden"
               href={viewUrl}
-              role="row"
               rel="noreferrer"
             />
           </span>
