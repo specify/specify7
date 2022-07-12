@@ -213,6 +213,9 @@ export function Field({
     <Input.Generic
       forwardRef={validationRef}
       name={field?.name}
+      {...validationAttributes}
+      // This is undefined when resource.noValidation = true
+      type={validationAttributes.type ?? 'text'}
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')
@@ -247,9 +250,6 @@ export function Field({
           ? `text-right ${isReadOnly ? '' : 'pr-6'}`
           : ''
       }
-      {...validationAttributes}
-      // This is undefined when resource.noValidation = true
-      type={validationAttributes.type ?? 'text'}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && mode !== 'search'}
     />

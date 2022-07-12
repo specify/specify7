@@ -494,7 +494,11 @@ export function useResourceValue<
        * parseValue() is going to report "Value missing" error. This fixes that
        * issue. See https://github.com/specify/specify7/issues/1427
        */
-      if (inputRef.current !== null && inputRef.current.value !== newValue)
+      if (
+        inputRef.current !== null &&
+        inputRef.current.value === '' &&
+        newValue !== ''
+      )
         inputRef.current.value = newValue?.toString() ?? inputRef.current.value;
 
       const parseResults = parseValue(

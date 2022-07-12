@@ -114,14 +114,14 @@ export const fetchCollectionsForResource = async (
         )
           .map((level) => level.toLowerCase())
           .join('__');
-        return fetchCollection(
-          'Collection',
-          { limit: 0 },
-          fieldsBetween.length === 0
-            ? undefined
-            : {
+        return fieldsBetween.length === 0
+          ? undefined
+          : fetchCollection(
+              'Collection',
+              { limit: 0 },
+              {
                 [fieldsBetween]: resource.id.toString(),
               }
-        ).then(({ records }) => records.map(({ id }) => id));
+            ).then(({ records }) => records.map(({ id }) => id));
       })
   ) ?? Promise.resolve(undefined);
