@@ -28,6 +28,7 @@ import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Form, Link, Submit } from './basic';
+import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useId } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
@@ -37,7 +38,6 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
-import { TableIcon } from './common';
 
 function QueryButton({
   disabled,
@@ -251,14 +251,7 @@ export function RecordSetCreated({
     <Dialog
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
-      buttons={
-        <>
-          <Link.Blue href={`/specify/recordset/${recordSet.id}/`}>
-            {commonText('open')}
-          </Link.Blue>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-        </>
-      }
+      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
     >
       <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
         <TableIcon
