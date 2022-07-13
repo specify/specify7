@@ -745,6 +745,7 @@ function QueryParametersDialog({
           openedElement={undefined}
           showHiddenFields={false}
           getMappedFields={() => []}
+          onOpenMap={undefined}
         />
       </Form>
     </Dialog>

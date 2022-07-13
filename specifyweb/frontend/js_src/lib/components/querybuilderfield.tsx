@@ -48,6 +48,10 @@ export function QueryLine({
   field,
   fieldHash,
   enforceLengthLimit = false,
+  isFocused,
+  openedElement,
+  showHiddenFields,
+  getMappedFields,
   onChange: handleChange,
   onMappingChange: handleMappingChange,
   onRemove: handleRemove,
@@ -56,15 +60,16 @@ export function QueryLine({
   onLineFocus: handleLineFocus,
   onMoveUp: handleMoveUp,
   onMoveDown: handleMoveDown,
-  isFocused,
-  openedElement,
-  showHiddenFields,
-  getMappedFields,
+  onOpenMap: handleOpenMap,
 }: {
   readonly baseTableName: keyof Tables;
   readonly field: QueryField;
   readonly fieldHash: string;
   readonly enforceLengthLimit?: boolean;
+  readonly isFocused: boolean;
+  readonly openedElement: number | undefined;
+  readonly showHiddenFields: boolean;
+  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChange: ((newField: QueryField) => void) | undefined;
   readonly onMappingChange:
     | ((payload: {
@@ -84,10 +89,7 @@ export function QueryLine({
   readonly onLineFocus: (target: 'previous' | 'current' | 'next') => void;
   readonly onMoveUp: (() => void) | undefined;
   readonly onMoveDown: (() => void) | undefined;
-  readonly isFocused: boolean;
-  readonly openedElement: number | undefined;
-  readonly showHiddenFields: boolean;
-  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
+  readonly onOpenMap: (() => void) | undefined;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
 
@@ -99,7 +101,8 @@ export function QueryLine({
   const [fieldMeta, setFieldMeta] = React.useState<{
     readonly fieldType: QueryFieldType | undefined;
     readonly parser: Parser | undefined;
-  }>({ fieldType: undefined, parser: undefined });
+    readonly canOpenMap: boolean;
+  }>({ fieldType: undefined, parser: undefined, canOpenMap: false });
 
   React.useEffect(
     () => {
@@ -121,6 +124,7 @@ export function QueryLine({
         typeof dataModelField === 'object' &&
         !dataModelField.isRelationship &&
         mappingPathIsComplete(field.mappingPath);
+      let canOpenMap = false;
       if (hasParser) {
         parser = resolveParser(dataModelField, {
           datePart,
@@ -135,6 +139,10 @@ export function QueryLine({
           dataModelField.name === 'catalogNumber'
             ? 'id'
             : parser.type ?? 'text';
+
+        canOpenMap =
+          baseTableName === 'Locality' &&
+          (fieldName === 'latitude1' || fieldName === 'longitude1');
       }
 
       const newFilters = hasParser
@@ -155,7 +163,7 @@ export function QueryLine({
           })
         : [];
 
-      setFieldMeta({ parser, fieldType });
+      setFieldMeta({ parser, fieldType, canOpenMap });
 
       if (
         field.filters.length === newFilters.length &&
@@ -425,6 +433,16 @@ export function QueryLine({
         </div>
       </div>
       <div className="contents print:hidden">
+        {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
+          <Button.Small
+            title={queryText('openMap')}
+            aria-label={queryText('openMap')}
+            variant={className.blueButton}
+            onClick={handleOpenMap}
+          >
+            {icons.locationMarker}
+          </Button.Small>
+        ) : undefined}
         <Button.Small
           title={queryText('showButtonDescription')}
           aria-label={queryText('showButtonDescription')}

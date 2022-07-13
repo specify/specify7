@@ -301,4 +301,8 @@ export const queryText = createDictionary({
     'en-us': 'Configure visible query tables',
     'ru-ru': 'Настроить видимые таблицы запроса',
   },
+  openMap: {
+    'en-us': 'Open Map',
+    'ru-ru': 'Открыть карту',
+  },
 });

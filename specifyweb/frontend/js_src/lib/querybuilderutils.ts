@@ -8,7 +8,6 @@ import { group, KEY, removeKey, sortFunction, VALUE } from './helpers';
 import { QueryFieldSpec } from './queryfieldspec';
 import type { RA } from './types';
 import { defined } from './types';
-import type { Parser } from './uiparse';
 import { parserFromType, parseValue } from './uiparse';
 import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
@@ -31,7 +30,6 @@ export type QueryField = {
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
-  readonly parser?: Parser;
   readonly filters: RA<{
     readonly type: QueryFieldFilter;
     readonly startValue: string;
@@ -46,7 +44,7 @@ export function parseQueryFields(
   return group(
     Array.from(queryFields)
       .sort(sortFunction(({ position }) => position))
-      .map(({ id, isNot, isDisplay, ...field }, index) => {
+      .map(({ isNot, isDisplay, ...field }, index) => {
         const fieldSpec = QueryFieldSpec.fromStringId(
           field.stringId,
           field.isRelFld ?? false
@@ -87,7 +85,7 @@ export function parseQueryFields(
         return [
           mappingPathToString(mappingPath),
           {
-            id: id ?? index,
+            id: index,
             mappingPath,
             sortType: sortTypes[field.sortType],
             filter: {

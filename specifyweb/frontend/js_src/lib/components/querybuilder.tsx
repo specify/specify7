@@ -39,6 +39,7 @@ import {
 } from './querybuildercomponents';
 import { QueryFields } from './querybuilderfields';
 import { QueryEditButton } from './queryedit';
+import { QueryFromMap } from './queryfrommap';
 import { QueryResultsWrapper } from './queryresultstable';
 import { useResource } from './resource';
 import { useCachedState } from './statecache';
@@ -199,6 +200,10 @@ export function QueryBuilder({
   const [isScrolledTop, handleScrollTop, handleScrolledDown] =
     useBooleanState(true);
 
+  const [mapFieldIndex, setMapFieldIndex] = React.useState<number | undefined>(
+    undefined
+  );
+
   return typeof treeRanks === 'object' ? (
     <Container.Full
       onClick={
@@ -219,6 +224,16 @@ export function QueryBuilder({
                 : undefined
       }
     >
+      {typeof mapFieldIndex === 'number' && (
+        <QueryFromMap
+          fields={state.fields}
+          lineNumber={mapFieldIndex}
+          onClose={(): void => setMapFieldIndex(undefined)}
+          onChange={(fields): void =>
+            dispatch({ type: 'ChangeFieldsAction', fields })
+          }
+        />
+      )}
       <Form
         className="contents"
         forwardRef={formRef}
@@ -401,6 +416,9 @@ export function QueryBuilder({
               baseTableName={state.baseTableName}
               fields={state.fields}
               enforceLengthLimit={triedToSave}
+              openedElement={state.openedElement}
+              showHiddenFields={showHiddenFields}
+              getMappedFields={getMappedFieldsBind}
               onRemoveField={
                 isReadOnly
                   ? undefined
@@ -463,9 +481,7 @@ export function QueryBuilder({
                         direction,
                       })
               }
-              openedElement={state.openedElement}
-              showHiddenFields={showHiddenFields}
-              getMappedFields={getMappedFieldsBind}
+              onOpenMap={setMapFieldIndex}
             />
             <div role="toolbar" className="flex flex-wrap gap-2">
               <Label.ForCheckbox>

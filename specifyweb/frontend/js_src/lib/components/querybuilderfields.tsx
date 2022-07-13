@@ -5,15 +5,18 @@ import type { QueryField } from '../querybuilderutils';
 import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Ul } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useReadyEffect } from './hooks';
 import { QueryLine } from './querybuilderfield';
 import type { MappingPath } from './wbplanviewmapper';
-import { ErrorBoundary } from './errorboundary';
 
 export function QueryFields({
   baseTableName,
   fields,
   enforceLengthLimit,
+  openedElement,
+  showHiddenFields,
+  getMappedFields,
   onChangeField: handleChangeField,
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
@@ -21,13 +24,17 @@ export function QueryFields({
   onClose: handleClose,
   onLineFocus: handleLineFocus,
   onLineMove: handleLineMove,
-  openedElement,
-  showHiddenFields,
-  getMappedFields,
+  onOpenMap: handleOpenMap,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly enforceLengthLimit: boolean;
+  readonly openedElement?: {
+    readonly line: number;
+    readonly index?: number;
+  };
+  readonly showHiddenFields: boolean;
+  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
   readonly onChangeField:
     | ((line: number, field: QueryField) => void)
     | undefined;
@@ -53,12 +60,7 @@ export function QueryFields({
   readonly onLineMove:
     | ((line: number, direction: 'up' | 'down') => void)
     | undefined;
-  readonly openedElement?: {
-    readonly line: number;
-    readonly index?: number;
-  };
-  readonly showHiddenFields: boolean;
-  readonly getMappedFields: (mappingPathFilter: MappingPath) => RA<string>;
+  readonly onOpenMap: ((line: number) => void) | undefined;
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
@@ -87,6 +89,12 @@ export function QueryFields({
             baseTableName={baseTableName}
             field={field}
             enforceLengthLimit={enforceLengthLimit}
+            showHiddenFields={showHiddenFields}
+            isFocused={openedElement?.line === line}
+            openedElement={
+              openedElement?.line === line ? openedElement?.index : undefined
+            }
+            getMappedFields={getMappedFields}
             onChange={handleChangeField?.bind(undefined, line)}
             onMappingChange={handleMappingChange?.bind(undefined, line)}
             onRemove={handleRemoveField?.bind(undefined, line)}
@@ -114,12 +122,7 @@ export function QueryFields({
                 ? undefined
                 : (): void => handleLineMove?.(line, 'down')
             }
-            showHiddenFields={showHiddenFields}
-            isFocused={openedElement?.line === line}
-            openedElement={
-              openedElement?.line === line ? openedElement?.index : undefined
-            }
-            getMappedFields={getMappedFields}
+            onOpenMap={handleOpenMap?.bind(undefined, line)}
           />
         </ErrorBoundary>
       ))}

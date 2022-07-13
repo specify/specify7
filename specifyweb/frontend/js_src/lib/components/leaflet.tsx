@@ -15,11 +15,17 @@ const resizeThrottle = 250;
 export function LeafletMap({
   localityPoints,
   markerClickCallback,
+  forwardRef,
+  header = commonText('geoMap'),
+  buttons = commonText('close'),
   onClose: handleClose,
   modal = true,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
+  readonly forwardRef?: React.RefCallback<L.Map>;
+  readonly header?: string;
+  readonly buttons?: string | JSX.Element;
   readonly onClose?: () => void;
   readonly modal?: boolean;
 }): JSX.Element {
@@ -44,15 +50,16 @@ export function LeafletMap({
           _.throttle(() => map.invalidateSize(), resizeThrottle)
         );
         addFullScreenButton(map, handleToggleFullScreen);
+        forwardRef?.(map);
       })
     );
     return (): void => void globalMap?.remove();
-  }, [container, loading, localityPoints, markerClickCallback]);
+  }, [container, loading, localityPoints, markerClickCallback, forwardRef]);
 
   return (
     <Dialog
-      header={commonText('geoMap')}
-      buttons={commonText('close')}
+      header={header}
+      buttons={buttons}
       className={{
         container: isFullScreen
           ? dialogClassNames.fullScreen

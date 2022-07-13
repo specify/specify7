@@ -247,7 +247,7 @@ function Between({
   const [values, setValues] = React.useState(filter.startValue.split(','));
   const updateValues =
     typeof handleChange === 'function'
-      ? (index: 0 | 1, newValue: string) => {
+      ? (index: 0 | 1, newValue: string): void => {
           const newValues = [
             index === 0 ? newValue : values[0],
             index === 1 ? newValue : values[1],
