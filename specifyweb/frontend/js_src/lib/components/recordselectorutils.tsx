@@ -587,6 +587,7 @@ const fetchItems = async (
              * Creating a sparse array of correct length here. Can't use
              * Array.from({ length: totalCount }) because it creates a dense array
              */
+            /* eslint-disable-next-line unicorn/no-new-array */
             new Array(totalCount)
           : /*
              * A trivial slice to create a shallow copy. Can't use Array.from

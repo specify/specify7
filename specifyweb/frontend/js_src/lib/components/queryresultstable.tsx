@@ -38,9 +38,10 @@ import {
   recordSetFromQueryLoading,
 } from './querybuildercomponents';
 import { QueryResults } from './queryresults';
-import { RecordSelectorFromIds } from './recordselectorutils';
+import { QueryToMap } from './querytomap';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { QueryToForms } from './querytoforms';
 
 function TableHeaderCell({
   fieldSpec,
@@ -92,80 +93,6 @@ function TableHeaderCell({
         content
       )}
     </div>
-  );
-}
-
-function ViewRecords({
-  model,
-  results,
-  selectedRows,
-  onFetchMore: handleFetchMore,
-  onDelete: handleDelete,
-  totalCount,
-}: {
-  readonly model: SpecifyModel;
-  readonly results: RA<RA<string | number | null>>;
-  readonly selectedRows: Set<number>;
-  readonly onFetchMore: ((index: number) => void) | undefined;
-  readonly onDelete: (index: number) => void;
-  readonly totalCount: number;
-}): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [ids, setIds] = React.useState<RA<number>>([]);
-  React.useEffect(
-    () =>
-      isOpen
-        ? setIds(
-            selectedRows.size === 0
-              ? (results.map((row) => row[queryIdField]) as RA<number>)
-              : Array.from(selectedRows)
-          )
-        : undefined,
-    [results, isOpen, selectedRows]
-  );
-
-  const unParseIndex = (index: number): number =>
-    selectedRows.size === 0
-      ? index
-      : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
-          results.findIndex((row) => row[queryIdField] === deletedRecordId)
-        );
-
-  return (
-    <>
-      <Button.Small onClick={handleOpen} disabled={results.length === 0}>
-        {commonText('browseInForms')}
-      </Button.Small>
-      {isOpen && (
-        <RecordSelectorFromIds
-          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
-          ids={ids}
-          newResource={undefined}
-          defaultIndex={0}
-          model={model}
-          onAdd={undefined}
-          onDelete={(index): void => handleDelete(unParseIndex(index))}
-          /*
-           * BUG: make fetching more efficient when fetching last query item
-           *   (don't fetch all intermediate results)
-           */
-          onSlide={(index): void =>
-            index >= ids.length - 1 && selectedRows.size === 0
-              ? handleFetchMore?.(unParseIndex(index))
-              : undefined
-          }
-          dialog="modal"
-          onClose={handleClose}
-          onSaved={f.void}
-          isDependent={false}
-          title={queryText('queryResults', model.label)}
-          mode="edit"
-          canAddAnother={false}
-          canRemove={false}
-          urlContext={false}
-        />
-      )}
-    </>
   );
 }
 
@@ -401,8 +328,14 @@ export function QueryResultsTable({
                 createRecordSet
               )
             ) : undefined}
+            <QueryToMap
+              results={results}
+              selectedRows={selectedRows}
+              model={model}
+              fieldSpecs={fieldSpecs}
+            />
             {handleSelected === undefined && (
-              <ViewRecords
+              <QueryToForms
                 selectedRows={selectedRows}
                 results={results}
                 model={model}

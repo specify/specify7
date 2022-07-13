@@ -9,10 +9,10 @@ import { fetchLocalityDataFromLocalityResource } from '../localityrecorddataextr
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { Button } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useAsyncState, useBooleanState } from './hooks';
 import { LeafletMap } from './leaflet';
 import { Dialog } from './modaldialog';
-import { ErrorBoundary } from './errorboundary';
 
 function LeafletDialog({
   locality,
