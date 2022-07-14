@@ -122,7 +122,10 @@ export function QueryLine({
         !dataModelField.isRelationship &&
         mappingPathIsComplete(field.mappingPath);
       if (hasParser) {
-        parser = resolveParser(dataModelField, { datePart });
+        parser = {
+          ...resolveParser(dataModelField, { datePart }),
+          required: false,
+        };
         // Remove autoNumbering wildCard from default values
         if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
           parser = { ...parser, value: undefined };
