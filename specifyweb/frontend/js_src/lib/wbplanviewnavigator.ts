@@ -15,7 +15,11 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
-import { hasTablePermission, hasTreeAccess } from './permissions';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasTreeAccess,
+} from './permissions';
 import { getUserPref } from './preferencesutils';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
@@ -243,6 +247,17 @@ export function getMappingLineData({
       ? mappingPath.length - 1
       : mappingPath.length - 2;
 
+  /*
+   * If user doesn't have upload a data set, there is no need to remove
+   * tables without create access from the mapper
+   */
+  const canDoWbUpload = hasPermission('/workbench/dataset', 'upload');
+  /*
+   * Similar for the query builder: if can't run a query, no need to remove
+   * tables without read access
+   */
+  const canExecuteQuery = hasPermission('/querybuilder/query', 'execute');
+
   const callbacks: NavigationCallbacks = {
     getNextDirection() {
       if (internalState.position > lastPartIndex) return undefined;
@@ -429,7 +444,8 @@ export function getMappingLineData({
                     ) &&
                     (!field.isRelationship ||
                       (scope === 'queryBuilder'
-                        ? (isTreeModel(model.name)
+                        ? !canExecuteQuery ||
+                          (isTreeModel(model.name)
                             ? hasTreeAccess(model.name, 'read')
                             : hasTablePermission(
                                 field.relatedModel.name,
@@ -440,7 +456,8 @@ export function getMappingLineData({
                             'general',
                             'showNoReadTables'
                           )
-                        : (isTreeModel(model.name)
+                        : !canDoWbUpload ||
+                          (isTreeModel(model.name)
                             ? hasTreeAccess(model.name, 'create')
                             : hasTablePermission(
                                 field.relatedModel.name,
