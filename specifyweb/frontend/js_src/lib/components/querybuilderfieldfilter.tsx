@@ -170,6 +170,7 @@ function QueryInputField({
         value={listInput ? value.split(',').map(f.trim) : value}
         size={listInput ? selectMultipleSize : 1}
       >
+        <option value="" />
         {pickListItems.map(({ title, value }) => (
           <option key={value} value={value}>
             {title}
