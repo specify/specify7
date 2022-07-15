@@ -184,7 +184,7 @@
       disabled:dark:text-neutral-400 hover:bg-brand-200 dark:hover:bg-brand-400;
   }
 
-  button[aria-pressed='true']:not(.aria-handled) {
+  button[aria-pressed='true']:not(.aria-handled), button[aria-selected='true']:not(.aria-handled) {
     @apply bg-white dark:bg-neutral-400;
   }
 
