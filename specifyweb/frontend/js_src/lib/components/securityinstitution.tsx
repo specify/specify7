@@ -9,7 +9,6 @@ import { removeKey, replaceKey, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { getResourceViewUrl } from '../resource';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import {
@@ -20,15 +19,17 @@ import {
 import type { IR, RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, Link, Ul } from './basic';
+import { Button, Container, DataEntry, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
-import { useAsyncState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
+import { ResourceView } from './resourceview';
+import { deserializeResource } from './resource';
 
 export function SecurityInstitution({
   institution,
@@ -107,16 +108,7 @@ export function SecurityInstitution({
             <h3 className="text-2xl">
               {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
             </h3>
-            <Link.Icon
-              href={getResourceViewUrl(
-                'Institution',
-                schema.domainLevelIds.institution
-              )}
-              className={className.dataEntryEdit}
-              icon="pencil"
-              title={commonText('edit')}
-              aria-label={commonText('edit')}
-            />
+            <ViewInstitutionButton institution={institution} />
           </div>
           <div className="flex flex-col flex-1 gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
@@ -330,4 +322,34 @@ function useAdmins():
     ),
     false
   )[0];
+}
+
+function ViewInstitutionButton({
+  institution,
+}: {
+  readonly institution: SerializedResource<Institution>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(
+    () => deserializeResource(institution),
+    [institution]
+  );
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <ResourceView
+          resource={resource}
+          mode="edit"
+          canAddAnother={false}
+          dialog="modal"
+          onSaved={undefined}
+          onDeleted={undefined}
+          onClose={handleClose}
+          isSubForm={false}
+          isDependent={false}
+        />
+      )}
+    </>
+  );
 }

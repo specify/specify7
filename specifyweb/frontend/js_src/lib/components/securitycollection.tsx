@@ -14,7 +14,7 @@ import {
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissions';
-import { fetchResource, getResourceViewUrl } from '../resource';
+import { fetchResource } from '../resource';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import {
@@ -25,11 +25,18 @@ import {
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, Link, Ul } from './basic';
+import { Button, Container, DataEntry, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import { useAsyncState, useLiveState, useTitle } from './hooks';
+import {
+  useAsyncState,
+  useBooleanState,
+  useLiveState,
+  useTitle,
+} from './hooks';
 import { formatList } from './internationalization';
 import { LoadingScreen } from './modaldialog';
+import { deserializeResource } from './resource';
+import { ResourceView } from './resourceview';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
@@ -247,13 +254,7 @@ export function SecurityCollection({
               }`}
             </h3>
             {hasTablePermission('Collection', 'read') && (
-              <Link.Icon
-                href={getResourceViewUrl('Collection', collection.id)}
-                className={className.dataEntryEdit}
-                icon="pencil"
-                title={commonText('edit')}
-                aria-label={commonText('edit')}
-              />
+              <ViewCollectionButton collection={collection} />
             )}
           </div>
           <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
@@ -495,5 +496,35 @@ export function SecurityCollection({
         )
       ) : undefined}
     </Container.Base>
+  );
+}
+
+function ViewCollectionButton({
+  collection,
+}: {
+  readonly collection: SerializedResource<Collection>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(
+    () => deserializeResource(collection),
+    [collection]
+  );
+  return (
+    <>
+      <DataEntry.Edit onClick={handleOpen} />
+      {isOpen && (
+        <ResourceView
+          resource={resource}
+          mode="edit"
+          canAddAnother={false}
+          dialog="modal"
+          onSaved={undefined}
+          onDeleted={undefined}
+          onClose={handleClose}
+          isSubForm={false}
+          isDependent={false}
+        />
+      )}
+    </>
   );
 }

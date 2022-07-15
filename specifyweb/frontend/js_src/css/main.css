@@ -254,7 +254,7 @@
   }
 
   .grid-table :is(th, td, [role~="columnheader"], [role~="rowheader"], [role~="cell"]) {
-    @apply flex items-center gap-x-1;
+    @apply flex items-center gap-1;
   }
 
   /*
