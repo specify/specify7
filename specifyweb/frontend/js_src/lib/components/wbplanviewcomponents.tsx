@@ -198,12 +198,13 @@ export function getMappingLineProps({
             isOpen: true,
             onChange:
               typeof handleChange === 'function'
-                ? (payload): void =>
+                ? (payload): void => {
                     handleChange({
                       index,
                       parentTableName: data.tableName,
                       ...payload,
-                    })
+                    });
+                  }
                 : undefined,
             onClose: handleClose?.bind(undefined, index),
             autoMapperSuggestions,

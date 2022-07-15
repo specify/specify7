@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { RecordSet, SpQuery } from '../datamodel';
+import { f } from '../functools';
 import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -14,7 +15,13 @@ import {
 } from '../querybuilderutils';
 import { getModelById, schema } from '../schema';
 import { isTreeModel, treeRanksPromise } from '../treedefinitions';
-import { defined, RA } from '../types';
+import type { RA } from '../types';
+import { defined, filterArray } from '../types';
+import {
+  anyTreeRank,
+  formattedEntry,
+  formatTreeRank,
+} from '../wbplanviewmappinghelper';
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
@@ -105,14 +112,14 @@ export function QueryBuilder({
     queryText('queryUnloadProtectDialogText')
   );
 
-  const handleAddField = (): void =>
+  const handleAddField = (mappingPath = state.mappingView): void =>
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
         ...state.fields,
         {
           id: Math.max(-1, ...state.fields.map(({ id }) => id)) + 1,
-          mappingPath: state.mappingView,
+          mappingPath,
           sortType: undefined,
           filters: [
             {
@@ -390,7 +397,26 @@ export function QueryBuilder({
                 customSelectType: 'OPENED_LIST',
                 onChange({ isDoubleClick, ...rest }) {
                   if (isDoubleClick && mapButtonEnabled) handleAddField();
-                  else
+                  else if (
+                    isDoubleClick &&
+                    rest.isRelationship &&
+                    !isReadOnly
+                  ) {
+                    const newMappingPath = filterArray([
+                      ...state.mappingView.slice(0, -1),
+                      typeof rest.newTableName === 'string' &&
+                      isTreeModel(rest.newTableName)
+                        ? formatTreeRank(anyTreeRank)
+                        : undefined,
+                      formattedEntry,
+                    ]);
+                    if (
+                      !getMappedFieldsBind(
+                        newMappingPath.slice(0, -1)
+                      ).includes(newMappingPath.slice(-1)[0])
+                    )
+                      handleAddField(newMappingPath);
+                  } else
                     dispatch({
                       type: 'ChangeSelectElementValueAction',
                       line: 'mappingView',
@@ -403,7 +429,7 @@ export function QueryBuilder({
                 <Button.Small
                   className="justify-center p-2"
                   disabled={!mapButtonEnabled}
-                  onClick={handleAddField}
+                  onClick={f.zero(handleAddField)}
                   aria-label={commonText('add')}
                   title={queryText('newButtonDescription')}
                 >
