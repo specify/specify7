@@ -11,22 +11,21 @@ import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../../permissionutils';
+import { getUserPref } from '../../preferencesutils';
 import type { RA } from '../../types';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
-import { SortIndicator } from '../common';
+import { SortIndicator, useSortConfig } from '../common';
 import { DataSetMeta } from '../datasetmeta';
+import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
 import { goTo } from '../navigation';
-import { useCachedState } from '../statecache';
 import type { Dataset, DatasetBrief } from '../wbplanview';
-import { getUserPref } from '../../preferencesutils';
-import { ErrorBoundary } from '../errorboundary';
 
 const createEmptyDataSet = async (): Promise<void> =>
   ajax<Dataset>(
@@ -82,12 +81,10 @@ function DsMeta({
 
 function TableHeader({
   sortConfig,
-  onChange: handleChange,
+  onSort: handleSort,
 }: {
   readonly sortConfig: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>;
-  readonly onChange: (
-    newSortConfig: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>
-  ) => void;
+  readonly onSort: (sortField: 'name' | 'dateCreated' | 'dateUploaded') => void;
 }): JSX.Element {
   return (
     <thead>
@@ -96,40 +93,19 @@ function TableHeader({
           scope="col"
           className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
         >
-          <Button.LikeLink
-            onClick={(): void =>
-              handleChange({
-                sortField: 'name',
-                ascending: !sortConfig.ascending,
-              })
-            }
-          >
+          <Button.LikeLink onClick={(): void => handleSort('name')}>
             {commonText('name')}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
-          <Button.LikeLink
-            onClick={(): void =>
-              handleChange({
-                sortField: 'dateCreated',
-                ascending: !sortConfig.ascending,
-              })
-            }
-          >
+          <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
             {commonText('created')}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
-          <Button.LikeLink
-            onClick={(): void =>
-              handleChange({
-                sortField: 'dateUploaded',
-                ascending: !sortConfig.ascending,
-              })
-            }
-          >
+          <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
             {commonText('uploaded')}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
@@ -169,13 +145,8 @@ function DataSets({
     true
   );
 
-  const [sortConfig, setSortConfig] = useCachedState({
-    category: 'sortConfig',
-    key: 'listOfDataSets',
-    defaultValue: defaultSearchConfig,
-    staleWhileRefresh: false,
-  });
-  if (sortConfig === undefined) return null;
+  const [sortConfig = defaultSortConfig, handleSort] =
+    useSortConfig('listOfDataSets');
 
   const datasets = Array.isArray(unsortedDatasets)
     ? Array.from(unsortedDatasets).sort(
@@ -232,10 +203,7 @@ function DataSets({
       ) : (
         <nav>
           <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
-            <TableHeader
-              sortConfig={sortConfig}
-              onChange={(newSortConfig): void => setSortConfig(newSortConfig)}
-            />
+            <TableHeader sortConfig={sortConfig} onSort={handleSort} />
             <tbody>
               {datasets.map((dataset, index) => {
                 return (

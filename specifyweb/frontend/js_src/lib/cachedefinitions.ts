@@ -88,14 +88,7 @@ export type CacheDefinitions = {
     [key in `${number}_${number}`]: RA<hot.columnSorting.Config>;
   };
   readonly sortConfig: {
-    readonly listOfQueries: SortConfig<
-      keyof SpQuery['fields'] &
-        ('name' | 'timestampCreated' | 'timestampModified')
-    >;
-    readonly listOfRecordSets: SortConfig<'name' | 'timestampCreated'>;
-    readonly listOfDataSets: SortConfig<
-      'name' | 'dateCreated' | 'dateUploaded'
-    >;
+    readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };
   readonly attachments: {
     readonly sortOrder:
@@ -141,6 +134,15 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
   };
+};
+
+export type SortConfigs = {
+  readonly listOfQueries: keyof SpQuery['fields'] &
+    ('name' | 'timestampCreated' | 'timestampModified');
+  readonly listOfRecordSets: 'name' | 'timestampCreated';
+  readonly listOfDataSets: 'name' | 'dateCreated' | 'dateUploaded';
+  readonly listOfReports: 'name' | 'timestampCreated';
+  readonly listOfLabels: 'name' | 'timestampCreated';
 };
 
 const cacheDefinitions = {} as unknown as CacheDefinitions;

@@ -15,7 +15,7 @@ import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
-import { SortIndicator, TableIcon } from './common';
+import { SortIndicator, TableIcon, useSortConfig } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
@@ -24,7 +24,6 @@ import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
-import { useCachedState } from './statecache';
 import { QueryToolbarItem } from './toolbar/query';
 
 function Row({
@@ -133,12 +132,8 @@ export function RecordSetsDialog({
     | State<'EditState', { recordSet: SpecifyResource<RecordSet> }>
   >({ type: 'MainState' });
 
-  const [sortConfig = defaultSortConfig, setSortConfig] = useCachedState({
-    category: 'sortConfig',
-    key: 'listOfRecordSets',
-    defaultValue: defaultSortConfig,
-    staleWhileRefresh: false,
-  });
+  const [sortConfig = defaultSortConfig, handleSort] =
+    useSortConfig('listOfRecordSets');
 
   const [unsortedData] = useAsyncState(
     React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
@@ -169,26 +164,14 @@ export function RecordSetsDialog({
             <thead>
               <tr>
                 <th scope="col">
-                  <Button.LikeLink
-                    onClick={(): void =>
-                      setSortConfig({
-                        sortField: 'name',
-                        ascending: !sortConfig.ascending,
-                      })
-                    }
-                  >
+                  <Button.LikeLink onClick={(): void => handleSort('name')}>
                     {commonText('recordSet')}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
                 <th scope="col">
                   <Button.LikeLink
-                    onClick={(): void =>
-                      setSortConfig({
-                        sortField: 'timestampCreated',
-                        ascending: !sortConfig.ascending,
-                      })
-                    }
+                    onClick={(): void => handleSort('timestampCreated')}
                   >
                     {commonText('created')}
                     <SortIndicator

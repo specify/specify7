@@ -42,7 +42,7 @@ function CarryForwardConfig({
   readonly model: SpecifyModel;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields, setShowHiddenFields] = useCachedState(
+  const [showHiddenFields = true, setShowHiddenFields] = useCachedState(
     'forms',
     'carryForwardShowHidden'
   );

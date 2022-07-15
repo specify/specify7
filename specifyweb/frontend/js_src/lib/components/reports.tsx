@@ -21,6 +21,7 @@ import {
   keysToLowerCase,
   replaceItem,
   replaceKey,
+  sortFunction,
   split,
 } from '../helpers';
 import { commonText } from '../localization/common';
@@ -127,61 +128,112 @@ export function ReportsView({
         onClose={handleClose}
         buttons={commonText('cancel')}
       >
-        <section>
-          <h2>{commonText('reports')}</h2>
-          <Entries
-            resources={reports}
-            icon="/images/Reports16x16.png"
-            onClick={setSelectedReport}
-          />
-        </section>
-        <section>
-          <h2>{commonText('labels')}</h2>
-          <Entries
-            resources={labels}
-            icon="/images/Label16x16.png"
-            onClick={setSelectedReport}
-          />
-        </section>
+        <div className="flex flex-col gap-4">
+          <section>
+            <h2>{commonText('reports')}</h2>
+            <Entries
+              resources={reports}
+              icon="/images/Reports16x16.png"
+              onClick={setSelectedReport}
+              cacheKey="listOfReports"
+            />
+          </section>
+          <section>
+            <h2>{commonText('labels')}</h2>
+            <Entries
+              resources={labels}
+              icon="/images/Label16x16.png"
+              cacheKey="listOfLabels"
+              onClick={setSelectedReport}
+            />
+          </section>
+        </div>
       </Dialog>
     )
   ) : null;
 }
 
+const defaultSortConfig = { sortField: 'name', ascending: true } as const;
 function Entries({
-  resources,
+  resources: unsortedResources,
   icon,
+  cacheKey,
   onClick: handleClick,
 }: {
   readonly resources: RA<SerializedResource<SpAppResource>>;
   readonly icon: string;
+  readonly cacheKey: 'listOfReports' | 'listOfLabels';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
-  return (
-    <nav className="flex flex-col gap-2">
-      {resources.length === 0 ? (
-        <p>{commonText('noResults')}</p>
-      ) : (
-        resources.map((resource) => (
-          <div className="flex gap-2" key={resource.id}>
-            <Button.LikeLink
-              title={resource.description ?? undefined}
-              onClick={(): void => handleClick(resource)}
-              className="flex-1"
-            >
-              <img src={icon} alt="" className={iconClassName} />
-              {resource.name}
+  const [sortConfig = defaultSortConfig, handleSort] = useSortConfig(cacheKey);
+  const resources = React.useMemo(
+    () =>
+      Array.from(unsortedResources).sort(
+        sortFunction(
+          (record) => record[sortConfig.sortField],
+          !sortConfig.ascending
+        )
+      ),
+    [sortConfig, unsortedResources]
+  );
+  return resources.length === 0 ? (
+    <p>{commonText('noResults')}</p>
+  ) : (
+    <table className="grid-table grid-cols-[1fr_auto_auto_min-content] gap-2">
+      <thead>
+        <tr>
+          <th>
+            <Button.LikeLink onClick={(): void => handleSort('name')}>
+              {commonText('name')}
+              <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
-            <Link.Icon
-              icon="pencil"
-              href={`/specify/appresources/${resource.id}/`}
-              aria-label={commonText('edit')}
-              title={commonText('edit')}
-            />
-          </div>
-        ))
-      )}
-    </nav>
+          </th>
+          <th>
+            <Button.LikeLink
+              onClick={(): void => handleSort('timestampCreated')}
+            >
+              {commonText('created')}
+              <SortIndicator
+                fieldName="timestampCreated"
+                sortConfig={sortConfig}
+              />
+            </Button.LikeLink>
+          </th>
+          <th>{commonText('createdBy')}</th>
+          <td />
+        </tr>
+      </thead>
+      <tbody>
+        {resources.map((resource) => (
+          <tr key={resource.id}>
+            <td>
+              <Button.LikeLink
+                title={resource.description ?? undefined}
+                onClick={(): void => handleClick(resource)}
+                className="flex-1"
+              >
+                <img src={icon} alt="" className={iconClassName} />
+                {resource.name}
+              </Button.LikeLink>
+            </td>
+            <td>
+              <DateElement date={resource.timestampCreated} />
+            </td>
+            <td>
+              <FormattedResource resourceUrl={resource.specifyUser} />
+            </td>
+            <td>
+              <Link.Icon
+                icon="pencil"
+                href={`/specify/appresources/${resource.id}/`}
+                aria-label={commonText('edit')}
+                title={commonText('edit')}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

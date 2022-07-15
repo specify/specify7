@@ -167,6 +167,31 @@ export function SortIndicator<FIELD_NAMES extends string>({
   );
 }
 
+export function useSortConfig<NAME extends keyof SortConfigs>(
+  cacheKey: NAME
+): Readonly<
+  [
+    SortConfig<SortConfigs[NAME]> | undefined,
+    (fieldName: SortConfigs[NAME]) => void
+  ]
+> {
+  const [sortConfig, setSortConfig] = useCachedState('sortConfig', cacheKey);
+  const handleClick = React.useCallback(
+    (sortField: SortConfigs[NAME]) => {
+      const newSortConfig: SortConfig<SortConfigs[NAME]> = {
+        sortField,
+        ascending:
+          sortField === sortConfig?.sortField ? !sortConfig.ascending : true,
+      };
+      (setSortConfig as (sortConfig: SortConfig<SortConfigs[NAME]>) => void)(
+        newSortConfig
+      );
+    },
+    [sortConfig, setSortConfig]
+  );
+  return [sortConfig, handleClick];
+}
+
 /**
  * A React Portal wrapper
  *

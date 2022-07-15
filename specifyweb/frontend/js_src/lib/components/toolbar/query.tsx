@@ -16,7 +16,7 @@ import { getModelById } from '../../schema';
 import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Link } from '../basic';
-import { SortIndicator, TableIcon } from '../common';
+import { SortIndicator, TableIcon, useSortConfig } from '../common';
 import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import { icons } from '../icons';
@@ -25,7 +25,6 @@ import type { MenuItem } from '../main';
 import { Dialog } from '../modaldialog';
 import { QueryEditButton } from '../queryedit';
 import { QueryTables } from '../querytables';
-import { useCachedState } from '../statecache';
 
 const defaultSortConfig = {
   sortField: 'timestampCreated',
@@ -40,15 +39,9 @@ function QueryList({
   readonly queries: RA<SerializedResource<SpQuery>>;
   readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-}): JSX.Element | null {
-  const [sortConfig, setSortConfig] = useCachedState({
-    category: 'sortConfig',
-    key: 'listOfQueries',
-    defaultValue: defaultSortConfig,
-    staleWhileRefresh: true,
-  });
-
-  if (sortConfig === undefined) return null;
+}): JSX.Element {
+  const [sortConfig = defaultSortConfig, handleSort] =
+    useSortConfig('listOfQueries');
 
   const queries = Array.from(unsortedQueries).sort(
     sortFunction(
@@ -67,26 +60,14 @@ function QueryList({
             scope="col"
             className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
           >
-            <Button.LikeLink
-              onClick={(): void =>
-                setSortConfig({
-                  sortField: 'name',
-                  ascending: !sortConfig.ascending,
-                })
-              }
-            >
+            <Button.LikeLink onClick={(): void => handleSort('name')}>
               {commonText('name')}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
           <th scope="col">
             <Button.LikeLink
-              onClick={(): void =>
-                setSortConfig({
-                  sortField: 'timestampCreated',
-                  ascending: !sortConfig.ascending,
-                })
-              }
+              onClick={(): void => handleSort('timestampCreated')}
             >
               {commonText('created')}
               <SortIndicator
@@ -97,12 +78,7 @@ function QueryList({
           </th>
           <th scope="col">
             <Button.LikeLink
-              onClick={(): void =>
-                setSortConfig({
-                  sortField: 'timestampModified',
-                  ascending: !sortConfig.ascending,
-                })
-              }
+              onClick={(): void => handleSort('timestampModified')}
             >
               {commonText('modified')}
               <SortIndicator
