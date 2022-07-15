@@ -14,7 +14,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { removeItem, replaceItem } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import type { RA } from '../types';
 import { AppResourceIcon } from './appresourceeditorcomponents';
 import {

@@ -4,7 +4,6 @@ import React from 'react';
 import { getAppResourceType } from '../appresourcesfilters';
 import type {
   SpAppResource,
-  SpAppResourceData,
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
@@ -23,6 +22,7 @@ import {
   visualAppResourceEditors,
 } from './appresourcestabsdefs';
 import { Button, className } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -34,7 +34,7 @@ export function AppResourcesTabs({
   headerButtons,
   appResource,
   resource,
-  resourceData,
+  data,
   onChange: handleChange,
 }: {
   readonly label: string;
@@ -43,10 +43,8 @@ export function AppResourcesTabs({
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly headerButtons: JSX.Element;
-  readonly resourceData: SerializedResource<SpAppResourceData>;
-  readonly onChange: (
-    resourceData: SerializedResource<SpAppResourceData>
-  ) => void;
+  readonly data: string | null;
+  readonly onChange: (data: string | null) => void;
 }): JSX.Element {
   const [isFullScreen, _, handleExitFullScreen, handleToggleFullScreen] =
     useBooleanState();
@@ -79,14 +77,16 @@ export function AppResourcesTabs({
       <Tab.Panels className="h-full overflow-auto">
         {tabs.map(({ component: Component }, index) => (
           <Tab.Panel key={index} className="h-full">
-            <Component
-              isReadOnly={isReadOnly}
-              resource={resource}
-              appResource={appResource}
-              resourceData={resourceData}
-              onChange={handleChange}
-              showValidationRef={showValidationRef}
-            />
+            <ErrorBoundary dismissable>
+              <Component
+                isReadOnly={isReadOnly}
+                resource={resource}
+                appResource={appResource}
+                data={data}
+                onChange={handleChange}
+                showValidationRef={showValidationRef}
+              />
+            </ErrorBoundary>
           </Tab.Panel>
         ))}
       </Tab.Panels>
@@ -121,9 +121,10 @@ function useEditorTabs(
     getAppResourceType
   );
   return React.useMemo(() => {
-    const visualEditor = Object.entries(visualAppResourceEditors).find(
-      ([type]) => type === subType
-    );
+    const visualEditor =
+      typeof subType === 'string'
+        ? visualAppResourceEditors[subType]
+        : undefined;
     return filterArray([
       typeof visualEditor === 'function'
         ? {

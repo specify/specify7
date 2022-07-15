@@ -6,13 +6,13 @@ import '../../css/main.css';
 
 import React from 'react';
 
-import { csrfToken } from '../csrftoken';
+import { csrfToken, parseDjangoDump } from '../csrftoken';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
-import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
+import { entrypoint, SplashScreen } from './splashscreen';
 
 function ChangePassword({
   data,

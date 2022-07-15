@@ -8,7 +8,7 @@ import type {
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { formsText } from '../localization/forms';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { createResource } from '../resource';
 import { toTable } from '../specifymodel';
 import {
@@ -121,8 +121,10 @@ export function AppResourceEditor({
                   headerButtons={headerButtons}
                   appResource={appResource}
                   resource={resource}
-                  resourceData={resourceData}
-                  onChange={setResourceData}
+                  data={resourceData.data}
+                  onChange={(data): void =>
+                    setResourceData({ ...resourceData, data })
+                  }
                 />
               </Form>
               <DataEntry.Footer>

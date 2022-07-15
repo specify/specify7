@@ -8,38 +8,41 @@ import React from 'react';
 
 import type {
   SpAppResource,
-  SpAppResourceData,
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
+import type { UserPreferences } from '../preferencesutils';
+import { getPrefDefinition, setPrefsGenerator } from '../preferencesutils';
+import type { ContextType, RR } from '../types';
 import { useCodeMirrorExtensions } from './appresourceeditorcomponents';
-import { useDarkMode } from './preferenceshooks';
-import { appResourceSubTypes } from './appresourcescreate';
-import { RR } from '../types';
+import type { appResourceSubTypes } from './appresourcescreate';
+import { useId, useLiveState } from './hooks';
+import { PreferencesContext, useDarkMode } from './preferenceshooks';
+import { PreferencesContent } from './toolbar/preferences';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
-  readonly resourceData: SerializedResource<SpAppResourceData>;
+  readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<null | (() => void)>;
-  readonly onChange: (
-    resourceData: SerializedResource<SpAppResourceData>
-  ) => void;
+  readonly onChange: (data: string | null) => void;
 }) => JSX.Element;
 
 export const AppResourceTextEditor: AppResourceTab = function ({
   isReadOnly,
   resource,
   appResource,
-  resourceData,
+  data,
   showValidationRef,
   onChange: handleChange,
 }): JSX.Element {
   const isDarkMode = useDarkMode();
   const extensions = useCodeMirrorExtensions(resource, appResource);
+
+  const [stateRestored, setStateRestored] = React.useState<boolean>(false);
   const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
   React.useEffect(() => {
     showValidationRef.current = (): void => {
@@ -50,22 +53,20 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   const selectionRef = React.useRef<unknown | undefined>(undefined);
   return (
     <CodeMirror
-      value={resourceData.data ?? ''}
-      onChange={(data: string): void =>
-        handleChange({
-          ...resourceData,
-          data,
-        })
-      }
+      value={data ?? ''}
+      onChange={handleChange}
       theme={isDarkMode ? okaidia : xcodeLight}
       readOnly={isReadOnly}
       ref={(ref): void => {
         codeMirrorRef.current = ref;
         // Restore selection state when switching tabs or toggling full screen
-        if (selectionRef.current !== undefined)
-          ref?.view?.dispatch({
-            selection: EditorSelection.fromJSON(selectionRef.current),
-          });
+        if (!stateRestored && typeof ref?.view === 'object') {
+          if (selectionRef.current !== undefined)
+            ref.view.dispatch({
+              selection: EditorSelection.fromJSON(selectionRef.current),
+            });
+          setStateRestored(true);
+        }
       }}
       /*
        * FEATURE: provide supported attributes for autocomplete
@@ -80,14 +81,46 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   );
 };
 
-const UserPreferences: AppResourceTab = function ({
+const UserPreferencesEditor: AppResourceTab = function ({
   isReadOnly,
-  resource,
-  appResource,
-  resourceData,
-  showValidationRef,
+  data,
   onChange: handleChange,
-}): JSX.Element {};
+}): JSX.Element {
+  const id = useId('user-preferences');
+  const [preferencesContext] = useLiveState<
+    ContextType<typeof PreferencesContext>
+  >(
+    React.useCallback(() => {
+      const preferences = JSON.parse(data ?? '{}') as UserPreferences;
+      const setPrefs = setPrefsGenerator(preferences, false);
+      return [
+        (
+          category: string,
+          subcategory: PropertyKey,
+          item: PropertyKey
+        ): unknown =>
+          preferences[category]?.[subcategory as string]?.[item as string] ??
+          getPrefDefinition(category, subcategory as string, item as string)
+            .defaultValue,
+        (
+          category: string,
+          subcategory: PropertyKey,
+          item: PropertyKey,
+          value: unknown
+        ): void => {
+          setPrefs(category, subcategory as string, item as string, value);
+          handleChange(JSON.stringify(preferences));
+        },
+      ];
+    }, [handleChange])
+  );
+
+  return (
+    <PreferencesContext.Provider value={preferencesContext}>
+      <PreferencesContent id={id} isReadOnly={isReadOnly} />
+    </PreferencesContext.Provider>
+  );
+};
 
 export const visualAppResourceEditors: RR<
   keyof typeof appResourceSubTypes,
@@ -95,8 +128,8 @@ export const visualAppResourceEditors: RR<
 > = {
   label: undefined,
   report: undefined,
-  userPreferences: UserPreferences,
-  defaultUserPreferences: UserPreferences,
+  userPreferences: UserPreferencesEditor,
+  defaultUserPreferences: UserPreferencesEditor,
   leafletLayers: undefined,
   rssExportFeed: undefined,
   expressSearchConfig: undefined,

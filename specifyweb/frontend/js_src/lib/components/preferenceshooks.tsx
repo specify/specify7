@@ -28,7 +28,7 @@ export const prefEvents = eventListener<{
 export const PreferencesContext = React.createContext<
   | Readonly<[getUserPref: typeof getUserPref, setPref: typeof setPref]>
   | undefined
->([getUserPref, setPref]);
+>(undefined);
 PreferencesContext.displayName = 'PreferencesContext';
 
 export function usePref<

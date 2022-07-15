@@ -64,7 +64,7 @@ function Preferences({
       >
         <div className="md:flex-row relative flex flex-col gap-6 overflow-y-auto">
           <PreferencesAside id={id} />
-          <PreferencesContent id={id} />
+          <PreferencesContent id={id} isReadOnly={false} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">

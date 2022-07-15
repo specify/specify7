@@ -66,80 +66,90 @@ let preferences: {
 export type UserPreferences = typeof preferences;
 export const getRawUserPreferences = () => preferences;
 
-export function setPref<
-  CATEGORY extends keyof Preferences,
-  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
-  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
->(
-  category: CATEGORY,
-  subcategory: SUBCATEGORY,
-  item: ITEM,
-  value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-): void {
-  const definition = getPrefDefinition(category, subcategory, item);
+export const setPrefsGenerator = (
+  preferences: UserPreferences,
+  triggerSync: boolean
+) =>
+  function setPref<
+    CATEGORY extends keyof Preferences,
+    SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+    ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+  >(
+    category: CATEGORY,
+    subcategory: SUBCATEGORY,
+    item: ITEM,
+    value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+  ): void {
+    const definition = getPrefDefinition(category, subcategory, item);
 
-  let parsed;
-  if ('type' in definition) {
-    const baseParser = parserFromType(definition.type);
-    const parser =
-      typeof definition.parser === 'object'
-        ? mergeParsers(baseParser, definition.parser)
-        : baseParser;
-    const parseResult = parseValue(parser, undefined, value?.toString());
-    if (parseResult.isValid) parsed = parseResult.parsed;
-    else {
-      console.error(`Failed parsing pref value`, {
-        category,
-        subcategory,
-        item,
-        definition,
-        parseResult,
-      });
-      parsed = definition.defaultValue;
+    let parsed;
+    if ('type' in definition) {
+      const baseParser = parserFromType(definition.type);
+      const parser =
+        typeof definition.parser === 'object'
+          ? mergeParsers(baseParser, definition.parser)
+          : baseParser;
+      const parseResult = parseValue(parser, undefined, value?.toString());
+      if (parseResult.isValid) parsed = parseResult.parsed;
+      else {
+        console.error(`Failed parsing pref value`, {
+          category,
+          subcategory,
+          item,
+          definition,
+          parseResult,
+        });
+        parsed = definition.defaultValue;
+      }
+    } else if ('values' in definition) {
+      if (definition.values.some((item) => item.value === value))
+        parsed = value;
+      else {
+        console.error(`Failed parsing pref value`, {
+          category,
+          subcategory,
+          item,
+          value,
+          definition,
+        });
+        parsed = definition.defaultValue;
+      }
+    } else parsed = value;
+
+    const prefs = preferences as any;
+    if (
+      parsed ===
+      (prefs[category]?.[subcategory]?.[item] ?? definition.defaultValue)
+    )
+      return;
+
+    prefs[category] ??= {};
+    prefs[category][subcategory] ??= {};
+    prefs[category][subcategory][item] = parsed;
+
+    if (triggerSync) {
+      /*
+       * Unset default values
+       * This reduces the size of the downloaded file, but mainly, it allows for
+       * future Specify 7 versions to change the default value.
+       */
+      if (parsed === definition.defaultValue) {
+        prefs[category][subcategory][item] = undefined;
+        // Clean up empty objects
+        if (
+          filterArray(Object.values(prefs[category][subcategory])).length === 0
+        )
+          prefs[category][subcategory] = undefined;
+        if (filterArray(Object.values(prefs[category])).length === 0)
+          prefs[category] = undefined;
+      }
+
+      if (process.env.NODE_ENV !== 'test') commitToCache();
+      requestPreferencesSync();
     }
-  } else if ('values' in definition) {
-    if (definition.values.some((item) => item.value === value)) parsed = value;
-    else {
-      console.error(`Failed parsing pref value`, {
-        category,
-        subcategory,
-        item,
-        value,
-        definition,
-      });
-      parsed = definition.defaultValue;
-    }
-  } else parsed = value;
-
-  const prefs = preferences as any;
-  if (
-    parsed === prefs[category]?.[subcategory]?.[item] ??
-    definition.defaultValue
-  )
-    return;
-
-  prefs[category] ??= {};
-  prefs[category][subcategory] ??= {};
-  prefs[category][subcategory][item] = parsed;
-
-  /*
-   * Unset default values
-   * This reduces the size of the downloaded file, but mainly, it allows for
-   * future Specify 7 versions to change the default value.
-   */
-  if (parsed === definition.defaultValue) {
-    prefs[category][subcategory][item] = undefined;
-    // Clean up empty objects
-    if (filterArray(Object.values(prefs[category][subcategory])).length === 0)
-      prefs[category][subcategory] = undefined;
-    if (filterArray(Object.values(prefs[category])).length === 0)
-      prefs[category] = undefined;
-  }
-
-  prefEvents.trigger('update', definition);
-  if (process.env.NODE_ENV !== 'test') commitToCache();
-  requestPreferencesSync();
-}
+    prefEvents.trigger('update', definition);
+  };
+export const setPref = setPrefsGenerator(preferences, true);
 
 // Sync with back-end at most every 5s
 const syncTimeout = 5 * MILLISECONDS;
