@@ -5,19 +5,15 @@ import { Backbone } from '../backbone';
 import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { format } from '../dataobjformatters';
-import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
-import { hasTablePermission } from '../permissionutils';
-import { idFromUrl } from '../resource';
-import { schema } from '../schema';
 import type { RA } from '../types';
 import { defined } from '../types';
 import { userInformation } from '../userinfo';
+import { getMaxDataSetLength } from '../wbimporthelpers';
 import { uniquifyDataSetName } from '../wbuniquifyname';
-import { Button, Form, Input, Label, Link, Select, Submit } from './basic';
-import { AutoGrowTextArea, TableIcon } from './common';
+import { Button, Form, Input, Label, Select, Submit } from './basic';
+import { AutoGrowTextArea, FormattedResource, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { icons } from './icons';
@@ -26,20 +22,6 @@ import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
-import { getMaxDataSetLength } from '../wbimporthelpers';
-import { softFail } from './errorboundary';
-
-async function fetchAgent(url: string): Promise<JSX.Element> {
-  if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
-  const createdByAgentResource = new schema.models.Agent.Resource({
-    id: idFromUrl(url),
-  });
-  return format(createdByAgentResource).then((formattedAgent) => (
-    <Link.Default href={createdByAgentResource.viewUrl()}>
-      {formattedAgent}
-    </Link.Default>
-  ));
-}
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -56,28 +38,6 @@ export function DataSetMeta({
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
   const [remarks, setRemarks] = React.useState(dataset.remarks ?? '');
-  const [createdBy, setCreatedBy] = React.useState<JSX.Element | string>(
-    commonText('loading')
-  );
-  const [modifiedBy, setModifiedBy] = React.useState<JSX.Element | string>(
-    commonText('loading')
-  );
-
-  React.useEffect(() => {
-    const sameAgent = dataset.createdbyagent === dataset.modifiedbyagent;
-    f.all({
-      createdByAgent: fetchAgent(dataset.createdbyagent),
-      modifiedByAgent:
-        sameAgent || typeof dataset.modifiedbyagent !== 'string'
-          ? Promise.resolve(commonText('notApplicable'))
-          : fetchAgent(dataset.modifiedbyagent),
-    })
-      .then(({ createdByAgent, modifiedByAgent }) => {
-        setCreatedBy(createdByAgent);
-        setModifiedBy(sameAgent ? createdByAgent : modifiedByAgent);
-      })
-      .catch(softFail);
-  }, [dataset.createdbyagent, dataset.modifiedbyagent]);
 
   const loading = React.useContext(LoadingContext);
 
@@ -172,10 +132,20 @@ export function DataSetMeta({
             </i>
           </span>
           <span>
-            {commonText('createdBy')} <i>{createdBy}</i>
+            {commonText('createdBy')}{' '}
+            <i>
+              <FormattedResource resourceUrl={dataset.createdbyagent} />
+            </i>
           </span>
           <span>
-            {commonText('modifiedBy')} <i>{modifiedBy}</i>
+            {commonText('modifiedBy')}{' '}
+            <i>
+              {typeof dataset.modifiedbyagent === 'string' ? (
+                <FormattedResource resourceUrl={dataset.modifiedbyagent} />
+              ) : (
+                commonText('notApplicable')
+              )}
+            </i>
           </span>
           <span>
             {wbText('importedFileName')}{' '}

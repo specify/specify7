@@ -8,16 +8,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import type { SortConfigs } from '../cachedefinitions';
+import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import { spanNumber } from '../helpers';
 import { getIcon } from '../icons';
 import { commonText } from '../localization/common';
+import { hasTablePermission } from '../permissionutils';
+import { parseResourceUrl } from '../resource';
 import { getModel } from '../schema';
-import { Button, className, Textarea } from './basic';
+import { defined } from '../types';
+import { Button, className, Link, Textarea } from './basic';
 import { copyTextToClipboard } from './filepicker';
-import { useBooleanState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { icons } from './icons';
 import { usePref } from './preferenceshooks';
+import { useCachedState } from './statecache';
 
 const MAX_HUE = 360;
 
@@ -296,5 +302,29 @@ export function CopyButton({
     >
       {wasCopied ? commonText('copied') : label}
     </Button.Green>
+  );
+}
+
+export function FormattedResource({
+  resourceUrl,
+  fallback = commonText('loading'),
+}: {
+  readonly resourceUrl: string;
+  readonly fallback?: string;
+}): JSX.Element | null {
+  const resource = React.useMemo(() => {
+    const [tableName, id] = defined(parseResourceUrl(resourceUrl));
+    const model = defined(getModel(tableName));
+    return new model.Resource({ id });
+  }, [resourceUrl]);
+  const [formatted] = useAsyncState(
+    React.useCallback(async () => format(resource), [resource]),
+    false
+  );
+  return typeof resource === 'object' &&
+    hasTablePermission(resource.specifyModel.name, 'read') ? (
+    <Link.Default href={resource.viewUrl()}>{formatted}</Link.Default>
+  ) : (
+    <>{formatted ?? fallback}</>
   );
 }
