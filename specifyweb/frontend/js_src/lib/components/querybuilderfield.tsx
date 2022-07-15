@@ -145,7 +145,7 @@ export function QueryLine({
           (fieldName === 'latitude1' || fieldName === 'longitude1');
       }
 
-      const newFilters = hasParser
+      const updatedFilters = hasParser
         ? field.filters.map((filter) => {
             const filterType =
               fieldType === undefined ||
@@ -162,12 +162,23 @@ export function QueryLine({
               : filter;
           })
         : [];
+      const anyFilter =
+        updatedFilters.length -
+        1 -
+        Array.from(updatedFilters)
+          .reverse()
+          .findIndex(({ type }) => type === 'any');
+      // Make sure there is only one "any" filter at one time
+      const newFilters = updatedFilters.filter(
+        ({ type }, index) => type !== 'any' || index === anyFilter
+      );
 
       setFieldMeta({ parser, fieldType, canOpenMap });
 
       if (
-        field.filters.length === newFilters.length &&
-        field.filters.some((filter, index) => filter !== newFilters[index])
+        newFilters.length !== updatedFilters.length ||
+        (field.filters.length === newFilters.length &&
+          field.filters.some((filter, index) => filter !== newFilters[index]))
       )
         handleChange?.({
           ...field,
@@ -207,6 +218,15 @@ export function QueryLine({
     });
 
   const isFieldComplete = mappingPathIsComplete(field.mappingPath);
+
+  const availableFilters = Object.entries(queryFieldFilters).filter(
+    ([filterName, { types }]) =>
+      typeof fieldMeta.fieldType === 'string'
+        ? !Array.isArray(types) || types.includes(fieldMeta.fieldType)
+        : filterName === 'any'
+  );
+  const filtersVisible =
+    availableFilters.length > 1 || availableFilters[0][0] !== 'any';
 
   return (
     <li
@@ -267,170 +287,164 @@ export function QueryLine({
             </React.Fragment>
           ))}
         </div>
-        <div
-          className={
-            field.filters.length > 1 ? 'flex flex-col gap-2' : 'contents'
-          }
-        >
-          {field.filters.map((filter, index) => (
-            <div
-              className={
-                field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
-              }
-              key={index}
-            >
-              {index === 0 ? (
-                <React.Fragment>
-                  {mappingElementDivider}
-                  <Button.Small
-                    title={queryText('or')}
-                    aria-label={queryText('or')}
-                    variant={
-                      field.filters.length > 1
-                        ? className.blueButton
-                        : className.grayButton
-                    }
-                    className={`aria-handled print:hidden
+        {filtersVisible && (
+          <div
+            className={
+              field.filters.length > 1 ? 'flex flex-col gap-2' : 'contents'
+            }
+          >
+            {field.filters.map((filter, index) => (
+              <div
+                className={
+                  field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
+                }
+                key={index}
+              >
+                {index === 0 ? (
+                  <React.Fragment>
+                    {mappingElementDivider}
+                    <Button.Small
+                      title={queryText('or')}
+                      aria-label={queryText('or')}
+                      variant={
+                        field.filters.length > 1
+                          ? className.blueButton
+                          : className.grayButton
+                      }
+                      className={`aria-handled print:hidden
                       ${isFieldComplete ? '' : 'invisible'}
                     `}
+                      disabled={handleChange === undefined}
+                      onClick={(): void =>
+                        handleFilterChange(field.filters.length, {
+                          type: 'any',
+                          isNot: false,
+                          startValue: '',
+                        })
+                      }
+                      aria-pressed={field.filters.length > 1}
+                    >
+                      {icons.plus}
+                    </Button.Small>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <span className={mappingElementDividerClassName}>
+                      <span
+                        className={`uppercase flex items-center justify-center
+                        ${iconClassName}`}
+                      >
+                        {queryText('or')}
+                      </span>
+                    </span>
+                    <Button.Small
+                      className="print:hidden"
+                      variant={className.redButton}
+                      title={commonText('remove')}
+                      aria-label={commonText('remove')}
+                      disabled={handleChange === undefined}
+                      onClick={(): void => handleFilterChange(index, undefined)}
+                    >
+                      {icons.trash}
+                    </Button.Small>
+                  </React.Fragment>
+                )}
+                {field.filters[index].type === 'any' ? undefined : (
+                  <Button.Small
+                    title={queryText('negate')}
+                    aria-label={queryText('negate')}
+                    variant={
+                      field.filters[index].isNot
+                        ? className.redButton
+                        : className.grayButton
+                    }
+                    className="aria-handled"
                     disabled={handleChange === undefined}
                     onClick={(): void =>
-                      handleFilterChange(field.filters.length, {
-                        type: 'any',
-                        isNot: false,
-                        startValue: '',
+                      handleFilterChange(index, {
+                        ...field.filters[index],
+                        isNot: !field.filters[index].isNot,
                       })
                     }
-                    aria-pressed={field.filters.length > 1}
+                    aria-pressed={field.filters[index].isNot}
                   >
-                    {icons.plus}
+                    {icons.ban}
                   </Button.Small>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <span className={mappingElementDividerClassName}>
-                    <span
-                      className={`uppercase flex items-center justify-center
-                        ${iconClassName}`}
-                    >
-                      {queryText('or')}
-                    </span>
-                  </span>
-                  <Button.Small
-                    className="print:hidden"
-                    variant={className.redButton}
-                    title={commonText('remove')}
-                    aria-label={commonText('remove')}
+                )}
+                <div>
+                  <Select
+                    aria-label={
+                      queryFieldFilters[field.filters[index].type]
+                        .description ?? commonText('filter')
+                    }
+                    title={
+                      queryFieldFilters[field.filters[index].type]
+                        .description ?? commonText('filter')
+                    }
+                    value={filter.type}
+                    className={customSelectElementBackground}
                     disabled={handleChange === undefined}
-                    onClick={(): void => handleFilterChange(index, undefined)}
+                    onChange={({ target }): void => {
+                      const newFilter = (target as HTMLSelectElement)
+                        .value as QueryFieldFilter;
+                      const startValue =
+                        queryFieldFilters[newFilter].component === undefined
+                          ? ''
+                          : filter.type === 'any' &&
+                            filtersWithDefaultValue.has(newFilter) &&
+                            filter.startValue === '' &&
+                            typeof fieldMeta.parser?.value === 'string'
+                          ? fieldMeta.parser.value
+                          : filter.startValue;
+
+                      /*
+                       * When going from "in" to another filter type, throw away
+                       * all but first one or two values
+                       */
+                      const valueLength = newFilter === 'between' ? 2 : 1;
+                      const trimmedValue =
+                        filter.type === 'in'
+                          ? startValue
+                          : startValue
+                              .split(',')
+                              .slice(0, valueLength)
+                              .join(', ');
+
+                      handleFilterChange?.(index, {
+                        ...field.filters[index],
+                        type: newFilter,
+                        startValue: trimmedValue,
+                      });
+                    }}
                   >
-                    {icons.trash}
-                  </Button.Small>
-                </React.Fragment>
-              )}
-              {field.filters[index].type === 'any' ? undefined : (
-                <Button.Small
-                  title={queryText('negate')}
-                  aria-label={queryText('negate')}
-                  variant={
-                    field.filters[index].isNot
-                      ? className.redButton
-                      : className.grayButton
-                  }
-                  className="aria-handled"
-                  disabled={handleChange === undefined}
-                  onClick={(): void =>
-                    handleFilterChange(index, {
-                      ...field.filters[index],
-                      isNot: !field.filters[index].isNot,
-                    })
-                  }
-                  aria-pressed={field.filters[index].isNot}
-                >
-                  {icons.ban}
-                </Button.Small>
-              )}
-              <div>
-                <Select
-                  aria-label={
-                    queryFieldFilters[field.filters[index].type].description ??
-                    commonText('filter')
-                  }
-                  title={
-                    queryFieldFilters[field.filters[index].type].description ??
-                    commonText('filter')
-                  }
-                  value={filter.type}
-                  className={customSelectElementBackground}
-                  disabled={handleChange === undefined}
-                  onChange={({ target }): void => {
-                    const newFilter = (target as HTMLSelectElement)
-                      .value as QueryFieldFilter;
-                    const startValue =
-                      queryFieldFilters[newFilter].component === undefined
-                        ? ''
-                        : filter.type === 'any' &&
-                          filtersWithDefaultValue.has(newFilter) &&
-                          filter.startValue === '' &&
-                          typeof fieldMeta.parser?.value === 'string'
-                        ? fieldMeta.parser.value
-                        : filter.startValue;
-
-                    /*
-                     * When going from "in" to another filter type, throw away
-                     * all but first one or two values
-                     */
-                    const valueLength = newFilter === 'between' ? 2 : 1;
-                    const trimmedValue =
-                      filter.type === 'in'
-                        ? startValue
-                        : startValue
-                            .split(',')
-                            .slice(0, valueLength)
-                            .join(', ');
-
-                    handleFilterChange?.(index, {
-                      ...field.filters[index],
-                      type: newFilter,
-                      startValue: trimmedValue,
-                    });
-                  }}
-                >
-                  {Object.entries(queryFieldFilters).map(
-                    ([filterName, { label, types }]) =>
-                      (
-                        typeof fieldMeta.fieldType === 'string'
-                          ? !Array.isArray(types) ||
-                            types.includes(fieldMeta.fieldType)
-                          : filterName === 'any'
-                      ) ? (
-                        <option key={filterName} value={filterName}>
-                          {label}
-                        </option>
-                      ) : undefined
-                  )}
-                </Select>
+                    {availableFilters.map(([filterName, { label }]) => (
+                      <option key={filterName} value={filterName}>
+                        {label}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                {typeof fieldMeta.parser === 'object' && (
+                  <QueryLineFilter
+                    filter={field.filters[index]}
+                    fieldName={mappingPathToString(field.mappingPath)}
+                    parser={fieldMeta.parser}
+                    enforceLengthLimit={enforceLengthLimit}
+                    onChange={
+                      typeof handleChange === 'function'
+                        ? (startValue): void =>
+                            handleFilterChange(index, {
+                              ...field.filters[index],
+                              startValue,
+                            })
+                        : undefined
+                    }
+                  />
+                )}
               </div>
-              {typeof fieldMeta.parser === 'object' && (
-                <QueryLineFilter
-                  filter={field.filters[index]}
-                  fieldName={mappingPathToString(field.mappingPath)}
-                  parser={fieldMeta.parser}
-                  enforceLengthLimit={enforceLengthLimit}
-                  onChange={
-                    typeof handleChange === 'function'
-                      ? (startValue): void =>
-                          handleFilterChange(index, {
-                            ...field.filters[index],
-                            startValue,
-                          })
-                      : undefined
-                  }
-                />
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       <div className="contents print:hidden">
         {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
