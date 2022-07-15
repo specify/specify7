@@ -28,6 +28,7 @@ import { userInformation } from '../userinfo';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Form, Link, Submit } from './basic';
+import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useId } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
@@ -37,7 +38,6 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
-import { TableIcon } from './common';
 
 function QueryButton({
   disabled,
@@ -305,6 +305,11 @@ export function QueryExportButtons({
     });
   }
 
+  const canUseKml =
+    (baseTableName === 'Locality' ||
+      fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
+    hasPermission('/querybuilder/query', 'export_kml');
+
   return (
     <>
       {state === 'creating' ? (
@@ -333,7 +338,7 @@ export function QueryExportButtons({
           {queryText('createCsv')}
         </QueryButton>
       )}
-      {hasPermission('/querybuilder/query', 'export_kml') && (
+      {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}
           onClick={(): void =>

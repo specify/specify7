@@ -23,7 +23,7 @@ export function QueryToForms({
   readonly selectedRows: Set<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
   readonly onDelete: (index: number) => void;
-  readonly totalCount: number;
+  readonly totalCount: number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows, isOpen);
@@ -37,10 +37,13 @@ export function QueryToForms({
 
   return (
     <>
-      <Button.Small onClick={handleOpen} disabled={results.length === 0}>
+      <Button.Small
+        onClick={handleOpen}
+        disabled={results.length === 0 || totalCount === undefined}
+      >
         {commonText('browseInForms')}
       </Button.Small>
-      {isOpen && (
+      {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           ids={ids}
@@ -64,7 +67,7 @@ export function QueryToForms({
           canRemove={false}
           urlContext={false}
         />
-      )}
+      ) : undefined}
     </>
   );
 }

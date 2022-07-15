@@ -212,7 +212,7 @@ export function QueryResultsTable({
   readonly fetchResults: (
     offset: number
   ) => Promise<RA<RA<string | number | null>>>;
-  readonly totalCount: number;
+  readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<RA<string | number | null>> | undefined;
@@ -270,7 +270,7 @@ export function QueryResultsTable({
   );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
-  React.useEffect(() => setSelectedRows(new Set()), [initialTotalCount]);
+  React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
   function fetchMore(
     index?: number,
@@ -325,8 +325,8 @@ export function QueryResultsTable({
       <div className="gap-x-2 flex items-center">
         <H3>{`${label}: (${
           selectedRows.size === 0
-            ? totalCount
-            : `${selectedRows.size}/${totalCount}`
+            ? totalCount ?? commonText('loading')
+            : `${selectedRows.size}/${totalCount ?? commonText('loading')}`
         })`}</H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
@@ -367,26 +367,24 @@ export function QueryResultsTable({
               model={model}
               fieldSpecs={fieldSpecs}
             />
-            {handleSelected === undefined && (
-              <QueryToForms
-                selectedRows={selectedRows}
-                results={results}
-                model={model}
-                onFetchMore={isFetching ? undefined : fetchMore}
-                onDelete={(index): void => {
-                  setTotalCount(totalCount - 1);
-                  setResults(removeItem(results, index));
-                  setSelectedRows(
-                    new Set(
-                      Array.from(selectedRows).filter(
-                        (id) => id !== loadedResults[index][queryIdField]
-                      )
+            <QueryToForms
+              selectedRows={selectedRows}
+              results={results}
+              model={model}
+              onFetchMore={isFetching ? undefined : fetchMore}
+              onDelete={(index): void => {
+                setTotalCount(defined(totalCount) - 1);
+                setResults(removeItem(results, index));
+                setSelectedRows(
+                  new Set(
+                    Array.from(selectedRows).filter(
+                      (id) => id !== loadedResults[index][queryIdField]
                     )
-                  );
-                }}
-                totalCount={totalCount}
-              />
-            )}
+                  )
+                );
+              }}
+              totalCount={totalCount}
+            />
           </>
         ) : undefined}
       </div>
@@ -569,8 +567,12 @@ export function QueryResultsWrapper({
    * the query results until query is reRun
    */
   const [props, setProps] = React.useState<
-    Parameters<typeof QueryResultsTable>[0] | undefined
+    Omit<Parameters<typeof QueryResultsTable>[0], 'totalCount'> | undefined
   >(undefined);
+
+  const [totalCount, setTotalCount] = React.useState<number | undefined>(
+    undefined
+  );
 
   const previousQueryRunCount = React.useRef(0);
   React.useEffect(() => {
@@ -581,46 +583,46 @@ export function QueryResultsWrapper({
 
     const allFields = addAuditLogFields(baseTableName, fields);
 
-    const totalCount = ajax<{ readonly count: number }>(
-      '/stored_query/ephemeral/',
-      {
-        method: 'POST',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Accept: 'application/json' },
-        body: keysToLowerCase({
-          ...queryResource.toJSON(),
-          fields: unParseQueryFields(baseTableName, allFields, []),
-          recordSetId,
-          countOnly: true,
-        }),
-      }
-    ).then(({ data }) => data.count);
+    setTotalCount(undefined);
+    ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/json' },
+      body: keysToLowerCase({
+        ...queryResource.toJSON(),
+        fields: unParseQueryFields(baseTableName, allFields, []),
+        recordSetId,
+        countOnly: true,
+      }),
+    })
+      .then(({ data }) => setTotalCount(data.count))
+      .catch(fail);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const initialData =
       // Run as count only if there are no visible fields
       queryResource.get('countOnly') === true || displayedFields.length === 0
-        ? undefined
+        ? Promise.resolve(undefined)
         : fetchResults(0);
     const fieldSpecs = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
     ).map(([_field, fieldSpec]) => fieldSpec);
 
-    f.all({ totalCount, initialData })
-      .then(({ totalCount, initialData }) =>
+    initialData
+      .then((initialData) =>
         setProps({
           model,
           hasIdField: queryResource.get('selectDistinct') !== true,
           fetchSize,
           fetchResults,
-          totalCount,
           fieldSpecs,
           initialData,
           sortConfig: fields.map((field) => field.sortType),
           onSortChange: handleSortChange,
           createRecordSet,
           extraButtons,
+          onSelected: handleSelected,
         })
       )
       .catch(fail);
@@ -645,7 +647,7 @@ export function QueryResultsWrapper({
       }`}
     >
       <ErrorBoundary dismissable>
-        <QueryResultsTable {...props} onSelected={handleSelected} />
+        <QueryResultsTable {...props} totalCount={totalCount} />
       </ErrorBoundary>
     </div>
   );
