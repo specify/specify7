@@ -9,7 +9,7 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import type { FormCellDefinition } from '../parseformcells';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { resourceOn } from '../resource';
 import type { Relationship } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';

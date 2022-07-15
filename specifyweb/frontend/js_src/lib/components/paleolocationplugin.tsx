@@ -12,7 +12,7 @@ import { Button } from './basic';
 import { Dialog } from './modaldialog';
 import { toTable, toTables } from '../specifymodel';
 import { LoadingContext } from './contexts';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { ErrorBoundary } from './errorboundary';
 
 type States =

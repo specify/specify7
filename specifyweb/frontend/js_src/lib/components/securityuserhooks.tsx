@@ -12,7 +12,7 @@ import {
   hasDerivedPermission,
   hasPermission,
   hasTablePermission,
-} from '../permissions';
+} from '../permissionutils';
 import { fetchResource, getResourceApiUrl, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import { fetchRoles, fetchUserRoles, processPolicies } from '../securityutils';

@@ -59,10 +59,8 @@ export const isTreeResource = (
 
 export const treeRanksPromise = Promise.all([
   // Dynamic imports are used to prevent circular dependencies
-  import('./permissions').then(
-    async ({ fetchContext, hasTreeAccess, hasTablePermission }) =>
-      fetchContext.then(() => ({ hasTreeAccess, hasTablePermission }))
-  ),
+  import('./permissionutils'),
+  import('./permissions').then(async ({ fetchContext }) => fetchContext),
   import('./schema').then(async ({ fetchContext }) => fetchContext),
   fetchDomain,
 ])

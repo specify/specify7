@@ -7,7 +7,7 @@ import { camelToHuman, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';

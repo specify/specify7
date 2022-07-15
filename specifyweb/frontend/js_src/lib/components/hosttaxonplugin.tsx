@@ -5,7 +5,7 @@ import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
-import { hasTreeAccess } from '../permissions';
+import { hasTreeAccess } from '../permissionutils';
 import { schema } from '../schema';
 import { defined } from '../types';
 import { Input } from './basic';

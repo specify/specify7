@@ -12,7 +12,7 @@ import { Button } from './basic';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoadingContext } from './contexts';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { useCachedState } from './statecache';
 

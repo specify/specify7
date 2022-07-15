@@ -8,7 +8,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { removeKey, replaceKey, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import {

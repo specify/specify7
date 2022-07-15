@@ -4,8 +4,16 @@
  * See more: https://docs.djangoproject.com/en/4.0/ref/csrf/
  */
 
-import { parseDjangoDump } from './components/splashscreen';
 import { readCookie } from './cookies';
+
+/**
+ * Back-end passes initial data to front-end though templates as JSON in
+ * <script> tags
+ */
+export const parseDjangoDump = <T>(id: string): T =>
+  (typeof document === 'object'
+    ? JSON.parse(document.getElementById(id)?.textContent ?? '[]')
+    : []) as T;
 
 export const csrfToken =
   readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token');

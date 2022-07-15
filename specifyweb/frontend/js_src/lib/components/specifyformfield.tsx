@@ -4,7 +4,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes, FormFieldDefinition } from '../parseformfields';
-import { hasPathPermission, hasPermission } from '../permissions';
+import { hasPathPermission, hasPermission } from '../permissionutils';
 import type { IR } from '../types';
 import { defined } from '../types';
 import type { Parser } from '../uiparse';

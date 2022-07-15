@@ -6,7 +6,7 @@ import type { SpQuery, SpReport } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { schema } from '../schema';
 import { Button, DataEntry, Form, Input, Submit } from './basic';
 import { AutoGrowTextArea } from './common';

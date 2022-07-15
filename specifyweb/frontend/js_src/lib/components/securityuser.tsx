@@ -10,12 +10,12 @@ import { f } from '../functools';
 import { replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import { getOperationPermissions } from '../permissions';
 import {
-  getOperationPermissions,
   hasDerivedPermission,
   hasPermission,
   hasTablePermission,
-} from '../permissions';
+} from '../permissionutils';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import {

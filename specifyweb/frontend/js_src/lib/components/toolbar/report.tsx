@@ -3,7 +3,7 @@ import React from 'react';
 import { ajax } from '../../ajax';
 import { cachableUrl } from '../../initialcontext';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissions';
+import { hasPermission } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { ReportsView } from '../reports';
 import { icons } from '../icons';

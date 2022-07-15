@@ -19,7 +19,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { toTable } from '../specifymodel';
 import { AttachmentCell } from './attachmentstask';
 import { Progress } from './basic';

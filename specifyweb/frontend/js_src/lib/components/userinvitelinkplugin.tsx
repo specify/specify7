@@ -5,7 +5,7 @@ import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import type { IR } from '../types';
 import { Button, Input } from './basic';
 import { CopyButton } from './common';

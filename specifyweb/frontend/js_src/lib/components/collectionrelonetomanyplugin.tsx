@@ -14,7 +14,7 @@ import { removeItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';

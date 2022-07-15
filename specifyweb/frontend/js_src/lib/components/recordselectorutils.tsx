@@ -10,7 +10,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
-import { hasTablePermission, hasToolPermission } from '../permissions';
+import { hasTablePermission, hasToolPermission } from '../permissionutils';
 import { formatUrl, parseUrl } from '../querystring';
 import {
   createResource,

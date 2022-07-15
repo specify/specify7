@@ -11,7 +11,7 @@ import { format } from './dataobjformatters';
 import { f } from './functools';
 import { sortFunction, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
-import { hasTablePermission } from './permissions';
+import { hasTablePermission } from './permissionutils';
 import { fetchPickLists } from './picklists';
 import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';

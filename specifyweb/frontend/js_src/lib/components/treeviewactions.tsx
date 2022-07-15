@@ -6,7 +6,7 @@ import { toLowerCase } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { treeText } from '../localization/tree';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { Row } from '../treeviewutils';

@@ -20,7 +20,7 @@ import {
 } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
-import { hasTablePermission, mappingPathToTableNames } from './permissions';
+import { hasTablePermission, mappingPathToTableNames } from './permissionutils';
 import { formatUrl } from './querystring';
 import { schema } from './schema';
 import type { LiteralField } from './specifyfield';

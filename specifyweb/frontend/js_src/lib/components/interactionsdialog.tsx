@@ -12,7 +12,7 @@ import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { getView } from '../parseform';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { getModel, schema } from '../schema';

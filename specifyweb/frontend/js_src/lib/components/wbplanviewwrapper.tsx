@@ -9,7 +9,7 @@ import React from 'react';
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
 import { NotFoundView } from './notfoundview';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { treeRanksPromise } from '../treedefinitions';
 import { useAsyncState } from './hooks';
 import type { Dataset } from './wbplanview';

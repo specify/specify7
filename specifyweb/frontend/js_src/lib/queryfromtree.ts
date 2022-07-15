@@ -5,7 +5,7 @@ import type { SpQuery, SpQueryField, TaxonTreeDefItem } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import { hasTablePermission } from './permissions';
+import { hasTablePermission } from './permissionutils';
 import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
 import { getTreeModel, schema } from './schema';

@@ -17,7 +17,7 @@ import { caseInsensitiveHash } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { idFromUrl } from '../resource';
 import { getModel, getModelById, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';

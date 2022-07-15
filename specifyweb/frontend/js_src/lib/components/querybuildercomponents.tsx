@@ -17,7 +17,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import type { QueryField } from '../querybuilderutils';
 import { hasLocalityColumns } from '../querybuilderutils';
 import { getResourceViewUrl, idFromUrl, resourceToJson } from '../resource';

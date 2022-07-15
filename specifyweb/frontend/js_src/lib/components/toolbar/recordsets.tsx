@@ -2,7 +2,7 @@ import React from 'react';
 
 import { fetchCollection } from '../../collection';
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../../permissions';
+import { hasToolPermission } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { userInformation } from '../../userinfo';
 import { icons } from '../icons';

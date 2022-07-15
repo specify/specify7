@@ -7,7 +7,7 @@ import { f } from '../functools';
 import { keysToLowerCase } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import { fetchRoles } from '../securityutils';

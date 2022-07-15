@@ -14,9 +14,10 @@ import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { useTitle, useValidation } from './hooks';
 import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
-import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
+import { entrypoint, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 import { LoadingContext } from './contexts';
+import { parseDjangoDump } from '../csrftoken';
 
 function Login({
   data,

@@ -13,7 +13,7 @@ import { addMissingFields, serializeResource } from '../../datamodelutils';
 import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasTablePermission } from '../../permissions';
+import { hasPermission, hasTablePermission } from '../../permissionutils';
 import { schema } from '../../schema';
 import type { BackEndRole } from '../../securityutils';
 import { processPolicies } from '../../securityutils';

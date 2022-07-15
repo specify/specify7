@@ -6,7 +6,7 @@ import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { formsText } from '../localization/forms';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import { getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';

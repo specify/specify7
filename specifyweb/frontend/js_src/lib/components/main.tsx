@@ -22,6 +22,9 @@ import {
 import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo } from './navigation';
 import { Notifications } from './notifications';
+import { startApp } from '../startapp';
+import { listen } from '../events';
+import { getUserPref } from '../preferencesutils';
 
 export type UserTool = {
   readonly task: string;
@@ -89,6 +92,23 @@ function processMenuItems<T extends UserTool | MenuItem>(items: RA<T>): RA<T> {
   );
 
   return filtered;
+}
+
+function handleClick(event: Readonly<MouseEvent>): void {
+  const link = (event.target as HTMLElement)?.closest('a');
+  if (
+    link !== null &&
+    link.href.length > 0 &&
+    link.getAttribute('href')?.startsWith('#') === false &&
+    link.getAttribute('download') === null &&
+    (link.target !== '_blank' ||
+      (getUserPref('general', 'behavior', 'altClickToSupressNewTab') &&
+        event.altKey)) &&
+    !link.classList.contains(className.navigationHandled)
+  ) {
+    event.preventDefault();
+    goTo(link.href);
+  }
 }
 
 const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
@@ -162,11 +182,7 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   .then((items) => items.flat())
   .then((items) => processMenuItems(items.map(({ userTool }) => userTool)));
 
-export function Main({
-  onLoaded: handleLoaded,
-}: {
-  readonly onLoaded: () => void;
-}): JSX.Element | null {
+export function Main(): JSX.Element | null {
   const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
     undefined
   );
@@ -185,7 +201,10 @@ export function Main({
       menuItemsPromise.then(setMenuItems),
       userToolsPromise.then(setUserTools),
     ])
-      .then(handleLoaded)
+      .then(() => {
+        startApp();
+        listen(document.body, 'click', handleClick);
+      })
       .catch(crash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -6,7 +6,7 @@ import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { fetchResource, idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';

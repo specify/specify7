@@ -10,7 +10,7 @@ import { ajax, Http } from '../../ajax';
 import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { hasPermission } from '../../permissions';
+import { hasPermission } from '../../permissionutils';
 import type { RA } from '../../types';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, DataEntry, Link } from '../basic';

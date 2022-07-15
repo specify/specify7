@@ -4,7 +4,7 @@ import { ping } from '../ajax';
 import type { SpLocaleItemStr as SpLocaleItemString_ } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { createResource, saveResource } from '../resource';
 import type { SpecifyModel } from '../specifymodel';

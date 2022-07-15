@@ -6,7 +6,7 @@ import type { AnyTree } from '../datamodelutils';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { queryText } from '../localization/query';
-import { hasPermission, hasToolPermission } from '../permissions';
+import { hasPermission, hasToolPermission } from '../permissionutils';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { parseUrl } from '../querystring';

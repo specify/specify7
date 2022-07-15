@@ -15,7 +15,7 @@ import type { LocalityData } from '../leafletutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { specifyNetworkText } from '../localization/specifynetwork';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { getUserPref } from '../preferencesutils';
 import { toTable } from '../specifymodel';
 import type { OccurrenceData } from '../specifynetworkmap';

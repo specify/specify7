@@ -7,7 +7,7 @@ import '../../css/main.css';
 import React from 'react';
 
 import { ping } from '../ajax';
-import { csrfToken } from '../csrftoken';
+import { csrfToken, parseDjangoDump } from '../csrftoken';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';
 import { f } from '../functools';
@@ -20,7 +20,7 @@ import { Button, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useTitle } from './hooks';
 import { usePref } from './preferenceshooks';
-import { entrypoint, parseDjangoDump, SplashScreen } from './splashscreen';
+import { entrypoint, SplashScreen } from './splashscreen';
 
 function ChooseCollection({
   data,

@@ -13,7 +13,7 @@ import {
 } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { fetchResource } from '../resource';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';

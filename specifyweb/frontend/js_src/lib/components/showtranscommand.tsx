@@ -9,7 +9,7 @@ import { f } from '../functools';
 import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
 import { sortFunction } from '../helpers';

@@ -1,5 +1,5 @@
 import { commonText } from '../../localization/common';
-import { hasTablePermission, hasToolPermission } from '../../permissions';
+import { hasTablePermission, hasToolPermission } from '../../permissionutils';
 import type { UserTool } from '../main';
 
 export const userTool: UserTool = {

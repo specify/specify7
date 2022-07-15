@@ -7,7 +7,7 @@ import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';

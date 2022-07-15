@@ -9,7 +9,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import type { FieldTypes } from '../parseformfields';
 import type { UiPlugins } from '../parseuiplugins';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { toTable } from '../specifymodel';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';

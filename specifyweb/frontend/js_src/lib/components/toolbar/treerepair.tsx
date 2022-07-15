@@ -11,7 +11,7 @@ import { f } from '../../functools';
 import { toLowerCase } from '../../helpers';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasTreeAccess } from '../../permissions';
+import { hasPermission, hasTreeAccess } from '../../permissionutils';
 import { formatUrl, parseUrl } from '../../querystring';
 import { schema } from '../../schema';
 import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';

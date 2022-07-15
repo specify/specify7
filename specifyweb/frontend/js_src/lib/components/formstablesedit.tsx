@@ -3,7 +3,7 @@ import React from 'react';
 import type { Tables } from '../datamodel';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { getModel, getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';

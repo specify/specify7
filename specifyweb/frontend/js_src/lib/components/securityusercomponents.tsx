@@ -8,11 +8,8 @@ import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
-import {
-  collectionAccessResource,
-  hasPermission,
-  hasTablePermission,
-} from '../permissions';
+import { collectionAccessResource } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import { anyResource } from '../securityutils';

@@ -9,7 +9,7 @@ import { ajax, formData } from '../ajax';
 import type { SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { userInformation } from '../userinfo';
 import { Button } from './basic';
 import { LoadingContext } from './contexts';

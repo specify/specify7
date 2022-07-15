@@ -7,7 +7,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { queryText } from '../localization/query';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { PickListTypes } from '../picklistmixins';
 import { resourceOn } from '../resource';
 import { schema } from '../schema';

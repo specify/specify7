@@ -5,7 +5,7 @@ import type { AnySchema } from './datamodelutils';
 import { f } from './functools';
 import { capitalize } from './helpers';
 import type { SpecifyResource } from './legacytypes';
-import { hasTablePermission } from './permissions';
+import { hasTablePermission } from './permissionutils';
 import { getCollectionPref } from './remoteprefs';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';

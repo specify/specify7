@@ -7,7 +7,7 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';

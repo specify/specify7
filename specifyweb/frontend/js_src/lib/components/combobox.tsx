@@ -29,7 +29,7 @@ import { PickListTableComboBox } from './picklisttablecombobox';
 import { QueryComboBox } from './querycombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UiField } from './uifield';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

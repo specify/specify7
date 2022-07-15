@@ -10,7 +10,7 @@ import type { SpQuery } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasToolPermission } from '../../permissions';
+import { hasPermission, hasToolPermission } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { getModelById } from '../../schema';
 import type { RA } from '../../types';

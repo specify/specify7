@@ -4,7 +4,7 @@ import { f } from '../functools';
 import { group, removeKey, replaceItem, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
 import { Button, Form, H3, Input, Label, Submit, Ul } from './basic';

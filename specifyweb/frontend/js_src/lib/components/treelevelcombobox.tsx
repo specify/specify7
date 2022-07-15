@@ -6,7 +6,7 @@ import type { AnyTree } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import { hasTreeAccess } from '../permissions';
+import { hasTreeAccess } from '../permissionutils';
 import { resourceOn } from '../resource';
 import { toTreeTable } from '../specifymodel';
 import {

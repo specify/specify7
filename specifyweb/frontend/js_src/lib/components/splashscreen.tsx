@@ -38,15 +38,6 @@ export function SplashScreen({
   );
 }
 
-/**
- * Back-end passes initial data to front-end though templates as JSON in
- * <script> tags
- */
-export const parseDjangoDump = <T,>(id: string): T =>
-  (typeof document === 'object'
-    ? JSON.parse(document.getElementById(id)?.textContent ?? '[]')
-    : []) as T;
-
 export function entrypoint(
   name: ReturnType<typeof getEntrypointName>,
   getContent: () => JSX.Element

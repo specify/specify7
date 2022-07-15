@@ -9,7 +9,7 @@ import { format } from '../dataobjformatters';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { idFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';

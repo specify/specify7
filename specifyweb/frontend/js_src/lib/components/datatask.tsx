@@ -14,7 +14,7 @@ import {
 } from '../domain';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { formatUrl, parseUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { router } from '../router';
@@ -238,8 +238,7 @@ async function byCatNumber(
       ).getUiFormatter();
       if (typeof formatter === 'object') {
         const formatted = formatter.format(catNumber);
-        if (formatted === undefined)
-          error('bad catalog number:', catNumber);
+        if (formatted === undefined) error('bad catalog number:', catNumber);
         catNumber = formatted;
       }
 

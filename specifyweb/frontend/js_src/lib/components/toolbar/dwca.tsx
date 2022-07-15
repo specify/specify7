@@ -10,7 +10,7 @@ import type { SpAppResource } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissions';
+import { hasPermission } from '../../permissionutils';
 import { toResource } from '../../specifymodel';
 import { AppResourcesAside } from '../appresourcesaside';
 import type { AppResources } from '../appresourceshooks';

@@ -5,7 +5,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { KEY, sortFunction, split } from '../helpers';
 import { commonText } from '../localization/common';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { getItemType, isFormatterAvailable } from '../schemaconfighelper';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { IR, RA, RR } from '../types';

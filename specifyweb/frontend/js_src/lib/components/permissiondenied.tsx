@@ -10,13 +10,13 @@ import { jsonStringify } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { getOperationPermissions, tableActions } from '../permissions';
+import { institutionPermissions } from '../permissions';
 import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
   hasTreeAccess,
-  institutionPermissions,
-} from '../permissions';
+} from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { schema } from '../schema';
 import type { toolDefinitions } from '../securityutils';

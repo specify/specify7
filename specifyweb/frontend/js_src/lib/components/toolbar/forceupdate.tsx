@@ -6,7 +6,7 @@ import React from 'react';
 
 import { ping } from '../../ajax';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissions';
+import { hasPermission } from '../../permissionutils';
 import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';

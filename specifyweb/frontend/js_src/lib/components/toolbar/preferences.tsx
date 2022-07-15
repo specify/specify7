@@ -6,7 +6,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { hasPermission } from '../../permissions';
+import { hasPermission } from '../../permissionutils';
 import {
   awaitPrefsSynced,
   getPrefDefinition,
@@ -135,8 +135,10 @@ function useDefinitions() {
 
 export function PreferencesContent({
   id,
+  isReadOnly,
 }: {
   readonly id: (prefix: string) => string;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const definitions = useDefinitions();
   return (

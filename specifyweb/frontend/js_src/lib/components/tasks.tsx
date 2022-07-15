@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { hasTablePermission, hasToolPermission } from '../permissions';
+import { hasTablePermission, hasToolPermission } from '../permissionutils';
 import { router } from '../router';
 import { getModel } from '../schema';
 import { setCurrentComponent } from '../specifyapp';

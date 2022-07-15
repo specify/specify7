@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { hasTreeAccess } from '../../permissions';
+import { hasTreeAccess } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { getDisciplineTrees } from '../../treedefinitions';
 import { useTitle } from '../hooks';

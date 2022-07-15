@@ -6,7 +6,7 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode } from '../parseform';
-import { hasPathPermission, hasTablePermission } from '../permissions';
+import { hasPathPermission, hasTablePermission } from '../permissionutils';
 import { QueryFieldSpec } from '../queryfieldspec';
 import { parseRelativeDate } from '../relativedate';
 import type { LiteralField, Relationship } from '../specifyfield';

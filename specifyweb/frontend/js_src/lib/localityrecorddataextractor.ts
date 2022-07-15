@@ -17,7 +17,7 @@ import {
   getLocalityData,
 } from './leafletutils';
 import type { SpecifyResource } from './legacytypes';
-import { hasTablePermission, hasTreeAccess } from './permissions';
+import { hasTablePermission, hasTreeAccess } from './permissionutils';
 import type { Collection } from './specifymodel';
 import { deflateLocalityData } from './specifynetworkhelper';
 import { getTreeDefinitionItems, treeRanksPromise } from './treedefinitions';
@@ -133,8 +133,7 @@ async function recursiveResourceResolve(
     const currentRank = tableRanks.find(
       ({ rankId }) => rankId === resource.get('rankId')
     );
-    if (currentRank === undefined)
-      throw new Error('Failed to fetch tree name');
+    if (currentRank === undefined) throw new Error('Failed to fetch tree name');
     const currentRankName = formatTreeRank(currentRank.name);
     return [
       [

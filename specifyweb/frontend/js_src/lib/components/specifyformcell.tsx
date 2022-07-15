@@ -8,7 +8,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { getView, processViewDefinition } from '../parseform';
 import type { cellAlign, CellTypes } from '../parseformcells';
-import { hasPathPermission } from '../permissions';
+import { hasPathPermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { Collection } from '../specifymodel';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';

@@ -3,7 +3,7 @@ import React from 'react';
 import { fetchCollection } from '../collection';
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
 import { TaxonTiles } from './taxontiles';

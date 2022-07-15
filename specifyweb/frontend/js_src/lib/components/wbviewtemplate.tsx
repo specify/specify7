@@ -9,7 +9,7 @@ import ReactDOMServer from 'react-dom/server';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { wbText } from '../localization/workbench';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { Button, Input, Link } from './basic';
 
 function Navigation({

@@ -14,7 +14,7 @@ import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
 import { columnToFieldMapper } from '../parseselect';
-import { hasTablePermission, hasTreeAccess } from '../permissions';
+import { hasTablePermission, hasTreeAccess } from '../permissionutils';
 import { fetchPickLists } from '../picklists';
 import type {
   CollectionRelationships,

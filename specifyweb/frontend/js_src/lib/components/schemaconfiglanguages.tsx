@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../localization/common';
-import { hasToolPermission } from '../permissions';
+import { hasToolPermission } from '../permissionutils';
 import { Button, Form, Input, Label, Submit, Ul } from './basic';
 import { useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';

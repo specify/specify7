@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { getTablePermissions, hasToolPermission } from '../../permissions';
+import { getTablePermissions } from '../../permissions';
+import { hasToolPermission } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { schema } from '../../schema';
 import { icons } from '../icons';

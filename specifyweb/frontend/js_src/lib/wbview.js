@@ -52,7 +52,11 @@ import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
 import {setCurrentComponent, setCurrentView} from './specifyapp';
 import {ajax, Http, ping} from './ajax';
-import {hasPermission, hasTablePermission, hasTreeAccess,} from './permissions';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasTreeAccess,
+} from './permissionutils';
 import {wbViewTemplate} from './components/wbviewtemplate';
 import {legacyLoadingContext} from './components/contexts';
 import {

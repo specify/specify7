@@ -15,7 +15,7 @@ import type { MappingPath } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { commonText } from './localization/common';
 import { queryText } from './localization/query';
-import { hasTablePermission, hasTreeAccess } from './permissions';
+import { hasTablePermission, hasTreeAccess } from './permissionutils';
 import { getUserPref } from './preferencesutils';
 import { getModel } from './schema';
 import type { Relationship } from './specifyfield';

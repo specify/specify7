@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../../permissions';
+import { hasToolPermission } from '../../permissionutils';
 import { ErrorBoundary } from '../errorboundary';
 import { useTitle } from '../hooks';
 import type { UserTool } from '../main';

@@ -8,7 +8,7 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import { wbText } from '../localization/workbench';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { IR, R, RA } from '../types';
 import type { MappingLineData } from '../wbplanviewnavigator';

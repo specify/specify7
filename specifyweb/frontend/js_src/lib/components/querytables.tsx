@@ -3,7 +3,7 @@ import React from 'react';
 import type { SpQuery, Tables } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';
-import { hasTablePermission, hasToolPermission } from '../permissions';
+import { hasTablePermission, hasToolPermission } from '../permissionutils';
 import { getModel, getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';

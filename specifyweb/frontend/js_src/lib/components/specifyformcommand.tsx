@@ -7,7 +7,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { UiCommands } from '../parseuicommands';
-import { hasPermission, hasTablePermission } from '../permissions';
+import { hasPermission, hasTablePermission } from '../permissionutils';
 import { toTable } from '../specifymodel';
 import { Button } from './basic';
 import { useBooleanState } from './hooks';

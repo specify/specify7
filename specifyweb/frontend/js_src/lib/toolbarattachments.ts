@@ -1,7 +1,7 @@
 import { attachmentsAvailable, attachmentSettingsPromise } from './attachments';
 import { icons } from './components/icons';
 import { commonText } from './localization/common';
-import { hasTablePermission } from './permissions';
+import { hasTablePermission } from './permissionutils';
 import { getUserPref } from './preferencesutils';
 
 export const menuItem = attachmentSettingsPromise.then(() => ({

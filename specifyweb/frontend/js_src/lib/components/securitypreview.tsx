@@ -8,10 +8,10 @@ import { commonText } from '../localization/common';
 import type { PermissionsQueryItem } from '../permissions';
 import {
   getTablePermissions,
-  hasPermission,
   queryUserPermissions,
   tableActions,
 } from '../permissions';
+import { hasPermission } from '../permissionutils';
 import { schema } from '../schema';
 import {
   actionToLabel,

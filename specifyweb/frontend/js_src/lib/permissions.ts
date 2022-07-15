@@ -5,21 +5,16 @@
 import { ajax } from './ajax';
 import { error } from './assert';
 import type { Tables } from './datamodel';
-import type { AnyTree } from './datamodelutils';
 import { f } from './functools';
 import { group, split } from './helpers';
 import { load } from './initialcontext';
-import { schema } from './schema';
 import type { anyAction, anyResource } from './securityutils';
 import {
   tableNameToResourceName,
   tablePermissionsPrefix,
-  toolDefinitions,
 } from './securityutils';
 import type { IR, RA, RR } from './types';
-import { defined, filterArray } from './types';
 import { fetchContext as fetchUser, userInformation } from './userinfo';
-import { getCache } from './cache';
 
 export const tableActions = ['read', 'create', 'update', 'delete'] as const;
 
@@ -183,6 +178,7 @@ let derivedPermissions: RR<
 
 export const getTablePermissions = () => tablePermissions;
 export const getOperationPermissions = () => operationPermissions;
+export const getDerivedPermissions = () => derivedPermissions;
 
 export type PermissionsQueryItem = {
   readonly action: string;
@@ -383,104 +379,3 @@ export const fetchUserPermissions = async (
     });
 
 export const fetchContext = fetchUserPermissions();
-
-const isReadOnly = getCache('forms', 'readOnlyMode') === true;
-
-/**
- * Security errors are logged so that admins can see why a particular UI
- * component is disabled or missing
- */
-export function hasTablePermission(
-  tableName: keyof Tables,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
-): boolean {
-  if (isReadOnly && action !== 'read') return false;
-  if (
-    defined(tablePermissions)[collectionId][tableNameToResourceName(tableName)][
-      action
-    ]
-  )
-    return true;
-  console.log(`No permission to ${action} ${tableName}`);
-  return false;
-}
-
-export const hasPermission = <
-  RESOURCE extends keyof typeof operationPermissions[number]
->(
-  resource: RESOURCE,
-  action: keyof typeof operationPermissions[number][RESOURCE],
-  collectionId = schema.domainLevelIds.collection
-): boolean =>
-  defined(operationPermissions)[collectionId][resource][action]
-    ? true
-    : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
-
-export const hasToolPermission = (
-  tool: keyof ReturnType<typeof toolDefinitions>,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
-): boolean =>
-  (toolDefinitions()[tool].tables as RA<keyof Tables>).every((tableName) =>
-    hasTablePermission(tableName, action, collectionId)
-  );
-
-export const hasTreeAccess = (
-  treeName: AnyTree['tableName'],
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
-): boolean =>
-  hasTablePermission(treeName, action, collectionId) &&
-  hasTablePermission(`${treeName}TreeDef`, action, collectionId) &&
-  hasTablePermission(`${treeName}TreeDefItem`, action, collectionId);
-
-export const hasDerivedPermission = <
-  RESOURCE extends keyof typeof derivedPermissions[number]
->(
-  resource: RESOURCE,
-  action: keyof typeof derivedPermissions[number][RESOURCE],
-  collectionId = schema.domainLevelIds.collection
-): boolean =>
-  defined(derivedPermissions)[collectionId][resource][action]
-    ? true
-    : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
-
-/** Check if user has a given permission for each table in a mapping path */
-export const hasPathPermission = (
-  baseTableName: keyof Tables,
-  mappingPath: RA<string>,
-  action: typeof tableActions[number],
-  collectionId = schema.domainLevelIds.collection
-): boolean =>
-  mappingPathToTableNames(baseTableName, mappingPath, true).every((tableName) =>
-    hasTablePermission(tableName, action, collectionId)
-  );
-
-export const mappingPathToTableNames = (
-  baseTableName: keyof Tables,
-  mappingPath: RA<string>,
-  ignoreBaseTable = false
-): RA<keyof Tables> =>
-  f.unique(
-    filterArray(
-      mappingPath.flatMap((_, index) =>
-        index === 0 && ignoreBaseTable
-          ? undefined
-          : f.var(
-              schema.models[baseTableName].getField(
-                mappingPath.slice(index).join('.')
-              ),
-              (field) =>
-                typeof field === 'object'
-                  ? [
-                      field.model.name,
-                      field.isRelationship
-                        ? field.relatedModel.name
-                        : undefined,
-                    ]
-                  : undefined
-            )
-      )
-    )
-  );

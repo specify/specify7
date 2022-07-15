@@ -6,7 +6,7 @@ import { replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
-import { hasPermission, hasToolPermission } from '../permissions';
+import { hasPermission, hasToolPermission } from '../permissionutils';
 import { getInitialState, reducer } from '../querybuilderreducer';
 import {
   mutateLineData,

@@ -9,7 +9,7 @@ import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
-import { hasToolPermission } from './permissions';
+import { hasToolPermission } from './permissionutils';
 import { createPickListItem, PickListTypes } from './picklistmixins';
 import { schema } from './schema';
 import type { IR, RA } from './types';

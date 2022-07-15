@@ -11,7 +11,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { getResourceViewUrl, resourceOn } from '../resource';
 import { Button, className, Container, DataEntry, Form } from './basic';
 import { AppTitle, TableIcon } from './common';

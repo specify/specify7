@@ -11,7 +11,7 @@ import {
 import { cachableUrl } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { getView } from '../parseform';
-import { hasTablePermission } from '../permissions';
+import { hasTablePermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { getResourceViewUrl, parseClassName } from '../resource';
 import { fetchContext as fetchSchema, getModel } from '../schema';
