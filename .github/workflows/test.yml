@@ -83,7 +83,7 @@ jobs:
         run: sudo apt-get install -y nodejs npm
 
       - name: Build frontend
-        run: npm install && npx webpack -o ../static/js --mode=development
+        run: make frontend
 
       - name: Run JS test suite
         run: cd specifyweb/frontend/js_src && npm test
