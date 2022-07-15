@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { fetchCollection } from '../collection';
 import type { RecordSet } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -14,15 +15,16 @@ import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
-import { TableIcon } from './common';
+import { SortIndicator, TableIcon } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
-import { formatNumber } from './internationalization';
+import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
 import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { useCachedState } from './statecache';
 import { QueryToolbarItem } from './toolbar/query';
 
 function Row({
@@ -72,6 +74,9 @@ function Row({
           {recordSet.name}
         </Link.Default>
       </td>
+      <td>
+        <DateElement date={recordSet.timestampCreated} />
+      </td>
       <td
         title={commonText('recordCount')}
         className="tabular-nums justify-end"
@@ -94,6 +99,7 @@ function Row({
   );
 }
 
+const defaultSortConfig = { sortField: 'name', ascending: true } as const;
 export function RecordSetsDialog({
   recordSetsPromise,
   onClose: handleClose,
@@ -120,31 +126,77 @@ export function RecordSetsDialog({
     ) => JSX.Element;
   }) => JSX.Element;
 }): JSX.Element | null {
-  const [data] = useAsyncState(
-    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
-    true
-  );
-
   const [state, setState] = React.useState<
     | State<'MainState'>
     | State<'CreateState'>
     | State<'EditState', { recordSet: SpecifyResource<RecordSet> }>
   >({ type: 'MainState' });
 
+  const [sortConfig = defaultSortConfig, setSortConfig] = useCachedState({
+    category: 'sortConfig',
+    key: 'listOfRecordSets',
+    defaultValue: defaultSortConfig,
+    staleWhileRefresh: false,
+  });
+
+  const [unsortedData] = useAsyncState(
+    React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
+    true
+  );
+  const data = React.useMemo(
+    () =>
+      typeof unsortedData === 'object'
+        ? {
+            ...unsortedData,
+            records: Array.from(unsortedData.records).sort(
+              sortFunction(
+                (recordSet) => recordSet[sortConfig.sortField],
+                !sortConfig.ascending
+              )
+            ),
+          }
+        : undefined,
+    [unsortedData, sortConfig]
+  );
+
   return typeof data === 'object' ? (
     state.type === 'MainState' ? (
       children({
         ...data,
         children: (
-          <table className="grid-table grid-cols-[1fr_min-content_min-content] gap-2">
+          <table className="grid-table grid-cols-[1fr_auto_min-content_min-content] gap-2">
             <thead>
               <tr>
                 <th scope="col">
-                  <span className="sr-only">{commonText('recordSet')}</span>
+                  <Button.LikeLink
+                    onClick={(): void =>
+                      setSortConfig({
+                        sortField: 'name',
+                        ascending: !sortConfig.ascending,
+                      })
+                    }
+                  >
+                    {commonText('recordSet')}
+                    <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                  </Button.LikeLink>
                 </th>
                 <th scope="col">
-                  <span className="sr-only">{commonText('size')}</span>
+                  <Button.LikeLink
+                    onClick={(): void =>
+                      setSortConfig({
+                        sortField: 'timestampCreated',
+                        ascending: !sortConfig.ascending,
+                      })
+                    }
+                  >
+                    {commonText('created')}
+                    <SortIndicator
+                      fieldName="timestampCreated"
+                      sortConfig={sortConfig}
+                    />
+                  </Button.LikeLink>
                 </th>
+                <th scope="col">{commonText('size')}</th>
                 <td />
               </tr>
             </thead>

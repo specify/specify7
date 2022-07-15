@@ -92,6 +92,7 @@ export type CacheDefinitions = {
       keyof SpQuery['fields'] &
         ('name' | 'timestampCreated' | 'timestampModified')
     >;
+    readonly listOfRecordSets: SortConfig<'name' | 'timestampCreated'>;
     readonly listOfDataSets: SortConfig<
       'name' | 'dateCreated' | 'dateUploaded'
     >;
