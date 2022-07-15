@@ -39,35 +39,6 @@ function Preferences({
 
   const loading = React.useContext(LoadingContext);
 
-  // Hide invisible preferences. Remote empty categories and subCategories
-  const definitions = Object.entries(
-    preferenceDefinitions as GenericPreferencesCategories
-  )
-    .map(
-      ([category, { subCategories, ...categoryData }]) =>
-        [
-          category,
-          {
-            ...categoryData,
-            subCategories: Object.entries(subCategories)
-              .map(
-                ([subCategory, { items, ...subCategoryData }]) =>
-                  [
-                    subCategory,
-                    {
-                      ...subCategoryData,
-                      items: Object.entries(items).filter(
-                        ([_name, { visible }]) => visible !== false
-                      ),
-                    },
-                  ] as const
-              )
-              .filter(([_name, { items }]) => items.length > 0),
-          },
-        ] as const
-    )
-    .filter(([_name, { subCategories }]) => subCategories.length > 0);
-
   React.useEffect(
     () =>
       prefEvents.on('update', (definition) => {
@@ -91,130 +62,9 @@ function Preferences({
           )
         }
       >
-        <div className="relative flex gap-6 overflow-y-auto">
-          {/* FEATURE: highlight link that corresponds to current section */}
-          <aside
-            className={`min-w-fit sticky top-0 flex flex-col flex-1 divide-y-4
-             divide-[color:var(--form-background)]`}
-          >
-            {definitions.map(([category, { title }]) => (
-              <Link.Gray href={`#${id(category)}`} key={category}>
-                {title}
-              </Link.Gray>
-            ))}
-          </aside>
-          <div className="h-fit flex flex-col gap-6">
-            {definitions.map(
-              ([
-                category,
-                { title, description = undefined, subCategories },
-              ]) => (
-                <ErrorBoundary dismissable key={category}>
-                  <Container.Center
-                    className="gap-8 overflow-y-visible"
-                    id={id(category)}
-                  >
-                    <h3 className="text-2xl">{title}</h3>
-                    {description !== undefined && <p>{description}</p>}
-                    {subCategories.map(
-                      ([
-                        subcategory,
-                        { title, description = undefined, items },
-                      ]) => (
-                        <section
-                          key={subcategory}
-                          className="flex flex-col gap-4"
-                        >
-                          <div className="flex items-center">
-                            <span className="flex-1" />
-                            <h4
-                              className={`${className.headerGray} text-xl text-center`}
-                            >
-                              {title}
-                            </h4>
-                            <div className="flex justify-end flex-1">
-                              <Button.Small
-                                onClick={(): void =>
-                                  items.forEach(([name]) =>
-                                    setPref(
-                                      category,
-                                      subcategory,
-                                      name,
-                                      /*
-                                       * Need to get default value via this
-                                       * function as defaults may be changed
-                                       */
-                                      defined(
-                                        getPrefDefinition(
-                                          category,
-                                          subcategory,
-                                          name
-                                        )
-                                      ).defaultValue
-                                    )
-                                  )
-                                }
-                              >
-                                {commonText('reset')}
-                              </Button.Small>
-                            </div>
-                          </div>
-                          {description !== undefined && <p>{description}</p>}
-                          {items.map(([name, item]) => {
-                            const canEdit =
-                              item.visible !== 'protected' ||
-                              hasPermission(
-                                '/preferences/user',
-                                'edit_protected'
-                              );
-                            return (
-                              <label
-                                key={name}
-                                className={`flex items-start gap-2 ${
-                                  canEdit ? '' : '!cursor-not-allowed'
-                                }`}
-                                title={
-                                  canEdit
-                                    ? undefined
-                                    : preferencesText('adminsOnlyPreference')
-                                }
-                              >
-                                <div className="flex flex-col flex-1 gap-2">
-                                  <p
-                                    className={`flex items-center justify-end flex-1
-                              text-right min-h-[theme(spacing.8)]`}
-                                  >
-                                    {item.title}
-                                  </p>
-                                  {item.description !== undefined && (
-                                    <p className="flex justify-end flex-1 text-right text-gray-500">
-                                      {item.description}
-                                    </p>
-                                  )}
-                                </div>
-                                <div
-                                  className={`flex flex-col justify-center flex-1 gap-2
-                            min-h-[theme(spacing.8)]`}
-                                >
-                                  <Item
-                                    item={item}
-                                    category={category}
-                                    subcategory={subcategory}
-                                    name={name}
-                                    isReadOnly={!canEdit}
-                                  />
-                                </div>
-                              </label>
-                            );
-                          })}
-                        </section>
-                      )
-                    )}
-                  </Container.Center>
-                </ErrorBoundary>
-              )
-            )}
-          </div>
+        <div className="md:flex-row relative flex flex-col gap-6 overflow-y-auto">
+          <PreferencesAside id={id} />
+          <PreferencesContent id={id} />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -226,6 +76,166 @@ function Preferences({
         </div>
       </Form>
     </Container.FullGray>
+  );
+}
+
+function PreferencesAside({
+  id,
+}: {
+  readonly id: (prefix: string) => string;
+}): JSX.Element {
+  const definitions = useDefinitions();
+  // FEATURE: highlight link that corresponds to current section
+  return (
+    <aside
+      className={`min-w-fit md:sticky top-0 flex flex-col flex-1 divide-y-4
+             divide-[color:var(--form-background)]`}
+    >
+      {definitions.map(([category, { title }]) => (
+        <Link.Gray href={`#${id(category)}`} key={category}>
+          {title}
+        </Link.Gray>
+      ))}
+    </aside>
+  );
+}
+
+function useDefinitions() {
+  // Hide invisible preferences. Remote empty categories and subCategories
+  return React.useMemo(
+    () =>
+      Object.entries(preferenceDefinitions as GenericPreferencesCategories)
+        .map(
+          ([category, { subCategories, ...categoryData }]) =>
+            [
+              category,
+              {
+                ...categoryData,
+                subCategories: Object.entries(subCategories)
+                  .map(
+                    ([subCategory, { items, ...subCategoryData }]) =>
+                      [
+                        subCategory,
+                        {
+                          ...subCategoryData,
+                          items: Object.entries(items).filter(
+                            ([_name, { visible }]) => visible !== false
+                          ),
+                        },
+                      ] as const
+                  )
+                  .filter(([_name, { items }]) => items.length > 0),
+              },
+            ] as const
+        )
+        .filter(([_name, { subCategories }]) => subCategories.length > 0),
+    []
+  );
+}
+
+export function PreferencesContent({
+  id,
+}: {
+  readonly id: (prefix: string) => string;
+}): JSX.Element {
+  const definitions = useDefinitions();
+  return (
+    <div className="h-fit flex flex-col gap-6">
+      {definitions.map(
+        ([category, { title, description = undefined, subCategories }]) => (
+          <ErrorBoundary dismissable key={category}>
+            <Container.Center
+              className="gap-8 overflow-y-visible"
+              id={id(category)}
+            >
+              <h3 className="text-2xl">{title}</h3>
+              {description !== undefined && <p>{description}</p>}
+              {subCategories.map(
+                ([subcategory, { title, description = undefined, items }]) => (
+                  <section key={subcategory} className="flex flex-col gap-4">
+                    <div className="flex items-center">
+                      <span className="flex-1" />
+                      <h4
+                        className={`${className.headerGray} text-xl text-center`}
+                      >
+                        {title}
+                      </h4>
+                      <div className="flex justify-end flex-1">
+                        <Button.Small
+                          onClick={(): void =>
+                            items.forEach(([name]) =>
+                              setPref(
+                                category,
+                                subcategory,
+                                name,
+                                /*
+                                 * Need to get default value via this
+                                 * function as defaults may be changed
+                                 */
+                                defined(
+                                  getPrefDefinition(category, subcategory, name)
+                                ).defaultValue
+                              )
+                            )
+                          }
+                        >
+                          {commonText('reset')}
+                        </Button.Small>
+                      </div>
+                    </div>
+                    {description !== undefined && <p>{description}</p>}
+                    {items.map(([name, item]) => {
+                      const canEdit =
+                        item.visible !== 'protected' ||
+                        hasPermission('/preferences/user', 'edit_protected');
+                      return (
+                        <label
+                          key={name}
+                          className={`flex items-start gap-2 ${
+                            canEdit ? '' : '!cursor-not-allowed'
+                          }`}
+                          title={
+                            canEdit
+                              ? undefined
+                              : preferencesText('adminsOnlyPreference')
+                          }
+                        >
+                          <div className="flex flex-col flex-1 gap-2">
+                            <p
+                              className={`flex items-center justify-end flex-1
+                              text-right min-h-[theme(spacing.8)]`}
+                            >
+                              {item.title}
+                            </p>
+                            {item.description !== undefined && (
+                              <p className="flex justify-end flex-1 text-right text-gray-500">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                          <div
+                            className={`flex flex-col justify-center flex-1 gap-2
+                            min-h-[theme(spacing.8)]`}
+                          >
+                            <Item
+                              item={item}
+                              category={category}
+                              subcategory={subcategory}
+                              name={name}
+                              isReadOnly={!canEdit}
+                            />
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </section>
+                )
+              )}
+            </Container.Center>
+          </ErrorBoundary>
+        )
+      )}
+    </div>
   );
 }
 

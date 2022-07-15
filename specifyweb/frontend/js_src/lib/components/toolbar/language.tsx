@@ -17,7 +17,7 @@ import { fail, supportLink } from '../errorboundary';
 import { useAsyncState } from '../hooks';
 import { Dialog, dialogClassNames } from '../modaldialog';
 import type { PreferenceItem, PreferenceItemComponent } from '../preferences';
-import { prefEvents } from '../preferenceshooks';
+import { PreferencesContext, prefEvents } from '../preferenceshooks';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -108,6 +108,12 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       false
     );
     const [language, setLanguage] = React.useState(LANGUAGE);
+
+    /**
+     * When editing someone else's user preferences, disable the language
+     * selector, since language preference is stored in session storage.
+     */
+    const isRedirecting = React.useContext(PreferencesContext) !== undefined;
     return (
       <LanguageSelection<Language>
         languages={languages ?? { loading: commonText('loading') }}
@@ -123,7 +129,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           setLanguage(language);
           prefEvents.trigger('update', definition as PreferenceItem<unknown>);
         }}
-        isReadOnly={isReadOnly || languages === undefined}
+        isReadOnly={isReadOnly || isRedirecting || languages === undefined}
       />
     );
   };

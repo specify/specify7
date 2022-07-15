@@ -21,6 +21,16 @@ export const prefEvents = eventListener<{
   synchronized: undefined;
 }>();
 
+/*
+ * This allows to overwrite where user preferences are stored
+ * Used when editing user preferences for another user in AppResources
+ */
+export const PreferencesContext = React.createContext<
+  | Readonly<[getUserPref: typeof getUserPref, setPref: typeof setPref]>
+  | undefined
+>([getUserPref, setPref]);
+PreferencesContext.displayName = 'PreferencesContext';
+
 export function usePref<
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
@@ -39,9 +49,14 @@ export function usePref<
     ) => void
   ]
 > {
+  const [getPref, setUserPref] = React.useContext(PreferencesContext) ?? [
+    getUserPref,
+    setPref,
+  ];
+
   const [pref, setLocalPref] = React.useState<
     Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(() => getUserPref(category, subcategory, item));
+  >(() => getPref(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
   React.useEffect(
@@ -53,7 +68,7 @@ export function usePref<
           definition !== getPrefDefinition(category, subcategory, item)
         )
           return;
-        const newValue = getUserPref(category, subcategory, item);
+        const newValue = getPref(category, subcategory, item);
         if (newValue === currentPref.current) return;
         setLocalPref(newValue);
         currentPref.current = newValue;
@@ -64,7 +79,7 @@ export function usePref<
   const updatePref = React.useCallback(
     (
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ): void => setPref(category, subcategory, item, newPref),
+    ): void => setUserPref(category, subcategory, item, newPref),
     [category, subcategory, item]
   );
 

@@ -426,8 +426,12 @@ export const adminText = createDictionary({
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои Leaflet',
   },
-  editor: {
-    'en-us': 'Editor',
-    'ru-ru': 'Редактор',
+  textEditor: {
+    'en-us': 'Text Editor',
+    'ru-ru': 'Текстовый редактор',
+  },
+  visualEditor: {
+    'en-us': 'Visual Editor',
+    'ru-ru': 'Визуальный редактор',
   },
 });

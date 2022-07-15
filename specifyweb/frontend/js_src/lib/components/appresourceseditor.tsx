@@ -1,5 +1,3 @@
-import { openLintPanel } from '@codemirror/lint';
-import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import React from 'react';
 
 import type {
@@ -9,7 +7,6 @@ import type {
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
-import { f } from '../functools';
 import { formsText } from '../localization/forms';
 import { hasToolPermission } from '../permissions';
 import { createResource } from '../resource';
@@ -70,9 +67,9 @@ export function AppResourceEditor({
     appResource.isNew() ? 'create' : 'update'
   );
 
-  const codeMirrorRef = React.useRef<ReactCodeMirrorRef | null>(null);
   const loading = React.useContext(LoadingContext);
 
+  const showValidationRef = React.useRef<(() => void) | null>(null);
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-hidden">
       <BaseResourceView
@@ -120,7 +117,7 @@ export function AppResourceEditor({
                 <AppResourcesTabs
                   label={formatted}
                   isReadOnly={isReadOnly}
-                  forwardRef={codeMirrorRef}
+                  showValidationRef={showValidationRef}
                   headerButtons={headerButtons}
                   appResource={appResource}
                   resource={resource}
@@ -168,8 +165,7 @@ export function AppResourceEditor({
                     canAddAnother={false}
                     saveRequired={isChanged}
                     onIgnored={(): void => {
-                      const editorView = codeMirrorRef.current?.view;
-                      f.maybe(editorView, openLintPanel);
+                      showValidationRef.current?.();
                     }}
                     onSaving={(): false => {
                       loading(

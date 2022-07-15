@@ -185,6 +185,7 @@
   }
 
   button[aria-pressed='true']:not(.aria-handled), button[aria-selected='true']:not(.aria-handled) {
+    /* FEATURE: consider replacing this with "brightness-150" */
     @apply bg-white dark:bg-neutral-400;
   }
 
