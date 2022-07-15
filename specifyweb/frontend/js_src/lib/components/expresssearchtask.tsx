@@ -134,7 +134,10 @@ export function ExpressSearchView(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
   const query = parseUrl().q;
-  const ajaxUrl = formatUrl('/express_search/', { q: query, limit: fetchSize });
+  const ajaxUrl = formatUrl('/express_search/', {
+    q: query,
+    limit: fetchSize.toString(),
+  });
 
   const [primaryResults] = useAsyncState<RA<RawQueryTableResult> | false>(
     React.useCallback(
@@ -174,7 +177,7 @@ export function ExpressSearchView(): JSX.Element {
                 const ajaxUrl = formatUrl('/express_search/related/', {
                   q: query,
                   name,
-                  limit: fetchSize,
+                  limit: fetchSize.toString(),
                 });
                 return ajax<RelatedTableResult>(
                   ajaxUrl,

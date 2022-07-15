@@ -47,14 +47,16 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   forceCollection,
   extraFilters = [],
   templateResource,
+  multiple,
   onSelected: handleSelected,
   onClose: handleClose,
 }: {
   readonly forceCollection: number | undefined;
   readonly extraFilters: RA<QueryComboBoxFilter<SCHEMA>> | undefined;
   readonly templateResource: SpecifyResource<SCHEMA>;
+  readonly multiple: boolean;
   readonly onClose: () => void;
-  readonly onSelected: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
 }): JSX.Element | null {
   const [viewName, setViewName] = useAsyncState(
     React.useCallback(
@@ -152,7 +154,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                     className={className.navigationHandled}
                     onClick={(event): void => {
                       event.preventDefault();
-                      handleSelected(resource);
+                      handleSelected([resource]);
                       handleClose();
                     }}
                   >
@@ -177,8 +179,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     <QueryBuilderSearch
       model={templateResource.specifyModel}
       onClose={handleClose}
-      onSelected={(resource): void => {
-        handleSelected(resource);
+      multiple={multiple}
+      onSelected={(records): void => {
+        handleSelected(records);
         handleClose();
       }}
     />
@@ -218,10 +221,12 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
   model,
   onSelected: handleSelected,
   onClose: handleClose,
+  multiple,
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly onClose: () => void;
-  readonly onSelected: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
+  readonly multiple: boolean;
 }): JSX.Element {
   const query = React.useMemo(
     () => createQuery(commonText('search'), model),
@@ -237,13 +242,11 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Button.Blue
             onClick={(): void =>
-              handleSelected(
-                new model.Resource({
-                  id: selected[0],
-                })
-              )
+              handleSelected(selected.map((id) => new model.Resource({ id })))
             }
-            disabled={selected.length !== 1}
+            disabled={
+              selected.length === 0 || (selected.length > 1 && !multiple)
+            }
           >
             {commonText('select')}
           </Button.Blue>

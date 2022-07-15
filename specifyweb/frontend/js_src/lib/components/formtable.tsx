@@ -58,7 +58,9 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly relationship: Relationship;
   readonly isDependent: boolean;
   readonly resources: RA<SpecifyResource<SCHEMA>>;
-  readonly onAdd: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
+  readonly onAdd:
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
   readonly mode: FormMode;
   readonly viewName?: string;
@@ -81,12 +83,20 @@ export function FormTable<SCHEMA extends AnySchema>({
   const addedResource = React.useRef<SpecifyResource<SCHEMA> | undefined>(
     undefined
   );
-  const handleAddResource =
+  const handleAddResources =
     typeof handleAdd === 'function'
-      ? function handleAddResource(resource: SpecifyResource<SCHEMA>): void {
-          setExpandedRecords({ ...isExpanded, [resource.cid]: true });
-          handleAdd(resource);
-          addedResource.current = resource;
+      ? function handleAddResources(
+          resources: RA<SpecifyResource<SCHEMA>>
+        ): void {
+          const expandedRecords = {
+            ...isExpanded,
+            ...Object.fromEntries(
+              resources.map((resource) => [resource.cid, true] as const)
+            ),
+          };
+          setExpandedRecords(expandedRecords);
+          handleAdd(resources);
+          addedResource.current = resources[0];
         }
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
@@ -307,7 +317,7 @@ export function FormTable<SCHEMA extends AnySchema>({
       </DataEntry.Grid>
     );
   const addButton =
-    typeof handleAddResource === 'function' &&
+    typeof handleAddResources === 'function' &&
     mode !== 'view' &&
     !disableAdding &&
     hasTablePermission(
@@ -321,7 +331,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             : isDependent
             ? (): void => {
                 const resource = new relationship.relatedModel.Resource();
-                handleAddResource(resource);
+                handleAddResources([resource]);
               }
             : (): void =>
                 setState({
@@ -339,13 +349,14 @@ export function FormTable<SCHEMA extends AnySchema>({
       </DataEntry.SubFormHeader>
       {children}
       {state.type === 'SearchState' &&
-      typeof handleAddResource === 'function' ? (
+      typeof handleAddResources === 'function' ? (
         <SearchDialog
           forceCollection={undefined}
           extraFilters={undefined}
           templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={handleAddResource}
+          multiple
+          onSelected={handleAddResources}
         />
       ) : undefined}
     </DataEntry.SubForm>
@@ -400,8 +411,8 @@ export function FormTableCollection({
         disableAdding
           ? undefined
           : handleAdd ??
-            ((resource): void => {
-              collection.add(resource);
+            ((resources): void => {
+              collection.add(resources);
               setRecords(Array.from(collection.models));
             })
       }

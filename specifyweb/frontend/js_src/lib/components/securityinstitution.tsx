@@ -284,7 +284,7 @@ export function SecurityInstitution({
                 : undefined
             }
             onOpenUser={undefined}
-            onAddUser={undefined}
+            onAddUsers={undefined}
             permissionName="/permissions/library/roles"
             collectionId={schema.domainLevelIds.collection}
           />

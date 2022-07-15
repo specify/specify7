@@ -4,7 +4,6 @@ import type { State } from 'typesafe-reducer';
 import { ajax, Http, ping } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { KeysToLowerCase, SerializedResource } from '../datamodelutils';
-import { f } from '../functools';
 import {
   index,
   removeKey,
@@ -24,7 +23,7 @@ import {
   processPolicies,
 } from '../securityutils';
 import type { IR, RA, RR } from '../types';
-import { defined } from '../types';
+import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Container, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
@@ -439,46 +438,57 @@ export function SecurityCollection({
             permissionName="/permissions/roles"
             collectionId={collection.id}
             onOpenUser={handleOpenUser}
-            onAddUser={(user): void =>
-              typeof userRoles === 'object' && typeof state.role.id === 'number'
-                ? f.var(
-                    userRoles.findIndex(({ userId }) => userId === user.id),
-                    (userIndex) =>
-                      f.var(
-                        userRoles[userIndex].roles.map(({ roleId }) => roleId),
-                        (currentUserRoles) =>
-                          currentUserRoles.includes(defined(state.role.id))
-                            ? undefined
-                            : loading(
-                                ping(
-                                  `/permissions/user_roles/${collection.id}/${user.id}/`,
-                                  {
-                                    method: 'PUT',
-                                    body: [
-                                      ...currentUserRoles,
-                                      state.role.id,
-                                    ].map((id) => ({ id })),
-                                  },
-                                  { expectedResponseCodes: [Http.NO_CONTENT] }
-                                ).then(() =>
-                                  setUserRoles(
-                                    replaceItem(userRoles, userIndex, {
-                                      ...userRoles[userIndex],
-                                      roles: [
-                                        ...userRoles[userIndex].roles,
-                                        {
-                                          roleId: defined(state.role.id),
-                                          roleName: state.role.name,
-                                        },
-                                      ],
-                                    })
-                                  )
-                                )
-                              )
-                      )
+            onAddUsers={(users): void => {
+              if (userRoles === undefined || state.role.id === undefined)
+                return;
+              loading(
+                Promise.all(
+                  users.map((user) => {
+                    const userIndex = userRoles.findIndex(
+                      ({ userId }) => userId === user.id
+                    );
+                    const currentUserRoles = userRoles[userIndex].roles.map(
+                      ({ roleId }) => roleId
+                    );
+                    // Noop if user is already part of this role
+                    return currentUserRoles.includes(defined(state.role.id))
+                      ? undefined
+                      : ping(
+                          `/permissions/user_roles/${collection.id}/${user.id}/`,
+                          {
+                            method: 'PUT',
+                            body: [...currentUserRoles, state.role.id].map(
+                              (id) => ({
+                                id,
+                              })
+                            ),
+                          },
+                          { expectedResponseCodes: [Http.NO_CONTENT] }
+                        ).then(() => ({
+                          userIndex,
+                          updatedRoles: {
+                            ...userRoles[userIndex],
+                            roles: [
+                              ...userRoles[userIndex].roles,
+                              {
+                                roleId: defined(state.role.id),
+                                roleName: state.role.name,
+                              },
+                            ],
+                          },
+                        }));
+                  })
+                ).then((addedUserRoles) =>
+                  setUserRoles(
+                    filterArray(addedUserRoles).reduce(
+                      (userRoles, { userIndex, updatedRoles }) =>
+                        replaceItem(userRoles, userIndex, updatedRoles),
+                      userRoles
+                    )
                   )
-                : undefined
-            }
+                )
+              );
+            }}
           />
         ) : (
           <LoadingScreen />

@@ -51,7 +51,7 @@ export function QueryBuilder({
   recordSet,
   isEmbedded = false,
   autoRun = false,
-  // If present, this callback is called when a query result is selected
+  // If present, this callback is called when query results are selected
   onSelected: handleSelected,
 }: {
   readonly query: SpecifyResource<SpQuery>;

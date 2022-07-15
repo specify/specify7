@@ -287,19 +287,25 @@ export function CollectionOneToManyPlugin({
           extraFilters={undefined}
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
-          onSelected={(addedResource): void => {
-            const toAdd = new schema.models.CollectionRelationship.Resource();
-            toAdd.set(`${data.otherSide}Side`, addedResource);
-            toAdd.set(`${data.side}Side`, resource);
-            toAdd.set(
-              'collectionRelType',
-              data.relationshipType.get('resource_uri')
-            );
+          multiple
+          onSelected={(addedResources): void => {
+            const addedRelationships = addedResources.map((addedResource) => {
+              const toAdd = new schema.models.CollectionRelationship.Resource();
+              toAdd.set(`${data.otherSide}Side`, addedResource);
+              toAdd.set(`${data.side}Side`, resource);
+              toAdd.set(
+                'collectionRelType',
+                data.relationshipType.get('resource_uri')
+              );
+              return toAdd;
+            });
             loading(
               resource
                 .rgetCollection(`${data.side}SideRels`)
-                .then((collection) => collection.add(toAdd))
-                .then(async () => processRelationships([toAdd], data.otherSide))
+                .then((collection) => collection.add(addedRelationships))
+                .then(async () =>
+                  processRelationships(addedRelationships, data.otherSide)
+                )
                 .then((relationships) =>
                   setData({
                     ...data,

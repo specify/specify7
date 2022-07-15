@@ -190,7 +190,7 @@ export function SubView({
             relationshipIsToMany(relationship) &&
             relationship.type !== 'zero-to-one'
               ? undefined
-              : (resource): void =>
+              : ([resource]): void =>
                   void parentResource.set(relationship.name, resource as never)
           }
           onDelete={

@@ -126,11 +126,12 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       model={collection.model.specifyModel}
       relatedResource={isDependent ? collection.related : undefined}
       records={records}
-      onAdd={(resource): void => {
+      onAdd={(rawResources): void => {
+        const resources = isToOne ? rawResources.slice(1) : rawResources;
         if (isDependent && isToOne)
-          collection.related?.placeInSameHierarchy(resource);
-        collection.add(resource);
-        handleAdd?.(resource);
+          collection.related?.placeInSameHierarchy(resources[0]);
+        collection.add(resources);
+        handleAdd?.(resources);
         setIndex(collection.models.length - 1);
         handleSlide?.(collection.models.length - 1);
         // Updates the state to trigger a reRender
@@ -396,14 +397,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       {...rest}
       onAdd={
         typeof handleAdd === 'function'
-          ? (resource): void => {
+          ? (resources): void => {
               if (currentResource?.needsSaved === true)
                 /*
                  * Since React's setState has a special behavior when a function
                  * argument is passed, need to wrap a function in a function
                  */
-                setUnloadProtect(() => () => handleAdd(resource));
-              else handleAdd(resource);
+                setUnloadProtect(() => () => handleAdd(resources));
+              else handleAdd(resources);
             }
           : undefined
       }
@@ -689,28 +690,36 @@ export function RecordSet<SCHEMA extends AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
-  const handleAdd = (resource: SpecifyResource<SCHEMA>): void =>
+  const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void =>
     setItems(({ totalCount, ids } = defaultRecordSetState) => {
-      // If resource is not yet in a context of a record set, make it
-      if (resource.recordsetid !== recordSet.id) {
-        resource.recordsetid = recordSet.id;
-        /*
-         * For new resources, RecordSetItem would be created by the
-         * back-end on save. For existing resources have to do that
-         * manually
-         */
-        if (!resource.isNew())
-          loading(
-            createResource('RecordSetItem', {
-              recordId: resource.id,
-              recordSet: recordSet.get('resource_uri'),
-            })
-          );
-      }
+      loading(
+        Promise.all(
+          resources.map((resource) => {
+            // If resource is not yet in a context of a record set, make it
+            if (resource.recordsetid !== recordSet.id) {
+              resource.recordsetid = recordSet.id;
+              /*
+               * For new resources, RecordSetItem would be created by the
+               * back-end on save. For existing resources have to do that
+               * manually
+               */
+              return resource.isNew()
+                ? createResource('RecordSetItem', {
+                    recordId: resource.id,
+                    recordSet: recordSet.get('resource_uri'),
+                  })
+                : undefined;
+            } else return undefined;
+          })
+        )
+      );
+      const hasNew = resources.some((resource) => resource.isNew());
+      if (hasNew && resources.length > 1)
+        throw new Error("Can't add multiple new resources at once");
       return {
         totalCount: totalCount + 1,
-        ids: resource.isNew() ? ids : [...ids, resource.id],
-        newResource: resource.isNew() ? resource : undefined,
+        ids: hasNew ? ids : [...ids, ...resources.map(({ id }) => id)],
+        newResource: hasNew ? resources[0] : undefined,
         index: totalCount,
       };
     });
@@ -734,27 +743,41 @@ export function RecordSet<SCHEMA extends AnySchema>({
         defaultIndex={index}
         onSaved={({ newResource, wasNew, resource }): void => {
           if (wasNew) {
-            handleAdd(resource);
+            handleAdd([resource]);
             pushUrl(resource.viewUrl());
           }
-          if (typeof newResource === 'object') handleAdd(newResource);
+          if (typeof newResource === 'object') handleAdd([newResource]);
         }}
         onAdd={
           hasToolPermission('recordSets', 'create')
-            ? (resource) =>
-                loading(
-                  // Detect duplicate record set item
-                  (resource.isNew()
-                    ? Promise.resolve(false)
-                    : fetchCollection('RecordSetItem', {
-                        recordSet: recordSet.id,
-                        recordId: resource.id,
-                        limit: 1,
-                      }).then(({ totalCount }) => totalCount !== 0)
-                  ).then((isDuplicate) =>
-                    isDuplicate ? handleHasDuplicate() : handleAdd(resource)
+            ? (resources) =>
+                // Detect duplicate record set item
+                Promise.all(
+                  resources.map((resource) =>
+                    f.all({
+                      resource,
+                      isDuplicate: resource.isNew()
+                        ? Promise.resolve(false)
+                        : fetchCollection('RecordSetItem', {
+                            recordSet: recordSet.id,
+                            recordId: resource.id,
+                            limit: 1,
+                          }).then(({ totalCount }) => totalCount !== 0),
+                    })
                   )
-                )
+                ).then((results) => {
+                  const hasDuplicate = results.some(
+                    ({ isDuplicate }) => isDuplicate
+                  );
+                  if (hasDuplicate && results.length === 1)
+                    handleHasDuplicate();
+                  else {
+                    const resources = results
+                      .filter(({ isDuplicate }) => !isDuplicate)
+                      .map(({ resource }) => resource);
+                    handleAdd(resources);
+                  }
+                })
             : undefined
         }
         onDelete={

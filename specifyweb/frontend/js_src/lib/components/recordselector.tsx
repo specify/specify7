@@ -107,7 +107,7 @@ function Search<SCHEMA extends AnySchema>({
   onClose: handleClose,
 }: {
   readonly model: SpecifyModel<SCHEMA>;
-  readonly onAdd: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onAdd: (resources: RA<SpecifyResource<SCHEMA>>) => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const resource = React.useMemo(
@@ -126,8 +126,9 @@ function Search<SCHEMA extends AnySchema>({
       templateResource={resource}
       forceCollection={undefined}
       extraFilters={undefined}
-      onSelected={(resource): void => handleAdd(resource)}
+      onSelected={handleAdd}
       onClose={handleClose}
+      multiple
     />
   );
 }
@@ -141,7 +142,9 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   // List of record set items
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   // Callback to call when new record needs to be added to the record set
-  readonly onAdd: undefined | ((resource: SpecifyResource<SCHEMA>) => void);
+  readonly onAdd:
+    | undefined
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void);
   // Callback to call when a record needs to be removed from the record set
   readonly onDelete:
     | undefined
@@ -219,13 +222,15 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
       state.type === 'AddBySearch' && typeof handleAdded === 'function' ? (
         <Search
           model={model}
-          onAdd={(record): void => {
+          onAdd={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
-                record.set(fieldName, url as never)
+                resources.forEach((resource) =>
+                  resource.set(fieldName, url as never)
+                )
               )
             );
-            handleAdded(record);
+            handleAdded(resources);
           }}
           onClose={(): void => setState({ type: 'Main' })}
         />
@@ -240,7 +245,7 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
                 !relatedResource.isNew()
               )
                 resource.set(field.otherSideName, relatedResource.url() as any);
-              handleAdded(resource);
+              handleAdded([resource]);
             } else setState({ type: 'AddBySearch' });
           }
         : undefined,

@@ -44,7 +44,7 @@ export function RoleView({
   onSave: handleSave,
   onClose: handleClose,
   onOpenUser: handleOpenUser,
-  onAddUser: handleAddUser,
+  onAddUsers: handleAddUsers,
 }: {
   readonly role: Role | NewRole;
   readonly parentName: string | undefined;
@@ -59,8 +59,8 @@ export function RoleView({
   readonly onDelete: () => void;
   readonly onClose: () => void;
   readonly onOpenUser: ((userId: number) => void) | undefined;
-  readonly onAddUser:
-    | ((user: SpecifyResource<SpecifyUser>) => void)
+  readonly onAddUsers:
+    | ((user: RA<SpecifyResource<SpecifyUser>>) => void)
     | undefined;
 }): JSX.Element {
   const [role, setRole] = useTriggerState(initialRole);
@@ -160,7 +160,7 @@ export function RoleView({
                   </div>
                 )}
                 {state.type === 'AddUserState' &&
-                typeof handleAddUser === 'function' ? (
+                typeof handleAddUsers === 'function' ? (
                   <SearchDialog
                     forceCollection={undefined}
                     extraFilters={[
@@ -174,7 +174,8 @@ export function RoleView({
                     ]}
                     templateResource={state.templateResource}
                     onClose={(): void => setState({ type: 'MainState' })}
-                    onSelected={handleAddUser}
+                    multiple
+                    onSelected={handleAddUsers}
                   />
                 ) : undefined}
               </>
@@ -204,7 +205,7 @@ export function RoleView({
         hasPermission(permissionName, 'delete', collectionId) ? (
           <Button.Red
             disabled={
-              userRoles === undefined && typeof handleAddUser === 'function'
+              userRoles === undefined && typeof handleAddUsers === 'function'
             }
             onClick={
               userRoles?.length === 0
