@@ -9,7 +9,7 @@ import type { LiteralField, Relationship } from '../specifyfield';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { Button, Form, H3, Input, Label, Submit, Ul } from './basic';
-import {useBooleanState, useId} from './hooks';
+import { useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { useCachedState } from './statecache';
 
@@ -42,19 +42,15 @@ function CarryForwardConfig({
   readonly model: SpecifyModel;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
-    category: 'forms',
-    key: 'carryForwardShowHidden',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [showHiddenFields, setShowHiddenFields] = useCachedState(
+    'forms',
+    'carryForwardShowHidden'
+  );
 
-  const [globalConfig = {}, setGlobalConfig] = useCachedState({
-    category: 'forms',
-    key: 'carryForward',
-    defaultValue: {},
-    staleWhileRefresh: false,
-  });
+  const [globalConfig = {}, setGlobalConfig] = useCachedState(
+    'forms',
+    'carryForward'
+  );
 
   const uniqueFields = getUniqueFields(model);
   const defaultConfig = model.fields

@@ -47,12 +47,7 @@ export function useViewDefinition({
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
-  const [globalConfig = {}] = useCachedState({
-    category: 'forms',
-    key: 'useCustomForm',
-    defaultValue: {},
-    staleWhileRefresh: false,
-  });
+  const [globalConfig = {}] = useCachedState('forms', 'useCustomForm');
   const useCustomForm = globalConfig[model.name] ?? true;
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(

@@ -44,12 +44,10 @@ export function AppResourcesAside({
     | ((directory: SerializedResource<SpAppResourceDir>) => void)
     | undefined;
 }): JSX.Element {
-  const [conformations = [], setConformations] = useCachedState({
-    category: 'appResources',
-    key: 'conformation',
-    defaultValue: [],
-    staleWhileRefresh: false,
-  });
+  const [conformations = [], setConformations] = useCachedState(
+    'appResources',
+    'conformation'
+  );
   const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
   return (

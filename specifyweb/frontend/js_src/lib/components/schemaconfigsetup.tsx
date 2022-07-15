@@ -56,12 +56,10 @@ function SchemaConfigTables({
   const [model, setModel] = React.useState<SpecifyModel | undefined>(
     Object.values(schema.models).find(({ name }) => name === defaultTable)
   );
-  const [showHiddenTables = false, setShowHiddenTables] = useCachedState({
-    category: 'schemaConfig',
-    key: 'showHiddenTables',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
+    'schemaConfig',
+    'showHiddenTables'
+  );
   const sortedTables = React.useMemo(() => {
     const sortedTables = Object.values(schema.models).sort(
       sortFunction(({ name }) => name)

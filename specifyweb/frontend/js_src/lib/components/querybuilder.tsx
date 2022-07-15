@@ -97,12 +97,10 @@ export function QueryBuilder({
    */
   const [triedToSave, handleTriedToSave] = useBooleanState();
 
-  const [showHiddenFields = false, setShowHiddenFields] = useCachedState({
-    category: 'queryBuilder',
-    key: 'showHiddenFields',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [showHiddenFields = false, setShowHiddenFields] = useCachedState(
+    'queryBuilder',
+    'showHiddenFields'
+  );
 
   const saveRequired =
     (useIsModified(queryResource) || state.saveRequired) && !isEmbedded;

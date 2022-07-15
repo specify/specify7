@@ -222,19 +222,15 @@ const defaultFilter = { type: 'all' } as const;
 export function AttachmentsView(): JSX.Element {
   useTitle(commonText('attachments'));
 
-  const [order = defaultSortOrder, setOrder] = useCachedState({
-    category: 'attachments',
-    key: 'sortOrder',
-    defaultValue: defaultSortOrder,
-    staleWhileRefresh: false,
-  });
+  const [order = defaultSortOrder, setOrder] = useCachedState(
+    'attachments',
+    'sortOrder'
+  );
 
-  const [filter = defaultFilter, setFilter] = useCachedState({
-    category: 'attachments',
-    key: 'filter',
-    defaultValue: defaultFilter,
-    staleWhileRefresh: false,
-  });
+  const [filter = defaultFilter, setFilter] = useCachedState(
+    'attachments',
+    'filter'
+  );
 
   const [collectionSizes] = useAsyncState(
     React.useCallback(
@@ -275,12 +271,10 @@ export function AttachmentsView(): JSX.Element {
     false
   );
 
-  const [scale = defaultScale, setScale] = useCachedState({
-    category: 'attachments',
-    key: 'scale',
-    defaultValue: defaultScale,
-    staleWhileRefresh: false,
-  });
+  const [scale = defaultScale, setScale] = useCachedState(
+    'attachments',
+    'scale'
+  );
 
   const [collection, fetchMore] = useCollection(
     React.useCallback(

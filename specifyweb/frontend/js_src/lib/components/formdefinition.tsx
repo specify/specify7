@@ -48,12 +48,10 @@ function FormDefinitionDialog({
 }
 
 function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
-  const [globalConfig = {}, setGlobalConfig] = useCachedState({
-    category: 'forms',
-    key: 'useCustomForm',
-    defaultValue: {},
-    staleWhileRefresh: false,
-  });
+  const [globalConfig = {}, setGlobalConfig] = useCachedState(
+    'forms',
+    'useCustomForm'
+  );
   const useCustomForm = globalConfig[model.name] ?? true;
   const handleChange = (checked: boolean): void =>
     setGlobalConfig({ ...globalConfig, [model.name]: !checked });
@@ -67,12 +65,10 @@ function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
 }
 
 function UseLabels(): JSX.Element {
-  const [useFieldLabels = true, setUseFieldLabels] = useCachedState({
-    category: 'forms',
-    key: 'useFieldLabels',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
+  const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
+    'forms',
+    'useFieldLabels'
+  );
 
   return (
     <Label.ForCheckbox>

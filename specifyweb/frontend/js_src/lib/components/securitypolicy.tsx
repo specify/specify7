@@ -274,19 +274,15 @@ export function SecurityPoliciesWrapper({
   readonly collapsable: boolean;
   readonly children: JSX.Element;
 }): JSX.Element {
-  const [orientation = 'vertical', setOrientation] = useCachedState({
-    category: 'securityTool',
-    key: 'policiesLayout',
-    defaultValue: 'vertical',
-    staleWhileRefresh: false,
-  });
+  const [orientation = 'vertical', setOrientation] = useCachedState(
+    'securityTool',
+    'policiesLayout'
+  );
 
-  const [isExpanded = true, setExpanded] = useCachedState({
-    category: 'securityTool',
-    key: 'institutionPoliciesExpanded',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
+  const [isExpanded = true, setExpanded] = useCachedState(
+    'securityTool',
+    'institutionPoliciesExpanded'
+  );
   const buttonTitle =
     orientation === 'vertical'
       ? adminText('switchToHorizontalLayout')
@@ -368,12 +364,10 @@ export function SecurityPolicies({
     policyCountRef.current = policies?.length ?? -1;
   }, [policies]);
 
-  const [orientation = 'vertical'] = useCachedState({
-    category: 'securityTool',
-    key: 'policiesLayout',
-    defaultValue: 'vertical',
-    staleWhileRefresh: false,
-  });
+  const [orientation = 'vertical'] = useCachedState(
+    'securityTool',
+    'policiesLayout'
+  );
 
   return Array.isArray(policies) ? (
     <>

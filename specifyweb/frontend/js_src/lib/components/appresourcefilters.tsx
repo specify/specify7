@@ -23,12 +23,10 @@ export function AppResourcesFilters({
 }: {
   readonly initialResources: AppResources;
 }): JSX.Element {
-  const [filters = defaultAppResourceFilters, setFilters] = useCachedState({
-    category: 'appResources',
-    key: 'filters',
-    defaultValue: defaultAppResourceFilters,
-    staleWhileRefresh: false,
-  });
+  const [filters = defaultAppResourceFilters, setFilters] = useCachedState(
+    'appResources',
+    'filters'
+  );
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
@@ -113,14 +111,9 @@ export function AppResourcesFilters({
 
 export function useFilteredAppResources(
   initialResources: AppResources,
-  initialFilters: AppResourceFiltersType | undefined
+  initialFilters: AppResourceFiltersType | undefined = defaultAppResourceFilters
 ): AppResources {
-  const [filters = defaultAppResourceFilters] = useCachedState({
-    category: 'appResources',
-    key: 'filters',
-    defaultValue: initialFilters ?? defaultAppResourceFilters,
-    staleWhileRefresh: true,
-  });
+  const [filters = initialFilters] = useCachedState('appResources', 'filters');
   return React.useMemo(
     () => filterAppResources(initialResources, filters),
     [filters, initialResources]

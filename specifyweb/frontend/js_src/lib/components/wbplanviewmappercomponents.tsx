@@ -125,12 +125,7 @@ export function MappingView({
 }): JSX.Element | null {
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
-    useCachedState({
-      category: 'wbPlanViewUi',
-      key: 'mappingViewHeight',
-      defaultValue,
-      staleWhileRefresh: false,
-    });
+    useCachedState('wbPlanViewUi', 'mappingViewHeight');
   const mappingViewParentRef = React.useCallback<
     (mappingViewParent: HTMLElement | null) => void
   >(

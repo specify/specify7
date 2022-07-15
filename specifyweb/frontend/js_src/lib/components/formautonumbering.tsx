@@ -50,12 +50,10 @@ function AutoNumberingDialog({
   readonly fields: RA<LiteralField>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [globalConfig = {}, setGlobalConfig] = useCachedState({
-    category: 'forms',
-    key: 'autoNumbering',
-    defaultValue: {},
-    staleWhileRefresh: false,
-  });
+  const [globalConfig = {}, setGlobalConfig] = useCachedState(
+    'forms',
+    'autoNumbering'
+  );
   const config =
     (globalConfig[resource.specifyModel.name] as RA<string>) ?? fields;
 

@@ -78,12 +78,10 @@ export function BaseTableSelection({
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
 }): JSX.Element {
-  const [showHiddenTables = true, setShowHiddenTables] = useCachedState({
-    category: 'wbPlanViewUi',
-    key: 'showHiddenTables',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
+  const [showHiddenTables = true, setShowHiddenTables] = useCachedState(
+    'wbPlanViewUi',
+    'showHiddenTables'
+  );
 
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();

@@ -27,6 +27,7 @@ import type { IR, RA } from '../types';
 import { Autocomplete } from './autocomplete';
 import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
+import { ErrorBoundary, softFail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { supportsBackdropBlur } from './modaldialog';
 import { pushUrl } from './navigation';
@@ -43,9 +44,6 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { ErrorBoundary, softFail } from './errorboundary';
-
-const defaultCacheValue = [] as const;
 
 const treeToPref = {
   Geography: 'geography',
@@ -68,19 +66,15 @@ function TreeView<SCHEMA extends AnyTree>({
 }): JSX.Element | null {
   const table = schema.models[tableName] as SpecifyModel<AnyTree>;
   const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
-  const [collapsedRanks, setCollapsedRanks] = useCachedState({
-    category: 'tree',
-    key: `collapsedRanks${tableName}`,
-    defaultValue: defaultCacheValue,
-    staleWhileRefresh: false,
-  });
+  const [collapsedRanks, setCollapsedRanks] = useCachedState(
+    'tree',
+    `collapsedRanks${tableName}`
+  );
 
-  const [rawConformation = '', setConformation] = useCachedState({
-    category: 'tree',
-    key: `conformation${tableName}`,
-    defaultValue: '',
-    staleWhileRefresh: false,
-  });
+  const [rawConformation = '', setConformation] = useCachedState(
+    'tree',
+    `conformation${tableName}`
+  );
   const conformation = deserializeConformation(rawConformation);
 
   // FEATURE: update query string in URL on initial load if has cached conformation
@@ -130,12 +124,10 @@ function TreeView<SCHEMA extends AnyTree>({
   const id = useId('tree-view');
 
   // FEATURE: synchronize focus path with the URL
-  const [focusPath = [], setFocusPath] = useCachedState({
-    category: 'tree',
-    key: `focusPath${tableName}`,
-    defaultValue: [],
-    staleWhileRefresh: false,
-  });
+  const [focusPath = [], setFocusPath] = useCachedState(
+    'tree',
+    `focusPath${tableName}`
+  );
   const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
     undefined
   );

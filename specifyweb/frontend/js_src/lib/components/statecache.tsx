@@ -3,10 +3,6 @@ import React from 'react';
 import { cacheEvents, getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
 import { f } from '../functools';
-import { isFunction } from '../types';
-import { crash } from './errorboundary';
-
-type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
 
 /**
  * Like React.useState, but initial value is read from localStorage
@@ -23,22 +19,10 @@ type DefaultValue<T> = T | Promise<T> | (() => Promise<T>);
 export function useCachedState<
   CATEGORY extends string & keyof CacheDefinitions,
   KEY extends string & keyof CacheDefinitions[CATEGORY]
->({
-  category,
-  key,
-  defaultValue,
-  /**
-   * A concept borrowed from Vercel's SWR,
-   * If there is a cashed state in localStorage, use that, but still fetch
-   * the most up to date value and use that once fetched
-   */
-  staleWhileRefresh,
-}: {
-  readonly category: CATEGORY;
-  readonly key: KEY;
-  readonly defaultValue: DefaultValue<CacheDefinitions[CATEGORY][KEY]>;
-  readonly staleWhileRefresh: boolean;
-}): [
+>(
+  category: CATEGORY,
+  key: KEY
+): [
   value: CacheDefinitions[CATEGORY][KEY] | undefined,
   setValue: (newValue: CacheDefinitions[CATEGORY][KEY]) => void
 ] {
@@ -51,17 +35,6 @@ export function useCachedState<
       setState(setCache(category, key, newValue)),
     [category, key]
   );
-
-  const isUndefined = state === undefined;
-  React.useEffect(() => {
-    if (isUndefined || staleWhileRefresh)
-      (isFunction(defaultValue)
-        ? Promise.resolve(defaultValue())
-        : Promise.resolve(defaultValue)
-      )
-        .then((value) => f.maybe(value, setCachedState))
-        .catch(crash);
-  }, [isUndefined, defaultValue, setCachedState, staleWhileRefresh]);
 
   React.useEffect(
     () =>

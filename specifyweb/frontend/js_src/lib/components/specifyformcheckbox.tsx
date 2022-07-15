@@ -20,12 +20,7 @@ export function PrintOnSave({
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
-  const [tables, setTables] = useCachedState({
-    category: 'forms',
-    key: 'printOnSave',
-    defaultValue: {},
-    staleWhileRefresh: false,
-  });
+  const [tables, setTables] = useCachedState('forms', 'printOnSave');
   /*
    * Need to check for object explicitly, because this cache key stored
    * boolean in the past

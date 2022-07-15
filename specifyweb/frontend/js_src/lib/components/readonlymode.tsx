@@ -9,12 +9,10 @@ export function ReadOnlyMode({
 }: {
   readonly isNew: boolean;
 }): JSX.Element {
-  const [isReadOnly = false, setReadOnly] = useCachedState({
-    category: 'forms',
-    key: 'readOnlyMode',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [isReadOnly = false, setReadOnly] = useCachedState(
+    'forms',
+    'readOnlyMode'
+  );
   return (
     <Button.Simple
       onClick={(): void => {

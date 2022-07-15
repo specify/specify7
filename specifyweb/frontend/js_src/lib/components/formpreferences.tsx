@@ -31,12 +31,7 @@ export function FormPreferences({
   readonly resource: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  const [isReadOnly = false] = useCachedState({
-    category: 'forms',
-    key: 'readOnlyMode',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
   return typeof resource === 'object' ? (
     <>
       <Button.Small

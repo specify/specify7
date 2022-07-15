@@ -140,7 +140,7 @@ function TableHeader({
   );
 }
 
-const defaultSearchConfig = {
+const defaultSortConfig = {
   sortField: 'dateCreated',
   ascending: false,
 } as const;

@@ -100,6 +100,7 @@ function Row({
 }
 
 const defaultSortConfig = { sortField: 'name', ascending: true } as const;
+
 export function RecordSetsDialog({
   recordSetsPromise,
   onClose: handleClose,

@@ -126,12 +126,10 @@ function Layout({
   const [dataSetName, setDataSetName] = useTriggerState(
     extractFileName(fileName)
   );
-  const [hasHeader = true, setHasHeader] = useCachedState({
-    category: 'wbImport',
-    key: 'hasHeader',
-    defaultValue: true,
-    staleWhileRefresh: false,
-  });
+  const [hasHeader = true, setHasHeader] = useCachedState(
+    'wbImport',
+    'hasHeader'
+  );
   return typeof preview === 'string' ? (
     <BadImport error={preview} />
   ) : Array.isArray(preview) ? (

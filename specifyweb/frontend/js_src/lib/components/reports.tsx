@@ -8,6 +8,7 @@ import {
   attachmentSettingsPromise,
   formatAttachmentUrl,
 } from '../attachments';
+import { parseXml } from '../codemirrorlinters';
 import { fetchCollection } from '../collection';
 import { csrfToken } from '../csrftoken';
 import type { RecordSet, SpAppResource, SpQuery, SpReport } from '../datamodel';
@@ -37,16 +38,17 @@ import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { AttachmentPlugin } from './attachmentplugin';
 import { Button, Form, H3, Input, Label, Link, Submit, Ul } from './basic';
+import { FormattedResource, SortIndicator, useSortConfig } from './common';
 import { LoadingContext } from './contexts';
+import { ErrorBoundary, softFail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useLiveState } from './hooks';
 import { iconClassName, icons } from './icons';
+import { DateElement } from './internationalization';
 import { Dialog, LoadingScreen } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { queryFieldFilters } from './querybuilderfieldfilter';
 import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { ErrorBoundary, softFail } from './errorboundary';
-import { parseXml } from '../codemirrorlinters';
 
 export function ReportsView({
   // If resource ID is provided, model must be too
@@ -231,7 +233,7 @@ function Report({
     React.useCallback(
       () =>
         typeof report === 'object'
-          ? f.maybe(idFromUrl(report.query), (id) =>
+          ? f.maybe(idFromUrl(report.query), async (id) =>
               fetchResource('SpQuery', id).then((resource) => resource ?? false)
             ) ?? false
           : undefined,

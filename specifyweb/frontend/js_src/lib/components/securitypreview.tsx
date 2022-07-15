@@ -412,18 +412,14 @@ export function PreviewPermissions({
     ),
     false
   );
-  const [isCollapsed = false, setCollapsed] = useCachedState({
-    category: 'securityTool',
-    key: 'previewCollapsed',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
-  const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState({
-    category: 'securityTool',
-    key: 'advancedPreviewCollapsed',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [isCollapsed = false, setCollapsed] = useCachedState(
+    'securityTool',
+    'previewCollapsed'
+  );
+  const [isSystemCollapsed = false, setSystemCollapsed] = useCachedState(
+    'securityTool',
+    'advancedPreviewCollapsed'
+  );
   return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className="text-xl" onToggle={setCollapsed}>

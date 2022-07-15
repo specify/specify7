@@ -94,18 +94,11 @@ function GeoLocate({
     return (): void => globalThis.removeEventListener('message', listener);
   }, [loading, data, handleClose, resource]);
 
-  const [width = defaultWidth, setWidth] = useCachedState({
-    category: 'geoLocate',
-    key: 'width',
-    defaultValue: defaultWidth,
-    staleWhileRefresh: false,
-  });
-  const [height = defaultHeight, setHeight] = useCachedState({
-    category: 'geoLocate',
-    key: 'height',
-    defaultValue: defaultHeight,
-    staleWhileRefresh: false,
-  });
+  const [width = defaultWidth, setWidth] = useCachedState('geoLocate', 'width');
+  const [height = defaultHeight, setHeight] = useCachedState(
+    'geoLocate',
+    'height'
+  );
 
   return data === undefined ? null : data === false ? (
     <Dialog

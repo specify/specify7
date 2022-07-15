@@ -71,12 +71,10 @@ function ErrorDialog({
     'application',
     'allowDismissingErrors'
   );
-  const [clearCacheOnException = false, setClearCache] = useCachedState({
-    category: 'general',
-    key: 'clearCacheOnException',
-    defaultValue: false,
-    staleWhileRefresh: false,
-  });
+  const [clearCacheOnException = false, setClearCache] = useCachedState(
+    'general',
+    'clearCacheOnException'
+  );
   return (
     <Dialog
       header={header}
