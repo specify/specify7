@@ -106,9 +106,6 @@ export const dialogIconTriggers = {
 };
 
 // ClassNames are primarily for usage by non-react components
-const niceButton = `rounded cursor-pointer active:brightness-80 px-4 py-2
-  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-  inline-flex items-center capitalize`;
 const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
@@ -136,12 +133,15 @@ export const className = {
   // Disable default link click intercept action
   navigationHandled: 'navigation-handled',
   label: 'flex flex-col',
-  labelForCheckbox: 'cursor-pointer inline-flex gap-x-1 items-center',
+  labelForCheckbox: 'cursor-pointer inline-flex gap-1 items-center',
   textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',
   button: 'button',
   link: 'link',
   icon: 'icon link',
   grayButton,
+  niceButton: `rounded cursor-pointer active:brightness-80 px-4 py-2
+  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
+  inline-flex items-center capitalize`,
   borderedGrayButton: `${grayButton} ring-1 ring-gray-400 dark:ring-0
     disabled:ring-gray-500 disabled:dark:ring-neutral-500`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
@@ -155,7 +155,7 @@ export const className = {
   containerBase,
   containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full ${formStyles}`,
-  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-x-4',
+  formHeader: 'border-b-2 border-brand-300 flex items-center pb-2 gap-4',
   formTitle: 'text-lg font-bold flex items-center gap-2',
   formStyles,
   limitedWidth: `max-w-[min(100%,var(--max-field-width))]`,
@@ -163,7 +163,7 @@ export const className = {
   headerGray: 'text-gray-500 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
-  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-x-2',
+  formFooter: 'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2',
   dataEntryAdd: '!text-green-700 print:hidden',
   dataEntryView: '!text-orange-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
@@ -272,7 +272,7 @@ export const DataEntry = {
   SubFormHeader: wrap(
     'DataEntry.SubFormHeader',
     'legend',
-    'gap-x-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
+    'gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center',
     ({ children, ...props }) => ({
       // A hack for Safari. See https://github.com/specify/specify7/issues/1535
       children: <span {...props}>{children}</span>,
@@ -665,19 +665,34 @@ export const Link = {
     ),
   })),
   LikeButton: linkComponent('Link.LikeButton', className.button),
-  Fancy: linkComponent('Link.Fancy', `${niceButton} ${className.fancyButton}`),
-  Gray: linkComponent('Link.Gray', `${niceButton} ${className.grayButton}`),
+  Fancy: linkComponent(
+    'Link.Fancy',
+    `${className.niceButton} ${className.fancyButton}`
+  ),
+  Gray: linkComponent(
+    'Link.Gray',
+    `${className.niceButton} ${className.grayButton}`
+  ),
   BorderedGray: linkComponent(
     'Link.BorderedGray',
-    `${niceButton} ${className.borderedGrayButton}`
+    `${className.niceButton} ${className.borderedGrayButton}`
   ),
-  Red: linkComponent('Link.Red', `${niceButton} ${className.redButton}`),
-  Blue: linkComponent('Link.Blue', `${niceButton} ${className.blueButton}`),
+  Red: linkComponent(
+    'Link.Red',
+    `${className.niceButton} ${className.redButton}`
+  ),
+  Blue: linkComponent(
+    'Link.Blue',
+    `${className.niceButton} ${className.blueButton}`
+  ),
   Orange: linkComponent(
     'Link.Orange',
-    `${niceButton} ${className.orangeButton}`
+    `${className.niceButton} ${className.orangeButton}`
   ),
-  Green: linkComponent('Link.Green', `${niceButton} ${className.greenButton}`),
+  Green: linkComponent(
+    'Link.Green',
+    `${className.niceButton} ${className.greenButton}`
+  ),
 
   Icon: linkComponent<IconProps>(
     'Link.Icon',
@@ -750,7 +765,7 @@ export const Button = {
   >(
     'Button.Small',
     'button',
-    `${niceButton} !py-1 !px-2`,
+    `${className.niceButton} !py-1 !px-2`,
     ({
       variant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
       type,
@@ -762,16 +777,31 @@ export const Button = {
       ...props,
     })
   ),
-  Fancy: button('Button.LikeLink', `${niceButton} ${className.fancyButton}`),
-  Gray: button('Button.Gray', `${niceButton} ${className.grayButton}`),
+  Fancy: button(
+    'Button.LikeLink',
+    `${className.niceButton} ${className.fancyButton}`
+  ),
+  Gray: button(
+    'Button.Gray',
+    `${className.niceButton} ${className.grayButton}`
+  ),
   BorderedGray: button(
     'Button.BorderedGray',
-    `${niceButton} ${className.borderedGrayButton}`
+    `${className.niceButton} ${className.borderedGrayButton}`
   ),
-  Red: button('Button.Red', `${niceButton} ${className.redButton}`),
-  Blue: button('Button.Blue', `${niceButton} ${className.blueButton}`),
-  Orange: button('Button.Orange', `${niceButton} ${className.orangeButton}`),
-  Green: button('Button.Green', `${niceButton} ${className.greenButton}`),
+  Red: button('Button.Red', `${className.niceButton} ${className.redButton}`),
+  Blue: button(
+    'Button.Blue',
+    `${className.niceButton} ${className.blueButton}`
+  ),
+  Orange: button(
+    'Button.Orange',
+    `${className.niceButton} ${className.orangeButton}`
+  ),
+  Green: button(
+    'Button.Green',
+    `${className.niceButton} ${className.greenButton}`
+  ),
   DialogClose: DialogCloseButton,
   Icon: wrap<
     'button',
@@ -810,16 +840,28 @@ export const Submit = {
   Simple: submitButton('Submit.Simple', className.button),
   Fancy: submitButton(
     'Submit.Fancy',
-    `${niceButton} ${className.fancyButton} !inline`
+    `${className.niceButton} ${className.fancyButton} !inline`
   ),
-  Gray: submitButton('Submit.Gray', `${niceButton} ${className.grayButton}`),
-  Red: submitButton('Submit.Red', `${niceButton} ${className.redButton}`),
-  Blue: submitButton('Submit.Blue', `${niceButton} ${className.blueButton}`),
+  Gray: submitButton(
+    'Submit.Gray',
+    `${className.niceButton} ${className.grayButton}`
+  ),
+  Red: submitButton(
+    'Submit.Red',
+    `${className.niceButton} ${className.redButton}`
+  ),
+  Blue: submitButton(
+    'Submit.Blue',
+    `${className.niceButton} ${className.blueButton}`
+  ),
   Orange: submitButton(
     'Submit.Orange',
-    `${niceButton} ${className.orangeButton}`
+    `${className.niceButton} ${className.orangeButton}`
   ),
-  Green: submitButton('Submit.Green', `${niceButton} ${className.greenButton}`),
+  Green: submitButton(
+    'Submit.Green',
+    `${className.niceButton} ${className.greenButton}`
+  ),
 } as const;
 
 export const Container = {

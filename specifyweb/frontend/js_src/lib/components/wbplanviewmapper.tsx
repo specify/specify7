@@ -442,7 +442,6 @@ export function WbPlanViewMapper(props: {
               generateFieldData: 'all',
             }),
             customSelectType: 'OPENED_LIST',
-            scope: 'wbPlanView',
             onChange({ isDoubleClick, ...rest }) {
               if (isDoubleClick && mapButtonEnabled)
                 dispatch({ type: 'MappingViewMapAction' });
