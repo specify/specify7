@@ -283,7 +283,7 @@ export function QueryResults({
   readonly results: RA<RA<string | number | null>>;
   readonly selectedRows: Set<number>;
   readonly onSelected: (
-    id: number,
+    index: number,
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
@@ -310,11 +310,7 @@ export function QueryResults({
           onSelected={
             hasIdField
               ? (isSelected, isShiftClick): void =>
-                  handleSelected(
-                    result[queryIdField] as number,
-                    isSelected,
-                    isShiftClick
-                  )
+                  handleSelected(index, isSelected, isShiftClick)
               : undefined
           }
         />

@@ -19,7 +19,7 @@ export function QueryToForms({
   totalCount,
 }: {
   readonly model: SpecifyModel;
-  readonly results: RA<RA<string | number | null>>;
+  readonly results: RA<RA<string | number | null> | undefined>;
   readonly selectedRows: Set<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
   readonly onDelete: (index: number) => void;
@@ -32,7 +32,7 @@ export function QueryToForms({
     selectedRows.size === 0
       ? index
       : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
-          results.findIndex((row) => row[queryIdField] === deletedRecordId)
+          results.findIndex((row) => row![queryIdField] === deletedRecordId)
         );
 
   return (
@@ -49,13 +49,9 @@ export function QueryToForms({
           model={model}
           onAdd={undefined}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
-          /*
-           * BUG: make fetching more efficient when fetching last query item
-           *   (don't fetch all intermediate results)
-           */
           onSlide={(index): void =>
-            index >= ids.length - 1 && selectedRows.size === 0
-              ? handleFetchMore?.(unParseIndex(index))
+            selectedRows.size === 0 && results[index] === undefined
+              ? handleFetchMore?.(index)
               : undefined
           }
           dialog="modal"
@@ -74,17 +70,17 @@ export function QueryToForms({
 }
 
 export function useSelectedResults(
-  results: RA<RA<string | number | null>>,
+  results: RA<RA<string | number | null> | undefined>,
   selectedRows: Set<number>,
   isOpen: boolean
-): RA<number> {
+): RA<number | undefined> {
   const [ids, setIds] = React.useState<RA<number>>([]);
   React.useEffect(
     () =>
       isOpen
         ? setIds(
             selectedRows.size === 0
-              ? (results.map((row) => row[queryIdField]) as RA<number>)
+              ? (results.map((row) => row?.[queryIdField]) as RA<number>)
               : Array.from(selectedRows)
           )
         : undefined,

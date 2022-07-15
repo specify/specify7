@@ -36,7 +36,7 @@ export function QueryToMap({
   readonly fieldSpecs: RA<QueryFieldSpec>;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const ids = useSelectedResults(results, selectedRows, isOpen);
+  const ids = useSelectedResults(results, selectedRows, isOpen) as RA<number>;
   const localityMappings = useLocalityMappings(model.name, fieldSpecs);
   return localityMappings.length === 0 ? null : (
     <>

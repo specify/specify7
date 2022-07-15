@@ -59,6 +59,8 @@ type RelatedTableResult = {
   readonly totalCount: number;
 };
 
+const fetchSize = 40;
+
 function TableResults({
   header,
   queryResults,
@@ -93,6 +95,7 @@ function TableResults({
                 model={model}
                 label={model.label}
                 initialData={tableResults.results}
+                fetchSize={fetchSize}
                 fetchResults={async (
                   offset: number
                 ): Promise<RA<RA<string | number>>> =>
@@ -131,7 +134,7 @@ export function ExpressSearchView(): JSX.Element {
   useTitle(commonText('expressSearch'));
 
   const query = parseUrl().q;
-  const ajaxUrl = formatUrl('/express_search/', { q: query });
+  const ajaxUrl = formatUrl('/express_search/', { q: query, limit: fetchSize });
 
   const [primaryResults] = useAsyncState<RA<RawQueryTableResult> | false>(
     React.useCallback(
@@ -171,6 +174,7 @@ export function ExpressSearchView(): JSX.Element {
                 const ajaxUrl = formatUrl('/express_search/related/', {
                   q: query,
                   name,
+                  limit: fetchSize,
                 });
                 return ajax<RelatedTableResult>(
                   ajaxUrl,
@@ -197,8 +201,8 @@ export function ExpressSearchView(): JSX.Element {
                 const idFieldIndex = 0;
                 /*
                  * FEATURE: decide if this code is needed
-                 * It is responsible for deciding whether express search on
-                 * "Taxon CollectionObject" links out to Taxon records rather
+                 * It is responsible for making express search on
+                 * "Taxon CollectionObject" link out to Taxon records rather
                  * than CollectionObject
                  */
                 /*

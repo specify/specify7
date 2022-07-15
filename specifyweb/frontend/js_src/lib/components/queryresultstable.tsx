@@ -188,6 +188,7 @@ export function QueryResultsTable({
   model,
   label = commonText('results'),
   hasIdField,
+  fetchSize,
   fetchResults,
   totalCount: initialTotalCount,
   fieldSpecs,
@@ -202,6 +203,12 @@ export function QueryResultsTable({
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
+  /**
+   * A hint for how many records a fetch can return at maximum. This is used to
+   * optimize fetch performance when user is using "Browse in forms" and going
+   * backwards in the list from the end.
+   */
+  readonly fetchSize: number;
   readonly fetchResults: (
     offset: number
   ) => Promise<RA<RA<string | number | null>>>;
@@ -220,7 +227,15 @@ export function QueryResultsTable({
   readonly tableClassName?: string;
 }): JSX.Element {
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
-  const [results, setResults] = useTriggerState(initialData);
+  /*
+   * Warning:
+   * "results" can be a sparse array. Using sparse array to allow
+   * efficiently retrieving the last query result in a query that returns
+   * hundreds of thousands of results.
+   */
+  const [results, setResults] = useTriggerState<
+    RA<RA<string | number | null> | undefined> | undefined
+  >(initialData);
 
   const [pickListsLoaded] = useAsyncState(
     React.useCallback(
@@ -259,23 +274,36 @@ export function QueryResultsTable({
 
   function fetchMore(
     index?: number,
-    currentResults: RA<RA<string | number | null>> | undefined = results
+    currentResults:
+      | RA<RA<string | number | null> | undefined>
+      | undefined = results
   ): void {
-    if (
-      !Array.isArray(currentResults) ||
-      isFetching ||
-      currentResults.length === totalCount
-    )
-      return;
+    if (!Array.isArray(currentResults) || isFetching) return;
+    const naiveFetchIndex = index ?? currentResults.length;
+    const fetchIndex =
+      /* If navigating backwards, fetch the previous 40 records */
+      typeof index === 'number' &&
+      typeof currentResults[index + 1] === 'object' &&
+      currentResults[index - 1] === undefined &&
+      index > fetchSize
+        ? naiveFetchIndex - fetchSize + 1
+        : naiveFetchIndex;
+    if (currentResults[fetchIndex] !== undefined) return;
     handleFetching();
-    fetchResults(currentResults.length)
-      .then((newResults) => [...currentResults, ...newResults])
-      .then((combinedResults): void => {
-        setResults(combinedResults);
-        if (index === undefined || index < combinedResults.length)
-          handleFetched();
-        else fetchMore(index, combinedResults);
+    fetchResults(fetchIndex)
+      .then((newResults) => {
+        // Not using Array.from() so as not to expand the sparse array
+        const resultsCopy = currentResults.slice();
+        /*
+         * This extends the sparse array to fit new results. Without this,
+         * splice won't place the results in the correct place.
+         */
+        resultsCopy[fetchIndex] = resultsCopy[fetchIndex] ?? undefined;
+        resultsCopy.splice(fetchIndex, newResults.length, ...newResults);
+        return resultsCopy;
       })
+      .then(setResults)
+      .then(handleFetched)
       .catch(fail);
   }
 
@@ -286,6 +314,11 @@ export function QueryResultsTable({
     fieldSpecs.length > 0 &&
     pickListsLoaded === true &&
     treeRanksLoaded === true;
+
+  const undefinedResult = results?.indexOf(undefined);
+  const loadedResults = (
+    undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
+  ) as RA<RA<string | number | null>> | undefined;
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -301,7 +334,10 @@ export function QueryResultsTable({
           </Button.Small>
         )}
         <div className="flex-1 -ml-2" />
-        {hasIdField && Array.isArray(results) && results.length > 0 ? (
+        {hasIdField &&
+        Array.isArray(results) &&
+        Array.isArray(loadedResults) &&
+        results.length > 0 ? (
           <>
             {extraButtons}
             {hasToolPermission('recordSets', 'create') ? (
@@ -313,7 +349,7 @@ export function QueryResultsTable({
                    * if records were selected out of order)
                    */
                   getIds={(): RA<number> =>
-                    defined(results)
+                    defined(loadedResults)
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
@@ -326,7 +362,7 @@ export function QueryResultsTable({
               )
             ) : undefined}
             <QueryToMap
-              results={results}
+              results={loadedResults}
               selectedRows={selectedRows}
               model={model}
               fieldSpecs={fieldSpecs}
@@ -343,7 +379,7 @@ export function QueryResultsTable({
                   setSelectedRows(
                     new Set(
                       Array.from(selectedRows).filter(
-                        (id) => id !== results[index][queryIdField]
+                        (id) => id !== loadedResults[index][queryIdField]
                       )
                     )
                   );
@@ -414,21 +450,18 @@ export function QueryResultsTable({
           </div>
         )}
         <div role="rowgroup">
-          {showResults ? (
+          {showResults && Array.isArray(loadedResults) ? (
             <QueryResults
               model={model}
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
-              results={results}
+              results={loadedResults}
               selectedRows={selectedRows}
-              onSelected={(id, isSelected, isShiftClick): void => {
+              onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
                  * between the current one, and the last selected one
                  */
-                const rowIndex = results.findIndex(
-                  (row) => row[queryIdField] === id
-                );
                 const ids = (
                   isShiftClick && typeof lastSelectedRow.current === 'number'
                     ? Array.from(
@@ -440,7 +473,9 @@ export function QueryResultsTable({
                           Math.min(lastSelectedRow.current!, rowIndex) + index
                       )
                     : [rowIndex]
-                ).map((rowIndex) => results[rowIndex][queryIdField] as number);
+                ).map(
+                  (rowIndex) => loadedResults[rowIndex][queryIdField] as number
+                );
                 const newSelectedRows = [
                   ...Array.from(selectedRows).filter(
                     (id) => isSelected || !ids.includes(id)
@@ -476,6 +511,8 @@ export const loadingGif = (
 
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
+// TODO: [FEATURE] allow customizing this and other constants as make sense
+const fetchSize = 40;
 
 export function QueryResultsWrapper({
   baseTableName,
@@ -519,7 +556,7 @@ export function QueryResultsWrapper({
               []
             ),
             recordSetId,
-            limit: 40,
+            limit: fetchSize,
             offset,
           }),
         }
@@ -575,6 +612,7 @@ export function QueryResultsWrapper({
         setProps({
           model,
           hasIdField: queryResource.get('selectDistinct') !== true,
+          fetchSize,
           fetchResults,
           totalCount,
           fieldSpecs,
