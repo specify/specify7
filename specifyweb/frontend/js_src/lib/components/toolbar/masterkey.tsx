@@ -103,7 +103,7 @@ function ShowKey({
       onClose={handleClose}
       buttons={commonText('close')}
     >
-      <div className="grid gap-x-2 grid-cols-[auto_min-content] grid-rows-[min-content_auto]">
+      <div className="grid gap-2 grid-cols-[auto_min-content] grid-rows-[min-content_auto]">
         <Label.Generic className="contents">
           <span className="col-span-full">
             {commonText('masterKeyFieldLabel')}

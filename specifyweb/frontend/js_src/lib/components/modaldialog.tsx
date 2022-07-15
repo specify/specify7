@@ -436,7 +436,7 @@ export function Dialog({
         </div>
         {buttons !== undefined && (
           <div
-            className={`gap-x-2 flex ${buttonContainerClassName}`}
+            className={`gap-2 flex ${buttonContainerClassName}`}
             ref={setButtonContainer}
           >
             {typeof buttons === 'string' ? (

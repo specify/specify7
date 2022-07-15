@@ -31,7 +31,7 @@ export function Slider({
     [value]
   );
   return count > 0 ? (
-    <div className="gap-x-2 print:hidden flex justify-center">
+    <div className="print:hidden flex justify-center gap-2">
       <Button.Small
         aria-label={formsText('firstRecord')}
         title={formsText('firstRecord')}

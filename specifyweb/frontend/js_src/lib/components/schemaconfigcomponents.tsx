@@ -18,7 +18,7 @@ export function SchemaConfigHeader({
   readonly onSave: (() => void) | undefined;
 }): JSX.Element {
   return (
-    <header className="gap-x-2 flex">
+    <header className="flex gap-2">
       <H2>
         {commonText('schemaConfig')} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})

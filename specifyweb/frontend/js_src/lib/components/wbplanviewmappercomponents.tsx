@@ -36,7 +36,7 @@ export function MappingsControlPanel({
   const newHeaderIdRef = React.useRef(1);
 
   return (
-    <div role="toolbar" className="gap-x-2 print:hidden flex items-center">
+    <div role="toolbar" className="print:hidden flex items-center gap-2">
       {typeof handleAddNewHeader === 'function' && (
         <Button.Small
           onClick={(): void => {
@@ -86,7 +86,7 @@ export function ValidationResults(props: {
       }
     >
       <p>{wbText('validationFailedDialogText')}</p>
-      <section className="gap-x-2 flex flex-col">
+      <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
             className={`hover:bg-gray-300 hover:dark:bg-neutral-700 border-x-0
@@ -163,8 +163,8 @@ export function MappingView({
       aria-label={wbText('mappingEditor')}
       ref={mappingViewParentRef}
     >
-      <div className="gap-x-8 w-max flex h-full">
-        <div className="gap-x-1 flex" role="list">
+      <div className="w-max flex h-full gap-8">
+        <div className="flex gap-1" role="list">
           <MappingPathComponent mappingLineData={mappingElementProps} />
         </div>
         {children}

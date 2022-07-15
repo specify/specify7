@@ -202,7 +202,7 @@ function DataSetName({
   return (
     <>
       {' '}
-      <h2 className="gap-x-1 flex overflow-y-auto">
+      <h2 className="flex gap-1 overflow-y-auto">
         {dataset.uploadplan !== null && (
           <TableIcon name={dataset.uploadplan.baseTableName} label />
         )}

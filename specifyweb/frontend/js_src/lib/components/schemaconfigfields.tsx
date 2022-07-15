@@ -69,7 +69,7 @@ export function SchemaConfigColumn({
   readonly id?: string;
 }): JSX.Element {
   return (
-    <section className="sm:overflow-y-auto gap-y-4 flex flex-col flex-1 p-1 -m-1">
+    <section className="sm:overflow-y-auto flex flex-col flex-1 gap-4 p-1 -m-1">
       <H3 id={id}>{header}</H3>
       {children}
     </section>

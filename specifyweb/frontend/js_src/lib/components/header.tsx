@@ -85,7 +85,7 @@ export function HeaderItems({
             relative
             inline-flex
             items-center
-            gap-x-2
+            gap-2
             active:bg-white
             active:dark:bg-neutral-600
             ${

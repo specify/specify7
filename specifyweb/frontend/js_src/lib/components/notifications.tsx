@@ -167,7 +167,7 @@ export function Notifications(): JSX.Element {
           buttons={commonText('close')}
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
-            content: `${dialogClassNames.flexContent} gap-y-3 divide-y divide-gray-500`,
+            content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
         >
           {/*

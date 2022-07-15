@@ -255,7 +255,7 @@ function Option({
   hasIcon = true,
   hasArrow = true,
 }: CustomSelectElementOptionProps): JSX.Element {
-  const classes = ['p-1 flex items-center gap-x-1'];
+  const classes = ['p-1 flex items-center gap-1'];
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
@@ -556,7 +556,7 @@ export function CustomSelectElement({
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
         className={`cursor-pointer min-h-[theme(spacing.8)]
-          flex items-center gap-x-1 px-1 border border-gray-500 dark:border-none
+          flex items-center gap-1 px-1 border border-gray-500 dark:border-none
           rounded ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'

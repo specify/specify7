@@ -23,7 +23,7 @@ function TableResults({
   readonly recordCount: number;
 }): JSX.Element {
   return (
-    <li className="gap-x-1 flex items-center">
+    <li className="flex items-center gap-1">
       <TableIcon name={tableName} label={false} />
       <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
     </li>
@@ -40,7 +40,7 @@ export function WbUploaded({
   readonly isUploaded: boolean;
 }): JSX.Element {
   return (
-    <div className="gap-y-4 w-60 flex flex-col h-full">
+    <div className="w-60 flex flex-col h-full gap-4">
       <div>
         <H2>
           {isUploaded
@@ -53,7 +53,7 @@ export function WbUploaded({
             : wbText('wbUploadedPotentialDescription')}
         </p>
       </div>
-      <Ul className="gap-y-2 flex flex-col flex-1">
+      <Ul className="flex flex-col flex-1 gap-2">
         {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
           <TableResults
             key={index}

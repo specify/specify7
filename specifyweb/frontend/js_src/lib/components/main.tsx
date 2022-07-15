@@ -225,7 +225,7 @@ export function Main({
             className={`flex flex-col gap-2 m-4 order-3 min-w-[275px]
               2xl:w-max-[350px]`}
           >
-            <div className="gap-x-2 flex items-center justify-end">
+            <div className="flex items-center justify-end gap-2">
               {userInformation.isauthenticated ? (
                 <UserTools userTools={userTools} />
               ) : (
@@ -235,7 +235,7 @@ export function Main({
               )}
               <CollectionSelector />
             </div>
-            <div className="gap-x-2 flex items-center justify-end">
+            <div className="flex items-center justify-end gap-2">
               <Notifications />
               <ExpressSearch />
             </div>

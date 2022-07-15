@@ -230,7 +230,7 @@ export function QueryLine({
 
   return (
     <li
-      className="border-t-gray-500 gap-x-2 flex py-2 border-t"
+      className="border-t-gray-500 flex gap-2 py-2 border-t"
       aria-current={isFocused}
     >
       {typeof handleRemove === 'function' && (

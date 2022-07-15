@@ -314,7 +314,7 @@ export function AttachmentsView(): JSX.Element {
   return (
     <Container.FullGray>
       <header
-        className={`gap-x-2 flex items-center ${className.hasAltBackground}`}
+        className={`gap-2 flex items-center ${className.hasAltBackground}`}
       >
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>

@@ -258,7 +258,7 @@ function FormatPermissionError({
   readonly url: string | undefined;
 }): JSX.Element {
   return (
-    <div className="gap-y-2 flex flex-col h-full">
+    <div className="flex flex-col h-full gap-2">
       <p>{commonText('permissionDeniedDialogText')}</p>
       <table className="grid-table grid-cols-4 border border-gray-500 rounded">
         <thead>

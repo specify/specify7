@@ -280,7 +280,7 @@ export function QueryBuilder({
         {
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
-            <header className="gap-x-2 whitespace-nowrap flex items-center">
+            <header className="whitespace-nowrap flex items-center gap-2">
               <TableIcon name={model.name} label />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
@@ -358,7 +358,7 @@ export function QueryBuilder({
           )
         }
         <div
-          className={`gap-y-4 grid flex-1 overflow-y-auto grid-cols-1
+          className={`gap-4 grid flex-1 overflow-y-auto grid-cols-1
             ${stickyScrolling ? 'snap-y snap-proximity' : ''}
             ${
               isEmbedded
@@ -381,7 +381,7 @@ export function QueryBuilder({
               : handleScrolledDown()
           }
         >
-          <div className="gap-y-4 snap-start flex flex-col">
+          <div className="snap-start flex flex-col gap-4">
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(

@@ -374,7 +374,7 @@ export function MappingElement({
                 index + 1,
                 {
                   optionLabel: (
-                    <span className="gap-y-2 flex flex-wrap">
+                    <span className="flex flex-wrap gap-2">
                       <MappingPathComponent
                         mappingLineData={autoMapperSuggestion.mappingLineData}
                       />

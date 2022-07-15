@@ -353,7 +353,7 @@ const WBView = Backbone.View.extend({
             const tableLabel = isMapped
               ? getModel(tableName)?.label ?? tableName ?? ''
               : '';
-            return `<div class="flex gap-x-1 items-center pl-4">
+            return `<div class="flex gap-1 items-center pl-4">
               ${
                 isMapped
                   ? `<img

@@ -345,7 +345,7 @@ function formatError(
   }
 
   return [
-    <div key="object" className="gap-y-2 flex flex-col h-full">
+    <div key="object" className="flex flex-col h-full gap-2">
       {errorObject}
     </div>,
     errorMessage.join('\n'),

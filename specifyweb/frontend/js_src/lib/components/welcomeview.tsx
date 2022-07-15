@@ -171,7 +171,7 @@ export function WelcomeView(): JSX.Element {
 
   return (
     <div
-      className="flex flex-col gap-y-4 h-full justify-center p-4 max-w-[1000px]
+      className="flex flex-col gap-4 h-full justify-center p-4 max-w-[1000px]
         mx-auto"
     >
       <span className="flex-1" />
