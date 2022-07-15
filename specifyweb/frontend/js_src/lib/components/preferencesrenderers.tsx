@@ -291,8 +291,13 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         onValueChange={(newValue): void => {
           if (typeof parser === 'object' && inputRef.current !== null) {
             const parsed = parseValue(parser, inputRef.current, newValue);
-            if (parsed.isValid) handleChanged(newValue);
-            else setValidation(parsed.reason);
+            if (!parsed.isValid) setValidation(parsed.reason);
+            /**
+             * Set value, even if invalid.
+             * Fixes https://github.com/specify/specify7/issues/1566
+             */
+            if (parsed.isValid || definition.setOnBlurOnly === true)
+              handleChanged(newValue);
           } else handleChanged(newValue);
         }}
         onBlur={handleBlur}
