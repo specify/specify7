@@ -20,6 +20,22 @@ export const commonText = createDictionary({
     'en-us': 'Page Not Found',
     'ru-ru': 'Страница не найдена',
   },
+  nothingWasFound: {
+    'en-us': 'Oops! Nothing was found',
+    'ru-ru': 'Ой! Ничего не найдено',
+  },
+  pageNotFoundDescription: {
+    'en-us': `
+      The page you are looking for might have been removed, had its name changed
+      or is temporarily unavailable.`,
+    'ru-ru': `
+      Возможно, страница, которую вы ищете, была удалена, ее название изменилось
+      или она временно недоступна.`,
+  },
+  returnToHomepage: {
+    'en-us': 'Return to homepage',
+    'ru-ru': 'Вернуться на главную страницу',
+  },
   collectionAccessDeniedDialogHeader: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
