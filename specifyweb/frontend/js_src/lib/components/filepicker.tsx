@@ -3,6 +3,7 @@ import React from 'react';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { useBooleanState } from './hooks';
+import { softFail } from './errorboundary';
 
 export function FilePicker({
   onSelected: handleSelected,
@@ -192,4 +193,4 @@ export const copyTextToClipboard = async (text: string): Promise<void> =>
       console.error(error);
       return fallbackCopyTextToClipboard(text);
     }) ?? fallbackCopyTextToClipboard(text)
-  ).catch(console.error);
+  ).catch(softFail);

@@ -27,6 +27,7 @@ import { goTo } from './navigation';
 import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
 import { getMaxDataSetLength } from '../wbimporthelpers';
+import { softFail } from './errorboundary';
 
 async function fetchAgent(url: string): Promise<JSX.Element> {
   if (!hasTablePermission('Agent', 'read')) return <>{url}</>;
@@ -75,7 +76,7 @@ export function DataSetMeta({
         setCreatedBy(createdByAgent);
         setModifiedBy(sameAgent ? createdByAgent : modifiedByAgent);
       })
-      .catch(console.error);
+      .catch(softFail);
   }, [dataset.createdbyagent, dataset.modifiedbyagent]);
 
   const loading = React.useContext(LoadingContext);

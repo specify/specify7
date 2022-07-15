@@ -52,7 +52,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { ErrorBoundary } from './errorboundary';
+import { ErrorBoundary, softFail } from './errorboundary';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -234,7 +234,7 @@ export function WbPlanViewMapper(props: {
               autoMapperSuggestions,
             })
       )
-      .catch(console.error);
+      .catch(softFail);
 
     let destructorCalled = false;
     return (): void => {

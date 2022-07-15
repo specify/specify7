@@ -148,6 +148,9 @@ function ErrorDialog({
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const fail = (error: Error): void => showError(error, true);
 
+export const softFail =
+  process.env.NODE_ENV === 'production' ? console.error : fail;
+
 /** Display an error message. Can only be dismissed if has user preference set */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export const crash = (error: Error): void => showError(error, false);

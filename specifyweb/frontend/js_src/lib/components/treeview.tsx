@@ -43,7 +43,7 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { ErrorBoundary } from './errorboundary';
+import { ErrorBoundary, softFail } from './errorboundary';
 
 const defaultCacheValue = [] as const;
 
@@ -225,7 +225,7 @@ function TreeView<SCHEMA extends AnyTree>({
                       .map(({ id }) => id)
                   )
                 )
-                .catch(console.error);
+                .catch(softFail);
             }}
             forwardRef={searchBoxRef}
             aria-label={treeText('searchTreePlaceholder')}

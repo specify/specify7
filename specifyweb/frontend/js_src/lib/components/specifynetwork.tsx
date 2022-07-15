@@ -28,7 +28,7 @@ import {
 import { getSystemInfo } from '../systeminfo';
 import type { IR, RA, RR } from '../types';
 import { Link } from './basic';
-import { ErrorBoundary } from './errorboundary';
+import { ErrorBoundary, softFail } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 
@@ -164,7 +164,7 @@ function SpecifyNetwork({
         ) ?? f.maybe(toTable(resource, 'CollectionObject'), fetchOccurrenceName)
       )
         ?.then(setOccurrenceName)
-        .catch(console.error),
+        .catch(softFail),
     [resource]
   );
 

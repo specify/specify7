@@ -45,7 +45,7 @@ import { usePref } from './preferenceshooks';
 import { queryFieldFilters } from './querybuilderfieldfilter';
 import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { ErrorBoundary } from './errorboundary';
+import { ErrorBoundary, softFail } from './errorboundary';
 import { parseXml } from '../codemirrorlinters';
 
 export function ReportsView({
@@ -595,7 +595,7 @@ function RecordSets({
         .then(({ totalCount }) =>
           totalCount === 0 ? setState({ type: 'Raw' }) : undefined
         )
-        .catch(console.error),
+        .catch(softFail),
     [recordSetsPromise]
   );
   const [state, setState] = React.useState<

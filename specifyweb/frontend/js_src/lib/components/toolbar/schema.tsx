@@ -24,6 +24,7 @@ import { downloadFile } from '../filepicker';
 import { useTitle } from '../hooks';
 import { formatNumber } from '../internationalization';
 import type { UserTool } from '../main';
+import { softFail } from '../errorboundary';
 
 function Table({
   children,
@@ -196,7 +197,7 @@ export function DataModelView({
             void downloadFile(
               `Specify 7 datamodel - v${getSystemInfo().schema_version}.tsv`,
               dataModelToTsv()
-            ).catch(console.error)
+            ).catch(softFail)
           }
         >
           {commonText('downloadAsTsv')}

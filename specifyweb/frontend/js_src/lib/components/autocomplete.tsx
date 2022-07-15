@@ -13,6 +13,7 @@ import { useBooleanState, useId, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
+import { softFail } from './errorboundary';
 
 const debounceRate = 300;
 
@@ -173,7 +174,7 @@ export function Autocomplete<T>({
       handleLoading();
       void fetchItems(value)
         .then((items) => updateItems(items, value))
-        .catch(console.error)
+        .catch(softFail)
         .finally(handleLoaded);
     },
     delay),

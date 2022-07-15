@@ -15,6 +15,7 @@ import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { Dataset, Status } from './wbplanview';
 import { error } from '../assert';
+import { softFail } from './errorboundary';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -84,7 +85,7 @@ export function WbStatus({
           }
           return undefined;
         })
-        .catch(console.error);
+        .catch(softFail);
     fetchStatus();
     return (): void => {
       destructorCalled = true;
@@ -97,7 +98,7 @@ export function WbStatus({
     unuploading: wbText('wbStatusUnuploadDialogTitle'),
   }[state.status.uploaderstatus.operation];
 
-  // FEATURE: display upload progress in the title if tab not focused
+  // FEATURE: display upload progress in the title if tab is not focused
   useTitle(title);
 
   const mappedOperation = {

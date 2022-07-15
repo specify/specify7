@@ -3,6 +3,7 @@ import type { SpecifyResource } from './legacytypes';
 import type { IR, RA } from './types';
 import { ajax } from './ajax';
 import { formatUrl } from './querystring';
+import { softFail } from './components/errorboundary';
 
 export const snServer = 'https://broker.spcoco.org';
 
@@ -59,10 +60,10 @@ export const fetchOccurrenceName = (
         .map(({ records }) => records[0]['dwc:scientificName'])
         .find((occurrenceName) => occurrenceName)
     )
-    .catch(console.error)
+    .catch(softFail)
     .then(
       (remoteOccurrence) =>
         remoteOccurrence ?? fetchLocalScientificName(resource)
     )
-    .catch(console.error)
+    .catch(softFail)
     .then((occurrenceName) => occurrenceName ?? '');

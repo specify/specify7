@@ -31,6 +31,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from './toolbar/language';
+import { softFail } from './errorboundary';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1280,7 +1281,7 @@ import('../schema')
         schema.models.RecordSet.label;
     })
   )
-  .catch(console.error);
+  .catch(softFail);
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;

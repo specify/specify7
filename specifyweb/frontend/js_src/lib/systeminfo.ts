@@ -5,6 +5,7 @@
 import { Http, ping } from './ajax';
 import { load } from './initialcontext';
 import { formatUrl } from './querystring';
+import { softFail } from './components/errorboundary';
 
 type SystemInfo = {
   readonly version: string;
@@ -51,7 +52,7 @@ export const fetchContext = load<SystemInfo>(
       ),
       {},
       { strict: false, expectedResponseCodes: [Http.NO_CONTENT] }
-    ).catch(console.error);
+    ).catch(softFail);
 });
 
 export const getSystemInfo = (): SystemInfo => systemInfo;
