@@ -10,7 +10,7 @@
 // REFACTOR: add col-span-{n} and col-span-[full-1]
 // REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
 //    instead of grid-template-columns:repeat(n,1fr)
-// eslint-disable-next-line unicorn/prefer-module
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './lib/components/**/*.tsx',
