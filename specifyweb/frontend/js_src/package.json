@@ -50,7 +50,7 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "~7.14.5",
     "@maxxxxxdlp/eslint-config": "^1.0.10",
-    "@maxxxxxdlp/prettier-config": "^1.0.3",
+    "@maxxxxxdlp/prettier-config": "^1.0.4",
     "@maxxxxxdlp/stylelint-config": "^1.0.0",
     "@rushstack/eslint-patch": "^1.1.0",
     "@stylelint/postcss-css-in-js": "^0.37.2",
