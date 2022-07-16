@@ -137,6 +137,8 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
+  const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
+
   // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
@@ -149,13 +151,14 @@ export function FormTable<SCHEMA extends AnySchema>({
         viewDefinition={viewDefinition}
         flexibleColumnWidth={flexibleColumnWidth}
         display="inline"
-        className="w-fit"
+        className="w-fit sticky pt-0"
         style={{
           gridTemplateColumns: `min-content repeat(${
             viewDefinition.columns.length
           },auto) ${displayViewButton ? 'min-content' : ''} ${
             displayDeleteButton ? 'min-content' : ''
           }`,
+          maxHeight: `${maxHeight}px`,
         }}
       >
         <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
@@ -170,6 +173,8 @@ export function FormTable<SCHEMA extends AnySchema>({
             return (
               <DataEntry.Cell
                 role="columnheader"
+                className={`sticky top-0 bg-[color:var(--form-foreground)] z-10
+                  h-full -mx-1 pl-1 pt-1`}
                 key={index}
                 colSpan={cell.colSpan}
                 align="center"

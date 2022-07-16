@@ -188,8 +188,9 @@ export function PreferencesContent({
                     {description !== undefined && <p>{description}</p>}
                     {items.map(([name, item]) => {
                       const canEdit =
-                        item.visible !== 'protected' ||
-                        hasPermission('/preferences/user', 'edit_protected');
+                        !isReadOnly &&
+                        (item.visible !== 'protected' ||
+                          hasPermission('/preferences/user', 'edit_protected'));
                       return (
                         <label
                           key={name}

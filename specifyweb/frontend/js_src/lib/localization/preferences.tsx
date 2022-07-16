@@ -681,4 +681,12 @@ export const preferencesText = createDictionary({
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
   },
+  formTable: {
+    'en-us': 'Form table',
+    'ru-ru': 'Форма таблицы',
+  },
+  maxHeight: {
+    'en-us': 'Max height',
+    'ru-ru': 'Максимальная высота',
+  },
 });

@@ -127,7 +127,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       relatedResource={isDependent ? collection.related : undefined}
       records={records}
       onAdd={(rawResources): void => {
-        const resources = isToOne ? rawResources.slice(1) : rawResources;
+        const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
         if (isDependent && isToOne)
           collection.related?.placeInSameHierarchy(resources[0]);
         collection.add(resources);
