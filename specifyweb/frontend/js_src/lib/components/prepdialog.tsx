@@ -81,6 +81,10 @@ export function PrepDialog({
       [preparations.length]
     )
   );
+  const canDeselect = selected.some((value) => value > 0);
+  const canSelectAll = selected.some(
+    (value, index) => value < preparations[index].available
+  );
 
   const id = useId('prep-dialog');
 
@@ -99,12 +103,14 @@ export function PrepDialog({
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
+              disabled={!canSelectAll}
             >
               {formsText('selectAll')}
             </Button.Blue>
             <Button.Blue
               title={commonText('clearAll')}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
+              disabled={!canDeselect}
             >
               {formsText('deselectAll')}
             </Button.Blue>

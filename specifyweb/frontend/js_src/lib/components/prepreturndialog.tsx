@@ -227,6 +227,11 @@ function PreparationReturn({
       remarks: '',
     }))
   );
+  const canDeselect = state.some(({ resolve }) => resolve > 0);
+  const canSelectAll = state.some(
+    ({ resolve, unresolved }) => resolve < unresolved
+  );
+
   const id = useId('prep-return-dialog');
   return (
     <Dialog
@@ -246,6 +251,7 @@ function PreparationReturn({
                 }))
               )
             }
+            disabled={!canSelectAll}
             title={formsText('returnAllPreparations')}
           >
             {formsText('selectAll')}
@@ -261,6 +267,7 @@ function PreparationReturn({
                 }))
               )
             }
+            disabled={!canDeselect}
             title={commonText('clearAll')}
           >
             {formsText('deselectAll')}
