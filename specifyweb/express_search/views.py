@@ -18,6 +18,8 @@ from ..specify.views import login_maybe_required
 from ..stored_queries import models
 from ..stored_queries.execution import filter_by_collection
 from ..stored_queries.queryfieldspec import QueryFieldSpec
+from ..permissions.permissions import check_table_permissions
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +28,10 @@ def get_express_search_config(collection, user):
     return ElementTree.XML(resource)
 
 
-def build_primary_query(session, searchtable, terms, collection, as_scalar=False):
+def build_primary_query(session, searchtable, terms, collection, user, as_scalar=False):
     table = datamodel.get_table(searchtable.find('tableName').text)
+    check_table_permissions(collection, user, table, "read")
+
     model = getattr(models, table.name)
     id_field = getattr(model, table.idFieldName)
 
@@ -60,8 +64,8 @@ def make_fieldspecs(searchtable):
             for fieldname in searchtable.findall('.//displayfield/fieldName')]
 
 
-def run_primary_search(session, searchtable, terms, collection, limit, offset):
-    query = build_primary_query(session, searchtable, terms, collection)
+def run_primary_search(session, searchtable, terms, collection, user, limit, offset):
+    query = build_primary_query(session, searchtable, terms, collection, user)
 
     if query is not None:
         total_count = query.count()
@@ -108,6 +112,7 @@ def search(request):
     logger.debug("parameters: %s", form.cleaned_data)
 
     collection = request.specify_collection
+    user = request.specify_user
     express_search_config = get_express_search_config(collection, request.specify_user)
     terms = parse_search_str(collection, form.cleaned_data['q'])
     specific_table = form.cleaned_data['name'].lower()
@@ -115,7 +120,7 @@ def search(request):
     offset = form.cleaned_data['offset']
 
     with models.session_context() as session:
-        results = [run_primary_search(session, searchtable, terms, collection, limit, offset)
+        results = [run_primary_search(session, searchtable, terms, collection, user, limit, offset)
                    for searchtable in express_search_config.findall('tables/searchtable')
                    if specific_table == "" or searchtable.find('tableName').text.lower() == specific_table]
 

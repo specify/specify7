@@ -777,7 +777,7 @@ function QueryParametersDialog({
             query: replaceKey(
               query,
               'fields',
-              unParseQueryFields(model.name, fields, query.fields)
+              unParseQueryFields(model.name, fields)
             ),
           })
         }

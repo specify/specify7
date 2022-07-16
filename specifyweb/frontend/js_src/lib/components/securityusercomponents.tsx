@@ -27,9 +27,11 @@ import {
   Ul,
 } from './basic';
 import { ComboBox } from './combobox';
+import { useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { QueryComboBox } from './querycombobox';
 import type { RoleBase } from './securitycollection';
+import { useAdmins } from './securityinstitution';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
 import type { UserAgents } from './securityuserhooks';
@@ -113,7 +115,7 @@ export function UserRoles({
       <legend>
         <span className="text-xl">{adminText('assignedUserRoles')}</span>
       </legend>
-      <Ul className="flex flex-col gap-1">
+      <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
           ? collectionRoles[collectionId]?.map((role) => (
               <li key={role.id} className="flex items-center gap-2">
@@ -228,6 +230,7 @@ export function CollectionAccess({
   collectionId,
   userAgents,
   mode,
+  isSuperAdmin,
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
   readonly onChange: (
@@ -237,6 +240,7 @@ export function CollectionAccess({
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
   readonly mode: FormMode;
+  readonly isSuperAdmin: boolean;
 }): JSX.Element {
   const hasCollectionAccess =
     userPolicies?.[collectionId]?.some(
@@ -257,7 +261,8 @@ export function CollectionAccess({
 
   return (
     <div className="flex flex-col gap-4">
-      {hasPermission('/permissions/policies/user', 'read', collectionId) && (
+      {hasPermission('/permissions/policies/user', 'read', collectionId) &&
+      !isSuperAdmin ? (
         <Label.ForCheckbox className={className.limitedWidth}>
           <Input.Checkbox
             isReadOnly={
@@ -293,7 +298,7 @@ export function CollectionAccess({
           />
           {adminText('collectionAccess')}
         </Label.ForCheckbox>
-      )}
+      ) : undefined}
       <Label.Generic className={className.limitedWidth}>
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
@@ -307,7 +312,7 @@ export function CollectionAccess({
                 : 'edit'
             }
             formType="form"
-            isRequired={hasCollectionAccess}
+            isRequired={hasCollectionAccess || isSuperAdmin}
             relatedModel={schema.models.Agent}
             forceCollection={collectionId}
             typeSearch={undefined}
@@ -350,16 +355,29 @@ export function LegacyPermissions({
   readonly userResource: SpecifyResource<SpecifyUser>;
   readonly mode: FormMode;
 }): JSX.Element {
+  const admins = useAdmins();
+  const [isAdmin, setIsAdmin] = useLiveState(
+    React.useCallback(
+      () => admins?.legacyAdmins.has(userResource.id) === true,
+      [admins, userResource.id]
+    )
+  );
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
-      <div className="flex gap-2">
-        <AdminStatusPlugin user={userResource} />
-        {hasPermission('/admin/user/sp6/collection_access', 'read') &&
-        hasTablePermission('Collection', 'read') ? (
-          <UserCollectionsPlugin user={userResource} />
-        ) : undefined}
-      </div>
+      {hasPermission('/permissions/list_admins', 'read') && (
+        <div className="flex gap-2">
+          <AdminStatusPlugin
+            user={userResource}
+            isAdmin={isAdmin}
+            onChange={setIsAdmin}
+          />
+          {hasPermission('/admin/user/sp6/collection_access', 'read') &&
+          hasTablePermission('Collection', 'read') ? (
+            <UserCollectionsPlugin user={userResource} isAdmin={isAdmin} />
+          ) : undefined}
+        </div>
+      )}
       {f.var(
         defined(schema.models.SpecifyUser.getLiteralField('userType')),
         (userType) => (

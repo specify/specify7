@@ -45,7 +45,7 @@ export function PickListComboBox(
         props.field.name,
         (value === '' && !props.isRequired
           ? null
-          : validationAttributes.type === 'number'
+          : validationAttributes?.type === 'number'
           ? f.parseInt(value) ?? null
           : value) as never
       ),

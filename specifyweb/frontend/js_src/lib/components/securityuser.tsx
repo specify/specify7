@@ -2,7 +2,6 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import { ajax, formData, Http, ping } from '../ajax';
-import { error } from '../assert';
 import type { Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
@@ -270,12 +269,13 @@ export function SecurityUser({
                         collectionId={collectionId}
                         userAgents={userAgents}
                         mode={mode}
+                        isSuperAdmin={isSuperAdmin}
                       />
                       {hasPermission(
                         '/permissions/user/roles',
                         'read',
                         collectionId
-                      ) ? (
+                      ) && (
                         <UserRoles
                           collectionRoles={collectionRoles}
                           collectionId={collectionId}
@@ -283,7 +283,7 @@ export function SecurityUser({
                           onChange={setUserRoles}
                           onOpenRole={handleOpenRole}
                         />
-                      ) : undefined}
+                      )}
                       {
                         /*
                          * If user is a super admin, they have all policies, so
@@ -465,14 +465,10 @@ export function SecurityUser({
                                       type: 'NoAdminsError',
                                     });
                                   else
-                                    error(
-                                      'Failed updating institution policies',
-                                      {
-                                        data,
-                                        status,
-                                        userResource,
-                                      }
-                                    );
+                                    setState({
+                                      type: 'SettingAgents',
+                                      response: JSON.parse(data),
+                                    });
                                 } else return true;
                                 return undefined;
                               })

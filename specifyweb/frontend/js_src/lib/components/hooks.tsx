@@ -495,7 +495,11 @@ export function useResourceValue<
        * parseValue() is going to report "Value missing" error. This fixes that
        * issue. See https://github.com/specify/specify7/issues/1427
        */
-      if (inputRef.current !== null && inputRef.current.value !== newValue)
+      if (
+        inputRef.current !== null &&
+        inputRef.current.value === '' &&
+        newValue !== ''
+      )
         inputRef.current.value = newValue?.toString() ?? inputRef.current.value;
 
       const parseResults = parseValue(
@@ -523,12 +527,19 @@ export function useResourceValue<
       else resource.saveBlockers?.add(key, field.name, parseResults.reason);
       setValidation(blockers.current, reportErrors ? 'auto' : 'silent');
       ignoreChangeRef.current = true;
+      /*
+       * If value changed as a result of being formatted, don't trigger
+       * unload protect
+       */
+      const formattedOnly = resource.get(field.name) === newValue;
       resource.set(field.name, formattedValue as never, {
         /*
          * Don't trigger the save blocker for this trivial change
          * REFACTOR: move this logic into ResourceBase.set
          */
-        silent: formattedValue === null && resource.get(field.name) === '',
+        silent:
+          (formattedValue === null && resource.get(field.name) === '') ||
+          formattedOnly,
       });
       ignoreChangeRef.current = false;
     },

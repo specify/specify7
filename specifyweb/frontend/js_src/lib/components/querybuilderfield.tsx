@@ -126,10 +126,10 @@ export function QueryLine({
         mappingPathIsComplete(field.mappingPath);
       let canOpenMap = false;
       if (hasParser) {
-        parser = resolveParser(dataModelField, {
-          datePart,
-          isRequired: true,
-        });
+        parser = {
+          ...resolveParser(dataModelField, { datePart }),
+          required: false,
+        };
         // Remove autoNumbering wildCard from default values
         if (dataModelField.getUiFormatter()?.valueOrWild() === parser.value)
           parser = { ...parser, value: undefined };
@@ -311,9 +311,10 @@ export function QueryLine({
                           ? className.blueButton
                           : className.grayButton
                       }
-                      className={`aria-handled print:hidden
-                      ${isFieldComplete ? '' : 'invisible'}
-                    `}
+                      className={`
+                        aria-handled print:hidden
+                        ${isFieldComplete ? '' : 'invisible'}
+                      `}
                       disabled={handleChange === undefined}
                       onClick={(): void =>
                         handleFilterChange(field.filters.length, {
@@ -349,7 +350,7 @@ export function QueryLine({
                     </Button.Small>
                   </React.Fragment>
                 )}
-                {field.filters[index].type === 'any' ? undefined : (
+                {field.filters[index].type !== 'any' && (
                   <Button.Small
                     title={queryText('negate')}
                     aria-label={queryText('negate')}

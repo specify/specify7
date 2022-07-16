@@ -17,11 +17,15 @@ import { useResource } from './resource';
 
 export function AdminStatusPlugin({
   user: resource,
+  isAdmin,
+  onChange: handleChange,
 }: {
   readonly user: SpecifyResource<SpecifyUser>;
+  readonly isAdmin: boolean;
+  readonly onChange: (isAdmin: boolean) => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
-  const [user, setUser] = useResource(resource);
+  const [user] = useResource(resource);
   const isCurrentUser = userInformation.id === user.id;
 
   return (
@@ -33,12 +37,12 @@ export function AdminStatusPlugin({
         // Only managers can be admins
         user.userType != 'Manager' ||
         // Can't remove admin status from yourself
-        (user.isAdmin && isCurrentUser)
+        (isAdmin && isCurrentUser)
       }
       title={
         resource.isNew()
           ? adminText('saveUserFirst')
-          : user.isAdmin && isCurrentUser
+          : isAdmin && isCurrentUser
           ? adminText('canNotRemoveYourself')
           : user.userType === 'Manager'
           ? undefined
@@ -49,21 +53,16 @@ export function AdminStatusPlugin({
           ajax<'true' | 'false'>(`/api/set_admin_status/${user.id}/`, {
             method: 'POST',
             body: formData({
-              admin_status: !user.isAdmin,
+              admin_status: !isAdmin,
             }),
             headers: {
               Accept: 'text/plain',
             },
-          }).then(({ data }) =>
-            setUser({
-              ...user,
-              isAdmin: data === 'true',
-            })
-          )
+          }).then(({ data }) => handleChange(data === 'true'))
         )
       }
     >
-      {user.isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
+      {isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
     </Button.Small>
   );
 }

@@ -74,7 +74,6 @@ export function QueryBuilder({
   );
 
   const [query, setQuery] = useResource(queryResource);
-  const [originalQueryFields] = React.useState(query.fields ?? []);
 
   const model = defined(getModelById(query.contextTableId));
   const [state, dispatch] = React.useReducer(
@@ -143,9 +142,13 @@ export function QueryBuilder({
     ? (
         fields: typeof state.fields = state.fields
       ): ReturnType<typeof unParseQueryFields> =>
-        unParseQueryFields(state.baseTableName, fields, originalQueryFields)
+        unParseQueryFields(state.baseTableName, fields)
     : undefined;
 
+  /*
+   * REFACTOR: simplify this (move "executed query" state into this component
+   *    and get rid of queryRunCount)
+   */
   function runQuery(
     mode: 'regular' | 'count',
     fields: typeof state.fields = state.fields

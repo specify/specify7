@@ -69,7 +69,7 @@ export const formsText = createDictionary({
   },
   deleteBlockedDialogText: {
     'en-us': `
-      The resource cannot be deleted because it is referenced by the following 
+      The resource cannot be deleted because it is referenced by the following
       resources:`,
     'ru-ru': `
       Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:`,
@@ -225,10 +225,12 @@ export const formsText = createDictionary({
   },
   // DeleteButton
   deleteConfirmationDialogHeader: {
-    'en-us':
-      'Are you sure you want to permanently delete this item(s) from the database?',
-    'ru-ru':
-      'Вы уверены, что хотите навсегда удалить этот элемент(ы) из базы данных?',
+    'en-us': (tableName: string) =>
+      `Are you sure you want to permanently delete this ${tableName} from the
+      database?`,
+    'ru-ru': (tableName: string) =>
+      `Вы уверены, что хотите навсегда удалить этот ${tableName} из базы
+      данных?`,
   },
   deleteConfirmationDialogText: {
     'en-us': 'This action cannot be undone.',
@@ -279,10 +281,10 @@ export const formsText = createDictionary({
   recordSetDeletionWarning: {
     'en-us': (recordSetName: string) => `
       The record set "${recordSetName}" will be deleted. The referenced
-      records will NOT be deleted.`,
+      records will NOT be deleted from the database.`,
     'ru-ru': (recordSetName: string) => `
       Набор объектов "${recordSetName}" будет удален. Связанные записи не будут
-      удалены.`,
+      удалены из базы данных.`,
   },
   // Reports
   saveRecordFirst: {

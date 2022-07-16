@@ -198,11 +198,12 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
       title: preferencesText('customImage'),
       description: preferencesText('customImageDescription'),
     },
-    {
+    // FEATURE: make documentation more user friendly and reEnable this:
+    /*{
       value: 'embeddedWebpage',
       title: preferencesText('embeddedWebpage'),
       description: preferencesText('embeddedWebpageDescription'),
-    },
+    },*/
   ],
 };
 

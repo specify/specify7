@@ -19,7 +19,7 @@ import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
-): Primise<RA<DeleteBlocker>> =>
+): Promise<RA<DeleteBlocker>> =>
   ajax<
     RA<{
       table: keyof Tables;
@@ -79,6 +79,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const loading = React.useContext(LoadingContext);
 
+  const isBlocked = Array.isArray(blockers) && blockers.length > 0;
   return (
     <>
       <ButtonComponent
@@ -86,6 +87,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           handleOpen();
           setDeferred(false);
         }}
+        title={isBlocked ? formsText('deleteBlockedDialogHeader') : undefined}
       >
         {Array.isArray(blockers) && blockers.length > 0
           ? icons.exclamation
@@ -105,7 +107,10 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           </Dialog>
         ) : blockers.length === 0 ? (
           <Dialog
-            header={formsText('deleteConfirmationDialogHeader')}
+            header={formsText(
+              'deleteConfirmationDialogHeader',
+              resource.specifyModel.label
+            )}
             onClose={handleClose}
             className={{
               container: dialogClassNames.narrowContainer,

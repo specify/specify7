@@ -145,7 +145,7 @@ function ErrorDialog({
     >
       <p>
         {commonText('errorBoundaryDialogText')}
-        {!canClose && commonText('errorBoundaryDialogText')}
+        {!canClose && commonText('errorBoundaryCriticalDialogText')}
       </p>
       <br />
       <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>

@@ -541,8 +541,7 @@ export function QueryResultsWrapper({
             ...queryResource.toJSON(),
             fields: unParseQueryFields(
               baseTableName,
-              addAuditLogFields(baseTableName, fields),
-              []
+              addAuditLogFields(baseTableName, fields)
             ),
             recordSetId,
             limit: fetchSize,
@@ -581,7 +580,7 @@ export function QueryResultsWrapper({
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
         ...queryResource.toJSON(),
-        fields: unParseQueryFields(baseTableName, allFields, []),
+        fields: unParseQueryFields(baseTableName, allFields),
         recordSetId,
         countOnly: true,
       }),

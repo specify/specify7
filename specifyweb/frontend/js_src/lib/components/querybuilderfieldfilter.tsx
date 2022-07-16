@@ -170,6 +170,7 @@ function QueryInputField({
         value={listInput ? value.split(',').map(f.trim) : value}
         size={listInput ? selectMultipleSize : 1}
       >
+        <option value="" />
         {pickListItems.map(({ title, value }) => (
           <option key={value} value={value}>
             {title}
@@ -234,7 +235,7 @@ function SingleField({
 function Between({
   filter,
   fieldName,
-  parser,
+  parser: originalParser,
   pickListItems,
   onChange: handleChange,
 }: {
@@ -256,6 +257,14 @@ function Between({
           setValues(newValues);
         }
       : undefined;
+  const hasFilters = values.join('').length > 0;
+  const parser = React.useMemo(
+    () => ({
+      ...originalParser,
+      isRequired: hasFilters,
+    }),
+    [originalParser, hasFilters]
+  );
   return (
     <>
       <QueryInputField
@@ -327,8 +336,6 @@ export const queryFieldFilters: RR<
     renderPickList: boolean;
     types?: RA<QueryFieldType>;
     component?: typeof SingleField;
-    // Whether empty "startValue" is equivalent to "(any)"
-    resetToAny: boolean;
     // Whether to do front-end validation
     hasParser: boolean;
   }
@@ -338,7 +345,6 @@ export const queryFieldFilters: RR<
     label: queryText('any'),
     description: undefined,
     renderPickList: false,
-    resetToAny: false,
     hasParser: false,
   },
   like: {
@@ -348,7 +354,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: SingleField,
-    resetToAny: true,
     hasParser: false,
   },
   equal: {
@@ -357,7 +362,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: true,
     component: SingleField,
-    resetToAny: true,
     hasParser: true,
     types: ['text', 'number', 'date', 'id'],
   },
@@ -368,7 +372,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
-    resetToAny: true,
     hasParser: true,
   },
   less: {
@@ -378,7 +381,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
-    resetToAny: true,
     hasParser: true,
   },
   greaterOrEqual: {
@@ -388,7 +390,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
-    resetToAny: true,
     hasParser: true,
   },
   lessOrEqual: {
@@ -398,7 +399,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['number', 'date', 'id'],
     component: SingleField,
-    resetToAny: true,
     hasParser: true,
   },
   true: {
@@ -407,7 +407,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
-    resetToAny: false,
     hasParser: true,
   },
   false: {
@@ -416,7 +415,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
-    resetToAny: false,
     hasParser: true,
   },
   between: {
@@ -426,7 +424,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: Between,
-    resetToAny: true,
     hasParser: true,
   },
   in: {
@@ -440,7 +437,6 @@ export const queryFieldFilters: RR<
      */
     types: ['text', 'number', 'id'],
     component: In,
-    resetToAny: true,
     hasParser: true,
   },
   contains: {
@@ -450,7 +446,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
-    resetToAny: true,
     hasParser: false,
   },
   startsWith: {
@@ -460,7 +455,6 @@ export const queryFieldFilters: RR<
     renderPickList: false,
     component: SingleField,
     types: ['text', 'number', 'date', 'id'],
-    resetToAny: true,
     hasParser: false,
   },
   empty: {
@@ -468,7 +462,6 @@ export const queryFieldFilters: RR<
     label: queryText('empty'),
     description: undefined,
     renderPickList: false,
-    resetToAny: false,
     hasParser: false,
   },
   trueOrNull: {
@@ -477,7 +470,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
-    resetToAny: false,
     hasParser: true,
   },
   falseOrNull: {
@@ -486,7 +478,6 @@ export const queryFieldFilters: RR<
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
-    resetToAny: false,
     hasParser: true,
   },
 };

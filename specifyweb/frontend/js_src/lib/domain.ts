@@ -106,19 +106,22 @@ export const fetchCollectionsForResource = async (
   f.maybe(resource.specifyModel.getScopingRelationship(), async (domainField) =>
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
-      .then(async (resource) =>
-        fetchCollection(
+      .then(async (resource) => {
+        const fieldsBetween = takeBetween(
+          schema.orgHierarchy,
           'Collection',
-          { limit: 0 },
-          {
-            [takeBetween(
-              schema.orgHierarchy,
+          resource.specifyModel.name
+        )
+          .map((level) => level.toLowerCase())
+          .join('__');
+        return fieldsBetween.length === 0
+          ? undefined
+          : fetchCollection(
               'Collection',
-              resource.specifyModel.name
-            )
-              .map((level) => level.toLowerCase())
-              .join('__')]: resource.id.toString(),
-          }
-        ).then(({ records }) => records.map(({ id }) => id))
-      )
+              { limit: 0 },
+              {
+                [fieldsBetween]: resource.id.toString(),
+              }
+            ).then(({ records }) => records.map(({ id }) => id));
+      })
   ) ?? Promise.resolve(undefined);

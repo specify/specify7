@@ -118,7 +118,7 @@ class RelatedSearch(object, metaclass=RelatedSearchMeta):
             return None
 
         logger.debug('using %s for primary search', searchtable.find('tableName').text)
-        primary_query = build_primary_query(session, searchtable, terms, collection, as_scalar=True)
+        primary_query = build_primary_query(session, searchtable, terms, collection, user, as_scalar=True)
 
         if primary_query is None:
             return None
