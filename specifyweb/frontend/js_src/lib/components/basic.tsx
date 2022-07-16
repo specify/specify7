@@ -583,7 +583,7 @@ export const Select = wrap<
 >(
   'Select',
   'select',
-  `${className.notTouchedInput} w-full`,
+  `${className.notTouchedInput} w-full pr-5 bg-right cursor-pointer`,
   ({ onValueChange, onValuesChange, ...props }) => ({
     ...props,
     /*

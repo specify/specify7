@@ -57,11 +57,7 @@ export function SchemaConfigField({
       </Label.Generic>
       <Label.Generic>
         {commonText('length')}
-        <Input.Number
-          value={field.length ?? ''}
-          isReadOnly
-          className="no-arrows"
-        />
+        <Input.Number value={field.length ?? ''} isReadOnly />
       </Label.Generic>
       <Label.Generic>
         {commonText('type')}

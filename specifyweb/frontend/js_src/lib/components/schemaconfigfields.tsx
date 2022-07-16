@@ -31,7 +31,7 @@ export function SchemaConfigFields({
   return (
     <SchemaConfigColumn id={id('fields-label')} header={commonText('fields')}>
       <Select
-        className="min-h-[30vh] h-full sm:min-h-0 overflow-y-auto no-arrow"
+        className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
         size={2}
         aria-labelledby={id('fields-label')}
         value={index}
@@ -69,7 +69,7 @@ export function SchemaConfigColumn({
   readonly id?: string;
 }): JSX.Element {
   return (
-    <section className="sm:overflow-y-auto flex flex-col flex-1 gap-4 p-1 -m-1">
+    <section className="-m-1 flex flex-1 flex-col gap-4 p-1 sm:overflow-y-auto">
       <H3 id={id}>{header}</H3>
       {children}
     </section>

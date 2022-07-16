@@ -6,6 +6,7 @@
 
 /*
  * REFACTOR: get rid of most global styles once everything is using React components
+ *   (can use arbitrary variants too)
  * REFACTOR: remove most usages of !important after global styles are removed
  */
 @layer base {
@@ -14,7 +15,7 @@
     @apply !transition-none !duration-0;
   }
 
-  body.no-rounded-corners * {
+  body.no-rounded-corners *:not(.rounded-full) {
     @apply !rounded-none;
   }
 
@@ -22,7 +23,7 @@
     @apply transition duration-[var(--transition-duration)] ease-in-out
       dark:!shadow-none placeholder-gray-400 !ring-inset;
     /*
-     * Disable transitions for text color.
+     * Disables transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
      */
     transition-property: background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
@@ -46,7 +47,9 @@
   select {
     @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-500
       ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
-      text-[length:inherit] leading-[unset];
+      text-[length:inherit] leading-[unset]
+      [.has-alt-background_&]:optional:bg-white
+      [.has-alt-background_&]:optional:dark:bg-neutral-900;
   }
 
   input,
@@ -68,27 +71,6 @@
     padding-right: 1.5em;
   }
 
-  .has-alt-background :is(
-    [type='text'],
-    [type='email'],
-    [type='url'],
-    [type='password'],
-    [type='number'],
-    [type='date'],
-    [type='datetime-local'],
-    [type='month'],
-    [type='search'],
-    [type='tel'],
-    [type='time'],
-    [type='week'],
-    [multiple],
-    textarea,
-    .textarea-shadow,
-    select
-  ):not(:required) {
-    @apply bg-white dark:bg-neutral-900;
-  }
-
   :disabled:not(.link), [readonly] {
     @apply !cursor-not-allowed ring-1 ring-gray-500 dark:ring-1;
   }
@@ -98,11 +80,7 @@
       dark:text-neutral-500;
   }
 
-  select {
-    @apply pr-5 bg-right cursor-pointer;
-  }
-
-  select.no-arrow {
+  select[size] {
     @apply bg-none pl-2 pr-1;
   }
 
@@ -182,15 +160,8 @@
   }
 
   .link {
-    @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0;
-  }
-
-  .link:not([disabled]) {
-    @apply hover:text-brand-300;
-  }
-
-  .link {
-    @apply gap-2 inline-flex items-center active:underline;
+    @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0
+      enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
   }
 
   .icon {
@@ -204,7 +175,6 @@
     @apply bg-gray-200 dark:bg-neutral-700 rounded;
   }
 
-  /* REFACTOR: Can combine the next two selectors using :is() */
   progress::-webkit-progress-value {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
@@ -212,7 +182,6 @@
   progress::-moz-progress-bar {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
-
 
   /* Display tooltips as an overlay on touch-screen devices */
   @media (pointer: coarse), (hover: none) {
