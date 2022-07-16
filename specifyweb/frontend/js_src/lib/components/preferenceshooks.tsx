@@ -167,6 +167,7 @@ export function SetCssVariables(): null {
   const reduceMotion = useReducedMotion();
   React.useEffect(() => {
     document.body.classList[reduceMotion ? 'add' : 'remove']('reduce-motion');
+    document.body.classList[reduceMotion ? 'remove' : 'add']('motion-normal');
     document.documentElement.classList[reduceMotion ? 'remove' : 'add'](
       'scroll-smooth'
     );

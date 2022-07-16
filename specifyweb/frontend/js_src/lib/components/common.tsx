@@ -353,3 +353,18 @@ export function FormattedResource({
     <>{formatted ?? fallback}</>
   );
 }
+
+export const loadingGif = (
+  <div className="hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate">
+    <div
+      className={`
+        spinner-border border-brand-300 w-20 h-20 border-8 rounded-full
+        [.motion-normal_&]:border-r-transparent
+        [.motion-normal_&]:animate-spin
+      `}
+      role="status"
+    >
+      <span className="sr-only">{commonText('loading')}</span>
+    </div>
+  </div>
+);

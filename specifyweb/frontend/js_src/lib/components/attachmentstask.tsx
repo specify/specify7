@@ -34,13 +34,12 @@ import {
   Select,
 } from './basic';
 import { useCollection } from './collection';
-import { TableIcon } from './common';
+import { loadingGif, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { ErrorBoundary, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { OrderPicker } from './preferencesrenderers';
-import { loadingGif } from './queryresultstable';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';

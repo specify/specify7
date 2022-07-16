@@ -20,7 +20,7 @@ import { DataEntry } from './basic';
 import { useAsyncState, useId } from './hooks';
 import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
-import { loadingGif } from './queryresultstable';
+import { loadingGif } from './common';
 import { FormCell } from './specifyformcell';
 import { useCachedState } from './statecache';
 

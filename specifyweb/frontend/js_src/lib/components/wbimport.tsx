@@ -23,7 +23,7 @@ import { Button, Container, H2, H3, Input, Select } from './basic';
 import { LoadingContext } from './contexts';
 import { FilePicker } from './filepicker';
 import { useAsyncState, useTitle, useTriggerState } from './hooks';
-import { loadingGif } from './queryresultstable';
+import { loadingGif } from './common';
 import { useCachedState } from './statecache';
 
 export function WbImportView(): JSX.Element {

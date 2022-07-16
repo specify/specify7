@@ -28,7 +28,7 @@ import type { RA } from '../types';
 import { defined } from '../types';
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
-import { SortIndicator, TableIcon } from './common';
+import { loadingGif, SortIndicator, TableIcon } from './common';
 import { ErrorBoundary, fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
 import {
@@ -497,15 +497,6 @@ export function QueryResultsTable({
     </Container.Base>
   );
 }
-
-export const loadingGif = (
-  <img
-    src="/static/img/specify128spinner.gif"
-    alt={commonText('loading')}
-    className="hover:animate-hue-rotate w-20 rounded"
-    aria-live="polite"
-  />
-);
 
 /** Record ID column index in Query Results when not in distinct mode */
 export const queryIdField = 0;
