@@ -1,5 +1,6 @@
 import { breakpoint, error } from './assert';
 import type { IR, RA } from './types';
+import { filterArray } from './types';
 
 /** A storage for f.store */
 const store = new Map<() => unknown, unknown>();
@@ -168,4 +169,8 @@ export const f = {
   toString: (value: unknown): string =>
     (value as undefined | { readonly toString: () => string })?.toString() ??
     '',
+  min: (...array: RA<number | undefined>): number | undefined =>
+    f.var(filterArray(array), (data) =>
+      data.length === 0 ? undefined : Math.min(...data)
+    ),
 } as const;

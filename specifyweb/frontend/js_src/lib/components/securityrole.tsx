@@ -34,6 +34,8 @@ export type Role = NewRole & {
   readonly id: number;
 };
 
+const roleNameMaxLength = 1024;
+
 export function RoleView({
   role: initialRole,
   parentName,
@@ -103,7 +105,7 @@ export function RoleView({
                 setRole(replaceKey(role, 'name', name))
               }
               required
-              maxLength={1024}
+              maxLength={roleNameMaxLength}
             />
           </Label.Generic>
         )}

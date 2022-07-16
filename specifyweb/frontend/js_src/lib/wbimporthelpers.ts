@@ -40,15 +40,14 @@ export const inferDataSetType = (file: File): 'xls' | 'csv' =>
  */
 const dataSetMaxLength = 256;
 
-export const getMaxDataSetLength = (): number =>
-  Math.min(
+export const getMaxDataSetLength = (): number | undefined =>
+  f.min(
     /**
      * Since record set is automatically created from a Data Set name, need
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    schema.models.RecordSet.getField('name')!.length ??
-      Number.POSITIVE_INFINITY,
+    schema.models.RecordSet.getField('name')!.length,
     dataSetMaxLength
   );
 

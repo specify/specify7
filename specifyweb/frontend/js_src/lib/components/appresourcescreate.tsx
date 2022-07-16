@@ -7,17 +7,18 @@ import type {
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { addMissingFields } from '../datamodelutils';
+import { addMissingFields, serializeResource } from '../datamodelutils';
+import { f } from '../functools';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { schema } from '../schema';
 import type { IR, RR } from '../types';
 import { ensure } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Form, Input, Label, Link, Submit, Ul } from './basic';
-import { useId } from './hooks';
+import { Button, Link, Ul } from './basic';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
+import { deserializeResource } from './resource';
+import { ResourceView } from './resourceview';
 
 type AppResourceType = {
   readonly tableName: 'SpAppResource' | 'SpViewSetObject';
@@ -201,7 +202,6 @@ export function CreateAppResource({
   ) => void;
 }): JSX.Element {
   const [name, setName] = React.useState<string>('');
-  const id = useId('create-app-resource');
   const [type, setType] = React.useState<AppResourceType | undefined>(
     undefined
   );
@@ -270,36 +270,63 @@ export function CreateAppResource({
       </table>
     </Dialog>
   ) : (
-    <Dialog
-      header={adminText('createResourceDialogHeader')}
+    <EditAppResource
+      directory={directory}
+      name={name}
+      type={type}
+      mimeType={mimeType}
+      onSelected={handleSelected}
       onClose={handleClose}
-      buttons={
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
-        </>
-      }
-    >
-      <Form
-        id={id('form')}
-        onSubmit={(): void =>
-          handleSelected(
-            addMissingFields(type.tableName as 'SpAppResource', {
-              // I don't think this field is used anywhere
-              level: 0,
-              mimeType,
-              name: name.trim(),
-              specifyUser: userInformation.resource_uri,
-              spAppResourceDir: directory.resource_uri,
-            })
-          )
-        }
-      >
-        <Label.Generic>
-          {schema.models.SpAppResource.getField('name')!.label}
-          <Input.Text value={name} onValueChange={setName} required />
-        </Label.Generic>
-      </Form>
-    </Dialog>
+    />
+  );
+}
+
+function EditAppResource({
+  directory,
+  name,
+  type,
+  mimeType,
+  onSelected: handleSelected,
+  onClose: handleClose,
+}: {
+  readonly directory: SerializedResource<SpAppResourceDir>;
+  readonly name: string;
+  readonly type: AppResourceType;
+  readonly mimeType: string | undefined;
+  readonly onSelected: (
+    resource: SerializedResource<SpAppResource | SpViewSetObject>
+  ) => void;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const resource = React.useMemo(
+    () =>
+      deserializeResource(
+        addMissingFields(type.tableName as 'SpAppResource', {
+          // I don't think this field is used anywhere
+          level: 0,
+          mimeType,
+          name: name.trim(),
+          specifyUser: userInformation.resource_uri,
+          spAppResourceDir: directory.resource_uri,
+        })
+      ),
+    [directory, name, type, mimeType]
+  );
+  return (
+    <ResourceView
+      resource={resource}
+      mode="edit"
+      canAddAnother={false}
+      dialog="modal"
+      onSaving={(): false => {
+        handleSelected(serializeResource(resource));
+        return false;
+      }}
+      onSaved={f.never}
+      onDeleted={undefined}
+      onClose={handleClose}
+      isSubForm={false}
+      isDependent={false}
+    />
   );
 }

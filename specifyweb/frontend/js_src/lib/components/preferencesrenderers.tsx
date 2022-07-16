@@ -48,6 +48,10 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
           value={value}
           onValueChange={handleChange}
           isReadOnly={isReadOnly}
+          minLength={7}
+          maxLength={7}
+          required
+          pattern="^#[0-9a-fA-F]{6}$"
         />
       </div>
     );
@@ -235,6 +239,7 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     );
   };
 
+// BUG: either make inputs required, or handle no value case
 export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
   function ({ definition, value, onChange: handleChange, isReadOnly }) {
     const parser =

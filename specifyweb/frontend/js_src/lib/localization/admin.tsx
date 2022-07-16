@@ -57,10 +57,6 @@ export const adminText = createDictionary({
     'en-us': 'User Accounts Assigned to this Collection',
     'ru-ru': 'Пользователи',
   },
-  createResourceDialogHeader: {
-    'en-us': 'Create New Resource File',
-    'ru-ru': 'Создать новый файл ресурсов',
-  },
   selectResourceTypeDialogHeader: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',

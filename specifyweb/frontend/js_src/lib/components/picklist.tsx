@@ -205,6 +205,7 @@ export function PickListComboBox(
               name={name}
               disabled={isDisabled}
               isReadOnly={props.mode === 'view'}
+              {...validationAttributes}
               required={isRequired}
               {...inputProps}
             />

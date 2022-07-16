@@ -17,6 +17,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { f } from '../functools';
 
 export function QueryEditButton({
   query,
@@ -208,9 +209,16 @@ function QueryExport({
           }
           required
           value={name}
+          maxLength={getMaxLength()}
           onValueChange={(value): void => setName(value)}
         />
       </Form>
     </Dialog>
   );
 }
+
+const getMaxLength = (): number | undefined =>
+  f.min(
+    schema.models.SpAppResource.getLiteralField('name')!.length,
+    schema.models.SpReport.getLiteralField('name')!.length
+  );

@@ -10,6 +10,7 @@ import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { getUniqueName } from '../wbuniquifyname';
+import { schema } from '../schema';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -87,6 +88,7 @@ export function QuerySaveDialog({
             spellCheck="true"
             required
             value={name}
+            maxLength={schema.models.SpQuery.getLiteralField('name')!.length}
             onValueChange={setName}
           />
         </Label.Generic>
