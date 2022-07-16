@@ -136,15 +136,17 @@ export function TreeRow({
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
                */
-              className={`border whitespace-nowrap border-transparent aria-handled
-              -mb-[12px] -ml-[5px] mt-2 rounded
-              ${
-                isAction
-                  ? 'outline outline-1 outline-red-500'
-                  : isFocused
-                  ? 'outline outline-1 outline-blue-500'
-                  : ''
-              }`}
+              className={`
+                aria-handled -mb-[12px] -ml-[5px] mt-2
+                whitespace-nowrap rounded border border-transparent
+                ${
+                  isAction
+                    ? 'outline outline-1 outline-red-500'
+                    : isFocused
+                    ? 'outline outline-1 outline-blue-500'
+                    : ''
+                }
+              `}
               style={{
                 color:
                   typeof row.acceptedId === 'number' ? synonymColor : undefined,
@@ -243,8 +245,9 @@ export function TreeRow({
             <span
               key={rankId}
               aria-hidden="true"
-              className={`border border-dotted border-transparent
-              pointer-events-none whitespace-nowrap
+              className={`
+                pointer-events-none whitespace-nowrap border
+                border-dotted border-transparent
                 ${
                   // Add left border for empty cell before tree node
                   indexOfAncestor !== -1 &&

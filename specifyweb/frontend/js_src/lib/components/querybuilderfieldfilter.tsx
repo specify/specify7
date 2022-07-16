@@ -182,9 +182,11 @@ function QueryInputField({
     // This allows <input> to grow in size as needed
     <span
       data-value={value}
-      /* The :after pseudo element sets the width */
-      className={`relative after:invisible after:content-[attr(data-value)]
-        after:leading-[0px] min-w-[theme(spacing.40)] after:block after:px-2`}
+      // The :after pseudo element sets the width
+      className={`
+        relative min-w-[theme(spacing.40)] after:invisible
+        after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
+      `}
     >
       {/* This invisible input is used to set the height */}
       <Input.Text className="invisible w-0" aria-hidden={true} />

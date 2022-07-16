@@ -412,10 +412,12 @@ export function Autocomplete<T>({
        * of parents with overflow:hidden */}
       <Portal>
         <ul
-          className={`fixed w-[inherit] rounded cursor-pointer z-[10000]
-            rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
-            shadow-lg shadow-gray-400 dark:border dark:border-gray-500
-            ${showList ? '' : 'sr-only'}`}
+          className={`
+            fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
+            overflow-y-auto rounded rounded bg-white shadow-lg
+            shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
+            ${showList ? '' : 'sr-only'}
+          `}
           role="listbox"
           aria-label={ariaLabel}
           id={id}

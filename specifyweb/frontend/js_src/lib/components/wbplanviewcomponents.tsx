@@ -244,9 +244,9 @@ export function MappingLineComponent({
       aria-labelledby={id('header')}
       aria-current={isFocused}
     >
-      <div className="print:hidden border-t-gray-500 py-2 border-t">
+      <div className="border-t border-t-gray-500 py-2 print:hidden">
         <Button.Small
-          className="w-full h-full p-2"
+          className="h-full w-full p-2"
           title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
           onClick={handleClearMapping}
@@ -256,18 +256,20 @@ export function MappingLineComponent({
         </Button.Small>
       </div>
       <div
-        className={`flex items-center justify-end max-w-[25vw] p-2 border-t
-          border-t-gray-500 ${isComplete ? '' : 'font-extrabold text-red-600'}`}
+        className={`
+          flex max-w-[25vw] items-center justify-end border-t border-t-gray-500
+          p-2 ${isComplete ? '' : 'font-extrabold text-red-600'}
+        `}
         id={id('header')}
       >
         {headerName}
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        className={`print:gap-1 flex flex-wrap items-center gap-2 border-t
-          border-t-gray-500 py-2 ${
-            isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''
-          }
+        className={`
+          flex flex-wrap items-center gap-2 border-t border-t-gray-500
+          py-2 print:gap-1
+          ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
         `}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */

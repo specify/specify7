@@ -61,8 +61,10 @@ function Table<
   return (
     <div
       role="table"
-      className={`grid-table grid-cols-[repeat(var(--cols),auto)] border rounded
-        flex-1 overflow-auto`}
+      className={`
+        grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] overflow-auto
+        rounded border
+      `}
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
@@ -70,7 +72,7 @@ function Table<
           <div
             key={name}
             role="columnheader"
-            className={`sticky top-0 p-2 font-bold border bg-[color:var(--background)]`}
+            className="sticky top-0 border bg-[color:var(--background)] p-2 font-bold"
           >
             <Button.LikeLink
               onClick={(): void => handleSort(name as FIELD_NAME)}
@@ -114,7 +116,7 @@ function Cell({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div role="cell" className="p-2 border">
+    <div role="cell" className="border p-2">
       {children}
     </div>
   );
@@ -188,7 +190,7 @@ const getFields = (model: SpecifyModel): RA<Row<keyof typeof fieldColumns>> =>
     type: javaTypeToHuman(field.type, undefined),
     length: [
       field.length,
-      <span className="tabular-nums flex justify-end w-full">
+      <span className="flex w-full justify-end tabular-nums">
         {f.maybe(field.length, formatNumber)}
       </span>,
     ],
@@ -301,19 +303,19 @@ const getTables = (): RA<Row<keyof typeof tableColumns>> =>
     isHidden: booleanFormatter(model.isHidden),
     tableId: [
       model.tableId,
-      <span className="tabular-nums flex justify-end w-full">
+      <span className="flex w-full justify-end tabular-nums">
         {model.tableId}
       </span>,
     ],
     fieldCount: [
       model.fields.length,
-      <span className="tabular-nums flex justify-end w-full">
+      <span className="flex w-full justify-end tabular-nums">
         {formatNumber(model.fields.length)}
       </span>,
     ],
     relationshipCount: [
       model.relationships.length,
-      <span className="tabular-nums flex justify-end w-full">
+      <span className="flex w-full justify-end tabular-nums">
         {formatNumber(model.relationships.length)}
       </span>,
     ],
@@ -327,7 +329,7 @@ function DataModelTables(): JSX.Element {
         <H2 className="text-2xl">
           {`${welcomeText('schemaVersion')} ${getSystemInfo().schema_version}`}
         </H2>
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         <Link.Green
           href="/context/datamodel.json"
           className={`${className.navigationHandled} print:hidden`}

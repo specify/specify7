@@ -134,7 +134,7 @@ function Layout({
     <BadImport error={preview} />
   ) : Array.isArray(preview) ? (
     <>
-      <div className="w-96 grid items-center grid-cols-2 gap-2">
+      <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <ToggleHeader hasHeader={hasHeader} onChange={setHasHeader} />
@@ -218,12 +218,12 @@ function Preview({
       <div className="overflow-auto">
         <table>
           <thead>
-            <tr className="dark:bg-neutral-700 text-center bg-gray-200">
+            <tr className="bg-gray-200 text-center dark:bg-neutral-700">
               {header.map((cell, index) => (
                 <th
                   key={index}
                   scope="col"
-                  className="dark:border-gray-500 p-1 border border-gray-700"
+                  className="border border-gray-700 p-1 dark:border-gray-500"
                 >
                   {cell}
                 </th>
@@ -234,7 +234,7 @@ function Preview({
             {rows.map((row, index) => (
               <tr key={index}>
                 {row.map((cell, index) => (
-                  <td key={index} className={`border border-gray-500`}>
+                  <td key={index} className="border border-gray-500">
                     {cell}
                   </td>
                 ))}

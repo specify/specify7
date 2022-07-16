@@ -212,7 +212,7 @@ export function Main(): JSX.Element | null {
   return menuItems === undefined || userTools === undefined ? null : (
     <>
       <Button.Small
-        className="focus:not-sr-only !absolute top-0 left-0 !p-2 sr-only z-10"
+        className="sr-only !absolute top-0 left-0 z-10 !p-2 focus:not-sr-only"
         onClick={(): void => {
           if (!mainRef.current) return;
           mainRef.current.setAttribute('tabindex', '-1');
@@ -224,25 +224,28 @@ export function Main(): JSX.Element | null {
       </Button.Small>
 
       <header
-        className={`bg-gray-200 dark:bg-neutral-800 border-b-[5px]
-          border-b-brand-200 dark:border-b-brand-400 flex flex-col 2xl:flex-row 
-          shadow-md shadow-gray-400 print:hidden [z-index:1]
-          ${className.hasAltBackground}`}
+        className={`
+          flex flex-col border-b-[5px]
+          border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400 [z-index:1] 
+          dark:border-b-brand-400 dark:bg-neutral-800 print:hidden 2xl:flex-row
+          ${className.hasAltBackground}
+        `}
       >
-        <div className="2xl:contents flex items-center justify-between w-full">
+        <div className="flex w-full items-center justify-between 2xl:contents">
           <h1 className="contents">
-            <a href="/specify/" className="flex items-center order-1 m-4">
+            <a href="/specify/" className="order-1 m-4 flex items-center">
               <img
                 src="/static/img/seven_logo.png"
                 alt=""
-                className="hover:animate-hue-rotate h-16"
+                className="h-16 hover:animate-hue-rotate"
               />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
           </h1>
           <div
-            className={`flex flex-col gap-2 m-4 order-3 min-w-[275px]
-              2xl:w-max-[350px]`}
+            className={`
+              2xl:w-max-[350px] order-3 m-4 flex min-w-[275px] flex-col gap-2
+            `}
           >
             <div className="flex items-center justify-end gap-2">
               {userInformation.isauthenticated ? (

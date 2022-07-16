@@ -237,7 +237,7 @@ function TreeView<SCHEMA extends AnyTree>({
         >
           {treeText('editRanks')}
         </Button.Small>
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissable>
           <TreeViewActions<SCHEMA>
             tableName={tableName}
@@ -255,10 +255,11 @@ function TreeView<SCHEMA extends AnyTree>({
         </ErrorBoundary>
       </header>
       <div
-        className={`grid-table grid-cols-[repeat(var(--cols),auto)] flex-1
-          overflow-auto shadow-md shadow-gray-500 content-start rounded p-2 pt-0
-          outline-none
-          from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)]
+        className={`
+          grid-table flex-1 grid-cols-[repeat(var(--cols),auto)]
+          content-start overflow-auto rounded from-[var(--edge-color)] via-[var(--middle-color)] to-[var(--edge-color)] p-2
+          pt-0
+          shadow-md shadow-gray-500 outline-none
           ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
         `}
         style={
@@ -292,14 +293,14 @@ function TreeView<SCHEMA extends AnyTree>({
               <div
                 role="columnheader"
                 key={index}
-                className={`border whitespace-nowrap border-transparent top-0
-                  sticky p-2
-                  ${index === 0 ? '-ml-2 pl-4 rounded-bl' : ''}
-                  ${index + 1 === length ? 'pr-4 -mr-2 rounded-br' : ''}
+                className={`
+                  sticky top-0 whitespace-nowrap border border-transparent p-2
+                  ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
+                  ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
                   ${
                     reduceTransparency || !supportsBackdropBlur
                       ? 'bg-gray-100 dark:bg-neutral-900'
-                      : 'backdrop-blur-sm bg-gray-100/60 dark:bg-neutral-900/60'
+                      : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
                 `}
               >

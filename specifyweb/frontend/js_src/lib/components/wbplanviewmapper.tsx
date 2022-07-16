@@ -31,6 +31,7 @@ import {
 import { Button, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
+import { ErrorBoundary, softFail } from './errorboundary';
 import { useId } from './hooks';
 import { icons } from './icons';
 import { useUnloadProtect } from './navigation';
@@ -52,7 +53,6 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
-import { ErrorBoundary, softFail } from './errorboundary';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -463,9 +463,10 @@ export function WbPlanViewMapper(props: {
           >
             {wbText('map')}
             <span
-              className={`text-green-500 ${
-                mapButtonEnabled ? '' : 'invisible'
-              }`}
+              className={`
+                text-green-500
+                ${mapButtonEnabled ? '' : 'invisible'}
+              `}
               aria-hidden="true"
             >
               &#8594;
@@ -475,9 +476,11 @@ export function WbPlanViewMapper(props: {
       )}
 
       <Ul
-        className={`auto-rows-max flex-1 overflow-x-hidden grid
-          grid-cols-[theme(spacing.8)_max-content_auto]
-          print:grid-cols-[min-content_auto]`}
+        className={`
+          grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
+          overflow-x-hidden
+          print:grid-cols-[min-content_auto]
+        `}
         tabIndex={-1}
         forwardRef={listOfMappings}
         onScroll={repositionSuggestionBox}

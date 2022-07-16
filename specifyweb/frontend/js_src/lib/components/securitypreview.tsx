@@ -39,7 +39,7 @@ function ReasonExplanation({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="grid-table grid-cols-[auto_auto_auto] border border-gray-500 rounded"
+        className="grid-table grid-cols-[auto_auto_auto] rounded border border-gray-500"
         role="table"
       >
         <div role="row">
@@ -50,13 +50,16 @@ function ReasonExplanation({
           ].map((label, index, { length }) => (
             <div
               role="columnheader"
-              className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
-                index === 0
-                  ? 'rounded-l'
-                  : index + 1 === length
-                  ? 'rounded-r'
-                  : ''
-              }`}
+              className={`
+                bg-gray-350 p-2 dark:bg-neutral-600
+                ${
+                  index === 0
+                    ? 'rounded-l'
+                    : index + 1 === length
+                    ? 'rounded-r'
+                    : ''
+                }
+              `}
               key={index}
             >
               {label}
@@ -91,7 +94,7 @@ function ReasonExplanation({
         </div>
       </div>
       <div
-        className="grid-table w-full grid-cols-[auto_auto_auto_auto] border border-gray-500 rounded"
+        className="grid-table w-full grid-cols-[auto_auto_auto_auto] rounded border border-gray-500"
         role="table"
       >
         <div role="row">
@@ -103,13 +106,16 @@ function ReasonExplanation({
           ].map((label, index, { length }) => (
             <div
               role="columnheader"
-              className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
-                index === 0
-                  ? 'rounded-l'
-                  : index + 1 === length
-                  ? 'rounded-r'
-                  : ''
-              }`}
+              className={`
+                bg-gray-350 p-2 dark:bg-neutral-600
+                ${
+                  index === 0
+                    ? 'rounded-l'
+                    : index + 1 === length
+                    ? 'rounded-r'
+                    : ''
+                }
+              `}
               key={index}
             >
               {label}
@@ -167,9 +173,10 @@ function PreviewRow({
         {tableActions.map((action) => (
           <div
             role="cell"
-            className={`justify-center p-2 cursor-pointer rounded ${
-              view === action ? 'bg-brand-100 dark:bg-brand-500' : ''
-            }`}
+            className={`
+              cursor-pointer justify-center rounded p-2
+              ${view === action ? 'bg-brand-100 dark:bg-brand-500' : ''}
+            `}
             key={action}
             onClick={(): void => setView(action === view ? undefined : action)}
           >
@@ -243,8 +250,10 @@ function PreviewTables({
   );
   return (
     <div
-      className={`grid-table grid-cols-[repeat(4,min-content)_auto]
-        relative overflow-x-hidden`}
+      className={`
+        grid-table relative
+        grid-cols-[repeat(4,min-content)_auto] overflow-x-hidden
+      `}
       role="table"
     >
       <div role="row">
@@ -258,13 +267,15 @@ function PreviewTables({
           <div
             key={header}
             role="columnheader"
-            className={`p-2 sticky top-0 bg-[color:var(--form-background)] ${
-              index === 0
-                ? 'rounded-l'
-                : index + 1 === length
-                ? 'rounded-r'
-                : ''
-            }`}
+            className={`
+              sticky top-0 bg-[color:var(--form-background)] p-2 ${
+                index === 0
+                  ? 'rounded-l'
+                  : index + 1 === length
+                  ? 'rounded-r'
+                  : ''
+              }
+            `}
           >
             {header}
           </div>
@@ -306,7 +317,7 @@ function TreeView({
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   return (
-    <Ul className="pl-5 list-disc">
+    <Ul className="list-disc pl-5">
       {Object.entries(tree)
         .sort(sortFunction(([_name, { label }]) => label))
         .map(([name, { label, children, actions, resource }]) => (
@@ -428,7 +439,7 @@ export function PreviewPermissions({
       {typeof query === 'object' ? (
         <>
           {changesMade && <p>{adminText('outOfDateWarning')}</p>}
-          <div className="flex flex-wrap flex-1 gap-4">
+          <div className="flex flex-1 flex-wrap gap-4">
             <div>
               <PreviewTables
                 query={query}

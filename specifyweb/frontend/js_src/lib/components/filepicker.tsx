@@ -90,10 +90,11 @@ export function FilePicker({
       />
       <span
         ref={filePickerButton}
-        className={`align-center button h-44 flex justify-center text-center
+        className={`
+          align-center button flex h-44 justify-center text-center
           ${
             isDragging
-              ? 'bg-white dark:bg-neutral-700 ring ring-brand-200 dark:ring-brand-400'
+              ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
               : ''
           }
           ${isFocused ? '!ring ring-blue-500' : ''}

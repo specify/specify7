@@ -65,8 +65,8 @@ function TableHeaderCell({
   return (
     <div
       role={typeof content === 'object' ? `columnheader` : 'cell'}
-      className="w-full min-w-max bg-brand-100 dark:bg-brand-500 border-b
-        border-gray-500 p-1 [inset-block-start:_0] sticky [z-index:2]"
+      className="sticky w-full min-w-max border-b border-gray-500
+        bg-brand-100 p-1 [inset-block-start:_0] [z-index:2] dark:bg-brand-500"
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
@@ -333,7 +333,7 @@ export function QueryResultsTable({
             {formsText('deselectAll')}
           </Button.Small>
         )}
-        <div className="flex-1 -ml-2" />
+        <div className="-ml-2 flex-1" />
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
@@ -391,8 +391,8 @@ export function QueryResultsTable({
       <div
         // REFACTOR: turn this into a reusable table component
         role="table"
-        className={`grid-table overflow-auto
-          auto-rows-min rounded
+        className={`
+          grid-table auto-rows-min overflow-auto rounded
           ${tableClassName ?? ''}
           ${showResults ? 'border-b border-gray-500' : ''}
           ${
@@ -628,13 +628,14 @@ export function QueryResultsWrapper({
 
   return props === undefined ? (
     queryRunCount === 0 ? null : (
-      <div className="snap-start flex-1">{loadingGif}</div>
+      <div className="flex-1 snap-start">{loadingGif}</div>
     )
   ) : (
     <div
-      className={`nap-start flex flex-1 ${
-        typeof handleSelected === 'function' ? 'max-h-[70vh]' : ''
-      }`}
+      className={`
+        flex flex-1 snap-start
+        ${typeof handleSelected === 'function' ? 'max-h-[70vh]' : ''}
+      `}
     >
       <ErrorBoundary dismissable>
         <QueryResultsTable {...props} totalCount={totalCount} />

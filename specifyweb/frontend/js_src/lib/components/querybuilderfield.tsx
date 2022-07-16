@@ -230,7 +230,7 @@ export function QueryLine({
 
   return (
     <li
-      className="border-t-gray-500 flex gap-2 py-2 border-t"
+      className="flex gap-2 border-t border-t-gray-500 py-2"
       aria-current={isFocused}
     >
       {typeof handleRemove === 'function' && (
@@ -246,9 +246,11 @@ export function QueryLine({
       )}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        className={`flex-1 print:gap-1 flex flex-wrap gap-2
+        className={`
+          flex flex-1 flex-wrap gap-2 print:gap-1
           ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
-          ${isFocused ? 'bg-gray-300 dark:bg-neutral-700 rounded' : ''}`}
+          ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
+        `}
         role="list"
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
@@ -332,8 +334,10 @@ export function QueryLine({
                   <React.Fragment>
                     <span className={mappingElementDividerClassName}>
                       <span
-                        className={`uppercase flex items-center justify-center
-                        ${iconClassName}`}
+                        className={`
+                          flex items-center justify-center uppercase
+                          ${iconClassName}
+                        `}
                       >
                         {queryText('or')}
                       </span>

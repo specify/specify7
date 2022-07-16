@@ -88,7 +88,7 @@ export function TableIcon({
   if (typeof tableIconSource === 'string')
     return (
       <span
-        className={`${className} bg-center bg-no-repeat bg-contain`}
+        className={`${className} bg-contain bg-center bg-no-repeat`}
         role={role}
         style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}
@@ -102,8 +102,10 @@ export function TableIcon({
     <span
       style={{ backgroundColor: stringToColor(name) }}
       role={role}
-      className={`w-table-icon h-table-icon flex items-center justify-center
-        text-white rounded-sm text-sm`}
+      className={`
+        flex h-table-icon w-table-icon items-center justify-center
+        rounded-sm text-sm text-white
+      `}
       title={resolvedTableLabel}
       aria-label={resolvedTableLabel}
       aria-hidden={ariaHidden}
@@ -115,7 +117,10 @@ export function TableIcon({
 
 export const tableIconUndefined = (
   <span
-    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-red-600"
+    className={`
+      flex h-table-icon w-table-icon items-center justify-center font-bold
+      text-red-600
+    `}
     aria-label={commonText('unmapped')}
     role="img"
   >
@@ -125,7 +130,10 @@ export const tableIconUndefined = (
 
 export const tableIconSelected = (
   <span
-    className="w-table-icon h-table-icon flex items-center justify-center font-bold text-green-500"
+    className={`
+      flex h-table-icon w-table-icon items-center justify-center font-bold
+      text-green-500
+    `}
     aria-label={commonText('mapped')}
     role="img"
   >
@@ -134,7 +142,7 @@ export const tableIconSelected = (
 );
 
 export const tableIconEmpty = (
-  <span className="w-table-icon h-table-icon" aria-hidden={true} />
+  <span className="h-table-icon w-table-icon" aria-hidden={true} />
 );
 
 export type SortConfig<FIELD_NAMES extends string> = {
@@ -275,8 +283,8 @@ export function AutoGrowTextArea({
        */}
       <div
         className={`
-          textarea-shadow print:hidden invisible whitespace-pre-wrap
-          [grid-area:1/1/2/2] ${className.textArea}
+          textarea-shadow invisible whitespace-pre-wrap [grid-area:1/1/2/2]
+          print:hidden ${className.textArea}
         `}
         ref={setShadow}
       >
@@ -285,7 +293,7 @@ export function AutoGrowTextArea({
       <Textarea
         {...props}
         className={`
-          h-full top-0 [grid-area:1/1/2/2] absolute
+          absolute top-0 h-full [grid-area:1/1/2/2]
           ${props.className ?? ''}
         `}
         forwardRef={(textArea): void => {
@@ -361,9 +369,9 @@ export const loadingGif = (
   <div className="hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate">
     <div
       className={`
-        spinner-border border-brand-300 w-20 h-20 border-8 rounded-full
-        [.motion-normal_&]:border-r-transparent
+        spinner-border h-20 w-20 rounded-full border-8 border-brand-300
         [.motion-normal_&]:animate-spin
+        [.motion-normal_&]:border-r-transparent
       `}
       role="status"
     >

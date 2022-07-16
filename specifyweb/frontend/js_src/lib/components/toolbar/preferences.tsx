@@ -62,7 +62,7 @@ function Preferences({
           )
         }
       >
-        <div className="md:flex-row relative flex flex-col gap-6 overflow-y-auto">
+        <div className="relative flex flex-col gap-6 overflow-y-auto md:flex-row">
           <PreferencesAside id={id} />
           <PreferencesContent id={id} isReadOnly={false} />
           <span className="flex-1" />
@@ -88,8 +88,10 @@ function PreferencesAside({
   // FEATURE: highlight link that corresponds to current section
   return (
     <aside
-      className={`min-w-fit md:sticky top-0 flex flex-col flex-1 divide-y-4
-             divide-[color:var(--form-background)]`}
+      className={`
+        top-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
+        md:sticky
+      `}
     >
       {definitions.map(([category, { title }]) => (
         <Link.Gray href={`#${id(category)}`} key={category}>
@@ -142,7 +144,7 @@ export function PreferencesContent({
 }): JSX.Element {
   const definitions = useDefinitions();
   return (
-    <div className="h-fit flex flex-col gap-6">
+    <div className="flex h-fit flex-col gap-6">
       {definitions.map(
         ([category, { title, description = undefined, subCategories }]) => (
           <ErrorBoundary dismissable key={category}>
@@ -158,11 +160,11 @@ export function PreferencesContent({
                     <div className="flex items-center">
                       <span className="flex-1" />
                       <h4
-                        className={`${className.headerGray} text-xl text-center`}
+                        className={`${className.headerGray} text-center text-xl`}
                       >
                         {title}
                       </h4>
-                      <div className="flex justify-end flex-1">
+                      <div className="flex flex-1 justify-end">
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) =>
@@ -194,31 +196,36 @@ export function PreferencesContent({
                       return (
                         <label
                           key={name}
-                          className={`flex items-start gap-2 ${
-                            canEdit ? '' : '!cursor-not-allowed'
-                          }`}
+                          className={`
+                            flex items-start gap-2
+                            ${canEdit ? '' : '!cursor-not-allowed'}
+                          `}
                           title={
                             canEdit
                               ? undefined
                               : preferencesText('adminsOnlyPreference')
                           }
                         >
-                          <div className="flex flex-col flex-1 gap-2">
+                          <div className="flex flex-1 flex-col gap-2">
                             <p
-                              className={`flex items-center justify-end flex-1
-                              text-right min-h-[theme(spacing.8)]`}
+                              className={`
+                                flex min-h-[theme(spacing.8)] flex-1 items-center
+                                justify-end text-right
+                              `}
                             >
                               {item.title}
                             </p>
                             {item.description !== undefined && (
-                              <p className="flex justify-end flex-1 text-right text-gray-500">
+                              <p className="flex flex-1 justify-end text-right text-gray-500">
                                 {item.description}
                               </p>
                             )}
                           </div>
                           <div
-                            className={`flex flex-col justify-center flex-1 gap-2
-                            min-h-[theme(spacing.8)]`}
+                            className={`
+                              flex min-h-[theme(spacing.8)] flex-1 flex-col justify-center
+                              gap-2
+                            `}
                           >
                             <Item
                               item={item}

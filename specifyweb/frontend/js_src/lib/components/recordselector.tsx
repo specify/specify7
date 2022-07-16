@@ -31,7 +31,7 @@ export function Slider({
     [value]
   );
   return count > 0 ? (
-    <div className="print:hidden flex justify-center gap-2">
+    <div className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText('firstRecord')}
         title={formsText('firstRecord')}
@@ -41,7 +41,7 @@ export function Slider({
         ≪
       </Button.Small>
       <Button.Small
-        className="dark:bg-neutral-500 px-4 bg-white"
+        className="bg-white px-4 dark:bg-neutral-500"
         aria-label={formsText('previousRecord')}
         title={formsText('previousRecord')}
         disabled={value == 0}
@@ -49,16 +49,20 @@ export function Slider({
       >
         {'<'}
       </Button.Small>
-      <div className="grid font-bold items-center grid-cols-[1fr_auto_1fr] gap-1">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 font-bold">
         <label
-          className={`h-full relative after:invisible after:p-2
-            after:content-[attr(data-value)]`}
+          className={`
+            relative h-full after:invisible after:p-2
+            after:content-[attr(data-value)]
+          `}
           data-value={value}
         >
           <span className="sr-only">{formsText('currentRecord', count)}</span>
           <Input.Number
-            className={`no-arrows dark:bg-neutral-600 absolute top-0 left-0 h-full
-              font-bold bg-white ring-0 text-center`}
+            className={`
+              no-arrows absolute top-0 left-0 h-full bg-white
+              text-center font-bold ring-0 dark:bg-neutral-600
+            `}
             min={1}
             /*
              * Count is 0 when input is invisible, which causes the field to be
@@ -81,7 +85,7 @@ export function Slider({
         <span>{count}</span>
       </div>
       <Button.Small
-        className="dark:bg-neutral-500 px-4 bg-white"
+        className="bg-white px-4 dark:bg-neutral-500"
         aria-label={formsText('nextRecord')}
         title={formsText('nextRecord')}
         disabled={value + 1 == count}

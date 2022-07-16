@@ -258,9 +258,9 @@ function FormatPermissionError({
   readonly url: string | undefined;
 }): JSX.Element {
   return (
-    <div className="flex flex-col h-full gap-2">
+    <div className="flex h-full flex-col gap-2">
       <p>{commonText('permissionDeniedDialogText')}</p>
-      <table className="grid-table grid-cols-4 border border-gray-500 rounded">
+      <table className="grid-table grid-cols-4 rounded border border-gray-500">
         <thead>
           <tr>
             {[
@@ -271,13 +271,16 @@ function FormatPermissionError({
             ].map((label, index, { length }) => (
               <th
                 scope="column"
-                className={`bg-gray-350 dark:bg-neutral-600 p-2 ${
-                  index === 0
-                    ? 'rounded-l'
-                    : index + 1 === length
-                    ? 'rounded-r'
-                    : ''
-                }`}
+                className={`
+                  bg-gray-350 p-2 dark:bg-neutral-600
+                  ${
+                    index === 0
+                      ? 'rounded-l'
+                      : index + 1 === length
+                      ? 'rounded-r'
+                      : ''
+                  }
+                `}
                 key={index}
               >
                 {label}

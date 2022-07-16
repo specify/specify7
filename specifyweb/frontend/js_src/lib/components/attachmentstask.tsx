@@ -178,8 +178,10 @@ export function AttachmentCell({
       )}
       {typeof thumbnail === 'object' ? (
         <Link.Default
-          className={`dark:bg-black shadow-gray-500 flex items-center
-            justify-center bg-white rounded shadow-lg`}
+          className={`
+            flex items-center justify-center rounded bg-white
+            shadow-lg shadow-gray-500 dark:bg-black
+          `}
           href={originalUrl}
           target="_blank"
           onClick={(): void =>
@@ -192,7 +194,10 @@ export function AttachmentCell({
           }
         >
           <img
-            className="dark:border-black object-contain max-w-full max-h-full border-8 border-white"
+            className={`
+              max-h-full max-w-full border-8 border-white object-contain
+              dark:border-black
+            `}
             src={thumbnail.src}
             alt={attachment?.title || thumbnail.alt}
             style={{
@@ -203,7 +208,7 @@ export function AttachmentCell({
           {isPreviewPending && <LoadingScreen />}
         </Link.Default>
       ) : (
-        <div className="flex items-center justify-center w-10 h-10">
+        <div className="flex h-10 w-10 items-center justify-center">
           {commonText('loading')}
         </div>
       )}
@@ -307,7 +312,7 @@ export function AttachmentsView(): JSX.Element {
   return (
     <Container.FullGray>
       <header
-        className={`gap-2 flex items-center ${className.hasAltBackground}`}
+        className={`flex items-center gap-2 ${className.hasAltBackground}`}
       >
         <H2>{commonText('attachments')}</H2>
         <Label.ForCheckbox>
@@ -363,7 +368,7 @@ export function AttachmentsView(): JSX.Element {
             />
           </div>
         </Label.ForCheckbox>
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         <Label.ForCheckbox>
           {commonText('scale')}
           <Input.Generic
@@ -428,8 +433,8 @@ function Gallery({
   return (
     <>
       <Container.Base
-        className="flex-1 gap-4 grid items-center
-          grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))]"
+        className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))] items-center
+          gap-4"
         style={
           {
             '--scale': `${scale}rem`,

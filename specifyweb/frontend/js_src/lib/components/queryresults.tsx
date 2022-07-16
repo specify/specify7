@@ -142,11 +142,11 @@ function QueryResultCell({
   return (
     <span
       role="cell"
-      className={`${getCellClassName(condenseQueryResults)} ${
-        value === null ? 'text-gray-700 dark:text-neutral-500' : ''
-      } ${
-        fieldSpec?.parser.type === 'number' ? 'tabular-nums justify-end' : ''
-      }`}
+      className={`
+        ${getCellClassName(condenseQueryResults)}
+        ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
+        ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
+      `}
       title={
         typeof value === 'string' && value !== formatted ? value : undefined
       }
@@ -208,7 +208,8 @@ function QueryResult({
   return (
     <div
       role="row"
-      className={`even:[--bg:transparent] odd:[--bg:theme(colors.gray.100)]
+      className={`
+        odd:[--bg:theme(colors.gray.100)] even:[--bg:transparent]
         odd:dark:[--bg:theme(colors.neutral.700)]
         ${condenseQueryResults ? 'text-sm' : ''}
       `}
@@ -229,7 +230,8 @@ function QueryResult({
         <>
           <span
             role="cell"
-            className={`${getCellClassName(condenseQueryResults)} sticky
+            className={`
+              ${getCellClassName(condenseQueryResults)} sticky
               ${isLast ? 'rounded-bl' : ''}
             `}
           >

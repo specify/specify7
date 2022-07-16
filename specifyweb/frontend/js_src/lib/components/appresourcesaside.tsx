@@ -52,7 +52,7 @@ export function AppResourcesAside({
   const resourcesTree = useResourcesTree(resources);
   return (
     <aside className={className.containerBase}>
-      <Ul role="tree" className="flex flex-col flex-1 gap-1 overflow-auto">
+      <Ul role="tree" className="flex flex-1 flex-col gap-1 overflow-auto">
         {resourcesTree.map((resources) => (
           <TreeItem
             resourcesTree={resources}
@@ -262,7 +262,10 @@ function ResourceItem({
   return (
     <Link.Default
       href={url}
-      className={`!text-neutral-500 hover:!text-brand-300 ${className.navigationHandled}`}
+      className={`
+        !text-neutral-500 hover:!text-brand-300
+        ${className.navigationHandled}
+      `}
       onClick={(event): void => {
         event.preventDefault();
         handleOpen(resource);

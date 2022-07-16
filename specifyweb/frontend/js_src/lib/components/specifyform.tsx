@@ -200,14 +200,17 @@ export function RenderForm<SCHEMA extends AnySchema>({
       >
         {showLoading && (
           <div
-            className={`${
-              /*
-               * If form is not yet visible, the logo should be reserving
-               * some space for itself so as not to overlap with the
-               * form header and the save button
-               */
-              formIsLoaded ? 'absolute' : ''
-            } z-10 flex items-center justify-center w-full h-full`}
+            className={`
+              z-10 flex h-full w-full items-center justify-center
+              ${
+                /*
+                 * If form is not yet visible, the logo should be reserving
+                 * some space for itself so as not to overlap with the
+                 * form header and the save button
+                 */
+                formIsLoaded ? 'absolute' : ''
+              }
+            `}
           >
             {loadingGif}
           </div>
@@ -217,7 +220,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
             viewDefinition={viewDefinition}
             aria-hidden={showLoading}
             className={
-              showLoading ? 'opacity-50 pointer-events-none' : undefined
+              showLoading ? 'pointer-events-none opacity-50' : undefined
             }
             flexibleColumnWidth={flexibleColumnWidth}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}

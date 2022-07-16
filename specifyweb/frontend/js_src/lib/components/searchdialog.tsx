@@ -135,8 +135,10 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           display="inline"
         />
         <Ul
-          className={`dark:bg-neutral-700 min-w-96 ring-1 dark:ring-0
-          ring-gray-500 h-40 p-2 overflow-auto bg-white border rounded`}
+          className={`
+            min-w-96 h-40 overflow-auto rounded
+            border bg-white p-2 ring-1 ring-gray-500 dark:bg-neutral-700 dark:ring-0
+          `}
         >
           {isLoading ? (
             <li>{commonText('loading')}</li>

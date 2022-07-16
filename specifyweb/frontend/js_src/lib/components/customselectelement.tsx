@@ -10,11 +10,13 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
+import { camelToKebab, upperToKebab } from '../helpers';
+import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
+import { scrollIntoView } from '../treeviewutils';
 import type { IR, RA, RR } from '../types';
 import { filterArray } from '../types';
-import { camelToKebab, upperToKebab } from '../helpers';
 import {
   TableIcon,
   tableIconEmpty,
@@ -22,8 +24,6 @@ import {
   tableIconUndefined,
 } from './common';
 import { iconClassName, icons } from './icons';
-import { scrollIntoView } from '../treeviewutils';
-import { commonText } from '../localization/common';
 
 type Properties =
   /*
@@ -344,14 +344,16 @@ function OptionGroup({
 }: CustomSelectElementOptionGroupProps): JSX.Element {
   return (
     <section
-      className={`bg-[color:var(--custom-select-b1)] flex flex-col
-        custom-select-group-${camelToKebab(selectGroupName ?? '')}`}
+      className={`
+        flex flex-col bg-[color:var(--custom-select-b1)]
+        custom-select-group-${camelToKebab(selectGroupName ?? '')}
+      `}
       role="group"
     >
       {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden={true}
-          className="bg-[color:var(--custom-select-b2)] px-1 cursor-auto"
+          className="cursor-auto bg-[color:var(--custom-select-b2)] px-1"
         >
           {selectGroupLabel}
         </header>
@@ -410,8 +412,10 @@ function ShadowListOfOptions({
     gap * 2 + (hasIcon ? gap + 1.25 : 0) + (hasArrow ? gap + 1.5 : 0);
   return (
     <span
-      className={`print:hidden flex flex-col invisible overflow-y-scroll border
-        -mt-2`}
+      className={`
+        invisible -mt-2 flex flex-col overflow-y-scroll border
+        print:hidden
+      `}
       aria-hidden="true"
       style={{ paddingRight: `${paddingRight}rem` }}
     >
@@ -536,8 +540,10 @@ export function CustomSelectElement({
   if (has('header') && selectLabel)
     header = (
       <header
-        className={`border border-brand-300 p-2 flex gap-y-2 gap-x-1
-          items-center bg-brand-100 dark:bg-brand-500 rounded rounded-b-none`}
+        className={`
+          flex items-center gap-y-2 gap-x-1 rounded rounded-b-none
+          border border-brand-300 bg-brand-100 p-2 dark:bg-brand-500
+        `}
       >
         {has('icon') && (
           <Icon
@@ -555,9 +561,10 @@ export function CustomSelectElement({
       // Not tabbable because keyboard events are handled separately
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
-        className={`cursor-pointer min-h-[theme(spacing.8)]
-          flex items-center gap-1 px-1 border border-gray-500 dark:border-none
-          rounded ${
+        className={`
+          flex min-h-[theme(spacing.8)] cursor-pointer
+          items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
+          ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
               : defaultOption?.isHidden === true
@@ -568,7 +575,8 @@ export function CustomSelectElement({
               ? 'bg-yellow-250 dark:bg-yellow-900'
               : customSelectElementBackground
           }
-        ${isOpen ? '[z-index:3] rounded-b-none' : ''}`}
+          ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
+        `}
         role="button"
         onClick={
           has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
@@ -586,11 +594,13 @@ export function CustomSelectElement({
           />
         )}
         <span
-          className={`flex-1 ${
-            defaultOption.optionLabel === '0'
-              ? 'font-extrabold text-red-600'
-              : ''
-          }`}
+          className={`
+            flex-1 ${
+              defaultOption.optionLabel === '0'
+                ? 'font-extrabold text-red-600'
+                : ''
+            }
+          `}
         >
           {defaultOption.optionLabel === '0'
             ? wbText('notMapped')
@@ -666,11 +676,12 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
-      className={`cursor-pointer h-fit rounded overflow-x-hidden
-        bg-[color:var(--custom-select-b1)] border border-brand-300 flex-1
+      className={`
+        h-fit flex-1 cursor-pointer overflow-x-hidden
+        rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
         ${has('preview') ? '[z-index:2]' : ''}
         ${has('scroll') ? 'overflow-y-scroll' : 'overflow-y-auto'}
-        ${has('shadow') ? 'shadow-md max-h-[theme(spacing.64)]' : ''}
+        ${has('shadow') ? 'max-h-[theme(spacing.64)] shadow-md' : ''}
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
       ref={listOfOptionsRef}
@@ -717,8 +728,9 @@ export function CustomSelectElement({
 
   return (
     <article
-      className={`h-8 relative flex flex-col
-        custom-select custom-select-${upperToKebab(customSelectType)}
+      className={`
+        custom-select relative flex h-8
+        flex-col custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
       title={selectLabel}

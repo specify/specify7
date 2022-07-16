@@ -9,6 +9,8 @@ import type { Props } from 'react-modal';
 import Modal from 'react-modal';
 
 import { listen } from '../events';
+import { KEY } from '../helpers';
+import { commonText } from '../localization/common';
 import { Button, className, DialogContext, dialogIconTriggers } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useTitle } from './hooks';
@@ -19,16 +21,19 @@ import {
   useReducedTransparency,
   useTransitionDuration,
 } from './preferenceshooks';
-import { KEY } from '../helpers';
-import { commonText } from '../localization/common';
 
-// This must be accompanied by a label since loading bar is hidden from screen readers
+/*
+ * This must be accompanied by a label since loading bar is hidden from screen
+ * readers
+ */
 export const loadingBar = (
-  <div className="hover:animate-hue-rotate pt-5">
+  <div className="pt-5 hover:animate-hue-rotate">
     <div
       aria-hidden
-      className={`animate-bounce h-7 bg-gradient-to-r from-orange-400
-      to-amber-200 rounded`}
+      className={`
+        h-7 animate-bounce rounded bg-gradient-to-r
+        from-orange-400 to-amber-200
+      `}
     />
   </div>
 );
@@ -340,19 +345,19 @@ export function Dialog({
       portalClassName=""
       // "overflow-x-hidden" is necessary for the "resize" handle to appear
       className={`
-        outline-none flex flex-col p-4 gap-2 ${containerClassName}
-        dark:text-neutral-200 dark:border dark:border-neutral-700
-        text-neutral-900 overflow-x-hidden duration-0
+        flex flex-col gap-2 p-4 outline-none ${containerClassName}
+        overflow-x-hidden text-neutral-900 duration-0
+        dark:border dark:border-neutral-700 dark:text-neutral-200
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
           reduceTransparency || highContrast
             ? 'bg-white dark:bg-neutral-900'
             : transparentDialog && modal
             ? supportsBackdropBlur
-              ? 'backdrop-blur-lg bg-white/40 dark:bg-transparent'
+              ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
               : 'bg-white/70 dark:bg-black/70'
-            : `bg-gradient-to-bl from-gray-200 dark:from-neutral-800
-                via-white dark:via-neutral-900 to-white dark:to-neutral-900`
+            : `bg-gradient-to-bl from-gray-200 via-white
+                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`
         }
       `}
       shouldCloseOnEsc={
@@ -396,9 +401,10 @@ export function Dialog({
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span
-        className={`flex flex-wrap gap-4 ${
-          isFullScreen ? '' : 'p-4 -m-4 cursor-move'
-        }`}
+        className={`
+          flex flex-wrap gap-4
+          ${isFullScreen ? '' : '-m-4 cursor-move p-4'}
+        `}
         id={id('handle')}
       >
         <div className="flex items-center gap-2">
@@ -427,8 +433,10 @@ export function Dialog({
          * close
          */}
         <div
-          className={`px-1 py-4 -mx-1 overflow-y-auto flex-1 text-gray-700
-          dark:text-neutral-350 ${contentClassName}`}
+          className={`
+            -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
+            dark:text-neutral-350 ${contentClassName}
+          `}
           ref={contentRef}
           id={id('content')}
         >
@@ -436,7 +444,7 @@ export function Dialog({
         </div>
         {buttons !== undefined && (
           <div
-            className={`gap-2 flex ${buttonContainerClassName}`}
+            className={`flex gap-2 ${buttonContainerClassName}`}
             ref={setButtonContainer}
           >
             {typeof buttons === 'string' ? (

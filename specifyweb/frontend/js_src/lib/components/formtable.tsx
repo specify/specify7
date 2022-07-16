@@ -151,7 +151,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         viewDefinition={viewDefinition}
         flexibleColumnWidth={flexibleColumnWidth}
         display="inline"
-        className="w-fit sticky pt-0"
+        className="sticky w-fit pt-0"
         style={{
           gridTemplateColumns: `min-content repeat(${
             viewDefinition.columns.length
@@ -173,8 +173,10 @@ export function FormTable<SCHEMA extends AnySchema>({
             return (
               <DataEntry.Cell
                 role="columnheader"
-                className={`sticky top-0 bg-[color:var(--form-foreground)] z-10
-                  h-full -mx-1 pl-1 pt-1`}
+                className={`
+                  sticky top-0 z-10 -mx-1
+                  h-full bg-[color:var(--form-foreground)] pl-1 pt-1
+                `}
                 key={index}
                 colSpan={cell.colSpan}
                 align="center"

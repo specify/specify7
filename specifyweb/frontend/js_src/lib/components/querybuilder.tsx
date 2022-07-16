@@ -281,7 +281,7 @@ export function QueryBuilder({
         {
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
-            <header className="whitespace-nowrap flex items-center gap-2">
+            <header className="flex items-center gap-2 whitespace-nowrap">
               <TableIcon name={model.name} label />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
@@ -293,7 +293,7 @@ export function QueryBuilder({
                   : queryText('queryTaskTitle', query.name)}
               </H2>
               {!queryResource.isNew() && <QueryEditButton query={query} />}
-              <span className="flex-1 ml-2" />
+              <span className="ml-2 flex-1" />
               {!isScrolledTop && (
                 <Button.Small
                   onClick={(): void =>
@@ -359,7 +359,8 @@ export function QueryBuilder({
           )
         }
         <div
-          className={`gap-4 grid flex-1 overflow-y-auto grid-cols-1
+          className={`
+            grid flex-1 grid-cols-1 gap-4 overflow-y-auto
             ${stickyScrolling ? 'snap-y snap-proximity' : ''}
             ${
               isEmbedded
@@ -368,7 +369,7 @@ export function QueryBuilder({
                 ? 'grid-rows-[100%]'
                 : 'grid-rows-[100%_100%]'
             }
-            ${isEmbedded ? '' : 'px-4 -mx-4'}
+            ${isEmbedded ? '' : '-mx-4 px-4'}
           `}
           ref={setContainer}
           onScroll={(): void =>
@@ -382,7 +383,7 @@ export function QueryBuilder({
               : handleScrolledDown()
           }
         >
-          <div className="snap-start flex flex-col gap-4">
+          <div className="flex snap-start flex-col gap-4">
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -517,7 +518,7 @@ export function QueryBuilder({
                 />
                 {commonText('revealHiddenFormFields')}
               </Label.ForCheckbox>
-              <span className="flex-1 -ml-2" />
+              <span className="-ml-2 flex-1" />
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
                   {/*

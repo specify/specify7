@@ -17,19 +17,23 @@ export function SplashScreen({
 }): JSX.Element {
   return (
     <div
-      className={`flex items-center justify-center h-full overflow-y-auto
-        bg-gray-400 dark:bg-neutral-900`}
+      className={`
+        flex h-full items-center justify-center overflow-y-auto
+        bg-gray-400 dark:bg-neutral-900
+      `}
     >
       <div
-        className={`sm:max-w-md flex flex-col w-full gap-4 p-16 bg-gray-100
-          dark:bg-neutral-800 rounded shadow-2xl`}
+        className={`
+          flex w-full flex-col gap-4 rounded bg-gray-100 p-16
+          shadow-2xl dark:bg-neutral-800 sm:max-w-md
+        `}
       >
         <header className="pb-2">
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
           <img
             src="/static/img/seven_logo.png"
             alt=""
-            className="hover:animate-hue-rotate max-w-xs"
+            className="max-w-xs hover:animate-hue-rotate"
           />
         </header>
         <main className="contents">{children}</main>

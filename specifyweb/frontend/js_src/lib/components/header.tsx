@@ -70,23 +70,25 @@ export function HeaderItems({
 
   return (
     <nav
-      className={`xl:m-0 lg:justify-center flex flex-row flex-wrap flex-1
-        order-2 -mt-2 px-2`}
+      className={`
+        order-2 -mt-2 flex flex-1 flex-row flex-wrap
+        px-2 lg:justify-center xl:m-0
+      `}
       aria-label={commonText('primary')}
     >
       {menuItems.map(({ task, title, icon, view, isOverlay }) => (
         <Link.Default
           className={`
             ${typeof view === 'string' ? '' : className.navigationHandled}
-            p-3
-            text-gray-700
-            dark:text-neutral-300
-            rounded
             relative
             inline-flex
             items-center
             gap-2
+            rounded
+            p-3
+            text-gray-700
             active:bg-white
+            dark:text-neutral-300
             active:dark:bg-neutral-600
             ${
               task === activeTask
@@ -95,10 +97,10 @@ export function HeaderItems({
             }
             lg:after:absolute
             lg:after:-bottom-1
-            lg:after:w-full
             lg:after:left-0
             lg:after:right-0
             lg:after:h-2
+            lg:after:w-full
             lg:after:bg-transparent
             lg:hover:after:bg-gray-200
             lg:hover:after:dark:bg-neutral-800
@@ -233,7 +235,7 @@ function UserToolsColumn({
   readonly onClose: () => void;
 }): JSX.Element {
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-1 flex-col gap-4">
       {groups.map(([groupName, userTools]) => (
         <div key={groupName}>
           <H3>{groupName}</H3>
@@ -334,8 +336,10 @@ export function UserTools({
     <>
       {/* REFACTOR: get rid of usages of "px" units in the header */}
       <Button.Small
-        className={`max-w-[110px] overflow-hidden whitespace-nowrap
-          text-overflow-ellipsis normal-case`}
+        className={`
+          text-overflow-ellipsis max-w-[110px] overflow-hidden
+          whitespace-nowrap normal-case
+        `}
         title={commonText('currentUser')}
         onClick={handleOpen}
       >

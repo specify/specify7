@@ -82,11 +82,14 @@ export function TreeSelectDialog({
                       <div className="flex gap-2">
                         <Link.Default
                           href={getLink(treeName)}
-                          className={`flex-1 ${
-                            typeof handleClick === 'function'
-                              ? className.navigationHandled
-                              : undefined
-                          }`}
+                          className={`
+                            flex-1
+                            ${
+                              typeof handleClick === 'function'
+                                ? className.navigationHandled
+                                : undefined
+                            }
+                          `}
                           onClick={(event): void => {
                             if (handleClick === undefined) return;
                             event.preventDefault();

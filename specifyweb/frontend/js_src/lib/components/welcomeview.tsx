@@ -22,7 +22,7 @@ function WelcomeScreenContent(): JSX.Element {
 
   return mode === 'embeddedWebpage' ? (
     <iframe
-      className="w-full h-full border-0"
+      className="h-full w-full border-0"
       title={welcomeText('pageTitle')}
       src={source}
     />
@@ -70,7 +70,7 @@ function AboutDialog({
 
       <section>
         <H3>{welcomeText('systemInformation')}</H3>
-        <table className="grid-table gap-1 grid-cols-[auto,auto]">
+        <table className="grid-table grid-cols-[auto,auto] gap-1">
           <tbody>
             {[
               [welcomeText('specifyVersion'), getSystemInfo().version],
@@ -116,7 +116,7 @@ function AboutDialog({
               [welcomeText('browser'), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
-                <th scope="row" className="whitespace-nowrap justify-end">
+                <th scope="row" className="justify-end whitespace-nowrap">
                   {label}
                 </th>
                 <td>{value}</td>
@@ -171,14 +171,15 @@ export function WelcomeView(): JSX.Element {
 
   return (
     <div
-      className="flex flex-col gap-4 h-full justify-center p-4 max-w-[1000px]
-        mx-auto"
+      className="mx-auto flex h-full max-w-[1000px] flex-col justify-center gap-4
+        p-4"
     >
       <span className="flex-1" />
       <div
-        className={`flex items-center justify-center min-h-0 ${
-          mode === 'embeddedWebpage' ? 'h-5/6' : ''
-        }`}
+        className={`
+          flex min-h-0 items-center justify-center
+          ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
+        `}
       >
         {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
       </div>

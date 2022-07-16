@@ -307,9 +307,10 @@ export function SecurityPoliciesWrapper({
     <details open={isExpanded}>
       <Summary onToggle={setExpanded}>
         <span
-          className={`inline-flex items-center gap-4 ${
-            collapsable ? '' : 'text-xl'
-          }`}
+          className={`
+            inline-flex items-center gap-4
+            ${collapsable ? '' : 'text-xl'}
+          `}
         >
           {header}
         </span>
@@ -372,9 +373,10 @@ export function SecurityPolicies({
   return Array.isArray(policies) ? (
     <>
       <Ul
-        className={`flex flex-col gap-2 overflow-auto ${
-          limitHeight ? 'max-h-[theme(spacing.96)]' : ''
-        }`}
+        className={`
+          flex flex-col gap-2 overflow-auto
+          ${limitHeight ? 'max-h-[theme(spacing.96)]' : ''}
+        `}
         forwardRef={listRef}
       >
         {policies.map((policy, index) => (

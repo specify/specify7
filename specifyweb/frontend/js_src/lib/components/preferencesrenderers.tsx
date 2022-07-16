@@ -37,13 +37,13 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
     return (
       <div className={`relative ${iconClassName}`}>
         <span
-          className="block w-full h-full rounded-full"
+          className="block h-full w-full rounded-full"
           style={{
             backgroundColor: value,
           }}
         />
         <Input.Generic
-          className={`sr-only`}
+          className="sr-only"
           type="color"
           value={value}
           onValueChange={handleChange}

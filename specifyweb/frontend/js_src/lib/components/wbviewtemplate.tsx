@@ -26,15 +26,17 @@ function Navigation({
       aria-atomic
     >
       <Button.Small
-        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0`}
+        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="previous"
       >
         {'<'}
       </Button.Small>
       <Button.Small
-        className={`wb-navigation-text aria-handled ring-0 grid items-center hover:brightness-70
-          grid-cols-[auto_1fr_auto_1fr_auto]`}
+        className={`
+          wb-navigation-text aria-handled grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
+          ring-0 hover:brightness-70
+        `}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         title={wbText('clickToToggle')}
       >
@@ -43,7 +45,7 @@ function Navigation({
       </Button.Small>
       <Button.Small
         type="button"
-        className={`wb-cell-navigation brightness-80 hover:brightness-70 p-2 ring-0`}
+        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="next"
       >
@@ -64,7 +66,7 @@ function WbView({
     <>
       <div
         role="toolbar"
-        className="whitespace-nowrap gap-x-1 gap-y-2 flex items-center justify-between"
+        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
       >
         <div className="wb-name-container contents" />
         <Button.Small
@@ -74,12 +76,13 @@ function WbView({
         >
           {commonText('tools')}
         </Button.Small>
-        <span className="flex-1 -ml-1" />
+        <span className="-ml-1 flex-1" />
         {/* This button is here for debugging only */}
         <Button.Small
-          className={`wb-show-plan ${
-            process.env.NODE_ENV === 'production' ? 'hidden' : ''
-          }`}
+          className={`
+            wb-show-plan
+            ${process.env.NODE_ENV === 'production' ? 'hidden' : ''}
+          `}
         >
           [DEV] Show Plan
         </Button.Small>
@@ -134,7 +137,7 @@ function WbView({
         )}
       </div>
       <div
-        className="wb-toolkit gap-x-1 gap-y-2 flex flex-wrap"
+        className="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
         role="toolbar"
         style={{ display: 'none' }}
         aria-label={commonText('tools')}
@@ -156,7 +159,7 @@ function WbView({
             {commonText('delete')}
           </Button.Small>
         )}
-        <span className="flex-1 -ml-1" />
+        <span className="-ml-1 flex-1" />
         {hasPermission('/workbench/dataset', 'update') && (
           <>
             <Button.Small
@@ -187,12 +190,12 @@ function WbView({
         </Button.Small>
       </div>
       <div className="flex flex-1 gap-4 overflow-hidden">
-        <section className="wb-spreadsheet overscroll-none flex-1 overflow-hidden" />
+        <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none" />
         <aside className="wb-uploaded-view-wrapper hidden" aria-live="polite" />
       </div>
       <div
         role="toolbar"
-        className="gap-x-1 gap-y-2 flex flex-wrap justify-end"
+        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
         aria-label={wbText('navigation')}
       >
         <span className="contents" role="search">
