@@ -571,16 +571,16 @@ export const commonText = createDictionary({
     'ru-ru': 'Произошла неожиданная ошибка',
   },
   errorBoundaryDialogText: {
-    // FEATURE: display this message for recoverable errors:
-    // 'en-us': `We're sorry, it seems you have encountered an error in Specify 7
-    //   that we may not be aware of. You can press the back button and try again
-    //   or go to the home page`,
-    'en-us': `There is an unrecoverable error that will not allow us to safely
-      return to your current window. To avoid corrupting data records, we need
-      to start again from a safe spot--the Home page.`,
+    'en-us': `We're sorry, it seems you have encountered an error in Specify 7
+      that we may not be aware of.`,
     'ru-ru': `Произошла неисправимая ошибка, которая не позволит нам безопасно
-      вернуться к вашему текущему окну. Чтобы избежать повреждения записей
-      данных, нам нужно начать заново с безопасного места — домашней страницы.`,
+      вернуться к вашему текущему окну.`,
+  },
+  errorBoundaryCriticalDialogText: {
+    'en-us': `To avoid corrupting data records, we need to start again from a
+      safe spot--the Home page.`,
+    'ru-ru': `Чтобы избежать повреждения записей данных, нам нужно начать
+      заново с безопасного места — домашней страницы.`,
   },
   errorBoundaryDialogSecondMessage: {
     'en-us': (email: JSX.Element) => (

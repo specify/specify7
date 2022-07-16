@@ -6,7 +6,6 @@ import { welcomeText } from '../localization/welcome';
 import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
-import { TaxonTiles } from './taxontiles';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
@@ -15,6 +14,7 @@ import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
+import { TaxonTiles } from './taxontiles';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');

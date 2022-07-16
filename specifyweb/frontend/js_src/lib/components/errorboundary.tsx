@@ -71,6 +71,9 @@ function ErrorDialog({
     'application',
     'allowDismissingErrors'
   );
+  const canClose =
+    (canDismiss || dismissable || process.env.NODE_ENV !== 'production') &&
+    typeof handleClose === 'function';
   const [clearCacheOnException = false, setClearCache] = useCachedState(
     'general',
     'clearCacheOnException'
@@ -117,18 +120,20 @@ function ErrorDialog({
           >
             {commonText('goToHomepage')}
           </Button.Red>
-          {(canDismiss ||
-            dismissable ||
-            process.env.NODE_ENV !== 'production') &&
-            typeof handleClose === 'function' && (
-              <Button.Blue onClick={handleClose}>[DEV] dismiss</Button.Blue>
-            )}
+          {canClose && (
+            <Button.Blue onClick={handleClose}>
+              {commonText('dismiss')}
+            </Button.Blue>
+          )}
         </>
       }
       forceToTop={true}
       onClose={undefined}
     >
-      <p>{commonText('errorBoundaryDialogText')}</p>
+      <p>
+        {commonText('errorBoundaryDialogText')}
+        {!canClose && commonText('errorBoundaryDialogText')}
+      </p>
       <br />
       <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
       <details
