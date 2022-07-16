@@ -1,13 +1,18 @@
 import React from 'react';
 
 import { ajax } from '../ajax';
+import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { getModel } from '../schema';
 import type { RA } from '../types';
-import { Button, Ul } from './basic';
+import { defined } from '../types';
+import { Button } from './basic';
 import { LoadingContext } from './contexts';
+import type { DeleteBlocker } from './deleteblocked';
+import { DeleteBlocked } from './deleteblocked';
 import { useAsyncState, useBooleanState, useLiveState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
@@ -39,12 +44,18 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   const [deferred, setDeferred] = useLiveState<boolean>(
     React.useCallback(() => initialDeferred, [initialDeferred, resource])
   );
-  const [blockers] = useAsyncState<RA<string>>(
+  const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
     React.useCallback(
       async () =>
         deferred
           ? undefined
-          : ajax<RA<string>>(
+          : ajax<
+              RA<{
+                table: keyof Tables;
+                field: string;
+                id: number;
+              }>
+            >(
               `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
                 resource.id
               }/`,
@@ -52,7 +63,12 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 headers: { Accept: 'application/json' },
               }
-            ).then(({ data }) => data),
+            ).then(({ data }) =>
+              data.map(({ table, ...rest }) => ({
+                ...rest,
+                model: defined(getModel(table)),
+              }))
+            ),
       [resource, deferred]
     ),
     false
@@ -114,21 +130,12 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             {deletionMessage}
           </Dialog>
         ) : (
-          <Dialog
-            header={formsText('deleteBlockedDialogHeader')}
-            buttons={commonText('close')}
+          <DeleteBlocked
+            resource={resource}
+            blockers={blockers}
             onClose={handleClose}
-            className={{
-              container: dialogClassNames.narrowContainer,
-            }}
-          >
-            {formsText('deleteBlockedDialogText')}
-            <Ul>
-              {blockers.map((blocker, index) => (
-                <li key={index}>{blocker}</li>
-              ))}
-            </Ul>
-          </Dialog>
+            onDeleted={(): void => setBlockers([])}
+          />
         )
       ) : undefined}
     </>

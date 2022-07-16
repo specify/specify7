@@ -69,11 +69,18 @@ export const formsText = createDictionary({
   },
   deleteBlockedDialogText: {
     'en-us': `
-      The resource cannot be deleted because it is referenced through the
-      following fields:`,
+      The resource cannot be deleted because it is referenced by the following 
+      resources:`,
     'ru-ru': `
-      Ресурс не может быть удален, потому что на него есть ссылка через
-      следующие поля:`,
+      Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:`,
+  },
+  record: {
+    'en-us': 'Record',
+    'ru-ru': 'Запись',
+  },
+  relationship: {
+    'en-us': 'Relationship',
+    'ru-ru': 'Связь',
   },
   contract: {
     'en-us': 'Contract',

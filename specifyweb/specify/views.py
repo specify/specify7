@@ -4,13 +4,14 @@ A few non-business data resource end points
 
 import json
 import mimetypes
+from functools import wraps
+
 from django import http
 from django.conf import settings
 from django.db import router, transaction, connection
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
-from functools import wraps
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets
@@ -87,8 +88,14 @@ def delete_blockers(request, model, id):
     collector = Collector(using=using)
     collector.delete_blockers = []
     collector.collect([obj])
-    result = ["%s.%s" % (sub_objs[0].__class__.__name__, field.name)
-              for field, sub_objs in collector.delete_blockers]
+    result = [
+        {
+            'table': sub_objs[0].__class__.__name__,
+            'field': field.name,
+            'id': sub_objs[0].id
+        }
+        for field, sub_objs in collector.delete_blockers
+    ]
     return http.HttpResponse(api.toJson(result), content_type='application/json')
 
 @login_maybe_required
