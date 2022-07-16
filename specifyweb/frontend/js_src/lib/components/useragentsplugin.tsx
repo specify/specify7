@@ -2,6 +2,7 @@ import React from 'react';
 
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -66,6 +67,8 @@ export function UserAgentsDialog({
                   ...rest,
                 }))
               )
+            ).then((userAgents) =>
+              userAgents.sort(sortFunction(({ division }) => division.name))
             )
           : undefined,
       [userAgents, response]

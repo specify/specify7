@@ -15,6 +15,7 @@ import type {
 } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
 import { f } from './functools';
+import { sortFunction } from './helpers';
 import { getModel, schema } from './schema';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
@@ -169,7 +170,8 @@ export function getMustMatchTables({
         (!tableName.endsWith('attribute') &&
           // Exclude embedded paleo context
           (!schema.embeddedPaleoContext || tableName !== 'PaleoContext'))
-    );
+    )
+    .sort(sortFunction((tableName) => getModel(tableName)?.label ?? null));
 
   return {
     ...Object.fromEntries(

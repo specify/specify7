@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { Tables } from '../datamodel';
 import { f } from '../functools';
-import { group } from '../helpers';
+import { group, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { PermissionsQueryItem } from '../permissions';
@@ -307,8 +307,9 @@ function TreeView({
 }): JSX.Element {
   return (
     <Ul className="pl-5 list-disc">
-      {Object.entries(tree).map(
-        ([name, { label, children, actions, resource }]) => (
+      {Object.entries(tree)
+        .sort(sortFunction(([_name, { label }]) => label))
+        .map(([name, { label, children, actions, resource }]) => (
           <li key={name}>
             {label}
             {actions.length > 0 && (
@@ -335,8 +336,7 @@ function TreeView({
               <TreeView tree={children} onOpenRole={handleOpenRole} />
             )}
           </li>
-        )
-      )}
+        ))}
     </Ul>
   );
 }

@@ -4,7 +4,7 @@ import { ajax, Http } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
-import { keysToLowerCase } from '../helpers';
+import { keysToLowerCase, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissionutils';
@@ -97,59 +97,61 @@ export function CreateRole({
               commonText('none')
             ) : (
               <Ul>
-                {Object.entries(libraryRoles).map(([libraryRoleId, role]) => (
-                  <li key={libraryRoleId}>
-                    <Button.LikeLink
-                      onClick={(): void =>
-                        f.var(
-                          getUniqueName(role.name, currentRoleNames),
-                          (roleName) =>
-                            loading(
-                              (scope === 'institution' ||
-                              hasPermission(
-                                '/permissions/roles',
-                                'create',
-                                collectionId
-                              )
-                                ? Promise.resolve({
-                                    ...role,
-                                    id: undefined,
-                                    name: roleName,
+                {Object.entries(libraryRoles)
+                  .sort(sortFunction(([_id, { name }]) => name))
+                  .map(([libraryRoleId, role]) => (
+                    <li key={libraryRoleId}>
+                      <Button.LikeLink
+                        onClick={(): void =>
+                          f.var(
+                            getUniqueName(role.name, currentRoleNames),
+                            (roleName) =>
+                              loading(
+                                (scope === 'institution' ||
+                                hasPermission(
+                                  '/permissions/roles',
+                                  'create',
+                                  collectionId
+                                )
+                                  ? Promise.resolve({
+                                      ...role,
+                                      id: undefined,
+                                      name: roleName,
+                                    })
+                                  : /*
+                                     * If don't have permission to create a role
+                                     * but have permission to copy from the library,
+                                     * must provide libraryRoleId in the request
+                                     * body
+                                     */
+                                    ajax<BackEndRole>(
+                                      `/permissions/roles/${collectionId}/`,
+                                      {
+                                        headers: { Accept: 'application/json' },
+                                        method: 'POST',
+                                        body: keysToLowerCase({
+                                          libraryRoleId,
+                                          name: roleName,
+                                        }),
+                                      },
+                                      {
+                                        expectedResponseCodes: [Http.CREATED],
+                                      }
+                                    ).then(({ data }) => data)
+                                ).then((newRole) =>
+                                  handleCreated({
+                                    ...newRole,
+                                    policies: role.policies,
                                   })
-                                : /*
-                                   * If don't have permission to create a role
-                                   * but have permission to copy from the library,
-                                   * must provide libraryRoleId in the request
-                                   * body
-                                   */
-                                  ajax<BackEndRole>(
-                                    `/permissions/roles/${collectionId}/`,
-                                    {
-                                      headers: { Accept: 'application/json' },
-                                      method: 'POST',
-                                      body: keysToLowerCase({
-                                        libraryRoleId,
-                                        name: roleName,
-                                      }),
-                                    },
-                                    {
-                                      expectedResponseCodes: [Http.CREATED],
-                                    }
-                                  ).then(({ data }) => data)
-                              ).then((newRole) =>
-                                handleCreated({
-                                  ...newRole,
-                                  policies: role.policies,
-                                })
+                                )
                               )
-                            )
-                        )
-                      }
-                    >
-                      {role.name}
-                    </Button.LikeLink>
-                  </li>
-                ))}
+                          )
+                        }
+                      >
+                        {role.name}
+                      </Button.LikeLink>
+                    </li>
+                  ))}
               </Ul>
             )
           ) : (

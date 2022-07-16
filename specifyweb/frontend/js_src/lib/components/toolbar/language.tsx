@@ -7,6 +7,7 @@ import React from 'react';
 import { ajax, formData, ping } from '../../ajax';
 import { csrfToken } from '../../csrftoken';
 import { f } from '../../functools';
+import { sortFunction } from '../../helpers';
 import { cachableUrl } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
@@ -164,15 +165,17 @@ export function useSchemaLanguages(
           .then((languages) =>
             // Get translated language names
             Object.fromEntries(
-              languages.map(
-                (language) =>
-                  [
-                    language,
-                    new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
-                      language
-                    ) ?? language,
-                  ] as const
-              )
+              languages
+                .map(
+                  (language) =>
+                    [
+                      language,
+                      new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                        language
+                      ) ?? language,
+                    ] as const
+                )
+                .sort(sortFunction(([_code, localized]) => localized))
             )
           ),
       []

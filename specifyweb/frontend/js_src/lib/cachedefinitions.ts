@@ -143,6 +143,36 @@ export type SortConfigs = {
   readonly listOfDataSets: 'name' | 'dateCreated' | 'dateUploaded';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
+  readonly dataModelFields:
+    | 'name'
+    | 'label'
+    | 'description'
+    | 'isHidden'
+    | 'isReadOnly'
+    | 'isRequired'
+    | 'type'
+    | 'length'
+    | 'databaseColumn';
+  readonly dataModelRelationships:
+    | 'name'
+    | 'label'
+    | 'description'
+    | 'isHidden'
+    | 'isReadOnly'
+    | 'isRequired'
+    | 'type'
+    | 'databaseColumn'
+    | 'relatedModel'
+    | 'otherSideName'
+    | 'isDependent';
+  readonly dataModelTables:
+    | 'name'
+    | 'label'
+    | 'isSystem'
+    | 'isHidden'
+    | 'tableId'
+    | 'fieldCount'
+    | 'relationshipCount';
 };
 
 const cacheDefinitions = {} as unknown as CacheDefinitions;

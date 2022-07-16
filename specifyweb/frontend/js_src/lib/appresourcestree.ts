@@ -16,24 +16,31 @@ import { adminText } from './localization/admin';
 import { userTypes } from './picklists';
 import type { RA } from './types';
 
-export const getAppResourceTree = (
-  resources: AppResources
-): AppResourcesTree => [
-  {
-    label: adminText('globalResources'),
-    key: 'globalResources',
-    ...getGlobalAllResources(resources),
-    subCategories: [],
-  },
-  {
-    label: adminText('disciplineResources'),
-    key: 'disciplineResources',
-    directory: undefined,
-    appResources: [],
-    viewSets: [],
-    subCategories: getScopedAppResources(resources),
-  },
-];
+export const getAppResourceTree = (resources: AppResources): AppResourcesTree =>
+  sortTree([
+    {
+      label: adminText('globalResources'),
+      key: 'globalResources',
+      ...getGlobalAllResources(resources),
+      subCategories: [],
+    },
+    {
+      label: adminText('disciplineResources'),
+      key: 'disciplineResources',
+      directory: undefined,
+      appResources: [],
+      viewSets: [],
+      subCategories: getScopedAppResources(resources),
+    },
+  ]);
+
+const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
+  Array.from(tree)
+    .sort(sortFunction(({ label }) => label))
+    .map(({ subCategories, ...rest }) => ({
+      ...rest,
+      subCategories: sortTree(subCategories),
+    }));
 
 function getGlobalAllResources(resources: AppResources): {
   readonly directory: SerializedResource<SpAppResourceDir>;
@@ -100,12 +107,16 @@ const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
   resources: AppResources
 ): DirectoryChildren => ({
-  appResources: resources.appResources.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-  ),
-  viewSets: resources.viewSets.filter(
-    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-  ),
+  appResources: resources.appResources
+    .filter(
+      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    )
+    .sort(sortFunction(({ name }) => name)),
+  viewSets: resources.viewSets
+    .filter(
+      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+    )
+    .sort(sortFunction(({ name }) => name)),
 });
 
 export const getScopedAppResources = (

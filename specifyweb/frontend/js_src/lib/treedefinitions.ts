@@ -41,6 +41,7 @@ const treeScopes = {
   /* eslint-enable @typescript-eslint/naming-convention */
 } as const;
 
+// FEATURE: allow reordering trees
 const commonTrees = ['Geography', 'Storage', 'Taxon'] as const;
 const treesForPaleo = ['GeologicTimePeriod', 'LithoStrat'] as const;
 const allTrees = [...commonTrees, ...treesForPaleo] as const;

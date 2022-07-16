@@ -6,7 +6,7 @@ import type { Address, Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
 import { f } from '../functools';
-import { group } from '../helpers';
+import { group, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import {
   hasDerivedPermission,
@@ -342,10 +342,14 @@ export function useUserProviders(
               })
               .then(({ allProviders, userProviders }) =>
                 Object.fromEntries(
-                  allProviders.map(({ title, provider }) => [
-                    title,
-                    userProviders.some((entry) => entry.provider === provider),
-                  ])
+                  allProviders
+                    .map(({ title, provider }) => [
+                      title,
+                      userProviders.some(
+                        (entry) => entry.provider === provider
+                      ),
+                    ])
+                    .sort(sortFunction(([title]) => title))
                 )
               )
           : undefined,

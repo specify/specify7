@@ -153,7 +153,6 @@ export function ReportsView({
   ) : null;
 }
 
-const defaultSortConfig = { sortField: 'name', ascending: true } as const;
 function Entries({
   resources: unsortedResources,
   icon,
@@ -165,7 +164,7 @@ function Entries({
   readonly cacheKey: 'listOfReports' | 'listOfLabels';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
-  const [sortConfig = defaultSortConfig, handleSort] = useSortConfig(cacheKey);
+  const [sortConfig, handleSort] = useSortConfig(cacheKey, 'name');
   const resources = React.useMemo(
     () =>
       Array.from(unsortedResources).sort(

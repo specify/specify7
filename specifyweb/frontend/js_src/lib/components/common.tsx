@@ -168,14 +168,14 @@ export function SortIndicator<FIELD_NAMES extends string>({
 }
 
 export function useSortConfig<NAME extends keyof SortConfigs>(
-  cacheKey: NAME
+  cacheKey: NAME,
+  defaultField: SortConfigs[NAME],
+  ascending = true
 ): Readonly<
-  [
-    SortConfig<SortConfigs[NAME]> | undefined,
-    (fieldName: SortConfigs[NAME]) => void
-  ]
+  [SortConfig<SortConfigs[NAME]>, (fieldName: SortConfigs[NAME]) => void]
 > {
-  const [sortConfig, setSortConfig] = useCachedState('sortConfig', cacheKey);
+  const [sortConfig = { sortField: defaultField, ascending }, setSortConfig] =
+    useCachedState('sortConfig', cacheKey);
   const handleClick = React.useCallback(
     (sortField: SortConfigs[NAME]) => {
       const newSortConfig: SortConfig<SortConfigs[NAME]> = {

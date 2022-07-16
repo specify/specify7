@@ -10,7 +10,7 @@ import type {
 } from '../datamodel';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
-import { removeItem } from '../helpers';
+import { removeItem, sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -312,7 +312,7 @@ export function CollectionOneToManyPlugin({
                     collectionObjects: [
                       ...data.collectionObjects,
                       ...relationships,
-                    ],
+                    ].sort(sortFunction(({ formatted }) => formatted)),
                   })
                 )
             );

@@ -94,7 +94,7 @@ abstract class FieldBase {
 
   public readonly length?: number;
 
-  public readonly dbColumn?: string;
+  public readonly databaseColumn?: string;
 
   public readonly localization: SchemaLocalization['items'][string];
 
@@ -125,7 +125,7 @@ abstract class FieldBase {
         : fieldDefinition.required;
     this.type = fieldDefinition.type;
     this.length = fieldDefinition.length;
-    this.dbColumn = fieldDefinition.column;
+    this.databaseColumn = fieldDefinition.column;
 
     this.localization =
       this.model.localization.items[this.name.toLowerCase()] ?? {};

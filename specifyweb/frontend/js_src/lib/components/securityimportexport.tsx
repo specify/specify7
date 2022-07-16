@@ -1,7 +1,13 @@
 import React from 'react';
 
 import { f } from '../functools';
-import { group, removeKey, replaceItem, replaceKey } from '../helpers';
+import {
+  group,
+  removeKey,
+  replaceItem,
+  replaceKey,
+  sortFunction,
+} from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissionutils';
@@ -119,32 +125,34 @@ export function SecurityImportExport({
                     adminText('none')
                   ) : (
                     <Ul>
-                      {roles.map(({ role, isChecked }, index) => (
-                        <li key={index}>
-                          {category === 'unchanged' ? (
-                            role.name
-                          ) : (
-                            <Label.ForCheckbox>
-                              <Input.Checkbox
-                                checked={isChecked}
-                                onValueChange={(): void =>
-                                  setNewRoles(
-                                    replaceKey(
-                                      newRoles,
-                                      category,
-                                      replaceItem(roles, index, {
-                                        role,
-                                        isChecked: !isChecked,
-                                      })
+                      {Array.from(roles)
+                        .sort(sortFunction(({ role }) => role.name))
+                        .map(({ role, isChecked }, index) => (
+                          <li key={index}>
+                            {category === 'unchanged' ? (
+                              role.name
+                            ) : (
+                              <Label.ForCheckbox>
+                                <Input.Checkbox
+                                  checked={isChecked}
+                                  onValueChange={(): void =>
+                                    setNewRoles(
+                                      replaceKey(
+                                        newRoles,
+                                        category,
+                                        replaceItem(roles, index, {
+                                          role,
+                                          isChecked: !isChecked,
+                                        })
+                                      )
                                     )
-                                  )
-                                }
-                              />
-                              {role.name}
-                            </Label.ForCheckbox>
-                          )}
-                        </li>
-                      ))}
+                                  }
+                                />
+                                {role.name}
+                              </Label.ForCheckbox>
+                            )}
+                          </li>
+                        ))}
                     </Ul>
                   )}
                 </section>

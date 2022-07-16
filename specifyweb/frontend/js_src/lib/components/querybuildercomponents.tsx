@@ -38,6 +38,7 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { sortFunction } from '../helpers';
 
 function QueryButton({
   disabled,
@@ -391,14 +392,16 @@ const returnLoanPreps = async (
       receivedby: idFromUrl(loanReturnPreparation.get('receivedBy') ?? ''),
     },
   }).then(({ data }) =>
-    Object.entries(data).map(([loanId, { loanpreparations, loannumber }]) => ({
-      loanId: Number.parseInt(loanId),
-      loanNumber: loannumber,
-      totalPreps: loanpreparations.reduce(
-        (count, { quantity }) => count + (quantity ?? 0),
-        0
-      ),
-    }))
+    Object.entries(data)
+      .map(([loanId, { loanpreparations, loannumber }]) => ({
+        loanId: Number.parseInt(loanId),
+        loanNumber: loannumber,
+        totalPreps: loanpreparations.reduce(
+          (count, { quantity }) => count + (quantity ?? 0),
+          0
+        ),
+      }))
+      .sort(sortFunction(({ loanNumber }) => loanNumber))
   );
 
 export function QueryLoanReturn({

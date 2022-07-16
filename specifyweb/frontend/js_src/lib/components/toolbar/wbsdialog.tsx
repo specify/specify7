@@ -116,11 +116,6 @@ function TableHeader({
   );
 }
 
-const defaultSortConfig = {
-  sortField: 'dateCreated',
-  ascending: false,
-} as const;
-
 function DataSets({
   onClose: handleClose,
   showTemplates,
@@ -145,8 +140,11 @@ function DataSets({
     true
   );
 
-  const [sortConfig = defaultSortConfig, handleSort] =
-    useSortConfig('listOfDataSets');
+  const [sortConfig, handleSort] = useSortConfig(
+    'listOfDataSets',
+    'dateCreated',
+    false
+  );
 
   const datasets = Array.isArray(unsortedDatasets)
     ? Array.from(unsortedDatasets).sort(

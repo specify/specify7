@@ -21,6 +21,8 @@ import { NO_CLONE } from './resourceview';
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
+ * BUG: if required field is set as readonly in the form, it will prevent
+ *   saving, but validation error won't be shown
  */
 /**
  * A button to save a resource

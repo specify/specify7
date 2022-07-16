@@ -7,6 +7,7 @@
 import React from 'react';
 
 import type { Tables } from '../datamodel';
+import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { getModel } from '../schema';
@@ -54,13 +55,15 @@ export function WbUploaded({
         </p>
       </div>
       <Ul className="flex flex-col flex-1 gap-2">
-        {Object.entries(recordCounts).map(([tableName, recordCount], index) => (
-          <TableResults
-            key={index}
-            tableName={tableName}
-            recordCount={recordCount}
-          />
-        ))}
+        {Object.entries(recordCounts)
+          .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
+          .map(([tableName, recordCount], index) => (
+            <TableResults
+              key={index}
+              tableName={tableName}
+              recordCount={recordCount}
+            />
+          ))}
       </Ul>
       <Button.Small onClick={handleClose}>{commonText('close')}</Button.Small>
     </div>

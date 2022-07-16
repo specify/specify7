@@ -26,11 +26,6 @@ import { Dialog } from '../modaldialog';
 import { QueryEditButton } from '../queryedit';
 import { QueryTables } from '../querytables';
 
-const defaultSortConfig = {
-  sortField: 'timestampCreated',
-  ascending: false,
-} as const;
-
 function QueryList({
   queries: unsortedQueries,
   isReadOnly,
@@ -40,8 +35,11 @@ function QueryList({
   readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element {
-  const [sortConfig = defaultSortConfig, handleSort] =
-    useSortConfig('listOfQueries');
+  const [sortConfig, handleSort] = useSortConfig(
+    'listOfQueries',
+    'name',
+    false
+  );
 
   const queries = Array.from(unsortedQueries).sort(
     sortFunction(

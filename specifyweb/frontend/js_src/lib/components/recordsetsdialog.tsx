@@ -98,8 +98,6 @@ function Row({
   );
 }
 
-const defaultSortConfig = { sortField: 'name', ascending: true } as const;
-
 export function RecordSetsDialog({
   recordSetsPromise,
   onClose: handleClose,
@@ -132,8 +130,7 @@ export function RecordSetsDialog({
     | State<'EditState', { recordSet: SpecifyResource<RecordSet> }>
   >({ type: 'MainState' });
 
-  const [sortConfig = defaultSortConfig, handleSort] =
-    useSortConfig('listOfRecordSets');
+  const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
 
   const [unsortedData] = useAsyncState(
     React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),

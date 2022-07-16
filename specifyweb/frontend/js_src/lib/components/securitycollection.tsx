@@ -121,10 +121,12 @@ export function SecurityCollection({
               data.map(({ userid, username, roles }) => ({
                 userId: userid,
                 userName: username,
-                roles: roles.map(({ roleid, rolename }) => ({
-                  roleId: roleid,
-                  roleName: rolename,
-                })),
+                roles: roles
+                  .map(({ roleid, rolename }) => ({
+                    roleId: roleid,
+                    roleName: rolename,
+                  }))
+                  .sort(sortFunction(({ roleName }) => roleName)),
               }))
             )
           : undefined,
@@ -263,20 +265,22 @@ export function SecurityCollection({
                 <h4 className="text-xl">{adminText('collectionUserRoles')}</h4>
                 {typeof roles === 'object' ? (
                   <Ul>
-                    {Object.values(roles).map((role) => (
-                      <li key={role.id}>
-                        <Button.LikeLink
-                          onClick={(): void =>
-                            setState({
-                              type: 'RoleState',
-                              role,
-                            })
-                          }
-                        >
-                          {role.name}
-                        </Button.LikeLink>
-                      </li>
-                    ))}
+                    {Object.values(roles)
+                      .sort(sortFunction(({ name }) => name))
+                      .map((role) => (
+                        <li key={role.id}>
+                          <Button.LikeLink
+                            onClick={(): void =>
+                              setState({
+                                type: 'RoleState',
+                                role,
+                              })
+                            }
+                          >
+                            {role.name}
+                          </Button.LikeLink>
+                        </li>
+                      ))}
                   </Ul>
                 ) : (
                   commonText('loading')

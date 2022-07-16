@@ -118,7 +118,7 @@ export const caseInsensitiveHash = <
 
 /** Generate a sort function for Array.prototype.sort */
 export const sortFunction =
-  <T, V extends boolean | number | string | null>(
+  <T, V extends boolean | number | string | null | undefined>(
     mapper: (value: T) => V,
     reverse = false
   ): ((left: T, right: T) => -1 | 0 | 1) =>
