@@ -1,7 +1,7 @@
 import React from 'react';
 
 import type { Locality } from '../datamodel';
-import { Lat, Long } from '../latlongutils';
+import { Lat, Long, trimLatLong } from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
@@ -92,13 +92,14 @@ function Coordinate({
               | Parsed
               | undefined)
           : undefined;
-        handleChanged(value.trim(), parsed?.format(step));
+        handleChanged(trimLatLong(value), parsed?.format(step));
 
-        resource.set(coordinateTextField, value);
+        resource.set(coordinateTextField, trimLatLong(value));
         resource.set(coordinateField, parsed?.asFloat() ?? null);
         resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
         resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
       }}
+      onBlur={(): void => setCoordinate(trimLatLong(coordinate))}
     />
   );
 }
