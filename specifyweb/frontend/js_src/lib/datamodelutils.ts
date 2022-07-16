@@ -1,7 +1,7 @@
 import type { Tables } from './datamodel';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import { getResourceApiUrl, resourceToJson, tableFromUrl } from './resource';
+import { resourceToJson, tableFromUrl } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
@@ -98,8 +98,8 @@ export type RecordSetInfo = {
  */
 export type CommonFields = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  // BUG: These fields are undefined for newly created resources. Improve typing
   readonly resource_uri: string;
-  // BUG: This field is undefined for newly created resources. Improve typing
   readonly id: number;
 };
 
@@ -321,9 +321,7 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
     /*
-     * REFACTOR: if resource is new, set this to undefined
      * REFACTOR: convert all usages of this to camel case
      */
-    resource_uri:
-      record.resource_uri ?? getResourceApiUrl(tableName, record.id ?? 0),
+    resource_uri: record.resource_uri,
   }));

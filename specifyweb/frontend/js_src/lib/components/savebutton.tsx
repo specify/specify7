@@ -8,6 +8,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { hasTablePermission } from '../permissionutils';
+import { smoothScroll } from '../querybuilderutils';
 import { resourceOn } from '../resource';
 import { defined } from '../types';
 import { Button, className, H3, Submit, Ul } from './basic';
@@ -171,6 +172,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           });
         })
         .then(() => setIsSaving(false))
+        .then(() => smoothScroll(form, 0))
         .catch((error_) =>
           Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===
           hasSaveConflict
