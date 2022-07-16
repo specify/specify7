@@ -30,6 +30,7 @@ import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
+import { useId } from './hooks';
 
 type ErrorBoundaryState =
   | State<'Main'>
@@ -52,6 +53,7 @@ export const supportLink =
     </Link.NewTab>
   );
 
+const errors = new Set<string>();
 function ErrorDialog({
   header = commonText('errorBoundaryDialogHeader'),
   children,
@@ -66,13 +68,24 @@ function ErrorDialog({
   readonly onClose?: () => void;
   readonly dismissable?: boolean;
 }): JSX.Element {
+  const id = useId('error-dialog')('');
+  // If there is more than one error, all but the last one should be dismissable
+  const isLastError = React.useRef(errors.size === 0).current;
+  React.useEffect(() => {
+    errors.add(id);
+    return (): void => void errors.delete(id);
+  }, [id]);
+
   const [canDismiss] = usePref(
     'general',
     'application',
     'allowDismissingErrors'
   );
   const canClose =
-    (canDismiss || dismissable || process.env.NODE_ENV !== 'production') &&
+    (canDismiss ||
+      dismissable ||
+      process.env.NODE_ENV !== 'production' ||
+      !isLastError) &&
     typeof handleClose === 'function';
   const [clearCacheOnException = false, setClearCache] = useCachedState(
     'general',
