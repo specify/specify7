@@ -10,8 +10,6 @@
  *
  */
 
-'use strict';
-
 if (process.env.NODE_ENV !== 'test') require('../css/workbench.css');
 
 import $ from 'jquery';

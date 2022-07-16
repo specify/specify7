@@ -1,4 +1,3 @@
-"use strict";
 import {schema} from './schema';
 import {interactionBusinessRules} from './interactionbusinessrules';
 

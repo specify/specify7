@@ -1,5 +1,3 @@
-"use strict";
-
 import _ from 'underscore';
 import {globalEvents} from './specifyapi';
 import {SaveBlockers} from './saveblockers';

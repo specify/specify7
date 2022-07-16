@@ -6,7 +6,7 @@ import { welcomeText } from '../localization/welcome';
 import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
-import { Button, H3, Link, Progress } from './basic';
+import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { DateElement } from './internationalization';
@@ -175,7 +175,6 @@ export function WelcomeView(): JSX.Element {
         p-4"
     >
       <span className="flex-1" />
-      <Progress value={10} />
       <div
         className={`
           flex min-h-0 items-center justify-center

@@ -1,5 +1,3 @@
-'use strict';
-
 /*
  * This config partially overwrites and extends the default Tailwind config:
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js

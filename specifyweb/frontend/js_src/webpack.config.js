@@ -2,12 +2,12 @@
  * WebPack config for development and production
  */
 
-'use strict';
-
 const path = require('path');
 const fs = require('fs');
-const webpack = require("webpack");
-const { WebpackManifestPlugin, getCompilerHooks } = require('webpack-manifest-plugin');
+const webpack = require('webpack');
+const {getCompilerHooks, WebpackManifestPlugin} = require('webpack-manifest-plugin');
+
+const outputPath = path.resolve(__dirname, 'dist');
 
 
 // Don't write if file was unchanged to avoid triggering needles Django reload
@@ -27,7 +27,7 @@ function writeIfChanged(compiler, fileName, fileContent){
 
 class EmitInitPyPlugin {
     apply = (compiler)=>
-        compiler.hooks.done.tap('EmitInitPyPlugin', () => 
+        compiler.hooks.done.tap('EmitInitPyPlugin', () =>
             writeIfChanged(
                 compiler,
                 '__init__.py',
@@ -87,7 +87,7 @@ class CleanupPlugin {
 }
 
 
-module.exports = (_env, argv)=>({
+module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */ ({
     module: {
         rules: [
             {
@@ -105,6 +105,9 @@ module.exports = (_env, argv)=>({
             {
                 test: /\.[tj]sx?$/,
                 exclude: /(node_modules)/,
+                resolve: {
+                    fullySpecified: false,
+                },
                 use: [{
                     loader: "babel-loader?+cacheDirectory",
                     options: {
@@ -114,7 +117,7 @@ module.exports = (_env, argv)=>({
                                 {
                                     useBuiltIns: 'usage',
                                     corejs: {
-                                        version: '3.19.3',
+                                        version: '3.23.4',
                                         proposals: true,
                                     },
                                     bugfixes: true,
@@ -150,9 +153,8 @@ module.exports = (_env, argv)=>({
             fileName: '../manifest.json',
         }),
         new EmitInitPyPlugin(),
-        // Don't split every async import into a separate bundle
-        new webpack.optimize.LimitChunkCountPlugin({
-            maxChunks: argv.mode === 'development' ? 4 : 10,
+        new webpack.optimize.MinChunkSizePlugin({
+            minChunkSize: 10000, // Minimum number of characters
         }),
         // Clean up build artifacts
         new CleanupPlugin(),
@@ -163,6 +165,11 @@ module.exports = (_env, argv)=>({
     devtool: argv.mode === 'development'
         ? 'eval-source-map'
         : 'source-map',
+    optimization: {
+        removeAvailableModules: argv.mode !== 'development',
+        removeEmptyChunks: argv.mode !== 'development',
+        splitChunks: argv.mode !== 'development',
+    },
     entry: {
         main: "./lib/components/entrypoint.tsx",
         login: "./lib/components/login.tsx",
@@ -170,19 +177,17 @@ module.exports = (_env, argv)=>({
         choosecollection: "./lib/components/choosecollection.tsx",
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: outputPath,
         publicPath: "/static/js/",
         filename: "[name].[contenthash].bundle.js",
         environment: {
             arrowFunction: true,
             const: true,
             destructuring: true,
-            ...(argv.mode === 'development' ? {
-                bigIntLiteral: true,
-                dynamicImport: true,
-                forOf: true,
-                module: true,
-            } : {})
+            bigIntLiteral: true,
+            forOf: true,
+            dynamicImport: true,
+            module: true,
         },
     },
     watchOptions: {

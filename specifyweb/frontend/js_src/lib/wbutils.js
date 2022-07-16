@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import $ from 'jquery';
 import _ from 'underscore';
 import React from 'react';
