@@ -19,6 +19,7 @@ import { parseResourceUrl } from '../resource';
 import { getModel } from '../schema';
 import { defined } from '../types';
 import { Button, className, Link, Textarea } from './basic';
+import { softFail } from './errorboundary';
 import { copyTextToClipboard } from './filepicker';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { icons } from './icons';
@@ -343,12 +344,14 @@ export function FormattedResource({
     return new model.Resource({ id });
   }, [resourceUrl]);
   const [formatted] = useAsyncState(
-    React.useCallback(async () => format(resource), [resource]),
+    React.useCallback(async () => format(resource).catch(softFail), [resource]),
     false
   );
   return typeof resource === 'object' &&
     hasTablePermission(resource.specifyModel.name, 'read') ? (
-    <Link.Default href={resource.viewUrl()}>{formatted}</Link.Default>
+    <Link.Default href={resource.viewUrl()}>
+      {formatted ?? fallback}
+    </Link.Default>
   ) : (
     <>{formatted ?? fallback}</>
   );

@@ -31,7 +31,10 @@ export function TaxonTiles(): JSX.Element {
     const chart = makeTreeMap(container, treeData.root);
     chart
       .attr('title', titleGenerator)
-      .on('mouseover', (_event, node) => setTitle(titleGenerator(node)));
+      .on('mouseover', (_event, node) => setTitle(titleGenerator(node)))
+      .on('click', (_event, node) =>
+        window.open(`/specify/query/fromtree/taxon/${node.data.id}/`, '_blank')
+      );
     setTitle(treeData.root.name);
     return () => void chart.remove();
   }, [container, genusRankId, treeData]);

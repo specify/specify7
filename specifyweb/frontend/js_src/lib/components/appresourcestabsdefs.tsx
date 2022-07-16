@@ -92,7 +92,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
   >(
     React.useCallback(() => {
       const preferences = JSON.parse(data ?? '{}') as UserPreferences;
-      const setPrefs = setPrefsGenerator(preferences, false);
+      const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (
           category: string,

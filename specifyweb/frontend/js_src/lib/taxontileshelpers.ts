@@ -132,7 +132,7 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
     .attr('y', (d) => nodeRead(d, 'y0'))
     .attr('width', (d) => nodeRead(d, 'x1') - nodeRead(d, 'x0'))
     .attr('height', (d) => nodeRead(d, 'y1') - nodeRead(d, 'y0'))
-    .attr('class', 'stroke stroke-black dark:stroke-neutral-700')
+    .attr('class', 'cursor-pointer stroke stroke-black dark:stroke-neutral-700')
     .attr('fill', ({ data }) => color(data.name));
 }
 

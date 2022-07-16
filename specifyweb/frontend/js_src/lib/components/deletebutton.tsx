@@ -17,6 +17,30 @@ import { useAsyncState, useBooleanState, useLiveState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames, loadingBar } from './modaldialog';
 
+const fetchBlockers = async (
+  resource: SpecifyResource<AnySchema>
+): Primise<RA<DeleteBlocker>> =>
+  ajax<
+    RA<{
+      table: keyof Tables;
+      field: string;
+      id: number;
+    }>
+  >(
+    `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
+      resource.id
+    }/`,
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/json' },
+    }
+  ).then(({ data }) =>
+    data.map(({ table, ...rest }) => ({
+      ...rest,
+      model: defined(getModel(table)),
+    }))
+  );
+
 /**
  * A button to delele a resorce
  * Prompts before deletion
@@ -46,29 +70,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   );
   const [blockers, setBlockers] = useAsyncState<RA<DeleteBlocker>>(
     React.useCallback(
-      async () =>
-        deferred
-          ? undefined
-          : ajax<
-              RA<{
-                table: keyof Tables;
-                field: string;
-                id: number;
-              }>
-            >(
-              `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
-                resource.id
-              }/`,
-              {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) =>
-              data.map(({ table, ...rest }) => ({
-                ...rest,
-                model: defined(getModel(table)),
-              }))
-            ),
+      async () => (deferred ? undefined : fetchBlockers(resource)),
       [resource, deferred]
     ),
     false

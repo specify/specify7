@@ -67,7 +67,7 @@ export type UserPreferences = typeof preferences;
 export const getRawUserPreferences = () => preferences;
 
 export const setPrefsGenerator = (
-  preferences: UserPreferences,
+  getPreferences: () => UserPreferences,
   triggerSync: boolean
 ) =>
   function setPref<
@@ -116,7 +116,7 @@ export const setPrefsGenerator = (
       }
     } else parsed = value;
 
-    const prefs = preferences as any;
+    const prefs = getPreferences() as any;
     if (
       parsed ===
       (prefs[category]?.[subcategory]?.[item] ?? definition.defaultValue)
@@ -149,7 +149,7 @@ export const setPrefsGenerator = (
     }
     prefEvents.trigger('update', definition);
   };
-export const setPref = setPrefsGenerator(preferences, true);
+export const setPref = setPrefsGenerator(getRawUserPreferences, true);
 
 // Sync with back-end at most every 5s
 const syncTimeout = 5 * MILLISECONDS;
