@@ -464,6 +464,10 @@ export const formsText = createDictionary({
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
   },
+  invalidValue: {
+    'en-us': 'Invalid value',
+    'ru-ru': 'Недопустимое значение',
+  },
   requiredFormat: {
     'en-us': (format: string) => `Required Format: ${format}.`,
     'ru-ru': (format: string) => `Обязательный формат: ${format}.`,

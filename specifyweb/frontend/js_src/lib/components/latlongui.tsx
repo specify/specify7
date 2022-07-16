@@ -4,10 +4,12 @@ import type { Locality } from '../datamodel';
 import { Lat, Long, trimLatLong } from '../latlongutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
+import { formsText } from '../localization/forms';
 import { localityText } from '../localization/locality';
 import type { FormMode } from '../parseform';
 import { resourceOn } from '../resource';
 import { Input, Select } from './basic';
+import { useResourceValue } from './hooks';
 
 type CoordinateType = 'Point' | 'Line' | 'Rectangle';
 
@@ -23,83 +25,89 @@ function Coordinate({
   coordinateTextField,
   fieldType,
   isReadOnly,
-  onChange: handleChange,
   step,
+  onFormatted: handleFormatted,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly coordinateField: `${'latitude' | 'longitude'}${1 | 2}`;
   readonly coordinateTextField: `${'lat' | 'long'}${1 | 2}text`;
   readonly fieldType: 'Lat' | 'Long';
   readonly isReadOnly: boolean;
-  readonly onChange: (parsed: string) => void;
   readonly step: number | undefined;
+  readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
-  const [coordinate, setCoordinate] = React.useState<string>(
+  const { value, updateValue, validationRef, setValidation } = useResourceValue(
+    resource,
+    coordinateTextField,
+    undefined
+  );
+  const isChanging = React.useRef<boolean>(false);
+  React.useEffect(
     () =>
-      (resource.get(coordinateTextField) ||
-        resource.get(coordinateField)?.toString()) ??
-      ''
+      resourceOn(resource, `change:${coordinateTextField}`, () => {
+        if (isChanging.current) return;
+        if (
+          (resource.get(coordinateTextField) ?? '') === '' &&
+          (resource.get(coordinateField) ?? '') !== ''
+        )
+          resource.set(coordinateTextField, resource.get(coordinateField));
+      }),
+    [resource, coordinateField, coordinateTextField]
   );
 
-  const handleChanged = (raw: string, formatted: string | undefined) =>
-    handleChange(raw === '' ? commonText('notApplicable') : formatted ?? '???');
+  React.useEffect(
+    () =>
+      resourceOn(resource, `change:${coordinateField}`, () => {
+        if (isChanging.current) return;
+        const coordinate = resource.get(coordinateField)?.toString() ?? '';
+        const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
+        updateValue(parsed?.asFloat() ?? null);
+      }),
+    [resource, coordinateField, updateValue, step, fieldType]
+  );
 
   React.useEffect(() => {
-    const handleChange = (coordinate: string): void =>
-      handleChanged(
-        coordinate,
-        (fieldType === 'Lat' ? Lat : Long).parse(coordinate)?.format(step)
-      );
-    const textDestructor = resourceOn(
-      resource,
-      `change:${coordinateTextField}`,
-      (): void => {
-        setCoordinate(
-          resource.get(coordinateTextField) ??
-            resource.get(coordinateField)?.toString() ??
-            ''
-        );
-        handleChange(
-          resource.get(coordinateTextField) ??
-            resource.get(coordinateField) ??
-            ''
-        );
-      },
-      // Update parent's Preview column with initial values on first render
-      true
-    );
-    const destructor = resourceOn(
-      resource,
-      `change:${coordinateField}`,
-      (): void => handleChange(resource.get(coordinateField)?.toString() ?? '')
+    const trimmedValue = trimLatLong(value?.toString() ?? '');
+    const hasValue = trimmedValue.length > 0;
+    const parsed = hasValue
+      ? (((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ??
+          undefined) as Parsed | undefined)
+      : undefined;
+
+    const isValid = !hasValue || parsed !== undefined;
+    setValidation(isValid ? '' : formsText('invalidValue'));
+    handleFormatted(
+      isValid
+        ? hasValue
+          ? parsed?.format(step) ?? ''
+          : commonText('notApplicable')
+        : undefined
     );
 
-    return (): void => {
-      textDestructor();
-      destructor();
-    };
-  }, [resource, step, coordinateField, coordinateTextField, fieldType]);
+    isChanging.current = true;
+    resource.set(coordinateTextField, trimmedValue);
+    resource.set(coordinateField, parsed?.asFloat() ?? null);
+    resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
+    resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
+    isChanging.current = false;
+  }, [
+    value,
+    resource,
+    coordinateField,
+    coordinateTextField,
+    fieldType,
+    step,
+    handleFormatted,
+    setValidation,
+  ]);
 
   return (
     <Input.Text
-      value={coordinate}
+      value={value?.toString() ?? ''}
       isReadOnly={isReadOnly}
-      onValueChange={(value): void => {
-        setCoordinate(value);
-        const hasValue = value.trim() !== '';
-        const parsed = hasValue
-          ? (((fieldType === 'Lat' ? Lat : Long).parse(value) ?? undefined) as
-              | Parsed
-              | undefined)
-          : undefined;
-        handleChanged(trimLatLong(value), parsed?.format(step));
-
-        resource.set(coordinateTextField, trimLatLong(value));
-        resource.set(coordinateField, parsed?.asFloat() ?? null);
-        resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
-        resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
-      }}
-      onBlur={(): void => setCoordinate(trimLatLong(coordinate))}
+      forwardRef={validationRef}
+      onValueChange={updateValue}
+      // OnBlur={(): void => setCoordinate(trimLatLong(coordinate))}
     />
   );
 }
@@ -117,10 +125,10 @@ function CoordinatePoint({
   readonly isReadOnly: boolean;
   readonly step: number | undefined;
 }): JSX.Element {
-  const [latitude, setLatitude] = React.useState<string>(
+  const [latitude, setLatitude] = React.useState<string | undefined>(
     commonText('notApplicable')
   );
-  const [longitude, setLongitude] = React.useState<string>(
+  const [longitude, setLongitude] = React.useState<string | undefined>(
     commonText('notApplicable')
   );
   return (
@@ -137,7 +145,7 @@ function CoordinatePoint({
             coordinateTextField={`lat${index}text`}
             fieldType={`Lat`}
             isReadOnly={isReadOnly}
-            onChange={setLatitude}
+            onFormatted={setLatitude}
             step={step}
           />
         </label>
@@ -153,15 +161,15 @@ function CoordinatePoint({
             coordinateTextField={`long${index}text`}
             fieldType={`Long`}
             isReadOnly={isReadOnly}
-            onChange={setLongitude}
+            onFormatted={setLongitude}
             step={step}
           />
         </label>
       </td>
       <td>
-        <span>{latitude}</span>
+        <span>{latitude ?? '???'}</span>
         {', '}
-        <span>{longitude}</span>
+        <span>{longitude ?? '???'}</span>
       </td>
     </tr>
   );
