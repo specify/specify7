@@ -3,89 +3,10 @@
  */
 
 const path = require('path');
-const fs = require('fs');
 const webpack = require('webpack');
-const {getCompilerHooks, WebpackManifestPlugin} = require('webpack-manifest-plugin');
+const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
 
 const outputPath = path.resolve(__dirname, 'dist');
-
-
-// Don't write if file was unchanged to avoid triggering needles Django reload
-function writeIfChanged(compiler, fileName, fileContent){
-    if(!fs.existsSync(compiler.options.output.path))
-        fs.mkdirSync(compiler.options.output.path);
-    const fullOutPath = path.join(
-        compiler.options.output.path,
-        fileName
-    );
-    if(
-        !fs.existsSync(fullOutPath) ||
-        fileContent !== fs.readFileSync(fullOutPath).toString()
-    )
-        fs.writeFileSync(fullOutPath, fileContent);
-}
-
-class EmitInitPyPlugin {
-    apply = (compiler)=>
-        compiler.hooks.done.tap('EmitInitPyPlugin', () =>
-            writeIfChanged(
-                compiler,
-                '__init__.py',
-                "# Allows manifest.py to be imported / reloaded by Django dev server.\n"
-            )
-        );
-}
-
-/**
- * After manifest is generated outside of the build directory (to avoid
- * triggering a rebuild), the manifest inside the build directory is updated,
- * only if changed.
- *
- * The manifest outside the build directory is not used, but can't be disabled
- * since WebpackManifestPlugin does not support conditional update
- */
-class SmartWebpackManifestPlugin {
-    apply = (compiler)=>
-        getCompilerHooks(compiler).afterEmit.tap(
-            'SmartWebpackManifestPlugin',
-            (manifest)=>
-                writeIfChanged(
-                    compiler,
-                    'manifest.py',
-                    `manifest = ${
-                        JSON.stringify(manifest, null, 2)
-                    }\n`
-                )
-        );
-}
-
-/**
- * Clean-up build artifacts.
- * Especially useful in production since each rebuild produces files with
- * different file names.
- * Unlike Webpack's output.clean=true, this does not delete manifest.py
- */
-const excludes = new Set(['__init__.py','manifest.py']);
-class CleanupPlugin {
-    apply = (compiler) =>
-      fs.readdir(compiler.options.output.path, (error,files)=>{
-          if(error){
-            console.log(error);
-            return;
-          }
-          files
-            .filter(fileName=>!excludes.has(fileName))
-            .map(fileName=>
-                fs.promises.unlink(
-                    path.join(
-                        compiler.options.output.path,
-                        fileName
-                    )
-                ).catch(console.error)
-            );
-      });
-}
-
 
 module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */ ({
     module: {
@@ -143,21 +64,10 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
         symlinks: false,
     },
     plugins: [
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
-        new SmartWebpackManifestPlugin(),
-        new WebpackManifestPlugin({
-            /*
-             * Create the file outside of the dist dir to avoid
-             * triggering the watcher
-             */
-            fileName: '../manifest.json',
-        }),
-        new EmitInitPyPlugin(),
+        new WebpackManifestPlugin(),
         new webpack.optimize.MinChunkSizePlugin({
             minChunkSize: 10000, // Minimum number of characters
         }),
-        // Clean up build artifacts
-        new CleanupPlugin(),
     ],
     // Set appropriate process.env.NODE_ENV
     mode: argv.mode,
@@ -168,7 +78,6 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
     optimization: {
         removeAvailableModules: argv.mode !== 'development',
         removeEmptyChunks: argv.mode !== 'development',
-        splitChunks: argv.mode !== 'development',
     },
     entry: {
         main: "./lib/components/entrypoint.tsx",
@@ -178,6 +87,7 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
     },
     output: {
         path: outputPath,
+        clean: true,
         publicPath: "/static/js/",
         filename: "[name].[contenthash].bundle.js",
         environment: {
