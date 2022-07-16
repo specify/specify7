@@ -82,7 +82,7 @@ function TableResults({
               className="link list-item bg-brand-200 dark:bg-brand-500 p-1.5
                 rounded hover:!text-white hover:dark:!bg-brand-400"
             >
-              {caption}
+              {`${caption} (${tableResults.totalCount})`}
             </summary>
             <ErrorBoundary dismissable>
               <QueryResultsTable
