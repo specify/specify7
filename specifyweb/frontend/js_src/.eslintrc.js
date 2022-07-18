@@ -14,7 +14,9 @@ module.exports = {
     browser: true,
     node: true,
   },
-  extends: ['@maxxxxxdlp/eslint-react-config'],
+  extends: [
+    '@maxxxxxdlp/eslint-config-react',
+  ],
   rules: {
     '@typescript-eslint/no-empty-interface': OFF,
     '@next/next/google-font-display': OFF,
