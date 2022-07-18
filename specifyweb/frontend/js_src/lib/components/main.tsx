@@ -182,6 +182,9 @@ const userToolsPromise: Promise<RA<UserTool>> = Promise.all([
   .then((items) => items.flat())
   .then((items) => processMenuItems(items.map(({ userTool }) => userTool)));
 
+// FIXME: remove this
+let isFirstCall = true;
+
 export function Main(): JSX.Element | null {
   const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
     undefined
@@ -202,6 +205,10 @@ export function Main(): JSX.Element | null {
       userToolsPromise.then(setUserTools),
     ])
       .then(() => {
+        if (isFirstCall) {
+          isFirstCall = false;
+          return;
+        }
         startApp();
         listen(document.body, 'click', handleClick);
       })

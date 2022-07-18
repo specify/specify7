@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import type { getEntrypointName } from '../initialcontext';
 import { unlockInitialContext } from '../initialcontext';
@@ -62,14 +62,14 @@ export function entrypoint(
       text-neutral-900 dark:text-neutral-200`
     );
     portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
-    ReactDOM.render(
+    const reactRoot = createRoot(root);
+    reactRoot.render(
       <React.StrictMode>
         <Contexts>
           <SetCssVariables />
           {getContent()}
         </Contexts>
-      </React.StrictMode>,
-      root
+      </React.StrictMode>
     );
   });
 }

@@ -7,7 +7,8 @@
 
 import { default as Backbone, type View } from 'backbone';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import type { Root } from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 
 import { error } from '../assert';
 import type { IR } from '../types';
@@ -49,12 +50,15 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
     [Component.name]: class extends Backbone.View {
       public options: PROPS & { readonly el?: HTMLElement };
 
+      private readonly root: Root;
+
       private setProps: (newProps: PROPS) => void;
 
       public constructor(options?: PROPS & { readonly el?: HTMLElement }) {
         const { el, ...rest } = options ?? {};
         super({ el });
         this.options = (rest ?? {}) as PROPS;
+        this.root = createRoot(this.el);
 
         // Initial value
         this.setProps = (): void => error('setProps callback is not forwarded');
@@ -67,7 +71,7 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
 
       public render(): this {
         if (makeParentContents) this.el.classList.add('contents');
-        ReactDOM.render(
+        this.root.render(
           <React.StrictMode>
             <Contexts>
               <ForwardProps
@@ -76,14 +80,13 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
                 setPropsCallback={this.saveSetProps.bind(this)}
               />
             </Contexts>
-          </React.StrictMode>,
-          this.el
+          </React.StrictMode>
         );
         return this;
       }
 
       public remove(): this {
-        ReactDOM.unmountComponentAtNode(this.el);
+        this.root.unmount();
         Backbone.View.prototype.remove.call(this);
         return this;
       }

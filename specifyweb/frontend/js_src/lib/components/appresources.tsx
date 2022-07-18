@@ -27,7 +27,7 @@ export function AppResourcesWrapper({
 }: {
   readonly mode: AppResourceMode;
   readonly resourceId: number | undefined;
-}): JSX.Element | null {
+}): JSX.Element | undefined {
   const model =
     mode === 'appResources'
       ? schema.models.SpAppResource
@@ -41,7 +41,7 @@ export function AppResourcesWrapper({
       model={model}
       resourceId={resourceId}
     />
-  ) : null;
+  ) : undefined;
 }
 
 function AppResourcesView({
@@ -93,7 +93,7 @@ function AppResourcesView({
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{model.label}</H2>
-      <div className="flex flex-1 h-0 gap-4">
+      <div className="flex h-0 flex-1 gap-4">
         <AppResourcesAside
           // FEATURE: highlight current resource on the sidebar
           resources={resources}

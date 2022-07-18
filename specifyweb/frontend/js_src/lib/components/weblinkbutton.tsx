@@ -159,7 +159,7 @@ export function WebLinkButton({
   return (
     <div
       className={
-        formType === 'formTable' ? undefined : 'print:hidden flex gap-2'
+        formType === 'formTable' ? undefined : 'flex gap-2 print:hidden'
       }
     >
       {typeof data === 'object' ? (
@@ -182,7 +182,7 @@ export function WebLinkButton({
           >
             <img
               src={getIcon(icon) ?? unknownIcon}
-              className="max-w-[theme(spacing.10)] max-h-[theme(spacing.5)]"
+              className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
               alt={data.title ?? url}
             />
           </Link.Gray>
