@@ -26,9 +26,6 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
             {
                 test: /\.[tj]sx?$/,
                 exclude: /(node_modules)/,
-                resolve: {
-                    fullySpecified: false,
-                },
                 use: [{
                     loader: "babel-loader?+cacheDirectory",
                     options: {
@@ -65,9 +62,11 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
     },
     plugins: [
         new WebpackManifestPlugin(),
-        new webpack.optimize.MinChunkSizePlugin({
-            minChunkSize: 10000, // Minimum number of characters
-        }),
+        ...(process.env.NODE_ENV === 'production'
+          ? [new webpack.optimize.MinChunkSizePlugin({
+              minChunkSize: 10000, // Minimum number of characters
+            })]
+          : []),
     ],
     // Set appropriate process.env.NODE_ENV
     mode: argv.mode,
@@ -75,11 +74,8 @@ module.exports = (_env, argv)=> /** @type { import('webpack').Configuration } */
     devtool: argv.mode === 'development'
         ? 'eval-source-map'
         : 'source-map',
-    optimization: {
-        removeAvailableModules: argv.mode !== 'development',
-        removeEmptyChunks: argv.mode !== 'development',
-    },
     entry: {
+        // REFACTOR: reduce to a single entrypoint
         main: "./lib/components/entrypoint.tsx",
         login: "./lib/components/login.tsx",
         passwordchange: "./lib/components/passwordchange.tsx",
