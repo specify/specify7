@@ -110,7 +110,7 @@ export function SecurityInstitution({
             </h3>
             <ViewInstitutionButton institution={institution} />
           </div>
-          <div className="flex flex-col flex-1 gap-8 overflow-y-scroll">
+          <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
                 <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>

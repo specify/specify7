@@ -208,12 +208,12 @@ function NotificationComponent({
     <article className="flex flex-col gap-2 pt-2">
       <div className="flex gap-2">
         {!notification.read && (
-          <span className="w-3 h-3 mt-1.5 bg-blue-500 rounded-full" />
+          <span className="mt-1.5 h-3 w-3 rounded-full bg-blue-500" />
         )}
         <span className="text-gray-500">
           <DateElement date={notification.timestamp} />
         </span>
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         <Button.Icon
           icon="x"
           title={commonText('delete')}

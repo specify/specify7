@@ -35,17 +35,17 @@ export function Layout(props: {
           : undefined
       }
     >
-      <header className="whitespace-nowrap flex gap-2">
+      <header className="flex gap-2 whitespace-nowrap">
         <h2 className="flex items-center gap-1 overflow-x-auto" id={id('name')}>
           {props.title}
         </h2>
         <div role="toolbar" className="contents">
           {props.buttonsLeft}
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           {props.buttonsRight}
         </div>
       </header>
-      <div className="flex flex-col flex-1 gap-4 overflow-hidden">
+      <div className="flex flex-1 flex-col gap-4 overflow-hidden">
         {props.children}
       </div>
       {props.footer}

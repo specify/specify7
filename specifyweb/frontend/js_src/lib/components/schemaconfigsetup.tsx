@@ -89,7 +89,7 @@ function SchemaConfigTables({
           >
             {commonText('export')}
           </Link.Green>
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.Gray onClick={handleBack}>{commonText('back')}</Button.Gray>
         </>
       }

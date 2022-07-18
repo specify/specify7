@@ -1,6 +1,5 @@
 require('@rushstack/eslint-patch/modern-module-resolution');
 
-
 const OFF = 'off';
 const WARN = 'warn';
 const ERROR = 'error';

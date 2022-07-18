@@ -270,7 +270,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>
           <Select
-            className="print:hidden !w-auto"
+            className="!w-auto print:hidden"
             title={formsText('datePrecision')}
             value={precision}
             onChange={({ target }): void => {

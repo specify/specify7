@@ -145,7 +145,7 @@ export function AttachmentPlugin({
         </Dialog>
       ) : state.type === 'DisplayAttachment' ? (
         // Padding bottom prevents the shadow from being cut off
-        <div className="flex items-center justify-center h-full pb-5">
+        <div className="flex h-full items-center justify-center pb-5">
           <AttachmentCell
             attachment={state.attachment}
             onViewRecord={undefined}

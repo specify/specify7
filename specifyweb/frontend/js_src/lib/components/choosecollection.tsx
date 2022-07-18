@@ -107,7 +107,7 @@ function ChooseCollection({
         {data.errors.length > 0 && <ErrorMessage>{data.errors}</ErrorMessage>}
         {hasAccess ? (
           <>
-            <div className="max-h-56 flex flex-col gap-2 pl-1 -ml-1 overflow-y-auto">
+            <div className="-ml-1 flex max-h-56 flex-col gap-2 overflow-y-auto pl-1">
               {availableCollections.map(({ id, collectionname }) => (
                 <Label.ForCheckbox key={id}>
                   <Input.Radio

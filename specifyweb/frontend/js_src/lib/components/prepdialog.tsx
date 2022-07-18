@@ -274,7 +274,7 @@ function Row({
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
-        <td className="tabular-nums justify-end">
+        <td className="justify-end tabular-nums">
           {fieldFormat(
             schema.models.CollectionObject.getLiteralField('catalogNumber'),
             undefined,
@@ -293,8 +293,8 @@ function Row({
             onValueChange={handleChange}
           />
         </td>
-        <td className="tabular-nums justify-end">{preparation.available}</td>
-        <td className="tabular-nums justify-end">
+        <td className="justify-end tabular-nums">{preparation.available}</td>
+        <td className="justify-end tabular-nums">
           {
             /* If unavailable items, link to related interactions */
             unavailableCount === 0 ? (

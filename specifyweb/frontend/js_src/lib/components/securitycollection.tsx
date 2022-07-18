@@ -259,7 +259,7 @@ export function SecurityCollection({
               <ViewCollectionButton collection={collection} />
             )}
           </div>
-          <div className="flex flex-col flex-1 gap-6 overflow-y-scroll">
+          <div className="flex flex-1 flex-col gap-6 overflow-y-scroll">
             {hasPermission('/permissions/roles', 'read', collection.id) && (
               <section className="flex flex-col gap-1">
                 <h4 className="text-xl">{adminText('collectionUserRoles')}</h4>

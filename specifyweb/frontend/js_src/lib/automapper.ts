@@ -482,7 +482,7 @@ export class AutoMapper {
     readonly isTreeRank?: boolean;
   }): void {
     if (mode === 'shortcutsAndTableSynonyms') {
-      if (fieldName  !== undefined) return;
+      if (fieldName !== undefined) return;
 
       const tableDefinitionData = autoMapperDefinitions.shortcuts[tableName];
 
@@ -524,10 +524,7 @@ export class AutoMapper {
   ): RA<string> {
     const tableSynonyms = autoMapperDefinitions.tableSynonyms[tableName];
 
-    if (
-      mode !== 'shortcutsAndTableSynonyms' ||
-      tableSynonyms  === undefined
-    )
+    if (mode !== 'shortcutsAndTableSynonyms' || tableSynonyms === undefined)
       return [];
 
     // Filter out -to-many references from the path for matching
@@ -766,7 +763,7 @@ export class AutoMapper {
                         const match =
                           regularExpression.exec(lowercaseHeaderName);
 
-                        if (match === null || match[1]  === undefined)
+                        if (match === null || match[1] === undefined)
                           return false;
 
                         toManyIndex = Number(match[1]);

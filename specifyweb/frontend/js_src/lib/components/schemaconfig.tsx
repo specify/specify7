@@ -114,7 +114,7 @@ export function SchemaConfigMain({
         onBack={handleBack}
         onSave={canSave ? handleSave : undefined}
       />
-      <div className="sm:flex-row flex flex-col flex-1 gap-4 overflow-hidden">
+      <div className="flex flex-1 flex-col gap-4 overflow-hidden sm:flex-row">
         <SchemaConfigTable
           schemaData={schemaData}
           isReadOnly={isReadOnly}

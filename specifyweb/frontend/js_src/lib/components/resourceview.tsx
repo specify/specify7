@@ -379,7 +379,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
               typeof extraButtons === 'object' ? (
                 <DataEntry.Footer>
                   {deleteButton}
-                  {extraButtons ?? <span className="flex-1 -ml-2" />}
+                  {extraButtons ?? <span className="-ml-2 flex-1" />}
                   {saveButtonElement}
                 </DataEntry.Footer>
               ) : undefined}
@@ -387,7 +387,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           );
           const headerComponents = headerButtons?.(headerContent) ?? (
             <>
-              <span className="flex-1 -ml-2" />
+              <span className="-ml-2 flex-1" />
               {headerContent}
             </>
           );
@@ -435,12 +435,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   {headerButtons?.(specifyNetworkBadge) ?? (
                     <>
                       <DataEntry.Visit resource={resource} />
-                      <span className="flex-1 -ml-4" />
+                      <span className="-ml-4 flex-1" />
                       {headerContent}
                     </>
                   )}
                   {!isSubForm && (
-                    <div className="border-brand-300 w-full -mt-4 border-b-2" />
+                    <div className="-mt-4 w-full border-b-2 border-brand-300" />
                   )}
                 </>
               }
@@ -448,7 +448,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 isSubForm ? undefined : (
                   <>
                     {deleteButton}
-                    {extraButtons ?? <span className="flex-1 -ml-2" />}
+                    {extraButtons ?? <span className="-ml-2 flex-1" />}
                     {isModified && !isDependent ? (
                       <Button.Red onClick={handleClose}>
                         {commonText('cancel')}

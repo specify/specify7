@@ -334,7 +334,7 @@ function PreparationReturn({
           viewDefinition={loanReturnPrepForm()}
           display="block"
         />
-        <table className="grid-table gap-2 grid-cols-[repeat(8,auto)]">
+        <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
               <td />

@@ -105,7 +105,7 @@ function CarryForwardConfig({
       }
     >
       <Form id={id('form')} onSubmit={handleClose}>
-        <div className="flex flex-col flex-1 gap-2 overflow-y-auto">
+        <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
             fields={literalFields}
@@ -121,7 +121,7 @@ function CarryForwardConfig({
             onChange={handleChange}
           />
         </div>
-        <Label.ForCheckbox className="dark:border-neutral-700 pt-2 border-t">
+        <Label.ForCheckbox className="border-t pt-2 dark:border-neutral-700">
           <Input.Checkbox
             checked={showHiddenFields}
             onValueChange={setShowHiddenFields}

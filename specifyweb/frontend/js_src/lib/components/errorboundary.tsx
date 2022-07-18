@@ -113,7 +113,7 @@ function ErrorDialog({
           >
             {commonText('downloadErrorMessage')}
           </Button.Blue>
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Label.ForCheckbox>
             <Input.Checkbox
               checked={clearCacheOnException}
@@ -361,7 +361,7 @@ function formatError(
   }
 
   return [
-    <div key="object" className="flex flex-col h-full gap-2">
+    <div key="object" className="flex h-full flex-col gap-2">
       {errorObject}
     </div>,
     errorMessage.join('\n'),

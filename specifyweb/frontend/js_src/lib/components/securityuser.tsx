@@ -366,7 +366,7 @@ export function SecurityUser({
                   onDeleted={handleDelete}
                 />
               ) : undefined}
-              <span className="flex-1 -ml-2" />
+              <span className="-ml-2 flex-1" />
               {formElement !== null &&
               (mode === 'edit' ||
                 // Check if has update access in any collection

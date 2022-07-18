@@ -95,7 +95,7 @@ export function RoleView({
         {icons.arrowLeft}
         {parentName}
       </Button.LikeLink>
-      <div className="flex flex-col flex-1 gap-2 overflow-auto">
+      <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Generic className={className.limitedWidth}>
             {commonText('name')}
@@ -126,7 +126,7 @@ export function RoleView({
             <legend>{adminText('users')}</legend>
             {typeof userRoles === 'object' ? (
               <>
-                <Ul className="flex flex-col gap-2 max-h-[theme(spacing.96)] overflow-auto">
+                <Ul className="flex max-h-[theme(spacing.96)] flex-col gap-2 overflow-auto">
                   {userRoles.map(({ userId, userName }) => (
                     <li key={userId}>
                       <Button.LikeLink
@@ -233,7 +233,7 @@ export function RoleView({
         ) : (
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         )}
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         {typeof role.id === 'number' && (
           <SecurityImportExport
             roles={{ [role.id]: role as Role }}

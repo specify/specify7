@@ -76,7 +76,7 @@ export function CreateRole({
               {commonText('new')}
             </Button.Blue>
           )}
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }

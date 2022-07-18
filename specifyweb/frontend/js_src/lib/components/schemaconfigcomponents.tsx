@@ -26,7 +26,7 @@ export function SchemaConfigHeader({
       <Button.Small onClick={handleBack}>
         {commonText('changeBaseTable')}
       </Button.Small>
-      <span className="flex-1 -ml-2" />
+      <span className="-ml-2 flex-1" />
       <Button.Small onClick={handleSave}>{commonText('save')}</Button.Small>
     </header>
   );

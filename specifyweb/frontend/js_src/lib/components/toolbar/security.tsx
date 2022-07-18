@@ -106,7 +106,7 @@ export function SecurityPanel(): JSX.Element | null {
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>
-      <div className="flex flex-1 h-0 gap-4">
+      <div className="flex h-0 flex-1 gap-4">
         <aside className={className.containerBase}>
           {typeof institution === 'object' && (
             <section>

@@ -523,7 +523,7 @@ export function QueryLoanReturn({
                           {loanNumber}
                         </Link.NewTab>
                       </td>
-                      <td className="tabular-nums justify-end">{totalPreps}</td>
+                      <td className="justify-end tabular-nums">{totalPreps}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -15,16 +15,16 @@ if (process.env.NODE_ENV !== 'test') require('../css/workbench.css');
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import {Backbone} from './backbone';
+import { Backbone } from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {Button, className, Link} from './components/basic';
-import {getModel, schema} from './schema';
-import {DataSetNameView} from './components/datasetmeta';
-import {NotFoundView} from './components/notfoundview';
-import {WbUploaded} from './components/wbuploadedview';
-import {WBUtils} from './wbutils';
+import { Button, className, Link } from './components/basic';
+import { getModel, schema } from './schema';
+import { DataSetNameView } from './components/datasetmeta';
+import { NotFoundView } from './components/notfoundview';
+import { WbUploaded } from './components/wbuploadedview';
+import { WBUtils } from './wbutils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -32,42 +32,42 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import {parseUploadPlan} from './uploadplanparser';
-import {capitalize, clamp, mappedFind} from './helpers';
-import {getTableFromMappingPath} from './wbplanviewnavigator';
-import {getIcon, unknownIcon} from './icons';
-import {wbText} from './localization/workbench';
-import {commonText} from './localization/common';
-import {showDialog} from './components/legacydialog';
-import {dialogClassNames, loadingBar} from './components/modaldialog';
-import {format} from './dataobjformatters';
-import {iconClassName, legacyNonJsxIcons} from './components/icons';
-import {LANGUAGE} from './localization/utils';
-import {defined, filterArray} from './types';
-import {crash} from './components/errorboundary';
-import {getTreeDefinitionItems} from './treedefinitions';
-import {serializeResource} from './datamodelutils';
-import {fetchPickList} from './picklistmixins';
-import {setCurrentComponent, setCurrentView} from './specifyapp';
-import {ajax, Http, ping} from './ajax';
+import { parseUploadPlan } from './uploadplanparser';
+import { capitalize, clamp, mappedFind } from './helpers';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { getIcon, unknownIcon } from './icons';
+import { wbText } from './localization/workbench';
+import { commonText } from './localization/common';
+import { showDialog } from './components/legacydialog';
+import { dialogClassNames, loadingBar } from './components/modaldialog';
+import { format } from './dataobjformatters';
+import { iconClassName, legacyNonJsxIcons } from './components/icons';
+import { LANGUAGE } from './localization/utils';
+import { defined, filterArray } from './types';
+import { crash } from './components/errorboundary';
+import { getTreeDefinitionItems } from './treedefinitions';
+import { serializeResource } from './datamodelutils';
+import { fetchPickList } from './picklistmixins';
+import { setCurrentComponent, setCurrentView } from './specifyapp';
+import { ajax, Http, ping } from './ajax';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from './permissionutils';
-import {wbViewTemplate} from './components/wbviewtemplate';
-import {legacyLoadingContext} from './components/contexts';
+import { wbViewTemplate } from './components/wbviewtemplate';
+import { legacyLoadingContext } from './components/contexts';
 import {
   addUnloadProtect,
   goTo,
   removeUnloadProtect,
 } from './components/navigation';
-import {getCache, setCache} from './cache';
-import {f} from './functools';
-import {pathStartsWith} from './wbplanviewutils';
-import {getUserPref} from './preferencesutils';
-import {createBackboneView} from './components/reactbackboneextend';
-import {WbStatus} from './components/wbstatus';
+import { getCache, setCache } from './cache';
+import { f } from './functools';
+import { pathStartsWith } from './wbplanviewutils';
+import { getUserPref } from './preferencesutils';
+import { createBackboneView } from './components/reactbackboneextend';
+import { WbStatus } from './components/wbstatus';
 
 const metaKeys = [
   'isNew',
@@ -241,68 +241,74 @@ const WBView = Backbone.View.extend({
       this.operationAbortedMessage();
 
     const initDataModelIntegration = () =>
-      this.fetchPickLists().then((pickLists) =>
-        this.hot.batch(() => {
-          if (
-            !this.isUploaded &&
-            !(this.mappings?.lines.length > 0) &&
-            hasPermission('/workbench/dataset', 'update')
-          ) {
-            const dialog = showDialog({
-              header: wbText('noUploadPlanDialogHeader'),
-              onClose: () => dialog.remove(),
-              buttons: (
-                <>
-                  <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-                  <Link.Blue
-                    href={`/specify/workbench-plan/${this.dataset.id}/`}
-                  >
-                    {commonText('create')}
-                  </Link.Blue>
-                </>
-              ),
-              content: wbText('noUploadPlanDialogText'),
-            });
-            this.$('.wb-validate, .wb-data-check')
-              .prop('disabled', true)
-              .prop('title', wbText('wbValidateUnavailable'));
-          } else {
-            this.$('.wb-validate, .wb-data-check').prop('disabled', false);
-            this.$('.wb-show-upload-view')
-              .prop('disabled', false)
-              .prop('title', undefined);
-          }
+      this.fetchPickLists()
+        .then((pickLists) =>
+          this.hot.batch(() => {
+            if (
+              !this.isUploaded &&
+              !(this.mappings?.lines.length > 0) &&
+              hasPermission('/workbench/dataset', 'update')
+            ) {
+              const dialog = showDialog({
+                header: wbText('noUploadPlanDialogHeader'),
+                onClose: () => dialog.remove(),
+                buttons: (
+                  <>
+                    <Button.DialogClose>
+                      {commonText('close')}
+                    </Button.DialogClose>
+                    <Link.Blue
+                      href={`/specify/workbench-plan/${this.dataset.id}/`}
+                    >
+                      {commonText('create')}
+                    </Link.Blue>
+                  </>
+                ),
+                content: wbText('noUploadPlanDialogText'),
+              });
+              this.$('.wb-validate, .wb-data-check')
+                .prop('disabled', true)
+                .prop('title', wbText('wbValidateUnavailable'));
+            } else {
+              this.$('.wb-validate, .wb-data-check').prop('disabled', false);
+              this.$('.wb-show-upload-view')
+                .prop('disabled', false)
+                .prop('title', undefined);
+            }
 
-          /*
-           * These methods update HOT's cells settings, which resets meta data
-           * Thus, need to run them first
-           */
-          this.identifyDefaultValues();
-          this.identifyPickLists(pickLists);
+            /*
+             * These methods update HOT's cells settings, which resets meta data
+             * Thus, need to run them first
+             */
+            this.identifyDefaultValues();
+            this.identifyPickLists(pickLists);
 
-          if (this.dataset.rowresults) this.getValidationResults();
+            if (this.dataset.rowresults) this.getValidationResults();
 
-          // The rest goes in order of importance
-          this.identifyMappedHeaders();
-          // CHeck if any column is reordered
-          if (
-            this.dataset.visualorder?.some((column, index) => column !== index)
-          )
-            this.hot.updateSettings({
-              manualColumnMove: this.dataset.visualorder,
-            });
-          this.fetchSortConfig();
-          this.wbutils.findLocalityColumns();
-          this.identifyCoordinateColumns();
-          this.identifyTreeRanks();
-          this.wbutils.render();
+            // The rest goes in order of importance
+            this.identifyMappedHeaders();
+            // CHeck if any column is reordered
+            if (
+              this.dataset.visualorder?.some(
+                (column, index) => column !== index
+              )
+            )
+              this.hot.updateSettings({
+                manualColumnMove: this.dataset.visualorder,
+              });
+            this.fetchSortConfig();
+            this.wbutils.findLocalityColumns();
+            this.identifyCoordinateColumns();
+            this.identifyTreeRanks();
+            this.wbutils.render();
 
-          this.hotIsReady = true;
+            this.hotIsReady = true;
 
-          this.hotCommentsContainer =
-            document.getElementsByClassName('htComments')[0];
-        })
-      ).catch(crash);
+            this.hotCommentsContainer =
+              document.getElementsByClassName('htComments')[0];
+          })
+        )
+        .catch(crash);
 
     legacyLoadingContext(
       this.initHot().then(() => {
@@ -993,7 +999,8 @@ const WBView = Backbone.View.extend({
         newValue,
       }) => {
         if (
-          this.getCellMeta(physicalRow, physicalCol, 'originalValue') === undefined
+          this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
+          undefined
         )
           this.setCellMeta(
             physicalRow,
@@ -1245,7 +1252,8 @@ const WBView = Backbone.View.extend({
     );
 
     // Make sure box is overflowing horizontally
-    if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2) return;
+    if (globalThis.innerWidth > cellContainerBoundingBox.right + oneRem * 2)
+      return;
 
     this.hotCommentsContainer.style.setProperty(
       '--offset-right',
@@ -1857,7 +1865,8 @@ const WBView = Backbone.View.extend({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Button.Green
             onClick={() => {
-              dataset.uploadplan = textarea.value.length === 0 ? null : JSON.parse(textarea.value);
+              dataset.uploadplan =
+                textarea.value.length === 0 ? null : JSON.parse(textarea.value);
               ping(
                 `/api/workbench/dataset/${dataset.id}/`,
                 {

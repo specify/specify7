@@ -122,7 +122,7 @@ export function QueryTables({
               {commonText('import')}
             </Button.Green>
           ) : undefined}
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.Gray onClick={handleClose}>{commonText('close')}</Button.Gray>
         </>
       }

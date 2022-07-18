@@ -57,7 +57,7 @@ function EditQueryDialog({
       canAddAnother={false}
       extraButtons={
         <>
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.Green
             onClick={(): void => {
               loading(

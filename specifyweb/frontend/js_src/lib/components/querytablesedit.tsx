@@ -131,13 +131,13 @@ export function TablesListEdit({
           <Button.Blue onClick={(): void => handleRawChange([])}>
             {commonText('reset')}
           </Button.Blue>
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         </>
       }
       onClose={handleClose}
     >
-      <div className="grid grid-rows-1 grid-cols-[auto_1fr_auto_1fr]">
+      <div className="grid grid-cols-[auto_1fr_auto_1fr] grid-rows-1">
         <div className="flex flex-col justify-center">
           <Button.Icon
             icon="chevronUp"

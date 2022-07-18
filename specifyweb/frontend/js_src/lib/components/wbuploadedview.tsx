@@ -41,7 +41,7 @@ export function WbUploaded({
   readonly isUploaded: boolean;
 }): JSX.Element {
   return (
-    <div className="w-60 flex flex-col h-full gap-4">
+    <div className="flex h-full w-60 flex-col gap-4">
       <div>
         <H2>
           {isUploaded
@@ -54,7 +54,7 @@ export function WbUploaded({
             : wbText('wbUploadedPotentialDescription')}
         </p>
       </div>
-      <Ul className="flex flex-col flex-1 gap-2">
+      <Ul className="flex flex-1 flex-col gap-2">
         {Object.entries(recordCounts)
           .sort(sortFunction(([_tableName, recordCount]) => recordCount, false))
           .map(([tableName, recordCount], index) => (

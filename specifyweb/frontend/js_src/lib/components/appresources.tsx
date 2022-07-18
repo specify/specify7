@@ -27,7 +27,7 @@ export function AppResourcesWrapper({
 }: {
   readonly mode: AppResourceMode;
   readonly resourceId: number | undefined;
-}): JSX.Element | undefined {
+}): JSX.Element | null {
   const model =
     mode === 'appResources'
       ? schema.models.SpAppResource
@@ -41,7 +41,7 @@ export function AppResourcesWrapper({
       model={model}
       resourceId={resourceId}
     />
-  ) : undefined;
+  ) : null;
 }
 
 function AppResourcesView({

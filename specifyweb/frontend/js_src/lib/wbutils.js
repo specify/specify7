@@ -15,21 +15,21 @@ import {
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
-import {Backbone} from './backbone';
-import {Button, Input, Label, Ul} from './components/basic';
-import {Lat, Long} from './latlongutils';
-import {camelToKebab, clamp, sortFunction} from './helpers';
-import {f} from './functools';
+import { Backbone } from './backbone';
+import { Button, Input, Label, Ul } from './components/basic';
+import { Lat, Long } from './latlongutils';
+import { camelToKebab, clamp, sortFunction } from './helpers';
+import { f } from './functools';
 import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './components/wbadvancedsearch';
-import {wbText} from './localization/workbench';
-import {commonText} from './localization/common';
-import {showDialog} from './components/legacydialog';
-import {createBackboneView} from './components/reactbackboneextend';
-import {LeafletMap} from './components/leaflet';
-import {localityText} from './localization/locality';
+import { wbText } from './localization/workbench';
+import { commonText } from './localization/common';
+import { showDialog } from './components/legacydialog';
+import { createBackboneView } from './components/reactbackboneextend';
+import { LeafletMap } from './components/leaflet';
+import { localityText } from './localization/locality';
 
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
@@ -921,13 +921,13 @@ export const WBUtils = Backbone.View.extend({
       });
       this.wbview.isReadOnly = originalReadOnlyState;
       this.el.classList.remove('wb-focus-coordinates');
-    }
+    };
 
     const handleClose = () => {
       this.wbview.coordinateConverterView.remove();
       this.wbview.coordinateConverterView = undefined;
       cleanUp();
-    }
+    };
 
     const options = [
       {
@@ -1029,35 +1029,28 @@ export const WBUtils = Backbone.View.extend({
       buttons: (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={handleClose}>
-            {commonText('apply')}
-          </Button.Blue>
+          <Button.Blue onClick={handleClose}>{commonText('apply')}</Button.Blue>
         </>
       ),
       content: (
         <>
           {wbText('coordinateConverterDialogHeader')}
           <Ul>
-            {Object.values(options).map(
-              (
-                entry,
-                optionIndex
-              ) => (
-                <li key={optionIndex}>
-                  <Label.ForCheckbox>
-                    <Input.Radio
-                      name="latLongFormat"
-                      onChange={() =>{
-                        conversionFunctionName = entry.conversionFunctionName;
-                        showCardinalDirection = entry.showCardinalDirection;
-                        handleChange();
-                      }}
-                    />
-                    {entry.optionName}
-                  </Label.ForCheckbox>
-                </li>
-              )
-            )}
+            {Object.values(options).map((entry, optionIndex) => (
+              <li key={optionIndex}>
+                <Label.ForCheckbox>
+                  <Input.Radio
+                    name="latLongFormat"
+                    onChange={() => {
+                      conversionFunctionName = entry.conversionFunctionName;
+                      showCardinalDirection = entry.showCardinalDirection;
+                      handleChange();
+                    }}
+                  />
+                  {entry.optionName}
+                </Label.ForCheckbox>
+              </li>
+            ))}
             <br />
             <li>
               <Label.ForCheckbox>
@@ -1065,7 +1058,7 @@ export const WBUtils = Backbone.View.extend({
                   defaultChecked={includeSymbols}
                   onValueChange={(newValue) => {
                     includeSymbols = newValue;
-                    if(typeof conversionFunctionName === 'string')
+                    if (typeof conversionFunctionName === 'string')
                       handleChange();
                   }}
                 />
@@ -1078,7 +1071,7 @@ export const WBUtils = Backbone.View.extend({
                   defaultChecked={applyToAll}
                   onValueChange={(newValue) => {
                     applyToAll = newValue;
-                    if(typeof conversionFunctionName === 'string')
+                    if (typeof conversionFunctionName === 'string')
                       handleChange();
                   }}
                 />

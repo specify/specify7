@@ -10,10 +10,7 @@
 //    instead of grid-template-columns:repeat(n,1fr)
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './lib/components/**/*.tsx',
-    './lib/*.{ts,js}',
-  ],
+  content: ['./lib/components/**/*.tsx', './lib/*.{ts,js}'],
   // Disable unneeded components to reduce performance impact
   corePlugins: {
     float: false,
@@ -73,13 +70,13 @@ module.exports = {
       },
       keyframes: {
         'hue-rotate': {
-          '0%': {filter: 'hue-rotate(0deg)'},
-          '100%': {filter: 'hue-rotate(360deg)'},
-        }
+          '0%': { filter: 'hue-rotate(0deg)' },
+          '100%': { filter: 'hue-rotate(360deg)' },
+        },
       },
       animation: {
         'hue-rotate': '4s hue-rotate 2s linear infinite',
-      }
+      },
     },
   },
 };

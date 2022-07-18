@@ -64,7 +64,7 @@ export function AppResourcesTabs({
             {label}
           </Tab>
         ))}
-        <span className="flex-1 -ml-2" />
+        <span className="-ml-2 flex-1" />
         <Button.Blue
           title={localityText('toggleFullScreen')}
           aria-label={localityText('toggleFullScreen')}

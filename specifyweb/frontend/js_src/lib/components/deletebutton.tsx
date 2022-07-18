@@ -129,7 +129,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 >
                   {commonText('delete')}
                 </Button.Red>
-                <span className="flex-1 -ml-2" />
+                <span className="-ml-2 flex-1" />
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               </>
             }

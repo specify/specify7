@@ -34,7 +34,7 @@ export function ChooseSchemaLanguage({
               {commonText('addLanguage')}
             </Button.Blue>
           )}
-          <span className="flex-1 -ml-2" />
+          <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
         </>
       }

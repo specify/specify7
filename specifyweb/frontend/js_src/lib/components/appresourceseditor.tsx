@@ -85,7 +85,7 @@ export function AppResourceEditor({
                 {form()}
               </AppResourceEditButton>
               <AppTitle title={formatted} type="form" />
-              <span className="flex-1 -ml-4" />
+              <span className="-ml-4 flex-1" />
               <AppResourceLoad
                 onLoaded={(data: string, mimeType: string): void => {
                   setResourceData({
@@ -108,7 +108,7 @@ export function AppResourceEditor({
             <>
               <DataEntry.Header>
                 <AppResourceIcon resource={resource} />
-                <h3 className="whitespace-nowrap overflow-auto text-2xl">
+                <h3 className="overflow-auto whitespace-nowrap text-2xl">
                   {formatted}
                 </h3>
                 {headerButtons}
@@ -135,7 +135,7 @@ export function AppResourceEditor({
                     onDeleted={handleDeleted}
                   />
                 ) : undefined}
-                <span className="flex-1 -ml-2" />
+                <span className="-ml-2 flex-1" />
                 {hasToolPermission('resources', 'create') && (
                   <Button.Orange
                     onClick={(): void =>

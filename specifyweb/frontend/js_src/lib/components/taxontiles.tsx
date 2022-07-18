@@ -40,9 +40,9 @@ export function TaxonTiles(): JSX.Element {
   }, [container, genusRankId, treeData]);
 
   return (
-    <div className="h-[473px] w-full text-xl flex relative">
+    <div className="relative flex h-[473px] w-full text-xl">
       <p
-        className="top-3 left-3 dark:bg-black opacity-80 absolute z-10 px-2 py-0 bg-white border"
+        className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
             ? welcomeText('taxonTilesDescription', treeData.threshold)
@@ -52,13 +52,13 @@ export function TaxonTiles(): JSX.Element {
         {welcomeText('taxonTiles')}
       </p>
       {typeof title === 'string' && (
-        <p className="top-3 right-3 dark:bg-black opacity-80 absolute z-10 px-2 py-0 bg-white border">
+        <p className="absolute top-3 right-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">
           {title}
         </p>
       )}
       <svg
         ref={setContainer}
-        className="dark:bg-neutral-700 flex-1 w-full bg-black"
+        className="w-full flex-1 bg-black dark:bg-neutral-700"
       />
     </div>
   );

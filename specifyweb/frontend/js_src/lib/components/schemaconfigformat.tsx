@@ -137,7 +137,7 @@ export function SchemaConfigFormat({
           </Label.ForCheckbox>
           {values && (
             <PickList
-              className="flex-1 w-0"
+              className="w-0 flex-1"
               label={label}
               value={value}
               groups={values}

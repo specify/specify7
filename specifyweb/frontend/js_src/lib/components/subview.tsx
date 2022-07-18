@@ -167,9 +167,9 @@ export function SubView({
            * Thus, have to introduce some inconsistency here
            */}
           {parentFormType === 'form' && (
-            <TableIcon name={icon} label={false} className="w-8 h-8" />
+            <TableIcon name={icon} label={false} className="h-8 w-8" />
           )}
-          <span className="dark:bg-neutral-800 p-1 font-bold bg-white border-gray-500 rounded">
+          <span className="rounded border-gray-500 bg-white p-1 font-bold dark:bg-neutral-800">
             {collection?.models.length ?? commonText('loading')}
           </span>
         </Button.BorderedGray>

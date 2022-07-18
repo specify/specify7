@@ -78,7 +78,7 @@ function Row({
       </td>
       <td
         title={commonText('recordCount')}
-        className="tabular-nums justify-end"
+        className="justify-end tabular-nums"
       >
         {typeof count === 'number' ? `(${formatNumber(count)})` : undefined}
       </td>
@@ -302,7 +302,7 @@ export function EditRecordSet({
       extraButtons={
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
           <>
-            <span className="flex-1 -ml-2" />
+            <span className="-ml-2 flex-1" />
             <Button.Blue onClick={handleOpenQuery}>
               {commonText('query')}
             </Button.Blue>

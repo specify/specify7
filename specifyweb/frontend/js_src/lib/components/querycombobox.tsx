@@ -524,7 +524,7 @@ export function QueryComboBox({
           />
         )}
       </Autocomplete>
-      <span className="print:hidden contents">
+      <span className="contents print:hidden">
         {formType === 'formTable' ? undefined : mode === 'view' ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
