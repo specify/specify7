@@ -133,6 +133,10 @@ class ObjectFormatter(object):
             query, value, expr = make_case(query, caseNode)
             cases.append((value, expr))
 
+        if not cases:
+            logger.warn("dataobjformatter for %s contains switch clause no fields", specify_model)
+            return query, literal(_("<Formatter not defined.>"))
+
         if single:
             value, expr = cases[0]
         else:
