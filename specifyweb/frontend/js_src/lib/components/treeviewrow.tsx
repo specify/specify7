@@ -47,7 +47,7 @@ export function TreeRow({
   readonly focusPath: RA<number> | undefined;
   readonly actionRow: Row | undefined;
   readonly onFocusNode: (newFocusedNode: RA<number>) => void;
-  readonly onAction: (action: Exclude<KeyAction, 'toggle' | 'child'>) => void;
+  readonly onAction: (action: Exclude<KeyAction, 'child' | 'toggle'>) => void;
   readonly setFocusedRow: (row: Row) => void;
   readonly synonymColor: string;
 }): JSX.Element {
@@ -122,7 +122,7 @@ export function TreeRow({
   }
 
   const isFocused = focusPath?.length === 0;
-  const parentRankId = path.slice(-1)[0]?.rankId;
+  const parentRankId = path.at(-1)?.rankId;
   const id = useId('tree-node');
   const isAction = actionRow === row;
   return (
@@ -131,11 +131,13 @@ export function TreeRow({
         if (row.rankId === rankId)
           return (
             <Button.LikeLink
-              key={rankId}
+              aria-controls={id('children')}
               /*
                * Shift all node labels using margin and padding to align nicely
                * with borders of <span> cells
                */
+              aria-describedby={rankNameId(rankId.toString())}
+              aria-pressed={isLoading ? 'mixed' : displayChildren}
               className={`
                 aria-handled -mb-[12px] -ml-[5px] mt-2
                 whitespace-nowrap rounded border border-transparent
@@ -147,10 +149,6 @@ export function TreeRow({
                     : ''
                 }
               `}
-              style={{
-                color:
-                  typeof row.acceptedId === 'number' ? synonymColor : undefined,
-              }}
               forwardRef={
                 isFocused
                   ? (element: HTMLButtonElement | null): void => {
@@ -161,8 +159,14 @@ export function TreeRow({
                     }
                   : undefined
               }
-              aria-pressed={isLoading ? 'mixed' : displayChildren}
-              aria-controls={id('children')}
+              key={rankId}
+              style={{
+                color:
+                  typeof row.acceptedId === 'number' ? synonymColor : undefined,
+              }}
+              onClick={({ metaKey, shiftKey }): void =>
+                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
+              }
               onKeyDown={(event): void => {
                 const action = mapKey(event);
                 if (action === undefined) return undefined;
@@ -175,10 +179,6 @@ export function TreeRow({
                 else handleAction(action);
                 return undefined;
               }}
-              onClick={({ metaKey, shiftKey }): void =>
-                metaKey || shiftKey ? handleFocusNode([]) : handleToggle(false)
-              }
-              aria-describedby={rankNameId(rankId.toString())}
             >
               <span className="-mr-2">
                 <span className="sr-only">
@@ -243,7 +243,6 @@ export function TreeRow({
           const currentNode = path[indexOfAncestor + 1];
           return (
             <span
-              key={rankId}
               aria-hidden="true"
               className={`
                 pointer-events-none whitespace-nowrap border
@@ -257,51 +256,45 @@ export function TreeRow({
                 }
                 ${
                   // Add a line from parent till child
-                  parentRankId <= rankId && rankId < row.rankId
+                  typeof parentRankId === 'number' &&
+                  parentRankId <= rankId &&
+                  rankId < row.rankId
                     ? 'border-b-gray-500'
                     : ''
                 }
               `}
+              key={rankId}
             />
           );
         }
       })}
       {displayChildren ? (
-        <ul role="group row" id={id('children')}>
+        <ul id={id('children')} role="group row">
           {rows.map((childRow, index) => (
             <TreeRow
-              key={childRow.nodeId}
-              row={childRow}
-              getRows={getRows}
-              getStats={getStats}
-              nodeStats={childStats?.[childRow.nodeId]}
-              path={[...path, row]}
-              ranks={ranks}
-              rankNameId={rankNameId}
+              actionRow={actionRow}
               collapsedRanks={collapsedRanks}
               conformation={
                 conformation
                   ?.find(([id]) => id === childRow.nodeId)
                   ?.slice(1) as Conformations
               }
-              onChangeConformation={(newConformation): void =>
-                handleChangeConformation([
-                  ...conformation.filter(([id]) => id !== childRow.nodeId),
-                  ...(typeof newConformation === 'object'
-                    ? ([[childRow.nodeId, ...newConformation]] as const)
-                    : []),
-                ])
-              }
-              actionRow={actionRow}
               focusPath={
                 (focusPath?.[0] === 0 && index === 0) ||
                 focusPath?.[0] === childRow.nodeId
                   ? focusPath.slice(1)
                   : undefined
               }
-              onFocusNode={(newFocusedNode): void =>
-                handleFocusNode([childRow.nodeId, ...newFocusedNode])
-              }
+              getRows={getRows}
+              getStats={getStats}
+              key={childRow.nodeId}
+              nodeStats={childStats?.[childRow.nodeId]}
+              path={[...path, row]}
+              rankNameId={rankNameId}
+              ranks={ranks}
+              row={childRow}
+              setFocusedRow={setFocusedRow}
+              synonymColor={synonymColor}
               onAction={(action): void => {
                 if (action === 'next')
                   if (typeof rows[index + 1] === 'object')
@@ -314,8 +307,17 @@ export function TreeRow({
                 else handleAction(action);
                 return undefined;
               }}
-              setFocusedRow={setFocusedRow}
-              synonymColor={synonymColor}
+              onChangeConformation={(newConformation): void =>
+                handleChangeConformation([
+                  ...conformation.filter(([id]) => id !== childRow.nodeId),
+                  ...(typeof newConformation === 'object'
+                    ? ([[childRow.nodeId, ...newConformation]] as const)
+                    : []),
+                ])
+              }
+              onFocusNode={(newFocusedNode): void =>
+                handleFocusNode([childRow.nodeId, ...newFocusedNode])
+              }
             />
           ))}
         </ul>

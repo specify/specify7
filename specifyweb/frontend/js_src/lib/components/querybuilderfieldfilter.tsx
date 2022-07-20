@@ -27,30 +27,10 @@ import { mappingElementDivider } from './wbplanviewcomponents';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
-  | 'text'
-  | 'number'
-  | 'date'
-  | 'id'
-  | 'checkbox'
-  | 'formatter';
+  'checkbox' | 'date' | 'formatter' | 'id' | 'number' | 'text';
 export type QueryFieldFilter =
-  | 'any'
-  | 'like'
-  | 'equal'
-  | 'greater'
-  | 'less'
-  | 'greaterOrEqual'
-  | 'lessOrEqual'
-  | 'true'
-  | 'false'
-  | 'between'
-  | 'in'
-  | 'contains'
-  | 'startsWith'
-  | 'empty'
-  | 'trueOrNull'
-  | 'falseOrNull';
-export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
+  'any' | 'between' | 'contains' | 'empty' | 'equal' | 'false' | 'falseOrNull' | 'greater' | 'greaterOrEqual' | 'in' | 'less' | 'lessOrEqual' | 'like' | 'startsWith' | 'true' | 'trueOrNull';
+export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'equal',
   'in',
 ]);
@@ -83,11 +63,11 @@ function QueryInputField({
     target: HTMLInputElement | HTMLSelectElement
   ): RA<string> =>
     listInput
-      ? Array.isArray(pickListItems)
+      ? (Array.isArray(pickListItems)
         ? Array.from(target.querySelectorAll('option'))
             .filter(({ selected }) => selected)
             .map(({ value }) => value)
-        : target.value.split(',')
+        : target.value.split(','))
       : [target.value];
 
   /*
@@ -165,10 +145,10 @@ function QueryInputField({
     <div>
       <Select
         {...commonProps}
-        required={Boolean(validationAttributes.required)}
         multiple={listInput}
-        value={listInput ? value.split(',').map(f.trim) : value}
+        required={Boolean(validationAttributes.required)}
         size={listInput ? selectMultipleSize : 1}
+        value={listInput ? value.split(',').map(f.trim) : value}
       >
         <option value="" />
         {pickListItems.map(({ title, value }) => (
@@ -181,21 +161,21 @@ function QueryInputField({
   ) : (
     // This allows <input> to grow in size as needed
     <span
-      data-value={value}
-      // The :after pseudo element sets the width
       className={`
         relative min-w-[theme(spacing.40)] after:invisible
         after:block after:px-2 after:leading-[0px] after:content-[attr(data-value)]
       `}
+      // The :after pseudo element sets the width
+      data-value={value}
     >
       {/* This invisible input is used to set the height */}
-      <Input.Text className="invisible w-0" aria-hidden={true} />
+      <Input.Text aria-hidden className="invisible w-0" />
       <Input.Generic
         {...commonProps}
         {...validationAttributes}
-        value={value}
-        // This is the actual input that is visible to user
         className="!absolute inset-0"
+        // This is the actual input that is visible to user
+        value={value}
       />
     </span>
   );
@@ -219,16 +199,16 @@ function SingleField({
    * This prop is not used here, but defined here because of "typeof SingleField"
    * in queryFieldFilters
    */
-  // eslint-disable-next-line react/no-unused-prop-types
+   
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   return (
     <QueryInputField
       currentValue={filter.startValue}
-      parser={parser}
-      label={label}
-      pickListItems={pickListItems}
       fieldName={fieldName}
+      label={label}
+      parser={parser}
+      pickListItems={pickListItems}
       onChange={handleChange}
     />
   );
@@ -271,19 +251,19 @@ function Between({
     <>
       <QueryInputField
         currentValue={values[0] ?? ''}
+        fieldName={fieldName}
+        label={queryText('startValue')}
         parser={parser}
         pickListItems={pickListItems}
-        label={queryText('startValue')}
-        fieldName={fieldName}
         onChange={updateValues?.bind(undefined, 0)}
       />
       <span className="flex items-center">{queryText('and')}</span>
       <QueryInputField
         currentValue={values[1] ?? ''}
+        fieldName={fieldName}
+        label={queryText('endValue')}
         parser={parser}
         pickListItems={pickListItems}
-        label={queryText('endValue')}
-        fieldName={fieldName}
         onChange={updateValues?.bind(undefined, 1)}
       />
     </>
@@ -318,11 +298,11 @@ function In({
   return (
     <QueryInputField
       currentValue={filter.startValue}
+      fieldName={fieldName}
+      label={queryText('startValue')}
+      listInput
       parser={pluralizedParser}
       pickListItems={pickListItems}
-      label={queryText('startValue')}
-      fieldName={fieldName}
-      listInput={true}
       onChange={handleChange}
     />
   );
@@ -331,15 +311,15 @@ function In({
 export const queryFieldFilters: RR<
   QueryFieldFilter,
   {
-    id: number;
-    label: string;
-    description: string | undefined;
+    readonly id: number;
+    readonly label: string;
+    readonly description: string | undefined;
     // If true, show pick list item titles. Else, show free input
-    renderPickList: boolean;
-    types?: RA<QueryFieldType>;
-    component?: typeof SingleField;
+    readonly renderPickList: boolean;
+    readonly types?: RA<QueryFieldType>;
+    readonly component?: typeof SingleField;
     // Whether to do front-end validation
-    hasParser: boolean;
+    readonly hasParser: boolean;
   }
 > = {
   any: {
@@ -529,20 +509,20 @@ export function QueryLineFilter({
 
   const Component = queryFieldFilters[filter.type].component;
   return Component === undefined ? null : (
-    <React.Fragment>
+    <>
       {mappingElementDivider}
       <Component
-        filter={filter}
-        onChange={handleChange}
-        parser={parser}
-        fieldName={fieldName}
         enforceLengthLimit={enforceLengthLimit}
+        fieldName={fieldName}
+        filter={filter}
+        parser={parser}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
             ? pickListItems
             : undefined
         }
+        onChange={handleChange}
       />
-    </React.Fragment>
+    </>
   );
 }

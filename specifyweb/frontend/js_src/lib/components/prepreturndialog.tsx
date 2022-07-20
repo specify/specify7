@@ -104,9 +104,9 @@ function Row({
       <tr>
         <td>
           <Input.Checkbox
-            title={formsText('selectAll')}
             aria-label={formsText('selectAll')}
             checked={resolve > 0}
+            title={formsText('selectAll')}
             onValueChange={(checked): void =>
               handleChange({
                 resolve: checked ? unresolved : 0,
@@ -125,12 +125,12 @@ function Row({
         <td className="text-center">{unresolved}</td>
         <td>
           <Input.Number
-            value={returns}
-            min={0}
-            max={unresolved}
-            className="w-12"
-            title={formsText('returnedAmount')}
             aria-label={formsText('returnedAmount')}
+            className="w-12"
+            max={unresolved}
+            min={0}
+            title={formsText('returnedAmount')}
+            value={returns}
             onValueChange={(returns): void =>
               handleChange({
                 // Make return <= unresolved
@@ -145,12 +145,12 @@ function Row({
         </td>
         <td>
           <Input.Number
-            value={resolve}
-            min={returns}
-            max={unresolved}
-            className="w-12"
-            title={formsText('resolvedAmount')}
             aria-label={formsText('resolvedAmount')}
+            className="w-12"
+            max={unresolved}
+            min={returns}
+            title={formsText('resolvedAmount')}
+            value={resolve}
             onValueChange={(resolve): void =>
               handleChange({
                 // Make resolve <= unresolved
@@ -166,10 +166,10 @@ function Row({
         <td>
           {resolve > 0 && (
             <Button.Icon
-              className="return-remark w-full"
-              title={formsText('remarks')}
               aria-pressed={showRemarks}
+              className="return-remark w-full"
               icon="annotation"
+              title={formsText('remarks')}
               onClick={handleToggle}
             />
           )}
@@ -180,10 +180,13 @@ function Row({
           <td />
           <td className="col-span-7">
             <AutoGrowTextArea
+              aria-label={formsText('remarks')}
+              containerClassName="w-full"
+              forwardRef={(target): void => target?.focus()}
               placeholder={formsText('remarks')}
               title={formsText('remarks')}
-              aria-label={formsText('remarks')}
               value={remarks}
+              // Focus the input when toggled
               onValueChange={(remarks): void =>
                 handleChange({
                   resolve,
@@ -192,9 +195,6 @@ function Row({
                   remarks,
                 })
               }
-              containerClassName="w-full"
-              // Focus the input when toggled
-              forwardRef={(target): void => target?.focus()}
             />
           </td>
         </tr>
@@ -235,12 +235,12 @@ function PreparationReturn({
   const id = useId('prep-return-dialog');
   return (
     <Dialog
-      header={schema.models.LoanPreparation.label}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Blue
+            disabled={!canSelectAll}
+            title={formsText('returnAllPreparations')}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -251,12 +251,12 @@ function PreparationReturn({
                 }))
               )
             }
-            disabled={!canSelectAll}
-            title={formsText('returnAllPreparations')}
           >
             {formsText('selectAll')}
           </Button.Blue>
           <Button.Blue
+            disabled={!canDeselect}
+            title={commonText('clearAll')}
             onClick={(): void =>
               setState(
                 state.map(({ remarks }) => ({
@@ -267,8 +267,6 @@ function PreparationReturn({
                 }))
               )
             }
-            disabled={!canDeselect}
-            title={commonText('clearAll')}
           >
             {formsText('deselectAll')}
           </Button.Blue>
@@ -280,6 +278,8 @@ function PreparationReturn({
           </Submit.Green>
         </>
       }
+      header={schema.models.LoanPreparation.label}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -330,34 +330,34 @@ function PreparationReturn({
         }}
       >
         <RenderForm
+          display="block"
           resource={loanReturnPreparation.current}
           viewDefinition={loanReturnPrepForm()}
-          display="block"
         />
         <table className="grid-table grid-cols-[repeat(8,auto)] gap-2">
           <thead>
             <tr>
               <td />
-              <th scope="col" className="text-center">
+              <th className="text-center" scope="col">
                 {
                   defined(
                     schema.models.CollectionObject.getField('catalogNumber')
                   ).label
                 }
               </th>
-              <th scope="col" className="text-center">
+              <th className="text-center" scope="col">
                 {defined(schema.models.Determination.getField('taxon')).label}
               </th>
-              <th scope="col" className="text-center">
+              <th className="text-center" scope="col">
                 {defined(schema.models.Preparation.getField('prepType')).label}
               </th>
-              <th scope="col" className="text-center">
+              <th className="text-center" scope="col">
                 {formsText('unresolved')}
               </th>
-              <th scope="col" className="text-center">
+              <th className="text-center" scope="col">
                 {formsText('return')}
               </th>
-              <th scope="col" className="col-span-2 text-center">
+              <th className="col-span-2 text-center" scope="col">
                 {formsText('resolve')}
               </th>
             </tr>
@@ -365,8 +365,8 @@ function PreparationReturn({
           <tbody>
             {preparations.map((preparation, index) => (
               <Row
-                preparation={preparation}
                 key={preparation.cid}
+                preparation={preparation}
                 {...state[index]}
                 onChange={(newState): void =>
                   setState(replaceItem(state, index, newState))
@@ -407,9 +407,9 @@ export function LoanReturn({
   return Array.isArray(preparations) ? (
     preparations.length === 0 ? (
       <Dialog
+        buttons={commonText('close')}
         header={schema.models.LoanPreparation.label}
         onClose={handleClose}
-        buttons={commonText('close')}
       >
         {formsText('noUnresolvedPreparations')}
       </Dialog>

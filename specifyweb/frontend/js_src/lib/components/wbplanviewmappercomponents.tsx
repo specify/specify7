@@ -36,7 +36,7 @@ export function MappingsControlPanel({
   const newHeaderIdRef = React.useRef(1);
 
   return (
-    <div role="toolbar" className="flex items-center gap-2 print:hidden">
+    <div className="flex items-center gap-2 print:hidden" role="toolbar">
       {typeof handleAddNewHeader === 'function' && (
         <Button.Small
           onClick={(): void => {
@@ -71,9 +71,6 @@ export function ValidationResults(props: {
 
   return (
     <Dialog
-      header={wbText('validationFailedDialogHeader')}
-      modal={false}
-      onClose={props.onDismissValidation}
       buttons={
         <>
           <Button.Blue onClick={props.onDismissValidation}>
@@ -84,6 +81,9 @@ export function ValidationResults(props: {
           </Button.Orange>
         </>
       }
+      header={wbText('validationFailedDialogHeader')}
+      modal={false}
+      onClose={props.onDismissValidation}
     >
       <p>{wbText('validationFailedDialogText')}</p>
       <section className="flex flex-col gap-2">
@@ -150,17 +150,17 @@ export function MappingView({
 
   return (
     <section
+      aria-label={wbText('mappingEditor')}
       className={`
         h-[var(--mapping-view-height)] max-h-[50vh]
         min-h-[theme(spacing.40)] resize-y overflow-x-auto
       `}
+      ref={mappingViewParentRef}
       style={
         {
           '--mapping-view-height': `${mappingViewHeight ?? ''}px`,
         } as React.CSSProperties
       }
-      aria-label={wbText('mappingEditor')}
-      ref={mappingViewParentRef}
     >
       <div className="flex h-full w-max gap-8">
         <div className="flex gap-1" role="list">
@@ -188,10 +188,10 @@ export function EmptyDataSetDialog({
 
   return (
     <Dialog
-      isOpen={showDialog}
-      header={wbText('emptyDataSetDialogHeader')}
-      onClose={handleClose}
       buttons={commonText('close')}
+      header={wbText('emptyDataSetDialogHeader')}
+      isOpen={showDialog}
+      onClose={handleClose}
     >
       {wbText('emptyDataSetDialogText')}
     </Dialog>
@@ -236,10 +236,10 @@ export function mappingOptionsMenu({
               <li key={id}>
                 <Label.ForCheckbox title={description}>
                   <Input.Radio
-                    name="match-behavior"
-                    value={id}
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
+                    name="match-behavior"
+                    value={id}
                     onChange={(): void => handleChangeMatchBehaviour(id)}
                   />
                   {` ${title}`}
@@ -282,11 +282,11 @@ export function mappingOptionsMenu({
             <>
               <br />
               <AutoGrowTextArea
-                value={columnOptions.default || ''}
-                title={wbText('defaultValue')}
                 aria-labelledby={id('default-value')}
-                onValueChange={handleChangeDefaultValue}
                 disabled={isReadOnly}
+                title={wbText('defaultValue')}
+                value={columnOptions.default || ''}
+                onValueChange={handleChangeDefaultValue}
               />
             </>
           )}
@@ -304,8 +304,6 @@ export function ChangeBaseTable({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogHeader={wbText('goToBaseTableDialogHeader')}
-      dialogMessage={wbText('goToBaseTableDialogText')}
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -314,6 +312,8 @@ export function ChangeBaseTable({
           </Button.Orange>
         </>
       )}
+      dialogHeader={wbText('goToBaseTableDialogHeader')}
+      dialogMessage={wbText('goToBaseTableDialogText')}
       onConfirm={handleClick}
     >
       {wbText('baseTable')}
@@ -330,8 +330,6 @@ export function ReRunAutoMapper({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogHeader={wbText('reRunAutoMapperDialogHeader')}
-      dialogMessage={wbText('reRunAutoMapperDialogText')}
       dialogButtons={(confirm) => (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -340,6 +338,8 @@ export function ReRunAutoMapper({
           </Button.Orange>
         </>
       )}
+      dialogHeader={wbText('reRunAutoMapperDialogHeader')}
+      dialogMessage={wbText('reRunAutoMapperDialogText')}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
@@ -356,7 +356,7 @@ export function ToggleMappingPath({
   readonly onClick: () => void;
 }): JSX.Element {
   return (
-    <Button.Small onClick={handleClick} aria-pressed={!showMappingView}>
+    <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
       {showMappingView
         ? wbText('hideMappingEditor')
         : wbText('showMappingEditor')}
@@ -399,11 +399,6 @@ export function MustMatch({
       </Button.Small>
       {typeof localPreferences === 'object' && (
         <Dialog
-          header={wbText('matchingLogicDialogTitle')}
-          onClose={handleDialogClose}
-          className={{
-            container: dialogClassNames.narrowContainer,
-          }}
           buttons={
             <Button.Blue onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
@@ -411,6 +406,11 @@ export function MustMatch({
                 : commonText('apply')}
             </Button.Blue>
           }
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+          header={wbText('matchingLogicDialogTitle')}
+          onClose={handleDialogClose}
         >
           {Object.keys(localPreferences).length === 0 ? (
             wbText('matchingLogicUnavailableDialogText')
@@ -418,15 +418,15 @@ export function MustMatch({
             <>
               <p id={id('description')}>{wbText('matchingLogicDialogText')}</p>
               <table
-                className="grid-table grid-cols-[auto_auto] gap-2"
                 aria-describedby={id('description')}
+                className="grid-table grid-cols-[auto_auto] gap-2"
               >
                 <thead>
                   <tr>
-                    <th scope="col" className="justify-center">
+                    <th className="justify-center" scope="col">
                       {commonText('tableName')}
                     </th>
-                    <th scope="col" className="justify-center">
+                    <th className="justify-center" scope="col">
                       {wbText('mustMatch')}
                     </th>
                   </tr>
@@ -437,10 +437,10 @@ export function MustMatch({
                       <tr key={tableName}>
                         <td>
                           <label
-                            htmlFor={id(`table-${tableName}`)}
                             className="contents"
+                            htmlFor={id(`table-${tableName}`)}
                           >
-                            <TableIcon name={tableName} label={false} />
+                            <TableIcon label={false} name={tableName} />
                             {defined(getModel(tableName)).label}
                           </label>
                         </td>

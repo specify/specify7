@@ -6,14 +6,14 @@
 
 import React from 'react';
 
+import { getCache, setCache } from '../cache';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { Button, H2, Input, Label, Select } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { getCache, setCache } from '../cache';
-import { ErrorBoundary } from './errorboundary';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';
@@ -102,19 +102,20 @@ function PreferencesDialog({
 }): JSX.Element {
   return (
     <Dialog
-      header={wbText('wbAdvancedSearchDialogTitle')}
-      onClose={handleClose}
       buttons={commonText('close')}
-      modal={false}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
+      header={wbText('wbAdvancedSearchDialogTitle')}
+      modal={false}
+      onClose={handleClose}
     >
       <div>
         <H2>{wbText('navigationOptions')}</H2>
         <Label.Generic>
           {wbText('cursorPriority')}
           <Select
+            value={searchPreferences.navigation.direction}
             onValueChange={(value): void =>
               handleChange({
                 ...searchPreferences,
@@ -124,7 +125,6 @@ function PreferencesDialog({
                 },
               })
             }
-            value={searchPreferences.navigation.direction}
           >
             <option value="columnFirst">{wbText('columnFirst')}</option>
             <option value="rowFirst">{wbText('rowFirst')}</option>
@@ -136,29 +136,29 @@ function PreferencesDialog({
         <H2>{wbText('searchOptions')}</H2>
         <CheckboxLine
           property="fullMatch"
-          state={searchPreferences}
           setState={handleChange}
+          state={searchPreferences}
         >
           {wbText('findEntireCellsOnly')}
         </CheckboxLine>
         <CheckboxLine
           property="caseSensitive"
-          state={searchPreferences}
           setState={handleChange}
+          state={searchPreferences}
         >
           {wbText('matchCase')}
         </CheckboxLine>
         <CheckboxLine
           property="useRegex"
-          state={searchPreferences}
           setState={handleChange}
+          state={searchPreferences}
         >
           {wbText('useRegularExpression')}
         </CheckboxLine>
         <CheckboxLine
           property="liveUpdate"
-          state={searchPreferences}
           setState={handleChange}
+          state={searchPreferences}
         >
           {wbText('liveUpdate')}
         </CheckboxLine>
@@ -169,6 +169,7 @@ function PreferencesDialog({
         <Label.Generic>
           {wbText('replaceMode')}
           <Select
+            value={searchPreferences.replace.replaceMode}
             onValueChange={(value): void =>
               handleChange({
                 ...searchPreferences,
@@ -178,7 +179,6 @@ function PreferencesDialog({
                 },
               })
             }
-            value={searchPreferences.replace.replaceMode}
           >
             <option value="replaceAll">{wbText('replaceAll')}</option>
             <option value="replaceNext">{wbText('replaceNext')}</option>
@@ -209,9 +209,9 @@ export function WbAdvancedSearch({
     <ErrorBoundary dismissable>
       <Button.Small
         aria-haspopup="dialog"
+        aria-label={wbText('configureSearchReplace')}
         aria-pressed={isOpen}
         title={wbText('configureSearchReplace')}
-        aria-label={wbText('configureSearchReplace')}
         onClick={handleToggle}
       >
         {icons.cog}
@@ -219,8 +219,8 @@ export function WbAdvancedSearch({
       {isOpen && (
         <PreferencesDialog
           searchPreferences={searchPreferences}
-          onClose={handleClose}
           onChange={setSearchPreferences}
+          onClose={handleClose}
         />
       )}
     </ErrorBoundary>

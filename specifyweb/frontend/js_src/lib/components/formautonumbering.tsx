@@ -27,8 +27,8 @@ export function FormAutoNumbering({
       </Button.Simple>
       {isOpen && (
         <AutoNumberingDialog
-          resource={resource}
           fields={fields}
+          resource={resource}
           onClose={handleClose}
         />
       )}
@@ -85,8 +85,8 @@ function AutoNumberingDialog({
 
   return (
     <Dialog
-      header={formsText('autoNumbering')}
       buttons={commonText('close')}
+      header={formsText('autoNumbering')}
       onClose={handleClose}
     >
       <Ul>

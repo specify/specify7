@@ -110,20 +110,20 @@ export function TreeLevelComboBox(props: DefaultComboBoxProps): JSX.Element {
   return (
     <PickListComboBox
       {...props}
-      isRequired={
-        props.model.specifyModel.getRelationship('definitionItem')
-          ?.isRequired ?? true
-      }
-      items={items}
-      onAdd={undefined}
-      pickList={undefined}
-      // Select next enforced rank by default
       defaultValue={props.defaultValue ?? items?.slice(-1)[0]?.value}
       isDisabled={
         props.isDisabled ||
         !isTreeResource(props.model) ||
         props.model.get('parent') === null
       }
+      isRequired={
+        props.model.specifyModel.getRelationship('definitionItem')
+          ?.isRequired ?? true
+      }
+      items={items}
+      // Select next enforced rank by default
+      pickList={undefined}
+      onAdd={undefined}
     />
   );
 }

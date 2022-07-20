@@ -10,12 +10,12 @@ import type { UiCommands } from '../parseuicommands';
 import { hasPermission, hasTablePermission } from '../permissionutils';
 import { toTable } from '../specifymodel';
 import { Button } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
 import { LoanReturn } from './prepreturndialog';
 import { ReportsView } from './reports';
 import { ShowLoansCommand } from './showtranscommand';
-import { ErrorBoundary } from './errorboundary';
 
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
@@ -32,18 +32,18 @@ const commandRenderers: {
     return hasPermission('/report', 'execute') ? (
       <>
         <Button.Small
-          id={id}
-          onClick={handleRunReport}
           disabled={isDisabled}
+          id={id}
           title={isDisabled ? formsText('saveRecordFirst') : undefined}
+          onClick={handleRunReport}
         >
           {label}
         </Button.Small>
         {runReport ? (
           <ReportsView
+            autoSelectSingle
             model={resource.specifyModel}
             resourceId={resource.get('id')}
-            autoSelectSingle={true}
             onClose={handleHideReport}
           />
         ) : undefined}
@@ -79,8 +79,8 @@ const commandRenderers: {
             {showDialog ? (
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
-                  header={label ?? ''}
                   buttons={commonText('close')}
+                  header={label ?? ''}
                   onClose={handleHide}
                 >
                   {formsText('preparationsCanNotBeReturned')}
@@ -101,10 +101,10 @@ const commandRenderers: {
           {formsText('unavailableCommandButton')}
         </Button.Small>
         <Dialog
+          buttons={commonText('close')}
+          header={formsText('unavailableCommandDialogHeader')}
           isOpen={isClicked}
           onClose={handleHide}
-          header={formsText('unavailableCommandDialogHeader')}
-          buttons={commonText('close')}
         >
           {formsText('unavailableCommandDialogText')}
           <br />
@@ -131,10 +131,10 @@ export function UiCommand({
   ] as typeof commandRenderers['GenerateLabel'];
   return (
     <Command
-      resource={resource}
+      commandDefinition={commandDefinition as UiCommands['GenerateLabel']}
       id={id}
       label={label}
-      commandDefinition={commandDefinition as UiCommands['GenerateLabel']}
+      resource={resource}
     />
   );
 }

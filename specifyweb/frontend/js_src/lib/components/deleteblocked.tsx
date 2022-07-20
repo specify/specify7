@@ -16,9 +16,9 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { ResourceView } from './resourceview';
 
 export type DeleteBlocker = {
-  model: SpecifyModel;
-  field: string;
-  id: number;
+  readonly model: SpecifyModel;
+  readonly field: string;
+  readonly id: number;
 };
 
 export function DeleteBlocked({
@@ -67,9 +67,9 @@ export function DeleteBlocked({
   return Array.isArray(data) ? (
     typeof preview === 'object' ? (
       <BlockerPreview
-        resource={preview.resource}
-        parentResource={parentResource}
         field={preview.field}
+        parentResource={parentResource}
+        resource={preview.resource}
         onClose={(): void => setPreview(undefined)}
         onDeleted={(): void =>
           setData(data.filter(({ resource }) => resource !== preview.resource))
@@ -77,12 +77,12 @@ export function DeleteBlocked({
       />
     ) : (
       <Dialog
-        header={formsText('deleteBlockedDialogHeader')}
         buttons={commonText('close')}
-        onClose={handleClose}
         className={{
           container: dialogClassNames.narrowContainer,
         }}
+        header={formsText('deleteBlockedDialogHeader')}
+        onClose={handleClose}
       >
         {formsText('deleteBlockedDialogText')}
         <table className="grid-table grid-cols-[auto_auto] gap-2">
@@ -97,15 +97,15 @@ export function DeleteBlocked({
               <tr key={index}>
                 <td>
                   <Button.LikeLink
+                    className="text-left"
                     onClick={(): void =>
                       setPreview({
                         resource,
                         field: typeof field === 'object' ? field : undefined,
                       })
                     }
-                    className="text-left"
                   >
-                    <TableIcon name={resource.specifyModel.name} label />
+                    <TableIcon label name={resource.specifyModel.name} />
                     {`${formatted ?? resource.viewUrl()}`}
                   </Button.LikeLink>
                 </td>
@@ -134,10 +134,17 @@ function BlockerPreview({
 }): JSX.Element {
   return (
     <ResourceView
-      resource={resource}
-      mode="edit"
       canAddAnother={false}
       dialog="modal"
+      isDependent={false}
+      isSubForm={false}
+      mode="edit"
+      resource={resource}
+      onClose={handleClose}
+      onDeleted={(): void => {
+        handleDeleted();
+        handleClose();
+      }}
       onSaved={() => {
         if (
           typeof field === 'object' &&
@@ -146,13 +153,6 @@ function BlockerPreview({
           handleDeleted();
         handleClose();
       }}
-      onDeleted={(): void => {
-        handleDeleted();
-        handleClose();
-      }}
-      onClose={handleClose}
-      isSubForm={false}
-      isDependent={false}
     />
   );
 }

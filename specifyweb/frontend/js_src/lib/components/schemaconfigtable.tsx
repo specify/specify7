@@ -31,13 +31,13 @@ export function SchemaConfigTable({
   readonly isReadOnly: boolean;
   readonly container: SerializedResource<SpLocaleContainer>;
   readonly onChange: (container: SerializedResource<SpLocaleContainer>) => void;
-  readonly name: SpLocaleItemString | NewSpLocaleItemString | undefined;
+  readonly name: NewSpLocaleItemString | SpLocaleItemString | undefined;
   readonly onChangeName: (
-    containerName: SpLocaleItemString | NewSpLocaleItemString
+    containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
-  readonly desc: SpLocaleItemString | NewSpLocaleItemString | undefined;
+  readonly desc: NewSpLocaleItemString | SpLocaleItemString | undefined;
   readonly onChangeDesc: (
-    containerName: SpLocaleItemString | NewSpLocaleItemString
+    containerName: NewSpLocaleItemString | SpLocaleItemString
   ) => void;
 }): JSX.Element {
   return (
@@ -47,59 +47,59 @@ export function SchemaConfigTable({
       <Label.Generic>
         {commonText('caption')}
         <Input.Text
-          value={name?.text ?? ''}
-          onValueChange={(text): void => handleChangeName({ ...name!, text })}
           isReadOnly={isReadOnly || name === undefined}
           maxLength={maxSchemaValueLength}
+          value={name?.text ?? ''}
+          onValueChange={(text): void => handleChangeName({ ...name!, text })}
         />
       </Label.Generic>
       <Label.Generic>
         {commonText('description')}
         <AutoGrowTextArea
           className="resize-y"
-          value={desc?.text ?? ''}
-          onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
           isReadOnly={isReadOnly || desc === undefined}
           maxLength={maxSchemaValueLength}
+          value={desc?.text ?? ''}
+          onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
         />
       </Label.Generic>
       <Label.Generic>
         {commonText('tableFormat')}
         <PickList
-          value={container.format}
+          disabled={isReadOnly}
           groups={{
             '': filterFormatters(
               schemaData.formatters,
               container.name as keyof Tables
             ),
           }}
+          value={container.format}
           onChange={(format): void => handleChange({ ...container, format })}
-          disabled={isReadOnly}
         />
       </Label.Generic>
       <Label.Generic>
         {commonText('tableAggregation')}
         <PickList
-          value={container.aggregator}
+          disabled={isReadOnly}
           groups={{
             '': filterFormatters(
               schemaData.aggregators,
               container.name as keyof Tables
             ),
           }}
+          value={container.aggregator}
           onChange={(aggregator): void =>
             handleChange({ ...container, aggregator })
           }
-          disabled={isReadOnly}
         />
       </Label.Generic>
       <Label.ForCheckbox>
         <Input.Checkbox
           checked={container.isHidden}
+          isReadOnly={isReadOnly}
           onValueChange={(isHidden): void =>
             handleChange({ ...container, isHidden })
           }
-          isReadOnly={isReadOnly}
         />
         {commonText('hideTable')}
       </Label.ForCheckbox>

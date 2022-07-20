@@ -19,7 +19,7 @@ import { useBooleanState, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 
-type Action = 'add' | 'edit' | 'merge' | 'move' | 'synonymize' | 'desynonymize';
+type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
 export function TreeViewActions<SCHEMA extends AnyTree>({
   tableName,
@@ -62,13 +62,13 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             <Link.LikeButton
+              forwardRef={(element): void => {
+                focusRef.current = element;
+              }}
               href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
                 focusedRow.nodeId
               }/`}
               target="_blank"
-              forwardRef={(element): void => {
-                focusRef.current = element;
-              }}
             >
               {commonText('query')}
             </Link.LikeButton>
@@ -79,16 +79,16 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       )}
       <li className="contents">
         <EditRecordDialog<SCHEMA>
-          nodeId={focusedRow?.nodeId}
           addNew={false}
+          disabled={focusedRow === undefined}
           label={
             hasTablePermission(tableName, 'update')
               ? commonText('edit')
               : commonText('view')
           }
+          nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
-          disabled={focusedRow === undefined}
         />
       </li>
       {hasTablePermission(tableName, 'delete') ? (
@@ -104,17 +104,17 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasTablePermission(tableName, 'create') && (
         <li className="contents">
           <EditRecordDialog<SCHEMA>
-            addNew={true}
-            label={commonText('addChild')}
-            nodeId={focusedRow?.nodeId}
-            tableName={tableName}
-            onRefresh={handleRefresh}
+            addNew
             disabled={
               focusedRow === undefined ||
               typeof focusedRow.acceptedId === 'number' ||
               // Forbid adding children to the lowest rank
-              ranks.slice(-1)[0] === focusedRow.rankId
+              ranks.at(-1) === focusedRow.rankId
             }
+            label={commonText('addChild')}
+            nodeId={focusedRow?.nodeId}
+            tableName={tableName}
+            onRefresh={handleRefresh}
           />
         </li>
       )}
@@ -156,11 +156,11 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
     </menu>
   ) : (
     <ActiveAction<SCHEMA>
-      tableName={tableName}
       actionRow={actionRow}
-      type={currentAction}
-      focusRef={focusRef}
       focusedRow={focusedRow}
+      focusRef={focusRef}
+      tableName={tableName}
+      type={currentAction}
       onCancelAction={(): void => setAction(undefined)}
       onCompleteAction={(): void => {
         setAction(currentAction);
@@ -207,30 +207,30 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   return (
     <>
       <Button.Small
+        aria-pressed={isOpen}
         disabled={nodeId === undefined || disabled}
         onClick={handleToggle}
-        aria-pressed={isOpen}
       >
         {label}
       </Button.Small>
       {isOpen && typeof resource === 'object' && (
         <ResourceView
-          resource={resource}
+          canAddAnother
           dialog="nonModal"
+          isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          onClose={(): void =>
+            hasChanged.current ? handleRefresh() : handleClose()
+          }
+          onDeleted={handleRefresh}
           onSaved={({ newResource, wasChanged }): void => {
             if (typeof newResource === 'object') {
               setResource(newResource);
               if (wasChanged) hasChanged.current = true;
             } else handleRefresh();
           }}
-          canAddAnother={true}
-          onClose={(): void =>
-            hasChanged.current ? handleRefresh() : handleClose()
-          }
-          mode="edit"
-          onDeleted={handleRefresh}
-          isSubForm={false}
-          isDependent={false}
         />
       )}
     </>
@@ -262,7 +262,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
 
   const [showPrompt, setShowPrompt] = React.useState(type === 'desynonymize');
   const loading = React.useContext(LoadingContext);
-  const [error, setError] = React.useState<undefined | string>(undefined);
+  const [error, setError] = React.useState<string | undefined>(undefined);
 
   const action = async (): Promise<number> =>
     ping(
@@ -282,7 +282,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const title =
     type === 'move'
       ? treeText('nodeMoveHintMessage', actionRow.fullName)
-      : type === 'merge'
+      : (type === 'merge'
       ? treeText('mergeNodeHintMessage', actionRow.fullName)
       : type === 'synonymize'
       ? treeText('synonymizeNodeHintMessage', actionRow.fullName)
@@ -290,7 +290,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           'desynonymizeNodeMessage',
           actionRow.fullName,
           focusedRow.fullName
-        );
+        ));
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
@@ -312,49 +312,39 @@ function ActiveAction<SCHEMA extends AnyTree>({
   return (
     <menu className="contents">
       <Button.Small
+        className="normal-case"
+        disabled={disabled !== false}
         forwardRef={(element): void => {
           focusRef.current = element;
         }}
-        className="normal-case"
-        disabled={disabled !== false}
-        onClick={(): void => setShowPrompt(true)}
         title={title}
+        onClick={(): void => setShowPrompt(true)}
       >
         {typeof disabled === 'string'
           ? disabled
-          : type === 'move'
+          : (type === 'move'
           ? treeText('moveNodeHere', actionRow.fullName)
           : type === 'merge'
           ? treeText('mergeNodeHere', actionRow.fullName)
           : type === 'synonymize'
           ? treeText('makeSynonym', actionRow.fullName, focusedRow.fullName)
-          : treeText('desynonymizeNode')}
+          : treeText('desynonymizeNode'))}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
         {commonText('cancel')}
       </Button.Small>
       {typeof error === 'object' ? (
         <Dialog
+          buttons={commonText('close')}
           header={treeText('actionFailedDialogHeader')}
           onClose={handleCancelAction}
-          buttons={commonText('close')}
         >
           {treeText('actionFailedDialogText')}
           <br />
           {error}
         </Dialog>
-      ) : showPrompt ? (
+      ) : (showPrompt ? (
         <Dialog
-          header={
-            type === 'move'
-              ? treeText('moveNode')
-              : type === 'merge'
-              ? treeText('mergeNode')
-              : type === 'synonymize'
-              ? treeText('synonymizeNode')
-              : treeText('desynonymizeNode')
-          }
-          onClose={handleCancelAction}
           buttons={
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -369,14 +359,24 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText('moveNode')
-                  : type === 'merge'
+                  : (type === 'merge'
                   ? treeText('mergeNode')
                   : type === 'synonymize'
                   ? treeText('synonymizeNode')
-                  : treeText('desynonymizeNode')}
+                  : treeText('desynonymizeNode'))}
               </Button.Blue>
             </>
           }
+          header={
+            type === 'move'
+              ? treeText('moveNode')
+              : (type === 'merge'
+              ? treeText('mergeNode')
+              : type === 'synonymize'
+              ? treeText('synonymizeNode')
+              : treeText('desynonymizeNode'))
+          }
+          onClose={handleCancelAction}
         >
           {type === 'move'
             ? treeText(
@@ -385,7 +385,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 actionRow.fullName,
                 focusedRow.fullName
               )
-            : type === 'merge'
+            : (type === 'merge'
             ? treeText(
                 'mergeNodeMessage',
                 treeName,
@@ -403,9 +403,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 'desynonymizeNodeMessage',
                 actionRow.fullName,
                 focusedRow.fullName
-              )}
+              ))}
         </Dialog>
-      ) : undefined}
+      ) : undefined)}
     </menu>
   );
 }
@@ -432,10 +432,10 @@ function NodeDeleteButton({
     <Button.Small disabled>{commonText('delete')}</Button.Small>
   ) : (
     <DeleteButton
-      resource={resource}
       component={Button.Small}
-      onDeleted={handleDeleted}
       deferred
+      resource={resource}
+      onDeleted={handleDeleted}
     />
   );
 }

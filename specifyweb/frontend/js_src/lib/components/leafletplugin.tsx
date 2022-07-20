@@ -29,15 +29,15 @@ function LeafletDialog({
     true
   );
 
-  const fullLocalityData = React.useRef<undefined | false | LocalityData>(
+  const fullLocalityData = React.useRef<LocalityData | false | undefined>(
     undefined
   );
 
-  return localityData === undefined ? null : localityData === false ? (
+  return localityData === undefined ? null : (localityData === false ? (
     <Dialog
+      buttons={commonText('close')}
       header={localityText('noCoordinates')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       {localityText('notEnoughInformationToMap')}
     </Dialog>
@@ -58,7 +58,7 @@ function LeafletDialog({
       }
       onClose={handleClose}
     />
-  );
+  ));
 }
 
 export function LeafletPlugin({
@@ -73,10 +73,10 @@ export function LeafletPlugin({
   return (
     <ErrorBoundary dismissable>
       <Button.Small
-        id={id}
-        onClick={handleToggle}
         aria-pressed={isOpen}
         className="w-fit"
+        id={id}
+        onClick={handleToggle}
       >
         {localityText('showMap')}
       </Button.Small>

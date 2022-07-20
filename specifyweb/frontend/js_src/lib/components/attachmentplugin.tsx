@@ -42,10 +42,7 @@ export function AttachmentPlugin({
   readonly name?: string;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
-    | State<'AddAttachment'>
-    | State<'Unavailable'>
-    | State<'DisplayAttachment', { attachment: SerializedResource<Attachment> }>
-    | State<'FileUpload', { file: File }>
+    State<'AddAttachment'> | State<'DisplayAttachment', { readonly attachment: SerializedResource<Attachment> }> | State<'FileUpload', { readonly file: File }> | State<'Unavailable'>
   >(
     React.useCallback(
       async () =>
@@ -108,7 +105,7 @@ export function AttachmentPlugin({
 
   return state === undefined ? (
     <>{commonText('loading')}</>
-  ) : state.type === 'Unavailable' ? (
+  ) : (state.type === 'Unavailable' ? (
     <div>{formsText('attachmentServerUnavailable')}</div>
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
@@ -117,6 +114,9 @@ export function AttachmentPlugin({
           <p>{formsText('noData')}</p>
         ) : (
           <FilePicker
+            acceptedFormats={undefined}
+            id={id}
+            name={name}
             onSelected={(file): void => {
               filePickerContainer.current?.focus();
               setState({
@@ -124,15 +124,12 @@ export function AttachmentPlugin({
                 file,
               });
             }}
-            acceptedFormats={undefined}
-            id={id}
-            name={name}
           />
         )
-      ) : state.type === 'FileUpload' ? (
+      ) : (state.type === 'FileUpload' ? (
         <Dialog
-          header={formsText('attachmentUploadDialogTitle')}
           buttons={undefined}
+          header={formsText('attachmentUploadDialogTitle')}
           onClose={undefined}
         >
           <div aria-live="polite">
@@ -153,7 +150,7 @@ export function AttachmentPlugin({
         </div>
       ) : (
         error('Unhandled case', { state })
-      )}
+      ))}
     </div>
-  );
+  ));
 }

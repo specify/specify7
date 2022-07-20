@@ -67,7 +67,7 @@ export function UiField({
     React.useCallback(
       async () =>
         hasAccess && typeof data === 'object' && typeof fieldName === 'string'
-          ? 'models' in data.resource
+          ? ('models' in data.resource
             ? aggregate(data.resource as unknown as Collection<AnySchema>)
             : QueryFieldSpec.fromPath(
                 resource.specifyModel.name,
@@ -76,7 +76,7 @@ export function UiField({
                 (field) => field.isRelationship && relationshipIsToMany(field)
               )
             ? data.resource.rgetCollection(data.field.name).then(aggregate)
-            : false
+            : false)
           : undefined,
       [hasAccess, resource.specifyModel.name, data, fieldName]
     ),
@@ -105,36 +105,36 @@ export function UiField({
       <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
     ) : fieldType === 'date' ? (
       <PartialDateUi
-        resource={data.resource}
+        canChangePrecision={false}
         dateField={data.field.name}
-        precisionField={undefined}
         defaultPrecision="full"
         defaultValue={defaultDate}
-        isReadOnly={mode === 'view' || data.resource !== resource}
         id={id}
-        canChangePrecision={false}
+        isReadOnly={mode === 'view' || data.resource !== resource}
+        precisionField={undefined}
+        resource={data.resource}
       />
     ) : fieldType === 'checkbox' ? (
       <SpecifyFormCheckbox
-        id={id}
-        resource={data.resource}
-        fieldName={data.field.name}
         defaultValue={
           parser?.value === true ||
           // Not sure if this branch can ever happen:
           parser?.value?.toString().toLowerCase() === 'true'
         }
+        fieldName={data.field.name}
+        id={id}
         isReadOnly={resource !== data.resource}
+        resource={data.resource}
         text={undefined}
       />
     ) : aggregated === false ? (
       <Field
-        id={id}
-        model={resource}
-        resource={data.resource}
         field={data.field}
-        parser={parser}
+        id={id}
         mode={mode}
+        model={resource}
+        parser={parser}
+        resource={data.resource}
       />
     ) : (
       <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
@@ -184,7 +184,7 @@ export function Field({
     React.useCallback(
       () =>
         field?.isRelationship === true
-          ? hasTablePermission(field.relatedModel.name, 'read')
+          ? (hasTablePermission(field.relatedModel.name, 'read')
             ? (
                 resource.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined
@@ -192,7 +192,7 @@ export function Field({
               )
                 .then(format)
                 .then((value) => value ?? '')
-            : commonText('noPermission')
+            : commonText('noPermission'))
           : undefined,
       /*
        * While "value" is not used in the hook, it is needed to update a
@@ -215,17 +215,34 @@ export function Field({
       name={field?.name}
       {...validationAttributes}
       // This is undefined when resource.noValidation = true
+      className={
+        validationAttributes.type === 'number' &&
+        rightAlignNumberFields &&
+        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+          : ''
+      }
+      id={id}
+      isReadOnly={isReadOnly}
+      /*
+       * Update data model value before onBlur, as onBlur fires after onSubmit
+       * if form is submitted using the ENTER key
+       */
+      required={'required' in validationAttributes && mode !== 'search'}
+      tabIndex={isReadOnly ? -1 : undefined}
       type={validationAttributes.type ?? 'text'}
+      /*
+       * Disable "text-align: right" in non webkit browsers
+       * as they don't support spinner's arrow customization
+       */
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')
           : value?.toString() ?? ''
       }
-      tabIndex={isReadOnly ? -1 : undefined}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
+      onBlur={
+        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
+      }
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*
@@ -235,23 +252,6 @@ export function Field({
          */
         updateValue(input.value, event.type === 'paste');
       }}
-      onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
-      }
-      id={id}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
-      className={
-        validationAttributes.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
-      isReadOnly={isReadOnly}
-      required={'required' in validationAttributes && mode !== 'search'}
     />
   );
 }

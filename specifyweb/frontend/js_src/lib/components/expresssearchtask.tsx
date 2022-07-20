@@ -15,9 +15,9 @@ import { legacyLocalize } from '../stringlocalization';
 import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Container, H3 } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useAsyncState, useTitle } from './hooks';
 import { QueryResultsTable } from './queryresultstable';
-import { ErrorBoundary } from './errorboundary';
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
@@ -36,7 +36,7 @@ type FieldSpec = {
 
 export type QueryTableResult = {
   readonly fieldSpecs: RA<FieldSpec>;
-  readonly results: RA<RA<string | number>>;
+  readonly results: RA<RA<number | string>>;
   readonly totalCount: number;
 };
 
@@ -55,7 +55,7 @@ type RelatedTableResult = {
     readonly name: string;
     readonly root: string;
   };
-  readonly results: RA<RA<string | number>>;
+  readonly results: RA<RA<number | string>>;
   readonly totalCount: number;
 };
 
@@ -73,7 +73,7 @@ function TableResults({
       <H3>{header}</H3>
       {queryResults === undefined ? (
         <p aria-live="polite">{commonText('running')}</p>
-      ) : Object.keys(queryResults).length === 0 ? (
+      ) : (Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText('noMatches')}</p>
       ) : (
         queryResults.map(({ model, caption, tableResults, ajaxUrl }, index) => (
@@ -86,19 +86,11 @@ function TableResults({
             </summary>
             <ErrorBoundary dismissable>
               <QueryResultsTable
-                fieldSpecs={tableResults.fieldSpecs.map(
-                  ({ stringId, isRelationship }) =>
-                    QueryFieldSpec.fromStringId(stringId, isRelationship)
-                )}
-                hasIdField={true}
-                totalCount={tableResults.totalCount}
-                model={model}
-                label={model.label}
-                initialData={tableResults.results}
-                fetchSize={fetchSize}
+                createRecordSet={undefined}
+                extraButtons={undefined}
                 fetchResults={async (
                   offset: number
-                ): Promise<RA<RA<string | number>>> =>
+                ): Promise<RA<RA<number | string>>> =>
                   ajax<IR<QueryTableResult> | QueryTableResult>(
                     formatUrl(ajaxUrl, {
                       name: model.name,
@@ -118,14 +110,22 @@ function TableResults({
                       ).results
                   )
                 }
-                createRecordSet={undefined}
-                extraButtons={undefined}
+                fetchSize={fetchSize}
+                fieldSpecs={tableResults.fieldSpecs.map(
+                  ({ stringId, isRelationship }) =>
+                    QueryFieldSpec.fromStringId(stringId, isRelationship)
+                )}
+                hasIdField
+                initialData={tableResults.results}
+                label={model.label}
+                model={model}
                 tableClassName="max-h-[70vh]"
+                totalCount={tableResults.totalCount}
               />
             </ErrorBoundary>
           </details>
         ))
-      )}
+      ))}
     </section>
   );
 }

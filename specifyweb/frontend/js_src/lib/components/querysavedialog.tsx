@@ -4,13 +4,13 @@ import type { SpQuery } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { queryText } from '../localization/query';
+import { schema } from '../schema';
 import { userInformation } from '../userinfo';
+import { getUniqueName } from '../wbuniquifyname';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { getUniqueName } from '../wbuniquifyname';
-import { schema } from '../schema';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -52,21 +52,21 @@ export function QuerySaveDialog({
 
   return query.isNew() || isSaveAs ? (
     <Dialog
-      header={
-        isSaveAs
-          ? queryText('saveClonedQueryDialogHeader')
-          : queryText('saveQueryDialogHeader')
-      }
-      className={{
-        container: dialogClassNames.narrowContainer,
-      }}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
         </>
       }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
+      header={
+        isSaveAs
+          ? queryText('saveClonedQueryDialogHeader')
+          : queryText('saveQueryDialogHeader')
+      }
+      onClose={handleClose}
     >
       <p>
         {isSaveAs
@@ -83,12 +83,12 @@ export function QuerySaveDialog({
         <Label.Generic>
           {queryText('queryName')}
           <Input.Text
-            name="queryName"
             autoComplete="on"
-            spellCheck="true"
-            required
-            value={name}
             maxLength={schema.models.SpQuery.getLiteralField('name')!.length}
+            name="queryName"
+            required
+            spellCheck="true"
+            value={name}
             onValueChange={setName}
           />
         </Label.Generic>

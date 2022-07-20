@@ -46,8 +46,8 @@ export type PreferenceItemComponent<VALUE> = (props: {
  * https://firefox-source-docs.mozilla.org/toolkit/components/featuregates/featuregates/
  */
 export type PreferenceItem<VALUE> = {
-  readonly title: string | JSX.Element;
-  readonly description?: string | JSX.Element;
+  readonly title: JSX.Element | string;
+  readonly description?: JSX.Element | string;
   // Whether the page needs to be reloaded for this preference to apply
   readonly requiresReload: boolean;
   /*
@@ -65,22 +65,19 @@ export type PreferenceItem<VALUE> = {
   readonly visible: boolean | 'protected';
   readonly defaultValue: VALUE;
 } & (
-  | {
-      readonly values:
-        | RA<VALUE>
-        | RA<{
-            readonly value: VALUE;
-            readonly title?: string;
-            readonly description?: string;
-          }>;
-    }
-  | {
+  {
       // Parses the stored value. Determines the input type to render
       readonly type: JavaType;
       readonly parser?: Parser;
-    }
-  | {
+    } | {
       readonly renderer: PreferenceItemComponent<VALUE>;
+    } | {
+      readonly values:
+        RA<{
+            readonly value: VALUE;
+            readonly title?: string;
+            readonly description?: string;
+          }> | RA<VALUE>;
     }
 );
 
@@ -115,7 +112,7 @@ export const preferenceDefinitions = {
             defaultValue: LANGUAGE,
             renderer: LanguagePreferencesItem,
           }),
-          theme: defineItem<'system' | 'light' | 'dark'>({
+          theme: defineItem<'dark' | 'light' | 'system'>({
             title: preferencesText('theme'),
             requiresReload: false,
             visible: true,
@@ -136,7 +133,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          reduceMotion: defineItem<'system' | 'reduce' | 'noPreference'>({
+          reduceMotion: defineItem<'noPreference' | 'reduce' | 'system'>({
             title: preferencesText('reduceMotion'),
             description: preferencesText('reduceMotionDescription'),
             requiresReload: false,
@@ -158,7 +155,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          reduceTransparency: defineItem<'system' | 'reduce' | 'noPreference'>({
+          reduceTransparency: defineItem<'noPreference' | 'reduce' | 'system'>({
             title: preferencesText('reduceTransparency'),
             description: preferencesText('reduceTransparencyDescription'),
             requiresReload: false,
@@ -180,7 +177,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          contrast: defineItem<'system' | 'more' | 'less' | 'noPreference'>({
+          contrast: defineItem<'less' | 'more' | 'noPreference' | 'system'>({
             title: preferencesText('contrast'),
             requiresReload: false,
             visible: true,
@@ -475,7 +472,7 @@ export const preferenceDefinitions = {
       general: {
         title: preferencesText('general'),
         items: {
-          shownTables: defineItem<'legacy' | RA<number>>({
+          shownTables: defineItem<RA<number> | 'legacy'>({
             title: '_shownTables',
             requiresReload: false,
             visible: false,
@@ -522,7 +519,7 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          formHeaderFormat: defineItem<'full' | 'name' | 'icon'>({
+          formHeaderFormat: defineItem<'full' | 'icon' | 'name'>({
             title: preferencesText('formHeaderFormat'),
             requiresReload: false,
             visible: true,
@@ -733,7 +730,7 @@ export const preferenceDefinitions = {
         title: preferencesText('queryComboBox'),
         items: {
           searchAlgorithm: defineItem<
-            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+            'contains' | 'startsWith' | 'startsWithCaseSensitive'
           >({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
@@ -1123,7 +1120,7 @@ export const preferenceDefinitions = {
             type: 'java.lang.Boolean',
           }),
           filterPickLists: defineItem<
-            'case-sensitive' | 'case-insensitive' | 'none'
+            'case-insensitive' | 'case-sensitive' | 'none'
           >({
             title: preferencesText('filterPickLists'),
             requiresReload: false,

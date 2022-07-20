@@ -25,9 +25,9 @@ export function RecordHistory({
   return (
     <>
       <Button.Simple
-        onClick={handleOpen}
         disabled={resource.isNew()}
         title={resource.isNew() ? formsText('saveRecordFirst') : undefined}
+        onClick={handleOpen}
       >
         {formsText('historyOfEdits')}
       </Button.Simple>
@@ -48,19 +48,19 @@ function RecordHistoryDialog({
   const query = useEditHistoryQuery(resource);
   return typeof query === 'object' ? (
     <Dialog
-      header={formsText('historyOfEdits')}
-      onClose={handleClose}
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      header={formsText('historyOfEdits')}
+      onClose={handleClose}
     >
       <QueryBuilder
-        query={query}
+        autoRun
+        isEmbedded
         isReadOnly={false}
+        query={query}
         recordSet={undefined}
-        isEmbedded={true}
-        autoRun={true}
       />
     </Dialog>
   ) : null;

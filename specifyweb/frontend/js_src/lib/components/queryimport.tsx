@@ -26,10 +26,10 @@ export function QueryImport({
   const loading = React.useContext(LoadingContext);
   return typeof queries === 'object' ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      header={commonText('import')}
-      onClose={handleClose}
       buttons={commonText('cancel')}
+      header={commonText('import')}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
     >
       <Form>
         <FilePicker
@@ -72,7 +72,7 @@ export function QueryImport({
           }
         />
         {/* This button is never actually clicked. */}
-        <Submit.Green disabled className="sr-only">
+        <Submit.Green className="sr-only" disabled>
           {commonText('import')}
         </Submit.Green>
       </Form>

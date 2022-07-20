@@ -46,7 +46,8 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
-import { Autocomplete, AutoCompleteItem } from './autocomplete';
+import type { AutoCompleteItem } from './autocomplete';
+import { Autocomplete } from './autocomplete';
 import { DataEntry, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
@@ -84,7 +85,7 @@ export function QueryComboBox({
   readonly formType: FormType;
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
-  readonly typeSearch: string | Element | undefined;
+  readonly typeSearch: Element | string | undefined;
   readonly forceCollection: number | undefined;
   readonly relatedModel: SpecifyModel | undefined;
 }): JSX.Element {
@@ -332,9 +333,6 @@ export function QueryComboBox({
   );
 
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'AccessDeniedState', { readonly collectionName: string }>
-    | State<'ViewResourceState'>
     | State<
         'AddResourceState',
         { readonly resource: SpecifyResource<AnySchema> }
@@ -346,6 +344,9 @@ export function QueryComboBox({
           readonly templateResource: SpecifyResource<AnySchema>;
         }
       >
+    | State<'AccessDeniedState', { readonly collectionName: string }>
+    | State<'MainState'>
+    | State<'ViewResourceState'>
   >({ type: 'MainState' });
 
   const relatedCollectionId =
@@ -435,7 +436,7 @@ export function QueryComboBox({
               }))
               .map(async (query) =>
                 ajax<{
-                  readonly results: RA<Readonly<[id: number, label: string]>>;
+                  readonly results: RA<readonly [id: number, label: string]>;
                 }>('/stored_query/ephemeral/', {
                   method: 'POST',
                   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -485,8 +486,12 @@ export function QueryComboBox({
   return (
     <div className="flex items-center">
       <Autocomplete<string>
+        aria-label={undefined}
         filterItems={false}
+        forwardRef={validationRef}
+        pendingValueRef={pendingValueRef}
         source={fetchSource}
+        value={formatted?.label ?? commonText('loading') ?? ''}
         onChange={({ data }): void => updateValue(data)}
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>
@@ -499,25 +504,21 @@ export function QueryComboBox({
                 })
             : undefined
         }
-        value={formatted?.label ?? commonText('loading') ?? ''}
-        pendingValueRef={pendingValueRef}
-        forwardRef={validationRef}
-        aria-label={undefined}
       >
         {({ className, ...props }): JSX.Element => (
           <Input.Generic
             className={`flex-1 ${className}`}
             id={id}
-            required={isRequired}
-            title={
-              typeof typeSearch === 'object' ? typeSearch.title : undefined
-            }
             isReadOnly={
               !isLoaded ||
               mode === 'view' ||
               formType === 'formTable' ||
               typeSearch === undefined ||
               formatted === undefined
+            }
+            required={isRequired}
+            title={
+              typeof typeSearch === 'object' ? typeSearch.title : undefined
             }
             {...getValidationAttributes(parser)}
             {...props}
@@ -530,12 +531,12 @@ export function QueryComboBox({
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
             <DataEntry.View
               aria-pressed={state.type === 'ViewResourceState'}
+              className="ml-1"
               disabled={
                 formatted?.resource === undefined ||
                 collectionRelationships === undefined
               }
               onClick={handleOpenRelated}
-              className="ml-1"
             />
           ) : undefined
         ) : (
@@ -654,9 +655,9 @@ export function QueryComboBox({
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
+          buttons={commonText('close')}
           header={commonText('collectionAccessDeniedDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
-          buttons={commonText('close')}
         >
           {commonText('collectionAccessDeniedDialogText', state.collectionName)}
         </Dialog>
@@ -664,30 +665,38 @@ export function QueryComboBox({
       {typeof formatted?.resource === 'object' &&
       state.type === 'ViewResourceState' ? (
         <ResourceView
-          isSubForm={false}
-          resource={formatted.resource}
           canAddAnother={false}
           dialog="nonModal"
+          isDependent={field?.isDependent() ?? false}
+          isSubForm={false}
+          mode={mode}
+          resource={formatted.resource}
+          onClose={(): void => setState({ type: 'MainState' })}
+          onDeleted={(): void => {
+            resource.set(defined(field?.name), null as never);
+            setState({ type: 'MainState' });
+          }}
+          onSaved={undefined}
           onSaving={
             field?.isDependent() === true
               ? f.never
               : (): void => setState({ type: 'MainState' })
           }
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSaved={undefined}
-          onDeleted={(): void => {
-            resource.set(defined(field?.name), null as never);
-            setState({ type: 'MainState' });
-          }}
-          mode={mode}
-          isDependent={field?.isDependent() ?? false}
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
-          isSubForm={false}
-          resource={state.resource}
           canAddAnother={false}
           dialog="nonModal"
+          isDependent={false}
+          isSubForm={false}
+          mode={mode}
+          resource={state.resource}
+          onClose={(): void => setState({ type: 'MainState' })}
+          onDeleted={undefined}
+          onSaved={(): void => {
+            resource.set(defined(field?.name), state.resource as never);
+            setState({ type: 'MainState' });
+          }}
           onSaving={
             field?.isDependent()
               ? (): false => {
@@ -697,23 +706,15 @@ export function QueryComboBox({
                 }
               : undefined
           }
-          onClose={(): void => setState({ type: 'MainState' })}
-          onSaved={(): void => {
-            resource.set(defined(field?.name), state.resource as never);
-            setState({ type: 'MainState' });
-          }}
-          isDependent={false}
-          onDeleted={undefined}
-          mode={mode}
         />
       ) : undefined}
       {state.type === 'SearchState' ? (
         <SearchDialog
-          forceCollection={forceCollection ?? relatedCollectionId}
           extraFilters={state.extraConditions}
+          forceCollection={forceCollection ?? relatedCollectionId}
+          multiple={false}
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
-          multiple={false}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics
             void resource.set(defined(field?.name), selectedResource)

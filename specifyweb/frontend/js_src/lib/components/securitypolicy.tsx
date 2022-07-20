@@ -37,7 +37,7 @@ export type Policy = {
  * Institutional policies are ignored if set on a collection level, thus,
  * UI should hide them.
  */
-export type PolicyScope = 'institution' | 'collection';
+export type PolicyScope = 'collection' | 'institution';
 
 const hasTableActions = (actions: RA<string>): boolean =>
   tableActions.every((action) => actions.includes(action));
@@ -55,7 +55,7 @@ function SecurityPolicy({
   readonly isResourceMapped: (resource: string) => boolean;
   readonly onChange: (policy: Policy | undefined) => void;
   readonly scope: PolicyScope;
-  readonly orientation: 'vertical' | 'horizontal';
+  readonly orientation: 'horizontal' | 'vertical';
 }): JSX.Element {
   const resourceParts = resourceNameToParts(resource);
   const registryFunction =
@@ -84,7 +84,7 @@ function SecurityPolicy({
   const isUnknownResource = registries.includes(undefined);
   const possibleActions = isUnknownResource
     ? actions
-    : registryParts.slice(-1)[0]?.[resourceParts.slice(-1)[0]]?.actions;
+    : registryParts.at(-1)?.[resourceParts.at(-1)!]?.actions;
   // If user has actions that aren't known, display them anyway
   const extendedActions = Array.isArray(possibleActions)
     ? f.unique([...possibleActions, ...(actions ?? [])])
@@ -94,10 +94,10 @@ function SecurityPolicy({
     <li className="flex flex-wrap gap-2">
       {!isReadOnly && (
         <Button.Small
-          className="print:hidden"
-          variant={className.redButton}
-          title={commonText('remove')}
           aria-label={commonText('remove')}
+          className="print:hidden"
+          title={commonText('remove')}
+          variant={className.redButton}
           onClick={(): void => handleChange(undefined)}
         >
           {icons.trash}
@@ -109,13 +109,14 @@ function SecurityPolicy({
             <li key={index}>
               <Select
                 className="h-full"
-                value={resourceParts[index] ?? ''}
                 disabled={isReadOnly}
+                required
+                value={resourceParts[index] ?? ''}
                 onValueChange={(part): void => {
                   const parts = [...resourceParts.slice(0, index), part];
                   // If new part has only one child, select it (recursively)
                   while (true) {
-                    const childResources = registryFunction(parts).slice(-1)[0];
+                    const childResources = registryFunction(parts).at(-1);
                     if (
                       childResources === undefined ||
                       // Checking for 2, as first option is always anyResource
@@ -141,9 +142,8 @@ function SecurityPolicy({
                     actions,
                   });
                 }}
-                required
               >
-                <option value="" key="0" />
+                <option key="0" value="" />
                 {group(
                   Object.entries(defined(registry)).map(
                     ([partName, { groupName, ...rest }]) =>
@@ -165,8 +165,6 @@ function SecurityPolicy({
                         length <= 2 &&
                         resourceParts[index] !== anyResource ? undefined : (
                           <option
-                            key={partName}
-                            value={partName}
                             disabled={
                               /*
                                * Disable terminal resource parts if they are
@@ -185,6 +183,8 @@ function SecurityPolicy({
                                */
                               (scope !== 'institution' && isInstitutional)
                             }
+                            key={partName}
+                            value={partName}
                           >
                             {label}
                           </option>
@@ -194,7 +194,7 @@ function SecurityPolicy({
                       groupName === '' ? (
                         children
                       ) : (
-                        <optgroup label={groupName} key={groupName}>
+                        <optgroup key={groupName} label={groupName}>
                           {children}
                         </optgroup>
                       )
@@ -204,7 +204,7 @@ function SecurityPolicy({
             </li>
           )
         )}
-        {Array.isArray(extendedActions) && possibleActions.length > 0 && (
+        {Array.isArray(extendedActions) && possibleActions!.length > 0 && (
           <li className="contents">
             <Ul
               className={
@@ -215,23 +215,17 @@ function SecurityPolicy({
             >
               {extendedActions.map((action) => (
                 <li
-                  key={action}
                   className={
                     orientation === 'vertical' ? undefined : 'contents'
                   }
+                  key={action}
                 >
                   <Label.ForCheckbox
                     className={orientation === 'vertical' ? undefined : 'mr-2'}
                   >
                     <Input.Checkbox
-                      onValueChange={(): void =>
-                        handleChange({
-                          resource,
-                          actions: toggleItem(actions, action),
-                        })
-                      }
-                      disabled={isReadOnly}
                       checked={actions.includes(action)}
+                      disabled={isReadOnly}
                       required={
                         /*
                          * If no checkboxes are checked, mark all as required.
@@ -249,6 +243,12 @@ function SecurityPolicy({
                          */
                         (resource === '/querybuilder/query' &&
                           action === 'execute')
+                      }
+                      onValueChange={(): void =>
+                        handleChange({
+                          resource,
+                          actions: toggleItem(actions, action),
+                        })
                       }
                     />
                     {actionToLabel(action)}
@@ -290,9 +290,9 @@ export function SecurityPoliciesWrapper({
   const switchButton =
     (!collapsable || isExpanded) && Array.isArray(policies) ? (
       <Button.Small
-        variant={className.blueButton}
-        title={buttonTitle}
         aria-label={buttonTitle}
+        title={buttonTitle}
+        variant={className.blueButton}
         onClick={(): void =>
           setOrientation(orientation === 'vertical' ? 'horizontal' : 'vertical')
         }
@@ -381,13 +381,14 @@ export function SecurityPolicies({
       >
         {policies.map((policy, index) => (
           <SecurityPolicy
-            key={index}
-            scope={scope}
-            policy={policy}
             isReadOnly={isReadOnly}
             isResourceMapped={(resource): boolean =>
               policies.some((policy) => policy.resource.startsWith(resource))
             }
+            key={index}
+            orientation={orientation}
+            policy={policy}
+            scope={scope}
             onChange={(policy): void =>
               handleChange(
                 typeof policy === 'object'
@@ -430,7 +431,6 @@ export function SecurityPolicies({
                   : removeItem(policies, index)
               )
             }
-            orientation={orientation}
           />
         ))}
       </Ul>

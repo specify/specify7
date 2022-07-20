@@ -35,8 +35,8 @@ const dialogDefinitions =
 const resourceLimit = 100;
 
 export type QueryComboBoxFilter<SCHEMA extends AnySchema> = {
-  readonly field: keyof SCHEMA['fields'] | keyof CommonFields;
-  readonly operation: 'notIn' | 'in' | 'notBetween' | 'lessThan';
+  readonly field: keyof CommonFields | keyof SCHEMA['fields'];
+  readonly operation: 'in' | 'lessThan' | 'notBetween' | 'notIn';
   readonly values: RA<string>;
 };
 
@@ -86,12 +86,10 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   const id = useId('search-dialog');
   return typeof viewName === 'string' ? (
     <Dialog
-      header={commonText('search')}
-      modal={false}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <ProtectedAction resource="/querybuilder/query" action="execute">
+          <ProtectedAction action="execute" resource="/querybuilder/query">
             <Button.Blue onClick={(): void => setViewName(false)}>
               {queryText('queryBuilder')}
             </Button.Blue>
@@ -99,6 +97,8 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           <Submit.Green form={id('form')}>{commonText('search')}</Submit.Green>
         </>
       }
+      header={commonText('search')}
+      modal={false}
       onClose={handleClose}
     >
       <Form
@@ -128,11 +128,11 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         }}
       >
         <SpecifyForm
-          resource={templateResource}
-          viewName={viewName}
+          display="inline"
           formType="form"
           mode="search"
-          display="inline"
+          resource={templateResource}
+          viewName={viewName}
         />
         <Ul
           className={`
@@ -142,18 +142,18 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         >
           {isLoading ? (
             <li>{commonText('loading')}</li>
-          ) : results === undefined ? undefined : results.length === 0 ? (
+          ) : (results === undefined ? undefined : results.length === 0 ? (
             <li>{commonText('noResults')}</li>
           ) : (
             <>
               {results.map(({ id, formatted, resource }) => (
                 <li key={id}>
                   <Link.Default
+                    className={className.navigationHandled}
                     href={getResourceViewUrl(
                       templateResource.specifyModel.name,
                       id
                     )}
-                    className={className.navigationHandled}
                     onClick={(event): void => {
                       event.preventDefault();
                       handleSelected([resource]);
@@ -169,25 +169,25 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                   <span className="sr-only">
                     {formsText('additionalResultsOmitted')}
                   </span>
-                  {'...'}
+                  ...
                 </li>
               )}
             </>
-          )}
+          ))}
         </Ul>
       </Form>
     </Dialog>
-  ) : viewName === false ? (
+  ) : (viewName === false ? (
     <QueryBuilderSearch
       model={templateResource.specifyModel}
-      onClose={handleClose}
       multiple={multiple}
+      onClose={handleClose}
       onSelected={(records): void => {
         handleSelected(records);
         handleClose();
       }}
     />
-  ) : null;
+  ) : null);
 }
 
 const filterResults = <SCHEMA extends AnySchema>(
@@ -204,7 +204,7 @@ const testFilter = <SCHEMA extends AnySchema>(
 ): boolean =>
   operation === 'notBetween'
     ? resource.get(field) < values[0] || resource.get(field) > values[1]
-    : operation === 'in'
+    : (operation === 'in'
     ? values.some(f.equal(resource.get(field)))
     : operation === 'notIn'
     ? values.every(f.notEqual(resource.get(field)))
@@ -217,7 +217,7 @@ const testFilter = <SCHEMA extends AnySchema>(
           values,
         },
         resource,
-      });
+      }));
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   model,
@@ -237,17 +237,15 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
   const [selected, setSelected] = React.useState<RA<number>>([]);
   return (
     <Dialog
-      header={queryText('queryBuilder')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Button.Blue
-            onClick={(): void =>
-              handleSelected(selected.map((id) => new model.Resource({ id })))
-            }
             disabled={
               selected.length === 0 || (selected.length > 1 && !multiple)
+            }
+            onClick={(): void =>
+              handleSelected(selected.map((id) => new model.Resource({ id })))
             }
           >
             {commonText('select')}
@@ -257,12 +255,14 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      header={queryText('queryBuilder')}
+      onClose={handleClose}
     >
       <QueryBuilder
-        query={query}
+        isEmbedded
         isReadOnly={false}
+        query={query}
         recordSet={undefined}
-        isEmbedded={true}
         onSelected={setSelected}
       />
     </Dialog>

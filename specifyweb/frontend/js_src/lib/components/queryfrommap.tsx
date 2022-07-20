@@ -12,7 +12,7 @@ import { LeafletMap } from './leaflet';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
-type Pair<T = number> = Readonly<[T, T]>;
+type Pair<T = number> = readonly [T, T];
 
 export function QueryFromMap({
   fields,
@@ -65,10 +65,6 @@ export function QueryFromMap({
 
   return (
     <LeafletMap
-      localityPoints={emptyArray}
-      markerClickCallback={f.never}
-      onClose={handleClose}
-      forwardRef={setMap}
       buttons={
         <>
           <Button.Gray onClick={handleClose}>
@@ -77,6 +73,10 @@ export function QueryFromMap({
           <Button.Blue onClick={handleSave}>{commonText('save')}</Button.Blue>
         </>
       }
+      forwardRef={setMap}
+      localityPoints={emptyArray}
+      markerClickCallback={f.never}
+      onClose={handleClose}
     />
   );
 }
@@ -101,11 +101,11 @@ const parseFilter = (
 function findCoordinateLines(
   fields: RA<QueryField>,
   lineNumber: number
-): Readonly<[number, number]> {
+): readonly [number, number] {
   const line = fields[lineNumber];
   const [commonPath, fieldName] = [
     line.mappingPath.slice(0, -1),
-    line.mappingPath.slice(-1)[0],
+    line.mappingPath.at(-1)!,
   ];
 
   const isLatitude = fieldName === 'latitude1';
@@ -126,7 +126,7 @@ const createMarkers = (
   map: L.Map,
   start: Pair,
   end: Pair
-): Readonly<[L.Marker, L.Marker]> => [
+): readonly [L.Marker, L.Marker] => [
   createMarker(start).addTo(map),
   createMarker(end).addTo(map),
 ];

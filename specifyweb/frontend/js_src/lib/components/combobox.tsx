@@ -10,6 +10,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import type { FormMode, FormType } from '../parseform';
+import { hasToolPermission } from '../permissionutils';
 import {
   fetchPickList,
   getPickListItems,
@@ -29,7 +30,6 @@ import { PickListTableComboBox } from './picklisttablecombobox';
 import { QueryComboBox } from './querycombobox';
 import { TreeLevelComboBox } from './treelevelcombobox';
 import { UiField } from './uifield';
-import { hasToolPermission } from '../permissionutils';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -80,16 +80,16 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   const mode =
     // Only PickListTypes.ITEMS pick lists are editable
     pickList?.get('type') !== PickListTypes.ITEMS ||
-    pickList?.get('isSystem') == true
+    pickList?.get('isSystem')
       ? 'view'
       : props.mode;
 
   return typeof pickList === 'object' && Array.isArray(items) ? (
     <PickListComboBox
       {...props}
+      items={items}
       mode={props.mode}
       pickList={pickList}
-      items={items}
       onAdd={
         mode === 'view'
           ? undefined
@@ -106,9 +106,9 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
   ) : (
     <Input.Text
       disabled
-      value={commonText('loading')}
-      // BUG: required has no effect while disabled. Need a better solution
       required={props.isRequired}
+      // BUG: required has no effect while disabled. Need a better solution
+      value={commonText('loading')}
     />
   );
 }
@@ -157,15 +157,15 @@ export function ComboBox({
     const field = defined(resource.specifyModel.getField('division'));
     return (
       <QueryComboBox
-        id={id}
-        resource={resource}
         fieldName={field.name}
-        mode={mode}
-        formType={formType}
-        isRequired={isRequired}
-        typeSearch={undefined}
         forceCollection={undefined}
+        formType={formType}
+        id={id}
+        isRequired={isRequired}
+        mode={mode}
         relatedModel={undefined}
+        resource={resource}
+        typeSearch={undefined}
       />
     );
   }
@@ -193,10 +193,10 @@ export function ComboBox({
       />
     ) : (
       <UiField
-        id={props.id}
-        resource={props.resource}
-        mode="view"
         fieldName={resolvedField.name}
+        id={props.id}
+        mode="view"
+        resource={props.resource}
       />
     );
   else {
@@ -205,10 +205,10 @@ export function ComboBox({
     );
     return (
       <UiField
-        id={props.id}
-        resource={props.resource}
-        mode={props.mode}
         fieldName={resolvedField.name}
+        id={props.id}
+        mode={props.mode}
+        resource={props.resource}
       />
     );
   }

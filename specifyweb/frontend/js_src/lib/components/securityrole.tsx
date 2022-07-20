@@ -48,7 +48,7 @@ export function RoleView({
   onOpenUser: handleOpenUser,
   onAddUsers: handleAddUsers,
 }: {
-  readonly role: Role | NewRole;
+  readonly role: NewRole | Role;
   readonly parentName: string | undefined;
   readonly userRoles: UserRoles | undefined;
   /*
@@ -57,7 +57,7 @@ export function RoleView({
    */
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly collectionId: number;
-  readonly onSave: (role: Role | NewRole) => void;
+  readonly onSave: (role: NewRole | Role) => void;
   readonly onDelete: () => void;
   readonly onClose: () => void;
   readonly onOpenUser: ((userId: number) => void) | undefined;
@@ -88,7 +88,7 @@ export function RoleView({
     !hasPermission(permissionName, 'update', collectionId);
 
   return (
-    <Form onSubmit={(): void => handleSave(role)} className="contents">
+    <Form className="contents" onSubmit={(): void => handleSave(role)}>
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <AppTitle title={role.name} type="form" />
       <Button.LikeLink onClick={handleClose}>
@@ -100,12 +100,12 @@ export function RoleView({
           <Label.Generic className={className.limitedWidth}>
             {commonText('name')}
             <Input.Text
+              maxLength={roleNameMaxLength}
+              required
               value={role.name}
               onValueChange={(name): void =>
                 setRole(replaceKey(role, 'name', name))
               }
-              required
-              maxLength={roleNameMaxLength}
             />
           </Label.Generic>
         )}
@@ -164,7 +164,6 @@ export function RoleView({
                 {state.type === 'AddUserState' &&
                 typeof handleAddUsers === 'function' ? (
                   <SearchDialog
-                    forceCollection={undefined}
                     extraFilters={[
                       {
                         field: 'id',
@@ -174,9 +173,10 @@ export function RoleView({
                         ),
                       },
                     ]}
+                    forceCollection={undefined}
+                    multiple
                     templateResource={state.templateResource}
                     onClose={(): void => setState({ type: 'MainState' })}
-                    multiple
                     onSelected={handleAddUsers}
                   />
                 ) : undefined}
@@ -187,18 +187,18 @@ export function RoleView({
           </fieldset>
         ) : undefined}
         <SecurityPoliciesWrapper
-          policies={role.policies}
-          header={adminText('rolePolicies')}
           collapsable={false}
+          header={adminText('rolePolicies')}
+          policies={role.policies}
         >
           <SecurityPolicies
+            isReadOnly={isReadOnly}
+            limitHeight={false}
             policies={role.policies}
+            scope="collection"
             onChange={(policies): void =>
               setRole(replaceKey(role, 'policies', policies))
             }
-            isReadOnly={isReadOnly}
-            scope="collection"
-            limitHeight={false}
           />
         </SecurityPoliciesWrapper>
       </div>
@@ -236,13 +236,13 @@ export function RoleView({
         <span className="-ml-2 flex-1" />
         {typeof role.id === 'number' && (
           <SecurityImportExport
-            roles={{ [role.id]: role as Role }}
-            permissionName={permissionName}
-            isReadOnly={true}
             baseName={role.name ?? ''}
             collectionId={collectionId}
-            onUpdateRole={f.never}
+            isReadOnly
+            permissionName={permissionName}
+            roles={{ [role.id]: role as Role }}
             onCreateRole={f.never}
+            onUpdateRole={f.never}
           />
         )}
         {!isReadOnly && (
@@ -253,7 +253,6 @@ export function RoleView({
       </div>
       {state.type === 'DeletionPromptState' && (
         <Dialog
-          header={adminText('deleteRoleDialogHeader')}
           buttons={
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -262,6 +261,7 @@ export function RoleView({
               </Button.Red>
             </>
           }
+          header={adminText('deleteRoleDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           {adminText('deleteRoleDialogText')}

@@ -22,7 +22,7 @@ export function useCachedState<
 >(
   category: CATEGORY,
   key: KEY
-): [
+): readonly [
   value: CacheDefinitions[CATEGORY][KEY] | undefined,
   setValue: (newValue: CacheDefinitions[CATEGORY][KEY]) => void
 ] {

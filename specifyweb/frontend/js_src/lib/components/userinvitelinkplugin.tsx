@@ -36,6 +36,7 @@ export function UserInviteLinkPlugin({
   return (
     <>
       <Button.Small
+        disabled={identityProviders === undefined}
         onClick={(): void =>
           hasProvidersConfigured
             ? loading(
@@ -45,24 +46,23 @@ export function UserInviteLinkPlugin({
               )
             : setLink('')
         }
-        disabled={identityProviders === undefined}
       >
         {adminText('createInviteLink')}
       </Button.Small>
       {typeof link === 'string' && (
         <Dialog
+          buttons={commonText('close')}
           header={adminText('userInviteLinkDialogHeader')}
           onClose={(): void => setLink(undefined)}
-          buttons={commonText('close')}
         >
           {hasProvidersConfigured ? (
             <>
               {adminText('userInviteLinkDialogText', user.name)}
               <div className="flex gap-2">
                 <Input.Text
+                  className="flex-1 !cursor-pointer"
                   isReadOnly
                   value={link}
-                  className="flex-1 !cursor-pointer"
                 />
                 <CopyButton text={link} />
               </div>

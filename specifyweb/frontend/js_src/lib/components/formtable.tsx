@@ -126,7 +126,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
   const [state, setState] = React.useState<
     | State<'MainState'>
-    | State<'SearchState', { resource: SpecifyResource<SCHEMA> }>
+    | State<'SearchState', { readonly resource: SpecifyResource<SCHEMA> }>
   >({ type: 'MainState' });
   const [flexibleColumnWidth] = usePref(
     'form',
@@ -147,11 +147,10 @@ export function FormTable<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     ) : (
       <DataEntry.Grid
-        role="table"
-        viewDefinition={viewDefinition}
-        flexibleColumnWidth={flexibleColumnWidth}
-        display="inline"
         className="sticky w-fit pt-0"
+        display="inline"
+        flexibleColumnWidth={flexibleColumnWidth}
+        role="table"
         style={{
           gridTemplateColumns: `min-content repeat(${
             viewDefinition.columns.length
@@ -160,6 +159,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           }`,
           maxHeight: `${maxHeight}px`,
         }}
+        viewDefinition={viewDefinition}
       >
         <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
           <div role="columnheader">
@@ -172,16 +172,16 @@ export function FormTable<SCHEMA extends AnySchema>({
             );
             return (
               <DataEntry.Cell
-                role="columnheader"
+                align="center"
                 className={`
                   sticky top-0 z-10 -mx-1
                   h-full bg-[color:var(--form-foreground)] pl-1 pt-1
                 `}
-                key={index}
                 colSpan={cell.colSpan}
-                align="center"
+                key={index}
+                role="columnheader"
                 title={title}
-                visible={true}
+                visible
               >
                 {(cell.type === 'Field' || cell.type === 'SubView') &&
                 typeof cell.fieldName === 'string' ? (
@@ -215,15 +215,15 @@ export function FormTable<SCHEMA extends AnySchema>({
             </div>
           )}
         </div>
-        <div className="contents" role="rowgroup" ref={rowsRef}>
+        <div className="contents" ref={rowsRef} role="rowgroup">
           {resources.map((resource) => (
-            <div className="contents" role="row" key={resource.cid}>
+            <div className="contents" key={resource.cid} role="row">
               {isExpanded[resource.cid] ? (
                 <>
-                  <div role="cell" className="flex justify-center">
+                  <div className="flex justify-center" role="cell">
                     <Button.Icon
-                      title={formsText('contract')}
                       icon="chevronDown"
+                      title={formsText('contract')}
                       onClick={(): void =>
                         setExpandedRecords({
                           ...isExpanded,
@@ -233,28 +233,28 @@ export function FormTable<SCHEMA extends AnySchema>({
                     />
                   </div>
                   <DataEntry.Cell
-                    role="cell"
+                    align="left"
                     colSpan={
                       viewDefinition.columns.length + (isDependent ? 0 : 1)
                     }
-                    align="left"
-                    visible={true}
+                    role="cell"
                     tabIndex={-1}
+                    visible
                   >
                     <SpecifyForm
-                      resource={resource}
+                      display="inline"
                       formType="form"
                       mode={mode}
-                      display="inline"
+                      resource={resource}
                     />
                   </DataEntry.Cell>
                 </>
               ) : (
                 <>
-                  <div role="cell" className="flex justify-center">
+                  <div className="flex justify-center" role="cell">
                     <Button.Icon
-                      title={commonText('expand')}
                       icon="chevronRight"
+                      title={commonText('expand')}
                       onClick={(): void =>
                         setExpandedRecords({
                           ...isExpanded,
@@ -269,44 +269,41 @@ export function FormTable<SCHEMA extends AnySchema>({
                       index
                     ) => (
                       <DataEntry.Cell
-                        role="cell"
-                        key={index}
-                        colSpan={colSpan}
                         align={align}
+                        colSpan={colSpan}
+                        key={index}
+                        role="cell"
                         visible={visible}
                       >
                         <FormCell
                           align={align}
-                          resource={resource}
-                          mode={viewDefinition.mode}
-                          formType="formTable"
                           cellData={cellData}
-                          id={cellId}
                           formatId={(suffix: string): string =>
                             id(`${index}-${suffix}`)
                           }
+                          formType="formTable"
+                          id={cellId}
+                          mode={viewDefinition.mode}
+                          resource={resource}
                         />
                       </DataEntry.Cell>
                     )
                   )}
                   {displayViewButton && (
-                    <div role="cell" className="flex justify-center">
+                    <div className="flex justify-center" role="cell">
                       <DataEntry.Visit resource={resource} />
                     </div>
                   )}
                 </>
               )}
               {displayDeleteButton && (
-                <div role="cell" className="flex justify-center">
+                <div className="flex justify-center" role="cell">
                   {(!resource.isNew() ||
                     hasTablePermission(
                       relationship.relatedModel.name,
                       'delete'
                     )) && (
                     <Button.Icon
-                      title={commonText('remove')}
-                      icon="trash"
-                      onClick={(): void => handleDelete(resource)}
                       disabled={
                         !resource.isNew() &&
                         !hasTablePermission(
@@ -314,6 +311,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                           'delete'
                         )
                       }
+                      icon="trash"
+                      title={commonText('remove')}
+                      onClick={(): void => handleDelete(resource)}
                     />
                   )}
                 </div>
@@ -358,22 +358,22 @@ export function FormTable<SCHEMA extends AnySchema>({
       {state.type === 'SearchState' &&
       typeof handleAddResources === 'function' ? (
         <SearchDialog
-          forceCollection={undefined}
           extraFilters={undefined}
+          forceCollection={undefined}
+          multiple
           templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
-          multiple
           onSelected={handleAddResources}
         />
       ) : undefined}
     </DataEntry.SubForm>
   ) : (
     <Dialog
-      modal={dialog === 'modal'}
-      header={header}
-      onClose={handleClose}
       buttons={commonText('close')}
+      header={header}
       headerButtons={addButton}
+      modal={dialog === 'modal'}
+      onClose={handleClose}
     >
       {children}
     </Dialog>
@@ -388,7 +388,7 @@ export function FormTableCollection({
 }: PartialBy<
   Omit<
     Parameters<typeof FormTable>[0],
-    'resources' | 'relationship' | 'isDependent'
+    'isDependent' | 'relationship' | 'resources'
   >,
   'onAdd' | 'onDelete'
 > & {
@@ -411,8 +411,8 @@ export function FormTableCollection({
   const disableAdding = isToOne && records.length > 0;
   return (
     <FormTable
-      relationship={defined(collection.field?.getReverse())}
       isDependent={isDependent}
+      relationship={defined(collection.field?.getReverse())}
       resources={records}
       onAdd={
         disableAdding

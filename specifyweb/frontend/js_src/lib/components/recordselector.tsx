@@ -34,17 +34,17 @@ export function Slider({
     <div className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText('firstRecord')}
-        title={formsText('firstRecord')}
         disabled={value == 0}
+        title={formsText('firstRecord')}
         onClick={(): void => handleChange(0)}
       >
         ≪
       </Button.Small>
       <Button.Small
-        className="bg-white px-4 dark:bg-neutral-500"
         aria-label={formsText('previousRecord')}
-        title={formsText('previousRecord')}
+        className="bg-white px-4 dark:bg-neutral-500"
         disabled={value == 0}
+        title={formsText('previousRecord')}
         onClick={(): void => handleChange(value - 1)}
       >
         {'<'}
@@ -63,40 +63,40 @@ export function Slider({
               no-arrows absolute top-0 left-0 h-full bg-white
               text-center font-bold ring-0 dark:bg-neutral-600
             `}
-            min={1}
+            forwardRef={inputRef}
             /*
              * Count is 0 when input is invisible, which causes the field to be
              * invalid (as min is 1) which inhibits form submission
              */
             max={Math.max(1, count)}
-            step={1}
+            min={1}
             // Convert 0-based indexing to 1-based
+            step={1}
             value={Number.isNaN(pendingValue) ? '' : pendingValue + 1}
+            onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
               const newValue = clamp(0, value - 1, count - 1);
               setPendingValue(newValue);
               if (!Number.isNaN(value)) handleChange(newValue);
             }}
-            onBlur={(): void => setPendingValue(value)}
-            forwardRef={inputRef}
           />
         </label>
         <span>/</span>
         <span>{count}</span>
       </div>
       <Button.Small
-        className="bg-white px-4 dark:bg-neutral-500"
         aria-label={formsText('nextRecord')}
-        title={formsText('nextRecord')}
+        className="bg-white px-4 dark:bg-neutral-500"
         disabled={value + 1 == count}
+        title={formsText('nextRecord')}
         onClick={(): void => handleChange(value + 1)}
       >
         {'>'}
       </Button.Small>
       <Button.Small
         aria-label={formsText('lastRecord')}
-        title={formsText('lastRecord')}
         disabled={value + 1 == count}
+        title={formsText('lastRecord')}
         onClick={(): void => handleChange(count - 1)}
       >
         ≫
@@ -127,12 +127,12 @@ function Search<SCHEMA extends AnySchema>({
   );
   return (
     <SearchDialog<SCHEMA>
-      templateResource={resource}
-      forceCollection={undefined}
       extraFilters={undefined}
-      onSelected={handleAdd}
-      onClose={handleClose}
+      forceCollection={undefined}
       multiple
+      templateResource={resource}
+      onClose={handleClose}
+      onSelected={handleAdd}
     />
   );
 }
@@ -147,12 +147,10 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   // Callback to call when new record needs to be added to the record set
   readonly onAdd:
-    | undefined
-    | ((resources: RA<SpecifyResource<SCHEMA>>) => void);
+    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
   // Callback to call when a record needs to be removed from the record set
   readonly onDelete:
-    | undefined
-    | ((index: number, source: 'deleteButton' | 'minusButton') => void);
+    ((index: number, source: 'deleteButton' | 'minusButton') => void) | undefined;
   readonly defaultIndex?: number;
   // Render function. Allows to customize placement of elements and features
   readonly children: (props: {
@@ -204,16 +202,16 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const [state, setState] = React.useState<
-    State<'Main'> | State<'AddBySearch'>
+    State<'AddBySearch'> | State<'Main'>
   >({ type: 'Main' });
 
   return children({
     slider: (
       <Slider
+        count={totalCount}
         value={
           typeof records[index] === 'object' ? index : lastIndexRef.current
         }
-        count={totalCount}
         onChange={handleSlide}
       />
     ),

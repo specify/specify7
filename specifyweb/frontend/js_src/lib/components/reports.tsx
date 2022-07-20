@@ -116,34 +116,34 @@ export function ReportsView({
       <ErrorBoundary dismissable>
         <Report
           appResource={selectedReport}
-          onClose={handleClose}
-          resourceId={resourceId}
           model={model}
+          resourceId={resourceId}
+          onClose={handleClose}
         />
       </ErrorBoundary>
     ) : (
       <Dialog
-        icon={<span className="text-blue-500">{icons.documentReport}</span>}
-        header={commonText('reports')}
-        onClose={handleClose}
         buttons={commonText('cancel')}
+        header={commonText('reports')}
+        icon={<span className="text-blue-500">{icons.documentReport}</span>}
+        onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
           <section>
             <h2>{commonText('reports')}</h2>
             <Entries
-              resources={reports}
-              icon="/images/Reports16x16.png"
-              onClick={setSelectedReport}
               cacheKey="listOfReports"
+              icon="/images/Reports16x16.png"
+              resources={reports}
+              onClick={setSelectedReport}
             />
           </section>
           <section>
             <h2>{commonText('labels')}</h2>
             <Entries
-              resources={labels}
-              icon="/images/Label16x16.png"
               cacheKey="listOfLabels"
+              icon="/images/Label16x16.png"
+              resources={labels}
               onClick={setSelectedReport}
             />
           </section>
@@ -161,7 +161,7 @@ function Entries({
 }: {
   readonly resources: RA<SerializedResource<SpAppResource>>;
   readonly icon: string;
-  readonly cacheKey: 'listOfReports' | 'listOfLabels';
+  readonly cacheKey: 'listOfLabels' | 'listOfReports';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
   const [sortConfig, handleSort] = useSortConfig(cacheKey, 'name');
@@ -207,11 +207,11 @@ function Entries({
           <tr key={resource.id}>
             <td>
               <Button.LikeLink
+                className="flex-1"
                 title={resource.description ?? undefined}
                 onClick={(): void => handleClick(resource)}
-                className="flex-1"
               >
-                <img src={icon} alt="" className={iconClassName} />
+                <img alt="" className={iconClassName} src={icon} />
                 {resource.name}
               </Button.LikeLink>
             </td>
@@ -223,9 +223,9 @@ function Entries({
             </td>
             <td>
               <Link.Icon
-                icon="pencil"
-                href={`/specify/appresources/${resource.id}/`}
                 aria-label={commonText('edit')}
+                href={`/specify/appresources/${resource.id}/`}
+                icon="pencil"
                 title={commonText('edit')}
               />
             </td>
@@ -268,7 +268,7 @@ function Report({
   );
 
   const [report] = useAsyncState<
-    SerializedResource<SpReport> | undefined | false
+    SerializedResource<SpReport> | false | undefined
   >(
     React.useCallback(
       async () =>
@@ -303,18 +303,18 @@ function Report({
   );
   return query === false ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={formsText('missingReportQueryDialogHeader')}
       buttons={commonText('close')}
+      header={formsText('missingReportQueryDialogHeader')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
       {formsText('missingReportQueryDialogText')}
     </Dialog>
-  ) : report === false ? (
+  ) : (report === false ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={formsText('missingReportDialogHeader')}
       buttons={commonText('close')}
+      header={formsText('missingReportDialogHeader')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
       {formsText('missingReportDialogText')}
@@ -322,22 +322,22 @@ function Report({
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
       <ParametersDialog
-        definition={definition}
-        query={typeof query === 'object' ? query : undefined}
         appResource={appResource}
-        resourceId={resourceId}
+        definition={definition}
         model={model}
+        query={typeof query === 'object' ? query : undefined}
+        resourceId={resourceId}
         onClose={handleClose}
       />
     ) : (
       <FixImagesDialog
         missingAttachments={missingAttachments}
+        onClose={handleClose}
         onIgnore={(): void => setMissingAttachments([])}
         onRefresh={(): void => setRunCount(runCount + 1)}
-        onClose={handleClose}
       />
     )
-  ) : null;
+  ) : null);
 }
 
 async function fixupImages(definition: Document): Promise<RA<string>> {
@@ -383,8 +383,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
       imageExpressions.forEach((image) => {
         image.textContent = imageUrl;
       });
-      if (attachment === undefined) return fileName;
-      else return undefined;
+      return attachment === undefined ? fileName : undefined;
     })
   );
 }
@@ -405,9 +404,6 @@ function FixImagesDialog({
   const loading = React.useContext(LoadingContext);
   return index === undefined ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={formsText('reportProblemsDialogTitle')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -416,16 +412,19 @@ function FixImagesDialog({
           </Button.Orange>
         </>
       }
+      header={formsText('reportProblemsDialogTitle')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
     >
       {formsText('reportsProblemsDialogText')}
       <H3>{formsText('missingAttachments')}</H3>
       <Ul>
         {missingAttachments.map((fileName, index) => (
           <Button.LikeLink
-            onClick={(): void => setIndex(index)}
-            key={fileName}
             aria-label={formsText('fix')}
+            key={fileName}
             title={formsText('fix')}
+            onClick={(): void => setIndex(index)}
           >
             {fileName}
           </Button.LikeLink>
@@ -434,14 +433,14 @@ function FixImagesDialog({
     </Dialog>
   ) : (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={formsText('missingAttachmentsFixDialogTitle')}
-      onClose={(): void => setIndex(undefined)}
       buttons={commonText('cancel')}
+      header={formsText('missingAttachmentsFixDialogTitle')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={(): void => setIndex(undefined)}
     >
       <AttachmentPlugin
-        resource={undefined}
         mode="edit"
+        resource={undefined}
         onUploadComplete={(attachment): void =>
           loading(
             attachment
@@ -494,19 +493,19 @@ function ParametersDialog({
     typeof query === 'object' ? (
       typeof resourceId === 'number' && typeof model === 'object' ? (
         <ReportForRecord
-          query={query}
-          parameters={parameters}
           definition={definition}
           model={model}
+          parameters={parameters}
+          query={query}
           resourceId={resourceId}
           onClose={handleClose}
         />
       ) : (
         <RecordSets
-          query={query}
-          parameters={parameters}
-          definition={definition}
           appResource={appResource}
+          definition={definition}
+          parameters={parameters}
+          query={query}
           onClose={handleClose}
         />
       )
@@ -515,24 +514,24 @@ function ParametersDialog({
     )
   ) : (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={formsText('reportParameters')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Green form={id('form')}>{commonText('save')}</Submit.Green>
         </>
       }
+      header={formsText('reportParameters')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
     >
       <Form id={id('form')} onSubmit={handleSubmitted}>
         {Object.entries(parameters).map(([name, value]) => (
           <Label.Generic key={name}>
             {name}
             <Input.Text
-              value={value}
               autoComplete="on"
               spellCheck
+              value={value}
               onValueChange={(value): void =>
                 setParameters(replaceKey(parameters, name, value))
               }
@@ -597,10 +596,10 @@ function ReportForRecord({
 
   return (
     <RunReport
-      query={query}
-      recordSetId={undefined}
       definition={definition}
       parameters={parameters}
+      query={query}
+      recordSetId={undefined}
       onClose={handleClose}
     />
   );
@@ -653,21 +652,19 @@ function RecordSets({
     [recordSetsPromise]
   );
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<
+    State<
         'RecordSet',
         {
           readonly recordSet: SerializedResource<RecordSet>;
           readonly autoRun: boolean;
         }
-      >
-    | State<'Raw'>
+      > | State<'Main'> | State<'Raw'>
   >({ type: 'Main' });
   return state.type === 'Main' ? (
     <RecordSetsDialog
+      isReadOnly
       recordSetsPromise={recordSetsPromise}
       onClose={handleClose}
-      isReadOnly
       onConfigure={(recordSet): void =>
         setState({
           type: 'RecordSet',
@@ -694,11 +691,11 @@ function RecordSets({
     </RecordSetsDialog>
   ) : (
     <QueryParametersDialog
-      query={query}
       autoRun={state.type === 'RecordSet' && state.autoRun}
-      recordSetId={state.type === 'RecordSet' ? state.recordSet.id : undefined}
       definition={definition}
       parameters={parameters}
+      query={query}
+      recordSetId={state.type === 'RecordSet' ? state.recordSet.id : undefined}
       onClose={handleClose}
     />
   );
@@ -726,17 +723,16 @@ function QueryParametersDialog({
   );
   const id = useId('report-query');
   const [state, setState] = useLiveState<
-    | State<'Main'>
-    | State<
+    State<
         'Running',
         {
           /*
            * This query here may be different from the one passed as a prop
            * since user can modify filters
            */
-          query: SerializedResource<SpQuery>;
+          readonly query: SerializedResource<SpQuery>;
         }
-      >
+      > | State<'Main'>
   >(
     React.useCallback(
       () =>
@@ -752,23 +748,23 @@ function QueryParametersDialog({
 
   return state.type === 'Running' ? (
     <RunReport
-      query={state.query}
-      recordSetId={recordSetId}
       definition={definition}
       parameters={parameters}
+      query={state.query}
+      recordSetId={recordSetId}
       onClose={(): void => setState({ type: 'Main' })}
     />
   ) : (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentReport}</span>}
-      header={query.name ?? commonText('reports')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{formsText('runReport')}</Submit.Blue>
         </>
       }
+      header={query.name ?? commonText('reports')}
+      icon={<span className="text-blue-500">{icons.documentReport}</span>}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -785,21 +781,21 @@ function QueryParametersDialog({
       >
         <QueryFields
           baseTableName={model.name}
-          fields={fields}
           enforceLengthLimit={false}
+          fields={fields}
+          getMappedFields={() => []}
+          openedElement={undefined}
+          showHiddenFields={false}
           onChangeField={(line, field): void =>
             setFields(replaceItem(fields, line, field))
           }
-          onMappingChange={undefined}
-          onRemoveField={undefined}
-          onOpen={undefined}
           onClose={undefined}
           onLineFocus={undefined}
           onLineMove={undefined}
-          openedElement={undefined}
-          showHiddenFields={false}
-          getMappedFields={() => []}
+          onMappingChange={undefined}
+          onOpen={undefined}
           onOpenMap={undefined}
+          onRemoveField={undefined}
         />
       </Form>
     </Dialog>
@@ -841,26 +837,24 @@ function RunReport({
   return (
     <form
       action="/report_runner/run/"
-      method="post"
-      target={reportWindowContext}
-      ref={setForm}
       className="hidden"
+      method="post"
+      ref={setForm}
+      target={reportWindowContext}
     >
       <input
-        type="hidden"
-        name="csrfmiddlewaretoken"
         defaultValue={csrfToken}
+        name="csrfmiddlewaretoken"
+        type="hidden"
       />
       <input
-        type="hidden"
-        name="report"
         defaultValue={new XMLSerializer().serializeToString(
           definition.documentElement
         )}
+        name="report"
+        type="hidden"
       />
       <input
-        type="hidden"
-        name="query"
         defaultValue={JSON.stringify(
           keysToLowerCase({
             ...query,
@@ -868,12 +862,14 @@ function RunReport({
             recordSetId,
           })
         )}
+        name="query"
+        type="hidden"
       />
       <input
-        type="hidden"
-        name="parameters"
         defaultValue={JSON.stringify(parameters)}
+        name="parameters"
         readOnly
+        type="hidden"
       />
       <input type="submit" />
     </form>

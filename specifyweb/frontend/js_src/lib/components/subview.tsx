@@ -154,11 +154,11 @@ export function SubView({
     <SubViewContext.Provider value={contextValue}>
       {isButton && (
         <Button.BorderedGray
-          title={relationship.label}
           aria-label={relationship.label}
           aria-pressed={isOpen}
-          onClick={handleToggle}
           className="w-fit"
+          title={relationship.label}
+          onClick={handleToggle}
         >
           {/*
            * Attachment table icons have lots of vertical white space, making
@@ -167,7 +167,7 @@ export function SubView({
            * Thus, have to introduce some inconsistency here
            */}
           {parentFormType === 'form' && (
-            <TableIcon name={icon} label={false} className="h-8 w-8" />
+            <TableIcon className="h-8 w-8" label={false} name={icon} />
           )}
           <span className="rounded border-gray-500 bg-white p-1 font-bold dark:bg-neutral-800">
             {collection?.models.length ?? commonText('loading')}
@@ -176,16 +176,17 @@ export function SubView({
       )}
       {typeof collection === 'object' && isOpen ? (
         <IntegratedRecordSelector
-          viewName={viewName}
-          formType={formType}
+          collection={collection}
           dialog={isButton ? 'nonModal' : false}
+          formType={formType}
           mode={
             relationship.isDependent() && initialMode !== 'view'
               ? 'edit'
               : 'view'
           }
-          collection={collection}
           relationship={relationship}
+          sortField={sortField}
+          viewName={viewName}
           onAdd={
             relationshipIsToMany(relationship) &&
             relationship.type !== 'zero-to-one'
@@ -193,6 +194,7 @@ export function SubView({
               : ([resource]): void =>
                   void parentResource.set(relationship.name, resource as never)
           }
+          onClose={handleClose}
           onDelete={
             relationshipIsToMany(relationship) &&
             relationship.type !== 'zero-to-one'
@@ -200,8 +202,6 @@ export function SubView({
               : (): void =>
                   void parentResource.set(relationship.name, null as never)
           }
-          onClose={handleClose}
-          sortField={sortField}
         />
       ) : undefined}
     </SubViewContext.Provider>

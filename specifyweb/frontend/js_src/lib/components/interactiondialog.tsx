@@ -12,6 +12,7 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
@@ -41,7 +42,6 @@ import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 import { PrepDialog } from './prepdialog';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { SerializedResource } from '../datamodelutils';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -55,28 +55,25 @@ export function InteractionDialog({
     readonly totalCount: number;
     readonly records: RA<SerializedResource<RecordSet>>;
   }>;
-  readonly model: SpecifyModel<Gift | Disposal | CollectionObject | Loan>;
+  readonly model: SpecifyModel<CollectionObject | Disposal | Gift | Loan>;
   readonly searchField: LiteralField | undefined;
   readonly onClose: () => void;
   readonly action: {
-    readonly model: SpecifyModel<Loan | Gift | Disposal>;
+    readonly model: SpecifyModel<Disposal | Gift | Loan>;
     readonly name?: string;
   };
   readonly itemCollection?: Collection<
-    LoanPreparation | GiftPreparation | DisposalPreparation
+    DisposalPreparation | GiftPreparation | LoanPreparation
   >;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'LoadingState'>
-    | State<'LoanReturnDoneState', { result: string }>
-    | State<
+    State<
         'PreparationSelectState',
         {
-          entries: Preparations;
-          problems: IR<RA<string>>;
+          readonly entries: Preparations;
+          readonly problems: IR<RA<string>>;
         }
-      >
+      > | State<'LoadingState'> | State<'LoanReturnDoneState', { readonly result: string }> | State<'MainState'>
   >({ type: 'MainState' });
 
   const { parser, split, attributes } = React.useMemo(() => {
@@ -210,39 +207,31 @@ export function InteractionDialog({
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
+      buttons={commonText('close')}
       header={formsText('returnedPreparations')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       {formsText('returnedAndSaved', state.result)}
     </Dialog>
-  ) : state.type === 'PreparationSelectState' &&
+  ) : (state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
-      preparations={state.entries}
       action={action}
-      itemCollection={itemCollection}
-      onClose={handleClose}
-      // BUG: make this readOnly if don't have necessary permissions
       isReadOnly={false}
+      itemCollection={itemCollection}
+      preparations={state.entries}
+      // BUG: make this readOnly if don't have necessary permissions
+      onClose={handleClose}
     />
   ) : (
     <RecordSetsDialog
+      isReadOnly
       recordSetsPromise={recordSetsPromise}
-      isReadOnly={true}
       onClose={handleClose}
       onSelect={handleProceed}
     >
       {({ children, totalCount }): JSX.Element => (
         <Dialog
-          header={
-            typeof itemCollection === 'object'
-              ? formsText('addItems')
-              : model.name === 'Loan'
-              ? formsText('recordReturn', model.label)
-              : formsText('createRecord', action.model.name)
-          }
-          onClose={handleClose}
           buttons={
             <>
               <Button.DialogClose>{commonText('close')}</Button.DialogClose>
@@ -254,13 +243,21 @@ export function InteractionDialog({
                 >
                   {formsText('noCollectionObjectCaption')}
                 </Button.Blue>
-              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : (model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {formsText('noPreparationsCaption')}
                 </Link.Blue>
-              ) : undefined}
+              ) : undefined)}
             </>
           }
+          header={
+            typeof itemCollection === 'object'
+              ? formsText('addItems')
+              : (model.name === 'Loan'
+              ? formsText('recordReturn', model.label)
+              : formsText('createRecord', action.model.name))
+          }
+          onClose={handleClose}
         >
           <details>
             <summary>{formsText('recordSetCaption', totalCount)}</summary>
@@ -272,10 +269,9 @@ export function InteractionDialog({
             </summary>
             <div className="flex flex-col gap-2">
               <AutoGrowTextArea
+                forwardRef={validationRef}
                 spellCheck={false}
                 value={catalogNumbers}
-                onValueChange={setCatalogNumbers}
-                forwardRef={validationRef}
                 onBlur={(): void => {
                   const parseResults = split(catalogNumbers).map((value) =>
                     parseValue(parser, inputRef.current ?? undefined, value)
@@ -302,6 +298,7 @@ export function InteractionDialog({
                     .join('\n');
                   setCatalogNumbers(parsed);
                 }}
+                onValueChange={setCatalogNumbers}
                 {...attributes}
               />
               <div>
@@ -317,7 +314,7 @@ export function InteractionDialog({
                 </Button.Blue>
               </div>
               {state.type === 'PreparationSelectState' &&
-              Object.keys(state.problems).length !== 0 ? (
+              Object.keys(state.problems).length > 0 ? (
                 <>
                   {formsText('problemsFound')}
                   {Object.entries(state.problems).map(
@@ -349,5 +346,5 @@ export function InteractionDialog({
         </Dialog>
       )}
     </RecordSetsDialog>
-  );
+  ));
 }

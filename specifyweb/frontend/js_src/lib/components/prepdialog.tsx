@@ -90,8 +90,6 @@ export function PrepDialog({
 
   return (
     <Dialog
-      header={formsText('preparationsDialogTitle')}
-      onClose={handleClose}
       buttons={
         isReadOnly ? (
           commonText('close')
@@ -99,34 +97,36 @@ export function PrepDialog({
           <>
             <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
             <Button.Blue
+              disabled={!canSelectAll}
               title={formsText('selectAllAvailablePreparations')}
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
-              disabled={!canSelectAll}
             >
               {formsText('selectAll')}
             </Button.Blue>
             <Button.Blue
+              disabled={!canDeselect}
               title={commonText('clearAll')}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
-              disabled={!canDeselect}
             >
               {formsText('deselectAll')}
             </Button.Blue>
             <Submit.Green
+              form={id('form')}
               title={
                 typeof itemCollection === 'object'
                   ? formsText('addItems')
                   : formsText('createRecord', action.model.label)
               }
-              form={id('form')}
             >
               {commonText('apply')}
             </Submit.Green>
           </>
         )
       }
+      header={formsText('preparationsDialogTitle')}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -134,7 +134,7 @@ export function PrepDialog({
           const itemModel = defined(
             getModel(`${action.model.name}Preparation`)
           ) as SpecifyModel<
-            LoanPreparation | GiftPreparation | DisposalPreparation
+            DisposalPreparation | GiftPreparation | LoanPreparation
           >;
           const items = filterArray(
             preparations.map((preparation, index) => {
@@ -172,7 +172,7 @@ export function PrepDialog({
               items as RA<SpecifyResource<DisposalPreparation>>
             );
             setCurrentComponent(
-              <ShowResource resource={interaction} recordSet={undefined} />
+              <ShowResource recordSet={undefined} resource={interaction} />
             );
           }
         }}
@@ -212,8 +212,8 @@ export function PrepDialog({
           <tbody>
             {preparations.map((preparation, index) => (
               <Row
-                preparation={preparation}
                 key={index}
+                preparation={preparation}
                 selected={selected[index]}
                 onChange={(newSelected): void =>
                   setSelected(replaceItem(selected, index, newSelected))
@@ -242,25 +242,23 @@ function Row({
   const checked = selected !== 0;
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<
+    State<
         'ItemSelection',
         {
-          items: RR<
-            'Loan' | 'Gift' | 'ExchangeOut',
+          readonly items: RR<
+            'ExchangeOut' | 'Gift' | 'Loan',
             RA<{
-              id: number;
-              label: string;
+              readonly id: number;
+              readonly label: string;
             }>
           >;
         }
-      >
-    | State<
+      > | State<
         'ResourceDialog',
         {
-          resource: SpecifyResource<Loan | Gift | ExchangeOut>;
+          readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
         }
-      >
+      > | State<'Main'>
   >({ type: 'Main' });
 
   return (
@@ -269,8 +267,8 @@ function Row({
         <td>
           <Input.Checkbox
             aria-label={formsText('selectAll')}
-            title={formsText('selectAll')}
             checked={checked}
+            title={formsText('selectAll')}
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
@@ -286,10 +284,10 @@ function Row({
         <td>
           <Input.Number
             aria-label={formsText('selectedAmount')}
-            title={formsText('selectedAmount')}
-            min={0}
-            value={selected}
             max={preparation.available}
+            min={0}
+            title={formsText('selectedAmount')}
+            value={selected}
             onValueChange={handleChange}
           />
         </td>
@@ -326,9 +324,9 @@ function Row({
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
                                     ? schema.models.Loan
-                                    : gifts.length === 1
+                                    : (gifts.length === 1
                                     ? schema.models.Gift
-                                    : schema.models.ExchangeOut
+                                    : schema.models.ExchangeOut)
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,
@@ -374,15 +372,15 @@ function Row({
       )}
       {state.type === 'ResourceDialog' && (
         <ResourceView
-          resource={state.resource}
-          mode="edit"
-          canAddAnother={true}
+          canAddAnother
           dialog="modal"
-          onSaved={undefined}
-          onDeleted={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          isSubForm={false}
           isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={state.resource}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={undefined}
+          onSaved={undefined}
         />
       )}
     </>

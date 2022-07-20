@@ -26,8 +26,8 @@ export function SchemaConfigField({
   readonly field: LiteralField | Relationship;
   readonly item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings;
   readonly onChange: (
-    field: 'name' | 'desc' | 'isHidden' | 'isRequired',
-    value: string | boolean
+    field: 'desc' | 'isHidden' | 'isRequired' | 'name',
+    value: boolean | string
   ) => void;
   readonly onFormatted: (format: ItemType, value: string | null) => void;
   readonly isReadOnly: boolean;
@@ -39,25 +39,25 @@ export function SchemaConfigField({
       <Label.Generic>
         {commonText('caption')}
         <Input.Text
-          value={item.strings.name.text}
-          onValueChange={(value): void => handleChange('name', value)}
           isReadOnly={isReadOnly}
           maxLength={maxSchemaValueLength}
+          value={item.strings.name.text}
+          onValueChange={(value): void => handleChange('name', value)}
         />
       </Label.Generic>
       <Label.Generic>
         {commonText('description')}
         <AutoGrowTextArea
           className="resize-y"
-          value={item.strings.desc.text}
           isReadOnly={isReadOnly}
-          onValueChange={(value): void => handleChange('desc', value)}
           maxLength={maxSchemaValueLength}
+          value={item.strings.desc.text}
+          onValueChange={(value): void => handleChange('desc', value)}
         />
       </Label.Generic>
       <Label.Generic>
         {commonText('length')}
-        <Input.Number value={field.length ?? ''} isReadOnly />
+        <Input.Number isReadOnly value={field.length ?? ''} />
       </Label.Generic>
       <Label.Generic>
         {commonText('type')}
@@ -89,11 +89,11 @@ export function SchemaConfigField({
         {commonText('required')}
       </Label.ForCheckbox>
       <SchemaConfigFormat
-        schemaData={schemaData}
         field={field}
-        item={item}
-        onFormatted={handleFormatted}
         isReadOnly={isReadOnly}
+        item={item}
+        schemaData={schemaData}
+        onFormatted={handleFormatted}
       />
     </SchemaConfigColumn>
   );

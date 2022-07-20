@@ -42,13 +42,13 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : Array.isArray(forms) ? (
+  ) : (Array.isArray(forms) ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.pencilAt}</span>}
+      buttons={commonText('cancel')}
+      className={{ container: dialogClassNames.narrowContainer }}
       header={commonText('dataEntry')}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
-      className={{ container: dialogClassNames.narrowContainer }}
-      buttons={commonText('cancel')}
+      icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       onClose={handleClose}
     >
       <nav>
@@ -58,12 +58,12 @@ export function FormsDialog({
             .map(({ iconName, title, table }, index) => (
               <li key={index}>
                 <Link.Default
-                  href={getResourceViewUrl(table)}
                   className={
                     typeof handleSelected === 'function'
                       ? className.navigationHandled
                       : undefined
                   }
+                  href={getResourceViewUrl(table)}
                   onClick={
                     typeof handleSelected === 'function'
                       ? (event): void => {
@@ -74,7 +74,7 @@ export function FormsDialog({
                   }
                 >
                   {typeof iconName === 'string' && (
-                    <TableIcon name={iconName} label={false} />
+                    <TableIcon label={false} name={iconName} />
                   )}
                   {title}
                 </Link.Default>
@@ -83,13 +83,13 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null;
+  ) : null);
 }
 
 export type FormEntry = {
-  iconName: string | undefined;
-  title: string;
-  table: keyof Tables;
+  readonly iconName: string | undefined;
+  readonly title: string;
+  readonly table: keyof Tables;
 };
 
 const url = cachableUrl(

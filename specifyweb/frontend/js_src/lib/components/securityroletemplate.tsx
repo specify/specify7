@@ -58,7 +58,6 @@ export function CreateRole({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      header={adminText('createRoleDialogHeader')}
       buttons={
         <>
           {(scope === 'institution' ||
@@ -80,6 +79,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }
+      header={adminText('createRoleDialogHeader')}
       onClose={handleClose}
     >
       {scope === 'institution' ||

@@ -31,9 +31,9 @@ export function SplashScreen({
         <header className="pb-2">
           <h1 className="sr-only">{commonText('specifySeven')}</h1>
           <img
-            src="/static/img/seven_logo.png"
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
+            src="/static/img/seven_logo.png"
           />
         </header>
         <main className="contents">{children}</main>

@@ -43,15 +43,15 @@ export function DataSetMeta({
 
   return (
     <Dialog
-      icon={<span className="text-blue-500">{icons.table}</span>}
-      header={wbText('dataSetMetaDialogTitle')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
         </>
       }
+      header={wbText('dataSetMetaDialogTitle')}
+      icon={<span className="text-blue-500">{icons.table}</span>}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -85,11 +85,11 @@ export function DataSetMeta({
         <Label.Generic>
           <b>{wbText('dataSetName')}</b>
           <Input.Text
+            maxLength={getMaxDataSetLength()}
+            required
             spellCheck="true"
             value={name}
             onValueChange={setName}
-            required
-            maxLength={getMaxDataSetLength()}
           />
         </Label.Generic>
         <Label.Generic>
@@ -174,7 +174,7 @@ function DataSetName({
       {' '}
       <h2 className="flex gap-1 overflow-y-auto">
         {dataset.uploadplan !== null && (
-          <TableIcon name={dataset.uploadplan.baseTableName} label />
+          <TableIcon label name={dataset.uploadplan.baseTableName} />
         )}
         {`${wbText('dataSet')} ${name}`}
         {dataset.uploadresult?.success === true && (
@@ -185,12 +185,12 @@ function DataSetName({
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
-          onClose={handleClose}
           getRowCount={getRowCount}
           onChange={(name): void => {
             handleClose();
             setName(name);
           }}
+          onClose={handleClose}
         />
       )}
     </>
@@ -221,26 +221,26 @@ function ChangeOwner({
   const [isChanged, setIsChanged] = React.useState(false);
   const loading = React.useContext(LoadingContext);
 
-  return users === undefined ? null : isChanged ? (
+  return users === undefined ? null : (isChanged ? (
     <Dialog
+      buttons={commonText('close')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
       onClose={(): void => goTo('/')}
-      buttons={commonText('close')}
     >
       <p>{wbText('dataSetOwnerChangedDialogText')}</p>
     </Dialog>
   ) : (
     <Dialog
-      header={wbText('changeDataSetOwnerDialogHeader')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')} disabled={newOwner === undefined}>
+          <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
             {wbText('changeOwner')}
           </Submit.Blue>
         </>
       }
+      header={wbText('changeDataSetOwnerDialogHeader')}
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -277,7 +277,7 @@ function ChangeOwner({
         </Label.Generic>
       </Form>
     </Dialog>
-  );
+  ));
 }
 
 const WrappedDataSetName = createBackboneView(DataSetName);

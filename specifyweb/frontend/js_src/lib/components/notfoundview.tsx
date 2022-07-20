@@ -13,8 +13,8 @@ export function NotFoundView(): JSX.Element {
       <Container.Center className="flex flex-1">
         <div className="flex flex-1 flex-col items-center justify-center gap-2">
           <h2
-            className="py-2 text-9xl text-indigo-300"
             aria-label={commonText('pageNotFound')}
+            className="py-2 text-9xl text-indigo-300"
           >
             {Http.NOT_FOUND}
           </h2>

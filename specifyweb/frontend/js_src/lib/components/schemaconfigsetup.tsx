@@ -27,8 +27,8 @@ export function SchemaConfigLanguage({
   );
   return typeof language === 'string' ? (
     <SchemaConfigTables
-      schemaData={schemaData}
       language={language}
+      schemaData={schemaData}
       onBack={(): void => setLanguage(undefined)}
       onClose={handleClose}
     />
@@ -70,22 +70,20 @@ function SchemaConfigTables({
   }, [showHiddenTables]);
   return typeof model === 'object' ? (
     <SchemaConfigMain
-      schemaData={schemaData}
       language={language}
       model={model}
+      schemaData={schemaData}
       onBack={(): void => setModel(undefined)}
     />
   ) : (
     <Dialog
-      header={commonText('tables')}
-      onClose={handleClose}
       buttons={
         <>
           <Link.Green
+            download={`schema_localization_${language}.json`}
             href={formatUrl('/context/schema_localization.json', {
               lang: language,
             })}
-            download={`schema_localization_${language}.json`}
           >
             {commonText('export')}
           </Link.Green>
@@ -93,12 +91,14 @@ function SchemaConfigTables({
           <Button.Gray onClick={handleBack}>{commonText('back')}</Button.Gray>
         </>
       }
+      header={commonText('tables')}
+      onClose={handleClose}
     >
       <Ul className="flex-1 overflow-y-auto">
         {sortedTables.map((model) => (
           <li key={model.tableId}>
             <Button.LikeLink onClick={(): void => setModel(model)}>
-              <TableIcon name={model.name} label={false} />
+              <TableIcon label={false} name={model.name} />
               {model.name}
             </Button.LikeLink>
           </li>

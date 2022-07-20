@@ -33,7 +33,7 @@ export function PickListComboBox(
     const value = props.resource.get(props.field.name);
     return typeof value === 'object'
       ? (value as SpecifyResource<AnySchema>)?.url() ?? null
-      : (value as string | number)?.toString() ?? null;
+      : (value as number | string)?.toString() ?? null;
   }, [props.resource, props.field?.name]);
 
   const [value, setValue] = React.useState<string | null>(getValue);
@@ -45,9 +45,9 @@ export function PickListComboBox(
         props.field.name,
         (value === '' && !props.isRequired
           ? null
-          : validationAttributes?.type === 'number'
+          : (validationAttributes?.type === 'number'
           ? f.parseInt(value) ?? null
-          : value) as never
+          : value)) as never
       ),
     [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
@@ -151,26 +151,26 @@ export function PickListComboBox(
           // "null" value is represented as an empty string
           value={value ?? ''}
           {...validationAttributes}
+          disabled={isDisabled || props.mode === 'view'}
+          name={name}
           required={isRequired}
           onValueChange={(newValue): void =>
             props.items?.some(({ value }) => value === newValue) === true
               ? updateValue(newValue)
               : undefined
           }
-          name={name}
-          disabled={isDisabled || props.mode === 'view'}
         >
           {isExistingValue ? (
             isRequired ? undefined : (
               <option key="nullValue" />
             )
-          ) : value === null ? (
+          ) : (value === null ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
               {queryText('invalidPicklistValue', value)}
             </option>
-          )}
+          ))}
           {props.items?.map(({ title, value }) => (
             // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>
@@ -180,8 +180,13 @@ export function PickListComboBox(
         </Select>
       ) : (
         <Autocomplete<string>
-          filterItems={true}
+          aria-label={undefined}
+          filterItems
+          forwardRef={validationRef}
           source={autocompleteItems}
+          value={(currentValue?.title || value) ?? ''}
+          onChange={({ data }): void => updateValue(data)}
+          onCleared={(): void => updateValue('')}
           onNewValue={
             typeof props.onAdd === 'function'
               ? f.var(props.pickList?.get('sizeLimit'), (sizeLimit) =>
@@ -193,18 +198,13 @@ export function PickListComboBox(
                 )
               : undefined
           }
-          onChange={({ data }): void => updateValue(data)}
-          onCleared={(): void => updateValue('')}
-          forwardRef={validationRef}
-          aria-label={undefined}
-          value={(currentValue?.title || value) ?? ''}
         >
           {(inputProps): JSX.Element => (
             <Input.Generic
-              id={props.id}
-              name={name}
               disabled={isDisabled}
+              id={props.id}
               isReadOnly={props.mode === 'view'}
+              name={name}
               {...validationAttributes}
               required={isRequired}
               {...inputProps}
@@ -216,8 +216,8 @@ export function PickListComboBox(
         typeof props.pickList === 'object' &&
         typeof handleAdd === 'function' && (
           <AddingToPicklist
-            value={pendingNewValue}
             pickList={props.pickList}
+            value={pendingNewValue}
             onAdd={(): void => {
               handleAdd?.(pendingNewValue);
               updateValue(pendingNewValue);
@@ -243,8 +243,6 @@ function AddingToPicklist({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      header={formsText('addToPickListConfirmationDialogHeader')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.Green
@@ -269,6 +267,8 @@ function AddingToPicklist({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }
+      header={formsText('addToPickListConfirmationDialogHeader')}
+      onClose={handleClose}
     >
       {formsText(
         'addToPickListConfirmationDialogText',

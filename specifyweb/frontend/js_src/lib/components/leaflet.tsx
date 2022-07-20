@@ -25,7 +25,7 @@ export function LeafletMap({
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: React.RefCallback<L.Map>;
   readonly header?: string;
-  readonly buttons?: string | JSX.Element;
+  readonly buttons?: JSX.Element | string;
   readonly onClose?: () => void;
   readonly modal?: boolean;
 }): JSX.Element {
@@ -58,16 +58,16 @@ export function LeafletMap({
 
   return (
     <Dialog
-      header={header}
       buttons={buttons}
       className={{
         container: isFullScreen
           ? dialogClassNames.fullScreen
           : dialogClassNames.extraWideContainer,
       }}
-      onResize={handleResize}
-      onClose={handleClose}
+      header={header}
       modal={modal}
+      onClose={handleClose}
+      onResize={handleResize}
     >
       <div
         ref={setContainer}

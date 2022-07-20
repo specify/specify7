@@ -44,13 +44,13 @@ export function EditFormTables({
     />
   ) : (
     <Dialog
-      header={formsText('selectSourceOfTables')}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
         </>
       }
+      header={formsText('selectSourceOfTables')}
       onClose={handleClose}
     >
       <Form
@@ -86,7 +86,7 @@ export function EditFormTables({
   );
 }
 
-export function useFormModels(): [
+export function useFormModels(): readonly [
   RA<SpecifyModel> | 'legacy',
   (models: RA<SpecifyModel> | 'legacy') => void
 ] {
@@ -94,9 +94,9 @@ export function useFormModels(): [
   const visibleTables =
     tables === 'legacy'
       ? []
-      : tables.length === 0
+      : (tables.length === 0
       ? filterArray(defaultFormTablesConfig.map(getModel))
-      : tables.map(getModelById);
+      : tables.map(getModelById));
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')
   );
@@ -121,8 +121,8 @@ function CustomEditTables({
 }): JSX.Element {
   return (
     <TablesListEdit
-      isNoRestrictionMode={false}
       defaultTables={defaultFormTablesConfig}
+      isNoRestrictionMode={false}
       models={models}
       onChange={handleChange}
       onClose={handleClose}

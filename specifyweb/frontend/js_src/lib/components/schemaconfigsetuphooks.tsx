@@ -20,7 +20,7 @@ export type SchemaData = {
   readonly formatters: IR<DataObjectFormatter>;
   readonly aggregators: IR<DataObjectFormatter>;
   readonly uiFormatters: RA<UiFormatter>;
-  readonly webLinks: RA<Readonly<[string, string]>>;
+  readonly webLinks: RA<readonly [string, string]>;
   readonly pickLists: IR<{
     readonly name: string;
     readonly isSystem: boolean;
@@ -69,13 +69,15 @@ function useLocaleContainers():
   | IR<SerializedResource<SpLocaleContainer>>
   | undefined {
   return useAsyncState<IR<SerializedResource<SpLocaleContainer>>>(
-    React.useCallback(async () => {
-      return fetchCollection('SpLocaleContainer', {
-        limit: 0,
-        domainFilter: true,
-        schemaType: 0,
-      }).then(({ records }) => index(records));
-    }, []),
+    React.useCallback(
+      async () =>
+        fetchCollection('SpLocaleContainer', {
+          limit: 0,
+          domainFilter: true,
+          schemaType: 0,
+        }).then(({ records }) => index(records)),
+      []
+    ),
     true
   )[0];
 }
@@ -123,7 +125,7 @@ function useAggregators(): IR<DataObjectFormatter> | undefined {
   )[0];
 }
 
-function useWebLinks(): RA<Readonly<[string, string]>> | undefined {
+function useWebLinks(): RA<readonly [string, string]> | undefined {
   return useAsyncState(
     React.useCallback(
       async () =>

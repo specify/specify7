@@ -155,19 +155,17 @@ export function CollectionOneToManyPlugin({
   );
 
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<
+    State<
         'DeniedAccessState',
         {
-          collectionName: string;
+          readonly collectionName: string;
         }
-      >
-    | State<
+      > | State<
         'SearchState',
         {
-          templateResource: SpecifyResource<CollectionObject>;
+          readonly templateResource: SpecifyResource<CollectionObject>;
         }
-      >
+      > | State<'MainState'>
   >({ type: 'MainState' });
 
   const loading = React.useContext(LoadingContext);
@@ -191,8 +189,8 @@ export function CollectionOneToManyPlugin({
                 <tr key={relatedResource.cid}>
                   <td>
                     <Link.Default
-                      href={relatedResource.viewUrl()}
                       className={className.navigationHandled}
+                      href={relatedResource.viewUrl()}
                       onClick={(event): void => {
                         event.preventDefault();
                         const collectionsIds =
@@ -222,8 +220,8 @@ export function CollectionOneToManyPlugin({
                   <td>
                     {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
-                        title={commonText('remove')}
                         icon="trash"
+                        title={commonText('remove')}
                         onClick={(): void => {
                           if (data === undefined) return;
                           resource
@@ -274,20 +272,20 @@ export function CollectionOneToManyPlugin({
       )}
       {state.type === 'DeniedAccessState' && (
         <Dialog
+          buttons={commonText('close')}
           header={commonText('collectionAccessDeniedDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
-          buttons={commonText('close')}
         >
           {commonText('collectionAccessDeniedDialogText', state.collectionName)}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (
         <SearchDialog
-          forceCollection={data.otherCollection.id}
           extraFilters={undefined}
+          forceCollection={data.otherCollection.id}
+          multiple
           templateResource={state.templateResource}
           onClose={(): void => setState({ type: 'MainState' })}
-          multiple
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {
               const toAdd = new schema.models.CollectionRelationship.Resource();

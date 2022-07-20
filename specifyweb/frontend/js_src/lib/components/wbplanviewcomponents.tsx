@@ -31,7 +31,7 @@ import { usePref } from './preferenceshooks';
 import type { AutoMapperSuggestion } from './wbplanviewmapper';
 
 export type HtmlGeneratorFieldData = {
-  readonly optionLabel: string | JSX.Element;
+  readonly optionLabel: JSX.Element | string;
   readonly title?: string;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
@@ -54,11 +54,11 @@ type MappingLineBaseProps = {
 export type MappingElementProps = {
   readonly fieldsData: IR<HtmlGeneratorFieldData>;
 } & (
+  | Omit<CustomSelectElementPropsClosed, 'fieldNames'>
   | (Omit<CustomSelectElementPropsOpenBase, 'autoMapperSuggestions'> & {
       readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
       readonly onAutoMapperSuggestionSelection?: (suggestion: string) => void;
     })
-  | Omit<CustomSelectElementPropsClosed, 'fieldNames'>
 );
 
 export function ListOfBaseTables({
@@ -102,11 +102,11 @@ export function ListOfBaseTables({
   );
   return (
     <MappingElement
-      isOpen={true}
-      onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
-      fieldsData={fieldsData}
-      customSelectType="BASE_TABLE_SELECTION_LIST"
       customSelectSubtype="tree"
+      customSelectType="BASE_TABLE_SELECTION_LIST"
+      fieldsData={fieldsData}
+      isOpen
+      onChange={({ newValue }): void => handleChange(newValue as keyof Tables)}
     />
   );
 }
@@ -128,26 +128,26 @@ export function ButtonWithConfirmation(props: {
     <>
       <Button.Small
         aria-haspopup="dialog"
+        disabled={props.disabled}
         onClick={(): void =>
           props.showConfirmation === undefined || props.showConfirmation()
             ? handleShow()
             : props.onConfirm()
         }
-        disabled={props.disabled}
       >
         {props.children}
       </Button.Small>
       <Dialog
-        isOpen={displayPrompt}
-        header={props.dialogHeader}
-        onClose={handleHide}
-        className={{
-          container: dialogClassNames.narrowContainer,
-        }}
         buttons={props.dialogButtons(() => {
           handleHide();
           props.onConfirm();
         })}
+        className={{
+          container: dialogClassNames.narrowContainer,
+        }}
+        header={props.dialogHeader}
+        isOpen={displayPrompt}
+        onClose={handleHide}
       >
         {props.dialogMessage}
       </Dialog>
@@ -237,20 +237,20 @@ export function MappingLineComponent({
 
   const id = useId('mapping-line');
 
-  const isComplete = lineData.slice(-1)[0].customSelectType === 'OPTIONS_LIST';
+  const isComplete = lineData.at(-1)?.customSelectType === 'OPTIONS_LIST';
   return (
     <li
-      className="contents"
-      aria-labelledby={id('header')}
       aria-current={isFocused}
+      aria-labelledby={id('header')}
+      className="contents"
     >
       <div className="border-t border-t-gray-500 py-2 print:hidden">
         <Button.Small
-          className="h-full w-full p-2"
-          title={wbText('clearMapping')}
           aria-label={wbText('clearMapping')}
-          onClick={handleClearMapping}
+          className="h-full w-full p-2"
           disabled={isReadOnly}
+          title={wbText('clearMapping')}
+          onClick={handleClearMapping}
         >
           {icons.backspace}
         </Button.Small>
@@ -266,19 +266,18 @@ export function MappingLineComponent({
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
+        aria-label={wbText('columnMapping')}
         className={`
           flex flex-wrap items-center gap-2 border-t border-t-gray-500
           py-2 print:gap-1
           ${isFocused ? 'bg-gray-300 dark:bg-neutral-700' : ''}
         `}
+        ref={lineRef}
         role="list"
-        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
+        title={wbText('columnMapping')}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
-        ref={lineRef}
-        title={wbText('columnMapping')}
-        aria-label={wbText('columnMapping')}
       >
         <MappingPathComponent mappingLineData={lineData} />
       </div>
@@ -315,7 +314,7 @@ const fieldGroupLabels = {
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;
 export const mappingElementDivider = (
-  <span className={mappingElementDividerClassName} aria-hidden={true}>
+  <span aria-hidden className={mappingElementDividerClassName}>
     {icons.arrowRight}
   </span>
 );
@@ -358,15 +357,11 @@ export function MappingElement({
   return props.isOpen ? (
     <CustomSelectElement
       {...props}
-      customSelectOptionGroups={customSelectOptionGroups}
       autoMapperSuggestions={
         Array.isArray(props.autoMapperSuggestions) &&
         props.autoMapperSuggestions.length > 0 &&
         typeof props.onAutoMapperSuggestionSelection === 'function' ? (
           <SuggestionBox
-            onSelect={(selection): void =>
-              props.onAutoMapperSuggestionSelection?.(selection)
-            }
             selectOptionsData={Object.fromEntries(
               props.autoMapperSuggestions.map((autoMapperSuggestion, index) => [
                 /*
@@ -385,9 +380,13 @@ export function MappingElement({
                 },
               ])
             )}
+            onSelect={(selection): void =>
+              props.onAutoMapperSuggestionSelection?.(selection)
+            }
           />
         ) : undefined
       }
+      customSelectOptionGroups={customSelectOptionGroups}
     />
   ) : (
     <CustomSelectElement

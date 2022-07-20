@@ -70,14 +70,15 @@ export function HeaderItems({
 
   return (
     <nav
+      aria-label={commonText('primary')}
       className={`
         order-2 -mt-2 flex flex-1 flex-row flex-wrap
         px-2 lg:justify-center xl:m-0
       `}
-      aria-label={commonText('primary')}
     >
       {menuItems.map(({ task, title, icon, view, isOverlay }) => (
         <Link.Default
+          aria-current={task === activeTask ? 'page' : undefined}
           className={`
             ${typeof view === 'string' ? '' : className.navigationHandled}
             relative
@@ -107,9 +108,8 @@ export function HeaderItems({
             ${task === activeTask ? 'lg:after:bg-gray-200' : ''}
             ${task === activeTask ? 'lg:after:dark:bg-neutral-800' : ''}
           `}
-          key={task}
           href={typeof view === 'string' ? view : `/specify/task/${task}/`}
-          aria-current={task === activeTask ? 'page' : undefined}
+          key={task}
           onClick={(event): void => {
             if (typeof view === 'string') return;
             event.preventDefault();
@@ -170,9 +170,9 @@ export function CollectionSelector(): JSX.Element {
 
   return (
     <Select
+      aria-label={commonText('currentCollection')}
       className="flex-1"
       title={commonText('currentCollection')}
-      aria-label={commonText('currentCollection')}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
         switchCollection(Number.parseInt(value), '/', () => {
@@ -198,27 +198,26 @@ export function ExpressSearch(): JSX.Element {
   );
   return (
     <Form
+      action="/specify/express_search/"
+      className="contents"
+      role="search"
       onSubmit={(): void => {
         const query = searchQuery.trim();
         if (query.length === 0) return;
         const url = formatUrl('/specify/express_search/', {
-          // eslint-disable-next-line id-length
           q: query,
         });
         goTo(url);
       }}
-      className="contents"
-      action="/specify/express_search/"
-      role="search"
     >
       <Input.Generic
-        type="search"
-        className="flex-1"
+        aria-label={commonText('search')}
         autoComplete="on"
+        className="flex-1"
         /* Name is for autocomplete purposes only */
         name="searchQuery"
         placeholder={commonText('search')}
-        aria-label={commonText('search')}
+        type="search"
         value={searchQuery}
         onValueChange={setSearchQuery}
       />
@@ -231,7 +230,7 @@ function UserToolsColumn({
   groups,
   onClose: handleClose,
 }: {
-  readonly groups: RA<Readonly<[string, RA<Omit<UserTool, 'groupLabel'>>]>>;
+  readonly groups: RA<readonly [string, RA<Omit<UserTool, 'groupLabel'>>]>;
   readonly onClose: () => void;
 }): JSX.Element {
   return (
@@ -262,13 +261,13 @@ function UserToolsColumn({
                 return (
                   <li key={task}>
                     <Component
-                      href={
-                        typeof view === 'string' ? view : `${basePath}${task}/`
-                      }
                       className={
                         typeof view === 'string' && basePath === '/'
                           ? className.navigationHandled
                           : undefined
+                      }
+                      href={
+                        typeof view === 'string' ? view : `${basePath}${task}/`
                       }
                       onClick={(event): void => {
                         if (typeof view === 'string') {
@@ -346,11 +345,11 @@ export function UserTools({
         {userInformation.name}
       </Button.Small>
       <Dialog
+        buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+        header={commonText('userToolsDialogTitle')}
         icon={<span className="text-blue-500">{icons.cog}</span>}
         isOpen={isOpen}
-        header={commonText('userToolsDialogTitle')}
         onClose={handleClose}
-        buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       >
         <nav className="flex gap-2">
           <UserToolsColumn groups={leftColumn} onClose={handleClose} />

@@ -2,8 +2,8 @@ import React from 'react';
 
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
-import { useBooleanState } from './hooks';
 import { softFail } from './errorboundary';
+import { useBooleanState } from './hooks';
 
 export function FilePicker({
   onSelected: handleSelected,
@@ -72,24 +72,23 @@ export function FilePicker({
   return (
     <label
       className="contents"
-      onDrop={handleFileDropped}
+      onBlur={handleBlur}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={preventPropagation}
+      onDrop={handleFileDropped}
       onFocus={handleFocus}
-      onBlur={handleBlur}
     >
       <input
-        type="file"
         accept={acceptedFormats?.join(',')}
-        onChange={handleFileSelected}
         className="sr-only"
         id={id}
         name={name}
         required
+        type="file"
+        onChange={handleFileSelected}
       />
       <span
-        ref={filePickerButton}
         className={`
           align-center button flex h-44 justify-center text-center
           ${
@@ -99,6 +98,7 @@ export function FilePicker({
           }
           ${isFocused ? '!ring ring-blue-500' : ''}
         `}
+        ref={filePickerButton}
       >
         <span>
           {commonText('filePickerMessage')}
@@ -127,7 +127,7 @@ export function FilePicker({
  * https://stackoverflow.com/a/10433550/8584605
  *
  */
-export const downloadFile = (fileName: string, text: string): Promise<void> =>
+export const downloadFile = async (fileName: string, text: string): Promise<void> =>
   new Promise((resolve) => {
     const iframe = document.createElement('iframe');
     iframe.addEventListener('load', () => {
@@ -172,7 +172,7 @@ async function fallbackCopyTextToClipboard(text: string) {
   textArea.value = text;
   textArea.classList.add('sr-only');
 
-  document.body.appendChild(textArea);
+  document.body.append(textArea);
   textArea.focus();
   textArea.select();
 
@@ -180,7 +180,7 @@ async function fallbackCopyTextToClipboard(text: string) {
     ? Promise.resolve()
     : Promise.reject(new Error('Failed to copy text to clipboard'));
 
-  document.body.removeChild(textArea);
+  textArea.remove();
   return promise;
 }
 
@@ -190,7 +190,7 @@ export const copyTextToClipboard = async (text: string): Promise<void> =>
    * Not available over Http, unless on localhost
    */
   (
-    globalThis.navigator.clipboard?.writeText(text).catch((error) => {
+    globalThis.navigator.clipboard?.writeText(text).catch(async (error) => {
       console.error(error);
       return fallbackCopyTextToClipboard(text);
     }) ?? fallbackCopyTextToClipboard(text)

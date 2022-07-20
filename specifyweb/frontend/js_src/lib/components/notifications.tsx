@@ -6,10 +6,10 @@ import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { Button, Link } from './basic';
+import { ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { ErrorBoundary } from './errorboundary';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -59,7 +59,7 @@ export function Notifications(): JSX.Element {
         .then(async () =>
           ajax<
             RA<
-              Omit<Notification, 'payload' | 'messageId'> & {
+              Omit<Notification, 'messageId' | 'payload'> & {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 readonly message_id: string;
               }
@@ -126,11 +126,11 @@ export function Notifications(): JSX.Element {
   return (
     <>
       <Button.Small
+        aria-live="polite"
         className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
         disabled={notificationCount === 0}
-        aria-live="polite"
-        onClick={handleToggle}
         forwardRef={buttonRef}
+        onClick={handleToggle}
       >
         {commonText(
           'notifications',
@@ -141,8 +141,13 @@ export function Notifications(): JSX.Element {
       </Button.Small>
       {Array.isArray(notifications) && (
         <Dialog
-          isOpen={isOpen}
+          buttons={commonText('close')}
+          className={{
+            container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
+            content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
+          }}
           header={commonText('notificationsDialogTitle')}
+          isOpen={isOpen}
           onClose={(): void => {
             handleClose();
             setNotifications(
@@ -158,16 +163,11 @@ export function Notifications(): JSX.Element {
                   method: 'POST',
                   body: formData({
                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                    last_seen: notifications.slice(-1)[0].timestamp,
+                    last_seen: notifications.at(-1)!.timestamp,
                   }),
                 },
                 { strict: false }
               ).then(() => undefined);
-          }}
-          buttons={commonText('close')}
-          className={{
-            container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
-            content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
         >
           {/*
@@ -259,9 +259,9 @@ const notificationRenderers: IR<
       <>
         {commonText('feedItemUpdated')}
         <Link.Green
+          className="w-fit"
           download
           href={`/static/depository/export_feed/${filename}`}
-          className="w-fit"
         >
           {filename}
         </Link.Green>
@@ -273,9 +273,9 @@ const notificationRenderers: IR<
       <>
         {commonText('updateFeedFailed')}
         <Link.Green
+          className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
-          className="w-fit"
         >
           {commonText('exception')}
         </Link.Green>
@@ -287,9 +287,9 @@ const notificationRenderers: IR<
       <>
         {commonText('dwcaExportCompleted')}
         <Link.Green
+          className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
-          className="w-fit"
         >
           {commonText('download')}
         </Link.Green>
@@ -301,9 +301,9 @@ const notificationRenderers: IR<
       <>
         {commonText('dwcaExportFailed')}
         <Link.Green
+          className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
-          className="w-fit"
         >
           {commonText('exception')}
         </Link.Green>
@@ -315,9 +315,9 @@ const notificationRenderers: IR<
       <>
         {commonText('queryExportToCsvCompleted')}
         <Link.Green
+          className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
-          className="w-fit"
         >
           {commonText('download')}
         </Link.Green>
@@ -329,9 +329,9 @@ const notificationRenderers: IR<
       <>
         {commonText('queryExportToKmlCompleted')}
         <Link.Green
+          className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
-          className="w-fit"
         >
           {commonText('download')}
         </Link.Green>

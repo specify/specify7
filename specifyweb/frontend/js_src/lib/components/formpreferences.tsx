@@ -17,13 +17,13 @@ import { Dialog } from './modaldialog';
 import { ProtectedAction, ProtectedTool } from './permissiondenied';
 import { PickListUsages } from './picklistusages';
 import { QueryTreeUsages } from './querytreeusages';
+import { ReadOnlyMode } from './readonlymode';
 import { RecordHistory } from './recordhistory';
 import { ShareRecord } from './sharerecord';
 import { PrintOnSave } from './specifyformcheckbox';
+import { useCachedState } from './statecache';
 import { SubViewContext } from './subview';
 import { SubViewPreferences } from './subviewpreferences';
-import { useCachedState } from './statecache';
-import { ReadOnlyMode } from './readonlymode';
 
 export function FormPreferences({
   resource,
@@ -35,8 +35,8 @@ export function FormPreferences({
   return typeof resource === 'object' ? (
     <>
       <Button.Small
-        title={commonText('preferences')}
         aria-label={commonText('preferences')}
+        title={commonText('preferences')}
         onClick={handleToggle}
       >
         {icons.cog}
@@ -59,10 +59,10 @@ function PreferencesDialog({
   const subView = React.useContext(SubViewContext);
   return (
     <Dialog
-      header={resource.specifyModel.label}
-      onClose={handleClose}
       buttons={commonText('close')}
+      header={resource.specifyModel.label}
       modal={false}
+      onClose={handleClose}
     >
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('formConfiguration')}</H3>
@@ -73,30 +73,30 @@ function PreferencesDialog({
           <ReadOnlyMode isNew={resource.isNew()} />
         </div>
         <PrintOnSave
-          model={resource.specifyModel}
-          id={undefined}
-          fieldName={undefined}
-          text={formsText('printOnSave')}
           defaultValue={false}
+          fieldName={undefined}
+          id={undefined}
+          model={resource.specifyModel}
+          text={formsText('printOnSave')}
         />
       </div>
       {typeof subView === 'object' ? (
         <div className="flex flex-col gap-2 pb-2">
           <H3>{formsText('recordSelectorConfiguration')}</H3>
-          <SubViewPreferences subView={subView} model={resource.specifyModel} />
+          <SubViewPreferences model={resource.specifyModel} subView={subView} />
         </div>
       ) : undefined}
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('recordInformation')}</H3>
         <div className="flex flex-wrap gap-2">
-          <ProtectedTool tool="auditLog" action="read">
-            <ProtectedAction resource="/querybuilder/query" action="execute">
+          <ProtectedTool action="read" tool="auditLog">
+            <ProtectedAction action="execute" resource="/querybuilder/query">
               <RecordHistory resource={resource} />
             </ProtectedAction>
           </ProtectedTool>
           {isTreeResource(resource) && <QueryTreeUsages resource={resource} />}
-          <ProtectedTool tool="pickLists" action="read">
-            <ProtectedAction resource="/querybuilder/query" action="execute">
+          <ProtectedTool action="read" tool="pickLists">
+            <ProtectedAction action="execute" resource="/querybuilder/query">
               {f.maybe(toTable(resource, 'PickList'), (pickList) => (
                 <PickListUsages pickList={pickList} />
               ))}

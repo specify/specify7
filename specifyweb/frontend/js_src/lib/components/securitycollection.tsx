@@ -156,10 +156,7 @@ export function SecurityCollection({
       : undefined;
 
   const [state, setState] = useLiveState<
-    | State<'MainState'>
-    | State<'CreatingRoleState'>
-    | State<'LoadingRole'>
-    | State<'RoleState', { readonly role: Role | NewRole }>
+    State<'CreatingRoleState'> | State<'LoadingRole'> | State<'MainState'> | State<'RoleState', { readonly role: NewRole | Role }>
   >(
     React.useCallback(
       () =>
@@ -209,7 +206,7 @@ export function SecurityCollection({
       setRoles(replaceKey(defined(roles), role.id.toString(), role))
     );
 
-  const createRole = async (role: Role | NewRole): Promise<void> =>
+  const createRole = async (role: NewRole | Role): Promise<void> =>
     typeof role.id === 'number'
       ? setRoles((roles) => ({
           ...roles,
@@ -298,11 +295,6 @@ export function SecurityCollection({
                   ) &&
                     hasPermission('/permissions/library/roles', 'read')) ? (
                     <Button.Green
-                      onClick={(): void =>
-                        setState({
-                          type: 'CreatingRoleState',
-                        })
-                      }
                       disabled={
                         !Array.isArray(userRoles) &&
                         hasPermission(
@@ -311,17 +303,22 @@ export function SecurityCollection({
                           collection.id
                         )
                       }
+                      onClick={(): void =>
+                        setState({
+                          type: 'CreatingRoleState',
+                        })
+                      }
                     >
                       {commonText('create')}
                     </Button.Green>
                   ) : undefined}
                   <SecurityImportExport
-                    roles={roles}
-                    permissionName="/permissions/roles"
                     baseName={collection.collectionName ?? ''}
                     collectionId={collection.id}
-                    onUpdateRole={updateRole}
+                    permissionName="/permissions/roles"
+                    roles={roles}
                     onCreateRole={createRole}
+                    onUpdateRole={updateRole}
                   />
                 </div>
               </section>
@@ -337,11 +334,11 @@ export function SecurityCollection({
                       {mergedUsers.map(({ userId, userName, roles }) => (
                         <li key={userId}>
                           <Button.LikeLink
-                            onClick={(): void => handleOpenUser(userId)}
                             disabled={
                               userId !== userInformation.id &&
                               !hasTablePermission('SpecifyUser', 'read')
                             }
+                            onClick={(): void => handleOpenUser(userId)}
                           >
                             {userName}
                             {roles.length > 0 && (
@@ -364,7 +361,7 @@ export function SecurityCollection({
                     </div>
                   </>
                 )
-              ) : hasPermission(
+              ) : (hasPermission(
                   '/permissions/user/roles',
                   'read',
                   collection.id
@@ -376,15 +373,21 @@ export function SecurityCollection({
                 >
                   {userInformation.name}
                 </Button.LikeLink>
-              )}
+              ))}
             </section>
           </div>
         </>
       )}
       {state.type === 'CreatingRoleState' && (
         <CreateRole
-          libraryRoles={libraryRoles}
           collections={collections}
+          libraryRoles={libraryRoles}
+          scope={collection.id}
+          onClose={(): void =>
+            setState({
+              type: 'MainState',
+            })
+          }
           onCreated={(role): void =>
             loading(
               (typeof role.id === 'number'
@@ -398,51 +401,16 @@ export function SecurityCollection({
               )
             )
           }
-          onClose={(): void =>
-            setState({
-              type: 'MainState',
-            })
-          }
-          scope={collection.id}
         />
       )}
       {state.type === 'RoleState' ? (
         typeof roles === 'object' ? (
           <RoleView
-            role={state.role}
-            parentName={collection.collectionName ?? ''}
-            onClose={(): void => setState({ type: 'MainState' })}
-            onSave={(role): void =>
-              loading(
-                (typeof role.id === 'number'
-                  ? updateRole(role as Role)
-                  : createRole(role)
-                ).then((): void => setState({ type: 'MainState' }))
-              )
-            }
-            onDelete={(): void =>
-              typeof state.role.id === 'number'
-                ? loading(
-                    ping(
-                      `/permissions/role/${state.role.id}/`,
-                      {
-                        method: 'DELETE',
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    )
-                      .then((): void => setState({ type: 'MainState' }))
-                      .then((): void =>
-                        setRoles(
-                          removeKey(roles, defined(state.role.id).toString())
-                        )
-                      )
-                  )
-                : undefined
-            }
-            userRoles={roleUsers}
-            permissionName="/permissions/roles"
             collectionId={collection.id}
-            onOpenUser={handleOpenUser}
+            parentName={collection.collectionName ?? ''}
+            permissionName="/permissions/roles"
+            role={state.role}
+            userRoles={roleUsers}
             onAddUsers={(users): void => {
               if (userRoles === undefined || state.role.id === undefined)
                 return;
@@ -494,6 +462,35 @@ export function SecurityCollection({
                 )
               );
             }}
+            onClose={(): void => setState({ type: 'MainState' })}
+            onDelete={(): void =>
+              typeof state.role.id === 'number'
+                ? loading(
+                    ping(
+                      `/permissions/role/${state.role.id}/`,
+                      {
+                        method: 'DELETE',
+                      },
+                      { expectedResponseCodes: [Http.NO_CONTENT] }
+                    )
+                      .then((): void => setState({ type: 'MainState' }))
+                      .then((): void =>
+                        setRoles(
+                          removeKey(roles, defined(state.role.id).toString())
+                        )
+                      )
+                  )
+                : undefined
+            }
+            onOpenUser={handleOpenUser}
+            onSave={(role): void =>
+              loading(
+                (typeof role.id === 'number'
+                  ? updateRole(role as Role)
+                  : createRole(role)
+                ).then((): void => setState({ type: 'MainState' }))
+              )
+            }
           />
         ) : (
           <LoadingScreen />
@@ -518,15 +515,15 @@ function ViewCollectionButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          resource={resource}
-          mode="edit"
           canAddAnother={false}
           dialog="modal"
-          onSaved={undefined}
-          onDeleted={undefined}
-          onClose={handleClose}
-          isSubForm={false}
           isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={undefined}
         />
       )}
     </>

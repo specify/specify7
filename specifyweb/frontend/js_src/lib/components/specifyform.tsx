@@ -17,10 +17,10 @@ import type { SpecifyModel } from '../specifymodel';
 import { hijackBackboneAjax } from '../startapp';
 import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
+import { loadingGif } from './common';
 import { useAsyncState, useId } from './hooks';
 import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
-import { loadingGif } from './common';
 import { FormCell } from './specifyformcell';
 import { useCachedState } from './statecache';
 
@@ -59,7 +59,7 @@ export function useViewDefinition({
               formType,
               mode,
             }
-          : useCustomForm
+          : (useCustomForm
           ? getView(
               viewName === originalAttachmentsView
                 ? 'ObjectAttachment'
@@ -72,11 +72,11 @@ export function useViewDefinition({
               )
               .then((viewDefinition) =>
                 typeof viewDefinition === 'object'
-                  ? viewDefinition.model === model
+                  ? (viewDefinition.model === model
                     ? viewDefinition
                     : error(
                         'View definition model does not match resource model'
-                      )
+                      ))
                   : f.maybe(
                       webOnlyViews()[viewName as keyof typeof webOnlyViews],
                       ({ columns, rows }) => ({
@@ -88,7 +88,7 @@ export function useViewDefinition({
                       })
                     ) ?? autoGenerateViewDefinition(model, formType, mode)
               )
-          : autoGenerateViewDefinition(model, formType, mode),
+          : autoGenerateViewDefinition(model, formType, mode)),
       [useCustomForm, viewName, formType, mode, model]
     ),
     false
@@ -110,7 +110,7 @@ export function SpecifyForm({
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly display: 'inline' | 'block';
+  readonly display: 'block' | 'inline';
 }): JSX.Element {
   const viewDefinition = useViewDefinition({
     model: resource.specifyModel,
@@ -121,10 +121,10 @@ export function SpecifyForm({
 
   return (
     <RenderForm
+      display={display}
       isLoading={isLoading}
       resource={resource}
       viewDefinition={viewDefinition}
-      display={display}
     />
   );
 }
@@ -145,7 +145,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   readonly isLoading?: boolean;
   readonly resource: SpecifyResource<SCHEMA>;
   readonly viewDefinition: ViewDescription | undefined;
-  readonly display: 'inline' | 'block';
+  readonly display: 'block' | 'inline';
 }): JSX.Element {
   const id = useId(
     `form-${resource.specifyModel.name ?? viewDefinition?.model?.name ?? ''}`
@@ -217,13 +217,13 @@ export function RenderForm<SCHEMA extends AnySchema>({
         )}
         {formIsLoaded && (
           <DataEntry.Grid
-            viewDefinition={viewDefinition}
             aria-hidden={showLoading}
             className={
               showLoading ? 'pointer-events-none opacity-50' : undefined
             }
-            flexibleColumnWidth={flexibleColumnWidth}
             display={viewDefinition?.columns.length === 1 ? 'block' : display}
+            flexibleColumnWidth={flexibleColumnWidth}
+            viewDefinition={viewDefinition}
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
@@ -235,8 +235,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
                  */}
                 {process.env.NODE_ENV !== 'production' && (
                   <span
-                    className="contents"
                     aria-hidden
+                    className="contents"
                     data--row-index={index}
                   />
                 )}
@@ -246,19 +246,19 @@ export function RenderForm<SCHEMA extends AnySchema>({
                     index
                   ) => (
                     <DataEntry.Cell
-                      key={index}
-                      colSpan={colSpan}
                       align={align}
+                      colSpan={colSpan}
+                      key={index}
                       visible={visible}
                     >
                       <FormCell
                         align={align}
-                        resource={resolvedResource}
-                        mode={viewDefinition.mode}
-                        formType={viewDefinition.formType}
                         cellData={cellData}
-                        id={cellId}
                         formatId={id}
+                        formType={viewDefinition.formType}
+                        id={cellId}
+                        mode={viewDefinition.mode}
+                        resource={resolvedResource}
                       />
                     </DataEntry.Cell>
                   )

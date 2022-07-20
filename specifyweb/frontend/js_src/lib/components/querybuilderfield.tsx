@@ -86,7 +86,7 @@ export function QueryLine({
   readonly onRemove?: () => void;
   readonly onOpen: ((index: number) => void) | undefined;
   readonly onClose: (() => void) | undefined;
-  readonly onLineFocus: (target: 'previous' | 'current' | 'next') => void;
+  readonly onLineFocus: (target: 'current' | 'next' | 'previous') => void;
   readonly onMoveUp: (() => void) | undefined;
   readonly onMoveDown: (() => void) | undefined;
   readonly onOpenMap: (() => void) | undefined;
@@ -106,11 +106,10 @@ export function QueryLine({
 
   React.useEffect(
     () => {
-      const [fieldName, datePart] = valueIsPartialField(
-        field.mappingPath.slice(-1)[0] ?? ''
-      )
-        ? parsePartialField<DatePart>(field.mappingPath.slice(-1)[0])
-        : [field.mappingPath.slice(-1)[0], undefined];
+      const partialField = field.mappingPath.at(-1) ?? '';
+      const [fieldName, datePart] = valueIsPartialField(partialField)
+        ? parsePartialField<DatePart>(partialField)
+        : [field.mappingPath.at(-1)!, undefined];
       const tableName =
         mappingPathIsComplete(field.mappingPath) &&
         !fieldName.startsWith(schema.fieldPartSeparator)
@@ -230,15 +229,15 @@ export function QueryLine({
 
   return (
     <li
-      className="flex gap-2 border-t border-t-gray-500 py-2"
       aria-current={isFocused}
+      className="flex gap-2 border-t border-t-gray-500 py-2"
     >
       {typeof handleRemove === 'function' && (
         <Button.Small
-          className="print:hidden"
-          variant={className.redButton}
-          title={commonText('remove')}
           aria-label={commonText('remove')}
+          className="print:hidden"
+          title={commonText('remove')}
+          variant={className.redButton}
           onClick={handleRemove}
         >
           {icons.trash}
@@ -251,11 +250,11 @@ export function QueryLine({
           ${field.filters.length > 1 ? 'items-baseline' : 'items-center'}
           ${isFocused ? 'rounded bg-gray-300 dark:bg-neutral-700' : ''}
         `}
+        ref={lineRef}
         role="list"
-        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
-        onClick={(): void => handleLineFocus('current')}
         // Same key bindings as in WbPlanView
+        onClick={(): void => handleLineFocus('current')}
         onKeyDown={({ target, key }): void => {
           if ((target as HTMLElement).closest('input, select') !== null) return;
           if (typeof openedElement === 'number') {
@@ -275,7 +274,6 @@ export function QueryLine({
           else if (key === 'ArrowUp') handleLineFocus('previous');
           else if (key === 'ArrowDown') handleLineFocus('next');
         }}
-        ref={lineRef}
       >
         <div
           className={
@@ -303,21 +301,22 @@ export function QueryLine({
                 key={index}
               >
                 {index === 0 ? (
-                  <React.Fragment>
+                  <>
                     {mappingElementDivider}
                     <Button.Small
-                      title={queryText('or')}
                       aria-label={queryText('or')}
-                      variant={
-                        field.filters.length > 1
-                          ? className.blueButton
-                          : className.grayButton
-                      }
+                      aria-pressed={field.filters.length > 1}
                       className={`
                         aria-handled print:hidden
                         ${isFieldComplete ? '' : 'invisible'}
                       `}
                       disabled={handleChange === undefined}
+                      title={queryText('or')}
+                      variant={
+                        field.filters.length > 1
+                          ? className.blueButton
+                          : className.grayButton
+                      }
                       onClick={(): void =>
                         handleFilterChange(field.filters.length, {
                           type: 'any',
@@ -325,13 +324,12 @@ export function QueryLine({
                           startValue: '',
                         })
                       }
-                      aria-pressed={field.filters.length > 1}
                     >
                       {icons.plus}
                     </Button.Small>
-                  </React.Fragment>
+                  </>
                 ) : (
-                  <React.Fragment>
+                  <>
                     <span className={mappingElementDividerClassName}>
                       <span
                         className={`
@@ -343,35 +341,35 @@ export function QueryLine({
                       </span>
                     </span>
                     <Button.Small
-                      className="print:hidden"
-                      variant={className.redButton}
-                      title={commonText('remove')}
                       aria-label={commonText('remove')}
+                      className="print:hidden"
                       disabled={handleChange === undefined}
+                      title={commonText('remove')}
+                      variant={className.redButton}
                       onClick={(): void => handleFilterChange(index, undefined)}
                     >
                       {icons.trash}
                     </Button.Small>
-                  </React.Fragment>
+                  </>
                 )}
                 {field.filters[index].type !== 'any' && (
                   <Button.Small
-                    title={queryText('negate')}
                     aria-label={queryText('negate')}
+                    aria-pressed={field.filters[index].isNot}
+                    className="aria-handled"
+                    disabled={handleChange === undefined}
+                    title={queryText('negate')}
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
                         : className.grayButton
                     }
-                    className="aria-handled"
-                    disabled={handleChange === undefined}
                     onClick={(): void =>
                       handleFilterChange(index, {
                         ...field.filters[index],
                         isNot: !field.filters[index].isNot,
                       })
                     }
-                    aria-pressed={field.filters[index].isNot}
                   >
                     {icons.ban}
                   </Button.Small>
@@ -382,13 +380,13 @@ export function QueryLine({
                       queryFieldFilters[field.filters[index].type]
                         .description ?? commonText('filter')
                     }
+                    className={customSelectElementBackground}
+                    disabled={handleChange === undefined}
                     title={
                       queryFieldFilters[field.filters[index].type]
                         .description ?? commonText('filter')
                     }
                     value={filter.type}
-                    className={customSelectElementBackground}
-                    disabled={handleChange === undefined}
                     onChange={({ target }): void => {
                       const newFilter = (target as HTMLSelectElement)
                         .value as QueryFieldFilter;
@@ -431,10 +429,10 @@ export function QueryLine({
                 </div>
                 {typeof fieldMeta.parser === 'object' && (
                   <QueryLineFilter
-                    filter={field.filters[index]}
-                    fieldName={mappingPathToString(field.mappingPath)}
-                    parser={fieldMeta.parser}
                     enforceLengthLimit={enforceLengthLimit}
+                    fieldName={mappingPathToString(field.mappingPath)}
+                    filter={field.filters[index]}
+                    parser={fieldMeta.parser}
                     onChange={
                       typeof handleChange === 'function'
                         ? (startValue): void =>
@@ -454,8 +452,8 @@ export function QueryLine({
       <div className="contents print:hidden">
         {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
           <Button.Small
-            title={queryText('openMap')}
             aria-label={queryText('openMap')}
+            title={queryText('openMap')}
             variant={className.blueButton}
             onClick={handleOpenMap}
           >
@@ -463,9 +461,10 @@ export function QueryLine({
           </Button.Small>
         ) : undefined}
         <Button.Small
-          title={queryText('showButtonDescription')}
           aria-label={queryText('showButtonDescription')}
+          aria-pressed={field.isDisplay}
           className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
+          title={queryText('showButtonDescription')}
           variant={
             field.isDisplay ? className.greenButton : className.grayButton
           }
@@ -473,20 +472,19 @@ export function QueryLine({
             ...field,
             isDisplay: !field.isDisplay,
           })}
-          aria-pressed={field.isDisplay}
         >
           {icons.check}
         </Button.Small>
         <Button.Small
-          className={isFieldComplete ? undefined : 'invisible'}
-          title={
+          aria-label={
             field.sortType === 'ascending'
               ? queryText('ascendingSort')
               : field.sortType === 'descending'
               ? queryText('descendingSort')
               : queryText('sort')
           }
-          aria-label={
+          className={isFieldComplete ? undefined : 'invisible'}
+          title={
             field.sortType === 'ascending'
               ? queryText('ascendingSort')
               : field.sortType === 'descending'
@@ -508,15 +506,15 @@ export function QueryLine({
             : icons.circle}
         </Button.Small>
         <Button.Small
-          title={queryText('moveUp')}
           aria-label={queryText('moveUp')}
+          title={queryText('moveUp')}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
         </Button.Small>
         <Button.Small
-          title={queryText('moveDown')}
           aria-label={queryText('moveDown')}
+          title={queryText('moveDown')}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}

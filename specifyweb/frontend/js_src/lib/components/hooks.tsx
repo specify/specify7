@@ -76,7 +76,7 @@ export function setTitle(title: string): void {
 const titleStack = new Map<unknown, string>();
 
 const refreshTitle = (): void =>
-  setTitle(Array.from(titleStack.values()).slice(-1)[0] ?? '');
+  setTitle(Array.from(titleStack.values()).at(-1) ?? '');
 
 /** Set title of the webpage. Restores previous title on component destruction */
 export function useTitle(title: string | undefined): void {
@@ -104,7 +104,7 @@ export function useTitle(title: string | undefined): void {
  */
 export function useValidation<T extends Input = HTMLInputElement>(
   // Can set validation message from state or a prop
-  message: string | RA<string> = ''
+  message: RA<string> | string = ''
 ): {
   // Set this as a ref prop on an input
   readonly validationRef: React.RefCallback<T>;
@@ -112,8 +112,8 @@ export function useValidation<T extends Input = HTMLInputElement>(
   readonly inputRef: React.MutableRefObject<T | null>;
   // Can set validation message via this callback
   readonly setValidation: (
-    message: string | RA<string>,
-    type?: 'focus' | 'auto' | 'silent'
+    message: RA<string> | string,
+    type?: 'auto' | 'focus' | 'silent'
   ) => void;
 } {
   const inputRef = React.useRef<T | null>(null);
@@ -154,8 +154,8 @@ export function useValidation<T extends Input = HTMLInputElement>(
   }, []);
 
   const setValidation = React.useCallback(function setValidation(
-    message: string | RA<string>,
-    type: 'focus' | 'auto' | 'silent' = 'auto'
+    message: RA<string> | string,
+    type: 'auto' | 'focus' | 'silent' = 'auto'
   ): void {
     const joined = Array.isArray(message) ? message.join('\n') : message;
     if (validationMessageRef.current === joined && type !== 'focus') return;
@@ -216,10 +216,10 @@ export function useValidation<T extends Input = HTMLInputElement>(
  * ```
  */
 export function useAsyncState<T>(
-  callback: () => undefined | T | Promise<T | undefined>,
+  callback: () => Promise<T | undefined> | T | undefined,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean
-): [
+): readonly [
   state: T | undefined,
   setState: React.Dispatch<React.SetStateAction<T | undefined>>
 ] {
@@ -232,7 +232,7 @@ export function useAsyncState<T>(
     const wrapped = loadingScreen
       ? loading
       : (promise: Promise<unknown>): void => void promise.catch(crash);
-    void wrapped(
+    wrapped(
       Promise.resolve(callback()).then((newState) =>
         destructorCalled ? undefined : setState(newState)
       )
@@ -272,7 +272,7 @@ export function useAsyncState<T>(
  */
 export function useLiveState<T>(
   callback: () => T
-): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+): readonly [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = React.useState<T>(() => callback());
 
   useReadyEffect(React.useCallback(() => setState(callback()), [callback]));
@@ -285,7 +285,7 @@ export function useLiveState<T>(
  */
 export function useTriggerState<T>(
   defaultValue: T
-): [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+): readonly [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = React.useState<T>(defaultValue);
 
   /* Using layout effect rather than useEffect to update the state earlier */
@@ -342,7 +342,7 @@ export function useReadyEffect(callback: () => void): void {
 export function useBooleanState(
   value = false
 ): Readonly<
-  [state: boolean, enable: () => void, disable: () => void, toggle: () => void]
+  readonly [state: boolean, enable: () => void, disable: () => void, toggle: () => void]
 > {
   const [state, setState] = useTriggerState(value);
   return [
@@ -382,7 +382,7 @@ export function useBooleanState(
  *
  */
 export function useResourceValue<
-  T extends string | number | boolean | null,
+  T extends boolean | number | string | null,
   INPUT extends Input = HTMLInputElement
 >(
   resource: SpecifyResource<AnySchema>,
@@ -390,15 +390,15 @@ export function useResourceValue<
   fieldName: string | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined
-): {
+): ReturnType<typeof useValidation> & {
   readonly value: T | undefined;
   readonly updateValue: (newValue: T, reportError?: boolean) => void;
   // See useValidation for documentation of these props:
   readonly validationRef: React.RefCallback<INPUT>;
   readonly inputRef: React.MutableRefObject<INPUT | null>;
-  readonly setValidation: (message: string | RA<string>) => void;
+  readonly setValidation: (message: RA<string> | string) => void;
   readonly parser: Parser;
-} & ReturnType<typeof useValidation> {
+} {
   const { inputRef, validationRef, setValidation } = useValidation<INPUT>();
 
   const [parser, setParser] = React.useState<Parser>({});
@@ -512,9 +512,9 @@ export function useResourceValue<
       const formattedValue =
         field?.isRelationship === true && newValue === ''
           ? null
-          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
+          : (['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
           ? parsedValue
-          : newValue;
+          : newValue);
       setValue(
         (parser.type === 'number' && reportErrors
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
@@ -571,9 +571,9 @@ export function useResourceValue<
       ? resolveParser(field)
       : { type: 'text' as const };
     const parser = shouldResolveParser
-      ? typeof defaultParser === 'object'
+      ? (typeof defaultParser === 'object'
         ? mergeParsers(resolvedParser, defaultParser)
-        : resolvedParser
+        : resolvedParser)
       : resolvedParser;
     setParser(parser);
 

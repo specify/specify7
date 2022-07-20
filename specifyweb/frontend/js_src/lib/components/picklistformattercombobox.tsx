@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { fetchFormatters } from '../dataobjformatters';
+import { PickListTypes } from '../picklistmixins';
+import { resourceOn } from '../resource';
 import { getModel } from '../schema';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { PickListTypes } from '../picklistmixins';
 import { fail } from './errorboundary';
 import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
-import { resourceOn } from '../resource';
 
 export function PickListFormatterComboBox(
   props: DefaultComboBoxProps
@@ -48,10 +48,10 @@ export function PickListFormatterComboBox(
   return (
     <PickListComboBox
       {...props}
-      items={items}
-      onAdd={undefined}
-      pickList={undefined}
       isDisabled={props.isDisabled || items === undefined || items.length === 0}
+      items={items}
+      pickList={undefined}
+      onAdd={undefined}
     />
   );
 }

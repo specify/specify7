@@ -10,7 +10,7 @@ import { fetchLocalityDataFromLocalityResource } from '../localityrecorddataextr
 import { commonText } from '../localization/common';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
-import type { RA } from '../types';
+import type { RA, WritableArray } from '../types';
 import { findLocalityColumnsInDataSet } from '../wblocalitydataextractor';
 import { defaultColumnOptions } from '../wbplanviewlinesgetter';
 import type { SplitMappingPath } from '../wbplanviewmappinghelper';
@@ -30,8 +30,8 @@ export function QueryToMap({
   model,
   fieldSpecs,
 }: {
-  readonly results: RA<RA<string | number | null>>;
-  readonly selectedRows: Set<number>;
+  readonly results: RA<RA<number | string | null>>;
+  readonly selectedRows: ReadonlySet<number>;
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
 }): JSX.Element | null {
@@ -40,7 +40,7 @@ export function QueryToMap({
   const localityMappings = useLocalityMappings(model.name, fieldSpecs);
   return localityMappings.length === 0 ? null : (
     <>
-      <Button.Small onClick={handleOpen} disabled={results.length === 0}>
+      <Button.Small disabled={results.length === 0} onClick={handleOpen}>
         {commonText('geoMap')}
       </Button.Small>
       {isOpen && ids.length > 0 ? (
@@ -102,7 +102,9 @@ function Dialog({
     () => localities?.map(({ localityData }) => localityData),
     [localities]
   );
-  const fullLocalityData = React.useRef<(undefined | false | LocalityData)[]>(
+  const fullLocalityData = React.useRef<
+    WritableArray<LocalityData | false | undefined>
+  >(
     // Creating a sparse array
     /* eslint-disable-next-line unicorn/no-new-array */
     new Array(ids.length)

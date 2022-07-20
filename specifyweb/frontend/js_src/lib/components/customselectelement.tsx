@@ -60,12 +60,7 @@ type Properties =
   // Has down arrow (closed picklist preview) or left arrow (relationship)
   | 'arrow';
 export type CustomSelectType =
-  | 'OPENED_LIST'
-  | 'CLOSED_LIST'
-  | 'PREVIEW_LIST'
-  | 'SUGGESTION_LIST'
-  | 'BASE_TABLE_SELECTION_LIST'
-  | 'OPTIONS_LIST';
+  'BASE_TABLE_SELECTION_LIST' | 'CLOSED_LIST' | 'OPENED_LIST' | 'OPTIONS_LIST' | 'PREVIEW_LIST' | 'SUGGESTION_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
   // Used in Map Explorer
@@ -135,14 +130,14 @@ type CustomSelectElementIconProps = {
    */
   readonly isRelationship?: boolean;
   // Whether the option is now selected
-  // eslint-disable-next-line react/no-unused-prop-types
+   
   readonly isDefault?: boolean;
   // The name of the table this option represents
   readonly tableName?: keyof Tables;
   // The name of the option. Would be used as a label (visible to the user)
-  readonly optionLabel?: string | JSX.Element;
+  readonly optionLabel?: JSX.Element | string;
   // The value of the title HTML attribute
-  // eslint-disable-next-line react/no-unused-prop-types
+   
   readonly title?: string;
   /*
    * True if option can be selected. False if option cannot be selected because
@@ -241,7 +236,7 @@ export function Icon({
   else if (!isRelationship && (isPreview || !isEnabled))
     return tableIconSelected;
   else if (!isRelationship || tableName === undefined) return tableIconEmpty;
-  else return <TableIcon name={tableName} label />;
+  else return <TableIcon label name={tableName} />;
 }
 
 function Option({
@@ -286,27 +281,27 @@ function Option({
     // Keyboard events are handled by the parent
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <span
-      className={classes.join(' ')}
-      title={fullTitle === optionLabel ? tableLabel : fullTitle}
+      aria-atomic="true"
+      aria-current={isDefault}
+      aria-disabled={!isEnabled || isDefault}
       aria-label={fullTitle}
+      aria-selected={isDefault}
+      className={classes.join(' ')}
+      role="option"
       tabIndex={-1}
+      title={fullTitle === optionLabel ? tableLabel : fullTitle}
       onClick={
         typeof handleClick === 'function'
           ? (event): void => handleClick({ isDoubleClick: event.detail > 1 })
           : undefined
       }
-      aria-selected={isDefault}
-      role="option"
-      aria-disabled={!isEnabled || isDefault}
-      aria-current={isDefault}
-      aria-atomic="true"
     >
       {hasIcon && (
         <Icon
-          optionLabel={optionLabel}
-          isRelationship={isRelationship}
-          isEnabled={isEnabled}
           isDefault={isDefault}
+          isEnabled={isEnabled}
+          isRelationship={isRelationship}
+          optionLabel={optionLabel}
           tableName={tableName}
         />
       )}
@@ -316,14 +311,14 @@ function Option({
       {hasArrow &&
         (isRelationship ? (
           <span
+            aria-label={wbText('relationship', tableLabel ?? '')}
             className="print:hidden"
+            role="img"
             title={
               typeof tableLabel === 'string'
                 ? wbText('relationship', tableLabel)
                 : undefined
             }
-            aria-label={wbText('relationship', tableLabel ?? '')}
-            role="img"
           >
             {icons.chevronRight}
           </span>
@@ -352,15 +347,14 @@ function OptionGroup({
     >
       {typeof selectGroupLabel === 'string' && (
         <header
-          aria-hidden={true}
+          aria-hidden
           className="cursor-auto bg-[color:var(--custom-select-b2)] px-1"
         >
           {selectGroupLabel}
         </header>
       )}
       {Object.entries(selectOptionsData).map(
-        ([optionName, selectionOptionData]) => {
-          return (
+        ([optionName, selectionOptionData]) => (
             <Option
               key={optionName}
               onClick={({ isDoubleClick }): void =>
@@ -378,11 +372,10 @@ function OptionGroup({
                   : undefined
               }
               {...selectionOptionData}
-              hasIcon={hasIcon}
               hasArrow={hasArrow}
+              hasIcon={hasIcon}
             />
-          );
-        }
+          )
       )}
     </section>
   );
@@ -412,11 +405,11 @@ function ShadowListOfOptions({
     gap * 2 + (hasIcon ? gap + 1.25 : 0) + (hasArrow ? gap + 1.5 : 0);
   return (
     <span
+      aria-hidden="true"
       className={`
         invisible -mt-2 flex flex-col overflow-y-scroll border
         print:hidden
       `}
-      aria-hidden="true"
       style={{ paddingRight: `${paddingRight}rem` }}
     >
       {fieldNames.map((fieldName, index) => (
@@ -547,10 +540,10 @@ export function CustomSelectElement({
       >
         {has('icon') && (
           <Icon
-            isDefault={true}
-            isRelationship={true}
-            tableName={tableName}
+            isDefault
+            isRelationship
             optionLabel={tableName}
+            tableName={tableName}
           />
         )}
         <span>{selectLabel}</span>
@@ -561,19 +554,21 @@ export function CustomSelectElement({
       // Not tabbable because keyboard events are handled separately
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
       <header
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
         className={`
           flex min-h-[theme(spacing.8)] cursor-pointer
           items-center gap-1 rounded border border-gray-500 px-1 dark:border-none
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
-              : defaultOption?.isHidden === true
+              : (defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                  dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground
+              : customSelectElementBackground)
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
@@ -581,16 +576,14 @@ export function CustomSelectElement({
         onClick={
           has('interactive') ? (isOpen ? handleClose : handleOpen) : undefined
         }
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
       >
         {has('icon') && (
           <Icon
-            isDefault={true}
+            isDefault
+            isPreview
             isRelationship={defaultOption.isRelationship}
-            tableName={defaultOption.tableName}
             optionLabel={defaultOption.optionLabel}
-            isPreview={true}
+            tableName={defaultOption.tableName}
           />
         )}
         <span
@@ -614,6 +607,10 @@ export function CustomSelectElement({
 
     unmapOption = showUnmapOption ? (
       <Option
+        hasArrow
+        hasIcon
+        isDefault={defaultOption.optionLabel === '0'}
+        optionLabel="0"
         onClick={(): void =>
           handleClick?.({
             close: true,
@@ -623,10 +620,6 @@ export function CustomSelectElement({
             isDoubleClick: false,
           })
         }
-        isDefault={defaultOption.optionLabel === '0'}
-        optionLabel="0"
-        hasIcon={true}
-        hasArrow={true}
       />
     ) : undefined;
 
@@ -637,8 +630,8 @@ export function CustomSelectElement({
       !isOpen && has('scroll') && fieldNames.length > 0 ? (
         <ShadowListOfOptions
           fieldNames={fieldNames}
-          hasIcon={has('icon')}
           hasArrow={has('arrow')}
+          hasIcon={has('icon')}
         />
       ) : undefined;
   }
@@ -657,18 +650,18 @@ export function CustomSelectElement({
         ) => (
           <OptionGroup
             key={index}
+            selectGroupName={selectGroupName}
             onClick={
               typeof handleClick === 'function'
                 ? (payload): void => handleClick({ close: true, ...payload })
                 : undefined
             }
-            selectGroupName={selectGroupName}
             {...selectGroupData}
+            hasArrow={has('arrow')}
+            hasIcon={has('icon')}
             selectGroupLabel={
               customSelectSubtype === 'simple' ? selectGroupLabel : undefined
             }
-            hasIcon={has('icon')}
-            hasArrow={has('arrow')}
           />
         )
       );
@@ -676,6 +669,8 @@ export function CustomSelectElement({
   const listOfOptionsRef = React.useRef<HTMLElement>(null);
   const customSelectOptions = (Boolean(unmapOption) || groups) && (
     <span
+      aria-label={selectLabel}
+      aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       className={`
         h-fit flex-1 cursor-pointer overflow-x-hidden
         rounded border border-brand-300 bg-[color:var(--custom-select-b1)]
@@ -685,10 +680,8 @@ export function CustomSelectElement({
         ${customSelectType === 'SUGGESTION_LIST' ? '' : 'min-w-max'}
       `}
       ref={listOfOptionsRef}
-      aria-readonly={!has('interactive') || typeof handleChange !== 'function'}
       role="listbox"
       tabIndex={-1}
-      aria-label={selectLabel}
     >
       {unmapOption}
       {groups}
@@ -696,7 +689,7 @@ export function CustomSelectElement({
   );
 
   const previousDefaultOption = React.useRef<
-    undefined | CustomSelectElementDefaultOptionProps
+    CustomSelectElementDefaultOptionProps | undefined
   >(undefined);
   React.useEffect(() => {
     const optionChanged =
@@ -712,7 +705,7 @@ export function CustomSelectElement({
     ) {
       const selectedOption = listOfOptionsRef.current.getElementsByClassName(
         'custom-select-option-selected'
-      )?.[0] as undefined | HTMLElement;
+      )?.[0] as HTMLElement | undefined;
 
       if (typeof selectedOption === 'object')
         scrollIntoView(selectedOption, 'nearest');
@@ -728,16 +721,16 @@ export function CustomSelectElement({
 
   return (
     <article
+      aria-live={has('interactive') ? 'polite' : 'off'}
       className={`
         custom-select relative flex h-8
         flex-col custom-select-${upperToKebab(customSelectType)}
         ${customSelectClassNames[customSelectType] ?? ''}
       `}
-      title={selectLabel}
-      role={role}
       ref={customSelectElementRef}
-      aria-live={has('interactive') ? 'polite' : 'off'}
-      tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
+      role={role}
+      tabIndex={has('tabIndex') ? 0 : (has('interactive') ? -1 : undefined)}
+      title={selectLabel}
       onBlur={
         has('interactive')
           ? (event): void => {
@@ -834,8 +827,6 @@ export function SuggestionBox({
 }): JSX.Element {
   return (
     <CustomSelectElement
-      customSelectType="SUGGESTION_LIST"
-      customSelectSubtype="simple"
       customSelectOptionGroups={{
         suggestedMappings: {
           selectGroupLabel: wbText('suggestedMappings'),
@@ -844,7 +835,9 @@ export function SuggestionBox({
           hasArrow: false,
         },
       }}
-      isOpen={true}
+      customSelectSubtype="simple"
+      customSelectType="SUGGESTION_LIST"
+      isOpen
       onChange={({ newValue }): void => handleSelect(newValue)}
       {...props}
     />

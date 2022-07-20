@@ -29,14 +29,14 @@ export function SchemaConfigFields({
     (item) => model.getField(item.name)!.isRelationship
   );
   return (
-    <SchemaConfigColumn id={id('fields-label')} header={commonText('fields')}>
+    <SchemaConfigColumn header={commonText('fields')} id={id('fields-label')}>
       <Select
-        className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
-        size={2}
         aria-labelledby={id('fields-label')}
+        className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
+        disabled={!Array.isArray(items)}
+        size={2}
         value={index}
         onValueChange={(index): void => handleChange(Number.parseInt(index))}
-        disabled={!Array.isArray(items)}
       >
         <optgroup label={commonText('fields')}>
           {fields.map((item) => (

@@ -58,7 +58,7 @@ export function QueryFields({
   readonly onClose: (() => void) | undefined;
   readonly onLineFocus: ((line: number) => void) | undefined;
   readonly onLineMove:
-    | ((line: number, direction: 'up' | 'down') => void)
+    | ((line: number, direction: 'down' | 'up') => void)
     | undefined;
   readonly onOpenMap: ((line: number) => void) | undefined;
 }): JSX.Element {
@@ -85,20 +85,17 @@ export function QueryFields({
       {fields.map((field, line, { length }) => (
         <ErrorBoundary dismissable key={field.id}>
           <QueryLine
-            fieldHash={`${line}_${length}`}
             baseTableName={baseTableName}
-            field={field}
             enforceLengthLimit={enforceLengthLimit}
-            showHiddenFields={showHiddenFields}
+            field={field}
+            fieldHash={`${line}_${length}`}
+            getMappedFields={getMappedFields}
             isFocused={openedElement?.line === line}
             openedElement={
               openedElement?.line === line ? openedElement?.index : undefined
             }
-            getMappedFields={getMappedFields}
+            showHiddenFields={showHiddenFields}
             onChange={handleChangeField?.bind(undefined, line)}
-            onMappingChange={handleMappingChange?.bind(undefined, line)}
-            onRemove={handleRemoveField?.bind(undefined, line)}
-            onOpen={handleOpen?.bind(undefined, line)}
             onClose={handleClose}
             onLineFocus={(target): void =>
               (target === 'previous' && line === 0) ||
@@ -107,22 +104,25 @@ export function QueryFields({
                 : handleLineFocus?.(
                     target === 'previous'
                       ? line - 1
-                      : target === 'current'
+                      : (target === 'current'
                       ? line
-                      : line + 1
+                      : line + 1)
                   )
+            }
+            onMappingChange={handleMappingChange?.bind(undefined, line)}
+            onMoveDown={
+              line + 1 === length || handleLineMove === undefined
+                ? undefined
+                : (): void => handleLineMove?.(line, 'down')
             }
             onMoveUp={
               line === 0 || handleLineMove === undefined
                 ? undefined
                 : (): void => handleLineMove?.(line, 'up')
             }
-            onMoveDown={
-              line + 1 === length || handleLineMove === undefined
-                ? undefined
-                : (): void => handleLineMove?.(line, 'down')
-            }
+            onOpen={handleOpen?.bind(undefined, line)}
             onOpenMap={handleOpenMap?.bind(undefined, line)}
+            onRemove={handleRemoveField?.bind(undefined, line)}
           />
         </ErrorBoundary>
       ))}

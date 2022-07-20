@@ -155,7 +155,7 @@ function TreeView<SCHEMA extends AnyTree>({
   return rows === undefined ? null : (
     <Container.Full>
       <header className="flex flex-wrap items-center gap-2">
-        <TableIcon name={table.name} label />
+        <TableIcon label name={table.name} />
         <H2 title={treeDefinition.get('remarks') ?? undefined}>
           {treeDefinition.get('name')}
         </H2>
@@ -163,8 +163,9 @@ function TreeView<SCHEMA extends AnyTree>({
         <div>
           {/* A React component that is also a TypeScript generic */}
           <Autocomplete<SerializedResource<SCHEMA>>
+            aria-label={treeText('searchTreePlaceholder')}
             filterItems={false}
-            value={searchValue}
+            forwardRef={searchBoxRef}
             source={async (value) =>
               fetchCollection(
                 table.name,
@@ -191,11 +192,11 @@ function TreeView<SCHEMA extends AnyTree>({
                 })
               )
             }
-            onCleared={(): void => setSearchValue('')}
+            value={searchValue}
             onChange={({ label, data }): void => {
               setSearchValue(label as string);
               ajax<
-                IR<{ readonly rankid: number; readonly id: number } | string>
+                IR<string | { readonly rankid: number; readonly id: number }>
               >(
                 `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
                 {
@@ -219,8 +220,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 )
                 .catch(softFail);
             }}
-            forwardRef={searchBoxRef}
-            aria-label={treeText('searchTreePlaceholder')}
+            onCleared={(): void => setSearchValue('')}
           >
             {(inputProps): JSX.Element => (
               <Input.Generic
@@ -232,25 +232,25 @@ function TreeView<SCHEMA extends AnyTree>({
           </Autocomplete>
         </div>
         <Button.Small
-          onClick={handleToggleEditingRanks}
           aria-pressed={isEditingRanks}
+          onClick={handleToggleEditingRanks}
         >
           {treeText('editRanks')}
         </Button.Small>
         <span className="-ml-2 flex-1" />
         <ErrorBoundary dismissable>
           <TreeViewActions<SCHEMA>
-            tableName={tableName}
+            actionRow={actionRow}
+            focusedRow={focusedRow}
             focusRef={toolbarButtonRef}
+            ranks={rankIds}
+            tableName={tableName}
+            onChange={setActionRow}
             onRefresh={(): void => {
               // Force re-load
               setRows(undefined);
               globalThis.setTimeout(() => setRows(rows), 0);
             }}
-            focusedRow={focusedRow}
-            ranks={rankIds}
-            actionRow={actionRow}
-            onChange={setActionRow}
           />
         </ErrorBoundary>
       </header>
@@ -262,6 +262,8 @@ function TreeView<SCHEMA extends AnyTree>({
           shadow-md shadow-gray-500 outline-none
           ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
         `}
+        role="none table"
+        // First role is for screen readers. Second is for styling
         style={
           {
             '--cols': treeDefinitionItems.length,
@@ -269,8 +271,6 @@ function TreeView<SCHEMA extends AnyTree>({
             '--edge-color': `${treeAccentColor}00`,
           } as React.CSSProperties
         }
-        // First role is for screen readers. Second is for styling
-        role="none table"
         tabIndex={0}
         // When tree viewer is focused, move focus to last focused node
         onFocus={(event): void => {
@@ -291,8 +291,6 @@ function TreeView<SCHEMA extends AnyTree>({
           <div role="none row">
             {treeDefinitionItems.map((rank, index, { length }) => (
               <div
-                role="columnheader"
-                key={index}
                 className={`
                   sticky top-0 whitespace-nowrap border border-transparent p-2
                   ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
@@ -303,6 +301,8 @@ function TreeView<SCHEMA extends AnyTree>({
                       : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
                 `}
+                key={index}
+                role="columnheader"
               >
                 <Button.LikeLink
                   id={id(rank.rankId.toString())}
@@ -332,38 +332,29 @@ function TreeView<SCHEMA extends AnyTree>({
         <ul role="tree rowgroup">
           {rows.map((row, index) => (
             <TreeRow
-              key={row.nodeId}
-              row={row}
-              getRows={getRows}
-              getStats={getStats}
-              nodeStats={undefined}
-              path={[]}
-              ranks={rankIds}
-              rankNameId={id}
+              actionRow={actionRow}
               collapsedRanks={collapsedRanks ?? []}
               conformation={
                 conformation
                   ?.find(([id]) => id === row.nodeId)
                   ?.slice(1) as Conformations
               }
-              onChangeConformation={(newConformation): void =>
-                updateConformation([
-                  ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
-                  ...(typeof newConformation === 'object'
-                    ? ([[row.nodeId, ...newConformation]] as const)
-                    : []),
-                ])
-              }
-              actionRow={actionRow}
               focusPath={
                 (focusPath[0] === 0 && index === 0) ||
                 focusPath[0] === row.nodeId
                   ? focusPath.slice(1)
                   : undefined
               }
-              onFocusNode={(newFocusPath): void =>
-                setFocusPath([row.nodeId, ...newFocusPath])
-              }
+              getRows={getRows}
+              getStats={getStats}
+              key={row.nodeId}
+              nodeStats={undefined}
+              path={[]}
+              rankNameId={id}
+              ranks={rankIds}
+              row={row}
+              setFocusedRow={setFocusedRow}
+              synonymColor={synonymColor}
               onAction={(action): void => {
                 if (action === 'next')
                   if (rows[index + 1] === undefined) return undefined;
@@ -377,8 +368,17 @@ function TreeView<SCHEMA extends AnyTree>({
                 else if (action === 'focusNext') searchBoxRef.current?.focus();
                 return undefined;
               }}
-              setFocusedRow={setFocusedRow}
-              synonymColor={synonymColor}
+              onChangeConformation={(newConformation): void =>
+                updateConformation([
+                  ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
+                  ...(typeof newConformation === 'object'
+                    ? ([[row.nodeId, ...newConformation]] as const)
+                    : []),
+                ])
+              }
+              onFocusNode={(newFocusPath): void =>
+                setFocusPath([row.nodeId, ...newFocusPath])
+              }
             />
           ))}
         </ul>
@@ -399,15 +399,15 @@ function EditTreeRank({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          resource={resource}
-          mode="edit"
           canAddAnother={false}
           dialog="modal"
-          onClose={handleClose}
-          onSaved={(): void => globalThis.location.reload()}
-          onDeleted={undefined}
-          isSubForm={false}
           isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={(): void => globalThis.location.reload()}
         />
       )}
     </>
@@ -434,7 +434,7 @@ export function TreeViewWrapper({
 
   if (treeName === undefined || !isTreeModel(treeName)) return <NotFoundView />;
   return (
-    <ProtectedTree treeName={treeName} action="read">
+    <ProtectedTree action="read" treeName={treeName}>
       {typeof treeDefinition === 'object' ? (
         <TreeView
           tableName={treeName}

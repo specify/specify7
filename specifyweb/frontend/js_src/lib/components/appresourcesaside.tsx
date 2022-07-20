@@ -52,15 +52,15 @@ export function AppResourcesAside({
   const resourcesTree = useResourcesTree(resources);
   return (
     <aside className={className.containerBase}>
-      <Ul role="tree" className="flex flex-1 flex-col gap-1 overflow-auto">
+      <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
         {resourcesTree.map((resources) => (
           <TreeItem
-            resourcesTree={resources}
-            key={resources.key}
             conformations={conformations}
+            key={resources.key}
+            resourcesTree={resources}
+            onCreate={handleCreate}
             onFold={setConformations}
             onOpen={handleOpen}
-            onCreate={handleCreate}
           />
         ))}
       </Ul>
@@ -134,16 +134,16 @@ function TreeItem({
   const count = useAppResourceCount(resourcesTree);
   return (
     <li
-      id={id('li')}
-      aria-labelledby={id('label')}
-      role="treeitem"
       aria-expanded={isExpanded}
+      aria-labelledby={id('label')}
       className="flex flex-col gap-2"
+      id={id('li')}
+      role="treeitem"
     >
       <Button.LikeLink
-        id={id('label')}
         aria-controls={id('li')}
         className="font-bold"
+        id={id('label')}
         onClick={(): void =>
           handleFold(
             conformationIndex === -1
@@ -164,22 +164,22 @@ function TreeItem({
           />
           {subCategories.length > 0 && (
             <Ul
-              role="group"
               aria-label={adminText('subCategories')}
               className="flex flex-col gap-2 pl-4"
+              role="group"
             >
               {subCategories.map((resources) => (
                 <TreeItem
-                  resourcesTree={resources}
-                  key={resources.key}
                   conformations={conformation.children}
+                  key={resources.key}
+                  resourcesTree={resources}
+                  onCreate={handleCreate}
                   onFold={(newConformation): void =>
                     handleFold(
                       mutateConformation(conformations, key, newConformation)
                     )
                   }
                   onOpen={handleOpen}
-                  onCreate={handleCreate}
                 />
               ))}
             </Ul>
@@ -211,7 +211,7 @@ function TreeItemResources({
     typeof handleCreate === 'function';
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
-    <Ul role="group" aria-label={adminText('resources')} className="pl-4">
+    <Ul aria-label={adminText('resources')} className="pl-4" role="group">
       {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem
@@ -261,11 +261,11 @@ function ResourceItem({
       : `/specify/viewsets/${resource.id}/`;
   return (
     <Link.Default
-      href={url}
       className={`
         !text-neutral-500 hover:!text-brand-300
         ${className.navigationHandled}
       `}
+      href={url}
       onClick={(event): void => {
         event.preventDefault();
         handleOpen(resource);

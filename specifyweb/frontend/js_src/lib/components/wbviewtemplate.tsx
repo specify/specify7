@@ -21,14 +21,14 @@ function Navigation({
 }): JSX.Element {
   return (
     <span
+      aria-atomic
       className="wb-navigation-section flex rounded"
       data-navigation-type={name}
-      aria-atomic
     >
       <Button.Small
         className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="previous"
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
       >
         {'<'}
       </Button.Small>
@@ -37,17 +37,17 @@ function Navigation({
           wb-navigation-text aria-handled grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
           ring-0 hover:brightness-70
         `}
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
         title={wbText('clickToToggle')}
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
       >
         {label} (<span className="wb-navigation-position text-center">0</span>/
         <span className="wb-navigation-total">0</span>)
       </Button.Small>
       <Button.Small
-        type="button"
         className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
-        variant="bg-inherit text-gray-800 dark:text-gray-100"
         data-navigation-direction="next"
+        type="button"
+        variant="bg-inherit text-gray-800 dark:text-gray-100"
       >
         {'>'}
       </Button.Small>
@@ -65,13 +65,13 @@ function WbView({
   return (
     <>
       <div
-        role="toolbar"
         className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
+        role="toolbar"
       >
         <div className="wb-name-container contents" />
         <Button.Small
-          aria-pressed="false"
           aria-haspopup="grid"
+          aria-pressed="false"
           className="wb-show-toolkit"
         >
           {commonText('tools')}
@@ -137,10 +137,10 @@ function WbView({
         )}
       </div>
       <div
+        aria-label={commonText('tools')}
         className="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
         role="toolbar"
         style={{ display: 'none' }}
-        aria-label={commonText('tools')}
       >
         {hasPermission('/workbench/dataset', 'transfer') &&
         hasTablePermission('SpecifyUser', 'read') ? (
@@ -165,16 +165,16 @@ function WbView({
             <Button.Small
               aria-haspopup="dialog"
               className="wb-convert-coordinates"
-              title={wbText('unavailableWithoutLocality')}
               disabled
+              title={wbText('unavailableWithoutLocality')}
             >
               {wbText('convertCoordinates')}
             </Button.Small>
             <Button.Small
               aria-haspopup="dialog"
               className="wb-geolocate"
-              title={wbText('unavailableWithoutLocality')}
               disabled
+              title={wbText('unavailableWithoutLocality')}
             >
               {localityText('geoLocate')}
             </Button.Small>
@@ -183,53 +183,53 @@ function WbView({
         <Button.Small
           aria-haspopup="dialog"
           className="wb-leafletmap"
-          title={wbText('unavailableWithoutLocality')}
           disabled
+          title={wbText('unavailableWithoutLocality')}
         >
           {commonText('geoMap')}
         </Button.Small>
       </div>
       <div className="flex flex-1 gap-4 overflow-hidden">
         <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none" />
-        <aside className="wb-uploaded-view-wrapper hidden" aria-live="polite" />
+        <aside aria-live="polite" className="wb-uploaded-view-wrapper hidden" />
       </div>
       <div
-        role="toolbar"
-        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
         aria-label={wbText('navigation')}
+        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
+        role="toolbar"
       >
         <span className="contents" role="search">
           <div className="flex">
             <Input.Generic
-              type="search"
-              className="wb-search-query"
-              placeholder={commonText('search')}
-              title={commonText('searchQuery')}
               aria-label={commonText('searchQuery')}
               autoComplete="on"
+              className="wb-search-query"
+              placeholder={commonText('search')}
               spellCheck
+              title={commonText('searchQuery')}
+              type="search"
             />
           </div>
           {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
             <div className="flex">
               <Input.Text
+                aria-label={wbText('replacementValue')}
+                autoComplete="on"
                 className="wb-replace-value"
                 placeholder={wbText('replace')}
                 title={wbText('replacementValue')}
-                aria-label={wbText('replacementValue')}
-                autoComplete="on"
               />
             </div>
           ) : undefined}
           <span className="wb-advanced-search-wrapper" />
         </span>
-        <Navigation name="searchResults" label={wbText('searchResults')} />
+        <Navigation label={wbText('searchResults')} name="searchResults" />
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-          <Navigation name="modifiedCells" label={wbText('modifiedCells')} />
+          <Navigation label={wbText('modifiedCells')} name="modifiedCells" />
         ) : undefined}
-        <Navigation name="newCells" label={wbText('newCells')} />
+        <Navigation label={wbText('newCells')} name="newCells" />
         {!isUploaded && (
-          <Navigation name="invalidCells" label={wbText('errorCells')} />
+          <Navigation label={wbText('errorCells')} name="invalidCells" />
         )}
       </div>
     </>
@@ -241,5 +241,5 @@ export const wbViewTemplate = (
   dataSetId: number
 ): string =>
   ReactDOMServer.renderToStaticMarkup(
-    <WbView isUploaded={isUploaded} dataSetId={dataSetId} />
+    <WbView dataSetId={dataSetId} isUploaded={isUploaded} />
   );

@@ -14,7 +14,7 @@ export function Layout(props: {
   readonly footer?: JSX.Element;
   readonly onClick?: () => void;
 
-  readonly title: string | JSX.Element;
+  readonly title: JSX.Element | string;
   readonly buttonsLeft: React.ReactNode;
   readonly buttonsRight: React.ReactNode;
 }): JSX.Element {
@@ -39,7 +39,7 @@ export function Layout(props: {
         <h2 className="flex items-center gap-1 overflow-x-auto" id={id('name')}>
           {props.title}
         </h2>
-        <div role="toolbar" className="contents">
+        <div className="contents" role="toolbar">
           {props.buttonsLeft}
           <span className="-ml-2 flex-1" />
           {props.buttonsRight}

@@ -53,12 +53,12 @@ function Row({
     <tr key={recordSet.id}>
       <td>
         <Link.Default
-          href={`/specify/recordset/${recordSet.id}/`}
           className={
             typeof handleSelect === 'function'
               ? className.navigationHandled
               : undefined
           }
+          href={`/specify/recordset/${recordSet.id}/`}
           title={recordSet.remarks ?? undefined}
           onClick={
             typeof handleSelect === 'function'
@@ -69,7 +69,7 @@ function Row({
               : undefined
           }
         >
-          <TableIcon name={getModelById(recordSet.dbTableId).name} label />
+          <TableIcon label name={getModelById(recordSet.dbTableId).name} />
           {recordSet.name}
         </Link.Default>
       </td>
@@ -77,8 +77,8 @@ function Row({
         <DateElement date={recordSet.timestampCreated} />
       </td>
       <td
-        title={commonText('recordCount')}
         className="justify-end tabular-nums"
+        title={commonText('recordCount')}
       >
         {typeof count === 'number' ? `(${formatNumber(count)})` : undefined}
       </td>
@@ -125,9 +125,7 @@ export function RecordSetsDialog({
   }) => JSX.Element;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'CreateState'>
-    | State<'EditState', { recordSet: SpecifyResource<RecordSet> }>
+    State<'CreateState'> | State<'EditState', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'MainState'>
   >({ type: 'MainState' });
 
   const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
@@ -184,12 +182,9 @@ export function RecordSetsDialog({
             <tbody>
               {data.records.map((recordSet) => (
                 <Row
+                  key={recordSet.id}
                   recordSet={recordSet}
-                  onSelect={
-                    typeof handleSelect === 'function'
-                      ? (): void => handleSelect(recordSet)
-                      : undefined
-                  }
+                  onConfigure={handleConfigure?.bind(undefined, recordSet)}
                   onEdit={
                     isReadOnly
                       ? undefined
@@ -199,8 +194,11 @@ export function RecordSetsDialog({
                             recordSet: deserializeResource(recordSet),
                           })
                   }
-                  onConfigure={handleConfigure?.bind(undefined, recordSet)}
-                  key={recordSet.id}
+                  onSelect={
+                    typeof handleSelect === 'function'
+                      ? (): void => handleSelect(recordSet)
+                      : undefined
+                  }
                 />
               ))}
               {data.totalCount !== data.records.length && (
@@ -213,9 +211,6 @@ export function RecordSetsDialog({
         ),
         dialog: (children, buttons) => (
           <Dialog
-            icon={<span className="text-blue-500">{icons.collection}</span>}
-            header={formsText('recordSetsDialogTitle', data.totalCount)}
-            onClose={handleClose}
             buttons={
               <>
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -229,6 +224,9 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
+            header={formsText('recordSetsDialogTitle', data.totalCount)}
+            icon={<span className="text-blue-500">{icons.collection}</span>}
+            onClose={handleClose}
           >
             {children}
           </Dialog>
@@ -248,8 +246,8 @@ export function RecordSetsDialog({
       />
     ) : (
       <EditRecordSet
-        recordSet={state.recordSet}
         isReadOnly={isReadOnly}
+        recordSet={state.recordSet}
         onClose={handleClose}
       />
     )
@@ -268,37 +266,18 @@ export function EditRecordSet({
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
   return isQuerying ? (
     <QueryRecordSet
-      recordSet={recordSet}
       isReadOnly={isReadOnly}
+      recordSet={recordSet}
       onClose={handleCloseQuery}
     />
   ) : (
     <ResourceView
-      dialog="modal"
-      resource={recordSet}
-      mode={
-        isReadOnly ||
-        (!recordSet.isNew() && !hasToolPermission('recordSets', 'update'))
-          ? 'view'
-          : 'edit'
-      }
-      onDeleted={undefined}
-      onSaved={(): void =>
-        goTo(
-          getResourceViewUrl(
-            getModelById(recordSet.get('dbTableId')).name,
-            undefined,
-            recordSet.id
-          )
-        )
-      }
-      onClose={handleClose}
+      canAddAnother={false}
       deletionMessage={formsText(
         'recordSetDeletionWarning',
         recordSet.get('name')
       )}
-      canAddAnother={false}
-      isSubForm={false}
+      dialog="modal"
       extraButtons={
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
           <>
@@ -310,6 +289,25 @@ export function EditRecordSet({
         ) : undefined
       }
       isDependent={false}
+      isSubForm={false}
+      mode={
+        isReadOnly ||
+        (!recordSet.isNew() && !hasToolPermission('recordSets', 'update'))
+          ? 'view'
+          : 'edit'
+      }
+      resource={recordSet}
+      onClose={handleClose}
+      onDeleted={undefined}
+      onSaved={(): void =>
+        goTo(
+          getResourceViewUrl(
+            getModelById(recordSet.get('dbTableId')).name,
+            undefined,
+            recordSet.id
+          )
+        )
+      }
     />
   );
 }
@@ -325,17 +323,17 @@ function QueryRecordSet({
 }): JSX.Element {
   return (
     <QueryToolbarItem
-      isReadOnly={isReadOnly}
-      onClose={handleClose}
       getQuerySelectUrl={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
           recordSetId: recordSet.id.toString(),
         })
       }
+      isReadOnly={isReadOnly}
       spQueryFilter={{
         specifyUser: userInformation.id,
         contextTableId: recordSet.get('dbTableId'),
       }}
+      onClose={handleClose}
       onNewQuery={(): void =>
         goTo(
           formatUrl(

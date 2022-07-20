@@ -56,22 +56,14 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   children,
   defaultIndex,
   ...rest
-}: {
+}: Omit<
+    RecordSelectorProps<SCHEMA>,
+    'index' | 'isDependent' | 'model' | 'onAdd' | 'onDelete' | 'records' | 'relatedResource' | 'totalCount'
+  > & Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
   readonly collection: Collection<SCHEMA>;
   readonly relationship: Relationship;
   readonly defaultIndex?: number;
-} & Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> &
-  Omit<
-    RecordSelectorProps<SCHEMA>,
-    | 'model'
-    | 'relatedResource'
-    | 'records'
-    | 'isDependent'
-    | 'onAdd'
-    | 'onDelete'
-    | 'index'
-    | 'totalCount'
-  >): JSX.Element | null {
+}): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
       Array.from(collection.models),
@@ -122,10 +114,11 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
-      totalCount={collection._totalCount ?? records.length}
+      index={index}
       model={collection.model.specifyModel}
-      relatedResource={isDependent ? collection.related : undefined}
       records={records}
+      relatedResource={isDependent ? collection.related : undefined}
+      totalCount={collection._totalCount ?? records.length}
       onAdd={(rawResources): void => {
         const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
         if (isDependent && isToOne)
@@ -142,7 +135,6 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         handleDelete?.(index, source);
         setRecords(getRecords);
       }}
-      index={index}
       onSlide={(index, callback): void => {
         setIndex(index);
         handleSlide?.(index);
@@ -167,9 +159,9 @@ export function IntegratedRecordSelector({
   ...rest
 }: Omit<
   Parameters<typeof RecordSelectorFromCollection>[0],
-  'onSlide' | 'children' | 'model'
+  'children' | 'model' | 'onSlide'
 > & {
-  readonly dialog: false | 'modal' | 'nonModal';
+  readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
   readonly formType: FormType;
   readonly viewName?: string;
@@ -184,13 +176,13 @@ export function IntegratedRecordSelector({
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
-      mode={mode}
-      viewName={viewName}
       dialog={dialog}
-      onAdd={undefined}
-      onDelete={undefined}
-      onClose={handleClose}
+      mode={mode}
       sortField={sortField}
+      viewName={viewName}
+      onAdd={undefined}
+      onClose={handleClose}
+      onDelete={undefined}
     />
   ) : (
     <RecordSelectorFromCollection
@@ -200,12 +192,12 @@ export function IntegratedRecordSelector({
           ? 0
           : getDefaultIndex(urlParameter ?? '', collection.models.length)
       }
+      relationship={relationship}
       onSlide={(index): void =>
         typeof urlParameter === 'string'
           ? setQueryParameter(urlParameter, index)
           : undefined
       }
-      relationship={relationship}
       {...rest}
     >
       {({
@@ -218,10 +210,8 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
-            isLoading={isLoading}
-            resource={resource}
+            canAddAnother={false}
             dialog={dialog}
-            title={`${relationship.label}`}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 <DataEntry.Visit
@@ -238,11 +228,11 @@ export function IntegratedRecordSelector({
                   isDependent ? 'create' : 'read'
                 ) && typeof handleAdd === 'function' ? (
                   <DataEntry.Add
-                    onClick={handleAdd}
                     disabled={
                       mode === 'view' ||
                       (isToOne && collection.models.length > 0)
                     }
+                    onClick={handleAdd}
                   />
                 ) : undefined}
                 {hasTablePermission(
@@ -250,8 +240,8 @@ export function IntegratedRecordSelector({
                   isDependent ? 'create' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Remove
-                    onClick={(): void => handleRemove('minusButton')}
                     disabled={mode === 'view' || collection.models.length === 0}
+                    onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}
                 <span
@@ -261,19 +251,21 @@ export function IntegratedRecordSelector({
                 {!isToOne && slider}
               </>
             )}
-            mode={mode}
-            viewName={viewName}
-            isSubForm={dialog === false}
             isDependent={isDependent}
-            canAddAnother={false}
+            isLoading={isLoading}
+            isSubForm={dialog === false}
+            mode={mode}
+            resource={resource}
+            title={`${relationship.label}`}
+            viewName={viewName}
             /*
              * Don't save the resource on save button click if it is a dependent
              * resource
              */
-            onSaving={undefined}
-            onSaved={handleClose}
-            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
             onClose={handleClose}
+            onDeleted={collection.models.length <= 1 ? handleClose : undefined}
+            onSaved={handleClose}
+            onSaving={undefined}
           />
           {dialogs}
         </>
@@ -306,7 +298,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onDelete: handleDelete,
   urlContext,
   ...rest
-}: {
+}: Omit<
+  RecordSelectorProps<SCHEMA>,
+  'children' | 'index' | 'records'
+> & {
   /*
    * Undefined IDs are placeholders for items with unknown IDs (e.g in record
    * sets or query results with thousands of items)
@@ -316,7 +311,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly defaultIndex?: number;
   readonly title: string | undefined;
   readonly headerButtons?: JSX.Element;
-  readonly dialog: false | 'modal' | 'nonModal';
+  readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;
   readonly mode: FormMode;
   readonly viewName?: string;
@@ -329,11 +324,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     readonly wasNew: boolean;
   }) => void;
   // Record set ID, or false to not update the URL
-  readonly urlContext: false | undefined | number;
-} & Omit<
-  RecordSelectorProps<SCHEMA>,
-  'records' | 'index' | 'children'
->): JSX.Element | null {
+  readonly urlContext: number | false | undefined;
+}): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
   >(() =>
@@ -396,6 +388,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   return (
     <BaseRecordSelector<SCHEMA>
       {...rest}
+      index={index}
+      model={model}
+      records={
+        typeof newResource === 'object' ? [...records, newResource] : records
+      }
+      totalCount={rest.totalCount + (typeof newResource === 'object' ? 1 : 0)}
       onAdd={
         typeof handleAdd === 'function'
           ? (resources): void => {
@@ -417,12 +415,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               if (ids.length === 1) handleClose();
             }
           : undefined
-      }
-      totalCount={rest.totalCount + (typeof newResource === 'object' ? 1 : 0)}
-      index={index}
-      model={model}
-      records={
-        typeof newResource === 'object' ? [...records, newResource] : records
       }
       onSlide={(index, callback): void => {
         function doSlide(): void {
@@ -454,10 +446,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       }): JSX.Element => (
         <>
           <ResourceView
-            isLoading={isLoading}
-            resource={resource}
+            canAddAnother={canAddAnother}
             dialog={dialog}
-            title={title}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
                 {headerButtons}
@@ -471,18 +461,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   isDependent ? 'create' : 'read'
                 ) && typeof handleAdd === 'function' ? (
                   <DataEntry.Add
-                    disabled={mode === 'view'}
-                    onClick={handleAdd}
-                    title={
-                      typeof urlContext === 'number'
-                        ? formsText('addToRecordSet')
-                        : commonText('add')
-                    }
                     aria-label={
                       typeof urlContext === 'number'
                         ? formsText('addToRecordSet')
                         : commonText('add')
                     }
+                    disabled={mode === 'view'}
+                    title={
+                      typeof urlContext === 'number'
+                        ? formsText('addToRecordSet')
+                        : commonText('add')
+                    }
+                    onClick={handleAdd}
                   />
                 ) : undefined}
                 {(resource?.isNew() === true ||
@@ -490,18 +480,18 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 typeof handleRemove === 'function' &&
                 canRemove ? (
                   <DataEntry.Remove
-                    disabled={resource === undefined || mode === 'view'}
-                    onClick={(): void => handleRemove('minusButton')}
-                    title={
-                      typeof urlContext === 'number'
-                        ? formsText('removeFromRecordSet')
-                        : commonText('delete')
-                    }
                     aria-label={
                       typeof urlContext === 'number'
                         ? formsText('removeFromRecordSet')
                         : commonText('delete')
                     }
+                    disabled={resource === undefined || mode === 'view'}
+                    title={
+                      typeof urlContext === 'number'
+                        ? formsText('removeFromRecordSet')
+                        : commonText('delete')
+                    }
+                    onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}
                 {typeof newResource === 'object' ? (
@@ -515,25 +505,25 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 {slider}
               </>
             )}
-            mode={mode}
-            viewName={viewName}
+            isDependent={isDependent}
+            isLoading={isLoading}
             isSubForm={false}
-            canAddAnother={canAddAnother}
+            mode={mode}
+            resource={resource}
+            title={title}
+            viewName={viewName}
+            onClose={handleClose}
+            onDeleted={handleRemove?.bind(undefined, 'deleteButton')}
             onSaved={(payload): void =>
               handleSaved({
                 ...payload,
                 resource: defined(resource),
               })
             }
-            isDependent={isDependent}
-            onDeleted={handleRemove?.bind(undefined, 'deleteButton')}
-            onClose={handleClose}
           />
           {dialogs}
           {typeof unloadProtect === 'function' && (
             <Dialog
-              header={formsText('recordSelectorUnloadProtectDialogHeader')}
-              onClose={(): void => setUnloadProtect(undefined)}
               buttons={
                 <>
                   <Button.DialogClose>
@@ -549,6 +539,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   </Button.Orange>
                 </>
               }
+              header={formsText('recordSelectorUnloadProtectDialogHeader')}
+              onClose={(): void => setUnloadProtect(undefined)}
             >
               {formsText('recordSelectorUnloadProtectDialogText')}
             </Dialog>
@@ -609,18 +601,11 @@ export function RecordSet<SCHEMA extends AnySchema>({
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  | 'records'
-  | 'field'
-  | 'defaultIndex'
-  | 'totalCount'
-  | 'children'
-  | 'onDelete'
-  | 'onSaved'
-  | 'index'
+  'children' | 'defaultIndex' | 'field' | 'index' | 'onDelete' | 'onSaved' | 'records' | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly defaultResourceIndex: number | undefined;
-  readonly dialog: false | 'modal' | 'nonModal';
+  readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
   readonly onClose: () => void;
   readonly canAddAnother: boolean;
@@ -732,30 +717,23 @@ export function RecordSet<SCHEMA extends AnySchema>({
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
-        ids={ids}
-        title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
-        headerButtons={<EditRecordSetButton recordSet={recordSet} />}
-        isDependent={false}
-        newResource={newResource}
-        dialog={dialog}
-        mode={mode}
         canAddAnother={canAddAnother}
-        onClose={handleClose}
-        totalCount={totalCount}
         defaultIndex={index}
-        onSaved={({ newResource, wasNew, resource }): void => {
-          if (wasNew) {
-            handleAdd([resource]);
-            pushUrl(resource.viewUrl());
-          }
-          if (typeof newResource === 'object') handleAdd([newResource]);
-        }}
+        dialog={dialog}
+        headerButtons={<EditRecordSetButton recordSet={recordSet} />}
+        ids={ids}
+        isDependent={false}
+        mode={mode}
+        newResource={newResource}
+        title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
+        totalCount={totalCount}
+        urlContext={recordSet.id}
         onAdd={
           hasToolPermission('recordSets', 'create')
-            ? (resources) =>
+            ? async (resources) =>
                 // Detect duplicate record set item
                 Promise.all(
-                  resources.map((resource) =>
+                  resources.map(async (resource) =>
                     f.all({
                       resource,
                       isDuplicate: resource.isNew()
@@ -782,6 +760,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
                 })
             : undefined
         }
+        onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
           (newResource === undefined || totalCount !== 0)
@@ -825,6 +804,13 @@ export function RecordSet<SCHEMA extends AnySchema>({
               }
             : undefined
         }
+        onSaved={({ newResource, wasNew, resource }): void => {
+          if (wasNew) {
+            handleAdd([resource]);
+            pushUrl(resource.viewUrl());
+          }
+          if (typeof newResource === 'object') handleAdd([newResource]);
+        }}
         onSlide={(index): void =>
           setItems({
             totalCount,
@@ -833,12 +819,11 @@ export function RecordSet<SCHEMA extends AnySchema>({
             index: Math.min(index, totalCount - 1),
           })
         }
-        urlContext={recordSet.id}
       />
       {hasDuplicate && (
         <Dialog
-          header={formsText('duplicateRecordSetItemDialogHeader')}
           buttons={commonText('close')}
+          header={formsText('duplicateRecordSetItemDialogHeader')}
           onClose={handleDismissDuplicate}
         >
           {formsText('duplicateRecordSetItemDialogText')}
@@ -859,9 +844,9 @@ function EditRecordSetButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <EditRecordSet
+          isReadOnly={false}
           recordSet={recordSet}
           onClose={handleClose}
-          isReadOnly={false}
         />
       )}
     </>

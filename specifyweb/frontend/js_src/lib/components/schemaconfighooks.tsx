@@ -21,7 +21,7 @@ import type { WithFetchedStrings } from './toolbar/schemaconfig';
 export function useContainer(
   tables: SchemaData['tables'],
   tableName: keyof Tables
-): [
+): readonly [
   SerializedResource<SpLocaleContainer>,
   (container: SerializedResource<SpLocaleContainer>) => void,
   boolean
@@ -48,19 +48,19 @@ export function useContainer(
 }
 
 export function useContainerString(
-  itemType: 'containerName' | 'containerDesc',
+  itemType: 'containerDesc' | 'containerName',
   container: SerializedResource<SpLocaleContainer>,
   language: string,
   country: string | null
 ): Readonly<
-  [
-    SpLocaleItemString | NewSpLocaleItemString | undefined,
-    (containerName: SpLocaleItemString | NewSpLocaleItemString) => void,
+  readonly [
+    NewSpLocaleItemString | SpLocaleItemString | undefined,
+    (containerName: NewSpLocaleItemString | SpLocaleItemString) => void,
     boolean
   ]
 > {
   const initialValue = React.useRef<
-    SpLocaleItemString | NewSpLocaleItemString | undefined
+    NewSpLocaleItemString | SpLocaleItemString | undefined
   >(undefined);
   const [state, setState] = useAsyncState(
     React.useCallback(
@@ -98,7 +98,7 @@ export function useContainerItems(
   language: string,
   country: string | null
 ): Readonly<
-  [
+  readonly [
     (
       | RA<SerializedResource<SpLocaleContainerItem> & WithFetchedStrings>
       | undefined

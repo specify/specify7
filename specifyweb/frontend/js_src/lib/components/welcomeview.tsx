@@ -23,14 +23,14 @@ function WelcomeScreenContent(): JSX.Element {
   return mode === 'embeddedWebpage' ? (
     <iframe
       className="h-full w-full border-0"
-      title={welcomeText('pageTitle')}
       src={source}
+      title={welcomeText('pageTitle')}
     />
   ) : (
     <img
-      src={mode === 'default' ? defaultWelcomePageImage : source}
       alt=""
       className="h-full"
+      src={mode === 'default' ? defaultWelcomePageImage : source}
     />
   );
 }
@@ -44,15 +44,15 @@ function AboutDialog({
 }): JSX.Element {
   return (
     <Dialog
-      isOpen={isOpen}
-      header={welcomeText('aboutSpecify')}
+      buttons={commonText('close')}
       className={{
         container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
         content: `${dialogClassNames.flexContent} pr-4`,
         header: 'text-3xl',
       }}
+      header={welcomeText('aboutSpecify')}
+      isOpen={isOpen}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       <p>
         <b>{welcomeText('fullAddress')}</b>
@@ -116,7 +116,7 @@ function AboutDialog({
               [welcomeText('browser'), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
-                <th scope="row" className="justify-end whitespace-nowrap">
+                <th className="justify-end whitespace-nowrap" scope="row">
                   {label}
                 </th>
                 <td>{value}</td>
@@ -144,7 +144,7 @@ function DatabaseCreationDate(): JSX.Element {
     <DateElement
       date={date}
       fallback={commonText('loading')}
-      flipDates={true}
+      flipDates
     />
   );
 }
@@ -155,11 +155,11 @@ function AboutSpecify(): JSX.Element {
     <div className="flex-1 text-right">
       <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
         <img
-          src="/static/img/specify_7_small.png"
           alt={welcomeText('aboutSpecify')}
+          src="/static/img/specify_7_small.png"
         />
       </Button.LikeLink>
-      <AboutDialog onClose={handleClose} isOpen={isOpen} />
+      <AboutDialog isOpen={isOpen} onClose={handleClose} />
     </div>
   );
 }
@@ -193,7 +193,7 @@ export const userTool: UserTool = {
   task: 'about',
   title: welcomeText('aboutSpecify'),
   view: ({ onClose: handleClose }) => (
-    <AboutDialog onClose={handleClose} isOpen={true} />
+    <AboutDialog isOpen onClose={handleClose} />
   ),
   isOverlay: true,
   groupLabel: commonText('documentation'),

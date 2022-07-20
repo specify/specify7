@@ -3,30 +3,27 @@ import type { State } from 'typesafe-reducer';
 
 import type { Locality } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { filterArray } from '../types';
-import { f } from '../functools';
-import { Button } from './basic';
-import { Dialog } from './modaldialog';
-import { toTable, toTables } from '../specifymodel';
-import { LoadingContext } from './contexts';
 import { hasTablePermission } from '../permissionutils';
+import { toTable, toTables } from '../specifymodel';
+import { filterArray } from '../types';
+import { Button } from './basic';
+import { LoadingContext } from './contexts';
 import { ErrorBoundary } from './errorboundary';
+import { Dialog } from './modaldialog';
 
 type States =
-  | State<'MainState'>
-  | State<'InvalidTableState'>
-  | State<'NoDataState'>
-  | State<
+  State<
       'LoadedState',
       {
         readonly latitude: number;
         readonly longitude: number;
         readonly age: number;
       }
-    >;
+    > | State<'InvalidTableState'> | State<'MainState'> | State<'NoDataState'>;
 
 export function PaleoLocationMapPlugin({
   id,
@@ -43,47 +40,47 @@ export function PaleoLocationMapPlugin({
     hasTablePermission('PaleoContext', 'read') ? (
     <ErrorBoundary dismissable>
       <Button.Small
+        className="w-fit"
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
-        className="w-fit"
       >
         {formsText('paleoMap')}
       </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
+          buttons={commonText('close')}
           header={formsText('unsupportedFormDialogHeader')}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
-          buttons={commonText('close')}
         >
           {formsText('unsupportedFormDialogText')}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
+          buttons={commonText('close')}
           header={formsText('paleoRequiresGeographyDialogHeader')}
           onClose={(): void => setState({ type: 'MainState' })}
-          buttons={commonText('close')}
         >
           {formsText('paleoRequiresGeographyDialogText')}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (
         <Dialog
-          header={formsText('paleoMap')}
           buttons={commonText('close')}
+          header={formsText('paleoMap')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           <iframe
-            title={formsText('paleoMap')}
             src={`https://paleolocation.org/map?lat=${state.latitude}&amp;lng=${state.longitude}&amp;ma=${state.age}&amp;embed`}
             style={{
               width: '800px',
               height: '600px',
             }}
+            title={formsText('paleoMap')}
           />
         </Dialog>
       )}
@@ -98,9 +95,7 @@ const fetchPaleoData = async (
     toTables(resource, ['Locality', 'CollectionObject', 'CollectingEvent']),
     async (resource) => {
       const locality:
-        | SpecifyResource<Locality>
-        | undefined
-        | 'InvalidTableState' =
+        SpecifyResource<Locality> | 'InvalidTableState' | undefined =
         toTable(resource, 'Locality') ??
         (await f.maybe(
           toTable(resource, 'CollectingEvent'),
@@ -108,7 +103,7 @@ const fetchPaleoData = async (
         )) ??
         (await f.maybe(
           toTable(resource, 'CollectionObject'),
-          (collectionObject) =>
+          async (collectionObject) =>
             collectionObject
               .rgetPromise('collectingEvent')
               .then((collectingEvent) =>

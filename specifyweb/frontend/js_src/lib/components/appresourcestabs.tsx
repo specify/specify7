@@ -39,7 +39,7 @@ export function AppResourcesTabs({
 }: {
   readonly label: string;
   readonly isReadOnly: boolean;
-  readonly showValidationRef: React.MutableRefObject<null | (() => void)>;
+  readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly headerButtons: JSX.Element;
@@ -54,37 +54,37 @@ export function AppResourcesTabs({
       <Tab.List className="flex flex-wrap gap-2">
         {tabs.map(({ label }, index) => (
           <Tab
-            key={index}
             className={({ selected }): string =>
               `${className.niceButton} ${className.blueButton} aria-handled ${
                 selected ? 'brightness-150' : ''
               }`
             }
+            key={index}
           >
             {label}
           </Tab>
         ))}
         <span className="-ml-2 flex-1" />
         <Button.Blue
-          title={localityText('toggleFullScreen')}
           aria-label={localityText('toggleFullScreen')}
-          onClick={handleToggleFullScreen}
           aria-pressed={isFullScreen}
+          title={localityText('toggleFullScreen')}
+          onClick={handleToggleFullScreen}
         >
           {icons.arrowsExpand}
         </Button.Blue>
       </Tab.List>
       <Tab.Panels className="h-full overflow-auto">
         {tabs.map(({ component: Component }, index) => (
-          <Tab.Panel key={index} className="h-full">
+          <Tab.Panel className="h-full" key={index}>
             <ErrorBoundary dismissable>
               <Component
-                isReadOnly={isReadOnly}
-                resource={resource}
                 appResource={appResource}
                 data={data}
-                onChange={handleChange}
+                isReadOnly={isReadOnly}
+                resource={resource}
                 showValidationRef={showValidationRef}
+                onChange={handleChange}
               />
             </ErrorBoundary>
           </Tab.Panel>
@@ -94,14 +94,14 @@ export function AppResourcesTabs({
   );
   return isFullScreen ? (
     <Dialog
-      icon={<AppResourceIcon resource={resource} />}
-      header={label}
-      headerButtons={headerButtons}
       buttons={commonText('close')}
-      onClose={handleExitFullScreen}
       className={{
         container: dialogClassNames.fullScreen,
       }}
+      header={label}
+      headerButtons={headerButtons}
+      icon={<AppResourceIcon resource={resource} />}
+      onClose={handleExitFullScreen}
     >
       {children}
     </Dialog>

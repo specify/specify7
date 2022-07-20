@@ -13,6 +13,7 @@ import type {
 import type { SerializedModel, SerializedResource } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
 import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -38,7 +39,6 @@ import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
-import { sortFunction } from '../helpers';
 
 function QueryButton({
   disabled,
@@ -53,8 +53,6 @@ function QueryButton({
 }): JSX.Element {
   return (
     <ButtonWithConfirmation
-      dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
-      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
       dialogButtons={(confirm): JSX.Element => (
         <>
           <Button.Orange onClick={confirm}>
@@ -63,9 +61,11 @@ function QueryButton({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       )}
+      dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
+      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
+      disabled={disabled}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
-      disabled={disabled}
     >
       {children}
     </ButtonWithConfirmation>
@@ -95,7 +95,7 @@ export function SaveQueryButtons({
   readonly onSaved: () => void;
   readonly onTriedToSave: () => boolean;
 }): JSX.Element {
-  const [showDialog, setShowDialog] = React.useState<false | 'save' | 'saveAs'>(
+  const [showDialog, setShowDialog] = React.useState<'save' | 'saveAs' | false>(
     false
   );
   const showConfirmation = (): boolean =>
@@ -115,6 +115,7 @@ export function SaveQueryButtons({
       {typeof showDialog === 'string' && (
         <QuerySaveDialog
           isSaveAs={showDialog === 'saveAs'}
+          query={queryResource}
           onClose={(): void => setShowDialog(false)}
           onSaved={(queryId: number): void => {
             handleSaved();
@@ -122,7 +123,6 @@ export function SaveQueryButtons({
             unsetUnloadProtect();
             goTo(`/specify/query/${queryId}/`);
           }}
-          query={queryResource}
         />
       )}
       {isReadOnly ||
@@ -130,10 +130,10 @@ export function SaveQueryButtons({
         userInformation.resource_uri ? undefined : (
         <QueryButton
           disabled={!saveRequired || fields.length === 0}
+          showConfirmation={showConfirmation}
           onClick={(): void =>
             handleTriedToSave() && isValid() ? handleSave('save') : undefined
           }
-          showConfirmation={showConfirmation}
         >
           {queryText('saveQuery')}
         </QueryButton>
@@ -141,10 +141,10 @@ export function SaveQueryButtons({
       {isReadOnly || queryResource.isNew() ? undefined : (
         <QueryButton
           disabled={fields.length === 0}
+          showConfirmation={showConfirmation}
           onClick={(): void =>
             handleTriedToSave() && isValid() ? handleSave('saveAs') : undefined
           }
-          showConfirmation={showConfirmation}
         >
           {queryText('saveAs')}
         </QueryButton>
@@ -171,7 +171,7 @@ export function MakeRecordSetButton({
     | undefined;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    undefined | 'editing' | 'saving' | 'saved'
+    'editing' | 'saved' | 'saving' | undefined
   >(undefined);
 
   const [recordSet, setRecordSet] = React.useState<
@@ -181,10 +181,10 @@ export function MakeRecordSetButton({
   return (
     <>
       <QueryButton
+        disabled={fields.length === 0}
         showConfirmation={(): boolean =>
           fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath))
         }
-        disabled={fields.length === 0}
         onClick={(): void => {
           setState('editing');
           if (typeof getQueryFieldRecords === 'function')
@@ -205,16 +205,16 @@ export function MakeRecordSetButton({
         <>
           {typeof recordSet === 'object' && (
             <ResourceView
-              dialog="modal"
               canAddAnother={false}
+              dialog="modal"
+              isDependent={false}
+              isSubForm={false}
+              mode="edit"
               resource={recordSet}
-              onSaving={(): void => setState('saving')}
-              onSaved={(): void => setState('saved')}
               onClose={(): void => setState(undefined)}
               onDeleted={f.never}
-              mode="edit"
-              isSubForm={false}
-              isDependent={false}
+              onSaved={(): void => setState('saved')}
+              onSaving={(): void => setState('saving')}
             />
           )}
           {state === 'saving' && recordSetFromQueryLoading}
@@ -232,9 +232,9 @@ export function MakeRecordSetButton({
 
 export const recordSetFromQueryLoading = (
   <Dialog
+    buttons={undefined}
     header={queryText('recordSetToQueryDialogHeader')}
     onClose={undefined}
-    buttons={undefined}
   >
     {queryText('recordSetToQueryDialogText')}
     {loadingBar}
@@ -250,14 +250,14 @@ export function RecordSetCreated({
 }): JSX.Element {
   return (
     <Dialog
+      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
     >
       <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
         <TableIcon
-          name={defined(getModelById(recordSet.get('dbTableId'))).name}
           label
+          name={defined(getModelById(recordSet.get('dbTableId'))).name}
         />
         {recordSet.get('name')}
       </Link.Default>
@@ -281,7 +281,7 @@ export function QueryExportButtons({
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
 
-  const [state, setState] = React.useState<undefined | 'creating' | 'warning'>(
+  const [state, setState] = React.useState<'creating' | 'warning' | undefined>(
     undefined
   );
 
@@ -308,26 +308,26 @@ export function QueryExportButtons({
     <>
       {state === 'creating' ? (
         <Dialog
+          buttons={commonText('close')}
           header={queryText('queryExportStartedDialogHeader')}
           onClose={(): void => setState(undefined)}
-          buttons={commonText('close')}
         >
           {queryText('queryExportStartedDialogText')}
         </Dialog>
-      ) : state === 'warning' ? (
+      ) : (state === 'warning' ? (
         <Dialog
+          buttons={commonText('close')}
           header={queryText('unableToExportAsKmlDialogHeader')}
           onClose={(): void => setState(undefined)}
-          buttons={commonText('close')}
         >
           {queryText('unableToExportAsKmlDialogText')}
         </Dialog>
-      ) : undefined}
+      ) : undefined)}
       {hasPermission('/querybuilder/query', 'export_csv') && (
         <QueryButton
           disabled={fields.length === 0}
-          onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
           showConfirmation={showConfirmation}
+          onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
         >
           {queryText('createCsv')}
         </QueryButton>
@@ -335,6 +335,7 @@ export function QueryExportButtons({
       {canUseKml && (
         <QueryButton
           disabled={fields.length === 0}
+          showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
               ? doQueryExport(
@@ -347,7 +348,6 @@ export function QueryExportButtons({
                 )
               : setState('warning')
           }
-          showConfirmation={showConfirmation}
         >
           {queryText('createKml')}
         </QueryButton>
@@ -411,15 +411,13 @@ export function QueryLoanReturn({
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<
+    State<
         'Dialog',
         {
-          queryResource: SerializedModel<SpQuery>;
-          loanReturnPreparation: SpecifyResource<LoanReturnPreparation>;
+          readonly queryResource: SerializedModel<SpQuery>;
+          readonly loanReturnPreparation: SpecifyResource<LoanReturnPreparation>;
         }
-      >
-    | State<'Returned'>
+      > | State<'Main'> | State<'Returned'>
   >({
     type: 'Main',
   });
@@ -443,6 +441,7 @@ export function QueryLoanReturn({
     <>
       <QueryButton
         disabled={fields.length === 0}
+        showConfirmation={showConfirmation}
         onClick={(): void =>
           setState({
             type: 'Dialog',
@@ -458,14 +457,11 @@ export function QueryLoanReturn({
             ),
           })
         }
-        showConfirmation={showConfirmation}
       >
         {formsText('returnLoan')}
       </QueryButton>
       {state.type === 'Dialog' && Array.isArray(toReturn) ? (
         <Dialog
-          header={schema.models.LoanPreparation.label}
-          onClose={(): void => setState({ type: 'Main' })}
           buttons={
             toReturn.length === 0 ? (
               commonText('close')
@@ -481,6 +477,8 @@ export function QueryLoanReturn({
               </>
             )
           }
+          header={schema.models.LoanPreparation.label}
+          onClose={(): void => setState({ type: 'Main' })}
         >
           {toReturn.length === 0 ? (
             queryText('noPreparationsToReturn')
@@ -498,9 +496,9 @@ export function QueryLoanReturn({
               }
             >
               <RenderForm
+                display="block"
                 resource={state.loanReturnPreparation}
                 viewDefinition={loanReturnPrepForm()}
-                display="block"
               />
               <table className="grid-table grid-cols-2 gap-2">
                 <thead>
@@ -534,9 +532,9 @@ export function QueryLoanReturn({
       ) : undefined}
       {state.type === 'Returned' && (
         <Dialog
+          buttons={commonText('close')}
           header={schema.models.LoanPreparation.label}
           onClose={(): void => setState({ type: 'Main' })}
-          buttons={commonText('close')}
         >
           {queryText('itemsReturned')}
         </Dialog>

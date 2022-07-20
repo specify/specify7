@@ -30,7 +30,7 @@ import { ProtectedTool, TablePermissionDenied } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import { ShowResource } from './resourceview';
 
-const reGuid = /[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}/;
+const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/;
 
 function recordSetView(
   recordSetIdString: string,
@@ -40,10 +40,10 @@ function recordSetView(
   const resourceIndex = f.parseInt(resourceIndexString);
   setCurrentComponent(
     typeof recordSetId === 'number' && typeof resourceIndex === 'number' ? (
-      <ProtectedTool tool="recordSets" action="read">
+      <ProtectedTool action="read" tool="recordSets">
         <RecordSetView
-          resourceIndex={resourceIndex}
           recordSetId={recordSetId}
+          resourceIndex={resourceIndex}
         />
       </ProtectedTool>
     ) : (
@@ -73,11 +73,11 @@ function RecordSetView({
   );
   return typeof recordSet === 'object' ? (
     <CheckLoggedInCollection resource={recordSet}>
-      <DisplayRecordSet resourceIndex={resourceIndex} recordSet={recordSet} />
+      <DisplayRecordSet recordSet={recordSet} resourceIndex={resourceIndex} />
     </CheckLoggedInCollection>
-  ) : recordSet === false ? (
+  ) : (recordSet === false ? (
     <NotFoundView />
-  ) : null;
+  ) : null);
 }
 
 function DisplayRecordSet({
@@ -122,14 +122,14 @@ function DisplayRecordSet({
 const newResourceView = async (tableName: string): Promise<void> =>
   f.var(getModel(tableName)?.name, async (tableName) =>
     typeof tableName === 'string'
-      ? hasTablePermission(tableName, 'create')
+      ? (hasTablePermission(tableName, 'create')
         ? resourceView(tableName, undefined)
         : Promise.resolve(
-            void setCurrentComponent(
-              <TablePermissionDenied tableName={tableName} action="create" />
+            setCurrentComponent(
+              <TablePermissionDenied action="create" tableName={tableName} />
             )
-          )
-      : Promise.resolve(void setCurrentComponent(<NotFoundView />))
+          ))
+      : Promise.resolve(setCurrentComponent(<NotFoundView />))
   );
 
 /**
@@ -152,7 +152,7 @@ async function resourceView(
     !hasTablePermission(model.name, 'read')
   ) {
     setCurrentComponent(
-      <TablePermissionDenied tableName={model.name} action="read" />
+      <TablePermissionDenied action="read" tableName={model.name} />
     );
     return undefined;
   } else if (reGuid.test(id ?? '')) return viewResourceByGuid(model, id ?? '');
@@ -177,7 +177,7 @@ async function resourceView(
        * We preload the resource and recordset to make sure they exist.
        * This prevents an unfilled view from being displayed.
        */}
-      <ShowResource resource={resource} recordSet={await recordSet?.fetch()} />
+      <ShowResource recordSet={await recordSet?.fetch()} resource={resource} />
     </CheckLoggedInCollection>
   );
 }
@@ -191,7 +191,7 @@ async function viewResourceByGuid(
     setCurrentComponent(
       models.length === 1 ? (
         <CheckLoggedInCollection resource={models[0]}>
-          <ShowResource resource={models[0]} recordSet={undefined} />
+          <ShowResource recordSet={undefined} resource={models[0]} />
         </CheckLoggedInCollection>
       ) : (
         <NotFoundView />
@@ -206,12 +206,12 @@ async function byCatNumber(
 ): Promise<void> {
   if (!hasTablePermission('CollectionObject', 'read')) {
     setCurrentComponent(
-      <TablePermissionDenied tableName="CollectionObject" action="read" />
+      <TablePermissionDenied action="read" tableName="CollectionObject" />
     );
     return;
   } else if (!hasTablePermission('Collection', 'read')) {
     setCurrentComponent(
-      <TablePermissionDenied tableName="Collection" action="read" />
+      <TablePermissionDenied action="read" tableName="Collection" />
     );
     return;
   }
@@ -251,7 +251,7 @@ async function byCatNumber(
       return collectionObjects.fetch({ limit: 1 }).then(({ models }) => {
         if (models.length === 0) error('Unable to find collection object');
         setCurrentComponent(
-          <ShowResource resource={models[0]} recordSet={undefined} />
+          <ShowResource recordSet={undefined} resource={models[0]} />
         );
         return undefined;
       });
@@ -281,7 +281,7 @@ function CheckLoggedInCollection({
                 f.var(getCollectionForResource(resource), (collectionId) =>
                   schema.domainLevelIds.collection === collectionId
                     ? false
-                    : typeof collectionId === 'number'
+                    : (typeof collectionId === 'number'
                     ? [collectionId]
                     : fetchCollectionsForResource(resource).then(
                         (collectionIds) =>
@@ -291,7 +291,7 @@ function CheckLoggedInCollection({
                           )
                             ? false
                             : collectionIds
-                      )
+                      ))
                 )
               ),
       [resource]
@@ -301,9 +301,9 @@ function CheckLoggedInCollection({
 
   return otherCollections === false ? (
     children
-  ) : Array.isArray(otherCollections) ? (
+  ) : (Array.isArray(otherCollections) ? (
     <OtherCollection collectionIds={otherCollections} />
-  ) : null;
+  ) : null);
 }
 
 export function task(): void {

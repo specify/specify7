@@ -15,6 +15,7 @@ import { AttachmentPlugin } from './attachmentplugin';
 import { Button } from './basic';
 import { CollectionOneToManyPlugin } from './collectionrelonetomanyplugin';
 import { CollectionOneToOnePlugin } from './collectionrelonetooneplugin';
+import { ErrorBoundary } from './errorboundary';
 import { GeoLocatePlugin } from './geolocateplugin';
 import { useBooleanState } from './hooks';
 import { HostTaxonPlugin } from './hosttaxonplugin';
@@ -24,7 +25,6 @@ import { Dialog } from './modaldialog';
 import { PaleoLocationMapPlugin } from './paleolocationplugin';
 import { PartialDateUi } from './partialdateui';
 import { WebLinkButton } from './weblinkbutton';
-import { ErrorBoundary } from './errorboundary';
 
 function WrongTable({
   resource,
@@ -40,10 +40,10 @@ function WrongTable({
         {formsText('unavailablePluginButton')}
       </Button.Small>
       <Dialog
+        buttons={commonText('close')}
+        header={formsText('unavailablePluginDialogHeader')}
         isOpen={isVisible}
         onClose={handleHide}
-        header={formsText('unavailablePluginDialogHeader')}
-        buttons={commonText('close')}
       >
         {formsText(
           'wrongTablePluginDialogText',
@@ -69,8 +69,8 @@ const pluginRenderers: {
   LatLonUI({ resource, mode, id, pluginDefinition: { step } }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <LatLongUi resource={locality} mode={mode} id={id} step={step} />
-      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
+        <LatLongUi id={id} mode={mode} resource={locality} step={step} />
+      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
     );
   },
   PartialDateUI: ({
@@ -96,14 +96,14 @@ const pluginRenderers: {
       return (
         <ErrorBoundary dismissable>
           <PartialDateUi
-            resource={resource}
+            canChangePrecision={formType === 'form'}
+            dateField={field}
+            defaultPrecision={defaultPrecision}
+            defaultValue={defaultValue}
             id={id}
             isReadOnly={mode === 'view'}
-            defaultValue={defaultValue}
-            defaultPrecision={defaultPrecision}
             precisionField={precisionField}
-            dateField={field}
-            canChangePrecision={formType === 'form'}
+            resource={resource}
           />
         </ErrorBoundary>
       );
@@ -124,12 +124,12 @@ const pluginRenderers: {
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
             <ErrorBoundary dismissable>
               <CollectionOneToManyPlugin
-                resource={collectionObject}
                 relationship={relationship}
+                resource={collectionObject}
               />
             </ErrorBoundary>
           )) ?? (
-            <WrongTable resource={resource} allowedTable="CollectionObject" />
+            <WrongTable allowedTable="CollectionObject" resource={resource} />
           );
   },
   ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
@@ -146,12 +146,12 @@ const pluginRenderers: {
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
             <ErrorBoundary dismissable>
               <CollectionOneToOnePlugin
-                resource={collectionObject}
                 relationship={relationship}
+                resource={collectionObject}
               />
             </ErrorBoundary>
           )) ?? (
-            <WrongTable resource={resource} allowedTable="CollectionObject" />
+            <WrongTable allowedTable="CollectionObject" resource={resource} />
           );
   },
   LocalityGeoRef({ resource }) {
@@ -160,7 +160,7 @@ const pluginRenderers: {
         <ErrorBoundary dismissable>
           <GeoLocatePlugin resource={locality} />
         </ErrorBoundary>
-      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
+      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
     );
   },
   WebLinkButton({
@@ -174,30 +174,33 @@ const pluginRenderers: {
     return (
       <ErrorBoundary dismissable>
         <WebLinkButton
-          resource={resource}
           fieldName={fieldName}
-          webLink={webLink}
-          icon={icon}
           formType={formType}
-          mode={mode}
+          icon={icon}
           id={id}
+          mode={mode}
+          resource={resource}
+          webLink={webLink}
         />
       </ErrorBoundary>
     );
   },
   AttachmentPlugin({ resource, mode, id, fieldName }) {
-    return hasTablePermission('Attachment', 'read') ? (
-      <AttachmentPlugin
-        resource={resource}
-        mode={mode}
-        id={id}
-        name={fieldName}
-      />
-    ) : (
-      void console.error(
+    if (hasTablePermission('Attachment', 'read'))
+      return (
+        <AttachmentPlugin
+          id={id}
+          mode={mode}
+          name={fieldName}
+          resource={resource}
+        />
+      );
+    else {
+      console.error(
         "Can't display AttachmentPlugin. User has no read access to Attachment table"
-      ) ?? null
-    );
+      );
+      return null;
+    }
   },
   HostTaxonPlugin({
     resource,
@@ -215,20 +218,20 @@ const pluginRenderers: {
     } else
       return hasTablePermission('CollectionRelType', 'read') ? (
         <HostTaxonPlugin
-          resource={resource}
-          relationship={relationship}
-          mode={mode}
-          id={id}
           formType={formType}
+          id={id}
           isRequired={isRequired}
+          mode={mode}
+          relationship={relationship}
+          resource={resource}
         />
       ) : null;
   },
   LocalityGoogleEarth({ resource, id }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <LeafletPlugin locality={locality} id={id} />
-      )) ?? <WrongTable resource={resource} allowedTable="Locality" />
+        <LeafletPlugin id={id} locality={locality} />
+      )) ?? <WrongTable allowedTable="Locality" resource={resource} />
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
@@ -236,14 +239,14 @@ const pluginRenderers: {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        <Button.Small id={id} onClick={handleShow} className="w-fit">
+        <Button.Small className="w-fit" id={id} onClick={handleShow}>
           {formsText('unavailablePluginButton')}
         </Button.Small>
         <Dialog
+          buttons={commonText('close')}
+          header={formsText('unavailablePluginDialogHeader')}
           isOpen={isVisible}
           onClose={handleHide}
-          header={formsText('unavailablePluginDialogHeader')}
-          buttons={commonText('close')}
         >
           {formsText('unavailablePluginDialogText')}
           <br />
@@ -276,15 +279,15 @@ export function UiPlugin({
   ] as typeof pluginRenderers.AttachmentPlugin;
   return (
     <Renderer
+      fieldName={fieldName}
+      formType={formType}
       id={id}
-      resource={resource}
+      isRequired={isRequired}
+      mode={mode}
       pluginDefinition={
         fieldDefinition.pluginDefinition as UiPlugins['AttachmentPlugin']
       }
-      fieldName={fieldName}
-      formType={formType}
-      mode={mode}
-      isRequired={isRequired}
+      resource={resource}
     />
   );
 }

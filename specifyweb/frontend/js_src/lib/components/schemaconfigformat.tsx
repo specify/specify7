@@ -49,10 +49,12 @@ export function SchemaConfigFormat({
         RR<
           ItemType,
           {
-            label: string;
-            value: string | null;
-            values: IR<RA<Readonly<[key: string, value: string]>>> | undefined;
-            extraComponents?: JSX.Element;
+            readonly label: string;
+            readonly value: string | null;
+            readonly values:
+              | IR<RA<readonly [key: string, value: string]>>
+              | undefined;
+            readonly extraComponents?: JSX.Element;
           }
         >
       >({
@@ -96,20 +98,20 @@ export function SchemaConfigFormat({
               {typeof currentPickListId === 'string' &&
               hasToolPermission('pickLists', 'read') ? (
                 <Link.Icon
-                  icon="pencil"
-                  title={commonText('edit')}
                   aria-label={commonText('edit')}
                   className={className.dataEntryEdit}
                   href={`/specify/view/picklist/${currentPickListId}/`}
+                  icon="pencil"
+                  title={commonText('edit')}
                 />
               ) : undefined}
               {hasToolPermission('pickLists', 'create') && (
                 <Link.Icon
-                  icon="plus"
-                  href="/specify/view/picklist/new/"
-                  className={className.dataEntryAdd}
-                  title={commonText('add')}
                   aria-label={commonText('add')}
+                  className={className.dataEntryAdd}
+                  href="/specify/view/picklist/new/"
+                  icon="plus"
+                  title={commonText('add')}
                 />
               )}
             </>
@@ -119,10 +121,11 @@ export function SchemaConfigFormat({
         <div className={className.labelForCheckbox} key={key}>
           <Label.ForCheckbox>
             <Input.Radio
-              name={id('format')}
-              value="none"
               checked={key === getItemType(item)}
               disabled={!isFormatterAvailable(field, key as ItemType)}
+              isReadOnly={isReadOnly}
+              name={id('format')}
+              value="none"
               onChange={(): void =>
                 handleFormatted(
                   key as ItemType,
@@ -131,17 +134,16 @@ export function SchemaConfigFormat({
                     : null
                 )
               }
-              isReadOnly={isReadOnly}
             />
             {label}
           </Label.ForCheckbox>
           {values && (
             <PickList
               className="w-0 flex-1"
+              disabled={isReadOnly || !isFormatterAvailable(field, key)}
+              groups={values}
               label={label}
               value={value}
-              groups={values}
-              disabled={isReadOnly || !isFormatterAvailable(field, key)}
               onChange={(value): void => handleFormatted(key, value)}
             />
           )}

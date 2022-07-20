@@ -4,10 +4,13 @@
 
 import React from 'react';
 
+import { listen } from '../events';
 import { commonText } from '../localization/common';
 import { fetchContext as userPermission } from '../permissions';
+import { getUserPref } from '../preferencesutils';
 import { router } from '../router';
 import { setCurrentComponent } from '../specifyapp';
+import { startApp } from '../startapp';
 import { getSystemInfo } from '../systeminfo';
 import type { RA } from '../types';
 import { fetchContext as fetchUserInfo, userInformation } from '../userinfo';
@@ -22,9 +25,6 @@ import {
 import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo } from './navigation';
 import { Notifications } from './notifications';
-import { startApp } from '../startapp';
-import { listen } from '../events';
-import { getUserPref } from '../preferencesutils';
 
 export type UserTool = {
   readonly task: string;
@@ -42,7 +42,7 @@ export type UserTool = {
   readonly basePath?: string;
 };
 
-export type MenuItem = Omit<UserTool, 'groupLabel' | 'basePath'> & {
+export type MenuItem = Omit<UserTool, 'basePath' | 'groupLabel'> & {
   readonly icon: JSX.Element;
 };
 
@@ -70,7 +70,7 @@ const menuItemsPromise: Promise<RA<MenuItem>> = userPermission
   )
   .then((items) => processMenuItems(items.map(({ menuItem }) => menuItem)));
 
-function processMenuItems<T extends UserTool | MenuItem>(items: RA<T>): RA<T> {
+function processMenuItems<T extends MenuItem | UserTool>(items: RA<T>): RA<T> {
   const filtered = items.filter(({ enabled }) =>
     typeof enabled === 'function' ? enabled() : enabled !== false
   );
@@ -213,7 +213,7 @@ export function Main(): JSX.Element | null {
         listen(document.body, 'click', handleClick);
       })
       .catch(crash);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   return menuItems === undefined || userTools === undefined ? null : (
@@ -240,11 +240,11 @@ export function Main(): JSX.Element | null {
       >
         <div className="flex w-full items-center justify-between 2xl:contents">
           <h1 className="contents">
-            <a href="/specify/" className="order-1 m-4 flex items-center">
+            <a className="order-1 m-4 flex items-center" href="/specify/">
               <img
-                src="/static/img/seven_logo.png"
                 alt=""
                 className="h-16 hover:animate-hue-rotate"
+                src="/static/img/seven_logo.png"
               />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
@@ -275,14 +275,14 @@ export function Main(): JSX.Element | null {
 
       {showVersionMismatch && (
         <Dialog
-          header={commonText('versionMismatchDialogHeader')}
-          onClose={(): void => setShowVersionMismatch(false)}
           buttons={
             <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
               {commonText('close')}
             </Button.Orange>
           }
-          forceToTop={true}
+          forceToTop
+          header={commonText('versionMismatchDialogHeader')}
+          onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
             {commonText(
@@ -298,17 +298,17 @@ export function Main(): JSX.Element | null {
         <main className="flex-1 overflow-auto" ref={mainRef} />
       ) : (
         <Dialog
-          header={commonText('noAgentDialogHeader')}
-          className={{
-            container: `${dialogClassNames.narrowContainer}`,
-          }}
-          onClose={(): void => globalThis.location.assign('/accounts/logout/')}
           buttons={
             <Button.DialogClose component={Button.Red}>
               {commonText('logOut')}
             </Button.DialogClose>
           }
-          forceToTop={true}
+          className={{
+            container: `${dialogClassNames.narrowContainer}`,
+          }}
+          forceToTop
+          header={commonText('noAgentDialogHeader')}
+          onClose={(): void => globalThis.location.assign('/accounts/logout/')}
         >
           {commonText('noAgentDialogText')}
         </Dialog>

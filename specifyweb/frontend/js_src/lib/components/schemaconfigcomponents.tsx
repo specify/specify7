@@ -42,23 +42,23 @@ export function PickList({
 }: {
   readonly label?: string;
   readonly value: string | null;
-  readonly groups: IR<RA<Readonly<[string, string]>> | IR<string>>;
+  readonly groups: IR<IR<string> | RA<readonly [string, string]>>;
   readonly disabled?: boolean;
   readonly onChange: (value: string | null) => void;
   readonly className?: string;
 }): JSX.Element {
   return (
     <Select
-      className={className}
       aria-label={label}
-      value={value ?? '0'}
+      className={className}
       disabled={disabled}
+      value={value ?? '0'}
       onValueChange={(value): void =>
         handleChange(value === '0' ? null : value)
       }
     >
       {Object.keys(groups).length === 0 ? (
-        <option value="0" disabled>
+        <option disabled value="0">
           {commonText('noneAvailable')}
         </option>
       ) : (
@@ -100,7 +100,7 @@ export function PickList({
 function Values({
   values,
 }: {
-  readonly values: RA<Readonly<[string, string]>> | IR<string>;
+  readonly values: IR<string> | RA<readonly [string, string]>;
 }): JSX.Element {
   return (
     <>

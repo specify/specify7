@@ -20,10 +20,10 @@ import {
   wbImportPreviewSize,
 } from '../wbimporthelpers';
 import { Button, Container, H2, H3, Input, Select } from './basic';
+import { loadingGif } from './common';
 import { LoadingContext } from './contexts';
 import { FilePicker } from './filepicker';
 import { useAsyncState, useTitle, useTriggerState } from './hooks';
-import { loadingGif } from './common';
 import { useCachedState } from './statecache';
 
 export function WbImportView(): JSX.Element {
@@ -36,8 +36,8 @@ export function WbImportView(): JSX.Element {
       <H2>{wbText('wbImportHeader')}</H2>
       <div className="w-96">
         <FilePicker
-          onSelected={setFile}
           acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
+          onSelected={setFile}
         />
       </div>
       {typeof file === 'object' && <FilePicked file={file} />}
@@ -103,7 +103,7 @@ function ChooseEncoding({
   return (
     <label className="contents">
       {wbText('characterEncoding')}
-      <Select onValueChange={handleChange} value={encoding ?? ''}>
+      <Select value={encoding ?? ''} onValueChange={handleChange}>
         {encodings.map((encoding: string) => (
           <option key={encoding}>{encoding}</option>
         ))}
@@ -132,24 +132,24 @@ function Layout({
   );
   return typeof preview === 'string' ? (
     <BadImport error={preview} />
-  ) : Array.isArray(preview) ? (
+  ) : (Array.isArray(preview) ? (
     <>
       <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <ToggleHeader hasHeader={hasHeader} onChange={setHasHeader} />
         <Button.Gray
-          onClick={(): void => handleImport(dataSetName, hasHeader)}
           className="col-span-full justify-center text-center"
+          onClick={(): void => handleImport(dataSetName, hasHeader)}
         >
           {wbText('importFile')}
         </Button.Gray>
       </div>
-      <Preview preview={preview} hasHeader={hasHeader} />
+      <Preview hasHeader={hasHeader} preview={preview} />
     </>
   ) : (
     loadingGif
-  );
+  ));
 }
 
 function ChooseName({
@@ -163,10 +163,10 @@ function ChooseName({
     <label className="contents">
       {wbText('chooseDataSetName')}
       <Input.Text
-        spellCheck={true}
-        value={name}
-        required
         maxLength={getMaxDataSetLength()}
+        required
+        spellCheck
+        value={name}
         onValueChange={handleChange}
       />
     </label>
@@ -185,8 +185,8 @@ function ToggleHeader({
       {wbText('firstRowIsHeader')}
       <span>
         <Input.Checkbox
-          onChange={(): void => handleChange(!hasHeader)}
           checked={hasHeader}
+          onChange={(): void => handleChange(!hasHeader)}
         />
       </span>
     </label>
@@ -221,9 +221,9 @@ function Preview({
             <tr className="bg-gray-200 text-center dark:bg-neutral-700">
               {header.map((cell, index) => (
                 <th
+                  className="border border-gray-700 p-1 dark:border-gray-500"
                   key={index}
                   scope="col"
-                  className="border border-gray-700 p-1 dark:border-gray-500"
                 >
                   {cell}
                 </th>
@@ -234,7 +234,7 @@ function Preview({
             {rows.map((row, index) => (
               <tr key={index}>
                 {row.map((cell, index) => (
-                  <td key={index} className="border border-gray-500">
+                  <td className="border border-gray-500" key={index}>
                     {cell}
                   </td>
                 ))}
@@ -252,8 +252,8 @@ function XlsPicked({ file }: { readonly file: File }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
     <Layout
-      preview={preview}
       fileName={file.name}
+      preview={preview}
       onImport={(dataSetName, hasHeader): void =>
         loading(
           parseXls(file).then(async (data) =>

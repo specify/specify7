@@ -1,23 +1,23 @@
 import React from 'react';
 import _ from 'underscore';
 
+import { isExternalUrl } from '../ajax';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
+import { keysToLowerCase } from '../helpers';
 import { getIcon, unknownIcon } from '../icons';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType } from '../parseform';
+import { formatUrl } from '../querystring';
+import { resourceOn } from '../resource';
 import { getTreePath } from '../specifyapi';
 import type { IR } from '../types';
 import { defined } from '../types';
 import { Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
-import { isExternalUrl } from '../ajax';
-import { resourceOn } from '../resource';
-import { formatUrl } from '../querystring';
-import { keysToLowerCase } from '../helpers';
 
 export const webLinks =
   process.env.NODE_ENV === 'test'
@@ -168,22 +168,22 @@ export function WebLinkButton({
           typeof fieldName === 'string' &&
           fieldName !== 'this' ? (
             <UiField
-              resource={resource}
               fieldName={fieldName}
-              mode={mode}
               id={id}
+              mode={mode}
+              resource={resource}
             />
           ) : undefined}
           <Link.Gray
-            title={data.title}
             href={url}
-            target={isExternal ? '_blank' : undefined}
             rel={isExternal ? 'noopener' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            title={data.title}
           >
             <img
-              src={getIcon(icon) ?? unknownIcon}
-              className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
               alt={data.title ?? url}
+              className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
+              src={getIcon(icon) ?? unknownIcon}
             />
           </Link.Gray>
         </>

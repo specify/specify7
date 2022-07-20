@@ -9,8 +9,8 @@ import { createBackboneView } from './reactbackboneextend';
 function LegacyDialogWrapper({
   content,
   ...props
-}: Omit<Parameters<typeof Dialog>[0], 'isOpen' | 'children'> & {
-  readonly content: HTMLElement | typeof jQuery | string;
+}: Omit<Parameters<typeof Dialog>[0], 'children' | 'isOpen'> & {
+  readonly content: HTMLElement | string | typeof jQuery;
 }): JSX.Element {
   const [contentElement, setContentElement] =
     React.useState<HTMLElement | null>(null);
@@ -30,12 +30,12 @@ function LegacyDialogWrapper({
   return (
     <Dialog
       {...props}
-      forwardRef={{ content: setContentElement }}
       className={{
         ...props.className,
         container:
           props.className?.container ?? dialogClassNames.normalContainer,
       }}
+      forwardRef={{ content: setContentElement }}
     >
       {isJsx ? content : undefined}
     </Dialog>
@@ -44,7 +44,7 @@ function LegacyDialogWrapper({
 
 const dialogClass = createBackboneView(LegacyDialogWrapper);
 
-export const openDialogs: Set<() => void> = new Set();
+export const openDialogs = new Set<() => void>();
 export const showDialog = (
   props: ConstructorParameters<typeof dialogClass>[0]
 ) => {

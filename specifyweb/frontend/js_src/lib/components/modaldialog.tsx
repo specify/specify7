@@ -76,7 +76,7 @@ export const dialogClassNames = {
  */
 const initialIndex = 180;
 const topIndex = 10_000;
-const dialogIndexes: Set<number> = new Set();
+const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
@@ -141,7 +141,7 @@ export function Dialog({
    */
   readonly icon?: JSX.Element | keyof typeof dialogIconTriggers;
   // Have to explicitly pass undefined if you don't want buttons
-  readonly buttons: undefined | string | JSX.Element;
+  readonly buttons: JSX.Element | string | undefined;
   readonly children: React.ReactNode;
   readonly modal?: boolean;
   /*
@@ -263,13 +263,13 @@ export function Dialog({
         // Don't allow moving the dialog past the window bounds
         bounds="parent"
         // Allow moving the dialog when hovering over the header line
-        handle={`#${id('handle')}`}
-        // Don't allow moving when in full-screen
         cancel={`#${id('full-screen')}`}
-        // Don't need any extra classNames
+        // Don't allow moving when in full-screen
         defaultClassName=""
-        defaultClassNameDragging=""
+        // Don't need any extra classNames
         defaultClassNameDragged=""
+        defaultClassNameDragging=""
+        handle={`#${id('handle')}`}
         nodeRef={containerRef}
       >
         <div {...props}>{children}</div>
@@ -332,8 +332,49 @@ export function Dialog({
 
   return (
     <Modal
-      isOpen={isOpen}
+      aria={{
+        labelledby: id('header'),
+        describedby: id('content'),
+        modal,
+      }}
+      ariaHideApp={false}
+      bodyOpenClassName={null}
+      className={`
+        flex flex-col gap-2 p-4 outline-none ${containerClassName}
+        overflow-x-hidden text-neutral-900 duration-0
+        dark:border dark:border-neutral-700 dark:text-neutral-200
+        ${modal ? '' : 'pointer-events-auto border border-gray-500'}
+        ${
+          reduceTransparency || highContrast
+            ? 'bg-white dark:bg-neutral-900'
+            : (transparentDialog && modal
+            ? supportsBackdropBlur
+              ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
+              : 'bg-white/70 dark:bg-black/70'
+            : `bg-gradient-to-bl from-gray-200 via-white
+                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`)
+        }
+      `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
+      // "overflow-x-hidden" is necessary for the "resize" handle to appear
+      contentElement={draggableContainer}
+      contentRef={(container): void => {
+        // Save to state so that React.useEffect hooks are reRun
+        setContainer(container ?? null);
+        // Save to React.useRef so that React Draggable can have immediate access
+        containerRef.current = container ?? null;
+        if (typeof externalContainerRef === 'function')
+          externalContainerRef(container ?? null);
+      }}
+      /*
+       * Can't use outside click detection that comes with this plugin
+       * because of https://github.com/specify/specify7/issues/1248.
+       * (it listens on click, not on mouse down)
+       */
+      htmlOpenClassName={null}
+      // Instead, a custom onMouseDown handler is set up for this element
+      id={isFullScreen ? id('full-screen') : undefined}
+      isOpen={isOpen}
       overlayClassName={{
         base: `w-screen h-screen absolute inset-0 flex items-center
           justify-center opacity-0 ${
@@ -344,45 +385,11 @@ export function Dialog({
         afterOpen: 'opacity-100',
         beforeClose: '!opacity-0',
       }}
-      style={{ overlay: { zIndex } }}
+      overlayElement={overlayElement}
       portalClassName=""
-      // "overflow-x-hidden" is necessary for the "resize" handle to appear
-      className={`
-        flex flex-col gap-2 p-4 outline-none ${containerClassName}
-        overflow-x-hidden text-neutral-900 duration-0
-        dark:border dark:border-neutral-700 dark:text-neutral-200
-        ${modal ? '' : 'pointer-events-auto border border-gray-500'}
-        ${
-          reduceTransparency || highContrast
-            ? 'bg-white dark:bg-neutral-900'
-            : transparentDialog && modal
-            ? supportsBackdropBlur
-              ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
-              : 'bg-white/70 dark:bg-black/70'
-            : `bg-gradient-to-bl from-gray-200 via-white
-                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`
-        }
-      `}
       shouldCloseOnEsc={
         modal && typeof handleClose === 'function' && closeOnEsc
       }
-      /*
-       * Can't use outside click detection that comes with this plugin
-       * because of https://github.com/specify/specify7/issues/1248.
-       * (it listens on click, not on mouse down)
-       */
-      shouldCloseOnOverlayClick={false}
-      // Instead, a custom onMouseDown handler is set up for this element
-      overlayElement={overlayElement}
-      aria={{
-        labelledby: id('header'),
-        describedby: id('content'),
-        modal,
-      }}
-      id={isFullScreen ? id('full-screen') : undefined}
-      onRequestClose={handleClose}
-      bodyOpenClassName={null}
-      htmlOpenClassName={null}
       /*
        * Adding aria-hidden to #root is a legacy solution. Modern solution
        * involves displaying an element with [role="dialog"][aria-modal="true"],
@@ -391,16 +398,9 @@ export function Dialog({
        * Additionally, aria-hidden has a drawback of hiding the <h1> element,
        * which causes another accessibility problem.
        */
-      ariaHideApp={false}
-      contentRef={(container): void => {
-        // Save to state so that React.useEffect hooks are reRun
-        setContainer(container ?? null);
-        // Save to React.useRef so that React Draggable can have immediate access
-        containerRef.current = container ?? null;
-        if (typeof externalContainerRef === 'function')
-          externalContainerRef(container ?? null);
-      }}
-      contentElement={draggableContainer}
+      shouldCloseOnOverlayClick={false}
+      style={{ overlay: { zIndex } }}
+      onRequestClose={handleClose}
     >
       {/* "p-4 -m-4" increases the handle size for easier dragging */}
       <span
@@ -440,8 +440,8 @@ export function Dialog({
             -mx-1 flex-1 overflow-y-auto px-1 py-4 text-gray-700
             dark:text-neutral-350 ${contentClassName}
           `}
-          ref={contentRef}
           id={id('content')}
+          ref={contentRef}
         >
           {children}
         </div>

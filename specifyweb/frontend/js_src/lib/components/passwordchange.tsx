@@ -41,44 +41,44 @@ function ChangePassword({
     <SplashScreen>
       <Form method="post">
         <input
-          type="hidden"
           name="csrfmiddlewaretoken"
+          type="hidden"
           value={csrfToken ?? ''}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Generic>
           {commonText('oldPassword')}
           <Input.Generic
-            required={true}
-            name="old_password"
-            type="password"
             autoComplete="current-password"
-            defaultValue={''}
+            defaultValue=""
             forwardRef={oldPasswordRef}
+            name="old_password"
+            required
+            type="password"
           />
         </Label.Generic>
         <Label.Generic>
           {commonText('newPassword')}
           <Input.Generic
-            type="password"
-            required={true}
-            name="new_password1"
-            minLength={MIN_PASSWORD_LENGTH}
             autoComplete="new-password"
-            defaultValue={''}
+            defaultValue=""
             forwardRef={newPasswordRef}
+            minLength={MIN_PASSWORD_LENGTH}
+            name="new_password1"
+            required
+            type="password"
           />
         </Label.Generic>
         <Label.Generic>
           {commonText('repeatPassword')}
           <Input.Generic
-            type="password"
-            required={true}
-            name="new_password2"
-            defaultValue={''}
             autoComplete="new-password"
-            minLength={MIN_PASSWORD_LENGTH}
+            defaultValue=""
             forwardRef={repeatPasswordRef}
+            minLength={MIN_PASSWORD_LENGTH}
+            name="new_password2"
+            required
+            type="password"
           />
         </Label.Generic>
         <Submit.Fancy>{commonText('changePassword')}</Submit.Fancy>

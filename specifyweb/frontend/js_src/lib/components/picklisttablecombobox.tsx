@@ -46,10 +46,10 @@ export function PickListTableComboBox(
   return (
     <PickListComboBox
       {...props}
-      items={items}
-      onAdd={undefined}
-      pickList={undefined}
       isDisabled={pickLists === undefined || items.length === 0}
+      items={items}
+      pickList={undefined}
+      onAdd={undefined}
     />
   );
 }

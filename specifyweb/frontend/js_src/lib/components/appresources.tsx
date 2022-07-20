@@ -37,9 +37,9 @@ export function AppResourcesWrapper({
   const resources = useAppResources();
   return typeof resources === 'object' ? (
     <AppResourcesView
-      resources={resources}
       model={model}
       resourceId={resourceId}
+      resources={resources}
     />
   ) : null;
 }
@@ -55,8 +55,12 @@ function AppResourcesView({
 }): JSX.Element {
   const [resources, setResources] = useTriggerState(initialResources);
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<
+    State<
+        'Create',
+        {
+          readonly directory: SerializedResource<SpAppResourceDir>;
+        }
+      > | State<
         'View',
         {
           readonly resource: SerializedResource<
@@ -65,14 +69,7 @@ function AppResourcesView({
           readonly directory: SerializedResource<SpAppResourceDir>;
           readonly initialData: string | undefined;
         }
-      >
-    | State<
-        'Create',
-        {
-          readonly directory: SerializedResource<SpAppResourceDir>;
-        }
-      >
-    | State<'NotFound'>
+      > | State<'Main'> | State<'NotFound'>
   >(() => {
     const resource = getAppResource(resources, model, resourceId);
     if (typeof resource === 'object') {
@@ -97,6 +94,9 @@ function AppResourcesView({
         <AppResourcesAside
           // FEATURE: highlight current resource on the sidebar
           resources={resources}
+          onCreate={(directory): void =>
+            setState({ type: 'Create', directory })
+          }
           onOpen={(resource, directory): void =>
             setState({
               type: 'View',
@@ -105,15 +105,23 @@ function AppResourcesView({
               initialData: undefined,
             })
           }
-          onCreate={(directory): void =>
-            setState({ type: 'Create', directory })
-          }
         />
         {state.type === 'View' && (
           <AppResourceEditor
-            resource={state.resource}
             directory={state.directory}
             initialData={state.initialData}
+            resource={state.resource}
+            onClone={(appResource, directory, initialData): void =>
+              setState({
+                type: 'View',
+                resource: {
+                  ...appResource,
+                  name: getUniqueName(appResource.name, [appResource.name]),
+                },
+                directory,
+                initialData,
+              })
+            }
             onDeleted={(): void => {
               const mode = getAppResourceMode(
                 state.resource
@@ -127,17 +135,6 @@ function AppResourcesView({
               });
               setState({ type: 'Main' });
             }}
-            onClone={(appResource, directory, initialData): void =>
-              setState({
-                type: 'View',
-                resource: {
-                  ...appResource,
-                  name: getUniqueName(appResource.name, [appResource.name]),
-                },
-                directory,
-                initialData,
-              })
-            }
             onSaved={(appResource, directory): void => {
               if (typeof state.resource.id === 'number') return;
               const mode = getAppResourceMode(appResource);

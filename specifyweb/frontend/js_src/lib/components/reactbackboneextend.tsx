@@ -48,10 +48,12 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
 } =>
   ({
     [Component.name]: class extends Backbone.View {
+      // eslint-disable-next-line functional/prefer-readonly-type
       public options: PROPS & { readonly el?: HTMLElement };
 
       private readonly root: Root;
 
+      // eslint-disable-next-line functional/prefer-readonly-type
       private setProps: (newProps: PROPS) => void;
 
       public constructor(options?: PROPS & { readonly el?: HTMLElement }) {

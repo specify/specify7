@@ -4,6 +4,7 @@ import { ajax, formData, Http } from '../ajax';
 import { error } from '../assert';
 import type { SpQuery, SpReport } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { hasPermission } from '../permissionutils';
@@ -17,7 +18,6 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
-import { f } from '../functools';
 
 export function QueryEditButton({
   query,
@@ -47,14 +47,14 @@ function EditQueryDialog({
   readonly onClose: () => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    'default' | 'dwcaExport' | 'reportExport' | 'labelExport' | 'report'
+    'default' | 'dwcaExport' | 'labelExport' | 'report' | 'reportExport'
   >('default');
 
   const loading = React.useContext(LoadingContext);
   return state === 'default' ? (
     <ResourceView
-      dialog="modal"
       canAddAnother={false}
+      dialog="modal"
       extraButtons={
         <>
           <span className="-ml-2 flex-1" />
@@ -72,13 +72,13 @@ function EditQueryDialog({
           </Button.Green>
         </>
       }
+      isDependent={false}
+      isSubForm={false}
+      mode="edit"
       resource={queryResource}
-      onSaved={(): void => goTo(`/query/${queryResource.id}/`)}
       onClose={handleClose}
       onDeleted={handleClose}
-      mode="edit"
-      isSubForm={false}
-      isDependent={false}
+      onSaved={(): void => goTo(`/query/${queryResource.id}/`)}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
@@ -99,17 +99,17 @@ function EditQueryDialog({
         </div>
       )}
     </ResourceView>
-  ) : state === 'dwcaExport' ? (
+  ) : (state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (
     <QueryExport
+      asLabel={state === 'labelExport'}
       queryResource={queryResource}
       onClose={handleClose}
-      asLabel={state === 'labelExport'}
     />
   ) : (
     error('Invalid state')
-  );
+  ));
 }
 
 function DwcaQueryExport({
@@ -133,11 +133,11 @@ function DwcaQueryExport({
 
   return typeof exported === 'string' ? (
     <Dialog
-      header={commonText('exportQueryForDwcaDialogHeader')}
+      buttons={commonText('close')}
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      buttons={commonText('close')}
+      header={commonText('exportQueryForDwcaDialogHeader')}
       onClose={handleClose}
     >
       <AutoGrowTextArea isReadOnly value={exported} />
@@ -160,18 +160,18 @@ function QueryExport({
 
   return (
     <Dialog
-      header={
-        asLabel
-          ? commonText('createLabelDialogHeader')
-          : commonText('createReportDialogHeader')
-      }
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
         </>
       }
+      header={
+        asLabel
+          ? commonText('createLabelDialogHeader')
+          : commonText('createReportDialogHeader')
+      }
+      onClose={handleClose}
     >
       <Form
         id={id('form')}
@@ -204,12 +204,12 @@ function QueryExport({
         }
       >
         <Input.Text
+          maxLength={getMaxLength()}
           placeholder={
             asLabel ? commonText('labelName') : commonText('reportName')
           }
           required
           value={name}
-          maxLength={getMaxLength()}
           onValueChange={(value): void => setName(value)}
         />
       </Form>

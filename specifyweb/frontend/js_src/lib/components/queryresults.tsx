@@ -57,10 +57,9 @@ function getAuditRecordFormatter(
   fieldSpecs: RA<QueryFieldSpec>,
   hasIdField: boolean
 ):
-  | undefined
-  | ((
-      resultRow: RA<string | number | null>
-    ) => Promise<RA<string | JSX.Element>>) {
+  ((
+      resultRow: RA<number | string | null>
+    ) => Promise<RA<JSX.Element | string>>) | undefined {
   if (!needAuditLogFormatting(fieldSpecs)) return undefined;
   const fields = Array.from(
     fieldSpecs
@@ -76,7 +75,7 @@ function getAuditRecordFormatter(
   );
   if (parentModelIdIndex <= 0) return undefined;
 
-  return async (resultRow): Promise<RA<string | JSX.Element>> =>
+  return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(
       resultRow
         .filter((_, index) => !hasIdField || index !== queryIdField)
@@ -123,12 +122,12 @@ function QueryResultCell({
 }: {
   readonly condenseQueryResults: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
-  readonly value: JSX.Element | string | number | null;
+  readonly value: JSX.Element | number | string | null;
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
   // REFACTOR: move this hook into parent for performance reasons
-  const formatted = React.useMemo<string | number | undefined | JSX.Element>(
+  const formatted = React.useMemo<JSX.Element | number | string | undefined>(
     () =>
       typeof value !== 'object' &&
       typeof field === 'object' &&
@@ -141,21 +140,21 @@ function QueryResultCell({
 
   return (
     <span
-      role="cell"
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
         ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
       `}
+      role="cell"
       title={
         typeof value === 'string' && value !== formatted ? value : undefined
       }
     >
       {value === null
         ? undefined
-        : fieldSpec === undefined || typeof value === 'object'
+        : (fieldSpec === undefined || typeof value === 'object'
         ? value
-        : formatted}
+        : formatted)}
     </span>
   );
 }
@@ -173,16 +172,16 @@ function QueryResult({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
-  readonly result: RA<string | number | null>;
+  readonly result: RA<number | string | null>;
   readonly recordFormatter?: (
-    result: RA<string | number | null>
-  ) => Promise<RA<string | JSX.Element>>;
+    result: RA<number | string | null>
+  ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
   const [resource] = useLiveState<
-    SpecifyResource<AnySchema> | undefined | false
+    SpecifyResource<AnySchema> | false | undefined
   >(
     React.useCallback((): SpecifyResource<AnySchema> | false => {
       if (!hasIdField) return false;
@@ -207,12 +206,12 @@ function QueryResult({
 
   return (
     <div
-      role="row"
       className={`
         odd:[--bg:theme(colors.gray.100)] even:[--bg:transparent]
         odd:dark:[--bg:theme(colors.neutral.700)]
         ${condenseQueryResults ? 'text-sm' : ''}
       `}
+      role="row"
       onClick={
         typeof handleSelected === 'function'
           ? ({ target, shiftKey }): void =>
@@ -229,11 +228,11 @@ function QueryResult({
       {hasIdField && (
         <>
           <span
-            role="cell"
             className={`
               ${getCellClassName(condenseQueryResults)} sticky
               ${isLast ? 'rounded-bl' : ''}
             `}
+            role="cell"
           >
             <Input.Checkbox
               checked={isSelected}
@@ -242,8 +241,8 @@ function QueryResult({
             />
           </span>
           <span
-            role="cell"
             className={`${getCellClassName(condenseQueryResults)} sticky`}
+            role="cell"
           >
             <Link.NewTab
               className="print:hidden"
@@ -257,14 +256,14 @@ function QueryResult({
         .filter((_, index) => !hasIdField || index !== queryIdField)
         .map((value, index) => (
           <QueryResultCell
-            key={index}
-            value={formattedValues?.[index] ?? value}
+            condenseQueryResults={condenseQueryResults}
             fieldSpec={
               formattedValues?.[index] === undefined
                 ? fieldSpecs[index]
                 : undefined
             }
-            condenseQueryResults={condenseQueryResults}
+            key={index}
+            value={formattedValues?.[index] ?? value}
           />
         ))}
     </div>
@@ -282,8 +281,8 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
-  readonly results: RA<RA<string | number | null>>;
-  readonly selectedRows: Set<number>;
+  readonly results: RA<RA<number | string | null>>;
+  readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
     index: number,
     isSelected: boolean,
@@ -298,17 +297,17 @@ export function QueryResults({
     <>
       {results.map((result, index, { length }) => (
         <QueryResult
-          key={index}
-          model={model}
           fieldSpecs={fieldSpecs}
           hasIdField={hasIdField}
-          result={result}
-          recordFormatter={recordFormatter}
+          isLast={index + 1 === length}
           isSelected={
             hasIdField &&
             selectedRows.has(results[index][queryIdField] as number)
           }
-          isLast={index + 1 === length}
+          key={index}
+          model={model}
+          recordFormatter={recordFormatter}
+          result={result}
           onSelected={
             hasIdField
               ? (isSelected, isShiftClick): void =>

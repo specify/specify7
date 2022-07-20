@@ -54,8 +54,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   canChangePrecision = true,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
-  readonly dateField: keyof SCHEMA['fields'] & string;
-  readonly precisionField: (keyof SCHEMA['fields'] & string) | undefined;
+  readonly dateField: string & keyof SCHEMA['fields'];
+  readonly precisionField: (string & keyof SCHEMA['fields']) | undefined;
   readonly defaultPrecision: PartialDatePrecision;
   readonly defaultValue: Date | undefined;
   readonly isReadOnly: boolean;
@@ -214,9 +214,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       const validationMessage =
         precision === 'full'
           ? formsText('requiredFormat', fullDateFormat())
-          : precision === 'month-year'
+          : (precision === 'month-year'
           ? formsText('requiredFormat', monthFormat())
-          : formsText('invalidDate');
+          : formsText('invalidDate'));
       resource.saveBlockers?.add(
         `invaliddate:${dateField}`,
         dateField,
@@ -273,14 +273,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
             className="!w-auto print:hidden"
             title={formsText('datePrecision')}
             value={precision}
-            onChange={({ target }): void => {
-              const precision = target.value as PartialDatePrecision;
-              setPrecision(precision);
-              const precisionIndex = precisions[precision];
-              if (typeof precisionField === 'string')
-                resource.set(precisionField, precisionIndex as never);
-              resource.saveBlockers?.remove(`invaliddate:${dateField}`);
-            }}
             onBlur={(): void => {
               if (moment === undefined) return;
               let newMoment = dayjs(moment);
@@ -296,6 +288,14 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
               setMoment(newMoment);
             }}
+            onChange={({ target }): void => {
+              const precision = target.value as PartialDatePrecision;
+              setPrecision(precision);
+              const precisionIndex = precisions[precision];
+              if (typeof precisionField === 'string')
+                resource.set(precisionField, precisionIndex as never);
+              resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+            }}
           >
             <option value="full">{commonText('fullDate')}</option>
             <option value="month-year">{formsText('monthYear')}</option>
@@ -304,13 +304,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         </label>
       ) : undefined}
       <Input.Generic
+        forwardRef={validationRef}
         id={id}
         isReadOnly={isReadOnly}
-        forwardRef={validationRef}
-        onValueChange={setInputValue}
-        onDatePaste={handleChange}
-        onBlur={f.zero(handleChange)}
         value={inputValue}
+        onBlur={f.zero(handleChange)}
+        onDatePaste={handleChange}
+        onValueChange={setInputValue}
         {...(precision === 'year'
           ? {
               ...getValidationAttributes(resolveParser({}, { type: 'year' })),
@@ -346,9 +346,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
         <Button.Icon
+          aria-label={formsText('today')}
           icon="calendar"
           title={formsText('todayButtonDescription')}
-          aria-label={formsText('today')}
           onClick={(): void => setMoment(dayjs())}
         />
       ) : undefined}

@@ -87,17 +87,17 @@ export type AutoMapperSuggestion = {
 export type MappingState = State<
   'MappingState',
   {
-    showMappingView: boolean;
-    showHiddenFields: boolean;
-    mappingView: MappingPath;
-    mappingsAreValidated: boolean;
-    lines: RA<MappingLine>;
-    focusedLine: number;
-    changesMade: boolean;
-    mustMatchPreferences: IR<boolean>;
-    autoMapperSuggestions?: RA<AutoMapperSuggestion>;
-    openSelectElement?: SelectElementPosition;
-    validationResults: RA<MappingPath>;
+    readonly showMappingView: boolean;
+    readonly showHiddenFields: boolean;
+    readonly mappingView: MappingPath;
+    readonly mappingsAreValidated: boolean;
+    readonly lines: RA<MappingLine>;
+    readonly focusedLine: number;
+    readonly changesMade: boolean;
+    readonly mustMatchPreferences: IR<boolean>;
+    readonly autoMapperSuggestions?: RA<AutoMapperSuggestion>;
+    readonly openSelectElement?: SelectElementPosition;
+    readonly validationResults: RA<MappingPath>;
   }
 >;
 
@@ -280,23 +280,6 @@ export function WbPlanViewMapper(props: {
 
   return (
     <Layout
-      title={
-        <>
-          <TableIcon name={props.baseTableName} label />
-          <span title={wbText('dataSetName')}>{props.dataset.name}</span>
-          <span title={wbText('baseTable')}>
-            {` (${defined(getModel(props.baseTableName)).label})`}
-          </span>
-          {props.dataset.uploadresult?.success === true && (
-            <span
-              className="flex items-center text-red-600"
-              title={wbText('dataSetUploadedDescription')}
-            >
-              {` ${wbText('dataSetUploaded')}`}
-            </span>
-          )}
-        </>
-      }
       buttonsLeft={
         props.isReadOnly ? undefined : (
           <>
@@ -339,7 +322,6 @@ export function WbPlanViewMapper(props: {
             }
           />
           <MustMatch
-            isReadOnly={props.isReadOnly}
             getMustMatchPreferences={(): IR<boolean> =>
               getMustMatchTables({
                 baseTableName: props.baseTableName,
@@ -347,6 +329,7 @@ export function WbPlanViewMapper(props: {
                 mustMatchPreferences: state.mustMatchPreferences,
               })
             }
+            isReadOnly={props.isReadOnly}
             onChange={(mustMatchPreferences): void =>
               dispatch({
                 type: 'MustMatchPrefChangeAction',
@@ -378,6 +361,9 @@ export function WbPlanViewMapper(props: {
                   ? 'bg-green-400 dark:bg-green-700'
                   : undefined
               }
+              disabled={state.lines.every(
+                ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
+              )}
               role="menuitem"
               onClick={(): void =>
                 dispatch({
@@ -385,9 +371,6 @@ export function WbPlanViewMapper(props: {
                   validationResults: validate(),
                 })
               }
-              disabled={state.lines.every(
-                ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
-              )}
             >
               {wbText('validate')}
             </Button.Small>
@@ -408,26 +391,43 @@ export function WbPlanViewMapper(props: {
           )}
         </>
       }
+      title={
+        <>
+          <TableIcon label name={props.baseTableName} />
+          <span title={wbText('dataSetName')}>{props.dataset.name}</span>
+          <span title={wbText('baseTable')}>
+            {` (${defined(getModel(props.baseTableName)).label})`}
+          </span>
+          {props.dataset.uploadresult?.success === true && (
+            <span
+              className="flex items-center text-red-600"
+              title={wbText('dataSetUploadedDescription')}
+            >
+              {` ${wbText('dataSetUploaded')}`}
+            </span>
+          )}
+        </>
+      }
       onClick={handleClose}
     >
       {!props.isReadOnly && state.validationResults.length > 0 && (
         <ValidationResults
           baseTableName={props.baseTableName}
+          getMappedFields={getMappedFieldsBind}
+          mustMatchPreferences={state.mustMatchPreferences}
           validationResults={state.validationResults}
-          onSave={(): void => handleSave(true)}
           onDismissValidation={(): void =>
             dispatch({
               type: 'ClearValidationAction',
             })
           }
-          getMappedFields={getMappedFieldsBind}
+          onSave={(): void => handleSave(true)}
           onValidationResultClick={(mappingPath: MappingPath): void =>
             dispatch({
               type: 'ValidationResultClickAction',
               mappingPath,
             })
           }
-          mustMatchPreferences={state.mustMatchPreferences}
         />
       )}
       {state.showMappingView && (
@@ -455,19 +455,19 @@ export function WbPlanViewMapper(props: {
           })}
         >
           <Button.Small
+            aria-label={wbText('map')}
             className="flex-col justify-center p-2"
             disabled={!mapButtonEnabled}
-            onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
-            aria-label={wbText('map')}
             title={wbText('mapButtonDescription')}
+            onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
           >
             {wbText('map')}
             <span
+              aria-hidden="true"
               className={`
                 text-green-500
                 ${mapButtonEnabled ? '' : 'invisible'}
               `}
-              aria-hidden="true"
             >
               &#8594;
             </span>
@@ -476,15 +476,15 @@ export function WbPlanViewMapper(props: {
       )}
 
       <Ul
+        aria-label={wbText('mappings')}
         className={`
           grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
           overflow-x-hidden
           print:grid-cols-[min-content_auto]
         `}
-        tabIndex={-1}
         forwardRef={listOfMappings}
+        tabIndex={-1}
         onScroll={repositionSuggestionBox}
-        aria-label={wbText('mappings')}
       >
         {state.lines.map(({ mappingPath, headerName, columnOptions }, line) => {
           const handleOpen = (index: number): void =>
@@ -592,17 +592,24 @@ export function WbPlanViewMapper(props: {
           return (
             <ErrorBoundary dismissable>
               <MappingLineComponent
-                key={line}
                 headerName={headerName}
-                isReadOnly={props.isReadOnly}
                 isFocused={line === state.focusedLine}
+                isReadOnly={props.isReadOnly}
+                key={line}
+                lineData={fullLineData}
+                // Same key bindings as in QueryBuilder
+                onClearMapping={(): void =>
+                  dispatch({
+                    type: 'ClearMappingLineAction',
+                    line,
+                  })
+                }
                 onFocus={(): void =>
                   dispatch({
                     type: 'FocusLineAction',
                     line,
                   })
                 }
-                // Same key bindings as in QueryBuilder
                 onKeyDown={(key): void => {
                   const openSelectElement =
                     state.openSelectElement?.line === line
@@ -642,13 +649,6 @@ export function WbPlanViewMapper(props: {
                       line: line + 1,
                     });
                 }}
-                onClearMapping={(): void =>
-                  dispatch({
-                    type: 'ClearMappingLineAction',
-                    line,
-                  })
-                }
-                lineData={fullLineData}
               />
             </ErrorBoundary>
           );
@@ -657,9 +657,6 @@ export function WbPlanViewMapper(props: {
 
       <MappingsControlPanel
         showHiddenFields={state.showHiddenFields}
-        onToggleHiddenFields={(): void =>
-          dispatch({ type: 'ToggleHiddenFieldsAction' })
-        }
         onAddNewHeader={
           props.isReadOnly
             ? undefined
@@ -672,6 +669,9 @@ export function WbPlanViewMapper(props: {
                     listOfMappings.current.scrollHeight
                   );
               }
+        }
+        onToggleHiddenFields={(): void =>
+          dispatch({ type: 'ToggleHiddenFieldsAction' })
         }
       />
       <EmptyDataSetDialog lineCount={state.lines.length} />

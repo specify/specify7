@@ -54,7 +54,7 @@ export function task(): void {
   router.route('attachments/', 'attachments', async () =>
     import('./attachmentstask').then(({ AttachmentsView }) =>
       setCurrentComponent(
-        <ProtectedTable tableName="Attachment" action="read">
+        <ProtectedTable action="read" tableName="Attachment">
           <AttachmentsView />
         </ProtectedTable>
       )
@@ -93,7 +93,7 @@ export function task(): void {
   const appResources = async (mode: 'appResources' | 'viewSets', id?: string) =>
     import('./appresources').then(({ AppResourcesWrapper }) =>
       hasToolPermission('resources', 'read')
-        ? hasTablePermission('Discipline', 'read')
+        ? (hasTablePermission('Discipline', 'read')
           ? hasTablePermission('Collection', 'read')
             ? setCurrentComponent(
                 hasTablePermission('SpecifyUser', 'read') ? (
@@ -103,19 +103,19 @@ export function task(): void {
                   />
                 ) : (
                   <TablePermissionDenied
-                    tableName="SpecifyUser"
                     action="read"
+                    tableName="SpecifyUser"
                   />
                 )
               )
             : setCurrentComponent(
-                <TablePermissionDenied tableName="Collection" action="read" />
+                <TablePermissionDenied action="read" tableName="Collection" />
               )
           : setCurrentComponent(
-              <TablePermissionDenied tableName="Discipline" action="read" />
-            )
+              <TablePermissionDenied action="read" tableName="Discipline" />
+            ))
         : setCurrentComponent(
-            <ToolPermissionDenied tool="resources" action="read" />
+            <ToolPermissionDenied action="read" tool="resources" />
           )
     );
 
@@ -130,7 +130,7 @@ export function task(): void {
     appResources('viewSets', id)
   );
 
-  router.route('', 'welcome', function () {
+  router.route('', 'welcome', () => {
     import('./welcomeview').then(({ WelcomeView }) =>
       setCurrentComponent(<WelcomeView />)
     );

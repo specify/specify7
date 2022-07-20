@@ -1,19 +1,19 @@
 import React from 'react';
 
 import type { Geography, Locality } from '../datamodel';
+import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
+import { hasTablePermission } from '../permissionutils';
+import { formatUrl } from '../querystring';
 import { schema } from '../schema';
 import type { IR } from '../types';
 import { filterArray } from '../types';
-import { f } from '../functools';
 import { Button } from './basic';
+import { LoadingContext } from './contexts';
 import { useAsyncState, useBooleanState } from './hooks';
 import { Dialog } from './modaldialog';
-import { LoadingContext } from './contexts';
-import { hasTablePermission } from '../permissionutils';
-import { formatUrl } from '../querystring';
 import { useCachedState } from './statecache';
 
 const defaultWidth = 947;
@@ -100,25 +100,17 @@ function GeoLocate({
     'height'
   );
 
-  return data === undefined ? null : data === false ? (
+  return data === undefined ? null : (data === false ? (
     <Dialog
-      onClose={handleClose}
-      header={localityText('geographyRequiredDialogHeader')}
       buttons={commonText('close')}
+      header={localityText('geographyRequiredDialogHeader')}
+      onClose={handleClose}
     >
       {localityText('geographyRequiredDialogText')}
     </Dialog>
   ) : (
     <Dialog
-      header={localityText('geoLocate')}
-      modal={false}
-      onClose={handleClose}
-      onResize={(container): void => {
-        setWidth(container.clientWidth);
-        setHeight(container.clientHeight);
-      }}
       buttons={commonText('close')}
-      // REFACTOR: consider adding a hook to remember dialog size and position
       forwardRef={{
         container(container): void {
           if (container === null) return;
@@ -126,18 +118,26 @@ function GeoLocate({
           container.style.height = `${height}px`;
         },
       }}
+      header={localityText('geoLocate')}
+      modal={false}
+      onClose={handleClose}
+      // REFACTOR: consider adding a hook to remember dialog size and position
+      onResize={(container): void => {
+        setWidth(container.clientWidth);
+        setHeight(container.clientHeight);
+      }}
     >
       <iframe
-        title={localityText('geoLocate')}
+        className="h-full"
         // GEOLocate doesn't like '|' to be uri escaped.
         src={formatUrl(
           'https://www.geo-locate.org/web/webgeoreflight.aspx',
           data
         ).replace(/%7c/gi, '|')}
-        className="h-full"
+        title={localityText('geoLocate')}
       />
     </Dialog>
-  );
+  ));
 }
 
 async function getGeoLocateData(
@@ -213,9 +213,9 @@ export function GeoLocatePlugin({
   return (
     <>
       <Button.Small
-        onClick={handleToggle}
         aria-pressed={isOpen}
         className="w-fit"
+        onClick={handleToggle}
       >
         {localityText('geoLocate')}
       </Button.Small>

@@ -17,8 +17,8 @@ import type {
 import { defaultFont } from './preferencesrenderers';
 
 export const prefEvents = eventListener<{
-  update: PreferenceItem<unknown> | undefined;
-  synchronized: undefined;
+  readonly update: PreferenceItem<unknown> | undefined;
+  readonly synchronized: undefined;
 }>();
 
 /*
@@ -26,7 +26,7 @@ export const prefEvents = eventListener<{
  * Used when editing user preferences for another user in AppResources
  */
 export const PreferencesContext = React.createContext<
-  | Readonly<[getUserPref: typeof getUserPref, setPref: typeof setPref]>
+  | readonly [getUserPref: typeof getUserPref, setPref: typeof setPref]
   | undefined
 >(undefined);
 PreferencesContext.displayName = 'PreferencesContext';
@@ -42,7 +42,7 @@ export function usePref<
   subcategory: SUBCATEGORY,
   item: ITEM
 ): Readonly<
-  [
+  readonly [
     pref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
     setPref: (
       newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
@@ -89,7 +89,7 @@ export function usePref<
 function useMedia(query: string): boolean {
   const media = React.useMemo(() => globalThis.matchMedia(query), [query]);
   const eventsTarget = React.useMemo(
-    () => eventListener<{ change: undefined }>(media),
+    () => eventListener<{ readonly change: undefined }>(media),
     [media]
   );
   const [matches, setMatches] = React.useState(media.matches);

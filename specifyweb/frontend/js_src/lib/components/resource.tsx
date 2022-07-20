@@ -58,7 +58,7 @@ export function useResource<SCHEMA extends AnySchema>(
 }
 
 export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedResource<SCHEMA> | SerializedModel<SCHEMA>
+  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
 ): SpecifyResource<SCHEMA> =>
   new schema.models[
     /**
@@ -126,9 +126,9 @@ export async function getResourceAndField(
   const getResource =
     path.length === 0
       ? Promise.resolve(undefined)
-      : path.length == 1
+      : (path.length == 1
       ? model.fetch()
-      : model.rgetPromise(path.slice(0, -1).join('.'));
+      : model.rgetPromise(path.slice(0, -1).join('.')));
 
   return getResource.then((resource) => {
     const field = model.specifyModel.getField(fieldName ?? '');

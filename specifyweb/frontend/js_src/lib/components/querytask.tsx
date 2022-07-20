@@ -21,7 +21,7 @@ import { NotFoundView } from './notfoundview';
 import { ProtectedTool, ProtectedTree } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
 
-function useQueryRecordSet(): SpecifyResource<RecordSet> | undefined | false {
+function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;
@@ -51,12 +51,12 @@ function QueryBuilderWrapper({
 
   return isLoaded ? (
     <QueryBuilder
-      query={query}
       autoRun={autoRun}
       isReadOnly={
         !hasPermission('/querybuilder/query', 'execute') &&
         !hasToolPermission('queryBuilder', query.isNew() ? 'create' : 'update')
       }
+      query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
   ) : null;
@@ -143,14 +143,14 @@ function QueryBuilderFromTree({
   );
 
   return query === undefined ? null : (
-    <QueryBuilderWrapper query={query} autoRun={true} />
+    <QueryBuilderWrapper autoRun query={query} />
   );
 }
 
 export function task(): void {
   router.route('query/:id/', 'storedQuery', (id) =>
     setCurrentComponent(
-      <ProtectedTool tool="queryBuilder" action="read">
+      <ProtectedTool action="read" tool="queryBuilder">
         <QueryBuilderById queryId={Number.parseInt(id)} />
       </ProtectedTool>
     )
@@ -165,7 +165,7 @@ export function task(): void {
       setCurrentComponent(
         f.var(getModel(tableName), (model) =>
           typeof model === 'object' && isTreeModel(model.name) ? (
-            <ProtectedTree treeName={model.name} action="read">
+            <ProtectedTree action="read" treeName={model.name}>
               <QueryBuilderFromTree
                 model={model as SpecifyModel<AnyTree>}
                 nodeId={Number.parseInt(nodeId)}

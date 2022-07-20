@@ -26,7 +26,7 @@ import { SchemaConfigTable } from './schemaconfigtable';
 export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 
-export type ItemType = 'none' | 'formatted' | 'webLink' | 'pickList';
+export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 
 export function SchemaConfigMain({
   schemaData,
@@ -109,34 +109,34 @@ export function SchemaConfigMain({
   return (
     <Container.Full>
       <SchemaConfigHeader
-        languages={schemaData.languages}
         language={language}
+        languages={schemaData.languages}
         onBack={handleBack}
         onSave={canSave ? handleSave : undefined}
       />
       <div className="flex flex-1 flex-col gap-4 overflow-hidden sm:flex-row">
         <SchemaConfigTable
-          schemaData={schemaData}
-          isReadOnly={isReadOnly}
           container={container}
-          onChange={setContainer}
-          name={name}
-          onChangeName={setName}
           desc={desc}
+          isReadOnly={isReadOnly}
+          name={name}
+          schemaData={schemaData}
+          onChange={setContainer}
           onChangeDesc={setDesc}
+          onChangeName={setName}
         />
         <SchemaConfigFields
-          model={model}
-          items={items}
           index={index}
+          items={items}
+          model={model}
           onChange={setIndex}
         />
         {typeof item === 'object' ? (
           <SchemaConfigField
-            schemaData={schemaData}
             field={model.getField(item.name)!}
-            item={item}
             isReadOnly={isReadOnly}
+            item={item}
+            schemaData={schemaData}
             onChange={(field, value): void =>
               setItem(index, {
                 ...item,

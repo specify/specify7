@@ -25,8 +25,8 @@ export function QueryTablesEdit({
   const [models, setModels] = useQueryModels();
   return (
     <TablesListEdit
-      isNoRestrictionMode={isNoRestrictionMode}
       defaultTables={defaultQueryTablesConfig}
+      isNoRestrictionMode={isNoRestrictionMode}
       models={models}
       onChange={setModels}
       onClose={handleClose}
@@ -125,7 +125,6 @@ export function TablesListEdit({
 
   return (
     <Dialog
-      header={queryText('configureQueryTables')}
       buttons={
         <>
           <Button.Blue onClick={(): void => handleRawChange([])}>
@@ -135,20 +134,21 @@ export function TablesListEdit({
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         </>
       }
+      header={queryText('configureQueryTables')}
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_1fr_auto_1fr] grid-rows-1">
         <div className="flex flex-col justify-center">
           <Button.Icon
+            disabled={selectedSubset.length === 0}
             icon="chevronUp"
             title={commonText('moveUp')}
-            disabled={selectedSubset.length === 0}
             onClick={handleMoveUp}
           />
           <Button.Icon
+            disabled={selectedSubset.length === 0}
             icon="chevronDown"
             title={commonText('moveDown')}
-            disabled={selectedSubset.length === 0}
             onClick={handleMoveDown}
           />
         </div>
@@ -157,11 +157,11 @@ export function TablesListEdit({
           <Select
             className="flex-1"
             multiple
+            size={10}
             value={selectedSubset}
             onValuesChange={(tables): void =>
               setSelectedSubset(tables as RA<keyof Tables>)
             }
-            size={10}
           >
             {selectedModels.map(({ name, label }) => (
               <option key={name} value={name}>
@@ -173,15 +173,15 @@ export function TablesListEdit({
         <div className="flex gap-2">
           <div className="flex items-center">
             <Button.Icon
+              disabled={possibleSubset.length === 0}
               icon="chevronLeft"
               title={commonText('add')}
-              disabled={possibleSubset.length === 0}
               onClick={handleAdd}
             />
             <Button.Icon
+              disabled={selectedSubset.length === 0}
               icon="chevronRight"
               title={commonText('remove')}
-              disabled={selectedSubset.length === 0}
               onClick={handleRemove}
             />
           </div>
@@ -191,11 +191,11 @@ export function TablesListEdit({
           <Select
             className="flex-1"
             multiple
+            size={10}
             value={possibleSubset}
             onValuesChange={(tables): void =>
               setPossibleSubset(tables as RA<keyof Tables>)
             }
-            size={10}
           >
             {possibleModels.map(({ name, label }) => (
               <option key={name} value={name}>

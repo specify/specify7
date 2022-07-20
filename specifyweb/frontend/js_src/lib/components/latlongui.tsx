@@ -11,7 +11,7 @@ import { resourceOn } from '../resource';
 import { Input, Select } from './basic';
 import { useResourceValue } from './hooks';
 
-type CoordinateType = 'Point' | 'Line' | 'Rectangle';
+type CoordinateType = 'Line' | 'Point' | 'Rectangle';
 
 type Parsed = {
   readonly format: (step: number | undefined) => string;
@@ -78,9 +78,9 @@ function Coordinate({
     setValidation(isValid ? '' : formsText('invalidValue'));
     handleFormatted(
       isValid
-        ? hasValue
+        ? (hasValue
           ? parsed?.format(step) ?? ''
-          : commonText('notApplicable')
+          : commonText('notApplicable'))
         : undefined
     );
 
@@ -103,9 +103,9 @@ function Coordinate({
 
   return (
     <Input.Text
-      value={value?.toString() ?? ''}
-      isReadOnly={isReadOnly}
       forwardRef={validationRef}
+      isReadOnly={isReadOnly}
+      value={value?.toString() ?? ''}
       onValueChange={updateValue}
       // OnBlur={(): void => setCoordinate(trimLatLong(coordinate))}
     />
@@ -140,13 +140,13 @@ function CoordinatePoint({
             'latitude'
           )} ${index}`}</span>
           <Coordinate
-            resource={resource}
             coordinateField={`latitude${index}`}
             coordinateTextField={`lat${index}text`}
-            fieldType={`Lat`}
+            fieldType="Lat"
             isReadOnly={isReadOnly}
-            onFormatted={setLatitude}
+            resource={resource}
             step={step}
+            onFormatted={setLatitude}
           />
         </label>
       </td>
@@ -156,13 +156,13 @@ function CoordinatePoint({
             'longitude'
           )} ${index}`}</span>
           <Coordinate
-            resource={resource}
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
-            fieldType={`Long`}
+            fieldType="Long"
             isReadOnly={isReadOnly}
-            onFormatted={setLongitude}
+            resource={resource}
             step={step}
+            onFormatted={setLongitude}
           />
         </label>
       </td>
@@ -212,11 +212,11 @@ export function LatLongUi({
                   {localityText('coordinateType')}
                 </span>
                 <Select
+                  disabled={mode === 'view'}
                   id={id}
                   name="type"
                   title={localityText('coordinateType')}
                   value={coordinateType}
-                  disabled={mode === 'view'}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);
                     resource.set('latLongType', value);
@@ -235,28 +235,28 @@ export function LatLongUi({
         </thead>
         <tbody>
           <CoordinatePoint
-            resource={resource}
+            index={1}
+            isReadOnly={mode === 'view'}
             label={
               coordinateType === 'Point'
                 ? localityText('coordinates')
-                : coordinateType === 'Line'
+                : (coordinateType === 'Line'
                 ? commonText('start')
-                : localityText('northWestCorner')
+                : localityText('northWestCorner'))
             }
-            index={1}
-            isReadOnly={mode === 'view'}
+            resource={resource}
             step={step}
           />
           {coordinateType === 'Point' ? undefined : (
             <CoordinatePoint
-              resource={resource}
+              index={2}
+              isReadOnly={mode === 'view'}
               label={
                 coordinateType === 'Line'
                   ? commonText('end')
                   : localityText('southEastCorner')
               }
-              index={2}
-              isReadOnly={mode === 'view'}
+              resource={resource}
               step={step}
             />
           )}

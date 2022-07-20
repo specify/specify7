@@ -19,10 +19,12 @@ import { remotePrefs } from '../remoteprefs';
 import { schema } from '../schema';
 import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
+import type { WritableArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Input, Label, Link } from './basic';
 import { displayError, legacyLoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
+import { useId } from './hooks';
 import { Dialog } from './modaldialog';
 import { clearUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
@@ -30,20 +32,16 @@ import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
-import { useId } from './hooks';
-import { WritableArray } from '../types';
 
 type ErrorBoundaryState =
-  | State<'Main'>
-  | State<
+  State<
       'Error',
       {
-        hasError: true;
-        error: Error;
-        errorInfo: { componentStack: string };
+        readonly hasError: true;
+        readonly error: Error;
+        readonly errorInfo: { readonly componentStack: string };
       }
-    >
-  | State<'Silenced'>;
+    > | State<'Main'> | State<'Silenced'>;
 
 export const supportLink =
   process.env.NODE_ENV === 'test' ? (
@@ -94,7 +92,6 @@ function ErrorDialog({
   );
   return (
     <Dialog
-      header={header}
       buttons={
         <>
           <Button.Blue
@@ -141,7 +138,8 @@ function ErrorDialog({
           )}
         </>
       }
-      forceToTop={true}
+      forceToTop
+      header={header}
       onClose={undefined}
     >
       <p>
@@ -186,9 +184,9 @@ function showError(error: Error, dismissable: boolean): void {
   breakpoint();
   displayError(({ onClose: handleClose }) => (
     <ErrorDialog
-      onClose={handleClose}
       copiableMessage={copiableMessage}
       dismissable={dismissable}
+      onClose={handleClose}
     >
       {errorObject}
     </ErrorDialog>
@@ -210,7 +208,7 @@ export class ErrorBoundary extends React.Component<
   },
   ErrorBoundaryState
 > {
-  public state: ErrorBoundaryState = {
+  public readonly state: ErrorBoundaryState = {
     type: 'Main',
   };
 
@@ -294,7 +292,7 @@ function formatError(
   error: unknown,
   url?: string
 ): Readonly<
-  [errorObject: JSX.Element, errorMessage: string, copiableMessage: string]
+  readonly [errorObject: JSX.Element, errorMessage: string, copiableMessage: string]
 > {
   const errorObject: WritableArray<React.ReactNode> = [
     typeof url === 'string' && (
@@ -362,7 +360,7 @@ function formatError(
   }
 
   return [
-    <div key="object" className="flex h-full flex-col gap-2">
+    <div className="flex h-full flex-col gap-2" key="object">
       {errorObject}
     </div>,
     errorMessage.join('\n'),
@@ -444,9 +442,9 @@ export function handleAjaxError(
   if (strict && !isPermissionError)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
+        copiableMessage={copiableMessage}
         header={commonText('errorBoundaryDialogHeader')}
         onClose={handleClose}
-        copiableMessage={copiableMessage}
       >
         {errorObject}
       </ErrorDialog>
@@ -459,7 +457,7 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({ children: error }: { children: string }): JSX.Element {
+function ErrorIframe({ children: error }: { readonly children: string }): JSX.Element {
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;
@@ -472,9 +470,9 @@ function ErrorIframe({ children: error }: { children: string }): JSX.Element {
 
   return (
     <iframe
-      title={commonText('errorBoundaryDialogHeader')}
       className="h-full"
       ref={iframeRef}
+      title={commonText('errorBoundaryDialogHeader')}
     />
   );
 }

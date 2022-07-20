@@ -7,12 +7,12 @@ import React from 'react';
 import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
+import { formatUrl, parseUrl } from '../querystring';
 import type { RA } from '../types';
 import { Button, Form, Link, Submit } from './basic';
 import { useTitle } from './hooks';
 import { SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
-import { formatUrl, parseUrl } from '../querystring';
 
 export type OicProvider = {
   readonly provider: string;
@@ -26,7 +26,7 @@ export function OicLogin({
   readonly data: {
     readonly inviteToken: '' | { readonly username: string };
     readonly providers: RA<OicProvider>;
-    readonly languages: RA<Readonly<[code: Language, name: string]>>;
+    readonly languages: RA<readonly [code: Language, name: string]>;
     readonly csrfToken: string;
   };
   readonly nextUrl: string;
@@ -44,7 +44,7 @@ export function OicLogin({
         value={LANGUAGE}
         onChange={handleLanguageChange}
       />
-      <Form method="post" forwardRef={formRef}>
+      <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (
           <p>
             {commonText('helloMessage', data.inviteToken.username)}
@@ -53,14 +53,14 @@ export function OicLogin({
           </p>
         )}
         <input
-          type="hidden"
           name="csrfmiddlewaretoken"
+          type="hidden"
           value={data.csrfToken}
         />
         <input
-          type="hidden"
           name="provider"
           ref={providerRef}
+          type="hidden"
           value={data.providers[0].provider}
         />
         {data.providers.map(({ provider, title }) => (
@@ -84,7 +84,7 @@ export function OicLogin({
             {commonText('legacyLogin')}
           </Link.Fancy>
         )}
-        <input type="hidden" name="next" value={nextUrl} />
+        <input name="next" type="hidden" value={nextUrl} />
         <Submit.Fancy className="sr-only">{commonText('login')}</Submit.Fancy>
       </Form>
     </SplashScreen>

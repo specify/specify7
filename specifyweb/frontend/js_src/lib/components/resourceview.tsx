@@ -35,7 +35,7 @@ import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
  * or some additional things need to be done after resource is created, or
  * resource clone operation needs to be handled in a special way.
  */
-export const RESTRICT_ADDING: Set<keyof Tables> = new Set([
+export const RESTRICT_ADDING = new Set<keyof Tables>([
   // Shouldn't clone preparations
   'Gift',
   'Borrow',
@@ -62,13 +62,13 @@ export const RESTRICT_ADDING: Set<keyof Tables> = new Set([
 /**
  * Like RESTRICT_ADDING, but also restricts cloning
  */
-export const NO_ADD_ANOTHER: Set<keyof Tables> = new Set([
+export const NO_ADD_ANOTHER = new Set<keyof Tables>([
   ...RESTRICT_ADDING,
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);
 
-export const NO_CLONE: Set<keyof Tables> = new Set([
+export const NO_CLONE = new Set<keyof Tables>([
   ...NO_ADD_ANOTHER,
   // To properly clone a user need to also clone their roles and policies
   'SpecifyUser',
@@ -130,12 +130,12 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   const specifyForm =
     typeof resource === 'object' ? (
       <SpecifyForm
-        isLoading={isLoading}
-        resource={resource}
-        mode={mode}
-        viewName={viewName}
-        formType="form"
         display={isSubForm ? 'inline' : 'block'}
+        formType="form"
+        isLoading={isLoading}
+        mode={mode}
+        resource={resource}
+        viewName={viewName}
       />
     ) : (
       <p>{formsText('noData')}</p>
@@ -146,9 +146,9 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   const title = `${
     resource === undefined
       ? ''
-      : resource.isNew()
+      : (resource.isNew()
       ? commonText('newResourceTitle', resource.specifyModel.label)
-      : resource.specifyModel.label
+      : resource.specifyModel.label)
   }${formatted.length > 0 ? `: ${formatted}` : ''}`;
 
   return children({
@@ -159,7 +159,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       ) : (
         <>
           {typeof resource === 'object' && (
-            <TableIcon name={resource.specifyModel.name} label />
+            <TableIcon label name={resource.specifyModel.name} />
           )}
           {formHeaderFormat === 'full' && title}
         </>
@@ -176,9 +176,9 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       ) : (
         <FormContext.Provider value={formMeta}>
           <Form
-            id={id('form')}
-            forwardRef={(newForm): void => setForm(newForm ?? form)}
             className={className}
+            forwardRef={(newForm): void => setForm(newForm ?? form)}
+            id={id('form')}
           >
             {specifyForm}
             {children}
@@ -193,8 +193,8 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
 const resourceDeletedDialog = (
   <Dialog
-    header={commonText('resourceDeletedDialogHeader')}
     buttons={commonText('close')}
+    header={commonText('resourceDeletedDialogHeader')}
     onClose={(): void => goTo('/')}
   >
     {commonText('resourceDeletedDialogText')}
@@ -208,11 +208,11 @@ export const augmentMode = (
 ): FormMode =>
   tableName === undefined
     ? 'view'
-    : initialMode === 'edit'
+    : (initialMode === 'edit'
     ? hasTablePermission(tableName, isNew ? 'create' : 'update')
       ? 'edit'
       : 'view'
-    : initialMode;
+    : initialMode);
 
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,
@@ -247,8 +247,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly canAddAnother: boolean;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
-  readonly dialog: false | 'modal' | 'nonModal';
-  readonly onSaving?: () => void | undefined | false;
+  readonly dialog: 'modal' | 'nonModal' | false;
+  readonly onSaving?: () => false | undefined | void;
   readonly onSaved:
     | ((payload: {
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
@@ -297,10 +297,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
   ) : (
     <BaseResourceView
       isLoading={isLoading}
-      resource={resource}
-      mode={mode}
-      viewName={viewName}
       isSubForm={isSubForm}
+      mode={mode}
+      resource={resource}
+      viewName={viewName}
     >
       {({
         formElement,
@@ -317,12 +317,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
           typeof resource === 'object' &&
           formElement !== null ? (
             <SaveButton
-              resource={resource}
-              form={formElement}
               canAddAnother={
                 canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
               }
-              onSaving={handleSaving}
+              form={formElement}
+              resource={resource}
               onSaved={(payload): void => {
                 const printOnSave = getCache('forms', 'printOnSave') ?? {};
                 if (
@@ -335,14 +334,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
                   });
                 else handleSaved(payload);
               }}
+              onSaving={handleSaving}
             />
           ) : undefined;
         const report =
           state.type === 'Report' && typeof resource === 'object' ? (
             <ReportsView
+              autoSelectSingle
               model={resource.specifyModel}
               resourceId={resource.id}
-              autoSelectSingle={true}
               onClose={(): void => {
                 state.onDone();
                 setState({ type: 'Main' });
@@ -357,8 +357,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
           hasTablePermission(resource.specifyModel.name, 'delete') ? (
             <ErrorBoundary dismissable>
               <DeleteButton
-                resource={resource}
                 deletionMessage={deletionMessage}
+                resource={resource}
                 onDeleted={handleDelete}
               />
             </ErrorBoundary>
@@ -427,23 +427,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
             !isSubForm;
           return (
             <Dialog
-              header={titleOverride ?? title}
-              icon="none"
-              modal={dialog === 'modal' || makeFormDialogsModal}
-              headerButtons={
-                <>
-                  {headerButtons?.(specifyNetworkBadge) ?? (
-                    <>
-                      <DataEntry.Visit resource={resource} />
-                      <span className="-ml-4 flex-1" />
-                      {headerContent}
-                    </>
-                  )}
-                  {!isSubForm && (
-                    <div className="-mt-4 w-full border-b-2 border-brand-300" />
-                  )}
-                </>
-              }
               buttons={
                 isSubForm ? undefined : (
                   <>
@@ -468,6 +451,23 @@ export function ResourceView<SCHEMA extends AnySchema>({
                 }`,
                 content: `${className.formStyles} ${dialogClassNames.flexContent}`,
               }}
+              header={titleOverride ?? title}
+              headerButtons={
+                <>
+                  {headerButtons?.(specifyNetworkBadge) ?? (
+                    <>
+                      <DataEntry.Visit resource={resource} />
+                      <span className="-ml-4 flex-1" />
+                      {headerContent}
+                    </>
+                  )}
+                  {!isSubForm && (
+                    <div className="-mt-4 w-full border-b-2 border-brand-300" />
+                  )}
+                </>
+              }
+              icon="none"
+              modal={dialog === 'modal' || makeFormDialogsModal}
               onClose={(): void => {
                 if (isModified) setShowUnloadProtect(true);
                 else handleClose();
@@ -476,8 +476,6 @@ export function ResourceView<SCHEMA extends AnySchema>({
               {form(children, 'overflow-y-hidden')}
               {showUnloadProtect && (
                 <Dialog
-                  header={commonText('leavePageDialogHeader')}
-                  onClose={(): void => setShowUnloadProtect(false)}
                   buttons={
                     <>
                       <Button.DialogClose>
@@ -488,6 +486,8 @@ export function ResourceView<SCHEMA extends AnySchema>({
                       </Button.Red>
                     </>
                   }
+                  header={commonText('leavePageDialogHeader')}
+                  onClose={(): void => setShowUnloadProtect(false)}
                 >
                   {formsText('unsavedFormUnloadProtect')}
                 </Dialog>
@@ -504,8 +504,8 @@ export function ShowResource({
   resource: initialResource,
   recordSet: initialRecordSet,
 }: {
-  resource: SpecifyResource<AnySchema>;
-  recordSet: SpecifyResource<RecordSet> | undefined;
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly recordSet: SpecifyResource<RecordSet> | undefined;
 }): JSX.Element | null {
   const [{ resource, recordSet }, setRecord] = React.useState({
     resource: initialResource,
@@ -554,26 +554,27 @@ export function ShowResource({
   return typeof recordSet === 'object' ? (
     recordSetItemIndex === undefined ? null : (
       <RecordSetView
+        canAddAnother
+        defaultResourceIndex={recordSetItemIndex}
         dialog={false}
         mode="edit"
         model={resource.specifyModel}
-        onClose={(): void => goTo('/')}
-        onAdd={f.void}
-        onSlide={f.void}
         recordSet={recordSet}
-        defaultResourceIndex={recordSetItemIndex}
-        canAddAnother={true}
+        onAdd={f.void}
+        onClose={(): void => goTo('/')}
+        onSlide={f.void}
       />
     )
   ) : (
     <ResourceView
-      resource={resource}
-      onClose={f.never}
-      canAddAnother={true}
+      canAddAnother
       dialog={false}
+      isDependent={false}
       isSubForm={false}
       mode="edit"
+      resource={resource}
       viewName={resource.specifyModel.view}
+      onClose={f.never}
       onDeleted={f.void}
       onSaved={({ wasNew, newResource }): void => {
         if (typeof newResource === 'object')
@@ -592,7 +593,6 @@ export function ShowResource({
             );
         }
       }}
-      isDependent={false}
     />
   );
 }

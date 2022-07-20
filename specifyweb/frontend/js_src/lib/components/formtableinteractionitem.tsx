@@ -35,20 +35,20 @@ export function FormTableInteraction(
         <InteractionDialog
           action={{
             model: props.collection.related.specifyModel as SpecifyModel<
-              Loan | Gift | Disposal
+              Disposal | Gift | Loan
             >,
           }}
-          model={schema.models.CollectionObject}
           itemCollection={
             props.collection as Collection<
-              LoanPreparation | GiftPreparation | DisposalPreparation
+              DisposalPreparation | GiftPreparation | LoanPreparation
             >
           }
+          model={schema.models.CollectionObject}
           recordSetsPromise={recordSetsPromise}
-          onClose={(): void => setRecordSetsPromise(undefined)}
           searchField={schema.models.CollectionObject.getLiteralField(
             'catalogNumber'
           )}
+          onClose={(): void => setRecordSetsPromise(undefined)}
         />
       ) : undefined}
       <FormTableCollection

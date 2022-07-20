@@ -14,10 +14,10 @@ import type { RA } from '../types';
 declare namespace Intl {
   class ListFormat {
     public constructor(
-      locales?: string | RA<string>,
+      locales?: RA<string> | string,
       options?: {
         readonly type?: 'conjunction' | 'disjunction';
-        readonly style?: 'long' | 'short' | 'narrow';
+        readonly style?: 'long' | 'narrow' | 'short';
       }
     );
 
@@ -26,7 +26,7 @@ declare namespace Intl {
 
   class DisplayNames {
     public constructor(
-      locales?: string | RA<string>,
+      locales?: RA<string> | string,
       options?: {
         readonly type:
           | 'calendar'
@@ -42,29 +42,29 @@ declare namespace Intl {
   }
 
   class NumberFormat {
-    public constructor(locales?: string | RA<string>);
+    public constructor(locales?: RA<string> | string);
 
     public format(value: number): string;
   }
 
   class RelativeTimeFormat {
     public constructor(
-      locales?: string | RA<string>,
+      locales?: RA<string> | string,
       options?: {
-        readonly numeric: 'auto' | 'always';
-        readonly style: 'long' | 'short' | 'narrow';
+        readonly numeric: 'always' | 'auto';
+        readonly style: 'long' | 'narrow' | 'short';
       }
     );
 
     public format(
       count: number,
-      type: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
+      type: 'day' | 'hour' | 'minute' | 'month' | 'second' | 'week' | 'year'
     ): string;
   }
 
   class DateTimeFormat {
     public constructor(
-      locales?: string | RA<string>,
+      locales?: RA<string> | string,
       options?: {
         readonly dateStyle?: 'full' | 'long' | 'medium' | 'short';
         readonly timeStyle?: 'full' | 'long' | 'medium' | 'short';
@@ -77,10 +77,10 @@ declare namespace Intl {
 
   class Collator {
     public constructor(
-      locales?: string | RA<string>,
+      locales?: RA<string> | string,
       options?: {
-        readonly sensitivity?: 'base' | 'accent' | 'case' | 'variant';
-        readonly caseFirst?: 'upper' | 'lower' | false;
+        readonly sensitivity?: 'accent' | 'base' | 'case' | 'variant';
+        readonly caseFirst?: 'lower' | 'upper' | false;
         readonly ignorePunctuation?: boolean;
       }
     );

@@ -118,23 +118,19 @@ export function SecurityUser({
   );
   const collectionId =
     rawCollectionId === -1
-      ? Array.isArray(collections)
+      ? (Array.isArray(collections)
         ? collections[0].id
-        : -1
+        : -1)
       : rawCollectionId;
 
   const mode = augmentMode('edit', userResource.isNew(), 'SpecifyUser');
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<'SetPasswordDialog'>
-    | State<
+    State<
         'SettingAgents',
         {
           readonly response: SetAgentsResponse;
         }
-      >
-    | State<'SettingPassword'>
-    | State<'NoAdminsError'>
+      > | State<'Main'> | State<'NoAdminsError'> | State<'SetPasswordDialog'> | State<'SettingPassword'>
   >({ type: 'Main' });
 
   const allActions = getAllActions(anyResource);
@@ -158,9 +154,9 @@ export function SecurityUser({
     <Container.Base className="flex-1">
       <BaseResourceView
         isLoading={false}
-        resource={userResource}
-        mode={mode}
         isSubForm={false}
+        mode={mode}
+        resource={userResource}
       >
         {({ title, formatted, formElement, form }): JSX.Element => (
           <>
@@ -179,14 +175,14 @@ export function SecurityUser({
                       <ErrorBoundary dismissable>
                         {canSetPassword && (
                           <PasswordPlugin
-                            onSet={setPassword}
                             isNew={userResource.isNew()}
+                            onSet={setPassword}
                           />
                         )}
                         {canCreateInviteLink && (
                           <UserInviteLinkPlugin
-                            user={user}
                             identityProviders={identityProviders}
+                            user={user}
                           />
                         )}
                       </ErrorBoundary>
@@ -201,10 +197,10 @@ export function SecurityUser({
                     <div className="flex flex-col gap-2">
                       <ErrorBoundary dismissable>
                         <SetSuperAdmin
-                          institutionPolicies={institutionPolicies}
-                          isSuperAdmin={isSuperAdmin}
-                          isCurrentUser={userResource.id === userInformation.id}
                           allActions={allActions}
+                          institutionPolicies={institutionPolicies}
+                          isCurrentUser={userResource.id === userInformation.id}
+                          isSuperAdmin={isSuperAdmin}
                           onChange={setInstitutionPolicies}
                         />
                         {
@@ -218,16 +214,16 @@ export function SecurityUser({
                               'read'
                             ) && (
                               <SecurityPoliciesWrapper
-                                policies={institutionPolicies}
+                                collapsable
                                 header={adminText('institutionPolicies')}
-                                collapsable={true}
+                                policies={institutionPolicies}
                               >
                                 <SecurityPolicies
-                                  policies={institutionPolicies}
                                   isReadOnly={!userInformation.isadmin}
+                                  limitHeight
+                                  policies={institutionPolicies}
                                   scope="institution"
                                   onChange={setInstitutionPolicies}
-                                  limitHeight
                                 />
                               </SecurityPoliciesWrapper>
                             )
@@ -263,13 +259,13 @@ export function SecurityUser({
                   {(): JSX.Element => (
                     <>
                       <CollectionAccess
+                        collectionId={collectionId}
+                        isSuperAdmin={isSuperAdmin}
+                        mode={mode}
+                        userAgents={userAgents}
                         userPolicies={userPolicies}
                         onChange={setUserPolicies}
                         onChangedAgent={handleChangedAgent}
-                        collectionId={collectionId}
-                        userAgents={userAgents}
-                        mode={mode}
-                        isSuperAdmin={isSuperAdmin}
                       />
                       {hasPermission(
                         '/permissions/user/roles',
@@ -277,8 +273,8 @@ export function SecurityUser({
                         collectionId
                       ) && (
                         <UserRoles
-                          collectionRoles={collectionRoles}
                           collectionId={collectionId}
+                          collectionRoles={collectionRoles}
                           userRoles={userRoles}
                           onChange={setUserRoles}
                           onOpenRole={handleOpenRole}
@@ -296,12 +292,11 @@ export function SecurityUser({
                           collectionId
                         ) ? (
                           <SecurityPoliciesWrapper
-                            policies={userPolicies?.[collectionId]}
-                            header={adminText('customUserPolices')}
                             collapsable={false}
+                            header={adminText('customUserPolices')}
+                            policies={userPolicies?.[collectionId]}
                           >
                             <SecurityPolicies
-                              policies={userPolicies?.[collectionId]}
                               isReadOnly={
                                 !hasPermission(
                                   '/permissions/policies/user',
@@ -309,6 +304,8 @@ export function SecurityUser({
                                   collectionId
                                 )
                               }
+                              limitHeight
+                              policies={userPolicies?.[collectionId]}
                               scope="collection"
                               onChange={(policies): void =>
                                 typeof userPolicies === 'object'
@@ -321,7 +318,6 @@ export function SecurityUser({
                                     )
                                   : undefined
                               }
-                              limitHeight
                             />
                           </SecurityPoliciesWrapper>
                         ) : undefined
@@ -329,10 +325,10 @@ export function SecurityUser({
                       {typeof userResource.id === 'number' && (
                         <ErrorBoundary dismissable>
                           <PreviewPermissions
+                            changesMade={previewAffected}
+                            collectionId={collectionId}
                             userId={userResource.id}
                             userVersion={version}
-                            collectionId={collectionId}
-                            changesMade={previewAffected}
                             onOpenRole={(roleId): void =>
                               handleOpenRole(collectionId, roleId)
                             }
@@ -343,7 +339,7 @@ export function SecurityUser({
                   )}
                 </SetPermissionContext>
                 <ErrorBoundary dismissable>
-                  <LegacyPermissions userResource={userResource} mode={mode} />
+                  <LegacyPermissions mode={mode} userResource={userResource} />
                 </ErrorBoundary>
               </>,
               '-mx-4 p-4 pt-0 flex-1 gap-8'
@@ -387,19 +383,10 @@ export function SecurityUser({
                       hasPermission('/permissions/user/roles', 'update', id)
                   )) ? (
                 <SaveButton
-                  resource={userResource}
-                  form={formElement}
                   canAddAnother={Array.isArray(userAgents)}
-                  onSaving={(): undefined | false => {
-                    if (userResource.isNew() && password === undefined) {
-                      setState({
-                        type: 'SetPasswordDialog',
-                      });
-                      return false;
-                    }
-                    return undefined;
-                  }}
                   disabled={!changesMade || userAgents === undefined}
+                  form={formElement}
+                  resource={userResource}
                   saveRequired={isChanged}
                   onSaved={({ newResource }): void =>
                     loading(
@@ -433,7 +420,7 @@ export function SecurityUser({
                                 type: 'SettingAgents',
                                 response: JSON.parse(data),
                               })
-                            : Array.isArray(institutionPolicies) &&
+                            : (Array.isArray(institutionPolicies) &&
                               changedInstitutionPolicies
                             ? ajax(
                                 `/permissions/user_policies/institution/${userResource.id}/`,
@@ -472,7 +459,7 @@ export function SecurityUser({
                                 } else return true;
                                 return undefined;
                               })
-                            : true
+                            : true)
                         )
                         .then((canContinue) =>
                           canContinue === true
@@ -572,6 +559,15 @@ export function SecurityUser({
                         )
                     )
                   }
+                  onSaving={(): false | undefined => {
+                    if (userResource.isNew() && password === undefined) {
+                      setState({
+                        type: 'SetPasswordDialog',
+                      });
+                      return false;
+                    }
+                    return undefined;
+                  }}
                 />
               ) : undefined}
             </DataEntry.Footer>
@@ -581,11 +577,11 @@ export function SecurityUser({
       {state.type === 'SetPasswordDialog' && (
         <SetPasswordPrompt
           onClose={(): void => setState({ type: 'Main' })}
-          onSet={(): void => setState({ type: 'SettingPassword' })}
           onIgnore={(): void => {
             setPassword('');
             setState({ type: 'Main' });
           }}
+          onSet={(): void => setState({ type: 'SettingPassword' })}
         />
       )}
       {state.type === 'SettingPassword' && (
@@ -595,23 +591,23 @@ export function SecurityUser({
         />
       )}
       {state.type === 'SettingAgents' && (
-        <ProtectedTable tableName="Division" action="read">
-          <ProtectedAction resource="/admin/user/agents" action="update">
+        <ProtectedTable action="read" tableName="Division">
+          <ProtectedAction action="update" resource="/admin/user/agents">
             <UserAgentsDialog
+              mode={mode}
+              response={state.response}
               userAgents={userAgents}
               userId={userResource.id}
               onClose={(): void => setState({ type: 'Main' })}
-              mode={mode}
-              response={state.response}
             />
           </ProtectedAction>
         </ProtectedTable>
       )}
       {state.type === 'NoAdminsError' && (
         <Dialog
+          buttons={commonText('close')}
           header={adminText('noAdminsErrorDialogHeader')}
           onClose={(): void => setState({ type: 'Main' })}
-          buttons={commonText('close')}
         >
           {adminText('noAdminsErrorDialogText')}
         </Dialog>

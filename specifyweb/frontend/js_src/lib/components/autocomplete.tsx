@@ -9,16 +9,16 @@ import { ensure } from '../types';
 import type { TagProps } from './basic';
 import { className, DialogContext } from './basic';
 import { Portal } from './common';
+import { softFail } from './errorboundary';
 import { useBooleanState, useId, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
-import { softFail } from './errorboundary';
 
 const debounceRate = 300;
 
 export type AutoCompleteItem<T> = {
-  readonly label: string | JSX.Element;
+  readonly label: JSX.Element | string;
   readonly searchValue?: string;
   readonly subLabel?: string;
   readonly icon?: JSX.Element;
@@ -32,9 +32,9 @@ export type AutoCompleteItem<T> = {
 const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
-    : node.scrollHeight > node.clientHeight
+    : (node.scrollHeight > node.clientHeight
     ? node
-    : getScrollParent(node.parentElement ?? undefined);
+    : getScrollParent(node.parentElement ?? undefined));
 
 const itemProps = ensure<Partial<TagProps<'li'>>>()({
   className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
@@ -96,7 +96,7 @@ export function Autocomplete<T>({
     readonly 'aria-autocomplete': 'list';
     readonly 'aria-controls': string;
     readonly 'aria-label': string | undefined;
-    readonly className: 'autocomplete' | '';
+    readonly className: '' | 'autocomplete';
     readonly onClick: () => void;
     readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     readonly onValueChange: (value: string) => void;
@@ -117,7 +117,7 @@ export function Autocomplete<T>({
     (newResults: typeof results, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
-        : shouldFilterItems
+        : (shouldFilterItems
         ? newResults.filter(
             ({ label, searchValue }) =>
               (typeof label === 'string' ? label : searchValue ?? '')
@@ -129,7 +129,7 @@ export function Autocomplete<T>({
                   pendingValue
                 ) === 0)
           )
-        : newResults,
+        : newResults),
     [shouldFilterItems]
   );
 
@@ -416,16 +416,23 @@ export function Autocomplete<T>({
        * of parents with overflow:hidden */}
       <Portal>
         <ul
+          aria-label={ariaLabel}
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
             ${showList ? '' : 'sr-only'}
           `}
-          role="listbox"
-          aria-label={ariaLabel}
           id={id}
           ref={dataListRef}
+          role="listbox"
+          onBlur={({ relatedTarget, target, currentTarget }): void =>
+            relatedTarget === null ||
+            (input?.contains(relatedTarget as Node) === false &&
+              target.closest('ul') !== currentTarget)
+              ? handleBlur()
+              : undefined
+          }
           onKeyDown={(event): void => {
             // Meta keys
             if (
@@ -434,20 +441,13 @@ export function Autocomplete<T>({
               handleKeyDown(event);
             } else input?.focus();
           }}
-          onBlur={({ relatedTarget, target, currentTarget }): void =>
-            relatedTarget === null ||
-            (input?.contains(relatedTarget as Node) === false &&
-              target.closest('ul') !== currentTarget)
-              ? handleBlur()
-              : undefined
-          }
         >
           {showList && (
             <>
               {isLoading && (
                 <li
+                  aria-disabled
                   aria-selected={false}
-                  aria-disabled={true}
                   {...itemProps}
                   className={`${itemProps.className} cursor-auto`}
                 >
@@ -510,10 +510,10 @@ export function Autocomplete<T>({
                   );
                 return (
                   <li
-                    key={index}
                     aria-posinset={index + 1}
-                    aria-setsize={length + Number(showAdd)}
                     aria-selected={index === currentIndex}
+                    aria-setsize={length + Number(showAdd)}
+                    key={index}
                     onClick={handleChanged.bind(undefined, item)}
                     {...itemProps}
                   >
@@ -530,8 +530,8 @@ export function Autocomplete<T>({
               })}
               {showAdd && (
                 <li
-                  aria-selected={itemSource.length === currentIndex}
                   aria-posinset={itemSource.length}
+                  aria-selected={itemSource.length === currentIndex}
                   aria-setsize={itemSource.length + 1}
                   onClick={handleAddNew}
                   {...itemProps}

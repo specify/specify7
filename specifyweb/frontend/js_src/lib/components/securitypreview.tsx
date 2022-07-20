@@ -49,7 +49,6 @@ function ReasonExplanation({
             adminText('resource'),
           ].map((label, index, { length }) => (
             <div
-              role="columnheader"
               className={`
                 bg-gray-350 p-2 dark:bg-neutral-600
                 ${
@@ -61,6 +60,7 @@ function ReasonExplanation({
                 }
               `}
               key={index}
+              role="columnheader"
             >
               {label}
             </div>
@@ -69,8 +69,8 @@ function ReasonExplanation({
         <div role="rowgroup">
           {matching_role_policies.map((role, index) => (
             <Button.LikeLink
-              role="row"
               key={index}
+              role="row"
               onClick={(): void => handleOpenRole(role.roleid)}
             >
               {[
@@ -78,7 +78,7 @@ function ReasonExplanation({
                 actionToLabel(role.action),
                 resourceNameToLabel(role.resource),
               ].map((value, index) => (
-                <div role="cell" className="p-2" key={index}>
+                <div className="p-2" key={index} role="cell">
                   {value}
                 </div>
               ))}
@@ -86,7 +86,7 @@ function ReasonExplanation({
           ))}
           {matching_role_policies.length === 0 && (
             <div role="row">
-              <div role="cell" className="col-span-full p-2">
+              <div className="col-span-full p-2" role="cell">
                 {adminText('none')}
               </div>
             </div>
@@ -105,7 +105,6 @@ function ReasonExplanation({
             adminText('resource'),
           ].map((label, index, { length }) => (
             <div
-              role="columnheader"
               className={`
                 bg-gray-350 p-2 dark:bg-neutral-600
                 ${
@@ -117,6 +116,7 @@ function ReasonExplanation({
                 }
               `}
               key={index}
+              role="columnheader"
             >
               {label}
             </div>
@@ -124,7 +124,7 @@ function ReasonExplanation({
         </div>
         <div role="rowgroup">
           {matching_user_policies.map((policy, index) => (
-            <div role="row" key={index}>
+            <div key={index} role="row">
               {[
                 policy.userid === null
                   ? adminText('allUsers')
@@ -135,7 +135,7 @@ function ReasonExplanation({
                 actionToLabel(policy.action),
                 resourceNameToLabel(policy.resource),
               ].map((value, index) => (
-                <div role="cell" key={index} className="p-2">
+                <div className="p-2" key={index} role="cell">
                   {value}
                 </div>
               ))}
@@ -143,7 +143,7 @@ function ReasonExplanation({
           ))}
           {matching_user_policies.length === 0 && (
             <div role="row">
-              <div role="cell" className="col-span-full p-2">
+              <div className="col-span-full p-2" role="cell">
                 {adminText('none')}
               </div>
             </div>
@@ -164,42 +164,42 @@ function PreviewRow({
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
   const [view, setView] = React.useState<
-    undefined | typeof tableActions[number]
+    typeof tableActions[number] | undefined
   >(undefined);
   const id = useId('preview-row');
   return (
     <>
-      <div role="row" aria-controls={id('reason')}>
+      <div aria-controls={id('reason')} role="row">
         {tableActions.map((action) => (
           <div
-            role="cell"
             className={`
               cursor-pointer justify-center rounded p-2
               ${view === action ? 'bg-brand-100 dark:bg-brand-500' : ''}
             `}
             key={action}
+            role="cell"
             onClick={(): void => setView(action === view ? undefined : action)}
           >
             <Input.Checkbox
               aria-expanded={view === action}
-              disabled
               checked={row[action].allowed}
               className="pointer-events-none"
+              disabled
             />
           </div>
         ))}
-        <div role="cell" className="p-2">
-          <TableIcon name={tableName} label={false} />
+        <div className="p-2" role="cell">
+          <TableIcon label={false} name={tableName} />
           {schema.models[tableName].label}
         </div>
       </div>
       <div
-        role="row"
         className={typeof view === 'string' ? '' : '!hidden'}
         id={id('reason')}
+        role="row"
       >
         {typeof view === 'string' && (
-          <div role="cell" className="col-span-full py-2">
+          <div className="col-span-full py-2" role="cell">
             <ReasonExplanation cell={row[view]} onOpenRole={handleOpenRole} />
           </div>
         )}
@@ -219,7 +219,7 @@ function PreviewTables({
   readonly isSystem: boolean;
   readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element {
-  const table = React.useMemo<RA<Readonly<[keyof Tables, IR<Cell>]>>>(
+  const table = React.useMemo<RA<readonly [keyof Tables, IR<Cell>]>>(
     () =>
       group(
         filterArray(
@@ -265,8 +265,6 @@ function PreviewTables({
           adminText('table'),
         ].map((header, index, { length }) => (
           <div
-            key={header}
-            role="columnheader"
             className={`
               sticky top-0 bg-[color:var(--form-background)] p-2 ${
                 index === 0
@@ -276,6 +274,8 @@ function PreviewTables({
                   : ''
               }
             `}
+            key={header}
+            role="columnheader"
           >
             {header}
           </div>
@@ -330,7 +330,7 @@ function TreeView({
                     <details>
                       <summary>
                         <Label.ForCheckbox className="pointer-events-none">
-                          <Input.Checkbox disabled checked={rest.allowed} />
+                          <Input.Checkbox checked={rest.allowed} disabled />
                           {actionToLabel(action)}
                         </Label.ForCheckbox>
                       </summary>
@@ -442,9 +442,9 @@ export function PreviewPermissions({
           <div className="flex flex-1 flex-wrap gap-4">
             <div>
               <PreviewTables
+                isSystem={false}
                 query={query}
                 onOpenRole={handleOpenRole}
-                isSystem={false}
               />
               <details open={isSystemCollapsed}>
                 <Summary
@@ -454,9 +454,9 @@ export function PreviewPermissions({
                   {adminText('advancedTables')}
                 </Summary>
                 <PreviewTables
+                  isSystem
                   query={query}
                   onOpenRole={handleOpenRole}
-                  isSystem={true}
                 />
               </details>
             </div>

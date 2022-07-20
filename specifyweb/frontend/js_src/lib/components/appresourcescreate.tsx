@@ -208,13 +208,13 @@ export function CreateAppResource({
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   return type === undefined ? (
     <Dialog
+      buttons={commonText('cancel')}
       header={adminText('selectResourceType')}
       onClose={handleClose}
-      buttons={commonText('cancel')}
     >
       <Ul className="flex flex-col">
         {Object.entries(appResourceTypes).map(([key, type]) => (
-          <li key={key} className="contents">
+          <li className="contents" key={key}>
             <Button.LikeLink
               onClick={(): void => {
                 setType(type);
@@ -228,11 +228,11 @@ export function CreateAppResource({
         ))}
       </Ul>
     </Dialog>
-  ) : mimeType === undefined ? (
+  ) : (mimeType === undefined ? (
     <Dialog
+      buttons={commonText('cancel')}
       header={adminText('selectResourceTypeDialogHeader')}
       onClose={handleClose}
-      buttons={commonText('cancel')}
     >
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
@@ -272,13 +272,13 @@ export function CreateAppResource({
   ) : (
     <EditAppResource
       directory={directory}
+      mimeType={mimeType}
       name={name}
       type={type}
-      mimeType={mimeType}
-      onSelected={handleSelected}
       onClose={handleClose}
+      onSelected={handleSelected}
     />
-  );
+  ));
 }
 
 function EditAppResource({
@@ -314,19 +314,19 @@ function EditAppResource({
   );
   return (
     <ResourceView
-      resource={resource}
-      mode="edit"
       canAddAnother={false}
       dialog="modal"
+      isDependent={false}
+      isSubForm={false}
+      mode="edit"
+      resource={resource}
+      onClose={handleClose}
+      onDeleted={undefined}
+      onSaved={f.never}
       onSaving={(): false => {
         handleSelected(serializeResource(resource));
         return false;
       }}
-      onSaved={f.never}
-      onDeleted={undefined}
-      onClose={handleClose}
-      isSubForm={false}
-      isDependent={false}
     />
   );
 }

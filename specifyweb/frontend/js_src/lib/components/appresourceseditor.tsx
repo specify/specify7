@@ -74,9 +74,9 @@ export function AppResourceEditor({
     <Container.Base className="flex-1 overflow-hidden">
       <BaseResourceView
         isLoading={false}
-        resource={appResource}
-        mode="edit"
         isSubForm={false}
+        mode="edit"
+        resource={appResource}
       >
         {({ title, formatted, form }): JSX.Element => {
           const headerButtons = (
@@ -99,8 +99,8 @@ export function AppResourceEditor({
                 }}
               />
               <AppResourceDownload
-                resource={resource}
                 data={resourceData?.data ?? ''}
+                resource={resource}
               />
             </>
           );
@@ -113,15 +113,15 @@ export function AppResourceEditor({
                 </h3>
                 {headerButtons}
               </DataEntry.Header>
-              <Form forwardRef={formRef} className="flex-1 overflow-hidden">
+              <Form className="flex-1 overflow-hidden" forwardRef={formRef}>
                 <AppResourcesTabs
-                  label={formatted}
-                  isReadOnly={isReadOnly}
-                  showValidationRef={showValidationRef}
-                  headerButtons={headerButtons}
                   appResource={appResource}
-                  resource={resource}
                   data={resourceData.data}
+                  headerButtons={headerButtons}
+                  isReadOnly={isReadOnly}
+                  label={formatted}
+                  resource={resource}
+                  showValidationRef={showValidationRef}
                   onChange={(data): void =>
                     setResourceData({ ...resourceData, data })
                   }
@@ -138,6 +138,7 @@ export function AppResourceEditor({
                 <span className="-ml-2 flex-1" />
                 {hasToolPermission('resources', 'create') && (
                   <Button.Orange
+                    disabled={isChanged || isModified}
                     onClick={(): void =>
                       loading(
                         appResource
@@ -151,7 +152,6 @@ export function AppResourceEditor({
                           )
                       )
                     }
-                    disabled={isChanged || isModified}
                   >
                     {formsText('clone')}
                   </Button.Orange>
@@ -162,9 +162,9 @@ export function AppResourceEditor({
                   appResource.isNew() ? 'create' : 'update'
                 ) ? (
                   <SaveButton
-                    resource={appResource}
-                    form={formRef.current}
                     canAddAnother={false}
+                    form={formRef.current}
+                    resource={appResource}
                     saveRequired={isChanged}
                     onIgnored={(): void => {
                       showValidationRef.current?.();

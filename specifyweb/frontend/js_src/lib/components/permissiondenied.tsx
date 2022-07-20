@@ -83,7 +83,7 @@ export function ProtectedTool({
   return hasToolPermission(tool, action) ? (
     <>{children}</>
   ) : (
-    <ToolPermissionDenied tool={tool} action={action} />
+    <ToolPermissionDenied action={action} tool={tool} />
   );
 }
 
@@ -132,7 +132,7 @@ export function ProtectedAction<
   return hasPermission(resource, action) ? (
     <>{children}</>
   ) : (
-    <PermissionDenied resource={resource} action={action} />
+    <PermissionDenied action={action} resource={resource} />
   );
 }
 
@@ -175,7 +175,7 @@ export function ProtectedTable({
   return hasTablePermission(tableName, action) ? (
     <>{children}</>
   ) : (
-    <TablePermissionDenied tableName={tableName} action={action} />
+    <TablePermissionDenied action={action} tableName={tableName} />
   );
 }
 
@@ -192,6 +192,7 @@ export function ProtectedTree({
     children
   ) : (
     <TablePermissionDenied
+      action={action}
       tableName={
         hasTablePermission(treeName, action)
           ? hasTablePermission(`${treeName}TreeDef`, action)
@@ -199,7 +200,6 @@ export function ProtectedTree({
             : `${treeName}TreeDef`
           : treeName
       }
-      action={action}
     />
   );
 }
@@ -213,10 +213,6 @@ export function PermissionError({
 }): JSX.Element {
   return typeof error === 'object' ? (
     <Dialog
-      header={commonText('permissionDeniedError')}
-      onClose={
-        handleClose || ((): void => globalThis.location.assign('/specify/'))
-      }
       buttons={
         <>
           <Button.Red
@@ -231,19 +227,23 @@ export function PermissionError({
           )}
         </>
       }
+      header={commonText('permissionDeniedError')}
+      onClose={
+        handleClose || ((): void => globalThis.location.assign('/specify/'))
+      }
     >
       {error}
     </Dialog>
   ) : (
     <Dialog
+      buttons={commonText('logIn')}
+      forceToTop
       header={commonText('sessionTimeOutDialogHeader')}
-      forceToTop={true}
       onClose={(): void =>
         globalThis.location.assign(
           formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
-      buttons={commonText('logIn')}
     >
       {commonText('sessionTimeOutDialogText')}
     </Dialog>
@@ -270,7 +270,6 @@ function FormatPermissionError({
               schema.models.SpecifyUser.label,
             ].map((label, index, { length }) => (
               <th
-                scope="column"
                 className={`
                   bg-gray-350 p-2 dark:bg-neutral-600
                   ${
@@ -282,6 +281,7 @@ function FormatPermissionError({
                   }
                 `}
                 key={index}
+                scope="column"
               >
                 {label}
               </th>
@@ -324,7 +324,7 @@ export function formatPermissionsError(
   response: string,
   url: string
 ):
-  | Readonly<[errorObject: JSX.Element | undefined, errorMessage: string]>
+  | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
   if (response.length === 0)
     return [undefined, commonText('sessionTimeOutDialogHeader')];

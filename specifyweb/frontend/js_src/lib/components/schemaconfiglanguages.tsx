@@ -19,14 +19,12 @@ export function ChooseSchemaLanguage({
   const [isAdding, handleAdding, handleNoAdding] = useBooleanState();
   return isAdding ? (
     <AddLanguage
+      onAddLanguage={handleSelected}
       onClose={handleClose}
       onGoBack={handleNoAdding}
-      onAddLanguage={handleSelected}
     />
   ) : (
     <Dialog
-      header={commonText('schemaConfig')}
-      onClose={handleClose}
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
@@ -38,14 +36,16 @@ export function ChooseSchemaLanguage({
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
         </>
       }
+      header={commonText('schemaConfig')}
+      onClose={handleClose}
     >
       {commonText('language')}
       <Ul>
         {Object.entries(languages).map(([code, label]) => (
           <li key={code}>
             <Button.LikeLink
-              role="link"
               className="font-bold"
+              role="link"
               onClick={(): void => handleSelected(code)}
             >
               {label}
@@ -72,14 +72,14 @@ function AddLanguage({
   const [country, setCountry] = React.useState<string>('');
   return (
     <Dialog
-      header={commonText('addLanguageDialogHeader')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.Gray onClick={handleGoBack}>{commonText('back')}</Button.Gray>
           <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
         </>
       }
+      header={commonText('addLanguageDialogHeader')}
+      onClose={handleClose}
     >
       <Form
         className="contents"
@@ -96,10 +96,10 @@ function AddLanguage({
         <Label.Generic>
           {commonText('language')}
           <Input.Text
-            required
-            minLength={2}
             maxLength={2}
+            minLength={2}
             placeholder="en"
+            required
             value={language}
             onValueChange={setLanguage}
           />
@@ -107,8 +107,8 @@ function AddLanguage({
         <Label.Generic>
           {commonText('country')}
           <Input.Text
-            minLength={2}
             maxLength={2}
+            minLength={2}
             placeholder="US"
             value={country}
             onValueChange={setCountry}

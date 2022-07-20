@@ -42,31 +42,31 @@ const cellRenderers: {
   }) {
     return (
       <FormField
-        id={typeof id === 'string' ? formatId(id.toString()) : undefined}
-        resource={resource}
-        mode={mode}
         fieldDefinition={fieldDefinition}
         fieldName={fieldName}
-        isRequired={isRequired}
         formType={formType}
+        id={typeof id === 'string' ? formatId(id.toString()) : undefined}
+        isRequired={isRequired}
+        mode={mode}
+        resource={resource}
       />
     );
   },
   Label({ cellData: { text, labelForCellId, title }, formatId, align }) {
     const style: React.CSSProperties = {
       textAlign:
-        align === 'right' ? 'right' : align === 'center' ? 'center' : undefined,
+        align === 'right' ? 'right' : (align === 'center' ? 'center' : undefined),
     };
     return typeof text === 'string' &&
-      text.length === 0 ? null : typeof labelForCellId === 'string' ? (
-      <label htmlFor={formatId(labelForCellId)} title={title} style={style}>
+      text.length === 0 ? null : (typeof labelForCellId === 'string' ? (
+      <label htmlFor={formatId(labelForCellId)} style={style} title={title}>
         {text}
       </label>
     ) : (
-      <p title={title} style={style}>
+      <p style={style} title={title}>
         {text}
       </p>
-    );
+    ));
   },
   Separator({ cellData: { label, icon, forClass } }) {
     return typeof label === 'string' || typeof forClass === 'string' ? (
@@ -80,13 +80,13 @@ const cellRenderers: {
       >
         {typeof forClass === 'string' ? (
           <>
-            <TableIcon name={forClass} label={false} />
+            <TableIcon label={false} name={forClass} />
             {schema.models[forClass].label}
           </>
         ) : (
           <>
             {typeof icon === 'string' && (
-              <TableIcon name={icon} label={false} />
+              <TableIcon label={false} name={icon} />
             )}
             {label}
           </>
@@ -130,7 +130,7 @@ const cellRenderers: {
     );
 
     const [interactionCollection] = useAsyncState<
-      false | Collection<AnySchema>
+      Collection<AnySchema> | false
     >(
       React.useCallback(
         () =>
@@ -165,26 +165,26 @@ const cellRenderers: {
       else if (interactionCollection === false || actualFormType === 'form')
         return (
           <SubView
-            mode={mode}
-            isButton={isButton}
-            parentFormType={parentFormType}
             formType={actualFormType}
+            icon={icon}
+            isButton={isButton}
+            mode={mode}
+            parentFormType={parentFormType}
             parentResource={resource}
             relationship={relationship}
-            viewName={viewName}
-            icon={icon}
             sortField={sortField}
+            viewName={viewName}
           />
         );
       else
         return (
           <FormTableInteraction
-            mode={mode}
             collection={interactionCollection}
             dialog={false}
-            onDelete={undefined}
-            onClose={f.never}
+            mode={mode}
             sortField={sortField}
+            onClose={f.never}
+            onDelete={undefined}
           />
         );
     } else {
@@ -197,14 +197,14 @@ const cellRenderers: {
   Panel({ mode, formType, resource, cellData: { display, ...cellData } }) {
     const form = (
       <RenderForm
+        display={display}
+        resource={resource}
         viewDefinition={{
           ...cellData,
           mode,
           formType,
           model: resource.specifyModel,
         }}
-        resource={resource}
-        display={display}
       />
     );
     return display === 'inline' ? <div className="mx-auto">{form}</div> : form;
@@ -218,10 +218,10 @@ const cellRenderers: {
   }) {
     return (
       <UiCommand
-        label={label}
         commandDefinition={commandDefinition}
-        resource={resource}
         id={id}
+        label={label}
+        resource={resource}
       />
     );
   },
@@ -260,12 +260,12 @@ export function FormCell({
   return (
     <Render
       align={align}
-      resource={resource}
-      mode={mode}
       cellData={cellData as CellTypes['Field']}
-      id={id}
       formatId={formatId}
       formType={formType}
+      id={id}
+      mode={mode}
+      resource={resource}
     />
   );
 }

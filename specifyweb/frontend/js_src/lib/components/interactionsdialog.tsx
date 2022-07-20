@@ -22,12 +22,12 @@ import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
+import { ErrorBoundary } from './errorboundary';
 import { useAsyncState, useTitle } from './hooks';
 import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { ReportsView } from './reports';
-import { ErrorBoundary } from './errorboundary';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -78,7 +78,7 @@ const fetchEntries = f.store(
                       table:
                         action === 'NEW_GIFT'
                           ? 'Gift'
-                          : action === 'NEW_LOAN'
+                          : (action === 'NEW_LOAN'
                           ? 'Loan'
                           : defined(
                               (await f
@@ -96,7 +96,7 @@ const fetchEntries = f.store(
                                 getModel(
                                   getParsedAttribute(entry, 'table') ?? ''
                                 )?.name
-                            ),
+                            )),
                       label: getParsedAttribute(entry, 'label'),
                       tooltip: getParsedAttribute(entry, 'tooltip'),
                       icon: getParsedAttribute(entry, 'icon'),
@@ -118,25 +118,23 @@ function Interactions({
   readonly entries: RA<InteractionEntry>;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<
+    State<
         'InteractionState',
         {
-          readonly table: 'Loan' | 'Disposal' | 'Gift' | 'CollectionObject';
-          readonly actionModel: SpecifyModel<Loan | Disposal | Gift>;
+          readonly table: 'CollectionObject' | 'Disposal' | 'Gift' | 'Loan';
+          readonly actionModel: SpecifyModel<Disposal | Gift | Loan>;
           readonly action: string;
           readonly recordSetsPromise: Promise<{
             readonly records: RA<SerializedResource<RecordSet>>;
             readonly totalCount: number;
           }>;
         }
-      >
-    | State<'ReportsState'>
+      > | State<'MainState'> | State<'ReportsState'>
   >({ type: 'MainState' });
-  const handleAction = React.useCallback(function (
+  const handleAction = React.useCallback((
     action: typeof supportedActions[number],
     table: keyof Tables
-  ): void {
+  ): void => {
     if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
     else {
       const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
@@ -157,11 +155,11 @@ function Interactions({
         actionModel:
           table.toLowerCase() === 'loan'
             ? schema.models.Loan
-            : table.toLowerCase() === 'gift'
+            : (table.toLowerCase() === 'gift'
             ? schema.models.Gift
             : table.toLowerCase() === 'gift'
             ? schema.models.Disposal
-            : error(`Unknown interaction table: ${table}`),
+            : error(`Unknown interaction table: ${table}`)),
         action,
       });
     }
@@ -181,13 +179,13 @@ function Interactions({
 
   return state.type === 'MainState' ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.chat}</span>}
-      header={commonText('interactions')}
+      buttons={commonText('cancel')}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
+      header={commonText('interactions')}
+      icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
-      buttons={commonText('cancel')}
     >
       <Ul>
         {entries
@@ -206,15 +204,15 @@ function Interactions({
                 }
               >
                 <Link.Default
-                  href={
-                    typeof action === 'string'
-                      ? `/specify/task/interactions/${action}/`
-                      : getResourceViewUrl(table)
-                  }
                   className={
                     typeof action === 'string'
                       ? className.navigationHandled
                       : undefined
+                  }
+                  href={
+                    typeof action === 'string'
+                      ? `/specify/task/interactions/${action}/`
+                      : getResourceViewUrl(table)
                   }
                   onClick={
                     typeof action === 'string'
@@ -226,47 +224,47 @@ function Interactions({
                   }
                 >
                   {f.maybe(icon ?? table, (icon) => (
-                    <TableIcon name={icon} label={false} />
+                    <TableIcon label={false} name={icon} />
                   ))}
                   {typeof label === 'string'
                     ? stringLocalization[
                         label as keyof typeof stringLocalization
                       ] ?? label
-                    : typeof table === 'string'
+                    : (typeof table === 'string'
                     ? getModel(table)?.label
-                    : action}
+                    : action)}
                 </Link.Default>
               </li>
             ) : undefined
           )}
       </Ul>
     </Dialog>
-  ) : state.type === 'InteractionState' ? (
+  ) : (state.type === 'InteractionState' ? (
     <InteractionDialog
-      recordSetsPromise={state.recordSetsPromise}
+      action={{ model: state.actionModel, name: state.action }}
       model={schema.models[state.table]}
+      recordSetsPromise={state.recordSetsPromise}
       searchField={defined(
         defined(getModel(state.table)).getLiteralField(
           state.table === 'Loan'
             ? 'loanNumber'
-            : state.table === 'Disposal'
+            : (state.table === 'Disposal'
             ? 'disposalNumber'
-            : 'catalogNumber'
+            : 'catalogNumber')
         )
       )}
       onClose={handleClose}
-      action={{ model: state.actionModel, name: state.action }}
     />
   ) : state.type === 'ReportsState' ? (
     <ReportsView
+      autoSelectSingle
       model={schema.models.Loan}
-      autoSelectSingle={true}
-      onClose={handleClose}
       resourceId={undefined}
+      onClose={handleClose}
     />
   ) : (
     error('Invalid state')
-  );
+  ));
 }
 
 export function InteractionsDialog({
@@ -283,9 +281,9 @@ export function InteractionsDialog({
   return typeof entries === 'object' ? (
     <ErrorBoundary dismissable>
       <Interactions
-        onClose={handleClose}
-        urlParameter={urlParameter}
         entries={entries}
+        urlParameter={urlParameter}
+        onClose={handleClose}
       />
     </ErrorBoundary>
   ) : null;

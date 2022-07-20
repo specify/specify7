@@ -24,12 +24,12 @@ import { LoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { deserializeResource } from './resource';
+import { ResourceView } from './resourceview';
 import { SecurityImportExport } from './securityimportexport';
 import type { NewRole, Role } from './securityrole';
 import { RoleView } from './securityrole';
 import { CreateRole } from './securityroletemplate';
-import { ResourceView } from './resourceview';
-import { deserializeResource } from './resource';
 
 export function SecurityInstitution({
   institution,
@@ -49,9 +49,7 @@ export function SecurityInstitution({
   ) => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'CreatingRoleState'>
-    | State<'RoleState', { readonly role: Role | NewRole }>
+    State<'CreatingRoleState'> | State<'MainState'> | State<'RoleState', { readonly role: NewRole | Role }>
   >({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
@@ -148,29 +146,29 @@ export function SecurityInstitution({
                   )}
                   {state.type === 'CreatingRoleState' && (
                     <CreateRole
-                      libraryRoles={libraryRoles}
                       collections={collections}
+                      libraryRoles={libraryRoles}
+                      scope="institution"
+                      onClose={(): void =>
+                        setState({
+                          type: 'MainState',
+                        })
+                      }
                       onCreated={(role): void =>
                         setState({
                           type: 'RoleState',
                           role,
                         })
                       }
-                      onClose={(): void =>
-                        setState({
-                          type: 'MainState',
-                        })
-                      }
-                      scope="institution"
                     />
                   )}
                   <SecurityImportExport
-                    roles={libraryRoles}
-                    permissionName="/permissions/library/roles"
                     baseName={institution.name ?? ''}
                     collectionId={schema.domainLevelIds.collection}
-                    onUpdateRole={updateRole}
+                    permissionName="/permissions/library/roles"
+                    roles={libraryRoles}
                     onCreateRole={createRole}
+                    onUpdateRole={updateRole}
                   />
                   <Button.Blue
                     className={
@@ -199,11 +197,11 @@ export function SecurityInstitution({
                       .map((user) => (
                         <li key={user.id}>
                           <Button.LikeLink
-                            onClick={handleOpenUser?.bind(undefined, user.id)}
                             disabled={
                               user.id !== userInformation.id &&
                               !hasTablePermission('SpecifyUser', 'read')
                             }
+                            onClick={handleOpenUser?.bind(undefined, user.id)}
                           >
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
@@ -238,21 +236,16 @@ export function SecurityInstitution({
             </section>
           </div>
         </>
-      ) : state.type === 'RoleState' ? (
+      ) : (state.type === 'RoleState' ? (
         typeof libraryRoles === 'object' ? (
           <RoleView
-            role={state.role}
+            collectionId={schema.domainLevelIds.collection}
             parentName={institution.name ?? schema.models.Institution.label}
+            permissionName="/permissions/library/roles"
+            role={state.role}
             userRoles={undefined}
+            onAddUsers={undefined}
             onClose={(): void => setState({ type: 'MainState' })}
-            onSave={(role): void =>
-              loading(
-                (typeof role.id === 'number'
-                  ? updateRole(role as Role)
-                  : createRole(role)
-                ).then((): void => setState({ type: 'MainState' }))
-              )
-            }
             onDelete={(): void =>
               typeof state.role.id === 'number'
                 ? loading(
@@ -276,24 +269,29 @@ export function SecurityInstitution({
                 : undefined
             }
             onOpenUser={undefined}
-            onAddUsers={undefined}
-            permissionName="/permissions/library/roles"
-            collectionId={schema.domainLevelIds.collection}
+            onSave={(role): void =>
+              loading(
+                (typeof role.id === 'number'
+                  ? updateRole(role as Role)
+                  : createRole(role)
+                ).then((): void => setState({ type: 'MainState' }))
+              )
+            }
           />
         ) : (
           <LoadingScreen />
         )
       ) : (
         error('Invalid state')
-      )}
+      ))}
     </Container.Base>
   );
 }
 
 export function useAdmins():
   | {
-      readonly admins: Set<number>;
-      readonly legacyAdmins: Set<number>;
+      readonly admins: ReadonlySet<number>;
+      readonly legacyAdmins: ReadonlySet<number>;
     }
   | undefined {
   return useAsyncState(
@@ -339,15 +337,15 @@ function ViewInstitutionButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          resource={resource}
-          mode="edit"
           canAddAnother={false}
           dialog="modal"
-          onSaved={undefined}
-          onDeleted={undefined}
-          onClose={handleClose}
-          isSubForm={false}
           isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={undefined}
         />
       )}
     </>

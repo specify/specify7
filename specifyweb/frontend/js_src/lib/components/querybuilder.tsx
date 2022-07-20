@@ -150,7 +150,7 @@ export function QueryBuilder({
    *    and get rid of queryRunCount)
    */
   function runQuery(
-    mode: 'regular' | 'count',
+    mode: 'count' | 'regular',
     fields: typeof state.fields = state.fields
   ): void {
     if (!isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
@@ -171,7 +171,7 @@ export function QueryBuilder({
     !isReadOnly &&
     mappingPathIsComplete(state.mappingView) &&
     !getMappedFieldsBind(state.mappingView.slice(0, -1)).includes(
-      state.mappingView.slice(-1)[0]
+      state.mappingView.at(-1)!
     );
 
   // Scroll down to query results when pressed the "Query" button
@@ -235,10 +235,10 @@ export function QueryBuilder({
         <QueryFromMap
           fields={state.fields}
           lineNumber={mapFieldIndex}
-          onClose={(): void => setMapFieldIndex(undefined)}
           onChange={(fields): void =>
             dispatch({ type: 'ChangeFieldsAction', fields })
           }
+          onClose={(): void => setMapFieldIndex(undefined)}
         />
       )}
       <Form
@@ -282,7 +282,7 @@ export function QueryBuilder({
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
             <header className="flex items-center gap-2 whitespace-nowrap">
-              <TableIcon name={model.name} label />
+              <TableIcon label name={model.name} />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
                   ? queryText(
@@ -305,20 +305,20 @@ export function QueryBuilder({
               )}
               {state.baseTableName === 'LoanPreparation' && (
                 <ProtectedAction
-                  resource="/querybuilder/query"
                   action="execute"
+                  resource="/querybuilder/query"
                 >
-                  <ProtectedTable tableName="Loan" action="update">
+                  <ProtectedTable action="update" tableName="Loan">
                     <ProtectedTable
-                      tableName="LoanReturnPreparation"
                       action="create"
+                      tableName="LoanReturnPreparation"
                     >
-                      <ProtectedTable tableName="LoanPreparation" action="read">
+                      <ProtectedTable action="read" tableName="LoanPreparation">
                         <ErrorBoundary dismissable>
                           <QueryLoanReturn
                             fields={state.fields}
-                            queryResource={queryResource}
                             getQueryFieldRecords={getQueryFieldRecords}
+                            queryResource={queryResource}
                           />
                         </ErrorBoundary>
                       </ProtectedTable>
@@ -331,15 +331,15 @@ export function QueryBuilder({
                 queryResource.isNew() ? 'create' : 'update'
               ) && (
                 <SaveQueryButtons
-                  isReadOnly={isReadOnly}
-                  queryResource={queryResource}
                   fields={state.fields}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                  isReadOnly={isReadOnly}
                   isValid={(): boolean =>
                     formRef.current?.reportValidity() ?? false
                   }
+                  queryResource={queryResource}
                   saveRequired={saveRequired}
                   unsetUnloadProtect={unsetUnloadProtect}
-                  getQueryFieldRecords={getQueryFieldRecords}
                   onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
                   onTriedToSave={(): boolean => {
                     handleTriedToSave();
@@ -415,7 +415,7 @@ export function QueryBuilder({
                     if (
                       !getMappedFieldsBind(
                         newMappingPath.slice(0, -1)
-                      ).includes(newMappingPath.slice(-1)[0])
+                      ).includes(newMappingPath.at(-1)!)
                     )
                       handleAddField(newMappingPath);
                   } else
@@ -429,11 +429,11 @@ export function QueryBuilder({
             >
               {isReadOnly ? undefined : (
                 <Button.Small
+                  aria-label={commonText('add')}
                   className="justify-center p-2"
                   disabled={!mapButtonEnabled}
-                  onClick={f.zero(handleAddField)}
-                  aria-label={commonText('add')}
                   title={queryText('newButtonDescription')}
+                  onClick={f.zero(handleAddField)}
                 >
                   {icons.plus}
                 </Button.Small>
@@ -441,44 +441,16 @@ export function QueryBuilder({
             </MappingView>
             <QueryFields
               baseTableName={state.baseTableName}
-              fields={state.fields}
               enforceLengthLimit={triedToSave}
+              fields={state.fields}
+              getMappedFields={getMappedFieldsBind}
               openedElement={state.openedElement}
               showHiddenFields={showHiddenFields}
-              getMappedFields={getMappedFieldsBind}
-              onRemoveField={
-                isReadOnly
-                  ? undefined
-                  : (line): void =>
-                      dispatch({
-                        type: 'ChangeFieldsAction',
-                        fields: state.fields.filter(
-                          (_, index) => index !== line
-                        ),
-                      })
-              }
               onChangeField={
                 isReadOnly
                   ? undefined
                   : (line, field): void =>
                       dispatch({ type: 'ChangeFieldAction', line, field })
-              }
-              onMappingChange={
-                isReadOnly
-                  ? undefined
-                  : (line, payload): void =>
-                      dispatch({
-                        type: 'ChangeSelectElementValueAction',
-                        line,
-                        ...payload,
-                      })
-              }
-              onOpen={(line, index): void =>
-                dispatch({
-                  type: 'ChangeOpenedElementAction',
-                  line,
-                  index,
-                })
               }
               onClose={(): void =>
                 dispatch({
@@ -508,9 +480,37 @@ export function QueryBuilder({
                         direction,
                       })
               }
+              onMappingChange={
+                isReadOnly
+                  ? undefined
+                  : (line, payload): void =>
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line,
+                        ...payload,
+                      })
+              }
+              onOpen={(line, index): void =>
+                dispatch({
+                  type: 'ChangeOpenedElementAction',
+                  line,
+                  index,
+                })
+              }
               onOpenMap={setMapFieldIndex}
+              onRemoveField={
+                isReadOnly
+                  ? undefined
+                  : (line): void =>
+                      dispatch({
+                        type: 'ChangeFieldsAction',
+                        fields: state.fields.filter(
+                          (_, index) => index !== line
+                        ),
+                      })
+              }
             />
-            <div role="toolbar" className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="toolbar">
               <Label.ForCheckbox>
                 <Input.Checkbox
                   checked={showHiddenFields}
@@ -528,8 +528,8 @@ export function QueryBuilder({
                   {!isTreeModel(model.name) && (
                     <Label.ForCheckbox>
                       <Input.Checkbox
-                        disabled={!isEmpty}
                         checked={query.selectDistinct ?? false}
+                        disabled={!isEmpty}
                         onChange={(): void =>
                           setQuery({
                             ...query,
@@ -556,9 +556,28 @@ export function QueryBuilder({
           {hasPermission('/querybuilder/query', 'execute') && (
             <QueryResultsWrapper
               baseTableName={state.baseTableName}
+              createRecordSet={
+                !isReadOnly &&
+                hasPermission('/querybuilder/query', 'create_recordset') ? (
+                  <MakeRecordSetButton
+                    baseTableName={state.baseTableName}
+                    fields={state.fields}
+                    getQueryFieldRecords={getQueryFieldRecords}
+                    queryResource={queryResource}
+                  />
+                ) : undefined
+              }
+              extraButtons={
+                <QueryExportButtons
+                  baseTableName={state.baseTableName}
+                  fields={state.fields}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                  queryResource={queryResource}
+                />
+              }
+              fields={state.fields}
               model={model}
               queryResource={queryResource}
-              fields={state.fields}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}
               onSelected={handleSelected}
@@ -576,25 +595,6 @@ export function QueryBuilder({
                   })
                 );
               }}
-              createRecordSet={
-                !isReadOnly &&
-                hasPermission('/querybuilder/query', 'create_recordset') ? (
-                  <MakeRecordSetButton
-                    baseTableName={state.baseTableName}
-                    fields={state.fields}
-                    queryResource={queryResource}
-                    getQueryFieldRecords={getQueryFieldRecords}
-                  />
-                ) : undefined
-              }
-              extraButtons={
-                <QueryExportButtons
-                  baseTableName={state.baseTableName}
-                  fields={state.fields}
-                  queryResource={queryResource}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                />
-              }
             />
           )}
         </div>

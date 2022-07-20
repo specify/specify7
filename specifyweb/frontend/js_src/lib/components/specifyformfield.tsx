@@ -44,20 +44,20 @@ const fieldRenderers: {
         {printOnSave ? (
           hasPermission('/report', 'execute') ? (
             <PrintOnSave
-              id={id}
+              defaultValue={defaultValue}
               fieldName={fieldName}
+              id={id}
               model={resource.specifyModel}
               text={label}
-              defaultValue={defaultValue}
             />
           ) : null
         ) : (
           <SpecifyFormCheckbox
-            id={id}
-            resource={resource}
-            fieldName={defined(fieldName)}
             defaultValue={defaultValue}
+            fieldName={defined(fieldName)}
+            id={id}
             isReadOnly={mode === 'view'}
+            resource={resource}
             text={label}
           />
         )}
@@ -103,13 +103,13 @@ const fieldRenderers: {
           {...validationAttributes}
           forwardRef={validationRef}
           id={id}
-          name={fieldName}
-          value={value?.toString() ?? ''}
-          onValueChange={(value): void => updateValue(value, false)}
-          onBlur={(): void => updateValue(value?.toString() ?? '')}
-          rows={rows}
           isReadOnly={mode === 'view'}
+          name={fieldName}
           required={'required' in validationAttributes && mode !== 'search'}
+          rows={rows}
+          value={value?.toString() ?? ''}
+          onBlur={(): void => updateValue(value?.toString() ?? '')}
+          onValueChange={(value): void => updateValue(value, false)}
         />
       </ErrorBoundary>
     );
@@ -137,17 +137,17 @@ const fieldRenderers: {
       <ErrorBoundary dismissable>
         {data === undefined ? undefined : (
           <ComboBox
-            id={id}
-            model={resource}
-            resource={data === false ? resource : data.resource}
+            defaultValue={defaultValue}
             field={data === false ? undefined : data.field}
             fieldName={fieldName}
-            pickListName={pickList}
-            defaultValue={defaultValue}
-            mode={mode}
-            isRequired={isRequired}
-            isDisabled={false}
             formType={formType}
+            id={id}
+            isDisabled={false}
+            isRequired={isRequired}
+            mode={mode}
+            model={resource}
+            pickListName={pickList}
+            resource={data === false ? resource : data.resource}
           />
         )}
       </ErrorBoundary>
@@ -169,16 +169,16 @@ const fieldRenderers: {
         'read'
       ) ? (
       <QueryComboBox
-        id={id}
-        resource={resource}
-        mode={mode}
-        formType={formType}
         fieldName={fieldName}
-        isRequired={isRequired}
-        hasCloneButton={hasCloneButton}
-        typeSearch={typeSearch}
         forceCollection={undefined}
+        formType={formType}
+        hasCloneButton={hasCloneButton}
+        id={id}
+        isRequired={isRequired}
+        mode={mode}
         relatedModel={undefined}
+        resource={resource}
+        typeSearch={typeSearch}
       />
     ) : null;
   },
@@ -193,10 +193,9 @@ const fieldRenderers: {
     return (
       <ErrorBoundary dismissable>
         <UiField
-          id={id}
-          resource={resource}
-          mode={mode}
           fieldName={fieldName}
+          id={id}
+          mode={mode}
           parser={React.useMemo<Parser>(
             () => ({
               value: defaultValue,
@@ -207,6 +206,7 @@ const fieldRenderers: {
             }),
             [defaultValue, min, max, step, isRequired]
           )}
+          resource={resource}
         />
       </ErrorBoundary>
     );
@@ -222,12 +222,12 @@ const fieldRenderers: {
      */
     return (
       <Input.Generic
-        type="file"
-        name={fieldName}
-        isReadOnly={mode === 'view'}
+        disabled
         id={id}
+        isReadOnly={mode === 'view'}
+        name={fieldName}
         required={isRequired}
-        disabled={true}
+        type="file"
       />
     );
   },
@@ -253,8 +253,8 @@ export function FormField({
     <Render
       mode={isReadOnly ? 'view' : mode}
       {...rest}
-      isRequired={rest.isRequired && mode !== 'search'}
       fieldDefinition={fieldDefinition as FieldTypes['Checkbox']}
+      isRequired={rest.isRequired && mode !== 'search'}
     />
   );
 }

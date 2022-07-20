@@ -41,7 +41,7 @@ function ChooseCollection({
   React.useEffect(
     () =>
       typeof data.initialValue === 'string'
-        ? void submitRef.current?.focus()
+        ? submitRef.current?.focus()
         : undefined,
     [data.initialValue]
   );
@@ -102,7 +102,7 @@ function ChooseCollection({
   const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <Form method="post" forwardRef={formRef}>
+      <Form forwardRef={formRef} method="post">
         <h2>{commonText('chooseCollection')}:</h2>
         {data.errors.length > 0 && <ErrorMessage>{data.errors}</ErrorMessage>}
         {hasAccess ? (
@@ -111,22 +111,22 @@ function ChooseCollection({
               {availableCollections.map(({ id, collectionname }) => (
                 <Label.ForCheckbox key={id}>
                   <Input.Radio
-                    name="collection"
-                    value={id}
                     checked={selectedCollection === id}
-                    onChange={(): void => setSelectedCollection(id)}
+                    name="collection"
                     required
+                    value={id}
+                    onChange={(): void => setSelectedCollection(id)}
                   />
                   {collectionname}
                 </Label.ForCheckbox>
               ))}
             </div>
             <input
-              type="hidden"
               name="csrfmiddlewaretoken"
+              type="hidden"
               value={csrfToken ?? ''}
             />
-            <input type="hidden" name="next" value={nextUrl} />
+            <input name="next" type="hidden" value={nextUrl} />
             <Submit.Fancy forwardRef={submitRef}>
               {commonText('open')}
             </Submit.Fancy>

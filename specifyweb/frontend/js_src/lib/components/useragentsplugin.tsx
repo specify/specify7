@@ -84,8 +84,6 @@ export function UserAgentsDialog({
   const loading = React.useContext(LoadingContext);
   return Array.isArray(data) ? (
     <Dialog
-      header={formsText('userAgentsPluginDialogTitle')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -94,6 +92,8 @@ export function UserAgentsDialog({
           )}
         </>
       }
+      header={formsText('userAgentsPluginDialogTitle')}
+      onClose={handleClose}
     >
       <p>{adminText('setAgentsDialogText')}</p>
       {/* Not formatting this error nicely, as it shouldn't ever happen */}
@@ -133,19 +133,19 @@ export function UserAgentsDialog({
             <Label.Generic key={division.id}>
               {division.name}
               <QueryComboBox
-                id={undefined}
                 fieldName="agent"
-                resource={address}
-                mode={mode}
+                forceCollection={collections[0]}
                 formType="form"
+                id={undefined}
                 isRequired={isRequired}
+                mode={mode}
                 relatedModel={schema.models.Agent}
                 /*
                  * Since Agents are scoped to Division, scoping the query to any
                  * collection in that division would scope results to
                  * Division
                  */
-                forceCollection={collections[0]}
+                resource={address}
                 typeSearch={undefined}
               />
               {f.includes(

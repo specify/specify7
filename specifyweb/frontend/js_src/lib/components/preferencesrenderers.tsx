@@ -44,14 +44,14 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
         />
         <Input.Generic
           className="sr-only"
+          isReadOnly={isReadOnly}
+          maxLength={7}
+          minLength={7}
+          pattern="^#[0-9a-fA-F]{6}$"
+          required
           type="color"
           value={value}
           onValueChange={handleChange}
-          isReadOnly={isReadOnly}
-          minLength={7}
-          maxLength={7}
-          required
-          pattern="^#[0-9a-fA-F]{6}$"
         />
       </div>
     );
@@ -66,10 +66,10 @@ export const CollectionSortOrderPreferenceItem: PreferenceItemComponent<
 }) {
   return (
     <OrderPicker
+      isReadOnly={isReadOnly}
       model={schema.models.Collection}
       order={value}
       onChange={handleChange}
-      isReadOnly={isReadOnly}
     />
   );
 };
@@ -82,23 +82,20 @@ export function OrderPicker<SCHEMA extends AnySchema>({
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly order:
-    | undefined
-    | (string & keyof SCHEMA['fields'])
-    | `-${string & keyof SCHEMA['fields']}`;
+    `-${string & keyof SCHEMA['fields']}` | string & keyof SCHEMA['fields'] | undefined;
   readonly onChange: (
     order:
-      | (string & keyof SCHEMA['fields'])
-      | `-${string & keyof SCHEMA['fields']}`
+      `-${string & keyof SCHEMA['fields']}` | string & keyof SCHEMA['fields']
   ) => void;
   readonly isReadOnly?: boolean;
 }): JSX.Element {
   return (
     <Select
+      disabled={isReadOnly}
       value={order}
       onValueChange={(newOrder): void =>
         handleChange(newOrder as Exclude<typeof order, undefined>)
       }
-      disabled={isReadOnly}
     >
       <option value="">{commonText('none')}</option>
       <optgroup label={commonText('ascending')}>
@@ -111,7 +108,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
             ({ isHidden, name }) => !isHidden || order === name
           )
           .map(({ name, label }) => (
-            <option value={name} key={name}>
+            <option key={name} value={name}>
               {label}
             </option>
           ))}
@@ -120,7 +117,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
         {model.literalFields
           .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
           .map(({ name, label }) => (
-            <option value={`-${name}`} key={name}>
+            <option key={name} value={`-${name}`}>
               {label}
             </option>
           ))}
@@ -157,15 +154,15 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
       <Input.Text isReadOnly value={value} />
     ) : (
       <Autocomplete<string>
-        source={items}
-        minLength={0}
-        delay={0}
-        onNewValue={handleChange}
-        onChange={({ data }): void => handleChange(data)}
-        // OnCleared={}
-        filterItems={true}
         aria-label={undefined}
+        delay={0}
+        filterItems
+        minLength={0}
+        source={items}
+        // OnCleared={}
         value={value === defaultFont ? preferencesText('defaultFont') : value}
+        onChange={({ data }): void => handleChange(data)}
+        onNewValue={handleChange}
       >
         {(props): JSX.Element => <Input.Generic {...props} />}
       </Autocomplete>
@@ -173,10 +170,7 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
   };
 
 export type WelcomePageMode =
-  | 'default'
-  | 'taxonTiles'
-  | 'customImage'
-  | 'embeddedWebpage';
+  'customImage' | 'default' | 'embeddedWebpage' | 'taxonTiles';
 export const defaultWelcomePageImage =
   '/static/img/icons_as_background_splash.png';
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
@@ -199,11 +193,13 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
       description: preferencesText('customImageDescription'),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
-    /*{
-      value: 'embeddedWebpage',
-      title: preferencesText('embeddedWebpage'),
-      description: preferencesText('embeddedWebpageDescription'),
-    },*/
+    /*
+     *{
+     *value: 'embeddedWebpage',
+     *title: preferencesText('embeddedWebpage'),
+     *description: preferencesText('embeddedWebpageDescription'),
+     *},
+     */
   ],
 };
 
@@ -223,17 +219,17 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     return (
       <>
         <DefaultPreferenceItemRender
-          value={value}
-          onChange={handleChange}
           definition={welcomePageModes}
           isReadOnly={isReadOnly}
+          value={value}
+          onChange={handleChange}
         />
         {value === 'customImage' || value === 'embeddedWebpage' ? (
           <DefaultPreferenceItemRender
             definition={sourceDefinition}
+            isReadOnly={isReadOnly}
             value={source}
             onChange={setSource}
-            isReadOnly={isReadOnly}
           />
         ) : undefined}
       </>
@@ -245,9 +241,9 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
   function ({ definition, value, onChange: handleChange, isReadOnly }) {
     const parser =
       'type' in definition
-        ? typeof definition.parser === 'object'
+        ? (typeof definition.parser === 'object'
           ? mergeParsers(parserFromType(definition.type), definition.parser)
-          : parserFromType(definition.type)
+          : parserFromType(definition.type))
         : undefined;
     const validationAttributes = React.useMemo(
       () => f.maybe(parser, getValidationAttributes),
@@ -264,10 +260,10 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
     return 'values' in definition ? (
       <>
         <Select
-          value={internalValue}
-          onValueChange={handleChanged}
-          onBlur={handleBlur}
           disabled={isReadOnly}
+          value={internalValue}
+          onBlur={handleBlur}
+          onValueChange={handleChanged}
         >
           {definition.values.map(({ value, title }) => (
             <option key={value} value={value}>
@@ -282,18 +278,19 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
           )
         )}
       </>
-    ) : parser?.type === 'checkbox' ? (
+    ) : (parser?.type === 'checkbox' ? (
       <Input.Checkbox
         checked={value}
-        onValueChange={handleChange}
         isReadOnly={isReadOnly}
+        onValueChange={handleChange}
       />
     ) : (
       <Input.Generic
         forwardRef={validationRef}
         {...(validationAttributes ?? { type: 'text' })}
-        value={internalValue}
         isReadOnly={isReadOnly}
+        value={internalValue}
+        onBlur={handleBlur}
         onValueChange={(newValue): void => {
           if (typeof parser === 'object' && inputRef.current !== null) {
             const parsed = parseValue(parser, inputRef.current, newValue);
@@ -306,7 +303,6 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
               handleChanged(newValue);
           } else handleChanged(newValue);
         }}
-        onBlur={handleBlur}
       />
-    );
+    ));
   };

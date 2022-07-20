@@ -69,7 +69,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'TreatmentEvent',
 ];
 
-export function useQueryModels(): [
+export function useQueryModels(): readonly [
   RA<SpecifyModel>,
   (models: RA<SpecifyModel>) => void
 ] {
@@ -103,18 +103,11 @@ export function QueryTables({
   const [isEditing, handleEditing] = useBooleanState();
   const [isImporting, handleImporting] = useBooleanState();
   return isImporting ? (
-    <QueryImport onClose={handleClose} queries={queries} />
-  ) : isEditing ? (
+    <QueryImport queries={queries} onClose={handleClose} />
+  ) : (isEditing ? (
     <QueryTablesEdit onClose={handleClose} />
   ) : (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      onClose={handleClose}
-      className={{
-        container: dialogClassNames.narrowContainer,
-      }}
-      header={commonText('newQueryDialogTitle')}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       buttons={
         <>
           {!isReadOnly && hasToolPermission('queryBuilder', 'create') ? (
@@ -126,17 +119,24 @@ export function QueryTables({
           <Button.Gray onClick={handleClose}>{commonText('close')}</Button.Gray>
         </>
       }
+      className={{
+        container: dialogClassNames.narrowContainer,
+      }}
+      header={commonText('newQueryDialogTitle')}
+      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
     >
       <Ul>
         {tables.map(({ name, label }, index) => (
           <li key={index}>
             <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
-              <TableIcon name={name} label={false} />
+              <TableIcon label={false} name={name} />
               {label}
             </Link.Default>
           </li>
         ))}
       </Ul>
     </Dialog>
-  );
+  ));
 }

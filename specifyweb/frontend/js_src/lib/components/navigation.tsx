@@ -7,9 +7,9 @@ import React from 'react';
 import { isExternalUrl } from '../ajax';
 import { Backbone } from '../backbone';
 import { commonText } from '../localization/common';
+import type { WritableArray } from '../types';
 import { Button } from './basic';
 import { showDialog } from './legacydialog';
-import { WritableArray } from '../types';
 
 /**
  * We introduce a sequence variable that is incremented and passed in
@@ -20,6 +20,7 @@ import { WritableArray } from '../types';
  */
 
 type State = {
+  // eslint-disable-next-line functional/prefer-readonly-type
   sequence?: number;
 };
 const sequenceFromState = (state?: State): number =>
@@ -60,7 +61,7 @@ export function removeUnloadProtect(removalKey: unknown): void {
     unloadBlockers.length === 0
       ? undefined
       : (): string => {
-          const { message } = unloadBlockers[unloadBlockers.length - 1];
+          const { message } = unloadBlockers.at(-1)!;
           return message;
         }
   );
@@ -168,7 +169,7 @@ function defaultConfirmNavigationHandler(
   proceed: () => void,
   cancel: () => void
 ): void {
-  const { message } = unloadBlockers[unloadBlockers.length - 1];
+  const { message } = unloadBlockers.at(-1)!;
 
   const dialog = showDialog({
     header: commonText('leavePageDialogHeader'),
@@ -200,8 +201,7 @@ export function confirmNavigation(
 ): void {
   if (unloadBlockers.length === 0) proceed();
   else {
-    const { confirmNavigationHandler } =
-      unloadBlockers[unloadBlockers.length - 1];
+    const { confirmNavigationHandler } = unloadBlockers.at(-1)!;
     confirmNavigationHandler(proceed, cancel);
   }
 }

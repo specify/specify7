@@ -55,7 +55,7 @@ function TableHeaderCell({
   const content =
     typeof fieldSpec === 'object' ? (
       <>
-        {tableName && <TableIcon name={tableName} label />}
+        {tableName && <TableIcon label name={tableName} />}
         {generateMappingPathPreview(
           fieldSpec.baseTable.name,
           fieldSpec.toMappingPath()
@@ -64,9 +64,9 @@ function TableHeaderCell({
     ) : undefined;
   return (
     <div
-      role={typeof content === 'object' ? `columnheader` : 'cell'}
       className="sticky w-full min-w-max border-b border-gray-500
         bg-brand-100 p-1 [inset-block-start:_0] [z-index:2] dark:bg-brand-500"
+      role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
@@ -79,7 +79,7 @@ function TableHeaderCell({
           {content}
           {typeof sortConfig === 'string' && (
             <SortIndicator
-              fieldName={'field'}
+              fieldName="field"
               sortConfig={{
                 sortField: 'field',
                 ascending: sortConfig === 'ascending',
@@ -106,10 +106,7 @@ function CreateRecordSet({
   readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    | State<'Main'>
-    | State<'Editing', { recordSet: SpecifyResource<RecordSet> }>
-    | State<'Saving'>
-    | State<'Saved', { recordSet: SpecifyResource<RecordSet> }>
+    State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'Main'> | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'Saving'>
   >({ type: 'Main' });
 
   return (
@@ -127,9 +124,15 @@ function CreateRecordSet({
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
-          dialog="modal"
           canAddAnother={false}
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          mode="edit"
           resource={state.recordSet}
+          onClose={(): void => setState({ type: 'Main' })}
+          onDeleted={f.never}
+          onSaved={f.never}
           onSaving={(): false => {
             setState({ type: 'Saving' });
             createResource('RecordSet', {
@@ -160,12 +163,6 @@ function CreateRecordSet({
               });
             return false;
           }}
-          onSaved={f.never}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={f.never}
-          mode="edit"
-          isSubForm={false}
-          isDependent={false}
         />
       )}
       {state.type === 'Saving' && recordSetFromQueryLoading}
@@ -211,11 +208,11 @@ export function QueryResultsTable({
   readonly fetchSize: number;
   readonly fetchResults: (
     offset: number
-  ) => Promise<RA<RA<string | number | null>>>;
+  ) => Promise<RA<RA<number | string | null>>>;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
-  readonly initialData: RA<RA<string | number | null>> | undefined;
+  readonly initialData: RA<RA<number | string | null>> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
   readonly onSelected?: (resource: RA<number>) => void;
   readonly onSortChange?: (
@@ -234,7 +231,7 @@ export function QueryResultsTable({
    * hundreds of thousands of results.
    */
   const [results, setResults] = useTriggerState<
-    RA<RA<string | number | null> | undefined> | undefined
+    RA<RA<number | string | null> | undefined> | undefined
   >(initialData);
 
   const [pickListsLoaded] = useAsyncState(
@@ -265,7 +262,7 @@ export function QueryResultsTable({
 
   const [totalCount, setTotalCount] = useTriggerState(initialTotalCount);
 
-  const [selectedRows, setSelectedRows] = React.useState<Set<number>>(
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
   );
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
@@ -275,7 +272,7 @@ export function QueryResultsTable({
   function fetchMore(
     index?: number,
     currentResults:
-      | RA<RA<string | number | null> | undefined>
+      | RA<RA<number | string | null> | undefined>
       | undefined = results
   ): void {
     if (!Array.isArray(currentResults) || isFetching) return;
@@ -318,7 +315,7 @@ export function QueryResultsTable({
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
-  ) as RA<RA<string | number | null>> | undefined;
+  ) as RA<RA<number | string | null>> | undefined;
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -348,6 +345,7 @@ export function QueryResultsTable({
                    * are in query results (selectedRows set may be out of order
                    * if records were selected out of order)
                    */
+                  baseTableName={fieldSpecs[0].baseTable.name}
                   getIds={(): RA<number> =>
                     defined(loadedResults)
                       .filter((result) =>
@@ -355,23 +353,22 @@ export function QueryResultsTable({
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  baseTableName={fieldSpecs[0].baseTable.name}
                 />
               ) : (
                 createRecordSet
               )
             ) : undefined}
             <QueryToMap
+              fieldSpecs={fieldSpecs}
+              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
-              model={model}
-              fieldSpecs={fieldSpecs}
             />
             <QueryToForms
-              selectedRows={selectedRows}
-              results={results}
               model={model}
-              onFetchMore={isFetching ? undefined : fetchMore}
+              results={results}
+              selectedRows={selectedRows}
+              totalCount={totalCount}
               onDelete={(index): void => {
                 setTotalCount(defined(totalCount) - 1);
                 setResults(removeItem(results, index));
@@ -383,14 +380,13 @@ export function QueryResultsTable({
                   )
                 );
               }}
-              totalCount={totalCount}
+              onFetchMore={isFetching ? undefined : fetchMore}
             />
           </>
         ) : undefined}
       </div>
       <div
         // REFACTOR: turn this into a reusable table component
-        role="table"
         className={`
           grid-table auto-rows-min overflow-auto rounded
           ${tableClassName ?? ''}
@@ -401,6 +397,7 @@ export function QueryResultsTable({
               : 'grid-cols-[repeat(var(--columns),auto)]'
           }
        `}
+        role="table"
         style={
           {
             '--columns': fieldSpecs.length,
@@ -434,8 +431,8 @@ export function QueryResultsTable({
               )}
               {fieldSpecs.map((fieldSpec, index) => (
                 <TableHeaderCell
-                  key={index}
                   fieldSpec={fieldSpec}
+                  key={index}
                   sortConfig={sortConfig?.[index]}
                   onSortChange={
                     typeof handleSortChange === 'function'
@@ -450,9 +447,9 @@ export function QueryResultsTable({
         <div role="rowgroup">
           {showResults && Array.isArray(loadedResults) ? (
             <QueryResults
-              model={model}
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
+              model={model}
               results={loadedResults}
               selectedRows={selectedRows}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
@@ -488,7 +485,7 @@ export function QueryResultsTable({
             />
           ) : undefined}
           {isFetching || (!showResults && Array.isArray(results)) ? (
-            <div role="cell" className="col-span-full">
+            <div className="col-span-full" role="cell">
               {loadingGif}
             </div>
           ) : undefined}
@@ -531,7 +528,7 @@ export function QueryResultsWrapper({
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (offset: number) =>
-      ajax<{ readonly results: RA<RA<string | number | null>> }>(
+      ajax<{ readonly results: RA<RA<number | string | null>> }>(
         '/stored_query/ephemeral/',
         {
           method: 'POST',

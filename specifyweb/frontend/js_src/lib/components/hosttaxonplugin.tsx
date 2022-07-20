@@ -58,17 +58,17 @@ export function HostTaxonPlugin({
   );
   return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
-  ) : hasTreeAccess('Taxon', 'read') ? (
+  ) : (hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      id={id}
       fieldName={undefined}
-      resource={resource}
       forceCollection={rightSideCollection}
-      relatedModel={schema.models.Taxon}
+      formType={formType}
+      id={id}
       isRequired={isRequired}
       mode={mode}
-      formType={formType}
+      relatedModel={schema.models.Taxon}
+      resource={resource}
       typeSearch={hostTaxonTypeSearch}
     />
-  ) : null;
+  ) : null);
 }

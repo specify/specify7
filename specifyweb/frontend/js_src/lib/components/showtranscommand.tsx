@@ -1,18 +1,18 @@
 import React from 'react';
 
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type { AnySchema } from '../datamodelutils';
+import { f } from '../functools';
+import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
+import { hasTablePermission } from '../permissionutils';
 import type { RA } from '../types';
-import { f } from '../functools';
 import { H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
-import { hasTablePermission } from '../permissionutils';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import { deserializeResource } from './resource';
-import { sortFunction } from '../helpers';
 
 function List({
   resources,
@@ -43,7 +43,7 @@ function List({
 
   return resources.length === 0 ? (
     <>{commonText('noResults')}</>
-  ) : Array.isArray(entries) ? (
+  ) : (Array.isArray(entries) ? (
     <Ul>
       {entries.map(({ label, href }, index) => (
         <li key={index}>
@@ -53,7 +53,7 @@ function List({
     </Ul>
   ) : (
     <>{commonText('loading')}</>
-  );
+  ));
 }
 
 export function ShowLoansCommand({
@@ -123,29 +123,29 @@ export function ShowLoansCommand({
     >
       <H3>{formsText('openLoans')}</H3>
       <List
-        resources={data.openLoans ?? []}
-        fieldName="loan"
         displayFieldName="loanNumber"
+        fieldName="loan"
+        resources={data.openLoans ?? []}
       />
       <H3>{formsText('resolvedLoans')}</H3>
       <List
-        resources={data.resolvedLoans ?? []}
-        fieldName="loan"
         displayFieldName="loanNumber"
+        fieldName="loan"
+        resources={data.resolvedLoans ?? []}
       />
       <H3>{formsText('gifts')}</H3>
       <List
-        resources={data.gifts ?? []}
-        fieldName="gift"
         displayFieldName="giftNumber"
+        fieldName="gift"
+        resources={data.gifts ?? []}
       />
       {Array.isArray(data.exchanges) && data.exchanges.length > 0 && (
         <>
           <H3>{formsText('exchanges')}</H3>
           <List
-            resources={data.exchanges}
-            fieldName="exchange"
             displayFieldName="exchangeOutNumber"
+            fieldName="exchange"
+            resources={data.exchanges}
           />
         </>
       )}

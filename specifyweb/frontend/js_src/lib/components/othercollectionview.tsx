@@ -35,7 +35,7 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
 export function OtherCollection({
   collectionIds,
 }: {
-  collectionIds: RA<number>;
+  readonly collectionIds: RA<number>;
 }): JSX.Element {
   const availableCollection = useAvailableCollections();
   const collections = filterArray(

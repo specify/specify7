@@ -180,7 +180,8 @@ const regexRemoveDuplicateHeaderIndexes = /\(\d+\)/gu;
 // Used to remove non letter characters
 const regexRemoveNonAz = /[^\sa-z]+/gu;
 
-const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*]|{[^}]*}|<[^>]*>/gu;
+// eslint-disable-next-line optimize-regex/optimize-regex
+const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/gu;
 
 const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/gu;
 

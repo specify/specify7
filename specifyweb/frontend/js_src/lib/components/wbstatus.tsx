@@ -8,14 +8,14 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
 import { ajax, Http } from '../ajax';
+import { error } from '../assert';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
 import { Button, Label, Progress } from './basic';
+import { softFail } from './errorboundary';
 import { useTitle } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import type { Dataset, Status } from './wbplanview';
-import { error } from '../assert';
-import { softFail } from './errorboundary';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -23,21 +23,21 @@ const REFRESH_RATE = 2000;
 type MainState = State<
   'MainState',
   {
-    status: Status;
-    aborted: boolean | 'pending' | 'failed';
+    readonly status: Status;
+    readonly aborted: boolean | 'failed' | 'pending';
   }
 >;
 
 type States = MainState;
 
-type RefreshStatusAction = Action<'RefreshStatusAction', { status: Status }>;
+type RefreshStatusAction = Action<'RefreshStatusAction', { readonly status: Status }>;
 
 type AbortAction = Action<
   'AbortAction',
-  { aborted: boolean | 'pending' | 'failed' }
+  { readonly aborted: boolean | 'failed' | 'pending' }
 >;
 
-type Actions = RefreshStatusAction | AbortAction;
+type Actions = AbortAction | RefreshStatusAction;
 
 const reducer = generateReducer<States, Actions>({
   RefreshStatusAction: ({ state, action }) => ({
@@ -116,9 +116,9 @@ export function WbStatus({
   if (state.aborted === 'failed')
     return (
       <Dialog
+        buttons={commonText('close')}
         header={title}
         onClose={(): void => dispatch({ type: 'AbortAction', aborted: false })}
-        buttons={commonText('close')}
       >
         {wbText('wbStatusAbortFailed', mappedOperation)}
       </Dialog>
@@ -162,7 +162,6 @@ export function WbStatus({
 
   return (
     <Dialog
-      header={title}
       buttons={
         state.aborted === false ? (
           <Button.Red
@@ -171,7 +170,7 @@ export function WbStatus({
                 type: 'AbortAction',
                 aborted: 'pending',
               });
-              ajax<'ok' | 'not running'>(
+              ajax<'not running' | 'ok'>(
                 `/api/workbench/abort/${dataset.id}/`,
                 { method: 'POST', headers: { Accept: 'application/json' } },
                 {
@@ -202,12 +201,13 @@ export function WbStatus({
       className={{
         container: dialogClassNames.narrowContainer,
       }}
+      header={title}
       onClose={undefined}
     >
-      <Label.Generic aria-live="polite" aria-atomic={true}>
+      <Label.Generic aria-atomic aria-live="polite">
         {message}
         {state.status.taskstatus === 'PROGRESS' && (
-          <Progress value={current} max={total} />
+          <Progress max={total} value={current} />
         )}
       </Label.Generic>
     </Dialog>

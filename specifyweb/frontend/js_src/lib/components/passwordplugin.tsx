@@ -29,14 +29,14 @@ export function PasswordResetDialog({
 
   return (
     <Dialog
-      header={adminText('setPassword')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
         </>
       }
+      header={adminText('setPassword')}
+      onClose={handleClose}
     >
       <Form
         className="contents"
@@ -51,23 +51,23 @@ export function PasswordResetDialog({
         <Label.Generic>
           {commonText('password')}
           <Input.Generic
-            type="password"
-            required
             autoComplete="new-password"
-            value={password}
             minLength={MIN_PASSWORD_LENGTH}
+            required
+            type="password"
+            value={password}
             onValueChange={setPassword}
           />
         </Label.Generic>
         <Label.Generic>
           {adminText('confirmPassword')}
           <Input.Generic
-            type="password"
-            required
             autoComplete="new-password"
-            value={repeatPassword}
-            minLength={MIN_PASSWORD_LENGTH}
             forwardRef={validationRef}
+            minLength={MIN_PASSWORD_LENGTH}
+            required
+            type="password"
+            value={repeatPassword}
             onValueChange={setRepeatPassword}
           />
         </Label.Generic>
@@ -90,7 +90,7 @@ export function PasswordPlugin({
         {isNew ? adminText('setPassword') : commonText('changePassword')}
       </Button.Small>
       {isOpen && (
-        <PasswordResetDialog onSet={handleSet} onClose={handleClose} />
+        <PasswordResetDialog onClose={handleClose} onSet={handleSet} />
       )}
     </>
   );

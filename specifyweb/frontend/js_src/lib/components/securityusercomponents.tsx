@@ -53,6 +53,7 @@ export function SetSuperAdmin({
   return typeof institutionPolicies === 'object' ? (
     <Label.ForCheckbox>
       <Input.Checkbox
+        checked={isSuperAdmin}
         isReadOnly={!userInformation.isadmin || isCurrentUser}
         onValueChange={(): void =>
           handleChange(
@@ -87,7 +88,6 @@ export function SetSuperAdmin({
                 )
           )
         }
-        checked={isSuperAdmin}
       />
       {adminText('institutionAdmin')}
     </Label.ForCheckbox>
@@ -118,13 +118,13 @@ export function UserRoles({
       <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
           ? collectionRoles[collectionId]?.map((role) => (
-              <li key={role.id} className="flex items-center gap-2">
+              <li className="flex items-center gap-2" key={role.id}>
                 <Label.ForCheckbox>
                   <Input.Checkbox
-                    disabled={!Array.isArray(userRoles?.[collectionId])}
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
                     )}
+                    disabled={!Array.isArray(userRoles?.[collectionId])}
                     onValueChange={(): void =>
                       handleChange(
                         replaceKey(
@@ -181,8 +181,6 @@ export function SetPasswordPrompt({
 }): JSX.Element {
   return (
     <Dialog
-      header={adminText('setPassword')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.Red onClick={handleIgnore}>{commonText('ignore')}</Button.Red>
@@ -191,6 +189,8 @@ export function SetPasswordPrompt({
           </Button.Green>
         </>
       }
+      header={adminText('setPassword')}
+      onClose={handleClose}
     >
       {adminText('setPasswordDialogText')}
     </Dialog>
@@ -265,6 +265,7 @@ export function CollectionAccess({
       !isSuperAdmin ? (
         <Label.ForCheckbox className={className.limitedWidth}>
           <Input.Checkbox
+            checked={hasCollectionAccess}
             isReadOnly={
               !hasPermission(
                 '/permissions/policies/user',
@@ -294,7 +295,6 @@ export function CollectionAccess({
                   : undefined
               )
             }
-            checked={hasCollectionAccess}
           />
           {adminText('collectionAccess')}
         </Label.ForCheckbox>
@@ -303,18 +303,18 @@ export function CollectionAccess({
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
-            id={undefined}
             fieldName="agent"
-            resource={collectionAddress}
+            forceCollection={collectionId}
+            formType="form"
+            id={undefined}
+            isRequired={hasCollectionAccess || isSuperAdmin}
             mode={
               mode === 'view' || !hasPermission('/admin/user/agents', 'update')
                 ? 'view'
                 : 'edit'
             }
-            formType="form"
-            isRequired={hasCollectionAccess || isSuperAdmin}
             relatedModel={schema.models.Agent}
-            forceCollection={collectionId}
+            resource={collectionAddress}
             typeSearch={undefined}
           />
         ) : (
@@ -338,7 +338,7 @@ export function UserIdentityProviders({
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
             <Label.ForCheckbox>
-              <Input.Checkbox isReadOnly checked={isEnabled} />
+              <Input.Checkbox checked={isEnabled} isReadOnly />
               {title}
             </Label.ForCheckbox>
           </li>
@@ -368,13 +368,13 @@ export function LegacyPermissions({
       {hasPermission('/permissions/list_admins', 'read') && (
         <div className="flex gap-2">
           <AdminStatusPlugin
-            user={userResource}
             isAdmin={isAdmin}
+            user={userResource}
             onChange={setIsAdmin}
           />
           {hasPermission('/admin/user/sp6/collection_access', 'read') &&
           hasTablePermission('Collection', 'read') ? (
-            <UserCollectionsPlugin user={userResource} isAdmin={isAdmin} />
+            <UserCollectionsPlugin isAdmin={isAdmin} user={userResource} />
           ) : undefined}
         </div>
       )}
@@ -382,22 +382,22 @@ export function LegacyPermissions({
         defined(schema.models.SpecifyUser.getLiteralField('userType')),
         (userType) => (
           <Label.Generic
-            title={userType.getLocalizedDesc()}
             className={className.limitedWidth}
+            title={userType.getLocalizedDesc()}
           >
             {userType.label}
             <ComboBox
-              id={undefined}
-              model={userResource}
-              resource={userResource}
+              defaultValue={undefined}
               field={userType}
               fieldName={userType.name}
-              pickListName={undefined}
-              defaultValue={undefined}
-              mode={mode}
-              isRequired={true}
-              isDisabled={false}
               formType="form"
+              id={undefined}
+              isDisabled={false}
+              isRequired
+              mode={mode}
+              model={userResource}
+              pickListName={undefined}
+              resource={userResource}
             />
           </Label.Generic>
         )

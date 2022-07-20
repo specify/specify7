@@ -25,12 +25,12 @@ import { BaseTableSelection } from './wbplanviewstate';
 // General definitions
 export type Status = {
   readonly uploaderstatus: {
-    readonly operation: 'validating' | 'uploading' | 'unuploading';
+    readonly operation: 'unuploading' | 'uploading' | 'validating';
     readonly taskid: string;
   };
 } & (
   | {
-      readonly taskstatus: 'PENDING' | 'FAILURE';
+      readonly taskstatus: 'FAILURE' | 'PENDING';
       readonly taskinfo: 'None';
     }
   | {
@@ -64,7 +64,7 @@ export type Dataset = DatasetBrief & {
   readonly rowresults: RA<UploadResult> | null;
   readonly rows: RA<RA<string>>;
   readonly uploadplan: UploadPlan | null;
-  readonly visualorder: null | RA<number>;
+  readonly visualorder: RA<number> | null;
 };
 
 export type WbPlanViewProps = {
@@ -86,16 +86,15 @@ export function WbPlanView({
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
-    | State<'SelectBaseTable'>
-    | State<
+    State<
         'MappingState',
         {
-          changesMade: boolean;
-          baseTableName: keyof Tables;
-          lines: RA<MappingLine>;
-          mustMatchPreferences: IR<boolean>;
+          readonly changesMade: boolean;
+          readonly baseTableName: keyof Tables;
+          readonly lines: RA<MappingLine>;
+          readonly mustMatchPreferences: IR<boolean>;
         }
-      >
+      > | State<'SelectBaseTable'>
   >(
     React.useCallback(
       () =>
@@ -114,14 +113,8 @@ export function WbPlanView({
 
   return state.type === 'SelectBaseTable' ? (
     <BaseTableSelection
+      headers={headers}
       onClose={(): void => goTo(`/workbench/${dataset.id}/`)}
-      onSelectTemplate={(uploadPlan, headers): void =>
-        setState({
-          type: 'MappingState',
-          changesMade: true,
-          ...getLinesFromUploadPlan(headers, uploadPlan),
-        })
-      }
       onSelected={(baseTableName): void =>
         setState({
           type: 'MappingState',
@@ -135,16 +128,22 @@ export function WbPlanView({
           mustMatchPreferences: {},
         })
       }
-      headers={headers}
+      onSelectTemplate={(uploadPlan, headers): void =>
+        setState({
+          type: 'MappingState',
+          changesMade: true,
+          ...getLinesFromUploadPlan(headers, uploadPlan),
+        })
+      }
     />
   ) : (
     <WbPlanViewMapper
-      isReadOnly={isReadOnly}
-      changesMade={state.changesMade}
       baseTableName={state.baseTableName}
+      changesMade={state.changesMade}
+      dataset={dataset}
+      isReadOnly={isReadOnly}
       lines={state.lines}
       mustMatchPreferences={state.mustMatchPreferences}
-      dataset={dataset}
       onChangeBaseTable={(): void =>
         setState({
           type: 'SelectBaseTable',

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormType } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
@@ -7,7 +8,6 @@ import type { ContextType } from '../types';
 import { Label, Select } from './basic';
 import { OrderPicker } from './preferencesrenderers';
 import type { SubViewContext } from './subview';
-import { commonText } from '../localization/common';
 
 export function SubViewPreferences({
   subView,

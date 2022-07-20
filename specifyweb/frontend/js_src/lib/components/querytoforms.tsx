@@ -19,8 +19,8 @@ export function QueryToForms({
   totalCount,
 }: {
   readonly model: SpecifyModel;
-  readonly results: RA<RA<string | number | null> | undefined>;
-  readonly selectedRows: Set<number>;
+  readonly results: RA<RA<number | string | null> | undefined>;
+  readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
   readonly onDelete: (index: number) => void;
   readonly totalCount: number | undefined;
@@ -38,34 +38,34 @@ export function QueryToForms({
   return (
     <>
       <Button.Small
-        onClick={handleOpen}
         disabled={results.length === 0 || totalCount === undefined}
+        onClick={handleOpen}
       >
         {commonText('browseInForms')}
       </Button.Small>
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
-          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
-          ids={ids}
-          newResource={undefined}
+          canAddAnother={false}
+          canRemove={false}
           defaultIndex={0}
+          dialog="modal"
+          ids={ids}
+          isDependent={false}
+          mode="edit"
           model={model}
+          newResource={undefined}
+          title={queryText('queryResults', model.label)}
+          totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
+          urlContext={false}
           onAdd={undefined}
+          onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
+          onSaved={f.void}
           onSlide={(index): void =>
             selectedRows.size === 0 && results[index] === undefined
               ? handleFetchMore?.(index)
               : undefined
           }
-          dialog="modal"
-          onClose={handleClose}
-          onSaved={f.void}
-          isDependent={false}
-          title={queryText('queryResults', model.label)}
-          mode="edit"
-          canAddAnother={false}
-          canRemove={false}
-          urlContext={false}
         />
       ) : undefined}
     </>
@@ -73,8 +73,8 @@ export function QueryToForms({
 }
 
 export function useSelectedResults(
-  results: RA<RA<string | number | null> | undefined>,
-  selectedRows: Set<number>,
+  results: RA<RA<number | string | null> | undefined>,
+  selectedRows: ReadonlySet<number>,
   isOpen: boolean
 ): RA<number | undefined> {
   const [ids, setIds] = React.useState<RA<number>>([]);

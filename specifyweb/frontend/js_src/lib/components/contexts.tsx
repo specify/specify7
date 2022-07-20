@@ -84,12 +84,12 @@ export function Contexts({
     <ErrorBoundary>
       <ErrorContext.Provider value={handleError}>
         {errors}
-        <LoadingContext.Provider value={handle} key="loadingContext">
+        <LoadingContext.Provider key="loadingContext" value={handle}>
           <Dialog
-            isOpen={isLoading}
-            header={commonText('loading')}
-            className={{ container: dialogClassNames.narrowContainer }}
             buttons={undefined}
+            className={{ container: dialogClassNames.narrowContainer }}
+            header={commonText('loading')}
+            isOpen={isLoading}
             onClose={undefined}
           >
             {loadingBar}
@@ -130,7 +130,7 @@ export type FormMeta = {
 
 export const FormContext = React.createContext<
   Readonly<
-    [
+    readonly [
       meta: FormMeta,
       setMeta:
         | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)

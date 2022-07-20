@@ -13,7 +13,7 @@ import { isFunction } from '../types';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 
-type Buckets = {
+type Buckets = { readonly
   [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
     number,
     SpecifyResource<Tables[TABLE_NAME]>
@@ -22,13 +22,13 @@ type Buckets = {
 
 type Store<
   BUCKETS extends Record<
-    string | number,
-    Record<string | number, object | boolean | string | number>
+    number | string,
+    Record<number | string, boolean | number | object | string>
   >
-> = {
+> = { readonly
   [BUCKET_NAME in keyof BUCKETS]: {
-    listeners: (() => void)[];
-    readonly values: {
+    readonly listeners: readonly (() => void)[];
+    readonly values: { readonly
       [KEY in keyof BUCKETS[BUCKET_NAME]]?: Promise<
         BUCKETS[BUCKET_NAME][KEY] | undefined
       >;
@@ -56,7 +56,7 @@ export function useStore<
   id: ID,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean
-): [
+): readonly [
   state: Buckets[BUCKET_NAME][ID] | undefined,
   setState: React.Dispatch<
     React.SetStateAction<Buckets[BUCKET_NAME][ID] | undefined>
@@ -115,7 +115,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
   loadingScreen: boolean
-): [
+): readonly [
   state: Buckets[`/api/specify/${TABLE_NAME}/`][number] | undefined,
   setState: React.Dispatch<
     React.SetStateAction<

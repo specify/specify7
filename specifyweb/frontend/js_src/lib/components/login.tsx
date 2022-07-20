@@ -6,18 +6,18 @@ import '../../css/main.css';
 
 import React from 'react';
 
+import { parseDjangoDump } from '../csrftoken';
 import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Submit } from './basic';
+import { LoadingContext } from './contexts';
 import { useTitle, useValidation } from './hooks';
 import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
 import { entrypoint, SplashScreen } from './splashscreen';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
-import { LoadingContext } from './contexts';
-import { parseDjangoDump } from '../csrftoken';
 
 function Login({
   data,
@@ -33,7 +33,7 @@ function Login({
           readonly provider_title: string;
         };
     readonly passwordErrors: RA<string>;
-    readonly languages: RA<Readonly<[code: Language, name: string]>>;
+    readonly languages: RA<readonly [code: Language, name: string]>;
     readonly csrfToken: string;
   };
   readonly nextUrl: string;
@@ -71,32 +71,32 @@ function Login({
       )}
       <Form method="post">
         <input
-          type="hidden"
           name="csrfmiddlewaretoken"
+          type="hidden"
           value={data.csrfToken}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Generic>
           {commonText('username')}
           <Input.Text
-            required={true}
-            name="username"
-            defaultValue={''}
+            defaultValue=""
             forwardRef={validationRef}
+            name="username"
+            required
           />
         </Label.Generic>
         <Label.Generic>
           {commonText('password')}
           <Input.Generic
-            type="password"
-            required={true}
-            name="password"
-            defaultValue={''}
+            defaultValue=""
             forwardRef={passwordRef}
+            name="password"
+            required
+            type="password"
           />
         </Label.Generic>
-        <input type="hidden" name="next" value={nextUrl} />
-        <input type="hidden" name="this_is_the_login_form" value="1" />
+        <input name="next" type="hidden" value={nextUrl} />
+        <input name="this_is_the_login_form" type="hidden" value="1" />
         <Submit.Fancy className="mt-1">{commonText('login')}</Submit.Fancy>
       </Form>
     </SplashScreen>

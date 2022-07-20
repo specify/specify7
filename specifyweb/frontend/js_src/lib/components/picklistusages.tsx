@@ -42,19 +42,19 @@ function PickListUsagesDialog({
   const query = usePickListQuery(pickList);
   return (
     <Dialog
-      header={pickList.specifyModel.label}
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-      onClose={handleClose}
       className={{
         container: dialogClassNames.wideContainer,
       }}
+      header={pickList.specifyModel.label}
+      onClose={handleClose}
     >
       <QueryBuilder
-        query={query}
+        autoRun
+        isEmbedded
         isReadOnly={false}
+        query={query}
         recordSet={undefined}
-        isEmbedded={true}
-        autoRun={true}
       />
     </Dialog>
   );

@@ -22,9 +22,9 @@ const fetchBlockers = async (
 ): Promise<RA<DeleteBlocker>> =>
   ajax<
     RA<{
-      table: keyof Tables;
-      field: string;
-      id: number;
+      readonly table: keyof Tables;
+      readonly field: string;
+      readonly id: number;
     }>
   >(
     `/api/delete_blockers/${resource.specifyModel.name.toLowerCase()}/${
@@ -83,11 +83,11 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   return (
     <>
       <ButtonComponent
+        title={isBlocked ? formsText('deleteBlockedDialogHeader') : undefined}
         onClick={(): void => {
           handleOpen();
           setDeferred(false);
         }}
-        title={isBlocked ? formsText('deleteBlockedDialogHeader') : undefined}
       >
         {Array.isArray(blockers) && blockers.length > 0
           ? icons.exclamation
@@ -97,9 +97,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
       {isOpen ? (
         blockers === undefined ? (
           <Dialog
-            header={commonText('loading')}
-            className={{ container: dialogClassNames.narrowContainer }}
             buttons={commonText('cancel')}
+            className={{ container: dialogClassNames.narrowContainer }}
+            header={commonText('loading')}
             onClose={handleClose}
           >
             {formsText('checkingIfResourceCanBeDeleted')}
@@ -107,14 +107,6 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           </Dialog>
         ) : blockers.length === 0 ? (
           <Dialog
-            header={formsText(
-              'deleteConfirmationDialogHeader',
-              resource.specifyModel.label
-            )}
-            onClose={handleClose}
-            className={{
-              container: dialogClassNames.narrowContainer,
-            }}
             buttons={
               <>
                 <Button.Red
@@ -133,13 +125,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               </>
             }
+            className={{
+              container: dialogClassNames.narrowContainer,
+            }}
+            header={formsText(
+              'deleteConfirmationDialogHeader',
+              resource.specifyModel.label
+            )}
+            onClose={handleClose}
           >
             {deletionMessage}
           </Dialog>
         ) : (
           <DeleteBlocked
-            resource={resource}
             blockers={blockers}
+            resource={resource}
             onClose={handleClose}
             onDeleted={(): void => setBlockers([])}
           />

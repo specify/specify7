@@ -149,29 +149,29 @@ export function AttachmentCell({
                       )
                 }
               >
-                <TableIcon name={model?.name ?? 'Attachment'} label />
+                <TableIcon label name={model?.name ?? 'Attachment'} />
               </Button.LikeLink>
             )}
           <Button.Icon
+            aria-pressed={isMetaOpen}
             className="absolute top-0 right-0"
+            icon="informationCircle"
             title={commonText('metadata')}
             onClick={handleMetaToggle}
-            icon="informationCircle"
-            aria-pressed={isMetaOpen}
           />
           {isMetaOpen && (
             <ResourceView
-              title={title}
-              resource={resource}
-              dialog="modal"
-              onClose={handleMetaClose}
               canAddAnother={false}
+              dialog="modal"
+              isDependent={false}
               isSubForm={false}
               mode="edit"
+              resource={resource}
+              title={title}
+              viewName={originalAttachmentsView}
+              onClose={handleMetaClose}
               onDeleted={undefined}
               onSaved={undefined}
-              viewName={originalAttachmentsView}
-              isDependent={false}
             />
           )}
         </>
@@ -194,12 +194,12 @@ export function AttachmentCell({
           }
         >
           <img
+            alt={attachment?.title || thumbnail.alt}
             className={`
               max-h-full max-w-full border-8 border-white object-contain
               dark:border-black
             `}
             src={thumbnail.src}
-            alt={attachment?.title || thumbnail.alt}
             style={{
               width: `${thumbnail.width}px`,
               height: `${thumbnail.height}px`,
@@ -293,7 +293,7 @@ export function AttachmentsView(): JSX.Element {
           },
           filter.type === 'unused'
             ? { tableId__isNull: 'true' }
-            : filter.type === 'byTable'
+            : (filter.type === 'byTable'
             ? {
                 tableId: schema.models[filter.tableName].tableId,
               }
@@ -303,7 +303,7 @@ export function AttachmentsView(): JSX.Element {
                 tableId__in: filteredTables()
                   .map(({ tableId }) => tableId)
                   .join(','),
-              }
+              })
         ),
       [order, filter]
     )
@@ -348,7 +348,7 @@ export function AttachmentsView(): JSX.Element {
               {filteredTables()
                 .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
                 .map(({ name, label }) => (
-                  <option value={name} key={name}>
+                  <option key={name} value={name}>
                     {label}
                     {typeof collectionSizes === 'object'
                       ? ` (${collectionSizes.byTable[name]})`
@@ -372,9 +372,9 @@ export function AttachmentsView(): JSX.Element {
         <Label.ForCheckbox>
           {commonText('scale')}
           <Input.Generic
-            type="range"
-            min={minScale}
             max={maxScale}
+            min={minScale}
+            type="range"
             value={scale}
             onValueChange={(value) => setScale(Number.parseInt(value))}
           />
@@ -386,8 +386,8 @@ export function AttachmentsView(): JSX.Element {
           typeof collection === 'object' &&
           collection.totalCount === collection.records.length
         }
-        onFetchMore={fetchMore}
         scale={scale}
+        onFetchMore={fetchMore}
       />
     </Container.FullGray>
   );
@@ -435,18 +435,18 @@ function Gallery({
       <Container.Base
         className="grid flex-1 grid-cols-[repeat(auto-fit,minmax(var(--scale),1fr))] items-center
           gap-4"
+        forwardRef={containerRef}
         style={
           {
             '--scale': `${scale}rem`,
           } as React.CSSProperties
         }
-        forwardRef={containerRef}
         onScroll={isComplete ? undefined : fillPage}
       >
         {attachments.map((attachment, index) => (
           <AttachmentCell
-            key={index}
             attachment={attachment}
+            key={index}
             onViewRecord={(model, id): void =>
               setViewRecord(new model.Resource({ id }))
             }
@@ -459,15 +459,15 @@ function Gallery({
       {typeof viewRecord === 'object' && (
         <ErrorBoundary dismissable>
           <ResourceView
-            resource={viewRecord}
+            canAddAnother={false}
             dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            mode="edit"
+            resource={viewRecord}
             onClose={(): void => setViewRecord(undefined)}
             onDeleted={undefined}
             onSaved={undefined}
-            canAddAnother={false}
-            isSubForm={false}
-            mode="edit"
-            isDependent={false}
           />
         </ErrorBoundary>
       )}

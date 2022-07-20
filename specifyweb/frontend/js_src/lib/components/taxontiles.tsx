@@ -57,8 +57,8 @@ export function TaxonTiles(): JSX.Element {
         </p>
       )}
       <svg
-        ref={setContainer}
         className="w-full flex-1 bg-black dark:bg-neutral-700"
+        ref={setContainer}
       />
     </div>
   );
@@ -87,7 +87,7 @@ function useTreeData(): ReturnType<typeof mergeNodes> | undefined {
       async () =>
         ajax<
           RA<
-            [
+            readonly [
               id: number,
               rankId: number,
               parentId: number,

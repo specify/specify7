@@ -25,7 +25,7 @@ function TableResults({
 }): JSX.Element {
   return (
     <li className="flex items-center gap-1">
-      <TableIcon name={tableName} label={false} />
+      <TableIcon label={false} name={tableName} />
       <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
     </li>
   );
@@ -60,8 +60,8 @@ export function WbUploaded({
           .map(([tableName, recordCount], index) => (
             <TableResults
               key={index}
-              tableName={tableName}
               recordCount={recordCount}
+              tableName={tableName}
             />
           ))}
       </Ul>

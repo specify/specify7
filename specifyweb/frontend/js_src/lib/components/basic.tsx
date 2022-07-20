@@ -20,7 +20,7 @@ import { icons } from './icons';
 
 export type RawTagProps<TAG extends keyof React.ReactHTML> = Exclude<
   Parameters<React.ReactHTML[TAG]>[0],
-  undefined | null
+  null | undefined
 >;
 
 /**
@@ -66,10 +66,10 @@ function wrap<
   className: string,
   initialProps?:
     | TagProps<TAG>
-    | ((props: TagProps<TAG> & Readonly<EXTRA_PROPS>) => TagProps<TAG>)
+    | ((props: Readonly<EXTRA_PROPS> & TagProps<TAG>) => TagProps<TAG>)
 ) {
   const wrapped = (
-    props: TagProps<TAG> & Readonly<EXTRA_PROPS>
+    props: Readonly<EXTRA_PROPS> & TagProps<TAG>
   ): JSX.Element => {
     // Merge classNames
     const fullClassName =
@@ -173,23 +173,27 @@ export const className = {
   dataEntryVisit: '!text-blue-700 print:hidden',
 } as const;
 
-const dataEntryButton =
-  (className: string, title: string, icon: keyof typeof icons) =>
-  (
-    props: Omit<TagProps<'button'>, 'type' | 'children'> & {
+const dataEntryButton = (
+  className: string,
+  title: string,
+  icon: keyof typeof icons
+) =>
+  function (
+    props: Omit<TagProps<'button'>, 'children' | 'type'> & {
       readonly onClick:
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
     }
-  ): JSX.Element =>
-    (
+  ): JSX.Element {
+    return (
       <Button.Icon
         className={`${className} ${props.className ?? ''}`}
-        title={title}
         icon={icon}
+        title={title}
         {...props}
       />
     );
+  };
 
 /**
  * Components for Specify Form
@@ -200,9 +204,9 @@ export const DataEntry = {
   Grid: wrap<
     'div',
     {
-      viewDefinition: ViewDescription;
-      flexibleColumnWidth: boolean;
-      display: 'inline' | 'block';
+      readonly viewDefinition: ViewDescription;
+      readonly flexibleColumnWidth: boolean;
+      readonly display: 'block' | 'inline';
     }
   >(
     'DataEntry.Grid',
@@ -241,9 +245,9 @@ export const DataEntry = {
   Cell: wrap<
     'div',
     {
-      colSpan: number;
-      align: string;
-      visible: boolean;
+      readonly colSpan: number;
+      readonly align: string;
+      readonly visible: boolean;
     }
   >(
     'DataEntry.Cell',
@@ -304,10 +308,10 @@ export const DataEntry = {
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        href={resource.viewUrl()}
         aria-label={formsText('visit')}
-        title={formsText('visit')}
         className={className.dataEntryVisit}
+        href={resource.viewUrl()}
+        title={formsText('visit')}
       />
     ) : null;
   },
@@ -379,11 +383,11 @@ export const Input = {
   Radio: wrap<
     'input',
     {
-      readOnly?: never;
-      isReadOnly?: boolean;
-      type?: never;
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly type?: never;
       // This is used to forbid accidentally passing children
-      children?: undefined;
+      readonly children?: undefined;
     }
   >(
     'Input.Radio',
@@ -419,11 +423,11 @@ export const Input = {
   Checkbox: wrap<
     'input',
     {
-      onValueChange?: (isChecked: boolean) => void;
-      readOnly?: never;
-      isReadOnly?: boolean;
-      type?: never;
-      children?: undefined;
+      readonly onValueChange?: (isChecked: boolean) => void;
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly type?: never;
+      readonly children?: undefined;
     }
   >(
     'Input.Checkbox',
@@ -444,11 +448,11 @@ export const Input = {
   Text: wrap<
     'input',
     {
-      onValueChange?: (value: string) => void;
-      type?: 'If you need to specify type, use Input.Generic';
-      readOnly?: never;
-      isReadOnly?: boolean;
-      children?: undefined;
+      readonly onValueChange?: (value: string) => void;
+      readonly type?: 'If you need to specify type, use Input.Generic';
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly children?: undefined;
     }
   >(
     'Input.Text',
@@ -468,11 +472,11 @@ export const Input = {
   Generic: wrap<
     'input',
     {
-      onValueChange?: (value: string) => void;
-      onDatePaste?: (value: string) => void;
-      readOnly?: never;
-      isReadOnly?: boolean;
-      children?: undefined;
+      readonly onValueChange?: (value: string) => void;
+      readonly onDatePaste?: (value: string) => void;
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly children?: undefined;
     }
   >(
     'Input.Generic',
@@ -525,11 +529,11 @@ export const Input = {
   Number: wrap<
     'input',
     {
-      onValueChange?: (value: number) => void;
-      type?: never;
-      readOnly?: never;
-      isReadOnly?: boolean;
-      children?: undefined;
+      readonly onValueChange?: (value: number) => void;
+      readonly type?: never;
+      readonly readOnly?: never;
+      readonly isReadOnly?: boolean;
+      readonly children?: undefined;
     }
   >(
     'Input.Number',
@@ -552,11 +556,11 @@ export const Input = {
 export const Textarea = wrap<
   'textarea',
   {
-    children?: undefined;
-    onValueChange?: (value: string) => void;
-    readOnly?: never;
-    isReadOnly?: boolean;
-    autoGrow?: boolean;
+    readonly children?: undefined;
+    readonly onValueChange?: (value: string) => void;
+    readonly readOnly?: never;
+    readonly isReadOnly?: boolean;
+    readonly autoGrow?: boolean;
   }
 >(
   'Textarea',
@@ -640,7 +644,7 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
   className: string,
   initialProps?:
     | TagProps<'a'>
-    | ((props: TagProps<'a'> & Readonly<EXTRA_PROPS>) => TagProps<'a'>)
+    | ((props: Readonly<EXTRA_PROPS> & TagProps<'a'>) => TagProps<'a'>)
 ) =>
   wrap<'a', EXTRA_PROPS & { readonly href: string | undefined }>(
     name,
@@ -829,7 +833,7 @@ const submitButton = (name: string, buttonClassName: string) =>
     ({
       children,
       ...props
-    }: TagProps<'input'> & SubmitProps): TagProps<'input'> => ({
+    }: SubmitProps & TagProps<'input'>): TagProps<'input'> => ({
       type: 'submit',
       ...props,
       value: children,

@@ -12,7 +12,7 @@ export function QueryTreeUsages({
   readonly resource: SpecifyResource<AnyTree>;
 }): JSX.Element {
   return (
-    <ProtectedAction resource="/querybuilder/query" action="execute">
+    <ProtectedAction action="execute" resource="/querybuilder/query">
       <Link.LikeButton
         href={`/specify/query/fromtree/${resource.specifyModel.name.toLowerCase()}/${
           resource.id

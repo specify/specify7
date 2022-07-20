@@ -32,15 +32,15 @@ function TemplateSelection({
     <>
       {isInvalid && (
         <Dialog
+          buttons={commonText('close')}
           header={wbText('noUploadPlanDialogHeader')}
           onClose={handleValid}
-          buttons={commonText('close')}
         >
           {wbText('invalidTemplateDialogText')}
         </Dialog>
       )}
       <WbsDialog
-        showTemplates={true}
+        showTemplates
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>
           loading(
@@ -94,11 +94,6 @@ export function BaseTableSelection({
     />
   ) : (
     <Dialog
-      header={wbText('selectBaseTableDialogTitle')}
-      onClose={handleClose}
-      className={{
-        container: `${dialogClassNames.narrowContainer} h-1/2`,
-      }}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -107,6 +102,11 @@ export function BaseTableSelection({
           </Button.Blue>
         </>
       }
+      className={{
+        container: `${dialogClassNames.narrowContainer} h-1/2`,
+      }}
+      header={wbText('selectBaseTableDialogTitle')}
+      onClose={handleClose}
     >
       <ListOfBaseTables
         showHiddenTables={showHiddenTables}

@@ -20,7 +20,7 @@ import { useBooleanState, useId } from './hooks';
 import { Dialog } from './modaldialog';
 import type { NewRole, Role } from './securityrole';
 
-type Category = 'changed' | 'unchanged' | 'created';
+type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
   changed: adminText('updateExistingRoles'),
   unchanged: adminText('unchangedRoles'),
@@ -50,7 +50,7 @@ export function SecurityImportExport({
     | RR<
         Category,
         | RA<{
-            readonly role: Role | NewRole;
+            readonly role: NewRole | Role;
             readonly isChecked: boolean;
           }>
         | undefined
@@ -84,11 +84,6 @@ export function SecurityImportExport({
       </Button.Blue>
       {isOpen && (
         <Dialog
-          header={commonText('import')}
-          onClose={(): void => {
-            setNewRoles(undefined);
-            handleClose();
-          }}
           buttons={
             <>
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -97,6 +92,11 @@ export function SecurityImportExport({
               </Submit.Green>
             </>
           }
+          header={commonText('import')}
+          onClose={(): void => {
+            setNewRoles(undefined);
+            handleClose();
+          }}
         >
           <Form
             id={id('form')}
@@ -171,7 +171,7 @@ export function SecurityImportExport({
                               filterArray(
                                 newRoles
                                   .map((newRole) =>
-                                    replaceKey<Role | NewRole>(
+                                    replaceKey<NewRole | Role>(
                                       newRole,
                                       'id',
                                       Object.values(roles ?? {})?.find(
@@ -182,7 +182,7 @@ export function SecurityImportExport({
                                   .map((newRole) =>
                                     f.var(
                                       typeof newRole.id === 'number'
-                                        ? JSON.stringify(
+                                        ? (JSON.stringify(
                                             removeKey(
                                               defined(roles)[newRole.id],
                                               'id'
@@ -192,7 +192,7 @@ export function SecurityImportExport({
                                             removeKey(newRole, 'id')
                                           )
                                           ? 'unchanged'
-                                          : 'changed'
+                                          : 'changed')
                                         : 'created',
                                       (groupName) =>
                                         (groupName === 'changed' &&

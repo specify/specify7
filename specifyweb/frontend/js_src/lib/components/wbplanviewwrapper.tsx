@@ -8,10 +8,10 @@ import React from 'react';
 
 import { ajax, Http } from '../ajax';
 import { f } from '../functools';
-import { NotFoundView } from './notfoundview';
 import { hasPermission } from '../permissionutils';
 import { treeRanksPromise } from '../treedefinitions';
 import { useAsyncState } from './hooks';
+import { NotFoundView } from './notfoundview';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 
@@ -49,11 +49,9 @@ export function WbPlanViewWrapper({
 
   return dataSet === false ? (
     <NotFoundView />
-  ) : typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
+  ) : (typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
     <WbPlanView
       dataset={dataSet}
-      uploadPlan={dataSet.uploadplan}
-      // Reorder headers if needed
       headers={
         dataSet.visualorder === null
           ? dataSet.columns
@@ -61,11 +59,13 @@ export function WbPlanViewWrapper({
               (physicalCol) => dataSet.columns[physicalCol]
             )
       }
+      // Reorder headers if needed
       isReadOnly={
         (!hasPermission('/workbench/dataset', 'update') ||
           dataSet.uploadresult?.success) ??
         false
       }
+      uploadPlan={dataSet.uploadplan}
     />
-  ) : null;
+  ) : null);
 }

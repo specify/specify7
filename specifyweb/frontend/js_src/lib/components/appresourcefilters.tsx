@@ -33,10 +33,10 @@ export function AppResourcesFilters({
       <Button.Blue onClick={handleOpen}>{adminText('filters')}</Button.Blue>
       {isOpen && (
         <Dialog
-          header={adminText('filters')}
-          onClose={handleClose}
           buttons={commonText('close')}
+          header={adminText('filters')}
           modal={false}
+          onClose={handleClose}
         >
           <Ul>
             <li>

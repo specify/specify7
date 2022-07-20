@@ -11,7 +11,7 @@ import { useAsyncState } from './hooks';
  */
 export function useCollection<SCHEMA extends AnySchema>(
   fetch: (offset: number) => Promise<SerializedCollection<SCHEMA>>
-): Readonly<[SerializedCollection<SCHEMA> | undefined, () => Promise<void>]> {
+): readonly [SerializedCollection<SCHEMA> | undefined, () => Promise<void>] {
   const fetchRef = React.useRef<
     Promise<SerializedCollection<SCHEMA> | undefined> | undefined
   >(undefined);

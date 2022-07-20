@@ -34,7 +34,7 @@ import { usePref } from './preferenceshooks';
 export function AppResourceIcon({
   resource,
 }: {
-  readonly resource: SerializedResource<SpViewSetObject | SpAppResource>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
 }): JSX.Element {
   const tableName = tableFromUrl(resource.resource_uri ?? '');
   if (tableName === 'SpViewSetObj') return appResourceTypes.viewSets.icon;
@@ -58,8 +58,8 @@ export function AppResourceEditButton({
       <DataEntry.Edit onClick={handleEditingMeta} />
       {isEditingMeta && (
         <Dialog
-          header={title}
           buttons={commonText('close')}
+          header={title}
           onClose={handleEditedMeta}
         >
           {children}
@@ -83,11 +83,12 @@ export function AppResourceLoad({
       </Button.Green>
       {isOpen && (
         <Dialog
+          buttons={commonText('cancel')}
           header={adminText('loadFile')}
           onClose={handleClose}
-          buttons={commonText('cancel')}
         >
           <FilePicker
+            acceptedFormats={undefined}
             onSelected={(file): void =>
               loading(
                 fileToText(file)
@@ -95,7 +96,6 @@ export function AppResourceLoad({
                   .finally(handleClose)
               )
             }
-            acceptedFormats={undefined}
           />
         </Dialog>
       )}
@@ -107,7 +107,7 @@ export function AppResourceDownload({
   resource,
   data,
 }: {
-  readonly resource: SerializedResource<SpViewSetObject | SpAppResource>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly data: string;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
@@ -156,9 +156,9 @@ export function useCodeMirrorExtensions(
     const language =
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
-        : mode === 'properties'
+        : (mode === 'properties'
         ? [StreamLanguage.define(properties)]
-        : [xml(), xmlLinter(handleLinted)];
+        : [xml(), xmlLinter(handleLinted)]);
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

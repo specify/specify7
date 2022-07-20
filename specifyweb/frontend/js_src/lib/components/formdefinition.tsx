@@ -36,8 +36,8 @@ function FormDefinitionDialog({
 }): JSX.Element {
   return (
     <Dialog
-      header={commonText('formDefinition')}
       buttons={commonText('close')}
+      header={commonText('formDefinition')}
       onClose={handleClose}
     >
       <UseAutoForm model={model} />
@@ -87,7 +87,7 @@ function UseLabels(): JSX.Element {
 function EditFormDefinition(): JSX.Element {
   const viewDefinitionLink = useFormDefinition();
   return (
-    <ProtectedTool tool="resources" action="read">
+    <ProtectedTool action="read" tool="resources">
       {typeof viewDefinitionLink === 'string' && (
         <Link.NewTab href={viewDefinitionLink}>
           {formsText('editFormDefinition')}

@@ -32,14 +32,14 @@ import { ErrorBoundary, softFail } from './errorboundary';
 import { useBooleanState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
 
-type LoadedAction = Action<'LoadedAction', { version: string }>;
+type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 
-type GetPinInfoAction = Action<'GetPinInfoAction', { index: number }>;
+type GetPinInfoAction = Action<'GetPinInfoAction', { readonly index: number }>;
 
-type IncomingMessage = LoadedAction | GetPinInfoAction;
+type IncomingMessage = GetPinInfoAction | LoadedAction;
 
 type IncomingMessageExtended = IncomingMessage & {
-  state: {
+  readonly state: {
     readonly sendMessage: (message: OutgoingMessage) => void;
     readonly resource:
       | SpecifyResource<CollectionObject>
@@ -102,13 +102,13 @@ const dispatch = generateDispatch<IncomingMessageExtended>({
 type BasicInformationAction = State<
   'BasicInformationAction',
   {
-    systemInfo: IR<unknown>;
-    leafletLayers: RR<
+    readonly systemInfo: IR<unknown>;
+    readonly leafletLayers: RR<
       'baseMaps' | 'overlays',
       IR<{
-        endpoint: string;
-        serverType: 'tileServer' | 'wms';
-        layerOptions: IR<unknown>;
+        readonly endpoint: string;
+        readonly serverType: 'tileServer' | 'wms';
+        readonly layerOptions: IR<unknown>;
       }>
     >;
   }
@@ -117,15 +117,15 @@ type BasicInformationAction = State<
 type LocalOccurrencesAction = State<
   'LocalOccurrencesAction',
   {
-    occurrences: RA<Omit<OccurrenceData, 'fetchMoreData'>>;
+    readonly occurrences: RA<Omit<OccurrenceData, 'fetchMoreData'>>;
   }
 >;
 
 type PointDataAction = State<
   'PointDataAction',
   {
-    index: number;
-    localityData: LocalityData;
+    readonly index: number;
+    readonly localityData: LocalityData;
   }
 >;
 
@@ -223,19 +223,19 @@ function SpecifyNetwork({
       {isPending && <LoadingScreen />}
       {hasFailure && (
         <Dialog
+          buttons={commonText('close')}
           header={specifyNetworkText('failedToOpenPopUpDialogHeader')}
           onClose={handleNoFailure}
-          buttons={commonText('close')}
         >
           {specifyNetworkText('failedToOpenPopUpDialogText')}
         </Dialog>
       )}
       <Link.Default
+        aria-label={specifyNetworkText('specifyNetwork')}
         href={getLink()}
+        rel="opener noreferrer"
         target="_blank"
         title={specifyNetworkText('specifyNetwork')}
-        aria-label={specifyNetworkText('specifyNetwork')}
-        rel="opener noreferrer"
         onClick={(event): void => {
           event.preventDefault();
           if (occurrenceName === undefined) handlePending();
@@ -243,9 +243,9 @@ function SpecifyNetwork({
         }}
       >
         <img
-          src="/static/img/specify_network_logo_long.svg"
           alt=""
           className="h-7"
+          src="/static/img/specify_network_logo_long.svg"
         />
       </Link.Default>
     </>
@@ -258,7 +258,7 @@ export function SpecifyNetworkBadge({
   readonly resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>;
 }): JSX.Element {
   return (
-    <ErrorBoundary silentErrors={true}>
+    <ErrorBoundary silentErrors>
       <SpecifyNetwork resource={resource} />
     </ErrorBoundary>
   );

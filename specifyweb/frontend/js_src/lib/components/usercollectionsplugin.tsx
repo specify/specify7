@@ -51,8 +51,6 @@ function UserCollectionsUi({
 
   return Array.isArray(allCollections) && Array.isArray(selected) ? (
     <Dialog
-      header={adminText('userCollectionsPluginDialogTitle')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
@@ -61,6 +59,8 @@ function UserCollectionsUi({
           )}
         </>
       }
+      header={adminText('userCollectionsPluginDialogTitle')}
+      onClose={handleClose}
     >
       <Form
         className="contents"
@@ -78,11 +78,11 @@ function UserCollectionsUi({
           <Label.ForCheckbox key={collection.id}>
             <Input.Checkbox
               checked={selected.includes(collection.id)}
-              onChange={(): void =>
-                setSelected(toggleItem(selected, collection.id))
-              }
               isReadOnly={
                 !hasPermission('/admin/user/sp6/collection_access', 'update')
+              }
+              onChange={(): void =>
+                setSelected(toggleItem(selected, collection.id))
               }
             />
             {collection.collectionName}
@@ -104,7 +104,6 @@ export function UserCollectionsPlugin({
   return (
     <>
       <Button.Small
-        onClick={handleOpen}
         className="w-fit"
         disabled={
           // Admin users have access to all collections
@@ -113,12 +112,13 @@ export function UserCollectionsPlugin({
         title={
           isAdmin
             ? adminText('notAvailableOnAdmins')
-            : user === undefined
+            : (user === undefined
             ? commonText('loading')
             : user.isNew()
             ? adminText('saveUserFirst')
-            : undefined
+            : undefined)
         }
+        onClick={handleOpen}
       >
         {adminText('setCollections')}
       </Button.Small>

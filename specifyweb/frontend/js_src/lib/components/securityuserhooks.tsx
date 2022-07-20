@@ -49,7 +49,7 @@ export function useCollectionRoles(
 export function useUserRoles(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>
-): [
+): readonly [
   userRoles: IR<RA<RoleBase> | undefined> | undefined,
   setUserRoles: (value: IR<RA<RoleBase> | undefined>) => void,
   initialRoles: React.MutableRefObject<IR<RA<RoleBase> | undefined>>,
@@ -146,7 +146,7 @@ export function useUserAgents(
               ] as const),
           async (divisions) =>
             (typeof userId === 'number'
-              ? hasTablePermission('Agent', 'read') &&
+              ? (hasTablePermission('Agent', 'read') &&
                 hasTablePermission('Division', 'read')
                 ? fetchCollection(
                     'Agent',
@@ -158,7 +158,7 @@ export function useUserAgents(
                       division__in: divisions.map(([id]) => id).join(','),
                     }
                   ).then(({ records }) => records)
-                : Promise.resolve([serializeResource(userInformation.agent)])
+                : Promise.resolve([serializeResource(userInformation.agent)]))
               : Promise.resolve([])
             ).then((agents) =>
               f.var(
@@ -196,7 +196,7 @@ export function useUserPolicies(
   userResource: SpecifyResource<SpecifyUser>,
   collections: RA<SerializedResource<Collection>>,
   initialCollection: number | undefined
-): [
+): readonly [
   userPolicies: IR<RA<Policy> | undefined> | undefined,
   setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
   initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
@@ -267,7 +267,7 @@ export function useUserPolicies(
 /** Fetching user institutional policies */
 export function useUserInstitutionalPolicies(
   userResource: SpecifyResource<SpecifyUser>
-): [
+): readonly [
   institutionPolicies: RA<Policy> | undefined,
   setInstitutionPolicies: (value: RA<Policy>) => void,
   initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
@@ -279,7 +279,7 @@ export function useUserInstitutionalPolicies(
       async () =>
         userResource.isNew()
           ? []
-          : hasDerivedPermission(
+          : (hasDerivedPermission(
               '/permissions/institutional_policies/user',
               'read'
             )
@@ -293,7 +293,7 @@ export function useUserInstitutionalPolicies(
               initialInstitutionPolicies.current = policies;
               return policies;
             })
-          : undefined,
+          : undefined),
       [userResource]
     ),
     false

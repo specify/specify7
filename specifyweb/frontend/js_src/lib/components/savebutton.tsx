@@ -50,7 +50,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
    */
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
-  readonly onSaving?: () => void | undefined | boolean;
+  readonly onSaving?: () => boolean | undefined | void;
   readonly onSaved?: (payload: {
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
@@ -101,7 +101,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [formContext, setFormContext] = React.useContext(FormContext);
 
   async function handleSubmit(
-    event: SubmitEvent | React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | SubmitEvent,
     mode: 'addAnother' | 'clone' | 'save' = 'save'
   ): Promise<void> {
     if (!form.reportValidity()) return;
@@ -145,9 +145,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     const newResource =
       mode === 'clone'
         ? await resource.clone()
-        : mode === 'addAnother'
+        : (mode === 'addAnother'
         ? new resource.specifyModel.Resource()
-        : undefined;
+        : undefined);
     const wasNew = resource.isNew();
     const wasChanged = resource.needsSaved;
 
@@ -225,7 +225,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       ) : undefined}
       {canSave && (
         <SubmitComponent
-          form={formId}
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
           disabled={
             disabled ||
@@ -244,6 +243,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                */
               !resource.isNew())
           }
+          form={formId}
           onClick={(): void =>
             form.classList.remove(className.notSubmittedForm)
           }
@@ -253,20 +253,20 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       )}
       {isSaveConflict ? (
         <Dialog
-          header={formsText('saveConflictDialogHeader')}
           buttons={
             <Button.Red onClick={(): void => globalThis.location.reload()}>
               {commonText('close')}
             </Button.Red>
           }
+          header={formsText('saveConflictDialogHeader')}
           onClose={undefined}
         >
           {formsText('saveConflictDialogText')}
         </Dialog>
-      ) : showSaveBlockedDialog ? (
+      ) : (showSaveBlockedDialog ? (
         <Dialog
-          header={formsText('saveBlockedDialogHeader')}
           buttons={commonText('close')}
+          header={formsText('saveBlockedDialogHeader')}
           onClose={(): void => setShowBlockedDialog(false)}
         >
           <p>{formsText('saveBlockedDialogText')}</p>
@@ -299,7 +299,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             )}
           </Ul>
         </Dialog>
-      ) : undefined}
+      ) : undefined)}
     </>
   );
 }

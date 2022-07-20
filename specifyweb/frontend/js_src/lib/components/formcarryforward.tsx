@@ -22,8 +22,8 @@ export function CarryForwardButton({
   return (
     <>
       <Button.Small
-        onClick={handleOpen}
         title={formsText('carryForwardDescription')}
+        onClick={handleOpen}
       >
         {formsText('carryForward')}
       </Button.Small>
@@ -82,42 +82,42 @@ function CarryForwardConfig({
   const id = useId('form-carry-forward');
   return (
     <Dialog
-      header={formsText('carryForwardDescription')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.Green
-            onClick={(): void => handleChange(defaultConfig)}
             disabled={isDefaultConfig(config)}
+            onClick={(): void => handleChange(defaultConfig)}
           >
             {formsText('selectAll')}
           </Button.Green>
           <Button.Green
-            onClick={(): void => handleChange([])}
             disabled={config.length === 0}
+            onClick={(): void => handleChange([])}
           >
             {formsText('deselectAll')}
           </Button.Green>
-          <Submit.Blue onClick={handleClose} form={id('form')}>
+          <Submit.Blue form={id('form')} onClick={handleClose}>
             {commonText('close')}
           </Submit.Blue>
         </>
       }
+      header={formsText('carryForwardDescription')}
+      onClose={handleClose}
     >
       <Form id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
+            carryForward={config}
             fields={literalFields}
             uniqueFields={uniqueFields}
-            carryForward={config}
             onChange={handleChange}
           />
           <h3>{commonText('relationships')}</h3>
           <CarryForwardCategory
+            carryForward={config}
             fields={relationships}
             uniqueFields={uniqueFields}
-            carryForward={config}
             onChange={handleChange}
           />
         </div>
@@ -157,10 +157,10 @@ function CarryForwardCategory({
           >
             <Input.Checkbox
               checked={f.includes(carryForward, name)}
+              disabled={uniqueFields.includes(name)}
               onValueChange={(): void =>
                 handleChange(toggleItem(carryForward, name))
               }
-              disabled={uniqueFields.includes(name)}
             />
             {label}
           </Label.ForCheckbox>

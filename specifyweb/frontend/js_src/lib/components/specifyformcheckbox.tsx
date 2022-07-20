@@ -30,9 +30,9 @@ export function PrintOnSave({
     entry === true || (entry === undefined && defaultValue === true);
   const input = (
     <Input.Checkbox
+      checked={checked}
       id={id}
       name={fieldName}
-      checked={checked}
       onValueChange={(checked): void =>
         setTables({
           ...(typeof tables === 'object' ? tables : {}),
@@ -75,14 +75,14 @@ export function SpecifyFormCheckbox({
   );
   const input = (
     <Input.Checkbox
+      checked={value ?? false}
       forwardRef={validationRef}
       id={id}
-      name={fieldName}
-      checked={value ?? false}
-      onValueChange={updateValue}
       isReadOnly={
         isReadOnly || resource.specifyModel.getField(fieldName)?.isReadOnly
       }
+      name={fieldName}
+      onValueChange={updateValue}
       // Checkbox cannot be required as checkbox does not have a "null" state
     />
   );
