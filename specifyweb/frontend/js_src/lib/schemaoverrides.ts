@@ -84,11 +84,8 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
  *  instead of tableName===key
  */
 const endsWithTableOverwrites: IR<TableConfigOverwrite> = {
-  Authorization: 'hidden',
-  Variant: 'hidden',
   Def: 'system',
   Item: 'system',
-  Property: 'hidden',
 };
 
 // These field overrides apply to entire front-end
@@ -138,6 +135,9 @@ const globalFieldOverrides: {
     isAccepted: 'readOnly',
     acceptedStorage: 'readOnly',
     fullName: 'readOnly',
+  },
+  SpecifyUser: {
+    isAdmin: 'readOnly',
   },
 };
 
