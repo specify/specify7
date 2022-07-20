@@ -18,12 +18,12 @@ import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
 import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
+import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import { ResourceView } from '../resourceview';
-import { ErrorBoundary } from '../errorboundary';
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -34,7 +34,7 @@ export function TreeSelectDialog({
   confirmationMessage,
 }: {
   readonly onClose: () => void;
-  readonly onClick: undefined | ((tree: string) => Promise<void> | void);
+  readonly onClick: ((tree: string) => Promise<void> | void) | undefined;
   readonly title: string;
   readonly confirmationMessage?: string;
   readonly getLink: (tree: string) => string;
@@ -49,14 +49,14 @@ export function TreeSelectDialog({
 
   return typeof treeRanks === 'object' ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.tree}</span>}
-      header={title}
-      onClose={handleClose}
       buttons={
         <Button.Gray onClick={handleClose}>
           {isFinished ? commonText('close') : commonText('cancel')}
         </Button.Gray>
       }
+      header={title}
+      icon={<span className="text-blue-500">{icons.tree}</span>}
+      onClose={handleClose}
     >
       {isFinished ? (
         confirmationMessage
@@ -81,7 +81,6 @@ export function TreeSelectDialog({
                     <li key={treeName}>
                       <div className="flex gap-2">
                         <Link.Default
-                          href={getLink(treeName)}
                           className={`
                             flex-1
                             ${
@@ -90,6 +89,8 @@ export function TreeSelectDialog({
                                 : undefined
                             }
                           `}
+                          href={getLink(treeName)}
+                          title={treeDefinition?.get('remarks') ?? undefined}
                           onClick={(event): void => {
                             if (handleClick === undefined) return;
                             event.preventDefault();
@@ -101,9 +102,8 @@ export function TreeSelectDialog({
                               )
                             );
                           }}
-                          title={treeDefinition?.get('remarks') ?? undefined}
                         >
-                          <TableIcon name={treeName} label={false} />
+                          <TableIcon label={false} name={treeName} />
                           {treeDefinition?.get('name') ??
                             schema.models[treeName].label}
                         </Link.Default>
@@ -142,15 +142,15 @@ function RepairTree({
   }, [loading, handleClose]);
   return (
     <TreeSelectDialog
-      onClose={handleClose}
-      onClick={handleClick}
-      title={commonText('repairTree')}
       confirmationMessage={commonText('treeRepairComplete')}
-      // REFACTOR: handle this sort of thing though the routing library
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
       permissionName="repair"
+      title={commonText('repairTree')}
+      // REFACTOR: handle this sort of thing though the routing library
+      onClick={handleClick}
+      onClose={handleClose}
     />
   );
 }
@@ -166,15 +166,15 @@ export function EditTreeDefinition({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          resource={treeDefinition}
-          mode="edit"
           canAddAnother={false}
           dialog="modal"
-          onClose={handleClose}
-          onSaved={(): void => globalThis.location.reload()}
-          onDeleted={undefined}
-          isSubForm={false}
           isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={treeDefinition}
+          onClose={handleClose}
+          onDeleted={undefined}
+          onSaved={(): void => globalThis.location.reload()}
         />
       )}
     </ErrorBoundary>

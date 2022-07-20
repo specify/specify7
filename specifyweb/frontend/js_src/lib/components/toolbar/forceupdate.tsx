@@ -25,16 +25,14 @@ function ForceUpdateFeed({
 
   return isActivated ? (
     <Dialog
+      buttons={commonText('close')}
       header={commonText('feedExportStartedDialogHeader')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       {commonText('feedExportStartedDialogText')}
     </Dialog>
   ) : (
     <Dialog
-      header={commonText('updateExportFeedDialogHeader')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -53,6 +51,8 @@ function ForceUpdateFeed({
           </Button.Blue>
         </>
       }
+      header={commonText('updateExportFeedDialogHeader')}
+      onClose={handleClose}
     >
       {commonText('updateExportFeedDialogText')}
     </Dialog>

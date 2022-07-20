@@ -55,8 +55,8 @@ function QueryList({
       <thead>
         <tr>
           <th
-            scope="col"
             className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+            scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
               {commonText('name')}
@@ -93,14 +93,14 @@ function QueryList({
           <tr key={query.id} title={query.remarks ?? undefined}>
             <td>
               <Link.Default
+                className="overflow-x-auto"
                 href={
                   getQuerySelectUrl?.(query) ?? `/specify/query/${query.id}/`
                 }
-                className="overflow-x-auto"
               >
                 <TableIcon
-                  name={getModelById(query.contextTableId).name}
                   label
+                  name={getModelById(query.contextTableId).name}
                 />
                 {query.name}
               </Link.Default>
@@ -156,15 +156,12 @@ export function QueryToolbarItem({
 
   return isCreating ? (
     <QueryTables
-      queries={queries}
       isReadOnly={isReadOnly}
+      queries={queries}
       onClose={handleClose}
     />
-  ) : Array.isArray(queries) ? (
+  ) : (Array.isArray(queries) ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      header={commonText('queriesDialogTitle', queries.length)}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
@@ -176,14 +173,17 @@ export function QueryToolbarItem({
           )}
         </>
       }
+      header={commonText('queriesDialogTitle', queries.length)}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
     >
       <QueryList
-        queries={queries}
-        isReadOnly={isReadOnly}
         getQuerySelectUrl={getQuerySelectUrl}
+        isReadOnly={isReadOnly}
+        queries={queries}
       />
     </Dialog>
-  ) : null;
+  ) : null);
 }
 
 export const menuItem: MenuItem = {
@@ -198,9 +198,9 @@ export const menuItem: MenuItem = {
   view: ({ onClose: handleClose }) => (
     <ErrorBoundary dismissable>
       <QueryToolbarItem
-        onClose={handleClose}
         getQuerySelectUrl={undefined}
         isReadOnly={false}
+        onClose={handleClose}
       />
     </ErrorBoundary>
   ),

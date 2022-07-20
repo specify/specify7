@@ -22,6 +22,6 @@ export const menuItem: MenuItem = {
     ) &&
     hasToolPermission('recordSets', 'read'),
   view: ({ onClose: handleClose, urlParameter }) => (
-    <InteractionsDialog onClose={handleClose} urlParameter={urlParameter} />
+    <InteractionsDialog urlParameter={urlParameter} onClose={handleClose} />
   ),
 };

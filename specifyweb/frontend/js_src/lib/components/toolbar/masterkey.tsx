@@ -8,8 +8,8 @@ import React from 'react';
 import { ajax, formData, Http } from '../../ajax';
 import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
-import { LoadingContext } from '../contexts';
 import { CopyButton } from '../common';
+import { LoadingContext } from '../contexts';
 import { useId, useTitle, useValidation } from '../hooks';
 import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
@@ -34,14 +34,14 @@ function MasterKey({
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   ) : (
     <Dialog
-      header={commonText('generateMasterKeyDialogHeader')}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
         </>
       }
+      header={commonText('generateMasterKeyDialogHeader')}
+      onClose={handleClose}
     >
       <Form
         className="contents"
@@ -76,13 +76,13 @@ function MasterKey({
           {commonText('userPassword')}
           <Input.Generic
             forwardRef={validationRef}
+            required
             type="password"
             value={password}
             onChange={({ target }): void => {
               setPassword(target.value);
               target.setCustomValidity('');
             }}
-            required
           />
         </Label.Generic>
       </Form>
@@ -99,9 +99,9 @@ function ShowKey({
 }): JSX.Element {
   return (
     <Dialog
+      buttons={commonText('close')}
       header={commonText('masterKeyDialogHeader')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       <div className="grid grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-2">
         <Label.Generic className="contents">
@@ -109,9 +109,9 @@ function ShowKey({
             {commonText('masterKeyFieldLabel')}
           </span>
           <Input.Text
+            className="!cursor-pointer"
             isReadOnly
             value={masterKey}
-            className="!cursor-pointer"
           />
         </Label.Generic>
         <CopyButton text={masterKey} />

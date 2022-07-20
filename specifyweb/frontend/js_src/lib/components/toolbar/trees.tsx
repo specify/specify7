@@ -22,11 +22,11 @@ function RepairTree({
 
   return (
     <TreeSelectDialog
-      onClose={handleClose}
-      onClick={undefined}
-      title={commonText('treesDialogTitle')}
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
+      title={commonText('treesDialogTitle')}
+      onClick={undefined}
+      onClose={handleClose}
     />
   );
 }

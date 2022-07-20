@@ -60,25 +60,25 @@ function Table<
   );
   return (
     <div
-      role="table"
       className={`
         grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] overflow-auto
         rounded border
       `}
+      role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
     >
       <div role="row">
         {Object.entries(headers).map(([name, label]) => (
           <div
+            className="sticky top-0 border bg-[color:var(--background)] p-2 font-bold"
             key={name}
             role="columnheader"
-            className="sticky top-0 border bg-[color:var(--background)] p-2 font-bold"
           >
             <Button.LikeLink
               onClick={(): void => handleSort(name as FIELD_NAME)}
             >
               {label}
-              <SortIndicator sortConfig={sortConfig} fieldName={name} />
+              <SortIndicator fieldName={name} sortConfig={sortConfig} />
             </Button.LikeLink>
           </div>
         ))}
@@ -96,11 +96,11 @@ function Table<
           const key = row[indexColumn]?.toString();
           const link = getLink?.(row);
           return typeof link === 'string' ? (
-            <Link.Default href={link} role="row" key={key}>
+            <Link.Default href={link} key={key} role="row">
               {children}
             </Link.Default>
           ) : (
-            <div role="row" key={key}>
+            <div key={key} role="row">
               {children}
             </div>
           );
@@ -116,7 +116,7 @@ function Cell({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div role="cell" className="border p-2">
+    <div className="border p-2" role="cell">
       {children}
     </div>
   );
@@ -174,9 +174,9 @@ const fieldColumns = {
 } as const;
 
 type Value =
-  | [string | number | undefined, JSX.Element]
-  | string
   | number
+  | string
+  | readonly [number | string | undefined, JSX.Element]
   | undefined;
 type Row<COLUMNS extends string> = RR<COLUMNS, Value>;
 const getFields = (model: SpecifyModel): RA<Row<keyof typeof fieldColumns>> =>
@@ -206,15 +206,15 @@ function DataModelFields({
   return (
     <>
       <div className="flex items-center gap-2">
-        <TableIcon name={model.name} label={false} />
+        <TableIcon label={false} name={model.name} />
         <H2 className="text-2xl">{model.name}</H2>
       </div>
       <H3>{commonText('fields')}</H3>
       <Table
-        headers={fieldColumns}
         data={data}
-        sortName="dataModelFields"
         getLink={undefined}
+        headers={fieldColumns}
+        sortName="dataModelFields"
       />
     </>
   );
@@ -249,7 +249,7 @@ const getRelationships = (
     relatedModel: [
       field.relatedModel.name.toLowerCase(),
       <>
-        <TableIcon name={field.relatedModel.name} label={false} />
+        <TableIcon label={false} name={field.relatedModel.name} />
         {field.relatedModel.name}
       </>,
     ],
@@ -267,14 +267,14 @@ function DataModelRelationships({
     <>
       <H3>{commonText('relationships')}</H3>
       <Table
-        sortName="dataModelRelationships"
-        headers={relationshipColumns}
         data={data}
         getLink={({ relatedModel }): string =>
           `/specify/datamodel/${
-            (relatedModel as Readonly<[string, JSX.Element]>)[0]
+            (relatedModel as readonly [string, JSX.Element])[0]
           }/`
         }
+        headers={relationshipColumns}
+        sortName="dataModelRelationships"
       />
     </>
   );
@@ -294,7 +294,7 @@ const getTables = (): RA<Row<keyof typeof tableColumns>> =>
     name: [
       model.name.toLowerCase(),
       <>
-        <TableIcon name={model.name} label={false} />
+        <TableIcon label={false} name={model.name} />
         {model.name}
       </>,
     ],
@@ -331,9 +331,9 @@ function DataModelTables(): JSX.Element {
         </H2>
         <span className="-ml-2 flex-1" />
         <Link.Green
-          href="/context/datamodel.json"
           className={`${className.navigationHandled} print:hidden`}
           download
+          href="/context/datamodel.json"
         >
           {commonText('downloadAsJson')}
         </Link.Green>
@@ -350,12 +350,12 @@ function DataModelTables(): JSX.Element {
         </Button.Green>
       </div>
       <Table
-        sortName="dataModelTables"
-        headers={tableColumns}
         data={tables}
         getLink={({ name }): string =>
-          `/specify/datamodel/${(name as Readonly<[string, JSX.Element]>)[0]}/`
+          `/specify/datamodel/${(name as readonly [string, JSX.Element])[0]}/`
         }
+        headers={tableColumns}
+        sortName="dataModelTables"
       />
     </>
   );

@@ -37,30 +37,30 @@ function MakeDwca({
   const loading = React.useContext(LoadingContext);
   const [isExporting, handleExporting, handleExported] = useBooleanState();
 
-  return resources === undefined ? null : definition === undefined ? (
+  return resources === undefined ? null : (definition === undefined ? (
     <PickAppResource
-      resources={resources}
       header={commonText('chooseDwcaDialogTitle')}
-      onSelected={(definition): void => setDefinition(definition?.name)}
+      resources={resources}
       onClose={handleClose}
+      onSelected={(definition): void => setDefinition(definition?.name)}
     />
   ) : isExporting ? (
     <ExportStarted onClose={handleClose} />
   ) : (
     <>
       <PickAppResource
-        resources={resources}
         header={commonText('chooseMetadataResource')}
+        resources={resources}
+        skippable
+        onClose={(): void => setDefinition(undefined)}
         onSelected={(metadata): void => {
           handleExporting();
           loading(startExport(definition, metadata?.name).then(handleExported));
         }}
-        onClose={(): void => setDefinition(undefined)}
-        skippable
       />
       ;
     </>
-  );
+  ));
 }
 
 const initialFilters: AppResourceFilters = {
@@ -85,7 +85,6 @@ function PickAppResource({
 }): JSX.Element {
   return (
     <Dialog
-      header={header}
       buttons={
         skippable ? (
           <>
@@ -98,15 +97,16 @@ function PickAppResource({
           commonText('back')
         )
       }
+      header={header}
       onClose={handleClose}
     >
       <AppResourcesAside
+        initialFilters={initialFilters}
         resources={resources}
+        onCreate={undefined}
         onOpen={(selected): void =>
           f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
         }
-        onCreate={undefined}
-        initialFilters={initialFilters}
       />
     </Dialog>
   );
@@ -119,9 +119,9 @@ function ExportStarted({
 }): JSX.Element {
   return (
     <Dialog
+      buttons={commonText('close')}
       header={commonText('dwcaExportStartedDialogHeader')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       {commonText('dwcaExportStartedDialogText')}
     </Dialog>

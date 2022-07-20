@@ -73,8 +73,8 @@ function DsMeta({
   return typeof dataset === 'object' ? (
     <DataSetMeta
       dataset={dataset}
-      onClose={handleClose}
       onChange={handleClose}
+      onClose={handleClose}
     />
   ) : null;
 }
@@ -83,15 +83,15 @@ function TableHeader({
   sortConfig,
   onSort: handleSort,
 }: {
-  readonly sortConfig: SortConfig<'name' | 'dateCreated' | 'dateUploaded'>;
-  readonly onSort: (sortField: 'name' | 'dateCreated' | 'dateUploaded') => void;
+  readonly sortConfig: SortConfig<'dateCreated' | 'dateUploaded' | 'name'>;
+  readonly onSort: (sortField: 'dateCreated' | 'dateUploaded' | 'name') => void;
 }): JSX.Element {
   return (
     <thead>
       <tr>
         <th
-          scope="col"
           className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+          scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
             {commonText('name')}
@@ -152,9 +152,9 @@ function DataSets({
           ({ name, timestampcreated, uploadresult }) =>
             sortConfig.sortField === 'name'
               ? name
-              : sortConfig.sortField === 'dateCreated'
+              : (sortConfig.sortField === 'dateCreated'
               ? timestampcreated
-              : uploadresult?.timestamp ?? '',
+              : uploadresult?.timestamp ?? ''),
           !sortConfig.ascending
         )
       )
@@ -164,22 +164,12 @@ function DataSets({
     hasPermission('/workbench/dataset', 'create') && !showTemplates;
   return Array.isArray(datasets) ? (
     <Dialog
-      icon={<span className="text-blue-500">{icons.table}</span>}
-      header={
-        showTemplates
-          ? wbText('wbsDialogTemplatesDialogTitle')
-          : wbText('wbsDialogDefaultDialogTitle', datasets.length)
-      }
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      onClose={handleClose}
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href={'/specify/workbench-import/'}>
+              <Link.Blue href="/specify/workbench-import/">
                 {wbText('importFile')}
               </Link.Blue>
               <Button.Blue onClick={createEmptyDataSet}>
@@ -189,6 +179,16 @@ function DataSets({
           )}
         </>
       }
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header={
+        showTemplates
+          ? wbText('wbsDialogTemplatesDialogTitle')
+          : wbText('wbsDialogDefaultDialogTitle', datasets.length)
+      }
+      icon={<span className="text-blue-500">{icons.table}</span>}
+      onClose={handleClose}
     >
       {datasets.length === 0 ? (
         <p>
@@ -203,8 +203,7 @@ function DataSets({
           <table className="grid-table grid-cols-[1fr_auto_auto_auto] gap-2">
             <TableHeader sortConfig={sortConfig} onSort={handleSort} />
             <tbody>
-              {datasets.map((dataset, index) => {
-                return (
+              {datasets.map((dataset, index) => (
                   <tr key={index}>
                     <td className="overflow-x-auto">
                       <Link.Default
@@ -222,9 +221,9 @@ function DataSets({
                             })}
                       >
                         <img
-                          src="/images/Workbench32x32.png"
                           alt=""
                           className="w-table-icon"
+                          src="/images/Workbench32x32.png"
                         />
                         {dataset.name}
                       </Link.Default>
@@ -249,8 +248,7 @@ function DataSets({
                       )}
                     </td>
                   </tr>
-                );
-              })}
+                ))}
             </tbody>
           </table>
         </nav>
@@ -272,13 +270,13 @@ export function WbsDialog({
   useTitle(commonText('workBench'));
 
   // Whether to show DS meta dialog. Either false or Data Set ID
-  const [showMeta, setShowMeta] = React.useState<false | number>(false);
+  const [showMeta, setShowMeta] = React.useState<number | false>(false);
 
   return (
     <>
       <DataSets
-        onClose={handleClose}
         showTemplates={showTemplates}
+        onClose={handleClose}
         onDataSetSelect={handleDataSetSelect}
         onShowMeta={setShowMeta}
       />
@@ -297,7 +295,7 @@ export const menuItem: MenuItem = {
   enabled: () => getUserPref('header', 'menu', 'showWorkBench'),
   view: ({ onClose: handleClose }) => (
     <ErrorBoundary dismissable>
-      <WbsDialog onClose={handleClose} showTemplates={false} />
+      <WbsDialog showTemplates={false} onClose={handleClose} />
     </ErrorBoundary>
   ),
 };

@@ -18,8 +18,8 @@ import { useSchemaData } from '../schemaconfigsetuphooks';
 
 export type WithFetchedStrings = {
   readonly strings: {
-    readonly desc: SpLocaleItemString | NewSpLocaleItemString;
-    readonly name: SpLocaleItemString | NewSpLocaleItemString;
+    readonly desc: NewSpLocaleItemString | SpLocaleItemString;
+    readonly name: NewSpLocaleItemString | SpLocaleItemString;
   };
 };
 

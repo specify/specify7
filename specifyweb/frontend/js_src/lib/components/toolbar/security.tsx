@@ -49,22 +49,19 @@ export function SecurityPanel(): JSX.Element | null {
   const availableCollections = useAvailableCollections();
 
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'InstitutionState'>
-    | State<
+    State<
         'CollectionState',
         {
           readonly collectionId: number;
           readonly initialRole: number | undefined;
         }
-      >
-    | State<
+      > | State<
         'UserState',
         {
           readonly initialCollection: number | undefined;
           readonly user: SerializedResource<SpecifyUser>;
         }
-      >
+      > | State<'InstitutionState'> | State<'MainState'>
   >({ type: 'MainState' });
 
   const [users, setUsers] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
@@ -152,10 +149,10 @@ export function SecurityPanel(): JSX.Element | null {
           {state.type === 'InstitutionState' &&
           typeof institution === 'object' ? (
             <SecurityInstitution
-              institution={institution}
               collections={availableCollections}
-              users={users}
+              institution={institution}
               libraryRoles={libraryRoles}
+              users={users}
               onChangeLibraryRoles={(newState): void =>
                 setLibraryRoles(
                   typeof newState === 'function'
@@ -204,14 +201,21 @@ export function SecurityPanel(): JSX.Element | null {
           )}
           {state.type === 'UserState' && typeof users === 'object' ? (
             <SecurityUser
-              user={state.user}
               collections={availableCollections}
               initialCollection={state.initialCollection}
+              user={state.user}
               onClose={(): void => setState({ type: 'MainState' })}
               onDelete={(): void => {
                 setUsers(removeKey(users, state.user.id.toString()));
                 setState({ type: 'MainState' });
               }}
+              onOpenRole={(collectionId, roleId): void =>
+                setState({
+                  type: 'CollectionState',
+                  collectionId,
+                  initialRole: roleId,
+                })
+              }
               onSave={(changedUser, newUser): void => {
                 setUsers({
                   ...users,
@@ -224,13 +228,6 @@ export function SecurityPanel(): JSX.Element | null {
                     user: newUser,
                   });
               }}
-              onOpenRole={(collectionId, roleId): void =>
-                setState({
-                  type: 'CollectionState',
-                  collectionId,
-                  initialRole: roleId,
-                })
-              }
             />
           ) : undefined}
         </ErrorBoundary>

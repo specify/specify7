@@ -5,10 +5,10 @@ import { commonText } from '../../localization/common';
 import { hasToolPermission } from '../../permissionutils';
 import { getUserPref } from '../../preferencesutils';
 import { userInformation } from '../../userinfo';
+import { ErrorBoundary } from '../errorboundary';
 import { icons } from '../icons';
 import type { MenuItem } from '../main';
 import { RecordSetsDialog } from '../recordsetsdialog';
-import { ErrorBoundary } from '../errorboundary';
 
 export const menuItem: MenuItem = {
   task: 'recordsets',
@@ -44,8 +44,8 @@ function RecordSetDialog({
   );
   return (
     <RecordSetsDialog
-      recordSetsPromise={recordSetsPromise}
       isReadOnly={false}
+      recordSetsPromise={recordSetsPromise}
       onClose={handleClose}
     />
   );

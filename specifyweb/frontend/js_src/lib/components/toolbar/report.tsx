@@ -28,10 +28,10 @@ export const menuItem = ajax<{ readonly available: boolean }>(
     isOverlay: true,
     view: ({ onClose: handleClose }) => (
       <ReportsView
-        onClose={handleClose}
         autoSelectSingle={false}
         model={undefined}
         resourceId={undefined}
+        onClose={handleClose}
       />
     ),
   }));

@@ -156,7 +156,7 @@ export function PreferencesContent({
               {description !== undefined && <p>{description}</p>}
               {subCategories.map(
                 ([subcategory, { title, description = undefined, items }]) => (
-                  <section key={subcategory} className="flex flex-col gap-4">
+                  <section className="flex flex-col gap-4" key={subcategory}>
                     <div className="flex items-center">
                       <span className="flex-1" />
                       <h4
@@ -195,11 +195,11 @@ export function PreferencesContent({
                           hasPermission('/preferences/user', 'edit_protected'));
                       return (
                         <label
-                          key={name}
                           className={`
                             flex items-start gap-2
                             ${canEdit ? '' : '!cursor-not-allowed'}
                           `}
+                          key={name}
                           title={
                             canEdit
                               ? undefined
@@ -228,11 +228,11 @@ export function PreferencesContent({
                             `}
                           >
                             <Item
-                              item={item}
                               category={category}
-                              subcategory={subcategory}
-                              name={name}
                               isReadOnly={!canEdit}
+                              item={item}
+                              name={name}
+                              subcategory={subcategory}
                             />
                           </div>
                         </label>
@@ -272,9 +272,9 @@ function Item({
   const children = (
     <Renderer
       definition={item}
+      isReadOnly={isReadOnly}
       value={value}
       onChange={setValue}
-      isReadOnly={isReadOnly}
     />
   );
   return 'renderer' in item ? (

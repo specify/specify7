@@ -46,12 +46,12 @@ export function LanguageSelection<LANGUAGES extends string>({
     <>
       {showSupportDialog && (
         <Dialog
-          header={commonText('helpLocalizeSpecify')}
-          onClose={(): void => setShowSupportDialog(false)}
           buttons={commonText('close')}
           className={{
             container: dialogClassNames.narrowContainer,
           }}
+          header={commonText('helpLocalizeSpecify')}
+          onClose={(): void => setShowSupportDialog(false)}
         >
           <p>{commonText('helpLocalizeSpecifyDialogText', supportLink)}</p>
         </Dialog>
@@ -59,13 +59,13 @@ export function LanguageSelection<LANGUAGES extends string>({
       {typeof languages === 'object' ? (
         <Select
           aria-label={commonText('language')}
+          disabled={isReadOnly}
           value={value}
           onChange={({ target }): void =>
             target.value === 'supportLocalization'
               ? setShowSupportDialog(true)
               : handleChange(target.value as LANGUAGES)
           }
-          disabled={isReadOnly}
         >
           {Object.entries(languages).map(([code, nameLocal]) => (
             <option key={code} value={code}>
@@ -117,6 +117,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     const isRedirecting = React.useContext(PreferencesContext) !== undefined;
     return (
       <LanguageSelection<Language>
+        isReadOnly={isReadOnly || isRedirecting || languages === undefined}
         languages={languages ?? { loading: commonText('loading') }}
         value={language}
         onChange={(language): void => {
@@ -130,7 +131,6 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           setLanguage(language);
           prefEvents.trigger('update', definition as PreferenceItem<unknown>);
         }}
-        isReadOnly={isReadOnly || isRedirecting || languages === undefined}
       />
     );
   };
@@ -194,10 +194,10 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     const languages = useSchemaLanguages(false);
     return (
       <LanguageSelection<string>
+        isReadOnly={isReadOnly || languages === undefined}
         languages={languages ?? { loading: commonText('loading') }}
         value={value}
         onChange={handleChange}
-        isReadOnly={isReadOnly || languages === undefined}
       />
     );
   };
