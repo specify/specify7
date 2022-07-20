@@ -16,14 +16,17 @@ import { ErrorBoundary } from './errorboundary';
 import { Dialog } from './modaldialog';
 
 type States =
-  State<
+  | State<
       'LoadedState',
       {
         readonly latitude: number;
         readonly longitude: number;
         readonly age: number;
       }
-    > | State<'InvalidTableState'> | State<'MainState'> | State<'NoDataState'>;
+    >
+  | State<'InvalidTableState'>
+  | State<'MainState'>
+  | State<'NoDataState'>;
 
 export function PaleoLocationMapPlugin({
   id,
@@ -95,7 +98,9 @@ const fetchPaleoData = async (
     toTables(resource, ['Locality', 'CollectionObject', 'CollectingEvent']),
     async (resource) => {
       const locality:
-        SpecifyResource<Locality> | 'InvalidTableState' | undefined =
+        | SpecifyResource<Locality>
+        | 'InvalidTableState'
+        | undefined =
         toTable(resource, 'Locality') ??
         (await f.maybe(
           toTable(resource, 'CollectingEvent'),

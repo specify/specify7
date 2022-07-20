@@ -182,7 +182,7 @@ export function SecurityImportExport({
                                   .map((newRole) =>
                                     f.var(
                                       typeof newRole.id === 'number'
-                                        ? (JSON.stringify(
+                                        ? JSON.stringify(
                                             removeKey(
                                               defined(roles)[newRole.id],
                                               'id'
@@ -192,7 +192,7 @@ export function SecurityImportExport({
                                             removeKey(newRole, 'id')
                                           )
                                           ? 'unchanged'
-                                          : 'changed')
+                                          : 'changed'
                                         : 'created',
                                       (groupName) =>
                                         (groupName === 'changed' &&

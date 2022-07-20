@@ -160,7 +160,7 @@ export function QueryToolbarItem({
       queries={queries}
       onClose={handleClose}
     />
-  ) : (Array.isArray(queries) ? (
+  ) : Array.isArray(queries) ? (
     <Dialog
       buttons={
         <>
@@ -183,7 +183,7 @@ export function QueryToolbarItem({
         queries={queries}
       />
     </Dialog>
-  ) : null);
+  ) : null;
 }
 
 export const menuItem: MenuItem = {

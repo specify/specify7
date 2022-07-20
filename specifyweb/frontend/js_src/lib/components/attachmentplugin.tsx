@@ -42,7 +42,13 @@ export function AttachmentPlugin({
   readonly name?: string;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
-    State<'AddAttachment'> | State<'DisplayAttachment', { readonly attachment: SerializedResource<Attachment> }> | State<'FileUpload', { readonly file: File }> | State<'Unavailable'>
+    | State<'AddAttachment'>
+    | State<
+        'DisplayAttachment',
+        { readonly attachment: SerializedResource<Attachment> }
+      >
+    | State<'FileUpload', { readonly file: File }>
+    | State<'Unavailable'>
   >(
     React.useCallback(
       async () =>
@@ -105,7 +111,7 @@ export function AttachmentPlugin({
 
   return state === undefined ? (
     <>{commonText('loading')}</>
-  ) : (state.type === 'Unavailable' ? (
+  ) : state.type === 'Unavailable' ? (
     <div>{formsText('attachmentServerUnavailable')}</div>
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
@@ -126,7 +132,7 @@ export function AttachmentPlugin({
             }}
           />
         )
-      ) : (state.type === 'FileUpload' ? (
+      ) : state.type === 'FileUpload' ? (
         <Dialog
           buttons={undefined}
           header={formsText('attachmentUploadDialogTitle')}
@@ -150,7 +156,7 @@ export function AttachmentPlugin({
         </div>
       ) : (
         error('Unhandled case', { state })
-      ))}
+      )}
     </div>
-  ));
+  );
 }

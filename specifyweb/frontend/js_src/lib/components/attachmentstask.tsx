@@ -293,7 +293,7 @@ export function AttachmentsView(): JSX.Element {
           },
           filter.type === 'unused'
             ? { tableId__isNull: 'true' }
-            : (filter.type === 'byTable'
+            : filter.type === 'byTable'
             ? {
                 tableId: schema.models[filter.tableName].tableId,
               }
@@ -303,7 +303,7 @@ export function AttachmentsView(): JSX.Element {
                 tableId__in: filteredTables()
                   .map(({ tableId }) => tableId)
                   .join(','),
-              })
+              }
         ),
       [order, filter]
     )

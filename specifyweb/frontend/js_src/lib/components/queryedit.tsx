@@ -99,7 +99,7 @@ function EditQueryDialog({
         </div>
       )}
     </ResourceView>
-  ) : (state === 'dwcaExport' ? (
+  ) : state === 'dwcaExport' ? (
     <DwcaQueryExport queryResource={queryResource} onClose={handleClose} />
   ) : state === 'reportExport' || state === 'labelExport' ? (
     <QueryExport
@@ -109,7 +109,7 @@ function EditQueryDialog({
     />
   ) : (
     error('Invalid state')
-  ));
+  );
 }
 
 function DwcaQueryExport({

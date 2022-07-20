@@ -27,7 +27,7 @@ export function parseXml(string: string): Document | string {
   const parsedXml = new DOMParser().parseFromString(string, 'text/xml');
 
   // Chrome, Safari
-   const parseError =
+  const parseError =
     parsedXml.documentElement.getElementsByTagName('parsererror')[0];
   if (typeof parseError === 'object')
     return (parseError.children[1].textContent ?? parseError.innerHTML).trim();
@@ -46,13 +46,13 @@ const xmlErrorParsers = [
   /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\s\S]*)*/,
 ];
 
- const formatXmlError = (text: Text, error: string): Diagnostic =>
+const formatXmlError = (text: Text, error: string): Diagnostic =>
   mappedFind(xmlErrorParsers, (regex) => {
     const match = regex.exec(error);
     if (match === null) return undefined;
     const { line, column, message } = match.groups ?? {};
-     const lineDescriptor = text.line(Number.parseInt(line));
-     const position = lineDescriptor.from - 1 + Number.parseInt(column);
+    const lineDescriptor = text.line(Number.parseInt(line));
+    const position = lineDescriptor.from - 1 + Number.parseInt(column);
     return {
       from: position,
       to: position,

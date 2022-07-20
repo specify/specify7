@@ -55,12 +55,13 @@ function AppResourcesView({
 }): JSX.Element {
   const [resources, setResources] = useTriggerState(initialResources);
   const [state, setState] = React.useState<
-    State<
+    | State<
         'Create',
         {
           readonly directory: SerializedResource<SpAppResourceDir>;
         }
-      > | State<
+      >
+    | State<
         'View',
         {
           readonly resource: SerializedResource<
@@ -69,7 +70,9 @@ function AppResourcesView({
           readonly directory: SerializedResource<SpAppResourceDir>;
           readonly initialData: string | undefined;
         }
-      > | State<'Main'> | State<'NotFound'>
+      >
+    | State<'Main'>
+    | State<'NotFound'>
   >(() => {
     const resource = getAppResource(resources, model, resourceId);
     if (typeof resource === 'object') {

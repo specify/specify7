@@ -33,7 +33,7 @@ function LeafletDialog({
     undefined
   );
 
-  return localityData === undefined ? null : (localityData === false ? (
+  return localityData === undefined ? null : localityData === false ? (
     <Dialog
       buttons={commonText('close')}
       header={localityText('noCoordinates')}
@@ -58,7 +58,7 @@ function LeafletDialog({
       }
       onClose={handleClose}
     />
-  ));
+  );
 }
 
 export function LeafletPlugin({

@@ -32,9 +32,9 @@ export type AutoCompleteItem<T> = {
 const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
-    : (node.scrollHeight > node.clientHeight
+    : node.scrollHeight > node.clientHeight
     ? node
-    : getScrollParent(node.parentElement ?? undefined));
+    : getScrollParent(node.parentElement ?? undefined);
 
 const itemProps = ensure<Partial<TagProps<'li'>>>()({
   className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
@@ -117,7 +117,7 @@ export function Autocomplete<T>({
     (newResults: typeof results, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
-        : (shouldFilterItems
+        : shouldFilterItems
         ? newResults.filter(
             ({ label, searchValue }) =>
               (typeof label === 'string' ? label : searchValue ?? '')
@@ -129,7 +129,7 @@ export function Autocomplete<T>({
                   pendingValue
                 ) === 0)
           )
-        : newResults),
+        : newResults,
     [shouldFilterItems]
   );
 

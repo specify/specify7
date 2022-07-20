@@ -155,17 +155,19 @@ export function CollectionOneToManyPlugin({
   );
 
   const [state, setState] = React.useState<
-    State<
+    | State<
         'DeniedAccessState',
         {
           readonly collectionName: string;
         }
-      > | State<
+      >
+    | State<
         'SearchState',
         {
           readonly templateResource: SpecifyResource<CollectionObject>;
         }
-      > | State<'MainState'>
+      >
+    | State<'MainState'>
   >({ type: 'MainState' });
 
   const loading = React.useContext(LoadingContext);

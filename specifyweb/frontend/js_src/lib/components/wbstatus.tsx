@@ -30,7 +30,10 @@ type MainState = State<
 
 type States = MainState;
 
-type RefreshStatusAction = Action<'RefreshStatusAction', { readonly status: Status }>;
+type RefreshStatusAction = Action<
+  'RefreshStatusAction',
+  { readonly status: Status }
+>;
 
 type AbortAction = Action<
   'AbortAction',

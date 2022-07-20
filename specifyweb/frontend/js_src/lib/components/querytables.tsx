@@ -104,7 +104,7 @@ export function QueryTables({
   const [isImporting, handleImporting] = useBooleanState();
   return isImporting ? (
     <QueryImport queries={queries} onClose={handleClose} />
-  ) : (isEditing ? (
+  ) : isEditing ? (
     <QueryTablesEdit onClose={handleClose} />
   ) : (
     <Dialog
@@ -138,5 +138,5 @@ export function QueryTables({
         ))}
       </Ul>
     </Dialog>
-  ));
+  );
 }

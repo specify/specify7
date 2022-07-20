@@ -145,9 +145,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     const newResource =
       mode === 'clone'
         ? await resource.clone()
-        : (mode === 'addAnother'
+        : mode === 'addAnother'
         ? new resource.specifyModel.Resource()
-        : undefined);
+        : undefined;
     const wasNew = resource.isNew();
     const wasChanged = resource.needsSaved;
 
@@ -263,7 +263,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         >
           {formsText('saveConflictDialogText')}
         </Dialog>
-      ) : (showSaveBlockedDialog ? (
+      ) : showSaveBlockedDialog ? (
         <Dialog
           buttons={commonText('close')}
           header={formsText('saveBlockedDialogHeader')}
@@ -299,7 +299,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             )}
           </Ul>
         </Dialog>
-      ) : undefined)}
+      ) : undefined}
     </>
   );
 }

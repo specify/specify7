@@ -152,9 +152,9 @@ function DataSets({
           ({ name, timestampcreated, uploadresult }) =>
             sortConfig.sortField === 'name'
               ? name
-              : (sortConfig.sortField === 'dateCreated'
+              : sortConfig.sortField === 'dateCreated'
               ? timestampcreated
-              : uploadresult?.timestamp ?? ''),
+              : uploadresult?.timestamp ?? '',
           !sortConfig.ascending
         )
       )
@@ -204,51 +204,51 @@ function DataSets({
             <TableHeader sortConfig={sortConfig} onSort={handleSort} />
             <tbody>
               {datasets.map((dataset, index) => (
-                  <tr key={index}>
-                    <td className="overflow-x-auto">
-                      <Link.Default
-                        href={`/specify/workbench/${dataset.id}/`}
-                        {...(handleDataSetSelect === undefined
-                          ? {
-                              className: 'font-bold',
-                            }
-                          : {
-                              className: `font-bold ${className.navigationHandled}`,
-                              onClick: (event): void => {
-                                event.preventDefault();
-                                handleDataSetSelect(dataset.id);
-                              },
-                            })}
-                      >
-                        <img
-                          alt=""
-                          className="w-table-icon"
-                          src="/images/Workbench32x32.png"
-                        />
-                        {dataset.name}
-                      </Link.Default>
-                    </td>
-                    <td>
-                      <DateElement date={dataset.timestampcreated} />
-                    </td>
-                    <td>
-                      <DateElement
-                        date={
-                          dataset.uploadresult?.success === true
-                            ? dataset.uploadresult?.timestamp
-                            : undefined
-                        }
+                <tr key={index}>
+                  <td className="overflow-x-auto">
+                    <Link.Default
+                      href={`/specify/workbench/${dataset.id}/`}
+                      {...(handleDataSetSelect === undefined
+                        ? {
+                            className: 'font-bold',
+                          }
+                        : {
+                            className: `font-bold ${className.navigationHandled}`,
+                            onClick: (event): void => {
+                              event.preventDefault();
+                              handleDataSetSelect(dataset.id);
+                            },
+                          })}
+                    >
+                      <img
+                        alt=""
+                        className="w-table-icon"
+                        src="/images/Workbench32x32.png"
                       />
-                    </td>
-                    <td>
-                      {canImport && (
-                        <DataEntry.Edit
-                          onClick={(): void => handleShowMeta(dataset.id)}
-                        />
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      {dataset.name}
+                    </Link.Default>
+                  </td>
+                  <td>
+                    <DateElement date={dataset.timestampcreated} />
+                  </td>
+                  <td>
+                    <DateElement
+                      date={
+                        dataset.uploadresult?.success === true
+                          ? dataset.uploadresult?.timestamp
+                          : undefined
+                      }
+                    />
+                  </td>
+                  <td>
+                    {canImport && (
+                      <DataEntry.Edit
+                        onClick={(): void => handleShowMeta(dataset.id)}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </nav>

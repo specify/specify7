@@ -132,7 +132,7 @@ function Layout({
   );
   return typeof preview === 'string' ? (
     <BadImport error={preview} />
-  ) : (Array.isArray(preview) ? (
+  ) : Array.isArray(preview) ? (
     <>
       <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
@@ -149,7 +149,7 @@ function Layout({
     </>
   ) : (
     loadingGif
-  ));
+  );
 }
 
 function ChooseName({

@@ -43,7 +43,7 @@ export type Options = {
    * NOTE: formattedHeaderFieldSynonym is also available as a matching
    * rule, but only for `synonym` rules. See more later in this file
    */
-}
+};
 
 // Main structure
 
@@ -54,7 +54,7 @@ export type TableSynonym = {
    */
   readonly mappingPathFilter: MappingPath;
   readonly synonyms: RA<string>;
-}
+};
 
 type AutoMapperDefinitions = {
   /*
@@ -184,7 +184,7 @@ type AutoMapperDefinitions = {
       >;
     };
   };
-}
+};
 
 export const autoMapperDefinitions: AutoMapperDefinitions = {
   tableSynonyms: {

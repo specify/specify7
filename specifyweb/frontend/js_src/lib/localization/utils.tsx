@@ -24,7 +24,8 @@ export const LANGUAGE: Language =
 
 type Line = JSX.Element | string;
 export type Value =
-  RR<Language, (...args: RA<never>) => Line> | RR<Language, Line>;
+  | RR<Language, (...args: RA<never>) => Line>
+  | RR<Language, Line>;
 type GetValueType<VALUE extends Value> = VALUE extends RR<
   Language,
   infer ValueType
@@ -92,10 +93,10 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
       : RA<never>
   ): GetValueType<typeof dictionary[typeof key]> =>
     (key in dictionary
-      ? (typeof dictionary[key][LANGUAGE] === 'function' &&
+      ? typeof dictionary[key][LANGUAGE] === 'function' &&
         isFunction(dictionary[key][LANGUAGE])
         ? (dictionary[key][LANGUAGE] as (...args: RA<unknown>) => Line)(...args)
-        : dictionary[key][LANGUAGE] ?? assertExhaustive(key))
+        : dictionary[key][LANGUAGE] ?? assertExhaustive(key)
       : assertExhaustive(key)) as GetValueType<typeof dictionary[typeof key]>;
   // This is used by ../tests/testlocalization.ts
   resolver.dictionary = dictionary;

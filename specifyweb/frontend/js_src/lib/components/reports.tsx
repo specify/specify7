@@ -310,7 +310,7 @@ function Report({
     >
       {formsText('missingReportQueryDialogText')}
     </Dialog>
-  ) : (report === false ? (
+  ) : report === false ? (
     <Dialog
       buttons={commonText('close')}
       header={formsText('missingReportDialogHeader')}
@@ -337,7 +337,7 @@ function Report({
         onRefresh={(): void => setRunCount(runCount + 1)}
       />
     )
-  ) : null);
+  ) : null;
 }
 
 async function fixupImages(definition: Document): Promise<RA<string>> {
@@ -652,13 +652,15 @@ function RecordSets({
     [recordSetsPromise]
   );
   const [state, setState] = React.useState<
-    State<
+    | State<
         'RecordSet',
         {
           readonly recordSet: SerializedResource<RecordSet>;
           readonly autoRun: boolean;
         }
-      > | State<'Main'> | State<'Raw'>
+      >
+    | State<'Main'>
+    | State<'Raw'>
   >({ type: 'Main' });
   return state.type === 'Main' ? (
     <RecordSetsDialog
@@ -723,7 +725,7 @@ function QueryParametersDialog({
   );
   const id = useId('report-query');
   const [state, setState] = useLiveState<
-    State<
+    | State<
         'Running',
         {
           /*
@@ -732,7 +734,8 @@ function QueryParametersDialog({
            */
           readonly query: SerializedResource<SpQuery>;
         }
-      > | State<'Main'>
+      >
+    | State<'Main'>
   >(
     React.useCallback(
       () =>

@@ -27,9 +27,29 @@ import { mappingElementDivider } from './wbplanviewcomponents';
  * See https://github.com/specify/specify7/issues/318
  */
 export type QueryFieldType =
-  'checkbox' | 'date' | 'formatter' | 'id' | 'number' | 'text';
+  | 'checkbox'
+  | 'date'
+  | 'formatter'
+  | 'id'
+  | 'number'
+  | 'text';
 export type QueryFieldFilter =
-  'any' | 'between' | 'contains' | 'empty' | 'equal' | 'false' | 'falseOrNull' | 'greater' | 'greaterOrEqual' | 'in' | 'less' | 'lessOrEqual' | 'like' | 'startsWith' | 'true' | 'trueOrNull';
+  | 'any'
+  | 'between'
+  | 'contains'
+  | 'empty'
+  | 'equal'
+  | 'false'
+  | 'falseOrNull'
+  | 'greater'
+  | 'greaterOrEqual'
+  | 'in'
+  | 'less'
+  | 'lessOrEqual'
+  | 'like'
+  | 'startsWith'
+  | 'true'
+  | 'trueOrNull';
 export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'equal',
   'in',
@@ -63,11 +83,11 @@ function QueryInputField({
     target: HTMLInputElement | HTMLSelectElement
   ): RA<string> =>
     listInput
-      ? (Array.isArray(pickListItems)
+      ? Array.isArray(pickListItems)
         ? Array.from(target.querySelectorAll('option'))
             .filter(({ selected }) => selected)
             .map(({ value }) => value)
-        : target.value.split(','))
+        : target.value.split(',')
       : [target.value];
 
   /*
@@ -199,7 +219,7 @@ function SingleField({
    * This prop is not used here, but defined here because of "typeof SingleField"
    * in queryFieldFilters
    */
-   
+
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
   return (

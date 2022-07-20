@@ -57,13 +57,21 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   defaultIndex,
   ...rest
 }: Omit<
-    RecordSelectorProps<SCHEMA>,
-    'index' | 'isDependent' | 'model' | 'onAdd' | 'onDelete' | 'records' | 'relatedResource' | 'totalCount'
-  > & Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
-  readonly collection: Collection<SCHEMA>;
-  readonly relationship: Relationship;
-  readonly defaultIndex?: number;
-}): JSX.Element | null {
+  RecordSelectorProps<SCHEMA>,
+  | 'index'
+  | 'isDependent'
+  | 'model'
+  | 'onAdd'
+  | 'onDelete'
+  | 'records'
+  | 'relatedResource'
+  | 'totalCount'
+> &
+  Partial<Pick<RecordSelectorProps<SCHEMA>, 'onAdd' | 'onDelete'>> & {
+    readonly collection: Collection<SCHEMA>;
+    readonly relationship: Relationship;
+    readonly defaultIndex?: number;
+  }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
       Array.from(collection.models),
@@ -298,10 +306,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onDelete: handleDelete,
   urlContext,
   ...rest
-}: Omit<
-  RecordSelectorProps<SCHEMA>,
-  'children' | 'index' | 'records'
-> & {
+}: Omit<RecordSelectorProps<SCHEMA>, 'children' | 'index' | 'records'> & {
   /*
    * Undefined IDs are placeholders for items with unknown IDs (e.g in record
    * sets or query results with thousands of items)
@@ -601,7 +606,14 @@ export function RecordSet<SCHEMA extends AnySchema>({
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  'children' | 'defaultIndex' | 'field' | 'index' | 'onDelete' | 'onSaved' | 'records' | 'totalCount'
+  | 'children'
+  | 'defaultIndex'
+  | 'field'
+  | 'index'
+  | 'onDelete'
+  | 'onSaved'
+  | 'records'
+  | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
   readonly defaultResourceIndex: number | undefined;

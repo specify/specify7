@@ -43,7 +43,7 @@ function List({
 
   return resources.length === 0 ? (
     <>{commonText('noResults')}</>
-  ) : (Array.isArray(entries) ? (
+  ) : Array.isArray(entries) ? (
     <Ul>
       {entries.map(({ label, href }, index) => (
         <li key={index}>
@@ -53,7 +53,7 @@ function List({
     </Ul>
   ) : (
     <>{commonText('loading')}</>
-  ));
+  );
 }
 
 export function ShowLoansCommand({

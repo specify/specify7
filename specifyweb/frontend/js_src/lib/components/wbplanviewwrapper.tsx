@@ -49,7 +49,7 @@ export function WbPlanViewWrapper({
 
   return dataSet === false ? (
     <NotFoundView />
-  ) : (typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
+  ) : typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
     <WbPlanView
       dataset={dataSet}
       headers={
@@ -67,5 +67,5 @@ export function WbPlanViewWrapper({
       }
       uploadPlan={dataSet.uploadplan}
     />
-  ) : null);
+  ) : null;
 }

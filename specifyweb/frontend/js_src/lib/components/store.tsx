@@ -13,8 +13,8 @@ import { isFunction } from '../types';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
 
-type Buckets = { readonly
-  [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
+type Buckets = {
+  readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<
     number,
     SpecifyResource<Tables[TABLE_NAME]>
   >;
@@ -25,11 +25,11 @@ type Store<
     number | string,
     Record<number | string, boolean | number | object | string>
   >
-> = { readonly
-  [BUCKET_NAME in keyof BUCKETS]: {
+> = {
+  readonly [BUCKET_NAME in keyof BUCKETS]: {
     readonly listeners: readonly (() => void)[];
-    readonly values: { readonly
-      [KEY in keyof BUCKETS[BUCKET_NAME]]?: Promise<
+    readonly values: {
+      readonly [KEY in keyof BUCKETS[BUCKET_NAME]]?: Promise<
         BUCKETS[BUCKET_NAME][KEY] | undefined
       >;
     };

@@ -59,7 +59,7 @@ export function useViewDefinition({
               formType,
               mode,
             }
-          : (useCustomForm
+          : useCustomForm
           ? getView(
               viewName === originalAttachmentsView
                 ? 'ObjectAttachment'
@@ -72,11 +72,11 @@ export function useViewDefinition({
               )
               .then((viewDefinition) =>
                 typeof viewDefinition === 'object'
-                  ? (viewDefinition.model === model
+                  ? viewDefinition.model === model
                     ? viewDefinition
                     : error(
                         'View definition model does not match resource model'
-                      ))
+                      )
                   : f.maybe(
                       webOnlyViews()[viewName as keyof typeof webOnlyViews],
                       ({ columns, rows }) => ({
@@ -88,7 +88,7 @@ export function useViewDefinition({
                       })
                     ) ?? autoGenerateViewDefinition(model, formType, mode)
               )
-          : autoGenerateViewDefinition(model, formType, mode)),
+          : autoGenerateViewDefinition(model, formType, mode),
       [useCustomForm, viewName, formType, mode, model]
     ),
     false

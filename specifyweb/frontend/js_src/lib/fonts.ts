@@ -115,7 +115,7 @@ const windowsFonts = [
  * macOsFonts.filter(fontName=>document.fonts.check(`12pt '${fontName}'`));
  * ```
  */
- const macOsFonts = [
+const macOsFonts = [
   'Al Nile',
   'American Typewriter',
   'Andale Mono',

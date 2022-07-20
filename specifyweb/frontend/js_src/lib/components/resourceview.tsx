@@ -146,9 +146,9 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   const title = `${
     resource === undefined
       ? ''
-      : (resource.isNew()
+      : resource.isNew()
       ? commonText('newResourceTitle', resource.specifyModel.label)
-      : resource.specifyModel.label)
+      : resource.specifyModel.label
   }${formatted.length > 0 ? `: ${formatted}` : ''}`;
 
   return children({
@@ -208,11 +208,11 @@ export const augmentMode = (
 ): FormMode =>
   tableName === undefined
     ? 'view'
-    : (initialMode === 'edit'
+    : initialMode === 'edit'
     ? hasTablePermission(tableName, isNew ? 'create' : 'update')
       ? 'edit'
       : 'view'
-    : initialMode);
+    : initialMode;
 
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,

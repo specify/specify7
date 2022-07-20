@@ -243,7 +243,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   },
   MappingViewMapAction: ({ state }) => {
     const mappingViewMappingPath = state.mappingView;
-      const focusedLine = state.focusedLine;
+    const focusedLine = state.focusedLine;
     /*
      * This is needed here to prevent double-click on an incomplete path
      * from mapping

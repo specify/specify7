@@ -15,7 +15,7 @@ export type UiCommands = {
     'Unsupported',
     { readonly name: string | undefined }
   >;
-}
+};
 
 const processUiCommand: {
   readonly [KEY in keyof UiCommands]: (
@@ -28,7 +28,7 @@ const processUiCommand: {
   Unsupported: (name) => ({ type: 'Unsupported', name }),
 };
 
- const commandTranslation: IR<keyof UiCommands> = {
+const commandTranslation: IR<keyof UiCommands> = {
   generateLabelBtn: 'GenerateLabel',
   ShowLoansBtn: 'ShowLoans',
   ReturnLoan: 'ReturnLoan',
@@ -37,12 +37,12 @@ const processUiCommand: {
 export type CommandDefinition = {
   readonly label: string | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
-}
+};
 
 export function parseUiCommand(cell: Element): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');
-   const label = getParsedAttribute(cell, 'label');
-   const uiCommand =
+  const label = getParsedAttribute(cell, 'label');
+  const uiCommand =
     processUiCommand[commandTranslation[name ?? '']] ??
     processUiCommand[commandTranslation[label ?? '']] ??
     processUiCommand.Unsupported;

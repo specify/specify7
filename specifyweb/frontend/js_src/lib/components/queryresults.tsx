@@ -57,9 +57,10 @@ function getAuditRecordFormatter(
   fieldSpecs: RA<QueryFieldSpec>,
   hasIdField: boolean
 ):
-  ((
+  | ((
       resultRow: RA<number | string | null>
-    ) => Promise<RA<JSX.Element | string>>) | undefined {
+    ) => Promise<RA<JSX.Element | string>>)
+  | undefined {
   if (!needAuditLogFormatting(fieldSpecs)) return undefined;
   const fields = Array.from(
     fieldSpecs
@@ -152,9 +153,9 @@ function QueryResultCell({
     >
       {value === null
         ? undefined
-        : (fieldSpec === undefined || typeof value === 'object'
+        : fieldSpec === undefined || typeof value === 'object'
         ? value
-        : formatted)}
+        : formatted}
     </span>
   );
 }

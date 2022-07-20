@@ -342,7 +342,12 @@ export function useReadyEffect(callback: () => void): void {
 export function useBooleanState(
   value = false
 ): Readonly<
-  readonly [state: boolean, enable: () => void, disable: () => void, toggle: () => void]
+  readonly [
+    state: boolean,
+    enable: () => void,
+    disable: () => void,
+    toggle: () => void
+  ]
 > {
   const [state, setState] = useTriggerState(value);
   return [
@@ -512,9 +517,9 @@ export function useResourceValue<
       const formattedValue =
         field?.isRelationship === true && newValue === ''
           ? null
-          : (['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
+          : ['checkbox', 'date'].includes(parser.type ?? '') || reportErrors
           ? parsedValue
-          : newValue);
+          : newValue;
       setValue(
         (parser.type === 'number' && reportErrors
           ? f.parseFloat(parser?.printFormatter?.(parsedValue, parser) ?? '') ??
@@ -571,9 +576,9 @@ export function useResourceValue<
       ? resolveParser(field)
       : { type: 'text' as const };
     const parser = shouldResolveParser
-      ? (typeof defaultParser === 'object'
+      ? typeof defaultParser === 'object'
         ? mergeParsers(resolvedParser, defaultParser)
-        : resolvedParser)
+        : resolvedParser
       : resolvedParser;
     setParser(parser);
 

@@ -79,8 +79,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
    */
   const mode =
     // Only PickListTypes.ITEMS pick lists are editable
-    pickList?.get('type') !== PickListTypes.ITEMS ||
-    pickList?.get('isSystem')
+    pickList?.get('type') !== PickListTypes.ITEMS || pickList?.get('isSystem')
       ? 'view'
       : props.mode;
 

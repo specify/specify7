@@ -80,9 +80,9 @@ export function TableIcon({
   const resolvedTableLabel =
     label === false
       ? undefined
-      : (typeof label === 'string'
+      : typeof label === 'string'
       ? label
-      : getModel(name)?.label ?? '');
+      : getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')
@@ -168,9 +168,9 @@ export function SortIndicator<FIELD_NAMES extends string>({
         </span>
       )}
       {isSorted
-        ? (sortConfig.ascending
+        ? sortConfig.ascending
           ? icons.chevronUp
-          : icons.chevronDown)
+          : icons.chevronDown
         : undefined}
     </span>
   );
@@ -181,7 +181,10 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
   defaultField: SortConfigs[NAME],
   ascending = true
 ): Readonly<
-  readonly [SortConfig<SortConfigs[NAME]>, (fieldName: SortConfigs[NAME]) => void]
+  readonly [
+    SortConfig<SortConfigs[NAME]>,
+    (fieldName: SortConfigs[NAME]) => void
+  ]
 > {
   const [sortConfig = { sortField: defaultField, ascending }, setSortConfig] =
     useCachedState('sortConfig', cacheKey);

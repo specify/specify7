@@ -33,9 +33,9 @@ export function SetPermissionContext({
   return (
     <PermissionContext.Provider value={collectionId}>
       {fetchedCollection === collectionId
-        ? (typeof children === 'function'
+        ? typeof children === 'function'
           ? children()
-          : children)
+          : children
         : fallback}
     </PermissionContext.Provider>
   );

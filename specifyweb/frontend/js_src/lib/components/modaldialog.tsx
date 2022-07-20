@@ -347,12 +347,12 @@ export function Dialog({
         ${
           reduceTransparency || highContrast
             ? 'bg-white dark:bg-neutral-900'
-            : (transparentDialog && modal
+            : transparentDialog && modal
             ? supportsBackdropBlur
               ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
               : 'bg-white/70 dark:bg-black/70'
             : `bg-gradient-to-bl from-gray-200 via-white
-                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`)
+                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`
         }
       `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}

@@ -75,9 +75,9 @@ function RecordSetView({
     <CheckLoggedInCollection resource={recordSet}>
       <DisplayRecordSet recordSet={recordSet} resourceIndex={resourceIndex} />
     </CheckLoggedInCollection>
-  ) : (recordSet === false ? (
+  ) : recordSet === false ? (
     <NotFoundView />
-  ) : null);
+  ) : null;
 }
 
 function DisplayRecordSet({
@@ -122,13 +122,13 @@ function DisplayRecordSet({
 const newResourceView = async (tableName: string): Promise<void> =>
   f.var(getModel(tableName)?.name, async (tableName) =>
     typeof tableName === 'string'
-      ? (hasTablePermission(tableName, 'create')
+      ? hasTablePermission(tableName, 'create')
         ? resourceView(tableName, undefined)
         : Promise.resolve(
             setCurrentComponent(
               <TablePermissionDenied action="create" tableName={tableName} />
             )
-          ))
+          )
       : Promise.resolve(setCurrentComponent(<NotFoundView />))
   );
 
@@ -281,7 +281,7 @@ function CheckLoggedInCollection({
                 f.var(getCollectionForResource(resource), (collectionId) =>
                   schema.domainLevelIds.collection === collectionId
                     ? false
-                    : (typeof collectionId === 'number'
+                    : typeof collectionId === 'number'
                     ? [collectionId]
                     : fetchCollectionsForResource(resource).then(
                         (collectionIds) =>
@@ -291,7 +291,7 @@ function CheckLoggedInCollection({
                           )
                             ? false
                             : collectionIds
-                      ))
+                      )
                 )
               ),
       [resource]
@@ -301,9 +301,9 @@ function CheckLoggedInCollection({
 
   return otherCollections === false ? (
     children
-  ) : (Array.isArray(otherCollections) ? (
+  ) : Array.isArray(otherCollections) ? (
     <OtherCollection collectionIds={otherCollections} />
-  ) : null);
+  ) : null;
 }
 
 export function task(): void {

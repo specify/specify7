@@ -82,10 +82,13 @@ export function OrderPicker<SCHEMA extends AnySchema>({
 }: {
   readonly model: SpecifyModel<SCHEMA>;
   readonly order:
-    `-${string & keyof SCHEMA['fields']}` | string & keyof SCHEMA['fields'] | undefined;
+    | `-${string & keyof SCHEMA['fields']}`
+    | (string & keyof SCHEMA['fields'])
+    | undefined;
   readonly onChange: (
     order:
-      `-${string & keyof SCHEMA['fields']}` | string & keyof SCHEMA['fields']
+      | `-${string & keyof SCHEMA['fields']}`
+      | (string & keyof SCHEMA['fields'])
   ) => void;
   readonly isReadOnly?: boolean;
 }): JSX.Element {
@@ -170,7 +173,10 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
   };
 
 export type WelcomePageMode =
-  'customImage' | 'default' | 'embeddedWebpage' | 'taxonTiles';
+  | 'customImage'
+  | 'default'
+  | 'embeddedWebpage'
+  | 'taxonTiles';
 export const defaultWelcomePageImage =
   '/static/img/icons_as_background_splash.png';
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
@@ -241,9 +247,9 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
   function ({ definition, value, onChange: handleChange, isReadOnly }) {
     const parser =
       'type' in definition
-        ? (typeof definition.parser === 'object'
+        ? typeof definition.parser === 'object'
           ? mergeParsers(parserFromType(definition.type), definition.parser)
-          : parserFromType(definition.type))
+          : parserFromType(definition.type)
         : undefined;
     const validationAttributes = React.useMemo(
       () => f.maybe(parser, getValidationAttributes),
@@ -278,7 +284,7 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
           )
         )}
       </>
-    ) : (parser?.type === 'checkbox' ? (
+    ) : parser?.type === 'checkbox' ? (
       <Input.Checkbox
         checked={value}
         isReadOnly={isReadOnly}
@@ -304,5 +310,5 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
           } else handleChanged(newValue);
         }}
       />
-    ));
+    );
   };

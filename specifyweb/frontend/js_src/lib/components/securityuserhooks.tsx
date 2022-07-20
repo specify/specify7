@@ -146,7 +146,7 @@ export function useUserAgents(
               ] as const),
           async (divisions) =>
             (typeof userId === 'number'
-              ? (hasTablePermission('Agent', 'read') &&
+              ? hasTablePermission('Agent', 'read') &&
                 hasTablePermission('Division', 'read')
                 ? fetchCollection(
                     'Agent',
@@ -158,7 +158,7 @@ export function useUserAgents(
                       division__in: divisions.map(([id]) => id).join(','),
                     }
                   ).then(({ records }) => records)
-                : Promise.resolve([serializeResource(userInformation.agent)]))
+                : Promise.resolve([serializeResource(userInformation.agent)])
               : Promise.resolve([])
             ).then((agents) =>
               f.var(
@@ -279,7 +279,7 @@ export function useUserInstitutionalPolicies(
       async () =>
         userResource.isNew()
           ? []
-          : (hasDerivedPermission(
+          : hasDerivedPermission(
               '/permissions/institutional_policies/user',
               'read'
             )
@@ -293,7 +293,7 @@ export function useUserInstitutionalPolicies(
               initialInstitutionPolicies.current = policies;
               return policies;
             })
-          : undefined),
+          : undefined,
       [userResource]
     ),
     false

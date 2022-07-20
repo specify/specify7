@@ -140,13 +140,7 @@ function DatabaseCreationDate(): JSX.Element {
     ),
     false
   );
-  return (
-    <DateElement
-      date={date}
-      fallback={commonText('loading')}
-      flipDates
-    />
-  );
+  return <DateElement date={date} fallback={commonText('loading')} flipDates />;
 }
 
 function AboutSpecify(): JSX.Element {

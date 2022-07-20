@@ -34,14 +34,16 @@ import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 
 type ErrorBoundaryState =
-  State<
+  | State<
       'Error',
       {
         readonly hasError: true;
         readonly error: Error;
         readonly errorInfo: { readonly componentStack: string };
       }
-    > | State<'Main'> | State<'Silenced'>;
+    >
+  | State<'Main'>
+  | State<'Silenced'>;
 
 export const supportLink =
   process.env.NODE_ENV === 'test' ? (
@@ -292,7 +294,11 @@ function formatError(
   error: unknown,
   url?: string
 ): Readonly<
-  readonly [errorObject: JSX.Element, errorMessage: string, copiableMessage: string]
+  readonly [
+    errorObject: JSX.Element,
+    errorMessage: string,
+    copiableMessage: string
+  ]
 > {
   const errorObject: WritableArray<React.ReactNode> = [
     typeof url === 'string' && (
@@ -457,7 +463,11 @@ export function handleAjaxError(
 }
 
 /** Create an iframe from HTML string */
-function ErrorIframe({ children: error }: { readonly children: string }): JSX.Element {
+function ErrorIframe({
+  children: error,
+}: {
+  readonly children: string;
+}): JSX.Element {
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
   React.useEffect(() => {
     if (iframeRef.current === null) return;

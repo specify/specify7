@@ -44,11 +44,11 @@ function Root(): JSX.Element | null {
 
   return isContextLoaded ? (
     <Main />
-  ) : (showLoadingScreen ? (
+  ) : showLoadingScreen ? (
     <SplashScreen>
       <h2 className="text-center">{commonText('loading')}</h2>
     </SplashScreen>
-  ) : null);
+  ) : null;
 }
 
 entrypoint('main', () => <Root />);

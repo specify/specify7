@@ -213,7 +213,6 @@ export function Main(): JSX.Element | null {
         listen(document.body, 'click', handleClick);
       })
       .catch(crash);
-     
   }, []);
 
   return menuItems === undefined || userTools === undefined ? null : (

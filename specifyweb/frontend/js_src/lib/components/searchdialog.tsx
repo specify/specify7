@@ -142,7 +142,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         >
           {isLoading ? (
             <li>{commonText('loading')}</li>
-          ) : (results === undefined ? undefined : results.length === 0 ? (
+          ) : results === undefined ? undefined : results.length === 0 ? (
             <li>{commonText('noResults')}</li>
           ) : (
             <>
@@ -173,11 +173,11 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 </li>
               )}
             </>
-          ))}
+          )}
         </Ul>
       </Form>
     </Dialog>
-  ) : (viewName === false ? (
+  ) : viewName === false ? (
     <QueryBuilderSearch
       model={templateResource.specifyModel}
       multiple={multiple}
@@ -187,7 +187,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         handleClose();
       }}
     />
-  ) : null);
+  ) : null;
 }
 
 const filterResults = <SCHEMA extends AnySchema>(
@@ -204,7 +204,7 @@ const testFilter = <SCHEMA extends AnySchema>(
 ): boolean =>
   operation === 'notBetween'
     ? resource.get(field) < values[0] || resource.get(field) > values[1]
-    : (operation === 'in'
+    : operation === 'in'
     ? values.some(f.equal(resource.get(field)))
     : operation === 'notIn'
     ? values.every(f.notEqual(resource.get(field)))
@@ -217,7 +217,7 @@ const testFilter = <SCHEMA extends AnySchema>(
           values,
         },
         resource,
-      }));
+      });
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   model,

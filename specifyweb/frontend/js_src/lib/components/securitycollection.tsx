@@ -156,7 +156,10 @@ export function SecurityCollection({
       : undefined;
 
   const [state, setState] = useLiveState<
-    State<'CreatingRoleState'> | State<'LoadingRole'> | State<'MainState'> | State<'RoleState', { readonly role: NewRole | Role }>
+    | State<'CreatingRoleState'>
+    | State<'LoadingRole'>
+    | State<'MainState'>
+    | State<'RoleState', { readonly role: NewRole | Role }>
   >(
     React.useCallback(
       () =>
@@ -361,7 +364,7 @@ export function SecurityCollection({
                     </div>
                   </>
                 )
-              ) : (hasPermission(
+              ) : hasPermission(
                   '/permissions/user/roles',
                   'read',
                   collection.id
@@ -373,7 +376,7 @@ export function SecurityCollection({
                 >
                   {userInformation.name}
                 </Button.LikeLink>
-              ))}
+              )}
             </section>
           </div>
         </>

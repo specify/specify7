@@ -50,14 +50,14 @@ export function splitLocalityData(
   filterMappingPath: MappingPath
 ): RA<LocalityData> {
   const filter = getCanonicalMappingPath(filterMappingPath);
-   const groups = Object.entries(localityData).reduce<
+  const groups = Object.entries(localityData).reduce<
     R<R<Field<number | string>>>
   >(
     (groups, [mappingPathString, field]) => {
       const mappingPath = splitJoinedMappingPath(mappingPathString);
-       const canonicalMappingPath = getCanonicalMappingPath(mappingPath);
-       const divergence = findArrayDivergencePoint(canonicalMappingPath, filter);
-       const key =
+      const canonicalMappingPath = getCanonicalMappingPath(mappingPath);
+      const divergence = findArrayDivergencePoint(canonicalMappingPath, filter);
+      const key =
         divergence === -1
           ? ''
           : mappingPathToString(mappingPath.slice(0, divergence));

@@ -97,7 +97,7 @@ export type CellTypes = {
     }
   >;
   readonly Blank: State<'Blank'>;
-}
+};
 
 export const cellAlign = ['left', 'center', 'right'] as const;
 
@@ -122,23 +122,23 @@ const processCellType: {
     )
       rawFieldName = parts?.slice(1).join('.');
     const field = model?.getField(rawFieldName ?? '');
-     const fieldDefinition = parseFormField(cell, getProperty);
+    const fieldDefinition = parseFormField(cell, getProperty);
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
      */
-     const fieldName =
+    const fieldName =
       fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'LatLonUI'
         ? undefined
         : (fieldDefinition.type === 'Plugin'
-            ? (fieldDefinition.pluginDefinition.type === 'PartialDateUI'
+            ? fieldDefinition.pluginDefinition.type === 'PartialDateUI'
               ? fieldDefinition.pluginDefinition.dateField
               : fieldDefinition.pluginDefinition.type ===
                   'CollectionRelOneToManyPlugin' ||
                 fieldDefinition.pluginDefinition.type === 'ColRelTypePlugin'
               ? fieldDefinition.pluginDefinition.relationship
-              : undefined)
+              : undefined
             : undefined) ?? rawFieldName;
     return {
       type: 'Field',
@@ -171,8 +171,8 @@ const processCellType: {
   }),
   SubView({ cell, model, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
-     const field = model?.getField(rawFieldName ?? '');
+    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
+    const field = model?.getField(rawFieldName ?? '');
     if (field === undefined)
       f.error(`Unknown field ${rawFieldName} when parsing form SubView`, {
         cell,
@@ -245,23 +245,23 @@ export function parseFormCell(
   cellNode: Element
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
-   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
-   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
-   const properties = parseSpecifyProperties(
+  const cellType = cellTypeTranslation[cellClass.toLowerCase()];
+  const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
+  const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
   );
-   const getProperty = (name: string): string | undefined =>
+  const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
-   const align = getProperty('align')?.toLowerCase();
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
+  const align = getProperty('align')?.toLowerCase();
   return {
     id: getParsedAttribute(cellNode, 'id'),
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align
-      : (cellType === 'Label'
+      : cellType === 'Label'
       ? 'right'
-      : 'left'),
+      : 'left',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

@@ -147,10 +147,12 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly records: RA<SpecifyResource<SCHEMA> | undefined>;
   // Callback to call when new record needs to be added to the record set
   readonly onAdd:
-    ((resources: RA<SpecifyResource<SCHEMA>>) => void) | undefined;
+    | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
+    | undefined;
   // Callback to call when a record needs to be removed from the record set
   readonly onDelete:
-    ((index: number, source: 'deleteButton' | 'minusButton') => void) | undefined;
+    | ((index: number, source: 'deleteButton' | 'minusButton') => void)
+    | undefined;
   readonly defaultIndex?: number;
   // Render function. Allows to customize placement of elements and features
   readonly children: (props: {

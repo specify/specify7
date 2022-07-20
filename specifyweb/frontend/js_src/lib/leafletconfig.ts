@@ -162,7 +162,7 @@ export const mappingLocalityColumns: RA<string> = [
 export type LocalityPinFields = {
   readonly pathToRelationship: MappingPath;
   readonly pathsToFields: RA<MappingPath>;
-}
+};
 
 /**
  * Applies only to the Leaflet map on the Locality form and the CO

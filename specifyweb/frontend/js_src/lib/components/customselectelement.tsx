@@ -60,7 +60,12 @@ type Properties =
   // Has down arrow (closed picklist preview) or left arrow (relationship)
   | 'arrow';
 export type CustomSelectType =
-  'BASE_TABLE_SELECTION_LIST' | 'CLOSED_LIST' | 'OPENED_LIST' | 'OPTIONS_LIST' | 'PREVIEW_LIST' | 'SUGGESTION_LIST';
+  | 'BASE_TABLE_SELECTION_LIST'
+  | 'CLOSED_LIST'
+  | 'OPENED_LIST'
+  | 'OPTIONS_LIST'
+  | 'PREVIEW_LIST'
+  | 'SUGGESTION_LIST';
 /* eslint-disable @typescript-eslint/naming-convention */
 export const customSelectTypes: RR<CustomSelectType, RA<Properties>> = {
   // Used in Map Explorer
@@ -130,14 +135,14 @@ type CustomSelectElementIconProps = {
    */
   readonly isRelationship?: boolean;
   // Whether the option is now selected
-   
+
   readonly isDefault?: boolean;
   // The name of the table this option represents
   readonly tableName?: keyof Tables;
   // The name of the option. Would be used as a label (visible to the user)
   readonly optionLabel?: JSX.Element | string;
   // The value of the title HTML attribute
-   
+
   readonly title?: string;
   /*
    * True if option can be selected. False if option cannot be selected because
@@ -355,27 +360,26 @@ function OptionGroup({
       )}
       {Object.entries(selectOptionsData).map(
         ([optionName, selectionOptionData]) => (
-            <Option
-              key={optionName}
-              onClick={({ isDoubleClick }): void =>
-                typeof handleClick === 'function' &&
-                (isDoubleClick ||
-                  (selectionOptionData.isEnabled !== false &&
-                    selectionOptionData.isDefault !== true))
-                  ? handleClick({
-                      newValue: optionName,
-                      isRelationship:
-                        selectionOptionData.isRelationship ?? false,
-                      newTableName: selectionOptionData.tableName,
-                      isDoubleClick,
-                    })
-                  : undefined
-              }
-              {...selectionOptionData}
-              hasArrow={hasArrow}
-              hasIcon={hasIcon}
-            />
-          )
+          <Option
+            key={optionName}
+            onClick={({ isDoubleClick }): void =>
+              typeof handleClick === 'function' &&
+              (isDoubleClick ||
+                (selectionOptionData.isEnabled !== false &&
+                  selectionOptionData.isDefault !== true))
+                ? handleClick({
+                    newValue: optionName,
+                    isRelationship: selectionOptionData.isRelationship ?? false,
+                    newTableName: selectionOptionData.tableName,
+                    isDoubleClick,
+                  })
+                : undefined
+            }
+            {...selectionOptionData}
+            hasArrow={hasArrow}
+            hasIcon={hasIcon}
+          />
+        )
       )}
     </section>
   );
@@ -562,13 +566,13 @@ export function CustomSelectElement({
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
-              : (defaultOption?.isHidden === true
+              : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                  dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground)
+              : customSelectElementBackground
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
@@ -729,7 +733,7 @@ export function CustomSelectElement({
       `}
       ref={customSelectElementRef}
       role={role}
-      tabIndex={has('tabIndex') ? 0 : (has('interactive') ? -1 : undefined)}
+      tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
       onBlur={
         has('interactive')

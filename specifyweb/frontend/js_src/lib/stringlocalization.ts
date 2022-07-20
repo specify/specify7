@@ -12,11 +12,11 @@ import { LANGUAGE } from './localization/utils';
 import { getProperty } from './props';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
- const locale =
+const locale =
   bundleLanguages.find((language) => LANGUAGE.startsWith(language)) ?? 'en';
- const bundles = {} as Record<typeof bundleNames[number], string>;
+const bundles = {} as Record<typeof bundleNames[number], string>;
 
- const bundleNames = [
+const bundleNames = [
   'resources',
   'views',
   'global_views',

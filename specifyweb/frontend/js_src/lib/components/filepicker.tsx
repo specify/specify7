@@ -127,7 +127,10 @@ export function FilePicker({
  * https://stackoverflow.com/a/10433550/8584605
  *
  */
-export const downloadFile = async (fileName: string, text: string): Promise<void> =>
+export const downloadFile = async (
+  fileName: string,
+  text: string
+): Promise<void> =>
   new Promise((resolve) => {
     const iframe = document.createElement('iframe');
     iframe.addEventListener('load', () => {

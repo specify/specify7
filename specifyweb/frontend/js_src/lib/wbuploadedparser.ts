@@ -18,7 +18,7 @@ type TreeInfo = {
   readonly rank: string;
   // The name of the tree node a record relates to
   readonly name: string;
-}
+};
 
 /*
  * Records metadata about an UploadResult indicating the tables, data set
@@ -30,7 +30,7 @@ type ReportInfo = {
   // The columns from the data set a record relates to
   readonly columns: RA<string>;
   readonly treeInfo: TreeInfo | null;
-}
+};
 
 /*
  * Indicates that a value had to be added to a picklist during uploading
@@ -45,7 +45,7 @@ type PicklistAddition = {
   readonly value: string;
   // The data set column that produced the new item
   readonly caption: string;
-}
+};
 
 // Indicates that a new row was added to the database
 type Uploaded = State<
@@ -125,11 +125,18 @@ type ParseFailures = State<
 type PropagatedFailure = State<'PropagatedFailure'>;
 
 type RecordResultTypes =
-  FailedBusinessRule | Matched | MatchedMultiple | NoMatch | NullRecord | ParseFailures | PropagatedFailure | Uploaded;
+  | FailedBusinessRule
+  | Matched
+  | MatchedMultiple
+  | NoMatch
+  | NullRecord
+  | ParseFailures
+  | PropagatedFailure
+  | Uploaded;
 
 // Records the specific result of attempting to upload a particular record
-type RecordResult = { readonly
-  [recordResultType in RecordResultTypes['type']]: Omit<
+type RecordResult = {
+  readonly [recordResultType in RecordResultTypes['type']]: Omit<
     Extract<RecordResultTypes, State<recordResultType>>,
     'type'
   >;
@@ -150,4 +157,4 @@ export type UploadResult = {
      */
     readonly toMany: IR<RA<UploadResult>>;
   };
-}
+};

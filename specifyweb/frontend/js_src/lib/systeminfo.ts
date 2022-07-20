@@ -20,7 +20,7 @@ type SystemInfo = {
   readonly institution_guid: string;
   readonly isa_number: string;
   readonly stats_url: string | null;
-}
+};
 
 let systemInfo: SystemInfo;
 

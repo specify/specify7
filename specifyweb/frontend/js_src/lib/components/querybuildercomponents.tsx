@@ -314,7 +314,7 @@ export function QueryExportButtons({
         >
           {queryText('queryExportStartedDialogText')}
         </Dialog>
-      ) : (state === 'warning' ? (
+      ) : state === 'warning' ? (
         <Dialog
           buttons={commonText('close')}
           header={queryText('unableToExportAsKmlDialogHeader')}
@@ -322,7 +322,7 @@ export function QueryExportButtons({
         >
           {queryText('unableToExportAsKmlDialogText')}
         </Dialog>
-      ) : undefined)}
+      ) : undefined}
       {hasPermission('/querybuilder/query', 'export_csv') && (
         <QueryButton
           disabled={fields.length === 0}
@@ -411,13 +411,15 @@ export function QueryLoanReturn({
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
   const [state, setState] = React.useState<
-    State<
+    | State<
         'Dialog',
         {
           readonly queryResource: SerializedModel<SpQuery>;
           readonly loanReturnPreparation: SpecifyResource<LoanReturnPreparation>;
         }
-      > | State<'Main'> | State<'Returned'>
+      >
+    | State<'Main'>
+    | State<'Returned'>
   >({
     type: 'Main',
   });

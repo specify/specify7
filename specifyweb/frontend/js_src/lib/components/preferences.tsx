@@ -65,19 +65,22 @@ export type PreferenceItem<VALUE> = {
   readonly visible: boolean | 'protected';
   readonly defaultValue: VALUE;
 } & (
-  {
+  | {
       // Parses the stored value. Determines the input type to render
       readonly type: JavaType;
       readonly parser?: Parser;
-    } | {
+    }
+  | {
       readonly renderer: PreferenceItemComponent<VALUE>;
-    } | {
+    }
+  | {
       readonly values:
-        RA<{
+        | RA<{
             readonly value: VALUE;
             readonly title?: string;
             readonly description?: string;
-          }> | RA<VALUE>;
+          }>
+        | RA<VALUE>;
     }
 );
 

@@ -118,19 +118,23 @@ export function SecurityUser({
   );
   const collectionId =
     rawCollectionId === -1
-      ? (Array.isArray(collections)
+      ? Array.isArray(collections)
         ? collections[0].id
-        : -1)
+        : -1
       : rawCollectionId;
 
   const mode = augmentMode('edit', userResource.isNew(), 'SpecifyUser');
   const [state, setState] = React.useState<
-    State<
+    | State<
         'SettingAgents',
         {
           readonly response: SetAgentsResponse;
         }
-      > | State<'Main'> | State<'NoAdminsError'> | State<'SetPasswordDialog'> | State<'SettingPassword'>
+      >
+    | State<'Main'>
+    | State<'NoAdminsError'>
+    | State<'SetPasswordDialog'>
+    | State<'SettingPassword'>
   >({ type: 'Main' });
 
   const allActions = getAllActions(anyResource);
@@ -420,7 +424,7 @@ export function SecurityUser({
                                 type: 'SettingAgents',
                                 response: JSON.parse(data),
                               })
-                            : (Array.isArray(institutionPolicies) &&
+                            : Array.isArray(institutionPolicies) &&
                               changedInstitutionPolicies
                             ? ajax(
                                 `/permissions/user_policies/institution/${userResource.id}/`,
@@ -459,7 +463,7 @@ export function SecurityUser({
                                 } else return true;
                                 return undefined;
                               })
-                            : true)
+                            : true
                         )
                         .then((canContinue) =>
                           canContinue === true

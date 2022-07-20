@@ -58,7 +58,7 @@ export function HostTaxonPlugin({
   );
   return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
-  ) : (hasTreeAccess('Taxon', 'read') ? (
+  ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       fieldName={undefined}
       forceCollection={rightSideCollection}
@@ -70,5 +70,5 @@ export function HostTaxonPlugin({
       resource={resource}
       typeSearch={hostTaxonTypeSearch}
     />
-  ) : null);
+  ) : null;
 }

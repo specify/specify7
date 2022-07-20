@@ -156,9 +156,9 @@ export function useCodeMirrorExtensions(
     const language =
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
-        : (mode === 'properties'
+        : mode === 'properties'
         ? [StreamLanguage.define(properties)]
-        : [xml(), xmlLinter(handleLinted)]);
+        : [xml(), xmlLinter(handleLinted)];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

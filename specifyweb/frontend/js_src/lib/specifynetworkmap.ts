@@ -21,14 +21,14 @@ export type OccurrenceData = {
   readonly localityId: number;
   readonly localityData: LocalityData;
   readonly fetchMoreData: () => Promise<LocalityData | false>;
-}
+};
 
 export const fetchLocalOccurrences = async (
   resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
   const LIMIT = 10_000;
 
-   const taxon =
+  const taxon =
     toTable(resource, 'Taxon') ??
     (await f.maybe(
       toTable(resource, 'CollectionObject'),
@@ -42,7 +42,7 @@ export const fetchLocalOccurrences = async (
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 
-   const commonFieldConfig = {
+  const commonFieldConfig = {
     isrelfld: false,
     sorttype: 0,
     isnot: false,
@@ -138,33 +138,33 @@ export const fetchLocalOccurrences = async (
         localityId,
         ...localityData
       ]) => ({
-          collectionObjectId,
-          collectingEventId,
-          localityId,
-          localityData: formatLocalityDataObject(
-            parsedLocalityFields.map((mappingPath, index) => [
-              mappingPath,
-              localityData[index],
-            ])
-          ),
-          fetchMoreData: async (): Promise<LocalityData | false> => {
-            const locality = new schema.models.Locality.Resource({
-              id: localityId,
-            });
-            return fetchLocalityDataFromLocalityResource(
-              await locality.fetch(),
-              false,
-              (mappingPathParts, resource) =>
-                (typeof resource !== 'object' ||
-                  !('specifyModel' in resource) ||
-                  ((resource.specifyModel.name !== 'CollectionObject' ||
-                    resource.id === collectionObjectId) &&
-                    (resource.specifyModel.name !== 'CollectingEvent' ||
-                      resource.id === collectingEventId))) &&
-                defaultRecordFilterFunction(mappingPathParts, resource)
-            );
-          },
-        })
+        collectionObjectId,
+        collectingEventId,
+        localityId,
+        localityData: formatLocalityDataObject(
+          parsedLocalityFields.map((mappingPath, index) => [
+            mappingPath,
+            localityData[index],
+          ])
+        ),
+        fetchMoreData: async (): Promise<LocalityData | false> => {
+          const locality = new schema.models.Locality.Resource({
+            id: localityId,
+          });
+          return fetchLocalityDataFromLocalityResource(
+            await locality.fetch(),
+            false,
+            (mappingPathParts, resource) =>
+              (typeof resource !== 'object' ||
+                !('specifyModel' in resource) ||
+                ((resource.specifyModel.name !== 'CollectionObject' ||
+                  resource.id === collectionObjectId) &&
+                  (resource.specifyModel.name !== 'CollectingEvent' ||
+                    resource.id === collectingEventId))) &&
+              defaultRecordFilterFunction(mappingPathParts, resource)
+          );
+        },
+      })
     )
     .filter(
       (occurrenceData): occurrenceData is OccurrenceData =>

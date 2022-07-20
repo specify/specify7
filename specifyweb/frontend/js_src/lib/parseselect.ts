@@ -4,13 +4,13 @@ import type { IR } from './types';
 import { defined } from './types';
 
 const reFrom = /from\s+(\w+)\s+(?:as\s+)?(\w+)/i;
- const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/gi;
+const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/gi;
 
 function parse(sqlSelectQuery: string): IR<string> {
   const [_match, table, tableAlias] = defined(
     reFrom.exec(sqlSelectQuery) ?? undefined
   );
-   const columnMapping = {
+  const columnMapping = {
     [tableAlias]: table,
   };
 
@@ -18,7 +18,7 @@ function parse(sqlSelectQuery: string): IR<string> {
     sqlSelectQuery.matchAll(reJoin),
     ([_match, fieldWithTable, alias]) => {
       const [table, fieldName] = fieldWithTable.split('.');
-       const col = defined(columnMapping[table]);
+      const col = defined(columnMapping[table]);
       columnMapping[alias] = `${col}.${fieldName}`;
     }
   );

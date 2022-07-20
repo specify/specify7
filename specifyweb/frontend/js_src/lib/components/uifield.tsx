@@ -67,7 +67,7 @@ export function UiField({
     React.useCallback(
       async () =>
         hasAccess && typeof data === 'object' && typeof fieldName === 'string'
-          ? ('models' in data.resource
+          ? 'models' in data.resource
             ? aggregate(data.resource as unknown as Collection<AnySchema>)
             : QueryFieldSpec.fromPath(
                 resource.specifyModel.name,
@@ -76,7 +76,7 @@ export function UiField({
                 (field) => field.isRelationship && relationshipIsToMany(field)
               )
             ? data.resource.rgetCollection(data.field.name).then(aggregate)
-            : false)
+            : false
           : undefined,
       [hasAccess, resource.specifyModel.name, data, fieldName]
     ),
@@ -184,7 +184,7 @@ export function Field({
     React.useCallback(
       () =>
         field?.isRelationship === true
-          ? (hasTablePermission(field.relatedModel.name, 'read')
+          ? hasTablePermission(field.relatedModel.name, 'read')
             ? (
                 resource.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined
@@ -192,7 +192,7 @@ export function Field({
               )
                 .then(format)
                 .then((value) => value ?? '')
-            : commonText('noPermission'))
+            : commonText('noPermission')
           : undefined,
       /*
        * While "value" is not used in the hook, it is needed to update a

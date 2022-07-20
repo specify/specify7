@@ -78,9 +78,9 @@ function Coordinate({
     setValidation(isValid ? '' : formsText('invalidValue'));
     handleFormatted(
       isValid
-        ? (hasValue
+        ? hasValue
           ? parsed?.format(step) ?? ''
-          : commonText('notApplicable'))
+          : commonText('notApplicable')
         : undefined
     );
 
@@ -240,9 +240,9 @@ export function LatLongUi({
             label={
               coordinateType === 'Point'
                 ? localityText('coordinates')
-                : (coordinateType === 'Line'
+                : coordinateType === 'Line'
                 ? commonText('start')
-                : localityText('northWestCorner'))
+                : localityText('northWestCorner')
             }
             resource={resource}
             step={step}

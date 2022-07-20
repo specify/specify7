@@ -112,11 +112,11 @@ export function UserCollectionsPlugin({
         title={
           isAdmin
             ? adminText('notAvailableOnAdmins')
-            : (user === undefined
+            : user === undefined
             ? commonText('loading')
             : user.isNew()
             ? adminText('saveUserFirst')
-            : undefined)
+            : undefined
         }
         onClick={handleOpen}
       >

@@ -41,11 +41,11 @@ export function formData(
       key,
       Array.isArray(value)
         ? JSON.stringify(value)
-        : (typeof value === 'number'
+        : typeof value === 'number'
         ? value.toString()
         : typeof value === 'boolean'
         ? value.toString()
-        : value)
+        : value
     )
   );
   return formData;
@@ -77,7 +77,7 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
   readonly response: Response;
   // One of expectedResponseCodes
   readonly status: number;
-}
+};
 
 /**
  * Wraps native fetch in useful helpers
@@ -126,7 +126,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
    * When running in a test environment, mock the calls rather than make
    * actual requests
    */
-  (process.env.NODE_ENV === 'test'
+  process.env.NODE_ENV === 'test'
     ? import('./tests/ajax').then(async ({ interceptRequest }) =>
         interceptRequest<RESPONSE_TYPE>(url, expectedResponseCodes)
       )
@@ -160,7 +160,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
             response,
             text,
           })
-        ));
+        );
 
 export function handleResponse<RESPONSE_TYPE = string>({
   expectedResponseCodes,

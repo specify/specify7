@@ -37,7 +37,7 @@ function MakeDwca({
   const loading = React.useContext(LoadingContext);
   const [isExporting, handleExporting, handleExported] = useBooleanState();
 
-  return resources === undefined ? null : (definition === undefined ? (
+  return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
       header={commonText('chooseDwcaDialogTitle')}
       resources={resources}
@@ -60,7 +60,7 @@ function MakeDwca({
       />
       ;
     </>
-  ));
+  );
 }
 
 const initialFilters: AppResourceFilters = {

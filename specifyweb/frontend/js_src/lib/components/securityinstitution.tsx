@@ -49,7 +49,9 @@ export function SecurityInstitution({
   ) => void;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    State<'CreatingRoleState'> | State<'MainState'> | State<'RoleState', { readonly role: NewRole | Role }>
+    | State<'CreatingRoleState'>
+    | State<'MainState'>
+    | State<'RoleState', { readonly role: NewRole | Role }>
   >({ type: 'MainState' });
   const loading = React.useContext(LoadingContext);
 
@@ -236,7 +238,7 @@ export function SecurityInstitution({
             </section>
           </div>
         </>
-      ) : (state.type === 'RoleState' ? (
+      ) : state.type === 'RoleState' ? (
         typeof libraryRoles === 'object' ? (
           <RoleView
             collectionId={schema.domainLevelIds.collection}
@@ -283,7 +285,7 @@ export function SecurityInstitution({
         )
       ) : (
         error('Invalid state')
-      ))}
+      )}
     </Container.Base>
   );
 }

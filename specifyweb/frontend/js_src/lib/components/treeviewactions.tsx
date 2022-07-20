@@ -282,7 +282,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const title =
     type === 'move'
       ? treeText('nodeMoveHintMessage', actionRow.fullName)
-      : (type === 'merge'
+      : type === 'merge'
       ? treeText('mergeNodeHintMessage', actionRow.fullName)
       : type === 'synonymize'
       ? treeText('synonymizeNodeHintMessage', actionRow.fullName)
@@ -290,7 +290,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           'desynonymizeNodeMessage',
           actionRow.fullName,
           focusedRow.fullName
-        ));
+        );
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
@@ -322,13 +322,13 @@ function ActiveAction<SCHEMA extends AnyTree>({
       >
         {typeof disabled === 'string'
           ? disabled
-          : (type === 'move'
+          : type === 'move'
           ? treeText('moveNodeHere', actionRow.fullName)
           : type === 'merge'
           ? treeText('mergeNodeHere', actionRow.fullName)
           : type === 'synonymize'
           ? treeText('makeSynonym', actionRow.fullName, focusedRow.fullName)
-          : treeText('desynonymizeNode'))}
+          : treeText('desynonymizeNode')}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
         {commonText('cancel')}
@@ -343,7 +343,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           <br />
           {error}
         </Dialog>
-      ) : (showPrompt ? (
+      ) : showPrompt ? (
         <Dialog
           buttons={
             <>
@@ -359,22 +359,22 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText('moveNode')
-                  : (type === 'merge'
+                  : type === 'merge'
                   ? treeText('mergeNode')
                   : type === 'synonymize'
                   ? treeText('synonymizeNode')
-                  : treeText('desynonymizeNode'))}
+                  : treeText('desynonymizeNode')}
               </Button.Blue>
             </>
           }
           header={
             type === 'move'
               ? treeText('moveNode')
-              : (type === 'merge'
+              : type === 'merge'
               ? treeText('mergeNode')
               : type === 'synonymize'
               ? treeText('synonymizeNode')
-              : treeText('desynonymizeNode'))
+              : treeText('desynonymizeNode')
           }
           onClose={handleCancelAction}
         >
@@ -385,7 +385,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 actionRow.fullName,
                 focusedRow.fullName
               )
-            : (type === 'merge'
+            : type === 'merge'
             ? treeText(
                 'mergeNodeMessage',
                 treeName,
@@ -403,9 +403,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 'desynonymizeNodeMessage',
                 actionRow.fullName,
                 focusedRow.fullName
-              ))}
+              )}
         </Dialog>
-      ) : undefined)}
+      ) : undefined}
     </menu>
   );
 }

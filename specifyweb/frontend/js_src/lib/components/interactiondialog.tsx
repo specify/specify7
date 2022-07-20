@@ -67,13 +67,16 @@ export function InteractionDialog({
   >;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    State<
+    | State<
         'PreparationSelectState',
         {
           readonly entries: Preparations;
           readonly problems: IR<RA<string>>;
         }
-      > | State<'LoadingState'> | State<'LoanReturnDoneState', { readonly result: string }> | State<'MainState'>
+      >
+    | State<'LoadingState'>
+    | State<'LoanReturnDoneState', { readonly result: string }>
+    | State<'MainState'>
   >({ type: 'MainState' });
 
   const { parser, split, attributes } = React.useMemo(() => {
@@ -213,7 +216,7 @@ export function InteractionDialog({
     >
       {formsText('returnedAndSaved', state.result)}
     </Dialog>
-  ) : (state.type === 'PreparationSelectState' &&
+  ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
       action={action}
@@ -243,19 +246,19 @@ export function InteractionDialog({
                 >
                   {formsText('noCollectionObjectCaption')}
                 </Button.Blue>
-              ) : (model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {formsText('noPreparationsCaption')}
                 </Link.Blue>
-              ) : undefined)}
+              ) : undefined}
             </>
           }
           header={
             typeof itemCollection === 'object'
               ? formsText('addItems')
-              : (model.name === 'Loan'
+              : model.name === 'Loan'
               ? formsText('recordReturn', model.label)
-              : formsText('createRecord', action.model.name))
+              : formsText('createRecord', action.model.name)
           }
           onClose={handleClose}
         >
@@ -346,5 +349,5 @@ export function InteractionDialog({
         </Dialog>
       )}
     </RecordSetsDialog>
-  ));
+  );
 }

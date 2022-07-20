@@ -106,7 +106,10 @@ function CreateRecordSet({
   readonly baseTableName: keyof Tables;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'Main'> | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'Saving'>
+    | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
+    | State<'Main'>
+    | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }>
+    | State<'Saving'>
   >({ type: 'Main' });
 
   return (

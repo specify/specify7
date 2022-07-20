@@ -78,7 +78,7 @@ const fetchEntries = f.store(
                       table:
                         action === 'NEW_GIFT'
                           ? 'Gift'
-                          : (action === 'NEW_LOAN'
+                          : action === 'NEW_LOAN'
                           ? 'Loan'
                           : defined(
                               (await f
@@ -96,7 +96,7 @@ const fetchEntries = f.store(
                                 getModel(
                                   getParsedAttribute(entry, 'table') ?? ''
                                 )?.name
-                            )),
+                            ),
                       label: getParsedAttribute(entry, 'label'),
                       tooltip: getParsedAttribute(entry, 'tooltip'),
                       icon: getParsedAttribute(entry, 'icon'),
@@ -118,7 +118,7 @@ function Interactions({
   readonly entries: RA<InteractionEntry>;
 }): JSX.Element {
   const [state, setState] = React.useState<
-    State<
+    | State<
         'InteractionState',
         {
           readonly table: 'CollectionObject' | 'Disposal' | 'Gift' | 'Loan';
@@ -129,42 +129,43 @@ function Interactions({
             readonly totalCount: number;
           }>;
         }
-      > | State<'MainState'> | State<'ReportsState'>
+      >
+    | State<'MainState'>
+    | State<'ReportsState'>
   >({ type: 'MainState' });
-  const handleAction = React.useCallback((
-    action: typeof supportedActions[number],
-    table: keyof Tables
-  ): void => {
-    if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
-    else {
-      const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
-      const model = isRecordSetAction
-        ? schema.models.CollectionObject
-        : schema.models.Loan;
-      setState({
-        type: 'InteractionState',
-        recordSetsPromise: fetchCollection('RecordSet', {
-          specifyUser: userInformation.id,
-          type: 0,
-          dbTableId: model.tableId,
-          domainFilter: true,
-          orderBy: '-timestampCreated',
-          limit: 5000,
-        }),
-        table: model.name,
-        actionModel:
-          table.toLowerCase() === 'loan'
-            ? schema.models.Loan
-            : (table.toLowerCase() === 'gift'
-            ? schema.models.Gift
-            : table.toLowerCase() === 'gift'
-            ? schema.models.Disposal
-            : error(`Unknown interaction table: ${table}`)),
-        action,
-      });
-    }
-  },
-  []);
+  const handleAction = React.useCallback(
+    (action: typeof supportedActions[number], table: keyof Tables): void => {
+      if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
+      else {
+        const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
+        const model = isRecordSetAction
+          ? schema.models.CollectionObject
+          : schema.models.Loan;
+        setState({
+          type: 'InteractionState',
+          recordSetsPromise: fetchCollection('RecordSet', {
+            specifyUser: userInformation.id,
+            type: 0,
+            dbTableId: model.tableId,
+            domainFilter: true,
+            orderBy: '-timestampCreated',
+            limit: 5000,
+          }),
+          table: model.name,
+          actionModel:
+            table.toLowerCase() === 'loan'
+              ? schema.models.Loan
+              : table.toLowerCase() === 'gift'
+              ? schema.models.Gift
+              : table.toLowerCase() === 'gift'
+              ? schema.models.Disposal
+              : error(`Unknown interaction table: ${table}`),
+          action,
+        });
+      }
+    },
+    []
+  );
 
   React.useEffect(
     () =>
@@ -230,16 +231,16 @@ function Interactions({
                     ? stringLocalization[
                         label as keyof typeof stringLocalization
                       ] ?? label
-                    : (typeof table === 'string'
+                    : typeof table === 'string'
                     ? getModel(table)?.label
-                    : action)}
+                    : action}
                 </Link.Default>
               </li>
             ) : undefined
           )}
       </Ul>
     </Dialog>
-  ) : (state.type === 'InteractionState' ? (
+  ) : state.type === 'InteractionState' ? (
     <InteractionDialog
       action={{ model: state.actionModel, name: state.action }}
       model={schema.models[state.table]}
@@ -248,9 +249,9 @@ function Interactions({
         defined(getModel(state.table)).getLiteralField(
           state.table === 'Loan'
             ? 'loanNumber'
-            : (state.table === 'Disposal'
+            : state.table === 'Disposal'
             ? 'disposalNumber'
-            : 'catalogNumber')
+            : 'catalogNumber'
         )
       )}
       onClose={handleClose}
@@ -264,7 +265,7 @@ function Interactions({
     />
   ) : (
     error('Invalid state')
-  ));
+  );
 }
 
 export function InteractionsDialog({

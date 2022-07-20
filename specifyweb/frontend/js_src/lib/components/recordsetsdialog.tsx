@@ -125,7 +125,9 @@ export function RecordSetsDialog({
   }) => JSX.Element;
 }): JSX.Element | null {
   const [state, setState] = React.useState<
-    State<'CreateState'> | State<'EditState', { readonly recordSet: SpecifyResource<RecordSet> }> | State<'MainState'>
+    | State<'CreateState'>
+    | State<'EditState', { readonly recordSet: SpecifyResource<RecordSet> }>
+    | State<'MainState'>
   >({ type: 'MainState' });
 
   const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');

@@ -242,7 +242,7 @@ function Row({
   const checked = selected !== 0;
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
-    State<
+    | State<
         'ItemSelection',
         {
           readonly items: RR<
@@ -253,12 +253,14 @@ function Row({
             }>
           >;
         }
-      > | State<
+      >
+    | State<
         'ResourceDialog',
         {
           readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
         }
-      > | State<'Main'>
+      >
+    | State<'Main'>
   >({ type: 'Main' });
 
   return (
@@ -324,9 +326,9 @@ function Row({
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
                                     ? schema.models.Loan
-                                    : (gifts.length === 1
+                                    : gifts.length === 1
                                     ? schema.models.Gift
-                                    : schema.models.ExchangeOut)
+                                    : schema.models.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,

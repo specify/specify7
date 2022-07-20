@@ -228,7 +228,7 @@ export function CreateAppResource({
         ))}
       </Ul>
     </Dialog>
-  ) : (mimeType === undefined ? (
+  ) : mimeType === undefined ? (
     <Dialog
       buttons={commonText('cancel')}
       header={adminText('selectResourceTypeDialogHeader')}
@@ -278,7 +278,7 @@ export function CreateAppResource({
       onClose={handleClose}
       onSelected={handleSelected}
     />
-  ));
+  );
 }
 
 function EditAppResource({

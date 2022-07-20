@@ -100,7 +100,7 @@ function GeoLocate({
     'height'
   );
 
-  return data === undefined ? null : (data === false ? (
+  return data === undefined ? null : data === false ? (
     <Dialog
       buttons={commonText('close')}
       header={localityText('geographyRequiredDialogHeader')}
@@ -137,7 +137,7 @@ function GeoLocate({
         title={localityText('geoLocate')}
       />
     </Dialog>
-  ));
+  );
 }
 
 async function getGeoLocateData(

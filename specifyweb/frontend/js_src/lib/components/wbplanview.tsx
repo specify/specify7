@@ -86,7 +86,7 @@ export function WbPlanView({
   useTitle(dataset.name);
 
   const [state, setState] = useLiveState<
-    State<
+    | State<
         'MappingState',
         {
           readonly changesMade: boolean;
@@ -94,7 +94,8 @@ export function WbPlanView({
           readonly lines: RA<MappingLine>;
           readonly mustMatchPreferences: IR<boolean>;
         }
-      > | State<'SelectBaseTable'>
+      >
+    | State<'SelectBaseTable'>
   >(
     React.useCallback(
       () =>

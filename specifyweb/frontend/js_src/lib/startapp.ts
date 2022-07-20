@@ -15,7 +15,7 @@ import { defined } from './types';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
- let requestCallback: ((status: number) => void) | undefined;
+let requestCallback: ((status: number) => void) | undefined;
 
 /**
  * Since arguments can't be passed directly to the Backbone.ajax call, this
@@ -41,7 +41,7 @@ export function hijackBackboneAjax<T>(
 Backbone.ajax = function (request): JQueryXHR {
   if (request === undefined) throw new Error('Undefined Request');
   const url = defined(request.url);
-   const requestCallbackCopy = requestCallback;
+  const requestCallbackCopy = requestCallback;
   return promiseToXhr(
     ajax(
       request.type === 'GET' && typeof request.data === 'object'

@@ -93,7 +93,7 @@ export function task(): void {
   const appResources = async (mode: 'appResources' | 'viewSets', id?: string) =>
     import('./appresources').then(({ AppResourcesWrapper }) =>
       hasToolPermission('resources', 'read')
-        ? (hasTablePermission('Discipline', 'read')
+        ? hasTablePermission('Discipline', 'read')
           ? hasTablePermission('Collection', 'read')
             ? setCurrentComponent(
                 hasTablePermission('SpecifyUser', 'read') ? (
@@ -113,7 +113,7 @@ export function task(): void {
               )
           : setCurrentComponent(
               <TablePermissionDenied action="read" tableName="Discipline" />
-            ))
+            )
         : setCurrentComponent(
             <ToolPermissionDenied action="read" tool="resources" />
           )

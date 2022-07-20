@@ -49,19 +49,22 @@ export function SecurityPanel(): JSX.Element | null {
   const availableCollections = useAvailableCollections();
 
   const [state, setState] = React.useState<
-    State<
+    | State<
         'CollectionState',
         {
           readonly collectionId: number;
           readonly initialRole: number | undefined;
         }
-      > | State<
+      >
+    | State<
         'UserState',
         {
           readonly initialCollection: number | undefined;
           readonly user: SerializedResource<SpecifyUser>;
         }
-      > | State<'InstitutionState'> | State<'MainState'>
+      >
+    | State<'InstitutionState'>
+    | State<'MainState'>
   >({ type: 'MainState' });
 
   const [users, setUsers] = useAsyncState<IR<SerializedResource<SpecifyUser>>>(
