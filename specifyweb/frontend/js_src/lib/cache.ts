@@ -35,9 +35,7 @@ const cachePrefix = 'specify7';
 const formatKey = (category: string, key: string): string =>
   [cachePrefix, category, key].join('-');
 
-function parseKey(
-  formattedKey: string
-): Readonly<[string, string]> | undefined {
+function parseKey(formattedKey: string): readonly [string, string] | undefined {
   const parts = formattedKey.split('-');
   if (parts.length !== 3 || parts[0] !== cachePrefix) return undefined;
   return [parts[1], parts[2]];
@@ -119,7 +117,7 @@ export const setCache = <
 ) => genericSet<CacheDefinitions[CATEGORY][KEY]>(category, key, cacheValue);
 
 export const cacheEvents = eventListener<{
-  change: { readonly category: string; readonly key: string };
+  readonly change: { readonly category: string; readonly key: string };
 }>();
 
 function genericSet<T>(

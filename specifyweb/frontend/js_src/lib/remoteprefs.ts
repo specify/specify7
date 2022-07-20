@@ -37,7 +37,7 @@ export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
 type Definitions = ReturnType<typeof remotePrefsDefinitions>;
 type CollectionDefinitions = typeof collectionPrefsDefinitions;
 type Definition = {
-  readonly defaultValue: boolean | string | number;
+  readonly defaultValue: boolean | number | string;
   readonly formatters?: RA<(value: unknown) => unknown>;
   readonly parser?: JavaType;
 };
@@ -48,7 +48,7 @@ type TypeOf<DEFINITION extends Definition> =
     ? number
     : boolean;
 
-type DefinitionOf<KEY extends keyof Definitions | keyof CollectionDefinitions> =
+type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
   KEY extends keyof Definitions
     ? Definitions[KEY]
     : KEY extends keyof CollectionDefinitions
@@ -76,7 +76,7 @@ export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
 function parsePref(
   rawValue: string | undefined,
   { defaultValue, formatters, parser }: Definition
-): string | boolean | number {
+): boolean | number | string {
   const value = f.maybe(rawValue, (rawValue) =>
     (formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
@@ -93,7 +93,7 @@ function parsePref(
         ? parsed.parsed
         : defaultValue
       : value ?? defaultValue
-  ) as string | number | boolean;
+  ) as boolean | number | string;
 }
 
 export const remotePrefs: IR<string> = preferences;

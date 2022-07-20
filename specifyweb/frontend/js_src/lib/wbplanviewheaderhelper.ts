@@ -18,10 +18,10 @@ export const uniquifyHeaders = (
   headers
     .map((header) => (header ? header : wbText('noHeader')))
     .map((header, index, headers) =>
-      headers.indexOf(header) === index ||
+      (headers.indexOf(header) === index ||
       (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
         ? header
-        : getUniqueName(header, headers)
+        : getUniqueName(header, headers))
     );
 
 export function renameNewlyCreatedHeaders(
@@ -39,11 +39,11 @@ export function renameNewlyCreatedHeaders(
       ])
   );
 
-  const newHeaders = lines.map(
+   const newHeaders = lines.map(
     ({ headerName }, index) => generatedHeaderPreviews[index] ?? headerName
   );
 
-  const uniqueHeaders = uniquifyHeaders(
+   const uniqueHeaders = uniquifyHeaders(
     newHeaders,
     Object.keys(generatedHeaderPreviews).map((index) => Number.parseInt(index))
   );

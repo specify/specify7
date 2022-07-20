@@ -27,7 +27,7 @@ import { relationshipIsToMany } from './wbplanviewmappinghelper';
  */
 export type AnySchema = {
   readonly tableName: keyof Tables;
-  readonly fields: IR<string | number | boolean | null>;
+  readonly fields: IR<boolean | number | string | null>;
   readonly toOneDependent: IR<AnySchema | null>;
   readonly toOneIndependent: IR<AnySchema | null>;
   readonly toManyDependent: IR<RA<AnySchema>>;
@@ -38,10 +38,10 @@ export type AnySchema = {
 export type TableFields<SCHEMA extends AnySchema> = string &
   (
     | keyof SCHEMA['fields']
-    | keyof SCHEMA['toOneDependent']
-    | keyof SCHEMA['toOneIndependent']
     | keyof SCHEMA['toManyDependent']
     | keyof SCHEMA['toManyIndependent']
+    | keyof SCHEMA['toOneDependent']
+    | keyof SCHEMA['toOneIndependent']
   );
 
 /**
@@ -97,7 +97,6 @@ export type RecordSetInfo = {
  * Meta-fields present in all resources
  */
 export type CommonFields = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   // BUG: These fields are undefined for newly created resources. Improve typing
   readonly resource_uri: string;
   readonly id: number;
@@ -120,19 +119,19 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
   readonly [KEY in
     | keyof CommonFields
     | keyof SCHEMA['fields']
-    | keyof SCHEMA['toOneDependent']
-    | keyof SCHEMA['toOneIndependent']
     | keyof SCHEMA['toManyDependent']
-    | keyof SCHEMA['toManyIndependent']]: KEY extends keyof CommonFields
+    | keyof SCHEMA['toManyIndependent']
+    | keyof SCHEMA['toOneDependent']
+    | keyof SCHEMA['toOneIndependent']]: KEY extends keyof CommonFields
     ? CommonFields[KEY]
     : KEY extends keyof SCHEMA['fields']
     ? SCHEMA['fields'][KEY]
     : KEY extends keyof SCHEMA['toOneDependent']
     ?
+        | Exclude<SCHEMA['toOneDependent'][KEY], SCHEMA>
         | Partial<
             SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
           >
-        | Exclude<SCHEMA['toOneDependent'][KEY], SCHEMA>
     : KEY extends keyof SCHEMA['toOneIndependent']
     ? SCHEMA['toOneIndependent'][KEY] extends null
       ? string | null
@@ -146,7 +145,7 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
 
 /** Convert type's keys to lowercase */
 export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
-  [KEY in keyof DICTIONARY as Lowercase<
+  readonly [KEY in keyof DICTIONARY as Lowercase<
     KEY & string
   >]: DICTIONARY[KEY] extends IR<unknown>
     ? KeysToLowerCase<DICTIONARY[KEY]>
@@ -161,7 +160,7 @@ export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA> | SerializedModel<SCHEMA>
+  resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
     typeof resource.toJSON === 'function'
@@ -242,11 +241,11 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
     requiredRelationships = 'set',
     optionalRelationships = 'define',
   }: {
-    readonly requiredFields?: 'define' | 'set' | 'omit';
-    readonly optionalFields?: 'define' | 'set' | 'omit';
-    readonly toManyRelationships?: 'define' | 'set' | 'omit';
-    readonly requiredRelationships?: 'define' | 'set' | 'omit';
-    readonly optionalRelationships?: 'define' | 'set' | 'omit';
+    readonly requiredFields?: 'define' | 'omit' | 'set';
+    readonly optionalFields?: 'define' | 'omit' | 'set';
+    readonly toManyRelationships?: 'define' | 'omit' | 'set';
+    readonly requiredRelationships?: 'define' | 'omit' | 'set';
+    readonly optionalRelationships?: 'define' | 'omit' | 'set';
   } = {}
 ): SerializedResource<Tables[TABLE_NAME]> =>
   f.var(defined(getModel(tableName)), (model) => ({

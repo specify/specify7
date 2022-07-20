@@ -3,6 +3,7 @@
  */
 
 import { error } from './assert';
+import { getCache } from './cache';
 import {
   DependentCollection,
   LazyCollection,
@@ -35,7 +36,6 @@ import {
 import { isTreeResource } from './treedefinitions';
 import type { IR, R, RA } from './types';
 import { defined } from './types';
-import { getCache } from './cache';
 
 type FieldAlias = {
   readonly vname: string;
@@ -66,7 +66,7 @@ type CollectionConstructor<SCHEMA extends AnySchema> = new (
       } & SCHEMA['fields'] &
         CommonFields &
         // This is required to allow for filters like leftSide__isnull
-        IR<string | boolean | number | null>
+        IR<boolean | number | string | null>
     >;
     readonly domainfilter?: boolean;
   },
@@ -98,7 +98,7 @@ export type Collection<SCHEMA extends AnySchema> = {
   getTotalCount(): Promise<number>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON<V extends IR<unknown>>(): RA<V>;
-  add(resource: SpecifyResource<SCHEMA> | RA<SpecifyResource<SCHEMA>>): void;
+  add(resource: RA<SpecifyResource<SCHEMA>> | SpecifyResource<SCHEMA>): void;
   remove(resource: SpecifyResource<SCHEMA>): void;
   fetch(filter?: { readonly limit: number }): Promise<Collection<SCHEMA>>;
   trigger(eventName: string): void;
@@ -174,12 +174,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
   /** All table non-relationship fields */
+  // eslint-disable-next-line functional/prefer-readonly-type
   public literalFields: RA<LiteralField> = [];
 
   /** All table relationships */
+  // eslint-disable-next-line functional/prefer-readonly-type
   public relationships: RA<Relationship> = [];
 
   /** All table literal fields and relationships */
+  // eslint-disable-next-line functional/prefer-readonly-type
   public fields: RA<LiteralField | Relationship> = [];
 
   public readonly localization: SchemaLocalization;
@@ -370,7 +373,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * scoping hierarchy.
    */
   public getScopingPath(): RA<string> | undefined {
-    if (this.name === schema.orgHierarchy.slice(-1)[0]) return [];
+    if (this.name === schema.orgHierarchy.at(-1)) return [];
     const up = this.getScopingRelationship();
     return up === undefined
       ? undefined

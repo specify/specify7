@@ -5,7 +5,7 @@ import { f } from '../functools';
 import { insertItem, replaceItem } from '../helpers';
 import { commonText } from '../localization/common';
 import type { QueryField } from '../querybuilderutils';
-import type { RA, Writable } from '../types';
+import type { RA, Writable, WritableArray } from '../types';
 import { mappingPathToString } from '../wbplanviewmappinghelper';
 import { Button } from './basic';
 import { LeafletMap } from './leaflet';
@@ -182,10 +182,11 @@ function usePolygon(map: L.Map | null, start: Pair, end: Pair): void {
   }, [map, start, end]);
 }
 
+// Leaflet has terrible typings, so have to cast everything to Writable<>
 const pointsToPolygon = (
   [latitude1, longitude1]: Pair,
   [latitude2, longitude2]: Pair
-): Writable<Pair>[] => [
+): WritableArray<Writable<Pair>> => [
   [latitude1, longitude1],
   [latitude1, longitude2],
   [latitude2, longitude2],

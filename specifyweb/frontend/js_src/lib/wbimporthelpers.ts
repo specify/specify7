@@ -30,7 +30,7 @@ const fileMimeMapper: IR<'csv' | 'xls'> = {
   'application/vnd.ms-excel.sheet.binary.macroEnabled.12': 'xls',
 };
 
-export const inferDataSetType = (file: File): 'xls' | 'csv' =>
+export const inferDataSetType = (file: File): 'csv' | 'xls' =>
   fileMimeMapper[file.type] ??
   (file.name.toLowerCase().endsWith('.psv') ? 'csv' : 'xlsx');
 
@@ -58,7 +58,7 @@ export function extractHeader(
   const header = hasHeader
     ? uniquifyHeaders(data[0].map(f.trim))
     : Array.from(data[0], (_, index) => wbText('columnName', index + 1));
-  const rows = hasHeader ? data.slice(1) : data;
+   const rows = hasHeader ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }
 
@@ -74,7 +74,7 @@ export const parseCsv = async (
       skipEmptyLines: true,
       complete: ({ data, errors }) => {
         const rows = data as RA<RA<string>>;
-        const maxWidth = Math.max(...rows.map((row) => row.length));
+         const maxWidth = Math.max(...rows.map((row) => row.length));
         /*
          * If rows were returned, despite an error, then the error is probably
          * not critical

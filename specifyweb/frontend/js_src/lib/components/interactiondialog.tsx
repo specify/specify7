@@ -25,7 +25,7 @@ import {
 import type { LiteralField } from '../specifyfield';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
-import type { IR, RA } from '../types';
+import type { IR, RA, WritableArray } from '../types';
 import { filterArray } from '../types';
 import type { InvalidParseResult, ValidParseResult } from '../uiparse';
 import {
@@ -150,7 +150,7 @@ export function InteractionDialog({
     prepsData: RA<PreparationRow>
   ) {
     // This is a really ugly piece of code:
-    let missing: string[] = [];
+    let missing: WritableArray<string> = [];
     if (Array.isArray(entries)) {
       let index = 0;
       let offsetIndex = 0;

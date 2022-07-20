@@ -10,11 +10,11 @@ import type { RA } from './types';
  * Taken from https://encoding.spec.whatwg.org/
  */
 const table: RA<{
-  encodings: RA<{
-    labels: RA<string>;
-    name: string;
+  readonly encodings: RA<{
+    readonly labels: RA<string>;
+    readonly name: string;
   }>;
-  heading: string;
+  readonly heading: string;
 }> = [
   {
     encodings: [

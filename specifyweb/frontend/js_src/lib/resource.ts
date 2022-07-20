@@ -128,8 +128,8 @@ export function getResourceApiUrl(
 
 export function parseResourceUrl(
   resourceUrl: string
-): Readonly<[modelName: keyof Tables, id: number] | undefined> {
-  const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/
+): readonly [modelName: keyof Tables, id: number] | undefined {
+  const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/u
     .exec(resourceUrl)
     ?.slice(1);
   const tableName = getModel(parsed?.[0] ?? '')?.name;
@@ -204,7 +204,7 @@ export function resourceOn(
 
 /** Extract model name from a Java class name */
 export const parseClassName = (className: string): string =>
-  className.split('.').slice(-1)[0];
+  className.split('.').at(-1) ?? '';
 
 export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
   const fieldsToClone = getFieldsToClone(model);

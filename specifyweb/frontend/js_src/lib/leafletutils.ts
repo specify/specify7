@@ -23,7 +23,7 @@ export type Field<T extends Readonly<unknown>> = {
   readonly value: T;
 };
 
-export type LocalityData = IR<Field<string | number>>;
+export type LocalityData = IR<Field<number | string>>;
 
 export const getField = (
   row: RA<string>,
@@ -43,7 +43,7 @@ export function formatCoordinate(coordinate: string): number {
 
 export const findRanksInMappings = (
   mappingPaths: RA<MappingPath>
-): RA<{ readonly groupName: string; treeRankLocation: number }> =>
+): RA<{ readonly groupName: string; readonly treeRankLocation: number }> =>
   mappingPaths
     .map((mappingPath) => ({
       mappingPath,

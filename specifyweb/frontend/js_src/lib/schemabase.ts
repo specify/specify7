@@ -31,7 +31,7 @@ export type Schema = {
   readonly treeSymbol: string;
   readonly fieldPartSeparator: string;
   readonly pathJoinSymbol: string;
-};
+}
 
 const schema: Writable<Schema> = {
   /*
@@ -72,7 +72,7 @@ const schema: Writable<Schema> = {
   pathJoinSymbol: '.',
 };
 
-const domainLevels = [
+ const domainLevels = [
   'collection',
   'discipline',
   'division',

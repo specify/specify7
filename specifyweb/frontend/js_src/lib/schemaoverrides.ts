@@ -9,8 +9,8 @@
 
 import type { Tables } from './datamodel';
 import type { TableFields } from './datamodelutils';
-import type { IR, RR } from './types';
 import { VALUE } from './helpers';
+import type { IR, RR } from './types';
 
 export type TableConfigOverwrite =
   /*
@@ -35,8 +35,6 @@ export type FieldConfigOverwrite =
   | 'required'
   // Removes a field from the mapper (but not from Query Builder)
   | 'readOnly'
-  // Removes a field from the mapper and Query Builder
-  | 'remove'
   // Hides a field. If it was required, it is made optional
   | 'hidden';
 

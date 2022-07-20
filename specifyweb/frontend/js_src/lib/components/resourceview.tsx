@@ -583,6 +583,7 @@ export function ShowResource({
           const reloadResource = new resource.specifyModel.Resource({
             id: resource.id,
           });
+          // @ts-expect-error Assigning to read-only
           reloadResource.recordsetid = resource.recordsetid;
           reloadResource
             .fetch()

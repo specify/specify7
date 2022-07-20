@@ -25,7 +25,7 @@ import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
-import type { IR, RA } from './types';
+import type { IR, RA, WritableArray } from './types';
 import { defined, filterArray } from './types';
 import {
   anyTreeRank,
@@ -156,9 +156,9 @@ export function getTableFromMappingPath(
   mappingPath: MappingPath
 ): keyof Tables {
   if (mappingPath.length === 0) return baseTableName;
-  const fieldName = valueIsPartialField(mappingPath.slice(-1)[0])
-    ? parsePartialField(mappingPath.slice(-1)[0])[0]
-    : mappingPath.slice(-1)[0];
+  const fieldName = valueIsPartialField(mappingPath.at(-1)!)
+    ? parsePartialField(mappingPath.at(-1)!)[0]
+    : mappingPath.at(-1)!;
   const field = defined(
     defined(getModel(baseTableName)).getField(
       getGenericMappingPath([...mappingPath.slice(0, -1), fieldName]).join('.')
@@ -169,7 +169,7 @@ export function getTableFromMappingPath(
 
 export type MappingLineData = Pick<
   MappingElementProps,
-  'fieldsData' | 'customSelectSubtype' | 'tableName' | 'selectLabel'
+  'customSelectSubtype' | 'fieldsData' | 'selectLabel' | 'tableName'
 >;
 
 const queryBuilderTreeFields = new Set(['fullName', 'author']);
@@ -195,7 +195,7 @@ export function getMappingLineData({
    * "selectedOnly" - fieldsData would only have data for the selected field
    * "all" - fieldsData has data for all files
    */
-  readonly generateFieldData: 'none' | 'selectedOnly' | 'all';
+  readonly generateFieldData: 'all' | 'none' | 'selectedOnly';
   readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
@@ -207,11 +207,15 @@ export function getMappingLineData({
       ? getUserPref('queryBuilder', 'general', 'noRestrictionsMode')
       : getUserPref('workBench', 'wbPlanView', 'noRestrictionsMode');
   const internalState: {
+    // eslint-disable-next-line functional/prefer-readonly-type
     position: number;
-    mappingLineData: MappingLineData[];
+    readonly mappingLineData: WritableArray<MappingLineData>;
+    // eslint-disable-next-line functional/prefer-readonly-type
     mappedFields: RA<string>;
+    // eslint-disable-next-line functional/prefer-readonly-type
     defaultValue: string;
-    parsedDefaultValue: Readonly<[fieldName: string, part: string | undefined]>;
+    // eslint-disable-next-line functional/prefer-readonly-type
+    parsedDefaultValue: readonly [fieldName: string, part: string | undefined];
   } = {
     position: -1,
     mappingLineData: [],
@@ -233,7 +237,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     model: SpecifyModel,
-    fieldsData: RA<Readonly<[string, HtmlGeneratorFieldData]> | undefined>
+    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
@@ -243,7 +247,7 @@ export function getMappingLineData({
     });
 
   const lastPartIndex =
-    mappingPath.slice(-1)[0] === '0'
+    mappingPath.at(-1) === '0'
       ? mappingPath.length - 1
       : mappingPath.length - 2;
 

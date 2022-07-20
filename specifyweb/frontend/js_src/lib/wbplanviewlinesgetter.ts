@@ -10,10 +10,10 @@ import type { AutoMapperResults } from './automapper';
 import { AutoMapper } from './automapper';
 import type { MappingLine } from './components/wbplanviewmapper';
 import type { Tables } from './datamodel';
-import type { IR, RA } from './types';
+import { f } from './functools';
+import type { IR, RA, WritableArray } from './types';
 import type { ColumnOptions, UploadPlan } from './uploadplanparser';
 import { parseUploadPlan } from './uploadplanparser';
-import { f } from './functools';
 
 export const defaultColumnOptions: ColumnOptions = {
   matchBehavior: 'ignoreNever',
@@ -37,12 +37,12 @@ export function getLinesFromHeaders({
   readonly headers?: RA<string>;
 } & (
   | {
-      readonly runAutoMapper: true;
-      readonly baseTableName: keyof Tables;
-    }
-  | {
       readonly runAutoMapper: false;
       readonly baseTableName?: keyof Tables;
+    }
+  | {
+      readonly runAutoMapper: true;
+      readonly baseTableName: keyof Tables;
     }
 )): RA<MappingLine> {
   const lines = headers.map(
@@ -105,7 +105,7 @@ export function getLinesFromUploadPlan(
       headerIndex: headers.indexOf(splitMappingPath.headerName),
     }))
     .filter(({ headerName }) => headers.includes(headerName))
-    .reduce<MappingLine[]>(
+    .reduce<WritableArray<MappingLine>>(
       (lines, { headerIndex, ...splitMappingPath }) => {
         lines[headerIndex] = splitMappingPath;
         return lines;

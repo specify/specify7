@@ -25,7 +25,7 @@ export const getDomainResource = <
   );
 
 let treeDefinitions: {
-  [TREE_NAME in AnyTree['tableName']]: {
+  readonly [TREE_NAME in AnyTree['tableName']]: {
     readonly definition: SpecifyResource<Tables[`${TREE_NAME}TreeDef`]>;
     readonly ranks: RA<SerializedResource<Tables[`${TREE_NAME}TreeDefItem`]>>;
   };

@@ -17,7 +17,7 @@ export const getAppResource = (
   resources: AppResources,
   model: SpecifyModel<SpAppResource | SpViewSetObject>,
   resourceId: number | undefined
-): SerializedResource<SpAppResource | SpViewSetObject> | undefined | false =>
+): SerializedResource<SpAppResource | SpViewSetObject> | false | undefined =>
   typeof resourceId === 'number'
     ? (
         (model.name === 'SpAppResource'

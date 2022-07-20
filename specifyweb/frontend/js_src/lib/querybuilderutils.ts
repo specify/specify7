@@ -13,7 +13,7 @@ import { mappingPathToString } from './wbplanviewmappinghelper';
 import type { MappingLineData } from './wbplanviewnavigator';
 import { mappingPathIsComplete } from './wbplanviewutils';
 
-export type SortTypes = undefined | 'ascending' | 'descending';
+export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];
 export const flippedSortTypes = {
   none: 0,
@@ -103,7 +103,7 @@ export function parseQueryFields(
 export const queryFieldsToFieldSpecs = (
   baseTableName: keyof Tables,
   fields: RA<QueryField>
-): RA<Readonly<[QueryField, QueryFieldSpec]>> =>
+): RA<readonly [QueryField, QueryFieldSpec]> =>
   fields
     .filter(({ mappingPath }) => mappingPathIsComplete(mappingPath))
     .map((field) => [
@@ -215,7 +215,7 @@ export function hasLocalityColumns(fields: RA<QueryField>): boolean {
   const fieldNames = new Set(
     fields
       .filter(({ isDisplay }) => isDisplay)
-      .map(({ mappingPath }) => mappingPath.slice(-1)[0])
+      .map(({ mappingPath }) => mappingPath.at(-1))
   );
   return fieldNames.has('latitude1') && fieldNames.has('longitude1');
 }

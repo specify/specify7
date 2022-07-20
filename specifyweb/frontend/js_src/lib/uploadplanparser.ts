@@ -8,7 +8,7 @@ import { defaultColumnOptions } from './wbplanviewlinesgetter';
 import type { SplitMappingPath } from './wbplanviewmappinghelper';
 import { formatToManyIndex, formatTreeRank } from './wbplanviewmappinghelper';
 
-export type MatchBehaviors = 'ignoreWhenBlank' | 'ignoreAlways' | 'ignoreNever';
+export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
 export type ColumnOptions = {
   readonly matchBehavior: MatchBehaviors;
@@ -16,7 +16,9 @@ export type ColumnOptions = {
   readonly default: string | null;
 };
 
-export type ColumnDefinition = string | ({ column: string } & ColumnOptions);
+export type ColumnDefinition =
+  | string
+  | (ColumnOptions & { readonly column: string });
 
 export type NestedUploadTable = Omit<UploadTable, 'toMany'>;
 
@@ -28,18 +30,18 @@ export type UploadTable = {
 };
 
 type UploadTableVariety =
-  | { readonly uploadTable: UploadTable }
-  | { readonly mustMatchTable: UploadTable };
+  | { readonly mustMatchTable: UploadTable }
+  | { readonly uploadTable: UploadTable };
 
 export type TreeRecord = {
-  readonly ranks: IR<string | { treeNodeCols: IR<ColumnDefinition> }>;
+  readonly ranks: IR<string | { readonly treeNodeCols: IR<ColumnDefinition> }>;
 };
 
 type TreeRecordVariety =
-  | { readonly treeRecord: TreeRecord }
-  | { readonly mustMatchTreeRecord: TreeRecord };
+  | { readonly mustMatchTreeRecord: TreeRecord }
+  | { readonly treeRecord: TreeRecord };
 
-export type Uploadable = UploadTableVariety | TreeRecordVariety;
+export type Uploadable = TreeRecordVariety | UploadTableVariety;
 
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
@@ -112,7 +114,7 @@ const parseWbCols = (
 
 const parseUploadTable = (
   model: SpecifyModel,
-  uploadPlan: UploadTable | NestedUploadTable,
+  uploadPlan: NestedUploadTable | UploadTable,
   makeMustMatch: (model: SpecifyModel) => void,
   mappingPath: MappingPath
 ): RA<SplitMappingPath> => [
@@ -174,11 +176,11 @@ const parseUploadable = (
  * Break down upload plan into components that are easier to manipulate
  */
 export function parseUploadPlan(uploadPlan: UploadPlan): {
-  baseTable: SpecifyModel;
-  lines: RA<SplitMappingPath>;
-  mustMatchPreferences: RR<keyof Tables, boolean>;
+  readonly baseTable: SpecifyModel;
+  readonly lines: RA<SplitMappingPath>;
+  readonly mustMatchPreferences: RR<keyof Tables, boolean>;
 } {
-  const mustMatchTables: Set<keyof Tables> = new Set();
+  const mustMatchTables = new Set<keyof Tables>();
 
   const makeMustMatch = (model: SpecifyModel): void =>
     void mustMatchTables.add(model.name);

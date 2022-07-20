@@ -36,7 +36,7 @@ const addBaseTableName = (
     mappingPath: [baseTableName, ...mappingPath],
   }));
 
-const matchLocalityPinFields = (
+ const matchLocalityPinFields = (
   splitMappingPaths: SplitMappingPaths
 ): RA<
   LocalityPinFields & { readonly matchedPathsToRelationship: RA<MappingPath> }
@@ -67,7 +67,7 @@ const matchLocalityPinFields = (
     );
 
 /** Find the index of a subArray in array. On failure returns -1 */
-const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
+ const findSubArray = (array: RA<string>, subArray: RA<string>): number =>
   array.findIndex((_, index) => pathStartsWith(array.slice(index), subArray));
 
 export type SplitMappingPathWithFieldName = SplitMappingPath & {
@@ -112,7 +112,7 @@ function groupLocalityColumns(
   splitMappingPaths: RA<SplitMappingPathWithFieldName>
 ): RA<IR<string>> {
   const groupedLocalityColumns: R<R<string>> = {};
-  const globalLocalityColumns: R<string> = {};
+   const globalLocalityColumns: R<string> = {};
   splitMappingPaths.forEach(({ mappingPath, fieldName, headerName }) => {
     const indexOfLocality = mappingPath.indexOf('locality');
     if (indexOfLocality === -1) globalLocalityColumns[fieldName] = headerName;
@@ -139,7 +139,7 @@ const filterInvalidLocalityColumnGroups = (
     )
   );
 
-const findLocalityColumns = (
+ const findLocalityColumns = (
   splitMappingPaths: SplitMappingPaths
 ): RA<IR<string>> =>
   filterInvalidLocalityColumnGroups(
@@ -177,7 +177,7 @@ const addCanonicalMappingPaths = (
     canonicalMappingPath: getCanonicalMappingPath(mappingPath),
   }));
 
-const convertToLowerCase = (
+ const convertToLowerCase = (
   splitMappingPaths: RA<SplitMappingPath>
 ): RA<SplitMappingPath> =>
   splitMappingPaths.map(({ mappingPath, ...rest }) => ({
@@ -224,10 +224,10 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
       field,
     }))
     .reverse();
-  const treeRanks = findRanksInMappings(
+   const treeRanks = findRanksInMappings(
     localityDataEntries.map(({ mappingPath }) => mappingPath)
   );
-  const aggregatedTreeRanks = treeRanks.reduce<R<Field<string | number>>>(
+   const aggregatedTreeRanks = treeRanks.reduce<R<Field<number | string>>>(
     (aggregated, { groupName, treeRankLocation }, index) => {
       if (treeRankLocation === -1) return aggregated;
 
@@ -254,7 +254,7 @@ function reshapeLocalityData(localityData: LocalityData): LocalityData {
       localityDataEntries
         .map(({ mappingPath, field }, index) => {
           const mappingPathString = mappingPathToString(mappingPath);
-          const { treeRankLocation, groupName } = treeRanks[index];
+           const { treeRankLocation, groupName } = treeRanks[index];
           if (treeRankLocation === -1)
             return [mappingPathString, field] as const;
           else if (
@@ -279,7 +279,7 @@ export function getLocalityCoordinate(
     headerName: localityColumns[fieldName],
     value: getField(row, headers, localityColumns, fieldName),
   });
-  const formatCoordinateCurried = (fieldName: string): Field<number> => ({
+   const formatCoordinateCurried = (fieldName: string): Field<number> => ({
     headerName: localityColumns[fieldName],
     value: formatCoordinate(getFieldCurried(fieldName).value),
   });

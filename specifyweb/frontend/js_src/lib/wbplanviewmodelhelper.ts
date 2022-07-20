@@ -48,7 +48,7 @@ export function findRequiredMissingFields(
   parentRelationship: Relationship | undefined = undefined,
   // Used internally in a recursion. Current mapping path
   path: MappingPath = []
-): MappingPath[] {
+): RA<MappingPath> {
   const model = defined(getModel(tableName));
 
   if (mappings === undefined) return [];
@@ -70,22 +70,22 @@ export function findRequiredMissingFields(
       )
     );
   // Handle trees
-  else if (isTreeModel(tableName) && !valueIsTreeRank(path.slice(-1)[0]))
+  else if (isTreeModel(tableName) && !valueIsTreeRank(path.at(-1)!))
     return (
       getTreeDefinitionItems(tableName as 'Geography', false)?.flatMap(
         ({ name: rankName }) => {
           const formattedRankName = formatTreeRank(rankName);
           const localPath = [...path, formattedRankName];
 
-          if (formattedRankName in indexedMappings)
-            return findRequiredMissingFields(
-              tableName,
-              indexedMappings[formattedRankName],
-              mustMatchPreferences,
-              parentRelationship,
-              localPath
-            );
-          else return [];
+          return formattedRankName in indexedMappings
+            ? findRequiredMissingFields(
+                tableName,
+                indexedMappings[formattedRankName],
+                mustMatchPreferences,
+                parentRelationship,
+                localPath
+              )
+            : [];
         }
       ) ?? []
     );

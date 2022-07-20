@@ -18,6 +18,7 @@ import { getUiFormatters, type UiFormatter } from './uiformatters';
 
 export type JavaType =
   // Strings
+  // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
   | 'text'
   | 'java.lang.String'
   // Numbers
@@ -76,17 +77,22 @@ abstract class FieldBase {
 
   public readonly dottedName: string;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public isHidden: boolean;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public isReadOnly: boolean;
 
   public readonly isRequired: boolean;
 
-  public overrides: {
+  public readonly overrides: {
+    // eslint-disable-next-line functional/prefer-readonly-type
     isRequired: boolean;
     // If relatedModel isHidden, this is set to true
+    // eslint-disable-next-line functional/prefer-readonly-type
     isHidden: boolean;
     // If relatedModel isSystem, this is set to true
+    // eslint-disable-next-line functional/prefer-readonly-type
     isReadOnly: boolean;
   };
 
@@ -227,7 +233,7 @@ abstract class FieldBase {
 export class LiteralField extends FieldBase {
   public readonly type: JavaType;
 
-  public isRelationship: false = false;
+  public readonly isRelationship: false = false;
 
   public constructor(model: SpecifyModel, fieldDefinition: FieldDefinition) {
     super(model, fieldDefinition);
@@ -236,6 +242,7 @@ export class LiteralField extends FieldBase {
 }
 
 export class Relationship extends FieldBase {
+  // eslint-disable-next-line functional/prefer-readonly-type
   public otherSideName?: string;
 
   public readonly relatedModel: SpecifyModel;
@@ -244,7 +251,7 @@ export class Relationship extends FieldBase {
 
   private readonly dependent: boolean;
 
-  public isRelationship: true = true;
+  public readonly isRelationship: true = true;
 
   public constructor(
     model: SpecifyModel,
@@ -281,11 +288,11 @@ export class Relationship extends FieldBase {
    */
   public isDependent(): boolean {
     // REFACTOR: move this into SchemaExtras.ts
-    return this.model.name == 'CollectionObject' &&
-      this.name == 'collectingEvent'
+    return this.model.name === 'CollectionObject' &&
+      this.name === 'collectingEvent'
       ? schema.embeddedCollectingEvent
-      : this.model.name.toLowerCase() == schema.paleoContextChildTable &&
-        this.name == 'paleoContext'
+      : this.model.name.toLowerCase() === schema.paleoContextChildTable &&
+        this.name === 'paleoContext'
       ? schema.embeddedPaleoContext
       : this.dependent;
   }

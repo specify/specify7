@@ -258,7 +258,7 @@ export function Dialog({
   const isFullScreen = containerClassName.includes(dialogClassNames.fullScreen);
 
   const draggableContainer: Props['contentElement'] = React.useCallback(
-    (props, children) => (
+    (props: React.ComponentPropsWithRef<'div'>, children: React.ReactNode) => (
       <Draggable
         // Don't allow moving the dialog past the window bounds
         bounds="parent"
@@ -299,7 +299,10 @@ export function Dialog({
   }, [showIcon, defaultIcon, buttons, buttonContainer]);
 
   const overlayElement: Props['overlayElement'] = React.useCallback(
-    (props, contentElement) => (
+    (
+      props: React.ComponentPropsWithRef<'div'>,
+      contentElement: React.ReactElement
+    ) => (
       <div
         {...props}
         onMouseDown={

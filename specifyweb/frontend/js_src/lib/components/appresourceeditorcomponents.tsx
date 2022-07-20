@@ -133,14 +133,14 @@ const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObject_>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObject_>
-): Extension[] {
+): RA<Extension> {
   const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
   const [indentWithTab] = usePref('appResources', 'behavior', 'indentWithTab');
   const indentCharacter = indentWithTab ? '\t' : ' '.repeat(indentSize);
 
   const mode = getAppResourceExtension(resource);
-  const [extensions, setExtensions] = React.useState<Extension[]>([]);
+  const [extensions, setExtensions] = React.useState<RA<Extension>>([]);
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {
       const hasErrors = results.length > 0;

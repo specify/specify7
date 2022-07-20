@@ -43,7 +43,7 @@ export type Options = {
    * NOTE: formattedHeaderFieldSynonym is also available as a matching
    * rule, but only for `synonym` rules. See more later in this file
    */
-};
+}
 
 // Main structure
 
@@ -54,7 +54,7 @@ export type TableSynonym = {
    */
   readonly mappingPathFilter: MappingPath;
   readonly synonyms: RA<string>;
-};
+}
 
 type AutoMapperDefinitions = {
   /*
@@ -116,7 +116,7 @@ type AutoMapperDefinitions = {
     RR<
       AutoMapperScope,
       // Described earlier in the file
-      { headers: Options }
+      { readonly headers: Options }
     >
   >;
 
@@ -164,7 +164,7 @@ type AutoMapperDefinitions = {
         RR<
           AutoMapperScope,
           {
-            headers: Options & {
+            readonly headers: Options & {
               /*
                * Additional matching rule - available
                * only for `synonym` definitions
@@ -177,14 +177,14 @@ type AutoMapperDefinitions = {
                * Where <fieldNameSynonym> is the value
                * provided in formattedHeaderFieldSynonym
                */
-              formattedHeaderFieldSynonym?: RA<string>;
+              readonly formattedHeaderFieldSynonym?: RA<string>;
             };
           }
         >
       >;
     };
   };
-};
+}
 
 export const autoMapperDefinitions: AutoMapperDefinitions = {
   tableSynonyms: {

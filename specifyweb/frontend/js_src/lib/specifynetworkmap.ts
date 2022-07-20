@@ -21,14 +21,14 @@ export type OccurrenceData = {
   readonly localityId: number;
   readonly localityData: LocalityData;
   readonly fetchMoreData: () => Promise<LocalityData | false>;
-};
+}
 
 export const fetchLocalOccurrences = async (
   resource: SpecifyResource<CollectionObject> | SpecifyResource<Taxon>
 ): Promise<RA<OccurrenceData>> => {
   const LIMIT = 10_000;
 
-  const taxon =
+   const taxon =
     toTable(resource, 'Taxon') ??
     (await f.maybe(
       toTable(resource, 'CollectionObject'),
@@ -42,7 +42,7 @@ export const fetchLocalOccurrences = async (
 
   const parsedLocalityFields = parseLocalityPinFields(true);
 
-  const commonFieldConfig = {
+   const commonFieldConfig = {
     isrelfld: false,
     sorttype: 0,
     isnot: false,
@@ -53,7 +53,7 @@ export const fetchLocalOccurrences = async (
   const {
     data: { results },
   } = await ajax<{
-    readonly results: RA<[number, number, number, ...RA<string>]>;
+    readonly results: RA<readonly [number, number, number, ...RA<string>]>;
   }>('/stored_query/ephemeral/', {
     method: 'POST',
     headers: {
@@ -137,8 +137,7 @@ export const fetchLocalOccurrences = async (
         collectingEventId,
         localityId,
         ...localityData
-      ]) => {
-        return {
+      ]) => ({
           collectionObjectId,
           collectingEventId,
           localityId,
@@ -165,8 +164,7 @@ export const fetchLocalOccurrences = async (
                 defaultRecordFilterFunction(mappingPathParts, resource)
             );
           },
-        };
-      }
+        })
     )
     .filter(
       (occurrenceData): occurrenceData is OccurrenceData =>

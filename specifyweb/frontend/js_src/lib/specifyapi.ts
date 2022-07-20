@@ -11,8 +11,8 @@ import type { RA } from './types';
 import { filterArray } from './types';
 
 export const globalEvents = eventListener<{
-  initResource: SpecifyResource<AnySchema>;
-  newResource: SpecifyResource<AnySchema>;
+  readonly initResource: SpecifyResource<AnySchema>;
+  readonly newResource: SpecifyResource<AnySchema>;
 }>();
 
 // FEATURE: consider replacing this with Query Builder
@@ -79,19 +79,17 @@ export type Preparations = RA<{
   readonly available: number;
 }>;
 
-export type PreparationRow = Readonly<
-  [
-    string,
-    string,
-    number,
-    string,
-    number,
-    string | null,
-    string | null,
-    string | null,
-    string
-  ]
->;
+export type PreparationRow = readonly [
+  string,
+  string,
+  number,
+  string,
+  number,
+  string | null,
+  string | null,
+  string | null,
+  string
+];
 
 export const getPrepsAvailableForLoanRs = async (recordSetId: number) =>
   ajax<RA<PreparationRow>>(
@@ -132,7 +130,7 @@ export const returnAllLoanItems = async (
   }).then(({ data }) => data);
 
 export const getInteractionsForPrepId = async (prepId: number) =>
-  ajax<RA<Readonly<[number, string | null, string | null, string | null]>>>(
+  ajax<RA<readonly [number, string | null, string | null, string | null]>>(
     '/interactions/prep_interactions/',
     {
       method: 'POST',

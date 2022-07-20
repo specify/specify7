@@ -63,7 +63,7 @@ export async function fetchPickListItems(
 
 export async function fetchPickList(
   pickListName: string
-): Promise<undefined | SpecifyResource<PickList>> {
+): Promise<SpecifyResource<PickList> | undefined> {
   const pickList = await fetchPickLists().then(
     (pickLists) => pickLists[pickListName]
   );

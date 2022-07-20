@@ -1,5 +1,5 @@
 import { jsonStringify } from './helpers';
-import type { RA } from './types';
+import type { RA, WritableArray } from './types';
 
 /**
  * Spy on the calls to these console so that can include all console
@@ -15,11 +15,11 @@ const logTypes = [
   'info',
   'trace',
 ] as const;
-export const consoleLog: {
+export const consoleLog: WritableArray<{
   readonly message: RA<unknown>;
   readonly type: typeof logTypes[number];
   readonly date: string;
-}[] = [];
+}> = [];
 
 export function interceptLogs(): void {
   logTypes.forEach((logType) => {

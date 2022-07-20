@@ -145,17 +145,17 @@ export const derivedPolicies = {
 
 let operationPermissions: RR<
   number,
-  {
+  RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
+    readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
+      typeof frontEndPermissions[RESOURCE][number],
+      boolean
+    >;
+  } & {
     readonly [RESOURCE in keyof typeof operationPolicies]: RR<
       typeof operationPolicies[RESOURCE][number],
       boolean
     >;
-  } & RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
-      readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
-        typeof frontEndPermissions[RESOURCE][number],
-        boolean
-      >;
-    }
+  }
 > = {};
 let tablePermissions: RR<
   number,
@@ -291,7 +291,7 @@ const calculateDerivedPermissions = (
 
 const indexQueryItems = (
   query: RA<PermissionsQueryItem>
-): RA<Readonly<[string, IR<boolean>]>> =>
+): RA<readonly [string, IR<boolean>]> =>
   group(
     query.map((result) => [
       result.resource,

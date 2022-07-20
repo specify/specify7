@@ -31,6 +31,7 @@ import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 import { useId } from './hooks';
+import { WritableArray } from '../types';
 
 type ErrorBoundaryState =
   | State<'Main'>
@@ -295,16 +296,16 @@ function formatError(
 ): Readonly<
   [errorObject: JSX.Element, errorMessage: string, copiableMessage: string]
 > {
-  const errorObject: React.ReactNode[] = [
+  const errorObject: WritableArray<React.ReactNode> = [
     typeof url === 'string' && (
       <p key="errorOccurred">
         Error occurred fetching from <code>{url}</code>
       </p>
     ),
   ];
-  const errorMessage: string[] =
+  const errorMessage: WritableArray<string> =
     typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
-  const copiableMessage: unknown[] =
+  const copiableMessage: WritableArray<unknown> =
     typeof url === 'string' ? [`Error occurred fetching from ${url}`] : [];
 
   if (typeof error === 'object' && error !== null) {

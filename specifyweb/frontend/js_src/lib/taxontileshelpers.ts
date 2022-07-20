@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import { index, sortFunction } from './helpers';
-import type { RA, RR } from './types';
+import type { RA, RR, WritableArray } from './types';
 import { filterArray } from './types';
 
 type Node = {
@@ -30,7 +30,10 @@ export function pairNodes(nodes: RA<Node>): RA<PairedNode> {
   return pairedNodes;
 }
 
-type PairedNode = Node & { children: PairedNode[] | undefined };
+type PairedNode = Node & {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  children: WritableArray<PairedNode> | undefined;
+};
 
 /**
  * Limit the number of tree squares to ~1000.

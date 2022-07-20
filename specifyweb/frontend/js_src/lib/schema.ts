@@ -14,7 +14,7 @@ import { formatUrl } from './querystring';
 import { schemaBase } from './schemabase';
 import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
-import { SpecifyModel, type TableDefinition } from './specifymodel';
+import { type TableDefinition,SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
 import type { IR, RA } from './types';
 
@@ -33,7 +33,7 @@ export type SchemaLocalization = {
     readonly isrequired: boolean;
     readonly ishidden: boolean;
   }>;
-};
+}
 
 const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
   fields: RA<FIELD_TYPE>,

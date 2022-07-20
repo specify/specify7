@@ -9,6 +9,7 @@ import { Backbone } from '../backbone';
 import { commonText } from '../localization/common';
 import { Button } from './basic';
 import { showDialog } from './legacydialog';
+import { WritableArray } from '../types';
 
 /**
  * We introduce a sequence variable that is incremented and passed in
@@ -32,7 +33,7 @@ type Blocker = {
   readonly message: string;
   readonly confirmNavigationHandler: typeof defaultConfirmNavigationHandler;
 };
-let unloadBlockers: Blocker[] = [];
+let unloadBlockers: WritableArray<Blocker> = [];
 
 let onBeforeUnloadHandler: (() => string) | undefined = undefined;
 

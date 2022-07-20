@@ -45,7 +45,7 @@ const modifyLine = (
 type ToggleMappingViewAction = Action<
   'ToggleMappingViewAction',
   {
-    isVisible: boolean;
+    readonly isVisible: boolean;
   }
 >;
 
@@ -55,7 +55,7 @@ type ResetMappingsAction = Action<'ResetMappingsAction'>;
 
 type ValidationAction = Action<
   'ValidationAction',
-  { validationResults: RA<MappingPath> }
+  { readonly validationResults: RA<MappingPath> }
 >;
 
 type ClearValidationAction = Action<'ClearValidationAction'>;
@@ -63,14 +63,14 @@ type ClearValidationAction = Action<'ClearValidationAction'>;
 type ClearMappingLineAction = Action<
   'ClearMappingLineAction',
   {
-    line: number;
+    readonly line: number;
   }
 >;
 
 type FocusLineAction = Action<
   'FocusLineAction',
   {
-    line: number;
+    readonly line: number;
   }
 >;
 
@@ -78,7 +78,7 @@ type MappingViewMapAction = Action<'MappingViewMapAction'>;
 
 type AddNewHeaderAction = Action<
   'AddNewHeaderAction',
-  { newHeaderName: string }
+  { readonly newHeaderName: string }
 >;
 
 type OpenSelectElementAction = Action<
@@ -105,89 +105,89 @@ export type ChangeSelectElementValueAction = Action<
 type AutoMapperSuggestionsLoadedAction = Action<
   'AutoMapperSuggestionsLoadedAction',
   {
-    autoMapperSuggestions: RA<AutoMapperSuggestion>;
+    readonly autoMapperSuggestions: RA<AutoMapperSuggestion>;
   }
 >;
 
 type AutoMapperSuggestionSelectedAction = Action<
   'AutoMapperSuggestionSelectedAction',
   {
-    suggestion: string;
+    readonly suggestion: string;
   }
 >;
 
 type ValidationResultClickAction = Action<
   'ValidationResultClickAction',
   {
-    mappingPath: MappingPath;
+    readonly mappingPath: MappingPath;
   }
 >;
 
 type MustMatchPrefChangeAction = Action<
   'MustMatchPrefChangeAction',
   {
-    mustMatchPreferences: IR<boolean>;
+    readonly mustMatchPreferences: IR<boolean>;
   }
 >;
 
 type ChangeMatchBehaviorAction = Action<
   'ChangeMatchBehaviorAction',
   {
-    line: number;
-    matchBehavior: MatchBehaviors;
+    readonly line: number;
+    readonly matchBehavior: MatchBehaviors;
   }
 >;
 
 type ToggleAllowNullsAction = Action<
   'ToggleAllowNullsAction',
   {
-    line: number;
-    allowNull: boolean;
+    readonly line: number;
+    readonly allowNull: boolean;
   }
 >;
 
 type ChangeDefaultValueAction = Action<
   'ChangeDefaultValueAction',
   {
-    line: number;
-    defaultValue: string | null;
+    readonly line: number;
+    readonly defaultValue: string | null;
   }
 >;
 
 type UpdateLinesAction = Action<
   'UpdateLinesAction',
-  { lines: RA<MappingLine> }
+  { readonly lines: RA<MappingLine> }
 >;
 
 type ReRunAutoMapperAction = Action<
   'ReRunAutoMapperAction',
   {
-    baseTableName: keyof Tables;
+    readonly baseTableName: keyof Tables;
   }
 >;
 
 export type MappingActions =
-  | ToggleMappingViewAction
-  | ToggleHiddenFieldsAction
-  | ResetMappingsAction
-  | ValidationAction
-  | ClearValidationAction
+  | AddNewHeaderAction
+  | AutoMapperSuggestionSelectedAction
+  | AutoMapperSuggestionsLoadedAction
+  | ChangeDefaultValueAction
+  | ChangeMatchBehaviorAction
+  | ChangeSelectElementValueAction
   | ClearMappingLineAction
+  | ClearValidationAction
+  | CloseSelectElementAction
   | FocusLineAction
   | MappingViewMapAction
-  | AddNewHeaderAction
-  | OpenSelectElementAction
-  | CloseSelectElementAction
-  | ChangeSelectElementValueAction
-  | AutoMapperSuggestionsLoadedAction
-  | AutoMapperSuggestionSelectedAction
-  | ValidationResultClickAction
   | MustMatchPrefChangeAction
-  | ChangeMatchBehaviorAction
+  | OpenSelectElementAction
+  | ReRunAutoMapperAction
+  | ResetMappingsAction
   | ToggleAllowNullsAction
-  | ChangeDefaultValueAction
+  | ToggleHiddenFieldsAction
+  | ToggleMappingViewAction
   | UpdateLinesAction
-  | ReRunAutoMapperAction;
+  | ValidationAction
+  | ValidationResultClickAction;
 
 export const reducer = generateReducer<MappingState, MappingActions>({
   ToggleMappingViewAction: ({ state, action }) => ({
@@ -243,7 +243,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   },
   MappingViewMapAction: ({ state }) => {
     const mappingViewMappingPath = state.mappingView;
-    const focusedLine = state.focusedLine;
+      const focusedLine = state.focusedLine;
     /*
      * This is needed here to prevent double-click on an incomplete path
      * from mapping
@@ -272,7 +272,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
         headerName: uniquifyHeaders(
           [...state.lines.map(({ headerName }) => headerName), newHeaderName],
           [state.lines.length]
-        ).slice(-1)[0],
+        ).at(-1)!,
         mappingPath: ['0'],
         columnOptions: defaultColumnOptions,
       },

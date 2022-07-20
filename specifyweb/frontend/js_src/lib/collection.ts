@@ -14,25 +14,25 @@ import { schema } from './schema';
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
 
-export type CollectionFetchFilters<SCHEMA extends AnySchema> = {
+export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
+  Exclude<SCHEMA['fields'], 'null'> &
+    RR<
+      keyof (SCHEMA['toManyDependent'] &
+        SCHEMA['toManyIndependent'] &
+        SCHEMA['toOneDependent'] &
+        SCHEMA['toOneIndependent']),
+      number
+    >
+> & {
   readonly limit: number;
   readonly offset?: number;
   readonly domainFilter?: boolean;
   readonly orderBy?:
-    | keyof SCHEMA['fields']
     | keyof CommonFields
-    | `-${string & keyof SCHEMA['fields']}`
-    | `-${string & keyof CommonFields}`;
-} & Partial<
-  Exclude<SCHEMA['fields'], 'null'> &
-    RR<
-      keyof (SCHEMA['toOneIndependent'] &
-        SCHEMA['toOneDependent'] &
-        SCHEMA['toManyIndependent'] &
-        SCHEMA['toManyDependent']),
-      number
-    >
->;
+    | keyof SCHEMA['fields']
+    | `-${string & keyof CommonFields}`
+    | `-${string & keyof SCHEMA['fields']}`;
+};
 
 export const DEFAULT_FETCH_LIMIT = 20;
 
@@ -58,7 +58,7 @@ export const fetchCollection = async <
    * Can query partial dates (e.g. catalogedDate__year=2030)
    * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
    */
-  advancedFilters: IR<string | number> = {}
+  advancedFilters: IR<number | string> = {}
 ): Promise<SerializedCollection<SCHEMA>> =>
   ajax<{
     readonly meta: {

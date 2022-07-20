@@ -3,6 +3,7 @@ import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './components/schemaconfig';
+import type { DataObjectFormatter } from './components/schemaconfigsetuphooks';
 import type { SpLocaleContainerItem, Tables } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { addMissingFields } from './datamodelutils';
@@ -11,7 +12,6 @@ import { commonText } from './localization/common';
 import { parseClassName } from './resource';
 import type { JavaType, LiteralField, Relationship } from './specifyfield';
 import type { IR, RA } from './types';
-import { DataObjectFormatter } from './components/schemaconfigsetuphooks';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -21,9 +21,9 @@ export function findString(
   strings: RA<SpLocaleItemString>,
   language: string,
   country: string | null,
-  itemType: 'containerName' | 'containerDesc' | 'itemName' | 'itemDesc',
+  itemType: 'containerDesc' | 'containerName' | 'itemDesc' | 'itemName',
   parentUrl: string
-): SpLocaleItemString | NewSpLocaleItemString {
+): NewSpLocaleItemString | SpLocaleItemString {
   /*
    * Start searching for matching string from the end. This would align
    * schema config behavior with the way back-end handles cases when there
@@ -55,7 +55,7 @@ export function findString(
 
 /** Throws away unneeded fields */
 export const formatAggregators = (
-  aggregators: RA<Formatter | Aggregator>
+  aggregators: RA<Aggregator | Formatter>
 ): IR<DataObjectFormatter> =>
   Object.fromEntries(
     aggregators.map(({ name = '', title = '', className = '' }) => [
@@ -129,6 +129,6 @@ export function javaTypeToHuman(
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)
     return `${localizedRelationshipTypes[type]} (${relatedModelName ?? ''})`;
-  else if (type.startsWith('java')) return type.split('.').slice(-1)[0];
+  else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }

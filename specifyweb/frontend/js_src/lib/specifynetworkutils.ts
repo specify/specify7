@@ -1,9 +1,9 @@
+import { ajax } from './ajax';
+import { softFail } from './components/errorboundary';
 import type { CollectionObject } from './datamodel';
 import type { SpecifyResource } from './legacytypes';
-import type { IR, RA } from './types';
-import { ajax } from './ajax';
 import { formatUrl } from './querystring';
-import { softFail } from './components/errorboundary';
+import type { IR, RA } from './types';
 
 export const snServer = 'https://broker.spcoco.org';
 
@@ -35,7 +35,7 @@ export const formatLifemapperViewPageRequest = (
 export const formatOccurrenceDataRequest = (occurrenceGuid: string): string =>
   formatUrl(`${snServer}/api/v1/occ/${occurrenceGuid}`, { count_only: '0' });
 
-export const fetchOccurrenceName = (
+export const fetchOccurrenceName = async (
   resource: SpecifyResource<CollectionObject>
 ): Promise<string> =>
   resource
@@ -58,7 +58,7 @@ export const fetchOccurrenceName = (
       data.records
         .filter(({ records }) => records.length > 0)
         .map(({ records }) => records[0]['dwc:scientificName'])
-        .find((occurrenceName) => occurrenceName)
+        .find(Boolean)
     )
     .catch(softFail)
     .then(

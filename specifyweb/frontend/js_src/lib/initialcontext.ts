@@ -11,7 +11,7 @@ import { defined } from './types';
  * This belongs to ./components/toolbar/cachebuster.tsx but was moved here
  * due to circular dependency issues
  */
-export const cachableUrls: Set<string> = new Set();
+export const cachableUrls = new Set<string>();
 
 /**
  * Mark URL as cachable -> should have its cache cleared when cache buster is
@@ -22,7 +22,7 @@ export function cachableUrl(url: string): string {
   return url;
 }
 
-let entrypointName: 'main' | 'login' | 'chooseCollection' | 'passwordChange';
+let entrypointName: 'chooseCollection' | 'login' | 'main' | 'passwordChange';
 
 export const getEntrypointName = (): typeof entrypointName =>
   defined(entrypointName);
@@ -57,7 +57,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
          */
         import('./ajax').then(async ({ ajax }) => {
           const startTime = Date.now();
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           return ajax<T>(cachableUrl(path), {
             headers: { Accept: mimeType },
           }).then(({ data }) => {

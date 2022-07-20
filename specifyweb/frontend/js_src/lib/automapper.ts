@@ -22,7 +22,7 @@ import { getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
-import type { IR, R, RA, Writable } from './types';
+import type { IR, R, RA, Writable, WritableArray } from './types';
 import { defined, filterArray } from './types';
 import {
   formatToManyIndex,
@@ -68,7 +68,7 @@ export type AutoMapperConstructorParameters = {
   readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 };
 
-export type AutoMapperResults = R<MappingPath[]>;
+export type AutoMapperResults = R<WritableArray<MappingPath>>;
 
 type FindMappingsParameters = {
   readonly tableName: keyof Tables;
@@ -78,24 +78,30 @@ type FindMappingsParameters = {
    * prevent circular relationships
    */
   readonly parentTableName?: keyof Tables;
-  readonly parentRelationship?: undefined | Relationship;
+  readonly parentRelationship?: Relationship | undefined;
 };
 
 type AutoMapperResultsActions = Action<
   'add',
-  { headerName: string; mappingPath: MappingPath }
+  { readonly headerName: string; readonly mappingPath: MappingPath }
 >;
 
-type AutoMapperHeadersToMapActions = Action<'mapped', { headerName: string }>;
+type AutoMapperHeadersToMapActions = Action<
+  'mapped',
+  { readonly headerName: string }
+>;
 
 type AutoMapperSearchedTablesActions =
-  | Action<'reset'>
-  | Action<'add', { tableName: keyof Tables }>;
+  | Action<'add', { readonly tableName: keyof Tables }>
+  | Action<'reset'>;
 
 type AutoMapperFindMappingsQueueActions =
-  | Action<'enqueue', { value: FindMappingsParameters; level: number }>
-  | Action<'reset', { initialValue?: FindMappingsParameters }>
-  | Action<'initializeLevel', { level: number }>;
+  | Action<
+      'enqueue',
+      { readonly value: FindMappingsParameters; readonly level: number }
+    >
+  | Action<'initializeLevel', { readonly level: number }>
+  | Action<'reset', { readonly initialValue?: FindMappingsParameters }>;
 
 // Find cases like `Phylum` and remap them to `Phylum > Name`
 const matchBaseRankName = (
@@ -148,7 +154,7 @@ const isMappingPathInMappingsTree = (
   getMappedFields?: (mappingPath: MappingPath) => RA<string>
 ): boolean =>
   checkForExistingMappings &&
-  getMappedFields?.(localPath.slice(0, -1)).includes(localPath.slice(-1)[0]) ===
+  getMappedFields?.(localPath.slice(0, -1)).includes(localPath.at(-1)!) ===
     true;
 
 const findRankSynonyms = (
@@ -167,25 +173,25 @@ function handleOrdinalNumbers(header: string): string {
 }
 
 // Used to replace any white space characters with space
-const regexReplaceWhiteSpace = /\s+/g;
+const regexReplaceWhiteSpace = /\s+/gu;
 
-const regexRemoveDuplicateHeaderIndexes = /\(\d+\)/g;
+const regexRemoveDuplicateHeaderIndexes = /\(\d+\)/gu;
 
 // Used to remove non letter characters
-const regexRemoveNonAz = /[^\sa-z]+/g;
+const regexRemoveNonAz = /[^\sa-z]+/gu;
 
-const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>/g;
+const regexRemoveParentheses = /\([^)]*\)|\[[^\]]*]|{[^}]*}|<[^>]*>/gu;
 
-const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/g;
+const regexParseOrdinalNumbers = /^(\d+)(?:st|nd|rd|th) ([\sa-z]+)$/gu;
 
 // How deep to go into the schema
 const depthLimit = 6;
 
 // The definitions for the comparison functions
 const headerComparisons: {
-  [key in keyof Options]:
-    | ((header: string, match: string) => boolean)
-    | ((header: string, match: RegExp) => boolean);
+  readonly [key in keyof Options]:
+    | ((header: string, match: RegExp) => boolean)
+    | ((header: string, match: string) => boolean);
 } = {
   regex: (header: string, regex: RegExp) => regex.exec(header) !== null,
   string: (header: string, string: string) => header === string,
@@ -213,6 +219,7 @@ export class AutoMapper {
   private readonly getMappedFields: (mappingPath: MappingPath) => RA<string>;
 
   private readonly headersToMap: IR<{
+    // eslint-disable-next-line functional/prefer-readonly-type
     isMapped: boolean;
     // OriginalHeaderName.toLowerCase() and trimmed
     readonly lowercaseHeaderName: string;
@@ -225,19 +232,25 @@ export class AutoMapper {
     readonly finalHeaderName: string;
   }> = {};
 
-  private searchedTables: string[] = [];
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private searchedTables: WritableArray<string> = [];
 
   /*
    * Used to enforce higher priority for closer mappings
    * (breadth-first-search)
    */
-  private findMappingsQueue: FindMappingsParameters[][] = [];
+  // eslint-disable-next-line functional/prefer-readonly-type
+  private findMappingsQueue: WritableArray<
+    WritableArray<FindMappingsParameters>
+  > = [];
 
   private readonly dispatch: {
-    results: (action: AutoMapperResultsActions) => void;
-    headersToMap: (action: AutoMapperHeadersToMapActions) => void;
-    searchedTables: (action: AutoMapperSearchedTablesActions) => void;
-    findMappingsQueue: (action: AutoMapperFindMappingsQueueActions) => void;
+    readonly results: (action: AutoMapperResultsActions) => void;
+    readonly headersToMap: (action: AutoMapperHeadersToMapActions) => void;
+    readonly searchedTables: (action: AutoMapperSearchedTablesActions) => void;
+    readonly findMappingsQueue: (
+      action: AutoMapperFindMappingsQueueActions
+    ) => void;
   } = {
     results: generateDispatch<AutoMapperResultsActions>({
       add: ({ headerName, mappingPath }) => {
@@ -610,11 +623,10 @@ export class AutoMapper {
     if (Array.isArray(ranksData)) {
       let ranks = ranksData.map(({ name }) => name).slice(1);
       const pushRankToPath =
-        mappingPath.length <= 0 ||
-        !valueIsTreeRank(mappingPath[mappingPath.length - 1]);
+        mappingPath.length <= 0 || !valueIsTreeRank(mappingPath.at(-1)!);
 
       if (!pushRankToPath)
-        ranks = [getNameFromTreeRankName(mappingPath[mappingPath.length - 1])];
+        ranks = [getNameFromTreeRankName(mappingPath.at(-1)!)];
 
       this.findMappingsInDefinitions({
         mappingPath,
@@ -881,7 +893,7 @@ export class AutoMapper {
       ...mappingPath,
       ...fixedNewPathParts,
     ];
-    const lastPathPart = localPath[localPath.length - 1];
+    const lastPathPart = localPath.at(-1)!;
 
     // Don't map if:
     if (
@@ -900,7 +912,7 @@ export class AutoMapper {
       return false;
 
     // If exact -to-many index was found, insert it into the path
-    let changesMade: string | boolean = false;
+    let changesMade: boolean | string = false;
     if (typeof toManyIndex === 'number')
       localPath = localPath
         .reverse()

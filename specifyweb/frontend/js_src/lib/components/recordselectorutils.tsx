@@ -348,6 +348,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         else if (records[index]?.id === id) return records[index];
         else {
           const resource = new model.Resource({ id });
+          // @ts-expect-error Setting a read-only value
           if (typeof urlContext === 'number') resource.recordsetid = urlContext;
           return resource;
         }
@@ -697,6 +698,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
           resources.map((resource) => {
             // If resource is not yet in a context of a record set, make it
             if (resource.recordsetid !== recordSet.id) {
+              // @ts-expect-error Setting a read-only value
               resource.recordsetid = recordSet.id;
               /*
                * For new resources, RecordSetItem would be created by the

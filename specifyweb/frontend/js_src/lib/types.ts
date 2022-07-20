@@ -5,20 +5,31 @@
  */
 import type React from 'react';
 
-import { error } from './assert';
-
 // Record
 export type R<V> = Record<string, V>;
 // Immutable record
 export type IR<V> = Readonly<Record<string, V>>;
 // Immutable record with constrained keys
-export type RR<K extends string | number | symbol, V> = Readonly<Record<K, V>>;
+export type RR<K extends number | string | symbol, V> = Readonly<Record<K, V>>;
 // Immutable Array
 export type RA<V> = readonly V[];
 
+/**
+ * It is a widely used convention in TypeScript to use T[] to denote arrays.
+ * However, this creates a mutable array type.
+ * This is why, RA<T> has been used across the codebase.
+ * In rare cases when a mutable array is needed, this type should be used, for
+ * the following reasons:
+ * - It makes it explicitly known that the value is meant to be mutated
+ * - It doesn't trigger the "functional/prefer-readonly-type" ESLint rule.
+ */
+// eslint-disable-next-line functional/prefer-readonly-type
+export type WritableArray<T> = T[];
+
 /** Cast a type as defined. Throws at runtime if it is not defined */
 export function defined<T>(value: T | undefined): T {
-  if (value === undefined) error('Value is not defined');
+  // eslint-disable-next-line functional/no-throw-statement
+  if (value === undefined) throw new Error('Value is not defined');
   else return value;
 }
 
@@ -32,9 +43,12 @@ export type PartialBy<
   OPTIONAL_KEYS extends keyof RECORD
 > = Omit<RECORD, OPTIONAL_KEYS> & Partial<Pick<RECORD, OPTIONAL_KEYS>>;
 
+// eslint-disable-next-line functional/prefer-readonly-type
 export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
+
+export const writable = <T>(value: T): Writable<T> => value;
 
 /**
  * "typeof value === 'function'" does not narrow the type in some cases where

@@ -15,7 +15,7 @@ export type UserInfo = SerializedModel<SpecifyUser> & {
   readonly agent: SerializedModel<Agent>;
 };
 
-const userInfo: Writable<UserInfo> = {} as Writable<UserInfo>;
+const userInfo: Writable<UserInfo> = {} as UserInfo;
 
 export const fetchContext = load<
   Omit<UserInfo, 'availableCollections'> & {
@@ -23,7 +23,7 @@ export const fetchContext = load<
     readonly available_collections: RA<SerializedModel<Collection>>;
   }
 >('/context/user.json', 'application/json').then(
-  ({ available_collections: availableCollections, ...data }) => {
+  async ({ available_collections: availableCollections, ...data }) => {
     Object.entries(data).forEach(([key, value]) => {
       // @ts-expect-error
       userInfo[key as keyof UserInfo] = value;

@@ -23,20 +23,20 @@ import {
 import { getMappingLineData } from './wbplanviewnavigator';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide: Set<string> = new Set(['name', 'fullName', 'localityName']);
+const fieldsToHide = new Set<string>(['name', 'fullName', 'localityName']);
 
 /**
  * Use table name alongside field label (if field label consists of a single
  * word) for the following fields:
  */
-const genericFields: Set<string> = new Set([]);
+const genericFields = new Set<string>([]);
 
 /**
  * If field label consists of a single word, it would be treated as generic
  * (the table name would be used alongside field label). The following
  * fields are exempt from such behaviour:
  */
-const nonGenericFields: Set<string> = new Set([
+const nonGenericFields = new Set<string>([
   'latitude1',
   'longitude1',
   'latitude2',
@@ -44,10 +44,10 @@ const nonGenericFields: Set<string> = new Set([
 ]);
 
 /** Use parent table label instead of this table label (if possible) */
-const tablesToHide: Set<string> = new Set(['agent', 'addresses']);
+const tablesToHide = new Set<string>(['agent', 'addresses']);
 
 /** Use both parent table label and this table label (if possible) */
-const genericTables: Set<string> = new Set(['referenceWork']);
+const genericTables = new Set<string>(['referenceWork']);
 
 /**
  * NOTE: subset is reversed so that array destructuring works right for mapping

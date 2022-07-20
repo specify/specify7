@@ -22,6 +22,20 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly id: number;
   readonly needsSaved: boolean;
   readonly cid: string;
+  readonly noValidation?: boolean;
+  readonly populated: boolean;
+  readonly specifyModel: SpecifyModel<SCHEMA>;
+  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
+  readonly parent?: SpecifyResource<SCHEMA>;
+  readonly recordsetid?: number;
+  readonly noBusinessRules: boolean;
+  readonly collection: {
+    readonly related: SpecifyResource<SCHEMA>;
+  };
+  readonly businessRuleMgr?: {
+    readonly pending: Promise<void>;
+    readonly checkField: (fieldName: string) => Promise<void>;
+  };
   /*
    * Shorthand method signature is used to prevent
    * https://github.com/microsoft/TypeScript/issues/48339
@@ -30,21 +44,22 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   /* eslint-disable @typescript-eslint/method-signature-style */
   get<
     FIELD_NAME extends
+      | keyof CommonFields
       | keyof SCHEMA['fields']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent']
       | keyof SCHEMA['toManyDependent']
       | keyof SCHEMA['toManyIndependent']
-      | keyof CommonFields,
-    VALUE extends (IR<never> &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'] &
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent'],
+    VALUE extends (CommonFields &
+      IR<never> &
+      SCHEMA['fields'] &
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
-      SCHEMA['fields'] &
-      CommonFields)[FIELD_NAME]
+      SCHEMA['toOneDependent'] &
+      SCHEMA['toOneIndependent'])[FIELD_NAME]
   >(
     fieldName: FIELD_NAME
+    // eslint-disable-next-line functional/prefer-readonly-type
   ): [VALUE] extends [never]
     ? never
     : VALUE extends AnySchema
@@ -65,12 +80,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   >(
     fieldName: FIELD_NAME,
     prePopulate?: boolean
-  ): [VALUE] extends [never]
+  ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
         VALUE extends AnySchema
           ? SpecifyResource<Exclude<VALUE, null>>
-          : never | Exclude<VALUE, AnySchema>
+          : Exclude<VALUE, AnySchema>
       >;
   getRelated<
     FIELD_NAME extends
@@ -85,12 +100,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       readonly prePop?: boolean;
       readonly noBusinessRules?: boolean;
     }
-  ): [VALUE] extends [never]
+  ): readonly [VALUE] extends readonly [never]
     ? never
     : Promise<
         VALUE extends AnySchema
           ? SpecifyResource<Exclude<VALUE, null>>
-          : never | Exclude<VALUE, AnySchema>
+          : Exclude<VALUE, AnySchema>
       >;
   // Case-insensitive fetch of a -to-many resource
   rgetCollection<
@@ -103,25 +118,30 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): Promise<Collection<VALUE[number]>>;
   set<
     FIELD_NAME extends
+      | keyof CommonFields
       | keyof SCHEMA['fields']
-      | keyof SCHEMA['toOneDependent']
-      | keyof SCHEMA['toOneIndependent']
       | keyof SCHEMA['toManyDependent']
       | keyof SCHEMA['toManyIndependent']
-      | keyof CommonFields,
-    VALUE extends (IR<never> &
-      SCHEMA['toOneDependent'] &
-      SCHEMA['toOneIndependent'] &
+      | keyof SCHEMA['toOneDependent']
+      | keyof SCHEMA['toOneIndependent'],
+    VALUE extends (CommonFields &
+      IR<never> &
+      SCHEMA['fields'] &
       SCHEMA['toManyDependent'] &
       SCHEMA['toManyIndependent'] &
-      SCHEMA['fields'] &
-      CommonFields)[FIELD_NAME]
+      SCHEMA['toOneDependent'] &
+      SCHEMA['toOneIndependent'])[FIELD_NAME]
   >(
     fieldName: FIELD_NAME,
-    value: [VALUE] extends [never]
+    value: readonly [VALUE] extends readonly [never]
       ? never
       :
           | VALUE
+          | (FIELD_NAME extends
+              | keyof SCHEMA['toManyIndependent']
+              | keyof SCHEMA['toOneIndependent']
+              ? string
+              : never)
           | (VALUE extends RA<AnySchema>
               ?
                   | Collection<VALUE[number]>
@@ -129,15 +149,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | RA<SpecifyResource<VALUE[number]>>
               : VALUE extends null
               ?
-                  | SpecifyResource<Exclude<VALUE, null>>
                   | SerializedResource<Exclude<VALUE, null>>
+                  | SpecifyResource<Exclude<VALUE, null>>
                   | null
-              : SpecifyResource<VALUE> | SerializedResource<VALUE>)
-          | (FIELD_NAME extends
-              | keyof SCHEMA['toOneIndependent']
-              | keyof SCHEMA['toManyIndependent']
-              ? string
-              : never),
+              : SerializedResource<VALUE> | SpecifyResource<VALUE>),
     options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
@@ -148,11 +163,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
-  readonly noValidation?: boolean;
   save(conflictCallback?: () => void): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
-  readonly populated: boolean;
   viewUrl(): string;
   isNew(): boolean;
   clone(): Promise<SpecifyResource<SCHEMA>>;
@@ -163,24 +176,12 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
       | (string & keyof SCHEMA['toManyDependent'])
       | (string & keyof SCHEMA['toManyIndependent'])
   ): Promise<number | undefined>;
-  readonly specifyModel: SpecifyModel<SCHEMA>;
-  readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
-  readonly parent?: SpecifyResource<SCHEMA>;
   format(): Promise<string>;
   url(): string;
-  recordsetid?: number;
-  noBusinessRules: boolean;
   placeInSameHierarchy(resource: SpecifyResource<AnySchema>): void;
-  readonly collection: {
-    readonly related: SpecifyResource<SCHEMA>;
-  };
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;
   trigger(eventName: string, ...args: RA<unknown>): void;
-  readonly businessRuleMgr?: {
-    readonly pending: Promise<void>;
-    checkField(fieldName: string): Promise<void>;
-  };
   /* eslint-enable @typescript-eslint/method-signature-style */
 };

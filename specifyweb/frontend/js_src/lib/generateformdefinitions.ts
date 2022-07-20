@@ -48,10 +48,10 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
   const baseFields = model.literalFields
     .filter((field) => !fieldsToSkip.includes(field.name))
     .sort(sortFunction(({ isRequired }) => isRequired, true));
-  const filteredFields = baseFields.filter(
+   const filteredFields = baseFields.filter(
     (field) => !field.isHidden && !field.isReadOnly
   );
-  const relationships = model.relationships
+   const relationships = model.relationships
     .filter(
       (field) =>
         !field.isHidden &&
@@ -61,7 +61,7 @@ export function getFieldsForAutoView<SCHEMA extends AnySchema>(
     )
     .sort(sortFunction(({ isRequired }) => isRequired, true));
   // Hide hidden fields, unless all fields are hidden
-  const fields =
+   const fields =
     filteredFields.length > 0 || relationships.length > 0
       ? filteredFields
       : baseFields;
@@ -107,11 +107,11 @@ function generateForm(
   const allFields = fieldsToShow.map((fieldName) =>
     defined(model.getField(fieldName))
   );
-  const [fields, relationships] = split<LiteralField, Relationship>(
+   const [fields, relationships] = split<LiteralField, Relationship>(
     allFields,
     (field) => field.isRelationship
   );
-  const skipLabels =
+   const skipLabels =
     fields.length === 0 ||
     relationships.length === 0 ||
     fields.length + relationships.length < 10;
@@ -221,7 +221,7 @@ function generateForm(
  */
 function getFieldDefinition(
   field: LiteralField
-): FormCellDefinition & CellTypes['Field'] {
+): CellTypes['Field'] & FormCellDefinition {
   const parser = resolveParser(field);
   return {
     ...cellAttributes,
@@ -238,7 +238,7 @@ function getFieldDefinition(
             label: field.label,
             printOnSave: false,
           }
-        : typeof parser.pickListName === 'string'
+        : (typeof parser.pickListName === 'string'
         ? {
             type: 'ComboBox',
             defaultValue: undefined,
@@ -256,7 +256,7 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
-          }),
+          })),
     },
   };
 }

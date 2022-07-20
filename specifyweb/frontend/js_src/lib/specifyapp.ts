@@ -8,8 +8,8 @@ import {
   getCurrentUrl,
   pushUrl,
 } from './components/navigation';
-import { f } from './functools';
 import { createBackboneView } from './components/reactbackboneextend';
+import { f } from './functools';
 
 // @ts-expect-error Exposing jQuery as a global variable
 global.jQuery = $;

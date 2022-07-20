@@ -206,7 +206,7 @@ export const getMappedFields = (
     .map((line) => line.mappingPath[mappingPathFilter.length]);
 
 export const mappingPathIsComplete = (mappingPath: MappingPath): boolean =>
-  mappingPath.slice(-1)[0] !== '0';
+  mappingPath.at(-1) !== '0';
 
 /*
  * The most important function in WbPlanView
@@ -360,10 +360,7 @@ export async function fetchAutoMapperSuggestions({
   const autoMapperResults = new AutoMapper({
     headers: [lines[line].headerName],
     baseTableName,
-    startingTable:
-      mappingLineData.length === 0
-        ? baseTableName
-        : mappingLineData[mappingLineData.length - 1].tableName,
+    startingTable: mappingLineData.at(-1)?.tableName ?? baseTableName,
     path: baseMappingPath,
     pathOffset,
     scope: 'suggestion',

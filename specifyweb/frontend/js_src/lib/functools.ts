@@ -44,7 +44,11 @@ export const f = {
    * Like console.log, but return type is undefined instead of void to allow
    * using this in expressions without a type error
    */
-  log: (...args: RA<unknown>): undefined => void console.log(...args),
+  log(...args: RA<unknown>): undefined {
+    console.log(...args);
+    return undefined;
+  },
+  // REFACTOR: reduse usages of f.var to produce more readable code
   /** An alternative way to declare a variable */
   var: <VALUE, RETURN>(
     value: VALUE,
@@ -99,7 +103,7 @@ export const f = {
   /**
    * Like f.includes, but for sets
    */
-  has: <T>(set: Set<T>, item: unknown): item is T => set.has(item as T),
+  has: <T>(set: ReadonlySet<T>, item: unknown): item is T => set.has(item as T),
   /**
    * Intercept function arguments without affecting it
    * Useful for debugging or logging
@@ -167,7 +171,7 @@ export const f = {
   true: (): true => true,
   flat: <T>(array: RA<RA<T>>): RA<T> => array.flat(),
   toString: (value: unknown): string =>
-    (value as undefined | { readonly toString: () => string })?.toString() ??
+    (value as { readonly toString: () => string } | undefined)?.toString() ??
     '',
   min: (...array: RA<number | undefined>): number | undefined =>
     f.var(filterArray(array), (data) =>

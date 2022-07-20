@@ -45,7 +45,7 @@ export const formatter = f.store(
     } as const)
 );
 
-export const validators: IR<(value: unknown) => undefined | string> = {
+export const validators: IR<(value: unknown) => string | undefined> = {
   number: (value) =>
     typeof value === 'number' &&
     !Number.isNaN(value) &&
@@ -55,7 +55,7 @@ export const validators: IR<(value: unknown) => undefined | string> = {
 } as const;
 
 export type Parser = Partial<{
-  readonly type: 'text' | 'number' | 'date' | 'checkbox';
+  readonly type: 'checkbox' | 'date' | 'number' | 'text';
   readonly minLength: number;
   readonly maxLength: number;
   readonly min: number;
@@ -78,7 +78,7 @@ export type Parser = Partial<{
   readonly printFormatter: (value: unknown, parser: Parser) => string;
   readonly required: boolean;
   // Default value
-  readonly value: string | number | boolean;
+  readonly value: boolean | number | string;
   // This is different from field.getPickList() for Month partial date
   readonly pickListName: string;
 }>;
@@ -88,7 +88,7 @@ const numberPrintFormatter = (value: unknown, { step }: Parser): string =>
     ? f.round(value, step).toString()
     : (value as number)?.toString() ?? '';
 
-type ExtendedJavaType = JavaType | 'year' | 'month' | 'day';
+type ExtendedJavaType = JavaType | 'day' | 'month' | 'year';
 
 export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
@@ -237,7 +237,7 @@ export const parsers = f.store(
 
 type ExtendedField = Partial<Omit<LiteralField | Relationship, 'type'>> & {
   readonly type: ExtendedJavaType | RelationshipType;
-  readonly datePart?: 'fullDate' | 'year' | 'month' | 'day';
+  readonly datePart?: 'day' | 'fullDate' | 'month' | 'year';
 };
 
 export function parserFromType(fieldType: ExtendedJavaType): Parser {
@@ -422,7 +422,7 @@ export function parseValue(
   parser: Parser,
   input: Input | undefined,
   value: string
-): ValidParseResult | InvalidParseResult {
+): InvalidParseResult | ValidParseResult {
   if (value.trim() === '')
     return parser.required === true
       ? {
@@ -478,7 +478,7 @@ export function parseValue(
 export function fieldFormat(
   field: LiteralField | undefined,
   parser: Parser | undefined,
-  value: string | number | null | boolean | undefined
+  value: boolean | number | string | null | undefined
 ): string {
   if (value === undefined || value === null) return '';
 

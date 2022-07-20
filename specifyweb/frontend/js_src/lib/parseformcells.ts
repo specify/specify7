@@ -4,6 +4,7 @@
 
 import type { State } from 'typesafe-reducer';
 
+import type { Tables } from './datamodel';
 import { f } from './functools';
 import {
   getAttribute,
@@ -16,12 +17,11 @@ import type { FormFieldDefinition } from './parseformfields';
 import { parseFormField } from './parseformfields';
 import type { CommandDefinition } from './parseuicommands';
 import { parseUiCommand } from './parseuicommands';
+import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import { legacyLocalize } from './stringlocalization';
 import type { IR, RA } from './types';
 import { filterArray } from './types';
-import { Tables } from './datamodel';
-import { getModel } from './schema';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -47,47 +47,47 @@ export type CellTypes = {
   readonly Field: State<
     'Field',
     {
-      fieldName: string | undefined;
-      fieldDefinition: FormFieldDefinition;
-      isRequired: boolean;
+      readonly fieldName: string | undefined;
+      readonly fieldDefinition: FormFieldDefinition;
+      readonly isRequired: boolean;
     }
   >;
   readonly Label: State<
     'Label',
     {
-      text: string | undefined;
-      title: string | undefined;
-      labelForCellId: string | undefined;
-      fieldName: string | undefined;
+      readonly text: string | undefined;
+      readonly title: string | undefined;
+      readonly labelForCellId: string | undefined;
+      readonly fieldName: string | undefined;
     }
   >;
   readonly Separator: State<
     'Separator',
     {
-      label: string | undefined;
-      icon: string | undefined;
-      forClass: keyof Tables | undefined;
+      readonly label: string | undefined;
+      readonly icon: string | undefined;
+      readonly forClass: keyof Tables | undefined;
     }
   >;
   readonly SubView: State<
     'SubView',
     {
-      fieldName: string | undefined;
-      formType: FormType;
-      isButton: boolean;
-      icon: string | undefined;
-      viewName: string | undefined;
-      sortField: string | undefined;
+      readonly fieldName: string | undefined;
+      readonly formType: FormType;
+      readonly isButton: boolean;
+      readonly icon: string | undefined;
+      readonly viewName: string | undefined;
+      readonly sortField: string | undefined;
     }
   >;
   readonly Panel: State<
     'Panel',
-    ParsedFormDefinition & { display: 'block' | 'inline' }
+    ParsedFormDefinition & { readonly display: 'block' | 'inline' }
   >;
   readonly Command: State<
     'Command',
     {
-      commandDefinition: CommandDefinition;
+      readonly commandDefinition: CommandDefinition;
     }
   >;
   readonly Unsupported: State<
@@ -97,7 +97,7 @@ export type CellTypes = {
     }
   >;
   readonly Blank: State<'Blank'>;
-};
+}
 
 export const cellAlign = ['left', 'center', 'right'] as const;
 
@@ -122,23 +122,23 @@ const processCellType: {
     )
       rawFieldName = parts?.slice(1).join('.');
     const field = model?.getField(rawFieldName ?? '');
-    const fieldDefinition = parseFormField(cell, getProperty);
+     const fieldDefinition = parseFormField(cell, getProperty);
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
      */
-    const fieldName =
+     const fieldName =
       fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'LatLonUI'
         ? undefined
         : (fieldDefinition.type === 'Plugin'
-            ? fieldDefinition.pluginDefinition.type === 'PartialDateUI'
+            ? (fieldDefinition.pluginDefinition.type === 'PartialDateUI'
               ? fieldDefinition.pluginDefinition.dateField
               : fieldDefinition.pluginDefinition.type ===
                   'CollectionRelOneToManyPlugin' ||
                 fieldDefinition.pluginDefinition.type === 'ColRelTypePlugin'
               ? fieldDefinition.pluginDefinition.relationship
-              : undefined
+              : undefined)
             : undefined) ?? rawFieldName;
     return {
       type: 'Field',
@@ -171,8 +171,8 @@ const processCellType: {
   }),
   SubView({ cell, model, getProperty }) {
     const rawFieldName = getParsedAttribute(cell, 'name');
-    const formType = getParsedAttribute(cell, 'defaultType') ?? '';
-    const field = model?.getField(rawFieldName ?? '');
+     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
+     const field = model?.getField(rawFieldName ?? '');
     if (field === undefined)
       f.error(`Unknown field ${rawFieldName} when parsing form SubView`, {
         cell,
@@ -245,23 +245,23 @@ export function parseFormCell(
   cellNode: Element
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
-  const cellType = cellTypeTranslation[cellClass.toLowerCase()];
-  const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
-  const properties = parseSpecifyProperties(
+   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
+   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
+   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
   );
-  const getProperty = (name: string): string | undefined =>
+   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
-  const align = getProperty('align')?.toLowerCase();
+   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
+   const align = getProperty('align')?.toLowerCase();
   return {
     id: getParsedAttribute(cellNode, 'id'),
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align
-      : cellType === 'Label'
+      : (cellType === 'Label'
       ? 'right'
-      : 'left',
+      : 'left'),
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.
@@ -278,7 +278,7 @@ export function parseFormCell(
      * Thus, support for visible=false was cut out of the 7.7.0 release, but
      * can be reenabled in the future by uncommenting the following line:
      */
-    // visible: getProperty('visible')?.toLowerCase() !== 'false',
+    // Visible: getProperty('visible')?.toLowerCase() !== 'false',
     visible: true,
     ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition

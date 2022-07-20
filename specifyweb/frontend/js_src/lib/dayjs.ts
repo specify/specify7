@@ -15,4 +15,4 @@ export function getDateInputValue(date: Date): string {
   return local.toJSON().slice(0, 10);
 }
 
-export const dayjs = dayJs;
+export { default as dayjs } from 'dayjs';

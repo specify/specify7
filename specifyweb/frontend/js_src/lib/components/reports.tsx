@@ -372,20 +372,21 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
     attachments.map((record) => [record.title ?? '', record])
   );
 
-  const missingAttachments: string[] = [];
   const badImageUrl = `"${globalThis.location.origin}/images/unknown.png"`;
-  Object.entries(fileNames).forEach(([fileName, imageExpressions]) => {
-    const attachment = indexedAttachments[fileName];
-    const imageUrl =
-      typeof attachment === 'object' && attachmentsAvailable()
-        ? `"${defined(formatAttachmentUrl(attachment, undefined))}"`
-        : badImageUrl;
-    if (attachment === undefined) missingAttachments.push(fileName);
-    imageExpressions.forEach((image) => {
-      image.textContent = imageUrl;
-    });
-  });
-  return missingAttachments;
+  return filterArray(
+    Object.entries(fileNames).map(([fileName, imageExpressions]) => {
+      const attachment = indexedAttachments[fileName];
+      const imageUrl =
+        typeof attachment === 'object' && attachmentsAvailable()
+          ? `"${defined(formatAttachmentUrl(attachment, undefined))}"`
+          : badImageUrl;
+      imageExpressions.forEach((image) => {
+        image.textContent = imageUrl;
+      });
+      if (attachment === undefined) return fileName;
+      else return undefined;
+    })
+  );
 }
 
 function FixImagesDialog({

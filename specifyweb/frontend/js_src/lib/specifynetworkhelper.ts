@@ -1,7 +1,7 @@
 import type { MappingPath } from './components/wbplanviewmapper';
+import { findArrayDivergencePoint } from './helpers';
 import type { Field, LocalityData } from './leafletutils';
 import type { R, RA } from './types';
-import { findArrayDivergencePoint } from './helpers';
 import {
   deflateMappingPaths,
   getCanonicalMappingPath,
@@ -50,14 +50,14 @@ export function splitLocalityData(
   filterMappingPath: MappingPath
 ): RA<LocalityData> {
   const filter = getCanonicalMappingPath(filterMappingPath);
-  const groups = Object.entries(localityData).reduce<
-    R<R<Field<string | number>>>
+   const groups = Object.entries(localityData).reduce<
+    R<R<Field<number | string>>>
   >(
     (groups, [mappingPathString, field]) => {
       const mappingPath = splitJoinedMappingPath(mappingPathString);
-      const canonicalMappingPath = getCanonicalMappingPath(mappingPath);
-      const divergence = findArrayDivergencePoint(canonicalMappingPath, filter);
-      const key =
+       const canonicalMappingPath = getCanonicalMappingPath(mappingPath);
+       const divergence = findArrayDivergencePoint(canonicalMappingPath, filter);
+       const key =
         divergence === -1
           ? ''
           : mappingPathToString(mappingPath.slice(0, divergence));

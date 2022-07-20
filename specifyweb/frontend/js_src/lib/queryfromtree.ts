@@ -5,6 +5,7 @@ import type { SpQuery, SpQueryField, TaxonTreeDefItem } from './datamodel';
 import type { AnyTree, SerializedResource } from './datamodelutils';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
+import { queryText } from './localization/query';
 import { hasTablePermission } from './permissionutils';
 import { flippedSortTypes } from './querybuilderutils';
 import { QueryFieldSpec } from './queryfieldspec';
@@ -13,7 +14,6 @@ import { getDomainResource } from './treedefinitions';
 import type { RA, RR } from './types';
 import { defined } from './types';
 import { formatTreeRank } from './wbplanviewmappinghelper';
-import { queryText } from './localization/query';
 
 function makeField(
   path: string,

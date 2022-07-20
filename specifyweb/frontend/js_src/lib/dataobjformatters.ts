@@ -110,16 +110,14 @@ export const fetchFormatters: Promise<{
         aggregators: filterArray(
           Array.from(
             definitions.getElementsByTagName('aggregator'),
-            (aggregator) => {
-              return {
-                name: getParsedAttribute(aggregator, 'name'),
-                title: getParsedAttribute(aggregator, 'title'),
-                className: getParsedAttribute(aggregator, 'class'),
-                isDefault: getParsedAttribute(aggregator, 'default') === 'true',
-                separator: getAttribute(aggregator, 'separator') ?? '',
-                format: getAttribute(aggregator, 'format') ?? '',
-              };
-            }
+            (aggregator) => ({
+              name: getParsedAttribute(aggregator, 'name'),
+              title: getParsedAttribute(aggregator, 'title'),
+              className: getParsedAttribute(aggregator, 'class'),
+              isDefault: getParsedAttribute(aggregator, 'default') === 'true',
+              separator: getAttribute(aggregator, 'separator') ?? '',
+              format: getAttribute(aggregator, 'format') ?? '',
+            })
           )
         ),
       }))
@@ -226,18 +224,17 @@ export async function format<SCHEMA extends AnySchema>(
                           : commonText('noPermission')
                         : (
                             resource.rgetPromise(fieldName) as Promise<
-                              string | SpecifyResource<AnySchema> | undefined
+                              SpecifyResource<AnySchema> | string | undefined
                             >
-                          ).then(async (value) => {
-                            return formatter.length > 0 &&
-                              typeof value === 'object'
+                          ).then(async (value) =>
+                            formatter.length > 0 && typeof value === 'object'
                               ? (await format(value, formatter)) ?? ''
                               : fieldFormat(
                                   field,
                                   resolveParser(field),
                                   value as string | undefined
-                                );
-                          })
+                                )
+                          )
                   )
             }`;
           }

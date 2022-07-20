@@ -21,10 +21,10 @@ export function getUniqueName(
 ): string {
   if (!usedNames.includes(name)) return name;
   const suffix = / \((\d+)\)$/.exec(name);
-  const [{ length }, indexString] = suffix ?? ([[], '0'] as const);
-  const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
-  const indexRegex = new RegExp(`^${escapeRegExp(strippedName)} \\((\\d+)\\)$`);
-  const newIndex =
+   const [{ length }, indexString] = suffix ?? ([[], '0'] as const);
+   const strippedName = length > 0 ? name.slice(0, -1 * length) : name;
+   const indexRegex = new RegExp(`^${escapeRegExp(strippedName)} \\((\\d+)\\)$`);
+   const newIndex =
     Math.max(
       ...filterArray([
         f.parseInt(indexString),
@@ -33,8 +33,8 @@ export function getUniqueName(
         ),
       ])
     ) + 1;
-  const uniquePart = ` (${newIndex})`;
-  const newName =
+   const uniquePart = ` (${newIndex})`;
+   const newName =
     newIndex === 1 && length === 0
       ? strippedName
       : `${strippedName}${uniquePart}`;

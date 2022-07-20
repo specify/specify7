@@ -20,23 +20,23 @@ export type FieldTypes = {
   readonly Checkbox: State<
     'Checkbox',
     {
-      defaultValue: boolean | undefined;
-      label: string | undefined;
-      printOnSave: boolean;
+      readonly defaultValue: boolean | undefined;
+      readonly label: string | undefined;
+      readonly printOnSave: boolean;
     }
   >;
   readonly TextArea: State<
     'TextArea',
     {
-      defaultValue: string | undefined;
-      rows: number | undefined;
+      readonly defaultValue: string | undefined;
+      readonly rows: number | undefined;
     }
   >;
   readonly ComboBox: State<
     'ComboBox',
     {
-      defaultValue: string | undefined;
-      pickList: string | undefined;
+      readonly defaultValue: string | undefined;
+      readonly pickList: string | undefined;
     }
   >;
   readonly QueryComboBox: State<
@@ -63,7 +63,7 @@ export type FieldTypes = {
     }
   >;
   readonly FilePicker: State<'FilePicker'>;
-};
+}
 
 const withStringDefault = (
   cell: Element
@@ -73,7 +73,7 @@ const withStringDefault = (
   defaultValue: getAttribute(cell, 'default'),
 });
 
-const processFieldType: {
+ const processFieldType: {
   readonly [KEY in keyof FieldTypes]: (
     cell: Element,
     getProperty: (name: string) => string | undefined
@@ -101,10 +101,10 @@ const processFieldType: {
       ...withStringDefault(cell),
       rows:
         rows === undefined
-          ? getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
+          ? (getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
             'textareabrief'
             ? 1
-            : undefined
+            : undefined)
           : rows,
     };
   },
@@ -135,7 +135,7 @@ const processFieldType: {
   FilePicker: () => ({ type: 'FilePicker' }),
 };
 
-const fieldTypesTranslations: IR<keyof FieldTypes> = {
+ const fieldTypesTranslations: IR<keyof FieldTypes> = {
   checkbox: 'Checkbox',
   textarea: 'TextArea',
   textareabrief: 'TextArea',

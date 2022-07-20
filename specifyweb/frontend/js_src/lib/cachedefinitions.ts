@@ -62,23 +62,23 @@ export type CacheDefinitions = {
     readonly showHiddenTables: boolean;
   };
   readonly leaflet: {
-    readonly /** Remembers the selected base layer */
-    [Property in `currentLayer${LeafletCacheSalt}`]: string;
-  } & {
     readonly /** Remembers the chosen overlays (markers/polygons/boundaries/...) */
     [Property in `show${Capitalize<MarkerLayerName>}`]: boolean;
+  } & {
+    readonly /** Remembers the selected base layer */
+    [Property in `currentLayer${LeafletCacheSalt}`]: string;
   };
   readonly workbench: {
     readonly searchProperties: SearchPreferences;
   };
   readonly tree: {
+    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
+  } & {
     readonly /** Collapsed ranks in a given tree */
     [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Open nodes in a given tree */
     [key in `conformation${AnyTree['tableName']}`]: string;
-  } & {
-    readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -92,12 +92,12 @@ export type CacheDefinitions = {
   };
   readonly attachments: {
     readonly sortOrder:
-      | (string & keyof Attachment['fields'])
-      | `-${string & keyof Attachment['fields']}`;
+      | `-${string & keyof Attachment['fields']}`
+      | (string & keyof Attachment['fields']);
     readonly filter:
       | State<'all'>
-      | State<'unused'>
-      | State<'byTable', { readonly tableName: keyof Tables }>;
+      | State<'byTable', { readonly tableName: keyof Tables }>
+      | State<'unused'>;
     /** Attachments grid scale */
     readonly scale: number;
   };
@@ -125,7 +125,7 @@ export type CacheDefinitions = {
     readonly defaultCached: UserPreferences;
   };
   readonly securityTool: {
-    readonly policiesLayout: 'vertical' | 'horizontal';
+    readonly policiesLayout: 'horizontal' | 'vertical';
     readonly previewCollapsed: boolean;
     readonly advancedPreviewCollapsed: boolean;
     readonly institutionPoliciesExpanded: boolean;
@@ -140,45 +140,48 @@ export type SortConfigs = {
   readonly listOfQueries: keyof SpQuery['fields'] &
     ('name' | 'timestampCreated' | 'timestampModified');
   readonly listOfRecordSets: 'name' | 'timestampCreated';
-  readonly listOfDataSets: 'name' | 'dateCreated' | 'dateUploaded';
+  readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
   readonly dataModelFields:
-    | 'name'
-    | 'label'
-    | 'description'
-    | 'isHidden'
-    | 'isReadOnly'
-    | 'isRequired'
-    | 'type'
-    | 'length'
-    | 'databaseColumn';
-  readonly dataModelRelationships:
-    | 'name'
-    | 'label'
-    | 'description'
-    | 'isHidden'
-    | 'isReadOnly'
-    | 'isRequired'
-    | 'type'
     | 'databaseColumn'
-    | 'relatedModel'
-    | 'otherSideName'
-    | 'isDependent';
-  readonly dataModelTables:
-    | 'name'
-    | 'label'
-    | 'isSystem'
+    | 'description'
     | 'isHidden'
-    | 'tableId'
+    | 'isReadOnly'
+    | 'isRequired'
+    | 'label'
+    | 'length'
+    | 'name'
+    | 'type';
+  readonly dataModelRelationships:
+    | 'databaseColumn'
+    | 'description'
+    | 'isDependent'
+    | 'isHidden'
+    | 'isReadOnly'
+    | 'isRequired'
+    | 'label'
+    | 'name'
+    | 'otherSideName'
+    | 'relatedModel'
+    | 'type';
+  readonly dataModelTables:
     | 'fieldCount'
-    | 'relationshipCount';
+    | 'isHidden'
+    | 'isSystem'
+    | 'label'
+    | 'name'
+    | 'relationshipCount'
+    | 'tableId';
 };
 
 const cacheDefinitions = {} as unknown as CacheDefinitions;
 
+// Some circular types can't be expressed without interfaces
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface CacheValueDict extends IR<CacheValue> {}
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface CacheValues extends RA<CacheValue> {}
 
 type CacheValue =

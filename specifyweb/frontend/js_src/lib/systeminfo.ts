@@ -3,9 +3,9 @@
  */
 
 import { Http, ping } from './ajax';
+import { softFail } from './components/errorboundary';
 import { load } from './initialcontext';
 import { formatUrl } from './querystring';
-import { softFail } from './components/errorboundary';
 
 type SystemInfo = {
   readonly version: string;
@@ -20,7 +20,7 @@ type SystemInfo = {
   readonly institution_guid: string;
   readonly isa_number: string;
   readonly stats_url: string | null;
-};
+}
 
 let systemInfo: SystemInfo;
 

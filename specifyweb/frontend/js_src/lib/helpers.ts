@@ -106,11 +106,11 @@ export const caseInsensitiveHash = <
 >(
   dictionary: DICTIONARY,
   searchKey:
+    | Capitalize<KEY>
     | KEY
     | Lowercase<KEY>
-    | Uppercase<KEY>
-    | Capitalize<KEY>
     | Uncapitalize<KEY>
+    | Uppercase<KEY>
 ): DICTIONARY[KEY] =>
   Object.entries(dictionary).find(
     ([key]) => (key as string).toLowerCase() === searchKey.toLowerCase()
@@ -143,20 +143,21 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
     index: number,
     array: RA<LEFT_ITEM | RIGHT_ITEM>
   ) => boolean
-): Readonly<[left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>]> =>
+): readonly [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>] =>
   array
     .map((item, index) => [item, discriminator(item, index, array)] as const)
     .reduce<
-      Readonly<
-        [left: RA<LEFT_ITEM | RIGHT_ITEM>, right: RA<LEFT_ITEM | RIGHT_ITEM>]
-      >
+      readonly [
+        left: RA<LEFT_ITEM | RIGHT_ITEM>,
+        right: RA<LEFT_ITEM | RIGHT_ITEM>
+      ]
     >(
       ([left, right], [item, isRight]) => [
         [...left, ...(isRight ? [] : [item])],
         [...right, ...(isRight ? [item] : [])],
       ],
       [[], []]
-    ) as [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>];
+    ) as readonly [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>];
 
 /**
  * Convert an array of [key,value] tuples to a RA<[key, RA<value>]>
@@ -165,10 +166,11 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
  * KEY doesn't have to be a string. It can be of any time
  */
 export const group = <KEY, VALUE>(
-  entries: RA<Readonly<[key: KEY, value: VALUE]>>
-): RA<Readonly<[key: KEY, values: RA<VALUE>]>> =>
+  entries: RA<readonly [key: KEY, value: VALUE]>
+): RA<readonly [key: KEY, values: RA<VALUE>]> =>
   Array.from(
     entries
+      // eslint-disable-next-line functional/prefer-readonly-type
       .reduce<Map<KEY, RA<VALUE>>>(
         (grouped, [key, value]) =>
           grouped.set(key, [...(grouped.get(key) ?? []), value]),
@@ -304,9 +306,9 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
  */
 export function jsonStringify(
   object: unknown,
-  space: undefined | number | string = undefined
+  space: number | string | undefined = undefined
 ): string {
-  const cache: Set<unknown> = new Set();
+  const cache = new Set<unknown>();
   return JSON.stringify(
     object,
     (_key, value) => {

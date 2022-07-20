@@ -52,14 +52,14 @@ function parse(rawValue: string): Coord | undefined {
     if (match === null) return undefined;
     const sign = match[components[0]].startsWith('-') ? -1 : 1;
     const parsedDirection = match[direction].toLowerCase() as
-      | 's'
-      | 'n'
       | 'e'
+      | 'n'
+      | 's'
       | 'w';
     const comps = components
       .slice(0, -1)
       .map((index) => Math.abs(Number.parseInt(match[index])));
-    comps.push(Math.abs(Number.parseFloat(match[components.slice(-1)[0]])));
+    comps.push(Math.abs(Number.parseFloat(match[components.at(-1)!])));
     const result = makeLatLong(sign, comps, parsedDirection);
     if (result) return result;
     return undefined;
@@ -69,7 +69,7 @@ function parse(rawValue: string): Coord | undefined {
 function makeLatLong(
   originalSign: number,
   components: RA<number>,
-  originalDirection?: 'n' | 's' | 'e' | 'w'
+  originalDirection?: 'e' | 'n' | 's' | 'w'
 ): Coord | undefined {
   if (components.some(Number.isNaN)) return undefined;
 
@@ -93,8 +93,10 @@ function makeLatLong(
 }
 
 export class Coord {
+  // eslint-disable-next-line functional/prefer-readonly-type
   public sign;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public components: RA<number>;
 
   public constructor(float = 0) {

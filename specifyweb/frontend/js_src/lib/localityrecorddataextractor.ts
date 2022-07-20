@@ -38,14 +38,14 @@ import { pathStartsWith } from './wbplanviewutils';
 const splitMappingPath = (
   mappingPath: MappingPath,
   index: number
-): [MappingPath, MappingPath] => [
+): readonly [MappingPath, MappingPath] => [
   mappingPath.slice(0, index),
   mappingPath.slice(index),
 ];
 
 function getNextMappingPathPart(
   mappingPath: MappingPath
-): [MappingPath, MappingPath] {
+): readonly [MappingPath, MappingPath] {
   for (let index = 0; index < mappingPath.length; index += 1)
     if (
       valueIsTreeRank(mappingPath[index]) ||
@@ -56,12 +56,12 @@ function getNextMappingPathPart(
 }
 
 type FilterFunction = (
-  mappingPath: [
+  mappingPath: readonly [
     pastParts: MappingPath,
     currentPart: MappingPath,
     nextParts: MappingPath
   ],
-  resource: SpecifyResource<AnySchema> | Collection<AnySchema>
+  resource: Collection<AnySchema> | SpecifyResource<AnySchema>
 ) => boolean;
 
 export const defaultRecordFilterFunction: FilterFunction = (
@@ -74,15 +74,15 @@ export const defaultRecordFilterFunction: FilterFunction = (
 
 async function recursiveResourceResolve(
   resource:
-    | SpecifyResource<AnySchema>
     | Collection<AnySchema>
+    | SpecifyResource<AnySchema>
     | string
-    | undefined
-    | null,
+    | null
+    | undefined,
   mappingPath: MappingPath,
   filterFunction: FilterFunction,
   pastParts: RA<string> = []
-): Promise<RA<Readonly<[MappingPath, string]>>> {
+): Promise<RA<readonly [MappingPath, string]>> {
   if (mappingPath.length === 0)
     return [[pastParts, resource?.toString() ?? '']];
 
@@ -170,6 +170,7 @@ async function recursiveResourceResolve(
   } else return [];
 }
 
+// eslint-disable-next-line functional/prefer-readonly-type
 export const parsedLocalityPinFields: [
   RA<MappingPath> | undefined,
   RA<MappingPath> | undefined
@@ -241,7 +242,7 @@ export async function fetchLocalityDataFromLocalityResource(
 }
 
 export function formatLocalityDataObject(
-  results: RA<Readonly<[MappingPath, string | null]>>
+  results: RA<readonly [MappingPath, string | null]>
 ): LocalityData | false {
   const rawLocalityData = Object.fromEntries(
     results

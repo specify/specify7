@@ -12,7 +12,7 @@ import { getModel, getModelById, schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
-import type { RA } from './types';
+import type { RA, WritableArray } from './types';
 import { defined, filterArray } from './types';
 import type { Parser } from './uiparse';
 import { resolveParser } from './uiparse';
@@ -34,7 +34,7 @@ const reStringId = /^([^.]*)\.([^.]*)\.(.*)$/;
 
 const reDatePart = /(.*)(NumericDay|NumericMonth|NumericYear)$/;
 
-export type DatePart = 'fullDate' | 'day' | 'month' | 'year';
+export type DatePart = 'day' | 'fullDate' | 'month' | 'year';
 
 function extractDatePart(fieldName: string): {
   readonly fieldName: string;
@@ -55,14 +55,19 @@ function extractDatePart(fieldName: string): {
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyModel;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public joinPath: RA<LiteralField | Relationship> = [];
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public table: SpecifyModel;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public datePart: DatePart | undefined = undefined;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public treeRank: string | undefined = undefined;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public parser: Parser = {};
 
   public constructor(baseTable: SpecifyModel) {
@@ -72,7 +77,7 @@ export class QueryFieldSpec {
 
   public toSpQueryAttributes(): Pick<
     SpQueryField['fields'],
-    'tableList' | 'stringId' | 'fieldName' | 'isRelFld'
+    'fieldName' | 'isRelFld' | 'stringId' | 'tableList'
   > {
     const fieldName = filterArray([
       this.treeRank === anyTreeRank ? undefined : this.treeRank,
@@ -127,7 +132,7 @@ export class QueryFieldSpec {
   }
 
   public getField(): LiteralField | Relationship | undefined {
-    return this.joinPath.slice(-1)[0];
+    return this.joinPath.at(-1);
   }
 
   public toMappingPath(): MappingPath {
@@ -165,10 +170,7 @@ export class QueryFieldSpec {
     if (this.getField()?.isTemporal() === true)
       path = [
         ...path.slice(0, -1),
-        formatPartialField(
-          defined(path.slice(-1)[0]),
-          this.datePart ?? 'fullDate'
-        ),
+        formatPartialField(defined(path.at(-1)), this.datePart ?? 'fullDate'),
       ];
 
     return path;
@@ -194,7 +196,7 @@ export class QueryFieldSpec {
     const rootTable = defined(getModel(baseTableName));
     const fieldSpec = new QueryFieldSpec(defined(getModel(baseTableName)));
 
-    const joinPath: (LiteralField | Relationship)[] = [];
+    const joinPath: WritableArray<LiteralField | Relationship> = [];
     let node = rootTable;
     path.every((rawFieldName, index) => {
       const [fieldName, datePart] =
@@ -271,7 +273,7 @@ export class QueryFieldSpec {
        * (empty) (becomes AnyRank->Formatted)
        */
       const parts = fieldName.split(' ');
-      const parsedField = fieldSpec.table.getField(parts.slice(-1)[0]);
+      const parsedField = fieldSpec.table.getField(parts.at(-1)!);
       /*
        * If no field passed, entire fieldName string is a rank name
        * If no rank passed, use anyTreeRank
@@ -287,7 +289,7 @@ export class QueryFieldSpec {
         field === undefined
           ? parsedField ??
             // If no field provided, use fullName
-            (fieldSpec.joinPath.slice(-1)[0]?.isRelationship &&
+            (fieldSpec.joinPath.at(-1)?.isRelationship &&
             fieldSpec.treeRank !== anyTreeRank
               ? defined(fieldSpec.table.getField('fullName'))
               : undefined)

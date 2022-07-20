@@ -1,15 +1,15 @@
 import { ajax, handleResponse, Http } from './ajax';
 import type { Attachment } from './datamodel';
+import type { SerializedResource } from './datamodelutils';
 import { getIcon, unknownIcon } from './icons';
 import { load } from './initialcontext';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
+import { formatUrl } from './querystring';
+import { getPref } from './remoteprefs';
 import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';
-import { SerializedResource } from './datamodelutils';
-import { getPref } from './remoteprefs';
-import { formatUrl } from './querystring';
 
 type AttachmentSettings = {
   readonly collection: string;

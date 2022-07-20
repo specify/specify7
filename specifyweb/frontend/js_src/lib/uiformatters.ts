@@ -102,9 +102,7 @@ export class UiFormatter {
 
   public parseRegexp(): string {
     return `^${this.fields
-      .map(function (field) {
-        return `(${field.wildOrValueRegexp()})`;
-      })
+      .map((field) => `(${field.wildOrValueRegexp()})`)
       .join('')}$`;
   }
 

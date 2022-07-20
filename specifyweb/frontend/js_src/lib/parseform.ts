@@ -5,6 +5,7 @@
 
 import { ajax, Http } from './ajax';
 import { error } from './assert';
+import { parseXml } from './codemirrorlinters';
 import { f } from './functools';
 import { getParsedAttribute } from './helpers';
 import { cachableUrl } from './initialcontext';
@@ -17,7 +18,6 @@ import { getModel } from './schema';
 import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
-import { parseXml } from './codemirrorlinters';
 
 const getColumnDefinitions = (viewDefinition: Element): string =>
   defined(
@@ -123,8 +123,8 @@ function postProcessRows(
           .filter(
             (
               cell
-            ): cell is FormCellDefinition &
-              CellTypes['Field'] & { readonly id: string } =>
+            ): cell is CellTypes['Field'] &
+              FormCellDefinition & { readonly id: string } =>
               cell.type === 'Field' && typeof cell.id === 'string'
           )
           .map((cell) =>
@@ -448,7 +448,7 @@ export function parseViewDefinition(
 }
 
 type AltView = {
-  readonly default: 'true' | 'false';
+  readonly default: 'false' | 'true';
   readonly mode: FormMode;
   readonly name: string;
   readonly viewdef: string;
@@ -459,7 +459,7 @@ export type ViewDefinition = {
   readonly busrules: string;
   readonly class: string;
   readonly name: string;
-  readonly resourcelabels: 'true' | 'false';
+  readonly resourcelabels: 'false' | 'true';
   readonly viewdefs: IR<string>;
   readonly viewsetLevel: string;
   readonly viewsetName: string;
@@ -492,4 +492,4 @@ export const getView = async (
 
 export const formTypes = ['form', 'formTable'] as const;
 export type FormType = typeof formTypes[number];
-export type FormMode = 'edit' | 'view' | 'search';
+export type FormMode = 'edit' | 'search' | 'view';

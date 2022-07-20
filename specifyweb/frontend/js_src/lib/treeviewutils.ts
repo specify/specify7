@@ -13,19 +13,17 @@ import { defined, filterArray } from './types';
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
     RA<
-      Readonly<
-        [
-          number,
-          string,
-          string,
-          number,
-          number,
-          number,
-          number | null,
-          string | null,
-          number
-        ]
-      >
+      readonly [
+        number,
+        string,
+        string,
+        number,
+        number,
+        number,
+        number | null,
+        string | null,
+        number
+      ]
     >
   >(fetchUrl, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -73,7 +71,7 @@ export type Stats = RR<
  * Fetch tree node usage stats
  */
 export const fetchStats = async (url: string): Promise<Stats> =>
-  ajax<RA<Readonly<[number, number, number]>>>(
+  ajax<RA<readonly [number, number, number]>>(
     url,
     {
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -92,15 +90,16 @@ export const fetchStats = async (url: string): Promise<Stats> =>
         ])
       )
     )
-    .catch(() => {
-      return {};
-    });
+    .catch(() => ({}));
 
 export type Row = Awaited<ReturnType<typeof fetchRows>>[number];
 
 export type Conformations = RA<Conformation>;
 
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+// eslint-disable-next-line functional/prefer-readonly-type
 export interface Conformation extends Readonly<[number, ...Conformations]> {}
+/* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 export function deserializeConformation(
   conformation: string
@@ -149,13 +148,13 @@ export const scrollIntoView = _.throttle(function scrollIntoView(
 throttleRate);
 
 export type KeyAction =
-  | 'toggle'
-  | 'next'
-  | 'previous'
-  | 'parent'
   | 'child'
+  | 'focusNext'
   | 'focusPrevious'
-  | 'focusNext';
+  | 'next'
+  | 'parent'
+  | 'previous'
+  | 'toggle';
 const keyMapper = {
   ArrowUp: 'previous',
   ArrowDown: 'next',

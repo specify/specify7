@@ -24,7 +24,7 @@ globalEvents.on('newResource', (resource) => {
   const domainFieldName =
     domainField.name as keyof typeof schema.domainLevelIds;
 
-  const parentResource = getDomainResource(domainFieldName);
+   const parentResource = getDomainResource(domainFieldName);
 
   if (
     typeof parentResource === 'object' &&
@@ -94,10 +94,10 @@ export const getCollectionForResource = (
   (resource.get('collectionMemberId') as number | null) ??
   f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
     f.var(idFromUrl(resource.get(domainField.name) ?? ''), (domainResourceId) =>
-      schema.domainLevelIds[domainField.name as 'collection'] ===
+      (schema.domainLevelIds[domainField.name as 'collection'] ===
       domainResourceId
         ? schema.domainLevelIds.collection
-        : undefined
+        : undefined)
     )
   );
 export const fetchCollectionsForResource = async (

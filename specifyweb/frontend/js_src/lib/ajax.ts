@@ -1,10 +1,10 @@
+import { parseXml } from './codemirrorlinters';
 import { handleAjaxError } from './components/errorboundary';
 import { formatList } from './components/internationalization';
 import { csrfToken } from './csrftoken';
 import { f } from './functools';
 import { sortFunction } from './helpers';
 import type { IR, PartialBy, RA } from './types';
-import { parseXml } from './codemirrorlinters';
 
 export const isExternalUrl = (url: string): boolean =>
   /*
@@ -33,7 +33,7 @@ export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
  * "body" to ajax()
  */
 export function formData(
-  data: IR<string | RA<string | number> | boolean | number | Blob>
+  data: IR<Blob | RA<number | string> | boolean | number | string>
 ): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) =>
@@ -41,11 +41,11 @@ export function formData(
       key,
       Array.isArray(value)
         ? JSON.stringify(value)
-        : typeof value === 'number'
+        : (typeof value === 'number'
         ? value.toString()
         : typeof value === 'boolean'
         ? value.toString()
-        : value
+        : value)
     )
   );
   return formData;
@@ -77,7 +77,7 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
   readonly response: Response;
   // One of expectedResponseCodes
   readonly status: number;
-};
+}
 
 /**
  * Wraps native fetch in useful helpers
@@ -98,12 +98,12 @@ export const ajax = async <RESPONSE_TYPE = string>(
      * If object is passed to body, it is stringified and proper HTTP header is set
      * Can wrap request body object in formData() to encode body as form data
      */
-    body?: string | RA<unknown> | IR<unknown> | FormData;
+    readonly body?: FormData | IR<unknown> | RA<unknown> | string;
     /**
      * Validates and parses response as JSON if 'Accept' header is 'application/json'
      * Validates and parses response as XML if 'Accept' header is 'application/xml'
      */
-    headers: IR<string | undefined> & { Accept?: MimeType };
+    readonly headers: IR<string | undefined> & { readonly Accept?: MimeType };
   },
   /** Ajax-specific options that are not passed to fetch() */
   {
@@ -126,7 +126,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
    * When running in a test environment, mock the calls rather than make
    * actual requests
    */
-  process.env.NODE_ENV === 'test'
+  (process.env.NODE_ENV === 'test'
     ? import('./tests/ajax').then(async ({ interceptRequest }) =>
         interceptRequest<RESPONSE_TYPE>(url, expectedResponseCodes)
       )
@@ -152,7 +152,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
         },
       })
         .then(async (response) => Promise.all([response, response.text()]))
-        .then(([response, text]: [Response, string]) =>
+        .then(([response, text]: readonly [Response, string]) =>
           handleResponse({
             expectedResponseCodes,
             accept,
@@ -160,7 +160,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
             response,
             text,
           })
-        );
+        ));
 
 export function handleResponse<RESPONSE_TYPE = string>({
   expectedResponseCodes,
@@ -246,8 +246,8 @@ export const ping = async (
   url: string,
   options?: PartialBy<Parameters<typeof ajax>[1], 'headers'>,
   additionalOptions?: Parameters<typeof ajax>[2]
-): Promise<number> => {
-  return ajax<never>(
+): Promise<number> =>
+  ajax<never>(
     url,
     {
       ...options,
@@ -255,4 +255,3 @@ export const ping = async (
     },
     additionalOptions
   ).then(({ status }) => status);
-};

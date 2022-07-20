@@ -54,9 +54,9 @@ export const getUserPref = <
   getPrefDefinition(category, subcategory, item).defaultValue;
 
 let preferences: {
-  [CATEGORY in keyof Preferences]?: {
-    [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
-      [ITEM in keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
+  readonly [CATEGORY in keyof Preferences]?: {
+    readonly [SUBCATEGORY in keyof Preferences[CATEGORY]['subCategories']]?: {
+      readonly [ITEM in keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
     };
   };
 } =

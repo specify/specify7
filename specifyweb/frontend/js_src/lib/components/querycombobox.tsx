@@ -46,7 +46,7 @@ import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
-import { Autocomplete } from './autocomplete';
+import { Autocomplete, AutoCompleteItem } from './autocomplete';
 import { DataEntry, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
@@ -400,93 +400,93 @@ export function QueryComboBox({
       ) ?? {}
     );
 
+  const fetchSource = React.useCallback(
+    async (value: string): Promise<RA<AutoCompleteItem<string>>> =>
+      isLoaded && typeof typeSearch === 'object'
+        ? Promise.all(
+            typeSearch.searchFieldsNames
+              .map((fieldName) =>
+                makeComboBoxQuery({
+                  fieldName,
+                  value,
+                  isTreeTable: isTreeResource(resource),
+                  typeSearch,
+                  specialConditions: getQueryComboBoxConditions({
+                    resource,
+                    fieldName,
+                    collectionRelationships:
+                      typeof collectionRelationships === 'object'
+                        ? collectionRelationships
+                        : undefined,
+                    treeData:
+                      typeof treeData === 'object' ? treeData : undefined,
+                    typeSearch,
+                    subViewRelationship,
+                  }),
+                })
+              )
+              .map(serializeResource)
+              .map((query) => ({
+                ...query,
+                fields: query.fields.map((field, index) => ({
+                  ...field,
+                  position: index,
+                })),
+              }))
+              .map(async (query) =>
+                ajax<{
+                  readonly results: RA<Readonly<[id: number, label: string]>>;
+                }>('/stored_query/ephemeral/', {
+                  method: 'POST',
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  headers: { Accept: 'application/json' },
+                  body: keysToLowerCase({
+                    ...query,
+                    collectionId: forceCollection ?? relatedCollectionId,
+                    // REFACTOR: allow customizing these arbitrary limits
+                    limit: 1000,
+                  }),
+                })
+              )
+          ).then((responses) =>
+            /*
+             * If there are multiple search fields and both returns the
+             * same record, it may be presented in results twice. Would
+             * be fixed by using OR queries
+             * REFACTOR: refactor to use OR queries across fields once
+             *   supported
+             */
+            responses
+              .flatMap(({ data: { results } }) => results)
+              .map(([id, label]) => ({
+                data: getResourceApiUrl(
+                  field?.isRelationship === true
+                    ? field.relatedModel.name
+                    : resource.specifyModel.name,
+                  id
+                ),
+                label,
+              }))
+          )
+        : [],
+    [
+      field,
+      isLoaded,
+      typeSearch,
+      subViewRelationship,
+      collectionRelationships,
+      forceCollection,
+      relatedCollectionId,
+      resource,
+      treeData,
+    ]
+  );
+
   return (
     <div className="flex items-center">
       <Autocomplete<string>
         filterItems={false}
-        source={React.useCallback(
-          async (value) =>
-            isLoaded && typeof typeSearch === 'object'
-              ? Promise.all(
-                  typeSearch.searchFieldsNames
-                    .map((fieldName) =>
-                      makeComboBoxQuery({
-                        fieldName,
-                        value,
-                        isTreeTable: isTreeResource(resource),
-                        typeSearch,
-                        specialConditions: getQueryComboBoxConditions({
-                          resource,
-                          fieldName,
-                          collectionRelationships:
-                            typeof collectionRelationships === 'object'
-                              ? collectionRelationships
-                              : undefined,
-                          treeData:
-                            typeof treeData === 'object' ? treeData : undefined,
-                          typeSearch,
-                          subViewRelationship,
-                        }),
-                      })
-                    )
-                    .map(serializeResource)
-                    .map((query) => ({
-                      ...query,
-                      fields: query.fields.map((field, index) => ({
-                        ...field,
-                        position: index,
-                      })),
-                    }))
-                    .map(async (query) =>
-                      ajax<{
-                        readonly results: RA<
-                          Readonly<[id: number, label: string]>
-                        >;
-                      }>('/stored_query/ephemeral/', {
-                        method: 'POST',
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        headers: { Accept: 'application/json' },
-                        body: keysToLowerCase({
-                          ...query,
-                          collectionId: forceCollection ?? relatedCollectionId,
-                          // REFACTOR: allow customizing these arbitrary limits
-                          limit: 1000,
-                        }),
-                      })
-                    )
-                ).then((responses) =>
-                  /*
-                   * If there are multiple search fields and both returns the
-                   * same record, it may be presented in results twice. Would
-                   * be fixed by using OR queries
-                   * REFACTOR: refactor to use OR queries across fields once
-                   *   supported
-                   */
-                  responses
-                    .flatMap(({ data: { results } }) => results)
-                    .map(([id, label]) => ({
-                      data: getResourceApiUrl(
-                        field?.isRelationship === true
-                          ? field.relatedModel.name
-                          : resource.specifyModel.name,
-                        id
-                      ),
-                      label,
-                    }))
-                )
-              : [],
-          [
-            field,
-            isLoaded,
-            typeSearch,
-            subViewRelationship,
-            collectionRelationships,
-            forceCollection,
-            relatedCollectionId,
-            resource,
-            treeData,
-          ]
-        )}
+        source={fetchSource}
         onChange={({ data }): void => updateValue(data)}
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>

@@ -5,6 +5,7 @@
  */
 
 import * as XLSX from 'xlsx';
+import { RA } from './types';
 
 const context: Worker = self as any;
 
@@ -13,7 +14,7 @@ context.onmessage = function (e) {
 
   const reader = new FileReader();
   reader.readAsArrayBuffer(e.data.file);
-  reader.addEventListener('load', function (loaded) {
+  reader.addEventListener('load', (loaded) => {
     if (
       loaded.target == null ||
       !(loaded.target.result instanceof ArrayBuffer)
@@ -30,22 +31,24 @@ context.onmessage = function (e) {
     };
     const workbook = XLSX.read(fileData, options);
 
-    const first_sheet_name = workbook.SheetNames[0];
-    const first_workbook = workbook.Sheets[first_sheet_name];
-    const sheet_data = XLSX.utils.sheet_to_json(first_workbook, {
+    const firstSheetName = workbook.SheetNames[0];
+    const firstWorkBook = workbook.Sheets[firstSheetName];
+    const sheetData = XLSX.utils.sheet_to_json(firstWorkBook, {
       header: 1,
       blankrows: false,
       raw: false,
     });
 
-    const max_width = Math.max(
-      ...sheet_data.map((row) => (row as string[]).length)
+    const maxMidth = Math.max(
+      ...sheetData.map((row) => (row as RA<string>).length)
     );
 
-    const data: string[][] = sheet_data.map((row) => {
-      const unSparseRow = Array.from(row as string[], (v) => v || '');
-      if (unSparseRow.length < max_width) {
-        unSparseRow.push(...new Array(max_width - unSparseRow.length).fill(''));
+    const data: RA<RA<string>> = sheetData.map((row) => {
+      const unSparseRow = Array.from(row as RA<string>, (v) => v || '');
+      if (unSparseRow.length < maxMidth) {
+        unSparseRow.push(
+          ...Array.from({ length: maxMidth - unSparseRow.length }).fill('')
+        );
       }
       return unSparseRow;
     });

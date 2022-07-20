@@ -83,7 +83,7 @@ const processUiPlugin: {
       getProperty('defaultPrecision')?.toLowerCase(),
       (defaultPrecision) =>
         f.includes(['year', 'month-year'], defaultPrecision)
-          ? (defaultPrecision as 'year' | 'month-year')
+          ? (defaultPrecision as 'month-year' | 'year')
           : 'full'
     ),
   }),

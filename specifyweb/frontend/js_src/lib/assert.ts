@@ -12,7 +12,7 @@ export function assert(value: unknown, message?: string): void {
  * There is a proposal for fixing this:
  * https://github.com/tc39/proposal-throw-expressions
  */
-export function error(message: string | Error, ...rest: RA<unknown>): never {
+export function error(message: Error | string, ...rest: RA<unknown>): never {
   if (rest.length > 0) console.error('Error details: ', ...rest);
   breakpoint();
   const error = message instanceof Error ? message : new Error(message);
@@ -32,8 +32,10 @@ export function error(message: string | Error, ...rest: RA<unknown>): never {
  */
 export function breakpoint(): void {
   /* Breakpoint */
-  // FEATURE: turn this on in development
-  // debugger;
+  /*
+   * FEATURE: turn this on in development
+   * debugger;
+   */
 }
 
 /**

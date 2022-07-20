@@ -10,7 +10,7 @@ import { schema } from './schema';
 import type { LiteralField, Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { toTable, toTreeTable } from './specifymodel';
-import type { RA } from './types';
+import type { RA, WritableArray } from './types';
 import { userInformation } from './userinfo';
 
 export function makeComboBoxQuery({
@@ -89,7 +89,7 @@ export function getQueryComboBoxConditions({
   readonly typeSearch: TypeSearch;
   readonly subViewRelationship: Relationship | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
-  const fields: SpecifyResource<SpQueryField>[] = [];
+  const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
   if (typeof treeResource === 'object') {
     const tableId = resource.specifyModel.tableId;
@@ -127,7 +127,7 @@ export function getQueryComboBoxConditions({
           nextRankId = treeData.treeRanks[rankIndex - 1].rankId;
         }
       }
-      const lastTreeRankId = treeData?.treeRanks.slice(-1)[0].rankId ?? 0;
+      const lastTreeRankId = treeData?.treeRanks.at(-1)!.rankId ?? 0;
 
       const lowestRankId = Math.min(
         lastTreeRankId,

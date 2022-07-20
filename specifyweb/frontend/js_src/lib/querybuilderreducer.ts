@@ -60,17 +60,13 @@ export const getInitialState = ({
 });
 
 type Actions =
-  | Action<'RunQueryAction'>
-  | Action<
-      'ChangeOpenedElementAction',
-      { line: number; index: number | undefined }
-    >
-  | Action<'FocusLineAction', { readonly line: number }>
-  | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
-  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
   | Action<
       'ChangeFieldAction',
       { readonly line: number; readonly field: QueryField }
+    >
+  | Action<
+      'ChangeOpenedElementAction',
+      { line: number; index: number | undefined }
     >
   | Action<
       'ChangeSelectElementValueAction',
@@ -85,6 +81,17 @@ type Actions =
         readonly currentTableName: keyof Tables | undefined;
       }
     >
+  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
+  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
+  | Action<'FocusLineAction', { readonly line: number }>
+  | Action<'FocusLineAction', { readonly line: number }>
+  | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
+  | Action<
+      'LineMoveAction',
+      { readonly line: number; readonly direction: 'down' | 'up' }
+    >
+  | Action<'RunQueryAction'>
+  | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({

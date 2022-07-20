@@ -28,7 +28,9 @@ export const eventListener = <TYPE extends IR<unknown>>(
   trigger: <EVENT_NAME extends string & keyof TYPE>(
     eventName: EVENT_NAME,
     // If payload type is undefined, don't require second argument
-    ...[payload]: TYPE[EVENT_NAME] extends undefined ? [] : [TYPE[EVENT_NAME]]
+    ...[payload]: TYPE[EVENT_NAME] extends undefined
+      ? readonly []
+      : readonly [TYPE[EVENT_NAME]]
   ): boolean =>
     // Disable events when running tests as Node.JS does not support CustomEvent
     process.env.NODE_ENV === 'test'
@@ -66,6 +68,7 @@ export function listen<EVENT_NAME extends keyof GlobalEventHandlersEventMap>(
 const blurHandlers = new Map<
   Input,
   {
+    // eslint-disable-next-line functional/prefer-readonly-type
     readonly listeners: Set<() => void>;
     /*
      * If there are no listeners left and only a default emitter, it would get

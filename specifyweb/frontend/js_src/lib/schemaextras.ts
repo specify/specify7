@@ -38,13 +38,11 @@ const treeDefItem = (
 export const schemaExtras: {
   readonly [TABLE_NAME in keyof Tables]?: (
     model: SpecifyModel<Tables[TABLE_NAME]>
-  ) => Readonly<
-    [
-      fields: RA<LiteralField>,
-      relationships: RA<Relationship>,
-      callback?: () => void
-    ]
-  >;
+  ) => readonly [
+    fields: RA<LiteralField>,
+    relationships: RA<Relationship>,
+    callback?: () => void
+  ];
 } = {
   Agent(model) {
     const catalogerOf = new Relationship(model, {

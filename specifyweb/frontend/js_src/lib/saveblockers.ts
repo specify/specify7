@@ -34,8 +34,10 @@ export type Input = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 export class SaveBlockers<SCHEMA extends AnySchema> {
   private readonly resource: SpecifyResource<SCHEMA>;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public blockers: R<Blocker> = {};
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   public readonly blockingResources: Set<SpecifyResource<AnySchema>> =
     new Set();
 
@@ -65,7 +67,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
 
   public add(
     key: string,
-    fieldName: (keyof SCHEMA['fields'] & string) | undefined,
+    fieldName: (string & keyof SCHEMA['fields']) | undefined,
     reason: string,
     deferred = false
   ): void {
@@ -106,7 +108,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   }
 
   public getFieldErrors(
-    fieldName: keyof SCHEMA['fields'] & string
+    fieldName: string & keyof SCHEMA['fields']
   ): RA<string> {
     return Object.values(this.blockers)
       .filter((blocker) => blocker.fieldName === fieldName.toLowerCase())
@@ -114,7 +116,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   }
 
   public blockersForField(
-    fieldName: keyof SCHEMA['fields'] & string
+    fieldName: string & keyof SCHEMA['fields']
   ): RA<Blocker> {
     return Object.values(this.blockers).filter(
       (blocker) => blocker.fieldName === fieldName.toLowerCase()

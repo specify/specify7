@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
+
 import { databaseDateFormat, fullDateFormat, monthFormat } from './dateformat';
-import { mappedFind } from './helpers';
 import { f } from './functools';
+import { mappedFind } from './helpers';
 
 const reParse = /today\s*([+-])\s*(\d+)\s*(day|week|month|year)/;
 

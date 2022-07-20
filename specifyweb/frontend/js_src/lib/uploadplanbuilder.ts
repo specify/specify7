@@ -91,21 +91,22 @@ function toUploadTable(
       )
     ),
     toMany: Object.fromEntries(
-      toMany.map(([fieldName, lines]) => {
-        return [
-          fieldName.toLowerCase(),
-          indexMappings(lines).map(([_index, lines]) =>
-            removeKey(
-              toUploadTable(
-                defined(model.getRelationship(fieldName)).relatedModel,
-                lines,
-                mustMatchPreferences
-              ),
-              'toMany'
-            )
-          ),
-        ] as const;
-      })
+      toMany.map(
+        ([fieldName, lines]) =>
+          [
+            fieldName.toLowerCase(),
+            indexMappings(lines).map(([_index, lines]) =>
+              removeKey(
+                toUploadTable(
+                  defined(model.getRelationship(fieldName)).relatedModel,
+                  lines,
+                  mustMatchPreferences
+                ),
+                'toMany'
+              )
+            ),
+          ] as const
+      )
     ),
   };
 }
@@ -155,7 +156,7 @@ export const uploadPlanBuilder = (
 
 const indexMappings = (
   mappings: RA<SplitMappingPath>
-): RA<Readonly<[string, RA<SplitMappingPath>]>> =>
+): RA<readonly [string, RA<SplitMappingPath>]> =>
   group(
     mappings.map(
       ({ mappingPath, ...rest }) =>

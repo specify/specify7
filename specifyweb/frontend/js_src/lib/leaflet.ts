@@ -26,10 +26,10 @@ import L from './leafletextend';
 import type { Field, LocalityData } from './leafletutils';
 import { commonText } from './localization/common';
 import { localityText } from './localization/locality';
-import type { IR, RA, RR } from './types';
-import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 import { getUserPref } from './preferencesutils';
 import { formatUrl } from './querystring';
+import type { IR, RA, RR, WritableArray } from './types';
+import { splitJoinedMappingPath } from './wbplanviewmappinghelper';
 
 const DEFAULT_ZOOM = 5;
 
@@ -100,6 +100,7 @@ export async function showLeafletMap({
     'min-h-[theme(spacing.80)]'
   );
 
+  // eslint-disable-next-line functional/prefer-readonly-type
   let defaultCenter: [number, number] = [0, 0];
   let defaultZoom = 1;
   if (localityPoints.length > 0) {
@@ -151,7 +152,7 @@ export async function showLeafletMap({
   return map;
 }
 
-export type LeafletCacheSalt = string & ('MainMap' | 'CoMap');
+export type LeafletCacheSalt = string & ('CoMap' | 'MainMap');
 
 function rememberSelectedBaseLayers(
   map: L.Map,
@@ -173,7 +174,7 @@ function rememberSelectedBaseLayers(
 
 function rememberSelectedOverlays(
   map: L.Map,
-  layers: IR<L.TileLayer | L.FeatureGroup>,
+  layers: IR<L.FeatureGroup | L.TileLayer>,
   defaultOverlays: IR<boolean> = {}
 ): void {
   const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
@@ -276,7 +277,7 @@ export function addMarkersToMap(
   const layerGroups = Object.fromEntries(
     markerLayerName.map(
       (groupName) =>
-        [groupName, L.featureGroup.subGroup(cluster)] as [
+        [groupName, L.featureGroup.subGroup(cluster)] as readonly [
           MarkerLayerName,
           L.FeatureGroup
         ]
@@ -339,10 +340,12 @@ export type MarkerGroups = {
   readonly polygonBoundary: RA<L.Marker>;
   readonly errorRadius: RA<L.Circle>;
 };
-type Marker = L.Marker | L.Polygon | L.Polyline | L.Circle;
+type Marker = L.Circle | L.Marker | L.Polygon | L.Polyline;
 
 const createLine = (
+  // eslint-disable-next-line functional/prefer-readonly-type
   coordinate1: [number, number],
+  // eslint-disable-next-line functional/prefer-readonly-type
   coordinate2: [number, number]
 ): L.Polyline =>
   new L.Polyline([coordinate1, coordinate2], {
@@ -364,7 +367,8 @@ export const formatLocalityData = (
           !hideRedundant || !mappingLocalityColumns.includes(fieldName)
       )
       .filter(
-        (entry): entry is [string, Field<string | number>] =>
+        // eslint-disable-next-line functional/prefer-readonly-type
+        (entry): entry is [string, Field<number | string>] =>
           typeof entry[1] === 'object' && entry[1].value !== ''
       )
       .map(([fieldName, field]) =>
@@ -397,11 +401,13 @@ export function getMarkersFromLocalityData({
   iconClass,
 }: {
   readonly localityData: LocalityData;
-  readonly markerClickCallback?: string | L.LeafletEventHandlerFn;
+  readonly markerClickCallback?: L.LeafletEventHandlerFn | string;
   readonly iconClass?: string;
 }): MarkerGroups {
   const markers: {
-    readonly [KEY in keyof MarkerGroups]: MarkerGroups[KEY][number][];
+    readonly [KEY in keyof MarkerGroups]: WritableArray<
+      MarkerGroups[KEY][number]
+    >;
   } = {
     marker: [],
     polygon: [],

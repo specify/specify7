@@ -168,6 +168,7 @@ async function resourceView(
           id: recordSetId,
         })
       : undefined;
+  // @ts-expect-error Assigning to readonly
   if (typeof recordSet === 'object') resource.recordsetid = recordSet.id;
 
   setCurrentComponent(

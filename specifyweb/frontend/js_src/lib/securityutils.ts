@@ -25,7 +25,7 @@ import {
 } from './permissions';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifymodel';
-import type { IR, R, RA } from './types';
+import type { IR, R, RA, WritableArray } from './types';
 import { defined, ensure, filterArray } from './types';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
@@ -98,8 +98,7 @@ export const resourceNameToLabel = (resource: string): string =>
     : f.var(
         resourceNameToParts(resource),
         (parts) =>
-          getRegistriesFromPath(parts)[parts.length - 1]?.[parts.slice(-1)[0]]
-            .label
+          getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label
       ) ?? adminText('resource');
 
 export const resourceNameToLongLabel = (resource: string): string =>
@@ -119,7 +118,7 @@ export const getRegistriesFromPath = (
   resourceParts: RA<string>
 ): RA<IR<Registry> | undefined> =>
   resourceParts.reduce<RA<IR<Registry> | undefined>>(
-    (parts, part) => [...parts, parts.slice(-1)[0]?.[part]?.children],
+    (parts, part) => [...parts, parts.at(-1)?.[part]?.children],
     [buildRegistry()]
   );
 
@@ -161,6 +160,7 @@ type WritableRegistry = {
   readonly children: R<WritableRegistry>;
   readonly actions: RA<string>;
   readonly groupName: string;
+  // eslint-disable-next-line functional/prefer-readonly-type
   isInstitutional: boolean;
 };
 
@@ -400,12 +400,12 @@ export const compressPermissionQuery = (
   f.var(
     query.reduce<{
       readonly tools: R<R<PermissionsQueryItem | undefined>>;
-      policies: PermissionsQueryItem[];
+      readonly policies: WritableArray<PermissionsQueryItem>;
     }>(
       ({ tools, policies }, item) => {
         if (
           item.resource.startsWith(tablePermissionsPrefix) &&
-          resourceNameToParts(item.resource).slice(-1)[0] !== anyResource
+          resourceNameToParts(item.resource).at(-1) !== anyResource
         ) {
           const model = resourceNameToModel(item.resource);
           if (f.has(toolTables(), model.name)) {
@@ -534,7 +534,7 @@ export const getAllActions = (path: string): RA<string> =>
     : f.var(
         f.var(resourceNameToParts(path), (parts) =>
           partsToResourceName(
-            parts.slice(-1)[0] === anyResource ? parts.slice(0, -1) : parts
+            parts.at(-1) === anyResource ? parts.slice(0, -1) : parts
           )
         ),
         (path) =>
@@ -560,7 +560,7 @@ export function policiesToTsv(): string {
   const iterate = (
     data: IR<Registry>,
     path: RA<string> = [],
-    isInstitutional: boolean = false
+    isInstitutional = false
   ): RA<RA<string>> =>
     Object.entries(data).flatMap(([key, entry]) =>
       key === '%'

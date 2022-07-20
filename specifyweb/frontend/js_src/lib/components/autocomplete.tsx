@@ -17,7 +17,7 @@ import { softFail } from './errorboundary';
 
 const debounceRate = 300;
 
-type Item<T> = {
+export type AutoCompleteItem<T> = {
   readonly label: string | JSX.Element;
   readonly searchValue?: string;
   readonly subLabel?: string;
@@ -75,11 +75,13 @@ export function Autocomplete<T>({
   value: currentValue,
   pendingValueRef,
 }: {
-  readonly source: RA<Item<T>> | ((value: string) => Promise<RA<Item<T>>>);
+  readonly source:
+    | RA<AutoCompleteItem<T>>
+    | ((value: string) => Promise<RA<AutoCompleteItem<T>>>);
   readonly minLength?: number;
   readonly delay?: number;
   readonly onNewValue?: (value: string) => void;
-  readonly onChange: (item: Item<T>) => void;
+  readonly onChange: (item: AutoCompleteItem<T>) => void;
   readonly onCleared?: () => void;
   readonly forwardRef?:
     | React.MutableRefObject<HTMLInputElement | null>
@@ -109,7 +111,7 @@ export function Autocomplete<T>({
   readonly pendingValueRef?: React.MutableRefObject<string>;
 }): JSX.Element {
   const id = useId('autocomplete-data-list')('');
-  const [results, setResults] = React.useState<RA<Item<T>>>([]);
+  const [results, setResults] = React.useState<RA<AutoCompleteItem<T>>>([]);
 
   const filterItems = React.useCallback(
     (newResults: typeof results, pendingValue: string) =>
@@ -142,7 +144,7 @@ export function Autocomplete<T>({
         : undefined
     );
   const updateItems = React.useCallback(
-    (items: RA<Item<T>>, pendingValue: string): void => {
+    (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
       // Focus might have moved since began fetching, thus need to rescue again
       resqueFocus();
       setResults(items);
@@ -186,7 +188,9 @@ export function Autocomplete<T>({
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
 
-  const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
+  const [filteredItems, setFilteredItems] = React.useState<
+    RA<AutoCompleteItem<T>>
+  >([]);
 
   const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
@@ -222,7 +226,7 @@ export function Autocomplete<T>({
     input?.focus();
   }
 
-  function handleChanged(item: Item<T>): void {
+  function handleChanged(item: AutoCompleteItem<T>): void {
     handleChange(item);
     const value =
       typeof item.label === 'string' ? item.label : item.searchValue ?? '';

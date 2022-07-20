@@ -7,7 +7,7 @@
 import type { MappingPath } from './components/wbplanviewmapper';
 import { schemaBase as schema } from './schemabase';
 import type { Relationship } from './specifyfield';
-import type { R, RA } from './types';
+import type { R, RA, WritableArray } from './types';
 import type { ColumnOptions } from './uploadplanparser';
 
 /**
@@ -80,9 +80,10 @@ export const formatPartialField = (fieldName: string, part: string): string =>
 
 export function parsePartialField<PART extends string>(
   value: string
-): Readonly<[fieldName: string, part: PART]> {
+): readonly [fieldName: string, part: PART] {
   const split = value.split(schema.fieldPartSeparator);
   if (split.length !== 2) throw new Error('failed to parse partial field');
+  // eslint-disable-next-line functional/prefer-readonly-type
   return split as [string, PART];
 }
 
@@ -110,21 +111,24 @@ export const findDuplicateMappings = (
   mappingPaths: RA<MappingPath>,
   focusedLine: number | false
 ): RA<number> => {
-  const duplicateIndexes: number[] = [];
+  const duplicateIndexes: WritableArray<number> = [];
 
-  mappingPaths.reduce<string[]>((dictionaryOfMappings, mappingPath, index) => {
-    const stringMappingPath = mappingPathToString(mappingPath);
+  mappingPaths.reduce<WritableArray<string>>(
+    (dictionaryOfMappings, mappingPath, index) => {
+      const stringMappingPath = mappingPathToString(mappingPath);
 
-    if (dictionaryOfMappings.includes(stringMappingPath))
-      duplicateIndexes.push(
-        typeof focusedLine === 'number' && focusedLine === index
-          ? dictionaryOfMappings.indexOf(stringMappingPath)
-          : index
-      );
-    else dictionaryOfMappings.push(stringMappingPath);
+      if (dictionaryOfMappings.includes(stringMappingPath))
+        duplicateIndexes.push(
+          typeof focusedLine === 'number' && focusedLine === index
+            ? dictionaryOfMappings.indexOf(stringMappingPath)
+            : index
+        );
+      else dictionaryOfMappings.push(stringMappingPath);
 
-    return dictionaryOfMappings;
-  }, []);
+      return dictionaryOfMappings;
+    },
+    []
+  );
 
   return duplicateIndexes;
 };

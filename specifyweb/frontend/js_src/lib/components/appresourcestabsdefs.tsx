@@ -16,6 +16,7 @@ import type { SpecifyResource } from '../legacytypes';
 import type { UserPreferences } from '../preferencesutils';
 import { getPrefDefinition, setPrefsGenerator } from '../preferencesutils';
 import type { ContextType, RR } from '../types';
+import { writable } from '../types';
 import { useCodeMirrorExtensions } from './appresourceeditorcomponents';
 import type { appResourceSubTypes } from './appresourcescreate';
 import { useId, useLiveState } from './hooks';
@@ -27,7 +28,7 @@ export type AppResourceTab = (props: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
   readonly data: string | null;
-  readonly showValidationRef: React.MutableRefObject<null | (() => void)>;
+  readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;
 }) => JSX.Element;
 
@@ -53,9 +54,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   const selectionRef = React.useRef<unknown | undefined>(undefined);
   return (
     <CodeMirror
-      value={data ?? ''}
-      onChange={handleChange}
-      theme={isDarkMode ? okaidia : xcodeLight}
+      extensions={writable(extensions)}
       readOnly={isReadOnly}
       ref={(ref): void => {
         codeMirrorRef.current = ref;
@@ -68,12 +67,14 @@ export const AppResourceTextEditor: AppResourceTab = function ({
           setStateRestored(true);
         }
       }}
+      theme={isDarkMode ? okaidia : xcodeLight}
+      value={data ?? ''}
       /*
        * FEATURE: provide supported attributes for autocomplete
        *   https://codemirror.net/examples/autocompletion/
        *   https://github.com/codemirror/lang-xml#api-reference
        */
-      extensions={extensions}
+      onChange={handleChange}
       onUpdate={({ state }): void => {
         selectionRef.current = state.selection.toJSON();
       }}
