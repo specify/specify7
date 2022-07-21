@@ -4,7 +4,7 @@ from sqlalchemy.dialects.mysql import BIT as mysql_bit_type
 metadata = MetaData()
 
 def make_table(datamodel, tabledef):
-    columns = [ Column(tabledef.idColumn, types.Integer, primary_key=True) ]
+    columns = [ Column(tabledef.idColumn.lower(), types.Integer, primary_key=True) ]
 
     columns.extend(make_column(field) for field in tabledef.fields)
 
@@ -20,9 +20,9 @@ def make_foreign_key(datamodel, reldef):
     if remote_tabledef is None:
         return
 
-    fk_target = '.'.join((remote_tabledef.table, remote_tabledef.idColumn))
+    fk_target = '.'.join((remote_tabledef.table, remote_tabledef.idColumn.lower()))
 
-    return Column(reldef.column,
+    return Column(reldef.column.lower(),
                   ForeignKey(fk_target),
                   nullable = not reldef.required,
                   unique = reldef.type == 'one_to_one')
@@ -33,7 +33,7 @@ def make_column(flddef):
     if hasattr(flddef, 'length') and field_type in (types.Text, types.String):
         field_type = field_type(flddef.length)
 
-    return Column(flddef.column,
+    return Column(flddef.column.lower(),
                   field_type,
                   index    = flddef.indexed,
                   unique   = flddef.unique,
@@ -59,7 +59,7 @@ def make_tables(datamodel):
 
 def make_classes(datamodel):
     def make_class(tabledef):
-        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': tabledef.idFieldName })
+        return type(tabledef.name, (object,), { 'tableid': tabledef.tableId, '_id': tabledef.idFieldName.lower() })
 
     return {td.name: make_class(td) for td in datamodel.tables}
 
@@ -75,22 +75,22 @@ def map_classes(datamodel, tables, classes):
                 return
 
             remote_class = classes[ reldef.relatedModelName ]
-            column = getattr(table.c, reldef.column)
+            column = getattr(table.c, reldef.column.lower())
 
             relationship_args = {'foreign_keys': column}
 
             if hasattr(reldef, 'otherSideName'):
                 backref_args = {'uselist': reldef.type != 'one-to-one'}
                 if remote_class is cls:
-                    backref_args['remote_side'] = table.c[ tabledef.idColumn ]
+                    backref_args['remote_side'] = table.c[ tabledef.idColumn.lower() ]
 
                 relationship_args['backref'] = orm.backref(reldef.otherSideName, **backref_args)
 
             return reldef.name, orm.relationship(remote_class, **relationship_args)
 
-        properties = { tabledef.idFieldName: table.c[tabledef.idColumn] }
+        properties = { tabledef.idFieldName.lower(): table.c[tabledef.idColumn.lower()] }
 
-        properties.update({ flddef.name: table.c[flddef.column]
+        properties.update({ flddef.name.lower(): table.c[flddef.column.lower()]
                             for flddef in tabledef.fields })
 
         properties.update(relationship

@@ -209,7 +209,7 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
             if self.tree_rank is not None:
                 query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
             else:
-                orm_field = getattr(orm_model, self.get_field().name)
+                orm_field = getattr(orm_model, self.get_field().name.lower())
 
                 if field.type == "java.sql.Timestamp":
                     # Only consider the date portion of timestamp fields.

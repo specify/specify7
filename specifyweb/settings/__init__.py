@@ -44,24 +44,28 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': (
+            'django.db.backends.postgresql'
+            if DATABASE_ENGINE == 'postgres' else
+            'specifyweb.hibernateboolsbackend.backends.mysql'
+        ),
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {
-            }
+        'TEST': {}
     },
  }
 
-SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
-        MASTER_NAME,
-        MASTER_PASSWORD,
-        DATABASE_HOST,
-        DATABASE_PORT or 3306,
-        DATABASE_NAME)
+
+
+SA_DATABASE_URL = (
+    f'postgresql+psycopg2://{MASTER_NAME}:{MASTER_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT or 5432}/{DATABASE_NAME}'
+    if DATABASE_ENGINE == 'postgres' else
+    f'mysql://{MASTER_NAME}:{MASTER_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT or 3306}/{DATABASE_NAME}?charset=utf8'
+)
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600

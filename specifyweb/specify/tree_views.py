@@ -48,24 +48,26 @@ def tree_view(request, treedef, tree, parentid, sortfield):
     accepted = aliased(node)
     id_col = getattr(node, node._id)
     child_id = getattr(child, node._id)
-    treedef_col = getattr(node, tree_table.name + "TreeDefID")
+    treedef_col = getattr(node, tree_table.name.lower() + "treedefid")
     orderby = tree_table.name.lower() + '.' + sortfield
 
+    cols =(id_col,
+           node.name,
+           node.fullname,
+           node.nodenumber,
+           node.highestchildnodenumber,
+           node.rankid,
+           node.acceptedid,
+           accepted.fullname,
+        )
+
     with models.session_context() as session:
-        query = session.query(id_col,
-                              node.name,
-                              node.fullName,
-                              node.nodeNumber,
-                              node.highestChildNodeNumber,
-                              node.rankId,
-                              node.AcceptedID,
-                              accepted.fullName,
-                              sql.functions.count(child_id)) \
-                        .outerjoin(child, child.ParentID == id_col) \
-                        .outerjoin(accepted, node.AcceptedID == getattr(accepted, node._id)) \
-                        .group_by(id_col) \
+        query = session.query(*cols, sql.functions.count(child_id)) \
+                        .outerjoin(child, child.parentid == id_col) \
+                        .outerjoin(accepted, node.acceptedid == getattr(accepted, node._id)) \
+                        .group_by(*cols) \
                         .filter(treedef_col == int(treedef)) \
-                        .filter(node.ParentID == parentid) \
+                        .filter(node.parentid == parentid) \
                         .order_by(orderby)
         results = list(query)
 
@@ -77,7 +79,7 @@ def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
     tree_table = datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
-    treedef_col = tree_table.name + "TreeDefID"
+    treedef_col = tree_table.name.lower() + "treedefid"
 
     tree_node = getattr(models, tree_table.name)
     child = aliased(tree_node)
@@ -91,7 +93,7 @@ def tree_stats(request, treedef, tree, parentid):
         descendants = [child]
         for i in range(depth):
             descendant = aliased(tree_node)
-            query = query.outerjoin(descendant, descendant.ParentID == getattr(descendants[-1], tree_node._id))
+            query = query.outerjoin(descendant, descendant.parentid == getattr(descendants[-1], tree_node._id))
             descendants.append(descendant)
 
         # The target table is the one we will be counting distinct IDs on. E.g. Collection object.
@@ -112,11 +114,11 @@ def tree_stats(request, treedef, tree, parentid):
         # The join depth only needs to be enough to reach the bottom of the tree.
         # That will be the number of distinct rankID values not less than
         # the rankIDs of the children of parentid.
-        highest_rank = session.query(sql.func.min(tree_node.rankId)).filter(tree_node.ParentID==parentid).as_scalar()
-        depth, = session.query(sql.func.count(distinct(tree_node.rankId))).filter(tree_node.rankId >= highest_rank)[0]
+        highest_rank = session.query(sql.func.min(tree_node.rankid)).filter(tree_node.parentid==parentid).as_scalar()
+        depth, = session.query(sql.func.count(distinct(tree_node.rankid))).filter(tree_node.rankid >= highest_rank)[0]
 
         query = session.query(getattr(child, child._id)) \
-                            .filter(child.ParentID == parentid) \
+                            .filter(child.parentid == parentid) \
                             .filter(getattr(child, treedef_col) == int(treedef)) \
                             .group_by(getattr(child, child._id))
 
@@ -131,9 +133,9 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
         det = aliased(models.Determination)
 
         query = query.outerjoin(det, sql.and_(
-            det.isCurrent,
-            det.collectionMemberId == self.collection.id,
-            det.PreferredTaxonID == descendant_id))
+            det.iscurrent,
+            det.collectionmemberid == self.collection.id,
+            det.preferredtaxonid == descendant_id))
 
         return query, det
 
@@ -143,11 +145,11 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
         loc = aliased(models.Locality)
         ce = aliased(models.CollectingEvent)
 
-        query = query.outerjoin(loc, loc.GeographyID == descendant_id) \
-                   .outerjoin(ce, ce.LocalityID == getattr(loc, loc._id)) \
+        query = query.outerjoin(loc, loc.geographyid == descendant_id) \
+                   .outerjoin(ce, ce.localityid == getattr(loc, loc._id)) \
                    .outerjoin(co, sql.and_(
-                co.CollectingEventID == getattr(ce, ce._id),
-                co.collectionMemberId == self.collection.id))
+                co.collectingeventid == getattr(ce, ce._id),
+                co.collectionmemberid == self.collection.id))
 
         return query, co
 
@@ -156,8 +158,8 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
         prep = aliased(models.Preparation)
 
         query = query.outerjoin(prep, sql.and_(
-                prep.StorageID == descendant_id,
-                prep.collectionMemberId == self.collection.id))
+                prep.storageid == descendant_id,
+                prep.collectionmemberid == self.collection.id))
 
         return query, prep
 
@@ -179,27 +181,27 @@ class StatsQuerySpecialization(namedtuple('StatsQuerySpecialization', 'collectio
         pc  = aliased(models.PaleoContext)
 
         pc_target = self.collection.discipline.paleocontextchildtable
-        join_col = pc.ChronosStratID if chronos_or_litho == 'chronos' else pc.LithoStratID
+        join_col = pc.chronosstratid if chronos_or_litho == 'chronos' else pc.lithostratid
 
         query = query.outerjoin(pc, join_col == descendant_id)
 
         if pc_target == "collectionobject":
             query = query.outerjoin(co, sql.and_(
-                co.PaleoContextID == getattr(pc, pc._id),
-                co.collectionMemberId == self.collection.id))
+                co.paleocontextid == getattr(pc, pc._id),
+                co.collectionmemberid == self.collection.id))
 
         elif pc_target == "collectingevent":
-            query = query.outerjoin(ce, ce.PaleoContextID == getattr(pc, pc._id)) \
+            query = query.outerjoin(ce, ce.paleocontextid == getattr(pc, pc._id)) \
                     .outerjoin(co, sql.and_(
-                co.CollectingEventID == getattr(ce, ce._id),
-                co.collectionMemberId == self.collection.id))
+                co.collectingeventid == getattr(ce, ce._id),
+                co.collectionmemberid == self.collection.id))
 
         elif pc_target == "locality":
-            query = query.outerjoin(loc, loc.PaleoContextID == getattr(pc, pc._id)) \
-                   .outerjoin(ce, ce.LocalityID == getattr(loc, loc._id)) \
+            query = query.outerjoin(loc, loc.paleocontextid == getattr(pc, pc._id)) \
+                   .outerjoin(ce, ce.localityid == getattr(loc, loc._id)) \
                    .outerjoin(co, sql.and_(
-                co.CollectingEventID == getattr(ce, ce._id),
-                co.collectionMemberId == self.collection.id))
+                co.collectingeventid == getattr(ce, ce._id),
+                co.collectionmemberid == self.collection.id))
 
         else:
             raise Exception('unknown paleocontext join table: %s' % pc_target)

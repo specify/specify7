@@ -36,7 +36,8 @@ def set_group_concat_max_len(session):
     small. This function increases it for the database connection for
     the given session.
     """
-    session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
+    if settings.DATABASE_ENGINE == 'mysql':
+        session.connection().execute('SET group_concat_max_len = 1024 * 1024 * 1024')
 
 def filter_by_collection(model, query, collection):
     """Add predicates to the given query to filter result to items scoped
@@ -53,23 +54,23 @@ def filter_by_collection(model, query, collection):
 
     if model is models.Taxon:
         logger.info("filtering taxon to discipline: %s", collection.discipline.name)
-        return query.filter(model.TaxonTreeDefID == collection.discipline.taxontreedef_id)
+        return query.filter(model.taxontreedefid == collection.discipline.taxontreedef_id)
 
     if model is models.Geography:
         logger.info("filtering geography to discipline: %s", collection.discipline.name)
-        return query.filter(model.GeographyTreeDefID == collection.discipline.geographytreedef_id)
+        return query.filter(model.geographytreedefid == collection.discipline.geographytreedef_id)
 
     if model is models.LithoStrat:
         logger.info("filtering lithostrat to discipline: %s", collection.discipline.name)
-        return query.filter(model.LithoStratTreeDefID == collection.discipline.lithostrattreedef_id)
+        return query.filter(model.lithostrattreedefid == collection.discipline.lithostrattreedef_id)
 
     if model is models.GeologicTimePeriod:
         logger.info("filtering geologic time period to discipline: %s", collection.discipline.name)
-        return query.filter(model.GeologicTimePeriodTreeDefID == collection.discipline.geologictimeperiodtreedef_id)
+        return query.filter(model.geologictimeperiodtreedefid == collection.discipline.geologictimeperiodtreedef_id)
 
     if model is models.Storage:
         logger.info("filtering storage to institution: %s", collection.discipline.division.institution.name)
-        return query.filter(model.StorageTreeDefID == collection.discipline.division.institution.storagetreedef_id)
+        return query.filter(model.storagetreedefid == collection.discipline.division.institution.storagetreedef_id)
 
     if model in (
             models.Agent,
@@ -79,12 +80,12 @@ def filter_by_collection(model, query, collection):
             models.ExchangeOut,
             models.ConservDescription,
     ):
-        return query.filter(model.DivisionID == collection.discipline.division_id)
+        return query.filter(model.divisionid == collection.discipline.division_id)
 
     for filter_col, scope, scope_name in (
-            ('CollectionID'       , lambda collection: collection, lambda o: o.collectionname),
-            ('collectionMemberId' , lambda collection: collection, lambda o: o.collectionname),
-            ('DisciplineID'       , lambda collection: collection.discipline, lambda o: o.name),
+            ('collectionid'       , lambda collection: collection, lambda o: o.collectionname),
+            ('collectionmemberid' , lambda collection: collection, lambda o: o.collectionname),
+            ('disciplineid'       , lambda collection: collection.discipline, lambda o: o.name),
 
         # The below are disabled to match Specify 6 behavior.
             # ('DivisionID'         , lambda collection: collection.discipline.division, lambda o: o.name),
