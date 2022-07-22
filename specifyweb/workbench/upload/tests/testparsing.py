@@ -135,7 +135,7 @@ class ParsingTests(UploadTestsBase):
             sizelimit=4,
         )
 
-        habitat.picklistitems.create(title='Marsh', value='marsh')
+        habitat.picklistitems.create(title='Marsh', value='Marsh')
 
     def test_nonreadonly_picklist(self) -> None:
         plan = UploadTable(
@@ -150,8 +150,8 @@ class ParsingTests(UploadTestsBase):
             {'catno': '2', 'habitat': 'Lake'},
             {'catno': '3', 'habitat': 'Marsh'},
             {'catno': '4', 'habitat': 'Lake'},
-            {'catno': '5', 'habitat': 'marsh'},
-            {'catno': '6', 'habitat': 'lake'},
+            {'catno': '5', 'habitat': 'Marsh'},
+            {'catno': '6', 'habitat': 'Lake'},
         ]
 
         self.assertEqual(0, get_table('Spauditlog').objects.filter(tablenum=get_table('Picklistitem').specify_model.tableId).count(), "No picklistitems in audit log yet.")
@@ -161,7 +161,7 @@ class ParsingTests(UploadTestsBase):
             validate([result.to_json()], upload_results_schema)
             self.assertIsInstance(result.record_result, Uploaded)
 
-        for i, v in enumerate('River Lake marsh Lake marsh Lake'.split()):
+        for i, v in enumerate('River Lake Marsh Lake Marsh Lake'.split()):
             r = results[i].record_result
             assert isinstance(r, Uploaded)
             self.assertEqual(v, get_table('Collectionobject').objects.get(id=r.get_id()).text1)

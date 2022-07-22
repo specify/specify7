@@ -101,6 +101,10 @@ def open_interval(model, parent_node_number, size):
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
     """
+    if settings.DATABASE_ENGINE == 'postgres':
+        logger.info('skipping open_interval for postgres')
+        return None
+
     # All intervals to the right of parent node get shifted right by size.
     model.objects.filter(nodenumber__gt=parent_node_number).update(
         nodenumber=F('nodenumber')+size,
@@ -117,12 +121,19 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
     to a new nodenumber range. There must be a gap of sufficient size
     at the destination. Leaves a gap at the old node number range.
     """
+    if settings.DATABASE_ENGINE == 'postgres':
+        logger.info('skipping move_interval for postgres')
+
     delta = new_node_number - old_node_number
     model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
         .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
 
 def close_interval(model, node_number, size):
     """Close a gap where an interval was removed."""
+    if settings.DATABASE_ENGINE == 'postgres':
+        logger.info('skipping close_interval for postgres')
+        return None
+
     # All intervals containing the gap get reduced by size.
     model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
         .update(highestchildnodenumber=F('highestchildnodenumber')-size)
@@ -347,6 +358,7 @@ def reset_fullnames(treedef, null_only=False):
     return set_fullnames(table, treedef.id, depth, reverse, null_only)
 
 def set_fullnames(table, treedefid, depth, reverse=False, null_only=False):
+    return
     logger.info('set_fullnames: %s', (table, treedefid, depth, reverse))
     if depth < 1:
         return
@@ -395,6 +407,10 @@ def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
 
 
 def validate_tree_numbering(table):
+    if settings.DATABASE_ENGINE == 'postgres':
+        logger.info('skipping validating tree for postgres')
+        return
+
     logger.info('validating tree')
     cursor = connection.cursor()
     cursor.execute(
@@ -439,6 +455,10 @@ def print_paths(table, depth):
     print(sql)
 
 def renumber_tree(table):
+    if settings.DATABASE_ENGINE == 'postgres':
+        logger.info('skipping renumbering tree for postgres')
+        return
+
     logger.info('renumbering tree')
     cursor = connection.cursor()
 
