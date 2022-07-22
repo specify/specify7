@@ -34,6 +34,8 @@ def make_model(module, table, datamodel):
             fldargs['auto_now'] = True
         if fldname == 'version':
             fldargs['default'] = 0
+        if table.name == 'Attachment' and fldname == 'tableid':
+            fldargs['null'] = True
         attrs[fldname] = maker(field, fldargs)
 
     for rel in table.relationships:
