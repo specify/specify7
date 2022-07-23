@@ -11,7 +11,11 @@ import { preferenceDefinitions } from './components/preferences';
 import { prefEvents } from './components/preferenceshooks';
 import { f } from './functools';
 import { keysToLowerCase, replaceKey } from './helpers';
-import { contextUnlockedPromise, foreverFetch } from './initialcontext';
+import {
+  cachableUrl,
+  contextUnlockedPromise,
+  foreverFetch,
+} from './initialcontext';
 import { formatUrl } from './querystring';
 import type { RA } from './types';
 import { filterArray } from './types';
@@ -251,9 +255,12 @@ export const preferencesPromise = contextUnlockedPromise.then(
     entrypoint === 'main'
       ? f
           .all({
-            items: ajax<RA<UserResource>>('/context/user_resource/', {
-              headers: { Accept: 'application/json' },
-            })
+            items: ajax<RA<UserResource>>(
+              cachableUrl('/context/user_resource/'),
+              {
+                headers: { Accept: 'application/json' },
+              }
+            )
               .then(
                 ({ data }) =>
                   data.find(
@@ -264,7 +271,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
               .then(async (appResourceId) =>
                 (typeof appResourceId === 'number'
                   ? ajax<ResourceWithData>(
-                      `/context/user_resource/${appResourceId}/`,
+                      cachableUrl(`/context/user_resource/${appResourceId}/`),
                       {
                         headers: { Accept: 'application/json' },
                       }

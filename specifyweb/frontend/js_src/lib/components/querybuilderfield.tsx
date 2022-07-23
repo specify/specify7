@@ -139,18 +139,21 @@ export function QueryLine({
 
       const newFilters = hasParser
         ? field.filters.map((filter) => {
-            const filterType =
+            const resetFilter =
               typeof fieldType === 'undefined' ||
               queryFieldFilters[filter.type].types?.includes(fieldType) ===
-                false
-                ? 'any'
-                : filter.type;
-            return filterType === 'any' && filter.type !== 'any'
+                false;
+            return resetFilter
               ? ({
                   type: 'any',
                   isNot: false,
                   startValue: '',
                 } as const)
+              : filter.type === 'any' && filter.isNot
+              ? {
+                  ...filter,
+                  isNot: false,
+                }
               : filter;
           })
         : [];

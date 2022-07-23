@@ -400,6 +400,7 @@ export function QueryComboBox({
       ) ?? {}
     );
 
+  // TODO: [BUG] add "w-full" here
   return (
     <div className="flex items-center">
       <Autocomplete<string>
