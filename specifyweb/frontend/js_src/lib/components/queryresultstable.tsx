@@ -282,7 +282,7 @@ export function QueryResultsTable({
   readonly sortConfig?: RA<QueryField['sortType']>;
   readonly onSelected?: (resource: RA<number>) => void;
   readonly onSortChange?: (
-    fieldIndex: number,
+    fieldSpec: QueryFieldSpec,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
   readonly createRecordSet: JSX.Element | undefined;
@@ -469,7 +469,8 @@ export function QueryResultsTable({
                   sortConfig={sortConfig?.[index]}
                   onSortChange={
                     typeof handleSortChange === 'function'
-                      ? (sortType): void => handleSortChange?.(index, sortType)
+                      ? (sortType): void =>
+                          handleSortChange?.(fieldSpec, sortType)
                       : undefined
                   }
                 />
@@ -642,8 +643,22 @@ export function QueryResultsWrapper({
           totalCount,
           fieldSpecs,
           initialData,
-          sortConfig: fields.map((field) => field.sortType),
-          onSortChange: handleSortChange,
+          sortConfig: fields
+            .filter(({ isDisplay }) => isDisplay)
+            .map(({ sortType }) => sortType),
+          onSortChange:
+            typeof handleSortChange === 'function'
+              ? (fieldSpec, direction) => {
+                  /*
+                   * If some fields are not displayed, visual index and actual
+                   * field index differ
+                   */
+                  const index = fieldSpecs.indexOf(fieldSpec);
+                  const field = displayedFields[index];
+                  const originalIndex = allFields.indexOf(field);
+                  handleSortChange(originalIndex, direction);
+                }
+              : undefined,
           createRecordSet,
           extraButtons,
         })
