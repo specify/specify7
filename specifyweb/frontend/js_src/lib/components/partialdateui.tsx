@@ -32,15 +32,48 @@ const reversePrecision: RR<number, PartialDatePrecision> = {
 };
 export type PartialDatePrecision = keyof typeof precisions;
 
+// TODO: [REFACTOR] migrate from day.js to date-fns
+/**
+ * Several bugs have been discovered in day.js in the process of testing
+ * Specify 7. The bugs are present in the latest stable version as of this
+ * writing (1.11.4).
+ * Day.js 2.0 is currently in beta. Need to wait for 2.0 to get released or
+ * migrate to date-fns.
+ */
+function fixDayJsBugs(
+  precision: PartialDatePrecision,
+  value: string
+): ReturnType<typeof dayjs> | undefined {
+  if (precision === 'month-year') return unsafeParseMonthYear(value);
+  else if (precision === 'full') return unsafeParseFullDate(value);
+  else return undefined;
+}
+
 /**
  * An ugly workaround for a bug in day.js where any date in the MM/YYYY format is
  * parsed as an invalid date.
  */
-function parseMonthYear(value: string): ReturnType<typeof dayjs> | undefined {
+function unsafeParseMonthYear(
+  value: string
+): ReturnType<typeof dayjs> | undefined {
   const parsed = /(\d{2})\D(\d{4})/.exec(value)?.slice(1);
   if (typeof parsed === 'undefined') return undefined;
   const [month, year] = parsed.map(f.unary(Number.parseInt));
   return dayjs(new Date(year, month - 1));
+}
+
+/**
+ * An ugly workaround for a bug in day.js where any date in the DD/MM/YYY format
+ * is parsed as an invalid date.
+ */
+function unsafeParseFullDate(
+  value: string
+): ReturnType<typeof dayjs> | undefined {
+  if (fullDateFormat().toUpperCase() !== 'DD/MM/YYYY') return;
+  const parsed = /(\d{2})\D(\d{2})\D(\d{4})/.exec(value)?.slice(1);
+  if (typeof parsed === 'undefined') return undefined;
+  const [day, month, year] = parsed.map(f.unary(Number.parseInt));
+  return dayjs(new Date(year, month - 1, day));
 }
 
 export function PartialDateUi<SCHEMA extends AnySchema>({
@@ -241,7 +274,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
     setMoment(
       value.length > 0
-        ? (precision === 'month-year' ? parseMonthYear(value) : undefined) ??
+        ? fixDayJsBugs(precision, value) ??
             dayjs(
               value,
               /*
