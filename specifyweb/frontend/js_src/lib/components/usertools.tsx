@@ -62,34 +62,23 @@ function UserToolsColumn({
         <div key={groupName}>
           <H3>{groupName}</H3>
           <Ul>
-            {userTools
-              .map((userTool) => ({
-                ...userTool,
-                basePath:
-                  'basePath' in userTool
-                    ? (
-                        userTool as unknown as {
-                          readonly basePath: string;
-                        }
-                      ).basePath
-                    : '/specify/task/',
-              }))
-              .map(({ title, url }) => {
-                const isExternalLink = isExternalUrl(url);
-                const Component = isExternalLink ? Link.NewTab : Link.Default;
-                return (
-                  <li key={url}>
-                    <Component
-                      href={url}
-                      onClick={(): void =>
-                        isExternalLink ? undefined : handleClose()
-                      }
-                    >
-                      {title}
-                    </Component>
-                  </li>
-                );
-              })}
+            {userTools.map(({ title, url }) => {
+              const isExternalLink = isExternalUrl(url);
+              // FIXME: link to the other entrypoint should cause page reload
+              const Component = isExternalLink ? Link.NewTab : Link.Default;
+              return (
+                <li key={url}>
+                  <Component
+                    href={url}
+                    onClick={(): void =>
+                      isExternalLink ? undefined : handleClose()
+                    }
+                  >
+                    {title}
+                  </Component>
+                </li>
+              );
+            })}
           </Ul>
         </div>
       ))}

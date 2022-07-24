@@ -27,6 +27,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'password_change',
+        title: commonText('changePassword'),
         element: () =>
           import('./passwordchange').then(
             ({ PasswordChange }) => PasswordChange
@@ -36,6 +37,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
   },
   {
     path: 'specify/*',
+    title: '',
     element: () => import('./specify').then(({ Root }) => Root),
   },
   {

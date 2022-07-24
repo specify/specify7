@@ -3,7 +3,7 @@ import React from 'react';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { Button, Form, Input, Label, Submit } from './basic';
-import { useBooleanState, useId, useTitle, useValidation } from './hooks';
+import { useBooleanState, useId, useValidation } from './hooks';
 import { Dialog } from './modaldialog';
 
 export const MIN_PASSWORD_LENGTH = 8;
@@ -15,8 +15,6 @@ export function PasswordResetDialog({
   readonly onSet: (password: string) => void;
   readonly onClose: () => void;
 }): JSX.Element | null {
-  useTitle(adminText('setPassword'));
-
   const id = useId('password-reset-dialog');
 
   const [password, setPassword] = React.useState('');

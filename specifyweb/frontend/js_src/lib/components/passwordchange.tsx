@@ -8,7 +8,7 @@ import { csrfToken, parseDjangoDump } from '../csrftoken';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Submit } from './basic';
-import { useTitle, useValidation } from './hooks';
+import { useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
 import { SplashScreen } from './entrypoint';
 
@@ -38,7 +38,6 @@ function ChangePassword({
     readonly repeatPasswordErrors: RA<string>;
   };
 }): JSX.Element {
-  useTitle(commonText('changePassword'));
   const [formErrors] = React.useState(data.formErrors);
 
   const { validationRef: oldPasswordRef } = useValidation(

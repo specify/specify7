@@ -2,7 +2,6 @@ import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
 import type { RA } from '../types';
 import type { EnhancedRoute } from './routerutils';
-import { UserToolsOverlay } from './usertools';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const overlayRoutes: RA<EnhancedRoute> = [

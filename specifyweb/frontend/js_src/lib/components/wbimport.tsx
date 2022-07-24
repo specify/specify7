@@ -76,7 +76,7 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
                 data,
               })
             )
-            .then(({ id }) => navigate(`/workbench/${id}/`))
+            .then(({ id }) => navigate(`/specify/workbench/${id}/`))
         )
       }
     >
@@ -275,7 +275,7 @@ function XlsPicked({ file }: { readonly file: File }): JSX.Element {
                 data,
               })
             )
-            .then(({ id }) => navigate(`/workbench/${id}/`))
+            .then(({ id }) => navigate(`/specify/workbench/${id}/`))
         )
       }
     />

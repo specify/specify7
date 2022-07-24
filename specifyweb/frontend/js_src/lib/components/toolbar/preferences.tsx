@@ -17,7 +17,7 @@ import { defined } from '../../types';
 import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
-import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
+import { useAsyncState, useBooleanState, useId } from '../hooks';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -28,9 +28,6 @@ import { DefaultPreferenceItemRender } from '../preferencesrenderers';
 import { useNavigate } from 'react-router-dom';
 
 function Preferences(): JSX.Element {
-  // FIXME: remove redundant useTitle()
-  useTitle(commonText('preferences'));
-
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 

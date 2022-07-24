@@ -30,6 +30,7 @@ export function Login(): JSX.Element {
           csrfToken: parseDjangoDump('csrf-token'),
         }}
         nextUrl={
+          // REFACTOR: use parseUrl() and formatUrl() instead
           nextUrl.startsWith(nextDestination)
             ? nextUrl
             : `${nextDestination}${nextUrl}`

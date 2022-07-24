@@ -19,7 +19,7 @@ import { Button, className, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
-import { useAsyncState, useBooleanState, useTitle } from '../hooks';
+import { useAsyncState, useBooleanState } from '../hooks';
 import { icons } from '../icons';
 import { Dialog } from '../modaldialog';
 import { ResourceView } from '../resourceview';
@@ -142,7 +142,6 @@ const handleClick = async (tree: string): Promise<void> =>
 
 export function TreeRepairOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-  useTitle(commonText('repairTree'));
 
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {

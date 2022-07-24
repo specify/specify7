@@ -14,7 +14,6 @@ import type { IR, RA } from './types';
 import { filterArray } from './types';
 import { fetchContext as fetchUserInfo } from './userinfo';
 
-// FIXME: remove trailing slashes from all front-end urls?
 const rawUserTools: IR<RA<UserTool>> = {
   [commonText('userAccount')]: [
     {
@@ -96,7 +95,7 @@ const rawUserTools: IR<RA<UserTool>> = {
     },
     {
       title: commonText('clearCache'),
-      url: '/specify/clear-cache/',
+      url: '/specify/command/clear-cache/',
     },
     {
       title: commonText('tableApi'),

@@ -156,7 +156,7 @@ export function CollectionSelector(): JSX.Element {
       title={commonText('currentCollection')}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
-        switchCollection(navigate, Number.parseInt(value), '/')
+        switchCollection(navigate, Number.parseInt(value), '/specify/')
       }
     >
       {collections === undefined && (

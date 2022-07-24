@@ -20,7 +20,7 @@ export function NotFoundView(): JSX.Element {
           </h2>
           <p>{commonText('nothingWasFound')}</p>
           <p>{commonText('pageNotFoundDescription')}</p>
-          <Link.Default href="/">
+          <Link.Default href="/specify/">
             {icons.arrowLeft}
             {commonText('returnToHomepage')}
           </Link.Default>

@@ -116,7 +116,7 @@ export function WbPlanView({
   return state.type === 'SelectBaseTable' ? (
     <BaseTableSelection
       headers={headers}
-      onClose={(): void => navigate(`/workbench/${dataset.id}/`)}
+      onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
       onSelected={(baseTableName): void =>
         setState({
           type: 'MappingState',
@@ -157,7 +157,7 @@ export function WbPlanView({
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
-        }).then(() => navigate(`/workbench/${dataset.id}/`))
+        }).then(() => navigate(`/specify/workbench/${dataset.id}/`))
       }
     />
   );

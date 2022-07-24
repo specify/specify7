@@ -102,7 +102,6 @@ function navigate(
 
 /*
  * FIXME: make navigate() trigger save blockers
- * FIXME: either add /specify/ or remove it for consistency
  */
 
 // FIXME: remove usages

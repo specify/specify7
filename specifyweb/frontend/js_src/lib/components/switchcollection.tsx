@@ -10,7 +10,7 @@ export const switchCollection = (
   collectionId: number,
   nextUrl?: string
 ): void =>
-  navigate(`/specify/command/switch-collection/${collectionId}`, {
+  navigate(`/specify/command/switch-collection/${collectionId}/`, {
     state: {
       nextUrl,
     },
@@ -21,7 +21,7 @@ export function SwitchCollectionCommand(): null {
   const location = useLocation();
   const nextUrl =
     (location.state as { readonly nextUrl: string | undefined })?.nextUrl ??
-    toRelativeUrl(window.location.href);
+    toRelativeUrl(globalThis.location.href);
 
   useAsyncState(
     React.useCallback(

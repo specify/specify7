@@ -2,16 +2,13 @@ import React from 'react';
 
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
+import { welcomeText } from '../localization/welcome';
 import { wbText } from '../localization/workbench';
 import type { RA } from '../types';
 import type { EnhancedRoute } from './routerutils';
 import { WelcomeView } from './welcomeview';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
-/*
- * FIXME: review these routes for missing titles
- * FIXME: move routes into a separate file
- */
 export const routes: RA<EnhancedRoute> = [
   {
     path: 'express_search',
@@ -20,6 +17,7 @@ export const routes: RA<EnhancedRoute> = [
         ({ ExpressSearchView }) => ExpressSearchView
       ),
     title: commonText('expressSearch'),
+    navigatable: false,
   },
   {
     path: 'datamodel',
@@ -27,6 +25,7 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         index: true,
+        title: commonText('databaseSchema'),
         element: () =>
           import('./toolbar/schema').then(
             ({ DataModelTables }) => DataModelTables
@@ -178,12 +177,6 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    title: commonText('clearCache'),
-    path: 'clear-cache',
-    element: () =>
-      import('./toolbar/cachebuster').then(({ CacheBuster }) => CacheBuster),
-  },
-  {
     path: 'command',
     children: [
       {
@@ -200,10 +193,19 @@ export const routes: RA<EnhancedRoute> = [
             ({ TestErrorCommand }) => TestErrorCommand
           ),
       },
+      {
+        path: 'clear-cache',
+        title: commonText('clearCache'),
+        element: () =>
+          import('./toolbar/cachebuster').then(
+            ({ CacheBuster }) => CacheBuster
+          ),
+      },
     ],
   },
   {
     index: true,
+    title: welcomeText('pageTitle'),
     element: <WelcomeView />,
   },
   /*

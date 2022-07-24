@@ -19,7 +19,7 @@ import type { SortConfig } from '../common';
 import { SortIndicator, useSortConfig } from '../common';
 import { LoadingContext } from '../contexts';
 import { DataSetMeta } from '../datasetmeta';
-import { useAsyncState, useTitle } from '../hooks';
+import { useAsyncState } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import { Dialog, dialogClassNames } from '../modaldialog';
@@ -177,7 +177,7 @@ function DataSets({
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
-                      navigate(`/workbench-plan/${id}/`)
+                      navigate(`/specify/workbench-plan/${id}/`)
                     )
                   )
                 }
@@ -276,8 +276,6 @@ export function WbsDialog({
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
 }): JSX.Element | null {
-  useTitle(commonText('workBench'));
-
   // Whether to show DS meta dialog. Either false or Data Set ID
   const [showMeta, setShowMeta] = React.useState<number | false>(false);
 

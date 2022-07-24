@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {ping} from '../ajax';
-import {useAsyncState} from './hooks';
+import { ping } from '../ajax';
+import { useAsyncState } from './hooks';
 
 /**
  * Trigger an error for test purposes.
@@ -9,7 +9,7 @@ import {useAsyncState} from './hooks';
  */
 export function TestErrorCommand(): null {
   useAsyncState(
-    React.useCallback(async () => ping('/api/test_error'), []),
+    React.useCallback(async () => ping('/api/test_error/'), []),
     true
   );
   return null;

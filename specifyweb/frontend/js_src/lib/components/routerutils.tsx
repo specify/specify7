@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router/lib/router';
 
 import { f } from '../functools';
 import type { RA, WritableArray } from '../types';
+import { useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 
 /**
@@ -14,8 +15,10 @@ export type EnhancedRoute = Readonly<
   readonly children?: RA<EnhancedRoute>;
   // Allow to define element as a function that returns an async
   readonly element?: React.ReactNode | (() => Promise<React.FunctionComponent>);
-  // Add a title attribute for usage when displaying the route in user preferences
-  // FIXME: integrate this prop with the page title
+  /*
+   * Add a title attribute for usage when displaying the route in user preferences
+   * FIXME: integrate this prop with the page title
+   */
   readonly title?: string;
   /*
    * Add an explicit way of opting out from displaying the path in user
@@ -31,7 +34,11 @@ export const toReactRoutes = (
     ...enhancedRoute,
     children: f.maybe(children, toReactRoutes),
     element:
-      typeof element === 'function' ? handleAsyncElement(element) : element,
+      typeof element === 'function' ? (
+        <Async element={element} title={enhancedRoute.title} />
+      ) : (
+        element
+      ),
   }));
 
 /**
@@ -42,12 +49,19 @@ export const toReactRoutes = (
  * suspense on the top level prevents all components from being un-rendered
  * when any component is being loaded.
  */
-function handleAsyncElement(
-  element: () => Promise<React.FunctionComponent>
-): JSX.Element {
+function Async({
+  element,
+  title,
+}: {
+  readonly element: () => Promise<React.FunctionComponent>;
+  readonly title: string | undefined;
+}): JSX.Element {
+  useTitle(title);
+
   const Element = React.lazy(async () =>
     element().then((element) => ({ default: element }))
   );
+
   return (
     <React.Suspense fallback={<LoadingScreen />}>
       <Element />

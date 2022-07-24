@@ -206,6 +206,10 @@ export function useUserPolicies(
       async () =>
         userResource.isNew()
           ? Object.fromEntries(
+              /*
+               * Automatically check "Collection Access" when creating user from
+               * the collection page
+               */
               collections.map(({ id }) => [
                 id,
                 id === initialCollection

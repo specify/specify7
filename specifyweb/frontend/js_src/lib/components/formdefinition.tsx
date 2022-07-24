@@ -76,7 +76,7 @@ function UseLabels(): JSX.Element {
         checked={useFieldLabels}
         onValueChange={(checked): void => {
           setUseFieldLabels(checked);
-          window.location.reload();
+          globalThis.location.reload();
         }}
       />
       {formsText('useFieldLabels')}

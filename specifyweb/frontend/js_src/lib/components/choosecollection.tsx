@@ -159,7 +159,7 @@ function Wrapped({
             <Button.Fancy
               onClick={(): void =>
                 loading(
-                  ping('/accounts/logout').then(() =>
+                  ping('/accounts/logout/').then(() =>
                     globalThis.location.assign(
                       formatUrl('/accounts/logout/', { next: data.nextUrl })
                     )

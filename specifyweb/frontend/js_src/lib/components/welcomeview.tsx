@@ -8,7 +8,7 @@ import { schema } from '../schema';
 import { getSystemInfo } from '../systeminfo';
 import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
-import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { DateElement } from './internationalization';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
@@ -164,8 +164,6 @@ function AboutSpecify(): JSX.Element {
 }
 
 export function WelcomeView(): JSX.Element {
-  useTitle(welcomeText('pageTitle'));
-
   const [mode] = usePref('welcomePage', 'general', 'mode');
 
   return (

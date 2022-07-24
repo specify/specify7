@@ -79,7 +79,7 @@ function EditQueryDialog({
       resource={queryResource}
       onClose={handleClose}
       onDeleted={handleClose}
-      onSaved={(): void => navigate(`/query/${queryResource.id}/`)}
+      onSaved={(): void => navigate(`/specify/query/${queryResource.id}/`)}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">

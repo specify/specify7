@@ -16,7 +16,7 @@ import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
-import { useAsyncState, useBooleanState, useTitle } from '../hooks';
+import { useAsyncState, useBooleanState } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import { Dialog } from '../modaldialog';
@@ -147,8 +147,6 @@ export function QueryToolbarItem({
   readonly onNewQuery?: () => void;
   readonly isReadOnly: boolean;
 }): JSX.Element | null {
-  useTitle(commonText('queries'));
-
   const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
       async () =>

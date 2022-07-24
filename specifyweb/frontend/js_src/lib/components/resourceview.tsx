@@ -13,7 +13,7 @@ import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissionutils';
 import { getResourceViewUrl, resourceOn } from '../resource';
-import { Button, className, Container, DataEntry, Form } from './basic';
+import { Button, className, Container, DataEntry, Form, Link } from './basic';
 import { AppTitle, TableIcon } from './common';
 import type { FormMeta } from './contexts';
 import { FormContext } from './contexts';
@@ -288,9 +288,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
   const navigate = useNavigate();
   return isDeleted ? (
     <Dialog
-      buttons={commonText('close')}
+      buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
       header={commonText('resourceDeletedDialogHeader')}
-      onClose={(): void => navigate('/')}
+      onClose={(): void => navigate('/specify/')}
     >
       {commonText('resourceDeletedDialogText')}
     </Dialog>
@@ -571,7 +571,7 @@ export function ShowResource({
         model={resource.specifyModel}
         recordSet={recordSet}
         onAdd={f.void}
-        onClose={(): void => navigate('/')}
+        onClose={(): void => navigate('/specify/')}
         onSlide={f.void}
       />
     )
