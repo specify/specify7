@@ -28,11 +28,10 @@ export function UserTools(): JSX.Element {
   );
 }
 
+const fetchUserTools = async (): typeof userToolsPromise => userToolsPromise;
+
 export function UserToolsOverlay(): JSX.Element | null {
-  const [userTools] = useAsyncState<RA<IR<RA<UserTool>>>>(
-    React.useCallback(async () => userToolsPromise, []),
-    true
-  );
+  const [userTools] = useAsyncState(fetchUserTools, true);
   const handleClose = React.useContext(OverlayContext);
   return Array.isArray(userTools) ? (
     <Dialog

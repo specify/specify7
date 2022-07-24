@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import { parseDjangoDump } from '../csrftoken';
 import type { getEntrypointName } from '../initialcontext';
@@ -10,7 +10,6 @@ import { commonText } from '../localization/common';
 import { Contexts } from './contexts';
 import { EntrypointRouter } from './entrypointrouter';
 import { SetCssVariables } from './preferenceshooks';
-import { createBrowserHistory } from 'history';
 
 // REFACTOR: simplify this after migrating to jest
 if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
@@ -47,8 +46,6 @@ export function SplashScreen({
   );
 }
 
-const history = createBrowserHistory({ window });
-
 function entrypoint(): void {
   interceptLogs();
 
@@ -73,12 +70,12 @@ function entrypoint(): void {
     const reactRoot = createRoot(root);
     reactRoot.render(
       <React.StrictMode>
-        <HistoryRouter history={history}>
+        <BrowserRouter>
           <Contexts>
             <SetCssVariables />
             <EntrypointRouter />
           </Contexts>
-        </HistoryRouter>
+        </BrowserRouter>
       </React.StrictMode>
     );
   });

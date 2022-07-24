@@ -13,93 +13,107 @@ import {
   hasToolPermission,
   hasTreeAccess,
 } from './permissionutils';
-import { getUserPref } from './preferencesutils';
 import { schema } from './schema';
 import { getDisciplineTrees } from './treedefinitions';
-import type { RA } from './types';
+import type { RR } from './types';
 import { filterArray } from './types';
 import { filterUserTools } from './usertools';
 
-const rawMenuItems: RA<MenuItem> = [
-  {
+export type MenuItemName =
+  | 'attachments'
+  | 'dataEntry'
+  | 'interactions'
+  | 'queries'
+  | 'recordSets'
+  | 'reports'
+  | 'trees'
+  | 'workBench';
+
+const rawMenuItems: RR<MenuItemName, MenuItem> = {
+  dataEntry: {
+    url: '/specify/overlay/data-entry/',
     title: commonText('dataEntry'),
     icon: icons.pencilAt,
+    visibilityKey: 'showDataEntry',
     enabled: () =>
-      getUserPref('header', 'menu', 'showDataEntry') &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
         getTablePermissions()[schema.domainLevelIds.collection]
       ).some(({ create }) => create),
-    url: '/specify/overlay/data-entry/',
   },
-  {
+  trees: {
+    url: '/specify/overlay/trees/',
     title: commonText('trees'),
     icon: icons.tree,
+    visibilityKey: 'showTrees',
     enabled: () =>
-      getUserPref('header', 'menu', 'showTrees') &&
       getDisciplineTrees().some((treeName) => hasTreeAccess(treeName, 'read')),
-    url: '/specify/overlay/trees/',
   },
-  {
+  interactions: {
+    url: '/specify/overlay/interactions/',
     title: commonText('interactions'),
     icon: icons.chat,
-    url: '/specify/overlay/interactions/',
+    visibilityKey: 'showInteractions',
     enabled: () =>
-      getUserPref('header', 'menu', 'showInteractions') &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
         getTablePermissions()[schema.domainLevelIds.collection]
-      ).some(({ create }) => create) &&
-      hasToolPermission('recordSets', 'read'),
+      ).some(({ create }) => create) && hasToolPermission('recordSets', 'read'),
   },
-  {
+  queries: {
+    url: '/specify/overlay/queries/',
     title: commonText('queries'),
     icon: icons.documentSearch,
+    visibilityKey: 'showQueries',
     enabled: () =>
-      (hasToolPermission('queryBuilder', 'read') ||
-        hasPermission('/querybuilder/query', 'execute')) &&
-      getUserPref('header', 'menu', 'showQueries'),
-    url: '/specify/overlay/queries/',
+      hasToolPermission('queryBuilder', 'read') ||
+      hasPermission('/querybuilder/query', 'execute'),
   },
-  {
+  recordSets: {
+    url: '/specify/overlay/record-sets/',
     title: commonText('recordSets'),
     icon: icons.collection,
-    enabled: () =>
-      getUserPref('header', 'menu', 'showRecordSets') &&
-      hasToolPermission('recordSets', 'read'),
-    url: '/specify/overlay/record-sets/',
+    visibilityKey: 'showRecordSets',
+    enabled: () => hasToolPermission('recordSets', 'read'),
   },
-  {
+  reports: {
+    url: '/specify/overlay/reports/',
     title: commonText('reports'),
     icon: icons.documentReport,
+    visibilityKey: 'showReports',
     enabled: async () =>
-      hasPermission('/report', 'execute') &&
-      getUserPref('header', 'menu', 'showReports') &&
-      (await reportsAvailable),
-    url: '/specify/overlay/reports/',
+      hasPermission('/report', 'execute') && (await reportsAvailable),
   },
-  {
+  workBench: {
     url: '/specify/overlay/data-sets/',
     title: commonText('workBench'),
     icon: icons.table,
-    enabled: () => getUserPref('header', 'menu', 'showWorkBench'),
+    visibilityKey: 'showWorkBench',
   },
-  {
+  attachments: {
+    url: '/specify/attachments/',
     title: commonText('attachments'),
     icon: icons.link,
+    visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {
-      if (
-        !hasTablePermission('Attachment', 'read') ||
-        !getUserPref('header', 'menu', 'showAttachments')
-      )
-        return false;
+      if (!hasTablePermission('Attachment', 'read')) return false;
       await attachmentSettingsPromise;
       return attachmentsAvailable();
     },
-    url: '/specify/attachments/',
   },
-];
+} as const;
 
 export const menuItemsPromise = fetchPermissions
-  .then(() => filterUserTools(rawMenuItems))
-  .then(filterArray);
+  .then(async () =>
+    filterUserTools(
+      Object.entries(rawMenuItems).map(([name, entry]) => ({
+        ...entry,
+        name,
+      }))
+    )
+  )
+  .then((entries) =>
+    Object.fromEntries(
+      filterArray(entries).map(({ name, ...entry }) => [name, entry])
+    )
+  );

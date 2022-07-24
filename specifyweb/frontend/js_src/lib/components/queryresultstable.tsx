@@ -184,6 +184,8 @@ const isScrolledBottom = (scrollable: HTMLElement): boolean =>
   scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >
   threshold;
 
+const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
+
 export function QueryResultsTable({
   model,
   label = commonText('results'),
@@ -237,7 +239,7 @@ export function QueryResultsTable({
     RA<RA<number | string | null> | undefined> | undefined
   >(initialData);
 
-  const [pickListsLoaded] = useAsyncState(
+  const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
       async () =>
         // Fetch all pick lists so that they are accessible synchronously later
@@ -258,10 +260,7 @@ export function QueryResultsTable({
     false
   );
 
-  const [treeRanksLoaded] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise.then(f.true), []),
-    false
-  );
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
   const [totalCount, setTotalCount] = useTriggerState(initialTotalCount);
 
@@ -312,8 +311,8 @@ export function QueryResultsTable({
   const showResults =
     Array.isArray(results) &&
     fieldSpecs.length > 0 &&
-    pickListsLoaded === true &&
-    treeRanksLoaded === true;
+    pickListsLoaded &&
+    treeRanksLoaded;
 
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (

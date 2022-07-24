@@ -45,6 +45,7 @@ import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
 import { ProtectedTable } from './permissiondenied';
+import { useMenuItem } from './header';
 
 const tablesWithAttachments = f.store(() =>
   filterArray(
@@ -233,6 +234,8 @@ export function AttachmentsView(): JSX.Element {
 }
 
 function Attachments(): JSX.Element {
+  useMenuItem('attachments');
+
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
     'sortOrder'

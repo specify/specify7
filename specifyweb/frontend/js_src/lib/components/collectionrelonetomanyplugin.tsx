@@ -16,7 +16,6 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
-import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, DataEntry, Link } from './basic';
@@ -25,6 +24,8 @@ import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
+import { switchCollection } from './switchcollection';
+import { useNavigate } from 'react-router-dom';
 
 type Data = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -109,7 +110,7 @@ export async function fetchOtherCollectionData(
         ? await fetchCollection(
             'CollectionRelationship',
             { limit: DEFAULT_FETCH_LIMIT },
-            side == 'left'
+            side === 'left'
               ? {
                   leftside_id: resource.id,
                   collectionreltype_id: relationshipType.id,
@@ -171,6 +172,7 @@ export function CollectionOneToManyPlugin({
   >({ type: 'MainState' });
 
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
   return data === false ? null : (
     <div className="w-fit rounded bg-[color:var(--form-background)] p-2">
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
@@ -201,6 +203,7 @@ export function CollectionOneToManyPlugin({
                           );
                         if (collectionsIds.includes(data.otherCollection.id))
                           switchCollection(
+                            navigate,
                             data.otherCollection.id,
                             relatedResource.viewUrl()
                           );

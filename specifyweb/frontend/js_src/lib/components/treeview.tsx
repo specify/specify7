@@ -28,9 +28,10 @@ import { Autocomplete } from './autocomplete';
 import { Button, Container, DataEntry, H2, Input } from './basic';
 import { TableIcon } from './common';
 import { ErrorBoundary, softFail } from './errorboundary';
+import { useMenuItem } from './header';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { supportsBackdropBlur } from './modaldialog';
-import { useSearchParam } from './navigation';
+import { useSearchParam as useSearchParameter } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTree } from './permissiondenied';
 import {
@@ -71,7 +72,8 @@ function TreeView<SCHEMA extends AnyTree>({
     `collapsedRanks${tableName}`
   );
 
-  const [urlConformation, setUrlConformation] = useSearchParam('conformation');
+  const [urlConformation, setUrlConformation] =
+    useSearchParameter('conformation');
   const [conformation = [], setConformation] = useCachedState(
     'tree',
     `conformations${tableName}`
@@ -409,14 +411,14 @@ function EditTreeRank({
   );
 }
 
+const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
+
 export function TreeViewWrapper(): JSX.Element | null {
+  useMenuItem('trees');
   const { tableName = '' } = useParams();
   const treeName = getModel(tableName)?.name;
 
-  const [treeDefinitions] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
 
   const treeDefinition =
     typeof treeDefinitions === 'object' &&

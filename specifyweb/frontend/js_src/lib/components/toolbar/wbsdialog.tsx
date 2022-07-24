@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { ajax, Http } from '../../ajax';
 import { sortFunction } from '../../helpers';
@@ -16,15 +17,14 @@ import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { SortIndicator, useSortConfig } from '../common';
+import { LoadingContext } from '../contexts';
 import { DataSetMeta } from '../datasetmeta';
 import { useAsyncState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import { Dialog, dialogClassNames } from '../modaldialog';
-import type { Dataset, DatasetBrief } from '../wbplanview';
-import { useNavigate } from 'react-router-dom';
-import { LoadingContext } from '../contexts';
 import { OverlayContext } from '../router';
+import type { Dataset, DatasetBrief } from '../wbplanview';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(

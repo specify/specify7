@@ -15,16 +15,17 @@ import { NotFoundView } from './notfoundview';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 import { useParams } from 'react-router-dom';
+import { useMenuItem } from './header';
+
+const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 /**
  * Entrypoint React component for the workbench mapper
  */
 export function WbPlanViewWrapper(): JSX.Element | null {
   const { id = '' } = useParams();
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
+  useMenuItem('workBench');
 
   const [dataSet] = useAsyncState<Dataset | false>(
     React.useCallback(
@@ -47,7 +48,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
 
   return dataSet === false ? (
     <NotFoundView />
-  ) : typeof treeRanks === 'object' && typeof dataSet === 'object' ? (
+  ) : treeRanksLoaded && typeof dataSet === 'object' ? (
     <WbPlanView
       dataset={dataSet}
       headers={

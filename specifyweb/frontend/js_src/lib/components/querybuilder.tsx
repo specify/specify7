@@ -51,6 +51,9 @@ import { useResource } from './resource';
 import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
+import { useMenuItem } from './header';
+
+const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 export function QueryBuilder({
   query: queryResource,
@@ -68,10 +71,9 @@ export function QueryBuilder({
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
 }): JSX.Element | null {
-  const [treeRanks] = useAsyncState(
-    React.useCallback(async () => treeRanksPromise, []),
-    true
-  );
+  useMenuItem('queries');
+
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
 
   const [query, setQuery] = useResource(queryResource);
 
@@ -211,7 +213,7 @@ export function QueryBuilder({
     undefined
   );
 
-  return typeof treeRanks === 'object' ? (
+  return treeRanksLoaded ? (
     <Container.Full
       onClick={
         state.openedElement.index === undefined

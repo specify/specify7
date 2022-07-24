@@ -30,6 +30,8 @@ import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
 import { useNavigate } from 'react-router-dom';
+import { useMenuItem } from './header';
+import { interactionTables } from './interactionsdialog';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -509,6 +511,14 @@ export function ShowResource({
     resource: initialResource,
     recordSet: initialRecordSet,
   });
+
+  useMenuItem(
+    typeof recordSet === 'object'
+      ? 'recordSets'
+      : interactionTables.has(resource.specifyModel.name)
+      ? 'interactions'
+      : 'dataEntry'
+  );
 
   React.useEffect(
     () =>

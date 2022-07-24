@@ -19,7 +19,6 @@ import { formatUrl, parseUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { ResourceBase } from '../resourceapi';
 import { getModel, getModelById, schema } from '../schema';
-import { switchCollection } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
 import { useAsyncState } from './hooks';
@@ -32,6 +31,7 @@ import {
 } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import { ShowResource } from './resourceview';
+import { switchCollection } from './switchcollection';
 
 const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
 
@@ -224,6 +224,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
   const { collection: rawCollection = '', catalogNumber: rawCatNumber = '' } =
     useParams();
 
+  const navigate = useNavigate();
   const [resource] = useAsyncState<SpecifyResource<AnySchema> | false>(
     React.useCallback(async () => {
       const collectionLookup = new schema.models.Collection.LazyCollection({
@@ -239,7 +240,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
       }
       const collection = collections.models[0];
       if (collection.id !== schema.domainLevelIds.collection) {
-        switchCollection(collection.id);
+        switchCollection(navigate, collection.id);
         return undefined;
       }
 

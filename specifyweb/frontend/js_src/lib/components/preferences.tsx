@@ -100,7 +100,6 @@ export type GenericPreferencesCategories = IR<{
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
-// FEATURE: reduce amount of items that have requiresReload=true
 export const preferenceDefinitions = {
   general: {
     title: preferencesText('general'),
@@ -411,56 +410,56 @@ export const preferenceDefinitions = {
         items: {
           showDataEntry: defineItem<boolean>({
             title: preferencesText('showDataEntry'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showInteractions: defineItem<boolean>({
             title: preferencesText('showInteractions'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showTrees: defineItem<boolean>({
             title: preferencesText('showTrees'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showRecordSets: defineItem<boolean>({
             title: preferencesText('showRecordSets'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showQueries: defineItem<boolean>({
             title: preferencesText('showQueries'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showReports: defineItem<boolean>({
             title: preferencesText('showReports'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showAttachments: defineItem<boolean>({
             title: preferencesText('showAttachments'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           showWorkBench: defineItem<boolean>({
             title: preferencesText('showWorkBench'),
-            requiresReload: true,
+            requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',

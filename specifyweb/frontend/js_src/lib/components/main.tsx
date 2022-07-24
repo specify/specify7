@@ -6,17 +6,19 @@ import React from 'react';
 
 import { enableBusinessRules } from '../businessrules';
 import { commonText } from '../localization/common';
+import type { MenuItemName } from '../menuitems';
 import { menuItemsPromise } from '../menuitems';
 import { getSystemInfo } from '../systeminfo';
-import type { RA } from '../types';
+import type { RR } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, className, Link } from './basic';
 import { crash, ErrorBoundary } from './errorboundary';
 import { CollectionSelector, ExpressSearch, HeaderItems } from './header';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { Notifications } from './notifications';
-import { UserTools } from './usertools';
+import type { Preferences } from './preferences';
 import { Router } from './router';
+import { UserTools } from './usertools';
 
 export type UserTool = {
   readonly title: string;
@@ -26,6 +28,7 @@ export type UserTool = {
 
 export type MenuItem = UserTool & {
   readonly icon: JSX.Element;
+  readonly visibilityKey: keyof Preferences['header']['subCategories']['menu']['items'];
 };
 
 /*
@@ -34,9 +37,9 @@ export type MenuItem = UserTool & {
  */
 
 export function Main(): JSX.Element | null {
-  const [menuItems, setMenuItems] = React.useState<RA<MenuItem> | undefined>(
-    undefined
-  );
+  const [menuItems, setMenuItems] = React.useState<
+    RR<MenuItemName, MenuItem> | undefined
+  >(undefined);
   const [showVersionMismatch, setShowVersionMismatch] = React.useState(
     getSystemInfo().specify6_version !== getSystemInfo().database_version
   );

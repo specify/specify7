@@ -21,6 +21,7 @@ import { ajax } from '../ajax';
 import { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
 import { GetSet } from '../types';
+import { useMenuItem } from './header';
 
 function Navigation({
   name,
@@ -254,9 +255,12 @@ export const wbViewTemplate = (
     <WbView dataSetId={dataSetId} isUploaded={isUploaded} />
   );
 
+const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
+
 export function WorkBench(): JSX.Element | null {
-  const treeRanksLoaded =
-    useAsyncState(async () => treeRanksPromise.then(f.true), true)[0] ?? false;
+  useMenuItem('workBench');
+
+  const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
   const { id = '' } = useParams();
   const dataSetId = f.parseInt(id);
 

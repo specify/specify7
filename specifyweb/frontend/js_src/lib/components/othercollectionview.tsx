@@ -4,12 +4,13 @@ import type { Collection } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
-import { switchCollection } from '../specifyapp';
 import type { RA } from '../types';
 import { filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Container, Ul } from './basic';
 import { usePref } from './preferenceshooks';
+import { useNavigate } from 'react-router-dom';
+import { switchCollection } from './switchcollection';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -41,6 +42,7 @@ export function OtherCollection({
   const collections = filterArray(
     availableCollection.filter(({ id }) => collectionIds.includes(id))
   );
+  const navigate = useNavigate();
   return (
     <Container.FullGray>
       <Container.Center>
@@ -57,9 +59,7 @@ export function OtherCollection({
                     <li key={id}>
                       <Button.LikeLink
                         onClick={(): void =>
-                          switchCollection(collections[0].id, undefined, () => {
-                            /* Nothing */
-                          })
+                          switchCollection(navigate, collections[0].id)
                         }
                       >
                         {collectionName}
@@ -73,7 +73,9 @@ export function OtherCollection({
                 <p>{commonText('loginToProceed')}</p>
                 <div>
                   <Button.Blue
-                    onClick={(): void => switchCollection(collections[0].id)}
+                    onClick={(): void =>
+                      switchCollection(navigate, collections[0].id)
+                    }
                   >
                     {collections[0].collectionName}
                   </Button.Blue>

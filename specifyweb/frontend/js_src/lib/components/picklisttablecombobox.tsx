@@ -22,15 +22,8 @@ export function PickListTableComboBox(
           ) ?? [],
     [props.resource, props.field]
   );
-  const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
-  const [pickLists] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchPickLists()
-          .then(() => setItems(getItems))
-          .then(f.true),
-      [getItems]
-    ),
+  const [items, setItems] = useAsyncState<RA<PickListItemSimple>>(
+    React.useCallback(async () => fetchPickLists().then(getItems), [getItems]),
     true
   );
   React.useEffect(
@@ -46,7 +39,7 @@ export function PickListTableComboBox(
   return (
     <PickListComboBox
       {...props}
-      isDisabled={pickLists === undefined || items.length === 0}
+      isDisabled={items === undefined || items.length === 0}
       items={items}
       pickList={undefined}
       onAdd={undefined}

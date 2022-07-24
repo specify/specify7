@@ -26,8 +26,10 @@ import { LoadingContext } from './contexts';
 import { FilePicker } from './filepicker';
 import { useAsyncState, useTriggerState } from './hooks';
 import { useCachedState } from './statecache';
+import { useMenuItem } from './header';
 
 export function WbImportView(): JSX.Element {
+  useMenuItem('workBench');
   const [file, setFile] = React.useState<File | undefined>();
 
   return (

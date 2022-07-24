@@ -2,99 +2,111 @@ import React from 'react';
 import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
+import { toRelativeUrl } from '../ajax';
 import { listen } from '../events';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { getUserPref } from '../preferencesutils';
 import { Button, className } from './basic';
+import { UnloadProtectsContext } from './contexts';
 import { ErrorBoundary } from './errorboundary';
 import { Dialog } from './modaldialog';
 import { NotFoundView } from './notfoundview';
 import { overlayRoutes } from './overlayroutes';
+import { useRouterBlocker } from './routerblocker';
 import { toReactRoutes } from './routerutils';
 import { routes } from './routes';
-import { UnloadProtectsContext } from './contexts';
-import { toRelativeUrl } from '../ajax';
 
 export function Router(): JSX.Element {
   const location = useLocation();
   const state = location.state as { readonly backgroundLocation?: Location };
 
-  const [unloadProtects, setUnloadProtects] = React.useContext(
-    UnloadProtectsContext
-  )!;
-  const [unloadProtectUrl, setUnloadProtectUrl] = React.useState<
-    string | undefined
+  const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
+  const [unloadProtect, setUnloadProtect] = React.useState<
+    { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
+  useRouterBlocker(
+    async ({ pathname }) =>
+      new Promise((resolve, reject) =>
+        pathIsOverlay(pathname) || isCurrentUrl(pathname)
+          ? resolve()
+          : setUnloadProtect({ resolve, reject })
+      ),
+    unloadProtects.length > 0
+  );
 
   const navigate = useNavigate();
   React.useEffect(() => {
-    console.log([unloadProtects, setUnloadProtects]);
     // Leak goTo function in development for quicker development
     if (process.env.NODE_ENV === 'development')
       // @ts-expect-error Creating a global value
       globalThis._goTo = navigate;
   }, [navigate]);
 
-  React.useEffect(
-    () =>
-      listen(document.body, 'click', (event) => {
-        const parsed = parseEvent(event);
-        if (parsed === undefined) return;
-        const { url, isOverlay } = parsed;
-        if (isOverlay)
-          navigate(url, { state: { backgroundLocation: location } });
-        else {
-          // FIXME: handle cases where URL change should not trigger unload protect
-          if (unloadProtects.length > 0) setUnloadProtectUrl(url);
-          else navigate(url);
-        }
-      }),
-    [navigate, location, unloadProtects]
-  );
-
-  useUnloadProtect(unloadProtects.at(-1));
+  useLinkIntercept();
 
   const transformedRoutes = React.useMemo(() => toReactRoutes(routes), []);
-  const main = useRoutes(
-    transformedRoutes,
-    state?.backgroundLocation ?? location
-  );
+  const main =
+    useRoutes(transformedRoutes, state?.backgroundLocation ?? location) ??
+    undefined;
 
   const transformedOverlays = React.useMemo(
     () => toReactRoutes(overlayRoutes),
     []
   );
-  const overlay = useRoutes(transformedOverlays);
+  const overlay = useRoutes(transformedOverlays) ?? undefined;
 
-  const backgroundUrl = state?.backgroundLocation?.pathname;
-  const handleCloseOverlay = React.useCallback(
-    () =>
-      typeof backgroundUrl === 'string' ? navigate(backgroundUrl) : undefined,
-    [backgroundUrl]
-  );
-
-  return main === null && overlay === null ? (
+  return main === undefined && overlay === undefined ? (
     <NotFoundView />
   ) : (
     <>
       {main}
-      <OverlayContext.Provider value={handleCloseOverlay}>
-        <ErrorBoundary dismissable>{overlay}</ErrorBoundary>
-      </OverlayContext.Provider>
-      {typeof unloadProtectUrl === 'string' && unloadProtects.length > 0 ? (
+      <Overlay
+        backgroundUrl={state?.backgroundLocation?.pathname}
+        overlay={overlay}
+      />
+      {typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
         <UnloadProtectDialog
           message={unloadProtects.at(-1)!}
-          onCancel={(): void => setUnloadProtectUrl(undefined)}
-          onConfirm={(): void => navigate(unloadProtectUrl)}
+          onCancel={(): void => {
+            unloadProtect.reject();
+            setUnloadProtect(undefined);
+          }}
+          onConfirm={(): void => {
+            unloadProtect.resolve();
+            setUnloadProtect(undefined);
+          }}
         />
       ) : undefined}
     </>
   );
 }
 
-export const OverlayContext = React.createContext<() => void>(f.never);
-OverlayContext.displayName = 'OverlayContext';
+const pathIsOverlay = (relativeUrl: string): boolean =>
+  relativeUrl.startsWith('/specify/overlay/');
+
+// Don't trigger unload protect if query string or hash changes
+const isCurrentUrl = (relativeUrl: string): boolean =>
+  new URL(relativeUrl, globalThis.location.origin).pathname ===
+  globalThis.location.pathname;
+
+function useLinkIntercept(): void {
+  const navigate = useNavigate();
+  const location = useLocation();
+  React.useEffect(
+    () =>
+      listen(document.body, 'click', (event) => {
+        const parsed = parseEvent(event);
+        if (parsed === undefined) return;
+        const { url, isOverlay } = parsed;
+        navigate(
+          url,
+          isOverlay ? { state: { backgroundLocation: location } } : undefined
+        );
+      }),
+    [navigate, location]
+  );
+}
 
 function parseEvent(
   event: Readonly<MouseEvent>
@@ -115,22 +127,36 @@ function parseEvent(
       event.preventDefault();
       return {
         url: relativeUrl,
-        isOverlay: relativeUrl.startsWith('/specify/overlay/'),
+        isOverlay: pathIsOverlay(relativeUrl),
       };
     }
   }
   return undefined;
 }
 
-function useUnloadProtect(message: string | undefined): void {
-  React.useEffect(() => {
-    if (message === undefined) return undefined;
-    const handleUnload = (): string => message;
-    globalThis.addEventListener('beforeunload', handleUnload);
-    return (): void =>
-      globalThis.removeEventListener('beforeunload', handleUnload);
-  }, [message]);
+function Overlay({
+  overlay,
+  backgroundUrl,
+}: {
+  readonly overlay: JSX.Element | undefined;
+  readonly backgroundUrl: string | undefined;
+}): JSX.Element {
+  const navigate = useNavigate();
+
+  const handleCloseOverlay = React.useCallback(
+    () => navigate(backgroundUrl ?? '/specify/'),
+    [backgroundUrl]
+  );
+
+  return (
+    <OverlayContext.Provider value={handleCloseOverlay}>
+      <ErrorBoundary dismissable>{overlay}</ErrorBoundary>
+    </OverlayContext.Provider>
+  );
 }
+
+export const OverlayContext = React.createContext<() => void>(f.never);
+OverlayContext.displayName = 'OverlayContext';
 
 function UnloadProtectDialog({
   message,
@@ -159,9 +185,6 @@ function UnloadProtectDialog({
 }
 
 /**
- * Let params = useParams();
- *   return <h2>Invoice: {params.invoiceId}</h2>;
- *
  * <NavLink
  *             style={({ isActive }) => {
  *               return {
@@ -172,39 +195,6 @@ function UnloadProtectDialog({
  *             }}
  *             className={({ isActive }) => isActive ? "red" : "blue"}
  *             to={`/invoices/${invoice.number}`}
- *
- *
- * const [searchParams, setSearchParams] = useSearchParams();
- * searchParams.get("filter") || ""
- * params.getAll("brand").includes(brand);
- * setSearchParams({ filter });
- * setSearchParams({  });
- *
- *
- * // Maintains query string on navigation
- * function QueryNavLink({ to, ...props }) {
- *   let location = useLocation();
- *   return <NavLink to={to + location.search} {...props} />;
- * }
- *
- *
- * useLocation() :
- * {
- *   pathname: "/invoices",
- *   search: "?filter=sa",
- *   hash: "",
- *   state: null,
- *   key: "ae4cz2j"
- * }
- *
- * let navigate = useNavigate();
- * let location = useLocation();
- * navigate("/invoices" + location.search);
- *
- *
- * https://reactrouter.com/docs/en/v6/getting-started/overview#descendant-routes
- *
- * <Router basename>
  *
  *
  * function BrandLink({ brand, children, ...props }: BrandLinkProps) {
@@ -244,9 +234,4 @@ function UnloadProtectDialog({
  *   );
  * }
  *
- *
- * https://github.com/Sage/jsurl
- *
- *
- * Can nest useRoutes(), but parent path must end with *
  */

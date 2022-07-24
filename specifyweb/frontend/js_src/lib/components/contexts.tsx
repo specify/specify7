@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { error } from '../assert';
+import { f } from '../functools';
 import { commonText } from '../localization/common';
-import type { RA } from '../types';
-import { GetOrSet } from '../types';
+import type { MenuItemName } from '../menuitems';
+import type { GetOrSet, RA } from '../types';
 import { crash, ErrorBoundary } from './errorboundary';
 import { useBooleanState } from './hooks';
 import {
@@ -96,6 +97,9 @@ export function Contexts({
   // eslint-disable-next-line react/hook-use-state
   const getSetProtects = React.useState<RA<string>>([]);
 
+  // eslint-disable-next-line react/hook-use-state
+  const menuContext = React.useState<MenuItemName | undefined>(undefined);
+
   return (
     <UnloadProtectsContext.Provider value={getSetProtects}>
       <ErrorBoundary>
@@ -111,9 +115,11 @@ export function Contexts({
             >
               {loadingBar}
             </Dialog>
-            <React.Suspense fallback={<LoadingScreen />}>
-              {children}
-            </React.Suspense>
+            <MenuContext.Provider value={menuContext}>
+              <React.Suspense fallback={<LoadingScreen />}>
+                {children}
+              </React.Suspense>
+            </MenuContext.Provider>
           </LoadingContext.Provider>
         </ErrorContext.Provider>
       </ErrorBoundary>
@@ -133,18 +139,25 @@ export const LoadingContext = React.createContext<
 >(() => error('Not defined'));
 LoadingContext.displayName = 'LoadingContext';
 
-/**
- * Display a modal error message dialog
- */
+/** Display a modal error message dialog */
 export const ErrorContext = React.createContext<
   (error: (props: { readonly onClose: () => void }) => JSX.Element) => void
 >(() => error('Not defined'));
 ErrorContext.displayName = 'ErrorContext';
 
+/**
+ * List of current unload protects (used for preventing loss of unsaved changes)
+ */
 export const UnloadProtectsContext = React.createContext<
   GetOrSet<RA<string>> | undefined
 >(undefined);
 UnloadProtectsContext.displayName = 'UnloadProtectsContext';
+
+/** Identifies active menu item */
+export const MenuContext = React.createContext<
+  GetOrSet<MenuItemName | undefined>
+>([undefined, f.never]);
+MenuContext.displayName = 'MenuContext';
 
 export type FormMeta = {
   /*

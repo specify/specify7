@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
@@ -37,6 +37,10 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
   {
     path: 'specify/*',
     element: () => import('./specify').then(({ Root }) => Root),
+  },
+  {
+    index: true,
+    element: <Navigate to="/specify/" />,
   },
   {
     path: '*',

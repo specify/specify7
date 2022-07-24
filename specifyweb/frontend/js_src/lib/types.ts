@@ -52,6 +52,10 @@ export type Writable<T> = {
   -readonly [K in keyof T]: T[K];
 };
 
+/**
+ * Cast type to writable. Equivalent to doing "as Writable<T>", except this
+ * way, don't have to manually specify the generic type
+ */
 export const writable = <T>(value: T): Writable<T> => value;
 
 /**

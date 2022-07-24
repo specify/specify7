@@ -31,6 +31,45 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { ReportsView } from './reports';
 import { OverlayContext } from './router';
 
+export const interactionTables: ReadonlySet<keyof Tables> = new Set<
+  keyof Tables
+>([
+  'Accession',
+  'AccessionAgent',
+  'AccessionAttachment',
+  'AccessionAuthorization',
+  'AccessionCitation',
+  'Appraisal',
+  'Borrow',
+  'BorrowAgent',
+  'BorrowAttachment',
+  'BorrowMaterial',
+  'BorrowReturnMaterial',
+  'Deaccession',
+  'DeaccessionAgent',
+  'DeaccessionAttachment',
+  'Disposal',
+  'DisposalAgent',
+  'DisposalAttachment',
+  'DisposalPreparation',
+  'ExchangeIn',
+  'ExchangeInPrep',
+  'ExchangeOut',
+  'ExchangeOutPrep',
+  'Gift',
+  'GiftAgent',
+  'GiftAttachment',
+  'GiftPreparation',
+  'InfoRequest',
+  'Loan',
+  'LoanAgent',
+  'LoanAttachment',
+  'LoanPreparation',
+  'LoanReturnPreparation',
+  'Permit',
+  'PermitAttachment',
+]);
+
 const supportedActions = [
   'NEW_GIFT',
   'NEW_LOAN',

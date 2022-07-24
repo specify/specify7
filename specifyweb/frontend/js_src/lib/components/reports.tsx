@@ -75,6 +75,9 @@ export function ReportsOverlay(): JSX.Element {
   );
 }
 
+const fetchAttachmentSettings = async (): Promise<true> =>
+  attachmentSettingsPromise.then(f.true);
+
 export function ReportsView({
   // If resource ID is provided, model must be too
   model,
@@ -128,14 +131,14 @@ export function ReportsView({
     )
   );
 
-  const [attachmentSettings] = useAsyncState(
-    React.useCallback(async () => attachmentSettingsPromise.then(f.true), []),
+  const [attachmentSettings = false] = useAsyncState(
+    fetchAttachmentSettings,
     true
   );
 
   const [labels, reports] = appResources ?? [[], []];
 
-  return typeof appResources === 'object' && attachmentSettings === true ? (
+  return typeof appResources === 'object' && attachmentSettings ? (
     typeof selectedReport === 'object' ? (
       <ErrorBoundary dismissable>
         <Report
