@@ -18,7 +18,7 @@ import { fetchContext as fetchSchema, getModel } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
-import { className, DataEntry, Link, Ul } from './basic';
+import { DataEntry, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { EditFormTables, useFormModels } from './formstablesedit';
 import { useAsyncState, useBooleanState } from './hooks';
@@ -64,11 +64,6 @@ export function FormsDialog({
             .map(({ iconName, title, table }, index) => (
               <li key={index}>
                 <Link.Default
-                  className={
-                    typeof handleSelected === 'function'
-                      ? className.navigationHandled
-                      : undefined
-                  }
                   href={getResourceViewUrl(table)}
                   onClick={
                     typeof handleSelected === 'function'

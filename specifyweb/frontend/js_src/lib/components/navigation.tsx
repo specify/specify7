@@ -5,12 +5,14 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { isExternalUrl } from '../ajax';
 import { removeItem } from '../helpers';
 import type { GetSet } from '../types';
+import { defined } from '../types';
 import { UnloadProtectsContext } from './contexts';
 
-export function useSearchParam(name: string): GetSet<string | undefined> {
+export function useSearchParam(
+  name: string | undefined
+): GetSet<string | undefined> {
   const [queryString, setQueryString] = useSearchParams();
 
   /*
@@ -24,12 +26,15 @@ export function useSearchParam(name: string): GetSet<string | undefined> {
 
   const handleChange = React.useCallback(
     (value: string | undefined) =>
-      setQuery.current(value === undefined ? {} : { [name]: value }, {
+      setQuery.current(value === undefined ? {} : { [defined(name)]: value }, {
         replace: true,
       }),
     [name]
   );
-  return [queryString.get(name) ?? undefined, handleChange];
+  return [
+    typeof name === 'string' ? queryString.get(name) ?? undefined : undefined,
+    handleChange,
+  ];
 }
 
 export function useUnloadProtect(
@@ -63,47 +68,3 @@ export function useUnloadProtect(
     [setUnloadProtects, isEnabled]
   );
 }
-
-// FIXME: migrate usages of this function
-export function clearUnloadProtect(): void {
-  unloadBlockers = [];
-  changeOnBeforeUnloadHandler(undefined);
-}
-
-// FIXME: replace with react router
-function navigate(
-  url: string,
-  options: {
-    readonly trigger?: boolean;
-    readonly replace?: boolean;
-  } = {}
-): void {
-  const cont = (): void => {
-    if (options.trigger !== false) clearUnloadProtect();
-
-    if (isExternalUrl(url)) globalThis.location.assign(url);
-    else {
-      const origin =
-        globalThis.location.origin ||
-        `${globalThis.location.protocol}//${globalThis.location.host}`;
-      const strippedUrl = url
-        .replace(new RegExp(`^${origin}`), '')
-        .replace(/^\/specify/, '');
-      Backbone.history.navigate(strippedUrl, options);
-    }
-  };
-
-  if (unloadBlockers.length > 0 && options.trigger !== false)
-    confirmNavigation(cont, () => {
-      /* Nothing */
-    });
-  else cont();
-}
-
-/*
- * FIXME: make navigate() trigger save blockers
- */
-
-// FIXME: remove usages
-export const pushUrl = (url: string): void =>
-  navigate(url, { trigger: false, replace: true });

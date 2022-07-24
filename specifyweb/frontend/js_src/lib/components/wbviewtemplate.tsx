@@ -7,21 +7,22 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { useParams } from 'react-router-dom';
 
+import { ajax } from '../ajax';
 import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { wbText } from '../localization/workbench';
 import { hasPermission, hasTablePermission } from '../permissionutils';
 import { treeRanksPromise } from '../treedefinitions';
+import type { GetSet } from '../types';
 import { WBView } from '../wbview';
 import { Button, Input, Link } from './basic';
-import { useAsyncState } from './hooks';
-import { NotFoundView } from './notfoundview';
-import { ajax } from '../ajax';
-import { Dataset } from './wbplanview';
 import { LoadingContext } from './contexts';
-import { GetSet } from '../types';
 import { useMenuItem } from './header';
+import { useAsyncState } from './hooks';
+import { useUnloadProtect } from './navigation';
+import { NotFoundView } from './notfoundview';
+import type { Dataset } from './wbplanview';
 
 function Navigation({
   name,
@@ -261,7 +262,7 @@ export function WorkBench(): JSX.Element | null {
   useMenuItem('workBench');
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
-  const { id = '' } = useParams();
+  const { id } = useParams();
   const dataSetId = f.parseInt(id);
 
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
@@ -305,6 +306,10 @@ function useWbView(
 ): void {
   const mode = React.useRef<string | undefined>(undefined);
   const wasAborted = React.useRef<boolean>(false);
+
+  const [hasUnloadProtect, setUnloadProtect] = React.useState<boolean>(false);
+  useUnloadProtect(hasUnloadProtect, wbText('onExitDialogText'));
+
   React.useEffect(() => {
     if (!treeRanksLoaded || container === null || dataSet === undefined)
       return undefined;
@@ -313,14 +318,13 @@ function useWbView(
       dataset: dataSet,
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
-    }).on(
-      'refresh',
-      (newMode: string | undefined, newWasAborted: boolean = false) => {
-        mode.current = newMode;
-        wasAborted.current = newWasAborted;
-        handleRefresh();
-      }
-    );
+      onSetUnloadProtect: setUnloadProtect,
+    }).on('refresh', (newMode: string | undefined, newWasAborted = false) => {
+      setUnloadProtect(false);
+      mode.current = newMode;
+      wasAborted.current = newWasAborted;
+      handleRefresh();
+    });
     return () => view.remove();
   }, [treeRanksLoaded, container, dataSet]);
 }

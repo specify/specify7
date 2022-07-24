@@ -52,9 +52,7 @@ export const fetchContext =
                         if (FieldClass === undefined) return undefined;
                         return new FieldClass({
                           size:
-                            f.parseInt(
-                              getParsedAttribute(field, 'size') ?? ''
-                            ) ?? 1,
+                            f.parseInt(getParsedAttribute(field, 'size')) ?? 1,
                           value: getAttribute(field, 'value') ?? ' ',
                           autoIncrement:
                             getBooleanAttribute(field, 'inc') ?? false,

@@ -5,7 +5,6 @@
 import { keysToLowerCase } from './helpers';
 import type { IR } from './types';
 
-// FIXME: replace with react router utils?
 export function formatUrl(
   url: string,
   parameters: IR<string>,
@@ -24,5 +23,6 @@ export function formatUrl(
 
 const getUrl = (): string => globalThis.location?.href ?? 'http://localhost/';
 
+/* Use "useSearchParam" instead of this whenever possible */
 export const parseUrl = (url: string = getUrl()): IR<string> =>
   Object.fromEntries(new URL(url, getUrl()).searchParams);

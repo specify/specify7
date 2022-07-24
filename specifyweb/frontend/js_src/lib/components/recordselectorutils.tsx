@@ -11,7 +11,6 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode, FormType } from '../parseform';
 import { hasTablePermission, hasToolPermission } from '../permissionutils';
-import { formatUrl, parseUrl } from '../querystring';
 import {
   createResource,
   deleteResource,
@@ -30,21 +29,11 @@ import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { pushUrl } from './navigation';
+import { useSearchParam } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { EditRecordSet } from './recordsetsdialog';
 import { augmentMode, ResourceView } from './resourceview';
-
-const getDefaultIndex = (queryParameter: string, lastIndex: number): number =>
-  f.var(parseUrl()[queryParameter], (index) =>
-    index === 'end' ? lastIndex : f.parseInt(index) ?? 0
-  );
-
-function setQueryParameter(queryParameter: string, index: number): void {
-  const parameters = { [queryParameter]: index.toString() };
-  pushUrl(formatUrl(globalThis.location.href, parameters));
-}
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
@@ -181,6 +170,9 @@ export function IntegratedRecordSelector({
   const isToOne =
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
+
+  const [rawIndex, setIndex] = useSearchParam(urlParameter);
+  const index = f.parseInt(rawIndex) ?? collection.models.length;
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -195,15 +187,11 @@ export function IntegratedRecordSelector({
   ) : (
     <RecordSelectorFromCollection
       collection={collection}
-      defaultIndex={
-        isToOne
-          ? 0
-          : getDefaultIndex(urlParameter ?? '', collection.models.length)
-      }
+      defaultIndex={isToOne ? 0 : index}
       relationship={relationship}
       onSlide={(index): void =>
         typeof urlParameter === 'string'
-          ? setQueryParameter(urlParameter, index)
+          ? setIndex(index.toString())
           : undefined
       }
       {...rest}
@@ -377,6 +365,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const currentResourceId = currentResource?.id;
   React.useEffect(
     () =>
+      // FIXME: migrate this
       urlContext === false
         ? undefined
         : pushUrl(
@@ -819,6 +808,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
         onSaved={({ newResource, wasNew, resource }): void => {
           if (wasNew) {
             handleAdd([resource]);
+            // FIXME: migrate this
             pushUrl(resource.viewUrl());
           }
           if (typeof newResource === 'object') handleAdd([newResource]);

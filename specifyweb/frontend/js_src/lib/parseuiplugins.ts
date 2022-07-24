@@ -69,7 +69,7 @@ const processUiPlugin: {
 } = {
   LatLonUI: ({ getProperty }) => ({
     type: 'LatLonUI',
-    step: f.parseInt(getProperty('step') ?? ''),
+    step: f.parseInt(getProperty('step')),
   }),
   PartialDateUI: ({ getProperty, defaultValue }) => ({
     type: 'PartialDateUI',

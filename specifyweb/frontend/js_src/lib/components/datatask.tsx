@@ -6,7 +6,7 @@ import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { fetchCollection } from '../collection';
-import type { RecordSet } from '../datamodel';
+import type { CollectionObject, RecordSet } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import {
   fetchCollectionsForResource,
@@ -15,7 +15,7 @@ import {
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { hasTablePermission } from '../permissionutils';
-import { formatUrl, parseUrl } from '../querystring';
+import { formatUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
 import { ResourceBase } from '../resourceapi';
 import { getModel, getModelById, schema } from '../schema';
@@ -36,9 +36,9 @@ import { switchCollection } from './switchcollection';
 const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
 
 export function ViewRecordSet(): JSX.Element {
-  const { id = '', index = '0' } = useParams();
+  const { id, index } = useParams();
   const recordSetId = f.parseInt(id);
-  const resourceIndex = f.parseInt(index);
+  const resourceIndex = f.parseInt(index) ?? 0;
 
   return typeof recordSetId === 'number' &&
     typeof resourceIndex === 'number' ? (
@@ -126,7 +126,7 @@ export function NewResourceView(): JSX.Element {
   return typeof parsedTableName === 'string' ? (
     <ProtectedTable action="create" tableName={parsedTableName}>
       {typeof resource === 'object' && resource instanceof ResourceBase ? (
-        <ShowResource recordSet={undefined} resource={resource} />
+        <ShowResource resource={resource} />
       ) : (
         <DisplayResource id={undefined} tableName={parsedTableName} />
       )}
@@ -155,34 +155,23 @@ function DisplayResource({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
+  const resource = React.useMemo(
+    () => (typeof model === 'object' ? new model.Resource({ id }) : undefined),
+    [model, id]
+  );
 
-  if (model === undefined) {
+  if (model === undefined || resource === undefined) {
     return <NotFoundView />;
   } else if (typeof id === 'string' && !hasTablePermission(model.name, 'read'))
     return <TablePermissionDenied action="read" tableName={model.name} />;
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;
-  else {
-    const resource = new model.Resource({ id });
-
-    // Look to see if we are in the context of a recordset
-    const parameters = parseUrl();
-    const recordSetId = f.parseInt(parameters.recordsetid);
-    const recordSet =
-      typeof recordSetId === 'number'
-        ? new schema.models.RecordSet.Resource({
-            id: recordSetId,
-          })
-        : undefined;
-    // @ts-expect-error Assigning to readonly
-    if (typeof recordSet === 'object') resource.recordsetid = recordSet.id;
-
+  else
     return (
       <CheckLoggedInCollection resource={resource}>
-        <ShowResource recordSet={recordSet} resource={resource} />
+        <ShowResource resource={resource} />
       </CheckLoggedInCollection>
     );
-  }
 }
 
 export function ViewResourceByGuid({
@@ -192,22 +181,27 @@ export function ViewResourceByGuid({
   readonly model: SpecifyModel;
   readonly guid: string;
 }): JSX.Element | null {
-  const [resource] = useAsyncState(
-    React.useCallback(async () => {
-      const collection = new model.LazyCollection({ filters: { guid } });
-      return collection
-        .fetch({ limit: 1 })
-        .then(({ models }) => models[0] ?? false);
-    }, [model, guid]),
+  const [id] = useAsyncState<number | false>(
+    React.useCallback(
+      async () =>
+        fetchCollection((model as SpecifyModel<CollectionObject>).name, {
+          guid,
+          limit: 1,
+        }).then(({ records }) => records[0]?.id ?? false),
+      [model, guid]
+    ),
     true
   );
-  return typeof resource === 'object' ? (
-    <CheckLoggedInCollection resource={resource}>
-      <ShowResource recordSet={undefined} resource={resource} />
-    </CheckLoggedInCollection>
-  ) : resource === false ? (
-    <NotFoundView />
-  ) : null;
+
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      typeof id === 'number'
+        ? navigate(getResourceViewUrl(model.name, id), { replace: true })
+        : undefined,
+    [id]
+  );
+  return id === false ? <NotFoundView /> : null;
 }
 
 export function ViewByCatalog(): JSX.Element {
@@ -221,24 +215,24 @@ export function ViewByCatalog(): JSX.Element {
 }
 
 function ViewByCatalogProtected(): JSX.Element | null {
-  const { collection: rawCollection = '', catalogNumber: rawCatNumber = '' } =
-    useParams();
+  const { collectionCode = '', catalogNumber = '' } = useParams();
 
   const navigate = useNavigate();
-  const [resource] = useAsyncState<SpecifyResource<AnySchema> | false>(
+  const [id] = useAsyncState<number | false>(
     React.useCallback(async () => {
-      const collectionLookup = new schema.models.Collection.LazyCollection({
-        filters: { code: decodeURIComponent(rawCollection) },
-      });
-      const collections = await collectionLookup.fetch({ limit: 1 });
-      if (collections.models.length === 0) {
+      const collections = await fetchCollection('Collection', {
+        code: collectionCode,
+        limit: 2,
+      }).then(({ records }) => records);
+      if (collections.length === 0) {
         console.error('Unable to find the collection');
         return false;
-      } else if (collections._totalCount !== 1) {
-        console.error('Multiple collections with code:', collections.models);
-        return false;
-      }
-      const collection = collections.models[0];
+      } else if (collections.length !== 1)
+        console.error('Multiple collections with the same code', {
+          collections,
+          collectionCode,
+        });
+      const collection = collections[0];
       if (collection.id !== schema.domainLevelIds.collection) {
         switchCollection(navigate, collection.id);
         return undefined;
@@ -248,36 +242,40 @@ function ViewByCatalogProtected(): JSX.Element | null {
         schema.models.CollectionObject.getLiteralField('catalogNumber')
       ).getUiFormatter();
 
-      let catNumber = decodeURIComponent(rawCatNumber);
+      let formattedNumber = catalogNumber;
       if (typeof formatter === 'object') {
-        const formatted = formatter.format(catNumber);
+        const formatted = formatter.format(catalogNumber);
         if (formatted === undefined) {
-          console.error('bad catalog number:', catNumber);
+          console.error('bad catalog number:', catalogNumber);
           return false;
         }
-        catNumber = formatted;
+        formattedNumber = formatted;
       }
 
-      const collectionObjects =
-        new schema.models.CollectionObject.LazyCollection({
-          filters: { catalognumber: catNumber },
-          domainfilter: true,
-        });
-      const { models } = await collectionObjects.fetch({ limit: 1 });
-      if (models.length === 0) {
-        console.error('Unable to find collection object');
+      return fetchCollection('CollectionObject', {
+        catalogNumber: formattedNumber,
+        limit: 1,
+      }).then(({ records }) => {
+        const id = records[0]?.id;
+        if (typeof id === 'number') return id;
+        console.error('Unable to find the resource');
         return false;
-      } else return models[0];
-      return undefined;
-    }, [rawCollection, rawCatNumber]),
+      });
+    }, [collectionCode, catalogNumber, navigate]),
     true
   );
 
-  return typeof resource === 'object' ? (
-    <ShowResource recordSet={undefined} resource={resource} />
-  ) : resource === false ? (
-    <NotFoundView />
-  ) : null;
+  React.useEffect(
+    () =>
+      typeof id === 'number'
+        ? navigate(getResourceViewUrl('CollectionObject', id), {
+            replace: true,
+          })
+        : undefined,
+    [navigate, id]
+  );
+
+  return id === false ? <NotFoundView /> : null;
 }
 
 /**

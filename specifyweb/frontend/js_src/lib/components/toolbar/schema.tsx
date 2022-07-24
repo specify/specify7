@@ -21,7 +21,7 @@ import type { SpecifyModel } from '../../specifymodel';
 import { getSystemInfo } from '../../systeminfo';
 import type { RA, RR } from '../../types';
 import { fieldFormat, resolveParser } from '../../uiparse';
-import { Button, className, Container, H2, H3, Link } from '../basic';
+import { Button, Container, H2, H3, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
 import { softFail } from '../errorboundary';
 import { downloadFile } from '../filepicker';
@@ -321,7 +321,7 @@ export function DataModelTables(): JSX.Element {
         </H2>
         <span className="-ml-2 flex-1" />
         <Link.Green
-          className={`${className.navigationHandled} print:hidden`}
+          className="print:hidden"
           download
           href="/context/datamodel.json"
         >

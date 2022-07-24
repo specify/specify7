@@ -30,7 +30,6 @@ export function SwitchCollectionCommand(): null {
           method: 'POST',
           body: collectionId!.toString(),
         }).then(() =>
-          // FIXME: make sure and other usages like this do not trigger the save blocker
           typeof nextUrl === 'string'
             ? globalThis.location.assign(nextUrl)
             : globalThis.location.reload()

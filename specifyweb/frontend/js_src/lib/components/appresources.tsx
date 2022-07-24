@@ -19,7 +19,7 @@ import { getUniqueName } from '../wbuniquifyname';
 import { AppResourcesAside } from './appresourcesaside';
 import { CreateAppResource } from './appresourcescreate';
 import { AppResourceEditor } from './appresourceseditor';
-import type { AppResources } from './appresourceshooks';
+import type { AppResources as AppResourcesType } from './appresourceshooks';
 import { useAppResources } from './appresourceshooks';
 import { Container, H2, H3 } from './basic';
 import { useTriggerState } from './hooks';
@@ -46,14 +46,12 @@ export function AppResources(): JSX.Element {
 
 export function AppResourceView(): JSX.Element {
   const { id = '' } = useParams();
-  return (
-    <AppResourcesPage mode="appResources" resourceId={f.parseInt(id ?? '')} />
-  );
+  return <AppResourcesPage mode="appResources" resourceId={f.parseInt(id)} />;
 }
 
 export function ViewSetView(): JSX.Element {
   const { id = '' } = useParams();
-  return <AppResourcesPage mode="viewSets" resourceId={f.parseInt(id ?? '')} />;
+  return <AppResourcesPage mode="viewSets" resourceId={f.parseInt(id)} />;
 }
 
 function AppResourcesPage({
@@ -83,7 +81,7 @@ function AppResourcesView({
   model,
   resourceId,
 }: {
-  readonly resources: AppResources;
+  readonly resources: AppResourcesType;
   readonly model: SpecifyModel<SpAppResource | SpViewSetObject>;
   readonly resourceId: number | undefined;
 }): JSX.Element {

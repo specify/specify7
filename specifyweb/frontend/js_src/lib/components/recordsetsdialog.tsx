@@ -14,7 +14,7 @@ import { getResourceViewUrl } from '../resource';
 import { getModelById, schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, DataEntry, Link } from './basic';
+import { Button, DataEntry, Link } from './basic';
 import { SortIndicator, TableIcon, useSortConfig } from './common';
 import { FormsDialog } from './formsdialog';
 import { useAsyncState, useBooleanState } from './hooks';
@@ -53,11 +53,6 @@ function Row({
     <tr key={recordSet.id}>
       <td>
         <Link.Default
-          className={
-            typeof handleSelect === 'function'
-              ? className.navigationHandled
-              : undefined
-          }
           href={`/specify/recordset/${recordSet.id}/`}
           title={recordSet.remarks ?? undefined}
           onClick={

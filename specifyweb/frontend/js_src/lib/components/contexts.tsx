@@ -96,6 +96,10 @@ export function Contexts({
 
   // eslint-disable-next-line react/hook-use-state
   const getSetProtects = React.useState<RA<string>>([]);
+  React.useEffect(() => {
+    // @ts-expect-error Exposing to global scope for easier debugging
+    globalThis._unloadProtects = getSetProtects;
+  }, getSetProtects);
 
   // eslint-disable-next-line react/hook-use-state
   const menuContext = React.useState<MenuItemName | undefined>(undefined);

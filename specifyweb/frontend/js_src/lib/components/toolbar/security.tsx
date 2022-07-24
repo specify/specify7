@@ -98,7 +98,12 @@ export function SecurityPanel(): JSX.Element | null {
     false
   );
 
-  // FEATURE: use a routing library to make navigation easier
+  /*
+   * FEATURE: use a routing library to make navigation easier
+   * FEATURE: replace blank home page with a security dashabord
+   *    that includes: whether page is using https, how many super admins
+   *    there are and etc
+   */
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{adminText('securityPanel')}</H2>

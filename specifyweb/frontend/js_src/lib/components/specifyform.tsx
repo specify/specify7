@@ -17,11 +17,11 @@ import { hijackBackboneAjax } from '../startapp';
 import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
 import { loadingGif } from './common';
-import { showNotFound } from './errorboundary';
 import { useAsyncState, useId } from './hooks';
 import { usePref } from './preferenceshooks';
 import { FormCell } from './specifyformcell';
 import { useCachedState } from './statecache';
+import { unsafeTriggerNotFound } from './router';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -165,7 +165,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
         hijackBackboneAjax(
           [Http.OK, Http.NOT_FOUND],
           async () => resource.fetch(),
-          (status) => (status === Http.NOT_FOUND ? showNotFound() : undefined)
+          (status) =>
+            status === Http.NOT_FOUND ? unsafeTriggerNotFound() : undefined
         ),
       [resource]
     ),

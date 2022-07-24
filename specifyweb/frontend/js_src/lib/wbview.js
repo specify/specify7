@@ -56,7 +56,6 @@ import {
 } from './permissionutils';
 import {wbViewTemplate} from './components/wbviewtemplate';
 import {legacyLoadingContext} from './components/contexts';
-import {addUnloadProtect, removeUnloadProtect,} from './components/navigation';
 import {getCache, setCache} from './cache';
 import {f} from './functools';
 import {pathStartsWith} from './wbplanviewutils';
@@ -2061,10 +2060,7 @@ export const WBView = Backbone.View.extend({
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Red
-            onClick={() => {
-              removeUnloadProtect(this);
-              this.trigger('refresh');
-            }}
+            onClick={() => this.trigger('refresh')}
           >
             {wbText('revert')}
           </Button.Red>
@@ -2411,7 +2407,7 @@ export const WBView = Backbone.View.extend({
     this.$('.wb-show-upload-view')
       .prop('disabled', true)
       .prop('title', wbText('wbUploadedUnavailable'));
-    addUnloadProtect(this, wbText('onExitDialogText'));
+    this.options.onSetUnloadProtect(true)
   },
   // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(statusCode) {
@@ -2439,7 +2435,7 @@ export const WBView = Backbone.View.extend({
       .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     this.$('.wb-revert').prop('disabled', true);
-    removeUnloadProtect(this);
+    this.options.onSetUnloadProtect(false)
   },
 
   // MetaData

@@ -12,10 +12,10 @@ import { toLowerCase } from '../../helpers';
 import type { SpecifyResource } from '../../legacytypes';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasTreeAccess } from '../../permissionutils';
-import { formatUrl, parseUrl } from '../../querystring';
+import { formatUrl } from '../../querystring';
 import { schema } from '../../schema';
 import { getDisciplineTrees, treeRanksPromise } from '../../treedefinitions';
-import { Button, className, DataEntry, Link, Ul } from '../basic';
+import { Button, DataEntry, Link, Ul } from '../basic';
 import { TableIcon } from '../common';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
@@ -24,6 +24,7 @@ import { icons } from '../icons';
 import { Dialog } from '../modaldialog';
 import { ResourceView } from '../resourceview';
 import { OverlayContext } from '../router';
+import { useSearchParam } from '../navigation';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -94,14 +95,7 @@ export function TreeSelectDialog({
                     <li key={treeName}>
                       <div className="flex gap-2">
                         <Link.Default
-                          className={`
-                            flex-1
-                            ${
-                              typeof handleClick === 'function'
-                                ? className.navigationHandled
-                                : undefined
-                            }
-                          `}
+                          className="flex-1"
                           href={getLink(treeName)}
                           title={treeDefinition?.get('remarks') ?? undefined}
                           onClick={(event): void => {
@@ -142,13 +136,17 @@ const handleClick = async (tree: string): Promise<void> =>
 
 export function TreeRepairOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-
   const loading = React.useContext(LoadingContext);
-  React.useEffect(() => {
-    const { tree } = parseUrl();
-    if (tree === undefined) return;
-    loading(handleClick(tree).then(handleClose));
-  }, [loading, handleClose]);
+
+  const [tree, setTree] = useSearchParam('tree');
+  React.useEffect(
+    () =>
+      tree === undefined
+        ? undefined
+        : loading(handleClick(tree).then(handleClose)),
+    [loading, handleClose, tree]
+  );
+
   return (
     <TreeSelectDialog
       confirmationMessage={commonText('treeRepairComplete')}
@@ -157,8 +155,7 @@ export function TreeRepairOverlay(): JSX.Element {
       }
       permissionName="repair"
       title={commonText('repairTree')}
-      // REFACTOR: handle this sort of thing though the routing library
-      onClick={handleClick}
+      onClick={setTree}
       onClose={handleClose}
     />
   );

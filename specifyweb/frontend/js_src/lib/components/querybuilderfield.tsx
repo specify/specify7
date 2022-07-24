@@ -229,7 +229,7 @@ export function QueryLine({
 
   return (
     <li
-      aria-current={isFocused}
+      aria-current={isFocused ? 'location' : undefined}
       className="flex gap-2 border-t border-t-gray-500 py-2"
     >
       {typeof handleRemove === 'function' && (

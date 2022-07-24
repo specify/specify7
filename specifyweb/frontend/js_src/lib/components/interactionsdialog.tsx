@@ -21,7 +21,7 @@ import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { className, Link, Ul } from './basic';
+import { Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { ErrorBoundary } from './errorboundary';
 import { useAsyncState } from './hooks';
@@ -245,11 +245,6 @@ function Interactions({
                 }
               >
                 <Link.Default
-                  className={
-                    typeof action === 'string'
-                      ? className.navigationHandled
-                      : undefined
-                  }
                   href={
                     typeof action === 'string'
                       ? `/specify/overlay/interactions/${action}/`

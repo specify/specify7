@@ -18,7 +18,7 @@ import { hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, DataEntry, Link } from './basic';
+import { Button, DataEntry, Link } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
@@ -193,7 +193,6 @@ export function CollectionOneToManyPlugin({
                 <tr key={relatedResource.cid}>
                   <td>
                     <Link.Default
-                      className={className.navigationHandled}
                       href={relatedResource.viewUrl()}
                       onClick={(event): void => {
                         event.preventDefault();

@@ -287,7 +287,7 @@ function Option({
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
     <span
       aria-atomic="true"
-      aria-current={isDefault}
+      aria-current={isDefault ? 'location' : undefined}
       aria-disabled={!isEnabled || isDefault}
       aria-label={fullTitle}
       aria-selected={isDefault}

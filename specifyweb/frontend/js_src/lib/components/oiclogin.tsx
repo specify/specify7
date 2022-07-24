@@ -7,10 +7,11 @@ import React from 'react';
 import { commonText } from '../localization/common';
 import type { Language } from '../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../localization/utils';
-import { formatUrl, parseUrl } from '../querystring';
+import { formatUrl } from '../querystring';
 import type { RA } from '../types';
 import { Button, Form, Link, Submit } from './basic';
 import { SplashScreen } from './entrypoint';
+import {useSearchParam as useSearchParameter} from './navigation';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 
 export type OicProvider = {
@@ -32,6 +33,7 @@ export function OicLogin({
 }): JSX.Element {
   const providerRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
+  const [next = ''] = useSearchParameter('next');
   return (
     <SplashScreen>
       <LanguageSelection<Language>
@@ -75,7 +77,7 @@ export function OicLogin({
         {data.inviteToken === '' && (
           <Link.Fancy
             href={formatUrl('/accounts/legacy_login/', {
-              next: parseUrl().next ?? '',
+              next,
             })}
           >
             {commonText('legacyLogin')}

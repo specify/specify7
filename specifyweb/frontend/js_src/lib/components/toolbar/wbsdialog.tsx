@@ -14,7 +14,7 @@ import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../../permissionutils';
 import type { RA } from '../../types';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
-import { Button, className, DataEntry, Link } from '../basic';
+import { Button, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { SortIndicator, useSortConfig } from '../common';
 import { LoadingContext } from '../contexts';
@@ -217,17 +217,15 @@ function DataSets({
                   <td className="overflow-x-auto">
                     <Link.Default
                       href={`/specify/workbench/${dataset.id}/`}
-                      {...(handleDataSetSelect === undefined
-                        ? {
-                            className: 'font-bold',
-                          }
-                        : {
-                            className: `font-bold ${className.navigationHandled}`,
-                            onClick: (event): void => {
+                      className="font-bold"
+                      onClick={
+                        handleDataSetSelect
+                          ? (event): void => {
                               event.preventDefault();
                               handleDataSetSelect(dataset.id);
-                            },
-                          })}
+                            }
+                          : undefined
+                      }
                     >
                       <img
                         alt=""

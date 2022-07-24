@@ -16,8 +16,8 @@ export type EnhancedRoute = Readonly<
   // Allow to define element as a function that returns an async
   readonly element?: React.ReactNode | (() => Promise<React.FunctionComponent>);
   /*
-   * Add a title attribute for usage when displaying the route in user preferences
-   * FIXME: integrate this prop with the page title
+   * Add a title attribute for usage when displaying the route in user
+   * preferences
    */
   readonly title?: string;
   /*

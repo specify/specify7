@@ -133,14 +133,14 @@ export const routes: RA<EnhancedRoute> = [
           import('./datatask').then(({ NewResourceView }) => NewResourceView),
       },
       {
-        path: ':index',
+        path: ':id',
         element: () =>
           import('./datatask').then(({ ViewResource }) => ViewResource),
       },
     ],
   },
   {
-    path: 'bycatalog/:collection/:catalogNumber/',
+    path: 'bycatalog/:collectionCode/:catalogNumber/',
     element: () =>
       import('./datatask').then(({ ViewByCatalog }) => ViewByCatalog),
   },
@@ -180,7 +180,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'command',
     children: [
       {
-        path: 'switch-collection/:id',
+        path: 'switch-collection/:collectionId',
         element: () =>
           import('./switchcollection').then(
             ({ SwitchCollectionCommand }) => SwitchCollectionCommand

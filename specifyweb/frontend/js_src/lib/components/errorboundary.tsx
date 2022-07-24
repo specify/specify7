@@ -29,12 +29,11 @@ import {
 import { downloadFile } from './filepicker';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { clearUnloadProtect } from './navigation';
-import { NotFoundView } from './notfoundview';
 import { formatPermissionsError, PermissionError } from './permissiondenied';
 import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
+import { unsafeTriggerNotFound } from './router';
 
 type ErrorBoundaryState =
   | State<
@@ -410,11 +409,6 @@ function formatErrorResponse(error: string): JSX.Element {
   return <pre>{error}</pre>;
 }
 
-export function showNotFound(): void {
-  // FIXME: open the notfound page without changing the URL
-  return <NotFoundView />;
-}
-
 export function handleAjaxError(
   error: unknown,
   response: Response,
@@ -430,9 +424,7 @@ export function handleAjaxError(
     response.status === Http.NOT_FOUND &&
     process.env.NODE_ENV !== 'development';
   // In production, uncaught 404 errors redirect to the NOT FOUND page
-  if (isNotFoundError) {
-    clearUnloadProtect();
-    showNotFound();
+  if (isNotFoundError && unsafeTriggerNotFound()) {
     Object.defineProperty(error, 'handledBy', {
       value: handleAjaxError,
     });

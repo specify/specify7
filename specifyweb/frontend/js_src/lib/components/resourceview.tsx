@@ -1,9 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { getCache } from '../cache';
 import { fetchCollection } from '../collection';
-import type { RecordSet, Tables } from '../datamodel';
+import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
@@ -12,7 +13,8 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormMode } from '../parseform';
 import { hasTablePermission } from '../permissionutils';
-import { getResourceViewUrl, resourceOn } from '../resource';
+import { resourceOn } from '../resource';
+import { schema } from '../schema';
 import { Button, className, Container, DataEntry, Form, Link } from './basic';
 import { AppTitle, TableIcon } from './common';
 import type { FormMeta } from './contexts';
@@ -20,18 +22,17 @@ import { FormContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { crash, ErrorBoundary, fail } from './errorboundary';
 import { FormPreferences } from './formpreferences';
+import { useMenuItem } from './header';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
+import { interactionTables } from './interactionsdialog';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { pushUrl } from './navigation';
+import { useSearchParam } from './navigation';
 import { usePref } from './preferenceshooks';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
-import { useNavigate } from 'react-router-dom';
-import { useMenuItem } from './header';
-import { interactionTables } from './interactionsdialog';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -194,18 +195,18 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   });
 }
 
-export const augmentMode = (
+export function augmentMode(
   initialMode: FormMode,
   isNew: boolean,
   tableName: keyof Tables | undefined
-): FormMode =>
-  tableName === undefined
-    ? 'view'
-    : initialMode === 'edit'
-    ? hasTablePermission(tableName, isNew ? 'create' : 'update')
+): FormMode {
+  if (tableName === undefined) return 'view';
+  else if (initialMode === 'edit')
+    return hasTablePermission(tableName, isNew ? 'create' : 'update')
       ? 'edit'
-      : 'view'
-    : initialMode;
+      : 'view';
+  else return initialMode;
+}
 
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,
@@ -502,11 +503,27 @@ export function ResourceView<SCHEMA extends AnySchema>({
 
 export function ShowResource({
   resource: initialResource,
-  recordSet: initialRecordSet,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly recordSet: SpecifyResource<RecordSet> | undefined;
 }): JSX.Element | null {
+  // Look to see if we are in the context of a recordset
+  const [recordsetid = ''] = useSearchParam('recordsetid');
+  const recordSetId = f.parseInt(recordsetid);
+  const initialRecordSet = React.useMemo(
+    () =>
+      typeof recordSetId === 'number'
+        ? new schema.models.RecordSet.Resource({
+            id: recordSetId,
+          })
+        : undefined,
+    [recordSetId]
+  );
+  React.useEffect(() => {
+    if (typeof initialRecordSet === 'object')
+      // @ts-expect-error Assigning to read-only
+      initialResource.recordsetid = recordSet.id;
+  }, [initialRecordSet, initialResource.recordsetid]);
+
   const [{ resource, recordSet }, setRecord] = React.useState({
     resource: initialResource,
     recordSet: initialRecordSet,
@@ -518,18 +535,6 @@ export function ShowResource({
       : interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
       : 'dataEntry'
-  );
-
-  React.useEffect(
-    () =>
-      pushUrl(
-        getResourceViewUrl(
-          resource.specifyModel.name,
-          resource.id,
-          recordSet?.id
-        )
-      ),
-    [resource, recordSet]
   );
 
   const [recordSetItemIndex] = useAsyncState(

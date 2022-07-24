@@ -12,7 +12,7 @@ import { serializeResource } from '../datamodelutils';
 import { removeItem, sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
 import type { MenuItemName } from '../menuitems';
-import { formatUrl, parseUrl } from '../querystring';
+import { formatUrl } from '../querystring';
 import type { RA, RR, WritableArray } from '../types';
 import { writable } from '../types';
 import { Form, Input, Link, Select, Submit } from './basic';
@@ -21,6 +21,7 @@ import { useAsyncState } from './hooks';
 import type { MenuItem } from './main';
 import { usePref } from './preferenceshooks';
 import { switchCollection } from './switchcollection';
+import {useSearchParam} from './navigation';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -172,9 +173,7 @@ export function CollectionSelector(): JSX.Element {
 }
 
 export function ExpressSearch(): JSX.Element {
-  const [searchQuery, setSearchQuery] = React.useState<string>(
-    () => parseUrl().q ?? ''
-  );
+  const [searchQuery='', setSearchQuery] = useSearchParam('q');
   const navigate = useNavigate();
   return (
     <Form

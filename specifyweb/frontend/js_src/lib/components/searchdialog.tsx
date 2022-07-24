@@ -15,7 +15,7 @@ import { getResourceViewUrl } from '../resource';
 import { queryCbxExtendedSearch } from '../specifyapi';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA } from '../types';
-import { Button, className, Form, Link, Submit, Ul } from './basic';
+import { Button, Form, Link, Submit, Ul } from './basic';
 import { fail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
@@ -149,7 +149,6 @@ export function SearchDialog<SCHEMA extends AnySchema>({
               {results.map(({ id, formatted, resource }) => (
                 <li key={id}>
                   <Link.Default
-                    className={className.navigationHandled}
                     href={getResourceViewUrl(
                       templateResource.specifyModel.name,
                       id

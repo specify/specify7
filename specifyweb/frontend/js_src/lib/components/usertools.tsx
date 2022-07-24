@@ -5,7 +5,7 @@ import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';
 import { userToolsPromise } from '../usertools';
-import { Button, H3, Link, Ul } from './basic';
+import { Button, className, H3, Link, Ul } from './basic';
 import { useAsyncState } from './hooks';
 import { icons } from './icons';
 import type { UserTool } from './main';
@@ -64,18 +64,25 @@ function UserToolsColumn({
           <Ul>
             {userTools.map(({ title, url }) => {
               const isExternalLink = isExternalUrl(url);
-              // FIXME: link to the other entrypoint should cause page reload
-              const Component = isExternalLink ? Link.NewTab : Link.Default;
+              // Make links to another entrypoint trigger page reload
+              const isDifferentEntrypoint =
+                !isExternalLink && !url.startsWith('/specify');
+              const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
               return (
                 <li key={url}>
-                  <Component
+                  <LinkComponent
+                    className={
+                      isDifferentEntrypoint
+                        ? className.navigationHandled
+                        : undefined
+                    }
                     href={url}
                     onClick={(): void =>
                       isExternalLink ? undefined : handleClose()
                     }
                   >
                     {title}
-                  </Component>
+                  </LinkComponent>
                 </li>
               );
             })}

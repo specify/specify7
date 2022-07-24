@@ -252,7 +252,7 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan') ?? '');
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan'));
   const align = getProperty('align')?.toLowerCase();
   return {
     id: getParsedAttribute(cellNode, 'id'),

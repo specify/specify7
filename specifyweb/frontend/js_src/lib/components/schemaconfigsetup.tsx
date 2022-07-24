@@ -3,12 +3,13 @@ import React from 'react';
 import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';
-import { formatUrl, parseUrl } from '../querystring';
+import { formatUrl } from '../querystring';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { Button, Input, Label, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog } from './modaldialog';
+import { useSearchParam as useSearchParameter } from './navigation';
 import { SchemaConfigMain } from './schemaconfig';
 import { ChooseSchemaLanguage } from './schemaconfiglanguages';
 import type { SchemaData } from './schemaconfigsetuphooks';
@@ -21,10 +22,7 @@ export function SchemaConfigLanguage({
   readonly schemaData: SchemaData;
   readonly onClose: () => void;
 }): JSX.Element {
-  const { language: defaultLanguage } = parseUrl();
-  const [language, setLanguage] = React.useState<string | undefined>(
-    defaultLanguage
-  );
+  const [language, setLanguage] = useSearchParameter('language');
   return typeof language === 'string' ? (
     <SchemaConfigTables
       language={language}
@@ -52,10 +50,12 @@ function SchemaConfigTables({
   readonly onClose: () => void;
   readonly onBack: () => void;
 }): JSX.Element {
-  const { table: defaultTable } = parseUrl();
+  const [defaultTable, setTable] = useSearchParameter('table');
   const [model, setModel] = React.useState<SpecifyModel | undefined>(
     Object.values(schema.models).find(({ name }) => name === defaultTable)
   );
+  React.useEffect(() => setTable(model?.name), [model, setTable]);
+
   const [showHiddenTables = false, setShowHiddenTables] = useCachedState(
     'schemaConfig',
     'showHiddenTables'

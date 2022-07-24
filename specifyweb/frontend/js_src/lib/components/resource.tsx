@@ -117,7 +117,7 @@ export async function getResourceAndField(
   const getResource =
     path.length === 0
       ? Promise.resolve(undefined)
-      : path.length == 1
+      : path.length === 1
       ? model.fetch()
       : model.rgetPromise(path.slice(0, -1).join('.'));
 

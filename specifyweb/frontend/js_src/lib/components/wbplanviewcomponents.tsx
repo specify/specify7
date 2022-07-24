@@ -240,7 +240,7 @@ export function MappingLineComponent({
   const isComplete = lineData.at(-1)?.customSelectType === 'OPTIONS_LIST';
   return (
     <li
-      aria-current={isFocused}
+      aria-current={isFocused ? 'location' : undefined}
       aria-labelledby={id('header')}
       className="contents"
     >

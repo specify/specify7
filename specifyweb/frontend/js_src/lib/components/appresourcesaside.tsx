@@ -261,10 +261,7 @@ function ResourceItem({
       : `/specify/viewsets/${resource.id}/`;
   return (
     <Link.Default
-      className={`
-        !text-neutral-500 hover:!text-brand-300
-        ${className.navigationHandled}
-      `}
+      className="!text-neutral-500 hover:!text-brand-300"
       href={url}
       onClick={(event): void => {
         event.preventDefault();

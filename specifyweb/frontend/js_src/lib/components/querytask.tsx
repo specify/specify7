@@ -9,7 +9,6 @@ import { queryText } from '../localization/query';
 import { hasPermission, hasToolPermission } from '../permissionutils';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
-import { parseUrl } from '../querystring';
 import { fetchResource } from '../resource';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -20,18 +19,20 @@ import { NotFoundView } from './notfoundview';
 import { ProtectedTool, ProtectedTree } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
 import { deserializeResource } from './resource';
+import { useSearchParam } from './navigation';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
+  const [recordsetid = ''] = useSearchParam('recordsetid');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;
-      const recordSetId = f.parseInt(parseUrl().recordsetid ?? '');
+      const recordSetId = f.parseInt(recordsetid);
       if (recordSetId === undefined) return false;
       const recordSet = new schema.models.RecordSet.Resource({
         id: recordSetId,
       });
       return recordSet.fetch();
-    }, []),
+    }, [recordsetid]),
     true
   );
 
@@ -63,7 +64,7 @@ function QueryBuilderWrapper({
 }
 
 export function QueryBuilderById(): JSX.Element {
-  const { id = '' } = useParams();
+  const { id } = useParams();
   const queryId = f.parseInt(id);
   return typeof queryId === 'number' ? (
     <ProtectedTool action="read" tool="queryBuilder">
@@ -142,7 +143,7 @@ function NewQuery({
 }
 
 export function QueryBuilderFromTree(): JSX.Element | null {
-  const { tableName = '', id = '' } = useParams();
+  const { tableName = '', id } = useParams();
   const nodeId = f.parseInt(id);
   const model = getModel(tableName);
   return typeof model === 'object' &&

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { NavigateFunction } from 'react-router/lib/hooks';
 import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
@@ -17,25 +18,49 @@ import { useRouterBlocker } from './routerblocker';
 import { toReactRoutes } from './routerutils';
 import { routes } from './routes';
 
+const backgroundLocation = Symbol('background-location');
+const isNotFound = Symbol('not-found-page');
+let unsafeNavigate: NavigateFunction | undefined;
+let unsafeLocation: Location | undefined;
+// Using this is not recommended. Render <NotFoundView /> instead.
+export function unsafeTriggerNotFound(): boolean {
+  unsafeNavigate?.(unsafeLocation ?? '/specify/', {
+    replace: true,
+    state: { [isNotFound]: true },
+  });
+  return typeof unsafeNavigate === 'undefined';
+}
+
 export function Router(): JSX.Element {
   const location = useLocation();
-  const state = location.state as { readonly backgroundLocation?: Location };
+  unsafeLocation = location;
+  const background = (
+    location.state as { readonly [backgroundLocation]?: Location }
+  )?.[backgroundLocation];
+  const isNotFoundPage =
+    (location.state as { readonly [isNotFound]?: true })?.[isNotFound] === true;
 
   const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
   useRouterBlocker(
-    async ({ pathname }) =>
-      new Promise((resolve, reject) =>
-        pathIsOverlay(pathname) || isCurrentUrl(pathname)
-          ? resolve()
-          : setUnloadProtect({ resolve, reject })
-      ),
+    React.useCallback(
+      async ({ pathname }) =>
+        new Promise((resolve, reject) =>
+          pathIsOverlay(pathname) ||
+          isCurrentUrl(pathname) ||
+          pathname === background?.pathname
+            ? resolve()
+            : setUnloadProtect({ resolve, reject })
+        ),
+      [background?.pathname]
+    ),
     unloadProtects.length > 0
   );
 
   const navigate = useNavigate();
+  unsafeNavigate = navigate;
   React.useEffect(() => {
     // Leak goTo function in development for quicker development
     if (process.env.NODE_ENV === 'development')
@@ -47,8 +72,7 @@ export function Router(): JSX.Element {
 
   const transformedRoutes = React.useMemo(() => toReactRoutes(routes), []);
   const main =
-    useRoutes(transformedRoutes, state?.backgroundLocation ?? location) ??
-    undefined;
+    useRoutes(transformedRoutes, background ?? location) ?? undefined;
 
   const transformedOverlays = React.useMemo(
     () => toReactRoutes(overlayRoutes),
@@ -56,15 +80,12 @@ export function Router(): JSX.Element {
   );
   const overlay = useRoutes(transformedOverlays) ?? undefined;
 
-  return main === undefined && overlay === undefined ? (
+  return isNotFoundPage || (main === undefined && overlay === undefined) ? (
     <NotFoundView />
   ) : (
     <>
       {main}
-      <Overlay
-        backgroundUrl={state?.backgroundLocation?.pathname}
-        overlay={overlay}
-      />
+      <Overlay backgroundUrl={background?.pathname} overlay={overlay} />
       {typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
         <UnloadProtectDialog
           message={unloadProtects.at(-1)!}
@@ -96,32 +117,41 @@ function useLinkIntercept(): void {
   React.useEffect(
     () =>
       listen(document.body, 'click', (event) => {
-        const parsed = parseEvent(event);
+        const parsed = parseClickEvent(event);
         if (parsed === undefined) return;
         const { url, isOverlay } = parsed;
         navigate(
           url,
-          isOverlay ? { state: { backgroundLocation: location } } : undefined
+          isOverlay ? { state: { [backgroundLocation]: location } } : undefined
         );
       }),
     [navigate, location]
   );
 }
 
-function parseEvent(
+/* Partially inspired by react-router's useLinkClickHandler() */
+function parseClickEvent(
   event: Readonly<MouseEvent>
 ): { readonly url: string; readonly isOverlay: boolean } | undefined {
   const link = (event.target as HTMLElement)?.closest('a');
   if (
+    // Check if link already has an onClick that called event.preventDefault()
+    !event.defaultPrevented &&
     link !== null &&
     link.href.length > 0 &&
     link.getAttribute('href')?.startsWith('#') === false &&
     link.getAttribute('download') === null &&
-    (link.target !== '_blank' ||
+    !event.metaKey &&
+    !event.shiftKey &&
+    !event.ctrlKey &&
+    (typeof link.target !== 'string' ||
+      link.target === '_self' ||
       (event.altKey &&
         getUserPref('general', 'behavior', 'altClickToSupressNewTab'))) &&
+    // Can add this class name to links to prevent react-router from handling them
     !link.classList.contains(className.navigationHandled)
   ) {
+    // Don't handle absolute URLs that lead to a different origin
     const relativeUrl = toRelativeUrl(link.href);
     if (typeof relativeUrl === 'string') {
       event.preventDefault();

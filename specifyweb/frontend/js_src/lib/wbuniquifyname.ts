@@ -28,9 +28,7 @@ export function getUniqueName(
     Math.max(
       ...filterArray([
         f.parseInt(indexString),
-        ...usedNames.map((name) =>
-          f.parseInt(indexRegex.exec(name)?.[1] ?? '1')
-        ),
+        ...usedNames.map((name) => f.parseInt(indexRegex.exec(name)?.[1]) ?? 1),
       ])
     ) + 1;
   const uniquePart = ` (${newIndex})`;

@@ -95,7 +95,7 @@ const processFieldType: {
       })
     ),
   TextArea(cell) {
-    const rows = f.parseInt(getParsedAttribute(cell, 'rows') ?? '');
+    const rows = f.parseInt(getParsedAttribute(cell, 'rows'));
     return {
       type: 'TextArea',
       ...withStringDefault(cell),
@@ -116,9 +116,9 @@ const processFieldType: {
   Text: (cell, getProperty) => ({
     type: 'Text',
     ...withStringDefault(cell),
-    min: f.parseInt(getProperty('min') ?? ''),
-    max: f.parseInt(getProperty('max') ?? ''),
-    step: f.parseFloat(getProperty('step') ?? ''),
+    min: f.parseInt(getProperty('min')),
+    max: f.parseInt(getProperty('max')),
+    step: f.parseFloat(getProperty('step')),
   }),
   QueryComboBox: (_cell, getProperty) => ({
     type: 'QueryComboBox',

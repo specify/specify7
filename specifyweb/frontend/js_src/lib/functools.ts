@@ -147,15 +147,19 @@ export const f = {
    * Since TypeScript is unaware of the NaN type, returning undefined
    * is a safer choice
    */
-  parseInt: (value: string): number | undefined =>
-    f.var(Number.parseInt(value), (number) =>
-      Number.isNaN(number) ? undefined : number
-    ),
+  parseInt: (value: string | undefined): number | undefined =>
+    value === undefined
+      ? undefined
+      : f.var(Number.parseInt(value), (number) =>
+          Number.isNaN(number) ? undefined : number
+        ),
   /** Like f.parseInt, but for floats */
-  parseFloat: (value: string): number | undefined =>
-    f.var(Number.parseFloat(value), (number) =>
-      Number.isNaN(number) ? undefined : number
-    ),
+  parseFloat: (value: string | undefined): number | undefined =>
+    value === undefined
+      ? undefined
+      : f.var(Number.parseFloat(value), (number) =>
+          Number.isNaN(number) ? undefined : number
+        ),
   /**
    * Round a number to the nearest step value, where step could be a float
    *
