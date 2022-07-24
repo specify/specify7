@@ -17,12 +17,15 @@ import { getOperationPermissions, getTablePermissions } from '../permissions';
 import { getRawUserPreferences } from '../preferencesutils';
 import { remotePrefs } from '../remoteprefs';
 import { schema } from '../schema';
-import { setCurrentComponent } from '../specifyapp';
 import { getSystemInfo } from '../systeminfo';
 import type { WritableArray } from '../types';
 import { userInformation } from '../userinfo';
 import { Button, Input, Label, Link } from './basic';
-import { displayError, legacyLoadingContext } from './contexts';
+import {
+  displayError,
+  legacyLoadingContext,
+  UnloadProtectsContext,
+} from './contexts';
 import { downloadFile } from './filepicker';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
@@ -55,6 +58,7 @@ export const supportLink =
   );
 
 const errors = new Set<string>();
+
 function ErrorDialog({
   header = commonText('errorBoundaryDialogHeader'),
   children,
@@ -85,13 +89,24 @@ function ErrorDialog({
   const canClose =
     (canDismiss ||
       dismissable ||
-      process.env.NODE_ENV !== 'production' ||
+      process.env.NODE_ENV === 'development' ||
       !isLastError) &&
     typeof handleClose === 'function';
   const [clearCacheOnException = false, setClearCache] = useCachedState(
     'general',
     'clearCacheOnException'
   );
+
+  const [unloadProtects, setUnloadProtects] = React.useContext(
+    UnloadProtectsContext
+  )!;
+  /**
+   * Clear unload protects when error occurs, but return them back if error
+   * is dismissed
+   */
+  const initialUnloadProtects = React.useRef(unloadProtects ?? []);
+  React.useCallback(() => setUnloadProtects?.([]), [setUnloadProtects]);
+
   return (
     <Dialog
       buttons={
@@ -134,7 +149,16 @@ function ErrorDialog({
             {commonText('goToHomepage')}
           </Button.Red>
           {canClose && (
-            <Button.Blue onClick={handleClose}>
+            <Button.Blue
+              onClick={(): void => {
+                setUnloadProtects?.(
+                  initialUnloadProtects.current.length === 0
+                    ? unloadProtects
+                    : initialUnloadProtects.current
+                );
+                handleClose();
+              }}
+            >
               {commonText('dismiss')}
             </Button.Blue>
           )}
@@ -152,7 +176,7 @@ function ErrorDialog({
       <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
       <details
         className="flex-1 whitespace-pre-wrap"
-        open={process.env.NODE_ENV !== 'production'}
+        open={process.env.NODE_ENV === 'development'}
       >
         <summary>{commonText('errorMessage')}</summary>
         {children}
@@ -166,7 +190,7 @@ function ErrorDialog({
 export const fail = (error: Error): void => showError(error, true);
 
 export const softFail =
-  process.env.NODE_ENV === 'production' ? console.error : fail;
+  process.env.NODE_ENV === 'development' ? fail : console.error;
 
 /** Display an error message. Can only be dismissed if has user preference set */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -218,14 +242,6 @@ export class ErrorBoundary extends React.Component<
     error: Error,
     errorInfo: { readonly componentStack: string }
   ): void {
-    /*
-     * REFACTOR: remove this line once everything is using React.
-     *   That is because unload protect should get removed when component
-     *   is unRendered due to crash (though need to verify that).
-     *   Also, once error bounders are used all over the place, a crash in one
-     *   component should not clear the unload protect for other components
-     */
-    clearUnloadProtect();
     console.error(error.toString());
     this.setState({
       type: 'Error',
@@ -238,7 +254,7 @@ export class ErrorBoundary extends React.Component<
     if (
       (this.state.type === 'Error' &&
         this.props.silentErrors === true &&
-        process.env.NODE_ENV === 'production') ||
+        process.env.NODE_ENV !== 'development') ||
       this.state.type === 'Silenced'
     )
       return null;
@@ -394,6 +410,11 @@ function formatErrorResponse(error: string): JSX.Element {
   return <pre>{error}</pre>;
 }
 
+export function showNotFound(): void {
+  // FIXME: open the notfound page without changing the URL
+  return <NotFoundView />;
+}
+
 export function handleAjaxError(
   error: unknown,
   response: Response,
@@ -406,11 +427,12 @@ export function handleAjaxError(
   if (userInformation.agent === null) throw error;
 
   const isNotFoundError =
-    response.status === Http.NOT_FOUND && process.env.NODE_ENV === 'production';
-  // In production, uncaught redirect 404 errors to the NOT FOUND page
+    response.status === Http.NOT_FOUND &&
+    process.env.NODE_ENV !== 'development';
+  // In production, uncaught 404 errors redirect to the NOT FOUND page
   if (isNotFoundError) {
     clearUnloadProtect();
-    setCurrentComponent(<NotFoundView />);
+    showNotFound();
     Object.defineProperty(error, 'handledBy', {
       value: handleAjaxError,
     });

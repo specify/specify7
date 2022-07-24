@@ -3,41 +3,21 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { ajax, isExternalUrl } from '../ajax';
+import { ajax } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
-import { group, sortFunction, split, toLowerCase } from '../helpers';
+import { sortFunction, toLowerCase } from '../helpers';
 import { commonText } from '../localization/common';
 import { formatUrl, parseUrl } from '../querystring';
-import { resourceOn } from '../resource';
-import { router } from '../router';
-import {
-  setCurrentOverlay,
-  setCurrentView,
-  switchCollection,
-} from '../specifyapp';
+import { switchCollection } from '../specifyapp';
 import type { IR, RA } from '../types';
-import { userInformation } from '../userinfo';
-import {
-  Button,
-  className,
-  Form,
-  H3,
-  Input,
-  Link,
-  Select,
-  Submit,
-  Ul,
-} from './basic';
-import { useAsyncState, useBooleanState } from './hooks';
-import { icons } from './icons';
-import type { MenuItem, UserTool } from './main';
-import { Dialog } from './modaldialog';
-import { goTo } from './navigation';
+import { Form, Input, Link, Select, Submit } from './basic';
+import { useAsyncState } from './hooks';
+import type { MenuItem } from './main';
 import { usePref } from './preferenceshooks';
-import { createBackboneView } from './reactbackboneextend';
 
 const routeMappings: IR<string> = {
   recordSetView: 'data',
@@ -59,14 +39,14 @@ export function HeaderItems({
   const [activeTask, setActiveTask] = React.useState<string | undefined>(
     undefined
   );
-  React.useEffect(
+  /*React.useEffect(
     () =>
       resourceOn(router, 'route', (route: string) => {
         if (menuItems.some(({ task }) => task === route)) setActiveTask(route);
         else setActiveTask(routeMappings[route] ?? undefined);
       }),
     [menuItems]
-  );
+  );*/
 
   return (
     <nav
@@ -76,11 +56,11 @@ export function HeaderItems({
         px-2 lg:justify-center xl:m-0
       `}
     >
-      {menuItems.map(({ task, title, icon, view, isOverlay }) => (
+      {menuItems.map(({ title, icon, url }) => (
         <Link.Default
-          aria-current={task === activeTask ? 'page' : undefined}
+          // FIXME: refactor the active task system
+          aria-current={url === activeTask ? 'page' : undefined}
           className={`
-            ${typeof view === 'string' ? '' : className.navigationHandled}
             relative
             inline-flex
             items-center
@@ -92,7 +72,7 @@ export function HeaderItems({
             dark:text-neutral-300
             active:dark:bg-neutral-600
             ${
-              task === activeTask
+              url === activeTask
                 ? 'bg-white dark:bg-neutral-600 lg:!bg-transparent'
                 : ''
             }
@@ -105,23 +85,11 @@ export function HeaderItems({
             lg:after:bg-transparent
             lg:hover:after:bg-gray-200
             lg:hover:after:dark:bg-neutral-800
-            ${task === activeTask ? 'lg:after:bg-gray-200' : ''}
-            ${task === activeTask ? 'lg:after:dark:bg-neutral-800' : ''}
+            ${url === activeTask ? 'lg:after:bg-gray-200' : ''}
+            ${url === activeTask ? 'lg:after:dark:bg-neutral-800' : ''}
           `}
-          href={typeof view === 'string' ? view : `/specify/task/${task}/`}
-          key={task}
-          onClick={(event): void => {
-            if (typeof view === 'string') return;
-            event.preventDefault();
-            const View = createBackboneView(view);
-            const backboneView = new View({
-              onClose: (): void => void backboneView.remove(),
-              urlParameter: undefined,
-            });
-            if (isOverlay)
-              setCurrentOverlay(backboneView, `/specify/task/${task}/`);
-            else setCurrentView(backboneView);
-          }}
+          href={url}
+          key={url}
         >
           {icon}
           {title}
@@ -196,6 +164,7 @@ export function ExpressSearch(): JSX.Element {
   const [searchQuery, setSearchQuery] = React.useState<string>(
     () => parseUrl().q ?? ''
   );
+  const navigate = useNavigate();
   return (
     <Form
       action="/specify/express_search/"
@@ -207,7 +176,7 @@ export function ExpressSearch(): JSX.Element {
         const url = formatUrl('/specify/express_search/', {
           q: query,
         });
-        goTo(url);
+        navigate(url);
       }}
     >
       <Input.Generic
@@ -223,139 +192,5 @@ export function ExpressSearch(): JSX.Element {
       />
       <Submit.Blue className="sr-only">{commonText('search')}</Submit.Blue>
     </Form>
-  );
-}
-
-function UserToolsColumn({
-  groups,
-  onClose: handleClose,
-}: {
-  readonly groups: RA<readonly [string, RA<Omit<UserTool, 'groupLabel'>>]>;
-  readonly onClose: () => void;
-}): JSX.Element {
-  return (
-    <div className="flex flex-1 flex-col gap-4">
-      {groups.map(([groupName, userTools]) => (
-        <div key={groupName}>
-          <H3>{groupName}</H3>
-          <Ul>
-            {userTools
-              .map((userTool) => ({
-                ...userTool,
-                basePath:
-                  'basePath' in userTool
-                    ? (
-                        userTool as unknown as {
-                          readonly basePath: string;
-                        }
-                      ).basePath
-                    : '/specify/task/',
-              }))
-              .map(({ task, title, basePath, view, isOverlay }) => {
-                // REFACTOR: simplify all of this
-                const isExternalLink =
-                  typeof view === 'string' &&
-                  basePath !== '/' &&
-                  isExternalUrl(view);
-                const Component = isExternalLink ? Link.NewTab : Link.Default;
-                return (
-                  <li key={task}>
-                    <Component
-                      className={
-                        typeof view === 'string' && basePath === '/'
-                          ? className.navigationHandled
-                          : undefined
-                      }
-                      href={
-                        typeof view === 'string' ? view : `${basePath}${task}/`
-                      }
-                      onClick={(event): void => {
-                        if (typeof view === 'string') {
-                          if (basePath === '/')
-                            globalThis.location.assign(view);
-                          else handleClose();
-                          return;
-                        }
-                        if (!isExternalLink) handleClose();
-
-                        if (isOverlay) {
-                          event.preventDefault();
-                          const BackboneView = createBackboneView(view);
-                          const backboneView = new BackboneView({
-                            onClose: (): void => void backboneView.remove(),
-                            urlParameter: undefined,
-                          });
-                          setCurrentOverlay(
-                            backboneView,
-                            `${basePath}${task}/`
-                          );
-                        }
-                      }}
-                    >
-                      {title}
-                    </Component>
-                  </li>
-                );
-              })}
-          </Ul>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export function UserTools({
-  userTools,
-}: {
-  readonly userTools: RA<UserTool>;
-}): JSX.Element {
-  /*
-   * Can't split columns with CSS because break-inside:avoid is not yet
-   * very well-supported
-   */
-  const [leftColumn, rightColumn] = split(
-    Array.from(
-      group(
-        userTools.map(({ groupLabel, ...userTool }) => [groupLabel, userTool])
-      ),
-      ([label, items]) =>
-        [
-          label,
-          /*
-           * Sort items only after they are grouped so that group order
-           * stays the same regardless of the UI language
-           */
-          Array.from(items).sort(sortFunction(({ title }) => title)),
-        ] as const
-    ),
-    (_item, index, { length }) => index >= length / 2
-  );
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <>
-      {/* REFACTOR: get rid of usages of "px" units in the header */}
-      <Button.Small
-        className={`
-          text-overflow-ellipsis max-w-[110px] overflow-hidden
-          whitespace-nowrap normal-case
-        `}
-        title={commonText('currentUser')}
-        onClick={handleOpen}
-      >
-        {userInformation.name}
-      </Button.Small>
-      <Dialog
-        buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-        header={commonText('userToolsDialogTitle')}
-        icon={<span className="text-blue-500">{icons.cog}</span>}
-        isOpen={isOpen}
-        onClose={handleClose}
-      >
-        <nav className="flex gap-2">
-          <UserToolsColumn groups={leftColumn} onClose={handleClose} />
-          <UserToolsColumn groups={rightColumn} onClose={handleClose} />
-        </nav>
-      </Dialog>
-    </>
   );
 }

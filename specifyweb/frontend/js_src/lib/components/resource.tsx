@@ -10,7 +10,7 @@ import type { SpecifyResource } from '../legacytypes';
 import { resourceOn, tableFromUrl } from '../resource';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
-import type { IR } from '../types';
+import type { GetOrSet, IR } from '../types';
 import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
 
@@ -25,16 +25,7 @@ import { getValidationAttributes, resolveParser } from '../uiparse';
  */
 export function useResource<SCHEMA extends AnySchema>(
   model: SpecifyResource<SCHEMA>
-): readonly [
-  SerializedResource<SCHEMA>,
-  (
-    newState:
-      | SerializedResource<SCHEMA>
-      | ((
-          previousState: SerializedResource<SCHEMA>
-        ) => SerializedResource<SCHEMA>)
-  ) => void
-] {
+): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
     () => serializeResource(model)
   );

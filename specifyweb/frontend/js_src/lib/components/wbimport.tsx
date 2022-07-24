@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { encodings } from '../encodings';
 import { wbText } from '../localization/workbench';
@@ -23,12 +24,10 @@ import { Button, Container, H2, H3, Input, Select } from './basic';
 import { loadingGif } from './common';
 import { LoadingContext } from './contexts';
 import { FilePicker } from './filepicker';
-import { useAsyncState, useTitle, useTriggerState } from './hooks';
+import { useAsyncState, useTriggerState } from './hooks';
 import { useCachedState } from './statecache';
 
 export function WbImportView(): JSX.Element {
-  useTitle(wbText('importDataSet'));
-
   const [file, setFile] = React.useState<File | undefined>();
 
   return (
@@ -59,15 +58,23 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
   const preview = useCsvPreview(file, encoding);
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
   return (
     <Layout
       fileName={file.name}
       preview={preview}
       onImport={(dataSetName, hasHeader): void =>
         loading(
-          parseCsv(file, encoding).then(async (data) =>
-            createDataSet({ dataSetName, fileName: file.name, hasHeader, data })
-          )
+          parseCsv(file, encoding)
+            .then(async (data) =>
+              createDataSet({
+                dataSetName,
+                fileName: file.name,
+                hasHeader,
+                data,
+              })
+            )
+            .then(({ id }) => navigate(`/workbench/${id}/`))
         )
       }
     >
@@ -250,15 +257,23 @@ function Preview({
 function XlsPicked({ file }: { readonly file: File }): JSX.Element {
   const preview = useXlsPreview(file);
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
   return (
     <Layout
       fileName={file.name}
       preview={preview}
       onImport={(dataSetName, hasHeader): void =>
         loading(
-          parseXls(file).then(async (data) =>
-            createDataSet({ dataSetName, fileName: file.name, hasHeader, data })
-          )
+          parseXls(file)
+            .then(async (data) =>
+              createDataSet({
+                dataSetName,
+                fileName: file.name,
+                hasHeader,
+                data,
+              })
+            )
+            .then(({ id }) => navigate(`/workbench/${id}/`))
         )
       }
     />

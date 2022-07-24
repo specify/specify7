@@ -2,7 +2,6 @@ import Papa from 'papaparse';
 import ImportXLSWorker from 'worker-loader!./wbimportxls.worker';
 
 import { ajax, Http } from './ajax';
-import { goTo } from './components/navigation';
 import type { Dataset } from './components/wbplanview';
 import { f } from './functools';
 import { wbText } from './localization/workbench';
@@ -122,7 +121,7 @@ export const createDataSet = async ({
   readonly fileName: string;
   readonly hasHeader: boolean;
   readonly data: RA<RA<string>>;
-}): Promise<void> =>
+}): Promise<Dataset> =>
   uniquifyDataSetName(dataSetName)
     .then(async (dataSetName) => {
       const { rows, header } = extractHeader(data, hasHeader);
@@ -143,4 +142,4 @@ export const createDataSet = async ({
         { expectedResponseCodes: [Http.CREATED] }
       );
     })
-    .then(({ data: { id } }) => goTo(`/workbench/${id}/`));
+    .then(({ data }) => data);

@@ -11,20 +11,29 @@ import type { SerializedResource } from '../../datamodelutils';
 import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasToolPermission } from '../../permissionutils';
-import { getUserPref } from '../../preferencesutils';
 import { getModelById } from '../../schema';
 import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
-import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
-import type { MenuItem } from '../main';
 import { Dialog } from '../modaldialog';
 import { QueryEditButton } from '../queryedit';
 import { QueryTables } from '../querytables';
+import { OverlayContext } from '../router';
+
+export function QueriesOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <QueryToolbarItem
+      getQuerySelectUrl={undefined}
+      isReadOnly={false}
+      onClose={handleClose}
+    />
+  );
+}
 
 function QueryList({
   queries: unsortedQueries,
@@ -185,23 +194,3 @@ export function QueryToolbarItem({
     </Dialog>
   ) : null;
 }
-
-export const menuItem: MenuItem = {
-  task: 'query',
-  title: commonText('queries'),
-  icon: icons.documentSearch,
-  isOverlay: true,
-  enabled: () =>
-    (hasToolPermission('queryBuilder', 'read') ||
-      hasPermission('/querybuilder/query', 'execute')) &&
-    getUserPref('header', 'menu', 'showQueries'),
-  view: ({ onClose: handleClose }) => (
-    <ErrorBoundary dismissable>
-      <QueryToolbarItem
-        getQuerySelectUrl={undefined}
-        isReadOnly={false}
-        onClose={handleClose}
-      />
-    </ErrorBoundary>
-  ),
-};

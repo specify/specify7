@@ -274,6 +274,10 @@ export const formsText = createDictionary({
     'ru-ru': 'Нет данных.',
   },
   // RecordSetsDialog
+  recordSets: {
+    'en-us': 'Record Sets',
+    'ru-ru': 'Наборы записей',
+  },
   recordSetsDialogTitle: {
     'en-us': (count: number) => `Record Sets (${count})`,
     'ru-ru': (count: number) => `Наборы объектов (${count})`,

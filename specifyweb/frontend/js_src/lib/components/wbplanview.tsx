@@ -17,10 +17,10 @@ import {
 import { savePlan } from '../wbplanviewutils';
 import type { UploadResult } from '../wbuploadedparser';
 import { useLiveState, useTitle } from './hooks';
-import { goTo } from './navigation';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
 import { BaseTableSelection } from './wbplanviewstate';
+import { useNavigate } from 'react-router-dom';
 
 // General definitions
 export type Status = {
@@ -112,10 +112,11 @@ export function WbPlanView({
     )
   );
 
+  const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
     <BaseTableSelection
       headers={headers}
-      onClose={(): void => goTo(`/workbench/${dataset.id}/`)}
+      onClose={(): void => navigate(`/workbench/${dataset.id}/`)}
       onSelected={(baseTableName): void =>
         setState({
           type: 'MappingState',
@@ -156,7 +157,7 @@ export function WbPlanView({
           baseTableName: state.baseTableName,
           lines,
           mustMatchPreferences,
-        }).then(() => goTo(`/workbench/${dataset.id}/`))
+        }).then(() => navigate(`/workbench/${dataset.id}/`))
       }
     />
   );

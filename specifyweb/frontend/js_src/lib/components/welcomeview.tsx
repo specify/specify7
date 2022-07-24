@@ -10,10 +10,10 @@ import { Button, H3, Link } from './basic';
 import { supportLink } from './errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { DateElement } from './internationalization';
-import type { UserTool } from './main';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
+import { OverlayContext } from './router';
 import { TaxonTiles } from './taxontiles';
 
 function WelcomeScreenContent(): JSX.Element {
@@ -35,12 +35,17 @@ function WelcomeScreenContent(): JSX.Element {
   );
 }
 
+export function AboutOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return <AboutDialog isOpen onClose={handleClose} />;
+}
+
 function AboutDialog({
-  onClose: handleClose,
   isOpen,
+  onClose: handleClose,
 }: {
-  readonly onClose: () => void;
   readonly isOpen: boolean;
+  readonly onClose: () => void;
 }): JSX.Element {
   return (
     <Dialog
@@ -182,13 +187,3 @@ export function WelcomeView(): JSX.Element {
     </div>
   );
 }
-
-export const userTool: UserTool = {
-  task: 'about',
-  title: welcomeText('aboutSpecify'),
-  view: ({ onClose: handleClose }) => (
-    <AboutDialog isOpen onClose={handleClose} />
-  ),
-  isOverlay: true,
-  groupLabel: commonText('documentation'),
-};

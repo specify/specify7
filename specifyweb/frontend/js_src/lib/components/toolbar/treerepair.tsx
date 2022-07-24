@@ -21,9 +21,22 @@ import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useTitle } from '../hooks';
 import { icons } from '../icons';
-import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 import { ResourceView } from '../resourceview';
+import { OverlayContext } from '../router';
+
+export function TreeSelectOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <TreeSelectDialog
+      getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
+      permissionName="read"
+      title={commonText('treesDialogTitle')}
+      onClick={undefined}
+      onClose={handleClose}
+    />
+  );
+}
 
 export function TreeSelectDialog({
   onClose: handleClose,
@@ -127,11 +140,8 @@ const handleClick = async (tree: string): Promise<void> =>
     method: 'POST',
   }).then(f.void);
 
-function RepairTree({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element {
+export function TreeRepairOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
   useTitle(commonText('repairTree'));
 
   const loading = React.useContext(LoadingContext);
@@ -180,15 +190,3 @@ export function EditTreeDefinition({
     </ErrorBoundary>
   );
 }
-
-export const userTool: UserTool = {
-  task: 'repair-tree',
-  title: commonText('repairTree'),
-  isOverlay: true,
-  enabled: () =>
-    getDisciplineTrees().some((treeName) =>
-      hasPermission(`/tree/edit/${toLowerCase(treeName)}`, 'repair')
-    ),
-  view: ({ onClose: handleClose }) => <RepairTree onClose={handleClose} />,
-  groupLabel: commonText('administration'),
-};

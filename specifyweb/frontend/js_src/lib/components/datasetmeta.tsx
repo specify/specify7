@@ -19,9 +19,9 @@ import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { icons } from './icons';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
-import { goTo } from './navigation';
 import { createBackboneView } from './reactbackboneextend';
 import type { Dataset } from './wbplanview';
+import { useNavigate } from 'react-router-dom';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -220,12 +220,13 @@ function ChangeOwner({
   const [newOwner, setNewOwner] = React.useState<number | undefined>(undefined);
   const [isChanged, setIsChanged] = React.useState(false);
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
 
   return users === undefined ? null : isChanged ? (
     <Dialog
       buttons={commonText('close')}
       header={wbText('dataSetOwnerChangedDialogHeader')}
-      onClose={(): void => goTo('/')}
+      onClose={(): void => navigate('/specify/')}
     >
       <p>{wbText('dataSetOwnerChangedDialogText')}</p>
     </Dialog>

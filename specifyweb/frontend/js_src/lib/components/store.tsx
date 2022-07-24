@@ -9,6 +9,7 @@ import type { Tables } from '../datamodel';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { getModel } from '../schema';
+import type { GetOrSet } from '../types';
 import { isFunction } from '../types';
 import { crash } from './errorboundary';
 import { useAsyncState } from './hooks';
@@ -56,12 +57,7 @@ export function useStore<
   id: ID,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean
-): readonly [
-  state: Buckets[BUCKET_NAME][ID] | undefined,
-  setState: React.Dispatch<
-    React.SetStateAction<Buckets[BUCKET_NAME][ID] | undefined>
-  >
-] {
+): GetOrSet<Buckets[BUCKET_NAME][ID] | undefined> {
   const [state, setState] = useAsyncState<Buckets[BUCKET_NAME][ID]>(
     React.useCallback(() => {
       if (store[bucketName] === undefined)
@@ -115,14 +111,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   id: number,
   loadingScreen: boolean
-): readonly [
-  state: Buckets[`/api/specify/${TABLE_NAME}/`][number] | undefined,
-  setState: React.Dispatch<
-    React.SetStateAction<
-      Buckets[`/api/specify/${TABLE_NAME}/`][number] | undefined
-    >
-  >
-] {
+): GetOrSet<Buckets[`/api/specify/${TABLE_NAME}/`][number] | undefined> {
   return useStore(
     React.useCallback(
       (id: number) => {

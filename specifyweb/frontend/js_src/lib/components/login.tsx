@@ -2,8 +2,6 @@
  * The entrypoint for the login endpoint
  */
 
-import '../../css/main.css';
-
 import React from 'react';
 
 import { parseDjangoDump } from '../csrftoken';
@@ -13,13 +11,53 @@ import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
-import { useTitle, useValidation } from './hooks';
+import { useValidation } from './hooks';
 import type { OicProvider } from './oiclogin';
 import { OicLogin } from './oiclogin';
-import { entrypoint, SplashScreen } from './splashscreen';
+import { SplashScreen } from './entrypoint';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 
-function Login({
+export function Login(): JSX.Element {
+  return React.useMemo(() => {
+    const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
+    const providers = parseDjangoDump<RA<OicProvider>>('providers');
+    return providers.length > 0 ? (
+      <OicLogin
+        data={{
+          inviteToken: parseDjangoDump('invite-token'),
+          providers,
+          languages: parseDjangoDump('languages'),
+          csrfToken: parseDjangoDump('csrf-token'),
+        }}
+        nextUrl={
+          nextUrl.startsWith(nextDestination)
+            ? nextUrl
+            : `${nextDestination}${nextUrl}`
+        }
+      />
+    ) : (
+      <LegacyLogin
+        data={{
+          formErrors: parseDjangoDump('form-errors'),
+          inputErrors: parseDjangoDump('input-errors'),
+          externalUser: parseDjangoDump('external-user'),
+          passwordErrors: parseDjangoDump('password-errors'),
+          languages: parseDjangoDump('languages'),
+          csrfToken: parseDjangoDump('csrf-token'),
+        }}
+        nextUrl={
+          nextUrl.startsWith(nextDestination)
+            ? nextUrl
+            : `${nextDestination}${nextUrl}`
+        }
+      />
+    );
+  }, []);
+}
+
+const nextDestination = '/accounts/choose_collection/?next=';
+
+function LegacyLogin({
   data,
   nextUrl,
 }: {
@@ -38,7 +76,6 @@ function Login({
   };
   readonly nextUrl: string;
 }): JSX.Element {
-  useTitle(commonText('login'));
   const [formErrors] = React.useState(data.formErrors);
 
   const { validationRef, inputRef } = useValidation(data.inputErrors);
@@ -102,41 +139,3 @@ function Login({
     </SplashScreen>
   );
 }
-
-const nextDestination = '/accounts/choose_collection/?next=';
-
-entrypoint('login', () => {
-  const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
-  const providers = parseDjangoDump<RA<OicProvider>>('providers');
-  return providers.length > 0 ? (
-    <OicLogin
-      data={{
-        inviteToken: parseDjangoDump('invite-token'),
-        providers,
-        languages: parseDjangoDump('languages'),
-        csrfToken: parseDjangoDump('csrf-token'),
-      }}
-      nextUrl={
-        nextUrl.startsWith(nextDestination)
-          ? nextUrl
-          : `${nextDestination}${nextUrl}`
-      }
-    />
-  ) : (
-    <Login
-      data={{
-        formErrors: parseDjangoDump('form-errors'),
-        inputErrors: parseDjangoDump('input-errors'),
-        externalUser: parseDjangoDump('external-user'),
-        passwordErrors: parseDjangoDump('password-errors'),
-        languages: parseDjangoDump('languages'),
-        csrfToken: parseDjangoDump('csrf-token'),
-      }}
-      nextUrl={
-        nextUrl.startsWith(nextDestination)
-          ? nextUrl
-          : `${nextDestination}${nextUrl}`
-      }
-    />
-  );
-});

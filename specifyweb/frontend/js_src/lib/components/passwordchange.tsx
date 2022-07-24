@@ -2,8 +2,6 @@
  * Entry point for the password change view
  */
 
-import '../../css/main.css';
-
 import React from 'react';
 
 import { csrfToken, parseDjangoDump } from '../csrftoken';
@@ -12,7 +10,23 @@ import type { RA } from '../types';
 import { ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { useTitle, useValidation } from './hooks';
 import { MIN_PASSWORD_LENGTH } from './passwordplugin';
-import { entrypoint, SplashScreen } from './splashscreen';
+import { SplashScreen } from './entrypoint';
+
+export function PasswordChange(): JSX.Element {
+  return React.useMemo(
+    () => (
+      <ChangePassword
+        data={{
+          formErrors: parseDjangoDump('form-errors'),
+          oldPasswordErrors: parseDjangoDump('old-password-errors'),
+          newPasswordErrors: parseDjangoDump('new-password-errors'),
+          repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
+        }}
+      />
+    ),
+    []
+  );
+}
 
 function ChangePassword({
   data,
@@ -86,14 +100,3 @@ function ChangePassword({
     </SplashScreen>
   );
 }
-
-entrypoint('passwordChange', () => (
-  <ChangePassword
-    data={{
-      formErrors: parseDjangoDump('form-errors'),
-      oldPasswordErrors: parseDjangoDump('old-password-errors'),
-      newPasswordErrors: parseDjangoDump('new-password-errors'),
-      repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
-    }}
-  />
-));

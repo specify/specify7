@@ -14,15 +14,13 @@ import { useAsyncState } from './hooks';
 import { NotFoundView } from './notfoundview';
 import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
+import { useParams } from 'react-router-dom';
 
 /**
  * Entrypoint React component for the workbench mapper
  */
-export function WbPlanViewWrapper({
-  dataSetId,
-}: {
-  readonly dataSetId: string;
-}): JSX.Element | null {
+export function WbPlanViewWrapper(): JSX.Element | null {
+  const { id = '' } = useParams();
   const [treeRanks] = useAsyncState(
     React.useCallback(async () => treeRanksPromise, []),
     true
@@ -31,7 +29,7 @@ export function WbPlanViewWrapper({
   const [dataSet] = useAsyncState<Dataset | false>(
     React.useCallback(
       () =>
-        f.maybe(f.parseInt(dataSetId), async (dataSetId) =>
+        f.maybe(f.parseInt(id), async (dataSetId) =>
           ajax<Dataset>(
             `/api/workbench/dataset/${dataSetId}/`,
             {
@@ -42,7 +40,7 @@ export function WbPlanViewWrapper({
             status === Http.NOT_FOUND ? false : data
           )
         ) ?? false,
-      [dataSetId]
+      [id]
     ),
     true
   );

@@ -12,7 +12,8 @@ import { LeafletMap } from './leaflet';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
-type Pair<T = number> = readonly [T, T];
+// REFACTOR: use this type where applicable
+export type Pair<T = number> = readonly [T, T];
 
 export function QueryFromMap({
   fields,

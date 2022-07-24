@@ -12,14 +12,13 @@ import { autoGenerateViewDefinition } from '../generateformdefinitions';
 import type { SpecifyResource } from '../legacytypes';
 import type { FormMode, FormType, ViewDescription } from '../parseform';
 import { getView, parseViewDefinition } from '../parseform';
-import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { hijackBackboneAjax } from '../startapp';
 import { webOnlyViews } from '../webonlyviews';
 import { DataEntry } from './basic';
 import { loadingGif } from './common';
+import { showNotFound } from './errorboundary';
 import { useAsyncState, useId } from './hooks';
-import { NotFoundView } from './notfoundview';
 import { usePref } from './preferenceshooks';
 import { FormCell } from './specifyformcell';
 import { useCachedState } from './statecache';
@@ -166,10 +165,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
         hijackBackboneAjax(
           [Http.OK, Http.NOT_FOUND],
           async () => resource.fetch(),
-          (status) =>
-            status === Http.NOT_FOUND
-              ? setCurrentComponent(<NotFoundView />)
-              : undefined
+          (status) => (status === Http.NOT_FOUND ? showNotFound() : undefined)
         ),
       [resource]
     ),
@@ -227,19 +223,6 @@ export function RenderForm<SCHEMA extends AnySchema>({
           >
             {viewDefinition.rows.map((cells, index) => (
               <React.Fragment key={index}>
-                {/*
-                 * This is used to help with debugging only. Previous implementation
-                 * was wrapping row in div.contents, but that caused elements
-                 * within to be not focusable when rendered inside a dialog because
-                 * of this bug: https://github.com/reactjs/react-modal/issues/905
-                 */}
-                {process.env.NODE_ENV !== 'production' && (
-                  <span
-                    aria-hidden
-                    className="contents"
-                    data--row-index={index}
-                  />
-                )}
                 {cells.map(
                   (
                     { colSpan, align, visible, id: cellId, ...cellData },

@@ -11,6 +11,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+// REFACTOR: get rid of "exampleDialogText" in favor of just "example" ?
 export const commonText = createDictionary({
   specifySeven: {
     'en-us': 'Specify 7',

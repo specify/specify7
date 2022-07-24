@@ -6,21 +6,15 @@ import React from 'react';
 
 import { ping } from '../../ajax';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissionutils';
 import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
-import { ErrorBoundary } from '../errorboundary';
-import { useBooleanState, useTitle } from '../hooks';
-import type { UserTool } from '../main';
+import { useBooleanState } from '../hooks';
 import { Dialog } from '../modaldialog';
+import {OverlayContext} from '../router';
 
-function ForceUpdateFeed({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element {
-  useTitle(commonText('updateExportFeed'));
+export function ForceUpdateFeedOverlay(): JSX.Element {
   const loading = React.useContext(LoadingContext);
+  const handleClose = React.useContext(OverlayContext);
   const [isActivated, handleActivated, handleDeactivated] = useBooleanState();
 
   return isActivated ? (
@@ -58,16 +52,3 @@ function ForceUpdateFeed({
     </Dialog>
   );
 }
-
-export const userTool: UserTool = {
-  task: 'force-update-feed',
-  title: commonText('updateExportFeed'),
-  enabled: () => hasPermission('/export/feed', 'force_update'),
-  isOverlay: true,
-  view: ({ onClose: handleClose }) => (
-    <ErrorBoundary dismissable>
-      <ForceUpdateFeed onClose={handleClose} />
-    </ErrorBoundary>
-  ),
-  groupLabel: commonText('export'),
-};

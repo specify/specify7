@@ -4,7 +4,6 @@ import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
 import type { FormType } from '../parseform';
 import type { SpecifyModel } from '../specifymodel';
-import type { ContextType } from '../types';
 import { Label, Select } from './basic';
 import { OrderPicker } from './preferencesrenderers';
 import type { SubViewContext } from './subview';
@@ -13,7 +12,10 @@ export function SubViewPreferences({
   subView,
   model,
 }: {
-  readonly subView: Exclude<ContextType<typeof SubViewContext>, undefined>;
+  readonly subView: Exclude<
+    React.ContextType<typeof SubViewContext>,
+    undefined
+  >;
   readonly model: SpecifyModel;
 }): JSX.Element {
   const { formType, sortField, handleChangeFormType, handleChangeSortField } =

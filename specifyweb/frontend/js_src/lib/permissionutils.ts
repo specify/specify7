@@ -15,6 +15,7 @@ import { defined, filterArray } from './types';
 
 const isReadOnly = getCache('forms', 'readOnlyMode') === true;
 
+// REFACTOR: use <ProtectedTable> and etc in favor of this function
 /**
  * Security errors are logged so that admins can see why a particular UI
  * component is disabled or missing

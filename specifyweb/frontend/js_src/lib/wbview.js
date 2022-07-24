@@ -10,21 +10,21 @@
  *
  */
 
+// REFACTOR: simplify this after migrating to jest
 if (process.env.NODE_ENV !== 'test') require('../css/workbench.css');
 
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import { Backbone } from './backbone';
+import {Backbone} from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import { Button, className, Link } from './components/basic';
-import { getModel, schema } from './schema';
-import { DataSetNameView } from './components/datasetmeta';
-import { NotFoundView } from './components/notfoundview';
-import { WbUploaded } from './components/wbuploadedview';
-import { WBUtils } from './wbutils';
+import {Button, className, Link} from './components/basic';
+import {getModel, schema} from './schema';
+import {DataSetNameView} from './components/datasetmeta';
+import {WbUploaded} from './components/wbuploadedview';
+import {WBUtils} from './wbutils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -32,42 +32,37 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { parseUploadPlan } from './uploadplanparser';
-import { capitalize, clamp, mappedFind } from './helpers';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon, unknownIcon } from './icons';
-import { wbText } from './localization/workbench';
-import { commonText } from './localization/common';
-import { showDialog } from './components/legacydialog';
-import { dialogClassNames, loadingBar } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { iconClassName, legacyNonJsxIcons } from './components/icons';
-import { LANGUAGE } from './localization/utils';
-import { defined, filterArray } from './types';
-import { crash } from './components/errorboundary';
-import { getTreeDefinitionItems } from './treedefinitions';
-import { serializeResource } from './datamodelutils';
-import { fetchPickList } from './picklistmixins';
-import { setCurrentComponent, setCurrentView } from './specifyapp';
-import { ajax, Http, ping } from './ajax';
+import {parseUploadPlan} from './uploadplanparser';
+import {capitalize, clamp, mappedFind} from './helpers';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon, unknownIcon} from './icons';
+import {wbText} from './localization/workbench';
+import {commonText} from './localization/common';
+import {showDialog} from './components/legacydialog';
+import {dialogClassNames, loadingBar} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {iconClassName, legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined, filterArray} from './types';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
+import {serializeResource} from './datamodelutils';
+import {fetchPickList} from './picklistmixins';
+import {ajax, Http, ping} from './ajax';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from './permissionutils';
-import { wbViewTemplate } from './components/wbviewtemplate';
-import { legacyLoadingContext } from './components/contexts';
-import {
-  addUnloadProtect,
-  goTo,
-  removeUnloadProtect,
-} from './components/navigation';
-import { getCache, setCache } from './cache';
-import { f } from './functools';
-import { pathStartsWith } from './wbplanviewutils';
-import { getUserPref } from './preferencesutils';
-import { createBackboneView } from './components/reactbackboneextend';
-import { WbStatus } from './components/wbstatus';
+import {wbViewTemplate} from './components/wbviewtemplate';
+import {legacyLoadingContext} from './components/contexts';
+import {addUnloadProtect, removeUnloadProtect,} from './components/navigation';
+import {getCache, setCache} from './cache';
+import {f} from './functools';
+import {pathStartsWith} from './wbplanviewutils';
+import {getUserPref} from './preferencesutils';
+import {createBackboneView} from './components/reactbackboneextend';
+import {WbStatus} from './components/wbstatus';
 
 const metaKeys = [
   'isNew',
@@ -88,7 +83,7 @@ const defaultMetaValues = Object.freeze([
 const WbUploadedView = createBackboneView(WbUploaded);
 const WbStatusView = createBackboneView(WbStatus);
 
-const WBView = Backbone.View.extend({
+export const WBView = Backbone.View.extend({
   __name__: 'WbForm',
   tagName: 'section',
   className: `wbs-form ${className.containerFull}`,
@@ -2031,8 +2026,9 @@ const WBView = Backbone.View.extend({
                   showDialog({
                     header: wbText('dataSetDeletedDialogHeader'),
                     content: wbText('dataSetDeletedDialogText'),
-                    onClose: () => goTo('/'),
-                    buttons: commonText('close'),
+                    buttons: <Link.Blue href="/specify/">
+                      {commonText('close')}
+                    </Link.Blue>,
                   });
               });
             }}
@@ -2610,32 +2606,6 @@ const WBView = Backbone.View.extend({
     return this.indexedCellMeta;
   },
 });
-
-export function loadDataset(
-  id,
-  refreshInitiatedBy = undefined,
-  refreshInitiatorAborted = false
-) {
-  legacyLoadingContext(
-    // BUG: intercept 403 (if dataset has been transferred to another user)
-    ajax(
-      `/api/workbench/dataset/${id}/`,
-      { headers: { Accept: 'application/json' } },
-      { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-    ).then(({ data: dataset, status }) => {
-      if (status === Http.NOT_FOUND) {
-        setCurrentComponent(<NotFoundView />);
-        return;
-      }
-      const view = new WBView({
-        dataset,
-        refreshInitiatedBy,
-        refreshInitiatorAborted,
-      }).on('refresh', (mode, wasAborted) => loadDataset(id, mode, wasAborted));
-      setCurrentView(view);
-    })
-  );
-}
 
 const extractDefaultValues = (splitMappingPaths, emptyStringReplacement) =>
   Object.fromEntries(

@@ -10,10 +10,10 @@ import type { IR, RA, RR } from '../types';
 import { isFunction } from '../types';
 
 export const languages = ['en-us', 'ru-ru'] as const;
-
 /** This allows to hide unfinished localizations in production */
 export const enabledLanguages =
-  process.env.NODE_ENV === 'production' ? ['en-us', 'ru-ru'] : languages;
+  process.env.NODE_ENV === 'development' ? languages : ['en-us', 'ru-ru'];
+
 export type Language = typeof languages[number];
 export const DEFAULT_LANGUAGE = 'en-us';
 export const LANGUAGE: Language =
@@ -56,7 +56,8 @@ function assertExhaustive(key: string): never {
    */
   const errorMessage = `
     Trying to access the value for a non-existent localization key "${key}"`;
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'development') throw new Error(errorMessage);
+  else {
     console.error(errorMessage);
     // Convert a camel case key to a human readable form
     const value: any = camelToHuman(key);
@@ -76,7 +77,7 @@ function assertExhaustive(key: string): never {
       }
     );
     return defaultValue as never;
-  } else throw new Error(errorMessage);
+  }
 }
 
 /**
@@ -116,4 +117,4 @@ export const whitespaceSensitive = (string: string): string =>
     .map(f.trim)
     .filter(Boolean)
     .join(' ')
-    .replace(/<br>\s?/, '\n');
+    .replace(/<br>\s?/u, '\n');

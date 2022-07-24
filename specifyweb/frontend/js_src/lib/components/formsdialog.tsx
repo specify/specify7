@@ -24,6 +24,12 @@ import { EditFormTables, useFormModels } from './formstablesedit';
 import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { Dialog, dialogClassNames } from './modaldialog';
+import { OverlayContext } from './router';
+
+export function FormsDialogOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return <FormsDialog onClose={handleClose} />;
+}
 
 /**
  * A dialog presenting a list of data forms

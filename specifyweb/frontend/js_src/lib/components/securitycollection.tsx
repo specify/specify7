@@ -96,7 +96,7 @@ export function SecurityCollection({
                   .map(async (userId) => ({
                     userId,
                     userName: await fetchResource('SpecifyUser', userId).then(
-                      (resource) => defined(resource).name
+                      ({ name }) => name
                     ),
                   }))
               )

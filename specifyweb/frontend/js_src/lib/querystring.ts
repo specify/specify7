@@ -5,6 +5,7 @@
 import { keysToLowerCase } from './helpers';
 import type { IR } from './types';
 
+// FIXME: replace with react router utils?
 export function formatUrl(
   url: string,
   parameters: IR<string>,

@@ -11,23 +11,22 @@ import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../../permissionutils';
-import { getUserPref } from '../../preferencesutils';
 import type { RA } from '../../types';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
 import { Button, className, DataEntry, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { SortIndicator, useSortConfig } from '../common';
 import { DataSetMeta } from '../datasetmeta';
-import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useTitle } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
-import type { MenuItem } from '../main';
 import { Dialog, dialogClassNames } from '../modaldialog';
-import { goTo } from '../navigation';
 import type { Dataset, DatasetBrief } from '../wbplanview';
+import { useNavigate } from 'react-router-dom';
+import { LoadingContext } from '../contexts';
+import { OverlayContext } from '../router';
 
-const createEmptyDataSet = async (): Promise<void> =>
+const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
     '/api/workbench/dataset/',
     {
@@ -48,7 +47,7 @@ const createEmptyDataSet = async (): Promise<void> =>
     {
       expectedResponseCodes: [Http.CREATED],
     }
-  ).then(({ data: { id } }) => goTo(`/workbench-plan/${id}/`));
+  ).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
 function DsMeta({
@@ -162,6 +161,8 @@ function DataSets({
 
   const canImport =
     hasPermission('/workbench/dataset', 'create') && !showTemplates;
+  const navigate = useNavigate();
+  const loading = React.useContext(LoadingContext);
   return Array.isArray(datasets) ? (
     <Dialog
       buttons={
@@ -172,7 +173,15 @@ function DataSets({
               <Link.Blue href="/specify/workbench-import/">
                 {wbText('importFile')}
               </Link.Blue>
-              <Button.Blue onClick={createEmptyDataSet}>
+              <Button.Blue
+                onClick={(): void =>
+                  loading(
+                    createEmptyDataSet().then(({ id }) =>
+                      navigate(`/workbench-plan/${id}/`)
+                    )
+                  )
+                }
+              >
                 {wbText('createNew')}
               </Button.Blue>
             </>
@@ -287,15 +296,7 @@ export function WbsDialog({
   );
 }
 
-export const menuItem: MenuItem = {
-  task: 'workbenches',
-  title: commonText('workBench'),
-  icon: icons.table,
-  isOverlay: true,
-  enabled: () => getUserPref('header', 'menu', 'showWorkBench'),
-  view: ({ onClose: handleClose }) => (
-    <ErrorBoundary dismissable>
-      <WbsDialog showTemplates={false} onClose={handleClose} />
-    </ErrorBoundary>
-  ),
-};
+export function DataSetsOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return <WbsDialog showTemplates={false} onClose={handleClose} />;
+}

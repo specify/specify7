@@ -3,8 +3,6 @@
  *
  * @module
  */
-import type React from 'react';
-
 // Record
 export type R<V> = Record<string, V>;
 // Immutable record
@@ -13,6 +11,12 @@ export type IR<V> = Readonly<Record<string, V>>;
 export type RR<K extends number | string | symbol, V> = Readonly<Record<K, V>>;
 // Immutable Array
 export type RA<V> = readonly V[];
+
+export type GetSet<T> = readonly [T, (value: T) => void];
+export type GetOrSet<T> = readonly [
+  T,
+  (value: T | ((oldValue: T) => T)) => void
+];
 
 /**
  * It is a widely used convention in TypeScript to use T[] to denote arrays.
@@ -100,6 +104,3 @@ export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
-
-/** Extract a type from React context */
-export type ContextType<T> = T extends React.Context<infer U> ? U : never;

@@ -174,9 +174,9 @@ export function SecurityInstitution({
                   />
                   <Button.Blue
                     className={
-                      process.env.NODE_ENV === 'production'
-                        ? `hidden`
-                        : undefined
+                      process.env.NODE_ENV === 'development'
+                        ? undefined
+                        : 'hidden'
                     }
                     onClick={(): void =>
                       loading(

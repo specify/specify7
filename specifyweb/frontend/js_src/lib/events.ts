@@ -27,7 +27,7 @@ export const eventListener = <TYPE extends IR<unknown>>(
   },
   trigger: <EVENT_NAME extends string & keyof TYPE>(
     eventName: EVENT_NAME,
-    // If payload type is undefined, don't require second argument
+    // If payload type is undefined, don't allow second argument
     ...[payload]: TYPE[EVENT_NAME] extends undefined
       ? readonly []
       : readonly [TYPE[EVENT_NAME]]

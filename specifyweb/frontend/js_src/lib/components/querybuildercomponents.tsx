@@ -33,12 +33,12 @@ import { TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useId } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
-import { goTo } from './navigation';
 import { loanReturnPrepForm } from './prepreturndialog';
 import { QuerySaveDialog } from './querysavedialog';
 import { ResourceView } from './resourceview';
 import { RenderForm } from './specifyform';
 import { ButtonWithConfirmation } from './wbplanviewcomponents';
+import { useNavigate } from 'react-router-dom';
 
 function QueryButton({
   disabled,
@@ -110,6 +110,7 @@ export function SaveQueryButtons({
     setShowDialog(newState);
   }
 
+  const navigate = useNavigate();
   return (
     <>
       {typeof showDialog === 'string' && (
@@ -121,7 +122,7 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            goTo(`/specify/query/${queryId}/`);
+            navigate(`/specify/query/${queryId}/`);
           }}
         />
       )}

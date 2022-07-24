@@ -15,6 +15,7 @@ import type {
   Preferences,
 } from './preferences';
 import { defaultFont } from './preferencesrenderers';
+import { GetSet } from '../types';
 
 export const prefEvents = eventListener<{
   readonly update: PreferenceItem<unknown> | undefined;
@@ -41,13 +42,8 @@ export function usePref<
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
-): Readonly<
-  readonly [
-    pref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'],
-    setPref: (
-      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ) => void
-  ]
+): GetSet<
+  Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
   const [getPref, setUserPref] = React.useContext(PreferencesContext) ?? [
     getUserPref,

@@ -10,8 +10,7 @@ import { enabledLanguages, LANGUAGE } from '../localization/utils';
 import { formatUrl, parseUrl } from '../querystring';
 import type { RA } from '../types';
 import { Button, Form, Link, Submit } from './basic';
-import { useTitle } from './hooks';
-import { SplashScreen } from './splashscreen';
+import { SplashScreen } from './entrypoint';
 import { handleLanguageChange, LanguageSelection } from './toolbar/language';
 
 export type OicProvider = {
@@ -31,8 +30,6 @@ export function OicLogin({
   };
   readonly nextUrl: string;
 }): JSX.Element {
-  useTitle(commonText('login'));
-
   const providerRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
   return (

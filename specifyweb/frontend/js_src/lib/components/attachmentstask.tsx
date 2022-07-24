@@ -37,13 +37,14 @@ import { useCollection } from './collection';
 import { loadingGif, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { ErrorBoundary, fail } from './errorboundary';
-import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { useAsyncState, useBooleanState } from './hooks';
 import { LoadingScreen } from './modaldialog';
 import { OrderPicker } from './preferencesrenderers';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
+import { ProtectedTable } from './permissiondenied';
 
 const tablesWithAttachments = f.store(() =>
   filterArray(
@@ -224,8 +225,14 @@ const defaultSortOrder = '-timestampCreated';
 const defaultFilter = { type: 'all' } as const;
 
 export function AttachmentsView(): JSX.Element {
-  useTitle(commonText('attachments'));
+  return (
+    <ProtectedTable action="read" tableName="Attachment">
+      <Attachments />
+    </ProtectedTable>
+  );
+}
 
+function Attachments(): JSX.Element {
   const [order = defaultSortOrder, setOrder] = useCachedState(
     'attachments',
     'sortOrder'

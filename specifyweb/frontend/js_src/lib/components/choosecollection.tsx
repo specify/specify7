@@ -2,8 +2,6 @@
  * The entrypoint for the choose collection endpoint
  */
 
-import '../../css/main.css';
-
 import React from 'react';
 
 import { ping } from '../ajax';
@@ -18,11 +16,35 @@ import { scrollIntoView } from '../treeviewutils';
 import type { RA } from '../types';
 import { Button, ErrorMessage, Form, Input, Label, Submit } from './basic';
 import { LoadingContext } from './contexts';
-import { useTitle } from './hooks';
 import { usePref } from './preferenceshooks';
-import { entrypoint, SplashScreen } from './splashscreen';
+import { SplashScreen } from './entrypoint';
 
-function ChooseCollection({
+export function ChooseCollection(): JSX.Element {
+  return React.useMemo(
+    () => (
+      <Wrapped
+        data={{
+          errors: [
+            parseDjangoDump<string>('form-errors'),
+            parseDjangoDump<string>('collection-errors'),
+          ]
+            .flat()
+            .filter(Boolean),
+          availableCollections: JSON.parse(
+            parseDjangoDump('available-collections')
+          ),
+          // REFACTOR: store this on the front-end?
+          initialValue: parseDjangoDump('initial-value'),
+          nextUrl: parseDjangoDump('next-url'),
+        }}
+        nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
+      />
+    ),
+    []
+  );
+}
+
+function Wrapped({
   data,
   nextUrl,
 }: {
@@ -34,8 +56,6 @@ function ChooseCollection({
   };
   readonly nextUrl: string;
 }): JSX.Element {
-  useTitle(commonText('chooseCollection'));
-
   // Focus submit button if some collection is selected by default
   const submitRef = React.useRef<HTMLInputElement | null>(null);
   React.useEffect(
@@ -155,23 +175,3 @@ function ChooseCollection({
     </SplashScreen>
   );
 }
-
-entrypoint('chooseCollection', () => (
-  <ChooseCollection
-    data={{
-      errors: [
-        parseDjangoDump<string>('form-errors'),
-        parseDjangoDump<string>('collection-errors'),
-      ]
-        .flat()
-        .filter(Boolean),
-      availableCollections: JSON.parse(
-        parseDjangoDump('available-collections')
-      ),
-      // REFACTOR: store this on the front-end?
-      initialValue: parseDjangoDump('initial-value'),
-      nextUrl: parseDjangoDump('next-url'),
-    }}
-    nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
-  />
-));

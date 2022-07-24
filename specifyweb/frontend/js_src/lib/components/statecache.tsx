@@ -3,6 +3,7 @@ import React from 'react';
 import { cacheEvents, getCache, setCache } from '../cache';
 import type { CacheDefinitions } from '../cachedefinitions';
 import { f } from '../functools';
+import type { GetOrSet } from '../types';
 
 /**
  * Like React.useState, but initial value is read from localStorage
@@ -22,17 +23,27 @@ export function useCachedState<
 >(
   category: CATEGORY,
   key: KEY
-): readonly [
-  value: CacheDefinitions[CATEGORY][KEY] | undefined,
-  setValue: (newValue: CacheDefinitions[CATEGORY][KEY]) => void
-] {
+): GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined> {
   const [state, setState] = React.useState<
     CacheDefinitions[CATEGORY][KEY] | undefined
   >(() => getCache(category, key));
 
-  const setCachedState = React.useCallback(
-    (newValue: CacheDefinitions[CATEGORY][KEY]) =>
-      setState(setCache(category, key, newValue)),
+  const setCachedState = React.useCallback<
+    GetOrSet<CacheDefinitions[CATEGORY][KEY] | undefined>[1]
+  >(
+    (newValue) => {
+      if (newValue === undefined) return;
+      const resolvedValue =
+        typeof newValue === 'function'
+          ? (
+              newValue as (
+                oldValue: CacheDefinitions[CATEGORY][KEY] | undefined
+              ) => CacheDefinitions[CATEGORY][KEY] | undefined
+            )(getCache(category, key))
+          : newValue;
+      if (resolvedValue === undefined) return;
+      setState(setCache(category, key, resolvedValue));
+    },
     [category, key]
   );
 

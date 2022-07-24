@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../cachedefinitions';
 import { f } from '../../functools';
@@ -11,7 +12,7 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
-import { schema } from '../../schema';
+import { getModel, schema } from '../../schema';
 import {
   javaTypeToHuman,
   localizedRelationshipTypes,
@@ -24,9 +25,8 @@ import { Button, className, Container, H2, H3, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
 import { softFail } from '../errorboundary';
 import { downloadFile } from '../filepicker';
-import { useTitle } from '../hooks';
 import { formatNumber } from '../internationalization';
-import type { UserTool } from '../main';
+import { NotFoundView } from '../notfoundview';
 
 function Table<
   SORT_CONFIG extends
@@ -138,25 +138,15 @@ const booleanFormatter = (value: boolean): string =>
  * FEATURE: adapt this page for printing
  */
 
-export function DataModelView({
-  model: initialModel,
-}: {
-  readonly model: SpecifyModel | undefined;
-}): JSX.Element {
-  useTitle(commonText('databaseSchema'));
-
-  const [model] = React.useState<SpecifyModel | undefined>(initialModel);
-
-  return (
+export function DataModelTable(): JSX.Element {
+  const { tableName = '' } = useParams();
+  const model = getModel(tableName);
+  return model === undefined ? (
+    <NotFoundView />
+  ) : (
     <Container.Full>
-      {typeof model === 'object' ? (
-        <>
-          <DataModelFields model={model} />
-          <DataModelRelationships model={model} />
-        </>
-      ) : (
-        <DataModelTables />
-      )}
+      <DataModelFields model={model} />
+      <DataModelRelationships model={model} />
     </Container.Full>
   );
 }
@@ -321,10 +311,10 @@ const getTables = (): RA<Row<keyof typeof tableColumns>> =>
     ],
   }));
 
-function DataModelTables(): JSX.Element {
+export function DataModelTables(): JSX.Element {
   const tables = React.useMemo(getTables, []);
   return (
-    <>
+    <Container.Full>
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">
           {`${welcomeText('schemaVersion')} ${getSystemInfo().schema_version}`}
@@ -357,17 +347,9 @@ function DataModelTables(): JSX.Element {
         headers={tableColumns}
         sortName="dataModelTables"
       />
-    </>
+    </Container.Full>
   );
 }
-
-export const userTool: UserTool = {
-  task: 'schema',
-  title: commonText('databaseSchema'),
-  isOverlay: false,
-  view: '/specify/datamodel/',
-  groupLabel: commonText('developers'),
-};
 
 const dataModelToTsv = (): string =>
   [

@@ -14,11 +14,10 @@ import { group, replaceItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
-import { getResourceApiUrl } from '../resource';
+import { getResourceApiUrl, getResourceViewUrl } from '../resource';
 import { getModel, schema } from '../schema';
 import type { Preparations } from '../specifyapi';
 import { getInteractionsForPrepId } from '../specifyapi';
-import { setCurrentComponent } from '../specifyapp';
 import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
 import type { RA, RR } from '../types';
@@ -28,7 +27,8 @@ import { Button, Form, Input, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
-import { ResourceView, ShowResource } from './resourceview';
+import { ResourceView } from './resourceview';
+import { useNavigate } from 'react-router-dom';
 
 export function PrepDialog({
   onClose: handleClose,
@@ -87,6 +87,7 @@ export function PrepDialog({
   );
 
   const id = useId('prep-dialog');
+  const navigate = useNavigate();
 
   return (
     <Dialog
@@ -171,9 +172,9 @@ export function PrepDialog({
               'disposalPreparations',
               items as RA<SpecifyResource<DisposalPreparation>>
             );
-            setCurrentComponent(
-              <ShowResource recordSet={undefined} resource={interaction} />
-            );
+            navigate(getResourceViewUrl(action.model.name, undefined), {
+              state: { resource: interaction },
+            });
           }
         }}
       >

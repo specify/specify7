@@ -118,9 +118,7 @@ export function useUserAgents(
                     ])
                   ).map(async ([disciplineId, collections]) =>
                     fetchResource('Discipline', disciplineId)
-                      .then((discipline) =>
-                        defined(idFromUrl(defined(discipline).division))
-                      )
+                      .then(({ division }) => defined(idFromUrl(division)))
                       .then((divisionId) =>
                         collections.map(
                           (collectionId) => [divisionId, collectionId] as const

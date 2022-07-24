@@ -59,7 +59,7 @@ export function UserAgentsDialog({
           ? Promise.all(
               userAgents.map(async ({ divisionId, ...rest }) =>
                 fetchResource('Division', divisionId).then((division) => ({
-                  division: defined(division),
+                  division,
                   isRequired:
                     response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
                       divisionId

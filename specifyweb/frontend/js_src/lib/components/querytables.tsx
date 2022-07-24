@@ -6,7 +6,7 @@ import { commonText } from '../localization/common';
 import { hasTablePermission, hasToolPermission } from '../permissionutils';
 import { getModel, getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
-import type { RA } from '../types';
+import type { GetSet, RA } from '../types';
 import { filterArray } from '../types';
 import { Button, DataEntry, Link, Ul } from './basic';
 import { TableIcon } from './common';
@@ -69,10 +69,7 @@ export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'TreatmentEvent',
 ];
 
-export function useQueryModels(): readonly [
-  RA<SpecifyModel>,
-  (models: RA<SpecifyModel>) => void
-] {
+export function useQueryModels(): GetSet<RA<SpecifyModel>> {
   const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
   const visibleTables =
     tables.length === 0

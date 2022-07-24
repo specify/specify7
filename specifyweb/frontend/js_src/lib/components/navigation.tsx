@@ -3,210 +3,75 @@
  */
 
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { isExternalUrl } from '../ajax';
-import { Backbone } from '../backbone';
-import { commonText } from '../localization/common';
-import type { WritableArray } from '../types';
-import { Button } from './basic';
-import { showDialog } from './legacydialog';
+import { removeItem } from '../helpers';
+import type { GetSet } from '../types';
+import { UnloadProtectsContext } from './contexts';
 
-/**
- * We introduce a sequence variable that is incremented and passed in
- * the state argument of each history.pushState invocation. When a
- * popstate event occurs, we can use the relative sequence values to
- * 'undo' the popstate in the case that the user elects not to leave
- * the current context.
- */
+export function useSearchParam(name: string): GetSet<string | undefined> {
+  const [queryString, setQueryString] = useSearchParams();
 
-type State = {
-  // eslint-disable-next-line functional/prefer-readonly-type
-  sequence?: number;
-};
-const sequenceFromState = (state?: State): number =>
-  typeof state?.sequence === 'number' ? state.sequence : 0;
+  /*
+   * Unfortunately, setQueryString changes whenever the URL changes, which can
+   * easily trigger an endless re-render. Thus, have to use a ref
+   */
+  const setQuery = React.useRef(setQueryString);
+  React.useEffect(() => {
+    setQuery.current = setQueryString;
+  }, [setQueryString]);
 
-// If the page is reloaded, the sequence needs to be set from the stored state.
-let sequence = sequenceFromState(globalThis.history?.state);
-
-type Blocker = {
-  readonly key: unknown;
-  readonly message: string;
-  readonly confirmNavigationHandler: typeof defaultConfirmNavigationHandler;
-};
-let unloadBlockers: WritableArray<Blocker> = [];
-
-let onBeforeUnloadHandler: (() => string) | undefined = undefined;
-
-export function addUnloadProtect(
-  key: unknown,
-  message: string,
-  confirmNavigationHandler = defaultConfirmNavigationHandler
-): void {
-  unloadBlockers.push({ key, message, confirmNavigationHandler });
-  changeOnBeforeUnloadHandler(() => message);
+  const handleChange = React.useCallback(
+    (value: string | undefined) =>
+      setQuery.current(value === undefined ? {} : { [name]: value }, {
+        replace: true,
+      }),
+    [name]
+  );
+  return [queryString.get(name) ?? undefined, handleChange];
 }
 
-function changeOnBeforeUnloadHandler(handler?: () => string): void {
-  if (typeof onBeforeUnloadHandler === 'function')
-    globalThis.removeEventListener('onbeforeunload', onBeforeUnloadHandler);
-  onBeforeUnloadHandler = handler;
-  if (typeof handler === 'function')
-    globalThis.addEventListener('onbeforeunload', handler);
-}
+export function useUnloadProtect(
+  isEnabled: boolean,
+  message: string
+): () => void {
+  const [_unloadProtects, setUnloadProtects] = React.useContext(
+    UnloadProtectsContext
+  )!;
 
-export function removeUnloadProtect(removalKey: unknown): void {
-  unloadBlockers = unloadBlockers.filter(({ key }) => key !== removalKey);
-  changeOnBeforeUnloadHandler(
-    unloadBlockers.length === 0
-      ? undefined
-      : (): string => {
-          const { message } = unloadBlockers.at(-1)!;
-          return message;
-        }
+  const handleRemove = React.useCallback(
+    (): void =>
+      setUnloadProtects((unloadProtects) =>
+        /*
+         * If there are multiple unload protects with the same message, this makes
+         * sure to remove only one
+         */
+        removeItem(unloadProtects, unloadProtects.indexOf(message))
+      ),
+    [setUnloadProtects, message]
+  );
+
+  React.useEffect(() => {
+    if (!isEnabled) return undefined;
+    setUnloadProtects((unloadProtects) => [...unloadProtects, message]);
+    return handleRemove;
+  }, [setUnloadProtects, isEnabled, message]);
+
+  return React.useCallback(
+    () => (isEnabled ? handleRemove() : undefined),
+    [setUnloadProtects, isEnabled]
   );
 }
 
+// FIXME: migrate usages of this function
 export function clearUnloadProtect(): void {
   unloadBlockers = [];
   changeOnBeforeUnloadHandler(undefined);
 }
 
-/**
- * We are going to extend the globalThis.history object to automatically
- * increment and store the sequence value on all pushState invocations.
- */
-
-function getSequence() {
-  return sequenceFromState(globalThis.history.state);
-}
-
-const pushState: History['pushState'] = function (state: State, title, url) {
-  sequence += 1;
-  state.sequence = sequence;
-  globalThis.history.pushState(state, title, url);
-};
-
-const replaceState: History['replaceState'] = function (
-  state: State,
-  title,
-  url
-) {
-  state.sequence = sequence;
-  globalThis.history.replaceState(state, title, url);
-};
-
-if ('history' in globalThis)
-  // @ts-expect-error
-  Backbone.history.history = Object.setPrototypeOf(
-    {
-      sequence: getSequence,
-      pushState,
-      replaceState,
-    },
-    globalThis.history
-  );
-
-// @ts-expect-error
-export const history = Backbone.history.history as typeof globalThis.history;
-
-/**
- * Make the Backbone routing mechanisms ignore queryparams in urls
- * this gets rid of all that *splat cruft in the routes.
- */
-const loadUrl = Backbone.history.loadUrl;
-Backbone.history.loadUrl = function (url: string | undefined) {
-  const stripped = url && url.replace(/\?.*$/, '');
-  return loadUrl.call(this, stripped);
-};
-
-/**
- * The Backbone history system binds checkUrl to the popstate
- * event. We replace it with a version that checks if unloadProtect is
- * set and optionally backs out the popstate in that case.
- */
-const checkUrl = Backbone.history.checkUrl;
-Backbone.history.checkUrl = function (event: any) {
-  const poppedSequence = sequenceFromState(event.originalEvent.state);
-  /*
-   * If a popstate is canceled, we use globalThis.history.go to return
-   * to previous point in the history, which results another
-   * popstate event where the sequence is the current sequence.
-   */
-  if (poppedSequence === sequence) return;
-
-  // Handle the noop situation where the new URL is unchanged.
-  const current = Backbone.history.getFragment();
-  // @ts-expect-error
-  if (current === Backbone.history.fragment) return;
-
-  /*
-   * This continuation "cancels" the popstate event by returning to
-   * the point in history from whence it came. This will result in
-   * another popstate event with the current sequence, which is
-   * ignored above.
-   */
-  const cancel = (): void => globalThis.history.go(sequence - poppedSequence);
-
-  confirmNavigation((): void => {
-    /*
-     * This continuation "proceeds" to the popped history by updating
-     * the current sequence and then invoking the default Backbone
-     * popstate handler.
-     */
-    sequence = poppedSequence;
-    checkUrl(event);
-  }, cancel);
-};
-
-/**
- * Open a dialog allowing the user to proceed with the navigation, or
- * remain on the same page. The proceed or cancel continuation will be
- * invoked accordingly. The unloadProtect variable will be cleared if
- * proceeding.
- */
-function defaultConfirmNavigationHandler(
-  proceed: () => void,
-  cancel: () => void
-): void {
-  const { message } = unloadBlockers.at(-1)!;
-
-  const dialog = showDialog({
-    header: commonText('leavePageDialogHeader'),
-    content: message,
-    onClose() {
-      dialog.remove();
-      cancel?.();
-    },
-    forceToTop: true,
-    buttons: (
-      <>
-        <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-        <Button.Red
-          onClick={(): void => {
-            dialog.remove();
-            proceed();
-          }}
-        >
-          {commonText('leave')}
-        </Button.Red>
-      </>
-    ),
-  });
-}
-
-export function confirmNavigation(
-  proceed: () => void,
-  cancel: () => void
-): void {
-  if (unloadBlockers.length === 0) proceed();
-  else {
-    const { confirmNavigationHandler } = unloadBlockers.at(-1)!;
-    confirmNavigationHandler(proceed, cancel);
-  }
-}
-
-export function navigate(
+// FIXME: replace with react router
+function navigate(
   url: string,
   options: {
     readonly trigger?: boolean;
@@ -235,34 +100,11 @@ export function navigate(
   else cont();
 }
 
-export const startNavigation = (): void =>
-  void Backbone.history.start({ pushState: true, root: '/specify/' });
+/*
+ * FIXME: make navigate() trigger save blockers
+ * FIXME: either add /specify/ or remove it for consistency
+ */
 
-export const goTo = (url: string): void => navigate(url, { trigger: true });
-
-// Leak goTo function in development for quicker development
-if (process.env.NODE_ENV !== 'production')
-  // @ts-expect-error Creating a global value
-  globalThis._goTo = goTo;
-
+// FIXME: remove usages
 export const pushUrl = (url: string): void =>
   navigate(url, { trigger: false, replace: true });
-
-export const getCurrentUrl = (): string =>
-  `${globalThis.location.pathname}${globalThis.location.search}${globalThis.location.hash}`;
-
-export function useUnloadProtect(
-  isEnabled: boolean,
-  message: string
-): () => void {
-  const id = React.useRef({});
-  React.useEffect(
-    () =>
-      isEnabled
-        ? addUnloadProtect(id.current, message)
-        : removeUnloadProtect(id.current),
-    [isEnabled, message]
-  );
-
-  return React.useCallback(() => removeUnloadProtect(id.current), []);
-}

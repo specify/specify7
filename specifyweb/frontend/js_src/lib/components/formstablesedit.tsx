@@ -6,7 +6,7 @@ import { formsText } from '../localization/forms';
 import { hasTablePermission } from '../permissionutils';
 import { getModel, getModelById } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
-import type { RA } from '../types';
+import type { GetSet, RA } from '../types';
 import { filterArray } from '../types';
 import { Button, Form, Input, Label, Submit } from './basic';
 import { useBooleanState, useId } from './hooks';
@@ -86,10 +86,7 @@ export function EditFormTables({
   );
 }
 
-export function useFormModels(): readonly [
-  RA<SpecifyModel> | 'legacy',
-  (models: RA<SpecifyModel> | 'legacy') => void
-] {
+export function useFormModels(): GetSet<RA<SpecifyModel> | 'legacy'> {
   const [tables, setTables] = usePref('form', 'general', 'shownTables');
   const visibleTables =
     tables === 'legacy'

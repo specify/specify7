@@ -4,11 +4,7 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../../permissionutils';
-import { ErrorBoundary } from '../errorboundary';
-import { useTitle } from '../hooks';
-import type { UserTool } from '../main';
+import { OverlayContext } from '../router';
 import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
@@ -23,29 +19,11 @@ export type WithFetchedStrings = {
   };
 };
 
-function SchemaConfigWrapper({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element | null {
-  useTitle(commonText('schemaConfig'));
-
+export function SchemaConfigOverlay(): JSX.Element | null {
   const schemaData = useSchemaData();
+  const handleClose = React.useContext(OverlayContext);
 
   return schemaData === undefined ? null : (
     <SchemaConfigLanguage schemaData={schemaData} onClose={handleClose} />
   );
 }
-
-export const userTool: UserTool = {
-  task: 'schema-config',
-  title: commonText('schemaConfig'),
-  isOverlay: true,
-  view: ({ onClose: handleClose }) => (
-    <ErrorBoundary dismissable>
-      <SchemaConfigWrapper onClose={handleClose} />
-    </ErrorBoundary>
-  ),
-  enabled: () => hasToolPermission('schemaConfig', 'read'),
-  groupLabel: commonText('customization'),
-};

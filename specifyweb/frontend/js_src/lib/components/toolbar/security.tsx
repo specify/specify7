@@ -12,7 +12,6 @@ import type { SerializedResource } from '../../datamodelutils';
 import { addMissingFields, serializeResource } from '../../datamodelutils';
 import { index, removeKey } from '../../helpers';
 import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
 import { hasPermission, hasTablePermission } from '../../permissionutils';
 import { schema } from '../../schema';
 import type { BackEndRole } from '../../securityutils';
@@ -22,8 +21,7 @@ import { defined } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, className, Container, H2, H3 } from '../basic';
 import { ErrorBoundary } from '../errorboundary';
-import { useAsyncState, useTitle } from '../hooks';
-import type { UserTool } from '../main';
+import { useAsyncState } from '../hooks';
 import { useAvailableCollections } from '../othercollectionview';
 import { SetPermissionContext } from '../permissioncontext';
 import { SecurityCollection } from '../securitycollection';
@@ -32,8 +30,6 @@ import type { Role } from '../securityrole';
 import { SecurityUser } from '../securityuser';
 
 export function SecurityPanel(): JSX.Element | null {
-  useTitle(adminText('securityPanel'));
-
   const [institution] = useAsyncState(
     React.useCallback(
       async () =>
@@ -238,11 +234,3 @@ export function SecurityPanel(): JSX.Element | null {
     </Container.FullGray>
   );
 }
-
-export const userTool: UserTool = {
-  task: 'security',
-  title: adminText('securityPanel'),
-  isOverlay: true,
-  view: '/specify/security/',
-  groupLabel: commonText('administration'),
-};

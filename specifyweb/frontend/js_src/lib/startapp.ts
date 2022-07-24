@@ -1,15 +1,7 @@
-import React from 'react';
-
-import { ajax, Http, ping } from './ajax';
+import { ajax, Http } from './ajax';
 import { Backbone } from './backbone';
-import { enableBusinessRules } from './businessrules';
-import { crash } from './components/errorboundary';
-import { startNavigation } from './components/navigation';
-import { NotFoundView } from './components/notfoundview';
-import { f } from './functools';
 import { formatUrl } from './querystring';
 import { promiseToXhr } from './resourceapi';
-import { router } from './router';
 import type { RA } from './types';
 import { defined } from './types';
 
@@ -80,23 +72,3 @@ Backbone.ajax = function (request): JQueryXHR {
       })
   );
 };
-
-const tasksPromise = Promise.all([
-  import('./components/tasks'),
-  import('./components/datatask'),
-  import('./components/querytask'),
-]).then((tasks) => (): void => tasks.forEach(({ task }) => task()));
-
-router
-  .route('*whatever', 'notFound', async () =>
-    import('./specifyapp').then(({ setCurrentComponent }) =>
-      setCurrentComponent(React.createElement(NotFoundView))
-    )
-  )
-  .route('test_error/', 'testError', () => void ping('/api/test_error/'));
-
-export function startApp(): void {
-  console.groupEnd();
-  enableBusinessRules(true);
-  tasksPromise.then(f.call).then(startNavigation).catch(crash);
-}

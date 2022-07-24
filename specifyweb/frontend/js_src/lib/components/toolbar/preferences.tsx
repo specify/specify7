@@ -18,7 +18,6 @@ import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
 import { useAsyncState, useBooleanState, useId, useTitle } from '../hooks';
-import type { UserTool } from '../main';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -26,18 +25,18 @@ import type {
 import { preferenceDefinitions } from '../preferences';
 import { prefEvents, usePref } from '../preferenceshooks';
 import { DefaultPreferenceItemRender } from '../preferencesrenderers';
+import { useNavigate } from 'react-router-dom';
 
-function Preferences({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element {
+function Preferences(): JSX.Element {
+  // FIXME: remove redundant useTitle()
   useTitle(commonText('preferences'));
 
   const [changesMade, handleChangesMade] = useBooleanState();
   const [needsRestart, handleRestartNeeded] = useBooleanState();
 
   const loading = React.useContext(LoadingContext);
+  const id = useId('preferences');
+  const navigate = useNavigate();
 
   React.useEffect(
     () =>
@@ -48,7 +47,6 @@ function Preferences({
     [handleChangesMade, handleRestartNeeded]
   );
 
-  const id = useId('preferences');
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{commonText('preferences')}</H2>
@@ -57,7 +55,9 @@ function Preferences({
         onSubmit={(): void =>
           loading(
             awaitPrefsSynced().then(() =>
-              needsRestart ? globalThis.location.assign('/') : handleClose()
+              needsRestart
+                ? globalThis.location.assign('/specify/')
+                : navigate('/specify/')
             )
           )
         }
@@ -284,26 +284,10 @@ function Item({
   );
 }
 
-function PreferencesWrapper({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element | null {
+export function PreferencesWrapper(): JSX.Element | null {
   const [preferences] = useAsyncState(
     React.useCallback(async () => preferencesPromise, []),
     true
   );
-  return typeof preferences === 'object' ? (
-    <Preferences onClose={handleClose} />
-  ) : null;
+  return typeof preferences === 'object' ? <Preferences /> : null;
 }
-
-export const userTool: UserTool = {
-  task: 'preferences',
-  title: commonText('preferences'),
-  isOverlay: false,
-  view: ({ onClose: handleClose }) => (
-    <PreferencesWrapper onClose={handleClose} />
-  ),
-  groupLabel: commonText('customization'),
-};

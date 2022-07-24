@@ -1,0 +1,56 @@
+import React from 'react';
+import type { RouteObject } from 'react-router/lib/router';
+
+import { f } from '../functools';
+import type { RA, WritableArray } from '../types';
+import { LoadingScreen } from './modaldialog';
+
+/**
+ * A wrapper for native React Routes object. Makes everything readonly.
+ */
+export type EnhancedRoute = Readonly<
+  Omit<RouteObject, 'children' | 'element'>
+> & {
+  readonly children?: RA<EnhancedRoute>;
+  // Allow to define element as a function that returns an async
+  readonly element?: React.ReactNode | (() => Promise<React.FunctionComponent>);
+  // Add a title attribute for usage when displaying the route in user preferences
+  // FIXME: integrate this prop with the page title
+  readonly title?: string;
+  /*
+   * Add an explicit way of opting out from displaying the path in user
+   * preferences (this is the case implicitly if title is missing)
+   */
+  readonly navigatable?: boolean;
+};
+
+export const toReactRoutes = (
+  enhancedRoutes: RA<EnhancedRoute>
+): WritableArray<RouteObject> =>
+  enhancedRoutes.map(({ element, children, ...enhancedRoute }) => ({
+    ...enhancedRoute,
+    children: f.maybe(children, toReactRoutes),
+    element:
+      typeof element === 'function' ? handleAsyncElement(element) : element,
+  }));
+
+/**
+ * Using this allows Webpack to split code bundles.
+ * React Suspense takes care of rendering a loading screen if component is
+ * being fetched.
+ * Having a separate Suspense for each async component rather than a one main
+ * suspense on the top level prevents all components from being un-rendered
+ * when any component is being loaded.
+ */
+function handleAsyncElement(
+  element: () => Promise<React.FunctionComponent>
+): JSX.Element {
+  const Element = React.lazy(async () =>
+    element().then((element) => ({ default: element }))
+  );
+  return (
+    <React.Suspense fallback={<LoadingScreen />}>
+      <Element />
+    </React.Suspense>
+  );
+}

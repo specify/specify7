@@ -115,7 +115,7 @@ export function QueryComboBox({
         !hasTreeAccess(treeResource.specifyModel.name, 'read')
       )
         return false;
-      if (field?.name == 'parent') {
+      if (field?.name === 'parent') {
         return f.all({
           lowestChildRank: treeResource.isNew()
             ? Promise.resolve(undefined)
@@ -139,11 +139,11 @@ export function QueryComboBox({
             }))
           ),
         });
-      } else if (field?.name == 'acceptedParent') {
+      } else if (field?.name === 'acceptedParent') {
         // Don't need to do anything. Form system prevents lookups/edits
       } else if (
-        field?.name == 'hybridParent1' ||
-        field?.name == 'hybridParent2'
+        field?.name === 'hybridParent1' ||
+        field?.name === 'hybridParent2'
       ) {
         /*
          * No idea what restrictions there should be, the only obviously

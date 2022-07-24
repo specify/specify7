@@ -15,7 +15,7 @@ import { commonText } from '../localization/common';
 import { parseRelativeDate } from '../relativedate';
 import { resourceOn } from '../resource';
 import type { Input } from '../saveblockers';
-import type { R, RA } from '../types';
+import type { GetOrSet, R, RA } from '../types';
 import type { Parser } from '../uiparse';
 import { mergeParsers, parseValue, resolveParser } from '../uiparse';
 import { isInputTouched } from '../validationmessages';
@@ -219,10 +219,7 @@ export function useAsyncState<T>(
   callback: () => Promise<T | undefined> | T | undefined,
   // Show the loading screen while the promise is being resolved
   loadingScreen: boolean
-): readonly [
-  state: T | undefined,
-  setState: React.Dispatch<React.SetStateAction<T | undefined>>
-] {
+): GetOrSet<T | undefined> {
   const [state, setState] = React.useState<T | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
 
@@ -270,9 +267,7 @@ export function useAsyncState<T>(
  * );
  * ```
  */
-export function useLiveState<T>(
-  callback: () => T
-): readonly [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+export function useLiveState<T>(callback: () => T): GetOrSet<T> {
   const [state, setState] = React.useState<T>(() => callback());
 
   useReadyEffect(React.useCallback(() => setState(callback()), [callback]));
@@ -283,9 +278,7 @@ export function useLiveState<T>(
 /**
  * Like React.useState, but updates the state whenever default value changes
  */
-export function useTriggerState<T>(
-  defaultValue: T
-): readonly [state: T, setState: React.Dispatch<React.SetStateAction<T>>] {
+export function useTriggerState<T>(defaultValue: T): GetOrSet<T> {
   const [state, setState] = React.useState<T>(defaultValue);
 
   /* Using layout effect rather than useEffect to update the state earlier */

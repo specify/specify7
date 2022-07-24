@@ -97,8 +97,10 @@ export type Row = Awaited<ReturnType<typeof fetchRows>>[number];
 export type Conformations = RA<Conformation>;
 
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
+
 // eslint-disable-next-line functional/prefer-readonly-type
 export interface Conformation extends Readonly<[number, ...Conformations]> {}
+
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 export function deserializeConformation(
@@ -122,13 +124,15 @@ export function deserializeConformation(
  * superfluous since they precede every open bracket that is not itself preceded
  * by an open bracket by nature of the construction.
  */
-export const serializeConformation = (
+export function serializeConformation(
   conformation: Conformations | undefined
-): string =>
-  JSON.stringify(conformation)
+): string | undefined {
+  const value = JSON.stringify(conformation)
     .replaceAll('[', '~')
     .replaceAll(']', '-')
     .replaceAll(',', '');
+  return value === '~~' ? undefined : value;
+}
 
 const throttleRate = 250;
 export const scrollIntoView = _.throttle(function scrollIntoView(

@@ -5,11 +5,9 @@
 import React from 'react';
 
 import { Http, ping } from '../../ajax';
-import { f } from '../../functools';
 import { cachableUrls } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import { useAsyncState } from '../hooks';
-import type { UserTool } from '../main';
 import { Dialog } from '../modaldialog';
 
 export const clearCache = async (): Promise<true> =>
@@ -21,11 +19,15 @@ export const clearCache = async (): Promise<true> =>
         {
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
         }
-      ).then(() => f.log(`Cleaned cache from ${endpoint}`))
+        // eslint-disable-next-line no-console
+      ).then(() => console.log(`Cleaned cache from ${endpoint}`))
     )
-  ).then(f.true);
+  ).then(() => {
+    localStorage.clear();
+    return true;
+  });
 
-function CacheBuster(): JSX.Element | null {
+export function CacheBuster(): JSX.Element | null {
   const [isLoaded] = useAsyncState(clearCache, true);
 
   return isLoaded === true ? (
@@ -42,11 +44,3 @@ function CacheBuster(): JSX.Element | null {
     </Dialog>
   ) : null;
 }
-
-export const userTool: UserTool = {
-  task: 'cache-buster',
-  title: commonText('clearCache'),
-  isOverlay: false,
-  view: () => <CacheBuster />,
-  groupLabel: commonText('developers'),
-};

@@ -11,9 +11,7 @@ import { readCookie } from './cookies';
  * <script> tags
  */
 export const parseDjangoDump = <T>(id: string): T =>
-  (typeof document === 'object'
-    ? JSON.parse(document.getElementById(id)?.textContent ?? '[]')
-    : []) as T;
+  JSON.parse(globalThis.document?.getElementById(id)?.textContent ?? '[]');
 
 export const csrfToken =
   readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token');

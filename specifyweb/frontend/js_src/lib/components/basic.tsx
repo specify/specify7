@@ -668,6 +668,26 @@ export const Link = {
       </>
     ),
   })),
+  Small: linkComponent<{
+    /*
+     * A class name that is responsible for text and background color
+     * Split into a separate prop in order to add a default value
+     */
+    readonly variant?: string;
+  }>(
+    'Link.Small',
+    `${className.niceButton} !py-1 !px-2`,
+    ({
+      variant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
+      type,
+      className: classString,
+      ...props
+    }) => ({
+      type: 'button',
+      className: `${classString ?? ''} ${variant}`,
+      ...props,
+    })
+  ),
   LikeButton: linkComponent('Link.LikeButton', className.button),
   Fancy: linkComponent(
     'Link.Fancy',
@@ -777,7 +797,7 @@ export const Button = {
       ...props
     }) => ({
       type: 'button',
-      className: `${classString} ${variant}`,
+      className: `${classString ?? ''} ${variant}`,
       ...props,
     })
   ),

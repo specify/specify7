@@ -40,6 +40,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-modal": "^3.15.1",
+    "react-router-dom": "^6.3.0",
     "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",
     "xlsx": "~0.16.8"
@@ -67,6 +68,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/react-modal": "^3.13.1",
+    "@types/react-router-dom": "^5.3.3",
     "@types/underscore": "^1.10.24",
     "autoprefixer": "10.4.5",
     "babel-loader": "^8.2.5",

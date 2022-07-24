@@ -10,24 +10,17 @@ import type { SpAppResource } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
 import { f } from '../../functools';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../../permissionutils';
 import { toResource } from '../../specifymodel';
 import { AppResourcesAside } from '../appresourcesaside';
 import type { AppResources } from '../appresourceshooks';
 import { useAppResources } from '../appresourceshooks';
 import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
-import { ErrorBoundary } from '../errorboundary';
-import { useBooleanState, useTitle } from '../hooks';
-import type { UserTool } from '../main';
+import { useBooleanState } from '../hooks';
 import { Dialog } from '../modaldialog';
+import {OverlayContext} from '../router';
 
-function MakeDwca({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element | null {
-  useTitle(commonText('makeDwca'));
+export function MakeDwcaOverlay(): JSX.Element | null {
   const resources = useAppResources();
 
   const [definition, setDefinition] = React.useState<string | undefined>(
@@ -35,6 +28,7 @@ function MakeDwca({
   );
 
   const loading = React.useContext(LoadingContext);
+  const handleClose = React.useContext(OverlayContext);
   const [isExporting, handleExporting, handleExported] = useBooleanState();
 
   return resources === undefined ? null : definition === undefined ? (
@@ -139,16 +133,3 @@ const startExport = async (
       ...(typeof metadata === 'string' ? { metadata } : {}),
     }),
   }).then(f.void);
-
-export const userTool: UserTool = {
-  task: 'make-dwca',
-  title: commonText('makeDwca'),
-  enabled: () => hasPermission('/export/dwca', 'execute'),
-  isOverlay: true,
-  view: ({ onClose: handleClose }) => (
-    <ErrorBoundary dismissable>
-      <MakeDwca onClose={handleClose} />
-    </ErrorBoundary>
-  ),
-  groupLabel: commonText('export'),
-};

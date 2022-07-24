@@ -32,18 +32,23 @@ import { defined } from './types';
  */
 export const fetchResource = async <
   TABLE_NAME extends keyof Tables,
-  SCHEMA extends Tables[TABLE_NAME]
+  SCHEMA extends Tables[TABLE_NAME],
+  STRICT extends boolean = true
 >(
   tableName: TABLE_NAME,
-  id: number
-): Promise<SerializedResource<SCHEMA> | undefined> =>
+  id: number,
+  // @ts-expect-error Whether to trigger 404 on resource not foudn
+  strict: STRICT = true
+): Promise<
+  SerializedResource<SCHEMA> | (STRICT extends true ? never : undefined)
+> =>
   ajax<SerializedModel<SCHEMA>>(
     `/api/specify/${tableName.toLowerCase()}/${id}/`,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { headers: { Accept: 'application/json' } },
-    { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+    strict ? undefined : { expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
   ).then(({ data: record, status }) =>
-    status === Http.NOT_FOUND ? undefined : serializeResource(record)
+    status === Http.NOT_FOUND ? undefined! : serializeResource(record)
   );
 
 export const deleteResource = async (

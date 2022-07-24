@@ -14,7 +14,7 @@ import { LoadingContext } from './contexts';
 import { FilePicker, fileToText } from './filepicker';
 import { icons } from './icons';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { goTo } from './navigation';
+import { useNavigate } from 'react-router-dom';
 
 export function QueryImport({
   onClose: handleClose,
@@ -24,6 +24,7 @@ export function QueryImport({
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
   return typeof queries === 'object' ? (
     <Dialog
       buttons={commonText('cancel')}
@@ -66,7 +67,7 @@ export function QueryImport({
                 )
                 .then(async (queryResource) => queryResource.save())
                 .then((queryResource) =>
-                  goTo(`/specify/query/${queryResource.id}/`)
+                  navigate(`/specify/query/${queryResource.id}/`)
                 )
             )
           }

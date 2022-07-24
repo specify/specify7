@@ -50,6 +50,30 @@ import { usePref } from './preferenceshooks';
 import { queryFieldFilters } from './querybuilderfieldfilter';
 import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
+import { cachableUrl } from '../initialcontext';
+import { OverlayContext } from './router';
+
+export const reportsAvailable = ajax<{ readonly available: boolean }>(
+  cachableUrl('/context/report_runner_status.json'),
+  {
+    headers: { Accept: 'application/json' },
+  },
+  { strict: false }
+)
+  .then(({ data }) => data.available)
+  .catch(() => false);
+
+export function ReportsOverlay(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  return (
+    <ReportsView
+      autoSelectSingle={false}
+      model={undefined}
+      resourceId={undefined}
+      onClose={handleClose}
+    />
+  );
+}
 
 export function ReportsView({
   // If resource ID is provided, model must be too
@@ -280,12 +304,14 @@ function Report({
     ),
     false
   );
-  const [query] = useAsyncState(
+  const [query] = useAsyncState<SerializedResource<SpQuery> | false>(
     React.useCallback(
       () =>
         typeof report === 'object'
           ? f.maybe(idFromUrl(report.query), async (id) =>
-              fetchResource('SpQuery', id).then((resource) => resource ?? false)
+              fetchResource('SpQuery', id, false).then(
+                (resource) => resource ?? false
+              )
             ) ?? false
           : undefined,
       [report]

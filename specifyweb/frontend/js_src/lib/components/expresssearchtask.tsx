@@ -16,7 +16,8 @@ import type { IR, RA } from '../types';
 import { defined, filterArray } from '../types';
 import { Container, H3 } from './basic';
 import { ErrorBoundary } from './errorboundary';
-import { useAsyncState, useTitle } from './hooks';
+import { useAsyncState } from './hooks';
+import { useSearchParam as useSearchParameter } from './navigation';
 import { QueryResultsTable } from './queryresultstable';
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
@@ -131,9 +132,7 @@ function TableResults({
 }
 
 export function ExpressSearchView(): JSX.Element {
-  useTitle(commonText('expressSearch'));
-
-  const query = parseUrl().q;
+  const [query = ''] = useSearchParameter('q');
   const ajaxUrl = formatUrl('/express_search/', {
     q: query,
     limit: fetchSize.toString(),

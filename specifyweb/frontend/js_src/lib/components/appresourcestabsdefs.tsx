@@ -15,7 +15,7 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import type { UserPreferences } from '../preferencesutils';
 import { getPrefDefinition, setPrefsGenerator } from '../preferencesutils';
-import type { ContextType, RR } from '../types';
+import type { RR } from '../types';
 import { writable } from '../types';
 import { useCodeMirrorExtensions } from './appresourceeditorcomponents';
 import type { appResourceSubTypes } from './appresourcescreate';
@@ -89,7 +89,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
 }): JSX.Element {
   const id = useId('user-preferences');
   const [preferencesContext] = useLiveState<
-    ContextType<typeof PreferencesContext>
+    React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
       const preferences = JSON.parse(data ?? '{}') as UserPreferences;

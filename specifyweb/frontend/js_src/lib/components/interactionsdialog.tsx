@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../ajax';
@@ -23,11 +24,12 @@ import { userInformation } from '../userinfo';
 import { className, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { ErrorBoundary } from './errorboundary';
-import { useAsyncState, useTitle } from './hooks';
+import { useAsyncState } from './hooks';
 import { icons } from './icons';
 import { InteractionDialog } from './interactiondialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { ReportsView } from './reports';
+import { OverlayContext } from './router';
 
 const supportedActions = [
   'NEW_GIFT',
@@ -110,11 +112,9 @@ const fetchEntries = f.store(
 
 function Interactions({
   onClose: handleClose,
-  urlParameter,
   entries,
 }: {
   readonly onClose: () => void;
-  readonly urlParameter: string | undefined;
   readonly entries: RA<InteractionEntry>;
 }): JSX.Element {
   const [state, setState] = React.useState<
@@ -167,15 +167,16 @@ function Interactions({
     []
   );
 
+  const { action } = useParams();
   React.useEffect(
     () =>
-      typeof urlParameter === 'string'
+      typeof action === 'string'
         ? f.maybe(
-            entries.find(({ action }) => action === urlParameter),
+            entries.find((entry) => entry.action === action),
             ({ action, table }) => handleAction(defined(action), table)
           )
         : undefined,
-    [urlParameter, entries]
+    [action, entries]
   );
 
   return state.type === 'MainState' ? (
@@ -212,7 +213,7 @@ function Interactions({
                   }
                   href={
                     typeof action === 'string'
-                      ? `/specify/task/interactions/${action}/`
+                      ? `/specify/overlay/interactions/${action}/`
                       : getResourceViewUrl(table)
                   }
                   onClick={
@@ -268,24 +269,13 @@ function Interactions({
   );
 }
 
-export function InteractionsDialog({
-  onClose: handleClose,
-  urlParameter,
-}: {
-  readonly onClose: () => void;
-  readonly urlParameter: string | undefined;
-}): JSX.Element | null {
-  useTitle(commonText('interactions'));
-
+export function InteractionsOverlay(): JSX.Element | null {
   const [entries] = useAsyncState(fetchEntries, true);
+  const handleClose = React.useContext(OverlayContext);
 
   return typeof entries === 'object' ? (
     <ErrorBoundary dismissable>
-      <Interactions
-        entries={entries}
-        urlParameter={urlParameter}
-        onClose={handleClose}
-      />
+      <Interactions entries={entries} onClose={handleClose} />
     </ErrorBoundary>
   ) : null;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
-import { Http } from '../ajax';
 import type { RecordSet, SpQuery } from '../datamodel';
 import type { AnyTree } from '../datamodelutils';
 import { f } from '../functools';
@@ -10,9 +10,8 @@ import { hasPermission, hasToolPermission } from '../permissionutils';
 import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { parseUrl } from '../querystring';
-import { router } from '../router';
+import { fetchResource } from '../resource';
 import { getModel, schema } from '../schema';
-import { setCurrentComponent } from '../specifyapp';
 import type { SpecifyModel } from '../specifymodel';
 import { isTreeModel } from '../treedefinitions';
 import { userInformation } from '../userinfo';
@@ -20,6 +19,7 @@ import { useAsyncState } from './hooks';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTool, ProtectedTree } from './permissiondenied';
 import { QueryBuilder } from './querybuilder';
+import { deserializeResource } from './resource';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
@@ -62,21 +62,28 @@ function QueryBuilderWrapper({
   ) : null;
 }
 
-function QueryBuilderById({
+export function QueryBuilderById(): JSX.Element {
+  const { id = '' } = useParams();
+  const queryId = f.parseInt(id);
+  return typeof queryId === 'number' ? (
+    <ProtectedTool action="read" tool="queryBuilder">
+      <QueryById queryId={queryId} />
+    </ProtectedTool>
+  ) : (
+    <NotFoundView />
+  );
+}
+
+function QueryById({
   queryId,
 }: {
   readonly queryId: number;
 }): JSX.Element | null {
   const [query] = useAsyncState<SpecifyResource<SpQuery>>(
-    React.useCallback(async () => {
-      const query = new schema.models.SpQuery.Resource({ id: queryId });
-      return query.fetch().catch((error) => {
-        if (error.status === Http.NOT_FOUND)
-          setCurrentComponent(<NotFoundView />);
-        else throw error;
-        return undefined;
-      });
-    }, [queryId]),
+    React.useCallback(
+      async () => fetchResource('SpQuery', queryId).then(deserializeResource),
+      [queryId]
+    ),
     false
   );
   const recordSet = useQueryRecordSet();
@@ -107,27 +114,49 @@ export function createQuery(
   return query;
 }
 
+export function NewQueryBuilder(): JSX.Element {
+  const { tableName = '' } = useParams();
+  const model = getModel(tableName);
+  return typeof model === 'object' ? (
+    <NewQuery model={model} />
+  ) : (
+    <NotFoundView />
+  );
+}
+
 function NewQuery({
-  tableName,
+  model,
 }: {
-  readonly tableName: string;
+  readonly model: SpecifyModel;
 }): JSX.Element | null {
-  const query = React.useMemo<SpecifyResource<SpQuery> | undefined>(() => {
-    const model = getModel(tableName);
-    if (model === undefined) {
-      setCurrentComponent(<NotFoundView />);
-      return undefined;
-    }
-    return createQuery(queryText('newQueryName'), model);
-  }, [tableName]);
+  const query = React.useMemo<SpecifyResource<SpQuery>>(
+    () => createQuery(queryText('newQueryName'), model),
+    [model]
+  );
+
   const recordSet = useQueryRecordSet();
 
-  return query === undefined || recordSet === undefined ? null : (
+  return recordSet === undefined ? null : (
     <QueryBuilderWrapper query={query} recordSet={recordSet} />
   );
 }
 
-function QueryBuilderFromTree({
+export function QueryBuilderFromTree(): JSX.Element | null {
+  const { tableName = '', id = '' } = useParams();
+  const nodeId = f.parseInt(id);
+  const model = getModel(tableName);
+  return typeof model === 'object' &&
+    isTreeModel(model.name) &&
+    typeof nodeId === 'number' ? (
+    <ProtectedTree action="read" treeName={model.name}>
+      <QueryFromTree model={model as SpecifyModel<AnyTree>} nodeId={nodeId} />
+    </ProtectedTree>
+  ) : (
+    <NotFoundView />
+  );
+}
+
+function QueryFromTree({
   model,
   nodeId,
 }: {
@@ -144,37 +173,5 @@ function QueryBuilderFromTree({
 
   return query === undefined ? null : (
     <QueryBuilderWrapper autoRun query={query} />
-  );
-}
-
-export function task(): void {
-  router.route('query/:id/', 'storedQuery', (id) =>
-    setCurrentComponent(
-      <ProtectedTool action="read" tool="queryBuilder">
-        <QueryBuilderById queryId={Number.parseInt(id)} />
-      </ProtectedTool>
-    )
-  );
-  router.route('query/new/:table/', 'ephemeralQuery', (tableName) =>
-    setCurrentComponent(<NewQuery tableName={tableName} />)
-  );
-  router.route(
-    'query/fromtree/:table/:id/',
-    'queryFromTree',
-    (tableName, nodeId) =>
-      setCurrentComponent(
-        f.var(getModel(tableName), (model) =>
-          typeof model === 'object' && isTreeModel(model.name) ? (
-            <ProtectedTree action="read" treeName={model.name}>
-              <QueryBuilderFromTree
-                model={model as SpecifyModel<AnyTree>}
-                nodeId={Number.parseInt(nodeId)}
-              />
-            </ProtectedTree>
-          ) : (
-            <NotFoundView />
-          )
-        )
-      )
   );
 }

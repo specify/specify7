@@ -15,9 +15,9 @@ import { LoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
 import { useAsyncState, useBooleanState, useId } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { useNavigate } from 'react-router-dom';
 
 export function QueryEditButton({
   query,
@@ -51,6 +51,7 @@ function EditQueryDialog({
   >('default');
 
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
   return state === 'default' ? (
     <ResourceView
       canAddAnother={false}
@@ -78,7 +79,7 @@ function EditQueryDialog({
       resource={queryResource}
       onClose={handleClose}
       onDeleted={handleClose}
-      onSaved={(): void => goTo(`/query/${queryResource.id}/`)}
+      onSaved={(): void => navigate(`/query/${queryResource.id}/`)}
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
@@ -158,6 +159,7 @@ function QueryExport({
   const [name, setName] = React.useState<string>('');
   const loading = React.useContext(LoadingContext);
 
+  const navigate = useNavigate();
   return (
     <Dialog
       buttons={
@@ -198,7 +200,7 @@ function QueryExport({
                 return report.rgetPromise('appResource');
               })
               .then((appResource) =>
-                goTo(`/specify/appresources/${appResource.id}/`)
+                navigate(`/specify/appresources/${appResource.id}/`)
               )
           )
         }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import { ajax } from '../ajax';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
@@ -11,7 +12,6 @@ import { f } from '../functools';
 import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
-import { formatUrl, parseUrl } from '../querystring';
 import { getPref } from '../remoteprefs';
 import { getModel, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -30,7 +30,7 @@ import { TableIcon } from './common';
 import { ErrorBoundary, softFail } from './errorboundary';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { supportsBackdropBlur } from './modaldialog';
-import { pushUrl } from './navigation';
+import { useSearchParam } from './navigation';
 import { NotFoundView } from './notfoundview';
 import { ProtectedTree } from './permissiondenied';
 import {
@@ -71,26 +71,21 @@ function TreeView<SCHEMA extends AnyTree>({
     `collapsedRanks${tableName}`
   );
 
-  const [rawConformation = '', setConformation] = useCachedState(
+  const [urlConformation, setUrlConformation] = useSearchParam('conformation');
+  const [conformation = [], setConformation] = useCachedState(
     'tree',
-    `conformation${tableName}`
+    `conformations${tableName}`
   );
-  const conformation = deserializeConformation(rawConformation);
 
-  // FEATURE: update query string in URL on initial load if has cached conformation
-  function updateConformation(value: Conformations | undefined): void {
-    if (typeof value === 'object') {
-      const encoded = serializeConformation(value);
-      pushUrl(formatUrl(globalThis.location.href, { conformation: encoded }));
-      setConformation(encoded);
-    } else setConformation('');
-  }
-
+  React.useEffect(
+    () => setUrlConformation(serializeConformation(conformation)),
+    [conformation, setUrlConformation]
+  );
   React.useEffect(() => {
-    const { conformation } = parseUrl();
-    if (typeof conformation === 'string' && conformation.length > 0)
-      updateConformation(deserializeConformation(conformation));
-  }, []);
+    if (typeof urlConformation !== 'string') return;
+    const parsed = deserializeConformation(urlConformation);
+    setConformation(parsed);
+  }, [setConformation]);
 
   useTitle(treeText('treeViewTitle', table.label));
 
@@ -369,7 +364,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 return undefined;
               }}
               onChangeConformation={(newConformation): void =>
-                updateConformation([
+                setConformation([
                   ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
                   ...(typeof newConformation === 'object'
                     ? ([[row.nodeId, ...newConformation]] as const)
@@ -414,17 +409,15 @@ function EditTreeRank({
   );
 }
 
-export function TreeViewWrapper({
-  table,
-}: {
-  readonly table: string;
-}): JSX.Element | null {
+export function TreeViewWrapper(): JSX.Element | null {
+  const { tableName = '' } = useParams();
+  const treeName = getModel(tableName)?.name;
+
   const [treeDefinitions] = useAsyncState(
     React.useCallback(async () => treeRanksPromise, []),
     true
   );
 
-  const treeName = getModel(table)?.name;
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
     typeof treeName === 'string' &&

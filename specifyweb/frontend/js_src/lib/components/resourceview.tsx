@@ -22,13 +22,14 @@ import { crash, ErrorBoundary, fail } from './errorboundary';
 import { FormPreferences } from './formpreferences';
 import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
-import { goTo, pushUrl } from './navigation';
+import { pushUrl } from './navigation';
 import { usePref } from './preferenceshooks';
 import { RecordSet as RecordSetView } from './recordselectorutils';
 import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -191,16 +192,6 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
   });
 }
 
-const resourceDeletedDialog = (
-  <Dialog
-    buttons={commonText('close')}
-    header={commonText('resourceDeletedDialogHeader')}
-    onClose={(): void => goTo('/')}
-  >
-    {commonText('resourceDeletedDialogText')}
-  </Dialog>
-);
-
 export const augmentMode = (
   initialMode: FormMode,
   isNew: boolean,
@@ -292,8 +283,15 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const navigate = useNavigate();
   return isDeleted ? (
-    resourceDeletedDialog
+    <Dialog
+      buttons={commonText('close')}
+      header={commonText('resourceDeletedDialogHeader')}
+      onClose={(): void => navigate('/')}
+    >
+      {commonText('resourceDeletedDialogText')}
+    </Dialog>
   ) : (
     <BaseResourceView
       isLoading={isLoading}
@@ -526,6 +524,7 @@ export function ShowResource({
 
   const [recordSetItemIndex] = useAsyncState(
     React.useCallback(async () => {
+      await recordSet?.fetch();
       if (resource.isNew()) return 0;
       return typeof recordSet === 'object'
         ? fetchCollection('RecordSetItem', {
@@ -551,6 +550,7 @@ export function ShowResource({
     true
   );
 
+  const navigate = useNavigate();
   return typeof recordSet === 'object' ? (
     recordSetItemIndex === undefined ? null : (
       <RecordSetView
@@ -561,7 +561,7 @@ export function ShowResource({
         model={resource.specifyModel}
         recordSet={recordSet}
         onAdd={f.void}
-        onClose={(): void => goTo('/')}
+        onClose={(): void => navigate('/')}
         onSlide={f.void}
       />
     )
@@ -579,7 +579,7 @@ export function ShowResource({
       onSaved={({ wasNew, newResource }): void => {
         if (typeof newResource === 'object')
           setRecord({ resource: newResource, recordSet });
-        else if (wasNew) goTo(resource.viewUrl());
+        else if (wasNew) navigate(resource.viewUrl());
         else {
           const reloadResource = new resource.specifyModel.Resource({
             id: resource.id,

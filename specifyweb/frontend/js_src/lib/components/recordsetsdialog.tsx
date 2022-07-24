@@ -21,10 +21,10 @@ import { useAsyncState, useBooleanState } from './hooks';
 import { icons } from './icons';
 import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
-import { goTo } from './navigation';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { QueryToolbarItem } from './toolbar/query';
+import { useNavigate } from 'react-router-dom';
 
 function Row({
   recordSet,
@@ -265,6 +265,7 @@ export function EditRecordSet({
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
+  const navigate = useNavigate();
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
   return isQuerying ? (
     <QueryRecordSet
@@ -302,7 +303,7 @@ export function EditRecordSet({
       onClose={handleClose}
       onDeleted={undefined}
       onSaved={(): void =>
-        goTo(
+        navigate(
           getResourceViewUrl(
             getModelById(recordSet.get('dbTableId')).name,
             undefined,
@@ -323,6 +324,7 @@ function QueryRecordSet({
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
+  const navigate = useNavigate();
   return (
     <QueryToolbarItem
       getQuerySelectUrl={(query): string =>
@@ -337,7 +339,7 @@ function QueryRecordSet({
       }}
       onClose={handleClose}
       onNewQuery={(): void =>
-        goTo(
+        navigate(
           formatUrl(
             `/specify/query/new/${getModelById(
               recordSet.get('dbTableId')

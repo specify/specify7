@@ -74,11 +74,7 @@ module.exports = (_env, argv) =>
     // User recommended source map types appropriate for each mode
     devtool: argv.mode === 'development' ? 'eval-source-map' : 'source-map',
     entry: {
-      // REFACTOR: reduce to a single entrypoint
       main: './lib/components/entrypoint.tsx',
-      login: './lib/components/login.tsx',
-      passwordchange: './lib/components/passwordchange.tsx',
-      choosecollection: './lib/components/choosecollection.tsx',
     },
     output: {
       path: outputPath,

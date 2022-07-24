@@ -9,16 +9,19 @@ import type { IR, PartialBy, RA } from './types';
 export const isExternalUrl = (url: string): boolean =>
   /*
    * Blob URLs may point to the same origin, but should be treated as external
-   * by the navigator. Also accounts and documentation pages are outside the
-   * router context.
+   * by the navigator
    */
   url.startsWith('blob:') ||
-  new URL(url, globalThis.location.origin).pathname.startsWith('/accounts/') ||
-  new URL(url, globalThis.location.origin).pathname.startsWith(
-    '/documentation/'
-  ) ||
   new URL(url, globalThis.location.origin).origin !==
     globalThis.location.origin;
+
+// Make sure the given URL is from current origin and give back the relative path
+export function toRelativeUrl(url: string): string | undefined {
+  const parsed = new URL(url, globalThis.location.origin);
+  return parsed.origin === globalThis.location.origin
+    ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+    : undefined;
+}
 
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);

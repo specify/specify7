@@ -10,16 +10,11 @@ import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { CopyButton } from '../common';
 import { LoadingContext } from '../contexts';
-import { useId, useTitle, useValidation } from '../hooks';
-import type { UserTool } from '../main';
+import { useId, useValidation } from '../hooks';
 import { Dialog } from '../modaldialog';
+import {OverlayContext} from '../router';
 
-function MasterKey({
-  onClose: handleClose,
-}: {
-  readonly onClose: () => void;
-}): JSX.Element | null {
-  useTitle(commonText('generateMasterKey'));
+export function MasterKeyOverlay(): JSX.Element | null {
 
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
@@ -27,9 +22,9 @@ function MasterKey({
   );
   const loading = React.useContext(LoadingContext);
   const id = useId('master-key');
+  const handleClose = React.useContext(OverlayContext);
 
   const { validationRef, setValidation } = useValidation();
-
   return typeof masterKey === 'string' ? (
     <ShowKey masterKey={masterKey} onClose={handleClose} />
   ) : (
@@ -120,10 +115,3 @@ function ShowKey({
   );
 }
 
-export const userTool: UserTool = {
-  task: 'master-key',
-  title: commonText('generateMasterKey'),
-  isOverlay: true,
-  view: ({ onClose: handleClose }) => <MasterKey onClose={handleClose} />,
-  groupLabel: commonText('administration'),
-};

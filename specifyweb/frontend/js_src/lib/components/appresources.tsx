@@ -1,4 +1,6 @@
 import React from 'react';
+import { Outlet } from 'react-router';
+import { useParams } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import type { AppResourceMode } from '../appresourceshelpers';
@@ -9,6 +11,7 @@ import type {
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
@@ -19,9 +22,41 @@ import { AppResourceEditor } from './appresourceseditor';
 import type { AppResources } from './appresourceshooks';
 import { useAppResources } from './appresourceshooks';
 import { Container, H2, H3 } from './basic';
-import { useTitle, useTriggerState } from './hooks';
+import { useTriggerState } from './hooks';
+import { ProtectedTable, ProtectedTool } from './permissiondenied';
 
-export function AppResourcesWrapper({
+// REFACTOR: use react-router here
+export function AppResourcesWrapper(): JSX.Element {
+  return (
+    <ProtectedTool action="read" tool="resources">
+      <ProtectedTable action="read" tableName="Discipline">
+        <ProtectedTable action="read" tableName="Discipline">
+          <ProtectedTable action="read" tableName="SpecifyUser">
+            <Outlet />
+          </ProtectedTable>
+        </ProtectedTable>
+      </ProtectedTable>
+    </ProtectedTool>
+  );
+}
+
+export function AppResources(): JSX.Element {
+  return <AppResourcesPage mode="appResources" resourceId={undefined} />;
+}
+
+export function AppResourceView(): JSX.Element {
+  const { id = '' } = useParams();
+  return (
+    <AppResourcesPage mode="appResources" resourceId={f.parseInt(id ?? '')} />
+  );
+}
+
+export function ViewSetView(): JSX.Element {
+  const { id = '' } = useParams();
+  return <AppResourcesPage mode="viewSets" resourceId={f.parseInt(id ?? '')} />;
+}
+
+function AppResourcesPage({
   mode,
   resourceId,
 }: {
@@ -32,7 +67,6 @@ export function AppResourcesWrapper({
     mode === 'appResources'
       ? schema.models.SpAppResource
       : schema.models.SpViewSetObj;
-  useTitle(commonText('appResources'));
 
   const resources = useAppResources();
   return typeof resources === 'object' ? (

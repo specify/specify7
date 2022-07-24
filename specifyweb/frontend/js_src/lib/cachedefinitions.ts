@@ -15,6 +15,7 @@ import type { Attachment, SpQuery, Tables } from './datamodel';
 import type { AnyTree, TableFields } from './datamodelutils';
 import type { LeafletCacheSalt, MarkerLayerName } from './leaflet';
 import type { UserPreferences } from './preferencesutils';
+import type { Conformations } from './treeviewutils';
 import type { IR, RA, RR } from './types';
 import { ensure } from './types';
 
@@ -72,13 +73,13 @@ export type CacheDefinitions = {
     readonly searchProperties: SearchPreferences;
   };
   readonly tree: {
+    readonly /** Open nodes in a given tree */
+    [key in `conformations${AnyTree['tableName']}`]: Conformations;
+  } & {
     readonly [key in `focusPath${AnyTree['tableName']}`]: RA<number>;
   } & {
     readonly /** Collapsed ranks in a given tree */
     [key in `collapsedRanks${AnyTree['tableName']}`]: RA<number>;
-  } & {
-    readonly /** Open nodes in a given tree */
-    [key in `conformation${AnyTree['tableName']}`]: string;
   };
   readonly workBenchSortConfig: {
     readonly /**
@@ -185,13 +186,13 @@ interface CacheValueDict extends IR<CacheValue> {}
 interface CacheValues extends RA<CacheValue> {}
 
 type CacheValue =
+  | CacheValueDict
+  | CacheValues
   | boolean
   | number
-  | null
-  | undefined
   | string
-  | CacheValues
-  | CacheValueDict;
+  | null
+  | undefined;
 /**
  * This will trigger a TypeScript type error if any cache definition
  * contains a value that is not JSON-Serializable.

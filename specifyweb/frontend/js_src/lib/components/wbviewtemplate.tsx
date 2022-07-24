@@ -5,12 +5,22 @@
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { useParams } from 'react-router-dom';
 
+import { f } from '../functools';
 import { commonText } from '../localization/common';
 import { localityText } from '../localization/locality';
 import { wbText } from '../localization/workbench';
 import { hasPermission, hasTablePermission } from '../permissionutils';
+import { treeRanksPromise } from '../treedefinitions';
+import { WBView } from '../wbview';
 import { Button, Input, Link } from './basic';
+import { useAsyncState } from './hooks';
+import { NotFoundView } from './notfoundview';
+import { ajax } from '../ajax';
+import { Dataset } from './wbplanview';
+import { LoadingContext } from './contexts';
+import { GetSet } from '../types';
 
 function Navigation({
   name,
@@ -81,7 +91,7 @@ function WbView({
         <Button.Small
           className={`
             wb-show-plan
-            ${process.env.NODE_ENV === 'production' ? 'hidden' : ''}
+            ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
           `}
         >
           [DEV] Show Plan
@@ -243,3 +253,70 @@ export const wbViewTemplate = (
   ReactDOMServer.renderToStaticMarkup(
     <WbView dataSetId={dataSetId} isUploaded={isUploaded} />
   );
+
+export function WorkBench(): JSX.Element | null {
+  const treeRanksLoaded =
+    useAsyncState(async () => treeRanksPromise.then(f.true), true)[0] ?? false;
+  const { id = '' } = useParams();
+  const dataSetId = f.parseInt(id);
+
+  const [container, setContainer] = React.useState<HTMLElement | null>(null);
+  const [dataSet, setDataSet] = useDataSet(dataSetId);
+  const loading = React.useContext(LoadingContext);
+  useWbView(dataSet, treeRanksLoaded, container, () =>
+    loading(fetchDataSet(dataSet!.id).then(setDataSet))
+  );
+
+  return dataSetId === undefined ? (
+    <NotFoundView />
+  ) : (
+    <section ref={setContainer} />
+  );
+}
+
+// BUG: intercept 403 (if dataset has been transferred to another user)
+function useDataSet(
+  dataSetId: number | undefined
+): GetSet<Dataset | undefined> {
+  return useAsyncState(
+    React.useCallback(async () => fetchDataSet(dataSetId), [dataSetId]),
+    true
+  );
+}
+
+const fetchDataSet = async (
+  dataSetId: number | undefined
+): Promise<Dataset | undefined> =>
+  typeof dataSetId === 'number'
+    ? ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
+        headers: { Accept: 'application/json' },
+      }).then(({ data }) => data)
+    : undefined;
+
+function useWbView(
+  dataSet: Dataset | undefined,
+  treeRanksLoaded: boolean,
+  container: HTMLElement | null,
+  handleRefresh: () => void
+): void {
+  const mode = React.useRef<string | undefined>(undefined);
+  const wasAborted = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    if (!treeRanksLoaded || container === null || dataSet === undefined)
+      return undefined;
+    const view = new WBView({
+      el: container,
+      dataset: dataSet,
+      refreshInitiatedBy: mode.current,
+      refreshInitiatorAborted: wasAborted.current,
+    }).on(
+      'refresh',
+      (newMode: string | undefined, newWasAborted: boolean = false) => {
+        mode.current = newMode;
+        wasAborted.current = newWasAborted;
+        handleRefresh();
+      }
+    );
+    return () => view.remove();
+  }, [treeRanksLoaded, container, dataSet]);
+}
