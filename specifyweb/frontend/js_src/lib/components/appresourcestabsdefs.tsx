@@ -52,21 +52,26 @@ export const AppResourceTextEditor: AppResourceTab = function ({
     };
   }, [showValidationRef]);
   const selectionRef = React.useRef<unknown | undefined>(undefined);
+
+  const handleRef = React.useCallback(
+    (ref: ReactCodeMirrorRef | null) => {
+      codeMirrorRef.current = ref;
+      // Restore selection state when switching tabs or toggling full screen
+      if (!stateRestored && typeof ref?.view === 'object') {
+        if (selectionRef.current !== undefined)
+          ref.view.dispatch({
+            selection: EditorSelection.fromJSON(selectionRef.current),
+          });
+        setStateRestored(true);
+      }
+    },
+    [stateRestored]
+  );
   return (
     <CodeMirror
       extensions={writable(extensions)}
       readOnly={isReadOnly}
-      ref={(ref): void => {
-        codeMirrorRef.current = ref;
-        // Restore selection state when switching tabs or toggling full screen
-        if (!stateRestored && typeof ref?.view === 'object') {
-          if (selectionRef.current !== undefined)
-            ref.view.dispatch({
-              selection: EditorSelection.fromJSON(selectionRef.current),
-            });
-          setStateRestored(true);
-        }
-      }}
+      ref={handleRef}
       theme={isDarkMode ? okaidia : xcodeLight}
       value={data ?? ''}
       /*

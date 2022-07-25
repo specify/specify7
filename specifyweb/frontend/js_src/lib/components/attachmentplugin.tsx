@@ -124,6 +124,7 @@ export function AttachmentPlugin({
             id={id}
             name={name}
             onSelected={(file): void => {
+              // Fix focus loss when <FilePicker would be removed from DOB
               filePickerContainer.current?.focus();
               setState({
                 type: 'FileUpload',

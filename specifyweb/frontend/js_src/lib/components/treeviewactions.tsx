@@ -31,7 +31,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   onRefresh: handleRefresh,
 }: {
   readonly tableName: SCHEMA['tableName'];
-  readonly focusRef: React.MutableRefObject<HTMLElement | null>;
+  readonly focusRef: React.MutableRefObject<HTMLAnchorElement | null>;
   readonly focusedRow: Row | undefined;
   readonly ranks: RA<number>;
   readonly actionRow: Row | undefined;
@@ -62,9 +62,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
         <li className="contents">
           {typeof focusedRow === 'object' ? (
             <Link.LikeButton
-              forwardRef={(element): void => {
-                focusRef.current = element;
-              }}
+              forwardRef={focusRef}
               href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
                 focusedRow.nodeId
               }/`}

@@ -179,11 +179,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
         </>
       ) : (
         <FormContext.Provider value={formMeta}>
-          <Form
-            className={className}
-            forwardRef={(newForm): void => setForm(newForm ?? form)}
-            id={id('form')}
-          >
+          <Form className={className} forwardRef={setForm} id={id('form')}>
             {specifyForm}
             {children}
           </Form>

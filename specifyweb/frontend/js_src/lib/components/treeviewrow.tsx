@@ -125,6 +125,17 @@ export function TreeRow({
   const parentRankId = path.at(-1)?.rankId;
   const id = useId('tree-node');
   const isAction = actionRow === row;
+
+  const handleRef = React.useCallback(
+    (element: HTMLButtonElement | null): void => {
+      if (element === null) return;
+      element.focus();
+      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
+        scrollIntoView(element);
+    },
+    []
+  );
+
   return (
     <li role="treeitem row">
       {ranks.map((rankId) => {
@@ -149,16 +160,7 @@ export function TreeRow({
                     : ''
                 }
               `}
-              forwardRef={
-                isFocused
-                  ? (element: HTMLButtonElement | null): void => {
-                      if (element === null) return;
-                      element.focus();
-                      if (getUserPref('treeEditor', 'behavior', 'autoScroll'))
-                        scrollIntoView(element);
-                    }
-                  : undefined
-              }
+              forwardRef={isFocused ? handleRef : undefined}
               key={rankId}
               style={{
                 color:

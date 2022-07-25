@@ -131,7 +131,7 @@ function TreeView<SCHEMA extends AnyTree>({
   const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
-  const toolbarButtonRef = React.useRef<HTMLElement | null>(null);
+  const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
   const [searchValue, setSearchValue] = React.useState<string>('');
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();

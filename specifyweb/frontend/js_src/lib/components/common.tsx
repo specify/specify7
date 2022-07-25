@@ -273,6 +273,18 @@ export function AutoGrowTextArea({
     observer.observe(textArea);
     return (): void => observer.disconnect();
   }, [textArea, shadow]);
+
+  React.useEffect(() => {
+    if (typeof props.forwardRef === 'function') props.forwardRef(textArea);
+    else if (
+      typeof props.forwardRef === 'object' &&
+      props.forwardRef !== null &&
+      'current' in props.forwardRef
+    )
+      /* REFACTOR: improve typing to make this editable */
+      // @ts-expect-error Modifying a read-only property
+      props.forwardRef.current = textArea;
+  }, [textArea, props.forwardRef]);
   return (
     <div
       className={`
@@ -300,19 +312,7 @@ export function AutoGrowTextArea({
           absolute top-0 h-full [grid-area:1/1/2/2]
           ${props.className ?? ''}
         `}
-        forwardRef={(textArea): void => {
-          setTextArea(textArea);
-          if (typeof props.forwardRef === 'function')
-            props.forwardRef(textArea);
-          else if (
-            typeof props.forwardRef === 'object' &&
-            props.forwardRef !== null &&
-            'current' in props.forwardRef
-          )
-            /* REFACTOR: improve typing to make this editable */
-            // @ts-expect-error Modifying a read-only property
-            props.forwardRef.current = textArea;
-        }}
+        forwardRef={setTextArea}
       />
     </div>
   );

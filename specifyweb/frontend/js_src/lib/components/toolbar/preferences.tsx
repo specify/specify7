@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
@@ -13,7 +14,8 @@ import {
   preferencesPromise,
   setPref,
 } from '../../preferencesutils';
-import { defined } from '../../types';
+import type { WritableArray } from '../../types';
+import { defined, filterArray } from '../../types';
 import { Button, className, Container, Form, H2, Link, Submit } from '../basic';
 import { LoadingContext } from '../contexts';
 import { ErrorBoundary } from '../errorboundary';
@@ -25,7 +27,6 @@ import type {
 import { preferenceDefinitions } from '../preferences';
 import { prefEvents, usePref } from '../preferenceshooks';
 import { DefaultPreferenceItemRender } from '../preferencesrenderers';
-import { useNavigate } from 'react-router-dom';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
@@ -44,6 +45,8 @@ function Preferences(): JSX.Element {
     [handleChangesMade, handleRestartNeeded]
   );
 
+  const { activeCategory, forwardRefs, containerRef } = useActiveCategory();
+
   return (
     <Container.FullGray>
       <H2 className="text-2xl">{commonText('preferences')}</H2>
@@ -59,9 +62,16 @@ function Preferences(): JSX.Element {
           )
         }
       >
-        <div className="relative flex flex-col gap-6 overflow-y-auto md:flex-row">
-          <PreferencesAside id={id} />
-          <PreferencesContent id={id} isReadOnly={false} />
+        <div
+          className="relative flex flex-col gap-6 overflow-y-auto md:flex-row"
+          ref={containerRef}
+        >
+          <PreferencesAside activeCategory={activeCategory} id={id} />
+          <PreferencesContent
+            forwardRefs={forwardRefs}
+            id={id}
+            isReadOnly={false}
+          />
           <span className="flex-1" />
         </div>
         <div className="flex justify-end">
@@ -76,13 +86,89 @@ function Preferences(): JSX.Element {
   );
 }
 
+/** Update the active category on the sidebar as user scrolls */
+function useActiveCategory(): {
+  readonly activeCategory: number;
+  readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
+  readonly containerRef: React.RefCallback<HTMLDivElement | null>;
+} {
+  const [activeCategory, setActiveCategory] = React.useState<number>(0);
+  const observer = React.useRef<IntersectionObserver | undefined>(undefined);
+  const references = React.useRef<WritableArray<HTMLElement | undefined>>([]);
+  React.useEffect(() => () => observer.current?.disconnect(), []);
+
+  // eslint-disable-next-line functional/prefer-readonly-type
+  const intersecting = React.useRef<Set<number>>(new Set());
+
+  function handleObserved({
+    isIntersecting,
+    target,
+  }: IntersectionObserverEntry): void {
+    const index = references.current.indexOf(target as HTMLElement);
+    intersecting.current[isIntersecting ? 'add' : 'delete'](index);
+    const intersection = Math.min(...Array.from(intersecting.current));
+    setActiveCategory(intersection);
+  }
+
+  return {
+    activeCategory,
+    forwardRefs: React.useCallback((index, element) => {
+      const oldElement = references.current[index];
+      if (typeof oldElement === 'object')
+        observer.current?.unobserve(oldElement);
+      references.current[index] = element ?? undefined;
+      if (element !== null) observer?.current?.observe(element);
+    }, []),
+    containerRef: React.useCallback((container): void => {
+      observer.current?.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => entries.map(handleObserved),
+        {
+          root: container,
+          rootMargin: '-200px 0px -100px 0px',
+          threshold: 0,
+        }
+      );
+      /*
+       * Since React 18, apps running in strict mode are mounted followed
+       * immediately by an unmount and the mount again when running in
+       * development. This causes observer not to fire. Can be fixed by either
+       * running React in non-strict mode (bad idea), or wrapping the following
+       * in setTimeout(()=>..., 0);
+       * More info:
+       * https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-strict-mode
+       */
+      setTimeout(
+        () =>
+          filterArray(references.current).forEach((value) =>
+            observer.current?.observe(value)
+          ),
+        0
+      );
+    }, []),
+  };
+}
+
 function PreferencesAside({
   id,
+  activeCategory,
 }: {
   readonly id: (prefix: string) => string;
+  readonly activeCategory: number;
 }): JSX.Element {
   const definitions = useDefinitions();
-  // FEATURE: highlight link that corresponds to current section
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      navigate(
+        `/specify/user-preferences/#${id(definitions[activeCategory][0])}`,
+        {
+          replace: true,
+        }
+      ),
+    [navigate, definitions, activeCategory, id]
+  );
   return (
     <aside
       className={`
@@ -90,8 +176,12 @@ function PreferencesAside({
         md:sticky
       `}
     >
-      {definitions.map(([category, { title }]) => (
-        <Link.Gray href={`#${id(category)}`} key={category}>
+      {definitions.map(([category, { title }], index) => (
+        <Link.Gray
+          aria-current={activeCategory === index ? 'page' : undefined}
+          href={`#${id(category)}`}
+          key={category}
+        >
           {title}
         </Link.Gray>
       ))}
@@ -99,8 +189,8 @@ function PreferencesAside({
   );
 }
 
+/** Hide invisible preferences. Remote empty categories and subCategories */
 function useDefinitions() {
-  // Hide invisible preferences. Remote empty categories and subCategories
   return React.useMemo(
     () =>
       Object.entries(preferenceDefinitions as GenericPreferencesCategories)
@@ -135,18 +225,24 @@ function useDefinitions() {
 export function PreferencesContent({
   id,
   isReadOnly,
+  forwardRefs,
 }: {
   readonly id: (prefix: string) => string;
   readonly isReadOnly: boolean;
+  readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
   const definitions = useDefinitions();
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(
-        ([category, { title, description = undefined, subCategories }]) => (
+        (
+          [category, { title, description = undefined, subCategories }],
+          index
+        ) => (
           <ErrorBoundary dismissable key={category}>
             <Container.Center
               className="gap-8 overflow-y-visible"
+              forwardRef={forwardRefs?.bind(undefined, index)}
               id={id(category)}
             >
               <h3 className="text-2xl">{title}</h3>
