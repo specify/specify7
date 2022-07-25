@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { useOutletContext } from 'react-router';
 
 import type { CollectionFetchFilters } from '../../collection';
 import { fetchCollection } from '../../collection';
@@ -16,23 +17,89 @@ import type { RA } from '../../types';
 import { userInformation } from '../../userinfo';
 import { Button, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
-import { useAsyncState, useBooleanState } from '../hooks';
+import { useAsyncState } from '../hooks';
 import { icons } from '../icons';
 import { DateElement } from '../internationalization';
 import { Dialog } from '../modaldialog';
 import { QueryEditButton } from '../queryedit';
 import { QueryTables } from '../querytables';
 import { OverlayContext } from '../router';
+import { SafeOutlet } from '../routerutils';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
+  const queries = useQueries();
   return (
-    <QueryToolbarItem
+    <SafeOutlet<QueryListContextType>
       getQuerySelectUrl={undefined}
       isReadOnly={false}
+      newQueryUrl="/specify/overlay/queries/new/"
+      queries={queries}
       onClose={handleClose}
     />
   );
+}
+
+const QUERY_FETCH_LIMIT = 5000;
+
+export type QueryListContextType = {
+  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
+  readonly newQueryUrl: string;
+  readonly isReadOnly: boolean;
+  readonly onClose: () => void;
+  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
+};
+
+export function useQueries(
+  spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
+): RA<SerializedResource<SpQuery>> | undefined {
+  return useAsyncState<RA<SerializedResource<SpQuery>>>(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpQuery', {
+          limit: QUERY_FETCH_LIMIT,
+          ...(spQueryFilter ?? { specifyUser: userInformation.id }),
+        }).then(({ records }) => records),
+      [spQueryFilter]
+    ),
+    true
+  )[0];
+}
+
+export function QueryListOutlet(): JSX.Element {
+  const props = useOutletContext<QueryListContextType>();
+  return <QueryListDialog {...props} />;
+}
+
+export function QueryListDialog({
+  queries,
+  newQueryUrl,
+  onClose: handleClose,
+  getQuerySelectUrl,
+  isReadOnly,
+}: QueryListContextType): JSX.Element | null {
+  return Array.isArray(queries) ? (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          {(hasToolPermission('queryBuilder', 'create') ||
+            hasPermission('/querybuilder/query', 'execute')) && (
+            <Link.Blue href={newQueryUrl}>{commonText('new')}</Link.Blue>
+          )}
+        </>
+      }
+      header={commonText('queriesDialogTitle', queries.length)}
+      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
+      onClose={handleClose}
+    >
+      <QueryList
+        getQuerySelectUrl={getQuerySelectUrl}
+        isReadOnly={isReadOnly}
+        queries={queries}
+      />
+    </Dialog>
+  ) : null;
 }
 
 function QueryList({
@@ -132,63 +199,17 @@ function QueryList({
   );
 }
 
-const QUERY_FETCH_LIMIT = 5000;
-
-export function QueryToolbarItem({
-  onClose: handleClose,
-  getQuerySelectUrl,
-  spQueryFilter,
-  onNewQuery: handleNewQuery,
-  isReadOnly,
-}: {
-  readonly onClose: () => void;
-  readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
-  readonly spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>;
-  readonly onNewQuery?: () => void;
-  readonly isReadOnly: boolean;
-}): JSX.Element | null {
-  const [queries] = useAsyncState<RA<SerializedResource<SpQuery>>>(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpQuery', {
-          limit: QUERY_FETCH_LIMIT,
-          ...(spQueryFilter ?? { specifyUser: userInformation.id }),
-        }).then(({ records }) => records),
-      [spQueryFilter]
-    ),
-    true
-  );
-
-  const [isCreating, handleCreating] = useBooleanState();
-
-  return isCreating ? (
+export function NewQuery(): JSX.Element {
+  const {
+    queries,
+    isReadOnly,
+    onClose: handleClose,
+  } = useOutletContext<QueryListContextType>();
+  return (
     <QueryTables
       isReadOnly={isReadOnly}
       queries={queries}
       onClose={handleClose}
     />
-  ) : Array.isArray(queries) ? (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          {(hasToolPermission('queryBuilder', 'create') ||
-            hasPermission('/querybuilder/query', 'execute')) && (
-            <Button.Blue onClick={handleNewQuery ?? handleCreating}>
-              {commonText('new')}
-            </Button.Blue>
-          )}
-        </>
-      }
-      header={commonText('queriesDialogTitle', queries.length)}
-      icon={<span className="text-blue-500">{icons.documentSearch}</span>}
-      onClose={handleClose}
-    >
-      <QueryList
-        getQuerySelectUrl={getQuerySelectUrl}
-        isReadOnly={isReadOnly}
-        queries={queries}
-      />
-    </Dialog>
-  ) : null;
+  );
 }

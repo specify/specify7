@@ -47,6 +47,21 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           import('./toolbar/query').then(
             ({ QueriesOverlay }) => QueriesOverlay
           ),
+        children: [
+          {
+            index: true,
+            element: () =>
+              import('./toolbar/query').then(
+                ({ QueryListOutlet }) => QueryListOutlet
+              ),
+          },
+          {
+            path: 'new',
+            title: commonText('newQueryDialogTitle'),
+            element: () =>
+              import('./toolbar/query').then(({ NewQuery }) => NewQuery),
+          },
+        ],
       },
       {
         path: 'record-sets',

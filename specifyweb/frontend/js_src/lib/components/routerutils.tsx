@@ -1,8 +1,8 @@
 import React from 'react';
+import { Outlet } from 'react-router';
 import type { RouteObject } from 'react-router/lib/router';
 
-import { f } from '../functools';
-import type { RA, WritableArray } from '../types';
+import type { IR, RA, WritableArray } from '../types';
 import { useTitle } from './hooks';
 import { LoadingScreen } from './modaldialog';
 
@@ -28,14 +28,17 @@ export type EnhancedRoute = Readonly<
 };
 
 export const toReactRoutes = (
-  enhancedRoutes: RA<EnhancedRoute>
+  enhancedRoutes: RA<EnhancedRoute>,
+  title?: string
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map(({ element, children, ...enhancedRoute }) => ({
     ...enhancedRoute,
-    children: f.maybe(children, toReactRoutes),
+    children: Array.isArray(children)
+      ? toReactRoutes(children, title)
+      : undefined,
     element:
       typeof element === 'function' ? (
-        <Async element={element} title={enhancedRoute.title} />
+        <Async element={element} title={enhancedRoute.title ?? title} />
       ) : (
         element
       ),
@@ -67,4 +70,9 @@ function Async({
       <Element />
     </React.Suspense>
   );
+}
+
+/** Type-safe react-router outlet */
+export function SafeOutlet<T extends IR<unknown>>(props: T): JSX.Element {
+  return <Outlet context={props} />;
 }

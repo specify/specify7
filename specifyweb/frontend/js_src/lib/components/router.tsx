@@ -67,7 +67,7 @@ export function Router(): JSX.Element {
       globalThis._goTo = navigate;
   }, [navigate]);
 
-  useLinkIntercept();
+  useLinkIntercept(background);
 
   const main =
     useRoutes(transformedRoutes, background ?? location) ?? undefined;
@@ -93,9 +93,16 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
 
-function useLinkIntercept(): void {
+function useLinkIntercept(background: Location | undefined): void {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const resolvedLocation = React.useRef<Location>(background ?? location);
+  React.useEffect(() => {
+    // REFACTOR: consider adding a set() util like in @vueuse/core
+    resolvedLocation.current = background ?? location;
+  }, [background, location]);
+
   React.useEffect(
     () =>
       listen(document.body, 'click', (event) => {
@@ -108,13 +115,13 @@ function useLinkIntercept(): void {
             ? {
                 state: createState({
                   type: 'BackgroundLocation',
-                  location,
+                  location: resolvedLocation.current,
                 }),
               }
             : undefined
         );
       }),
-    [navigate, location]
+    [navigate]
   );
 }
 

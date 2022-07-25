@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { fetchCollection } from '../collection';
@@ -23,8 +24,7 @@ import { DateElement, formatNumber } from './internationalization';
 import { Dialog } from './modaldialog';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
-import { QueryToolbarItem } from './toolbar/query';
-import { useNavigate } from 'react-router-dom';
+import { QueryListDialog, useQueries } from './toolbar/query';
 
 function Row({
   recordSet,
@@ -319,30 +319,31 @@ function QueryRecordSet({
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
-  const navigate = useNavigate();
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+      contextTableId: recordSet.get('dbTableId'),
+    }),
+    [recordSet]
+  );
+  const queries = useQueries(filters);
+
   return (
-    <QueryToolbarItem
+    <QueryListDialog
       getQuerySelectUrl={(query): string =>
         formatUrl(`/specify/query/${query.id}/`, {
           recordSetId: recordSet.id.toString(),
         })
       }
       isReadOnly={isReadOnly}
-      spQueryFilter={{
-        specifyUser: userInformation.id,
-        contextTableId: recordSet.get('dbTableId'),
-      }}
+      newQueryUrl={formatUrl(
+        `/specify/query/new/${getModelById(
+          recordSet.get('dbTableId')
+        ).name.toLowerCase()}/`,
+        { recordSetId: recordSet.id.toString() }
+      )}
+      queries={queries}
       onClose={handleClose}
-      onNewQuery={(): void =>
-        navigate(
-          formatUrl(
-            `/specify/query/new/${getModelById(
-              recordSet.get('dbTableId')
-            ).name.toLowerCase()}/`,
-            { recordSetId: recordSet.id.toString() }
-          )
-        )
-      }
     />
   );
 }
