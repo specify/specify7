@@ -29,6 +29,7 @@ import { useId, useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
 import { ResourceView } from './resourceview';
 import { useNavigate } from 'react-router-dom';
+import { serializeResource } from '../datamodelutils';
 
 export function PrepDialog({
   onClose: handleClose,
@@ -173,7 +174,7 @@ export function PrepDialog({
               items as RA<SpecifyResource<DisposalPreparation>>
             );
             navigate(getResourceViewUrl(action.model.name, undefined), {
-              state: { resource: interaction },
+              state: { resource: serializeResource(interaction) },
             });
           }
         }}

@@ -32,7 +32,7 @@ const rawUserTools: IR<RA<UserTool>> = {
     },
     {
       title: commonText('schemaConfig'),
-      url: '/specify/overlay/schema-config/',
+      url: '/specify/schema-config/',
     },
   ],
   [commonText('administration')]: [

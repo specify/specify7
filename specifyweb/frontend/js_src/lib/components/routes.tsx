@@ -177,6 +177,51 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
+    path: 'schema-config',
+    title: commonText('schemaConfig'),
+    element: () =>
+      import('./toolbar/schemaconfig').then(
+        ({ SchemaConfigOverlay }) => SchemaConfigOverlay
+      ),
+    children: [
+      {
+        index: true,
+        element: () =>
+          import('./schemaconfiglanguages').then(
+            ({ ChooseSchemaLanguage }) => ChooseSchemaLanguage
+          ),
+      },
+      {
+        path: 'add-language',
+        title: commonText('addLanguageDialogHeader'),
+        element: () =>
+          import('./schemaconfiglanguages').then(
+            ({ AddLanguage }) => AddLanguage
+          ),
+      },
+      {
+        path: ':language',
+        children: [
+          {
+            index: true,
+            title: commonText('tables'),
+            element: () =>
+              import('./schemaconfigtables').then(
+                ({ SchemaConfigTables }) => SchemaConfigTables
+              ),
+          },
+          {
+            path: ':tableName',
+            element: () =>
+              import('./schemaconfig').then(
+                ({ SchemaConfigMain }) => SchemaConfigMain
+              ),
+          },
+        ],
+      },
+    ],
+  },
+  {
     path: 'command',
     children: [
       {

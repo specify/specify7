@@ -155,6 +155,10 @@
       enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
   }
 
+  a.link {
+    @apply hover:text-brand-300;
+  }
+
   .link[aria-current]:not(.aria-handled) {
     @apply text-brand-300;
   }

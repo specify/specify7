@@ -5,25 +5,25 @@ import { queryText } from '../localization/query';
 import type { IR, RA } from '../types';
 import { Button, H2, Select } from './basic';
 import type { SchemaData } from './schemaconfigsetuphooks';
+import { useNavigate } from 'react-router-dom';
 
 export function SchemaConfigHeader({
   languages,
   language,
-  onBack: handleBack,
   onSave: handleSave,
 }: {
   readonly languages: SchemaData['languages'];
   readonly language: string;
-  readonly onBack: () => void;
   readonly onSave: (() => void) | undefined;
 }): JSX.Element {
+  const navigate = useNavigate();
   return (
     <header className="flex gap-2">
       <H2>
         {commonText('schemaConfig')} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>
-      <Button.Small onClick={handleBack}>
+      <Button.Small onClick={(): void => navigate(-1)}>
         {commonText('changeBaseTable')}
       </Button.Small>
       <span className="-ml-2 flex-1" />

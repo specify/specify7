@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { fetchCollection } from '../collection';
 import type { CollectionObject, RecordSet } from '../datamodel';
-import type { AnySchema } from '../datamodelutils';
+import type { AnySchema, SerializedResource } from '../datamodelutils';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
@@ -17,7 +17,6 @@ import type { SpecifyResource } from '../legacytypes';
 import { hasTablePermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { getResourceViewUrl } from '../resource';
-import { ResourceBase } from '../resourceapi';
 import { getModel, getModelById, schema } from '../schema';
 import type { SpecifyModel } from '../specifymodel';
 import { defined } from '../types';
@@ -30,6 +29,7 @@ import {
   TablePermissionDenied,
 } from './permissiondenied';
 import { usePref } from './preferenceshooks';
+import { deserializeResource } from './resource';
 import { ShowResource } from './resourceview';
 import { switchCollection } from './switchcollection';
 
@@ -119,14 +119,18 @@ export function NewResourceView(): JSX.Element {
   const { tableName = '' } = useParams();
   const { state } = useLocation();
   const resource = (
-    state as { readonly resource: SpecifyResource<AnySchema> | undefined }
+    state as { readonly resource: SerializedResource<AnySchema> | undefined }
   )?.resource;
+  const record = React.useMemo(
+    () => f.maybe(resource, deserializeResource),
+    [resource]
+  );
   const parsedTableName = getModel(tableName)?.name;
 
   return typeof parsedTableName === 'string' ? (
     <ProtectedTable action="create" tableName={parsedTableName}>
-      {typeof resource === 'object' && resource instanceof ResourceBase ? (
-        <ShowResource resource={resource} />
+      {typeof record === 'object' ? (
+        <ShowResource resource={record} />
       ) : (
         <DisplayResource id={undefined} tableName={parsedTableName} />
       )}

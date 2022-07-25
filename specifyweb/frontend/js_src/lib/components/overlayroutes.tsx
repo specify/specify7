@@ -86,14 +86,6 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'schema-config',
-        title: commonText('schemaConfig'),
-        element: () =>
-          import('./toolbar/schemaconfig').then(
-            ({ SchemaConfigOverlay }) => SchemaConfigOverlay
-          ),
-      },
-      {
         path: 'tree-repair',
         title: commonText('repairTree'),
         element: () =>

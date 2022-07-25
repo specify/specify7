@@ -74,7 +74,12 @@ export function Router(): JSX.Element {
 
   const overlay = useRoutes(transformedOverlays) ?? undefined;
 
-  return isNotFoundPage || (main === undefined && overlay === undefined) ? (
+  const isNotFound = main === undefined && overlay === undefined;
+  // If supposed to show an overlay, but it wasn't found, show <NotFoundView />
+  const isNotFoundOverlay =
+    typeof background === 'object' && overlay === undefined;
+
+  return isNotFoundPage || isNotFound || isNotFoundOverlay ? (
     <NotFoundView />
   ) : (
     <>

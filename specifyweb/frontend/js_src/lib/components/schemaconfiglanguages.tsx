@@ -1,36 +1,26 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../localization/common';
 import { hasToolPermission } from '../permissionutils';
-import { Button, Form, Input, Label, Submit, Ul } from './basic';
-import { useBooleanState, useId } from './hooks';
+import { Button, Form, Input, Label, Link, Submit, Ul } from './basic';
+import { useId } from './hooks';
 import { Dialog } from './modaldialog';
+import { OverlayContext } from './router';
 import type { SchemaData } from './schemaconfigsetuphooks';
 
-export function ChooseSchemaLanguage({
-  languages,
-  onClose: handleClose,
-  onSelected: handleSelected,
-}: {
-  readonly languages: SchemaData['languages'];
-  readonly onClose: () => void;
-  readonly onSelected: (languageCode: string) => void;
-}): JSX.Element {
-  const [isAdding, handleAdding, handleNoAdding] = useBooleanState();
-  return isAdding ? (
-    <AddLanguage
-      onAddLanguage={handleSelected}
-      onClose={handleClose}
-      onGoBack={handleNoAdding}
-    />
-  ) : (
+export function ChooseSchemaLanguage(): JSX.Element {
+  const schemaData = useOutletContext<SchemaData>();
+  const handleClose = React.useContext(OverlayContext);
+  return (
     <Dialog
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
-            <Button.Blue onClick={handleAdding}>
+            <Link.Blue href="/specify/schema-config/add-language">
               {commonText('addLanguage')}
-            </Button.Blue>
+            </Link.Blue>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
@@ -41,15 +31,15 @@ export function ChooseSchemaLanguage({
     >
       {commonText('language')}
       <Ul>
-        {Object.entries(languages).map(([code, label]) => (
+        {Object.entries(schemaData.languages).map(([code, label]) => (
           <li key={code}>
-            <Button.LikeLink
+            <Link.Default
               className="font-bold"
+              href={`/specify/schema-config/${code}`}
               role="link"
-              onClick={(): void => handleSelected(code)}
             >
               {label}
-            </Button.LikeLink>
+            </Link.Default>
           </li>
         ))}
       </Ul>
@@ -57,24 +47,20 @@ export function ChooseSchemaLanguage({
   );
 }
 
-function AddLanguage({
-  onClose: handleClose,
-  onGoBack: handleGoBack,
-  onAddLanguage: handleAddLanguage,
-}: {
-  readonly onClose: () => void;
-  readonly onGoBack: () => void;
-  readonly onAddLanguage: (language: string) => void;
-}): JSX.Element {
+export function AddLanguage(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
   const id = useId('schema-config-add-language');
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [language, setLanguage] = React.useState<string>('');
   const [country, setCountry] = React.useState<string>('');
+  const navigate = useNavigate();
   return (
     <Dialog
       buttons={
         <>
-          <Button.Gray onClick={handleGoBack}>{commonText('back')}</Button.Gray>
+          <Button.Gray onClick={(): void => navigate(-1)}>
+            {commonText('back')}
+          </Button.Gray>
           <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
         </>
       }
@@ -85,13 +71,12 @@ function AddLanguage({
         className="contents"
         forwardRef={formRef}
         id={id('form')}
-        onSubmit={(): void =>
-          handleAddLanguage(
-            `${language.toLowerCase()}${
-              country === '' ? '' : `-${country.toLowerCase()}`
-            }`
-          )
-        }
+        onSubmit={(): void => {
+          const code = `${language.toLowerCase()}${
+            country === '' ? '' : `-${country.toLowerCase()}`
+          }`;
+          navigate(`/specify/schema-config/${code}/`);
+        }}
       >
         <Label.Generic>
           {commonText('language')}

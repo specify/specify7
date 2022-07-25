@@ -1,4 +1,6 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 import { ping } from '../ajax';
 import type { SpLocaleItemStr as SpLocaleItemString_ } from '../datamodel';
@@ -7,8 +9,9 @@ import { commonText } from '../localization/common';
 import { hasToolPermission } from '../permissionutils';
 import { formatUrl } from '../querystring';
 import { createResource, saveResource } from '../resource';
-import type { SpecifyModel } from '../specifymodel';
+import { getModel } from '../schema';
 import type { PartialBy } from '../types';
+import { defined } from '../types';
 import { Container } from './basic';
 import { LoadingContext } from './contexts';
 import { useUnloadProtect } from './navigation';
@@ -28,17 +31,11 @@ export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 
 export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 
-export function SchemaConfigMain({
-  schemaData,
-  language: rawLanguage,
-  model,
-  onBack: handleBack,
-}: {
-  readonly schemaData: SchemaData;
-  readonly language: string;
-  readonly model: SpecifyModel;
-  readonly onBack: () => void;
-}): JSX.Element {
+export function SchemaConfigMain(): JSX.Element {
+  const { language: rawLanguage = '', tableName = '' } = useParams();
+  const model = defined(getModel(tableName));
+
+  const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =
     !hasToolPermission('schemaConfig', 'update') ||
     !hasToolPermission('schemaConfig', 'create');
@@ -111,7 +108,6 @@ export function SchemaConfigMain({
       <SchemaConfigHeader
         language={language}
         languages={schemaData.languages}
-        onBack={handleBack}
         onSave={canSave ? handleSave : undefined}
       />
       <div className="flex flex-1 flex-col gap-4 overflow-hidden sm:flex-row">
