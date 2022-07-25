@@ -210,7 +210,7 @@ def do_upload(
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
-            _cache = cache.copy() if cache and allow_partial else cache
+            _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
                 bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
