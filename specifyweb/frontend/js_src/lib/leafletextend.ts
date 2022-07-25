@@ -8,6 +8,7 @@
 import L from 'leaflet';
 import { localityText } from './localization/locality';
 import { legacyNonJsxIcons } from './components/icons';
+import { className } from './components/basic';
 
 if (process.env.NODE_ENV !== 'test') {
   require('leaflet/dist/leaflet.css');
@@ -36,7 +37,7 @@ L.Control.FullScreen = L.Control.extend({
     button.title = localityText('toggleFullScreen');
     button.ariaLabel = localityText('toggleFullScreen');
     button.classList.add(
-      'button',
+      className.button,
       'bg-white',
       'dark:bg-black',
       'p-2',
@@ -77,7 +78,7 @@ L.Control.PrintMap = L.Control.extend({
   onAdd() {
     const button = L.DomUtil.create('button') as HTMLSpanElement;
     button.classList.add(
-      'button',
+      className.button,
       'leaflet-print-map',
       'px-2',
       'bg-black',

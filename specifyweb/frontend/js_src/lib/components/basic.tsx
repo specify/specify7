@@ -106,7 +106,8 @@ export const dialogIconTriggers = {
 };
 
 // ClassNames are primarily for usage by non-react components
-const grayButton = `hover:bg-gray-400 bg-gray-300 text-gray-800
+const buttonClassName = 'button';
+const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
 const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
   shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
@@ -135,11 +136,11 @@ export const className = {
   label: 'flex flex-col',
   labelForCheckbox: 'cursor-pointer inline-flex gap-1 items-center',
   textArea: 'max-w-full min-w-[theme(spacing.20)] min-h-[theme(spacing.8)]',
-  button: 'button',
+  button: buttonClassName,
   link: 'link',
   icon: 'icon link',
   grayButton,
-  niceButton: `rounded cursor-pointer active:brightness-80 px-4 py-2
+  niceButton: `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
   disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
   inline-flex items-center capitalize`,
   borderedGrayButton: `${grayButton} ring-1 ring-gray-400 dark:ring-0
@@ -646,7 +647,7 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
     | TagProps<'a'>
     | ((props: Readonly<EXTRA_PROPS> & TagProps<'a'>) => TagProps<'a'>)
 ) =>
-  wrap<'a', EXTRA_PROPS & { readonly href: string | undefined }>(
+  wrap<'a', EXTRA_PROPS & { readonly href: string }>(
     name,
     'a',
     className,
@@ -717,7 +718,6 @@ export const Link = {
     'Link.Green',
     `${className.niceButton} ${className.greenButton}`
   ),
-
   Icon: linkComponent<IconProps>(
     'Link.Icon',
     `${className.icon} rounded`,

@@ -2,7 +2,7 @@ import { jsonStringify } from './helpers';
 import type { RA, WritableArray } from './types';
 
 /**
- * Spy on the calls to these console so that can include all console
+ * Spy on the calls to these console methods so that can include all console
  * messages as part of a crash report
  */
 const logTypes = [

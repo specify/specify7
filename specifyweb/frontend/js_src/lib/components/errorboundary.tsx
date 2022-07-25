@@ -420,46 +420,47 @@ export function handleAjaxError(
    */
   if (userInformation.agent === null) throw error;
 
-  const isNotFoundError =
-    response.status === Http.NOT_FOUND &&
-    process.env.NODE_ENV !== 'development';
-  // In production, uncaught 404 errors redirect to the NOT FOUND page
-  if (isNotFoundError && unsafeTriggerNotFound()) {
-    Object.defineProperty(error, 'handledBy', {
-      value: handleAjaxError,
-    });
-    throw error;
-  }
-  const permissionError = error as {
-    readonly type: 'permissionDenied';
-    readonly responseText: string;
-  };
-  const isPermissionError =
-    typeof permissionError === 'object' &&
-    permissionError?.type === 'permissionDenied' &&
-    strict;
-  if (isPermissionError) {
-    const parsed = formatPermissionsError(
-      permissionError.responseText,
-      response.url
-    );
-    if (Array.isArray(parsed)) {
-      const [errorObject, errorMessage] = parsed;
-      displayError(({ onClose: handleClose }) => (
-        <PermissionError error={errorObject} onClose={handleClose} />
-      ));
-      const error = new Error(errorMessage);
+  if (strict) {
+    const isNotFoundError =
+      response.status === Http.NOT_FOUND &&
+      process.env.NODE_ENV !== 'development';
+    // In production, uncaught 404 errors redirect to the NOT FOUND page
+    if (isNotFoundError && unsafeTriggerNotFound()) {
       Object.defineProperty(error, 'handledBy', {
         value: handleAjaxError,
       });
       throw error;
+    }
+    const permissionError = error as {
+      readonly type: 'permissionDenied';
+      readonly responseText: string;
+    };
+    const isPermissionError =
+      typeof permissionError === 'object' &&
+      permissionError?.type === 'permissionDenied';
+    if (isPermissionError) {
+      const parsed = formatPermissionsError(
+        permissionError.responseText,
+        response.url
+      );
+      if (Array.isArray(parsed)) {
+        const [errorObject, errorMessage] = parsed;
+        displayError(({ onClose: handleClose }) => (
+          <PermissionError error={errorObject} onClose={handleClose} />
+        ));
+        const error = new Error(errorMessage);
+        Object.defineProperty(error, 'handledBy', {
+          value: handleAjaxError,
+        });
+        throw error;
+      }
     }
   }
   const [errorObject, errorMessage, copiableMessage] = formatError(
     error,
     response.url
   );
-  if (strict && !isPermissionError)
+  if (strict)
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}

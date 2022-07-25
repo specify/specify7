@@ -90,9 +90,7 @@ export function Contexts({
       }),
     []
   );
-  React.useEffect(() => {
-    setError = handleError;
-  }, [handleError]);
+  setError = handleError;
 
   // eslint-disable-next-line react/hook-use-state
   const getSetProtects = React.useState<RA<string>>([]);

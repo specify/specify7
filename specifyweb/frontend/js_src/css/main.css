@@ -141,18 +141,9 @@
     @apply relative;
   }
 
-  .button {
-    @apply ring-1 dark:ring-0 rounded cursor-pointer active:brightness-80
-      bg-gray-300 text-black dark:text-gray-100 gap-2 inline-flex items-center
-      ring-zinc-400 disabled:bg-gray-200 dark:bg-neutral-600 px-2 py-1
-      disabled:ring-gray-500 disabled:dark:ring-neutral-500
-      disabled:dark:bg-neutral-800 disabled:text-gray-500
-      disabled:dark:text-neutral-400 hover:bg-brand-200 dark:hover:bg-brand-400;
-  }
-
-  button[aria-pressed='true']:not(.aria-handled), button[aria-selected='true']:not(.aria-handled) {
-    /* FEATURE: consider replacing this with "brightness-150" */
-    @apply bg-white dark:bg-neutral-400;
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
+    @apply brightness-[2];
+    /*@apply bg-white dark:bg-neutral-400;*/
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
@@ -162,6 +153,10 @@
   .link {
     @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0
       enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
+  }
+
+  .link[aria-current]:not(.aria-handled) {
+    @apply text-brand-300;
   }
 
   .icon {

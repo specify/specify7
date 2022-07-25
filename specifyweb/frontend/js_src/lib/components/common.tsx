@@ -7,6 +7,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useLocation } from 'react-router-dom';
 
 import type { SortConfigs } from '../cachedefinitions';
 import { format } from '../dataobjformatters';
@@ -382,3 +383,29 @@ export const loadingGif = (
     </div>
   </div>
 );
+
+/** Based on react-router's <NavLink> */
+export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
+  component: LinkComponent = Link.Default,
+  'aria-current': ariaCurrent = 'page',
+  end = false,
+  ...props
+}: T & {
+  readonly end?: boolean;
+  readonly component?: (props: T) => JSX.Element;
+}): JSX.Element {
+  const location = useLocation();
+  const isActive =
+    location.pathname === props.href ||
+    `${location.pathname}${location.hash}` === props.href ||
+    location.hash === props.href ||
+    (!end &&
+      location.pathname.startsWith(props.href) &&
+      location.pathname.charAt(props.href.length) === '/');
+  return (
+    <LinkComponent
+      {...(props as T)}
+      aria-current={isActive ? ariaCurrent : undefined}
+    />
+  );
+}
