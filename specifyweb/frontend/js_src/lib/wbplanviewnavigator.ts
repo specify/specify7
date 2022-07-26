@@ -402,7 +402,9 @@ export function getMappingLineData({
               (generateFieldData === 'all' &&
                 isFieldVisible(
                   showHiddenFields,
-                  model.idField.overrides.isHidden,
+                  scope === 'queryBuilder'
+                    ? model.idField.isHidden
+                    : model.idField.overrides.isHidden,
                   model.idField.name
                 ))
                 ? [
