@@ -21,7 +21,7 @@ import {
   hasTreeAccess,
 } from './permissions';
 import { getUserPref } from './preferencesutils';
-import { getModel } from './schema';
+import { getFrontEndOnlyFields, getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
@@ -492,7 +492,10 @@ export function getMappingLineData({
                       !isTreeModel(model.name) ||
                       mappingPath[internalState.position - 1] ==
                         formatTreeRank(anyTreeRank) ||
-                      queryBuilderTreeFields.has(field.name))
+                      queryBuilderTreeFields.has(field.name)) &&
+                    getFrontEndOnlyFields()[model.name]?.includes(
+                      field.name
+                    ) !== true
                 )
                 .flatMap((field) => {
                   const fieldData = {
