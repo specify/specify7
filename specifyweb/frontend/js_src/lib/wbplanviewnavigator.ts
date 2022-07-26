@@ -159,11 +159,12 @@ export function getTableFromMappingPath(
   const fieldName = valueIsPartialField(mappingPath.slice(-1)[0])
     ? parsePartialField(mappingPath.slice(-1)[0])[0]
     : mappingPath.slice(-1)[0];
-  const field = defined(
-    defined(getModel(baseTableName)).getField(
-      getGenericMappingPath([...mappingPath.slice(0, -1), fieldName]).join('.')
-    )
-  );
+  const fieldPath = getGenericMappingPath([
+    ...mappingPath.slice(0, -1),
+    fieldName,
+  ]).join('.');
+  if (fieldPath.length === 0) return baseTableName;
+  const field = defined(defined(getModel(baseTableName)).getField(fieldPath));
   return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
