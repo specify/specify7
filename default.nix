@@ -3,9 +3,9 @@ stdenv.mkDerivation rec {
   name = "env";
   env = buildEnv { name = name; paths = buildInputs; };
   buildInputs = [
-    python36
-    python36Packages.virtualenv
-    python36Packages.pip
+    python38
+    python38Packages.virtualenv
+    python38Packages.pip
     libmysqlclient
     libzip
     openssl
