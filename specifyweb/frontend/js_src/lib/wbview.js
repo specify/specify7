@@ -1775,6 +1775,7 @@ const WBView = Backbone.View.extend({
       this.getHotPlugin('hiddenColumns').hideColumns(colsToHide);
     });
     effectsCleanup.push(() => {
+      if(this.hot === undefined) return;
       this.getHotPlugin('hiddenRows').showRows(
         rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
       );
@@ -1822,7 +1823,7 @@ const WBView = Backbone.View.extend({
     const runCleanup = () =>
       // If WBView.remove() was called, this.hot would be undefined here
       [...effectsCleanup, this.hot?.render.bind(this.hot)].forEach(
-        (effectCleanup) => effectCleanup()
+        (effectCleanup) => effectCleanup?.()
       );
 
     const handleClose = () => {
