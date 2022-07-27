@@ -85,8 +85,30 @@ export const schemaExtras: {
     currentDetermination.isHidden = true;
     currentDetermination.overrides.isHidden = true;
 
+    const totalCountAmt = new LiteralField(model, {
+      name: 'totalCountAmt',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    totalCountAmt.isHidden = true;
+    totalCountAmt.overrides.isHidden = true;
+
+    const actualTotalCountAmt = new LiteralField(model, {
+      name: 'actualTotalCountAmt',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    actualTotalCountAmt.isHidden = true;
+    actualTotalCountAmt.overrides.isHidden = true;
+
     return [
-      [],
+      [totalCountAmt, actualTotalCountAmt],
       [currentDetermination],
       (): void => {
         const collection = defined(model.getRelationship('collection'));
@@ -116,13 +138,59 @@ export const schemaExtras: {
     accessions.overrides.isHidden = true;
     return [[], [accessions]];
   },
-  Accession: (model) => [
-    [],
-    [],
-    (): void => {
-      defined(model.getRelationship('division')).otherSideName = 'accessions';
-    },
-  ],
+  Accession: (model) => {
+    const actualTotalCountAmt = new LiteralField(model, {
+      name: 'actualTotalCountAmt',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    actualTotalCountAmt.isHidden = true;
+    actualTotalCountAmt.overrides.isHidden = true;
+
+    const totalCountAmt = new LiteralField(model, {
+      name: 'totalCountAmt',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    totalCountAmt.isHidden = true;
+    totalCountAmt.overrides.isHidden = true;
+
+    const preparationCount = new LiteralField(model, {
+      name: 'preparationCount',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    preparationCount.isHidden = true;
+    preparationCount.overrides.isHidden = true;
+
+    const collectionObjectCount = new LiteralField(model, {
+      name: 'collectionObjectCount',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    collectionObjectCount.isHidden = true;
+    collectionObjectCount.overrides.isHidden = true;
+
+    return [
+      [actualTotalCountAmt],
+      [],
+      (): void => {
+        defined(model.getRelationship('division')).otherSideName = 'accessions';
+      },
+    ];
+  },
   Loan(model) {
     const totalPreps = new LiteralField(model, {
       name: 'totalPreps',
@@ -227,8 +295,19 @@ export const schemaExtras: {
     isOnLoan.isHidden = true;
     isOnLoan.overrides.isHidden = true;
 
+    const preparation = new LiteralField(model, {
+      name: 'preparation',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    preparation.isHidden = true;
+    preparation.overrides.isHidden = true;
+
     return [
-      [isOnLoan],
+      [isOnLoan, preparation],
       [],
       (): void => {
         const preptype = defined(model.getRelationship('preptype'));
