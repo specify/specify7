@@ -403,7 +403,7 @@ export function getMappingLineData({
               (generateFieldData === 'all' &&
                 isFieldVisible(
                   showHiddenFields,
-                  model.idField.overrides.isHidden,
+                  model.idField.isHidden,
                   model.idField.name
                 ))
                 ? [
@@ -440,7 +440,9 @@ export function getMappingLineData({
                           )))) &&
                     isFieldVisible(
                       showHiddenFields,
-                      field.overrides.isHidden,
+                      scope === 'queryBuilder'
+                        ? field.isHidden
+                        : field.overrides.isHidden,
                       field.name
                     ) &&
                     (!field.isRelationship ||
@@ -512,7 +514,10 @@ export function getMappingLineData({
                       scope !== 'queryBuilder' &&
                       field.overrides.isRequired &&
                       !mustMatchPreferences[model.name],
-                    isHidden: field.overrides.isHidden,
+                    isHidden:
+                      scope === 'queryBuilder'
+                        ? field.isHidden
+                        : field.overrides.isHidden,
                     isDefault: field.name === internalState.defaultValue,
                     isRelationship: field.isRelationship,
                     tableName: field.isRelationship
