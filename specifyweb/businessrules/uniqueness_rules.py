@@ -15,8 +15,13 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                 unique_field: value})
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
-            if conflicts:
-                raise BusinessRuleException("{} must have unique {}".format(model.__name__, unique_field))
+            if conflicts.exists():
+                raise BusinessRuleException({
+                    "type": "UNIQUENESS",
+                    "table": model.__name__,
+                    "field": (unique_field, value),
+                    "conflicting": list(conflicts.values_list('id', flat=True)[:100]),
+                })
     else:
         @orm_signal_handler('pre_save', model_name)
         def check_unique(instance):
@@ -33,8 +38,14 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                     unique_field: value})
             if instance.id is not None:
                 conflicts = conflicts.exclude(id=instance.id)
-            if conflicts:
-                raise BusinessRuleException("{} must have unique {} in {}".format(model.__name__, unique_field, parent_field))
+            if conflicts.exists():
+                raise BusinessRuleException({
+                    "type": "UNIQUENESS",
+                    "table": model.__name__,
+                    "field": (unique_field, value),
+                    "within": (parent_field, parent),
+                    "conflicting": list(conflicts.values_list('id', flat=True)[:100]),
+                })
     return check_unique
 
 UNIQUENESS_RULES = {
