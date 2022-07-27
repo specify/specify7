@@ -295,19 +295,8 @@ export const schemaExtras: {
     isOnLoan.isHidden = true;
     isOnLoan.overrides.isHidden = true;
 
-    const preparation = new LiteralField(model, {
-      name: 'preparation',
-      required: false,
-      readOnly: true,
-      type: 'java.lang.Integer',
-      indexed: false,
-      unique: false,
-    });
-    preparation.isHidden = true;
-    preparation.overrides.isHidden = true;
-
     return [
-      [isOnLoan, preparation],
+      [isOnLoan],
       [],
       (): void => {
         const preptype = defined(model.getRelationship('preptype'));
