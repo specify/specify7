@@ -6,12 +6,6 @@ from specifyweb.permissions.permissions import skip_collection_access_check
 from . import views
 
 urlpatterns = [
-    path('login/',
-         views.oic_login
-         if settings.OAUTH_LOGIN_PROVIDERS
-         else auth_views.LoginView.as_view(template_name='login.html')
-         ),
-
     # Login with Specify username and password:
     path('legacy_login/', auth_views.LoginView.as_view(template_name='login.html')),
 
@@ -50,3 +44,12 @@ urlpatterns = [
     # which the specified user has registered identities with.
     path('oic_providers/<int:userid>/', views.user_providers),
 ]
+
+if settings.OAUTH_LOGIN_PROVIDERS:
+    urlpatterns.append(
+        path('login/', views.oic_login)
+    )
+else:
+    urlpatterns.append(
+        path('login/', auth_views.LoginView.as_view(template_name='login.html'))
+    )
