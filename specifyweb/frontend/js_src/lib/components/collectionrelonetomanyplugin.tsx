@@ -73,6 +73,7 @@ export async function fetchOtherCollectionData(
     'CollectionRelType',
     { name: relationship, limit: 1 }
   )
+    // BUG: this does not handle the not found case
     .then(({ records }) => deserializeResource(records[0]))
     .then(async (relationshipType) =>
       f.all({
@@ -195,11 +196,13 @@ export function CollectionOneToManyPlugin({
                       className={className.navigationHandled}
                       onClick={(event): void => {
                         event.preventDefault();
-                        const collectionsIds =
+                        const availableCollections =
                           userInformation.availableCollections.map(
                             ({ id }) => id
                           );
-                        if (collectionsIds.includes(data.otherCollection.id))
+                        if (
+                          availableCollections.includes(data.otherCollection.id)
+                        )
                           switchCollection(
                             data.otherCollection.id,
                             relatedResource.viewUrl()

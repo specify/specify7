@@ -32,6 +32,36 @@ const reversePrecision: RR<number, PartialDatePrecision> = {
 };
 export type PartialDatePrecision = keyof typeof precisions;
 
+/**
+ * Parse date using the current formatters, while working arround day.js bugs
+ */
+export function parseDate(
+  precision: PartialDatePrecision,
+  value: string
+): ReturnType<typeof dayjs> {
+  return (
+    fixDayJsBugs(precision, value) ??
+    dayjs(
+      value,
+      /*
+       * The date would be in the first format if browser supports
+       * input[type="date"] or input[type="month"]
+       * The date would be in the second format if browser does not support
+       * those inputs, or on date paste
+       */
+      precision === 'full'
+        ? [databaseDateFormat, fullDateFormat()]
+        : [
+            ...(precision === 'year' ? ['YYYY'] : []),
+            'YYYY-MM',
+            monthFormat(),
+            fullDateFormat(),
+          ],
+      true
+    )
+  );
+}
+
 // TODO: [REFACTOR] migrate from day.js to date-fns
 /**
  * Several bugs have been discovered in day.js in the process of testing
@@ -272,29 +302,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
 
     const value = initialValue ?? inputValue.trim();
 
-    setMoment(
-      value.length > 0
-        ? fixDayJsBugs(precision, value) ??
-            dayjs(
-              value,
-              /*
-               * The date would be in the first format if browser supports
-               * input[type="date"] or input[type="month"]
-               * The date would be in the second format if browser does not support
-               * those inputs, or on date paste
-               */
-              precision === 'full'
-                ? ['YYYY-MM-DD', fullDateFormat()]
-                : [
-                    ...(precision === 'year' ? ['YYYY'] : []),
-                    'YYYY-MM',
-                    monthFormat(),
-                    fullDateFormat(),
-                  ],
-              true
-            )
-        : undefined
-    );
+    setMoment(value.length > 0 ? parseDate(precision, value) : undefined);
   }
 
   return (
