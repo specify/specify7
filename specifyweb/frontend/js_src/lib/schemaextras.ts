@@ -295,8 +295,19 @@ export const schemaExtras: {
     isOnLoan.isHidden = true;
     isOnLoan.overrides.isHidden = true;
 
+    const actualCountAmt = new LiteralField(model, {
+      name: 'actualCountAmt',
+      required: false,
+      readOnly: true,
+      type: 'java.lang.Integer',
+      indexed: false,
+      unique: false,
+    });
+    actualCountAmt.isHidden = true;
+    actualCountAmt.overrides.isHidden = true;
+
     return [
-      [isOnLoan],
+      [isOnLoan, actualCountAmt],
       [],
       (): void => {
         const preptype = defined(model.getRelationship('preptype'));
