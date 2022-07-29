@@ -3,7 +3,7 @@ celery==5.0.3
 Django==3.2.14
 mysqlclient==2.1.1
 SQLAlchemy==1.2.11
-requests==2.26.0
+requests==2.28.1
 pycryptodome==3.9.7
 PyJWT==2.3.0
 django-auth-ldap==1.2.15
