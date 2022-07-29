@@ -236,13 +236,7 @@ class make_decimal_field(make_field):
 
 class make_boolean_field(make_field):
     """A specialization of make_field for Boolean type fields."""
-    @classmethod
-    def get_field_class(cls, fld):
-        """Django differentiates between boolean fields which
-        can contain nulls and those that cannot with different
-        types.
-        """
-        return BooleanField if fld.required else NullBooleanField
+    field_class = models.BooleanField
 
     @classmethod
     def make_args(cls, fld):
