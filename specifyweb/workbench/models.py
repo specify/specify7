@@ -1,7 +1,6 @@
 
 from django.db import models
 from django.utils import timezone
-from django_jsonfield_backport.models import JSONField # type: ignore
 
 from specifyweb.specify import models as spmodels
 
@@ -11,14 +10,14 @@ Agent = getattr(spmodels, 'Agent')
 
 class Spdataset(models.Model):
     name = models.CharField(max_length=256)
-    columns = JSONField()
-    visualorder = JSONField(null=True)
-    data = JSONField(default=list)
+    columns = models.JSONField()
+    visualorder = models.JSONField(null=True)
+    data = models.JSONField(default=list)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     specifyuser = models.ForeignKey(Specifyuser, on_delete=models.CASCADE)
     uploadplan = models.TextField(null=True)
-    uploaderstatus = JSONField(null=True)
-    uploadresult = JSONField(null=True)
+    uploaderstatus = models.JSONField(null=True)
+    uploadresult = models.JSONField(null=True)
     rowresults = models.TextField(null=True)
     remarks = models.TextField(null=True)
     importedfilename = models.TextField(null=True)

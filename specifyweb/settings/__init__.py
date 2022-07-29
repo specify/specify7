@@ -214,6 +214,8 @@ INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:
     AUTHENTICATION_BACKENDS.append('specifyweb.specify.support_login.SupportLoginBackend')
