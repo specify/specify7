@@ -2,6 +2,7 @@ import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
 import type { RA } from '../types';
 import type { EnhancedRoute } from './routerutils';
+import { DataSetMetaOverlay } from './toolbar/wbsdialog';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const overlayRoutes: RA<EnhancedRoute> = [
@@ -83,6 +84,13 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('./toolbar/wbsdialog').then(
             ({ DataSetsOverlay }) => DataSetsOverlay
+          ),
+      },
+      {
+        path: 'workbench/:dataSetId/meta',
+        element: () =>
+          import('./toolbar/wbsdialog').then(
+            ({ DataSetMetaOverlay }) => DataSetMetaOverlay
           ),
       },
       {

@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ajax, Http } from '../../ajax';
 import { sortFunction } from '../../helpers';
@@ -14,7 +14,7 @@ import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../../permissionutils';
 import type { RA } from '../../types';
 import { uniquifyDataSetName } from '../../wbuniquifyname';
-import { Button, DataEntry, Link } from '../basic';
+import { Button, className, Link } from '../basic';
 import type { SortConfig } from '../common';
 import { SortIndicator, useSortConfig } from '../common';
 import { LoadingContext } from '../contexts';
@@ -50,21 +50,17 @@ const createEmptyDataSet = async (): Promise<Dataset> =>
   ).then(({ data }) => data);
 
 /** Wrapper for Data Set Meta */
-function DsMeta({
-  dsId,
-  onClose: handleClose,
-}: {
-  readonly dsId: number;
-  readonly onClose: () => void;
-}): JSX.Element | null {
+export function DataSetMetaOverlay(): JSX.Element | null {
+  const { dataSetId = '' } = useParams();
+  const handleClose = React.useContext(OverlayContext);
   const [dataset] = useAsyncState<Dataset>(
     React.useCallback(
       async () =>
-        ajax<Dataset>(`/api/workbench/dataset/${dsId}/`, {
+        ajax<Dataset>(`/api/workbench/dataset/${dataSetId}/`, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         }).then(({ data }) => data),
-      [dsId]
+      [dataSetId]
     ),
     true
   );
@@ -115,16 +111,15 @@ function TableHeader({
   );
 }
 
+/** Render a dialog for choosing a data set */
 function DataSets({
   onClose: handleClose,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
-  onShowMeta: handleShowMeta,
 }: {
   readonly showTemplates: boolean;
   readonly onClose: () => void;
   readonly onDataSetSelect?: (id: number) => void;
-  readonly onShowMeta: (dataSet: number) => void;
 }): JSX.Element | null {
   const [unsortedDatasets] = useAsyncState(
     React.useCallback(
@@ -216,8 +211,8 @@ function DataSets({
                 <tr key={index}>
                   <td className="overflow-x-auto">
                     <Link.Default
-                      href={`/specify/workbench/${dataset.id}/`}
                       className="font-bold"
+                      href={`/specify/workbench/${dataset.id}/`}
                       onClick={
                         handleDataSetSelect
                           ? (event): void => {
@@ -249,8 +244,12 @@ function DataSets({
                   </td>
                   <td>
                     {canImport && (
-                      <DataEntry.Edit
-                        onClick={(): void => handleShowMeta(dataset.id)}
+                      <Link.Icon
+                        aria-label={commonText('edit')}
+                        className={className.dataEntryEdit}
+                        href={`/specify/overlay/workbench/${dataset.id}/meta/`}
+                        icon="pencil"
+                        title={commonText('edit')}
                       />
                     )}
                   </td>
@@ -264,35 +263,7 @@ function DataSets({
   ) : null;
 }
 
-/** Render a dialog for choosing a data set */
-export function WbsDialog({
-  onClose: handleClose,
-  showTemplates,
-  onDataSetSelect: handleDataSetSelect,
-}: {
-  readonly showTemplates: boolean;
-  readonly onClose: () => void;
-  readonly onDataSetSelect?: (id: number) => void;
-}): JSX.Element | null {
-  // Whether to show DS meta dialog. Either false or Data Set ID
-  const [showMeta, setShowMeta] = React.useState<number | false>(false);
-
-  return (
-    <>
-      <DataSets
-        showTemplates={showTemplates}
-        onClose={handleClose}
-        onDataSetSelect={handleDataSetSelect}
-        onShowMeta={setShowMeta}
-      />
-      {showMeta !== false && (
-        <DsMeta dsId={showMeta} onClose={(): void => setShowMeta(false)} />
-      )}
-    </>
-  );
-}
-
 export function DataSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-  return <WbsDialog showTemplates={false} onClose={handleClose} />;
+  return <DataSets showTemplates={false} onClose={handleClose} />;
 }
