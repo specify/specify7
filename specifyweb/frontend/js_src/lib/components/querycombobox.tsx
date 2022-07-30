@@ -400,9 +400,8 @@ export function QueryComboBox({
       ) ?? {}
     );
 
-  // TODO: [BUG] add "w-full" here
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <Autocomplete<string>
         filterItems={false}
         source={React.useCallback(
