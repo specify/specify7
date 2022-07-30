@@ -278,7 +278,7 @@ export function parseFormCell(
      * To mitigate the above issues, Specify 7 form definitions are using
      * "invisible=true" instead of "visible=false" for makign fields invisible
      */
-    visible: getProperty('invisible')?.toLowerCase() !== 'true',
+    visible: getBooleanAttribute(cellNode, 'invisible') ?? true,
     ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
