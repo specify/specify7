@@ -74,7 +74,6 @@ export function InteractionDialog({
           readonly problems: IR<RA<string>>;
         }
       >
-    | State<'LoadingState'>
     | State<'LoanReturnDoneState', { readonly result: string }>
     | State<'MainState'>
   >({ type: 'MainState' });
