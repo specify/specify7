@@ -19,7 +19,7 @@ export type WithFetchedStrings = {
   };
 };
 
-export function SchemaConfigOverlay(): JSX.Element | null {
+export function SchemaConfig(): JSX.Element | null {
   const schemaData = useSchemaData();
 
   return schemaData === undefined ? null : (

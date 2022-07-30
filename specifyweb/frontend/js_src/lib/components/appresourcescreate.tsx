@@ -1,24 +1,28 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import type { AppResourceMode } from '../appresourceshelpers';
-import type {
-  SpAppResource,
-  SpAppResourceDir,
-  SpViewSetObj as SpViewSetObject,
-} from '../datamodel';
+import type { SpAppResourceDir } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { addMissingFields, serializeResource } from '../datamodelutils';
 import { f } from '../functools';
+import { mappedFind } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import type { IR, RR } from '../types';
 import { ensure } from '../types';
 import { userInformation } from '../userinfo';
+import type { AppResourcesOutlet } from './appresources';
+import type { AppResourcesTree } from './appresourceshooks';
+import { useResourcesTree } from './appresourceshooks';
 import { Button, Link, Ul } from './basic';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
+import { NotFoundView } from './notfoundview';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { OverlayContext } from './router';
 
 type AppResourceType = {
   readonly tableName: 'SpAppResource' | 'SpViewSetObject';
@@ -190,23 +194,26 @@ export const appResourceSubTypes = {
 
 ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
-export function CreateAppResource({
-  directory,
-  onClose: handleClose,
-  onSelected: handleSelected,
-}: {
-  readonly directory: SerializedResource<SpAppResourceDir>;
-  readonly onClose: () => void;
-  readonly onSelected: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>
-  ) => void;
-}): JSX.Element {
+export function CreateAppResource(): JSX.Element {
+  const handleClose = React.useContext(OverlayContext);
+  const { directoryKey = '' } = useParams();
+  const {
+    getSet: [resources],
+  } = useOutletContext<AppResourcesOutlet>();
+  const resourcesTree = useResourcesTree(resources);
+  const directory = React.useMemo(
+    () => findDirectory(resourcesTree, directoryKey),
+    [resourcesTree, directoryKey]
+  );
+
   const [name, setName] = React.useState<string>('');
   const [type, setType] = React.useState<AppResourceType | undefined>(
     undefined
   );
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
-  return type === undefined ? (
+  return directory === undefined ? (
+    <NotFoundView />
+  ) : type === undefined ? (
     <Dialog
       buttons={commonText('cancel')}
       header={adminText('selectResourceType')}
@@ -275,28 +282,28 @@ export function CreateAppResource({
       mimeType={mimeType}
       name={name}
       type={type}
-      onClose={handleClose}
-      onSelected={handleSelected}
     />
   );
 }
+
+export const findDirectory = (
+  tree: AppResourcesTree,
+  searchKey: string
+): SerializedResource<SpAppResourceDir> | undefined =>
+  mappedFind(tree, ({ key, directory, subCategories }) =>
+    key === searchKey ? directory : findDirectory(subCategories, searchKey)
+  );
 
 function EditAppResource({
   directory,
   name,
   type,
   mimeType,
-  onSelected: handleSelected,
-  onClose: handleClose,
 }: {
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly name: string;
   readonly type: AppResourceType;
   readonly mimeType: string | undefined;
-  readonly onSelected: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>
-  ) => void;
-  readonly onClose: () => void;
 }): JSX.Element {
   const resource = React.useMemo(
     () =>
@@ -312,6 +319,11 @@ function EditAppResource({
       ),
     [directory, name, type, mimeType]
   );
+
+  const handleClose = React.useContext(OverlayContext);
+  const navigate = useNavigate();
+  const { directoryKey = '' } = useParams();
+
   return (
     <ResourceView
       canAddAnother={false}
@@ -324,7 +336,15 @@ function EditAppResource({
       onDeleted={undefined}
       onSaved={f.never}
       onSaving={(): false => {
-        handleSelected(serializeResource(resource));
+        const path =
+          type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
+        navigate(`/specify/resources/${path}/new/`, {
+          state: { resource: serializeResource(resource), directoryKey },
+        });
+        /*
+         * Prevent saving a resource to fix
+         * https://github.com/specify/specify7/issues/1596
+         */
         return false;
       }}
     />

@@ -19,7 +19,7 @@ import type { SerializedResource } from '../datamodelutils';
 import { addMissingFields } from '../datamodelutils';
 import { f } from '../functools';
 import { tableFromUrl } from '../resource';
-import type { IR, RA } from '../types';
+import type { GetOrSet, IR, RA } from '../types';
 import { useAsyncState } from './hooks';
 
 export type AppResources = {
@@ -31,7 +31,7 @@ export type AppResources = {
   readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
 };
 
-export function useAppResources(): AppResources | undefined {
+export function useAppResources(): GetOrSet<AppResources | undefined> {
   return useAsyncState(
     React.useCallback(
       async () =>
@@ -58,7 +58,7 @@ export function useAppResources(): AppResources | undefined {
       []
     ),
     true
-  )[0];
+  );
 }
 
 export type AppResourcesTree = RA<{

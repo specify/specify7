@@ -7,7 +7,6 @@ import {
 } from '../appresourceshelpers';
 import type {
   SpAppResource,
-  SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
@@ -24,25 +23,23 @@ import {
 import type { AppResources, AppResourcesTree } from './appresourceshooks';
 import { useAppResourceCount, useResourcesTree } from './appresourceshooks';
 import { Button, className, Link, Ul } from './basic';
+import { ActiveLink } from './common';
 import { useId } from './hooks';
 import { icons } from './icons';
 import { useCachedState } from './statecache';
 
 export function AppResourcesAside({
   resources: initialResources,
-  onOpen: handleOpen,
-  onCreate: handleCreate,
+  isReadOnly,
   initialFilters,
+  onOpen: handleOpen,
 }: {
   readonly resources: AppResources;
+  readonly isReadOnly: boolean;
   readonly initialFilters?: AppResourceFiltersType;
-  readonly onOpen: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
+  readonly onOpen?: (
+    resource: SerializedResource<SpAppResource | SpViewSetObject>
   ) => void;
-  readonly onCreate:
-    | ((directory: SerializedResource<SpAppResourceDir>) => void)
-    | undefined;
 }): JSX.Element {
   const [conformations = [], setConformations] = useCachedState(
     'appResources',
@@ -56,9 +53,9 @@ export function AppResourcesAside({
         {resourcesTree.map((resources) => (
           <TreeItem
             conformations={conformations}
+            isReadOnly={isReadOnly}
             key={resources.key}
             resourcesTree={resources}
-            onCreate={handleCreate}
             onFold={setConformations}
             onOpen={handleOpen}
           />
@@ -106,19 +103,16 @@ function AppResourcesExpand({
 function TreeItem({
   resourcesTree,
   conformations,
+  isReadOnly,
   onFold: handleFold,
   onOpen: handleOpen,
-  onCreate: handleCreate,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
   readonly conformations: RA<AppResourcesConformation>;
+  readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
-  readonly onOpen: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
-  ) => void;
-  readonly onCreate:
-    | ((directory: SerializedResource<SpAppResourceDir>) => void)
+  readonly onOpen:
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
@@ -158,8 +152,8 @@ function TreeItem({
       {isExpanded && (
         <>
           <TreeItemResources
+            isReadOnly={isReadOnly}
             resourcesTree={resourcesTree}
-            onCreate={handleCreate}
             onOpen={handleOpen}
           />
           {subCategories.length > 0 && (
@@ -171,9 +165,9 @@ function TreeItem({
               {subCategories.map((resources) => (
                 <TreeItem
                   conformations={conformation.children}
+                  isReadOnly={isReadOnly}
                   key={resources.key}
                   resourcesTree={resources}
-                  onCreate={handleCreate}
                   onFold={(newConformation): void =>
                     handleFold(
                       mutateConformation(conformations, key, newConformation)
@@ -192,40 +186,32 @@ function TreeItem({
 
 function TreeItemResources({
   resourcesTree,
-  onCreate: handleCreate,
+  isReadOnly,
   onOpen: handleOpen,
 }: {
   readonly resourcesTree: AppResourcesTree[number];
-  readonly onCreate:
-    | ((directory: SerializedResource<SpAppResourceDir>) => void)
+  readonly isReadOnly: boolean;
+  readonly onOpen:
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
-  readonly onOpen: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>
-  ) => void;
 }): JSX.Element | null {
-  const { appResources, viewSets, directory } = resourcesTree;
+  const { appResources, viewSets, directory, key } = resourcesTree;
   const resources = [...appResources, ...viewSets];
-  const canCreate =
-    hasToolPermission('resources', 'create') &&
-    typeof handleCreate === 'function';
+  const canCreate = hasToolPermission('resources', 'create') && !isReadOnly;
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
     <Ul aria-label={adminText('resources')} className="pl-4" role="group">
       {resources.map((resource, index) => (
         <li key={index}>
-          <ResourceItem
-            resource={resource}
-            onOpen={(resource): void => handleOpen(resource, directory)}
-          />
+          <ResourceItem resource={resource} onOpen={handleOpen} />
         </li>
       ))}
       {canCreate && (
         <li>
-          <Button.LikeLink onClick={(): void => handleCreate(directory)}>
+          <Link.Default href={`/specify/resources/create/${key}/`}>
             <span className={className.dataEntryAdd}>{icons.plus}</span>
             {adminText('addResource')}
-          </Button.LikeLink>
+          </Link.Default>
         </li>
       )}
     </Ul>
@@ -251,25 +237,29 @@ function ResourceItem({
   onOpen: handleOpen,
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
-  readonly onOpen: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>
-  ) => void;
+  readonly onOpen:
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | undefined;
 }): JSX.Element {
   const url =
     getAppResourceMode(resource) === 'appResources'
-      ? `/specify/appresources/${resource.id}/`
-      : `/specify/viewsets/${resource.id}/`;
+      ? `/specify/resources/app-resource/${resource.id}/`
+      : `/specify/resources/view-set/${resource.id}/`;
   return (
-    <Link.Default
+    <ActiveLink
       className="!text-neutral-500 hover:!text-brand-300"
       href={url}
-      onClick={(event): void => {
-        event.preventDefault();
-        handleOpen(resource);
-      }}
+      onClick={
+        typeof handleOpen === 'function'
+          ? (event): void => {
+              event.preventDefault();
+              handleOpen(resource);
+            }
+          : undefined
+      }
     >
       <AppResourceIcon resource={resource} />
       {resource.name || commonText('nullInline')}
-    </Link.Default>
+    </ActiveLink>
   );
 }

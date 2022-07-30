@@ -18,10 +18,10 @@ import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useBooleanState } from '../hooks';
 import { Dialog } from '../modaldialog';
-import {OverlayContext} from '../router';
+import { OverlayContext } from '../router';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
-  const resources = useAppResources();
+  const [resources] = useAppResources();
 
   const [definition, setDefinition] = React.useState<string | undefined>(
     undefined
@@ -97,7 +97,7 @@ function PickAppResource({
       <AppResourcesAside
         initialFilters={initialFilters}
         resources={resources}
-        onCreate={undefined}
+        isReadOnly
         onOpen={(selected): void =>
           f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
         }

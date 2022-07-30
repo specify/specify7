@@ -42,8 +42,7 @@ export function AppResourceEditor({
   readonly onDeleted: () => void;
   readonly onClone: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    directory: SerializedResource<SpAppResourceDir>,
-    initialData: string
+    initialData: number
   ) => void;
   readonly onSaved: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
@@ -146,8 +145,7 @@ export function AppResourceEditor({
                           .then((appResourceClone) =>
                             handleClone(
                               serializeResource(appResourceClone),
-                              directory,
-                              resourceData.data ?? ''
+                              resourceData.id
                             )
                           )
                       )

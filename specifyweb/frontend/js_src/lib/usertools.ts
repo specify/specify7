@@ -38,7 +38,7 @@ const rawUserTools: IR<RA<UserTool>> = {
   [commonText('administration')]: [
     {
       title: commonText('appResources'),
-      url: '/specify/appresources/',
+      url: '/specify/resources/',
       enabled: () =>
         hasToolPermission('resources', 'read') &&
         hasTablePermission('Discipline', 'read') &&

@@ -1,38 +1,21 @@
 import React from 'react';
-import { Outlet } from 'react-router';
-import { useParams } from 'react-router-dom';
-import type { State } from 'typesafe-reducer';
 
-import type { AppResourceMode } from '../appresourceshelpers';
-import { getAppResource, getAppResourceMode } from '../appresourceshelpers';
-import type {
-  SpAppResource,
-  SpAppResourceDir,
-  SpViewSetObj as SpViewSetObject,
-} from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
-import { f } from '../functools';
-import { commonText } from '../localization/common';
-import { schema } from '../schema';
-import type { SpecifyModel } from '../specifymodel';
-import { getUniqueName } from '../wbuniquifyname';
+import { adminText } from '../localization/admin';
+import type { GetOrSet } from '../types';
 import { AppResourcesAside } from './appresourcesaside';
-import { CreateAppResource } from './appresourcescreate';
-import { AppResourceEditor } from './appresourceseditor';
-import type { AppResources as AppResourcesType } from './appresourceshooks';
+import type { AppResources } from './appresourceshooks';
 import { useAppResources } from './appresourceshooks';
-import { Container, H2, H3 } from './basic';
-import { useTriggerState } from './hooks';
+import { Container, H2 } from './basic';
 import { ProtectedTable, ProtectedTool } from './permissiondenied';
+import { SafeOutlet } from './routerutils';
 
-// REFACTOR: use react-router here
 export function AppResourcesWrapper(): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
       <ProtectedTable action="read" tableName="Discipline">
         <ProtectedTable action="read" tableName="Discipline">
           <ProtectedTable action="read" tableName="SpecifyUser">
-            <Outlet />
+            <AppResourcesDataFetcher />
           </ProtectedTable>
         </ProtectedTable>
       </ProtectedTable>
@@ -40,175 +23,29 @@ export function AppResourcesWrapper(): JSX.Element {
   );
 }
 
-export function AppResources(): JSX.Element {
-  return <AppResourcesPage mode="appResources" resourceId={undefined} />;
-}
-
-export function AppResourceView(): JSX.Element {
-  const { id = '' } = useParams();
-  return <AppResourcesPage mode="appResources" resourceId={f.parseInt(id)} />;
-}
-
-export function ViewSetView(): JSX.Element {
-  const { id = '' } = useParams();
-  return <AppResourcesPage mode="viewSets" resourceId={f.parseInt(id)} />;
-}
-
-function AppResourcesPage({
-  mode,
-  resourceId,
-}: {
-  readonly mode: AppResourceMode;
-  readonly resourceId: number | undefined;
-}): JSX.Element | null {
-  const model =
-    mode === 'appResources'
-      ? schema.models.SpAppResource
-      : schema.models.SpViewSetObj;
-
-  const resources = useAppResources();
-  return typeof resources === 'object' ? (
-    <AppResourcesView
-      model={model}
-      resourceId={resourceId}
-      resources={resources}
-    />
+function AppResourcesDataFetcher(): JSX.Element | null {
+  const getSetResources = useAppResources();
+  return typeof getSetResources[1] === 'object' ? (
+    <AppResourcesView getSet={getSetResources as GetOrSet<AppResources>} />
   ) : null;
 }
 
+export type AppResourcesOutlet = { readonly getSet: GetOrSet<AppResources> };
+
 function AppResourcesView({
-  resources: initialResources,
-  model,
-  resourceId,
+  getSet,
 }: {
-  readonly resources: AppResourcesType;
-  readonly model: SpecifyModel<SpAppResource | SpViewSetObject>;
-  readonly resourceId: number | undefined;
+  readonly getSet: GetOrSet<AppResources>;
 }): JSX.Element {
-  const [resources, setResources] = useTriggerState(initialResources);
-  const [state, setState] = React.useState<
-    | State<
-        'Create',
-        {
-          readonly directory: SerializedResource<SpAppResourceDir>;
-        }
-      >
-    | State<
-        'View',
-        {
-          readonly resource: SerializedResource<
-            SpAppResource | SpViewSetObject
-          >;
-          readonly directory: SerializedResource<SpAppResourceDir>;
-          readonly initialData: string | undefined;
-        }
-      >
-    | State<'Main'>
-    | State<'NotFound'>
-  >(() => {
-    const resource = getAppResource(resources, model, resourceId);
-    if (typeof resource === 'object') {
-      const directoryUrl = resource.spAppResourceDir;
-      const directory = resources.directories.find(
-        (directory) => directory.resource_uri === directoryUrl
-      );
-      if (typeof directory === 'object')
-        return {
-          type: 'View',
-          resource,
-          directory,
-          initialData: undefined,
-        };
-    }
-    return resource === false ? { type: 'NotFound' } : { type: 'Main' };
-  });
+  const [resources] = getSet;
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{model.label}</H2>
+      <H2 className="text-2xl">{adminText('resources')}</H2>
       <div className="flex h-0 flex-1 gap-4">
-        <AppResourcesAside
-          // FEATURE: highlight current resource on the sidebar
-          resources={resources}
-          onCreate={(directory): void =>
-            setState({ type: 'Create', directory })
-          }
-          onOpen={(resource, directory): void =>
-            setState({
-              type: 'View',
-              resource,
-              directory,
-              initialData: undefined,
-            })
-          }
+        <AppResourcesAside isReadOnly={false} resources={resources} />
+        <SafeOutlet<AppResourcesOutlet>
+          getSet={getSet as GetOrSet<AppResources>}
         />
-        {state.type === 'View' && (
-          <AppResourceEditor
-            directory={state.directory}
-            initialData={state.initialData}
-            resource={state.resource}
-            onClone={(appResource, directory, initialData): void =>
-              setState({
-                type: 'View',
-                resource: {
-                  ...appResource,
-                  name: getUniqueName(appResource.name, [appResource.name]),
-                },
-                directory,
-                initialData,
-              })
-            }
-            onDeleted={(): void => {
-              const mode = getAppResourceMode(
-                state.resource
-                // Casting to simplify typing
-              ) as 'appResources';
-              setResources({
-                ...resources,
-                [mode]: resources[mode].filter(
-                  (resource) => resource !== state.resource
-                ),
-              });
-              setState({ type: 'Main' });
-            }}
-            onSaved={(appResource, directory): void => {
-              if (typeof state.resource.id === 'number') return;
-              const mode = getAppResourceMode(appResource);
-              setResources({
-                ...resources,
-                directories:
-                  typeof state.directory.id === 'number'
-                    ? resources.directories
-                    : [...resources.directories, directory],
-                [mode]: [...resources[mode], appResource],
-              });
-              setState({
-                type: 'View',
-                resource: appResource,
-                directory,
-                initialData: undefined,
-              });
-            }}
-          />
-        )}
-        {state.type === 'Create' && (
-          <CreateAppResource
-            directory={state.directory}
-            onClose={(): void => setState({ type: 'Main' })}
-            onSelected={(resource): void =>
-              setState({
-                type: 'View',
-                resource,
-                directory: state.directory,
-                initialData: undefined,
-              })
-            }
-          />
-        )}
-        {state.type === 'NotFound' && (
-          <Container.Base className="flex-1">
-            <H3>{commonText('pageNotFound')}</H3>
-          </Container.Base>
-        )}
       </div>
     </Container.FullGray>
   );

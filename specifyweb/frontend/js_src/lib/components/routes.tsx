@@ -167,7 +167,7 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'appresources',
+    path: 'resources',
     title: commonText('appResources'),
     element: () =>
       import('./appresources').then(
@@ -175,36 +175,24 @@ export const routes: RA<EnhancedRoute> = [
       ),
     children: [
       {
-        index: true,
+        path: 'create/:directoryKey',
+        title: adminText('addResource'),
         element: () =>
-          import('./appresources').then(({ AppResources }) => AppResources),
+          import('./appresourcescreate').then(
+            ({ CreateAppResource }) => CreateAppResource
+          ),
       },
       {
-        path: ':id',
+        path: 'app-resource/:id',
         element: () =>
-          import('./appresources').then(
+          import('./appresourceview').then(
             ({ AppResourceView }) => AppResourceView
           ),
       },
-    ],
-  },
-  {
-    path: 'viewsets',
-    title: commonText('appResources'),
-    element: () =>
-      import('./appresources').then(
-        ({ AppResourcesWrapper }) => AppResourcesWrapper
-      ),
-    children: [
       {
-        index: true,
+        path: 'view-set/:id',
         element: () =>
-          import('./appresources').then(({ AppResources }) => AppResources),
-      },
-      {
-        path: ':id',
-        element: () =>
-          import('./appresources').then(({ ViewSetView }) => ViewSetView),
+          import('./appresourceview').then(({ ViewSetView }) => ViewSetView),
       },
     ],
   },
@@ -269,9 +257,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'schema-config',
     title: commonText('schemaConfig'),
     element: () =>
-      import('./toolbar/schemaconfig').then(
-        ({ SchemaConfigOverlay }) => SchemaConfigOverlay
-      ),
+      import('./toolbar/schemaconfig').then(({ SchemaConfig }) => SchemaConfig),
     children: [
       {
         index: true,
