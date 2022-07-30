@@ -8,11 +8,10 @@ import type {
 import { serializeResource } from '../datamodelutils';
 import { removeKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
-import { resourceOn, tableFromUrl } from '../resource';
+import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { GetOrSet, IR } from '../types';
-import { defined } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
 
 /**
@@ -58,9 +57,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * a typechecking performance issue (it was taking 5s to typecheck this
      * line according to TypeScript trace analyzer)
      */
-    defined(
-      tableFromUrl(serializedResource.resource_uri?.toString() ?? '')
-    ) as SCHEMA['tableName']
+    serializedResource._tableName
   ].Resource(removeKey(serializedResource, '_tableName'));
 
 /** Hook for getting save blockers for a model's field */

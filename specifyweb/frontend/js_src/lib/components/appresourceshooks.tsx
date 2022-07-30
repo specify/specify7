@@ -18,7 +18,6 @@ import type {
 import type { SerializedResource } from '../datamodelutils';
 import { addMissingFields } from '../datamodelutils';
 import { f } from '../functools';
-import { tableFromUrl } from '../resource';
 import type { GetOrSet, IR, RA } from '../types';
 import { useAsyncState } from './hooks';
 
@@ -135,7 +134,7 @@ export function useAppResourceData(
 export const getAppResourceExtension = (
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): string =>
-  tableFromUrl(resource.resource_uri ?? '') === 'SpViewSetObj'
+  resource._tableName === 'SpViewSetObj'
     ? 'xml'
     : getResourceExtension(resource as SerializedResource<SpAppResource>);
 

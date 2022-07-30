@@ -1,7 +1,7 @@
 import type { Tables } from './datamodel';
 import { f } from './functools';
 import type { SpecifyResource } from './legacytypes';
-import { resourceToJson, tableFromUrl } from './resource';
+import { parseResourceUrl, resourceToJson } from './resource';
 import { getModel } from './schema';
 import type { IR, RA } from './types';
 import { defined, filterArray } from './types';
@@ -181,7 +181,9 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = defined(
     getModel(
       defined(
-        tableName ?? tableFromUrl(resource.resource_uri?.toString() ?? '')
+        (tableName as SCHEMA['tableName']) ??
+          resource._tablename ??
+          parseResourceUrl((resource.resource_uri as string) ?? '')?.[0]
       )
     )
   );
@@ -325,4 +327,5 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
      * REFACTOR: convert all usages of this to camel case
      */
     resource_uri: record.resource_uri,
+    _tableName: tableName,
   }));

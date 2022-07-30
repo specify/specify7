@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useOutletContext } from 'react-router';
+import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ajax } from '../ajax';
@@ -241,7 +241,7 @@ export function CollectionView({
                       }
                     />
                   ) : undefined}
-                  {isOverlay && <Outlet />}
+                  {isOverlay && outlet}
                   <SecurityImportExport
                     baseName={collection.collectionName ?? ''}
                     collectionId={collection.id}
@@ -338,8 +338,9 @@ export function CollectionView({
             </section>
           </div>
         </>
-      ) : undefined}
-      {isRoleState && outlet}
+      ) : (
+        outlet
+      )}
     </Container.Base>
   );
 }

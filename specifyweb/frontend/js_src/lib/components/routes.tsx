@@ -54,13 +54,13 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'institution',
+        element: () =>
+          import('./securityinstitution').then(
+            ({ SecurityInstitution }) => SecurityInstitution
+          ),
         children: [
           {
             index: true,
-            element: () =>
-              import('./securityinstitution').then(
-                ({ SecurityInstitution }) => SecurityInstitution
-              ),
           },
           {
             path: 'role',
@@ -100,13 +100,13 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'collection/:collectionId',
+        element: () =>
+          import('./securitycollection').then(
+            ({ SecurityCollection }) => SecurityCollection
+          ),
         children: [
           {
             index: true,
-            element: () =>
-              import('./securitycollection').then(
-                ({ SecurityCollection }) => SecurityCollection
-              ),
           },
           {
             path: 'role/',

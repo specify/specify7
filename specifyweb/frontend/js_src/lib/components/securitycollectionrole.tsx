@@ -124,7 +124,7 @@ export function SecurityCollectionRole(): JSX.Element {
 
   return typeof roles === 'object' && typeof role === 'object' ? (
     <RoleView
-      closeUrl={`/permissions/collection/${collection.id}/role/${role.id}/`}
+      closeUrl={`/specify/security/collection/${collection.id}/`}
       collectionId={collection.id}
       parentName={collection.collectionName ?? ''}
       permissionName="/permissions/roles"
@@ -203,9 +203,7 @@ function RoleUsers({
                     {userName}
                   </Button.LikeLink>
                 ) : (
-                  <Link.Default
-                    href={`/specify/security/collection/${collectionId}/user/${userId}/`}
-                  >
+                  <Link.Default href={`/specify/security/user/${userId}/`}>
                     {userName}
                   </Link.Default>
                 )}

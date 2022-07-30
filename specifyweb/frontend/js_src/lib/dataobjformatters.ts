@@ -138,7 +138,9 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
     .sort(sortFunction(({ isRequired }) => isRequired, true));
 
 export const naiveFormatter = (resource: SpecifyResource<AnySchema>): string =>
-  `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
+  `${resource.specifyModel.label}${
+    resource.isNew() ? '' : ` #${resource.id}/`
+  }`;
 
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,

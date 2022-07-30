@@ -20,7 +20,6 @@ import type { SerializedResource } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { tableFromUrl } from '../resource';
 import type { RA } from '../types';
 import { appResourceSubTypes, appResourceTypes } from './appresourcescreate';
 import { getAppResourceExtension } from './appresourceshooks';
@@ -36,8 +35,8 @@ export function AppResourceIcon({
 }: {
   readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
 }): JSX.Element {
-  const tableName = tableFromUrl(resource.resource_uri ?? '');
-  if (tableName === 'SpViewSetObj') return appResourceTypes.viewSets.icon;
+  if (resource._tableName === 'SpViewSetObj')
+    return appResourceTypes.viewSets.icon;
   const type = getAppResourceType(
     resource as SerializedResource<SpAppResource>
   );

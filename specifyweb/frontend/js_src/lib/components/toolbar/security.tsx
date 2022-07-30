@@ -128,7 +128,7 @@ function Aside({
           {availableCollections.map((collection, index) => (
             <li key={index}>
               <ActiveLink
-                href={`/specify/security/collection/${collection.id}`}
+                href={`/specify/security/collection/${collection.id}/`}
               >
                 {collection.collectionName}
               </ActiveLink>

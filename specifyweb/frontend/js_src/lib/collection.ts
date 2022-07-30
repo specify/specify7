@@ -9,7 +9,6 @@ import type {
 import { serializeResource } from './datamodelutils';
 import { f } from './functools';
 import { formatUrl } from './querystring';
-import { tableFromUrl } from './resource';
 import { schema } from './schema';
 import type { IR, RA, RR } from './types';
 import { defined, filterArray } from './types';
@@ -120,9 +119,7 @@ export const fetchRelated = async <
 }> =>
   f.var(
     defined(
-      schema.models[
-        defined(tableFromUrl(resource.resource_uri as string))
-      ].getRelationship(relationshipName)
+      schema.models[resource._tableName].getRelationship(relationshipName)
     ),
     async (relationship) =>
       fetchCollection(relationship.relatedModel.name, {

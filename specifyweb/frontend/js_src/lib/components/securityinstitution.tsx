@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useOutletContext } from 'react-router';
+import { useOutletContext } from 'react-router';
 import { useLocation } from 'react-router-dom';
 
 import { ajax } from '../ajax';
@@ -23,6 +23,7 @@ import { createLibraryRole } from './securitycreatelibraryrole';
 import { SecurityImportExport } from './securityimportexport';
 import { updateLibraryRole } from './securitylibraryrole';
 import type { SecurityOutlet } from './toolbar/security';
+import { SafeOutlet } from './routerutils';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -36,10 +37,11 @@ function InstitutionView({
 }: {
   readonly institution: SerializedResource<Institution>;
 }): JSX.Element {
+  const outletState = useOutletContext<SecurityOutlet>();
   const {
     getSetLibraryRoles,
     getSetUsers: [users],
-  } = useOutletContext<SecurityOutlet>();
+  } = outletState;
   const [libraryRoles, handleChangeLibraryRoles] = getSetLibraryRoles;
 
   const admins = useAdmins();
@@ -90,7 +92,7 @@ function InstitutionView({
                       {commonText('create')}
                     </Link.Green>
                   )}
-                  {isOverlay && <Outlet />}
+                  {isOverlay && <SafeOutlet<SecurityOutlet> {...outletState} />}
                   <SecurityImportExport
                     baseName={institution.name ?? ''}
                     collectionId={schema.domainLevelIds.collection}
@@ -149,7 +151,7 @@ function InstitutionView({
                           <li key={user.id}>
                             {canRead ? (
                               <Link.Default
-                                href={`/specify/security/user/${user.id}`}
+                                href={`/specify/security/user/${user.id}/`}
                               >
                                 {children}
                               </Link.Default>
@@ -178,7 +180,7 @@ function InstitutionView({
           </div>
         </>
       ) : (
-        <Outlet />
+        <SafeOutlet<SecurityOutlet> {...outletState} />
       )}
     </Container.Base>
   );

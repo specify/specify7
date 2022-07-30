@@ -21,7 +21,7 @@ import { f } from './functools';
 import { camelToHuman } from './helpers';
 import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
-import { parseClassName, tableFromUrl } from './resource';
+import { parseClassName } from './resource';
 import { ResourceBase } from './resourceapi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
@@ -409,7 +409,7 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
   resource: SerializedResource<AnySchema>,
   tableName: TABLE_NAME
 ): SerializedResource<Tables[TABLE_NAME]> | undefined =>
-  tableFromUrl(resource.resource_uri?.toString() ?? '') === tableName
+  resource._tableName === tableName
     ? (resource as SerializedResource<Tables[TABLE_NAME]>)
     : undefined;
 
