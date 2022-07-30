@@ -88,7 +88,7 @@ function Wrapped({
      * When switching databases on the test server, initial value may point
      * to a collection that doesn't exist in this database
      */
-    f.maybe(f.parseInt(data.initialValue), (id) =>
+    f.maybe(f.parseInt(data.initialValue ?? ''), (id) =>
       data.availableCollections.some((collection) => collection.id === id)
         ? id
         : undefined
@@ -102,7 +102,7 @@ function Wrapped({
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [alwaysPrompt] = usePref('chooseCollection', 'general', 'alwaysPrompt');
   React.useEffect(() => {
-    if (f.parseInt(data.initialValue) === undefined) return;
+    if (f.parseInt(data.initialValue ?? '') === undefined) return;
     else if (!alwaysPrompt || availableCollections.length === 1)
       formRef.current?.submit();
     else

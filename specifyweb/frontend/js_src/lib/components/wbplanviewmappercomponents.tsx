@@ -94,7 +94,7 @@ export function ValidationResults(props: {
               border-b-0 bg-transparent hover:bg-gray-300 hover:dark:bg-neutral-700
             `}
             key={index}
-            onClick={props.onValidationResultClick.bind(undefined, fieldPath)}
+            onClick={(): void => props.onValidationResultClick(fieldPath)}
           >
             <MappingPathComponent
               mappingLineData={getMappingLineData({

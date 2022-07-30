@@ -8,6 +8,7 @@ import type { RA } from '../types';
 import type { EnhancedRoute } from './routerutils';
 import { WelcomeView } from './welcomeview';
 
+// FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
@@ -50,6 +51,94 @@ export const routes: RA<EnhancedRoute> = [
     title: adminText('securityPanel'),
     element: () =>
       import('./toolbar/security').then(({ SecurityPanel }) => SecurityPanel),
+    children: [
+      {
+        path: 'institution',
+        children: [
+          {
+            index: true,
+            element: () =>
+              import('./securityinstitution').then(
+                ({ SecurityInstitution }) => SecurityInstitution
+              ),
+          },
+          {
+            path: 'role',
+            children: [
+              {
+                path: 'create',
+                element: () =>
+                  import('./securitycreatelibraryrole').then(
+                    ({ CreateLibraryRole }) => CreateLibraryRole
+                  ),
+              },
+              {
+                path: ':roleId',
+                element: () =>
+                  import('./securitylibraryrole').then(
+                    ({ SecurityLibraryRole }) => SecurityLibraryRole
+                  ),
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'user/',
+        children: [
+          {
+            path: 'new',
+            element: () =>
+              import('./securityuser').then(({ SecurityUser }) => SecurityUser),
+          },
+          {
+            path: ':userId',
+            element: () =>
+              import('./securityuser').then(({ SecurityUser }) => SecurityUser),
+          },
+        ],
+      },
+      {
+        path: 'collection/:collectionId',
+        children: [
+          {
+            index: true,
+            element: () =>
+              import('./securitycollection').then(
+                ({ SecurityCollection }) => SecurityCollection
+              ),
+          },
+          {
+            path: 'role/',
+            children: [
+              {
+                path: 'create',
+                title: adminText('createRoleDialogHeader'),
+                element: () =>
+                  import('./securitycreaterole').then(
+                    ({ CreateCollectionRole }) => CreateCollectionRole
+                  ),
+              },
+              {
+                path: 'new',
+                title: adminText('newRole'),
+                element: () =>
+                  import('./securitycollectionrole').then(
+                    ({ SecurityCollectionRole }) => SecurityCollectionRole
+                  ),
+              },
+              {
+                path: ':roleId',
+                element: () =>
+                  import('./securitycollectionrole').then(
+                    ({ SecurityCollectionRole }) => SecurityCollectionRole
+                  ),
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'attachments',

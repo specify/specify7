@@ -58,6 +58,7 @@ export function Router(): JSX.Element {
     state?.type === 'BackgroundLocation' ? state.location : undefined;
   const isNotFoundPage = state?.type === 'NotFoundPage';
 
+  // REFACTOR: replace usages of navigate with <a> where possible
   const navigate = useNavigate();
   unsafeNavigate = navigate;
   React.useEffect(() => {
@@ -198,15 +199,14 @@ function UnloadProtect({
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
+
   useRouterBlocker(
     React.useCallback(
-      async ({ pathname }) =>
+      async (location) =>
         new Promise((resolve, reject) =>
-          pathIsOverlay(pathname) ||
-          isCurrentUrl(pathname) ||
-          pathname === backgroundPath
-            ? resolve()
-            : setUnloadProtect({ resolve, reject })
+          hasUnloadProtect(backgroundPath, location)
+            ? setUnloadProtect({ resolve, reject })
+            : resolve()
         ),
       [backgroundPath]
     ),
@@ -225,6 +225,20 @@ function UnloadProtect({
       }}
     />
   ) : null;
+}
+
+function hasUnloadProtect(
+  backgroundPath: string | undefined,
+  { pathname, state }: Location
+): boolean {
+  const noUnloadProtect =
+    (state as { readonly noUnloadProtect?: true }).noUnloadProtect === true;
+  return (
+    !noUnloadProtect &&
+    !pathIsOverlay(pathname) &&
+    !isCurrentUrl(pathname) &&
+    pathname !== backgroundPath
+  );
 }
 
 function UnloadProtectDialog({

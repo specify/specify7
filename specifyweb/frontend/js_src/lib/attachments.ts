@@ -78,18 +78,17 @@ const fetchToken = async (filename: string): Promise<string | undefined> =>
       }).then(({ data }) => data)
     : Promise.resolve(undefined);
 
+export type AttachmentThumbnail = {
+  readonly src: string;
+  readonly alt: string | undefined;
+  readonly width: number;
+  readonly height: number;
+};
+
 export const fetchThumbnail = async (
   attachment: SerializedResource<Attachment>,
   scale = getPref('attachment.preview_size')
-): Promise<
-  | {
-      readonly src: string;
-      readonly alt: string | undefined;
-      readonly width: number;
-      readonly height: number;
-    }
-  | undefined
-> =>
+): Promise<AttachmentThumbnail | undefined> =>
   typeof attachment.mimeType === 'string' &&
   !thumbnailable.has(attachment.mimeType)
     ? {

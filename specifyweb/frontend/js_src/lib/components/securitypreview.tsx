@@ -24,17 +24,17 @@ import {
 import type { IR, R, RA } from '../types';
 import { filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Input, Label, Summary, Ul } from './basic';
+import { className, Input, Label, Link, Summary, Ul } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useId } from './hooks';
 import { useCachedState } from './statecache';
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },
-  onOpenRole: handleOpenRole,
+  getOpenRoleUrl,
 }: {
   readonly cell: Cell;
-  readonly onOpenRole: (roleId: number) => void;
+  readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   return (
     <div className="flex flex-col gap-4">
@@ -68,10 +68,10 @@ function ReasonExplanation({
         </div>
         <div role="rowgroup">
           {matching_role_policies.map((role, index) => (
-            <Button.LikeLink
+            <Link.Default
+              href={getOpenRoleUrl(role.roleid)}
               key={index}
               role="row"
-              onClick={(): void => handleOpenRole(role.roleid)}
             >
               {[
                 role.rolename,
@@ -82,7 +82,7 @@ function ReasonExplanation({
                   {value}
                 </div>
               ))}
-            </Button.LikeLink>
+            </Link.Default>
           ))}
           {matching_role_policies.length === 0 && (
             <div role="row">
@@ -157,11 +157,11 @@ function ReasonExplanation({
 function PreviewRow({
   row,
   tableName,
-  onOpenRole: handleOpenRole,
+  getOpenRoleUrl,
 }: {
   readonly row: IR<Cell>;
   readonly tableName: keyof Tables;
-  readonly onOpenRole: (roleId: number) => void;
+  readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const [view, setView] = React.useState<
     typeof tableActions[number] | undefined
@@ -200,7 +200,10 @@ function PreviewRow({
       >
         {typeof view === 'string' && (
           <div className="col-span-full py-2" role="cell">
-            <ReasonExplanation cell={row[view]} onOpenRole={handleOpenRole} />
+            <ReasonExplanation
+              cell={row[view]}
+              getOpenRoleUrl={getOpenRoleUrl}
+            />
           </div>
         )}
       </div>
@@ -213,11 +216,11 @@ type Cell = Omit<PermissionsQueryItem, 'action'>;
 function PreviewTables({
   query,
   isSystem,
-  onOpenRole: handleOpenRole,
+  getOpenRoleUrl,
 }: {
   readonly query: RA<PermissionsQueryItem>;
   readonly isSystem: boolean;
-  readonly onOpenRole: (roleId: number) => void;
+  readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const table = React.useMemo<RA<readonly [keyof Tables, IR<Cell>]>>(
     () =>
@@ -284,10 +287,10 @@ function PreviewTables({
       <div role="rowgroup">
         {table.map(([tableName, permissions]) => (
           <PreviewRow
+            getOpenRoleUrl={getOpenRoleUrl}
             key={tableName}
             row={permissions}
             tableName={tableName}
-            onOpenRole={handleOpenRole}
           />
         ))}
       </div>
@@ -311,10 +314,10 @@ type WritableTree = {
 
 function TreeView({
   tree,
-  onOpenRole: handleOpenRole,
+  getOpenRoleUrl,
 }: {
   readonly tree: IR<Tree>;
-  readonly onOpenRole: (roleId: number) => void;
+  readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   return (
     <Ul className="list-disc pl-5">
@@ -336,7 +339,7 @@ function TreeView({
                       </summary>
                       <ReasonExplanation
                         cell={{ ...rest, resource }}
-                        onOpenRole={handleOpenRole}
+                        getOpenRoleUrl={getOpenRoleUrl}
                       />
                     </details>
                   </li>
@@ -344,7 +347,7 @@ function TreeView({
               </Ul>
             )}
             {Object.keys(children).length > 0 && (
-              <TreeView tree={children} onOpenRole={handleOpenRole} />
+              <TreeView getOpenRoleUrl={getOpenRoleUrl} tree={children} />
             )}
           </li>
         ))}
@@ -354,10 +357,10 @@ function TreeView({
 
 function PreviewOperations({
   query,
-  onOpenRole: handleOpenRole,
+  getOpenRoleUrl,
 }: {
   readonly query: RA<PermissionsQueryItem>;
-  readonly onOpenRole: (roleId: number) => void;
+  readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   const tree = React.useMemo(
     () =>
@@ -391,7 +394,7 @@ function PreviewOperations({
       }, {}),
     [query]
   );
-  return <TreeView tree={tree} onOpenRole={handleOpenRole} />;
+  return <TreeView getOpenRoleUrl={getOpenRoleUrl} tree={tree} />;
 }
 
 export function PreviewPermissions({
@@ -399,13 +402,11 @@ export function PreviewPermissions({
   userVersion,
   collectionId,
   changesMade,
-  onOpenRole: handleOpenRole,
 }: {
   readonly userId: number;
   readonly userVersion: number;
   readonly collectionId: number;
   readonly changesMade: boolean;
-  readonly onOpenRole: (roleId: number) => void;
 }): JSX.Element | null {
   const [query] = useAsyncState(
     React.useCallback(
@@ -431,6 +432,10 @@ export function PreviewPermissions({
     'securityTool',
     'advancedPreviewCollapsed'
   );
+
+  const getOpenRoleUrl = (roleId: number): string =>
+    `/specify/security/collection/${collectionId}/role/${roleId}/`;
+
   return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className="text-xl" onToggle={setCollapsed}>
@@ -442,9 +447,9 @@ export function PreviewPermissions({
           <div className="flex flex-1 flex-wrap gap-4">
             <div>
               <PreviewTables
+                getOpenRoleUrl={getOpenRoleUrl}
                 isSystem={false}
                 query={query}
-                onOpenRole={handleOpenRole}
               />
               <details open={isSystemCollapsed}>
                 <Summary
@@ -454,9 +459,9 @@ export function PreviewPermissions({
                   {adminText('advancedTables')}
                 </Summary>
                 <PreviewTables
+                  getOpenRoleUrl={getOpenRoleUrl}
                   isSystem
                   query={query}
-                  onOpenRole={handleOpenRole}
                 />
               </details>
             </div>
@@ -469,7 +474,10 @@ export function PreviewPermissions({
              * on all but the largest screens
              **/}
             <div className="xl:w-full 2xl:w-auto">
-              <PreviewOperations query={query} onOpenRole={handleOpenRole} />
+              <PreviewOperations
+                getOpenRoleUrl={getOpenRoleUrl}
+                query={query}
+              />
             </div>
           </div>
         </>

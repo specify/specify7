@@ -514,7 +514,7 @@ export function Autocomplete<T>({
                     aria-selected={index === currentIndex}
                     aria-setsize={length + Number(showAdd)}
                     key={index}
-                    onClick={handleChanged.bind(undefined, item)}
+                    onClick={(): void => handleChanged(item)}
                     {...itemProps}
                   >
                     {typeof item.icon === 'string' ? (

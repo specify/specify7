@@ -1,8 +1,8 @@
 import React from 'react';
+import { useOutletContext } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { ajax, Http } from '../ajax';
-import type { Collection } from '../datamodel';
-import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { keysToLowerCase, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
@@ -11,27 +11,30 @@ import { hasPermission } from '../permissionutils';
 import { schema } from '../schema';
 import type { BackEndRole } from '../securityutils';
 import { fetchRoles } from '../securityutils';
-import type { IR, RA } from '../types';
 import { getUniqueName } from '../wbuniquifyname';
 import { Button, H3, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
 import { Dialog } from './modaldialog';
+import { useAvailableCollections } from './othercollectionview';
 import type { NewRole, Role } from './securityrole';
+import type { SecurityOutlet } from './toolbar/security';
 
 export function CreateRole({
-  libraryRoles,
-  collections,
   scope,
-  onCreated: handleCreated,
-  onClose: handleClose,
+  closeUrl,
+  getCreatedUrl,
 }: {
-  readonly libraryRoles: IR<Role> | undefined;
-  readonly collections: RA<SerializedResource<Collection>>;
   readonly scope: number | 'institution';
-  readonly onCreated: (role: NewRole | Role) => void;
-  readonly onClose: () => void;
+  readonly closeUrl: string;
+  readonly getCreatedUrl: (id: number | undefined) => string;
 }): JSX.Element {
+  const {
+    getSetLibraryRoles: [libraryRoles],
+  } = useOutletContext<SecurityOutlet>();
+
+  const collections = useAvailableCollections();
+
   const collectionId =
     typeof scope === 'number' ? scope : schema.domainLevelIds.collection;
   const [roles] = useAsyncState(
@@ -56,6 +59,11 @@ export function CreateRole({
       : Object.values(roles ?? []).find(([{ id }]) => id === scope)?.[1] ?? []
   ).map(({ name }) => name);
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
+
+  const handleCreated = (role: NewRole | Role): void =>
+    navigate(getCreatedUrl(role.id), { state: { role } });
+
   return (
     <Dialog
       buttons={
@@ -80,7 +88,7 @@ export function CreateRole({
         </>
       }
       header={adminText('createRoleDialogHeader')}
-      onClose={handleClose}
+      onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||
       ((hasPermission(

@@ -71,6 +71,7 @@ export function ToolPermissionDenied({
   );
 }
 
+// REFACTOR: integrate this and the following with PermissionsContext?
 export function ProtectedTool({
   tool,
   action,

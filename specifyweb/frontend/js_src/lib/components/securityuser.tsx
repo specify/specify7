@@ -1,12 +1,14 @@
 import React from 'react';
+import { useOutletContext, useParams } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { ajax, formData, Http, ping } from '../ajax';
-import type { Collection, SpecifyUser } from '../datamodel';
+import type { SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { serializeResource } from '../datamodelutils';
+import { addMissingFields, serializeResource } from '../datamodelutils';
 import { f } from '../functools';
-import { replaceKey } from '../helpers';
+import { removeKey, replaceKey } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { getOperationPermissions } from '../permissions';
@@ -22,16 +24,17 @@ import {
   decompressPolicies,
   getAllActions,
 } from '../securityutils';
-import type { IR, RA } from '../types';
+import type { IR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, className, Container, DataEntry } from './basic';
+import { className, Container, DataEntry, Link } from './basic';
 import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
 import { ErrorBoundary } from './errorboundary';
 import { useBooleanState, useIsModified, useLiveState } from './hooks';
-import { Dialog } from './modaldialog';
+import { Dialog, LoadingScreen } from './modaldialog';
+import { useAvailableCollections } from './othercollectionview';
 import { PasswordPlugin, PasswordResetDialog } from './passwordplugin';
 import { SetPermissionContext } from './permissioncontext';
 import { ProtectedAction, ProtectedTable } from './permissiondenied';
@@ -57,37 +60,79 @@ import {
   useUserProviders,
   useUserRoles,
 } from './securityuserhooks';
+import type { SecurityOutlet } from './toolbar/security';
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
+export function SecurityUser(): JSX.Element {
+  const location = useLocation();
+  const state = location.state as {
+    readonly user?: SerializedResource<SpecifyUser>;
+    readonly initialCollectionId?: number;
+  };
+  const { userId = '' } = useParams();
+  const {
+    getSetUsers: [users, setUsers],
+  } = useOutletContext<SecurityOutlet>();
+  const user = React.useMemo(() => {
+    if (typeof state.user === 'object') return state.user;
+    const parsedUserId = f.parseInt(userId);
+    return typeof parsedUserId === 'number'
+      ? users?.[parsedUserId]
+      : addMissingFields('SpecifyUser', {});
+  }, [users, userId, state.user]);
+
+  const navigate = useNavigate();
+  return typeof user === 'object' && typeof users === 'object' ? (
+    <UserView
+      initialCollectionId={state.initialCollectionId}
+      user={user}
+      onDeleted={(): void => {
+        setUsers(removeKey(users, user.id.toString()));
+        navigate('/specify/security/');
+      }}
+      onSave={(changedUser, newUser): void => {
+        setUsers({
+          ...users,
+          [changedUser.id.toString()]: changedUser,
+        });
+        if (typeof newUser === 'object')
+          navigate(`/specify/security/user/new/`, {
+            state: {
+              initialCollectionId: state.initialCollectionId,
+              resource: newUser,
+            },
+          });
+      }}
+    />
+  ) : (
+    <LoadingScreen />
+  );
+}
+
 // FEATURE: allow editing linkages with external accounts
-export function SecurityUser({
+function UserView({
   user,
-  initialCollection,
-  collections,
-  onOpenRole: handleOpenRole,
-  onClose: handleClose,
-  onDelete: handleDelete,
+  initialCollectionId,
   onSave: handleSave,
+  onDeleted: handleDeleted,
 }: {
   readonly user: SerializedResource<SpecifyUser>;
-  readonly initialCollection: number | undefined;
-  readonly collections: RA<SerializedResource<Collection>>;
-  readonly onOpenRole: (collectionId: number, roleId: number) => void;
-  readonly onClose: () => void;
-  readonly onDelete: () => void;
+  readonly initialCollectionId: number | undefined;
   readonly onSave: (
     changedUser: SerializedResource<SpecifyUser>,
-    user?: SerializedResource<SpecifyUser>
+    newUser?: SerializedResource<SpecifyUser>
   ) => void;
+  readonly onDeleted: () => void;
 }): JSX.Element {
+  const collections = useAvailableCollections();
   const collectionRoles = useCollectionRoles(collections);
   const userResource = React.useMemo(() => deserializeResource(user), [user]);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
-    useUserPolicies(userResource, collections, initialCollection);
+    useUserPolicies(userResource, collections, initialCollectionId);
   const [version, setVersion] = React.useState<number>(0);
   const userAgents = useUserAgents(userResource.id, collections, version);
   const identityProviders = useUserProviders(userResource.id);
@@ -114,7 +159,7 @@ export function SecurityUser({
   const loading = React.useContext(LoadingContext);
 
   const [rawCollectionId, setCollectionId] = React.useState<number>(
-    initialCollection ?? -1
+    initialCollectionId ?? -1
   );
   const collectionId =
     rawCollectionId === -1
@@ -281,7 +326,6 @@ export function SecurityUser({
                           collectionRoles={collectionRoles}
                           userRoles={userRoles}
                           onChange={setUserRoles}
-                          onOpenRole={handleOpenRole}
                         />
                       )}
                       {
@@ -333,9 +377,6 @@ export function SecurityUser({
                             collectionId={collectionId}
                             userId={userResource.id}
                             userVersion={version}
-                            onOpenRole={(roleId): void =>
-                              handleOpenRole(collectionId, roleId)
-                            }
                           />
                         </ErrorBoundary>
                       )}
@@ -350,20 +391,20 @@ export function SecurityUser({
             )}
             <DataEntry.Footer>
               {changesMade ? (
-                <Button.Gray onClick={handleClose}>
+                <Link.Gray href="/specify/security/">
                   {commonText('cancel')}
-                </Button.Gray>
+                </Link.Gray>
               ) : (
-                <Button.Blue onClick={handleClose}>
+                <Link.Blue href="/specify/security/">
                   {commonText('close')}
-                </Button.Blue>
+                </Link.Blue>
               )}
               {!userResource.isNew() &&
               hasTablePermission('SpecifyUser', 'delete') &&
               userResource.id !== userInformation.id ? (
                 <DeleteButton
                   resource={userResource}
-                  onDeleted={handleDelete}
+                  onDeleted={handleDeleted}
                 />
               ) : undefined}
               <span className="-ml-2 flex-1" />

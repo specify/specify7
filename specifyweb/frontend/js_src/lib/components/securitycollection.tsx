@@ -1,46 +1,35 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
+import { Outlet, useOutletContext } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { ajax, Http, ping } from '../ajax';
+import { ajax } from '../ajax';
 import type { Collection } from '../datamodel';
 import type { KeysToLowerCase, SerializedResource } from '../datamodelutils';
-import {
-  index,
-  removeKey,
-  replaceItem,
-  replaceKey,
-  sortFunction,
-} from '../helpers';
+import { index, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissionutils';
 import { fetchResource } from '../resource';
 import { schema } from '../schema';
-import type { BackEndRole } from '../securityutils';
-import {
-  decompressPolicies,
-  fetchRoles,
-  processPolicies,
-} from '../securityutils';
-import type { IR, RA, RR } from '../types';
-import { defined, filterArray } from '../types';
+import { fetchRoles } from '../securityutils';
+import type { GetOrSet, IR, RA, RR } from '../types';
+import { defined } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Container, DataEntry, Ul } from './basic';
+import { Button, Container, DataEntry, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
-import {
-  useAsyncState,
-  useBooleanState,
-  useLiveState,
-  useTitle,
-} from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
 import { formatList } from './internationalization';
-import { LoadingScreen } from './modaldialog';
+import { NotFoundView } from './notfoundview';
+import { useAvailableCollections } from './othercollectionview';
+import { SetPermissionContext } from './permissioncontext';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { SafeOutlet } from './routerutils';
+import { updateCollectionRole } from './securitycollectionrole';
+import { createCollectionRole } from './securitycreaterole';
 import { SecurityImportExport } from './securityimportexport';
-import type { NewRole, Role } from './securityrole';
-import { RoleView } from './securityrole';
-import { CreateRole } from './securityroletemplate';
+import type { Role } from './securityrole';
+import type { SecurityOutlet } from './toolbar/security';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -53,20 +42,33 @@ export type UserRoles = RA<{
   readonly roles: RA<RoleBase>;
 }>;
 
-export function SecurityCollection({
+export type SecurityCollectionOutlet = SecurityOutlet & {
+  readonly collection: SerializedResource<Collection>;
+  readonly getSetRoles: GetOrSet<IR<Role> | undefined>;
+  readonly getSetUserRoles: GetOrSet<UserRoles | undefined>;
+};
+
+export function SecurityCollection(): JSX.Element {
+  const { collectionId = '' } = useParams();
+  const availableCollections = useAvailableCollections();
+  const collection = availableCollections.find(
+    ({ id }) => id.toString() === collectionId
+  );
+  return typeof collection === 'object' ? (
+    <SetPermissionContext collectionId={collection.id}>
+      <CollectionView collection={collection} />
+    </SetPermissionContext>
+  ) : (
+    <NotFoundView />
+  );
+}
+
+export function CollectionView({
   collection,
-  collections,
-  initialRoleId,
-  onOpenUser: handleOpenUser,
-  libraryRoles,
 }: {
   readonly collection: SerializedResource<Collection>;
-  readonly collections: RA<SerializedResource<Collection>>;
-  readonly initialRoleId: number | undefined;
-  readonly onOpenUser: (userId: number | undefined) => void;
-  readonly libraryRoles: IR<Role> | undefined;
 }): JSX.Element {
-  const [roles, setRoles] = useAsyncState<IR<Role>>(
+  const getSetRoles = useAsyncState<IR<Role>>(
     React.useCallback(
       async () =>
         hasPermission('/permissions/roles', 'read', collection.id)
@@ -76,6 +78,7 @@ export function SecurityCollection({
     ),
     false
   );
+  const [roles, setRoles] = getSetRoles;
 
   const [usersWithPolicies] = useAsyncState<
     RA<{ readonly userId: number; readonly userName: string }>
@@ -107,7 +110,7 @@ export function SecurityCollection({
     false
   );
 
-  const [userRoles, setUserRoles] = useAsyncState<UserRoles>(
+  const getSetUserRoles = useAsyncState<UserRoles>(
     React.useCallback(
       async () =>
         hasPermission('/permissions/user/roles', 'read', collection.id)
@@ -132,9 +135,9 @@ export function SecurityCollection({
           : undefined,
       [collection.id]
     ),
-    // Display loading screen while loading a role
-    typeof initialRoleId === 'number'
+    false
   );
+  const [userRoles] = getSetUserRoles;
 
   // Combine users that have only policies or only roles together into one list
   const mergedUsers =
@@ -155,99 +158,33 @@ export function SecurityCollection({
         ].sort(sortFunction(({ userName }) => userName))
       : undefined;
 
-  const [state, setState] = useLiveState<
-    | State<'CreatingRoleState'>
-    | State<'LoadingRole'>
-    | State<'MainState'>
-    | State<'RoleState', { readonly role: NewRole | Role }>
-  >(
-    React.useCallback(
-      () =>
-        typeof initialRoleId === 'number'
-          ? ({
-              type: 'LoadingRole',
-              roleId: initialRoleId,
-            } as const)
-          : ({ type: 'MainState' } as const),
-      // Close open role when collection changes
-      [initialRoleId, collection.id]
-    )
-  );
-  React.useEffect(() => {
-    if (
-      state.type === 'LoadingRole' &&
-      typeof initialRoleId === 'number' &&
-      typeof roles === 'object'
-    )
-      setState({
-        type: 'RoleState',
-        role: roles[initialRoleId],
-      });
-  }, [roles, state, initialRoleId, setState, userRoles]);
-  const roleUsers = React.useMemo(
-    () =>
-      state.type === 'RoleState'
-        ? userRoles?.filter(({ roles }) =>
-            roles.some(({ roleId }) => roleId === state.role.id)
-          )
-        : undefined,
-    [userRoles, state]
-  );
-
-  const updateRole = async (role: Role): Promise<void> =>
-    ping(
-      `/permissions/role/${role.id}/`,
-      {
-        method: 'PUT',
-        body: {
-          ...role,
-          policies: decompressPolicies(role.policies),
-        },
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT] }
-    ).then((): void =>
-      setRoles(replaceKey(defined(roles), role.id.toString(), role))
-    );
-
-  const createRole = async (role: NewRole | Role): Promise<void> =>
-    typeof role.id === 'number'
-      ? setRoles((roles) => ({
-          ...roles,
-          [defined(role.id)]: {
-            ...role,
-          },
-        }))
-      : ajax<BackEndRole>(
-          `/permissions/roles/${collection.id}/`,
-          {
-            method: 'POST',
-            body: {
-              ...removeKey(role, 'id'),
-              policies: decompressPolicies(role.policies),
-            },
-            headers: { Accept: 'application/json' },
-          },
-          { expectedResponseCodes: [Http.CREATED] }
-        ).then(({ data: role }) =>
-          setRoles((roles) => ({
-            ...roles,
-            [role.id]: {
-              ...role,
-              policies: processPolicies(role.policies),
-            },
-          }))
-        );
-
-  useTitle(
-    state.type === 'MainState'
-      ? collection.collectionName ?? undefined
-      : undefined
-  );
+  useTitle(collection.collectionName ?? undefined);
 
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isOverlay = location.pathname.startsWith(
+    `/specify/security/collection/${collection.id}/role/create/`
+  );
+  const isRoleState =
+    !isOverlay &&
+    location.pathname.startsWith(
+      `/specify/security/collection/${collection.id}/role`
+    );
+  const isMainState = !isRoleState;
+  const outletState = useOutletContext<SecurityOutlet>();
+  const outlet = (
+    <SafeOutlet<SecurityCollectionOutlet>
+      {...outletState}
+      collection={collection}
+      getSetRoles={getSetRoles}
+      getSetUserRoles={getSetUserRoles}
+    />
+  );
+
   return (
     <Container.Base className="flex-1 gap-6">
-      {state.type === 'MainState' && (
+      {isMainState || isOverlay ? (
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
@@ -269,16 +206,11 @@ export function SecurityCollection({
                       .sort(sortFunction(({ name }) => name))
                       .map((role) => (
                         <li key={role.id}>
-                          <Button.LikeLink
-                            onClick={(): void =>
-                              setState({
-                                type: 'RoleState',
-                                role,
-                              })
-                            }
+                          <Link.Default
+                            href={`/specify/security/collection/${collection.id}/role/${role.id}/`}
                           >
                             {role.name}
-                          </Button.LikeLink>
+                          </Link.Default>
                         </li>
                       ))}
                   </Ul>
@@ -297,8 +229,9 @@ export function SecurityCollection({
                     collection.id
                   ) &&
                     hasPermission('/permissions/library/roles', 'read')) ? (
-                    <Button.Green
-                      disabled={
+                    <CreateRoleButton
+                      collectionId={collection.id}
+                      isDisabled={
                         !Array.isArray(userRoles) &&
                         hasPermission(
                           '/permissions/user/roles',
@@ -306,22 +239,22 @@ export function SecurityCollection({
                           collection.id
                         )
                       }
-                      onClick={(): void =>
-                        setState({
-                          type: 'CreatingRoleState',
-                        })
-                      }
-                    >
-                      {commonText('create')}
-                    </Button.Green>
+                    />
                   ) : undefined}
+                  {isOverlay && <Outlet />}
                   <SecurityImportExport
                     baseName={collection.collectionName ?? ''}
                     collectionId={collection.id}
                     permissionName="/permissions/roles"
                     roles={roles}
-                    onCreateRole={createRole}
-                    onUpdateRole={updateRole}
+                    onCreateRole={(role): void =>
+                      loading(
+                        createCollectionRole(setRoles, collection.id, role)
+                      )
+                    }
+                    onUpdateRole={(role): void =>
+                      loading(updateCollectionRole(getSetRoles, role))
+                    }
                   />
                 </div>
               </section>
@@ -334,15 +267,12 @@ export function SecurityCollection({
                 ) : (
                   <>
                     <Ul>
-                      {mergedUsers.map(({ userId, userName, roles }) => (
-                        <li key={userId}>
-                          <Button.LikeLink
-                            disabled={
-                              userId !== userInformation.id &&
-                              !hasTablePermission('SpecifyUser', 'read')
-                            }
-                            onClick={(): void => handleOpenUser(userId)}
-                          >
+                      {mergedUsers.map(({ userId, userName, roles }) => {
+                        const canRead =
+                          userId === userInformation.id ||
+                          hasTablePermission('SpecifyUser', 'read');
+                        const children = (
+                          <>
                             {userName}
                             {roles.length > 0 && (
                               <span className="text-gray-500">
@@ -351,16 +281,48 @@ export function SecurityCollection({
                                 )})`}
                               </span>
                             )}
-                          </Button.LikeLink>
-                        </li>
-                      ))}
+                          </>
+                        );
+                        return (
+                          <li key={userId}>
+                            {canRead ? (
+                              <Link.Default
+                                href={`/specify/security/user/${userId}/`}
+                                onClick={(event): void => {
+                                  event.preventDefault();
+                                  navigate(
+                                    `/specify/security/user/${userId}/`,
+                                    {
+                                      state: {
+                                        initialCollectionId: collection.id,
+                                      },
+                                    }
+                                  );
+                                }}
+                              >
+                                {children}
+                              </Link.Default>
+                            ) : (
+                              children
+                            )}
+                          </li>
+                        );
+                      })}
                     </Ul>
                     <div>
-                      <Button.Green
-                        onClick={(): void => handleOpenUser(undefined)}
+                      <Link.Green
+                        href="/specify/security/user/new/"
+                        onClick={(event): void => {
+                          event.preventDefault();
+                          navigate('/specify/security/user/new/', {
+                            state: {
+                              initialCollectionId: collection.id,
+                            },
+                          });
+                        }}
                       >
                         {commonText('create')}
-                      </Button.Green>
+                      </Link.Green>
                     </div>
                   </>
                 )
@@ -371,135 +333,61 @@ export function SecurityCollection({
                 ) ? (
                 commonText('loading')
               ) : (
-                <Button.LikeLink
-                  onClick={(): void => handleOpenUser(userInformation.id)}
-                >
-                  {userInformation.name}
-                </Button.LikeLink>
+                <CurrentUser collectionId={collection.id} />
               )}
             </section>
           </div>
         </>
-      )}
-      {state.type === 'CreatingRoleState' && (
-        <CreateRole
-          collections={collections}
-          libraryRoles={libraryRoles}
-          scope={collection.id}
-          onClose={(): void =>
-            setState({
-              type: 'MainState',
-            })
-          }
-          onCreated={(role): void =>
-            loading(
-              (typeof role.id === 'number'
-                ? createRole(role)
-                : Promise.resolve(undefined)
-              ).then(() =>
-                setState({
-                  type: 'RoleState',
-                  role,
-                })
-              )
-            )
-          }
-        />
-      )}
-      {state.type === 'RoleState' ? (
-        typeof roles === 'object' ? (
-          <RoleView
-            collectionId={collection.id}
-            parentName={collection.collectionName ?? ''}
-            permissionName="/permissions/roles"
-            role={state.role}
-            userRoles={roleUsers}
-            onAddUsers={(users): void => {
-              if (userRoles === undefined || state.role.id === undefined)
-                return;
-              loading(
-                Promise.all(
-                  users.map((user) => {
-                    const userIndex = userRoles.findIndex(
-                      ({ userId }) => userId === user.id
-                    );
-                    const currentUserRoles = userRoles[userIndex].roles.map(
-                      ({ roleId }) => roleId
-                    );
-                    // Noop if user is already part of this role
-                    return currentUserRoles.includes(defined(state.role.id))
-                      ? undefined
-                      : ping(
-                          `/permissions/user_roles/${collection.id}/${user.id}/`,
-                          {
-                            method: 'PUT',
-                            body: [...currentUserRoles, state.role.id].map(
-                              (id) => ({
-                                id,
-                              })
-                            ),
-                          },
-                          { expectedResponseCodes: [Http.NO_CONTENT] }
-                        ).then(() => ({
-                          userIndex,
-                          updatedRoles: {
-                            ...userRoles[userIndex],
-                            roles: [
-                              ...userRoles[userIndex].roles,
-                              {
-                                roleId: defined(state.role.id),
-                                roleName: state.role.name,
-                              },
-                            ],
-                          },
-                        }));
-                  })
-                ).then((addedUserRoles) =>
-                  setUserRoles(
-                    filterArray(addedUserRoles).reduce(
-                      (userRoles, { userIndex, updatedRoles }) =>
-                        replaceItem(userRoles, userIndex, updatedRoles),
-                      userRoles
-                    )
-                  )
-                )
-              );
-            }}
-            onClose={(): void => setState({ type: 'MainState' })}
-            onDelete={(): void =>
-              typeof state.role.id === 'number'
-                ? loading(
-                    ping(
-                      `/permissions/role/${state.role.id}/`,
-                      {
-                        method: 'DELETE',
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    )
-                      .then((): void => setState({ type: 'MainState' }))
-                      .then((): void =>
-                        setRoles(
-                          removeKey(roles, defined(state.role.id).toString())
-                        )
-                      )
-                  )
-                : undefined
-            }
-            onOpenUser={handleOpenUser}
-            onSave={(role): void =>
-              loading(
-                (typeof role.id === 'number'
-                  ? updateRole(role as Role)
-                  : createRole(role)
-                ).then((): void => setState({ type: 'MainState' }))
-              )
-            }
-          />
-        ) : (
-          <LoadingScreen />
-        )
       ) : undefined}
+      {isRoleState && outlet}
     </Container.Base>
+  );
+}
+
+/**
+ * Display a button to open current user
+ *
+ * @remarks
+ * Used when the user doesn't have read permission to SpecifyUser table
+ */
+function CurrentUser({
+  collectionId,
+}: {
+  readonly collectionId: number;
+}): JSX.Element {
+  const navigate = useNavigate();
+  return (
+    <Link.Default
+      href={`/specify/security/user/${userInformation.id}/`}
+      onClick={(event): void => {
+        event.preventDefault();
+        navigate(`/specify/security/user/${userInformation.id}/`, {
+          state: {
+            initialCollectionId: collectionId,
+          },
+        });
+      }}
+    >
+      {userInformation.name}
+    </Link.Default>
+  );
+}
+
+function CreateRoleButton({
+  isDisabled,
+  collectionId,
+}: {
+  readonly isDisabled: boolean;
+  readonly collectionId: number;
+}): JSX.Element {
+  return isDisabled ? (
+    <Button.Green onClick={undefined}>{commonText('create')}</Button.Green>
+  ) : (
+    <Link.Green
+      href={`/specify/security/collection/${collectionId}/role/create/`}
+    >
+      {commonText('create')}
+    </Link.Green>
   );
 }
 

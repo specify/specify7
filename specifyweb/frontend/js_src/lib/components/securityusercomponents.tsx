@@ -17,15 +17,7 @@ import type { IR, RA, RR } from '../types';
 import { defined, filterArray } from '../types';
 import { userInformation } from '../userinfo';
 import { AdminStatusPlugin } from './adminstatusplugin';
-import {
-  Button,
-  className,
-  DataEntry,
-  Input,
-  Label,
-  Select,
-  Ul,
-} from './basic';
+import { Button, className, Input, Label, Link, Select, Ul } from './basic';
 import { ComboBox } from './combobox';
 import { useLiveState } from './hooks';
 import { Dialog } from './modaldialog';
@@ -101,13 +93,11 @@ export function UserRoles({
   collectionId,
   userRoles,
   onChange: handleChange,
-  onOpenRole: handleOpenRole,
 }: {
   readonly collectionRoles: RR<number, RA<Role> | undefined> | undefined;
   readonly collectionId: number;
   readonly userRoles: IR<RA<RoleBase> | undefined> | undefined;
   readonly onChange: (value: IR<RA<RoleBase> | undefined>) => void;
-  readonly onOpenRole: (collectionId: number, roleId: number) => void;
 }): JSX.Element | null {
   return typeof userRoles !== 'object' ||
     typeof userRoles[collectionId] === 'object' ? (
@@ -155,9 +145,12 @@ export function UserRoles({
                   />
                   {role.name}
                 </Label.ForCheckbox>
-                <DataEntry.Edit
-                  // BUG: trigger unload protect
-                  onClick={(): void => handleOpenRole(collectionId, role.id)}
+                <Link.Icon
+                  aria-label={commonText('edit')}
+                  className={className.dataEntryEdit}
+                  href={`/specify/security/collection/${collectionId}/role/${role.id}/`}
+                  icon="pencil"
+                  title={commonText('edit')}
                 />
               </li>
             )) ??

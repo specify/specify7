@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import type { SpecifyUser } from '../datamodel';
@@ -7,17 +8,14 @@ import { replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
-import { hasPermission, hasTablePermission } from '../permissionutils';
-import { schema } from '../schema';
+import { hasPermission } from '../permissionutils';
 import type { RA } from '../types';
-import { userInformation } from '../userinfo';
-import { Button, className, Form, Input, Label, Submit, Ul } from './basic';
+import { Button, className, Form, Input, Label, Link, Submit } from './basic';
 import { AppTitle, AutoGrowTextArea } from './common';
 import { useLiveState, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { useUnloadProtect } from './navigation';
-import { SearchDialog } from './searchdialog';
 import type { UserRoles } from './securitycollection';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
@@ -36,16 +34,17 @@ export type Role = NewRole & {
 
 const roleNameMaxLength = 1024;
 
+// REFACTOR: make sure to implement useTitle() where needed
 export function RoleView({
   role: initialRole,
   parentName,
   userRoles,
   permissionName,
   collectionId,
+  closeUrl,
+  roleUsers,
   onDelete: handleDelete,
   onSave: handleSave,
-  onClose: handleClose,
-  onOpenUser: handleOpenUser,
   onAddUsers: handleAddUsers,
 }: {
   readonly role: NewRole | Role;
@@ -57,10 +56,10 @@ export function RoleView({
    */
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly collectionId: number;
+  readonly closeUrl: string;
+  readonly roleUsers: JSX.Element | undefined;
   readonly onSave: (role: NewRole | Role) => void;
   readonly onDelete: () => void;
-  readonly onClose: () => void;
-  readonly onOpenUser: ((userId: number) => void) | undefined;
   readonly onAddUsers:
     | ((user: RA<SpecifyResource<SpecifyUser>>) => void)
     | undefined;
@@ -69,10 +68,8 @@ export function RoleView({
   const changesMade =
     role.id === undefined ||
     JSON.stringify(initialRole) !== JSON.stringify(role);
-  const unsetUnloadProtect = useUnloadProtect(
-    changesMade,
-    commonText('leavePageDialogText')
-  );
+  const navigate = useNavigate();
+  useUnloadProtect(changesMade, commonText('leavePageDialogText'));
   const [state, setState] = useLiveState<
     | State<'MainState'>
     | State<
@@ -91,10 +88,10 @@ export function RoleView({
     <Form className="contents" onSubmit={(): void => handleSave(role)}>
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <AppTitle title={role.name} type="form" />
-      <Button.LikeLink onClick={handleClose}>
+      <Link.Default href={closeUrl}>
         {icons.arrowLeft}
         {parentName}
-      </Button.LikeLink>
+      </Link.Default>
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Generic className={className.limitedWidth}>
@@ -119,73 +116,7 @@ export function RoleView({
             }
           />
         </Label.Generic>
-        {typeof role.id === 'number' &&
-        typeof handleOpenUser === 'function' &&
-        hasPermission('/permissions/user/roles', 'read', collectionId) ? (
-          <fieldset className="flex flex-col gap-2">
-            <legend>{adminText('users')}</legend>
-            {typeof userRoles === 'object' ? (
-              <>
-                <Ul className="flex max-h-[theme(spacing.96)] flex-col gap-2 overflow-auto">
-                  {userRoles.map(({ userId, userName }) => (
-                    <li key={userId}>
-                      <Button.LikeLink
-                        disabled={
-                          userId !== userInformation.id &&
-                          !hasTablePermission('SpecifyUser', 'read')
-                        }
-                        // BUG: trigger unload protect
-                        onClick={(): void => handleOpenUser(userId)}
-                      >
-                        {userName}
-                      </Button.LikeLink>
-                    </li>
-                  ))}
-                </Ul>
-                {hasPermission(
-                  '/permissions/user/roles',
-                  'update',
-                  collectionId
-                ) && (
-                  <div>
-                    <Button.Green
-                      onClick={(): void =>
-                        setState({
-                          type: 'AddUserState',
-                          templateResource:
-                            new schema.models.SpecifyUser.Resource(),
-                        })
-                      }
-                    >
-                      {commonText('add')}
-                    </Button.Green>
-                  </div>
-                )}
-                {state.type === 'AddUserState' &&
-                typeof handleAddUsers === 'function' ? (
-                  <SearchDialog
-                    extraFilters={[
-                      {
-                        field: 'id',
-                        operation: 'notIn',
-                        values: userRoles.map(({ userId }) =>
-                          userId.toString()
-                        ),
-                      },
-                    ]}
-                    forceCollection={undefined}
-                    multiple
-                    templateResource={state.templateResource}
-                    onClose={(): void => setState({ type: 'MainState' })}
-                    onSelected={handleAddUsers}
-                  />
-                ) : undefined}
-              </>
-            ) : (
-              commonText('loading')
-            )}
-          </fieldset>
-        ) : undefined}
+        {roleUsers}
         <SecurityPoliciesWrapper
           collapsable={false}
           header={adminText('rolePolicies')}
@@ -222,16 +153,17 @@ export function RoleView({
           </Button.Red>
         ) : undefined}
         {changesMade ? (
-          <Button.Red
-            onClick={(): void => {
-              unsetUnloadProtect();
-              handleClose();
+          <Link.Red
+            href={closeUrl}
+            onClick={(event): void => {
+              event.preventDefault();
+              navigate(closeUrl, { state: { noUnloadProtect: true } });
             }}
           >
             {commonText('cancel')}
-          </Button.Red>
+          </Link.Red>
         ) : (
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
+          <Link.Blue href={closeUrl}>{commonText('close')}</Link.Blue>
         )}
         <span className="-ml-2 flex-1" />
         {typeof role.id === 'number' && (

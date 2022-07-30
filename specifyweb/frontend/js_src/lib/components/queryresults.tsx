@@ -226,7 +226,7 @@ function QueryResult({
           : undefined
       }
     >
-      {hasIdField && (
+      {typeof viewUrl === 'string' && (
         <>
           <span
             className={`

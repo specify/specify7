@@ -650,7 +650,7 @@ function RecordSets({
   const tableId = React.useMemo(
     () =>
       query.contextTableId ??
-      f.parseInt(parseSpecifyProperties(appResource.metaData).tableid),
+      f.parseInt(parseSpecifyProperties(appResource.metaData ?? '').tableid),
     [query, appResource]
   );
   React.useEffect(

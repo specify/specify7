@@ -9,11 +9,9 @@ import { schema } from '../schema';
 import { Button, Input, Label, Link, Ul } from './basic';
 import { TableIcon } from './common';
 import { Dialog } from './modaldialog';
-import { OverlayContext } from './router';
 import { useCachedState } from './statecache';
 
 export function SchemaConfigTables(): JSX.Element {
-  const handleClose = React.useContext(OverlayContext);
   const { language = '' } = useParams();
   const navigate = useNavigate();
 
@@ -48,7 +46,7 @@ export function SchemaConfigTables(): JSX.Element {
         </>
       }
       header={commonText('tables')}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify')}
     >
       <Ul className="flex-1 overflow-y-auto">
         {sortedTables.map((model) => (

@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import type { AttachmentThumbnail } from '../attachments';
 import { fetchOriginalUrl, fetchThumbnail } from '../attachments';
 import {
   DEFAULT_FETCH_LIMIT,
@@ -37,15 +38,15 @@ import { useCollection } from './collection';
 import { loadingGif, TableIcon } from './common';
 import { LoadingContext } from './contexts';
 import { ErrorBoundary, fail } from './errorboundary';
+import { useMenuItem } from './header';
 import { useAsyncState, useBooleanState } from './hooks';
 import { LoadingScreen } from './modaldialog';
+import { ProtectedTable } from './permissiondenied';
 import { OrderPicker } from './preferencesrenderers';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
 import { originalAttachmentsView } from './specifyform';
 import { useCachedState } from './statecache';
-import { ProtectedTable } from './permissiondenied';
-import { useMenuItem } from './header';
 
 const tablesWithAttachments = f.store(() =>
   filterArray(
@@ -66,7 +67,7 @@ export function AttachmentCell({
   attachment,
   onViewRecord: handleViewRecord,
 }: {
-  readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly attachment: SerializedResource<Attachment>;
   readonly onViewRecord:
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
@@ -80,21 +81,97 @@ export function AttachmentCell({
       : undefined;
 
   const [thumbnail] = useAsyncState(
-    React.useCallback(
-      () => (attachment === undefined ? undefined : fetchThumbnail(attachment)),
-      [attachment]
-    ),
+    React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
     false
   );
 
+  const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
+  const title = attachment.title || thumbnail?.alt;
+  const loading = React.useContext(LoadingContext);
+
+  const resource = React.useMemo(
+    () => deserializeResource(attachment),
+    [attachment]
+  );
+
+  return (
+    <div className="relative">
+      {typeof handleViewRecord === 'function' &&
+        (model === undefined || hasTablePermission(model.name, 'read')) && (
+          <Button.LikeLink
+            className="absolute top-0 left-0"
+            title={model?.label}
+            onClick={(): void =>
+              model === undefined
+                ? handleMetaToggle()
+                : loading(
+                    fetchRelated(
+                      attachment,
+                      `${model.name as 'agent'}Attachments`
+                    )
+                      .then(({ records }) =>
+                        typeof records[0] === 'object'
+                          ? idFromUrl(
+                              caseInsensitiveHash(
+                                records[0],
+                                model.name as 'agent'
+                              ) ?? ''
+                            )
+                          : undefined
+                      )
+                      .then((id) =>
+                        typeof id === 'number'
+                          ? handleViewRecord(model, id)
+                          : handleMetaToggle()
+                      )
+                  )
+            }
+          >
+            <TableIcon label name={model?.name ?? 'Attachment'} />
+          </Button.LikeLink>
+        )}
+      <Button.Icon
+        aria-pressed={isMetaOpen}
+        className="absolute top-0 right-0"
+        icon="informationCircle"
+        title={commonText('metadata')}
+        onClick={handleMetaToggle}
+      />
+      {isMetaOpen && (
+        <ResourceView
+          canAddAnother={false}
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          mode="edit"
+          resource={resource}
+          title={title}
+          viewName={originalAttachmentsView}
+          onClose={handleMetaClose}
+          onDeleted={undefined}
+          onSaved={undefined}
+        />
+      )}
+      {typeof thumbnail === 'object' ? (
+        <AttachmentPreview attachment={attachment} thumbnail={thumbnail} />
+      ) : (
+        <div className="flex h-10 w-10 items-center justify-center">
+          {commonText('loading')}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AttachmentPreview({
+  thumbnail,
+  attachment,
+}: {
+  readonly thumbnail: AttachmentThumbnail;
+  readonly attachment: SerializedResource<Attachment>;
+}): JSX.Element {
   const [originalUrl] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof attachment === 'object'
-          ? fetchOriginalUrl(attachment)
-          : undefined,
-      [attachment]
-    ),
+    React.useCallback(async () => fetchOriginalUrl(attachment), [attachment]),
     false
   );
 
@@ -106,115 +183,43 @@ export function AttachmentCell({
       globalThis.open(originalUrl, '_blank');
     }
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
-
-  const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = attachment?.title || thumbnail?.alt;
-  const loading = React.useContext(LoadingContext);
-
-  const resource = React.useMemo(
-    () => f.maybe(attachment, deserializeResource),
-    [attachment]
-  );
-
-  return (
-    <div className="relative">
-      {typeof attachment === 'object' && (
-        <>
-          {typeof handleViewRecord === 'function' &&
-            (model === undefined || hasTablePermission(model.name, 'read')) && (
-              <Button.LikeLink
-                className="absolute top-0 left-0"
-                title={model?.label}
-                onClick={(): void =>
-                  model === undefined
-                    ? handleMetaToggle()
-                    : loading(
-                        fetchRelated(
-                          attachment,
-                          `${model.name as 'agent'}Attachments`
-                        )
-                          .then(({ records }) =>
-                            typeof records[0] === 'object'
-                              ? idFromUrl(
-                                  caseInsensitiveHash(
-                                    records[0],
-                                    model.name as 'agent'
-                                  ) ?? ''
-                                )
-                              : undefined
-                          )
-                          .then((id) =>
-                            typeof id === 'number'
-                              ? handleViewRecord(model, id)
-                              : handleMetaToggle()
-                          )
-                      )
-                }
-              >
-                <TableIcon label name={model?.name ?? 'Attachment'} />
-              </Button.LikeLink>
-            )}
-          <Button.Icon
-            aria-pressed={isMetaOpen}
-            className="absolute top-0 right-0"
-            icon="informationCircle"
-            title={commonText('metadata')}
-            onClick={handleMetaToggle}
-          />
-          {isMetaOpen && (
-            <ResourceView
-              canAddAnother={false}
-              dialog="modal"
-              isDependent={false}
-              isSubForm={false}
-              mode="edit"
-              resource={resource}
-              title={title}
-              viewName={originalAttachmentsView}
-              onClose={handleMetaClose}
-              onDeleted={undefined}
-              onSaved={undefined}
-            />
-          )}
-        </>
-      )}
-      {typeof thumbnail === 'object' ? (
-        <Link.Default
-          className={`
-            flex items-center justify-center rounded bg-white
-            shadow-lg shadow-gray-500 dark:bg-black
-          `}
-          href={originalUrl}
-          target="_blank"
-          onClick={(): void =>
-            /*
-             * If clicked on a link before originalUrl is loaded,
-             * remember that and open the link as soon as loaded.
-             * In the meanwhile, display a loading screen
-             */
-            originalUrl === undefined ? handlePreviewPending() : undefined
-          }
-        >
-          <img
-            alt={attachment?.title || thumbnail.alt}
-            className={`
+  const children = (
+    <>
+      <img
+        alt={attachment.title || thumbnail.alt}
+        className={`
               max-h-full max-w-full border-8 border-white object-contain
               dark:border-black
             `}
-            src={thumbnail.src}
-            style={{
-              width: `${thumbnail.width}px`,
-              height: `${thumbnail.height}px`,
-            }}
-          />
-          {isPreviewPending && <LoadingScreen />}
-        </Link.Default>
-      ) : (
-        <div className="flex h-10 w-10 items-center justify-center">
-          {commonText('loading')}
-        </div>
-      )}
-    </div>
+        src={thumbnail.src}
+        style={{
+          width: `${thumbnail.width}px`,
+          height: `${thumbnail.height}px`,
+        }}
+      />
+      {isPreviewPending && <LoadingScreen />}
+    </>
+  );
+  const className = `
+    flex items-center justify-center rounded bg-white shadow-lg shadow-gray-500
+    dark:bg-black
+  `;
+  return typeof originalUrl === 'string' ? (
+    <Link.Default className={className} href={originalUrl} target="_blank">
+      {children}
+    </Link.Default>
+  ) : (
+    <Button.LikeLink
+      className={className}
+      /*
+       * If clicked on a link before originalUrl is loaded,
+       * remember that and open the link as soon as loaded.
+       * In the meanwhile, display a loading screen
+       */
+      onClick={handlePreviewPending}
+    >
+      {children}
+    </Button.LikeLink>
   );
 }
 

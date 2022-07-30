@@ -7,12 +7,11 @@ import { hasToolPermission } from '../permissionutils';
 import { Button, Form, Input, Label, Link, Submit, Ul } from './basic';
 import { useId } from './hooks';
 import { Dialog } from './modaldialog';
-import { OverlayContext } from './router';
 import type { SchemaData } from './schemaconfigsetuphooks';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
-  const handleClose = React.useContext(OverlayContext);
+  const navigate = useNavigate();
   return (
     <Dialog
       buttons={
@@ -27,7 +26,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
         </>
       }
       header={commonText('schemaConfig')}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify')}
     >
       {commonText('language')}
       <Ul>
@@ -48,7 +47,6 @@ export function ChooseSchemaLanguage(): JSX.Element {
 }
 
 export function AddLanguage(): JSX.Element {
-  const handleClose = React.useContext(OverlayContext);
   const id = useId('schema-config-add-language');
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const [language, setLanguage] = React.useState<string>('');
@@ -65,7 +63,7 @@ export function AddLanguage(): JSX.Element {
         </>
       }
       header={commonText('addLanguageDialogHeader')}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify/')}
     >
       <Form
         className="contents"

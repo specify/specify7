@@ -1,108 +1,63 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
+import { Outlet, useOutletContext } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
-import { ajax, Http, ping } from '../ajax';
-import { error } from '../assert';
-import type { Collection, Institution, SpecifyUser } from '../datamodel';
+import { ajax } from '../ajax';
+import type { Institution } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { removeKey, replaceKey, sortFunction } from '../helpers';
+import { sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
 import { commonText } from '../localization/common';
 import { hasPermission, hasTablePermission } from '../permissionutils';
 import { schema } from '../schema';
-import type { BackEndRole } from '../securityutils';
-import {
-  decompressPolicies,
-  policiesToTsv,
-  processPolicies,
-} from '../securityutils';
-import type { IR, RA } from '../types';
-import { defined } from '../types';
+import { policiesToTsv } from '../securityutils';
+import type { RA } from '../types';
 import { userInformation } from '../userinfo';
-import { Button, Container, DataEntry, Ul } from './basic';
+import { Button, Container, DataEntry, Link, Ul } from './basic';
 import { LoadingContext } from './contexts';
 import { downloadFile } from './filepicker';
 import { useAsyncState, useBooleanState, useTitle } from './hooks';
-import { LoadingScreen } from './modaldialog';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { createLibraryRole } from './securitycreatelibraryrole';
 import { SecurityImportExport } from './securityimportexport';
-import type { NewRole, Role } from './securityrole';
-import { RoleView } from './securityrole';
-import { CreateRole } from './securityroletemplate';
+import { updateLibraryRole } from './securitylibraryrole';
+import type { SecurityOutlet } from './toolbar/security';
 
-export function SecurityInstitution({
+export function SecurityInstitution(): JSX.Element | null {
+  const { institution } = useOutletContext<SecurityOutlet>();
+  return typeof institution === 'object' ? (
+    <InstitutionView institution={institution} />
+  ) : null;
+}
+
+function InstitutionView({
   institution,
-  users,
-  onOpenUser: handleOpenUser,
-  collections,
-  libraryRoles,
-  onChangeLibraryRoles: handleChangeLibraryRoles,
 }: {
   readonly institution: SerializedResource<Institution>;
-  readonly users: IR<SerializedResource<SpecifyUser>> | undefined;
-  readonly onOpenUser: ((userId: number | undefined) => void) | undefined;
-  readonly libraryRoles: IR<Role> | undefined;
-  readonly collections: RA<SerializedResource<Collection>>;
-  readonly onChangeLibraryRoles: (
-    roles: IR<Role> | ((oldState: IR<Role>) => IR<Role>)
-  ) => void;
 }): JSX.Element {
-  const [state, setState] = React.useState<
-    | State<'CreatingRoleState'>
-    | State<'MainState'>
-    | State<'RoleState', { readonly role: NewRole | Role }>
-  >({ type: 'MainState' });
-  const loading = React.useContext(LoadingContext);
-
-  const updateRole = async (role: Role): Promise<void> =>
-    ping(
-      `/permissions/library_role/${role.id}/`,
-      {
-        method: 'PUT',
-        body: {
-          ...role,
-          policies: decompressPolicies(role.policies),
-        },
-      },
-      { expectedResponseCodes: [Http.NO_CONTENT] }
-    ).then((): void =>
-      handleChangeLibraryRoles((roles) =>
-        replaceKey(defined(roles), role.id.toString(), role)
-      )
-    );
-
-  const createRole = async (role: NewRole): Promise<void> =>
-    ajax<BackEndRole>(
-      `/permissions/library_roles/`,
-      {
-        method: 'POST',
-        body: {
-          ...removeKey(role, 'id'),
-          policies: decompressPolicies(role.policies),
-        },
-        headers: { Accept: 'application/json' },
-      },
-      { expectedResponseCodes: [Http.CREATED] }
-    ).then(({ data: role }) =>
-      handleChangeLibraryRoles((roles) => ({
-        ...roles,
-        [role.id]: {
-          ...role,
-          policies: processPolicies(role.policies),
-        },
-      }))
-    );
+  const {
+    getSetLibraryRoles,
+    getSetUsers: [users],
+  } = useOutletContext<SecurityOutlet>();
+  const [libraryRoles, handleChangeLibraryRoles] = getSetLibraryRoles;
 
   const admins = useAdmins();
 
-  useTitle(
-    state.type === 'MainState' ? institution.name ?? undefined : undefined
+  useTitle(institution.name ?? undefined);
+  const loading = React.useContext(LoadingContext);
+  const location = useLocation();
+  const isOverlay = location.pathname.startsWith(
+    '/specify/security/institution/role/create/'
   );
+  const isRoleState =
+    !isOverlay &&
+    location.pathname.startsWith('/specify/security/institution/role');
+  const isMainState = !isRoleState;
 
   return (
     <Container.Base className="flex-1">
-      {state.type === 'MainState' || state.type === 'CreatingRoleState' ? (
+      {isMainState || isOverlay ? (
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
@@ -118,16 +73,11 @@ export function SecurityInstitution({
                   <ul>
                     {Object.values(libraryRoles).map((role) => (
                       <li key={role.id}>
-                        <Button.LikeLink
-                          onClick={(): void =>
-                            setState({
-                              type: 'RoleState',
-                              role,
-                            })
-                          }
+                        <Link.Default
+                          href={`/specify/security/institution/role/${role.id}/`}
                         >
                           {role.name}
-                        </Button.LikeLink>
+                        </Link.Default>
                       </li>
                     ))}
                   </ul>
@@ -136,41 +86,22 @@ export function SecurityInstitution({
                 )}
                 <div className="flex gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
-                    <Button.Green
-                      onClick={(): void =>
-                        setState({
-                          type: 'CreatingRoleState',
-                        })
-                      }
-                    >
+                    <Link.Green href="/specify/security/institution/role/create/">
                       {commonText('create')}
-                    </Button.Green>
+                    </Link.Green>
                   )}
-                  {state.type === 'CreatingRoleState' && (
-                    <CreateRole
-                      collections={collections}
-                      libraryRoles={libraryRoles}
-                      scope="institution"
-                      onClose={(): void =>
-                        setState({
-                          type: 'MainState',
-                        })
-                      }
-                      onCreated={(role): void =>
-                        setState({
-                          type: 'RoleState',
-                          role,
-                        })
-                      }
-                    />
-                  )}
+                  {isOverlay && <Outlet />}
                   <SecurityImportExport
                     baseName={institution.name ?? ''}
                     collectionId={schema.domainLevelIds.collection}
                     permissionName="/permissions/library/roles"
                     roles={libraryRoles}
-                    onCreateRole={createRole}
-                    onUpdateRole={updateRole}
+                    onCreateRole={(role): void =>
+                      loading(createLibraryRole(handleChangeLibraryRoles, role))
+                    }
+                    onUpdateRole={(role): void =>
+                      loading(updateLibraryRole(handleChangeLibraryRoles, role))
+                    }
                   />
                   <Button.Blue
                     className={
@@ -196,36 +127,44 @@ export function SecurityInstitution({
                   <Ul>
                     {Object.values(users)
                       .sort(sortFunction(({ name }) => name))
-                      .map((user) => (
-                        <li key={user.id}>
-                          <Button.LikeLink
-                            disabled={
-                              user.id !== userInformation.id &&
-                              !hasTablePermission('SpecifyUser', 'read')
-                            }
-                            onClick={handleOpenUser?.bind(undefined, user.id)}
-                          >
+                      .map((user) => {
+                        const canRead =
+                          user.id === userInformation.id ||
+                          hasTablePermission('SpecifyUser', 'read');
+                        const children = (
+                          <>
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
-                              admins?.admins.has(user.id)
+                              admins?.admins.has(user.id) === true
                                 ? ` ${adminText('specifyAdmin')}`
                                 : ''
                             }${
-                              admins?.legacyAdmins.has(user.id)
+                              admins?.legacyAdmins.has(user.id) === true
                                 ? ` ${adminText('legacyAdmin')}`
                                 : ''
                             }`}</span>
-                          </Button.LikeLink>
-                        </li>
-                      ))}
+                          </>
+                        );
+                        return (
+                          <li key={user.id}>
+                            {canRead ? (
+                              <Link.Default
+                                href={`/specify/security/user/${user.id}`}
+                              >
+                                {children}
+                              </Link.Default>
+                            ) : (
+                              children
+                            )}
+                          </li>
+                        );
+                      })}
                   </Ul>
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
-                      <Button.Green
-                        onClick={handleOpenUser?.bind(undefined, undefined)}
-                      >
+                      <Link.Green href="/specify/security/user/new/">
                         {commonText('create')}
-                      </Button.Green>
+                      </Link.Green>
                     </div>
                   )}
                 </>
@@ -238,53 +177,8 @@ export function SecurityInstitution({
             </section>
           </div>
         </>
-      ) : state.type === 'RoleState' ? (
-        typeof libraryRoles === 'object' ? (
-          <RoleView
-            collectionId={schema.domainLevelIds.collection}
-            parentName={institution.name ?? schema.models.Institution.label}
-            permissionName="/permissions/library/roles"
-            role={state.role}
-            userRoles={undefined}
-            onAddUsers={undefined}
-            onClose={(): void => setState({ type: 'MainState' })}
-            onDelete={(): void =>
-              typeof state.role.id === 'number'
-                ? loading(
-                    ping(
-                      `/permissions/library_role/${state.role.id}/`,
-                      {
-                        method: 'DELETE',
-                      },
-                      { expectedResponseCodes: [Http.NO_CONTENT] }
-                    )
-                      .then((): void => setState({ type: 'MainState' }))
-                      .then((): void =>
-                        handleChangeLibraryRoles(
-                          removeKey(
-                            libraryRoles,
-                            defined(state.role.id).toString()
-                          )
-                        )
-                      )
-                  )
-                : undefined
-            }
-            onOpenUser={undefined}
-            onSave={(role): void =>
-              loading(
-                (typeof role.id === 'number'
-                  ? updateRole(role as Role)
-                  : createRole(role)
-                ).then((): void => setState({ type: 'MainState' }))
-              )
-            }
-          />
-        ) : (
-          <LoadingScreen />
-        )
       ) : (
-        error('Invalid state')
+        <Outlet />
       )}
     </Container.Base>
   );

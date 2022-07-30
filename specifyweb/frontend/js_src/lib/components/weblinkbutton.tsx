@@ -15,7 +15,7 @@ import { resourceOn } from '../resource';
 import { getTreePath } from '../specifyapi';
 import type { IR } from '../types';
 import { defined } from '../types';
-import { Link } from './basic';
+import { Button, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 
@@ -156,6 +156,13 @@ export function WebLinkButton({
     );
   }, [resource, fieldName, data, formType]);
 
+  const image = (
+    <img
+      alt={data?.title ?? url}
+      className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
+      src={getIcon(icon) ?? unknownIcon}
+    />
+  );
   return (
     <div
       className={
@@ -174,18 +181,20 @@ export function WebLinkButton({
               resource={resource}
             />
           ) : undefined}
-          <Link.Gray
-            href={url}
-            rel={isExternal ? 'noopener' : undefined}
-            target={isExternal ? '_blank' : undefined}
-            title={data.title}
-          >
-            <img
-              alt={data.title ?? url}
-              className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
-              src={getIcon(icon) ?? unknownIcon}
-            />
-          </Link.Gray>
+          {typeof url === 'string' && url.length > 0 ? (
+            <Link.Gray
+              href={url}
+              rel={isExternal ? 'noopener' : undefined}
+              target={isExternal ? '_blank' : undefined}
+              title={data.title}
+            >
+              {image}
+            </Link.Gray>
+          ) : (
+            <Button.Gray title={data.title} onClick={undefined}>
+              {image}
+            </Button.Gray>
+          )}
         </>
       ) : undefined}
     </div>
