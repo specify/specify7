@@ -14,7 +14,7 @@ export function ReadOnlyMode({
     'readOnlyMode'
   );
   return (
-    <Button.Simple
+    <Button.Small
       onClick={(): void => {
         setReadOnly(!isReadOnly);
         if (isNew) globalThis.location.assign('/specify/');
@@ -22,6 +22,6 @@ export function ReadOnlyMode({
       }}
     >
       {isReadOnly ? formsText('disableReadOnly') : formsText('enableReadOnly')}
-    </Button.Simple>
+    </Button.Small>
   );
 }

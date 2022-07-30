@@ -98,9 +98,9 @@ function WbView({
         >
           [DEV] Show Plan
         </Button.Small>
-        <Link.LikeButton href={`/specify/workbench-plan/${dataSetId}/`}>
+        <Link.Small href={`/specify/workbench-plan/${dataSetId}/`}>
           {wbText('dataMapper')}
-        </Link.LikeButton>
+        </Link.Small>
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
           <Button.Small aria-haspopup="dialog" className="wb-validate" disabled>
             {wbText('validate')}

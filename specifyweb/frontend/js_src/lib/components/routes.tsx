@@ -12,7 +12,7 @@ import { WelcomeView } from './welcomeview';
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const routes: RA<EnhancedRoute> = [
   {
-    path: 'express_search',
+    path: 'express-search',
     element: () =>
       import('./expresssearchtask').then(
         ({ ExpressSearchView }) => ExpressSearchView
@@ -197,9 +197,19 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'recordset/:id/:index?',
-    element: () =>
-      import('./datatask').then(({ ViewRecordSet }) => ViewRecordSet),
+    path: 'recordset/:id',
+    children: [
+      {
+        index: true,
+        element: () =>
+          import('./datatask').then(({ ViewRecordSet }) => ViewRecordSet),
+      },
+      {
+        path: ':index',
+        element: () =>
+          import('./datatask').then(({ ViewRecordSet }) => ViewRecordSet),
+      },
+    ],
   },
   {
     path: 'view/:tableName',

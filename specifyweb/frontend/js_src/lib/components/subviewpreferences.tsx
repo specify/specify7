@@ -34,7 +34,7 @@ export function SubViewPreferences({
           <option value="formTable">{formsText('formTable')}</option>
         </Select>
       </Label.Generic>
-      {/* BUG: this change does not apply untill you add/remove subview record */}
+      {/* BUG: this change does not apply until you add/remove subview record */}
       <Label.Generic>
         {formsText('orderBy')}
         <OrderPicker

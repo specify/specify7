@@ -67,26 +67,28 @@ import { UserInviteLinkPlugin } from './userinvitelinkplugin';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();
-  const state = location.state as {
-    readonly user?: SerializedResource<SpecifyUser>;
-    readonly initialCollectionId?: number;
-  };
+  const state = location.state as
+    | {
+        readonly user?: SerializedResource<SpecifyUser>;
+        readonly initialCollectionId?: number;
+      }
+    | undefined;
   const { userId = '' } = useParams();
   const {
     getSetUsers: [users, setUsers],
   } = useOutletContext<SecurityOutlet>();
   const user = React.useMemo(() => {
-    if (typeof state.user === 'object') return state.user;
+    if (typeof state?.user === 'object') return state.user;
     const parsedUserId = f.parseInt(userId);
     return typeof parsedUserId === 'number'
       ? users?.[parsedUserId]
       : addMissingFields('SpecifyUser', {});
-  }, [users, userId, state.user]);
+  }, [users, userId, state?.user]);
 
   const navigate = useNavigate();
   return typeof user === 'object' && typeof users === 'object' ? (
     <UserView
-      initialCollectionId={state.initialCollectionId}
+      initialCollectionId={state?.initialCollectionId}
       user={user}
       onDeleted={(): void => {
         setUsers(removeKey(users, user.id.toString()));
@@ -100,7 +102,7 @@ export function SecurityUser(): JSX.Element {
         if (typeof newUser === 'object')
           navigate(`/specify/security/user/new/`, {
             state: {
-              initialCollectionId: state.initialCollectionId,
+              initialCollectionId: state?.initialCollectionId,
               resource: newUser,
             },
           });

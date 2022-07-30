@@ -34,7 +34,7 @@ export function Slider({
     <div className="flex justify-center gap-2 print:hidden">
       <Button.Small
         aria-label={formsText('firstRecord')}
-        disabled={value == 0}
+        disabled={value === 0}
         title={formsText('firstRecord')}
         onClick={(): void => handleChange(0)}
       >
@@ -43,7 +43,7 @@ export function Slider({
       <Button.Small
         aria-label={formsText('previousRecord')}
         className="bg-white px-4 dark:bg-neutral-500"
-        disabled={value == 0}
+        disabled={value === 0}
         title={formsText('previousRecord')}
         onClick={(): void => handleChange(value - 1)}
       >
@@ -87,7 +87,7 @@ export function Slider({
       <Button.Small
         aria-label={formsText('nextRecord')}
         className="bg-white px-4 dark:bg-neutral-500"
-        disabled={value + 1 == count}
+        disabled={value + 1 === count}
         title={formsText('nextRecord')}
         onClick={(): void => handleChange(value + 1)}
       >
@@ -95,7 +95,7 @@ export function Slider({
       </Button.Small>
       <Button.Small
         aria-label={formsText('lastRecord')}
-        disabled={value + 1 == count}
+        disabled={value + 1 === count}
         title={formsText('lastRecord')}
         onClick={(): void => handleChange(count - 1)}
       >

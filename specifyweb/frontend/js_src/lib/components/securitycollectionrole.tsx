@@ -45,8 +45,10 @@ export function SecurityCollectionRole(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const state = location.state as { readonly role?: NewRole | Role };
-  const initialRole = state.role;
+  const state = location.state as
+    | { readonly role?: NewRole | Role }
+    | undefined;
+  const initialRole = state?.role;
 
   const {
     getSetRoles: [roles, setRoles],

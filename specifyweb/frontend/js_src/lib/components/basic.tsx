@@ -173,6 +173,8 @@ export const className = {
   dataEntryRemove: '!text-red-700 print:hidden',
   dataEntryVisit: '!text-blue-700 print:hidden',
 } as const;
+const smallButton = `${className.niceButton} !py-1 !px-2`;
+const defaultSmallButtonVariant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`;
 
 const dataEntryButton = (
   className: string,
@@ -677,19 +679,16 @@ export const Link = {
     readonly variant?: string;
   }>(
     'Link.Small',
-    `${className.niceButton} !py-1 !px-2`,
+    smallButton,
     ({
-      variant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
-      type,
+      variant = defaultSmallButtonVariant,
       className: classString,
       ...props
     }) => ({
-      type: 'button',
       className: `${classString ?? ''} ${variant}`,
       ...props,
     })
   ),
-  LikeButton: linkComponent('Link.LikeButton', className.button),
   Fancy: linkComponent(
     'Link.Fancy',
     `${className.niceButton} ${className.fancyButton}`
@@ -771,7 +770,6 @@ const button = (name: string, className: string) =>
  *   provided
  */
 export const Button = {
-  Simple: button('Button.Simple', className.button),
   /*
    * When using Button.LikeLink component, consider adding [role="link"] if the
    * element should be announced as a link
@@ -789,9 +787,9 @@ export const Button = {
   >(
     'Button.Small',
     'button',
-    `${className.niceButton} !py-1 !px-2`,
+    smallButton,
     ({
-      variant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
+      variant = defaultSmallButtonVariant,
       type,
       className: classString,
       ...props
@@ -841,6 +839,7 @@ export const Button = {
   })),
 } as const;
 
+// Force passing children by nesting rather than through the [value] attribute
 type SubmitProps = {
   readonly children: string;
   readonly value?: undefined;
@@ -860,8 +859,10 @@ const submitButton = (name: string, buttonClassName: string) =>
     })
   );
 export const Submit = {
-  // Force passing children by nesting rather than through the [value] attribute
-  Simple: submitButton('Submit.Simple', className.button),
+  Small: submitButton(
+    'Submit.Small',
+    `${smallButton} ${defaultSmallButtonVariant}`
+  ),
   Fancy: submitButton(
     'Submit.Fancy',
     `${className.niceButton} ${className.fancyButton} !inline`

@@ -19,9 +19,9 @@ export function FormDefinition({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Simple onClick={handleOpen}>
+      <Button.Small onClick={handleOpen}>
         {commonText('formDefinition')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && <FormDefinitionDialog model={model} onClose={handleClose} />}
     </>
   );

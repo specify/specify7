@@ -26,7 +26,7 @@ const fetchPossibleRanks = async (
 ): Promise<RA<PickListItemSimple>> =>
   treeRanksPromise
     .then(() =>
-      defined(getTreeDefinitionItems(treeName, false))
+      defined(getTreeDefinitionItems(treeName as 'Geography', false))
         .filter(
           ({ rankId }) =>
             rankId > parentRankId &&

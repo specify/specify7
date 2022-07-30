@@ -548,9 +548,9 @@ export function QueryBuilder({
                   >
                     {queryText('countOnly')}
                   </Button.Small>
-                  <Submit.Simple disabled={!isEmpty}>
+                  <Submit.Small disabled={!isEmpty}>
                     {commonText('query')}
-                  </Submit.Simple>
+                  </Submit.Small>
                 </>
               )}
             </div>

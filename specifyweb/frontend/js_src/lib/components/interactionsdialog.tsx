@@ -196,7 +196,7 @@ function Interactions({
               ? schema.models.Loan
               : table.toLowerCase() === 'gift'
               ? schema.models.Gift
-              : table.toLowerCase() === 'gift'
+              : table.toLowerCase() === 'disposal'
               ? schema.models.Disposal
               : error(`Unknown interaction table: ${table}`),
           action,

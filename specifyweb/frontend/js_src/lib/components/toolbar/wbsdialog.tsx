@@ -112,7 +112,7 @@ function TableHeader({
 }
 
 /** Render a dialog for choosing a data set */
-function DataSets({
+export function DataSetsDialog({
   onClose: handleClose,
   showTemplates,
   onDataSetSelect: handleDataSetSelect,
@@ -265,5 +265,5 @@ function DataSets({
 
 export function DataSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
-  return <DataSets showTemplates={false} onClose={handleClose} />;
+  return <DataSetsDialog showTemplates={false} onClose={handleClose} />;
 }

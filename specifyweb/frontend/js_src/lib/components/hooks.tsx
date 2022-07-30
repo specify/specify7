@@ -223,7 +223,11 @@ export function useAsyncState<T>(
   const [state, setState] = React.useState<T | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
 
-  React.useEffect(() => {
+  /**
+   * Using layout effect so that setState(undefined) runs immediately on
+   * callback change, rather than give inconsistent state.
+   */
+  React.useLayoutEffect(() => {
     // If callback changes, state is reset while new state is fetching
     setState(undefined);
     const wrapped = loadingScreen
@@ -268,7 +272,7 @@ export function useAsyncState<T>(
  * ```
  */
 export function useLiveState<T>(callback: () => T): GetOrSet<T> {
-  const [state, setState] = React.useState<T>(() => callback());
+  const [state, setState] = React.useState<T>(callback);
 
   useReadyEffect(React.useCallback(() => setState(callback()), [callback]));
 
@@ -312,7 +316,7 @@ export function useReadyEffect(callback: () => void): void {
  * ```
  * const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
  * ```
- * "handleOpen" is easier to reason about than "setIsOpen(false)"
+ * "handleClose" is easier to reason about than "setIsOpen(false)"
  *
  * If handleClose or handleToggle actions are not needed, they simply
  * don't have to be destructured.

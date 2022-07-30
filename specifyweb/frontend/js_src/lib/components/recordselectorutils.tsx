@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import { DependentCollection, LazyCollection } from '../collectionapi';
@@ -29,7 +30,7 @@ import { crash } from './errorboundary';
 import { FormTableCollection } from './formtable';
 import { useBooleanState, useTriggerState } from './hooks';
 import { Dialog, LoadingScreen } from './modaldialog';
-import { useSearchParam } from './navigation';
+import { useSearchParam as useSearchParameter } from './navigation';
 import type { RecordSelectorProps } from './recordselector';
 import { BaseRecordSelector } from './recordselector';
 import { EditRecordSet } from './recordsetsdialog';
@@ -171,8 +172,8 @@ export function IntegratedRecordSelector({
     !relationshipIsToMany(relationship) || relationship.type === 'zero-to-one';
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
 
-  const [rawIndex, setIndex] = useSearchParam(urlParameter);
-  const index = f.parseInt(rawIndex) ?? collection.models.length;
+  const [rawIndex, setIndex] = useSearchParameter(urlParameter);
+  const index = f.parseInt(rawIndex) ?? collection.models.length - 1;
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
@@ -261,7 +262,6 @@ export function IntegratedRecordSelector({
             onClose={handleClose}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
             onSaved={handleClose}
-            onSaving={undefined}
           />
           {dialogs}
         </>
@@ -362,17 +362,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   );
 
   const currentResource = newResource ?? records[index];
-  const currentResourceId = currentResource?.id;
-  React.useEffect(
-    () =>
-      // FIXME: migrate this
-      urlContext === false
-        ? undefined
-        : pushUrl(
-            getResourceViewUrl(model.name, currentResourceId, urlContext)
-          ),
-    [urlContext, model, currentResourceId]
-  );
 
   // Show a warning dialog if navigating away before saving the record
   const [unloadProtect, setUnloadProtect] = React.useState<
@@ -675,6 +664,39 @@ export function RecordSet<SCHEMA extends AnySchema>({
   }, [totalCount, currentRecordId, index, recordSet.id]);
 
   const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as
+    | {
+        readonly originalLocation?: Location;
+        readonly itemIndex?: number;
+      }
+    | undefined;
+  const originalLocation = state?.originalLocation;
+  const itemIndex = state?.itemIndex;
+  React.useEffect(
+    () =>
+      setItems((state) =>
+        state?.index === itemIndex || itemIndex === undefined
+          ? state
+          : {
+              ...defaultRecordSetState,
+              ...state,
+              index: itemIndex,
+            }
+      ),
+    [itemIndex]
+  );
+  /** Change the URL without changing the rendered component */
+  const softNavigate = (url: string, itemIndex: number | undefined): void =>
+    navigate(url, {
+      state: {
+        type: 'NoopRoute',
+        originalLocation: originalLocation ?? location,
+        itemIndex,
+      },
+    });
+
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
   const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void =>
@@ -692,11 +714,11 @@ export function RecordSet<SCHEMA extends AnySchema>({
                * manually
                */
               return resource.isNew()
-                ? createResource('RecordSetItem', {
+                ? undefined
+                : createResource('RecordSetItem', {
                     recordId: resource.id,
                     recordSet: recordSet.get('resource_uri'),
-                  })
-                : undefined;
+                  });
             } else return undefined;
           })
         )
@@ -704,6 +726,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
       const hasNew = resources.some((resource) => resource.isNew());
       if (hasNew && resources.length > 1)
         throw new Error("Can't add multiple new resources at once");
+      softNavigate(resources[0].viewUrl(), hasNew ? undefined : ids.length);
       return {
         totalCount: totalCount + 1,
         ids: hasNew ? ids : [...ids, ...resources.map(({ id }) => id)],
@@ -808,19 +831,21 @@ export function RecordSet<SCHEMA extends AnySchema>({
         onSaved={({ newResource, wasNew, resource }): void => {
           if (wasNew) {
             handleAdd([resource]);
-            // FIXME: migrate this
-            pushUrl(resource.viewUrl());
           }
           if (typeof newResource === 'object') handleAdd([newResource]);
         }}
-        onSlide={(index): void =>
+        onSlide={(index): void => {
+          softNavigate(
+            getResourceViewUrl(rest.model.name, ids[index], recordSet.id),
+            index
+          );
           setItems({
             totalCount,
             ids,
             newResource: undefined,
             index: Math.min(index, totalCount - 1),
-          })
-        }
+          });
+        }}
       />
       {hasDuplicate && (
         <Dialog

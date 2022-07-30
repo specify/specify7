@@ -21,7 +21,7 @@ import { useAsyncState } from './hooks';
 import type { MenuItem } from './main';
 import { usePref } from './preferenceshooks';
 import { switchCollection } from './switchcollection';
-import {useSearchParam} from './navigation';
+import { useSearchParam } from './navigation';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -173,17 +173,17 @@ export function CollectionSelector(): JSX.Element {
 }
 
 export function ExpressSearch(): JSX.Element {
-  const [searchQuery='', setSearchQuery] = useSearchParam('q');
+  const [searchQuery = '', setSearchQuery] = useSearchParam('q');
   const navigate = useNavigate();
   return (
     <Form
-      action="/specify/express_search/"
+      action="/specify/express-search/"
       className="contents"
       role="search"
       onSubmit={(): void => {
         const query = searchQuery.trim();
         if (query.length === 0) return;
-        const url = formatUrl('/specify/express_search/', {
+        const url = formatUrl('/specify/express-search/', {
           q: query,
         });
         navigate(url);

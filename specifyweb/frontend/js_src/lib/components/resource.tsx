@@ -6,6 +6,7 @@ import type {
   SerializedResource,
 } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
+import { removeKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { resourceOn, tableFromUrl } from '../resource';
 import { schema } from '../schema';
@@ -60,7 +61,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
     defined(
       tableFromUrl(serializedResource.resource_uri?.toString() ?? '')
     ) as SCHEMA['tableName']
-  ].Resource(serializedResource);
+  ].Resource(removeKey(serializedResource, '_tableName'));
 
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({

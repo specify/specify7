@@ -61,7 +61,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission('/querybuilder/query', 'execute') && (
         <li className="contents">
           {typeof focusedRow === 'object' ? (
-            <Link.LikeButton
+            <Link.Small
               forwardRef={focusRef}
               href={`/specify/query/fromtree/${tableName.toLowerCase()}/${
                 focusedRow.nodeId
@@ -69,7 +69,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               target="_blank"
             >
               {commonText('query')}
-            </Link.LikeButton>
+            </Link.Small>
           ) : (
             <Button.Small disabled>{commonText('query')}</Button.Small>
           )}

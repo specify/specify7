@@ -24,13 +24,13 @@ export function RecordHistory({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Simple
+      <Button.Small
         disabled={resource.isNew()}
         title={resource.isNew() ? formsText('saveRecordFirst') : undefined}
         onClick={handleOpen}
       >
         {formsText('historyOfEdits')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && (
         <RecordHistoryDialog resource={resource} onClose={handleClose} />
       )}

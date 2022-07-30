@@ -201,11 +201,7 @@ export const removeKey = <
 >(
   object: DICTIONARY,
   ...toOmit: RA<OMIT>
-): {
-  readonly [KEY in keyof DICTIONARY as KEY extends OMIT
-    ? never
-    : KEY]: DICTIONARY[KEY];
-} =>
+): Omit<DICTIONARY, OMIT> =>
   // @ts-expect-error
   Object.fromEntries(
     Object.entries(object).filter(([key]) => !f.includes(toOmit, key))

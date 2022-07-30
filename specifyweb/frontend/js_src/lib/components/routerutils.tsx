@@ -27,6 +27,7 @@ export type EnhancedRoute = Readonly<
   readonly navigatable?: boolean;
 };
 
+/** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
   title?: string

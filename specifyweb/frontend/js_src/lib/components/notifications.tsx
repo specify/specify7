@@ -28,7 +28,7 @@ export function Notifications(): JSX.Element {
   >(undefined);
 
   const notificationCount = notifications?.length ?? 0;
-  const [isOpen, _, handleClose, handleToggle] = useBooleanState();
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
   const freezeFetchPromise = React.useRef<Promise<void> | undefined>(undefined);
 
   // Close the dialog when all notifications get dismissed
@@ -130,7 +130,7 @@ export function Notifications(): JSX.Element {
         className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
         disabled={notificationCount === 0}
         forwardRef={buttonRef}
-        onClick={handleToggle}
+        onClick={handleOpen}
       >
         {commonText(
           'notifications',

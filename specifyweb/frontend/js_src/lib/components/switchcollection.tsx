@@ -20,8 +20,8 @@ export function SwitchCollectionCommand(): null {
   const { collectionId } = useParams();
   const location = useLocation();
   const nextUrl =
-    (location.state as { readonly nextUrl: string | undefined })?.nextUrl ??
-    toRelativeUrl(globalThis.location.href);
+    (location.state as { readonly nextUrl: string | undefined } | undefined)
+      ?.nextUrl ?? toRelativeUrl(globalThis.location.href);
 
   useAsyncState(
     React.useCallback(
@@ -34,7 +34,7 @@ export function SwitchCollectionCommand(): null {
             ? globalThis.location.assign(nextUrl)
             : globalThis.location.reload()
         ),
-      []
+      [collectionId, nextUrl]
     ),
     true
   );

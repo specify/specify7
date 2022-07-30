@@ -375,12 +375,12 @@ export function WbPlanViewMapper(props: {
               {wbText('validate')}
             </Button.Small>
           )}
-          <Link.LikeButton
+          <Link.Small
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
             {props.isReadOnly ? wbText('dataEditor') : commonText('cancel')}
-          </Link.LikeButton>
+          </Link.Small>
           {!props.isReadOnly && (
             <Button.Small
               disabled={!state.changesMade}

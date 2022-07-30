@@ -42,6 +42,12 @@ type States =
         readonly location: Location;
       }
     >
+  | State<
+      'NoopRoute',
+      {
+        readonly originalLocation: Location;
+      }
+    >
   | State<'NotFoundPage'>
   | undefined;
 // Wrap state object in this for type safety
@@ -50,15 +56,24 @@ const createState = (state: States): States => state;
 const transformedRoutes = toReactRoutes(routes);
 const transformedOverlays = toReactRoutes(overlayRoutes);
 
+/**
+ * Wrapper for React-Router with support for overlays and unload protect.
+ *
+ * Support for overlays was modeled based on this example:
+ * https://reactrouter.com/docs/en/v6/examples/modal
+ */
 export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
   const state = location.state as States;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
+  const originalLocation =
+    state?.type === 'NoopRoute' ? state.originalLocation : undefined;
   const isNotFoundPage = state?.type === 'NotFoundPage';
 
   // REFACTOR: replace usages of navigate with <a> where possible
+  // REFACTOR: replace <Button> with <Link> where possible
   const navigate = useNavigate();
   unsafeNavigate = navigate;
   React.useEffect(() => {
@@ -71,9 +86,11 @@ export function Router(): JSX.Element {
   useLinkIntercept(background);
 
   const main =
-    useRoutes(transformedRoutes, background ?? location) ?? undefined;
+    useRoutes(transformedRoutes, originalLocation ?? background ?? location) ??
+    undefined;
 
-  const overlay = useRoutes(transformedOverlays) ?? undefined;
+  const overlay =
+    useRoutes(transformedOverlays, originalLocation ?? location) ?? undefined;
 
   const isNotFound = main === undefined && overlay === undefined;
   // If supposed to show an overlay, but it wasn't found, show <NotFoundView />
@@ -94,7 +111,7 @@ export function Router(): JSX.Element {
 const pathIsOverlay = (relativeUrl: string): boolean =>
   relativeUrl.startsWith('/specify/overlay/');
 
-// Don't trigger unload protect if query string or hash changes
+// Don't trigger unload protect if only query string or hash changes
 const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
@@ -232,7 +249,8 @@ function hasUnloadProtect(
   { pathname, state }: Location
 ): boolean {
   const noUnloadProtect =
-    (state as { readonly noUnloadProtect?: true }).noUnloadProtect === true;
+    (state as { readonly noUnloadProtect?: true } | undefined)
+      ?.noUnloadProtect === true;
   return (
     !noUnloadProtect &&
     !pathIsOverlay(pathname) &&

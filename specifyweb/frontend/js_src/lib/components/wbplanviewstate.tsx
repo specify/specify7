@@ -11,7 +11,7 @@ import { LoadingContext } from './contexts';
 import { useBooleanState } from './hooks';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { useCachedState } from './statecache';
-import { WbsDialog } from './toolbar/wbsdialog';
+import { DataSetsDialog } from './toolbar/wbsdialog';
 import type { Dataset } from './wbplanview';
 import { ListOfBaseTables } from './wbplanviewcomponents';
 
@@ -39,7 +39,7 @@ function TemplateSelection({
           {wbText('invalidTemplateDialogText')}
         </Dialog>
       )}
-      <WbsDialog
+      <DataSetsDialog
         showTemplates
         onClose={handleClose}
         onDataSetSelect={(id: number): void =>

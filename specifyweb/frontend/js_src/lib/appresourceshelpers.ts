@@ -9,7 +9,6 @@ import type {
 } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { f } from './functools';
-import { tableFromUrl } from './resource';
 import type { SpecifyModel } from './specifymodel';
 import type { RA } from './types';
 
@@ -31,9 +30,7 @@ export type AppResourceMode = 'appResources' | 'viewSets';
 export const getAppResourceMode = (
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): AppResourceMode =>
-  tableFromUrl(resource.resource_uri) === 'SpAppResource'
-    ? 'appResources'
-    : 'viewSets';
+  resource._tableName === 'SpAppResource' ? 'appResources' : 'viewSets';
 
 export const getAppResourceCount = (
   resourcesTree: AppResourcesTree[number]

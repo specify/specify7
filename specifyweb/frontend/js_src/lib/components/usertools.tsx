@@ -77,9 +77,7 @@ function UserToolsColumn({
                         : undefined
                     }
                     href={url}
-                    onClick={(): void =>
-                      isExternalLink ? undefined : handleClose()
-                    }
+                    onClick={isExternalLink ? undefined : handleClose}
                   >
                     {title}
                   </LinkComponent>

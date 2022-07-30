@@ -22,9 +22,9 @@ export function FormAutoNumbering({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return fields.length > 0 ? (
     <>
-      <Button.Simple onClick={handleOpen}>
+      <Button.Small onClick={handleOpen}>
         {formsText('autoNumbering')}
-      </Button.Simple>
+      </Button.Small>
       {isOpen && (
         <AutoNumberingDialog
           fields={fields}

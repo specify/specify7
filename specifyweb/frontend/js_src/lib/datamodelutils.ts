@@ -107,7 +107,7 @@ export type CommonFields = {
  * back-end or returned by `resourceToJson(resource)`
  */
 export type SerializedModel<SCHEMA extends AnySchema> = KeysToLowerCase<
-  SerializedResource<SCHEMA>
+  Omit<SerializedResource<SCHEMA>, '_tableName'>
 >;
 
 /**
@@ -141,6 +141,8 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     : KEY extends keyof SCHEMA['toManyIndependent']
     ? string
     : never;
+} & {
+  readonly _tableName: SCHEMA['tableName'];
 };
 
 /** Convert type's keys to lowercase */

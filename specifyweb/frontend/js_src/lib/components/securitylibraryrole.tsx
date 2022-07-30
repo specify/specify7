@@ -77,8 +77,10 @@ function useRole(
   libraryRoles: IR<Role> | undefined
 ): NewRole | Role | false | undefined {
   const location = useLocation();
-  const state = location.state as { readonly role?: NewRole | Role };
-  const role = state.role;
+  const state = location.state as
+    | { readonly role?: NewRole | Role }
+    | undefined;
+  const role = state?.role;
   const { roleId } = useParams();
   return React.useMemo(() => {
     if (typeof role === 'object') return role;

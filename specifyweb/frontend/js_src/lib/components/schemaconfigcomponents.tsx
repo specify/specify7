@@ -19,7 +19,7 @@ export function SchemaConfigHeader({
   const navigate = useNavigate();
   return (
     <header className="flex gap-2">
-      <H2>
+      <H2 className="flex items-center">
         {commonText('schemaConfig')} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>

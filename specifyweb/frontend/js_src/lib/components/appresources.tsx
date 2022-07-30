@@ -25,7 +25,7 @@ export function AppResourcesWrapper(): JSX.Element {
 
 function AppResourcesDataFetcher(): JSX.Element | null {
   const getSetResources = useAppResources();
-  return typeof getSetResources[1] === 'object' ? (
+  return typeof getSetResources[0] === 'object' ? (
     <AppResourcesView getSet={getSetResources as GetOrSet<AppResources>} />
   ) : null;
 }

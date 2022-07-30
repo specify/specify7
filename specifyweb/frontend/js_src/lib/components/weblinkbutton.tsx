@@ -5,7 +5,7 @@ import { isExternalUrl } from '../ajax';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';
-import { keysToLowerCase } from '../helpers';
+import { keysToLowerCase, removeKey } from '../helpers';
 import { getIcon, unknownIcon } from '../icons';
 import { load } from '../initialcontext';
 import type { SpecifyResource } from '../legacytypes';
@@ -133,7 +133,7 @@ export function WebLinkButton({
         // Lower case variants
         ...resource.toJSON(),
         // Camel case variants
-        ...serializeResource(resource),
+        ...removeKey(serializeResource(resource), '_tableName'),
         ...(await specialResourcesFields?.[resource.specifyModel.name]),
       };
       return _.template(template)({

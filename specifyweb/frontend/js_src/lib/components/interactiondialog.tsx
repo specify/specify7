@@ -219,10 +219,10 @@ export function InteractionDialog({
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
       action={action}
+      // BUG: make this readOnly if don't have necessary permissions
       isReadOnly={false}
       itemCollection={itemCollection}
       preparations={state.entries}
-      // BUG: make this readOnly if don't have necessary permissions
       onClose={handleClose}
     />
   ) : (

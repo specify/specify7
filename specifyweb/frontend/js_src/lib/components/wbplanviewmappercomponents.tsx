@@ -128,25 +128,23 @@ export function MappingView({
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
     useCachedState('wbPlanViewUi', 'mappingViewHeight');
-  const mappingViewParentRef = React.useCallback<
-    (mappingViewParent: HTMLElement | null) => void
-  >(
-    (mappingViewParent) => {
-      if (globalThis.ResizeObserver === undefined || mappingViewParent === null)
-        return undefined;
-
-      const resizeObserver = new globalThis.ResizeObserver(() =>
-        mappingViewParent.offsetHeight > 0
-          ? setMappingViewHeight(mappingViewParent.offsetHeight)
-          : undefined
-      );
-
-      resizeObserver.observe(mappingViewParent);
-
-      return (): void => resizeObserver.disconnect();
-    },
-    [setMappingViewHeight]
+  const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
+    null
   );
+  React.useEffect(() => {
+    if (globalThis.ResizeObserver === undefined || mappingView === null)
+      return undefined;
+
+    const resizeObserver = new globalThis.ResizeObserver(() =>
+      mappingView.offsetHeight > 0
+        ? setMappingViewHeight(mappingView.offsetHeight)
+        : undefined
+    );
+
+    resizeObserver.observe(mappingView);
+
+    return (): void => resizeObserver.disconnect();
+  }, [mappingView, setMappingViewHeight]);
 
   return (
     <section
@@ -155,7 +153,7 @@ export function MappingView({
         h-[var(--mapping-view-height)] max-h-[50vh]
         min-h-[theme(spacing.40)] resize-y overflow-x-auto
       `}
-      ref={mappingViewParentRef}
+      ref={setMappingView}
       style={
         {
           '--mapping-view-height': `${mappingViewHeight ?? ''}px`,

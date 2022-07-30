@@ -339,7 +339,11 @@ function EditAppResource({
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
         navigate(`/specify/resources/${path}/new/`, {
-          state: { resource: serializeResource(resource), directoryKey },
+          state: {
+            resource: serializeResource(resource),
+            directoryKey,
+            noUnloadProtect: true,
+          },
         });
         /*
          * Prevent saving a resource to fix

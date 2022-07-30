@@ -167,7 +167,7 @@ function PreferencesAside({
           replace: true,
         }
       ),
-    [navigate, definitions, activeCategory, id]
+    [definitions, activeCategory, id]
   );
   return (
     <aside

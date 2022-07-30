@@ -2,9 +2,24 @@ import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
 import type { RA } from '../types';
 import type { EnhancedRoute } from './routerutils';
-import { DataSetMetaOverlay } from './toolbar/wbsdialog';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
+/**
+ * Overlay routes are rendered inside of a <Dialog>.
+ * When linking to an overlay route, the previous route remains visible in
+ * the background.
+ * If opening overlay route in a new tab, the background is black.
+ *
+ * Overlay routes can also get a handleClose callback like this:
+ *
+ * ```js
+ * const handleClose = React.useContext(OverlayContext);
+ * ```
+ *
+ * Calling handleClose() would return user back to what was rendered behind
+ * the overlay. If nothing was rendered behind the overlay, user is returned
+ * to the Welcome Page
+ */
 export const overlayRoutes: RA<EnhancedRoute> = [
   {
     path: 'overlay',
@@ -34,12 +49,24 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'interactions/:action?',
+        path: 'interactions',
         title: commonText('interactions'),
-        element: () =>
-          import('./interactionsdialog').then(
-            ({ InteractionsOverlay }) => InteractionsOverlay
-          ),
+        children: [
+          {
+            index: true,
+            element: () =>
+              import('./interactionsdialog').then(
+                ({ InteractionsOverlay }) => InteractionsOverlay
+              ),
+          },
+          {
+            path: ':action',
+            element: () =>
+              import('./interactionsdialog').then(
+                ({ InteractionsOverlay }) => InteractionsOverlay
+              ),
+          },
+        ],
       },
       {
         path: 'queries',

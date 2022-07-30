@@ -16,23 +16,24 @@ import { adminText } from './localization/admin';
 import { userTypes } from './picklists';
 import type { RA } from './types';
 
-export const getAppResourceTree = (resources: AppResources): AppResourcesTree =>
-  sortTree([
-    {
-      label: adminText('globalResources'),
-      key: 'globalResources',
-      ...getGlobalAllResources(resources),
-      subCategories: [],
-    },
-    {
-      label: adminText('disciplineResources'),
-      key: 'disciplineResources',
-      directory: undefined,
-      appResources: [],
-      viewSets: [],
-      subCategories: getScopedAppResources(resources),
-    },
-  ]);
+export const getAppResourceTree = (
+  resources: AppResources
+): AppResourcesTree => [
+  {
+    label: adminText('globalResources'),
+    key: 'globalResources',
+    ...getGlobalAllResources(resources),
+    subCategories: [],
+  },
+  {
+    label: adminText('disciplineResources'),
+    key: 'disciplineResources',
+    directory: undefined,
+    appResources: [],
+    viewSets: [],
+    subCategories: sortTree(getScopedAppResources(resources)),
+  },
+];
 
 const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
   Array.from(tree)

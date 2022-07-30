@@ -23,7 +23,13 @@ import { DeleteButton } from './deletebutton';
 import { crash, ErrorBoundary, fail } from './errorboundary';
 import { FormPreferences } from './formpreferences';
 import { useMenuItem } from './header';
-import { useAsyncState, useBooleanState, useId, useIsModified } from './hooks';
+import {
+  useAsyncState,
+  useBooleanState,
+  useId,
+  useIsModified,
+  useTriggerState,
+} from './hooks';
 import { interactionTables } from './interactionsdialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { useSearchParam } from './navigation';
@@ -505,7 +511,7 @@ export function ShowResource({
   // Look to see if we are in the context of a recordset
   const [recordsetid = ''] = useSearchParam('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
-  const initialRecordSet = React.useMemo(
+  const recordSet = React.useMemo(
     () =>
       typeof recordSetId === 'number'
         ? new schema.models.RecordSet.Resource({
@@ -514,16 +520,13 @@ export function ShowResource({
         : undefined,
     [recordSetId]
   );
-  React.useEffect(() => {
-    if (typeof initialRecordSet === 'object')
-      // @ts-expect-error Assigning to read-only
-      initialResource.recordsetid = recordSet.id;
-  }, [initialRecordSet, initialResource.recordsetid]);
+  const [resource, setResource] = useTriggerState(initialResource);
 
-  const [{ resource, recordSet }, setRecord] = React.useState({
-    resource: initialResource,
-    recordSet: initialRecordSet,
-  });
+  React.useEffect(() => {
+    if (typeof recordSet === 'object')
+      // @ts-expect-error Assigning to read-only
+      resource.recordsetid = recordSet.id;
+  }, [recordSet, resource.recordsetid]);
 
   useMenuItem(
     typeof recordSet === 'object'
@@ -588,8 +591,7 @@ export function ShowResource({
       onClose={f.never}
       onDeleted={f.void}
       onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object')
-          setRecord({ resource: newResource, recordSet });
+        if (typeof newResource === 'object') setResource(newResource);
         else if (wasNew) navigate(resource.viewUrl());
         else {
           const reloadResource = new resource.specifyModel.Resource({
@@ -597,11 +599,7 @@ export function ShowResource({
           });
           // @ts-expect-error Assigning to read-only
           reloadResource.recordsetid = resource.recordsetid;
-          reloadResource
-            .fetch()
-            .then(async () =>
-              setRecord({ resource: reloadResource, recordSet })
-            );
+          reloadResource.fetch().then(async () => setResource(reloadResource));
         }
       }}
     />

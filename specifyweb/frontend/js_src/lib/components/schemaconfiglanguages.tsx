@@ -17,7 +17,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
       buttons={
         <>
           {hasToolPermission('schemaConfig', 'create') && (
-            <Link.Blue href="/specify/schema-config/add-language">
+            <Link.Blue href="/specify/schema-config/add-language/">
               {commonText('addLanguage')}
             </Link.Blue>
           )}
@@ -26,7 +26,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
         </>
       }
       header={commonText('schemaConfig')}
-      onClose={(): void => navigate('/specify')}
+      onClose={(): void => navigate('/specify/')}
     >
       {commonText('language')}
       <Ul>
@@ -34,7 +34,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
           <li key={code}>
             <Link.Default
               className="font-bold"
-              href={`/specify/schema-config/${code}`}
+              href={`/specify/schema-config/${code}/`}
               role="link"
             >
               {label}

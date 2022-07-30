@@ -39,14 +39,16 @@ export function Wrapper({
   } = useOutletContext<AppResourcesOutlet>();
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as {
-    readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
-    readonly directoryKey?: string;
-    readonly initialDataFrom?: number;
-  };
-  const resource = useAppResource(state.resource, resources, mode);
-  const initialData = useInitialData(state.initialDataFrom);
-  const directory = useDirectory(state.directoryKey, resource, resources);
+  const state = location.state as
+    | {
+        readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
+        readonly directoryKey?: string;
+        readonly initialDataFrom?: number;
+      }
+    | undefined;
+  const resource = useAppResource(state?.resource, resources, mode);
+  const initialData = useInitialData(state?.initialDataFrom);
+  const directory = useDirectory(state?.directoryKey, resource, resources);
 
   return initialData === undefined ? null : resource === undefined ||
     directory === undefined ? (
@@ -65,7 +67,7 @@ export function Wrapper({
               ...appResource,
               name: getUniqueName(appResource.name, [appResource.name]),
             },
-            directoryKey: state.directoryKey,
+            directoryKey: state?.directoryKey,
             initialDataFrom,
           },
         })
