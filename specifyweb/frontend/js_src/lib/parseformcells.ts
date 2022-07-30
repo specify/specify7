@@ -178,6 +178,19 @@ const processCellType: {
         cell,
         model,
       });
+    const rawSortField = getProperty('sortField') ?? '';
+    const sortField = field?.isRelationship
+      ? field?.relatedModel?.getField(rawSortField)?.name ??
+        // Cut away the negative sign
+        field?.relatedModel?.getField(rawSortField.slice(1))?.name
+      : undefined;
+    const isDescSort = rawSortField?.startsWith('-') ?? false;
+    const formattedSortField =
+      typeof sortField === 'string'
+        ? isDescSort
+          ? `-${sortField}`
+          : sortField
+        : undefined;
     return {
       type: 'SubView',
       formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
@@ -185,10 +198,7 @@ const processCellType: {
       viewName: getParsedAttribute(cell, 'viewName'),
       isButton: getProperty('btn')?.toLowerCase() === 'true',
       icon: getProperty('icon'),
-      sortField: field?.isRelationship
-        ? field?.relatedModel?.getField(getProperty('sortField') ?? '')?.name ??
-          undefined
-        : undefined,
+      sortField: formattedSortField,
     };
   },
   Panel: ({ cell, model }) => ({
