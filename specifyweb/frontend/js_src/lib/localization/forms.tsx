@@ -33,7 +33,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Клонировать',
   },
   addAnother: {
-    'en-us': 'Add new',
+    'en-us': 'Add another',
     'ru-ru': 'Добавить еще',
   },
   // BusinessRules
