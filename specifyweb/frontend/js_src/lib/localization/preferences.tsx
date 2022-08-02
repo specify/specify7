@@ -256,20 +256,38 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Начинается с (с учетом регистра)',
   },
   startsWithCaseSensitiveDescription: {
+    'en-us': 'Search for values that begin with a given query string.',
+    'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
+  },
+  startsWithCaseSensitiveSecondDescription: {
     'en-us':
-      'Search for values that begin with a given query string. Can use _ to match any single character or % to match any number of characters',
+      'Can use _ to match any single character or % to match any number of characters',
     'ru-ru':
-      'Поиск значений, начинающихся с заданной строки запроса. Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
   },
   contains: {
+    'en-us': 'Contains (case-insensitive)',
+    'ru-ru': 'Содержит (без учета регистра)',
+  },
+  containsCaseSensitive: {
     'en-us': 'Contains (case-sensitive)',
     'ru-ru': 'Содержит (с учетом регистра)',
   },
   containsDescription: {
+    'en-us': 'Search for values that contain a given query string.',
+    'ru-ru': 'Поиск значений, содержащих заданную строку запроса.',
+  },
+  containsCaseSensitiveDescription: {
     'en-us':
-      'Search for values that contain a given query string (case-sensitive). Can use _ to match any single character or % to match any number of characters',
+      'Search for values that contain a given query string (case-sensitive).',
     'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (с учетом регистра). Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+      'Поиск значений, содержащих заданную строку запроса (с учетом регистра).',
+  },
+  containsSecondDescription: {
+    'en-us':
+      'Can use _ to match any single character or % to match any number of characters',
+    'ru-ru':
+      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
   },
   highlightMatch: {
     'en-us': 'Highlight matched substring',
@@ -656,5 +674,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru':
       'Автоматически прокручивать страницу до сфокусированного узла дерева',
+  },
+  autoComplete: {
+    'en-us': 'Auto complete',
+    'ru-ru': 'Автозаполнение',
   },
 });

@@ -272,8 +272,8 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         </Select>
         {f.maybe(
           definition.values.find((item) => item.value === value).description,
-          (item) => (
-            <p>{item}</p>
+          (description) => (
+            <p>{description}</p>
           )
         )}
       </>
