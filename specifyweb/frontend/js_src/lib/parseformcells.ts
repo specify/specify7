@@ -276,9 +276,9 @@ export function parseFormCell(
      * this checkbox and button would disappear from forms in Specify 7 when
      * users update to 7.7.0.
      * To mitigate the above issues, Specify 7 form definitions are using
-     * "invisible=true" instead of "visible=false" for makign fields invisible
+     * "invisible=true" instead of "visible=false" for making fields invisible
      */
-    visible: getBooleanAttribute(cellNode, 'invisible') ?? true,
+    visible: getBooleanAttribute(cellNode, 'invisible') !== true,
     ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
