@@ -389,7 +389,7 @@ export function Autocomplete<T>({
         className: listHasItems ? 'autocomplete' : '',
         onKeyDown: (event) => (showList ? handleKeyDown(event) : handleOpen()),
         onValueChange(value) {
-          if (value === '' && pendingValue.length > 1) handleCleared?.();
+          if (value === '') handleCleared?.();
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')

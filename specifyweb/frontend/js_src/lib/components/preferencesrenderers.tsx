@@ -158,7 +158,6 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         delay={0}
         onNewValue={handleChange}
         onChange={({ data }): void => handleChange(data)}
-        // OnCleared={}
         filterItems={true}
         aria-label={undefined}
         value={value === defaultFont ? preferencesText('defaultFont') : value}
