@@ -41,6 +41,7 @@ export function SchemaConfigField({
         <Input.Text
           isReadOnly={isReadOnly}
           maxLength={maxSchemaValueLength}
+          required
           value={item.strings.name.text}
           onValueChange={(value): void => handleChange('name', value)}
         />

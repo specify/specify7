@@ -49,6 +49,7 @@ export function SchemaConfigTable({
         <Input.Text
           isReadOnly={isReadOnly || name === undefined}
           maxLength={maxSchemaValueLength}
+          required
           value={name?.text ?? ''}
           onValueChange={(text): void => handleChangeName({ ...name!, text })}
         />
