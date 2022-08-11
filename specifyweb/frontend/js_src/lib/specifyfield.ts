@@ -137,7 +137,8 @@ abstract class FieldBase {
       this.model.localization.items[this.name.toLowerCase()] ?? {};
 
     this.label =
-      typeof this.localization.name === 'string'
+      typeof this.localization.name === 'string' &&
+      this.localization.name.length > 0
         ? unescape(this.localization.name)
         : camelToHuman(this.name);
 
