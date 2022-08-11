@@ -243,6 +243,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Search Algorithm',
     'ru-ru': 'Алгоритм поиска',
   },
+  treeSearchAlgorithm: {
+    'en-us': 'Search Algorithm (for relationships with tree tables)',
+    'ru-ru': 'Алгоритм поиска (для деревьев)',
+  },
   startsWith: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (без учета регистра)',
