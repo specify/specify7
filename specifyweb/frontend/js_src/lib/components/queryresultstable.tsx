@@ -371,9 +371,9 @@ export function QueryResultsTable({
           </Button.Small>
         )}
         <div className="flex-1 -ml-2" />
+        {extraButtons}
         {hasIdField && Array.isArray(results) && results.length > 0 ? (
           <>
-            {extraButtons}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
