@@ -478,10 +478,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     }
                   />
                 ) : undefined}
-                {(resource?.isNew() === true ||
-                  hasTablePermission(model.name, 'delete')) &&
-                typeof handleRemove === 'function' &&
-                canRemove ? (
+                {typeof handleRemove === 'function' && canRemove ? (
                   <DataEntry.Remove
                     disabled={
                       typeof resource === 'undefined' || mode === 'view'
@@ -521,7 +518,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               })
             }
             isDependent={isDependent}
-            onDeleted={handleRemove?.bind(undefined, 'deleteButton')}
+            onDeleted={
+              resource?.isNew() === true ||
+              hasTablePermission(model.name, 'delete')
+                ? handleRemove?.bind(undefined, 'deleteButton')
+                : undefined
+            }
             onClose={handleClose}
           />
           {dialogs}
