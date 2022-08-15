@@ -718,6 +718,33 @@ export const preferenceDefinitions = {
               },
             ],
           }),
+          treeSearchAlgorithm: defineItem<
+            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+          >({
+            title: preferencesText('treeSearchAlgorithm'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'contains',
+            values: [
+              {
+                value: 'startsWith',
+                title: preferencesText('startsWith'),
+                description: preferencesText('startsWithDescription'),
+              },
+              {
+                value: 'startsWithCaseSensitive',
+                title: preferencesText('startsWithCaseSensitive'),
+                description: preferencesText(
+                  'startsWithCaseSensitiveDescription'
+                ),
+              },
+              {
+                value: 'contains',
+                title: preferencesText('contains'),
+                description: preferencesText('containsDescription'),
+              },
+            ],
+          }),
           highlightMatch: defineItem<boolean>({
             title: preferencesText('highlightMatch'),
             requiresReload: false,
