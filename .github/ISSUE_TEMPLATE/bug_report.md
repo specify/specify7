@@ -23,13 +23,15 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Desktop:**
  - OS: [e.g. Windows 10]
- - Browser [e.g. Chrome, Safari]
- - Specify 7 Version [e.g. 7.6.1]
+ - Browser: [e.g. Chrome, Safari]
+ - Specify 7 Version: [e.g. 7.6.1]
+
+**Database Name:** If applicable
 
 **Reported By**
 Name of your institution
 
 **Additional context**
-Add any other context about the problem here.
+Database name or any other context about the problem here.
