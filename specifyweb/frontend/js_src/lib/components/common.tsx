@@ -19,6 +19,7 @@ import { useBooleanState, useTitle } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
+import { RA } from '../types';
 
 const MAX_HUE = 360;
 
@@ -272,6 +273,22 @@ export function AutoGrowTextArea({
     </div>
   );
 }
+
+/**
+ * Add a JSX.Element in between JSX.Elements.
+ *
+ * Can't use .join() because it only works with strings.
+ */
+export const join = (
+  elements: RA<JSX.Element>,
+  separator: JSX.Element
+): RA<JSX.Element> =>
+  elements.map((element, index, { length }) => (
+    <React.Fragment key={index}>
+      {element}
+      {index + 1 === length ? undefined : separator}
+    </React.Fragment>
+  ));
 
 const copyMessageTimeout = 3000;
 

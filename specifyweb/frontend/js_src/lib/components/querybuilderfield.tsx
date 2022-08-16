@@ -41,6 +41,7 @@ import {
   mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
+import { join } from './common';
 
 // TODO: split this component into smaller components
 export function QueryLine({
@@ -255,12 +256,12 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {mappingLineProps.map((mappingDetails, index, { length }) => (
-            <React.Fragment key={index}>
+          {join(
+            mappingLineProps.map((mappingDetails) => (
               <MappingElement {...mappingDetails} role="listitem" />
-              {index + 1 === length ? undefined : mappingElementDivider}
-            </React.Fragment>
-          ))}
+            )),
+            mappingElementDivider
+          )}
         </div>
         <div
           className={
