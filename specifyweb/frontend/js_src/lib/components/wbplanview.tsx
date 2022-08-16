@@ -17,6 +17,7 @@ import {
 import { goBack, savePlan } from '../wbplanviewutils';
 import type { UploadResult } from '../wbuploadedparser';
 import { useLiveState, useTitle } from './hooks';
+import { ProtectedAction } from './permissiondenied';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
 import { BaseTableSelection } from './wbplanviewstate';
@@ -112,30 +113,32 @@ export function WbPlanView({
   );
 
   return state.type === 'SelectBaseTable' ? (
-    <BaseTableSelection
-      onClose={(): void => goBack(dataset.id)}
-      onSelectTemplate={(uploadPlan, headers): void =>
-        setState({
-          type: 'MappingState',
-          changesMade: true,
-          ...getLinesFromUploadPlan(headers, uploadPlan),
-        })
-      }
-      onSelected={(baseTableName): void =>
-        setState({
-          type: 'MappingState',
-          changesMade: true,
-          baseTableName,
-          lines: getLinesFromHeaders({
-            headers,
-            runAutoMapper: true,
+    <ProtectedAction resource="/workbench/dataset" action="update">
+      <BaseTableSelection
+        onClose={(): void => goBack(dataset.id)}
+        onSelectTemplate={(uploadPlan, headers): void =>
+          setState({
+            type: 'MappingState',
+            changesMade: true,
+            ...getLinesFromUploadPlan(headers, uploadPlan),
+          })
+        }
+        onSelected={(baseTableName): void =>
+          setState({
+            type: 'MappingState',
+            changesMade: true,
             baseTableName,
-          }),
-          mustMatchPreferences: {},
-        })
-      }
-      headers={headers}
-    />
+            lines: getLinesFromHeaders({
+              headers,
+              runAutoMapper: true,
+              baseTableName,
+            }),
+            mustMatchPreferences: {},
+          })
+        }
+        headers={headers}
+      />
+    </ProtectedAction>
   ) : (
     <WbPlanViewMapper
       isReadOnly={isReadOnly}

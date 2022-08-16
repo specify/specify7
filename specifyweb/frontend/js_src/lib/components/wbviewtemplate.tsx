@@ -55,11 +55,14 @@ function Navigation({
 
 function WbView({
   isUploaded,
+  isMapped,
   dataSetId,
 }: {
   readonly isUploaded: boolean;
+  readonly isMapped: boolean;
   readonly dataSetId: number;
 }): JSX.Element {
+  const canUpdate = hasPermission('/workbench/dataset', 'update');
   return (
     <>
       <div
@@ -83,9 +86,11 @@ function WbView({
         >
           [DEV] Show Plan
         </Button.Small>
-        <Link.LikeButton href={`/specify/workbench-plan/${dataSetId}/`}>
-          {wbText('dataMapper')}
-        </Link.LikeButton>
+        {canUpdate || isMapped ? (
+          <Link.LikeButton href={`/specify/workbench-plan/${dataSetId}/`}>
+            {wbText('dataMapper')}
+          </Link.LikeButton>
+        ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
           <Button.Small aria-haspopup="dialog" className="wb-validate" disabled>
             {wbText('validate')}
@@ -235,8 +240,9 @@ function WbView({
 
 export const wbViewTemplate = (
   isUploaded: boolean,
+  isMapped: boolean,
   dataSetId: number
 ): string =>
   ReactDOMServer.renderToStaticMarkup(
-    <WbView isUploaded={isUploaded} dataSetId={dataSetId} />
+    <WbView isUploaded={isUploaded} dataSetId={dataSetId} isMapped={isMapped} />
   );
