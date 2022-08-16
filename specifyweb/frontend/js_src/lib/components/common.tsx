@@ -280,6 +280,7 @@ export function AutoGrowTextArea({
  * Can't use .join() because it only works with strings.
  */
 export const join = (
+  // Don't need to add a [key] prop to these elements before passing in
   elements: RA<JSX.Element>,
   separator: JSX.Element
 ): RA<JSX.Element> =>

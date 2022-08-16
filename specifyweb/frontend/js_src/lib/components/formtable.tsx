@@ -127,6 +127,10 @@ export function FormTable<SCHEMA extends AnySchema>({
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
+
+  const contentColumns =
+    (viewDefinition?.columns.length ?? 0) + (isDependent ? 0 : 1);
+
   const children =
     typeof viewDefinition === 'undefined' ? (
       commonText('loading')
@@ -199,114 +203,117 @@ export function FormTable<SCHEMA extends AnySchema>({
           )}
         </div>
         <div className="contents" role="rowgroup" ref={rowsRef}>
-          {resources.map((resource) => (
-            <div className="contents" role="row" key={resource.cid}>
-              {isExpanded[resource.cid] ? (
-                <>
-                  <div role="cell" className="flex justify-center">
-                    <Button.Icon
-                      title={formsText('contract')}
-                      aria-label={formsText('contract')}
-                      icon="chevronDown"
-                      onClick={(): void =>
-                        setExpandedRecords({
-                          ...isExpanded,
-                          [resource.cid]: false,
-                        })
-                      }
-                    />
-                  </div>
-                  <DataEntry.Cell
-                    role="cell"
-                    colSpan={
-                      viewDefinition.columns.length + (isDependent ? 0 : 1)
-                    }
-                    align="left"
-                    visible={true}
-                    ariaLabel={undefined}
-                    tabIndex={-1}
-                  >
-                    <SpecifyForm
-                      resource={resource}
-                      formType="form"
-                      mode={mode}
-                      display="inline"
-                    />
-                  </DataEntry.Cell>
-                </>
-              ) : (
-                <>
-                  <div role="cell" className="flex justify-center">
-                    <Button.Icon
-                      title={commonText('expand')}
-                      aria-label={commonText('expand')}
-                      icon="chevronRight"
-                      onClick={(): void =>
-                        setExpandedRecords({
-                          ...isExpanded,
-                          [resource.cid]: true,
-                        })
-                      }
-                    />
-                  </div>
-                  {viewDefinition.rows[0].map(
-                    (
-                      { colSpan, align, visible, id: cellId, ...cellData },
-                      index
-                    ) => (
-                      <DataEntry.Cell
-                        role="cell"
-                        key={index}
-                        colSpan={colSpan}
-                        align={align}
-                        visible={visible}
-                        ariaLabel={undefined}
-                      >
-                        <FormCell
-                          align={align}
-                          resource={resource}
-                          mode={viewDefinition.mode}
-                          formType="formTable"
-                          cellData={cellData}
-                          id={cellId}
-                          formatId={(suffix: string): string =>
-                            id(`${index}-${suffix}`)
-                          }
-                        />
-                      </DataEntry.Cell>
-                    )
-                  )}
-                  {displayViewButton && (
+          {resources.map((resource, index, { length }) => (
+            <React.Fragment key={resource.cid}>
+              <div className="contents" role="row">
+                {isExpanded[resource.cid] ? (
+                  <>
                     <div role="cell" className="flex justify-center">
-                      <DataEntry.Visit resource={resource} />
+                      <Button.Icon
+                        title={formsText('contract')}
+                        aria-label={formsText('contract')}
+                        icon="chevronDown"
+                        onClick={(): void =>
+                          setExpandedRecords({
+                            ...isExpanded,
+                            [resource.cid]: false,
+                          })
+                        }
+                      />
                     </div>
-                  )}
-                </>
+                    <DataEntry.Cell
+                      role="cell"
+                      colSpan={contentColumns}
+                      align="left"
+                      visible={true}
+                      ariaLabel={undefined}
+                      tabIndex={-1}
+                    >
+                      <SpecifyForm
+                        resource={resource}
+                        formType="form"
+                        mode={mode}
+                        display="inline"
+                      />
+                    </DataEntry.Cell>
+                  </>
+                ) : (
+                  <>
+                    <div role="cell" className="flex justify-center">
+                      <Button.Icon
+                        title={commonText('expand')}
+                        aria-label={commonText('expand')}
+                        icon="chevronRight"
+                        onClick={(): void =>
+                          setExpandedRecords({
+                            ...isExpanded,
+                            [resource.cid]: true,
+                          })
+                        }
+                      />
+                    </div>
+                    {viewDefinition.rows[0].map(
+                      (
+                        { colSpan, align, visible, id: cellId, ...cellData },
+                        index
+                      ) => (
+                        <DataEntry.Cell
+                          role="cell"
+                          key={index}
+                          colSpan={colSpan}
+                          align={align}
+                          visible={visible}
+                          ariaLabel={undefined}
+                        >
+                          <FormCell
+                            align={align}
+                            resource={resource}
+                            mode={viewDefinition.mode}
+                            formType="formTable"
+                            cellData={cellData}
+                            id={cellId}
+                            formatId={(suffix: string): string =>
+                              id(`${index}-${suffix}`)
+                            }
+                          />
+                        </DataEntry.Cell>
+                      )
+                    )}
+                    {displayViewButton && (
+                      <div role="cell" className="flex justify-center">
+                        <DataEntry.Visit resource={resource} />
+                      </div>
+                    )}
+                  </>
+                )}
+                {displayDeleteButton && (
+                  <div role="cell" className="flex justify-center">
+                    {(!resource.isNew() ||
+                      hasTablePermission(
+                        relationship.relatedModel.name,
+                        'delete'
+                      )) && (
+                      <Button.Icon
+                        title={commonText('remove')}
+                        aria-label={commonText('remove')}
+                        icon="trash"
+                        onClick={(): void => handleDelete(resource)}
+                        disabled={
+                          !resource.isNew() &&
+                          !hasTablePermission(
+                            resource.specifyModel.name,
+                            'delete'
+                          )
+                        }
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+              {index + 1 === length ? undefined : (
+                <Spacer columns={contentColumns + 1} />
               )}
-              {displayDeleteButton && (
-                <div role="cell" className="flex justify-center">
-                  {(!resource.isNew() ||
-                    hasTablePermission(
-                      relationship.relatedModel.name,
-                      'delete'
-                    )) && (
-                    <Button.Icon
-                      title={commonText('remove')}
-                      aria-label={commonText('remove')}
-                      icon="trash"
-                      onClick={(): void => handleDelete(resource)}
-                      disabled={
-                        !resource.isNew() &&
-                        !hasTablePermission(
-                          resource.specifyModel.name,
-                          'delete'
-                        )
-                      }
-                    />
-                  )}
-                </div>
-              )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
       </DataEntry.Grid>
@@ -364,6 +371,22 @@ export function FormTable<SCHEMA extends AnySchema>({
     >
       {children}
     </Dialog>
+  );
+}
+
+function Spacer({ columns }: { readonly columns: number }): JSX.Element {
+  return (
+    <div role="none" className="contents">
+      {/* Offset the border for the expand/collapse button */}
+      <div role="cell" />
+      <div
+        role="cell"
+        className="border-t"
+        style={{
+          gridColumn: `span ${columns} / span ${columns}`,
+        }}
+      />
+    </div>
   );
 }
 

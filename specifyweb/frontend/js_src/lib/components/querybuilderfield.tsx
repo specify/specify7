@@ -23,6 +23,7 @@ import {
 } from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, className, Select } from './basic';
+import { join } from './common';
 import { customSelectElementBackground } from './customselectelement';
 import { iconClassName, icons } from './icons';
 import type {
@@ -41,7 +42,6 @@ import {
   mappingElementDividerClassName,
 } from './wbplanviewcomponents';
 import type { MappingPath } from './wbplanviewmapper';
-import { join } from './common';
 
 // TODO: split this component into smaller components
 export function QueryLine({
