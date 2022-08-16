@@ -478,12 +478,12 @@ export const commonText = createDictionary({
     'ru-ru': 'XML Запроса для определения DwCA',
   },
   exportQueryAsReport: {
-    'en-us': 'Define report based on query.',
-    'ru-ru': 'Определите отчет на основе запроса.',
+    'en-us': 'Define report based on query',
+    'ru-ru': 'Определите отчет на основе запроса',
   },
   exportQueryAsLabel: {
-    'en-us': 'Define label based on query.',
-    'ru-ru': 'Определите метку на основе запроса.',
+    'en-us': 'Define label based on query',
+    'ru-ru': 'Определите метку на основе запроса',
   },
   newResourceTitle: {
     'en-us': (resourceName: string) => `New ${resourceName}`,
