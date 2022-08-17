@@ -69,7 +69,6 @@ export function FormTableInteraction(
             })
           )
         }
-        onFetchMore={undefined}
       />
     </>
   );
