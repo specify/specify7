@@ -1,13 +1,10 @@
 import React from 'react';
-
-import { f } from '../functools';
 import { getPickListItems, PickListTypes } from '../picklistmixins';
-import { fetchPickLists, getPickLists } from '../picklists';
 import { resourceOn } from '../resource';
 import type { RA } from '../types';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
-import { useAsyncState } from './hooks';
 import { PickListComboBox } from './picklist';
+import { pickListTablesPickList } from '../picklists';
 
 export function PickListTableComboBox(
   props: DefaultComboBoxProps
@@ -16,23 +13,10 @@ export function PickListTableComboBox(
     () =>
       props.resource.get('type') === PickListTypes.ITEMS
         ? []
-        : f.maybe(
-            getPickLists()[props.field.getPickList() ?? ''],
-            getPickListItems
-          ) ?? [],
+        : getPickListItems(pickListTablesPickList()),
     [props.resource, props.field]
   );
   const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
-  const [pickLists] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchPickLists()
-          .then(() => setItems(getItems))
-          .then(f.true),
-      [getItems]
-    ),
-    true
-  );
   React.useEffect(
     () =>
       resourceOn(props.resource, 'change:type', (): void => {
@@ -49,7 +33,7 @@ export function PickListTableComboBox(
       items={items}
       onAdd={undefined}
       pickList={undefined}
-      isDisabled={typeof pickLists === 'undefined' || items.length === 0}
+      isDisabled={items.length === 0}
     />
   );
 }

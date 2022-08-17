@@ -530,18 +530,19 @@ export function QueryLineFilter({
       () =>
         typeof parser.pickListName === 'string'
           ? fetchPickList(parser.pickListName).then((pickList) =>
-              typeof pickList === 'object'
-                ? getPickListItems(pickList)
-                : undefined
+              typeof pickList === 'object' ? getPickListItems(pickList) : false
             )
-          : undefined,
+          : false,
       [parser.pickListName]
     ),
     false
   );
 
   const Component = queryFieldFilters[filter.type].component;
-  return typeof Component === 'undefined' ? null : (
+  return typeof Component === 'undefined' ? null : pickListItems ===
+    undefined ? (
+    <>{commonText('loading')}</>
+  ) : (
     <React.Fragment>
       {mappingElementDivider}
       <Component
@@ -552,7 +553,9 @@ export function QueryLineFilter({
         enforceLengthLimit={enforceLengthLimit}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
-            ? pickListItems
+            ? pickListItems === false
+              ? undefined
+              : pickListItems
             : undefined
         }
       />

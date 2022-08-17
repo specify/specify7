@@ -15,7 +15,6 @@ import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
 import { columnToFieldMapper } from '../parseselect';
 import { hasTablePermission, hasTreeAccess } from '../permissions';
-import { fetchPickLists } from '../picklists';
 import type {
   CollectionRelationships,
   QueryComboBoxTreeData,
@@ -301,29 +300,25 @@ export function QueryComboBox({
                       label: '',
                       resource: undefined,
                     }
-                  : fetchPickLists()
-                      .then(async () =>
-                        format(
-                          resource,
-                          typeof typeSearch === 'object'
-                            ? typeSearch.dataObjectFormatter
-                            : undefined
-                        )
-                      )
-                      .then((formatted) => ({
-                        label:
-                          formatted ??
-                          `${
-                            field?.isRelationship === true
-                              ? field.relatedModel.label
-                              : resource.specifyModel.label
-                          }${
-                            typeof resource.id === 'number'
-                              ? ` #${resource.id}`
-                              : ''
-                          }`,
-                        resource,
-                      }))
+                  : format(
+                      resource,
+                      typeof typeSearch === 'object'
+                        ? typeSearch.dataObjectFormatter
+                        : undefined
+                    ).then((formatted) => ({
+                      label:
+                        formatted ??
+                        `${
+                          field?.isRelationship === true
+                            ? field.relatedModel.label
+                            : resource.specifyModel.label
+                        }${
+                          typeof resource.id === 'number'
+                            ? ` #${resource.id}`
+                            : ''
+                        }`,
+                      resource,
+                    }))
               )
           : { label: commonText('noPermission'), resource: undefined },
       [version, value, resource, field, typeSearch]
