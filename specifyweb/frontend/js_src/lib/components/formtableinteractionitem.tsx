@@ -19,7 +19,10 @@ import { FormTableCollection } from './formtable';
 import { InteractionDialog } from './interactiondialog';
 
 export function FormTableInteraction(
-  props: Omit<Parameters<typeof FormTableCollection>[0], 'onAdd'>
+  props: Omit<
+    Parameters<typeof FormTableCollection>[0],
+    'onAdd' | 'onFetchMore'
+  >
 ): JSX.Element {
   const [recordSetsPromise, setRecordSetsPromise] = React.useState<
     | Promise<{
@@ -66,6 +69,7 @@ export function FormTableInteraction(
             })
           )
         }
+        onFetchMore={undefined}
       />
     </>
   );

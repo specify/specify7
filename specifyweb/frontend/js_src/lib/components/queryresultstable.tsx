@@ -39,6 +39,7 @@ import { QueryResults } from './queryresults';
 import { RecordSelectorFromIds } from './recordselectorutils';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { useInfiniteScroll } from './useInfiniteScroll';
 
 function TableHeaderCell({
   fieldSpec,
@@ -249,11 +250,6 @@ function CreateRecordSet({
   );
 }
 
-const threshold = 20;
-const isScrolledBottom = (scrollable: HTMLElement): boolean =>
-  scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >
-  threshold;
-
 export function QueryResultsTable({
   model,
   label = commonText('results'),
@@ -289,7 +285,6 @@ export function QueryResultsTable({
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
 }): JSX.Element {
-  const [isFetching, handleFetching, handleFetched] = useBooleanState();
   const [results, setResults] = useTriggerState(initialData);
 
   const [pickListsLoaded] = useAsyncState(
@@ -327,35 +322,39 @@ export function QueryResultsTable({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [initialTotalCount]);
 
-  function fetchMore(
+  async function handleFetchMore(
     index?: number,
     currentResults: RA<RA<string | number | null>> | undefined = results
-  ): void {
+  ): Promise<void> {
     if (
       !Array.isArray(currentResults) ||
       isFetching ||
       currentResults.length === totalCount
     )
-      return;
-    handleFetching();
-    fetchResults(currentResults.length)
+      return undefined;
+    return fetchResults(currentResults.length)
       .then((newResults) => [...currentResults, ...newResults])
-      .then((combinedResults): void => {
+      .then((combinedResults) => {
         setResults(combinedResults);
-        if (typeof index === 'undefined' || index < combinedResults.length)
-          handleFetched();
-        else fetchMore(index, combinedResults);
+        if (typeof index === 'number' && index >= combinedResults.length)
+          return handleFetchMore(index, combinedResults);
+        return undefined;
       })
       .catch(crash);
   }
-
-  React.useEffect(fetchMore, []);
 
   const showResults =
     Array.isArray(results) &&
     fieldSpecs.length > 0 &&
     pickListsLoaded === true &&
     treeRanksLoaded === true;
+  const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
+
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const { isFetching, handleScroll } = useInfiniteScroll(
+    canFetchMore ? handleFetchMore : undefined,
+    scrollRef
+  );
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -399,7 +398,7 @@ export function QueryResultsTable({
               selectedRows={selectedRows}
               results={results}
               model={model}
-              onFetchMore={isFetching ? undefined : fetchMore}
+              onFetchMore={isFetching ? undefined : handleFetchMore}
               onDelete={(index): void => {
                 setTotalCount(totalCount - 1);
                 setResults(removeItem(results, index));
@@ -434,13 +433,11 @@ export function QueryResultsTable({
             '--columns': fieldSpecs.length,
           } as React.CSSProperties
         }
+        ref={scrollRef}
         onScroll={
-          showResults && (isFetching || results.length === totalCount)
+          showResults && (isFetching || !canFetchMore)
             ? undefined
-            : ({ target }): void =>
-                isScrolledBottom(target as HTMLElement)
-                  ? undefined
-                  : fetchMore()
+            : handleScroll
         }
       >
         {showResults && (

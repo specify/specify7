@@ -25,6 +25,8 @@ import { usePref } from './preferenceshooks';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { useInfiniteScroll } from './useInfiniteScroll';
+import { loadingGif } from './queryresultstable';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -47,6 +49,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   relationship,
   isDependent,
   resources: unsortedResources,
+  totalCount = unsortedResources.length,
   onAdd: handleAdd,
   onDelete: handleDelete,
   mode,
@@ -54,10 +57,12 @@ export function FormTable<SCHEMA extends AnySchema>({
   dialog,
   onClose: handleClose,
   sortField = 'id',
+  onFetchMore: handleFetchMore,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
   readonly resources: RA<SpecifyResource<SCHEMA>>;
+  readonly totalCount?: number;
   readonly onAdd: ((resource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly onDelete: (resource: SpecifyResource<SCHEMA>) => void;
   readonly mode: FormMode;
@@ -65,6 +70,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
   readonly sortField: string | undefined;
+  readonly onFetchMore: (() => Promise<void>) | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
     sortField: sortField.startsWith('-') ? sortField.slice(1) : sortField,
@@ -104,7 +110,7 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  const header = `${relationship.label} (${resources.length})`;
+  const header = `${relationship.label} (${totalCount ?? resources.length})`;
   const viewDefinition = useViewDefinition({
     model: relationship.relatedModel,
     viewName,
@@ -128,6 +134,13 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
 
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const { isFetching, handleScroll } = useInfiniteScroll(
+    handleFetchMore,
+    scrollerRef
+  );
+
+  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const contentColumns =
     (viewDefinition?.columns.length ?? 0) + (isDependent ? 0 : 1);
 
@@ -154,6 +167,8 @@ export function FormTable<SCHEMA extends AnySchema>({
           }`,
           maxHeight: `${maxHeight}px`,
         }}
+        forwardRef={scrollerRef}
+        onScroll={handleScroll}
       >
         <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
           <div role="columnheader">
@@ -321,6 +336,13 @@ export function FormTable<SCHEMA extends AnySchema>({
               )}
             </React.Fragment>
           ))}
+          {isFetching && (
+            <div role="none" className="contents">
+              <div role="cell" className="col-span-full">
+                {loadingGif}
+              </div>
+            </div>
+          )}
         </div>
       </DataEntry.Grid>
     );
@@ -382,17 +404,18 @@ export function FormTable<SCHEMA extends AnySchema>({
 
 function Spacer({ columns }: { readonly columns: number }): JSX.Element {
   return (
-    <div role="none" className="contents">
+    <>
       {/* Offset the border for the expand/collapse button */}
-      <div role="cell" />
+      <div role="cell" aria-hidden />
       <div
         role="cell"
-        className="border-t"
+        aria-hidden
+        className="border-t border-gray-500"
         style={{
           gridColumn: `span ${columns} / span ${columns}`,
         }}
       />
-    </div>
+    </>
   );
 }
 
@@ -404,7 +427,7 @@ export function FormTableCollection({
 }: PartialBy<
   Omit<
     Parameters<typeof FormTable>[0],
-    'resources' | 'relationship' | 'isDependent'
+    'resources' | 'relationship' | 'isDependent' | 'onFetchMore'
   >,
   'onAdd' | 'onDelete'
 > & {
@@ -421,8 +444,14 @@ export function FormTableCollection({
       ),
     [collection]
   );
-  const field = defined(collection.field?.getReverse());
+
+  const handleFetchMore = React.useCallback(async () => {
+    await collection.fetch();
+    setRecords(Array.from(collection.models));
+  }, [collection]);
+
   const isDependent = collection instanceof DependentCollection;
+  const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
   const disableAdding = isToOne && records.length > 0;
   return (
@@ -430,6 +459,7 @@ export function FormTableCollection({
       relationship={defined(collection.field?.getReverse())}
       isDependent={isDependent}
       resources={records}
+      totalCount={collection._totalCount}
       onAdd={
         disableAdding
           ? undefined
@@ -444,6 +474,7 @@ export function FormTableCollection({
         setRecords(Array.from(collection.models));
         handleDelete?.(resource);
       }}
+      onFetchMore={handleFetchMore}
       {...props}
     />
   );
