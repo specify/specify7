@@ -42,6 +42,9 @@ const cellToLabel = (
       : undefined,
 });
 
+const cellClassName =
+  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
+
 /**
  * Show several records in "grid view"
  */
@@ -171,7 +174,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         onScroll={handleScroll}
       >
         <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
-          <div role="columnheader">
+          <div role="columnheader" className={cellClassName}>
             <span className="sr-only">{commonText('expand')}</span>
           </div>
           {viewDefinition.rows[0].map((cell, index) => {
@@ -182,8 +185,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             return (
               <DataEntry.Cell
                 role="columnheader"
-                className={`sticky top-0 bg-[color:var(--form-foreground)] z-10
-                  h-full -mx-1 pl-1 pt-1`}
+                className={cellClassName}
                 key={index}
                 colSpan={cell.colSpan}
                 align="center"
@@ -215,10 +217,12 @@ export function FormTable<SCHEMA extends AnySchema>({
             );
           })}
           {displayViewButton && (
-            <div role="columnheader">{commonText('view')}</div>
+            <div role="columnheader" className={cellClassName}>
+              <span className="sr-only">{commonText('view')}</span>
+            </div>
           )}
           {displayDeleteButton && (
-            <div role="columnheader">
+            <div role="columnheader" className={cellClassName}>
               <span className="sr-only">{commonText('remove')}</span>
             </div>
           )}
