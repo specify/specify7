@@ -144,8 +144,6 @@ export function FormTable<SCHEMA extends AnySchema>({
   );
 
   // FEATURE: add <FormPreferences /> for formTable records when expanded
-  const contentColumns =
-    (viewDefinition?.columns.length ?? 0) + (isDependent ? 0 : 1);
 
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
@@ -248,7 +246,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                     </div>
                     <DataEntry.Cell
                       role="cell"
-                      colSpan={contentColumns}
+                      colSpan={viewDefinition.columns.length}
                       align="left"
                       visible={true}
                       ariaLabel={undefined}
@@ -335,13 +333,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                   </div>
                 )}
               </div>
-              {index + 1 === length ? undefined : (
-                <Spacer columns={contentColumns + 1} />
-              )}
+              {index + 1 === length ? undefined : spacer}
             </React.Fragment>
           ))}
           {isFetching && (
-            <div role="none" className="contents">
+            <div role="row" className="contents">
               <div role="cell" className="col-span-full">
                 {loadingGif}
               </div>
@@ -406,22 +402,13 @@ export function FormTable<SCHEMA extends AnySchema>({
   );
 }
 
-function Spacer({ columns }: { readonly columns: number }): JSX.Element {
-  return (
-    <>
-      {/* Offset the border for the expand/collapse button */}
-      <div role="cell" aria-hidden />
-      <div
-        role="cell"
-        aria-hidden
-        className="border-t border-gray-500"
-        style={{
-          gridColumn: `span ${columns} / span ${columns}`,
-        }}
-      />
-    </>
-  );
-}
+const spacer = (
+  <div
+    role="cell"
+    aria-hidden
+    className="col-span-full border-t border-gray-500"
+  />
+);
 
 export function FormTableCollection({
   collection,
