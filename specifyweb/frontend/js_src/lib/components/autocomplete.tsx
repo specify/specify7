@@ -288,7 +288,6 @@ export function Autocomplete<T>({
        * container so as not to cause content overflow
        */
       const shouldHide = inputTop > parentBottom || inputBottom < parentTop;
-      // FIXME: test this
       if (shouldHide) dataList.classList.add('sr-only');
       else {
         dataList.classList.remove('sr-only');
