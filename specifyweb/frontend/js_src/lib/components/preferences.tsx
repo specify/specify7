@@ -732,13 +732,6 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          closeOnOutsideClick: defineItem<boolean>({
-            title: preferencesText('closeOnOutsideClick'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
         },
       },
       queryComboBox: {
