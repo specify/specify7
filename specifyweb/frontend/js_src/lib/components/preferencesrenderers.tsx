@@ -161,9 +161,7 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         filterItems={true}
         aria-label={undefined}
         value={value === defaultFont ? preferencesText('defaultFont') : value}
-      >
-        {(props): JSX.Element => <Input.Generic {...props} />}
-      </Autocomplete>
+      />
     );
   };
 
