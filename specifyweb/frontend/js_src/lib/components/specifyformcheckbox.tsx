@@ -4,9 +4,10 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Label } from './basic';
-import { useResourceValue } from './hooks';
 import { FormContext } from './contexts';
+import { useResourceValue } from './hooks';
 import { useCachedState } from './statecache';
+import { f } from '../functools';
 
 export function PrintOnSave({
   id,
@@ -71,17 +72,22 @@ export function SpecifyFormCheckbox({
   readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
-  const { value, updateValue, validationRef } = useResourceValue<boolean>(
+  const { value, updateValue, validationRef } = useResourceValue<
+    boolean | string
+  >(
     resource,
     fieldName,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
+  const isChecked =
+    !f.includes(falsyFields, value?.toString().toLowerCase().trim()) &&
+    Boolean(value ?? false);
   const input = (
     <Input.Checkbox
       forwardRef={validationRef}
       id={id}
       name={fieldName}
-      checked={value ?? false}
+      checked={isChecked}
       onValueChange={updateValue}
       isReadOnly={
         isReadOnly || resource.specifyModel.getField(fieldName)?.isReadOnly
@@ -102,3 +108,5 @@ export function SpecifyFormCheckbox({
     input
   );
 }
+
+const falsyFields = ['false', 'no', 'nan', 'null'];
