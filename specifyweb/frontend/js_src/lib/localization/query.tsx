@@ -230,12 +230,12 @@ export const queryText = createDictionary({
     'ru-ru': 'Ложь',
   },
   trueOrNull: {
-    'en-us': 'True or Null',
-    'ru-ru': 'Истина или Ноль',
+    'en-us': 'True or Empty',
+    'ru-ru': 'Истинный или пустой',
   },
   falseOrNull: {
-    'en-us': 'False or Null',
-    'ru-ru': 'Ложь или Нуль',
+    'en-us': 'False or Empty',
+    'ru-ru': 'Ложь или пустой',
   },
   between: {
     'en-us': 'Between',
