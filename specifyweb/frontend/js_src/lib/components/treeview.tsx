@@ -1,14 +1,12 @@
 import React from 'react';
 
-import { ajax } from '../ajax';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../datamodelutils';
 import { f } from '../functools';
-import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
+import { caseInsensitiveHash, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
 import { formatUrl, parseUrl } from '../querystring';
@@ -23,8 +21,7 @@ import {
   fetchStats,
   serializeConformation,
 } from '../treeviewutils';
-import type { IR, RA } from '../types';
-import { Autocomplete } from './autocomplete';
+import type { RA } from '../types';
 import { Button, Container, DataEntry, H2 } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
@@ -39,6 +36,7 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { TreeViewSearch } from './treeviewsearch';
 
 const defaultCacheValue = [] as const;
 
@@ -131,7 +129,6 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
   const toolbarButtonRef = React.useRef<HTMLElement | null>(null);
-  const [searchValue, setSearchValue] = React.useState<string>('');
 
   const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
 
@@ -155,73 +152,12 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeDefinition.get('name')}
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
-        <div>
-          {/* A React component that is also a TypeScript generic */}
-          <Autocomplete<SerializedResource<SCHEMA>>
-            filterItems={false}
-            value={searchValue}
-            source={async (value) =>
-              fetchCollection(
-                table.name,
-                {
-                  limit: DEFAULT_FETCH_LIMIT,
-                  orderBy: 'name',
-                  domainFilter: true,
-                },
-                {
-                  name__iStartsWith: value,
-                }
-              ).then(({ records }) =>
-                records.map((node) => {
-                  const rankDefinition = treeDefinitionItems.find(
-                    ({ rankId }) => rankId === node.rankId
-                  );
-                  const rankName =
-                    rankDefinition?.title || rankDefinition?.name;
-                  return {
-                    label: node.fullName ?? node.name,
-                    subLabel: rankName,
-                    data: node as SerializedResource<SCHEMA>,
-                  };
-                })
-              )
-            }
-            onCleared={(): void => setSearchValue('')}
-            onChange={({ label, data }): void => {
-              setSearchValue(label as string);
-              ajax<
-                IR<{ readonly rankid: number; readonly id: number } | string>
-              >(
-                `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
-                {
-                  headers: { Accept: 'application/json' },
-                }
-              )
-                .then(({ data }) =>
-                  setFocusPath(
-                    Object.values(data)
-                      .filter(
-                        (
-                          node
-                        ): node is {
-                          readonly rankid: number;
-                          readonly id: number;
-                        } => typeof node === 'object'
-                      )
-                      .sort(sortFunction(({ rankid }) => rankid))
-                      .map(({ id }) => id)
-                  )
-                )
-                .catch(console.error);
-            }}
-            forwardRef={searchBoxRef}
-            inputProps={{
-              'aria-label': treeText('searchTreePlaceholder'),
-              placeholder: treeText('searchTreePlaceholder'),
-              title: treeText('searchTreePlaceholder'),
-            }}
-          />
-        </div>
+        <TreeViewSearch<SCHEMA>
+          tableName={tableName}
+          treeDefinitionItems={treeDefinitionItems}
+          forwardRef={searchBoxRef}
+          onFocusPath={setFocusPath}
+        />
         <Button.Small
           onClick={handleToggleEditingRanks}
           aria-pressed={isEditingRanks}
