@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { ajax, Http } from '../ajax';
 import { fetchCollection } from '../collection';
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
@@ -74,6 +75,8 @@ function AboutDialog({
           <tbody>
             {[
               [welcomeText('specifyVersion'), getSystemInfo().version],
+              [welcomeText('gitSha'), <GitSha />],
+              [welcomeText('buildDate'), <BuildDate />],
               [
                 welcomeText('specifySixVersion'),
                 getSystemInfo().specify6_version,
@@ -127,6 +130,69 @@ function AboutDialog({
       </section>
     </Dialog>
   );
+}
+
+function GitSha(): JSX.Element {
+  const [gitSha] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax(
+          '/static/git_sha.txt',
+          {
+            headers: {
+              accept: 'text/plain',
+            },
+          },
+          {
+            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          }
+        ).then(({ data, status }) =>
+          status === Http.NOT_FOUND ? false : data
+        ),
+      []
+    ),
+    false
+  );
+  return (
+    <>
+      {gitSha === false ? (
+        commonText('unknown')
+      ) : typeof gitSha === 'string' ? (
+        <Link.NewTab
+          href={`https://github.com/specify/specify7/commit/${gitSha}`}
+          className="break-all"
+        >
+          {gitSha}
+        </Link.NewTab>
+      ) : (
+        commonText('loading')
+      )}
+    </>
+  );
+}
+
+function BuildDate(): JSX.Element {
+  const [buildDate] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax(
+          '/static/build_date.txt',
+          {
+            headers: {
+              accept: 'text/plain',
+            },
+          },
+          {
+            expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          }
+        ).then(({ data, status }) =>
+          status === Http.NOT_FOUND ? welcomeText('unknown') : data
+        ),
+      []
+    ),
+    false
+  );
+  return <DateElement date={buildDate} fallback={commonText('loading')} />;
 }
 
 function DatabaseCreationDate(): JSX.Element {
