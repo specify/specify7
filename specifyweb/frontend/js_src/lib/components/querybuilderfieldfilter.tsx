@@ -212,7 +212,7 @@ const resolveItem = (
 ): string =>
   items.find(({ value }) => value === currentValue)?.value ??
   items.find(({ title }) => title === currentValue)?.value ??
-  value;
+  currentValue;
 
 function SingleField({
   filter,
