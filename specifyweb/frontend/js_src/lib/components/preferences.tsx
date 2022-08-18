@@ -69,7 +69,7 @@ export type PreferenceItem<VALUE> = {
         | RA<{
             readonly value: VALUE;
             readonly title?: string;
-            readonly description?: string;
+            readonly description?: string | JSX.Element;
           }>;
     }
   | {
@@ -678,11 +678,14 @@ export const preferenceDefinitions = {
           }),
         },
       },
-      queryComboBox: {
-        title: preferencesText('queryComboBox'),
+      autoComplete: {
+        title: preferencesText('autoComplete'),
         items: {
           searchAlgorithm: defineItem<
-            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+            | 'startsWith'
+            | 'startsWithCaseSensitive'
+            | 'contains'
+            | 'containsCaseSensitive'
           >({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
@@ -706,6 +709,13 @@ export const preferenceDefinitions = {
                 title: preferencesText('contains'),
                 description: preferencesText('containsDescription'),
               },
+              {
+                value: 'containsCaseSensitive',
+                title: preferencesText('containsCaseSensitive'),
+                description: preferencesText(
+                  'containsCaseSensitiveDescription'
+                ),
+              },
             ],
           }),
           highlightMatch: defineItem<boolean>({
@@ -728,6 +738,69 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+      queryComboBox: {
+        title: preferencesText('queryComboBox'),
+        items: {
+          searchAlgorithm: defineItem<
+            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+          >({
+            title: preferencesText('searchAlgorithm'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'startsWith',
+            values: [
+              {
+                value: 'startsWith',
+                title: preferencesText('startsWith'),
+                description: preferencesText('startsWithDescription'),
+              },
+              {
+                value: 'startsWithCaseSensitive',
+                title: preferencesText('startsWithCaseSensitive'),
+                description: `${preferencesText(
+                  'startsWithCaseSensitiveDescription'
+                )} ${preferencesText(
+                  'startsWithCaseSensitiveSecondDescription'
+                )}`,
+              },
+              {
+                value: 'contains',
+                title: preferencesText('containsCaseSensitive'),
+                description: `${preferencesText(
+                  'containsCaseSensitiveDescription'
+                )} ${preferencesText('containsSecondDescription')}`,
+              },
+            ],
+          }),
+          treeSearchAlgorithm: defineItem<
+            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+          >({
+            title: preferencesText('treeSearchAlgorithm'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'contains',
+            values: [
+              {
+                value: 'startsWith',
+                title: preferencesText('startsWith'),
+                description: preferencesText('startsWithDescription'),
+              },
+              {
+                value: 'startsWithCaseSensitive',
+                title: preferencesText('startsWithCaseSensitive'),
+                description: preferencesText(
+                  'startsWithCaseSensitiveDescription'
+                ),
+              },
+              {
+                value: 'contains',
+                title: preferencesText('contains'),
+                description: preferencesText('containsDescription'),
+              },
+            ],
           }),
         },
       },

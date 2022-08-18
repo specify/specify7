@@ -133,7 +133,8 @@ function QueryResultCell({
       typeof value !== 'object' &&
       typeof field === 'object' &&
       !field.isRelationship &&
-      typeof fieldSpec === 'object'
+      typeof fieldSpec === 'object' &&
+      !field.isTemporal()
         ? fieldFormat(field, fieldSpec.parser, (value ?? '').toString())
         : value ?? '',
     [field, fieldSpec, value]

@@ -178,6 +178,19 @@ const processCellType: {
         cell,
         model,
       });
+    const rawSortField = getProperty('sortField') ?? '';
+    const sortField = field?.isRelationship
+      ? field?.relatedModel?.getField(rawSortField)?.name ??
+        // Cut away the negative sign
+        field?.relatedModel?.getField(rawSortField.slice(1))?.name
+      : undefined;
+    const isDescSort = rawSortField?.startsWith('-') ?? false;
+    const formattedSortField =
+      typeof sortField === 'string'
+        ? isDescSort
+          ? `-${sortField}`
+          : sortField
+        : undefined;
     return {
       type: 'SubView',
       formType: formType?.toLowerCase() === 'table' ? 'formTable' : 'form',
@@ -185,10 +198,7 @@ const processCellType: {
       viewName: getParsedAttribute(cell, 'viewName'),
       isButton: getProperty('btn')?.toLowerCase() === 'true',
       icon: getProperty('icon'),
-      sortField: field?.isRelationship
-        ? field?.relatedModel?.getField(getProperty('sortField') ?? '')?.name ??
-          undefined
-        : undefined,
+      sortField: formattedSortField,
     };
   },
   Panel: ({ cell, model }) => ({
@@ -275,11 +285,10 @@ export function parseFormCell(
      * visible=false. Adding support for that attribute in Specify 7 would mean
      * this checkbox and button would disappear from forms in Specify 7 when
      * users update to 7.7.0.
-     * Thus, support for visible=false was cut out of the 7.7.0 release, but
-     * can be reenabled in the future by uncommenting the following line:
+     * To mitigate the above issues, Specify 7 form definitions are using
+     * "invisible=true" instead of "visible=false" for making fields invisible
      */
-    // visible: getProperty('visible')?.toLowerCase() !== 'false',
-    visible: true,
+    visible: getBooleanAttribute(cellNode, 'invisible') !== true,
     ...parsedCell({ cell: cellNode, model, getProperty }),
     // This mag get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,

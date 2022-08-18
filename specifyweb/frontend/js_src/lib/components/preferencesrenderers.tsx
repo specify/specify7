@@ -158,7 +158,6 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         delay={0}
         onNewValue={handleChange}
         onChange={({ data }): void => handleChange(data)}
-        // OnCleared={}
         filterItems={true}
         aria-label={undefined}
         value={value === defaultFont ? preferencesText('defaultFont') : value}
@@ -272,8 +271,8 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         </Select>
         {f.maybe(
           definition.values.find((item) => item.value === value).description,
-          (item) => (
-            <p>{item}</p>
+          (description) => (
+            <p>{description}</p>
           )
         )}
       </>

@@ -1,7 +1,6 @@
-import dayjs from 'dayjs';
-import { databaseDateFormat, fullDateFormat, monthFormat } from './dateformat';
 import { mappedFind } from './helpers';
 import { f } from './functools';
+import { parseDate } from './components/partialdateui';
 
 const reParse = /today\s*([+-])\s*(\d+)\s*(day|week|month|year)/;
 
@@ -11,7 +10,7 @@ const reParse = /today\s*([+-])\s*(\d+)\s*(day|week|month|year)/;
 export function parseRelativeDate(value: string): Date | undefined {
   if (value === 'today') return new Date();
 
-  const parsed = reParse.exec(value.toLowerCase())?.slice(1, 3);
+  const parsed = reParse.exec(value.toLowerCase())?.slice(1);
   if (Array.isArray(parsed)) {
     const [direction, size, type] = parsed;
     const number = (direction === '-' ? -1 : 1) * Number.parseInt(size);
@@ -21,14 +20,13 @@ export function parseRelativeDate(value: string): Date | undefined {
     else if (type === 'month') date.setMonth(date.getMonth() + number);
     else if (type === 'year') date.setFullYear(date.getFullYear() + number);
     return date;
-  } else
-    return (
-      mappedFind(
-        [databaseDateFormat, fullDateFormat(), monthFormat(), 'YYYY'],
-        (format) =>
-          f.var(dayjs(value, format, true), (parsed) =>
-            parsed.isValid() ? parsed : undefined
-          )
-      )?.toDate() ?? undefined
-    );
+  } else {
+  }
+  return (
+    mappedFind(['full', 'month-year', 'year'] as const, (precision) =>
+      f.var(parseDate(precision, value), (parsed) =>
+        parsed.isValid() ? parsed : undefined
+      )
+    )?.toDate() ?? undefined
+  );
 }

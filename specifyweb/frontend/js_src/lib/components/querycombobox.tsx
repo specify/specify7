@@ -39,7 +39,7 @@ import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
 import {
   getTreeDefinitionItems,
-  isTreeResource,
+  isTreeModel,
   treeRanksPromise,
 } from '../treedefinitions';
 import type { RA } from '../types';
@@ -401,7 +401,7 @@ export function QueryComboBox({
     );
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <Autocomplete<string>
         filterItems={false}
         source={React.useCallback(
@@ -413,7 +413,9 @@ export function QueryComboBox({
                       makeComboBoxQuery({
                         fieldName,
                         value,
-                        isTreeTable: isTreeResource(resource),
+                        isTreeTable:
+                          field?.isRelationship === true &&
+                          isTreeModel(field.relatedModel.name),
                         typeSearch,
                         specialConditions: getQueryComboBoxConditions({
                           resource,

@@ -50,10 +50,12 @@ export const fetchRoles = async (
   ).then(({ data, status }) =>
     status === Http.FORBIDDEN
       ? undefined
-      : data.map((role) => ({
-          ...role,
-          policies: processPolicies(role.policies),
-        }))
+      : data
+          .map((role) => ({
+            ...role,
+            policies: processPolicies(role.policies),
+          }))
+          .sort(sortFunction(({ name }) => name))
   );
 
 export const fetchUserRoles = async (

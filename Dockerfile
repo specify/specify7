@@ -5,7 +5,7 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
         gettext \
-        python3.6 \
+        python3.8 \
         libldap-2.4-2 \
         libmariadbclient18 \
  && apt-get clean \
@@ -30,7 +30,7 @@ LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 USER node
 WORKDIR /home/node
 
-COPY --chown=node:node specifyweb/frontend/js_src/package*.json .
+COPY --chown=node:node specifyweb/frontend/js_src/package*.json ./
 RUN npm install
 RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
@@ -50,14 +50,15 @@ RUN apt-get update \
         libldap2-dev \
         libmariadbclient-dev \
         libsasl2-dev \
-        python3-venv \
-        python3.6-dev
+        python3.8-venv \
+        python3.8-distutils \
+        python3.8-dev
 
 USER specify
 COPY --chown=specify:specify requirements.txt /home/specify/
 
 WORKDIR /opt/specify7
-RUN python3.6 -m venv ve \
+RUN python3.8 -m venv ve \
  && ve/bin/pip install --no-cache-dir -r /home/specify/requirements.txt
 RUN ve/bin/pip install --no-cache-dir gunicorn
 
@@ -149,7 +150,7 @@ USER root
 
 RUN apt-get update \
  && apt-get -y install --no-install-recommends \
-        python3.6-distutils \
+        python3.8-distutils \
         ca-certificates \
         make
 
