@@ -216,7 +216,13 @@ const WBView = Backbone.View.extend({
     this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
-    this.$el.append(wbViewTemplate(this.isUploaded, this.dataset.id));
+    this.$el.append(
+      wbViewTemplate(
+        this.isUploaded,
+        Boolean(this.dataset.uploadplan),
+        this.dataset.id
+      )
+    );
     this.$el.attr('aria-label', commonText('workBench'));
 
     /*
