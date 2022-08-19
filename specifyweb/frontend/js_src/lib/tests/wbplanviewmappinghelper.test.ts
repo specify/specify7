@@ -6,7 +6,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from '../wbplanviewmappinghelper';
-import { theories } from './testmain';
+import { theories } from './utils';
 
 theories(valueIsToManyIndex, [
   [[`${schema.referenceSymbol}1`], true],
