@@ -5,16 +5,14 @@ import type { UploadPlan } from '../uploadplanparser';
 import { parseUploadPlan } from '../uploadplanparser';
 import mappingLines1 from './fixtures/mappinglines.1.json';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
-import { theories } from './utils';
+import { requireContext } from './helpers';
 
-theories(parseUploadPlan, [
-  [
-    [uploadPlan1.uploadPlan as UploadPlan],
-    {
-      baseTable:
-        schema.models[mappingLines1.baseTableName as 'CollectionObject'],
-      lines: mappingLines1.lines as RA<MappingLine>,
-      mustMatchPreferences: mappingLines1.mustMatchPreferences as IR<boolean>,
-    },
-  ],
-]);
+requireContext();
+
+test('parseUploadPlan', () => {
+  expect(parseUploadPlan(uploadPlan1.uploadPlan as UploadPlan)).toEqual({
+    baseTable: schema.models[mappingLines1.baseTableName as 'CollectionObject'],
+    lines: mappingLines1.lines as RA<MappingLine>,
+    mustMatchPreferences: mappingLines1.mustMatchPreferences as IR<boolean>,
+  });
+});

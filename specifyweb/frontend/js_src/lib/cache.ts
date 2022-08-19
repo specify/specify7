@@ -134,8 +134,7 @@ function genericSet<T>(
 
   cache[formattedKey] = value;
 
-  // FIXME: revert this?
-  globalThis.localStorage?.setItem(
+  globalThis.localStorage.setItem(
     formatKey(category, key),
     JSON.stringify(value)
   );

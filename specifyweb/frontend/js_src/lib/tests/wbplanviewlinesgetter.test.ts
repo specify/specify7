@@ -2,13 +2,16 @@ import type { MappingLine } from '../components/wbplanviewmapper';
 import type { Tables } from '../datamodel';
 import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
-import uploadPlan1 from './fixtures/uploadplan.1.json';
-import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
-import { theories } from './utils';
 import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from '../wbplanviewlinesgetter';
+import uploadPlan1 from './fixtures/uploadplan.1.json';
+import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
+import { requireContext } from './helpers';
+import { theories } from './utils';
+
+requireContext();
 
 theories(getLinesFromHeaders, [
   [

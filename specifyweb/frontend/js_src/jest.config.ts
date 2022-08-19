@@ -80,8 +80,6 @@ const config: Config.InitialOptions = {
 
   // A path to a module which exports an async function that is triggered once before all test suites
   // globalSetup: '',
-  // FIXME: uncomment or remove
-  // globalSetup: '<rootDIr>/lib/tests/globalSetup.js',
 
   // A path to a module which exports an async function that is triggered once after all test suites
   // globalTeardown: undefined,
@@ -112,12 +110,12 @@ const config: Config.InitialOptions = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
-  // FIXME: uncomment. https://jestjs.io/docs/webpack
-  // moduleNameMapper: {
-  //   '\\.(jpg|jpeg|png|gif|webp|svg|webm)$':
-  //     '<rootDir>/lib/__mocks__/fileMock.ts',
-  //   '\\.css$': '<rootDir>/lib/__mocks__/styleMock.ts',
-  // },
+  // See https://jestjs.io/docs/webpack
+  moduleNameMapper: {
+    '\\.(jpg|jpeg|png|webp|svg|ttf|webm)$':
+      '<rootDir>/lib/tests/__mocks__/fileMock.ts',
+    '\\.(css)$': '<rootDir>/lib/tests/__mocks__/styleFileMock.ts',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -173,12 +171,10 @@ const config: Config.InitialOptions = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // FIXME: should replace this with setupFilesAfterEnv?
-  setupFiles: ['<rootDir>/lib/tests/setup.ts'],
+  // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
-  // setupFilesAfterEnv: ['<rootDir>/lib/tests/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/lib/tests/setup.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   slowTestThreshold: 2,
@@ -231,8 +227,6 @@ const config: Config.InitialOptions = {
   // See https://stackoverflow.com/questions/69075510/jest-tests-failing-on-d3-import
   transformIgnorePatterns: [
     '/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)',
-    // FIXME: decide if this is needed
-    // 'lib/tests/',
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

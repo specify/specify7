@@ -1,7 +1,6 @@
 import type { RA } from '../types';
-/*import { leafletStub } from './leafletstub';
- *
- *
+
+/*
  * FIXME: error on console.error and console.warn
  */
 
@@ -17,6 +16,3 @@ export const theories = <ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
       test(`#${index}`, () => expect(testFunction(...input)).toEqual(output))
     )
   );
-
-// FIXME: migrate all of these
-//   leafletStub();

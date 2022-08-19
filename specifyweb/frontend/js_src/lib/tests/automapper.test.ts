@@ -1,10 +1,13 @@
+import type { AutoMapperResults } from '../automapper';
 import {
   AutoMapper as AutoMapperConstructor,
   type AutoMapperConstructorParameters,
-  AutoMapperResults,
 } from '../automapper';
 import type { RA } from '../types';
+import { requireContext } from './helpers';
 import { theories } from './utils';
+
+requireContext();
 
 theories(
   function AutoMapper(

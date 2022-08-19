@@ -1,5 +1,8 @@
 import { getMappingLineData } from '../wbplanviewnavigator';
 import { theories } from './utils';
+import { requireContext } from './helpers';
+
+requireContext();
 
 theories(getMappingLineData, [
   [

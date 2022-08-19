@@ -34,6 +34,7 @@ const stringGuard =
       ? formatter(value)
       : error('Value is not a string');
 
+// REFACTOR: check if f.store is required here
 export const formatter = f.store(
   (): IR<(value: unknown) => unknown> =>
     ({
@@ -94,9 +95,9 @@ export const parsers = f.store(
   (): RR<ExtendedJavaType, ExtendedJavaType | Parser> => ({
     'java.lang.Boolean': {
       type: 'checkbox',
-      pattern: /\s+(?:true|false|yes|no)\s+/i,
+      pattern: /true|false|yes|no|nan|null|undefined/i,
       title: formsText('illegalBool'),
-      formatters: [formatter().toLowerCase, formatter().trim],
+      formatters: [formatter().toLowerCase],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
         value === undefined
@@ -175,7 +176,6 @@ export const parsers = f.store(
       maxLength: fullDateFormat().length,
       formatters: [
         formatter().toLowerCase,
-        formatter().trim,
         stringGuard(
           (value) =>
             f.maybe(parseRelativeDate(value), (date) => f.maybe(date, dayjs)) ??

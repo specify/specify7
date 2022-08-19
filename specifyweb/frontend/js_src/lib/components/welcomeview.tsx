@@ -14,8 +14,7 @@ import { Dialog, dialogClassNames } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { defaultWelcomePageImage } from './preferencesrenderers';
 import { OverlayContext } from './router';
-
-// import { TaxonTiles } from './taxontiles';
+import { TaxonTiles } from './taxontiles';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -180,8 +179,7 @@ export function WelcomeView(): JSX.Element {
           ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
         `}
       >
-        {/* FIXME: uncomment this */}
-        {/*{mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}*/}
+        {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
       </div>
       <AboutSpecify />
     </div>

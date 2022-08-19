@@ -1,5 +1,8 @@
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
+import { requireContext } from './helpers';
 import { theories } from './utils';
+
+requireContext();
 
 theories(generateMappingPathPreview, [
   [['CollectionObject', ['catalogNumber']], 'Cat #'],
