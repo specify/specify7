@@ -1,11 +1,19 @@
 import { initialContext, unlockInitialContext } from '../initialcontext';
 import { treeRanksPromise } from '../treedefinitions';
 
-// FIXME: remove commented out code
 /**
  * Call this in test files that requite initial context to be fetched
  *
  * Initial context would be populated with static data.
+ *
+ * @remarks
+ * Call to this function adds ~200ms for each test file
+ * That is why it is included only in files that need it, rather than globally
+ * in the setup file.
+ *
+ * Also, can't place this inside of globalSetup file and have it run just once
+ * for all tests because Jest runs tests in isolated environments and sometimes
+ * even in separate threads.
  */
 export const requireContext = (): void =>
   beforeAll(async () => {

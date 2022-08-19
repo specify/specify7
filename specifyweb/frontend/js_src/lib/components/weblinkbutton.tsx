@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { isExternalUrl } from '../ajax';
+import { isExternalUrl } from '../ajaxUtils';
 import type { Tables } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import { serializeResource } from '../datamodelutils';

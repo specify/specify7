@@ -5,7 +5,8 @@
 
 import React from 'react';
 
-import { ajax, ping } from '../ajax';
+import { ajax } from '../ajax';
+import { ping } from '../ping';
 import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';
 import { toggleItem } from '../helpers';

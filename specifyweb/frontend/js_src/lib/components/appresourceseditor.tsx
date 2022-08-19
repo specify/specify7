@@ -23,7 +23,7 @@ import { Button, Container, DataEntry, Form } from './basic';
 import { AppTitle } from './common';
 import { LoadingContext } from './contexts';
 import { DeleteButton } from './deletebutton';
-import { useIsModified } from './hooks';
+import { useIsModified } from './useismodified';
 import { deserializeResource } from './resource';
 import { BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';

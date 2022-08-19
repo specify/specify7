@@ -1,7 +1,8 @@
 import Papa from 'papaparse';
 import ImportXLSWorker from 'worker-loader!./wbimportxls.worker';
 
-import { ajax, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import type { Dataset } from './components/wbplanview';
 import { f } from './functools';
 import { wbText } from './localization/workbench';

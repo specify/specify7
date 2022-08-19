@@ -4,7 +4,7 @@ import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
 import type { SpecifyModel } from '../specifymodel';
 import { Input, Label } from './basic';
-import { useResourceValue } from './hooks';
+import { useResourceValue } from './useresourcevalue';
 import { useCachedState } from './statecache';
 
 export function PrintOnSave({

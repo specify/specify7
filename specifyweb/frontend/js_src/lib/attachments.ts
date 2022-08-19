@@ -1,4 +1,5 @@
-import { ajax, handleResponse, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import type { Attachment } from './datamodel';
 import type { SerializedResource } from './datamodelutils';
 import { getIcon, unknownIcon } from './icons';
@@ -10,6 +11,7 @@ import { getPref } from './remoteprefs';
 import { schema } from './schema';
 import type { IR } from './types';
 import { defined } from './types';
+import { handleAjaxResponse } from './ajaxResponse';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -185,7 +187,7 @@ export const uploadFile = async (
           xhr.addEventListener('readystatechange', () =>
             xhr.readyState === DONE
               ? resolve(
-                  handleResponse({
+                  handleAjaxResponse({
                     expectedResponseCodes: [Http.OK],
                     accept: undefined,
                     response: {

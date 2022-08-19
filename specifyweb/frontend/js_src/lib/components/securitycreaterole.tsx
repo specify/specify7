@@ -1,7 +1,8 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { removeKey } from '../helpers';
 import type { BackEndRole } from '../securityutils';
 import { decompressPolicies, processPolicies } from '../securityutils';

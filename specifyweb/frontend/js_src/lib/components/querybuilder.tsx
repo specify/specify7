@@ -27,12 +27,8 @@ import { getMappedFields, mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, Container, Form, H2, Input, Label, Submit } from './basic';
 import { TableIcon } from './common';
 import { ErrorBoundary } from './errorboundary';
-import {
-  useAsyncState,
-  useBooleanState,
-  useIsModified,
-  useTitle,
-} from './hooks';
+import { useAsyncState, useBooleanState, useTitle } from './hooks';
+import { useIsModified } from './useismodified';
 import { icons } from './icons';
 import { useUnloadProtect } from './navigation';
 import { ProtectedAction, ProtectedTable } from './permissiondenied';

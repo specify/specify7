@@ -5,17 +5,17 @@
 
 import React from 'react';
 
-import { ajax, formData, Http } from '../../ajax';
+import { ajax } from '../../ajax';
+import { formData, Http } from '../../ajaxUtils';
 import { commonText } from '../../localization/common';
 import { Button, Form, Input, Label, Submit } from '../basic';
 import { CopyButton } from '../common';
 import { LoadingContext } from '../contexts';
 import { useId, useValidation } from '../hooks';
 import { Dialog } from '../modaldialog';
-import {OverlayContext} from '../router';
+import { OverlayContext } from '../router';
 
 export function MasterKeyOverlay(): JSX.Element | null {
-
   const [password, setPassword] = React.useState<string>('');
   const [masterKey, setMasterKey] = React.useState<string | undefined>(
     undefined
@@ -114,4 +114,3 @@ function ShowKey({
     </Dialog>
   );
 }
-

@@ -6,7 +6,8 @@
 
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { f } from '../functools';
 import { hasPermission } from '../permissionutils';
 import { treeRanksPromise } from '../treedefinitions';

@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { formData, ping } from '../ajax';
+import { ping } from '../ping';
+import { formData } from '../ajaxUtils';
 import type { AnySchema, AnyTree } from '../datamodelutils';
 import { toLowerCase } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';

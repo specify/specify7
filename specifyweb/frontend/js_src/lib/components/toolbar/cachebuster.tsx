@@ -4,7 +4,8 @@
 
 import React from 'react';
 
-import { Http, ping } from '../../ajax';
+import { ping } from '../../ping';
+import { Http } from '../../ajaxUtils';
 import { cachableUrls } from '../../initialcontext';
 import { commonText } from '../../localization/common';
 import { useAsyncState } from '../hooks';

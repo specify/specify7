@@ -27,9 +27,9 @@ import {
   useAsyncState,
   useBooleanState,
   useId,
-  useIsModified,
   useTriggerState,
 } from './hooks';
+import { useIsModified } from './useismodified';
 import { interactionTables } from './interactionsdialog';
 import { Dialog, dialogClassNames } from './modaldialog';
 import { useSearchParam } from './navigation';

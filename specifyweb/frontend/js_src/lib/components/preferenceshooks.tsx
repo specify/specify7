@@ -14,7 +14,7 @@ import type {
   PreferenceItem,
   Preferences,
 } from './preferences';
-import { defaultFont } from './preferencesrenderers';
+import { defaultFont } from './preferences';
 import { GetSet } from '../types';
 
 export const prefEvents = eventListener<{

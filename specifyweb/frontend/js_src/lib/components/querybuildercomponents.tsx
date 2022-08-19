@@ -1,7 +1,8 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax, ping } from '../ajax';
+import { ajax } from '../ajax';
+import { ping } from '../ping';
 import type {
   LoanPreparation,
   LoanReturnPreparation,

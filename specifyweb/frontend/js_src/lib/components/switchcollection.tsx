@@ -2,7 +2,8 @@ import React from 'react';
 import type { NavigateFunction } from 'react-router/lib/hooks';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { ping, toRelativeUrl } from '../ajax';
+import { ping } from '../ping';
+import { toRelativeUrl } from '../ajaxUtils';
 import { useAsyncState } from './hooks';
 
 export const switchCollection = (

@@ -1,4 +1,6 @@
-import { ajax, Http, ping } from './ajax';
+import { ajax } from './ajax';
+import { ping } from './ping';
+import { Http } from './ajaxUtils';
 import { businessRuleDefs } from './businessruledefs';
 import { getCache } from './cache';
 import type { Tables } from './datamodel';

@@ -1,6 +1,7 @@
 import { GetOrSet, IR } from '../types';
 import { NewRole, Role } from './securityrole';
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import {
   BackEndRole,
   decompressPolicies,

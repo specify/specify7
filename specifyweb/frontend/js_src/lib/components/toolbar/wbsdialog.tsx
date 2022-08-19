@@ -7,7 +7,8 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { ajax, Http } from '../../ajax';
+import { ajax } from '../../ajax';
+import { Http } from '../../ajaxUtils';
 import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';

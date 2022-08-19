@@ -8,18 +8,12 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { Http } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { breakpoint } from '../assert';
 import { jsonStringify, removeKey } from '../helpers';
 import { consoleLog } from '../interceptlogs';
 import { commonText } from '../localization/common';
-import { getOperationPermissions, getTablePermissions } from '../permissions';
-import { getRawUserPreferences } from '../preferencesutils';
-import { remotePrefs } from '../remoteprefs';
-import { schema } from '../schema';
-import { getSystemInfo } from '../systeminfo';
-import type { WritableArray } from '../types';
-import { userInformation } from '../userinfo';
+import type { IR, WritableArray } from '../types';
 import { Button, Input, Label, Link } from './basic';
 import {
   displayError,
@@ -34,6 +28,8 @@ import { usePref } from './preferenceshooks';
 import { useCachedState } from './statecache';
 import { clearCache } from './toolbar/cachebuster';
 import { unsafeTriggerNotFound } from './router';
+import { userInformation } from '../userinfo';
+import { f } from '../functools';
 
 type ErrorBoundaryState =
   | State<
@@ -49,7 +45,7 @@ type ErrorBoundaryState =
 
 export const supportLink = (
   <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">
-    support@specifysoftware.org
+    {'support@specifysoftware.org'}
   </Link.NewTab>
 );
 
@@ -280,23 +276,41 @@ export class ErrorBoundary extends React.Component<
   }
 }
 
+let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
+f.all({
+  userInformation: import('../userinfo').then(
+    ({ userInformation }) => userInformation
+  ),
+  tablePermissions: import('../permissions').then(({ getTablePermissions }) =>
+    getTablePermissions()
+  ),
+  systemInformation: import('../systeminfo').then(({ getSystemInfo }) =>
+    getSystemInfo()
+  ),
+  operationPermissions: import('../permissions').then(
+    ({ getOperationPermissions }) => getOperationPermissions()
+  ),
+  schema: import('../schema').then(({ schema }) => removeKey(schema, 'models')),
+  remotePrefs: import('../remoteprefs').then(({ remotePrefs }) => remotePrefs),
+  userPreferences: import('../preferencesutils').then(
+    ({ getRawUserPreferences }) => getRawUserPreferences()
+  ),
+}).then((data) => {
+  resolvedStackTrace = data;
+  return data;
+});
+
 /**
  * The stack trace is about 83KB in size
  */
 const produceStackTrace = (message: unknown): string =>
   jsonStringify({
     message,
-    userInformation,
-    systemInformation: getSystemInfo(),
-    schema: removeKey(schema, 'models'),
+    ...resolvedStackTrace,
     href: globalThis.location.href,
     consoleLog,
     // Network log and page load telemetry
     eventLog: globalThis.performance.getEntries(),
-    tablePermissions: getTablePermissions(),
-    operationPermissions: getOperationPermissions(),
-    remotePrefs,
-    userPreferences: getRawUserPreferences(),
     navigator: {
       userAgent: navigator.userAgent,
       language: navigator.language,

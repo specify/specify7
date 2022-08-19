@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { fetchCollection } from '../collection';
 import type { Address, Collection, SpecifyUser } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';

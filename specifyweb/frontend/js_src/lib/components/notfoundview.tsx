@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Http } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { commonText } from '../localization/common';
 import { Container, Link } from './basic';
 import { useTitle } from './hooks';

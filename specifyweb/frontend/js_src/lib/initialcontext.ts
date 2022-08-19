@@ -49,36 +49,31 @@ export const unlockInitialContext = (entrypoint: typeof entrypointName): void =>
   unlock(entrypoint);
 
 export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
-  contextUnlockedPromise.then(async (entrypoint) =>
-    entrypoint === 'main'
-      ? /*
-         * Using async import to avoid circular dependency
-         * REFACTOR: find a better solution
-         */
-        import('./ajax').then(async ({ ajax }) => {
-          const startTime = Date.now();
+  contextUnlockedPromise.then(async (entrypoint) => {
+    if (entrypoint !== 'main') return foreverFetch<T>();
+    const startTime = Date.now();
 
-          return ajax<T>(cachableUrl(path), {
-            headers: { Accept: mimeType },
-          }).then(({ data }) => {
-            const endTime = Date.now();
-            const timePassed = endTime - startTime;
-            // A very crude detection mechanism
-            const isCached = timePassed < 100;
-            // eslint-disable-next-line no-console
-            console.log(
-              `${path} %c[${
-                isCached
-                  ? 'cached'
-                  : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
-              }]`,
-              `color: ${isCached ? '#9fa' : '#f99'}`
-            );
-            return data;
-          });
-        })
-      : foreverFetch<T>()
-  );
+    // Doing async import to avoid a circular dependency
+    const { ajax } = await import('./ajax');
+
+    const { data } = await ajax<T>(cachableUrl(path), {
+      headers: { Accept: mimeType },
+    });
+    const endTime = Date.now();
+    const timePassed = endTime - startTime;
+    // A very crude detection mechanism
+    const isCached = timePassed < 100;
+    // eslint-disable-next-line no-console
+    console.log(
+      `${path} %c[${
+        isCached
+          ? 'cached'
+          : `${formatNumber(f.round(timePassed / MILLISECONDS, 0.01))}s`
+      }]`,
+      `color: ${isCached ? '#9fa' : '#f99'}`
+    );
+    return data;
+  });
 
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)

@@ -46,9 +46,10 @@ export function SplashScreen({
 }
 
 function entrypoint(): void {
+  if (process.env.NODE_ENV === 'test') return;
+
   interceptLogs();
 
-  if (process.env.NODE_ENV === 'test') return;
   console.group('Specify App Starting');
   const entrypointName =
     parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name');

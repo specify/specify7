@@ -47,7 +47,9 @@ import {crash} from './components/errorboundary';
 import {getTreeDefinitionItems} from './treedefinitions';
 import {serializeResource} from './datamodelutils';
 import {fetchPickList} from './picklistmixins';
-import {ajax, Http, ping} from './ajax';
+import {ajax} from './ajax';
+import {ping} from './ping';
+import {Http} from './ajaxUtils';
 import {
   hasPermission,
   hasTablePermission,

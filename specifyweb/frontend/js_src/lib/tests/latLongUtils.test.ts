@@ -2,7 +2,7 @@ import { Coord, Lat, Long } from '../latlongutils';
 import type { RA } from '../types';
 
 function compareCoords(coord: Coord, [sign, ...components]: RA<number>): void {
-  expect(coord.components.length).toBe(components.length);
+  expect(coord.components).toHaveLength(components.length);
   expect(coord.sign).toBe(sign);
   compareArray(coord.components, components);
 }

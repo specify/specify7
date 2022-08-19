@@ -4,7 +4,9 @@
 
 import React from 'react';
 
-import { ajax, formData, ping } from '../../ajax';
+import { ajax } from '../../ajax';
+import { ping } from '../../ping';
+import { formData } from '../../ajaxUtils';
 import { csrfToken } from '../../csrftoken';
 import { f } from '../../functools';
 import { sortFunction } from '../../helpers';

@@ -5,7 +5,8 @@
 
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { error } from '../assert';
 import { commonText } from '../localization/common';
 import { wbText } from '../localization/workbench';

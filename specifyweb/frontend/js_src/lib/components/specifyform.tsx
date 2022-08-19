@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { Http } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { error } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { f } from '../functools';

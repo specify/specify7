@@ -2,7 +2,8 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Http, ping } from '../ajax';
+import { ping } from '../ping';
+import { Http } from '../ajaxUtils';
 import { f } from '../functools';
 import { removeKey, replaceKey } from '../helpers';
 import { schema } from '../schema';

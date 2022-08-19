@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';

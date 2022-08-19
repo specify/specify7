@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { ajax, formData, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { formData, Http } from '../ajaxUtils';
 import { error } from '../assert';
 import type { SpQuery, SpReport } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';

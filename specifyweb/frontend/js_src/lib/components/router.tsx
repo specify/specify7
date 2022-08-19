@@ -4,7 +4,7 @@ import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
-import { toRelativeUrl } from '../ajax';
+import { toRelativeUrl } from '../ajaxUtils';
 import { listen } from '../events';
 import { f } from '../functools';
 import { commonText } from '../localization/common';

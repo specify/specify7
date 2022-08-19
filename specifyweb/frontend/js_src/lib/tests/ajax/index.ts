@@ -1,13 +1,14 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import type { AjaxResponseObject } from '../../ajax';
-import { handleResponse, Http } from '../../ajax';
+import { handleAjaxResponse } from '../../ajaxResponse';
+import { Http } from '../../ajaxUtils';
 import { f } from '../../functools';
 import type { RA } from '../../types';
 
 /**
- * When process.env.NODE_ENV === 'test', intercept the AJAX requests
+ * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
  *
  * @remarks
  * This doesn't know how to handle requests to third-party URLs and this will
@@ -17,9 +18,14 @@ import type { RA } from '../../types';
  * This would also not be able to handle requests for XML resources, as Node.JS
  * environment does not have an XML parser.
  */
-export async function interceptRequest<RESPONSE_TYPE>(
+export async function ajaxMock<RESPONSE_TYPE>(
   url: string,
-  expectedResponseCodes: RA<number>
+  _options: unknown,
+  {
+    expectedResponseCodes = [Http.OK],
+  }: {
+    readonly expectedResponseCodes?: RA<number>;
+  } = {}
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
     return formatResponse('', 'text/plain', expectedResponseCodes);
@@ -43,10 +49,12 @@ export async function interceptRequest<RESPONSE_TYPE>(
   )?.name;
 
   if (typeof targetFile === 'undefined')
-    throw new Error(`No static source found for URL ${url}`);
+    throw new Error(
+      `No static source found for URL ${url}.
+      You can mock it by creating a file in ./lib/tests/ajax/static`
+    );
 
   const file = await fs.promises.readFile(path.join(parsedUrl.dir, targetFile));
-  // console.log(`[${getResponseCode(expectedResponseCodes)}] ${url}`);
   return formatResponse(
     file.toString(),
     splitFileName(targetFile).extension,
@@ -70,7 +78,7 @@ const formatResponse = <RESPONSE_TYPE>(
   extension: string,
   expectedResponseCodes: RA<number>
 ): AjaxResponseObject<RESPONSE_TYPE> =>
-  handleResponse({
+  handleAjaxResponse({
     expectedResponseCodes,
     accept:
       extension === 'json'

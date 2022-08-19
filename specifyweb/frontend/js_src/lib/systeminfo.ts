@@ -2,7 +2,8 @@
  * Fetch basic server information
  */
 
-import { Http, ping } from './ajax';
+import { ping } from './ping';
+import { Http } from './ajaxUtils';
 import { softFail } from './components/errorboundary';
 import { load } from './initialcontext';
 import { formatUrl } from './querystring';

@@ -2,7 +2,8 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Http, ping } from '../ajax';
+import { ping } from '../ping';
+import { Http } from '../ajaxUtils';
 import type { SpecifyUser } from '../datamodel';
 import { removeKey, replaceItem, replaceKey } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';

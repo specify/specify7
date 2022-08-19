@@ -2,7 +2,9 @@
  * Utilities for dealing with user preferences
  */
 
-import { ajax, Http, ping } from './ajax';
+import { ajax } from './ajax';
+import { ping } from './ping';
+import { Http } from './ajaxUtils';
 import { cacheEvents, getCache, setCache } from './cache';
 import { fail } from './components/errorboundary';
 import { MILLISECONDS } from './components/internationalization';

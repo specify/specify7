@@ -4,13 +4,13 @@
 
 import React from 'react';
 
-import { ping } from '../../ajax';
+import { ping } from '../../ping';
 import { commonText } from '../../localization/common';
 import { Button } from '../basic';
 import { LoadingContext } from '../contexts';
 import { useBooleanState } from '../hooks';
 import { Dialog } from '../modaldialog';
-import {OverlayContext} from '../router';
+import { OverlayContext } from '../router';
 
 export function ForceUpdateFeedOverlay(): JSX.Element {
   const loading = React.useContext(LoadingContext);

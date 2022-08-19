@@ -9,7 +9,7 @@ import { localityText } from '../localization/locality';
 import type { FormMode } from '../parseform';
 import { resourceOn } from '../resource';
 import { Input, Select } from './basic';
-import { useResourceValue } from './hooks';
+import { useResourceValue } from './useresourcevalue';
 
 type CoordinateType = 'Line' | 'Point' | 'Rectangle';
 

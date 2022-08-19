@@ -20,7 +20,8 @@ import {
 } from '../uiparse';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
 import { Input } from './basic';
-import { useAsyncState, useResourceValue } from './hooks';
+import { useAsyncState } from './hooks';
+import { useResourceValue } from './useresourcevalue';
 import { PartialDateUi } from './partialdateui';
 import { usePref } from './preferenceshooks';
 import { getResourceAndField } from './resource';

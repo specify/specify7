@@ -1,4 +1,5 @@
-import { ajax, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import type { RoleBase } from './components/securitycollection';
 import type { Policy } from './components/securitypolicy';
 import type { Role } from './components/securityrole';

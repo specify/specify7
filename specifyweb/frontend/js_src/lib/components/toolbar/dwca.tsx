@@ -4,7 +4,8 @@
 
 import React from 'react';
 
-import { formData, ping } from '../../ajax';
+import { ping } from '../../ping';
+import { formData } from '../../ajaxUtils';
 import type { AppResourceFilters } from '../../appresourcesfilters';
 import type { SpAppResource } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';

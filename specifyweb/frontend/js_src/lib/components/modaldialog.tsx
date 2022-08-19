@@ -80,8 +80,6 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-if (globalThis.CSS === undefined)
-  throw new Error('glboalThis.CSS is NOT DEFINED');
 export const supportsBackdropBlur = globalThis.CSS.supports(
   '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
 );

@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { ping } from '../../ajax';
+import { ping } from '../../ping';
 import type { TaxonTreeDef } from '../../datamodel';
 import type { FilterTablesByEndsWith } from '../../datamodelutils';
 import { f } from '../../functools';

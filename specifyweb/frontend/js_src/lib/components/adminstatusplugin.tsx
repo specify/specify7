@@ -5,7 +5,8 @@
 
 import React from 'react';
 
-import { ajax, formData } from '../ajax';
+import { ajax } from '../ajax';
+import { formData } from '../ajaxUtils';
 import type { SpecifyUser } from '../datamodel';
 import type { SpecifyResource } from '../legacytypes';
 import { adminText } from '../localization/admin';

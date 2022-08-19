@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { isExternalUrl } from '../ajax';
+import { isExternalUrl } from '../ajaxUtils';
 import { commonText } from '../localization/common';
 import type { IR, RA } from '../types';
 import { userInformation } from '../userinfo';

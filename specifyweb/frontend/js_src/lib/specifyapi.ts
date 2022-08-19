@@ -2,7 +2,8 @@
  * Wrappers for some back-end API endpoints
  */
 
-import { ajax, formData } from './ajax';
+import { ajax } from './ajax';
+import { formData } from './ajaxUtils';
 import type { AnySchema, AnyTree, SerializedModel } from './datamodelutils';
 import { eventListener } from './events';
 import type { SpecifyResource } from './legacytypes';

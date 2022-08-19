@@ -6,7 +6,8 @@
 
 import type { LayersControlEventHandlerFn } from 'leaflet';
 
-import { ajax, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import { getCache, setCache } from './cache';
 import { legacyNonJsxIcons } from './components/icons';
 import { capitalize, KEY } from './helpers';

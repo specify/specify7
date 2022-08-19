@@ -1,4 +1,5 @@
-import { ajax, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import { Backbone } from './backbone';
 import { formatUrl } from './querystring';
 import { promiseToXhr } from './resourceapi';

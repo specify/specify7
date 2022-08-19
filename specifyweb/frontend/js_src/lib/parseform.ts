@@ -3,7 +3,8 @@
  * adding type safety and strictness to help resolve ambiguities
  */
 
-import { ajax, Http } from './ajax';
+import { ajax } from './ajax';
+import { Http } from './ajaxUtils';
 import { error } from './assert';
 import { parseXml } from './codemirrorlinters';
 import { f } from './functools';

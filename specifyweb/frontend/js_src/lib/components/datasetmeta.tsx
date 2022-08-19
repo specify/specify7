@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { formData, Http, ping } from '../ajax';
+import { ping } from '../ping';
+import { formData, Http } from '../ajaxUtils';
 import { Backbone } from '../backbone';
 import { fetchCollection } from '../collection';
 import type { SpecifyUser } from '../datamodel';

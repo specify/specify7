@@ -4,7 +4,9 @@
  * @module
  */
 
-import { ajax, Http, ping } from './ajax';
+import { ajax } from './ajax';
+import { ping } from './ping';
+import { Http } from './ajaxUtils';
 import { AutoMapper } from './automapper';
 import type { Dataset } from './components/wbplanview';
 import type {

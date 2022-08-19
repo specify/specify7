@@ -4,7 +4,8 @@
 
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { contextUnlockedPromise, foreverFetch } from '../initialcontext';
 import { commonText } from '../localization/common';
 import { QueryFieldSpec } from '../queryfieldspec';

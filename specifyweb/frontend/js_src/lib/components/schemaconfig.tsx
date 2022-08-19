@@ -2,7 +2,7 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useParams } from 'react-router-dom';
 
-import { ping } from '../ajax';
+import { ping } from '../ping';
 import type { SpLocaleItemStr as SpLocaleItemString_ } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
 import { commonText } from '../localization/common';

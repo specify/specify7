@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { ping } from '../ajax';
+import { ping } from '../ping';
 import { csrfToken, parseDjangoDump } from '../csrftoken';
 import type { Collection } from '../datamodel';
 import type { SerializedModel } from '../datamodelutils';

@@ -10,7 +10,7 @@ import {
 } from './resource';
 import {getResourceAndField} from './components/resource';
 import {hijackBackboneAjax} from './startapp';
-import {Http} from './ajax';
+import {Http} from './ajaxUtils';
 import {schema} from './schema';
 import {formatUrl} from './querystring';
 

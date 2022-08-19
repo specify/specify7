@@ -2,7 +2,8 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { f } from '../functools';
 import { keysToLowerCase, sortFunction } from '../helpers';
 import { adminText } from '../localization/admin';
