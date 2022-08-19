@@ -1,11 +1,11 @@
 import type { IR, RA } from '../types';
 import type { SplitMappingPath } from '../wbplanviewmappinghelper';
 import mappingLines1 from './fixtures/mappinglines.1.json';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 import { findRequiredMissingFields } from '../wbplanviewmodelhelper';
 
 export function testWbPlanViewModelHelper(): void {
-  runTest(
+  theories(
     'WbPlanViewModelHelper.findRequiredMissingFields',
     [
       [

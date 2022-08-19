@@ -5,10 +5,10 @@ import type { UploadPlan } from '../uploadplanparser';
 import { parseUploadPlan } from '../uploadplanparser';
 import mappingLines1 from './fixtures/mappinglines.1.json';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 
 export function testUploadPlanParser(): void {
-  runTest(
+  theories(
     'UploadPlanParser.parseUploadPlan',
     [
       [

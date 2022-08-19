@@ -128,6 +128,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
   /*
    * When running in a test environment, mock the calls rather than make
    * actual requests
+   * FIXME: replace with a mock
    */
   process.env.NODE_ENV === 'test'
     ? import('./tests/ajax').then(async ({ interceptRequest }) =>

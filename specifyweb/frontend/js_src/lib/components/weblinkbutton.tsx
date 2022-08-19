@@ -19,27 +19,23 @@ import { Button, Link } from './basic';
 import { useAsyncState } from './hooks';
 import { UiField } from './uifield';
 
-export const webLinks =
-  process.env.NODE_ENV === 'test'
-    ? Promise.resolve<IR<Element>>({})
-    : load<Element>(
-        formatUrl('/context/app.resource', { name: 'WebLinks' }),
-        'application/xml'
-      ).then((xml) =>
-        Object.fromEntries(
-          Array.from(
-            xml.querySelectorAll('vector > weblinkdef'),
-            (definition) =>
-              [
-                defined(
-                  definition.querySelector(':scope > name')?.textContent ??
-                    undefined
-                ),
-                definition,
-              ] as const
-          )
-        )
-      );
+export const webLinks = load<Element>(
+  formatUrl('/context/app.resource', { name: 'WebLinks' }),
+  'application/xml'
+).then((xml) =>
+  Object.fromEntries(
+    Array.from(
+      xml.querySelectorAll('vector > weblinkdef'),
+      (definition) =>
+        [
+          defined(
+            definition.querySelector(':scope > name')?.textContent ?? undefined
+          ),
+          definition,
+        ] as const
+    )
+  )
+);
 
 const specialResourcesFields: {
   readonly [TABLE_NAME in keyof Tables]?: (

@@ -206,7 +206,7 @@ function SpecifyNetwork({
      * the Specify Network page can retrieve information even after the form
      * is closed, for as long as the browser tab is open
      */
-    globalThis.addEventListener('message', messageHandler);
+    globalThis.window.addEventListener('message', messageHandler);
   }, [getLink, messageHandler, handleFailure]);
 
   // If link was clicked before resource was fully loaded, show loading message

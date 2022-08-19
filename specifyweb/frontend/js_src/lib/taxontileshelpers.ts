@@ -1,4 +1,12 @@
-import * as d3 from 'd3';
+import type { HierarchyNode } from 'd3';
+import {
+  hierarchy,
+  scaleOrdinal,
+  schemeSet2,
+  select,
+  treemap,
+  treemapBinary,
+} from 'd3';
 
 import { index, sortFunction } from './helpers';
 import type { RA, RR, WritableArray } from './types';
@@ -112,20 +120,18 @@ function pullUp(node: PairedNode, threshold: number): number {
 }
 
 export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
-  const root = d3
-    .hierarchy(rawRoot)
+  const root = hierarchy(rawRoot)
     .sum(({ count }) => count)
     .sort(sortFunction(({ data }) => data.id));
 
-  const svg = d3.select(container);
+  const svg = select(container);
 
-  d3
-    .treemap()
-    .tile(d3.treemapBinary)
+  treemap()
+    .tile(treemapBinary)
     .size([container.clientWidth, container.clientHeight])
     .round(true)(root);
 
-  const color = d3.scaleOrdinal(d3.schemeSet2);
+  const color = scaleOrdinal(schemeSet2);
   return svg
     .selectAll('rect')
     .data(root.leaves())
@@ -141,20 +147,20 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
 
 /** Fix for incorrect typing for d3.HierarchyNode */
 const nodeRead = (
-  node: d3.HierarchyNode<PairedNode>,
+  node: HierarchyNode<PairedNode>,
   key: 'x0' | 'x1' | 'y0' | 'y1'
 ): number => (node as unknown as Record<typeof key, number>)[key];
 
 export const getTitleGenerator =
   (
     genusRankId: number | undefined
-  ): ((node: d3.HierarchyNode<PairedNode>) => string) =>
+  ): ((node: HierarchyNode<PairedNode>) => string) =>
   (node) =>
     filterArray(recurseTreeTiles(node, genusRankId) ?? []).join(' ') ||
     node.data.name;
 
 const recurseTreeTiles = (
-  node: d3.HierarchyNode<PairedNode>,
+  node: HierarchyNode<PairedNode>,
   genusRankId: number | undefined
 ): RA<string | undefined> | undefined =>
   genusRankId === undefined || node.data.rankId >= genusRankId

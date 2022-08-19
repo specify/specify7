@@ -10,8 +10,7 @@
  *
  */
 
-// REFACTOR: simplify this after migrating to jest
-if (process.env.NODE_ENV !== 'test') require('../css/workbench.css');
+import '../css/workbench.css';
 
 import $ from 'jquery';
 import React from 'react';
@@ -323,7 +322,7 @@ export const WBView = Backbone.View.extend({
       this.wbutils.toggleCellTypes('invalidCells', 'remove');
 
     this.flushIndexedCellData = true;
-    globalThis.addEventListener('resize', this.handleResize);
+    globalThis.window.addEventListener('resize', this.handleResize);
 
     return this;
   },

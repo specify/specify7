@@ -47,14 +47,11 @@ type ErrorBoundaryState =
   | State<'Main'>
   | State<'Silenced'>;
 
-export const supportLink =
-  process.env.NODE_ENV === 'test' ? (
-    (undefined as unknown as JSX.Element)
-  ) : (
-    <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">
-      support@specifysoftware.org
-    </Link.NewTab>
-  );
+export const supportLink = (
+  <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">
+    support@specifysoftware.org
+  </Link.NewTab>
+);
 
 const errors = new Set<string>();
 

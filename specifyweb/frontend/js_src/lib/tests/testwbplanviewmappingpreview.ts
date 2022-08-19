@@ -1,8 +1,8 @@
 import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 
 export function testWbPlanViewTreePreview(): void {
-  runTest(
+  theories(
     'WbPlanViewMappingPreview.generateMappingPathPreview',
     [
       [['CollectionObject', ['catalogNumber']], 'Cat #'],

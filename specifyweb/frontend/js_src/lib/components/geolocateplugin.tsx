@@ -90,7 +90,7 @@ function GeoLocate({
       );
     }
 
-    globalThis.addEventListener('message', listener);
+    globalThis.window.addEventListener('message', listener);
     return (): void => globalThis.removeEventListener('message', listener);
   }, [loading, data, handleClose, resource]);
 

@@ -98,37 +98,34 @@ const url = cachableUrl(
 );
 const fetchLegacyForms = f.store(
   async (): Promise<RA<FormEntry>> =>
-    process.env.NODE_ENV === 'test'
-      ? []
-      : ajax<Document>(url, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/xml' },
-        }).then(async ({ data }) => {
-          await fetchSchema;
-          return Promise.all(
-            Array.from(
-              (data.querySelector('std') ?? data).getElementsByTagName('view')
-            )
-              // I don't think the non-sidebar items are ever used in Sp6.
-              .filter((item) => getBooleanAttribute(item, 'sideBar') ?? false)
-              .map(async (view) =>
-                getView(getAttribute(view, 'view') ?? '').then<
-                  FormEntry | undefined
-                >((form) => {
-                  if (form === undefined) return undefined;
-                  const modelName = parseClassName(form.class) as keyof Tables;
-                  const model = defined(getModel(modelName));
+    ajax<Document>(url, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Accept: 'application/xml' },
+    }).then(async ({ data }) => {
+      await fetchSchema;
+      return Promise.all(
+        Array.from(
+          (data.querySelector('std') ?? data).getElementsByTagName('view')
+        )
+          // I don't think the non-sidebar items are ever used in Sp6.
+          .filter((item) => getBooleanAttribute(item, 'sideBar') ?? false)
+          .map(async (view) =>
+            getView(getAttribute(view, 'view') ?? '').then<
+              FormEntry | undefined
+            >((form) => {
+              if (form === undefined) return undefined;
+              const modelName = parseClassName(form.class) as keyof Tables;
+              const model = defined(getModel(modelName));
 
-                  return {
-                    iconName:
-                      getParsedAttribute(view, 'iconName') ?? model.name,
-                    title: getParsedAttribute(view, 'title') ?? '',
-                    table: model.name,
-                  };
-                })
-              )
-          ).then(filterArray);
-        })
+              return {
+                iconName: getParsedAttribute(view, 'iconName') ?? model.name,
+                title: getParsedAttribute(view, 'title') ?? '',
+                table: model.name,
+              };
+            })
+          )
+      ).then(filterArray);
+    })
 );
 
 const resolveModels = (

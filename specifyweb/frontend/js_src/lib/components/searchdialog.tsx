@@ -24,13 +24,10 @@ import { QueryBuilder } from './querybuilder';
 import { createQuery } from './querytask';
 import { SpecifyForm } from './specifyform';
 
-const dialogDefinitions =
-  process.env.NODE_ENV === 'test'
-    ? Promise.resolve({} as Element)
-    : load<Element>(
-        formatUrl('/context/app.resource', { name: 'DialogDefs' }),
-        'application/xml'
-      );
+const dialogDefinitions = load<Element>(
+  formatUrl('/context/app.resource', { name: 'DialogDefs' }),
+  'application/xml'
+);
 
 const resourceLimit = 100;
 

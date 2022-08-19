@@ -9,28 +9,25 @@ import type { RA } from './types';
 
 const iconGroups = {} as Record<IconGroup, Document>;
 
-export const fetchContext =
-  process.env.NODE_ENV === 'test'
-    ? Promise.resolve()
-    : Promise.all(
-        Object.entries({
-          /**
-           * These files are defined in Specify 6 code here:
-           * https://github.com/specify/specify6/blob/master/config/
-           */
-          datamodel: 'icons_datamodel.xml',
-          discipline: 'icons_disciplines.xml',
-          imgproc: 'icons_imgproc.xml',
-          plugin: 'icons_plugins.xml',
-          default: 'icons.xml',
-        }).map(async ([iconGroup, fileName]) =>
-          load<Document>(`/static/config/${fileName}`, 'application/xml').then(
-            (xml) => {
-              iconGroups[iconGroup] = xml;
-            }
-          )
-        )
-      );
+export const fetchContext = Promise.all(
+  Object.entries({
+    /**
+     * These files are defined in Specify 6 code here:
+     * https://github.com/specify/specify6/blob/master/config/
+     */
+    datamodel: 'icons_datamodel.xml',
+    discipline: 'icons_disciplines.xml',
+    imgproc: 'icons_imgproc.xml',
+    plugin: 'icons_plugins.xml',
+    default: 'icons.xml',
+  }).map(async ([iconGroup, fileName]) =>
+    load<Document>(`/static/config/${fileName}`, 'application/xml').then(
+      (xml) => {
+        iconGroups[iconGroup] = xml;
+      }
+    )
+  )
+);
 
 type IconGroup = keyof typeof iconDirectories;
 

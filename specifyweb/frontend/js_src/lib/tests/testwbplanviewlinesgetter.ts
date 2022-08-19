@@ -4,14 +4,14 @@ import type { IR, RA } from '../types';
 import type { UploadPlan } from '../uploadplanparser';
 import uploadPlan1 from './fixtures/uploadplan.1.json';
 import wbPlanViewLines1 from './fixtures/wbplanviewlines.1.json';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 import {
   getLinesFromHeaders,
   getLinesFromUploadPlan,
 } from '../wbplanviewlinesgetter';
 
 export function testWbPlanViewLinesGetter(): void {
-  runTest(
+  theories(
     'WbPlanViewLinesGetter.getLinesFromHeaders',
     [
       [
@@ -260,7 +260,7 @@ export function testWbPlanViewLinesGetter(): void {
     getLinesFromHeaders
   );
 
-  runTest(
+  theories(
     'WbPlanViewLinesGetter.getLinesFromUploadPlan',
     [
       [

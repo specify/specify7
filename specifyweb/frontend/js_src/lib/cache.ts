@@ -49,7 +49,7 @@ let eventListenerIsInitialized = false;
 
 /** Listen for changes to localStorage from other tabs */
 function initialize(): void {
-  globalThis.addEventListener?.(
+  globalThis.window?.addEventListener(
     'storage',
     ({ storageArea, key: formattedKey, newValue }) => {
       // "key" is null only when running `localStorage.clear()`
@@ -134,7 +134,8 @@ function genericSet<T>(
 
   cache[formattedKey] = value;
 
-  globalThis.localStorage.setItem(
+  // FIXME: revert this?
+  globalThis.localStorage?.setItem(
     formatKey(category, key),
     JSON.stringify(value)
   );

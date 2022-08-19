@@ -22,6 +22,7 @@ export const consoleLog: WritableArray<{
 }> = [];
 
 export function interceptLogs(): void {
+  if (process.env.NODE_ENV === 'test') return;
   logTypes.forEach((logType) => {
     /**
      * Read this if you are coming here from DevTools:

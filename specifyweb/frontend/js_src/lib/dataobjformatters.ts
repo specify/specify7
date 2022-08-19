@@ -59,7 +59,7 @@ export const fetchFormatters: Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
 }> = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main' && process.env.NODE_ENV !== 'test'
+  entrypoint === 'main'
     ? ajax<Document>(
         cachableUrl(
           formatUrl('/context/app.resource', { name: 'DataObjFormatters' })

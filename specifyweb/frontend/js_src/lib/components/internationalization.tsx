@@ -137,14 +137,9 @@ const listFormatter = new Intl.ListFormat(LANGUAGE, {
 export const formatList = (list: RA<string>): string =>
   listFormatter.format(list);
 
-const datePartLocalizer =
-  process.env.NODE_ENV === 'test'
-    ? {
-        of: (code: string): string => code,
-      }
-    : new Intl.DisplayNames(LANGUAGE, {
-        type: 'dateTimeField',
-      });
+const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
+  type: 'dateTimeField',
+});
 export const dateParts = {
   fullDate: commonText('fullDate'),
   day: capitalize(datePartLocalizer.of('day')),

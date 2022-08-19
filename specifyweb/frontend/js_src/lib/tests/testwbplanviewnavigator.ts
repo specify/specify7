@@ -1,8 +1,8 @@
 import { getMappingLineData } from '../wbplanviewnavigator';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 
 export function testWbPlanViewNavigator(): void {
-  runTest(
+  theories(
     'WbPlanViewNavigator.getMappingLineData',
     [
       [

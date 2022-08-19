@@ -1,3 +1,5 @@
+import '../../css/main.css';
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -10,9 +12,6 @@ import { commonText } from '../localization/common';
 import { Contexts } from './contexts';
 import { EntrypointRouter } from './entrypointrouter';
 import { SetCssVariables } from './preferenceshooks';
-
-// REFACTOR: simplify this after migrating to jest
-if (process.env.NODE_ENV !== 'test') require('../../css/main.css');
 
 export function SplashScreen({
   children,
@@ -56,7 +55,7 @@ function entrypoint(): void {
   console.log(entrypointName);
   unlockInitialContext(entrypointName);
 
-  globalThis.addEventListener('load', () => {
+  globalThis.window.addEventListener('load', () => {
     const root = document.getElementById('root');
     const portalRoot = document.getElementById('portal-root');
     if (root === null || portalRoot === null)

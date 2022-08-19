@@ -63,6 +63,7 @@ let todosCount = 0;
 
 function todo(value: string): void {
   todosCount += 1;
+  // TODO: use chalk lib for this instead
   // Green
   console.warn(`\u001B[36m${value}\u001B[0m\n`);
 }

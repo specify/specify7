@@ -15,21 +15,21 @@ import {
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
-import { Backbone } from './backbone';
-import { Button, Input, Label, Ul } from './components/basic';
-import { Lat, Long } from './latlongutils';
-import { camelToKebab, clamp, sortFunction } from './helpers';
-import { f } from './functools';
+import {Backbone} from './backbone';
+import {Button, Input, Label, Ul} from './components/basic';
+import {Lat, Long} from './latlongutils';
+import {camelToKebab, clamp, sortFunction} from './helpers';
+import {f} from './functools';
 import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './components/wbadvancedsearch';
-import { wbText } from './localization/workbench';
-import { commonText } from './localization/common';
-import { showDialog } from './components/legacydialog';
-import { createBackboneView } from './components/reactbackboneextend';
-import { LeafletMap } from './components/leaflet';
-import { localityText } from './localization/locality';
+import {wbText} from './localization/workbench';
+import {commonText} from './localization/common';
+import {showDialog} from './components/legacydialog';
+import {createBackboneView} from './components/reactbackboneextend';
+import {LeafletMap} from './components/leaflet';
+import {localityText} from './localization/locality';
 
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
@@ -791,7 +791,7 @@ export const WBUtils = Backbone.View.extend({
       if (selection.length === 1) handleDelete();
     };
 
-    globalThis.addEventListener('message', handleGeolocateResult, false);
+    globalThis.window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
     if (this.geoMapDialog !== undefined) {

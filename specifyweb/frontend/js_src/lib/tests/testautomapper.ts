@@ -3,10 +3,10 @@ import {
   type AutoMapperConstructorParameters,
 } from '../automapper';
 import type { RA } from '../types';
-import { runTest } from './testmain';
+import { theories } from './testmain';
 
 export function testAutoMapper(): void {
-  runTest(
+  theories(
     'AutoMapper',
     [
       [

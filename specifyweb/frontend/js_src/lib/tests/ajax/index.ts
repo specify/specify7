@@ -46,7 +46,7 @@ export async function interceptRequest<RESPONSE_TYPE>(
     throw new Error(`No static source found for URL ${url}`);
 
   const file = await fs.promises.readFile(path.join(parsedUrl.dir, targetFile));
-  console.log(`[${getResponseCode(expectedResponseCodes)}] ${url}`);
+  // console.log(`[${getResponseCode(expectedResponseCodes)}] ${url}`);
   return formatResponse(
     file.toString(),
     splitFileName(targetFile).extension,
@@ -61,7 +61,7 @@ function splitFileName(fileName: string): {
   const parts = fileName.split('.');
   return {
     fileName: parts.slice(0, -1).join('.'),
-    extension: parts.slice(-1)[0],
+    extension: parts.at(-1)!,
   };
 }
 

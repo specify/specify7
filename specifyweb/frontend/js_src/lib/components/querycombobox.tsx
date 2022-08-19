@@ -58,13 +58,10 @@ import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
 
-const typeSearches =
-  process.env.NODE_ENV === 'test'
-    ? Promise.resolve({} as Element)
-    : load<Element>(
-        formatUrl('/context/app.resource', { name: 'TypeSearches' }),
-        'application/xml'
-      );
+const typeSearches = load<Element>(
+  formatUrl('/context/app.resource', { name: 'TypeSearches' }),
+  'application/xml'
+);
 
 export function QueryComboBox({
   id,

@@ -59,10 +59,7 @@ let preferences: {
       readonly [ITEM in keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']]?: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'];
     };
   };
-} =
-  process.env.NODE_ENV === 'test'
-    ? {}
-    : getCache('userPreferences', 'cached') ?? {};
+} = getCache('userPreferences', 'cached') ?? {};
 export type UserPreferences = typeof preferences;
 export const getRawUserPreferences = () => preferences;
 
@@ -144,7 +141,7 @@ export const setPrefsGenerator = (
           prefs[category] = undefined;
       }
 
-      if (process.env.NODE_ENV !== 'test') commitToCache();
+      commitToCache();
       requestPreferencesSync();
     }
     prefEvents.trigger('update', definition);
@@ -220,9 +217,7 @@ const mimeType = 'application/json';
 
 let userResource: ResourceWithData = undefined!;
 let defaultPreferences: UserPreferences =
-  process.env.NODE_ENV === 'test'
-    ? {}
-    : getCache('userPreferences', 'defaultCached') ?? {};
+  getCache('userPreferences', 'defaultCached') ?? {};
 
 type UserResource = {
   readonly id: number;
@@ -310,10 +305,8 @@ function initializePreferences(resource: ResourceWithData): ResourceWithData {
   userResource = resource;
   preferences = JSON.parse(userResource.data ?? '{}');
   prefEvents.trigger('update', undefined);
-  if (process.env.NODE_ENV !== 'test') {
-    commitToCache();
-    setCache('userPreferences', 'defaultCached', defaultPreferences);
-  }
+  commitToCache();
+  setCache('userPreferences', 'defaultCached', defaultPreferences);
 
   registerChangeListener();
   return userResource;

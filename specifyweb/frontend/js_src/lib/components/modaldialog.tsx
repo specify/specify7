@@ -80,12 +80,11 @@ const dialogIndexes = new Set<number>();
 const getNextIndex = (): number =>
   dialogIndexes.size === 0 ? initialIndex : Math.max(...dialogIndexes) + 1;
 
-export const supportsBackdropBlur =
-  process.env.NODE_ENV === 'test'
-    ? true
-    : CSS.supports(
-        '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
-      );
+if (globalThis.CSS === undefined)
+  throw new Error('glboalThis.CSS is NOT DEFINED');
+export const supportsBackdropBlur = globalThis.CSS.supports(
+  '((-webkit-backdrop-filter: none) or (backdrop-filter: none))'
+);
 
 /**
  * Modal or non-modal dialog. Highly customizable. Used all over the place
