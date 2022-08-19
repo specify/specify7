@@ -458,10 +458,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                     onClick={handleAdd}
                   />
                 ) : undefined}
-                {(resource?.isNew() === true ||
-                  hasTablePermission(model.name, 'delete')) &&
-                typeof handleRemove === 'function' &&
-                canRemove ? (
+                {typeof handleRemove === 'function' && canRemove ? (
                   <DataEntry.Remove
                     aria-label={
                       typeof urlContext === 'number'
@@ -496,7 +493,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             title={title}
             viewName={viewName}
             onClose={handleClose}
-            onDeleted={handleRemove?.bind(undefined, 'deleteButton')}
+            onDeleted={
+              resource?.isNew() === true || hasTablePermission(model.name)
+                ? handleRemove?.bind(undefined, 'deleteButton')
+                : undefined
+            }
             onSaved={(payload): void =>
               handleSaved({
                 ...payload,

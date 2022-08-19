@@ -21,7 +21,7 @@ import {
   hasTreeAccess,
 } from './permissionutils';
 import { getUserPref } from './preferencesutils';
-import { getModel } from './schema';
+import { getFrontEndOnlyFields, getModel } from './schema';
 import type { Relationship } from './specifyfield';
 import type { SpecifyModel } from './specifymodel';
 import { getTreeDefinitionItems, isTreeModel } from './treedefinitions';
@@ -159,11 +159,12 @@ export function getTableFromMappingPath(
   const fieldName = valueIsPartialField(mappingPath.at(-1)!)
     ? parsePartialField(mappingPath.at(-1)!)[0]
     : mappingPath.at(-1)!;
-  const field = defined(
-    defined(getModel(baseTableName)).getField(
-      getGenericMappingPath([...mappingPath.slice(0, -1), fieldName]).join('.')
-    )
-  );
+  const fieldPath = getGenericMappingPath([
+    ...mappingPath.slice(0, -1),
+    fieldName,
+  ]).join('.');
+  if (fieldPath.length === 0) return baseTableName;
+  const field = defined(defined(getModel(baseTableName)).getField(fieldPath));
   return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
@@ -406,7 +407,7 @@ export function getMappingLineData({
               (generateFieldData === 'all' &&
                 isFieldVisible(
                   showHiddenFields,
-                  model.idField.overrides.isHidden,
+                  model.idField.isHidden,
                   model.idField.name
                 ))
                 ? [
@@ -443,7 +444,9 @@ export function getMappingLineData({
                           )))) &&
                     isFieldVisible(
                       showHiddenFields,
-                      field.overrides.isHidden,
+                      scope === 'queryBuilder'
+                        ? field.isHidden
+                        : field.overrides.isHidden,
                       field.name
                     ) &&
                     (!field.isRelationship ||
@@ -496,7 +499,10 @@ export function getMappingLineData({
                       !isTreeModel(model.name) ||
                       mappingPath[internalState.position - 1] ==
                         formatTreeRank(anyTreeRank) ||
-                      queryBuilderTreeFields.has(field.name))
+                      queryBuilderTreeFields.has(field.name)) &&
+                    getFrontEndOnlyFields()[model.name]?.includes(
+                      field.name
+                    ) !== true
                 )
                 .flatMap((field) => {
                   const fieldData = {
@@ -512,7 +518,10 @@ export function getMappingLineData({
                       scope !== 'queryBuilder' &&
                       field.overrides.isRequired &&
                       !mustMatchPreferences[model.name],
-                    isHidden: field.overrides.isHidden,
+                    isHidden:
+                      scope === 'queryBuilder'
+                        ? field.isHidden
+                        : field.overrides.isHidden,
                     isDefault: field.name === internalState.defaultValue,
                     isRelationship: field.isRelationship,
                     tableName: field.isRelationship

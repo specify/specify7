@@ -66,10 +66,16 @@ const pluginRenderers: {
     readonly isRequired: boolean;
   }) => JSX.Element | null;
 } = {
-  LatLonUI({ resource, mode, id, pluginDefinition: { step } }) {
+  LatLonUI({ resource, mode, id, pluginDefinition: { step, latLongType } }) {
     return (
       f.maybe(toTable(resource, 'Locality'), (locality) => (
-        <LatLongUi id={id} mode={mode} resource={locality} step={step} />
+        <LatLongUi
+          id={id}
+          mode={mode}
+          resource={locality}
+          step={step}
+          latLongType={latLongType}
+        />
       )) ?? <WrongTable allowedTable="Locality" resource={resource} />
     );
   },

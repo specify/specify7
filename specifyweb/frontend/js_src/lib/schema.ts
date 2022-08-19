@@ -16,7 +16,7 @@ import { schemaExtras } from './schemaextras';
 import { LiteralField, Relationship } from './specifyfield';
 import { type TableDefinition, SpecifyModel } from './specifymodel';
 import { isTreeModel } from './treedefinitions';
-import type { IR, RA } from './types';
+import type { IR, RA, RR } from './types';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -66,6 +66,11 @@ export const getSchemaLocalization = (): IR<SchemaLocalization> =>
   schemaLocalization ??
   error('Accessing schema localization before fetching it');
 
+const frontEndOnlyFields: Partial<Record<keyof Tables, RA<string>>> = {};
+export const getFrontEndOnlyFields = (): Partial<
+  RR<keyof Tables, RA<string>>
+> => frontEndOnlyFields;
+
 export const fetchContext = f
   .all({
     tables: load<RA<TableDefinition>>(
@@ -102,6 +107,11 @@ export const fetchContext = f
           frontEndRelationships
         );
         model.fields = [...model.literalFields, ...model.relationships];
+
+        frontEndOnlyFields[model.name] = [
+          ...frontEndFields,
+          ...frontEndRelationships,
+        ].map(({ name }) => name);
 
         callback?.();
       });

@@ -7,12 +7,14 @@ import type { State } from 'typesafe-reducer';
 import type { PartialDatePrecision } from './components/partialdateui';
 import { f } from './functools';
 import { parseRelativeDate } from './relativedate';
+import { CoordinateType, coordinateType } from './components/latlongui';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
     'LatLonUI',
     {
       readonly step: number | undefined;
+      readonly latLongType: CoordinateType;
     }
   >;
   readonly PartialDateUI: State<
@@ -67,10 +69,17 @@ const processUiPlugin: {
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
 } = {
-  LatLonUI: ({ getProperty }) => ({
-    type: 'LatLonUI',
-    step: f.parseInt(getProperty('step')),
-  }),
+  LatLonUI({ getProperty }) {
+    const latLongType = getProperty('latLongType') ?? '';
+    return {
+      type: 'LatLonUI',
+      step: f.parseInt(getProperty('step')),
+      latLongType:
+        coordinateType.find(
+          (type) => type.toLowerCase() === latLongType.toLowerCase()
+        ) ?? 'Point',
+    };
+  },
   PartialDateUI: ({ getProperty, defaultValue }) => ({
     type: 'PartialDateUI',
     defaultValue: f.maybe(

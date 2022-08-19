@@ -146,18 +146,21 @@ export function QueryLine({
 
       const updatedFilters = hasParser
         ? field.filters.map((filter) => {
-            const filterType =
+            const resetFilter =
               fieldType === undefined ||
               queryFieldFilters[filter.type].types?.includes(fieldType) ===
-                false
-                ? 'any'
-                : filter.type;
-            return filterType === 'any' && filter.type !== 'any'
+                false;
+            return resetFilter
               ? ({
                   type: 'any',
                   isNot: false,
                   startValue: '',
                 } as const)
+              : filter.type === 'any' && filter.isNot
+              ? {
+                  ...filter,
+                  isNot: false,
+                }
               : filter;
           })
         : [];
@@ -230,7 +233,7 @@ export function QueryLine({
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
-      className="flex gap-2 border-t border-t-gray-500 py-2"
+      className="border-t-gray-500 flex gap-2 py-2 border-t"
     >
       {typeof handleRemove === 'function' && (
         <Button.Small

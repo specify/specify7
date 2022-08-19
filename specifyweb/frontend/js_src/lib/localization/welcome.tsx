@@ -75,7 +75,7 @@ export const welcomeText = createDictionary({
       University of Florida, Denmark Consortium of Museums и University of
       Kansas. Консорциум действует под некоммерческой организацией, 501(c)3,
       налоговым статусом США университета University of Kansas. Specify
-      поддерживался с 1996 по 2018 год грантами фонда U.S. National Science 
+      поддерживался с 1996 по 2018 год грантами фонда U.S. National Science
       Foundation.`,
   },
   licence: {
@@ -96,6 +96,18 @@ export const welcomeText = createDictionary({
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
+  },
+  gitSha: {
+    'en-us': 'Git SHA:',
+    'ru-ru': 'Git SHA:',
+  },
+  buildDate: {
+    'en-us': 'Build Date:',
+    'ru-ru': 'Дата сборки:',
+  },
+  unknown: {
+    'en-us': 'Unknown',
+    'ru-ru': 'Неизвестно',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',

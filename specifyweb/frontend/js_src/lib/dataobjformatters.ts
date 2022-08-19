@@ -208,7 +208,7 @@ export async function format<SCHEMA extends AnySchema>(
             const field = defined(
               resource.specifyModel.getField(fieldName) as LiteralField
             );
-            return `${separator}${
+            const formatted =
               typeof fieldFormatter === 'string' && fieldFormatter === ''
                 ? ''
                 : await f.var(
@@ -237,8 +237,8 @@ export async function format<SCHEMA extends AnySchema>(
                                   value as string | undefined
                                 )
                           )
-                  )
-            }`;
+                  );
+            return formatted === '' ? '' : `${separator}${formatted}`;
           }
         )
       ).then((values) => values.join(''));

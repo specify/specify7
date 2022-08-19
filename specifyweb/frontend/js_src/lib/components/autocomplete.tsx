@@ -113,24 +113,43 @@ export function Autocomplete<T>({
   const id = useId('autocomplete-data-list')('');
   const [results, setResults] = React.useState<RA<AutoCompleteItem<T>>>([]);
 
+  const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
+
   const filterItems = React.useCallback(
     (newResults: typeof results, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
         : shouldFilterItems
-        ? newResults.filter(
-            ({ label, searchValue }) =>
-              (typeof label === 'string' ? label : searchValue ?? '')
-                .toLowerCase()
-                .includes(pendingValue.toLowerCase()) ||
-              (typeof searchValue === 'string' &&
-                compareStrings(
-                  searchValue.slice(0, pendingValue.length),
-                  pendingValue
-                ) === 0)
-          )
+        ? newResults.filter(({ label, searchValue }) => {
+            let searchString =
+              typeof label === 'string' ? label : searchValue ?? '';
+            let searchQuery = pendingValue;
+
+            if (
+              searchAlgorithm === 'contains' ||
+              searchAlgorithm === 'startsWith'
+            ) {
+              searchString = searchString.toLowerCase();
+              searchQuery = pendingValue.toLowerCase();
+            }
+
+            if (
+              searchAlgorithm === 'contains' ||
+              searchAlgorithm === 'containsCaseSensitive'
+            ) {
+              if (searchString.includes(searchQuery)) return true;
+            } else if (searchString.startsWith(searchQuery)) return true;
+
+            const isEqual =
+              typeof searchValue === 'string' &&
+              compareStrings(
+                searchValue.slice(0, pendingValue.length),
+                pendingValue
+              ) === 0;
+            return isEqual;
+          })
         : newResults,
-    [shouldFilterItems]
+    [shouldFilterItems, searchAlgorithm]
   );
 
   /*
@@ -263,7 +282,7 @@ export function Autocomplete<T>({
 
   const [autoGrowAutoComplete] = usePref(
     'form',
-    'queryComboBox',
+    'autoComplete',
     'autoGrowAutoComplete'
   );
   /*
@@ -343,10 +362,10 @@ export function Autocomplete<T>({
     return listen(globalThis, 'scroll', handleScroll, true);
   }, [showList, input, isInDialog, autoGrowAutoComplete]);
 
-  const [highlightMatch] = usePref('form', 'queryComboBox', 'highlightMatch');
+  const [highlightMatch] = usePref('form', 'autoComplete', 'highlightMatch');
   const [closeOnOutsideClick] = usePref(
     'form',
-    'queryComboBox',
+    'autoComplete',
     'closeOnOutsideClick'
   );
 
@@ -395,7 +414,7 @@ export function Autocomplete<T>({
         className: listHasItems ? 'autocomplete' : '',
         onKeyDown: (event) => (showList ? handleKeyDown(event) : handleOpen()),
         onValueChange(value) {
-          if (value === '' && pendingValue.length > 1) handleCleared?.();
+          if (value === '') handleCleared?.();
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')

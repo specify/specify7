@@ -279,7 +279,7 @@ export function QueryBuilder({
         {
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
-            <header className="flex items-center gap-2 whitespace-nowrap">
+            <header className="whitespace-nowrap flex items-center gap-2">
               <TableIcon label name={model.name} />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
@@ -291,7 +291,7 @@ export function QueryBuilder({
                   : queryText('queryTaskTitle', query.name)}
               </H2>
               {!queryResource.isNew() && <QueryEditButton query={query} />}
-              <span className="ml-2 flex-1" />
+              <span className="flex-1 ml-2" />
               {!isScrolledTop && (
                 <Button.Small
                   onClick={(): void =>
@@ -381,7 +381,7 @@ export function QueryBuilder({
               : handleScrolledDown()
           }
         >
-          <div className="flex snap-start flex-col gap-4">
+          <div className="snap-start flex flex-col gap-4">
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -516,7 +516,7 @@ export function QueryBuilder({
                 />
                 {commonText('revealHiddenFormFields')}
               </Label.ForCheckbox>
-              <span className="-ml-2 flex-1" />
+              <span className="flex-1 -ml-2" />
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
                   {/*

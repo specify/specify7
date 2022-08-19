@@ -34,8 +34,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Клонировать',
   },
   addAnother: {
-    'en-us': 'Add another',
-    'ru-ru': 'Добавить еще',
+    'en-us': 'Add',
+    'ru-ru': 'Добавить',
   },
   // BusinessRules
   valueMustBeUniqueToField: {

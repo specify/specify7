@@ -11,7 +11,8 @@ import { resourceOn } from '../resource';
 import { Input, Select } from './basic';
 import { useResourceValue } from './useresourcevalue';
 
-type CoordinateType = 'Line' | 'Point' | 'Rectangle';
+export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
+export type CoordinateType = typeof coordinateType[number];
 
 type Parsed = {
   readonly format: (step: number | undefined) => string;
@@ -180,14 +181,16 @@ export function LatLongUi({
   mode,
   id,
   step,
+  latLongType,
 }: {
   readonly resource: SpecifyResource<Locality>;
   readonly mode: FormMode;
   readonly id: string | undefined;
   readonly step: number | undefined;
+  readonly latLongType: CoordinateType;
 }): JSX.Element {
   const [coordinateType, setCoordinateType] = React.useState<CoordinateType>(
-    () => resource.get('latLongType') ?? 'Point'
+    () => resource.get('latLongType') ?? latLongType
   );
 
   React.useEffect(

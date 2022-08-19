@@ -412,7 +412,7 @@ function UserView({
                   onDeleted={handleDeleted}
                 />
               ) : undefined}
-              <span className="-ml-2 flex-1" />
+              <span className="flex-1 -ml-2" />
               {formElement !== null &&
               (mode === 'edit' ||
                 // Check if has update access in any collection

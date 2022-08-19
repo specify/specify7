@@ -23,8 +23,9 @@ export function error(message: Error | string, ...rest: RA<unknown>): never {
 }
 
 /**
- * Before an error is thrown, this function is called
- * Setting a breakpoint in this function would break on most front-end errors
+ * Before an error is thrown, this function is called.
+ *
+ * Setting a breakpoint in this function would break on most front-end errors.
  *
  * There is a "Pause on caught exceptions" checkbox in Chrome's DevTools,
  * but it produces lot's of false positives, because babel's polyfills
@@ -40,6 +41,7 @@ export function breakpoint(): void {
 
 /**
  * Wrap a function in this to call a breakpoint when function is called
+ *
  * Usually, you can just set a breakpoint inside a function, but that is hard
  * for functions defined by third party libraries
  */

@@ -89,9 +89,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
           setDeferred(false);
         }}
       >
-        {Array.isArray(blockers) && blockers.length > 0
-          ? icons.exclamation
-          : undefined}
+        {isBlocked ? icons.exclamation : undefined}
         {commonText('delete')}
       </ButtonComponent>
       {isOpen ? (
@@ -121,7 +119,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 >
                   {commonText('delete')}
                 </Button.Red>
-                <span className="-ml-2 flex-1" />
+                <span className="flex-1 -ml-2" />
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               </>
             }

@@ -219,9 +219,9 @@ export function QueryResultsTable({
   // This is undefined when running query in countOnly mode
   readonly initialData: RA<RA<number | string | null>> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
-  readonly onSelected?: (resource: RA<number>) => void;
+  readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
-    fieldIndex: number,
+    fieldSpec: QueryFieldSpec,
     direction: 'ascending' | 'descending' | undefined
   ) => void;
   readonly createRecordSet: JSX.Element | undefined;
@@ -332,13 +332,13 @@ export function QueryResultsTable({
             {formsText('deselectAll')}
           </Button.Small>
         )}
-        <div className="-ml-2 flex-1" />
+        <div className="flex-1 -ml-2" />
+        {extraButtons}
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 ? (
           <>
-            {extraButtons}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet
@@ -438,7 +438,8 @@ export function QueryResultsTable({
                   sortConfig={sortConfig?.[index]}
                   onSortChange={
                     typeof handleSortChange === 'function'
-                      ? (sortType): void => handleSortChange?.(index, sortType)
+                      ? (sortType): void =>
+                          handleSortChange?.(fieldSpec, sortType)
                       : undefined
                   }
                 />
@@ -607,8 +608,22 @@ export function QueryResultsWrapper({
           fetchResults,
           fieldSpecs,
           initialData,
-          sortConfig: fields.map((field) => field.sortType),
-          onSortChange: handleSortChange,
+          sortConfig: fields
+            .filter(({ isDisplay }) => isDisplay)
+            .map((field) => field.sortType),
+          onSortChange:
+            typeof handleSortChange === 'function'
+              ? (fieldSpec, direction) => {
+                  /*
+                   * If some fields are not displayed, visual index and actual field
+                   * index differ
+                   */
+                  const index = fieldSpecs.indexOf(fieldSpec);
+                  const field = displayedFields[index];
+                  const originalIndex = allFields.indexOf(field);
+                  handleSortChange(originalIndex, direction);
+                }
+              : undefined,
           createRecordSet,
           extraButtons,
           onSelected: handleSelected,
@@ -627,7 +642,7 @@ export function QueryResultsWrapper({
 
   return props === undefined ? (
     queryRunCount === 0 ? null : (
-      <div className="flex-1 snap-start">{loadingGif}</div>
+      <div className="snap-start flex-1">{loadingGif}</div>
     )
   ) : (
     <div

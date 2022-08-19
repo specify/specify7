@@ -15,15 +15,15 @@ import '../css/workbench.css';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import {Backbone} from './backbone';
+import { Backbone } from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {Button, className, Link} from './components/basic';
-import {getModel, schema} from './schema';
-import {DataSetNameView} from './components/datasetmeta';
-import {WbUploaded} from './components/wbuploadedview';
-import {WBUtils} from './wbutils';
+import { Button, className, Link } from './components/basic';
+import { getModel, schema } from './schema';
+import { DataSetNameView } from './components/datasetmeta';
+import { WbUploaded } from './components/wbuploadedview';
+import { WBUtils } from './wbutils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -31,38 +31,38 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import {parseUploadPlan} from './uploadplanparser';
-import {capitalize, clamp, mappedFind} from './helpers';
-import {getTableFromMappingPath} from './wbplanviewnavigator';
-import {getIcon, unknownIcon} from './icons';
-import {wbText} from './localization/workbench';
-import {commonText} from './localization/common';
-import {showDialog} from './components/legacydialog';
-import {dialogClassNames, loadingBar} from './components/modaldialog';
-import {format} from './dataobjformatters';
-import {iconClassName, legacyNonJsxIcons} from './components/icons';
-import {LANGUAGE} from './localization/utils';
-import {defined, filterArray} from './types';
-import {crash} from './components/errorboundary';
-import {getTreeDefinitionItems} from './treedefinitions';
-import {serializeResource} from './datamodelutils';
-import {fetchPickList} from './picklistmixins';
-import {ajax} from './ajax';
-import {ping} from './ping';
-import {Http} from './ajaxUtils';
+import { parseUploadPlan } from './uploadplanparser';
+import { capitalize, clamp, mappedFind } from './helpers';
+import { getTableFromMappingPath } from './wbplanviewnavigator';
+import { getIcon, unknownIcon } from './icons';
+import { wbText } from './localization/workbench';
+import { commonText } from './localization/common';
+import { showDialog } from './components/legacydialog';
+import { dialogClassNames, loadingBar } from './components/modaldialog';
+import { format } from './dataobjformatters';
+import { iconClassName, legacyNonJsxIcons } from './components/icons';
+import { LANGUAGE } from './localization/utils';
+import { defined, filterArray } from './types';
+import { crash } from './components/errorboundary';
+import { getTreeDefinitionItems } from './treedefinitions';
+import { serializeResource } from './datamodelutils';
+import { fetchPickList } from './picklistmixins';
+import { ajax } from './ajax';
+import { ping } from './ping';
+import { Http } from './ajaxUtils';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from './permissionutils';
-import {wbViewTemplate} from './components/wbviewtemplate';
-import {legacyLoadingContext} from './components/contexts';
-import {getCache, setCache} from './cache';
-import {f} from './functools';
-import {pathStartsWith} from './wbplanviewutils';
-import {getUserPref} from './preferencesutils';
-import {createBackboneView} from './components/reactbackboneextend';
-import {WbStatus} from './components/wbstatus';
+import { wbViewTemplate } from './components/wbviewtemplate';
+import { legacyLoadingContext } from './components/contexts';
+import { getCache, setCache } from './cache';
+import { f } from './functools';
+import { pathStartsWith } from './wbplanviewutils';
+import { getUserPref } from './preferencesutils';
+import { createBackboneView } from './components/reactbackboneextend';
+import { WbStatus } from './components/wbstatus';
 
 const metaKeys = [
   'isNew',
@@ -214,7 +214,13 @@ export const WBView = Backbone.View.extend({
     this.handleResize = _.throttle(() => this.hot?.render(), throttleRate);
   },
   render() {
-    this.$el.append(wbViewTemplate(this.isUploaded, this.dataset.id));
+    this.$el.append(
+      wbViewTemplate(
+        this.isUploaded,
+        Boolean(this.dataset.uploadplan),
+        this.dataset.id
+      )
+    );
     this.$el.attr('aria-label', commonText('workBench'));
 
     /*
@@ -1780,6 +1786,7 @@ export const WBView = Backbone.View.extend({
       this.getHotPlugin('hiddenColumns').hideColumns(colsToHide);
     });
     effectsCleanup.push(() => {
+      if (this.hot === undefined) return;
       this.getHotPlugin('hiddenRows').showRows(
         rowsToHide.filter((visualRow) => !initialHiddenRows.includes(visualRow))
       );
@@ -1827,7 +1834,7 @@ export const WBView = Backbone.View.extend({
     const runCleanup = () =>
       // If WBView.remove() was called, this.hot would be undefined here
       [...effectsCleanup, this.hot?.render.bind(this.hot)].forEach(
-        (effectCleanup) => effectCleanup()
+        (effectCleanup) => effectCleanup?.()
       );
 
     const handleClose = () => {
@@ -2026,9 +2033,11 @@ export const WBView = Backbone.View.extend({
                   showDialog({
                     header: wbText('dataSetDeletedDialogHeader'),
                     content: wbText('dataSetDeletedDialogText'),
-                    buttons: <Link.Blue href="/specify/">
-                      {commonText('close')}
-                    </Link.Blue>,
+                    buttons: (
+                      <Link.Blue href="/specify/">
+                        {commonText('close')}
+                      </Link.Blue>
+                    ),
                   });
               });
             }}
@@ -2060,9 +2069,7 @@ export const WBView = Backbone.View.extend({
       buttons: (
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Red
-            onClick={() => this.trigger('refresh')}
-          >
+          <Button.Red onClick={() => this.trigger('refresh')}>
             {wbText('revert')}
           </Button.Red>
         </>
@@ -2408,7 +2415,7 @@ export const WBView = Backbone.View.extend({
     this.$('.wb-show-upload-view')
       .prop('disabled', true)
       .prop('title', wbText('wbUploadedUnavailable'));
-    this.options.onSetUnloadProtect(true)
+    this.options.onSetUnloadProtect(true);
   },
   // Check if AJAX failed because Data Set was deleted
   checkDeletedFail(statusCode) {
@@ -2436,7 +2443,7 @@ export const WBView = Backbone.View.extend({
       .prop('title', '');
     this.$('.wb-save').prop('disabled', true);
     this.$('.wb-revert').prop('disabled', true);
-    this.options.onSetUnloadProtect(false)
+    this.options.onSetUnloadProtect(false);
   },
 
   // MetaData

@@ -327,7 +327,7 @@ export function UserIdentityProviders({
     Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
       <legend>{adminText('externalIdentityProviders')}</legend>
-      <Ul className="flex flex-col gap-1">
+      <Ul className="flex flex-col gap-1 pl-2">
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
             <Label.ForCheckbox>

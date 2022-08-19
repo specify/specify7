@@ -39,7 +39,7 @@ import type { SpecifyModel } from '../specifymodel';
 import { toTable, toTreeTable } from '../specifymodel';
 import {
   getTreeDefinitionItems,
-  isTreeResource,
+  isTreeModel,
   treeRanksPromise,
 } from '../treedefinitions';
 import type { RA } from '../types';
@@ -51,13 +51,13 @@ import { Autocomplete } from './autocomplete';
 import { DataEntry, Input } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState } from './hooks';
-import { useResourceValue } from './useresourcevalue';
 import { formatList } from './internationalization';
 import { Dialog } from './modaldialog';
 import { ResourceView, RESTRICT_ADDING } from './resourceview';
 import type { QueryComboBoxFilter } from './searchdialog';
 import { SearchDialog } from './searchdialog';
 import { SubViewContext } from './subview';
+import { useResourceValue } from './useresourcevalue';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
@@ -408,7 +408,9 @@ export function QueryComboBox({
                 makeComboBoxQuery({
                   fieldName,
                   value,
-                  isTreeTable: isTreeResource(resource),
+                  isTreeTable:
+                    field?.isRelationship === true &&
+                    isTreeModel(field.relatedModel.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
@@ -482,7 +484,7 @@ export function QueryComboBox({
   );
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <Autocomplete<string>
         aria-label={undefined}
         filterItems={false}

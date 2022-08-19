@@ -39,9 +39,11 @@ export function makeComboBoxQuery({
   query.set('isFavorite', false);
   query.set('ordinal', null);
 
-  const searchAlgorithm = isTreeTable
-    ? 'contains'
-    : getUserPref('form', 'queryComboBox', 'searchAlgorithm');
+  const searchAlgorithm = getUserPref(
+    'form',
+    'queryComboBox',
+    isTreeTable ? 'treeSearchAlgorithm' : 'searchAlgorithm'
+  );
   const searchField = QueryFieldSpec.fromPath(
     relatedModel.name,
     fieldName.split('.')

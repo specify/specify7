@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import type { Tables } from '../datamodel';
@@ -17,10 +18,10 @@ import {
 import { savePlan } from '../wbplanviewutils';
 import type { UploadResult } from '../wbuploadedparser';
 import { useLiveState, useTitle } from './hooks';
+import { ProtectedAction } from './permissiondenied';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
 import { BaseTableSelection } from './wbplanviewstate';
-import { useNavigate } from 'react-router-dom';
 
 // General definitions
 export type Status = {
@@ -114,30 +115,32 @@ export function WbPlanView({
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (
-    <BaseTableSelection
-      headers={headers}
-      onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
-      onSelected={(baseTableName): void =>
-        setState({
-          type: 'MappingState',
-          changesMade: true,
-          baseTableName,
-          lines: getLinesFromHeaders({
-            headers,
-            runAutoMapper: true,
+    <ProtectedAction action="update" resource="/workbench/dataset">
+      <BaseTableSelection
+        headers={headers}
+        onClose={(): void => navigate(`/specify/workbench/${dataset.id}/`)}
+        onSelected={(baseTableName): void =>
+          setState({
+            type: 'MappingState',
+            changesMade: true,
             baseTableName,
-          }),
-          mustMatchPreferences: {},
-        })
-      }
-      onSelectTemplate={(uploadPlan, headers): void =>
-        setState({
-          type: 'MappingState',
-          changesMade: true,
-          ...getLinesFromUploadPlan(headers, uploadPlan),
-        })
-      }
-    />
+            lines: getLinesFromHeaders({
+              headers,
+              runAutoMapper: true,
+              baseTableName,
+            }),
+            mustMatchPreferences: {},
+          })
+        }
+        onSelectTemplate={(uploadPlan, headers): void =>
+          setState({
+            type: 'MappingState',
+            changesMade: true,
+            ...getLinesFromUploadPlan(headers, uploadPlan),
+          })
+        }
+      />
+    </ProtectedAction>
   ) : (
     <WbPlanViewMapper
       baseTableName={state.baseTableName}

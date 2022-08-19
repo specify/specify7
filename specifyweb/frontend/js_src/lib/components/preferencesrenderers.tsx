@@ -37,7 +37,7 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
     return (
       <div className={`relative ${iconClassName}`}>
         <span
-          className="block h-full w-full rounded-full"
+          className="block w-full h-full rounded-full"
           style={{
             backgroundColor: value,
           }}
@@ -201,9 +201,9 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
      *{
-     *value: 'embeddedWebpage',
-     *title: preferencesText('embeddedWebpage'),
-     *description: preferencesText('embeddedWebpageDescription'),
+     *  value: 'embeddedWebpage',
+     *  title: preferencesText('embeddedWebpage'),
+     *  description: preferencesText('embeddedWebpageDescription'),
      *},
      */
   ],
@@ -279,8 +279,8 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         </Select>
         {f.maybe(
           definition.values.find((item) => item.value === value).description,
-          (item) => (
-            <p>{item}</p>
+          (description) => (
+            <p>{description}</p>
           )
         )}
       </>

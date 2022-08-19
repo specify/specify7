@@ -155,7 +155,9 @@ export function PickListComboBox(
           name={name}
           required={isRequired}
           onValueChange={(newValue): void =>
-            props.items?.some(({ value }) => value === newValue) === true
+            newValue === ''
+              ? updateValue('')
+              : props.items?.some(({ value }) => value === newValue) === true
               ? updateValue(newValue)
               : undefined
           }

@@ -9,7 +9,7 @@ from jsonschema import validate # type: ignore
 from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
 
 from django.db import connection, transaction
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, IntegrityError
 from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
@@ -27,6 +27,9 @@ Rows = Union[List[Row], csv.DictReader]
 Progress = Callable[[int, Optional[int]], None]
 
 logger = logging.getLogger(__name__)
+
+class RollbackFailure(Exception):
+    pass
 
 class Rollback(Exception):
     def __init__(self, reason: str):
@@ -80,16 +83,31 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
                 unupload_record(record, agent)
 
         model = getattr(models, upload_result.record_result.info.tableName.capitalize())
-        obj = model.objects.get(id=upload_result.get_id())
-        logger.debug(f"deleting {obj}")
-        auditlog.remove(obj, agent, None)
-        obj.delete()
+        obj_q = model.objects.select_for_update().filter(id=upload_result.get_id())
+        try:
+            obj = obj_q[0]
+        except IndexError:
+            logger.debug("already deleted")
+        else:
+            logger.debug(f"deleting {obj}")
+            auditlog.remove(obj, agent, None)
+            try:
+                obj_q._raw_delete(obj_q.db)
+            except IntegrityError as e:
+                raise RollbackFailure(
+                    f"Unable to roll back {obj} because it is now refereneced by another record."
+                ) from e
 
         for addition in reversed(upload_result.record_result.picklistAdditions):
-            pli = getattr(models, 'Picklistitem').objects.get(id=addition.id)
-            logger.debug(f"deleting {pli}")
-            auditlog.remove(pli, agent, None)
-            pli.delete()
+            pli_q = getattr(models, 'Picklistitem').objects.select_for_update().filter(id=addition.id)
+            try:
+                pli = pli_q[0]
+            except IndexError:
+                logger.debug("picklist item already deleted")
+            else:
+                logger.debug(f"deleting {pli}")
+                auditlog.remove(pli, agent, None)
+                pli_q._raw_delete(pli_q.db)
 
     for _, record in sorted(upload_result.toOne.items(), key=lambda kv: kv[0], reverse=True):
         unupload_record(record, agent)
@@ -192,7 +210,7 @@ def do_upload(
         tic = time.perf_counter()
         results: List[UploadResult] = []
         for i, row in enumerate(rows):
-            _cache = cache.copy() if cache and allow_partial else cache
+            _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             with savepoint("row upload") if allow_partial else no_savepoint():
                 bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)

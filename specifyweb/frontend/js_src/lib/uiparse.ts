@@ -466,6 +466,10 @@ export function parseValue(
       };
 }
 
+/*
+ * BUG: when formatting a date field, it uses the databaseDateFormat rather
+ *  than fullDateFormat(). check usages to see where this may be a problem.
+ */
 /**
  * Format value for output
  *

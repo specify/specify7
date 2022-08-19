@@ -15,21 +15,22 @@ import {
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from './wblocalitydataextractor';
-import {Backbone} from './backbone';
-import {Button, Input, Label, Ul} from './components/basic';
-import {Lat, Long} from './latlongutils';
-import {camelToKebab, clamp, sortFunction} from './helpers';
-import {f} from './functools';
+import { Backbone } from './backbone';
+import { Button, Input, Label, Ul } from './components/basic';
+import { Lat, Long } from './latlongutils';
+import { camelToKebab, clamp, sortFunction } from './helpers';
+import { f } from './functools';
 import {
   getInitialSearchPreferences,
   WbAdvancedSearch,
 } from './components/wbadvancedsearch';
-import {wbText} from './localization/workbench';
-import {commonText} from './localization/common';
-import {showDialog} from './components/legacydialog';
-import {createBackboneView} from './components/reactbackboneextend';
-import {LeafletMap} from './components/leaflet';
-import {localityText} from './localization/locality';
+import { wbText } from './localization/workbench';
+import { commonText } from './localization/common';
+import { showDialog } from './components/legacydialog';
+import { createBackboneView } from './components/reactbackboneextend';
+import { LeafletMap } from './components/leaflet';
+import { localityText } from './localization/locality';
+import { filterArray } from './types';
 
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
@@ -557,6 +558,7 @@ export const WBUtils = Backbone.View.extend({
       : [];
 
     const leafletButton = this.el.getElementsByClassName('wb-leafletmap')[0];
+    // These buttons only exist if user has data set update permission
     const geoLocaleButton = this.el.getElementsByClassName('wb-geolocate')[0];
     const coordinateConverterButton = this.el.getElementsByClassName(
       'wb-convert-coordinates'
@@ -564,13 +566,16 @@ export const WBUtils = Backbone.View.extend({
 
     if (this.localityColumns.length > 0) {
       leafletButton.disabled = false;
-      if (this.wbview.isUploaded) {
-        [geoLocaleButton, coordinateConverterButton].map((button) =>
-          button.setAttribute('title', wbText('unavailableWhenUploaded'))
+      if (this.wbview.isUploaded)
+        filterArray([geoLocaleButton, coordinateConverterButton]).map(
+          (button) =>
+            button.setAttribute('title', wbText('unavailableWhenUploaded'))
         );
-      } else {
-        geoLocaleButton.disabled = false;
-        coordinateConverterButton.disabled = false;
+      else {
+        if (typeof geoLocaleButton === 'object')
+          geoLocaleButton.disabled = false;
+        if (typeof coordinateConverterButton === 'object')
+          coordinateConverterButton.disabled = false;
       }
     }
   },

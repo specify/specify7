@@ -96,13 +96,18 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
     if tablename.lower() == 'agent' and fieldname.lower() == 'agenttype':
         return parse_agenttype(value, colopts.column)
 
+    table = datamodel.get_table_strict(tablename)
+    field = table.get_field_strict(fieldname)
+
     if colopts.picklist:
         result = parse_with_picklist(collection, colopts.picklist, fieldname, value, colopts.column)
         if result is not None:
+            if isinstance(result, ParseResult) and hasattr(field, 'length') and len(result.upload[fieldname]) > field.length:
+                return ParseFailure(
+                    f"value from picklist {colopts.picklist.name} longer than the max of {field.length} for field",
+                    colopts.column
+                )
             return result
-
-    table = datamodel.get_table_strict(tablename)
-    field = table.get_field_strict(fieldname)
 
     if field.is_relationship:
         return parse_integer(fieldname, value, colopts.column)
