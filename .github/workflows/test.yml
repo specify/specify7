@@ -96,5 +96,5 @@ jobs:
         working-directory: specifyweb/frontend/js_src
         run: |
           npm run testBuild && \
-          npx run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
+          npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
           npm run localizationTests
