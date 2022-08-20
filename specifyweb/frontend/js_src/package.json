@@ -12,10 +12,11 @@
   "homepage": "https://specifysoftware.org",
   "main": "lib/main.ts",
   "scripts": {
-    "typecheck": "tsc --build tsconfig.tests.json",
-    "localizationTests": "node testBuild/tests/testlocalization.js",
-    "unitTests": "jest",
-    "test": "npm run typecheck && npm run unitTests && npm run localizationTests"
+    "//": "All of these should be executed from the js_src directory",
+    "localizationTests": "node testBuild/lib/tests/testlocalization.js",
+    "test": "npm run testBuild && npm run unitTests && npm run localizationTests",
+    "testBuild": "tsc --build tsconfig.tests.json",
+    "unitTests": "jest"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",

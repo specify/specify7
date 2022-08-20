@@ -300,6 +300,7 @@ export class AutoMapper {
     scope = 'autoMapper',
     getMappedFields,
   }: AutoMapperConstructorParameters) {
+    debugger;
     // Strip extra characters to increase mapping success
     this.headersToMap = Object.fromEntries(
       rawHeaders

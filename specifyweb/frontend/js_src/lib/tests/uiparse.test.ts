@@ -13,7 +13,7 @@ const ensureValid = (parser: Parser, values: IR<unknown>): void =>
 
 function expectValid(
   result: InvalidParseResult | ValidParseResult,
-  value
+  value: unknown
 ): void {
   expect(result.isValid).toBe(true);
   if (!result.isValid) expect(result.value).toBe(value);
@@ -29,7 +29,7 @@ const ensureInvalid = (parser: Parser, values: IR<string>): void =>
 
 function expectInvalid(
   result: InvalidParseResult | ValidParseResult,
-  message
+  message: string
 ): void {
   expect(result.isValid).toBe(false);
   expect((result as InvalidParseResult).reason).toBe(message);

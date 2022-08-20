@@ -15,6 +15,8 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const preferencesText = createDictionary({
   general: {
     'en-us': 'General',
@@ -716,3 +718,5 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Автозаполнение',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

@@ -11,6 +11,8 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const formsText = createDictionary({
   // Attachments
   orderBy: {
@@ -274,10 +276,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Нет данных.',
   },
   // RecordSetsDialog
-  recordSets: {
-    'en-us': 'Record Sets',
-    'ru-ru': 'Наборы записей',
-  },
   recordSetsDialogTitle: {
     'en-us': (count: number) => `Record Sets (${count})`,
     'ru-ru': (count: number) => `Наборы объектов (${count})`,
@@ -768,3 +766,5 @@ export const formsText = createDictionary({
     'ru-ru': 'Включить режим только для чтения',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

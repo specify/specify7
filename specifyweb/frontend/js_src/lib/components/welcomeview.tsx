@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { ajax, Http } from '../ajax';
+import { ajax } from '../ajax';
+import { Http } from '../ajaxUtils';
 import { fetchCollection } from '../collection';
 import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
@@ -23,7 +24,7 @@ function WelcomeScreenContent(): JSX.Element {
 
   return mode === 'embeddedWebpage' ? (
     <iframe
-      className="w-full h-full border-0"
+      className="h-full w-full border-0"
       src={source}
       title={welcomeText('pageTitle')}
     />
@@ -124,7 +125,7 @@ function AboutDialog({
               [welcomeText('browser'), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
-                <th className="whitespace-nowrap justify-end" scope="row">
+                <th className="justify-end whitespace-nowrap" scope="row">
                   {label}
                 </th>
                 <td>{value}</td>

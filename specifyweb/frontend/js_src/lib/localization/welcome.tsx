@@ -10,6 +10,8 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
@@ -138,3 +140,5 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Дата создания базы данных:',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

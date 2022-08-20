@@ -8,6 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const treeText = createDictionary({
   badStructure: {
     'en-us': 'Bad tree structure.',
@@ -176,3 +177,4 @@ export const treeText = createDictionary({
     'ru-ru': 'Изменить ранги',
   },
 });
+/* eslint-enable @typescript-eslint/naming-convention */

@@ -494,7 +494,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             viewName={viewName}
             onClose={handleClose}
             onDeleted={
-              resource?.isNew() === true || hasTablePermission(model.name)
+              resource?.isNew() === true ||
+              hasTablePermission(model.name, 'delete')
                 ? handleRemove?.bind(undefined, 'deleteButton')
                 : undefined
             }

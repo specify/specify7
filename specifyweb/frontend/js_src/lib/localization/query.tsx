@@ -8,6 +8,8 @@ import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const queryText = createDictionary({
   newQueryName: {
     'en-us': 'New Query',
@@ -306,3 +308,5 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

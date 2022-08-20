@@ -29,11 +29,13 @@ if (process.argv[1] === undefined)
 // CONFIGURATION
 /**
  * When tests are build, this scrip would get executed from
- * `js_src/testBuild/tests/testlocalization.js`. We need to go up two
+ * `js_src/testBuild/lib/tests/testlocalization.js`. We need to go up three
  * levels to get to the `js_src` directory.
  *
  */
-const jsSourceDirectory = path.dirname(path.dirname(process.argv[1]));
+const jsSourceDirectory = path.dirname(
+  path.dirname(path.dirname(process.argv[1]))
+);
 const libraryDirectory = path.join(path.dirname(jsSourceDirectory), 'lib');
 
 // Directory that contains the localization script
@@ -205,7 +207,7 @@ type Dictionary = IR<Key>;
         .map((fileName) => path.join(directoryName, fileName))
     )
     .filter((fileName) =>
-      extensionsToScan.includes(fileName.split('.').slice(-1)[0])
+      extensionsToScan.includes(fileName.split('.').at(-1)!)
     );
 
   debug('Looking for usages of strings');

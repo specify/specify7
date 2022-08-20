@@ -41,7 +41,7 @@ describe('latLongUtils', () => {
       ] as const
     ).forEach(([type, raw, components]) =>
       test(`${raw} is ${type.name}`, () => {
-        const result = Coord.parse(raw);
+        const result = Coord.parse(raw)!;
         expect(result).toBeInstanceOf(type);
         expect([result.sign, ...result.components]).toEqual(components);
       })
@@ -76,7 +76,7 @@ describe('latLongUtils', () => {
       '0': [1, 0],
     }).forEach(([raw, expectedComponents]) =>
       test(raw, () => {
-        const result = Coord.parse(raw).toDegs();
+        const result = Coord.parse(raw)!.toDegs();
         compareCoords(result, expectedComponents);
       })
     ));
@@ -119,7 +119,7 @@ describe('latLongUtils', () => {
     }).forEach(([formatted, components]) =>
       test(formatted, () => {
         const coord = new Coord();
-        coord.sign = components.shift();
+        coord.sign = components.shift()!;
         coord.components = components;
         expect(coord.format(undefined)).toBe(formatted);
       })
@@ -166,7 +166,7 @@ describe('latLongUtils', () => {
     ).forEach(([givenType, formatted, components]) => {
       [Coord, Lat, Long].forEach((type) =>
         test(`${formatted} as ${type.name}`, () => {
-          const result = type.parse(formatted);
+          const result = type.parse(formatted)!;
           if (type === Coord || givenType === Coord || givenType === type)
             expect([result.sign, ...result.components]).toEqual(components);
           else expect(result).toBe(undefined);

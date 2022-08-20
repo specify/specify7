@@ -1,9 +1,5 @@
 import type { RA } from '../types';
 
-/*
- * FIXME: error on console.error and console.warn
- */
-
 /**
  * Named after https://github.com/RobPethick/jest-theories
  */
