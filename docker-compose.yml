@@ -107,7 +107,7 @@ services:
       - "specify6:/volumes/Specify"
 
   nginx:
-    image: nginx
+    image: nginx:alpine
     ports:
       - "80:80"
     volumes:
