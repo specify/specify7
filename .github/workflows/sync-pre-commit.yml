@@ -27,7 +27,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./pre-commit-tools
-        run: npm install
+        run: npm ci
 
       - name: Sync Local and Global pre-commit configs
         run: node ./pre-commit-tools/pre-commit-tools/syncConfig.js https://raw.githubusercontent.com/maxxxxxdlp/dotfiles/main/git/.pre-commit-config.yaml
