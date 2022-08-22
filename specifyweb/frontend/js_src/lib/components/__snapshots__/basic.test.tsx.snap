@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorMessage renders without errors 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col gap-2 p-2 text-white bg-red-500 rounded"
+    role="alert"
+  >
+    Title
+  </div>
+</DocumentFragment>
+`;
