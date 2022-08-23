@@ -826,6 +826,21 @@ export const preferenceDefinitions = {
           }),
         },
       },
+      formTable: {
+        title: preferencesText('formTable'),
+        items: {
+          maxHeight: defineItem<number>({
+            title: preferencesText('maxHeight'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 600,
+            type: 'java.lang.Integer',
+            parser: {
+              min: 100,
+            },
+          }),
+        },
+      },
     },
   },
   chooseCollection: {

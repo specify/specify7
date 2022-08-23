@@ -23,6 +23,7 @@ import {
 } from '../wbplanviewnavigator';
 import { mappingPathIsComplete } from '../wbplanviewutils';
 import { Button, className, Select } from './basic';
+import { join } from './common';
 import { customSelectElementBackground } from './customselectelement';
 import { iconClassName, icons } from './icons';
 import type {
@@ -255,12 +256,12 @@ export function QueryLine({
             field.filters.length > 1 ? 'flex flex-wrap gap-2' : 'contents'
           }
         >
-          {mappingLineProps.map((mappingDetails, index, { length }) => (
-            <React.Fragment key={index}>
+          {join(
+            mappingLineProps.map((mappingDetails) => (
               <MappingElement {...mappingDetails} role="listitem" />
-              {index + 1 === length ? undefined : mappingElementDivider}
-            </React.Fragment>
-          ))}
+            )),
+            mappingElementDivider
+          )}
         </div>
         <div
           className={

@@ -683,4 +683,12 @@ export const preferencesText = createDictionary({
     'en-us': 'Auto complete',
     'ru-ru': 'Автозаполнение',
   },
+  formTable: {
+    'en-us': 'Form table',
+    'ru-ru': 'Форма таблицы',
+  },
+  maxHeight: {
+    'en-us': 'Max height',
+    'ru-ru': 'Максимальная высота',
+  },
 });
