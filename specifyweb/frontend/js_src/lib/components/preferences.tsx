@@ -911,7 +911,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'contains',
-                title: preferencesText('containsInsensitive'),
+                title: preferencesText('contains'),
               },
             ],
           }),
