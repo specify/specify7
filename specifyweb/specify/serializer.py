@@ -1,5 +1,5 @@
 
-from django.core.serializers.json import (
+from django.core.serializers.jsonl import (
     Serializer as JsonSerializer,
     Deserializer as JsonDeserializer
 )
