@@ -306,7 +306,6 @@ dependent_fields = {
     'Commonnametx.citations',
     'Conservdescription.events',
     'Deaccession.deaccessionagents',
-    'Deaccession.deaccessionpreparations',
     'Determination.determinationcitations',
     'Disposal.disposalagents',
     'Disposal.disposalpreparations',
