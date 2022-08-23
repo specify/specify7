@@ -83,6 +83,10 @@ function wrap<
     } = typeof initialProps === 'function'
       ? initialProps({ ...props, className: fullClassName })
       : { ...initialProps, ...props, className: fullClassName };
+    /*
+     * Using React.createElement rather than <tagName>, because the tag name is
+     * dynamic, and that can only be done using React.createElement
+     */
     return React.createElement(tagName, {
       ...mergedProps,
       ref: forwardRef,
