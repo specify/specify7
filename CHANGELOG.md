@@ -49,6 +49,9 @@ Minor fixes:
 
 ### Added
 
+- Support calculated fields in Collection Object and Preparation.
+  N.B. This breaks compatibility with database versions less than 6.8.01
+  ([#1829](https://github.com/specify/specify7/pull/1829))
 - Fetch pick lists on demand ([#1988](https://github.com/specify/specify7/pull/1988))
 - Allow limiting the heigh of SubView Grid
   ([#290](https://github.com/specify/specify7/issues/290))
