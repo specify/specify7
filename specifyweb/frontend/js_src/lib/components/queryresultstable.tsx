@@ -277,7 +277,13 @@ export function QueryResultsTable({
       | RA<RA<number | string | null> | undefined>
       | undefined = results
   ): void {
-    if (!Array.isArray(currentResults) || isFetching) return;
+    const canFetch = Array.isArray(currentResults);
+    if (!canFetch || isFetching) return;
+    const alreadyFetched =
+      currentResults.length === totalCount &&
+      !currentResults.includes(undefined);
+    if (alreadyFetched) return;
+
     const naiveFetchIndex = index ?? currentResults.length;
     const fetchIndex =
       /* If navigating backwards, fetch the previous 40 records */
@@ -332,7 +338,7 @@ export function QueryResultsTable({
             {formsText('deselectAll')}
           </Button.Small>
         )}
-        <div className="flex-1 -ml-2" />
+        <div className="-ml-2 flex-1" />
         {extraButtons}
         {hasIdField &&
         Array.isArray(results) &&
@@ -642,7 +648,7 @@ export function QueryResultsWrapper({
 
   return props === undefined ? (
     queryRunCount === 0 ? null : (
-      <div className="snap-start flex-1">{loadingGif}</div>
+      <div className="flex-1 snap-start">{loadingGif}</div>
     )
   ) : (
     <div
