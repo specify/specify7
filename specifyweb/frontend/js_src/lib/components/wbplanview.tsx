@@ -22,6 +22,7 @@ import { ProtectedAction } from './permissiondenied';
 import type { MappingLine } from './wbplanviewmapper';
 import { WbPlanViewMapper } from './wbplanviewmapper';
 import { BaseTableSelection } from './wbplanviewstate';
+import { useErrorContext } from '../errorcontext';
 
 // General definitions
 export type Status = {
@@ -112,6 +113,7 @@ export function WbPlanView({
       [uploadPlan, headers]
     )
   );
+  useErrorContext('state', state);
 
   const navigate = useNavigate();
   return state.type === 'SelectBaseTable' ? (

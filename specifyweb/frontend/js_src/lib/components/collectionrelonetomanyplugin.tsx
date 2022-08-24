@@ -26,6 +26,7 @@ import { deserializeResource } from './resource';
 import { SearchDialog } from './searchdialog';
 import { switchCollection } from './switchcollection';
 import { useNavigate } from 'react-router-dom';
+import { useErrorContext } from '../errorcontext';
 
 type Data = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -155,6 +156,7 @@ export function CollectionOneToManyPlugin({
     ),
     false
   );
+  useErrorContext('CollectionOneToManyPlugin', data);
 
   const [state, setState] = React.useState<
     | State<

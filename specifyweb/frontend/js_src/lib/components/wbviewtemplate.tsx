@@ -23,6 +23,7 @@ import { useAsyncState } from './hooks';
 import { useUnloadProtect } from './navigation';
 import { NotFoundView } from './notfoundview';
 import type { Dataset } from './wbplanview';
+import { useErrorContext } from '../errorcontext';
 
 function Navigation({
   name,
@@ -38,7 +39,7 @@ function Navigation({
       data-navigation-type={name}
     >
       <Button.Small
-        className="wb-cell-navigation ring-0 brightness-80 hover:brightness-70 p-2"
+        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
       >
@@ -56,7 +57,7 @@ function Navigation({
         <span className="wb-navigation-total">0</span>)
       </Button.Small>
       <Button.Small
-        className="wb-cell-navigation ring-0 brightness-80 hover:brightness-70 p-2"
+        className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
         data-navigation-direction="next"
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
@@ -80,7 +81,7 @@ function WbView({
   return (
     <>
       <div
-        className="gap-x-1 gap-y-2 whitespace-nowrap flex items-center justify-between"
+        className="flex items-center justify-between gap-x-1 gap-y-2 whitespace-nowrap"
         role="toolbar"
       >
         <div className="wb-name-container contents" />
@@ -91,7 +92,7 @@ function WbView({
         >
           {commonText('tools')}
         </Button.Small>
-        <span className="flex-1 -ml-1" />
+        <span className="-ml-1 flex-1" />
         {/* This button is here for debugging only */}
         <Button.Small
           className={`
@@ -155,7 +156,7 @@ function WbView({
       </div>
       <div
         aria-label={commonText('tools')}
-        className="wb-toolkit gap-x-1 gap-y-2 flex flex-wrap"
+        className="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
         role="toolbar"
         style={{ display: 'none' }}
       >
@@ -176,7 +177,7 @@ function WbView({
             {commonText('delete')}
           </Button.Small>
         )}
-        <span className="flex-1 -ml-1" />
+        <span className="-ml-1 flex-1" />
         {hasPermission('/workbench/dataset', 'update') && (
           <>
             <Button.Small
@@ -207,12 +208,12 @@ function WbView({
         </Button.Small>
       </div>
       <div className="flex flex-1 gap-4 overflow-hidden">
-        <section className="wb-spreadsheet overscroll-none flex-1 overflow-hidden" />
+        <section className="wb-spreadsheet flex-1 overflow-hidden overscroll-none" />
         <aside aria-live="polite" className="wb-uploaded-view-wrapper hidden" />
       </div>
       <div
         aria-label={wbText('navigation')}
-        className="gap-x-1 gap-y-2 flex flex-wrap justify-end"
+        className="flex flex-wrap justify-end gap-x-1 gap-y-2"
         role="toolbar"
       >
         <span className="contents" role="search">
@@ -273,6 +274,7 @@ export function WorkBench(): JSX.Element | null {
 
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
   const [dataSet, setDataSet] = useDataSet(dataSetId);
+  useErrorContext('dataSet', dataSet);
   const loading = React.useContext(LoadingContext);
   useWbView(dataSet, treeRanksLoaded, container, () =>
     loading(fetchDataSet(dataSet!.id).then(setDataSet))

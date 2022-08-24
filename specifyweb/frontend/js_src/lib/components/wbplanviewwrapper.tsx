@@ -17,6 +17,7 @@ import type { Dataset } from './wbplanview';
 import { WbPlanView } from './wbplanview';
 import { useParams } from 'react-router-dom';
 import { useMenuItem } from './header';
+import { useErrorContext } from '../errorcontext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -46,6 +47,7 @@ export function WbPlanViewWrapper(): JSX.Element | null {
     ),
     true
   );
+  useErrorContext('dataSet', dataSet);
 
   return dataSet === false ? (
     <NotFoundView />

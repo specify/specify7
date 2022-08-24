@@ -27,6 +27,7 @@ import { useIsModified } from './useismodified';
 import { deserializeResource } from './resource';
 import { BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';
+import { useErrorContext } from '../errorcontext';
 
 export function AppResourceEditor({
   resource,
@@ -53,12 +54,15 @@ export function AppResourceEditor({
     () => deserializeResource(resource),
     [resource]
   );
+  useErrorContext('appResource', resource);
+
   const isModified = useIsModified(appResource);
 
   const { resourceData, setResourceData, isChanged } = useAppResourceData(
     resource,
     initialData
   );
+  useErrorContext('resourceData', resourceData);
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
   const isReadOnly = !hasToolPermission(

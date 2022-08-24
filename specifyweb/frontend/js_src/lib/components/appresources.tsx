@@ -8,6 +8,7 @@ import { useAppResources } from './appresourceshooks';
 import { Container, H2 } from './basic';
 import { ProtectedTable, ProtectedTool } from './permissiondenied';
 import { SafeOutlet } from './routerutils';
+import { useErrorContext } from '../errorcontext';
 
 export function AppResourcesWrapper(): JSX.Element {
   return (
@@ -25,7 +26,10 @@ export function AppResourcesWrapper(): JSX.Element {
 
 function AppResourcesDataFetcher(): JSX.Element | null {
   const getSetResources = useAppResources();
-  return typeof getSetResources[0] === 'object' ? (
+  const [resources] = getSetResources;
+  useErrorContext('appResourcesData', resources);
+
+  return typeof resources === 'object' ? (
     <AppResourcesView getSet={getSetResources as GetOrSet<AppResources>} />
   ) : null;
 }

@@ -30,6 +30,7 @@ import { clearCache } from './toolbar/cachebuster';
 import { unsafeTriggerNotFound } from './router';
 import { userInformation } from '../userinfo';
 import { f } from '../functools';
+import { errorContext } from '../errorcontext';
 
 type ErrorBoundaryState =
   | State<
@@ -161,8 +162,7 @@ function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {commonText('errorBoundaryDialogText')}
-        {' '}
+        {commonText('errorBoundaryDialogText')}{' '}
         {!canClose && commonText('errorBoundaryCriticalDialogText')}
       </p>
       <br />
@@ -278,9 +278,6 @@ export class ErrorBoundary extends React.Component<
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
 f.all({
-  userInformation: import('../userinfo').then(
-    ({ userInformation }) => userInformation
-  ),
   tablePermissions: import('../permissions').then(({ getTablePermissions }) =>
     getTablePermissions()
   ),
@@ -290,15 +287,18 @@ f.all({
   operationPermissions: import('../permissions').then(
     ({ getOperationPermissions }) => getOperationPermissions()
   ),
+  errorContext,
   schema: import('../schema').then(({ schema }) => removeKey(schema, 'models')),
   remotePrefs: import('../remoteprefs').then(({ remotePrefs }) => remotePrefs),
   userPreferences: import('../preferencesutils').then(
     ({ getRawUserPreferences }) => getRawUserPreferences()
   ),
-}).then((data) => {
-  resolvedStackTrace = data;
-  return data;
-});
+})
+  .then((data) => {
+    resolvedStackTrace = data;
+    return data;
+  })
+  .catch(softFail);
 
 /**
  * The stack trace is about 83KB in size
@@ -307,8 +307,10 @@ const produceStackTrace = (message: unknown): string =>
   jsonStringify({
     message,
     ...resolvedStackTrace,
+    userInformation,
     href: globalThis.location.href,
     consoleLog,
+    localStorage: { ...localStorage },
     // Network log and page load telemetry
     eventLog: globalThis.performance.getEntries(),
     navigator: {

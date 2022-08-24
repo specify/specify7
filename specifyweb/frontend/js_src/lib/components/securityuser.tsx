@@ -67,6 +67,7 @@ import type { SecurityOutlet } from './toolbar/security';
 import type { SetAgentsResponse } from './useragentsplugin';
 import { UserAgentsDialog } from './useragentsplugin';
 import { UserInviteLinkPlugin } from './userinvitelinkplugin';
+import { useErrorContext } from '../errorcontext';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();
@@ -134,6 +135,7 @@ function UserView({
   const collections = useAvailableCollections();
   const collectionRoles = useCollectionRoles(collections);
   const userResource = React.useMemo(() => deserializeResource(user), [user]);
+  useErrorContext('userResource', userResource);
   const [userRoles, setUserRoles, initialUserRoles, changedRoles] =
     useUserRoles(userResource, collections);
   const [userPolicies, setUserPolicies, initialUserPolicies, changedPolicies] =
@@ -412,7 +414,7 @@ function UserView({
                   onDeleted={handleDeleted}
                 />
               ) : undefined}
-              <span className="flex-1 -ml-2" />
+              <span className="-ml-2 flex-1" />
               {formElement !== null &&
               (mode === 'edit' ||
                 // Check if has update access in any collection

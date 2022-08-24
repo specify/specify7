@@ -27,6 +27,7 @@ export function AppResourcesFilters({
     'appResources',
     'filters'
   );
+
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>

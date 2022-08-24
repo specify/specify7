@@ -20,6 +20,7 @@ import type { UserRoles } from './securitycollection';
 import { SecurityImportExport } from './securityimportexport';
 import type { Policy } from './securitypolicy';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './securitypolicy';
+import { useErrorContext } from '../errorcontext';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -65,6 +66,8 @@ export function RoleView({
     | undefined;
 }): JSX.Element {
   const [role, setRole] = useTriggerState(initialRole);
+  useErrorContext('role', role);
+
   const changesMade =
     role.id === undefined ||
     JSON.stringify(initialRole) !== JSON.stringify(role);

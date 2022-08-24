@@ -30,6 +30,7 @@ import { createCollectionRole } from './securitycreaterole';
 import { SecurityImportExport } from './securityimportexport';
 import type { Role } from './securityrole';
 import type { SecurityOutlet } from './toolbar/security';
+import { useErrorContext } from '../errorcontext';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -79,6 +80,7 @@ export function CollectionView({
     false
   );
   const [roles, setRoles] = getSetRoles;
+  useErrorContext('roles', roles);
 
   const [usersWithPolicies] = useAsyncState<
     RA<{ readonly userId: number; readonly userName: string }>
@@ -138,6 +140,7 @@ export function CollectionView({
     false
   );
   const [userRoles] = getSetUserRoles;
+  useErrorContext('userRoles', userRoles);
 
   // Combine users that have only policies or only roles together into one list
   const mergedUsers =

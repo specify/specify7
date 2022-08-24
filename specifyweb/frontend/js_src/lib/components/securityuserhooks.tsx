@@ -24,6 +24,7 @@ import { useAsyncState } from './hooks';
 import type { RoleBase } from './securitycollection';
 import type { Policy } from './securitypolicy';
 import type { Role } from './securityrole';
+import { useErrorContext } from '../errorcontext';
 
 /** Fetch roles from all collections */
 export function useCollectionRoles(
@@ -43,6 +44,7 @@ export function useCollectionRoles(
     ),
     false
   );
+  useErrorContext('collectionRoles', collectionRoles);
   return collectionRoles;
 }
 
@@ -86,6 +88,7 @@ export function useUserRoles(
         JSON.stringify(initialUserRoles.current[collectionId])
     );
 
+  useErrorContext('userRoles', userRoles);
   return [userRoles, setUserRoles, initialUserRoles, changedRoles];
 }
 
@@ -187,6 +190,7 @@ export function useUserAgents(
     false
   );
 
+  useErrorContext('userAgents', userAgents);
   return userAgents;
 }
 
@@ -264,6 +268,7 @@ export function useUserPolicies(
     JSON.stringify(userPolicies) !==
       JSON.stringify(initialUserPolicies.current);
 
+  useErrorContext('userPolicies', userPolicies);
   return [userPolicies, setUserPolicies, initialUserPolicies, changedPolices];
 }
 
@@ -306,6 +311,7 @@ export function useUserInstitutionalPolicies(
     JSON.stringify(initialInstitutionPolicies.current) !==
       JSON.stringify(institutionPolicies);
 
+  useErrorContext('institutionPolicies', institutionPolicies);
   return [
     institutionPolicies,
     setInstitutionPolicies,
@@ -360,5 +366,7 @@ export function useUserProviders(
     ),
     false
   );
+
+  useErrorContext('providers', providers);
   return providers;
 }

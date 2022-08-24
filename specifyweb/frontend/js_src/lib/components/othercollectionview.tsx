@@ -11,6 +11,7 @@ import { Button, Container, Ul } from './basic';
 import { usePref } from './preferenceshooks';
 import { useNavigate } from 'react-router-dom';
 import { switchCollection } from './switchcollection';
+import { useErrorContext } from '../errorcontext';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -21,13 +22,15 @@ export function useAvailableCollections(): RA<SerializedResource<Collection>> {
   const isReverseSort = sortOrder.startsWith('-');
   const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
     keyof Collection['fields'];
-  return React.useMemo(
+  const collections = React.useMemo(
     () =>
       Array.from(userInformation.availableCollections).sort(
         sortFunction((collection) => collection[sortField], isReverseSort)
       ),
     [userInformation.availableCollections, isReverseSort, sortField]
   );
+  useErrorContext('collections', collections);
+  return collections;
 }
 
 /**

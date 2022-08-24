@@ -24,6 +24,7 @@ import { SecurityImportExport } from './securityimportexport';
 import { updateLibraryRole } from './securitylibraryrole';
 import type { SecurityOutlet } from './toolbar/security';
 import { SafeOutlet } from './routerutils';
+import { useErrorContext } from '../errorcontext';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -43,6 +44,7 @@ function InstitutionView({
     getSetUsers: [users],
   } = outletState;
   const [libraryRoles, handleChangeLibraryRoles] = getSetLibraryRoles;
+  useErrorContext('libraryRoles', libraryRoles);
 
   const admins = useAdmins();
 

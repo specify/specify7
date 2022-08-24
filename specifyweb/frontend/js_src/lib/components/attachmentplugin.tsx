@@ -27,6 +27,7 @@ import { fail } from './errorboundary';
 import { FilePicker } from './filepicker';
 import { useAsyncState } from './hooks';
 import { Dialog, loadingBar } from './modaldialog';
+import { useErrorContext } from '../errorcontext';
 
 export function AttachmentPlugin({
   resource,
@@ -77,6 +78,7 @@ export function AttachmentPlugin({
     ),
     true
   );
+  useErrorContext('attachmentPluginState', state);
 
   const [uploadProgress, setUploadProgress] = React.useState<
     number | undefined

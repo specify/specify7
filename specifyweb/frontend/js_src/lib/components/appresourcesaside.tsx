@@ -27,6 +27,7 @@ import { ActiveLink } from './common';
 import { useId } from './hooks';
 import { icons } from './icons';
 import { useCachedState } from './statecache';
+import { useErrorContext } from '../errorcontext';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -47,6 +48,8 @@ export function AppResourcesAside({
   );
   const resources = useFilteredAppResources(initialResources, initialFilters);
   const resourcesTree = useResourcesTree(resources);
+  useErrorContext('appResourcesTree', resourcesTree);
+
   return (
     <aside className={className.containerBase}>
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">

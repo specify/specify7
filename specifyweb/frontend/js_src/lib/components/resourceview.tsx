@@ -39,6 +39,7 @@ import { ReportsView } from './reports';
 import { SaveButton } from './savebutton';
 import { SpecifyForm } from './specifyform';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from './specifynetwork';
+import { useErrorContext } from '../errorcontext';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -520,7 +521,10 @@ export function ShowResource({
         : undefined,
     [recordSetId]
   );
+  useErrorContext('recordSet', recordSet);
+
   const [resource, setResource] = useTriggerState(initialResource);
+  useErrorContext('resource', resource);
 
   React.useEffect(() => {
     if (typeof recordSet === 'object')

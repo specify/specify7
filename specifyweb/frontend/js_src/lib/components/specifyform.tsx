@@ -22,6 +22,7 @@ import { usePref } from './preferenceshooks';
 import { FormCell } from './specifyformcell';
 import { useCachedState } from './statecache';
 import { unsafeTriggerNotFound } from './router';
+import { useErrorContext } from '../errorcontext';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -92,6 +93,8 @@ export function useViewDefinition({
     ),
     false
   );
+
+  useErrorContext('viewDefinition', viewDefinition);
   return viewDefinition;
 }
 
@@ -172,6 +175,8 @@ export function RenderForm<SCHEMA extends AnySchema>({
     ),
     false
   );
+  useErrorContext('loadedResource', loadedResource);
+
   const isShowingOldResource =
     loadedResource === undefined && typeof oldResourceRef.current === 'object';
   const resolvedResource = loadedResource ?? oldResourceRef.current;

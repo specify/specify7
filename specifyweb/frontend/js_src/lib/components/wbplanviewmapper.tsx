@@ -53,6 +53,7 @@ import {
   ToggleMappingPath,
   ValidationResults,
 } from './wbplanviewmappercomponents';
+import { useErrorContext } from '../errorcontext';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -145,6 +146,7 @@ export function WbPlanViewMapper(props: {
     },
     getDefaultMappingState
   );
+  useErrorContext('state', state);
 
   const unsetUnloadProtect = useUnloadProtect(
     state.changesMade,

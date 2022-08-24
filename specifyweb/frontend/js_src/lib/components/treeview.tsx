@@ -45,6 +45,7 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { useErrorContext } from '../errorcontext';
 
 const treeToPref = {
   Geography: 'geography',
@@ -419,6 +420,7 @@ export function TreeViewWrapper(): JSX.Element | null {
   const treeName = getModel(tableName)?.name;
 
   const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
     typeof treeDefinitions === 'object' &&
