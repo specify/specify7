@@ -268,7 +268,7 @@ function eventHandlerForToOne(related, field) {
             return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
         },
         _handleField(value, fieldName) {
-            if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName)) return [fieldName, value]; // special fields
+            if (_(['id', 'resource_uri', 'recordset_info', '_tablename']).contains(fieldName)) return [fieldName, value]; // special fields
 
             var field = this.specifyModel.getField(fieldName);
             if (!field) {
