@@ -52,13 +52,14 @@ export function AppResourcesTabs({
   const children = (
     <Tab.Group>
       <Tab.List className="flex flex-wrap gap-2">
-        {tabs.map(({ label }, index) => (
+        {tabs.map(({ label }, index, { length }) => (
           <Tab
-            className={({ selected }): string =>
-              `${className.niceButton} ${className.blueButton} aria-handled ${
-                selected ? 'brightness-150' : ''
-              }`
-            }
+            className={({ selected }): string => `
+              ${className.niceButton} ${className.blueButton}
+              ${selected ? 'brightness-150' : ''}
+              ${length === 1 ? 'sr-only' : ''}
+              aria-handled
+              `}
             key={index}
           >
             {label}
