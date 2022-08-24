@@ -50,6 +50,9 @@ export function Wrapper({
   const initialData = useInitialData(state?.initialDataFrom);
   const directory = useDirectory(state?.directoryKey, resource, resources);
 
+  const baseHref = `/specify/resources/${
+    mode === 'appResources' ? 'app-resource' : 'view-set'
+  }`;
   return initialData === undefined ? null : resource === undefined ||
     directory === undefined ? (
     <Container.Base className="flex-1">
@@ -61,7 +64,7 @@ export function Wrapper({
       initialData={initialData === false ? undefined : initialData}
       resource={resource}
       onClone={(appResource, initialDataFrom): void =>
-        navigate(`/specify/resources/${mode}/new/`, {
+        navigate(`${baseHref}/new/`, {
           state: {
             resource: {
               ...appResource,
@@ -93,7 +96,7 @@ export function Wrapper({
                 : [...resources.directories, directory],
             [mode]: [...resources[mode], appResource],
           });
-        navigate(`/specify/resources/${mode}/${appResource.id}/`);
+        navigate(`${baseHref}/${appResource.id}/`);
       }}
     />
   );

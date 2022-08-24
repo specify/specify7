@@ -100,7 +100,7 @@ export function AppResourceEditor({
                   if (typeof resource === 'object') {
                     const currentType = resource.get('mimeType') ?? '';
                     // Don't widen the type unnecessarily.
-                    if (isAppResourceSubType(currentType, mimeType)) return;
+                    if (isAppResourceSubType(mimeType, currentType)) return;
                     resource?.set('mimeType', mimeType);
                   }
                 }}

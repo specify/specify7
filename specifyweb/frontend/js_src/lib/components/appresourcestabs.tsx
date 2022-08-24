@@ -59,7 +59,7 @@ export function AppResourcesTabs({
               ${selected ? 'brightness-150' : ''}
               ${length === 1 ? 'sr-only' : ''}
               aria-handled
-              `}
+            `}
             key={index}
           >
             {label}
