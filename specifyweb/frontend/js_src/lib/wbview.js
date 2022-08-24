@@ -15,15 +15,15 @@ import '../css/workbench.css';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import { Backbone } from './backbone';
+import {Backbone} from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import { Button, className, Link } from './components/basic';
-import { getModel, schema } from './schema';
-import { DataSetNameView } from './components/datasetmeta';
-import { WbUploaded } from './components/wbuploadedview';
-import { WBUtils } from './wbutils';
+import {Button, className, Link} from './components/basic';
+import {getModel, schema} from './schema';
+import {DataSetNameView} from './components/datasetmeta';
+import {WbUploaded} from './components/wbuploadedview';
+import {WBUtils} from './wbutils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -31,38 +31,38 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from './wbplanviewmappinghelper';
-import { parseUploadPlan } from './uploadplanparser';
-import { capitalize, clamp, mappedFind } from './helpers';
-import { getTableFromMappingPath } from './wbplanviewnavigator';
-import { getIcon, unknownIcon } from './icons';
-import { wbText } from './localization/workbench';
-import { commonText } from './localization/common';
-import { showDialog } from './components/legacydialog';
-import { dialogClassNames, loadingBar } from './components/modaldialog';
-import { format } from './dataobjformatters';
-import { iconClassName, legacyNonJsxIcons } from './components/icons';
-import { LANGUAGE } from './localization/utils';
-import { defined, filterArray } from './types';
-import { crash } from './components/errorboundary';
-import { getTreeDefinitionItems } from './treedefinitions';
-import { serializeResource } from './datamodelutils';
-import { fetchPickList } from './picklistmixins';
-import { ajax } from './ajax';
-import { ping } from './ping';
-import { Http } from './ajaxUtils';
+import {parseUploadPlan} from './uploadplanparser';
+import {capitalize, clamp, mappedFind} from './helpers';
+import {getTableFromMappingPath} from './wbplanviewnavigator';
+import {getIcon, unknownIcon} from './icons';
+import {wbText} from './localization/workbench';
+import {commonText} from './localization/common';
+import {showDialog} from './components/legacydialog';
+import {dialogClassNames, loadingBar} from './components/modaldialog';
+import {format} from './dataobjformatters';
+import {iconClassName, legacyNonJsxIcons} from './components/icons';
+import {LANGUAGE} from './localization/utils';
+import {defined, filterArray} from './types';
+import {crash} from './components/errorboundary';
+import {getTreeDefinitionItems} from './treedefinitions';
+import {serializeResource} from './datamodelutils';
+import {fetchPickList} from './picklistmixins';
+import {ajax} from './ajax';
+import {ping} from './ping';
+import {Http} from './ajaxUtils';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from './permissionutils';
-import { wbViewTemplate } from './components/wbviewtemplate';
-import { legacyLoadingContext } from './components/contexts';
-import { getCache, setCache } from './cache';
-import { f } from './functools';
-import { pathStartsWith } from './wbplanviewutils';
-import { getUserPref } from './preferencesutils';
-import { createBackboneView } from './components/reactbackboneextend';
-import { WbStatus } from './components/wbstatus';
+import {wbViewTemplate} from './components/wbviewtemplate';
+import {legacyLoadingContext} from './components/contexts';
+import {getCache, setCache} from './cache';
+import {f} from './functools';
+import {pathStartsWith} from './wbplanviewutils';
+import {getUserPref} from './preferencesutils';
+import {createBackboneView} from './components/reactbackboneextend';
+import {WbStatus} from './components/wbstatus';
 
 const metaKeys = [
   'isNew',
@@ -259,7 +259,7 @@ export const WBView = Backbone.View.extend({
                       {commonText('close')}
                     </Button.DialogClose>
                     <Link.Blue
-                      href={`/specify/workbench-plan/${this.dataset.id}/`}
+                      href={`/specify/workbench/plan/${this.dataset.id}/`}
                     >
                       {commonText('create')}
                     </Link.Blue>
@@ -608,7 +608,7 @@ export const WBView = Backbone.View.extend({
     this.validationMode = 'off';
   },
   remove() {
-    this.hot.destroy();
+    this.hot?.destroy();
     this.hot = undefined;
     this.wbutils.remove();
     this.datasetmeta.remove();
@@ -1954,7 +1954,7 @@ export const WBView = Backbone.View.extend({
         buttons: (
           <>
             <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Link.Blue href={`/specify/workbench-plan/${this.dataset.id}/`}>
+            <Link.Blue href={`/specify/workbench/plan/${this.dataset.id}/`}>
               {commonText('create')}
             </Link.Blue>
           </>
