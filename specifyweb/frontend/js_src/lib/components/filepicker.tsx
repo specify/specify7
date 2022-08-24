@@ -91,7 +91,7 @@ export function FilePicker({
       />
       <span
         className={`
-          align-center flex h-44 justify-center text-center normal-case
+          align-center flex h-44 w-full justify-center text-center normal-case
           ${className.grayButton}
           ${className.niceButton}
           ${
