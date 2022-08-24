@@ -149,22 +149,27 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
-    path: 'worbench/:id',
-    element: () =>
-      import('./wbviewtemplate').then(({ WorkBench }) => WorkBench),
-  },
-  {
-    path: 'workbench-import',
-    title: wbText('importDataSet'),
-    element: () =>
-      import('./wbimport').then(({ WbImportView }) => WbImportView),
-  },
-  {
-    path: 'workbench-plan/:id',
-    element: () =>
-      import('./wbplanviewwrapper').then(
-        ({ WbPlanViewWrapper }) => WbPlanViewWrapper
-      ),
+    path: 'workbench',
+    children: [
+      {
+        path: ':id',
+        element: () =>
+          import('./wbviewtemplate').then(({ WorkBench }) => WorkBench),
+      },
+      {
+        path: 'import',
+        title: wbText('importDataSet'),
+        element: () =>
+          import('./wbimport').then(({ WbImportView }) => WbImportView),
+      },
+      {
+        path: 'plan/:id',
+        element: () =>
+          import('./wbplanviewwrapper').then(
+            ({ WbPlanViewWrapper }) => WbPlanViewWrapper
+          ),
+      },
+    ],
   },
   {
     path: 'resources',

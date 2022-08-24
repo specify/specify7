@@ -166,14 +166,14 @@ export function DataSetsDialog({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           {canImport && (
             <>
-              <Link.Blue href="/specify/workbench-import/">
+              <Link.Blue href="/specify/workbench/import/">
                 {wbText('importFile')}
               </Link.Blue>
               <Button.Blue
                 onClick={(): void =>
                   loading(
                     createEmptyDataSet().then(({ id }) =>
-                      navigate(`/specify/workbench-plan/${id}/`)
+                      navigate(`/specify/workbench/plan/${id}/`)
                     )
                   )
                 }

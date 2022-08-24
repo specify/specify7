@@ -19,7 +19,7 @@ import {Backbone} from './backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {Button, className, Link} from './components/basic';
+import {Button, Link} from './components/basic';
 import {getModel, schema} from './schema';
 import {DataSetNameView} from './components/datasetmeta';
 import {WbUploaded} from './components/wbuploadedview';
@@ -86,7 +86,6 @@ const WbStatusView = createBackboneView(WbStatus);
 export const WBView = Backbone.View.extend({
   __name__: 'WbForm',
   tagName: 'section',
-  className: `wbs-form ${className.containerFull}`,
   events: {
     'click .wb-upload': 'upload',
     'click .wb-validate': 'upload',

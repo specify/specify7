@@ -16,7 +16,7 @@ import { hasPermission, hasTablePermission } from '../permissionutils';
 import { treeRanksPromise } from '../treedefinitions';
 import type { GetSet } from '../types';
 import { WBView } from '../wbview';
-import { Button, Input, Link } from './basic';
+import { Button, className, Input, Link } from './basic';
 import { LoadingContext } from './contexts';
 import { useMenuItem } from './header';
 import { useAsyncState } from './hooks';
@@ -103,7 +103,7 @@ function WbView({
           [DEV] Show Plan
         </Button.Small>
         {canUpdate || isMapped ? (
-          <Link.Small href={`/specify/workbench-plan/${dataSetId}/`}>
+          <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
             {wbText('dataMapper')}
           </Link.Small>
         ) : undefined}
@@ -283,7 +283,10 @@ export function WorkBench(): JSX.Element | null {
   return dataSetId === undefined ? (
     <NotFoundView />
   ) : (
-    <section ref={setContainer} />
+    <section
+      ref={setContainer}
+      className={`wbs-form ${className.containerFull}`}
+    />
   );
 }
 
@@ -327,12 +330,14 @@ function useWbView(
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
       onSetUnloadProtect: setUnloadProtect,
-    }).on('refresh', (newMode: string | undefined, newWasAborted = false) => {
-      setUnloadProtect(false);
-      mode.current = newMode;
-      wasAborted.current = newWasAborted;
-      handleRefresh();
-    });
+    })
+      .on('refresh', (newMode: string | undefined, newWasAborted = false) => {
+        setUnloadProtect(false);
+        mode.current = newMode;
+        wasAborted.current = newWasAborted;
+        handleRefresh();
+      })
+      .render();
     return () => view.remove();
   }, [treeRanksLoaded, container, dataSet]);
 }
