@@ -19,15 +19,22 @@ import { getValidationAttributes, resolveParser } from '../uiparse';
  * easier state tracking
  *
  * @example Can detect field changes using React hooks:
- *   React.useEffect(()=>{}, [model]);
+ *   React.useEffect(()=>{}, [resource]);
  * @example Or only certain fields:
- *   React.useEffect(()=>{}, [model.name, model.fullname]);
+ *   React.useEffect(()=>{}, [resource.name, resource.fullname]);
  */
 export function useResource<SCHEMA extends AnySchema>(
   model: SpecifyResource<SCHEMA>
 ): GetOrSet<SerializedResource<SCHEMA>> {
   const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
     () => serializeResource(model)
+  );
+
+  const isChanging = React.useRef<boolean>(false);
+  React.useEffect(() =>
+    resourceOn(model, 'change', () =>
+      isChanging.current ? undefined : setResource(serializeResource(model))
+    )
   );
 
   const previousResourceRef =
@@ -45,9 +52,12 @@ export function useResource<SCHEMA extends AnySchema>(
     );
     if (changes.length === 0) return;
 
+    isChanging.current = true;
     changes.forEach(([key, newValue]) =>
       model.set(key as 'resource_uri', newValue as never)
     );
+    isChanging.current = false;
+
     previousResourceRef.current = resource;
   }, [resource, model]);
 
