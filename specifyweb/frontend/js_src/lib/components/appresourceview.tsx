@@ -87,15 +87,19 @@ export function Wrapper({
         navigate('/specify/resources/');
       }}
       onSaved={(appResource, directory): void => {
-        if (resource.id === undefined)
-          setResources({
-            ...resources,
-            directories:
-              typeof directory.id === 'number'
-                ? resources.directories
-                : [...resources.directories, directory],
-            [mode]: [...resources[mode], appResource],
-          });
+        setResources({
+          ...resources,
+          directories:
+            resource.id === undefined && typeof directory.id === 'number'
+              ? resources.directories
+              : [...resources.directories, directory],
+          [mode]: [
+            ...resources[mode as 'appResources'].filter(
+              ({ id }) => id !== appResource.id
+            ),
+            appResource,
+          ],
+        });
         navigate(`${baseHref}/${appResource.id}/`);
       }}
     />

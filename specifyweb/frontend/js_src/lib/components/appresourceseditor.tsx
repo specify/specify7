@@ -2,6 +2,7 @@ import React from 'react';
 
 import type {
   SpAppResource,
+  SpAppResourceData,
   SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../datamodel';
@@ -192,6 +193,7 @@ export function AppResourceEditor({
                               resourceDirectory.resource_uri
                             );
                           await appResource.save();
+                          const resource = serializeResource(appResource);
 
                           const appResourceData = deserializeResource({
                             ...resourceData,
@@ -206,10 +208,13 @@ export function AppResourceEditor({
                           });
                           await appResourceData.save();
 
-                          handleSaved(
-                            serializeResource(appResource),
-                            resourceDirectory
+                          setResourceData(
+                            serializeResource(
+                              appResourceData
+                            ) as SerializedResource<SpAppResourceData>
                           );
+
+                          handleSaved(resource, resourceDirectory);
                         })()
                       );
 
