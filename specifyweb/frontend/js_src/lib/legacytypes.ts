@@ -163,7 +163,10 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toManyDependent']>(
     fieldName: FIELD_NAME
   ): Collection<SCHEMA['toManyDependent'][FIELD_NAME][number]> | undefined;
-  save(conflictCallback?: () => void): Promise<SpecifyResource<SCHEMA>>;
+  save(props?: {
+    onSaveConflict?: () => void;
+    errorOnAlreadySaving?: boolean;
+  }): Promise<SpecifyResource<SCHEMA>>;
   destroy(): Promise<void>;
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;

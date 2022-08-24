@@ -32,9 +32,12 @@ export function useResource<SCHEMA extends AnySchema>(
 
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(() =>
-    resourceOn(model, 'change', () =>
-      isChanging.current ? undefined : setResource(serializeResource(model))
-    )
+    resourceOn(model, 'change', () => {
+      if (isChanging.current) return;
+      const newResource = serializeResource(model);
+      previousResourceRef.current = newResource;
+      setResource(newResource);
+    })
   );
 
   const previousResourceRef =
@@ -43,7 +46,9 @@ export function useResource<SCHEMA extends AnySchema>(
   React.useEffect(() => {
     if (previousModel.current !== model) {
       previousModel.current = model;
-      setResource(serializeResource(model));
+      const newResource = serializeResource(model);
+      previousResourceRef.current = newResource;
+      setResource(newResource);
       return;
     }
     const changes = Object.entries(resource).filter(

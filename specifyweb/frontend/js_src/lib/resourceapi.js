@@ -501,10 +501,12 @@ function eventHandlerForToOne(related, field) {
                 return Promise.reject('unhandled relationship type');
             }
         },
-        save(conflictCallback) {
+        save({onSaveConflict:handleSaveConflict,errorOnAlreadySaving=true}={}) {
             var resource = this;
             if (resource._save) {
-                throw new Error('resource is already being saved');
+                if(errorOnAlreadySaving)
+                    throw new Error('resource is already being saved');
+                else return resource._save;
             }
             var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
@@ -513,10 +515,10 @@ function eventHandlerForToOne(related, field) {
             const save = ()=>Backbone.Model.prototype.save.apply(resource, [])
               .then(()=>resource.trigger('saved'));
             resource._save =
-              typeof conflictCallback === 'function'
+              typeof handleSaveConflict === 'function'
                 ? hijackBackboneAjax([Http.OK, Http.CONFLICT, Http.CREATED], save, (status) =>{
                       if(status === Http.CONFLICT) {
-                          conflictCallback()
+                          handleSaveConflict()
                           errorHandled = true;
                       }
                   })
@@ -526,9 +528,9 @@ function eventHandlerForToOne(related, field) {
                 resource._save = null;
                 resource.needsSaved = didNeedSaved;
                 didNeedSaved && resource.trigger('saverequired');
-                if(typeof conflictCallback === 'function' && errorHandled)
+                if(typeof handleSaveConflict === 'function' && errorHandled)
                     Object.defineProperty(error, 'handledBy', {
-                      value: conflictCallback,
+                      value: handleSaveConflict,
                     });
                 throw error;
             }).then(function() {

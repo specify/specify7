@@ -21,7 +21,12 @@ async function doSave(
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
-  return clonedQuery.save().then(() => clonedQuery.id);
+  return clonedQuery
+    .save({
+      // This may happen in development because React renders each component twice
+      errorOnAlreadySaving: false,
+    })
+    .then(() => clonedQuery.id);
 }
 
 export function QuerySaveDialog({

@@ -161,7 +161,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     setIsSaving(true);
     loading(
       (resource.needsSaved || resource.isNew()
-        ? resource.save(hasSaveConflict)
+        ? resource.save({ onSaveConflict: hasSaveConflict })
         : Promise.resolve()
       )
         .then(() => {
