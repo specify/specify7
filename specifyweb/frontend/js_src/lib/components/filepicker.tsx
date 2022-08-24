@@ -4,6 +4,7 @@ import { commonText } from '../localization/common';
 import type { RA } from '../types';
 import { softFail } from './errorboundary';
 import { useBooleanState } from './hooks';
+import { className } from './basic';
 
 export function FilePicker({
   onSelected: handleSelected,
@@ -90,7 +91,9 @@ export function FilePicker({
       />
       <span
         className={`
-          align-center button flex h-44 justify-center text-center
+          align-center flex h-44 justify-center text-center normal-case
+          ${className.grayButton}
+          ${className.niceButton}
           ${
             isDragging
               ? 'bg-white ring ring-brand-200 dark:bg-neutral-700 dark:ring-brand-400'
