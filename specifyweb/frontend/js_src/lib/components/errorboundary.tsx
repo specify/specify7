@@ -287,7 +287,7 @@ f.all({
   operationPermissions: import('../permissions').then(
     ({ getOperationPermissions }) => getOperationPermissions()
   ),
-  errorContext,
+  errorContext: Array.from(errorContext),
   schema: import('../schema').then(({ schema }) => removeKey(schema, 'models')),
   remotePrefs: import('../remoteprefs').then(({ remotePrefs }) => remotePrefs),
   userPreferences: import('../preferencesutils').then(

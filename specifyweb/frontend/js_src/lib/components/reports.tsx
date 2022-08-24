@@ -52,6 +52,7 @@ import { QueryFields } from './querybuilderfields';
 import { RecordSetsDialog } from './recordsetsdialog';
 import { cachableUrl } from '../initialcontext';
 import { OverlayContext } from './router';
+import { useErrorContext } from '../errorcontext';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -512,6 +513,10 @@ function ParametersDialog({
       [definition]
     )
   );
+  useErrorContext('definition', definition);
+  useErrorContext('parameters', parameters);
+  useErrorContext('query', query);
+  useErrorContext('appResource', appResource);
 
   const [isSubmitted, handleSubmitted] = useBooleanState(
     Object.values(parameters).length === 0

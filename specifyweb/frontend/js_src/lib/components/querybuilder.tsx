@@ -48,6 +48,7 @@ import { useCachedState } from './statecache';
 import { getMappingLineProps } from './wbplanviewcomponents';
 import { MappingView } from './wbplanviewmappercomponents';
 import { useMenuItem } from './header';
+import { useErrorContext } from '../errorcontext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -72,6 +73,7 @@ export function QueryBuilder({
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, true);
 
   const [query, setQuery] = useResource(queryResource);
+  useErrorContext('query', query);
 
   const model = defined(getModelById(query.contextTableId));
   const [state, dispatch] = React.useReducer(
@@ -84,6 +86,7 @@ export function QueryBuilder({
     },
     getInitialState
   );
+  useErrorContext('state', state);
 
   /**
    * If tried to save a query, enforce the field length limit for the
@@ -279,7 +282,7 @@ export function QueryBuilder({
         {
           /* FEATURE: For embedded queries, add a button to open query in new tab */
           !isEmbedded && (
-            <header className="whitespace-nowrap flex items-center gap-2">
+            <header className="flex items-center gap-2 whitespace-nowrap">
               <TableIcon label name={model.name} />
               <H2 className="overflow-x-auto">
                 {typeof recordSet === 'object'
@@ -291,7 +294,7 @@ export function QueryBuilder({
                   : queryText('queryTaskTitle', query.name)}
               </H2>
               {!queryResource.isNew() && <QueryEditButton query={query} />}
-              <span className="flex-1 ml-2" />
+              <span className="ml-2 flex-1" />
               {!isScrolledTop && (
                 <Button.Small
                   onClick={(): void =>
@@ -381,7 +384,7 @@ export function QueryBuilder({
               : handleScrolledDown()
           }
         >
-          <div className="snap-start flex flex-col gap-4">
+          <div className="flex snap-start flex-col gap-4">
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -516,7 +519,7 @@ export function QueryBuilder({
                 />
                 {commonText('revealHiddenFormFields')}
               </Label.ForCheckbox>
-              <span className="flex-1 -ml-2" />
+              <span className="-ml-2 flex-1" />
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
                   {/*
