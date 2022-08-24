@@ -192,6 +192,12 @@ export const appResourceSubTypes = {
   },
 } as const;
 
+/**
+ * Check if one type is a subtype of another
+ */
+export const isAppResourceSubType = (type: string, subType: string): boolean =>
+  type === 'text/xml' && subType.includes('xml');
+
 ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
 export function CreateAppResource(): JSX.Element {

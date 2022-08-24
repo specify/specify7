@@ -28,6 +28,7 @@ import { deserializeResource } from './resource';
 import { BaseResourceView } from './resourceview';
 import { SaveButton } from './savebutton';
 import { useErrorContext } from '../errorcontext';
+import { isAppResourceSubType } from './appresourcescreate';
 
 export function AppResourceEditor({
   resource,
@@ -95,10 +96,13 @@ export function AppResourceEditor({
                     ...resourceData,
                     data,
                   });
-                  toTable(appResource, 'SpAppResource')?.set(
-                    'mimeType',
-                    mimeType
-                  );
+                  const resource = toTable(appResource, 'SpAppResource');
+                  if (typeof resource === 'object') {
+                    const currentType = resource.get('mimeType') ?? '';
+                    // Don't widen the type unnecessarily.
+                    if (isAppResourceSubType(currentType, mimeType)) return;
+                    resource?.set('mimeType', mimeType);
+                  }
                 }}
               />
               <AppResourceDownload
