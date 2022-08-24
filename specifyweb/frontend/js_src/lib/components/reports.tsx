@@ -252,7 +252,7 @@ function Entries({
             <td>
               <Link.Icon
                 aria-label={commonText('edit')}
-                href={`/specify/appresources/${resource.id}/`}
+                href={`/specify/resources/app-resource/${resource.id}/`}
                 icon="pencil"
                 title={commonText('edit')}
               />
