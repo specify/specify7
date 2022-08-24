@@ -171,7 +171,12 @@ export const serializeResource = <SCHEMA extends AnySchema>(
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
-const specialFields = new Set(['id', 'resource_uri', 'recordset_info']);
+const specialFields = new Set([
+  'id',
+  'resource_uri',
+  'recordset_info',
+  '_tableName',
+]);
 
 /** Recursive helper for serializeResource */
 function serializeModel<SCHEMA extends AnySchema>(
