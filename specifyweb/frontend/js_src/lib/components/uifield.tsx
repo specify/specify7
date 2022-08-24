@@ -54,7 +54,12 @@ export function UiField({
   const [data] = useAsyncState(
     React.useCallback(
       async () =>
-        hasAccess ? getResourceAndField(resource, fieldName) : undefined,
+        hasAccess
+          ? getResourceAndField(resource, fieldName).catch((error) => {
+              console.error(error);
+              return undefined;
+            })
+          : undefined,
       [resource, fieldName]
     ),
     false
