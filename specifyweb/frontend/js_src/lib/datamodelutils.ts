@@ -327,5 +327,6 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
      * REFACTOR: convert all usages of this to camel case
      */
     resource_uri: record.resource_uri,
+    // REFACTOR: consider replacing this with a symbol
     _tableName: tableName,
   }));

@@ -11,6 +11,7 @@ import { commonText } from '../localization/common';
 import type { QueryFieldSpec } from '../queryfieldspec';
 import type { SpecifyModel } from '../specifymodel';
 import type { RA, WritableArray } from '../types';
+import { filterArray } from '../types';
 import { findLocalityColumnsInDataSet } from '../wblocalitydataextractor';
 import { defaultColumnOptions } from '../wbplanviewlinesgetter';
 import type { SplitMappingPath } from '../wbplanviewmappinghelper';
@@ -23,6 +24,8 @@ import { useAsyncState, useBooleanState } from './hooks';
 import { LeafletMap } from './leaflet';
 import { useSelectedResults } from './querytoforms';
 import { deserializeResource } from './resource';
+import { MappingPath } from './wbplanviewmapper';
+import { schema } from '../schema';
 
 export function QueryToMap({
   results,
@@ -64,17 +67,36 @@ function useLocalityMappings(
         tableName,
         fieldSpecsToMappingPaths(fieldSpecs)
       ).map((localityColumns) => {
-        const pathToLocality = splitJoinedMappingPath(
+        const pathToLocalityField = splitJoinedMappingPath(
           localityColumns['locality.latitude1']
         );
-        const pathFromLocality = [
-          ...Array.from(pathToLocality).reverse().slice(1),
-          'id',
-        ];
-        return pathFromLocality.join('__');
+        const pathToLocality = pathToLocalityField.slice(0, -1);
+        const pathFromLocality = reverseMappingPath(tableName, pathToLocality);
+        if (pathFromLocality === undefined)
+          throw new Error(
+            'Unable to find a reverse mapping from locality table'
+          );
+        const pathFromLocalityToId = [...pathFromLocality, 'id'];
+        return pathFromLocalityToId.join('__');
       }),
     [tableName, fieldSpecs]
   );
+}
+
+// REFACTOR: reuse this utility in other places
+function reverseMappingPath(
+  tableName: keyof Tables,
+  mappingPath: MappingPath
+): MappingPath | undefined {
+  const model = schema.models[tableName];
+  const path = mappingPath
+    .map((_part, index) => {
+      const field = model.getField(mappingPath.slice(0, index + 1).join('.'))!;
+      return field.isRelationship ? field.otherSideName : field.name;
+    })
+    .reverse();
+  // Check if reverse mapping path exists
+  return path.includes(undefined) ? undefined : filterArray(path);
 }
 
 const fieldSpecsToMappingPaths = (
