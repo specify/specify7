@@ -6,6 +6,8 @@
 
 // eslint-disable-next-line simple-import-sort/imports
 import 'leaflet/dist/leaflet.css';
+// This must preceded leaflet.markercluster imports
+import L from 'leaflet';
 // Marker Clustering
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -13,7 +15,6 @@ import 'leaflet.markercluster/dist/leaflet.markercluster';
 // Create sub-layers to selectively toggle markers in clusters
 import 'leaflet.featuregroup.subgroup';
 
-import L from 'leaflet';
 import { localityText } from './localization/locality';
 import { legacyNonJsxIcons } from './components/icons';
 import { className } from './components/basic';
