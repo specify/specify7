@@ -13,7 +13,6 @@ import { schema } from '../schema';
 import type { LiteralField, Relationship } from '../specifyfield';
 import type { GetOrSet, IR } from '../types';
 import { getValidationAttributes, resolveParser } from '../uiparse';
-import { useLiveState } from './hooks';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -27,13 +26,19 @@ import { useLiveState } from './hooks';
 export function useResource<SCHEMA extends AnySchema>(
   model: SpecifyResource<SCHEMA>
 ): GetOrSet<SerializedResource<SCHEMA>> {
-  const [resource, setResource] = useLiveState<SerializedResource<SCHEMA>>(
-    React.useCallback(() => serializeResource(model), [model])
+  const [resource, setResource] = React.useState<SerializedResource<SCHEMA>>(
+    () => serializeResource(model)
   );
 
   const previousResourceRef =
     React.useRef<SerializedResource<SCHEMA>>(resource);
+  const previousModel = React.useRef(model);
   React.useEffect(() => {
+    if (previousModel.current !== model) {
+      previousModel.current = model;
+      setResource(serializeResource(model));
+      return;
+    }
     const changes = Object.entries(resource).filter(
       ([key, newValue]) =>
         (newValue as unknown) !== previousResourceRef.current[key]

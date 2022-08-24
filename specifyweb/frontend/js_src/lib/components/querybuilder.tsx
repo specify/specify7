@@ -120,8 +120,9 @@ export function QueryBuilder({
     'showHiddenFields'
   );
 
+  const isResourceModified = useIsModified(queryResource);
   const saveRequired =
-    (useIsModified(queryResource) || state.saveRequired) && !isEmbedded;
+    (isResourceModified || state.saveRequired) && !isEmbedded;
 
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
