@@ -356,12 +356,14 @@ export function processViewDefinition(
   view: ViewDefinition,
   formType: FormType,
   mode: FormMode
-): {
-  readonly viewDefinition: Element;
-  readonly formType: FormType;
-  readonly mode: FormMode;
-  readonly model: SpecifyModel;
-} {
+):
+  | {
+      readonly viewDefinition: Element;
+      readonly formType: FormType;
+      readonly mode: FormMode;
+      readonly model: SpecifyModel;
+    }
+  | undefined {
   let altViews: RA<AltView> = Object.values(view.altviews).filter(
     (altView) => altView.mode === mode
   );
@@ -383,8 +385,9 @@ export function processViewDefinition(
   let altView = altViews.find((altView) => {
     viewDefinition = viewDefinitions[altView.viewdef];
     return (
+      typeof viewDefinition === 'object' &&
       getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
-      formType.toLowerCase()
+        formType.toLowerCase()
     );
   });
   if (altView === undefined || viewDefinition === undefined) {
@@ -394,11 +397,13 @@ export function processViewDefinition(
   }
 
   const definition =
-    viewDefinition.getElementsByTagName('definition')[0]?.textContent;
+    viewDefinition?.getElementsByTagName('definition')[0]?.textContent;
   const actualViewDefinition =
     typeof definition === 'string'
       ? viewDefinitions[definition]
       : viewDefinition;
+
+  if (actualViewDefinition === undefined) return undefined;
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
   return {
@@ -432,12 +437,10 @@ export function parseViewDefinition(
   view: ViewDefinition,
   defaultType: FormType,
   originalMode: FormMode
-): ViewDescription {
-  const { mode, formType, viewDefinition, model } = processViewDefinition(
-    view,
-    defaultType,
-    originalMode
-  );
+): ViewDescription | undefined {
+  const resolved = processViewDefinition(view, defaultType, originalMode);
+  if (resolved === undefined) return undefined;
+  const { mode, formType, viewDefinition, model } = resolved;
   const parser =
     formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
   return {
