@@ -52,6 +52,17 @@ import { useErrorContext } from '../errorcontext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
+// Use this state while real state is being resolved
+const pendingState = {
+  type: 'MainState',
+  fields: [],
+  mappingView: ['0'],
+  queryRunCount: 0,
+  openedElement: { line: 1, index: undefined },
+  saveRequired: false,
+  baseTableName: 'CollectionObject',
+} as const;
+
 export function QueryBuilder({
   query: queryResource,
   isReadOnly,
@@ -76,16 +87,23 @@ export function QueryBuilder({
   useErrorContext('query', query);
 
   const model = defined(getModelById(query.contextTableId));
-  const [state, dispatch] = React.useReducer(
-    reducer,
-    {
-      query,
-      queryResource,
-      model,
-      autoRun,
-    },
-    getInitialState
+  const buildInitialState = React.useCallback(
+    () =>
+      getInitialState({
+        query,
+        queryResource,
+        model,
+        autoRun,
+      }),
+    [query, queryResource, model, autoRun]
   );
+  const [state, dispatch] = React.useReducer(reducer, pendingState);
+  React.useEffect(() => {
+    dispatch({
+      type: 'ResetStateAction',
+      state: buildInitialState(),
+    });
+  }, [buildInitialState]);
   useErrorContext('state', state);
 
   /**

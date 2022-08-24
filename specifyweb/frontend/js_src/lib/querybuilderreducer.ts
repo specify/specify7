@@ -60,6 +60,7 @@ export const getInitialState = ({
 });
 
 type Actions =
+  | Action<'ResetStateAction', { readonly state: MainState }>
   | Action<
       'ChangeFieldAction',
       { readonly line: number; readonly field: QueryField }
@@ -95,6 +96,7 @@ type Actions =
   | Action<'SavedQueryAction'>;
 
 export const reducer = generateReducer<MainState, Actions>({
+  ResetStateAction: ({ action: { state } }) => state,
   RunQueryAction: ({ state }) => ({
     ...state,
     queryRunCount: state.queryRunCount + 1,
