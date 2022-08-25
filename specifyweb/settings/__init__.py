@@ -209,7 +209,6 @@ INSTALLED_APPS = (
     'specifyweb.notifications',
     'specifyweb.export',
     'specifyweb.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
-    'django_jsonfield_backport',
 )
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
