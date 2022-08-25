@@ -18,14 +18,22 @@ import type { SpecifyModel } from './specifymodel';
 import type { IR, R, RA } from './types';
 import { defined, filterArray } from './types';
 
-const getColumnDefinitions = (viewDefinition: Element): string =>
-  defined(
-    (
-      viewDefinition.querySelector(
-        `columnDef[os="${getPref('form.definition.columnSource')}"]`
-      ) ?? viewDefinition.querySelector('columnDef')
-    )?.textContent ?? getParsedAttribute(viewDefinition, 'colDef')
-  );
+function getColumnDefinitions(viewDefinition: Element): string {
+  const definition =
+    getColumnDefinition(
+      viewDefinition,
+      getPref('form.definition.columnSource')
+    ) ?? getColumnDefinition(viewDefinition, undefined);
+  return defined(definition ?? getParsedAttribute(viewDefinition, 'colDef'));
+}
+
+const getColumnDefinition = (
+  viewDefinition: Element,
+  os: string | undefined
+): string | undefined =>
+  viewDefinition.querySelector(
+    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
+  )?.textContent ?? undefined;
 
 export type ParsedFormDefinition = {
   // Define column sizes: either a number of pixels, or undefined for auto sizing
@@ -75,12 +83,37 @@ function parseFormTableDefinition(
         ? { fieldDefinition: { ...cell.fieldDefinition, label: undefined } }
         : {}),
     }));
+
   return {
-    columns: Array.from({
-      length: f.sum(row.map(({ colSpan }) => colSpan)),
-    }).fill(undefined),
+    columns: parseFormTableColumns(viewDefinition, row),
     rows: [row],
   };
+}
+
+function parseFormTableColumns(
+  viewDefinition: Element,
+  row: RA<FormCellDefinition>
+): RA<number | undefined> {
+  const columnCount = f.sum(row.map(({ colSpan }) => colSpan));
+  const rawColumnDefinition = f.maybe(
+    getColumnDefinition(viewDefinition, 'table'),
+    processColumnDefinition
+  );
+  const columnDefinition =
+    typeof rawColumnDefinition === 'object'
+      ? [
+          ...rawColumnDefinition,
+          ...Array.from({
+            length: columnCount - rawColumnDefinition.length,
+          }).fill(undefined),
+        ]
+      : undefined;
+  return (
+    columnDefinition ??
+    Array.from({
+      length: columnCount,
+    }).fill(undefined)
+  );
 }
 
 export const parseFormDefinition = (

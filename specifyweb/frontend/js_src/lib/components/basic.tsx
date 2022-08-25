@@ -193,6 +193,18 @@ const dataEntryButton =
       />
     );
 
+export const columnDefinitionsToCss = (
+  columns: RA<number | undefined>,
+  flexibleColumnWidth: boolean
+): string =>
+  columns
+    .map((width) =>
+      typeof width === 'number'
+        ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
+        : 'auto'
+    )
+    .join(' ');
+
 /**
  * Components for Specify Form
  * This is called DataEntry instead of Form because "Form" is already taken
@@ -222,13 +234,10 @@ export const DataEntry = {
         classNameString ?? ''
       } ${viewDefinition.columns.length === 1 ? className.limitedWidth : ''}`,
       style: {
-        gridTemplateColumns: viewDefinition.columns
-          .map((width) =>
-            typeof width === 'number'
-              ? `${width}${flexibleColumnWidth ? 'fr' : 'px'}`
-              : 'auto'
-          )
-          .join(' '),
+        gridTemplateColumns: columnDefinitionsToCss(
+          viewDefinition.columns,
+          flexibleColumnWidth
+        ),
         ...style,
       },
       ...props,
