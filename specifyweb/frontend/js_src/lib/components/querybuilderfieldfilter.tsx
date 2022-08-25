@@ -166,9 +166,15 @@ function QueryInputField({
       <Select
         {...commonProps}
         multiple={listInput}
-        required={Boolean(validationAttributes.required)}
         size={listInput ? selectMultipleSize : 1}
-        value={listInput ? value.split(',').map(f.trim) : value}
+        value={
+          listInput
+            ? value
+                .split(',')
+                .map(f.trim)
+                .map((value) => resolveItem(pickListItems, value))
+            : resolveItem(pickListItems, value)
+        }
       >
         <option value="" />
         {pickListItems.map(({ title, value }) => (
@@ -200,6 +206,14 @@ function QueryInputField({
     </span>
   );
 }
+
+const resolveItem = (
+  items: RA<PickListItemSimple>,
+  currentValue: string
+): string =>
+  items.find(({ value }) => value === currentValue)?.value ??
+  items.find(({ title }) => title === currentValue)?.value ??
+  currentValue;
 
 function SingleField({
   filter,
