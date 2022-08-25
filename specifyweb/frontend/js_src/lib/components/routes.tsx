@@ -5,6 +5,7 @@ import { commonText } from '../localization/common';
 import { welcomeText } from '../localization/welcome';
 import { wbText } from '../localization/workbench';
 import type { RA } from '../types';
+import { Redirect } from './redirect';
 import type { EnhancedRoute } from './routerutils';
 import { WelcomeView } from './welcomeview';
 
@@ -19,6 +20,10 @@ export const routes: RA<EnhancedRoute> = [
       ),
     title: commonText('expressSearch'),
     navigatable: false,
+  },
+  {
+    path: 'express_search',
+    element: <Redirect to="/specify/express-search/" />,
   },
   {
     path: 'datamodel',
@@ -172,6 +177,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'workbench-plan/:id',
+    element: <Redirect to="/specify/workbench/plan/:id" />,
+  },
+  {
+    path: 'workbench-import',
+    element: <Redirect to="/specify/workbench-import" />,
+  },
+  {
     path: 'resources',
     title: commonText('appResources'),
     element: () =>
@@ -198,6 +211,32 @@ export const routes: RA<EnhancedRoute> = [
         path: 'view-set/:id',
         element: () =>
           import('./appresourceview').then(({ ViewSetView }) => ViewSetView),
+      },
+    ],
+  },
+  {
+    path: 'appresources',
+    children: [
+      {
+        index: true,
+        element: <Redirect to="/specify/resources/" />,
+      },
+      {
+        path: ':id',
+        element: <Redirect to="/specify/resources/app-resource/:id" />,
+      },
+    ],
+  },
+  {
+    path: 'viewsets',
+    children: [
+      {
+        index: true,
+        element: <Redirect to="/specify/resources/" />,
+      },
+      {
+        path: ':id',
+        element: <Redirect to="/specify/resources/view-set/:id" />,
       },
     ],
   },

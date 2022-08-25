@@ -55,6 +55,8 @@ const treeToPref = {
   LithoStrat: 'lithoStrat',
 } as const;
 
+const defaultConformation: RA<never> = [];
+
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
   treeDefinition,
@@ -75,7 +77,7 @@ function TreeView<SCHEMA extends AnyTree>({
 
   const [urlConformation, setUrlConformation] =
     useSearchParameter('conformation');
-  const [conformation = [], setConformation] = useCachedState(
+  const [conformation = defaultConformation, setConformation] = useCachedState(
     'tree',
     `conformations${tableName}`
   );
