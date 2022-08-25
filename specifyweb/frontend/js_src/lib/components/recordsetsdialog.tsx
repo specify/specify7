@@ -5,7 +5,6 @@ import type { State } from 'typesafe-reducer';
 import { fetchCollection } from '../collection';
 import type { RecordSet } from '../datamodel';
 import type { SerializedResource } from '../datamodelutils';
-import { sortFunction } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
 import { formsText } from '../localization/forms';
@@ -125,7 +124,10 @@ export function RecordSetsDialog({
     | State<'MainState'>
   >({ type: 'MainState' });
 
-  const [sortConfig, handleSort] = useSortConfig('listOfRecordSets', 'name');
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    'listOfRecordSets',
+    'name'
+  );
 
   const [unsortedData] = useAsyncState(
     React.useCallback(async () => recordSetsPromise, [recordSetsPromise]),
@@ -136,11 +138,9 @@ export function RecordSetsDialog({
       typeof unsortedData === 'object'
         ? {
             ...unsortedData,
-            records: Array.from(unsortedData.records).sort(
-              sortFunction(
-                (recordSet) => recordSet[sortConfig.sortField],
-                !sortConfig.ascending
-              )
+            records: applySortConfig(
+              unsortedData.records,
+              (recordSet) => recordSet[sortConfig.sortField]
             ),
           }
         : undefined,

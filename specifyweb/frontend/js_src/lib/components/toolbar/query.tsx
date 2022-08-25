@@ -9,7 +9,6 @@ import type { CollectionFetchFilters } from '../../collection';
 import { fetchCollection } from '../../collection';
 import type { SpQuery } from '../../datamodel';
 import type { SerializedResource } from '../../datamodelutils';
-import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasToolPermission } from '../../permissionutils';
 import { getModelById } from '../../schema';
@@ -111,19 +110,15 @@ function QueryList({
   readonly isReadOnly: boolean;
   readonly getQuerySelectUrl?: (query: SerializedResource<SpQuery>) => string;
 }): JSX.Element {
-  const [sortConfig, handleSort] = useSortConfig(
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfQueries',
     'name',
     false
   );
 
-  const queries = Array.from(unsortedQueries).sort(
-    sortFunction(
-      sortConfig.sortField === 'name'
-        ? ({ name }): string => name
-        : ({ timestampCreated }): string => timestampCreated,
-      !sortConfig.ascending
-    )
+  const queries = applySortConfig(
+    unsortedQueries,
+    (query) => query[sortConfig.sortField]
   );
 
   return (

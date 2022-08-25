@@ -12,12 +12,13 @@ import { useLocation } from 'react-router-dom';
 import type { SortConfigs } from '../cachedefinitions';
 import { format } from '../dataobjformatters';
 import { f } from '../functools';
-import { spanNumber } from '../helpers';
+import { sortFunction, spanNumber } from '../helpers';
 import { getIcon } from '../icons';
 import { commonText } from '../localization/common';
 import { hasTablePermission } from '../permissionutils';
 import { parseResourceUrl } from '../resource';
 import { getModel } from '../schema';
+import type { RA } from '../types';
 import { defined } from '../types';
 import { Button, className, Link, Textarea } from './basic';
 import { softFail } from './errorboundary';
@@ -156,9 +157,9 @@ export function SortIndicator<FIELD_NAMES extends string>({
   sortConfig,
 }: {
   readonly fieldName: string;
-  readonly sortConfig: SortConfig<FIELD_NAMES>;
+  readonly sortConfig: SortConfig<FIELD_NAMES> | undefined;
 }): JSX.Element {
-  const isSorted = sortConfig.sortField === fieldName;
+  const isSorted = sortConfig?.sortField === fieldName;
   return (
     <span className="text-brand-300">
       {isSorted && (
@@ -181,12 +182,14 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
   cacheKey: NAME,
   defaultField: SortConfigs[NAME],
   ascending = true
-): Readonly<
-  readonly [
-    SortConfig<SortConfigs[NAME]>,
-    (fieldName: SortConfigs[NAME]) => void
-  ]
-> {
+): readonly [
+  sortConfig: SortConfig<SortConfigs[NAME]>,
+  handleSort: (fieldName: SortConfigs[NAME]) => void,
+  applySortConfig: <T>(
+    array: RA<T>,
+    mapper: (item: T) => boolean | number | string | null | undefined
+  ) => RA<T>
+] {
   const [sortConfig = { sortField: defaultField, ascending }, setSortConfig] =
     useCachedState('sortConfig', cacheKey);
   const handleClick = React.useCallback(
@@ -196,13 +199,25 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
         ascending:
           sortField === sortConfig?.sortField ? !sortConfig.ascending : true,
       };
-      (setSortConfig as (sortConfig: SortConfig<SortConfigs[NAME]>) => void)(
-        newSortConfig
-      );
+      (
+        setSortConfig as (
+          sortConfig: SortConfig<SortConfigs[NAME]> | undefined
+        ) => void
+      )(newSortConfig);
     },
     [sortConfig, setSortConfig]
   );
-  return [sortConfig, handleClick];
+  const applySortConfig = React.useCallback(
+    <T,>(
+      array: RA<T>,
+      mapper: (item: T) => boolean | number | string | null | undefined
+    ): RA<T> =>
+      sortConfig === undefined
+        ? array
+        : Array.from(array).sort(sortFunction(mapper, !sortConfig.ascending)),
+    [sortConfig]
+  );
+  return [sortConfig, handleClick, applySortConfig];
 }
 
 /**

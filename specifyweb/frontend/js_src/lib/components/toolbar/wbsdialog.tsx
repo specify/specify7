@@ -9,7 +9,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { ajax } from '../../ajax';
 import { Http } from '../../ajaxUtils';
-import { sortFunction } from '../../helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../../permissionutils';
@@ -79,7 +78,9 @@ function TableHeader({
   sortConfig,
   onSort: handleSort,
 }: {
-  readonly sortConfig: SortConfig<'dateCreated' | 'dateUploaded' | 'name'>;
+  readonly sortConfig:
+    | SortConfig<'dateCreated' | 'dateUploaded' | 'name'>
+    | undefined;
   readonly onSort: (sortField: 'dateCreated' | 'dateUploaded' | 'name') => void;
 }): JSX.Element {
   return (
@@ -135,23 +136,21 @@ export function DataSetsDialog({
     true
   );
 
-  const [sortConfig, handleSort] = useSortConfig(
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
     'listOfDataSets',
     'dateCreated',
     false
   );
 
   const datasets = Array.isArray(unsortedDatasets)
-    ? Array.from(unsortedDatasets).sort(
-        sortFunction(
-          ({ name, timestampcreated, uploadresult }) =>
-            sortConfig.sortField === 'name'
-              ? name
-              : sortConfig.sortField === 'dateCreated'
-              ? timestampcreated
-              : uploadresult?.timestamp ?? '',
-          !sortConfig.ascending
-        )
+    ? applySortConfig(
+        unsortedDatasets,
+        ({ name, timestampcreated, uploadresult }) =>
+          sortConfig.sortField === 'name'
+            ? name
+            : sortConfig.sortField === 'dateCreated'
+            ? timestampcreated
+            : uploadresult?.timestamp ?? ''
       )
     : undefined;
 

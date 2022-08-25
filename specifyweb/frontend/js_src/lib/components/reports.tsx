@@ -21,7 +21,6 @@ import {
   keysToLowerCase,
   replaceItem,
   replaceKey,
-  sortFunction,
   split,
 } from '../helpers';
 import { commonText } from '../localization/common';
@@ -192,14 +191,15 @@ function Entries({
   readonly cacheKey: 'listOfLabels' | 'listOfReports';
   readonly onClick: (resource: SerializedResource<SpAppResource>) => void;
 }): JSX.Element {
-  const [sortConfig, handleSort] = useSortConfig(cacheKey, 'name');
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    cacheKey,
+    'name'
+  );
   const resources = React.useMemo(
     () =>
-      Array.from(unsortedResources).sort(
-        sortFunction(
-          (record) => record[sortConfig.sortField],
-          !sortConfig.ascending
-        )
+      applySortConfig(
+        unsortedResources,
+        (record) => record[sortConfig.sortField]
       ),
     [sortConfig, unsortedResources]
   );

@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../cachedefinitions';
 import { f } from '../../functools';
-import { sortFunction } from '../../helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
@@ -46,17 +45,18 @@ function Table<
   readonly getLink: ((row: Row<FIELD_NAME>) => string) | undefined;
 }): JSX.Element {
   const indexColumn = Object.keys(headers)[0];
-  const [sortConfig, handleSort] = useSortConfig(sortName, 'name');
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    sortName,
+    'name'
+  );
   const data = React.useMemo(
     () =>
-      Array.from(unsortedData).sort(
-        sortFunction((row) => {
-          /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */
-          const data = row[sortConfig.sortField] as Value;
-          return Array.isArray(data) ? data[0] : data;
-        }, !sortConfig.ascending)
-      ),
-    [sortConfig, unsortedData]
+      applySortConfig(unsortedData, (row) => {
+        /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */
+        const data = row[sortConfig.sortField] as Value;
+        return Array.isArray(data) ? data[0] : data;
+      }),
+    [sortConfig, unsortedData, applySortConfig]
   );
   return (
     <div
