@@ -361,8 +361,6 @@ system_tables = {
     'Attachmenttag',
     'Attributedef',
     'Autonumberingscheme',
-    'Collectionreltype',
-    'Collectionrelationship',
     'Datatype',
     'Morphbankview',
     'Picklist',
