@@ -16,10 +16,12 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, PartialBy, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry } from './basic';
+import { Button, className, DataEntry } from './basic';
 import type { SortConfig } from './common';
 import { SortIndicator } from './common';
+import { FormPreferences } from './formpreferences';
 import { useId } from './hooks';
+import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { usePref } from './preferenceshooks';
 import { SearchDialog } from './searchdialog';
@@ -105,11 +107,10 @@ export function FormTable<SCHEMA extends AnySchema>({
     const resourceIndex = resources.indexOf(addedResource.current);
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
-    (
-      rowsRef.current.querySelector(
-        `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
-      ) as HTMLElement | null
-    )?.focus();
+
+    rowsRef.current
+      .querySelector(`:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`)
+      ?.focus();
   }, [resources]);
 
   const isToOne = !relationshipIsToMany(relationship);
@@ -139,7 +140,6 @@ export function FormTable<SCHEMA extends AnySchema>({
     resources.length !== 1 || !isExpanded[resources[0].cid];
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
-  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
       commonText('loading')
@@ -147,16 +147,12 @@ export function FormTable<SCHEMA extends AnySchema>({
       <p>{formsText('noData')}</p>
     ) : (
       <DataEntry.Grid
-        className="sticky w-fit pt-0"
+        className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
         display="inline"
         flexibleColumnWidth={flexibleColumnWidth}
         role="table"
         style={{
-          gridTemplateColumns: `min-content repeat(${
-            viewDefinition.columns.length
-          },auto) ${displayViewButton ? 'min-content' : ''} ${
-            displayDeleteButton ? 'min-content' : ''
-          }`,
+          gridTemplateColumns: `min-content repeat(${viewDefinition.columns.length},auto) min-content`,
           maxHeight: `${maxHeight}px`,
         }}
         viewDefinition={viewDefinition}
@@ -206,23 +202,19 @@ export function FormTable<SCHEMA extends AnySchema>({
               </DataEntry.Cell>
             );
           })}
-          {displayViewButton && (
-            <div role="columnheader">{commonText('view')}</div>
-          )}
-          {displayDeleteButton && (
-            <div role="columnheader">
-              <span className="sr-only">{commonText('remove')}</span>
-            </div>
-          )}
+          <div role="columnheader">
+            <span className="sr-only">{commonText('actions')}</span>
+          </div>
         </div>
         <div className="contents" ref={rowsRef} role="rowgroup">
           {resources.map((resource) => (
             <div className="contents" key={resource.cid} role="row">
               {isExpanded[resource.cid] ? (
                 <>
-                  <div className="flex justify-center" role="cell">
-                    <Button.Icon
-                      icon="chevronDown"
+                  <div className="h-full" role="cell">
+                    <Button.Small
+                      aria-label={formsText('contract')}
+                      className="h-full"
                       title={formsText('contract')}
                       onClick={(): void =>
                         setExpandedRecords({
@@ -230,7 +222,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                           [resource.cid]: false,
                         })
                       }
-                    />
+                    >
+                      {icons.chevronDown}
+                    </Button.Small>
                   </div>
                   <DataEntry.Cell
                     align="left"
@@ -251,9 +245,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                 </>
               ) : (
                 <>
-                  <div className="flex justify-center" role="cell">
-                    <Button.Icon
-                      icon="chevronRight"
+                  <div className="flex h-full justify-center" role="cell">
+                    <Button.Small
+                      aria-label={commonText('expand')}
                       title={commonText('expand')}
                       onClick={(): void =>
                         setExpandedRecords({
@@ -261,7 +255,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                           [resource.cid]: true,
                         })
                       }
-                    />
+                    >
+                      {icons.chevronRight}
+                    </Button.Small>
                   </div>
                   {viewDefinition.rows[0].map(
                     (
@@ -289,21 +285,26 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </DataEntry.Cell>
                     )
                   )}
-                  {displayViewButton && (
-                    <div className="flex justify-center" role="cell">
-                      <DataEntry.Visit resource={resource} />
-                    </div>
-                  )}
                 </>
               )}
-              {displayDeleteButton && (
-                <div className="flex justify-center" role="cell">
-                  {(!resource.isNew() ||
+              <div className="flex h-full flex-col gap-2" role="cell">
+                {displayViewButton && (
+                  <DataEntry.Visit
+                    props={{
+                      className: `flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`,
+                    }}
+                    resource={resource}
+                  />
+                )}
+                {displayDeleteButton &&
+                  (!resource.isNew() ||
                     hasTablePermission(
                       relationship.relatedModel.name,
                       'delete'
                     )) && (
-                    <Button.Icon
+                    <Button.Small
+                      aria-label={commonText('remove')}
+                      className="flex-1"
                       disabled={
                         !resource.isNew() &&
                         !hasTablePermission(
@@ -311,13 +312,16 @@ export function FormTable<SCHEMA extends AnySchema>({
                           'delete'
                         )
                       }
-                      icon="trash"
                       title={commonText('remove')}
                       onClick={(): void => handleDelete(resource)}
-                    />
+                    >
+                      {icons.trash}
+                    </Button.Small>
                   )}
-                </div>
-              )}
+                {isExpanded[resource.cid] && (
+                  <FormPreferences className="flex-1" resource={resource} />
+                )}
+              </div>
             </div>
           ))}
         </div>

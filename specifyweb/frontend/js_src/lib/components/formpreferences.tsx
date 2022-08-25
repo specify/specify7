@@ -28,8 +28,10 @@ import { GenerateLabel } from './specifyformcommand';
 
 export function FormPreferences({
   resource,
+  className,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly className?: string;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
@@ -38,6 +40,7 @@ export function FormPreferences({
       <Button.Small
         aria-label={commonText('preferences')}
         title={commonText('preferences')}
+        className={className}
         onClick={handleToggle}
       >
         {icons.cog}

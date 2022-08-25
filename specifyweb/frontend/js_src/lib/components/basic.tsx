@@ -119,6 +119,11 @@ const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
+const niceButton = `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
+    inline-flex items-center capitalize justify-center`;
+const borderedGrayButton = `${grayButton} ring-1 ring-gray-400 dark:ring-0
+    disabled:ring-gray-500 disabled:dark:ring-neutral-500`;
 // REFACTOR: reduce this once everything is using React. Can move things into tailwind.config.js
 export const className = {
   /*
@@ -144,11 +149,10 @@ export const className = {
   link: 'link',
   icon: 'icon link',
   grayButton,
-  niceButton: `${buttonClassName} rounded cursor-pointer active:brightness-80 px-4 py-2
-  disabled:bg-gray-200 disabled:text-gray-500 dark:disabled:!bg-neutral-700 gap-2
-  inline-flex items-center capitalize`,
-  borderedGrayButton: `${grayButton} ring-1 ring-gray-400 dark:ring-0
-    disabled:ring-gray-500 disabled:dark:ring-neutral-500`,
+  niceButton,
+  smallButton: `${niceButton} !py-1 !px-2`,
+  borderedGrayButton,
+  defaultSmallButtonVariant: `${borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`,
   redButton: `${dialogIconTriggers.error} hover:bg-red-800 bg-red-700 text-white`,
   blueButton: `${dialogIconTriggers.info} hover:bg-blue-700 bg-blue-600 text-white`,
   orangeButton: `${dialogIconTriggers.warning} hover:bg-orange-600 bg-orange-500 text-white`,
@@ -177,8 +181,6 @@ export const className = {
   dataEntryRemove: '!text-red-700 print:hidden',
   dataEntryVisit: '!text-blue-700 print:hidden',
 } as const;
-const smallButton = `${className.niceButton} !py-1 !px-2`;
-const defaultSmallButtonVariant = `${className.borderedGrayButton} hover:bg-brand-200 dark:hover:bg-brand-400`;
 
 const dataEntryButton = (
   className: string,
@@ -310,13 +312,16 @@ export const DataEntry = {
   ),
   Visit({
     resource,
+    props,
   }: {
+    readonly props?: Exclude<TagProps<'a'>, 'aria-label' | 'href' | 'title'>;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
+        {...props}
         aria-label={formsText('visit')}
-        className={className.dataEntryVisit}
+        className={`${className.dataEntryVisit} ${props?.className ?? ''}`}
         href={resource.viewUrl()}
         title={formsText('visit')}
       />
@@ -683,9 +688,9 @@ export const Link = {
     readonly variant?: string;
   }>(
     'Link.Small',
-    smallButton,
+    className.smallButton,
     ({
-      variant = defaultSmallButtonVariant,
+      variant = className.defaultSmallButtonVariant,
       className: classString,
       ...props
     }) => ({
@@ -791,9 +796,9 @@ export const Button = {
   >(
     'Button.Small',
     'button',
-    smallButton,
+    className.smallButton,
     ({
-      variant = defaultSmallButtonVariant,
+      variant = className.defaultSmallButtonVariant,
       type,
       className: classString,
       ...props
@@ -865,7 +870,7 @@ const submitButton = (name: string, buttonClassName: string) =>
 export const Submit = {
   Small: submitButton(
     'Submit.Small',
-    `${smallButton} ${defaultSmallButtonVariant}`
+    `${className.smallButton} ${className.defaultSmallButtonVariant}`
   ),
   Fancy: submitButton(
     'Submit.Fancy',
