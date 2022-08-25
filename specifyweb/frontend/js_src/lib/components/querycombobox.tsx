@@ -15,7 +15,6 @@ import { queryText } from '../localization/query';
 import type { FormMode, FormType } from '../parseform';
 import { columnToFieldMapper } from '../parseselect';
 import { hasTablePermission, hasTreeAccess } from '../permissions';
-import { fetchPickLists } from '../picklists';
 import type {
   CollectionRelationships,
   QueryComboBoxTreeData,
@@ -311,14 +310,12 @@ export function QueryComboBox({
                   : (value === formattedRef.current?.value &&
                     typeof formattedRef.current === 'object'
                       ? Promise.resolve(formattedRef.current.formatted)
-                      : fetchPickLists().then(async () =>
-                          format(
-                            resource,
-                            typeof typeSearch === 'object'
-                              ? typeSearch.dataObjectFormatter
-                              : undefined
+                      : format(
+                          resource,
+                          typeof typeSearch === 'object'
+                            ? typeSearch.dataObjectFormatter
+                            : undefined
                           )
-                        )
                     ).then((formatted) => ({
                       label:
                         formatted ??

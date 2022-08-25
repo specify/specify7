@@ -11,12 +11,14 @@ import { format } from './dataobjformatters';
 import { f } from './functools';
 import { sortFunction, toLowerCase } from './helpers';
 import type { SpecifyResource } from './legacytypes';
-import { hasTablePermission } from './permissions';
-import { fetchPickLists } from './picklists';
+import { hasTablePermission, hasToolPermission } from './permissions';
+import { getFrontEndPickLists, unsafeGetPickLists } from './picklists';
 import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';
 import type { RA } from './types';
 import { defined } from './types';
+import { fetchCollection } from './collection';
+import { deserializeResource } from './components/resource';
 
 export const PickListTypes = {
   // Items are defined in the PickListItems table
@@ -64,9 +66,24 @@ export async function fetchPickListItems(
 export async function fetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
-  const pickList = await fetchPickLists().then(
-    (pickLists) => pickLists[pickListName]
-  );
+  getFrontEndPickLists();
+
+  let pickList: SpecifyResource<PickList> | undefined =
+    unsafeGetPickLists()[pickListName];
+  if (pickList === undefined) {
+    if (
+      pickListName in unsafeGetPickLists() &&
+      unsafeGetPickLists()[pickListName] === undefined
+    )
+      // Pick list does not exist
+      return undefined;
+    if (!hasToolPermission('pickLists', 'read')) return undefined;
+    pickList = await fetchCollection('PickList', {
+      name: pickListName,
+      limit: 1,
+    }).then(({ records }) => f.maybe(records[0], deserializeResource));
+    unsafeGetPickLists()[pickListName] = pickList;
+  }
 
   if (typeof pickList === 'undefined') return undefined;
 

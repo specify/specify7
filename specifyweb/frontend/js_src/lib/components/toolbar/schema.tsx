@@ -17,7 +17,7 @@ import {
 import type { SpecifyModel } from '../../specifymodel';
 import { getSystemInfo } from '../../systeminfo';
 import type { RA } from '../../types';
-import { fieldFormat, resolveParser } from '../../uiparse';
+import { resolveParser, syncFieldFormat } from '../../uiparse';
 import { Button, className, Container, H2, H3, Link } from '../basic';
 import { TableIcon } from '../common';
 import { downloadFile } from '../filepicker';
@@ -77,7 +77,7 @@ const parser = f.store(() =>
 );
 
 const booleanFormatter = (value: boolean): string =>
-  fieldFormat(undefined, parser(), value);
+  syncFieldFormat(undefined, parser(), value);
 
 /*
  * TODO: add sorting by column headers
