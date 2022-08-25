@@ -494,6 +494,10 @@ export function getMappingLineData({
                       // Display read only fields in query builder only
                       scope === 'queryBuilder' ||
                       !field.overrides.isReadOnly) &&
+                    // Hide relationships to system tables
+                    (isNoRestrictionsMode ||
+                      !field.isRelationship ||
+                      !field.relatedModel.overrides.isSystem) &&
                     // Hide most fields for non "any" tree ranks in query builder
                     (scope !== 'queryBuilder' ||
                       !isTreeModel(model.name) ||

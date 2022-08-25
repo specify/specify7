@@ -21,7 +21,9 @@ export function Redirect({ to }: { readonly to: string }): null {
     url.hash = hash;
     url.search = search;
     const completeUrl = url.toString();
-    navigate(toRelativeUrl(completeUrl) ?? completeUrl);
+    navigate(toRelativeUrl(completeUrl) ?? completeUrl, {
+      replace: true,
+    });
   }, [to, parameters, search, hash, navigate]);
   return null;
 }

@@ -275,7 +275,6 @@ export class Relationship extends FieldBase {
         : relationshipDefinition.relatedModelName;
     this.relatedModel = defined(getModel(relatedModelName));
 
-    this.overrides.isReadOnly ||= this.relatedModel.overrides.isSystem;
     this.overrides.isRequired =
       this.overrides.isRequired && !this.overrides.isReadOnly;
     this.overrides.isHidden ||=
