@@ -23,7 +23,9 @@ export function SchemaConfigHeader({
         {commonText('schemaConfig')} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>
-      <Button.Small onClick={(): void => navigate(-1)}>
+      <Button.Small
+        onClick={(): void => navigate(`/specify/schema-config/${language}/`)}
+      >
         {commonText('changeBaseTable')}
       </Button.Small>
       <span className="-ml-2 flex-1" />

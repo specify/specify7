@@ -40,7 +40,9 @@ export function SchemaConfigTables(): JSX.Element {
             {commonText('export')}
           </Link.Green>
           <span className="-ml-2 flex-1" />
-          <Button.Gray onClick={(): void => navigate(-1)}>
+          <Button.Gray
+            onClick={(): void => navigate('/specify/schema-config/')}
+          >
             {commonText('back')}
           </Button.Gray>
         </>

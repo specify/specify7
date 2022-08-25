@@ -56,7 +56,9 @@ export function AddLanguage(): JSX.Element {
     <Dialog
       buttons={
         <>
-          <Button.Gray onClick={(): void => navigate(-1)}>
+          <Button.Gray
+            onClick={(): void => navigate('/specify/schema-config/')}
+          >
             {commonText('back')}
           </Button.Gray>
           <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
