@@ -13,7 +13,7 @@ import { resourceOn } from '../resource';
 import { schema } from '../schema';
 import type { RA } from '../types';
 import { Autocomplete } from './autocomplete';
-import { Button, Input, Select } from './basic';
+import { Button, Select } from './basic';
 import type { DefaultComboBoxProps, PickListItemSimple } from './combobox';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
@@ -196,23 +196,19 @@ export function PickListComboBox(
           forwardRef={validationRef}
           aria-label={undefined}
           value={(currentValue?.title || value) ?? ''}
-        >
-          {(inputProps): JSX.Element => (
-            <Input.Generic
-              id={props.id}
-              name={name}
-              disabled={isDisabled}
-              isReadOnly={props.mode === 'view'}
-              required={isRequired}
-              {...inputProps}
-            />
-          )}
-        </Autocomplete>
+          disabled={isDisabled || props.mode === 'view'}
+          inputProps={{
+            id: props.id,
+            name,
+            required: isRequired,
+          }}
+        />
       )}
       {typeof pendingNewValue === 'string' &&
         typeof props.pickList === 'object' &&
         typeof handleAdd === 'function' && (
           <AddingToPicklist
+            type={validationAttributes.type ?? 'string'}
             value={pendingNewValue}
             pickList={props.pickList}
             onAdd={(): void => {
@@ -227,18 +223,29 @@ export function PickListComboBox(
 }
 
 function AddingToPicklist({
+  type,
   value,
   pickList,
   onAdd: handleAdd,
   onClose: handleClose,
 }: {
+  readonly type: string;
   readonly value: string;
   readonly pickList: SpecifyResource<PickList>;
   readonly onAdd: () => void;
   readonly onClose: () => void;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
-  return (
+  const isInvalidNumeric = type === 'number' && f.parseInt(value) === undefined;
+  return isInvalidNumeric ? (
+    <Dialog
+      header={formsText('invalidType')}
+      onClose={handleClose}
+      buttons={commonText('close')}
+    >
+      {formsText('invalidNumericPicklistValue')}
+    </Dialog>
+  ) : (
     <Dialog
       header={formsText('addToPickListConfirmationDialogHeader')}
       onClose={handleClose}

@@ -1,18 +1,18 @@
+import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
 
-import { listen, registerBlurEmitter } from '../events';
-import { f } from '../functools';
+import { listen } from '../events';
 import { commonText } from '../localization/common';
 import type { RA } from '../types';
-import { ensure } from '../types';
 import type { TagProps } from './basic';
 import { className, DialogContext } from './basic';
 import { Portal } from './common';
-import { useBooleanState, useId, useTriggerState } from './hooks';
+import { useBooleanState, useTriggerState } from './hooks';
 import { icons } from './icons';
 import { compareStrings } from './internationalization';
 import { usePref } from './preferenceshooks';
+import { formsText } from '../localization/forms';
 
 const debounceRate = 300;
 
@@ -35,13 +35,10 @@ const getScrollParent = (node: Element | undefined): Element =>
     ? node
     : getScrollParent(node.parentElement ?? undefined);
 
-const itemProps = ensure<Partial<TagProps<'li'>>>()({
-  className: `p-0.5 hover:text-brand-300 hover:bg-gray-100
-      dark:hover:bg-neutral-800 active:bg-brand-100 dark:active:bg-brand-500
-      disabled:cursor-default rounded`,
-  role: 'options',
-  tabIndex: -1,
-} as const);
+const optionClassName = `p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  disabled:cursor-default rounded`;
+const selectedClassName = 'text-brand-300';
+const activeClassName = 'bg-gray-100 dark:bg-neutral-800';
 
 /**
  * An accessible autocomplete.
@@ -69,8 +66,8 @@ export function Autocomplete<T>({
   onChange: handleChange,
   onNewValue: handleNewValue,
   onCleared: handleCleared,
-  children,
-  'aria-label': ariaLabel,
+  disabled = false,
+  inputProps = {},
   value: currentValue,
   pendingValueRef,
 }: {
@@ -84,22 +81,20 @@ export function Autocomplete<T>({
     | React.MutableRefObject<HTMLInputElement | null>
     | React.RefCallback<HTMLInputElement>;
   readonly filterItems: boolean;
-  readonly children: (props: {
-    readonly forwardRef: React.RefCallback<HTMLInputElement>;
-    readonly value: string;
-    readonly type: 'search';
-    readonly autoComplete: 'off';
-    readonly 'aria-expanded': boolean;
-    readonly 'aria-autocomplete': 'list';
-    readonly 'aria-controls': string;
-    readonly 'aria-label': string | undefined;
-    readonly className: 'autocomplete' | '';
-    readonly onClick: () => void;
-    readonly onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    readonly onValueChange: (value: string) => void;
-    readonly onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
-  }) => JSX.Element;
-  readonly 'aria-label': string | undefined;
+  readonly disabled?: boolean;
+  readonly inputProps?: Omit<
+    TagProps<'input'>,
+    | 'value'
+    | 'aria-expanded'
+    | 'aria-controls'
+    | 'aria-activedescendant'
+    | 'onChange'
+    | 'onClick'
+    | 'onBlur'
+    | 'onKeyDown'
+    | 'disabled'
+    | 'readOnly'
+  >;
   readonly value: string;
   /*
    * For low-level access to the value in the input box before user finished
@@ -107,7 +102,6 @@ export function Autocomplete<T>({
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
 }): JSX.Element {
-  const id = useId('autocomplete-data-list')('');
   const [results, setResults] = React.useState<RA<Item<T>>>([]);
 
   const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
@@ -137,32 +131,20 @@ export function Autocomplete<T>({
               if (searchString.includes(searchQuery)) return true;
             } else if (searchString.startsWith(searchQuery)) return true;
 
-            const isEqual =
+            return (
               typeof searchValue === 'string' &&
               compareStrings(
                 searchValue.slice(0, pendingValue.length),
                 pendingValue
-              ) === 0;
-            return isEqual;
+              ) === 0
+            );
           })
         : newResults,
     [shouldFilterItems, searchAlgorithm]
   );
 
-  /*
-   * If currently focused autoComplete item is removed, focus would be lost.
-   * In such cases, need to move the focus to the input element
-   */
-  const resqueFocus = (): void =>
-    f.maybe(document.activeElement?.closest('li') ?? undefined, (li) =>
-      typeof li === 'object' && li.closest('ul') === dataListRef.current
-        ? inputRef.current?.focus()
-        : undefined
-    );
   const updateItems = React.useCallback(
     (items: RA<Item<T>>, pendingValue: string): void => {
-      // Focus might have moved since began fetching, thus need to rescue again
-      resqueFocus();
       setResults(items);
       setFilteredItems(filterItems(items, pendingValue));
     },
@@ -188,7 +170,6 @@ export function Autocomplete<T>({
 
       if (value.length < minLength) return;
 
-      resqueFocus();
       handleLoading();
       void fetchItems(value)
         .then((items) => updateItems(items, value))
@@ -199,14 +180,19 @@ export function Autocomplete<T>({
     []
   );
 
-  const [isOpen, handleOpen, handleClose, handleToggle] = useBooleanState();
-
   const [input, setInput] = React.useState<HTMLInputElement | null>(null);
   const dataListRef = React.useRef<HTMLUListElement | null>(null);
+  const [dataList, setDataList] = React.useState<HTMLUListElement | null>(null);
+  const dataListRefCallback = React.useCallback(
+    (dataList: HTMLUListElement | null) => {
+      setDataList(dataList);
+      dataListRef.current = dataList;
+    },
+    []
+  );
 
   const [filteredItems, setFilteredItems] = React.useState<RA<Item<T>>>([]);
 
-  const [currentIndex, setCurrentIndex] = React.useState<number>(-1);
   const [pendingValue, setPendingValue] = useTriggerState<string>(currentValue);
   React.useEffect(() => {
     if (typeof pendingValueRef === 'object')
@@ -226,19 +212,15 @@ export function Autocomplete<T>({
   const ignoreFilter = currentValue === pendingValue;
   const itemSource = ignoreFilter ? results : filteredItems;
 
+  const pendingItem = results.find(
+    ({ label, searchValue }) => (searchValue ?? label) === pendingValue
+  );
   const showAdd =
     !isLoading &&
     typeof handleNewValue === 'function' &&
-    pendingValue !== currentValue;
+    pendingValue !== currentValue &&
+    pendingItem === undefined;
   const listHasItems = showAdd || isLoading || itemSource.length > 0;
-  const showList = isOpen && listHasItems;
-
-  function handleAddNew(): void {
-    handleBlur();
-    handleClose();
-    handleNewValue?.(pendingValue);
-    input?.focus();
-  }
 
   function handleChanged(item: Item<T>): void {
     handleChange(item);
@@ -246,31 +228,6 @@ export function Autocomplete<T>({
       typeof item.label === 'string' ? item.label : item.searchValue ?? '';
     setPendingValue(value);
     if (typeof pendingValueRef === 'object') pendingValueRef.current = value;
-    handleClose();
-    input?.focus();
-  }
-
-  function handleKeyDown(
-    event: React.KeyboardEvent<HTMLInputElement | HTMLUListElement>
-  ): void {
-    let newIndex = currentIndex;
-    if (event.key === 'Escape' || event.key === 'Enter') {
-      event.preventDefault();
-      const newItem = itemSource[currentIndex];
-      if (typeof newItem === 'object') handleChanged(newItem);
-      else if (currentIndex === itemSource.length && showAdd) handleAddNew();
-    } else if (event.key === 'ArrowUp')
-      newIndex = Math.max(currentIndex - 1, -1);
-    else if (event.key === 'ArrowDown') newIndex = currentIndex + 1;
-
-    if (newIndex !== currentIndex) {
-      event.preventDefault();
-      const itemCount = itemSource.length + (showAdd ? 1 : 0);
-      const finalIndex = (itemCount + newIndex) % Math.max(itemCount, 1);
-      setCurrentIndex(finalIndex);
-      const item = dataListRef.current?.children?.[finalIndex];
-      (item as HTMLElement)?.focus();
-    }
   }
 
   const isInDialog = typeof React.useContext(DialogContext) === 'function';
@@ -285,13 +242,13 @@ export function Autocomplete<T>({
    * Not handling resize events as onBlur would close the list box on resize
    */
   React.useEffect(() => {
-    if (dataListRef.current === null || input === null) return undefined;
+    if (dataList === null || input === null) return undefined;
 
     /*
      * Assuming height does not change while the list is open for performance
      * reasons
      */
-    const listHeight = dataListRef.current.getBoundingClientRect().height;
+    const listHeight = dataList.getBoundingClientRect().height;
 
     const scrollableParent = getScrollParent(input);
     const { top: parentTop, bottom: parentBottom } =
@@ -302,13 +259,13 @@ export function Autocomplete<T>({
       width: inputWidth,
       x: inputStart,
     } = input.getBoundingClientRect();
-    dataListRef.current.style.left = `${inputLeft}px`;
+    dataList.style.left = `${inputLeft}px`;
     if (autoGrowAutoComplete) {
-      dataListRef.current.style.maxWidth = `${
+      dataList.style.maxWidth = `${
         (document.body.clientWidth - inputStart) * 0.9
       }px`;
-      dataListRef.current.style.minWidth = `${inputWidth}px`;
-    } else dataListRef.current.style.width = `max(${inputWidth}px, 6rem)`;
+      dataList.style.minWidth = `${inputWidth}px`;
+    } else dataList.style.width = `max(${inputWidth}px, 6rem)`;
 
     function handleScroll({
       target,
@@ -316,16 +273,12 @@ export function Autocomplete<T>({
       readonly target: EventTarget | null;
     }): void {
       if (
-        dataListRef.current === null ||
+        dataList === null ||
         input === null ||
         // If it is the list itself that is being scrolled
-        target === dataListRef.current
+        target === dataList
       )
         return;
-      if (!showList) {
-        dataListRef.current.classList.add('sr-only');
-        return;
-      }
 
       const { bottom: inputBottom, top: inputTop } =
         input.getBoundingClientRect();
@@ -335,18 +288,16 @@ export function Autocomplete<T>({
        * container so as not to cause content overflow
        */
       const shouldHide = inputTop > parentBottom || inputBottom < parentTop;
-      if (shouldHide) dataListRef.current.classList.add('sr-only');
+      if (shouldHide) dataList.classList.add('sr-only');
       else {
-        dataListRef.current.classList.remove('sr-only');
+        dataList.classList.remove('sr-only');
         const isOverflowing = inputBottom + listHeight > parentBottom;
         if (isOverflowing) {
-          dataListRef.current.style.top = '';
-          dataListRef.current.style.bottom = `${
-            document.body.clientHeight - inputTop
-          }px`;
+          dataList.style.top = '';
+          dataList.style.bottom = `${document.body.clientHeight - inputTop}px`;
         } else {
-          dataListRef.current.style.top = `${inputBottom}px`;
-          dataListRef.current.style.bottom = '';
+          dataList.style.top = `${inputBottom}px`;
+          dataList.style.bottom = '';
         }
       }
     }
@@ -354,32 +305,9 @@ export function Autocomplete<T>({
     handleScroll({ target: null });
 
     return listen(window, 'scroll', handleScroll, true);
-  }, [showList, input, isInDialog, autoGrowAutoComplete]);
+  }, [dataList, input, isInDialog, autoGrowAutoComplete]);
 
   const [highlightMatch] = usePref('form', 'autoComplete', 'highlightMatch');
-  const [closeOnOutsideClick] = usePref(
-    'form',
-    'autoComplete',
-    'closeOnOutsideClick'
-  );
-
-  const emitBlur = React.useRef<() => void>(console.error);
-
-  function handleBlur(): void {
-    emitBlur.current();
-    if (closeOnOutsideClick) handleClose();
-  }
-
-  React.useEffect(
-    () =>
-      input === null
-        ? undefined
-        : registerBlurEmitter(input, (emit) => {
-            emitBlur.current = emit;
-            return f.void;
-          }),
-    [input]
-  );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
@@ -394,139 +322,141 @@ export function Autocomplete<T>({
       [forwardRef]
     );
 
+  const currentItem =
+    results.find(
+      ({ label, searchValue }) => (searchValue ?? label) === currentValue
+    ) ?? currentValue;
+
   return (
-    <>
-      {children({
-        forwardRef: forwardChildRef,
-        value: pendingValue,
-        type: 'search',
-        autoComplete: 'off',
-        'aria-expanded': showList,
-        'aria-autocomplete': 'list',
-        'aria-controls': id,
-        'aria-label': ariaLabel,
-        className: listHasItems ? 'autocomplete' : '',
-        onKeyDown: (event) => (showList ? handleKeyDown(event) : handleOpen()),
-        onValueChange(value) {
-          if (value === '') handleCleared?.();
+    <Combobox
+      value={currentItem}
+      onChange={(value: Item<T> | null | undefined | string): void => {
+        if (value === null || value === undefined) handleCleared?.();
+        else if (typeof value === 'string') handleNewValue?.(value);
+        else handleChanged(value);
+      }}
+      disabled={disabled}
+      nullable
+      as="div"
+      className="relative w-full"
+    >
+      <Combobox.Input
+        onChange={({ target }): void => {
+          const value = (target as HTMLInputElement).value;
           handleRefreshItems(source, value);
           setPendingValue(value);
           if (typeof pendingValueRef === 'object')
             pendingValueRef.current = value;
-        },
-        onClick: handleToggle,
-        onBlur({ relatedTarget }): void {
-          if (
-            relatedTarget === null ||
-            dataListRef.current?.contains(relatedTarget as Node) === false
-          ) {
-            handleBlur();
-            if (closeOnOutsideClick) setPendingValue(currentValue);
-          }
-        },
-      })}
-      {/* Portal is needed so that the list can flow outside the bounds
-       * of parents with overflow:hidden */}
+        }}
+        autoComplete="off"
+        {...inputProps}
+        /*
+         * Padding for the button. Using "em" so as to match @tailwind/forms
+         * styles for <select>
+         */
+        className={`${inputProps.className ?? ''} w-full pr-[1.5em]`}
+        displayValue={(item: Item<T> | null): string =>
+          typeof item === 'string'
+            ? item
+            : item?.searchValue ?? (item?.label as string) ?? ''
+        }
+        ref={forwardChildRef}
+        /*
+         *OnBlur={({ relatedTarget }): void => {
+         *  if (
+         *    relatedTarget === null ||
+         *    dataListRef.current?.contains(relatedTarget as Node) === false
+         *  ) {
+         *    handleBlur();
+         *    if (closeOnOutsideClick) setPendingValue(currentValue);
+         *  }
+         *}}
+         */
+      />
+      {listHasItems && !disabled ? toggleButton : undefined}
+      {/*
+       * Portal is needed so that the list can flow outside the bounds
+       * of parents with overflow:hidden
+       */}
       <Portal>
-        <ul
-          className={`fixed w-[inherit] rounded cursor-pointer z-[10000]
+        <Combobox.Options
+          className={`
+            fixed w-[inherit] rounded cursor-pointer z-[10000]
             rounded bg-white dark:bg-neutral-900 max-h-[50vh] overflow-y-auto
             shadow-lg shadow-gray-400 dark:border dark:border-gray-500
-            ${showList ? '' : 'sr-only'}`}
-          role="listbox"
-          aria-label={ariaLabel}
-          id={id}
-          ref={dataListRef}
-          onKeyDown={(event): void => {
-            // Meta keys
-            if (
-              ['Space', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.key)
-            ) {
-              handleKeyDown(event);
-            } else input?.focus();
-          }}
-          onBlur={({ relatedTarget, target, currentTarget }): void =>
-            relatedTarget === null ||
-            (input?.contains(relatedTarget as Node) === false &&
-              target.closest('ul') !== currentTarget)
-              ? handleBlur()
-              : undefined
-          }
+          `}
+          ref={dataListRefCallback}
         >
-          {showList && (
-            <>
-              {isLoading && (
-                <li
-                  aria-selected={false}
-                  aria-disabled={true}
-                  {...itemProps}
-                  className={`${itemProps.className} cursor-auto`}
-                >
-                  {commonText('loading')}
-                </li>
-              )}
-              {itemSource.map((item, index, { length }) => {
-                /**
-                 * Highlight relevant part of the string.
-                 * Note, if item.searchValue and item.value is different,
-                 * label might not be highlighted even if it matched
-                 */
-                const stringLabel =
-                  typeof item.label === 'string' ? item.label : undefined;
-                const label =
-                  typeof stringLabel === 'string' && highlightMatch ? (
-                    <span>
-                      {stringLabel
-                        // Convert to lower case as search may be case-insensitive
-                        .toLowerCase()
-                        .split(pendingValue.toLowerCase())
-                        .map((part, index, parts) => {
-                          const startIndex = parts
-                            .slice(0, index)
-                            .join(pendingValue).length;
-                          const offsetStartIndex =
-                            startIndex +
-                            (index === 0 ? 0 : pendingValue.length);
-                          const endIndex =
-                            startIndex +
-                            part.length +
-                            (index === 0 ? 0 : pendingValue.length);
-                          return (
-                            <React.Fragment key={index}>
-                              {/* Reconstruct the value in original casing */}
-                              {stringLabel.slice(offsetStartIndex, endIndex)}
-                              {index + 1 !== parts.length && (
-                                <span className="text-brand-300">
-                                  {stringLabel.slice(
-                                    endIndex,
-                                    endIndex + pendingValue.length
-                                  )}
-                                </span>
+          {isLoading && (
+            <Combobox.Option
+              disabled
+              value=""
+              className={`${optionClassName} cursor-auto`}
+            >
+              {commonText('loading')}
+            </Combobox.Option>
+          )}
+          {itemSource.map((item, index) => {
+            /**
+             * Highlight relevant part of the string.
+             * Note, if item.searchValue and item.value is different,
+             * label might not be highlighted even if it matched
+             */
+            const stringLabel =
+              typeof item.label === 'string' ? item.label : undefined;
+            const label =
+              typeof stringLabel === 'string' && highlightMatch ? (
+                <span>
+                  {stringLabel
+                    // Convert to lower case as search may be case-insensitive
+                    .toLowerCase()
+                    .split(pendingValue.toLowerCase())
+                    .map((part, index, parts) => {
+                      const startIndex = parts
+                        .slice(0, index)
+                        .join(pendingValue).length;
+                      const offsetStartIndex =
+                        startIndex + (index === 0 ? 0 : pendingValue.length);
+                      const endIndex =
+                        startIndex +
+                        part.length +
+                        (index === 0 ? 0 : pendingValue.length);
+                      return (
+                        <React.Fragment key={index}>
+                          {/* Reconstruct the value in original casing */}
+                          {stringLabel.slice(offsetStartIndex, endIndex)}
+                          {index + 1 !== parts.length && (
+                            <span className="text-brand-300">
+                              {stringLabel.slice(
+                                endIndex,
+                                endIndex + pendingValue.length
                               )}
-                            </React.Fragment>
-                          );
-                        })}
-                    </span>
-                  ) : (
-                    item.label
-                  );
-                const fullLabel =
-                  typeof item.subLabel === 'string' ? (
-                    <div className="flex flex-col justify-center">
-                      {label}
-                      <span className="text-gray-500">{item.subLabel}</span>
-                    </div>
-                  ) : (
-                    label
-                  );
-                return (
+                            </span>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                </span>
+              ) : (
+                item.label
+              );
+            const fullLabel =
+              typeof item.subLabel === 'string' ? (
+                <div className="flex flex-col justify-center">
+                  {label}
+                  <span className="text-gray-500">{item.subLabel}</span>
+                </div>
+              ) : (
+                label
+              );
+            return (
+              <Combobox.Option key={index} value={item} as={React.Fragment}>
+                {({ active, selected }): JSX.Element => (
                   <li
-                    key={index}
-                    aria-posinset={index + 1}
-                    aria-setsize={length + Number(showAdd)}
-                    aria-selected={index === currentIndex}
-                    onClick={handleChanged.bind(undefined, item)}
-                    {...itemProps}
+                    className={`
+                      ${optionClassName}
+                      ${active ? activeClassName : ''}
+                      ${selected ? selectedClassName : ''}`}
                   >
                     {typeof item.icon === 'string' ? (
                       <div className="flex items-center">
@@ -537,15 +467,17 @@ export function Autocomplete<T>({
                       fullLabel
                     )}
                   </li>
-                );
-              })}
-              {showAdd && (
+                )}
+              </Combobox.Option>
+            );
+          })}
+          {showAdd && (
+            <Combobox.Option as={React.Fragment} value={pendingValue}>
+              {({ active }) => (
                 <li
-                  aria-selected={itemSource.length === currentIndex}
-                  aria-posinset={itemSource.length}
-                  aria-setsize={itemSource.length + 1}
-                  onClick={handleAddNew}
-                  {...itemProps}
+                  className={`${optionClassName} ${
+                    active ? activeClassName : ''
+                  }`}
                 >
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
@@ -553,10 +485,35 @@ export function Autocomplete<T>({
                   </div>
                 </li>
               )}
-            </>
+            </Combobox.Option>
           )}
-        </ul>
+          {!listHasItems && (
+            <div className={`${optionClassName} cursor-auto`}>
+              {formsText('nothingFound')}
+            </div>
+          )}
+        </Combobox.Options>
       </Portal>
-    </>
+    </Combobox>
   );
 }
+
+const toggleButton = (
+  <Combobox.Button className="absolute inset-y-0 right-0">
+    {/* Copied from the @tailwind/forms styles for <select> */}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 20 20"
+      className="w-[1.5em] h-[1.5em]"
+    >
+      <path
+        stroke="#6b7280"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M6 8l4 4 4-4"
+      />
+    </svg>
+  </Combobox.Button>
+);

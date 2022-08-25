@@ -8,7 +8,7 @@ import React from 'react';
 import { error, tap } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
-import { listen, registerBlurListener } from '../events';
+import { listen } from '../events';
 import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { commonText } from '../localization/common';
@@ -454,7 +454,7 @@ export function useResourceValue<
     () =>
       input === null || typeof field === 'undefined'
         ? undefined
-        : registerBlurListener(input, (): void => {
+        : listen(input, 'blur', (): void => {
             // Don't report the same error twice
             if (ignoreError) return;
             setValidation(blockers.current);
