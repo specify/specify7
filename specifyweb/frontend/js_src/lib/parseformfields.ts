@@ -90,7 +90,7 @@ const processFieldType: {
         defaultValue: getBooleanAttribute(cell, 'default') ?? false,
         label:
           f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
-          (printOnSave ? formsText('reportOnSave') : undefined),
+          (printOnSave ? formsText('printOnSave') : undefined),
         printOnSave,
       })
     ),

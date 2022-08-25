@@ -548,10 +548,6 @@ export const formsText = createDictionary({
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
   },
-  reportOnSave: {
-    'en-us': 'Generate Label on Save',
-    'ru-ru': 'Генерировать отчет при сохранении',
-  },
   recordSelectorUnloadProtectDialogHeader: {
     'en-us': 'Proceed without saving?',
     'ru-ru': 'Продолжить без сохранения?',
@@ -732,6 +728,10 @@ export const formsText = createDictionary({
   printOnSave: {
     'en-us': 'Print label on save',
     'ru-ru': 'Печатать метку при сохранении',
+  },
+  printLabel: {
+    'en-us': 'Print label',
+    'ru-ru': 'Печатать метку',
   },
   form: {
     'en-us': 'Subform',

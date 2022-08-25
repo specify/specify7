@@ -24,6 +24,7 @@ import { PrintOnSave } from './specifyformcheckbox';
 import { useCachedState } from './statecache';
 import { SubViewContext } from './subview';
 import { SubViewPreferences } from './subviewpreferences';
+import { GenerateLabel } from './specifyformcommand';
 
 export function FormPreferences({
   resource,
@@ -66,11 +67,16 @@ function PreferencesDialog({
     >
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('formConfiguration')}</H3>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex max-w-[theme(spacing.96)] flex-wrap gap-2">
           <CarryForwardButton model={resource.specifyModel} />
           <FormAutoNumbering resource={resource} />
           <FormDefinition model={resource.specifyModel} />
           <ReadOnlyMode isNew={resource.isNew()} />
+          <GenerateLabel
+            resource={resource}
+            id={undefined}
+            label={formsText('printLabel')}
+          />
         </div>
         <PrintOnSave
           defaultValue={false}

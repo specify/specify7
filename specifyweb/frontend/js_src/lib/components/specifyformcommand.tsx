@@ -17,6 +17,40 @@ import { LoanReturn } from './prepreturndialog';
 import { ReportsView } from './reports';
 import { ShowLoansCommand } from './showtranscommand';
 
+export function GenerateLabel({
+  resource,
+  id,
+  label,
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly id: string | undefined;
+  readonly label: string | undefined;
+}): JSX.Element | null {
+  const [runReport, handleRunReport, handleHideReport] = useBooleanState();
+
+  const isDisabled = resource.isNew() || !Boolean(resource.get('id'));
+  return hasPermission('/report', 'execute') ? (
+    <>
+      <Button.Small
+        disabled={isDisabled}
+        id={id}
+        title={isDisabled ? formsText('saveRecordFirst') : undefined}
+        onClick={handleRunReport}
+      >
+        {label}
+      </Button.Small>
+      {runReport ? (
+        <ReportsView
+          autoSelectSingle
+          model={resource.specifyModel}
+          resourceId={resource.get('id')}
+          onClose={handleHideReport}
+        />
+      ) : undefined}
+    </>
+  ) : null;
+}
+
 const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
     readonly resource: SpecifyResource<AnySchema>;
@@ -25,31 +59,7 @@ const commandRenderers: {
     readonly commandDefinition: UiCommands[KEY];
   }) => JSX.Element | null;
 } = {
-  GenerateLabel({ id, label, resource }) {
-    const [runReport, handleRunReport, handleHideReport] = useBooleanState();
-
-    const isDisabled = resource.isNew() || !Boolean(resource.get('id'));
-    return hasPermission('/report', 'execute') ? (
-      <>
-        <Button.Small
-          disabled={isDisabled}
-          id={id}
-          title={isDisabled ? formsText('saveRecordFirst') : undefined}
-          onClick={handleRunReport}
-        >
-          {label}
-        </Button.Small>
-        {runReport ? (
-          <ReportsView
-            autoSelectSingle
-            model={resource.specifyModel}
-            resourceId={resource.get('id')}
-            onClose={handleHideReport}
-          />
-        ) : undefined}
-      </>
-    ) : null;
-  },
+  GenerateLabel,
   ShowLoans({ label, resource, id }) {
     const [showLoans, handleShow, handleHide] = useBooleanState();
     return (
