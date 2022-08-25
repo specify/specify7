@@ -46,7 +46,7 @@ import { defined, filterArray } from '../types';
 import { getValidationAttributes } from '../uiparse';
 import { userInformation } from '../userinfo';
 import { Autocomplete } from './autocomplete';
-import { DataEntry, Input } from './basic';
+import { DataEntry } from './basic';
 import { LoadingContext } from './contexts';
 import { useAsyncState, useResourceValue } from './hooks';
 import { formatList } from './internationalization';
@@ -277,7 +277,14 @@ export function QueryComboBox({
     [resource]
   );
 
-  // TODO: fetch this from the back-end
+  /*
+   * Stores the formatted resource returned by the query from the back-end
+   * If back-end query hasn't been executed yet (i.e, because the form has
+   * just been opened), the resource would be fetched and formatted separately
+   */
+  const formattedRef = React.useRef<
+    { readonly value: string; readonly formatted: string } | undefined
+  >(undefined);
   const [formatted] = useAsyncState<{
     readonly label: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -300,11 +307,15 @@ export function QueryComboBox({
                       label: '',
                       resource: undefined,
                     }
-                  : format(
-                      resource,
-                      typeof typeSearch === 'object'
-                        ? typeSearch.dataObjectFormatter
-                        : undefined
+                  : (value === formattedRef.current?.value &&
+                    typeof formattedRef.current === 'object'
+                      ? Promise.resolve(formattedRef.current.formatted)
+                      : format(
+                          resource,
+                          typeof typeSearch === 'object'
+                            ? typeSearch.dataObjectFormatter
+                            : undefined
+                          )
                     ).then((formatted) => ({
                       label:
                         formatted ??
@@ -484,7 +495,10 @@ export function QueryComboBox({
             treeData,
           ]
         )}
-        onChange={({ data }): void => updateValue(data)}
+        onChange={({ data, label }): void => {
+          formattedRef.current = { value: data, formatted: label.toString() };
+          updateValue(data);
+        }}
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>
           field?.isRelationship === true
@@ -500,27 +514,21 @@ export function QueryComboBox({
         pendingValueRef={pendingValueRef}
         forwardRef={validationRef}
         aria-label={undefined}
-      >
-        {({ className, ...props }): JSX.Element => (
-          <Input.Generic
-            className={`flex-1 ${className}`}
-            id={id}
-            required={isRequired}
-            title={
-              typeof typeSearch === 'object' ? typeSearch.title : undefined
-            }
-            isReadOnly={
-              !isLoaded ||
-              mode === 'view' ||
-              formType === 'formTable' ||
-              typeof typeSearch === 'undefined' ||
-              typeof formatted === 'undefined'
-            }
-            {...getValidationAttributes(parser)}
-            {...props}
-          />
-        )}
-      </Autocomplete>
+        disabled={
+          !isLoaded ||
+          mode === 'view' ||
+          formType === 'formTable' ||
+          typeof typeSearch === 'undefined' ||
+          typeof formatted === 'undefined'
+        }
+        inputProps={{
+          id,
+          required: isRequired,
+          title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
+          ...getValidationAttributes(parser),
+          type: 'text',
+        }}
+      />
       <span className="print:hidden contents">
         {formType === 'formTable' ? undefined : mode === 'view' ? (
           typeof formatted?.resource === 'undefined' ||

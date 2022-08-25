@@ -260,6 +260,14 @@ export const formsText = createDictionary({
     'ru-ru': (value: string, pickListName: string) =>
       `Добавить значение "${value}" в список выбора ${pickListName}?`,
   },
+  invalidType: {
+    'en-us': 'Invalid Type',
+    'ru-ru': 'Недействительный тип',
+  },
+  invalidNumericPicklistValue: {
+    'en-us': 'Only numeric values are supported in this pick list',
+    'ru-ru': 'В этом списке выбора допускаются только числовые значения',
+  },
   // ReadOnlyPickListComboBox
   noData: {
     'en-us': 'No Data.',
@@ -656,5 +664,9 @@ export const formsText = createDictionary({
   removeFromRecordSet: {
     'en-us': 'Remove from Record Set',
     'ru-ru': 'Удалить из набора записей',
+  },
+  nothingFound: {
+    'en-us': 'Nothing found',
+    'ru-ru': 'Ничего не найдено',
   },
 });

@@ -25,7 +25,7 @@ import {
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
 import { Autocomplete } from './autocomplete';
-import { Button, Container, DataEntry, H2, Input } from './basic';
+import { Button, Container, DataEntry, H2 } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { supportsBackdropBlur } from './modaldialog';
@@ -215,16 +215,12 @@ function TreeView<SCHEMA extends AnyTree>({
                 .catch(console.error);
             }}
             forwardRef={searchBoxRef}
-            aria-label={treeText('searchTreePlaceholder')}
-          >
-            {(inputProps): JSX.Element => (
-              <Input.Generic
-                placeholder={treeText('searchTreePlaceholder')}
-                title={treeText('searchTreePlaceholder')}
-                {...inputProps}
-              />
-            )}
-          </Autocomplete>
+            inputProps={{
+              'aria-label': treeText('searchTreePlaceholder'),
+              placeholder: treeText('searchTreePlaceholder'),
+              title: treeText('searchTreePlaceholder'),
+            }}
+          />
         </div>
         <Button.Small
           onClick={handleToggleEditingRanks}

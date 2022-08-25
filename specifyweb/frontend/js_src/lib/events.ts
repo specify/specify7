@@ -1,7 +1,4 @@
-import { f } from './functools';
-import type { Input } from './saveblockers';
 import type { IR } from './types';
-import { defined } from './types';
 
 /**
  * A type safe event implementation using native events.
@@ -55,66 +52,4 @@ export function listen<EVENT_NAME extends keyof GlobalEventHandlersEventMap>(
       callback as (event: Event) => void,
       catchAll
     );
-}
-
-/**
- * Some hooks (useResourceValue) need to do some actions on focus loss
- * For some inputs (Autocomplete), blur event and focus loss are not equivalent,
- * (input may transfer its focus to the autocomplete list and back)
- * These functions allow registering custom blur event emitters and listeners
- */
-const blurHandlers = new Map<
-  Input,
-  {
-    readonly listeners: Set<() => void>;
-    /*
-     * If there are no listeners left and only a default emitter, it would get
-     * destroyed
-     */
-    readonly isDefault: boolean;
-    readonly emitterDestructor: () => void;
-  }
->();
-
-export function registerBlurEmitter(
-  input: Input,
-  // If this is not provided, native blur event is used as an emitter
-  emitter?: (emit: () => void) => () => void
-): () => void {
-  const oldEntry = blurHandlers.get(input);
-  oldEntry?.emitterDestructor?.();
-  const emit = (): void => blurHandlers.get(input)?.listeners.forEach(f.call);
-  const entry = {
-    listeners: oldEntry?.listeners ?? new Set(),
-    emitterDestructor: emitter?.(emit) ?? listen(input, 'blur', emit),
-    isDefault: typeof emitter === 'undefined',
-  };
-  blurHandlers.set(input, entry);
-  return (): void => {
-    if (entry.listeners.size === 0) {
-      blurHandlers.delete(input);
-      entry.emitterDestructor?.();
-    } else if (typeof emitter === 'function')
-      // If there are listeners still, register a default emitter
-      registerBlurEmitter(input);
-    else entry.emitterDestructor?.();
-  };
-}
-
-export function registerBlurListener(
-  input: Input,
-  callback: () => void
-): () => void {
-  // If emitter does not exist, use the default one
-  if (!blurHandlers.has(input)) registerBlurEmitter(input);
-  const entry = defined(blurHandlers.get(input));
-  entry.listeners.add(callback);
-  return (): void => {
-    entry.listeners.delete(callback);
-    if (entry.listeners.size === 0 && entry.isDefault) {
-      const entry = defined(blurHandlers.get(input));
-      entry.emitterDestructor?.();
-      blurHandlers.delete(input);
-    }
-  };
 }
