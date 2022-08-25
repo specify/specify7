@@ -4,7 +4,6 @@
 
 import React from 'react';
 
-import { error } from '../assert';
 import type { PickList } from '../datamodel';
 import type { AnySchema } from '../datamodelutils';
 import type { SpecifyResource } from '../legacytypes';
@@ -54,11 +53,11 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
     React.useCallback(
       () =>
         typeof props.pickListName === 'string'
-          ? fetchPickList(props.pickListName).then((pickList) =>
-              pickList === undefined
-                ? error('Unable to find pick list', props)
-                : pickList
-            )
+          ? fetchPickList(props.pickListName).then((pickList) => {
+              if (pickList === undefined)
+                console.error('Unable to find pick list', props);
+              return pickList;
+            })
           : undefined,
       [props.pickListName]
     ),

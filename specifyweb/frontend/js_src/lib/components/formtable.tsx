@@ -108,9 +108,10 @@ export function FormTable<SCHEMA extends AnySchema>({
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
 
-    rowsRef.current
-      .querySelector(`:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`)
-      ?.focus();
+    const lastRow: HTMLElement | null = rowsRef.current.querySelector(
+      `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
+    );
+    lastRow?.focus();
   }, [resources]);
 
   const isToOne = !relationshipIsToMany(relationship);
