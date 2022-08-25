@@ -217,7 +217,7 @@ export function QueryComboBox({
             );
       if (typeof typeSearch === 'undefined') return false;
 
-      const searchFieldsNames =
+      const rawSearchFieldsNames =
         typeSearch === null
           ? []
           : getParsedAttribute(typeSearch, 'searchField')
@@ -229,7 +229,7 @@ export function QueryComboBox({
                   ? columnToFieldMapper(typeSearch.textContent)
                   : f.id
               ) ?? [];
-      const searchFields = searchFieldsNames.map((searchField) =>
+      const searchFields = rawSearchFieldsNames.map((searchField) =>
         defined(relatedModel.getField(searchField))
       );
 
@@ -243,7 +243,6 @@ export function QueryComboBox({
       return {
         title: queryText('queryBoxDescription', formatList(fieldTitles)),
         searchFields,
-        searchFieldsNames,
         relatedModel,
         dataObjectFormatter:
           typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
@@ -414,8 +413,8 @@ export function QueryComboBox({
           async (value) =>
             isLoaded && typeof typeSearch === 'object'
               ? Promise.all(
-                  typeSearch.searchFieldsNames
-                    .map((fieldName) =>
+                  typeSearch.searchFields
+                    .map(({ name: fieldName }) =>
                       makeComboBoxQuery({
                         fieldName,
                         value,
