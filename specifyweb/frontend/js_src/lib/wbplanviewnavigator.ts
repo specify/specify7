@@ -521,7 +521,10 @@ export function getMappingLineData({
                     isRequired:
                       scope !== 'queryBuilder' &&
                       field.overrides.isRequired &&
-                      !mustMatchPreferences[model.name],
+                      !mustMatchPreferences[model.name] &&
+                      // Relationships to system tables are not required by the uploader
+                      (!field.isRelationship ||
+                        !field.relatedModel.overrides.isSystem),
                     isHidden:
                       scope === 'queryBuilder'
                         ? field.isHidden
