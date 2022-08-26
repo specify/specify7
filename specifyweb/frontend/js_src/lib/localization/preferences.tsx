@@ -588,6 +588,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Flexible column width',
     'ru-ru': 'Гибкая ширина столбцов',
   },
+  flexibleSubGridColumnWidth: {
+    'en-us': 'Flexible subview grid column width',
+    'ru-ru': 'Гибкая ширина столбцов в сетке подвидa',
+  },
   closeOnEsc: {
     'en-us': (
       <span>

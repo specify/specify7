@@ -21,7 +21,7 @@ import {
   fetchStats,
   serializeConformation,
 } from '../treeviewutils';
-import type { RA } from '../types';
+import type { RA } from '../types.js';
 import { Button, Container, DataEntry, H2 } from './basic';
 import { TableIcon } from './common';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';

@@ -16,7 +16,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, PartialBy, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, DataEntry } from './basic';
+import { Button, columnDefinitionsToCss, DataEntry } from './basic';
 import type { SortConfig } from './common';
 import { SortIndicator } from './common';
 import { useId } from './hooks';
@@ -132,6 +132,11 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleColumnWidth'
   );
+  const [flexibleSubGridColumnWidth] = usePref(
+    'form',
+    'definition',
+    'flexibleSubGridColumnWidth'
+  );
   const displayDeleteButton = mode !== 'view';
   const displayViewButton = !isDependent;
   const headerIsVisible =
@@ -154,197 +159,201 @@ export function FormTable<SCHEMA extends AnySchema>({
     ) : resources.length === 0 ? (
       <p>{formsText('noData')}</p>
     ) : (
-      <DataEntry.Grid
-        role="table"
-        viewDefinition={viewDefinition}
-        flexibleColumnWidth={flexibleColumnWidth}
-        display="inline"
-        className="w-fit sticky pt-0"
-        style={{
-          gridTemplateColumns: `min-content repeat(${
-            viewDefinition.columns.length
-          },auto) ${displayViewButton ? 'min-content' : ''} ${
-            displayDeleteButton ? 'min-content' : ''
-          }`,
-          maxHeight: `${maxHeight}px`,
-        }}
-        forwardRef={scrollerRef}
-        onScroll={handleScroll}
-      >
-        <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
-          <div role="columnheader" className={cellClassName}>
-            <span className="sr-only">{commonText('expand')}</span>
-          </div>
-          {viewDefinition.rows[0].map((cell, index) => {
-            const { text, title } = cellToLabel(
-              relationship.relatedModel,
-              cell
-            );
-            return (
-              <DataEntry.Cell
-                role="columnheader"
-                className={cellClassName}
-                key={index}
-                colSpan={cell.colSpan}
-                align="center"
-                title={title}
-                visible={true}
-                ariaLabel={undefined}
-              >
-                {(cell.type === 'Field' || cell.type === 'SubView') &&
-                typeof cell.fieldName === 'string' ? (
-                  <Button.LikeLink
-                    tabIndex={headerIsVisible ? undefined : -1}
-                    onClick={(): void =>
-                      setSortConfig({
-                        sortField: defined(cell.fieldName),
-                        ascending: !sortConfig.ascending,
-                      })
-                    }
-                  >
-                    {text}
-                    <SortIndicator
-                      fieldName={cell.fieldName}
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                ) : (
-                  text
-                )}
-              </DataEntry.Cell>
-            );
-          })}
-          {displayViewButton && (
+      <div className="overflow-x-auto">
+        <DataEntry.Grid
+          role="table"
+          viewDefinition={viewDefinition}
+          flexibleColumnWidth={flexibleColumnWidth}
+          display="inline"
+          className="w-fit sticky pt-0"
+          style={{
+            gridTemplateColumns: `min-content ${columnDefinitionsToCss(
+              viewDefinition.columns,
+              flexibleSubGridColumnWidth
+            )}
+          ${displayViewButton ? 'min-content' : ''} ${
+              displayDeleteButton ? 'min-content' : ''
+            }`,
+            maxHeight: `${maxHeight}px`,
+          }}
+          forwardRef={scrollerRef}
+          onScroll={handleScroll}
+        >
+          <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
             <div role="columnheader" className={cellClassName}>
-              <span className="sr-only">{commonText('view')}</span>
+              <span className="sr-only">{commonText('expand')}</span>
             </div>
-          )}
-          {displayDeleteButton && (
-            <div role="columnheader" className={cellClassName}>
-              <span className="sr-only">{commonText('remove')}</span>
-            </div>
-          )}
-        </div>
-        <div className="contents" role="rowgroup" ref={rowsRef}>
-          {resources.map((resource, index, { length }) => (
-            <React.Fragment key={resource.cid}>
-              <div className="contents" role="row">
-                {isExpanded[resource.cid] ? (
-                  <>
-                    <div role="cell" className="flex justify-center">
-                      <Button.Icon
-                        title={formsText('contract')}
-                        aria-label={formsText('contract')}
-                        icon="chevronDown"
-                        onClick={(): void =>
-                          setExpandedRecords({
-                            ...isExpanded,
-                            [resource.cid]: false,
-                          })
-                        }
-                      />
-                    </div>
-                    <DataEntry.Cell
-                      role="cell"
-                      colSpan={viewDefinition.columns.length}
-                      align="left"
-                      visible={true}
-                      ariaLabel={undefined}
-                      tabIndex={-1}
+            {viewDefinition.rows[0].map((cell, index) => {
+              const { text, title } = cellToLabel(
+                relationship.relatedModel,
+                cell
+              );
+              return (
+                <DataEntry.Cell
+                  role="columnheader"
+                  className={cellClassName}
+                  key={index}
+                  colSpan={cell.colSpan}
+                  align="center"
+                  title={title}
+                  visible={true}
+                  ariaLabel={undefined}
+                >
+                  {(cell.type === 'Field' || cell.type === 'SubView') &&
+                  typeof cell.fieldName === 'string' ? (
+                    <Button.LikeLink
+                      tabIndex={headerIsVisible ? undefined : -1}
+                      onClick={(): void =>
+                        setSortConfig({
+                          sortField: defined(cell.fieldName),
+                          ascending: !sortConfig.ascending,
+                        })
+                      }
                     >
-                      <SpecifyForm
-                        resource={resource}
-                        formType="form"
-                        mode={mode}
-                        display="inline"
+                      {text}
+                      <SortIndicator
+                        fieldName={cell.fieldName}
+                        sortConfig={sortConfig}
                       />
-                    </DataEntry.Cell>
-                  </>
-                ) : (
-                  <>
-                    <div role="cell" className="flex justify-center">
-                      <Button.Icon
-                        title={commonText('expand')}
-                        aria-label={commonText('expand')}
-                        icon="chevronRight"
-                        onClick={(): void =>
-                          setExpandedRecords({
-                            ...isExpanded,
-                            [resource.cid]: true,
-                          })
-                        }
-                      />
-                    </div>
-                    {viewDefinition.rows[0].map(
-                      (
-                        { colSpan, align, visible, id: cellId, ...cellData },
-                        index
-                      ) => (
-                        <DataEntry.Cell
-                          role="cell"
-                          key={index}
-                          colSpan={colSpan}
-                          align={align}
-                          visible={visible}
-                          ariaLabel={undefined}
-                        >
-                          <FormCell
-                            align={align}
-                            resource={resource}
-                            mode={viewDefinition.mode}
-                            formType="formTable"
-                            cellData={cellData}
-                            id={cellId}
-                            formatId={(suffix: string): string =>
-                              id(`${index}-${suffix}`)
-                            }
-                          />
-                        </DataEntry.Cell>
-                      )
-                    )}
-                    {displayViewButton && (
+                    </Button.LikeLink>
+                  ) : (
+                    text
+                  )}
+                </DataEntry.Cell>
+              );
+            })}
+            {displayViewButton && (
+              <div role="columnheader" className={cellClassName}>
+                <span className="sr-only">{commonText('view')}</span>
+              </div>
+            )}
+            {displayDeleteButton && (
+              <div role="columnheader" className={cellClassName}>
+                <span className="sr-only">{commonText('remove')}</span>
+              </div>
+            )}
+          </div>
+          <div className="contents" role="rowgroup" ref={rowsRef}>
+            {resources.map((resource, index, { length }) => (
+              <React.Fragment key={resource.cid}>
+                <div className="contents" role="row">
+                  {isExpanded[resource.cid] ? (
+                    <>
                       <div role="cell" className="flex justify-center">
-                        <DataEntry.Visit resource={resource} />
+                        <Button.Icon
+                          title={formsText('contract')}
+                          aria-label={formsText('contract')}
+                          icon="chevronDown"
+                          onClick={(): void =>
+                            setExpandedRecords({
+                              ...isExpanded,
+                              [resource.cid]: false,
+                            })
+                          }
+                        />
                       </div>
-                    )}
-                  </>
-                )}
-                {displayDeleteButton && (
-                  <div role="cell" className="flex justify-center">
-                    {(!resource.isNew() ||
-                      hasTablePermission(
-                        relationship.relatedModel.name,
-                        'delete'
-                      )) && (
-                      <Button.Icon
-                        title={commonText('remove')}
-                        aria-label={commonText('remove')}
-                        icon="trash"
-                        onClick={(): void => handleDelete(resource)}
-                        disabled={
-                          !resource.isNew() &&
-                          !hasTablePermission(
-                            resource.specifyModel.name,
-                            'delete'
-                          )
-                        }
-                      />
-                    )}
-                  </div>
-                )}
+                      <DataEntry.Cell
+                        role="cell"
+                        colSpan={viewDefinition.columns.length}
+                        align="left"
+                        visible={true}
+                        ariaLabel={undefined}
+                        tabIndex={-1}
+                      >
+                        <SpecifyForm
+                          resource={resource}
+                          formType="form"
+                          mode={mode}
+                          display="inline"
+                        />
+                      </DataEntry.Cell>
+                    </>
+                  ) : (
+                    <>
+                      <div role="cell" className="flex justify-center">
+                        <Button.Icon
+                          title={commonText('expand')}
+                          aria-label={commonText('expand')}
+                          icon="chevronRight"
+                          onClick={(): void =>
+                            setExpandedRecords({
+                              ...isExpanded,
+                              [resource.cid]: true,
+                            })
+                          }
+                        />
+                      </div>
+                      {viewDefinition.rows[0].map(
+                        (
+                          { colSpan, align, visible, id: cellId, ...cellData },
+                          index
+                        ) => (
+                          <DataEntry.Cell
+                            role="cell"
+                            key={index}
+                            colSpan={colSpan}
+                            align={align}
+                            visible={visible}
+                            ariaLabel={undefined}
+                          >
+                            <FormCell
+                              align={align}
+                              resource={resource}
+                              mode={viewDefinition.mode}
+                              formType="formTable"
+                              cellData={cellData}
+                              id={cellId}
+                              formatId={(suffix: string): string =>
+                                id(`${index}-${suffix}`)
+                              }
+                            />
+                          </DataEntry.Cell>
+                        )
+                      )}
+                      {displayViewButton && (
+                        <div role="cell" className="flex justify-center">
+                          <DataEntry.Visit resource={resource} />
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {displayDeleteButton && (
+                    <div role="cell" className="flex justify-center">
+                      {(!resource.isNew() ||
+                        hasTablePermission(
+                          relationship.relatedModel.name,
+                          'delete'
+                        )) && (
+                        <Button.Icon
+                          title={commonText('remove')}
+                          aria-label={commonText('remove')}
+                          icon="trash"
+                          onClick={(): void => handleDelete(resource)}
+                          disabled={
+                            !resource.isNew() &&
+                            !hasTablePermission(
+                              resource.specifyModel.name,
+                              'delete'
+                            )
+                          }
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+                {index + 1 === length ? undefined : spacer}
+              </React.Fragment>
+            ))}
+            {isFetching && (
+              <div role="row" className="contents">
+                <div role="cell" className="col-span-full">
+                  {loadingGif}
+                </div>
               </div>
-              {index + 1 === length ? undefined : spacer}
-            </React.Fragment>
-          ))}
-          {isFetching && (
-            <div role="row" className="contents">
-              <div role="cell" className="col-span-full">
-                {loadingGif}
-              </div>
-            </div>
-          )}
-        </div>
-      </DataEntry.Grid>
+            )}
+          </div>
+        </DataEntry.Grid>
+      </div>
     );
   const addButton =
     typeof handleAddResource === 'function' &&

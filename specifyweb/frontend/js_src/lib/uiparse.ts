@@ -4,15 +4,17 @@
  */
 
 import { error } from './assert';
+import type { PickList } from './datamodel';
 import { databaseDateFormat, fullDateFormat } from './dateformat';
 import { dayjs } from './dayjs';
 import { f } from './functools';
 import { mappedFind, removeKey } from './helpers';
+import type { SpecifyResource } from './legacytypes';
 import { commonText } from './localization/common';
 import { formsText } from './localization/forms';
 import { queryText } from './localization/query';
-import { getPickListItems } from './picklistmixins';
-import { getPickLists, monthPickListName } from './picklists';
+import { fetchPickList, getPickListItems } from './picklistmixins';
+import { monthsPickList, unsafeGetPickLists } from './picklists';
 import { getUserPref } from './preferencesutils';
 import { parseRelativeDate } from './relativedate';
 import type { Input } from './saveblockers';
@@ -266,7 +268,7 @@ export function resolveParser(
     pickListName:
       typeof fullField.datePart === 'string'
         ? fullField.datePart === 'month'
-          ? monthPickListName
+          ? monthsPickList().get('name')
           : undefined
         : field.getPickList?.(),
     // Don't make checkboxes required
@@ -470,24 +472,40 @@ export function parseValue(
  * Runs UI formatter if needed
  * Finds pickList item if available
  */
-export function fieldFormat(
+export async function fieldFormat(
   field: LiteralField | undefined,
   parser: Parser | undefined,
   value: string | number | null | boolean | undefined
-): string {
+): Promise<string> {
   if (typeof value === 'undefined' || value === null) return '';
 
   // Find Pick List Item Title
   const pickListName = parser?.pickListName ?? field?.getPickList();
   if (typeof pickListName === 'string') {
-    const pickList = getPickLists()?.[pickListName];
-    if (typeof pickList === 'object') {
-      const items = getPickListItems(pickList);
-      const item = items.find((item) => item.value === value);
-      if (typeof item === 'object') return item.title;
-    }
+    const pickList = await fetchPickList(pickListName);
+    const formatted = formatPickList(pickList, value);
+    if (typeof formatted === 'string') return formatted;
   }
 
+  return formatValue(field, parser, value);
+}
+
+function formatPickList(
+  pickList: SpecifyResource<PickList> | undefined,
+  value: string | number | boolean
+): string | undefined {
+  if (pickList === undefined) return undefined;
+  const parsedValue = value.toString();
+  const items = getPickListItems(pickList);
+  const item = items.find((item) => item.value === parsedValue);
+  return item?.title;
+}
+
+function formatValue(
+  field: LiteralField | undefined,
+  parser: Parser | undefined,
+  value: string | number | boolean
+): string {
   const resolvedParser = parser ?? resolveParser(field ?? {});
 
   const parseResults = parseValue(
@@ -509,4 +527,26 @@ export function fieldFormat(
     });
 
   return value.toString();
+}
+
+/**
+ * Like fieldFormat, but synchronous, because it doesn't fetch a pick list if
+ * it is not already fetched
+ */
+export function syncFieldFormat(
+  field: LiteralField | undefined,
+  parser: Parser | undefined,
+  value: string | number | null | boolean | undefined
+): string {
+  if (typeof value === 'undefined' || value === null) return '';
+
+  // Find Pick List Item Title
+  const pickListName = parser?.pickListName ?? field?.getPickList();
+  if (typeof pickListName === 'string') {
+    const pickList = unsafeGetPickLists()[pickListName];
+    const formatted = formatPickList(pickList, value);
+    if (typeof formatted === 'string') return formatted;
+  }
+
+  return formatValue(field, parser, value);
 }

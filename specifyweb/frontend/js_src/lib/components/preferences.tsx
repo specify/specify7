@@ -510,6 +510,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          flexibleSubGridColumnWidth: defineItem<boolean>({
+            title: preferencesText('flexibleSubGridColumnWidth'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       ui: {
