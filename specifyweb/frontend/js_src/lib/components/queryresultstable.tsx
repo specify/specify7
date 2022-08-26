@@ -30,7 +30,7 @@ import { generateMappingPathPreview } from '../wbplanviewmappingpreview';
 import { Button, Container, H3 } from './basic';
 import { loadingGif, SortIndicator, TableIcon } from './common';
 import { ErrorBoundary, fail } from './errorboundary';
-import { useAsyncState, useBooleanState, useTriggerState } from './hooks';
+import { useAsyncState, useTriggerState } from './hooks';
 import {
   RecordSetCreated,
   recordSetFromQueryLoading,
@@ -40,6 +40,7 @@ import { QueryToForms } from './querytoforms';
 import { QueryToMap } from './querytomap';
 import { deserializeResource } from './resource';
 import { ResourceView } from './resourceview';
+import { useInfiniteScroll } from './useInfiniteScroll';
 
 function TableHeaderCell({
   fieldSpec,
@@ -179,11 +180,6 @@ function CreateRecordSet({
   );
 }
 
-const threshold = 20;
-const isScrolledBottom = (scrollable: HTMLElement): boolean =>
-  scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight >
-  threshold;
-
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
 export function QueryResultsTable({
@@ -228,7 +224,6 @@ export function QueryResultsTable({
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
 }): JSX.Element {
-  const [isFetching, handleFetching, handleFetched] = useBooleanState();
   /*
    * Warning:
    * "results" can be a sparse array. Using sparse array to allow
@@ -271,18 +266,18 @@ export function QueryResultsTable({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
-  function fetchMore(
+  async function handleFetchMore(
     index?: number,
     currentResults:
       | RA<RA<number | string | null> | undefined>
       | undefined = results
-  ): void {
+  ): Promise<void> {
     const canFetch = Array.isArray(currentResults);
-    if (!canFetch || isFetching) return;
+    if (!canFetch) return undefined;
     const alreadyFetched =
       currentResults.length === totalCount &&
       !currentResults.includes(undefined);
-    if (alreadyFetched) return;
+    if (alreadyFetched) return undefined;
 
     const naiveFetchIndex = index ?? currentResults.length;
     const fetchIndex =
@@ -293,9 +288,9 @@ export function QueryResultsTable({
       index > fetchSize
         ? naiveFetchIndex - fetchSize + 1
         : naiveFetchIndex;
-    if (currentResults[fetchIndex] !== undefined) return;
-    handleFetching();
-    fetchResults(fetchIndex)
+    if (currentResults[fetchIndex] !== undefined) return undefined;
+
+    return fetchResults(fetchIndex)
       .then((newResults) => {
         // Not using Array.from() so as not to expand the sparse array
         const resultsCopy = currentResults.slice();
@@ -307,18 +302,27 @@ export function QueryResultsTable({
         resultsCopy.splice(fetchIndex, newResults.length, ...newResults);
         return resultsCopy;
       })
-      .then(setResults)
-      .then(handleFetched)
+      .then((combinedResults) => {
+        setResults(combinedResults);
+        if (typeof index === 'number' && index >= combinedResults.length)
+          return handleFetchMore(index, combinedResults);
+        return undefined;
+      })
       .catch(fail);
   }
-
-  React.useEffect(fetchMore, []);
 
   const showResults =
     Array.isArray(results) &&
     fieldSpecs.length > 0 &&
     pickListsLoaded &&
     treeRanksLoaded;
+  const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
+
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const { isFetching, handleScroll } = useInfiniteScroll(
+    canFetchMore ? handleFetchMore : undefined,
+    scrollRef
+  );
 
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (
@@ -388,7 +392,7 @@ export function QueryResultsTable({
                   )
                 );
               }}
-              onFetchMore={isFetching ? undefined : fetchMore}
+              onFetchMore={isFetching ? undefined : handleFetchMore}
             />
           </>
         ) : undefined}
@@ -411,14 +415,8 @@ export function QueryResultsTable({
             '--columns': fieldSpecs.length,
           } as React.CSSProperties
         }
-        onScroll={
-          showResults && (isFetching || results.length === totalCount)
-            ? undefined
-            : ({ target }): void =>
-                isScrolledBottom(target as HTMLElement)
-                  ? undefined
-                  : fetchMore()
-        }
+        ref={scrollRef}
+        onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
         {showResults && (
           <div role="rowgroup">

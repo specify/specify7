@@ -8,6 +8,7 @@ import type {
   FilterTablesByEndsWith,
   SerializedResource,
 } from '../datamodelutils';
+import { useErrorContext } from '../errorcontext';
 import { f } from '../functools';
 import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
@@ -25,7 +26,7 @@ import {
 } from '../treeviewutils';
 import type { IR, RA } from '../types';
 import { Autocomplete } from './autocomplete';
-import { Button, Container, DataEntry, H2, Input } from './basic';
+import { Button, Container, DataEntry, H2 } from './basic';
 import { TableIcon } from './common';
 import { ErrorBoundary, softFail } from './errorboundary';
 import { useMenuItem } from './header';
@@ -45,7 +46,6 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
-import { useErrorContext } from '../errorcontext';
 
 const treeToPref = {
   Geography: 'geography',
@@ -163,9 +163,13 @@ function TreeView<SCHEMA extends AnyTree>({
         <div>
           {/* A React component that is also a TypeScript generic */}
           <Autocomplete<SerializedResource<SCHEMA>>
-            aria-label={treeText('searchTreePlaceholder')}
             filterItems={false}
             forwardRef={searchBoxRef}
+            inputProps={{
+              'aria-label': treeText('searchTreePlaceholder'),
+              placeholder: treeText('searchTreePlaceholder'),
+              title: treeText('searchTreePlaceholder'),
+            }}
             source={async (value) =>
               fetchCollection(
                 table.name,
@@ -221,15 +225,7 @@ function TreeView<SCHEMA extends AnyTree>({
                 .catch(softFail);
             }}
             onCleared={(): void => setSearchValue('')}
-          >
-            {(inputProps): JSX.Element => (
-              <Input.Generic
-                placeholder={treeText('searchTreePlaceholder')}
-                title={treeText('searchTreePlaceholder')}
-                {...inputProps}
-              />
-            )}
-          </Autocomplete>
+          />
         </div>
         <Button.Small
           aria-pressed={isEditingRanks}

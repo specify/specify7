@@ -18,6 +18,7 @@ under GNU General Public License 2 (GPL2).
 
 - [Specify 7](#specify-7)
   - [Table of Contents](#table-of-contents)
+  - [Changelog](#changelog)
   - [Docker installation](#docker-installation)
   - [Installation](#installation)
     - [Installing system dependencies](#installing-system-dependencies)
@@ -34,6 +35,10 @@ under GNU General Public License 2 (GPL2).
     - [Restarting Apache](#restarting-apache)
   - [Updating Specify 7](#updating-specify-7)
   - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+
+## Changelog
+
+Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 
 ## Docker installation
 

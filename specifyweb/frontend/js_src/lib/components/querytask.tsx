@@ -7,7 +7,6 @@ import { f } from '../functools';
 import type { SpecifyResource } from '../legacytypes';
 import { queryText } from '../localization/query';
 import { hasPermission, hasToolPermission } from '../permissionutils';
-import { fetchPickLists } from '../picklists';
 import { queryFromTree } from '../queryfromtree';
 import { fetchResource } from '../resource';
 import { getModel, schema } from '../schema';
@@ -47,10 +46,8 @@ function QueryBuilderWrapper({
   readonly query: SpecifyResource<SpQuery>;
   readonly autoRun?: boolean;
   readonly recordSet?: SpecifyResource<RecordSet> | false;
-}): JSX.Element | null {
-  const isLoaded = typeof useAsyncState(fetchPickLists, true)[0] === 'object';
-
-  return isLoaded ? (
+}): JSX.Element {
+  return (
     <QueryBuilder
       autoRun={autoRun}
       isReadOnly={
@@ -60,7 +57,7 @@ function QueryBuilderWrapper({
       query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
     />
-  ) : null;
+  );
 }
 
 export function QueryBuilderById(): JSX.Element {

@@ -424,3 +424,20 @@ export function ActiveLink<T extends Parameters<typeof Link.Default>[0]>({
     />
   );
 }
+
+/**
+ * Add a JSX.Element in between JSX.Elements.
+ *
+ * Can't use .join() because it only works with strings.
+ */
+export const join = (
+  // Don't need to add a [key] prop to these elements before passing in
+  elements: RA<JSX.Element>,
+  separator: JSX.Element
+): RA<JSX.Element> =>
+  elements.map((element, index, { length }) => (
+    <React.Fragment key={index}>
+      {element}
+      {index + 1 === length ? undefined : separator}
+    </React.Fragment>
+  ));

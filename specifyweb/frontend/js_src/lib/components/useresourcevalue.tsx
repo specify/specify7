@@ -1,17 +1,19 @@
-import { Input } from '../saveblockers';
-import { SpecifyResource } from '../legacytypes';
-import { AnySchema } from '../datamodelutils';
-import { mergeParsers, Parser, parseValue, resolveParser } from '../uiparse';
 import React from 'react';
-import { RA } from '../types';
+
 import { error } from '../assert';
-import { FormContext } from './contexts';
-import { resourceOn } from '../resource';
-import { registerBlurListener } from '../events';
-import { f } from '../functools';
-import { className } from './basic';
+import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
+import { listen } from '../events';
+import { f } from '../functools';
+import type { SpecifyResource } from '../legacytypes';
 import { parseRelativeDate } from '../relativedate';
+import { resourceOn } from '../resource';
+import type { Input } from '../saveblockers';
+import type { RA } from '../types';
+import type { Parser } from '../uiparse';
+import { mergeParsers, parseValue, resolveParser } from '../uiparse';
+import { className } from './basic';
+import { FormContext } from './contexts';
 import { useBooleanState, useValidation } from './hooks';
 
 /**
@@ -101,7 +103,7 @@ export function useResourceValue<
     () =>
       input === null || field === undefined
         ? undefined
-        : registerBlurListener(input, (): void => {
+        : listen(input, 'blur', (): void => {
             // Don't report the same error twice
             if (ignoreError) return;
             setValidation(blockers.current);

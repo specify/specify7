@@ -22,7 +22,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
 import type { RA, RR } from '../types';
 import { defined, filterArray } from '../types';
-import { fieldFormat } from '../uiparse';
+import { syncFieldFormat } from '../uiparse';
 import { Button, Form, Input, Submit } from './basic';
 import { LoadingContext } from './contexts';
 import { useId, useLiveState } from './hooks';
@@ -277,7 +277,7 @@ function Row({
           />
         </td>
         <td className="justify-end tabular-nums">
-          {fieldFormat(
+          {syncFieldFormat(
             schema.models.CollectionObject.getLiteralField('catalogNumber'),
             undefined,
             preparation.catalogNumber

@@ -560,6 +560,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          flexibleSubGridColumnWidth: defineItem<boolean>({
+            title: preferencesText('flexibleSubGridColumnWidth'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       ui: {
@@ -777,13 +784,6 @@ export const preferenceDefinitions = {
           }),
           autoGrowAutoComplete: defineItem<boolean>({
             title: preferencesText('autoGrowAutoComplete'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
-          closeOnOutsideClick: defineItem<boolean>({
-            title: preferencesText('closeOnOutsideClick'),
             requiresReload: false,
             visible: true,
             defaultValue: true,

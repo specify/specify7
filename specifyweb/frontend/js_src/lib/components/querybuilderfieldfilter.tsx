@@ -531,18 +531,18 @@ export function QueryLineFilter({
       () =>
         typeof parser.pickListName === 'string'
           ? fetchPickList(parser.pickListName).then((pickList) =>
-              typeof pickList === 'object'
-                ? getPickListItems(pickList)
-                : undefined
+              typeof pickList === 'object' ? getPickListItems(pickList) : false
             )
-          : undefined,
+          : false,
       [parser.pickListName]
     ),
     false
   );
 
   const Component = queryFieldFilters[filter.type].component;
-  return Component === undefined ? null : (
+  return Component === undefined ? null : pickListItems === undefined ? (
+    <>{commonText('loading')}</>
+  ) : (
     <>
       {mappingElementDivider}
       <Component
@@ -552,7 +552,9 @@ export function QueryLineFilter({
         parser={parser}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
-            ? pickListItems
+            ? pickListItems === false
+              ? undefined
+              : pickListItems
             : undefined
         }
         onChange={handleChange}

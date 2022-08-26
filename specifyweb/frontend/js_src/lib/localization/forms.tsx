@@ -270,6 +270,14 @@ export const formsText = createDictionary({
     'ru-ru': (value: string, pickListName: string) =>
       `Добавить значение "${value}" в список выбора ${pickListName}?`,
   },
+  invalidType: {
+    'en-us': 'Invalid Type',
+    'ru-ru': 'Недействительный тип',
+  },
+  invalidNumericPicklistValue: {
+    'en-us': 'Only numeric values are supported in this pick list',
+    'ru-ru': 'В этом списке выбора допускаются только числовые значения',
+  },
   // ReadOnlyPickListComboBox
   noData: {
     'en-us': 'No Data.',
@@ -400,14 +408,14 @@ export const formsText = createDictionary({
   unavailableCommandDialogText: {
     'en-us': (
       <>
-        This command is currently unavailable for <i>Specify 7</i>
+        This command is currently unavailable for <i>Specify 7</i>.<br />
         It was probably included on this form from <i>Specify 6</i> and may be
         supported in the future.
       </>
     ),
     'ru-ru': (
       <>
-        Эта команда в настоящее время недоступна для <i>Specify 7</i>
+        Эта команда в настоящее время недоступна для <i>Specify 7</i>.<br />
         Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
         поддерживаним в будущем.
       </>
@@ -666,6 +674,10 @@ export const formsText = createDictionary({
   removeFromRecordSet: {
     'en-us': 'Remove from Record Set',
     'ru-ru': 'Удалить из набора записей',
+  },
+  nothingFound: {
+    'en-us': 'Nothing found',
+    'ru-ru': 'Ничего не найдено',
   },
   carryForward: {
     'en-us': 'Carry Forward',

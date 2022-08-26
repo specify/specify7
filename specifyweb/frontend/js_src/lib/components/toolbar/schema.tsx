@@ -19,7 +19,7 @@ import {
 import type { SpecifyModel } from '../../specifymodel';
 import { getSystemInfo } from '../../systeminfo';
 import type { RA, RR } from '../../types';
-import { fieldFormat, resolveParser } from '../../uiparse';
+import { resolveParser, syncFieldFormat } from '../../uiparse';
 import { Button, Container, H2, H3, Link } from '../basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../common';
 import { softFail } from '../errorboundary';
@@ -132,7 +132,7 @@ const parser = f.store(() =>
 );
 
 const booleanFormatter = (value: boolean): string =>
-  fieldFormat(undefined, parser(), value);
+  syncFieldFormat(undefined, parser(), value);
 
 /*
  * FEATURE: adapt this page for printing

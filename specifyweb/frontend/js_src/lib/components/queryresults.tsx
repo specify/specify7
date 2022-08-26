@@ -13,7 +13,7 @@ import type { SpecifyModel } from '../specifymodel';
 import { hijackBackboneAjax } from '../startapp';
 import type { RA } from '../types';
 import { defined } from '../types';
-import { fieldFormat } from '../uiparse';
+import { fieldFormat, syncFieldFormat } from '../uiparse';
 import { Input, Link } from './basic';
 import { useAsyncState, useLiveState } from './hooks';
 import { usePref } from './preferenceshooks';
@@ -135,7 +135,7 @@ function QueryResultCell({
       !field.isRelationship &&
       typeof fieldSpec === 'object' &&
       !field.isTemporal()
-        ? fieldFormat(field, fieldSpec.parser, (value ?? '').toString())
+        ? syncFieldFormat(field, fieldSpec.parser, (value ?? '').toString())
         : value ?? '',
     [field, fieldSpec, value]
   );

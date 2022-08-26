@@ -12,12 +12,12 @@ import { formsText } from './localization/forms';
 import { hasToolPermission } from './permissionutils';
 import { createPickListItem, PickListTypes } from './picklistmixins';
 import { schema } from './schema';
-import type { IR, RA } from './types';
+import type { IR, R, RA } from './types';
 
-let pickLists: IR<SpecifyResource<PickList>> = undefined!;
-/** Make sure to only use this value after calling (await fetchPickLists()) */
-export const getPickLists = (): typeof pickLists =>
-  pickLists ?? f.error('Tried to get pick lists before fetching them') ?? {};
+let pickLists: R<SpecifyResource<PickList> | undefined> = {};
+
+// Unsafe, because pick lists might not be defined yet
+export const unsafeGetPickLists = (): typeof pickLists => pickLists;
 
 const agentTypes = [
   formsText('organization'),
@@ -69,20 +69,23 @@ function definePicklist(
   return pickList;
 }
 
-export const monthPickListName = '_Months';
+export const pickListTablesPickList = f.store(() =>
+  definePicklist(
+    '_TablesByName',
+    Object.values(schema.models).map(({ name, label }) =>
+      createPickListItem(name.toLowerCase(), label)
+    )
+  )
+);
 
-let frontEndPickLists: {
-  readonly [TABLE_NAME in keyof Tables]?: {
-    readonly [FIELD_NAME in TableFields<
-      Tables[TABLE_NAME]
-    >]?: SpecifyResource<PickList>;
-  };
-};
-
-export function getFrontEndPickLists(): typeof frontEndPickLists {
-  if (frontEndPickLists === undefined) defineFrontEndPickLists();
-  return frontEndPickLists;
-}
+export const monthsPickList = f.store(() =>
+  definePicklist(
+    '_Months',
+    months.map((title, index) =>
+      createPickListItem((index + 1).toString(), title)
+    )
+  )
+);
 
 /**
  * Create front-end only pick lists
@@ -99,7 +102,19 @@ export function getFrontEndPickLists(): typeof frontEndPickLists {
  * that pick lists would take precedence
  *
  */
-function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
+export const getFrontEndPickLists: () => {
+  readonly [TABLE_NAME in keyof Tables]?: {
+    readonly [FIELD_NAME in TableFields<
+      Tables[TABLE_NAME]
+    >]?: SpecifyResource<PickList>;
+  };
+} = f.store(() => {
+  const fullNameDirection = definePicklist('_fullNameDirection', [
+    createPickListItem('-1', formsText('reverse')),
+    createPickListItem('1', formsText('forward')),
+  ]);
+
+  // Like pickListTablesPickList, but indexed by tableId
   const tablesPickList = definePicklist(
     '_Tables',
     Object.values(schema.models).map(({ tableId, label }) =>
@@ -107,19 +122,7 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     )
   );
 
-  const monthsPickList = definePicklist(
-    monthPickListName,
-    months.map((title, index) =>
-      createPickListItem((index + 1).toString(), title)
-    )
-  );
-
-  const fullNameDirection = definePicklist('_fullNameDirection', [
-    createPickListItem('-1', formsText('reverse')),
-    createPickListItem('1', formsText('forward')),
-  ]);
-
-  frontEndPickLists = {
+  const frontEndPickLists = {
     Agent: {
       agentType: definePicklist(
         '_AgentTypeComboBox',
@@ -145,13 +148,7 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
           createPickListItem(index.toString(), title)
         )
       ),
-      // Like tablesPickList, but tableName is the key
-      tableName: definePicklist(
-        '_TablesByName',
-        Object.values(schema.models).map(({ name, label }) =>
-          createPickListItem(name.toLowerCase(), label)
-        )
-      ),
+      tableName: pickListTablesPickList(),
       sortType: definePicklist(
         '_PickListSortType',
         pickListSortTypes.map((title, index) =>
@@ -186,14 +183,20 @@ function defineFrontEndPickLists(): RA<SpecifyResource<PickList>> {
     },
   };
 
-  return [
-    monthsPickList,
-    ...Object.values(frontEndPickLists).flatMap(Object.values),
-  ];
-}
+  pickLists = {
+    ...pickLists,
+    ...Object.fromEntries(
+      Object.values(frontEndPickLists)
+        .flatMap((entries) => Object.values(entries))
+        .map((pickList) => [pickList.get('name'), pickList] as const)
+    ),
+  };
+
+  return frontEndPickLists;
+});
 
 export const fetchPickLists = f.store(
-  async (): Promise<typeof pickLists> =>
+  async (): Promise<IR<SpecifyResource<PickList>>> =>
     (hasToolPermission('pickLists', 'read')
       ? f.var(
           new schema.models.PickList.LazyCollection({
@@ -205,24 +208,19 @@ export const fetchPickLists = f.store(
         )
       : Promise.resolve({ models: [] })
     ).then(async ({ models }) => {
-      pickLists = Object.fromEntries(
-        [
-          /**
-           * Reverse the list so that if there are duplicate names, the first
-           * occurrence is used (to be consistent with the behavior in older
-           * versions of Specify 7). See:
-           * https://github.com/specify/specify7/issues/1572#issuecomment-1125569909
-           */
-          ...Array.from(models)
-            .reverse()
+      getFrontEndPickLists();
+      pickLists = {
+        ...pickLists,
+        ...Object.fromEntries(
+          models
             .map((pickList) =>
               pickList.get('type') === PickListTypes.ITEMS
                 ? pickList
                 : pickList.set('pickListItems', [])
-            ),
-          ...defineFrontEndPickLists(),
-        ].map((pickList) => [pickList.get('name'), pickList] as const)
-      );
-      return pickLists;
+            )
+            .map((pickList) => [pickList.get('name'), pickList] as const)
+        ),
+      };
+      return pickLists as IR<SpecifyResource<PickList>>;
     })
 );

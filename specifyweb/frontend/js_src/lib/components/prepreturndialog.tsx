@@ -69,7 +69,7 @@ function Row({
                   readonly catalogNumber: string;
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
-                  catalogNumber: fieldFormat(
+                  catalogNumber: await fieldFormat(
                     defined(
                       schema.models.CollectionObject.getLiteralField(
                         'catalogNumber'

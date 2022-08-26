@@ -570,6 +570,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Flexible column width',
     'ru-ru': 'Гибкая ширина столбцов',
   },
+  flexibleSubGridColumnWidth: {
+    'en-us': 'Flexible subview grid column width',
+    'ru-ru': 'Гибкая ширина столбцов в сетке подвидa',
+  },
   closeOnEsc: {
     'en-us': (
       <span>
@@ -716,6 +720,14 @@ export const preferencesText = createDictionary({
   autoComplete: {
     'en-us': 'Auto complete',
     'ru-ru': 'Автозаполнение',
+  },
+  formTable: {
+    'en-us': 'Form table',
+    'ru-ru': 'Форма таблицы',
+  },
+  maxHeight: {
+    'en-us': 'Max height',
+    'ru-ru': 'Максимальная высота',
   },
 });
 /* eslint-enable react/jsx-no-literals */

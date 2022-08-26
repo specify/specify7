@@ -37,7 +37,7 @@ export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
     return (
       <div className={`relative ${iconClassName}`}>
         <span
-          className="block w-full h-full rounded-full"
+          className="block h-full w-full rounded-full"
           style={{
             backgroundColor: value,
           }}
@@ -166,9 +166,7 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         value={value === defaultFont ? preferencesText('defaultFont') : value}
         onChange={({ data }): void => handleChange(data)}
         onNewValue={handleChange}
-      >
-        {(props): JSX.Element => <Input.Generic {...props} />}
-      </Autocomplete>
+      />
     );
   };
 

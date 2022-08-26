@@ -16,17 +16,19 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import type { IR, PartialBy, RA } from '../types';
 import { defined } from '../types';
 import { relationshipIsToMany } from '../wbplanviewmappinghelper';
-import { Button, className, DataEntry } from './basic';
+import { Button, className, columnDefinitionsToCss, DataEntry } from './basic';
 import type { SortConfig } from './common';
 import { SortIndicator } from './common';
-import { FormPreferences } from './formpreferences';
 import { useId } from './hooks';
-import { icons } from './icons';
 import { Dialog } from './modaldialog';
 import { usePref } from './preferenceshooks';
+import { loadingGif } from './queryresultstable';
 import { SearchDialog } from './searchdialog';
 import { SpecifyForm, useViewDefinition } from './specifyform';
 import { FormCell } from './specifyformcell';
+import { useInfiniteScroll } from './useInfiniteScroll';
+import { icons } from './icons';
+import { FormPreferences } from './formpreferences';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -42,6 +44,9 @@ const cellToLabel = (
       : undefined,
 });
 
+const cellClassName =
+  'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
+
 /**
  * Show several records in "grid view"
  */
@@ -49,6 +54,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   relationship,
   isDependent,
   resources: unsortedResources,
+  totalCount = unsortedResources.length,
   onAdd: handleAdd,
   onDelete: handleDelete,
   mode,
@@ -56,10 +62,12 @@ export function FormTable<SCHEMA extends AnySchema>({
   dialog,
   onClose: handleClose,
   sortField = 'id',
+  onFetchMore: handleFetchMore,
 }: {
   readonly relationship: Relationship;
   readonly isDependent: boolean;
   readonly resources: RA<SpecifyResource<SCHEMA>>;
+  readonly totalCount?: number;
   readonly onAdd:
     | ((resources: RA<SpecifyResource<SCHEMA>>) => void)
     | undefined;
@@ -69,6 +77,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onClose: () => void;
   readonly sortField: string | undefined;
+  readonly onFetchMore: (() => Promise<void>) | undefined;
 }): JSX.Element {
   const [sortConfig, setSortConfig] = React.useState<SortConfig<string>>({
     sortField: sortField.startsWith('-') ? sortField.slice(1) : sortField,
@@ -103,11 +112,10 @@ export function FormTable<SCHEMA extends AnySchema>({
       : undefined;
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
   React.useEffect(() => {
-    if (addedResource.current === undefined) return;
+    if (typeof addedResource.current === 'undefined') return;
     const resourceIndex = resources.indexOf(addedResource.current);
     addedResource.current = undefined;
     if (resourceIndex === -1 || rowsRef.current === null) return;
-
     const lastRow: HTMLElement | null = rowsRef.current.querySelector(
       `:scope > :nth-child(${resourceIndex}) > [tabindex="-1"]`
     );
@@ -116,7 +124,7 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  const header = `${relationship.label} (${resources.length})`;
+  const header = `${relationship.label} (${totalCount ?? resources.length})`;
   const viewDefinition = useViewDefinition({
     model: relationship.relatedModel,
     viewName,
@@ -135,198 +143,222 @@ export function FormTable<SCHEMA extends AnySchema>({
     'definition',
     'flexibleColumnWidth'
   );
+  const [flexibleSubGridColumnWidth] = usePref(
+    'form',
+    'definition',
+    'flexibleSubGridColumnWidth'
+  );
   const displayDeleteButton = mode !== 'view';
   const displayViewButton = !isDependent;
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
+
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const { isFetching, handleScroll } = useInfiniteScroll(
+    handleFetchMore,
+    scrollerRef
+  );
+
+  // FEATURE: add <FormPreferences /> for formTable records when expanded
+
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
+  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
       commonText('loading')
     ) : resources.length === 0 ? (
       <p>{formsText('noData')}</p>
     ) : (
-      <DataEntry.Grid
-        className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
-        display="inline"
-        flexibleColumnWidth={flexibleColumnWidth}
-        role="table"
-        style={{
-          gridTemplateColumns: `min-content repeat(${viewDefinition.columns.length},auto) min-content`,
-          maxHeight: `${maxHeight}px`,
-        }}
-        viewDefinition={viewDefinition}
-      >
-        <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
-          <div role="columnheader">
-            <span className="sr-only">{commonText('expand')}</span>
-          </div>
-          {viewDefinition.rows[0].map((cell, index) => {
-            const { text, title } = cellToLabel(
-              relationship.relatedModel,
-              cell
-            );
-            return (
-              <DataEntry.Cell
-                align="center"
-                className={`
-                  sticky top-0 z-10 -mx-1
-                  h-full bg-[color:var(--form-foreground)] pl-1 pt-1
-                `}
-                colSpan={cell.colSpan}
-                key={index}
-                role="columnheader"
-                title={title}
-                visible
-              >
-                {(cell.type === 'Field' || cell.type === 'SubView') &&
-                typeof cell.fieldName === 'string' ? (
-                  <Button.LikeLink
-                    tabIndex={headerIsVisible ? undefined : -1}
-                    onClick={(): void =>
-                      setSortConfig({
-                        sortField: defined(cell.fieldName),
-                        ascending: !sortConfig.ascending,
-                      })
-                    }
-                  >
-                    {text}
-                    <SortIndicator
-                      fieldName={cell.fieldName}
-                      sortConfig={sortConfig}
-                    />
-                  </Button.LikeLink>
-                ) : (
-                  text
-                )}
-              </DataEntry.Cell>
-            );
-          })}
-          <div role="columnheader">
-            <span className="sr-only">{commonText('actions')}</span>
-          </div>
-        </div>
-        <div className="contents" ref={rowsRef} role="rowgroup">
-          {resources.map((resource) => (
-            <div className="contents" key={resource.cid} role="row">
-              {isExpanded[resource.cid] ? (
-                <>
-                  <div className="h-full" role="cell">
-                    <Button.Small
-                      aria-label={formsText('contract')}
-                      className="h-full"
-                      title={formsText('contract')}
+      <div className="overflow-x-auto">
+        <DataEntry.Grid
+          className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
+          display="inline"
+          flexibleColumnWidth={flexibleColumnWidth}
+          forwardRef={scrollerRef}
+          role="table"
+          style={{
+            gridTemplateColumns: `min-content ${columnDefinitionsToCss(
+              viewDefinition.columns,
+              flexibleSubGridColumnWidth
+            )} min-content`,
+            maxHeight: `${maxHeight}px`,
+          }}
+          viewDefinition={viewDefinition}
+          onScroll={handleScroll}
+        >
+          <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
+            <div className={cellClassName} role="columnheader">
+              <span className="sr-only">{commonText('expand')}</span>
+            </div>
+            {viewDefinition.rows[0].map((cell, index) => {
+              const { text, title } = cellToLabel(
+                relationship.relatedModel,
+                cell
+              );
+              return (
+                <DataEntry.Cell
+                  align="center"
+                  className={cellClassName}
+                  colSpan={cell.colSpan}
+                  key={index}
+                  role="columnheader"
+                  title={title}
+                  visible
+                >
+                  {(cell.type === 'Field' || cell.type === 'SubView') &&
+                  typeof cell.fieldName === 'string' ? (
+                    <Button.LikeLink
+                      tabIndex={headerIsVisible ? undefined : -1}
                       onClick={(): void =>
-                        setExpandedRecords({
-                          ...isExpanded,
-                          [resource.cid]: false,
+                        setSortConfig({
+                          sortField: defined(cell.fieldName),
+                          ascending: !sortConfig.ascending,
                         })
                       }
                     >
-                      {icons.chevronDown}
-                    </Button.Small>
-                  </div>
-                  <DataEntry.Cell
-                    align="left"
-                    colSpan={
-                      viewDefinition.columns.length + (isDependent ? 0 : 1)
-                    }
-                    role="cell"
-                    tabIndex={-1}
-                    visible
-                  >
-                    <SpecifyForm
-                      display="inline"
-                      formType="form"
-                      mode={mode}
-                      resource={resource}
-                    />
-                  </DataEntry.Cell>
-                </>
-              ) : (
-                <>
-                  <div className="flex h-full justify-center" role="cell">
-                    <Button.Small
-                      aria-label={commonText('expand')}
-                      title={commonText('expand')}
-                      onClick={(): void =>
-                        setExpandedRecords({
-                          ...isExpanded,
-                          [resource.cid]: true,
-                        })
-                      }
-                    >
-                      {icons.chevronRight}
-                    </Button.Small>
-                  </div>
-                  {viewDefinition.rows[0].map(
-                    (
-                      { colSpan, align, visible, id: cellId, ...cellData },
-                      index
-                    ) => (
-                      <DataEntry.Cell
-                        align={align}
-                        colSpan={colSpan}
-                        key={index}
-                        role="cell"
-                        visible={visible}
-                      >
-                        <FormCell
-                          align={align}
-                          cellData={cellData}
-                          formatId={(suffix: string): string =>
-                            id(`${index}-${suffix}`)
+                      {text}
+                      <SortIndicator
+                        fieldName={cell.fieldName}
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  ) : (
+                    text
+                  )}
+                </DataEntry.Cell>
+              );
+            })}
+            <div className={cellClassName} role="columnheader">
+              <span className="sr-only">{commonText('actions')}</span>
+            </div>
+          </div>
+          <div className="contents" ref={rowsRef} role="rowgroup">
+            {resources.map((resource) => (
+              <React.Fragment key={resource.cid}>
+                <div className="contents" role="row">
+                  {isExpanded[resource.cid] ? (
+                    <>
+                      <div className="h-full" role="cell">
+                        <Button.Small
+                          title={formsText('contract')}
+                          aria-label={formsText('contract')}
+                          onClick={(): void =>
+                            setExpandedRecords({
+                              ...isExpanded,
+                              [resource.cid]: false,
+                            })
                           }
-                          formType="formTable"
-                          id={cellId}
-                          mode={viewDefinition.mode}
+                        >
+                          {icons.chevronDown}
+                        </Button.Small>
+                      </div>
+                      <DataEntry.Cell
+                        align="left"
+                        colSpan={viewDefinition.columns.length}
+                        role="cell"
+                        tabIndex={-1}
+                        visible
+                      >
+                        <SpecifyForm
+                          display="inline"
+                          formType="form"
+                          mode={mode}
                           resource={resource}
                         />
                       </DataEntry.Cell>
-                    )
-                  )}
-                </>
-              )}
-              <div className="flex h-full flex-col gap-2" role="cell">
-                {displayViewButton && (
-                  <DataEntry.Visit
-                    props={{
-                      className: `flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`,
-                    }}
-                    resource={resource}
-                  />
-                )}
-                {displayDeleteButton &&
-                  (!resource.isNew() ||
-                    hasTablePermission(
-                      relationship.relatedModel.name,
-                      'delete'
-                    )) && (
-                    <Button.Small
-                      aria-label={commonText('remove')}
-                      className="flex-1"
-                      disabled={
-                        !resource.isNew() &&
-                        !hasTablePermission(
-                          resource.specifyModel.name,
-                          'delete'
+                    </>
+                  ) : (
+                    <>
+                      <div className="h-full" role="cell">
+                        <Button.Small
+                          title={commonText('expand')}
+                          aria-label={commonText('expand')}
+                          onClick={(): void =>
+                            setExpandedRecords({
+                              ...isExpanded,
+                              [resource.cid]: true,
+                            })
+                          }
+                        >
+                          {icons.chevronRight}
+                        </Button.Small>
+                      </div>
+                      {viewDefinition.rows[0].map(
+                        (
+                          { colSpan, align, visible, id: cellId, ...cellData },
+                          index
+                        ) => (
+                          <DataEntry.Cell
+                            align={align}
+                            colSpan={colSpan}
+                            key={index}
+                            role="cell"
+                            visible={visible}
+                          >
+                            <FormCell
+                              align={align}
+                              cellData={cellData}
+                              formatId={(suffix: string): string =>
+                                id(`${index}-${suffix}`)
+                              }
+                              formType="formTable"
+                              id={cellId}
+                              mode={viewDefinition.mode}
+                              resource={resource}
+                            />
+                          </DataEntry.Cell>
                         )
-                      }
-                      title={commonText('remove')}
-                      onClick={(): void => handleDelete(resource)}
-                    >
-                      {icons.trash}
-                    </Button.Small>
+                      )}
+                    </>
                   )}
-                {isExpanded[resource.cid] && (
-                  <FormPreferences className="flex-1" resource={resource} />
-                )}
+                  <div className="flex h-full flex-col gap-2" role="cell">
+                    {displayViewButton && isExpanded[resource.cid] ? (
+                      <DataEntry.Visit
+                        props={{
+                          className: `flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`,
+                        }}
+                        resource={resource}
+                      />
+                    ) : undefined}
+                    {displayDeleteButton &&
+                    (!resource.isNew() ||
+                      hasTablePermission(
+                        relationship.relatedModel.name,
+                        'delete'
+                      )) ? (
+                      <Button.Small
+                        disabled={
+                          !resource.isNew() &&
+                          !hasTablePermission(
+                            resource.specifyModel.name,
+                            'delete'
+                          )
+                        }
+                        title={commonText('remove')}
+                        aria-label={commonText('remove')}
+                        onClick={(): void => handleDelete(resource)}
+                      >
+                        {icons.trash}
+                      </Button.Small>
+                    ) : undefined}
+                    {isExpanded[resource.cid] && (
+                      <FormPreferences className="flex-1" resource={resource} />
+                    )}
+                  </div>
+                </div>
+              </React.Fragment>
+            ))}
+            {isFetching && (
+              <div className="contents" role="row">
+                <div className="col-span-full" role="cell">
+                  {loadingGif}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </DataEntry.Grid>
+            )}
+          </div>
+        </DataEntry.Grid>
+      </div>
     );
   const addButton =
     typeof handleAddResources === 'function' &&
@@ -363,9 +395,9 @@ export function FormTable<SCHEMA extends AnySchema>({
       {state.type === 'SearchState' &&
       typeof handleAddResources === 'function' ? (
         <SearchDialog
+          multiple
           extraFilters={undefined}
           forceCollection={undefined}
-          multiple
           templateResource={state.resource}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
@@ -393,7 +425,7 @@ export function FormTableCollection({
 }: PartialBy<
   Omit<
     Parameters<typeof FormTable>[0],
-    'isDependent' | 'relationship' | 'resources'
+    'isDependent' | 'onFetchMore' | 'relationship' | 'resources'
   >,
   'onAdd' | 'onDelete'
 > & {
@@ -410,8 +442,14 @@ export function FormTableCollection({
       ),
     [collection]
   );
-  const field = defined(collection.field?.getReverse());
+
+  const handleFetchMore = React.useCallback(async () => {
+    await collection.fetch();
+    setRecords(Array.from(collection.models));
+  }, [collection]);
+
   const isDependent = collection instanceof DependentCollection;
+  const field = defined(collection.field?.getReverse());
   const isToOne = !relationshipIsToMany(field);
   const disableAdding = isToOne && records.length > 0;
   return (
@@ -419,6 +457,7 @@ export function FormTableCollection({
       isDependent={isDependent}
       relationship={defined(collection.field?.getReverse())}
       resources={records}
+      totalCount={collection._totalCount}
       onAdd={
         disableAdding
           ? undefined
@@ -433,6 +472,7 @@ export function FormTableCollection({
         setRecords(Array.from(collection.models));
         handleDelete?.(resource);
       }}
+      onFetchMore={handleFetchMore}
       {...props}
     />
   );
