@@ -701,7 +701,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'startsWith',
-                title: preferencesText('startsWith'),
+                title: preferencesText('startsWithInsensitive'),
                 description: preferencesText('startsWithDescription'),
               },
               {
@@ -713,7 +713,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'contains',
-                title: preferencesText('contains'),
+                title: preferencesText('containsInsensitive'),
                 description: preferencesText('containsDescription'),
               },
               {
@@ -754,7 +754,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'startsWith',
-                title: preferencesText('startsWith'),
+                title: preferencesText('startsWithInsensitive'),
                 description: preferencesText('startsWithDescription'),
               },
               {
@@ -785,7 +785,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'startsWith',
-                title: preferencesText('startsWith'),
+                title: preferencesText('startsWithInsensitive'),
                 description: preferencesText('startsWithDescription'),
               },
               {
@@ -797,7 +797,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'contains',
-                title: preferencesText('contains'),
+                title: preferencesText('containsInsensitive'),
                 description: preferencesText('containsDescription'),
               },
             ],
@@ -882,6 +882,45 @@ export const preferenceDefinitions = {
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
+          }),
+          searchCaseSensitive: defineItem<boolean>({
+            title: preferencesText('searchCaseSensitive'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          searchField: defineItem<'name' | 'fullName'>({
+            title: preferencesText('searchField'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'name',
+            values: [
+              {
+                value: 'name',
+                title: commonText('name'),
+              },
+              {
+                value: 'fullName',
+                title: commonText('fullName'),
+              },
+            ],
+          }),
+          searchAlgorithm: defineItem<'startsWith' | 'contains'>({
+            title: preferencesText('searchAlgorithm'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'startsWith',
+            values: [
+              {
+                value: 'startsWith',
+                title: preferencesText('startsWith'),
+              },
+              {
+                value: 'contains',
+                title: preferencesText('contains'),
+              },
+            ],
           }),
         },
       },

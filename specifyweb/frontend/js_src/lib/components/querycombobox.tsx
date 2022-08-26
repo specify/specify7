@@ -314,7 +314,7 @@ export function QueryComboBox({
                           typeof typeSearch === 'object'
                             ? typeSearch.dataObjectFormatter
                             : undefined
-                          )
+                        )
                     ).then((formatted) => ({
                       label:
                         formatted ??
