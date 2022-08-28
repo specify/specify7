@@ -17,9 +17,9 @@ import type { IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState } from '../../hooks/hooks';
 import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
 import { QueryResultsTable } from '../QueryBuilder/ResultsTable';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'

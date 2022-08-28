@@ -8,8 +8,8 @@ import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { useId } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
+import {useId} from '../../hooks/useId';
 
 export function TreeRow({
   row,

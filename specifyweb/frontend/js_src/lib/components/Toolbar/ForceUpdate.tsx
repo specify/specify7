@@ -8,9 +8,9 @@ import { ping } from '../../utils/ajax/ping';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function ForceUpdateFeedOverlay(): JSX.Element {
   const loading = React.useContext(LoadingContext);

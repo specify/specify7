@@ -29,8 +29,8 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { IR, RA, RR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 

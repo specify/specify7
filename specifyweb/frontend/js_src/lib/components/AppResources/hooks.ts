@@ -19,7 +19,7 @@ import type { SerializedResource } from '../DataModel/helpers';
 import { addMissingFields } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;

@@ -7,8 +7,8 @@ import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
 import { fail } from '../Errors/ErrorBoundary';
-import { useAsyncState } from '../../hooks/hooks';
 import { PickListComboBox } from './index';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function FormattersPickList(
   props: DefaultComboBoxProps

@@ -22,9 +22,10 @@ import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './Create';
-import { useId, useLiveState } from '../../hooks/hooks';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
 import { PreferencesContent } from '../Toolbar/Preferences';
+import { useId } from '../../hooks/useId';
+import { useLiveState } from '../../hooks/useLiveState';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;

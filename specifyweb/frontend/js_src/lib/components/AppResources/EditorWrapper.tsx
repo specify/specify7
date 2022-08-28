@@ -19,7 +19,7 @@ import { AppResourceEditor } from './Editor';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import { Container, H3 } from '../Atoms';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;

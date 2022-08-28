@@ -11,9 +11,9 @@ import { hasTablePermission } from '../Permissions/helpers';
 import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 function List({
   resources,

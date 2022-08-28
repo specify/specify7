@@ -9,7 +9,6 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { getItemType, isFormatterAvailable } from './helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { IR, RA, RR } from '../../utils/types';
-import { useId } from '../../hooks/hooks';
 import type { ItemType } from './index';
 import { PickList } from './Components';
 import type { SchemaData } from './SetupHooks';
@@ -17,6 +16,7 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
+import {useId} from '../../hooks/useId';
 
 export function SchemaConfigFormat({
   schemaData,

@@ -13,10 +13,11 @@ import { getModel } from '../DataModel/schema';
 import { findString } from './helpers';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { useAsyncState, useLiveState } from '../../hooks/hooks';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
 
 export function useContainer(
   tables: SchemaData['tables'],

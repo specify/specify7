@@ -20,11 +20,11 @@ import { fetchRoles, fetchUserRoles, processPolicies } from './utils';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { useAsyncState } from '../../hooks/hooks';
 import type { RoleBase } from './Collection';
 import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 /** Fetch roles from all collections */
 export function useCollectionRoles(

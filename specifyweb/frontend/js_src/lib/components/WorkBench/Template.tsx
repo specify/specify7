@@ -18,7 +18,6 @@ import type { GetSet } from '../../utils/types';
 import { WBView } from './wbView';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header';
-import { useAsyncState } from '../../hooks/hooks';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -27,6 +26,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { Input } from '../Atoms/Form';
 import { className } from '../Atoms/className';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 function Navigation({
   name,

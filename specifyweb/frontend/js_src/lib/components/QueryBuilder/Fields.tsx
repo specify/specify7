@@ -6,9 +6,9 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useReadyEffect } from '../../hooks/hooks';
 import { QueryLine } from './Field';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { useReadyEffect } from '../../hooks/useReadyEffect';
 
 export function QueryFields({
   baseTableName,

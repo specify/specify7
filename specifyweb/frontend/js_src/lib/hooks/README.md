@@ -1,3 +1,3 @@
 # React Hooks
 
-// FIXME: split each hook into separate file
+Definitions for React hooks that are used extensively throughout the application

@@ -10,12 +10,13 @@ import { formData, Http } from '../../utils/ajax/helpers';
 import { commonText } from '../../localization/common';
 import { CopyButton } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
-import { useId, useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import {useId} from '../../hooks/useId';
+import {useValidation} from '../../hooks/useValidation';
 
 export function MasterKeyOverlay(): JSX.Element | null {
   const [password, setPassword] = React.useState<string>('');

@@ -29,7 +29,6 @@ import { AppTitle } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useBooleanState, useLiveState } from '../../hooks/hooks';
 import { useIsModified } from '../../hooks/useIsModified';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
@@ -70,6 +69,8 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Container } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();

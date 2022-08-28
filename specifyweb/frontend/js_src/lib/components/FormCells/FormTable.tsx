@@ -1,7 +1,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { useId } from '../../hooks/hooks';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -30,6 +29,7 @@ import { usePref } from '../UserPreferences/Hooks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 import { className } from '../Atoms/className';
+import {useId} from '../../hooks/useId';
 
 const cellToLabel = (
   model: SpecifyModel,

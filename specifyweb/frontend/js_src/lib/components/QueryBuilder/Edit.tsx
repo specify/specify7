@@ -13,7 +13,6 @@ import { schema } from '../DataModel/schema';
 import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
-import { useAsyncState, useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
@@ -22,6 +21,9 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { useId } from '../../hooks/useId';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function QueryEditButton({
   query,

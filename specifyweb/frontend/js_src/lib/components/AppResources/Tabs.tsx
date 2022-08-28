@@ -22,11 +22,11 @@ import {
   visualAppResourceEditors,
 } from './TabDefinitions';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { className } from '../Atoms/className';
 import { Button } from '../Atoms/Button';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function AppResourcesTabs({
   label,

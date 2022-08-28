@@ -12,8 +12,9 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Button } from '../Atoms/Button';
 import { TableIcon } from '../Molecules';
 import { fail } from '../Errors/ErrorBoundary';
-import { useBooleanState, useTriggerState } from '../../hooks/hooks';
 import { IntegratedRecordSelector } from './RecordSelectorUtils';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export const SubViewContext = React.createContext<
   | {

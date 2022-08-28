@@ -3,9 +3,9 @@ import React from 'react';
 import { Http } from '../../utils/ajax/helpers';
 import { commonText } from '../../localization/common';
 import { Container } from '../Atoms';
-import { useTitle } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
+import {useTitle} from '../../hooks/useTitle';
 
 export function NotFoundView(): JSX.Element {
   useTitle(commonText('pageNotFound'));

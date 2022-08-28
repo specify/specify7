@@ -26,12 +26,6 @@ import type { RA } from '../../utils/types';
 import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header';
-import {
-  useAsyncState,
-  useBooleanState,
-  useId,
-  useTitle,
-} from '../../hooks/hooks';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
 import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -43,7 +37,7 @@ import {
 } from '../UserPreferences/Hooks';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import { TreeViewActions } from './Actions';
 import { TreeRow } from './Row';
@@ -51,6 +45,10 @@ import { TreeViewSearch } from './Search';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { useId } from '../../hooks/useId';
+import { useTitle } from '../../hooks/useTitle';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const treeToPref = {
     Geography: 'geography',

@@ -4,7 +4,7 @@ import { tap } from '../components/Errors/assert';
 import type { AnySchema } from '../components/DataModel/helpers';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import { useBooleanState } from './hooks';
+import { useBooleanState } from './useBooleanState';
 
 export function useIsModified(
   resource: SpecifyResource<AnySchema> | undefined,

@@ -20,14 +20,13 @@ import {
   UnloadProtectsContext,
 } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
-import { useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import {
   formatPermissionsError,
   PermissionError,
 } from '../Permissions/PermissionDenied';
 import { usePref } from '../UserPreferences/Hooks';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { clearCache } from '../Toolbar/CacheBuster';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { userInformation } from '../InitialContext/userInformation';
@@ -36,6 +35,7 @@ import { errorContext } from '../../hooks/useErrorContext';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import {useId} from '../../hooks/useId';
 
 type ErrorBoundaryState =
   | State<

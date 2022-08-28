@@ -9,9 +9,9 @@ import { hasTreeAccess } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
-import { useAsyncState } from '../../hooks/hooks';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import { deserializeResource } from '../../hooks/resource';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const template =
   typeof document === 'object' ? document.createElement('template') : undefined;

@@ -12,7 +12,6 @@ import { Button } from '../Atoms/Button';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardButton } from './CarryForward';
 import { Definition } from './Definition';
-import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import {
@@ -25,10 +24,11 @@ import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
 import { PrintOnSave } from '../FormFields/Checkbox';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { SubViewContext } from '../Forms/SubView';
 import { SubViewPreferences } from '../Forms/SubViewPreferences';
 import { GenerateLabel } from '../FormCommands';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function FormPreferences({
   resource,

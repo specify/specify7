@@ -9,16 +9,17 @@ import { defined } from '../../utils/types';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 import { getMappingLineData } from './navigator';
 import { AutoGrowTextArea, TableIcon } from '../Molecules';
-import { useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import type { HtmlGeneratorFieldData, MappingElementProps } from './Components';
 import { ButtonWithConfirmation, MappingPathComponent } from './Components';
 import type { MappingPath } from './Mapper';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Ul } from '../Atoms';
+import { useId } from '../../hooks/useId';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function MappingsControlPanel({
   showHiddenFields,

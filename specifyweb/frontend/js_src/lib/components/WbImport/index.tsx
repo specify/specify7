@@ -23,12 +23,13 @@ import {
 import { loadingGif } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { FilePicker } from '../Molecules/FilePicker';
-import { useAsyncState, useTriggerState } from '../../hooks/hooks';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useMenuItem } from '../Header';
 import { Input, Select } from '../Atoms/Form';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');

@@ -30,9 +30,9 @@ import {
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Button } from '../Atoms/Button';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{

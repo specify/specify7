@@ -18,9 +18,11 @@ import { Form, Input } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { AutoGrowTextArea } from '../Molecules';
-import { useAsyncState, useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { RenderForm } from '../Forms/SpecifyForm';
+import { useId } from '../../hooks/useId';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>

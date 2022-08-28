@@ -15,11 +15,12 @@ import { checkMoveViolatesEnforced } from './helpers';
 import type { RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { useBooleanState, useLiveState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceView } from '../Forms/ResourceView';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 

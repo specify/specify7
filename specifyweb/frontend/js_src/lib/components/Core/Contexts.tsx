@@ -6,13 +6,13 @@ import { commonText } from '../../localization/common';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import type { GetOrSet, RA } from '../../utils/types';
 import { crash, ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useBooleanState } from '../../hooks/hooks';
 import {
   Dialog,
   dialogClassNames,
   loadingBar,
   LoadingScreen,
 } from '../Molecules/Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element

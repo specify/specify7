@@ -10,9 +10,9 @@ import { fetchPickLists } from '../PickLists/definitions';
 import { formatAggregators } from './helpers';
 import type { IR, RA } from '../../utils/types';
 import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
-import { useAsyncState } from '../../hooks/hooks';
 import { useSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../FormPlugins/WebLink';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export type SchemaData = {
   readonly languages: IR<string>;

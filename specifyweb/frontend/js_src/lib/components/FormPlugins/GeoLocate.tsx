@@ -12,9 +12,10 @@ import type { IR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const defaultWidth = 947;
 const defaultHeight = 779;

@@ -20,7 +20,6 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { defined } from '../../utils/types';
-import { useAsyncState } from '../../hooks/hooks';
 import { NotFoundView } from '../Router/NotFoundView';
 import { OtherCollection } from './OtherCollectionView';
 import {
@@ -32,6 +31,7 @@ import { usePref } from '../UserPreferences/Hooks';
 import { deserializeResource } from '../../hooks/resource';
 import { ShowResource } from './ResourceView';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
 

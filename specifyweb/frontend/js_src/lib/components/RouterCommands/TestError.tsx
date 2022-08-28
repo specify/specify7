@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 /**
  * Trigger an error for test purposes.

@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
@@ -51,6 +50,9 @@ import { QueryFromMap } from './FromMap';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsTable';
+import { useTitle } from '../../hooks/useTitle';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

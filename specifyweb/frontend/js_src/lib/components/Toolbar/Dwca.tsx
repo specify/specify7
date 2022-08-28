@@ -17,9 +17,9 @@ import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();

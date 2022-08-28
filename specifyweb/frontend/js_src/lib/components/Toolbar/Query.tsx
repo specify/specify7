@@ -15,7 +15,6 @@ import { getModelById } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { SortIndicator, TableIcon, useSortConfig } from '../Molecules';
-import { useAsyncState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryEditButton } from '../QueryBuilder/Edit';
@@ -25,6 +24,7 @@ import { SafeOutlet } from '../Router/RouterUtils';
 import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

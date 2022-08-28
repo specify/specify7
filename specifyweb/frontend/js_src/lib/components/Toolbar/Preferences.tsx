@@ -18,7 +18,6 @@ import type { WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState, useBooleanState, useId } from '../../hooks/hooks';
 import type {
   GenericPreferencesCategories,
   PreferenceItem,
@@ -32,6 +31,9 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { useId } from '../../hooks/useId';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();

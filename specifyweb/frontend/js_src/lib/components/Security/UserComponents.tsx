@@ -19,7 +19,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { AdminStatusPlugin } from './AdminStatusPlugin';
 import { Ul } from '../Atoms';
 import { Combobox } from '../FormFields/ComboBox';
-import { useLiveState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { RoleBase } from './Collection';
@@ -32,6 +31,7 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
+import { useLiveState } from '../../hooks/useLiveState';
 
 export function SetSuperAdmin({
   institutionPolicies,

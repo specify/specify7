@@ -7,8 +7,8 @@ import type { LocalityData } from '../Leaflet/leafletHelpers';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from './Dialog';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const resizeThrottle = 250;
 

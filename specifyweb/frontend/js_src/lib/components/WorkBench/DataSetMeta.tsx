@@ -15,12 +15,6 @@ import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 import { AutoGrowTextArea, FormattedResource, TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
-import {
-  useAsyncState,
-  useBooleanState,
-  useId,
-  useTitle,
-} from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Dialog } from '../Molecules/Dialog';
@@ -31,6 +25,10 @@ import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { useId } from '../../hooks/useId';
+import { useTitle } from '../../hooks/useTitle';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({

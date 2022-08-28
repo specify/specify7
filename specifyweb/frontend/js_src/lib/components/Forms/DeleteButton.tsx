@@ -13,13 +13,11 @@ import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
-import {
-  useAsyncState,
-  useBooleanState,
-  useLiveState,
-} from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames, loadingBar } from '../Molecules/Dialog';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>

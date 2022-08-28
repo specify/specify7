@@ -4,7 +4,7 @@ import type { CollectionObject } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { Link } from '../Atoms/Link';
 import { fetchOtherCollectionData } from './CollectionRelOneToMany';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function CollectionOneToOnePlugin({
   resource,

@@ -8,8 +8,8 @@ import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/helpers';
 import { cachableUrls } from '../InitialContext';
 import { commonText } from '../../localization/common';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export const clearCache = async (): Promise<true> =>
   Promise.all(

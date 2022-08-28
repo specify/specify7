@@ -30,13 +30,13 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Ul } from '../Atoms';
 import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { InteractionDialog } from './InteractionDialog';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { OverlayContext } from '../Router/Router';
 import { Link } from '../Atoms/Link';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables

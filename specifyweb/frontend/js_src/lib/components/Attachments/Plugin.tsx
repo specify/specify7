@@ -25,9 +25,9 @@ import { AttachmentCell } from './index';
 import { Progress } from '../Atoms';
 import { fail } from '../Errors/ErrorBoundary';
 import { FilePicker } from '../Molecules/FilePicker';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog, loadingBar } from '../Molecules/Dialog';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function AttachmentsPlugin({
   resource,

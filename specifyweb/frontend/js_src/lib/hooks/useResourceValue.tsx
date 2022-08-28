@@ -14,7 +14,8 @@ import type { Parser } from '../utils/uiParse';
 import { mergeParsers, parseValue, resolveParser } from '../utils/uiParse';
 import { className } from '../components/Atoms/className';
 import { FormContext } from '../components/Core/Contexts';
-import { useBooleanState, useValidation } from './hooks';
+import { useValidation } from './useValidation';
+import { useBooleanState } from './useBooleanState';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

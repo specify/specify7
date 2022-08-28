@@ -8,12 +8,12 @@ import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function AutoNumbering({
   resource,

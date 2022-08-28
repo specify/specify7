@@ -10,7 +10,6 @@ import { schema } from '../DataModel/schema';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { H3 } from '../Atoms';
 import { supportLink } from '../Errors/ErrorBoundary';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
@@ -19,6 +18,8 @@ import { TaxonTiles } from './TaxonTiles';
 import { DateElement } from '../Molecules/DateElement';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');

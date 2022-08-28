@@ -9,7 +9,6 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { TableIcon } from '../Molecules';
-import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
@@ -19,6 +18,7 @@ import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',

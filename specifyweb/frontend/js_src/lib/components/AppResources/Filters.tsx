@@ -14,11 +14,11 @@ import { commonText } from '../../localization/common';
 import { appResourceSubTypes, appResourceTypes } from './Create';
 import type { AppResources } from './hooks';
 import { Ul } from '../Atoms';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function AppResourcesFilters({
   initialResources,

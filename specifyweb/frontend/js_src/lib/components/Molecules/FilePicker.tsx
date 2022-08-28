@@ -3,8 +3,8 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { softFail } from '../Errors/ErrorBoundary';
-import { useBooleanState } from '../../hooks/hooks';
 import { className } from '../Atoms/className';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function FilePicker({
   onSelected: handleSelected,

@@ -11,9 +11,9 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { TableIcon } from '../Molecules';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ResourceView } from './ResourceView';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;

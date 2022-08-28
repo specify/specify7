@@ -20,11 +20,11 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Container, H2, H3 } from '../Atoms';
 import { ActiveLink } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState } from '../../hooks/hooks';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { Role } from '../Security/Role';
 import { className } from '../Atoms/className';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;

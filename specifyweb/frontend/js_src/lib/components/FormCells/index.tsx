@@ -15,11 +15,11 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { DataEntry } from '../Atoms/DataEntry';
 import { TableIcon } from '../Molecules';
 import { FormTableInteraction } from './FormTableInteraction';
-import { useAsyncState } from '../../hooks/hooks';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {

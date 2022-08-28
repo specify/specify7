@@ -6,7 +6,6 @@ import type { IR, RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { userToolsPromise } from './userToolDefinitions';
 import { H3, Ul } from '../Atoms';
-import { useAsyncState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import type { UserTool } from '../Core/Main';
 import { Dialog } from '../Molecules/Dialog';
@@ -14,6 +13,7 @@ import { OverlayContext } from '../Router/Router';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function UserTools(): JSX.Element {
   // REFACTOR: get rid of usages of "px" units in the header

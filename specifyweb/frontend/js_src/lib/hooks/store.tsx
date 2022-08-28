@@ -12,7 +12,7 @@ import { getModel } from '../components/DataModel/schema';
 import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { crash } from '../components/Errors/ErrorBoundary';
-import { useAsyncState } from './hooks';
+import {useAsyncState} from './useAsyncState';
 
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<

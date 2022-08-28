@@ -29,7 +29,6 @@ import { defined } from '../../utils/types';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { loadingGif, SortIndicator, TableIcon } from '../Molecules';
 import { ErrorBoundary, fail } from '../Errors/ErrorBoundary';
-import { useAsyncState, useTriggerState } from '../../hooks/hooks';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
 import { QueryResults } from './Results';
 import { QueryToForms } from './ToForms';
@@ -39,6 +38,8 @@ import { ResourceView } from '../Forms/ResourceView';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { Button } from '../Atoms/Button';
 import { Container, H3 } from '../Atoms';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 function TableHeaderCell({
   fieldSpec,

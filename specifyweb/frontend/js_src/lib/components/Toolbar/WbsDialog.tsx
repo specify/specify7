@@ -18,7 +18,6 @@ import type { SortConfig } from '../Molecules';
 import { SortIndicator, useSortConfig } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
-import { useAsyncState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
@@ -27,6 +26,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(

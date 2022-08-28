@@ -21,7 +21,6 @@ import { isResourceOfType } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
-import { useAsyncState, useLiveState } from '../../hooks/hooks';
 import { PickListComboBox } from '../PickLists';
 import { FieldsPickList } from '../PickLists/FieldsPickList';
 import { FormattersPickList } from '../PickLists/FormattersPickList';
@@ -29,6 +28,8 @@ import { TablesPickList } from '../PickLists/TablesPickList';
 import { QueryComboBox } from './QueryComboBox';
 import { TreeLevelComboBox } from '../PickLists/TreeLevelPickList';
 import { UiField } from './Field';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

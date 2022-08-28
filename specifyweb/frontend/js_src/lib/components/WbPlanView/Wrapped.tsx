@@ -11,18 +11,16 @@ import type { State } from 'typesafe-reducer';
 import type { Tables } from '../DataModel/types';
 import type { IR, RA } from '../../utils/types';
 import type { UploadPlan } from './uploadPlanParser';
-import {
-  getLinesFromHeaders,
-  getLinesFromUploadPlan,
-} from './linesGetter';
+import { getLinesFromHeaders, getLinesFromUploadPlan } from './linesGetter';
 import { savePlan } from './helpers';
 import type { UploadResult } from '../WorkBench/resultsParser';
-import { useLiveState, useTitle } from '../../hooks/hooks';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import type { MappingLine } from './Mapper';
 import { Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { useTitle } from '../../hooks/useTitle';
+import { useLiveState } from '../../hooks/useLiveState';
 
 // General definitions
 export type Status = {

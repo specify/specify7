@@ -17,12 +17,13 @@ import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
 import { DataEntry } from '../Atoms/DataEntry';
 import { loadingGif } from '../Molecules';
-import { useAsyncState, useId } from '../../hooks/hooks';
 import { usePref } from '../UserPreferences/Hooks';
 import { FormCell } from '../FormCells';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import {useId} from '../../hooks/useId';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with

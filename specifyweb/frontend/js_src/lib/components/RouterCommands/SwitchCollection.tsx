@@ -4,7 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import { ping } from '../../utils/ajax/ping';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export const switchCollection = (
   navigate: NavigateFunction,

@@ -24,11 +24,12 @@ import {
   customSelectTypes,
   SuggestionBox,
 } from './CustomSelectElement';
-import { useBooleanState, useId } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
 import type { AutoMapperSuggestion } from './Mapper';
+import { useId } from '../../hooks/useId';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;

@@ -14,7 +14,6 @@ import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
-import { useAsyncState, useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import type { UserAgents } from './UserHooks';
@@ -22,6 +21,8 @@ import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { Form, Label } from '../Atoms/Form';
 import { ErrorMessage, Ul } from '../Atoms';
+import {useId} from '../../hooks/useId';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;

@@ -22,14 +22,16 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { softFail } from '../Errors/ErrorBoundary';
 import { copyTextToClipboard } from './FilePicker';
-import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { usePref } from '../UserPreferences/Hooks';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { Textarea } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
+import { useTitle } from '../../hooks/useTitle';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const MAX_HUE = 360;
 

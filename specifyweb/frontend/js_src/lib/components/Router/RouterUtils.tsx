@@ -3,8 +3,8 @@ import { Outlet } from 'react-router';
 import type { RouteObject } from 'react-router/lib/router';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
-import { useTitle } from '../../hooks/hooks';
 import { LoadingScreen } from '../Molecules/Dialog';
+import {useTitle} from '../../hooks/useTitle';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.

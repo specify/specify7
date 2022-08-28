@@ -38,12 +38,12 @@ import {
 import { H3 } from '../Atoms';
 import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
-import { useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialog } from './PrepDialog';
 import { RecordSetsDialog } from '../QueryBuilder/RecordSets';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import {useValidation} from '../../hooks/useValidation';
 
 export function InteractionDialog({
   recordSetsPromise,

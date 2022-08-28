@@ -23,12 +23,6 @@ import { DeleteButton } from './DeleteButton';
 import { crash, ErrorBoundary, fail } from '../Errors/ErrorBoundary';
 import { FormPreferences } from '../FormPreferences';
 import { useMenuItem } from '../Header';
-import {
-  useAsyncState,
-  useBooleanState,
-  useId,
-  useTriggerState,
-} from '../../hooks/hooks';
 import { useIsModified } from '../../hooks/useIsModified';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -45,6 +39,10 @@ import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { useId } from '../../hooks/useId';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 /**
  * There is special behavior required when creating one of these resources,

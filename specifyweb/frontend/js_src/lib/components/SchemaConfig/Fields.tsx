@@ -7,8 +7,8 @@ import { commonText } from '../../localization/common';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { H3 } from '../Atoms';
-import { useId } from '../../hooks/hooks';
 import { Select } from '../Atoms/Form';
+import {useId} from '../../hooks/useId';
 
 export function SchemaConfigFields({
   model,

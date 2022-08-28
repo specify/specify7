@@ -10,7 +10,7 @@ import {
 } from './taxonTileHelpers';
 import { getTreeDefinitionItems, treeRanksPromise } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
-import { useAsyncState } from '../../hooks/hooks';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);

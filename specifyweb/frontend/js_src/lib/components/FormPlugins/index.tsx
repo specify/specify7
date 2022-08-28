@@ -17,7 +17,6 @@ import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { GeoLocatePlugin } from './GeoLocate';
-import { useBooleanState } from '../../hooks/hooks';
 import { HostTaxon } from './HostTaxon';
 import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
@@ -25,6 +24,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 // FIXME: make sure plugins/cells/commands are in correct directories
 // FIXME: undo renaming exports

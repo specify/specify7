@@ -12,12 +12,12 @@ import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { useValidation } from '../../hooks/hooks';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 import { SplashScreen } from '../Core/Entrypoint';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Submit } from '../Atoms/Submit';
+import {useValidation} from '../../hooks/useValidation';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {

@@ -16,7 +16,6 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
 import { fail, supportLink } from '../Errors/ErrorBoundary';
-import { useAsyncState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
@@ -24,6 +23,7 @@ import type {
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 import { Select } from '../Atoms/Form';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {

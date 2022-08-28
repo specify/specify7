@@ -48,7 +48,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { LoadingContext } from '../Core/Contexts';
-import { useAsyncState } from '../../hooks/hooks';
 import { formatList } from '../Atoms/Internationalization';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -57,6 +56,7 @@ import { SearchDialog } from '../Forms/SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { DataEntry } from '../Atoms/DataEntry';
+import {useAsyncState} from '../../hooks/useAsyncState';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),

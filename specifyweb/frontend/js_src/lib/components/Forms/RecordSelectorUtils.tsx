@@ -30,7 +30,6 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { LoadingContext } from '../Core/Contexts';
 import { crash } from '../Errors/ErrorBoundary';
 import { FormTableCollection } from '../FormCells/FormTable';
-import { useBooleanState, useTriggerState } from '../../hooks/hooks';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
 import type { RecordSelectorProps } from './RecordSelector';
@@ -39,6 +38,8 @@ import { EditRecordSet } from '../QueryBuilder/RecordSets';
 import { augmentMode, ResourceView } from './ResourceView';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({

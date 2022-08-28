@@ -10,9 +10,10 @@ import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { LeafletMap } from '../Molecules/Leaflet';
 import { Dialog } from '../Molecules/Dialog';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 function LeafletDialog({
   locality,

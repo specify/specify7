@@ -4,7 +4,7 @@ import type { SerializedCollection } from '../components/DataModel/collection';
 import type { AnySchema } from '../components/DataModel/helpers';
 import { f } from '../utils/functools';
 import { defined } from '../utils/types';
-import { useAsyncState } from './hooks';
+import {useAsyncState} from './useAsyncState';
 
 /**
  * A hook for fetching a collection of resources in a paginated way

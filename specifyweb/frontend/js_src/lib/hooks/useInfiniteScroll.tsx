@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { crash } from '../components/Errors/ErrorBoundary';
-import { useBooleanState } from './hooks';
+import { useBooleanState } from './useBooleanState';
 
 /**
  * Helps fetch more records when user is approaching the bottom of a list

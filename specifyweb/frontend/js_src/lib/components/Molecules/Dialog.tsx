@@ -12,7 +12,6 @@ import { listen } from '../../utils/events';
 import { KEY } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { LoadingContext } from '../Core/Contexts';
-import { useId, useTitle } from '../../hooks/hooks';
 import { dialogIcons } from '../Atoms/Icons';
 import {
   useHighContrast,
@@ -22,6 +21,8 @@ import {
 } from '../UserPreferences/Hooks';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { Button, DialogContext } from '../Atoms/Button';
+import {useId} from '../../hooks/useId';
+import {useTitle} from '../../hooks/useTitle';
 
 /*
  * This must be accompanied by a label since loading bar is hidden from screen

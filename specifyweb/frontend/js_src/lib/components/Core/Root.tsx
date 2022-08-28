@@ -8,8 +8,9 @@ import { f } from '../../utils/functools';
 import { initialContext } from '../InitialContext';
 import { commonText } from '../../localization/common';
 import { SplashScreen } from './Entrypoint';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Main } from './Main';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 // Show loading splash screen if didn't finish load within 2 seconds
 const LOADING_TIMEOUT = 2000;

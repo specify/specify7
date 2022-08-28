@@ -11,7 +11,6 @@ import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import type { RA } from '../../utils/types';
 import { AppTitle, AutoGrowTextArea } from '../Molecules';
-import { useLiveState, useTriggerState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -25,6 +24,8 @@ import { className } from '../Atoms/className';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
+import { useLiveState } from '../../hooks/useLiveState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 export type NewRole = {
   readonly id: number | undefined;

@@ -25,11 +25,11 @@ import { appResourceSubTypes, appResourceTypes } from './Create';
 import { getAppResourceExtension } from './hooks';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function AppResourceIcon({
   resource,

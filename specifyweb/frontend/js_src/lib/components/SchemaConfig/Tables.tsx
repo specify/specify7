@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { sortFunction } from '../../utils/utils';

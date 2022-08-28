@@ -11,11 +11,11 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { toTable } from '../DataModel/specifyModel';
 import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { LoanReturn } from '../Interactions/PrepReturnDialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function GenerateLabel({
   resource,

@@ -29,19 +29,20 @@ import { useCollection } from '../../hooks/useCollection';
 import { loadingGif, TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary, fail } from '../Errors/ErrorBoundary';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/SpecifyForm';
-import { useCachedState } from '../../hooks/statecache';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useMenuItem } from '../Header';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import { Input, Label, Select } from '../Atoms/Form';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 const tablesWithAttachments = f.store(() =>
   filterArray(

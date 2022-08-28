@@ -6,9 +6,9 @@ import { queryText } from '../../localization/query';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/hooks';
 import { queryIdField } from './ResultsTable';
 import { RecordSelectorFromIds } from '../Forms/RecordSelectorUtils';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function QueryToForms({
   model,

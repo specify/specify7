@@ -20,12 +20,13 @@ import {
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
 import { Button } from '../Atoms/Button';
-import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { LeafletMap } from '../Molecules/Leaflet';
 import { useSelectedResults } from './ToForms';
 import { deserializeResource } from '../../hooks/resource';
 import { MappingPath } from '../WbPlanView/Mapper';
 import { schema } from '../DataModel/schema';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function QueryToMap({
   results,

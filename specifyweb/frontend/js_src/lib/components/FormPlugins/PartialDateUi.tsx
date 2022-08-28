@@ -16,10 +16,10 @@ import type { RR } from '../../utils/types';
 import { getValidationAttributes, resolveParser } from '../../utils/uiParse';
 import { Input, Select } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
-import { useValidation } from '../../hooks/hooks';
 import { dateParts } from '../Atoms/Internationalization';
 import { usePref } from '../UserPreferences/Hooks';
 import { useSaveBlockers } from '../../hooks/resource';
+import {useValidation} from '../../hooks/useValidation';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');

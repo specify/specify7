@@ -20,9 +20,9 @@ import type {
   PickListItemSimple,
 } from '../FormFields/ComboBox';
 import { LoadingContext } from '../Core/Contexts';
-import { useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
+import {useValidation} from '../../hooks/useValidation';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {

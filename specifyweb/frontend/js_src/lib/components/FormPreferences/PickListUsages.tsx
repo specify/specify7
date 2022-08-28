@@ -8,11 +8,11 @@ import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { schema } from '../DataModel/schema';
 import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function PickListUsages({
   pickList,
