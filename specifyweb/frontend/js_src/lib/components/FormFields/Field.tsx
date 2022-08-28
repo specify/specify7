@@ -19,7 +19,7 @@ import {
   parserFromType,
 } from '../../utils/uiParse';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Input } from '../Atoms/Basic';
+import { Input } from '../Atoms/Form';
 import { useAsyncState } from '../../hooks/hooks';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { PartialDateUi } from '../FormPlugins/PartialDateUi';

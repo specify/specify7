@@ -9,7 +9,7 @@ import { formsText } from '../../localization/forms';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { TableIcon } from '../Molecules';
 import { useAsyncState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';

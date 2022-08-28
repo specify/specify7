@@ -6,7 +6,6 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import type { UploadPlan } from './uploadPlanParser';
-import { Button, Input, Label } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -14,6 +13,8 @@ import { useCachedState } from '../../hooks/statecache';
 import { DataSetsDialog } from '../Toolbar/WbsDialog';
 import type { Dataset } from './Wrapped';
 import { ListOfBaseTables } from './Components';
+import { Input, Label } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
 
 function TemplateSelection({
   headers,

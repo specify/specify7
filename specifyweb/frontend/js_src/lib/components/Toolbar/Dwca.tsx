@@ -15,7 +15,7 @@ import { toResource } from '../DataModel/specifyModel';
 import { AppResourcesAside } from '../AppResources/Aside';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';

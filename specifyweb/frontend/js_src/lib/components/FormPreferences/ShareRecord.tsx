@@ -8,7 +8,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { toTable } from '../DataModel/specifyModel';
 import { userInformation } from '../InitialContext/userInformation';
-import { Input } from '../Atoms/Basic';
+import { Input } from '../Atoms/Form';
 import { CopyButton } from '../Molecules';
 
 export function ShareRecord({

@@ -47,7 +47,6 @@ import { getValidationAttributes } from '../../utils/uiParse';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { DataEntry } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState } from '../../hooks/hooks';
 import { formatList } from '../Atoms/Internationalization';
@@ -57,6 +56,7 @@ import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
 import { useResourceValue } from '../../hooks/useResourceValue';
+import { DataEntry } from '../Atoms/DataEntry';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),

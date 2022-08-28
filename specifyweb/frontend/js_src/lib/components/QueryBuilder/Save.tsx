@@ -7,10 +7,12 @@ import { queryText } from '../../localization/query';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { Button, Form, Input, Label, Submit } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useId } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
+import { Form, Input, Label } from '../Atoms/Form';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,

@@ -10,7 +10,7 @@ import { formsText } from '../../localization/forms';
 import { hasTablePermission } from '../Permissions/helpers';
 import { toTable, toTables } from '../DataModel/specifyModel';
 import { filterArray } from '../../utils/types';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';

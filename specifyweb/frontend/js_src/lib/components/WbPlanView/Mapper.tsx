@@ -28,7 +28,6 @@ import {
   getMustMatchTables,
   mappingPathIsComplete,
 } from './helpers';
-import { Button, Link, Ul } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
@@ -51,6 +50,9 @@ import {
   ValidationResults,
 } from './MapperComponents';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { Ul } from '../Atoms';
 
 /*
  * Scope is used to differentiate between mapper definitions that should

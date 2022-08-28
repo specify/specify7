@@ -22,7 +22,7 @@ import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
 import { toTable } from '../DataModel/specifyModel';
 import { AttachmentCell } from './index';
-import { Progress } from '../Atoms/Basic';
+import { Progress } from '../Atoms';
 import { fail } from '../Errors/ErrorBoundary';
 import { FilePicker } from '../Molecules/FilePicker';
 import { useAsyncState } from '../../hooks/hooks';

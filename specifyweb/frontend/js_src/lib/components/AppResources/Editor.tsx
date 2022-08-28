@@ -20,7 +20,6 @@ import {
 } from './EditorComponents';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { Button, Container, DataEntry, Form } from '../Atoms/Basic';
 import { AppTitle } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -30,6 +29,10 @@ import { BaseResourceView } from '../Forms/ResourceView';
 import { SaveButton } from '../Forms/Save';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { isAppResourceSubType } from './Create';
+import { Container } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Button } from '../Atoms/Button';
+import { Form } from '../Atoms/Form';
 
 export function AppResourceEditor({
   resource,

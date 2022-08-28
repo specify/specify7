@@ -9,10 +9,13 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
-import { Button, Form, Link, Submit } from '../Atoms/Basic';
 import { SplashScreen } from '../Core/Entrypoint';
 import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
+import { Form } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
+import { Button } from '../Atoms/Button';
 
 export type OicProvider = {
   readonly provider: string;

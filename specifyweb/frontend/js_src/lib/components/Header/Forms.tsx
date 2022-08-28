@@ -18,13 +18,15 @@ import { fetchContext as fetchSchema, getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { DataEntry, Link, Ul } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Ul } from '../Atoms';
+import { Link } from '../Atoms/Link';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

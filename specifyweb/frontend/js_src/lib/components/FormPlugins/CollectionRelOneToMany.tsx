@@ -18,7 +18,6 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Button, DataEntry, Link } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
@@ -27,6 +26,9 @@ import { SearchDialog } from '../Forms/SearchDialog';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useNavigate } from 'react-router-dom';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 
 type Data = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;

@@ -17,13 +17,14 @@ import type { BackEndRole } from '../Security/utils';
 import { processPolicies } from '../Security/utils';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { className, Container, H2, H3 } from '../Atoms/Basic';
+import { Container, H2, H3 } from '../Atoms';
 import { ActiveLink } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAsyncState } from '../../hooks/hooks';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type { Role } from '../Security/Role';
+import { className } from '../Atoms/className';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;

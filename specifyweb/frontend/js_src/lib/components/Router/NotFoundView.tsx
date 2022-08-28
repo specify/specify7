@@ -2,9 +2,10 @@ import React from 'react';
 
 import { Http } from '../../utils/ajax/helpers';
 import { commonText } from '../../localization/common';
-import { Container, Link } from '../Atoms/Basic';
+import { Container } from '../Atoms';
 import { useTitle } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 
 export function NotFoundView(): JSX.Element {
   useTitle(commonText('pageNotFound'));

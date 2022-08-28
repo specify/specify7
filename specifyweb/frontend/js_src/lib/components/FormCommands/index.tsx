@@ -9,7 +9,7 @@ import { formsText } from '../../localization/forms';
 import type { UiCommands } from '../FormParse/commands';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { toTable } from '../DataModel/specifyModel';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';

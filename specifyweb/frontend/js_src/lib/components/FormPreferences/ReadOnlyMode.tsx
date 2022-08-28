@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { formsText } from '../../localization/forms';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { useCachedState } from '../../hooks/statecache';
 
 export function ReadOnlyMode({

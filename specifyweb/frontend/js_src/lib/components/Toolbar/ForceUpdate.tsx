@@ -6,7 +6,7 @@ import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
 import { commonText } from '../../localization/common';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';

@@ -5,7 +5,7 @@ import type { GetOrSet } from '../../utils/types';
 import { AppResourcesAside } from './Aside';
 import type { AppResources } from './hooks';
 import { useAppResources } from './hooks';
-import { Container, H2 } from '../Atoms/Basic';
+import { Container, H2 } from '../Atoms';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { useErrorContext } from '../../hooks/useErrorContext';

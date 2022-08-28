@@ -13,12 +13,13 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 import type { RA } from '../../utils/types';
-import { Button, Link } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { useBooleanState, useLiveState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceView } from '../Forms/ResourceView';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 

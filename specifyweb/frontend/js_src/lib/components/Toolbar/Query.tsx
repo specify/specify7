@@ -14,7 +14,6 @@ import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { getModelById } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Button, Link } from '../Atoms/Basic';
 import { SortIndicator, TableIcon, useSortConfig } from '../Molecules';
 import { useAsyncState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
@@ -24,6 +23,8 @@ import { QueryTables } from './QueryTables';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { DateElement } from '../Molecules/DateElement';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

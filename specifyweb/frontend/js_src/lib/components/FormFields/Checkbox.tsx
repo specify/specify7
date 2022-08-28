@@ -3,7 +3,7 @@ import React from 'react';
 import type { AnySchema } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { Input, Label } from '../Atoms/Basic';
+import { Input, Label } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { useCachedState } from '../../hooks/statecache';
 import { f } from '../../utils/functools';

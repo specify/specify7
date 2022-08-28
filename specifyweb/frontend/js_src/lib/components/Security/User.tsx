@@ -25,7 +25,6 @@ import { anyResource, decompressPolicies, getAllActions } from './utils';
 import type { IR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { className, Container, DataEntry, Link } from '../Atoms/Basic';
 import { AppTitle } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -67,6 +66,10 @@ import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
 import { UserInviteLink } from './UserInviteLink';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Container } from '../Atoms';
+import { Link } from '../Atoms/Link';
+import { className } from '../Atoms/className';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();

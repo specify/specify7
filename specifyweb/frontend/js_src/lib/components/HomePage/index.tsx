@@ -8,7 +8,7 @@ import { welcomeText } from '../../localization/welcome';
 import { hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import { getSystemInfo } from '../InitialContext/systemInfo';
-import { Button, H3, Link } from '../Atoms/Basic';
+import { H3 } from '../Atoms';
 import { supportLink } from '../Errors/ErrorBoundary';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -17,6 +17,8 @@ import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
 import { OverlayContext } from '../Router/Router';
 import { TaxonTiles } from './TaxonTiles';
 import { DateElement } from '../Molecules/DateElement';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
 
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');

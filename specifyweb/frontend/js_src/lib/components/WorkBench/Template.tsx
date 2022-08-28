@@ -16,7 +16,6 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import type { GetSet } from '../../utils/types';
 import { WBView } from './wbView';
-import { Button, className, Input, Link } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header';
 import { useAsyncState } from '../../hooks/hooks';
@@ -24,6 +23,10 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { Input } from '../Atoms/Form';
+import { className } from '../Atoms/className';
 
 function Navigation({
   name,

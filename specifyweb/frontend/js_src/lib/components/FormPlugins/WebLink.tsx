@@ -15,9 +15,10 @@ import { resourceOn } from '../DataModel/resource';
 import { getTreePath } from '../../utils/ajax/specifyApi';
 import type { IR } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Button, Link } from '../Atoms/Basic';
 import { useAsyncState } from '../../hooks/hooks';
 import { UiField } from '../FormFields/Field';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),

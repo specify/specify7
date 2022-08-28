@@ -15,14 +15,7 @@ import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import {
-  Button,
-  className,
-  Container,
-  DataEntry,
-  Form,
-  Link,
-} from '../Atoms/Basic';
+import { Container } from '../Atoms';
 import { AppTitle, TableIcon } from '../Molecules';
 import type { FormMeta } from '../Core/Contexts';
 import { FormContext } from '../Core/Contexts';
@@ -47,6 +40,11 @@ import { SaveButton } from './Save';
 import { SpecifyForm } from './SpecifyForm';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Form } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 
 /**
  * There is special behavior required when creating one of these resources,

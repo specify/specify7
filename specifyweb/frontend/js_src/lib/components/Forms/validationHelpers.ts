@@ -2,7 +2,7 @@
  * Helpers for dealing with browsers' native Validation API
  */
 
-import { className } from '../Atoms/Basic';
+import { className } from '../Atoms/className';
 import type { Input } from '../DataModel/saveBlockers';
 
 /**

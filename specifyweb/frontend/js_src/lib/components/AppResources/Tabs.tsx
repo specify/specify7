@@ -21,11 +21,12 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { Button, className } from '../Atoms/Basic';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { className } from '../Atoms/className';
+import { Button } from '../Atoms/Button';
 
 export function AppResourcesTabs({
   label,

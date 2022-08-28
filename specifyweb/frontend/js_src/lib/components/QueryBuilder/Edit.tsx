@@ -10,7 +10,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
-import { Button, DataEntry, Form, Input, Submit } from '../Atoms/Basic';
 import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
@@ -19,6 +18,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { useNavigate } from 'react-router-dom';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Button } from '../Atoms/Button';
+import { Form, Input } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 export function QueryEditButton({
   query,

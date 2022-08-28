@@ -10,7 +10,7 @@ import { formatUrl } from '../Router/queryString';
 import { schema } from '../DataModel/schema';
 import type { IR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';

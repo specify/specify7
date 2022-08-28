@@ -17,7 +17,7 @@ import type { JavaType } from '../DataModel/specifyField';
 import type { IR, RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import type { Parser } from '../../utils/uiParse';
-import { Link } from '../Atoms/Basic';
+import { Link } from '../Atoms/Link';
 import type { WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,

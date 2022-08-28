@@ -12,7 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes.js';
 import { adminText } from '../../localization/admin.js';
 import { hasPermission } from '../Permissions/helpers.js';
 import { userInformation } from '../InitialContext/userInformation.js';
-import { Button } from '../Atoms/Basic.js';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts.js';
 import { useResource } from '../../hooks/resource.js';
 

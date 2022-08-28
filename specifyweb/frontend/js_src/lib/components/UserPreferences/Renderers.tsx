@@ -22,11 +22,11 @@ import {
   parseValue,
 } from '../../utils/uiParse';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { Input, Select } from '../Atoms/Basic';
 import { useTriggerState, useValidation } from '../../hooks/hooks';
 import { iconClassName } from '../Atoms/Icons';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
 import { usePref } from './Hooks';
+import { Input, Select } from '../Atoms/Form';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({

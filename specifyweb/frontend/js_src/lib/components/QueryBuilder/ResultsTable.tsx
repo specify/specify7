@@ -27,7 +27,6 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
-import { Button, Container, H3 } from '../Atoms/Basic';
 import { loadingGif, SortIndicator, TableIcon } from '../Molecules';
 import { ErrorBoundary, fail } from '../Errors/ErrorBoundary';
 import { useAsyncState, useTriggerState } from '../../hooks/hooks';
@@ -38,6 +37,8 @@ import { QueryToMap } from './ToMap';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
+import { Button } from '../Atoms/Button';
+import { Container, H3 } from '../Atoms';
 
 function TableHeaderCell({
   fieldSpec,

@@ -8,8 +8,8 @@ import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import type { FormMode } from '../FormParse';
 import { resourceOn } from '../DataModel/resource';
-import { Input, Select } from '../Atoms/Basic';
 import { useResourceValue } from '../../hooks/useResourceValue';
+import { Input, Select } from '../Atoms/Form';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];

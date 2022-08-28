@@ -42,16 +42,7 @@ import type { IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
-import {
-  Button,
-  Form,
-  H3,
-  Input,
-  Label,
-  Link,
-  Submit,
-  Ul,
-} from '../Atoms/Basic';
+import { H3, Ul } from '../Atoms';
 import { FormattedResource, SortIndicator, useSortConfig } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
@@ -71,6 +62,10 @@ import { cachableUrl } from '../InitialContext';
 import { OverlayContext } from '../Router/Router';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { DateElement } from '../Molecules/DateElement';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
+import { Form, Input, Label } from '../Atoms/Form';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),

@@ -11,7 +11,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { resourceOn } from '../DataModel/resource';
 import { defined } from '../../utils/types';
-import { Button, className, H3, Submit, Ul } from '../Atoms/Basic';
+import { H3, Ul } from '../Atoms';
 import { FormContext, LoadingContext } from '../Core/Contexts';
 import { fail } from '../Errors/ErrorBoundary';
 import { useBooleanState, useId } from '../../hooks/hooks';
@@ -19,6 +19,9 @@ import { useIsModified } from '../../hooks/useIsModified';
 import { Dialog } from '../Molecules/Dialog';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { NO_CLONE } from './ResourceView';
+import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
+import { className } from '../Atoms/className';
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is

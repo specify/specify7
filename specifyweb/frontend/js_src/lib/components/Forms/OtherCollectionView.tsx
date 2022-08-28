@@ -7,11 +7,12 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Button, Container, Ul } from '../Atoms/Basic';
+import { Container, Ul } from '../Atoms';
 import { usePref } from '../UserPreferences/Hooks';
 import { useNavigate } from 'react-router-dom';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Button } from '../Atoms/Button';
 
 /**
  * Even though available collections do not change during lifecycle of a page,

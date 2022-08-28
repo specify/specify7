@@ -14,17 +14,13 @@ import { commonText } from '../../localization/common';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { RA } from '../../utils/types';
-import {
-  Button,
-  ErrorMessage,
-  Form,
-  Input,
-  Label,
-  Submit,
-} from '../Atoms/Basic';
+import { ErrorMessage } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { usePref } from '../UserPreferences/Hooks';
 import { SplashScreen } from '../Core/Entrypoint';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { Button } from '../Atoms/Button';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(

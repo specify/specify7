@@ -18,7 +18,6 @@ import {
   getDisciplineTrees,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import { Button, DataEntry, Link, Ul } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -28,6 +27,10 @@ import { Dialog } from '../Molecules/Dialog';
 import { ResourceView } from '../Forms/ResourceView';
 import { OverlayContext } from '../Router/Router';
 import { useSearchParam } from '../../hooks/navigation';
+import { Button } from '../Atoms/Button';
+import { Ul } from '../Atoms';
+import { Link } from '../Atoms/Link';
+import { DataEntry } from '../Atoms/DataEntry';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

@@ -1,18 +1,6 @@
-import { render } from '@testing-library/react';
+import { mount } from '../../../tests/utils';
+import { Input } from '../Form';
 import React from 'react';
-
-import { commonText } from '../../localization/common';
-import { mount } from '../../tests/utils';
-import { ErrorMessage, Input } from './Basic';
-
-test('ErrorMessage renders without errors', () => {
-  const { asFragment } = render(
-    <ErrorMessage>{commonText('title')}</ErrorMessage>,
-    {}
-  );
-
-  expect(asFragment()).toMatchSnapshot();
-});
 
 test('Input.Text emits onValueChange', async () => {
   const handleValueChange = jest.fn();

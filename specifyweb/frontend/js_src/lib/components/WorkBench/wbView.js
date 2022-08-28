@@ -19,7 +19,8 @@ import {Backbone} from '../DataModel/backbone';
 import Handsontable from 'handsontable';
 import Papa from 'papaparse';
 
-import {Button, Link} from '../Atoms/Basic';
+import {Button} from '../Atoms/Button';
+import {Link} from '../Atoms/Link';
 import {getModel, schema} from '../DataModel/schema';
 import {DataSetNameView} from './DataSetMeta';
 import {WbUploaded} from './Results';

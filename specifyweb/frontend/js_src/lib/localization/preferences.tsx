@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { Key } from '../components/Atoms/Basic';
+import { Key } from '../components/Atoms';
 import { createDictionary } from './utils';
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')

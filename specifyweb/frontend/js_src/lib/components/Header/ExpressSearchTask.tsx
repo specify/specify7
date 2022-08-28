@@ -15,7 +15,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { Container, H3 } from '../Atoms/Basic';
+import { Container, H3 } from '../Atoms';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAsyncState } from '../../hooks/hooks';
 import { useSearchParam as useSearchParameter } from '../../hooks/navigation';

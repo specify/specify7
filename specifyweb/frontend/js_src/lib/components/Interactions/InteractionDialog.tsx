@@ -35,13 +35,15 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../../utils/uiParse';
-import { Button, H3, Link } from '../Atoms/Basic';
+import { H3 } from '../Atoms';
 import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialog } from './PrepDialog';
 import { RecordSetsDialog } from '../QueryBuilder/RecordSets';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 
 export function InteractionDialog({
   recordSetsPromise,

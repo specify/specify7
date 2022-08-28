@@ -11,7 +11,6 @@ import Modal from 'react-modal';
 import { listen } from '../../utils/events';
 import { KEY } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { Button, className, DialogContext, dialogIconTriggers } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useId, useTitle } from '../../hooks/hooks';
 import { dialogIcons } from '../Atoms/Icons';
@@ -21,6 +20,8 @@ import {
   useReducedTransparency,
   useTransitionDuration,
 } from '../UserPreferences/Hooks';
+import { className, dialogIconTriggers } from '../Atoms/className';
+import { Button, DialogContext } from '../Atoms/Button';
 
 /*
  * This must be accompanied by a label since loading bar is hidden from screen

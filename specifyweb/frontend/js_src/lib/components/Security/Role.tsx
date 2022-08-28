@@ -10,15 +10,6 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import type { RA } from '../../utils/types';
-import {
-  Button,
-  className,
-  Form,
-  Input,
-  Label,
-  Link,
-  Submit,
-} from '../Atoms/Basic';
 import { AppTitle, AutoGrowTextArea } from '../Molecules';
 import { useLiveState, useTriggerState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
@@ -29,6 +20,11 @@ import { ImportExport } from './ImportExport';
 import type { Policy } from './Policy';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policy';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Link } from '../Atoms/Link';
+import { className } from '../Atoms/className';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
 
 export type NewRole = {
   readonly id: number | undefined;

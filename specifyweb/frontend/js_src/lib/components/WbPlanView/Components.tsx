@@ -12,7 +12,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import type { IR, R, RA } from '../../utils/types';
 import type { MappingLineData } from './navigator';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import type {
   CustomSelectElementOptionProps,
   CustomSelectElementPropsClosed,

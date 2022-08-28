@@ -7,10 +7,11 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import type { IR } from '../../utils/types';
-import { Button, Input } from '../Atoms/Basic';
 import { CopyButton } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
+import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to

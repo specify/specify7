@@ -13,8 +13,9 @@ import { wbText } from '../../localization/workbench';
 import { getModel } from '../DataModel/schema';
 import type { RR } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Button, H2, Ul } from '../Atoms/Basic';
+import { H2, Ul } from '../Atoms';
 import { TableIcon } from '../Molecules';
+import { Button } from '../Atoms/Button';
 
 function TableResults({
   tableName,

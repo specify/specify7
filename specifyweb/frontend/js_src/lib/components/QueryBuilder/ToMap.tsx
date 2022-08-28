@@ -19,7 +19,7 @@ import {
   mappingPathToString,
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { LeafletMap } from '../Molecules/Leaflet';
 import { useSelectedResults } from './ToForms';

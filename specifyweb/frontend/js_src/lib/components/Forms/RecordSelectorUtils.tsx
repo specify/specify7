@@ -1,10 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  DEFAULT_FETCH_LIMIT,
-  fetchCollection,
-} from '../DataModel/collection';
+import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import {
   DependentCollection,
   LazyCollection,
@@ -30,7 +27,6 @@ import type { Collection } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Button, DataEntry } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { crash } from '../Errors/ErrorBoundary';
 import { FormTableCollection } from '../FormCells/FormTable';
@@ -41,6 +37,8 @@ import type { RecordSelectorProps } from './RecordSelector';
 import { BaseRecordSelector } from './RecordSelector';
 import { EditRecordSet } from '../QueryBuilder/RecordSets';
 import { augmentMode, ResourceView } from './ResourceView';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Button } from '../Atoms/Button';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({

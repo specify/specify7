@@ -12,7 +12,7 @@ import type { UiPlugins } from '../FormParse/plugins';
 import { hasTablePermission } from '../Permissions/helpers';
 import { toTable } from '../DataModel/specifyModel';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';

@@ -24,9 +24,12 @@ import {
 } from './utils';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { Button, className, Input, Label, Select, Summary, Ul } from '../Atoms/Basic';
 import { icons } from '../Atoms/Icons';
 import { useCachedState } from '../../hooks/statecache';
+import { Button } from '../Atoms/Button';
+import { Summary, Ul } from '../Atoms';
+import { Input, Label, Select } from '../Atoms/Form';
+import { className } from '../Atoms/className';
 
 export type Policy = {
   readonly resource: string;

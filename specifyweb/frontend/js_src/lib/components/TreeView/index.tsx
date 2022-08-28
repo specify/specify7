@@ -23,7 +23,6 @@ import {
   serializeConformation,
 } from './helpers';
 import type { RA } from '../../utils/types';
-import { Button, Container, DataEntry, H2 } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header';
@@ -49,6 +48,9 @@ import { EditTreeDefinition } from '../Toolbar/TreeRepair';
 import { TreeViewActions } from './Actions';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
+import { Container, H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 
 const treeToPref = {
     Geography: 'geography',

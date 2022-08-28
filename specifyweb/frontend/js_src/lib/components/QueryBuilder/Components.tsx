@@ -33,7 +33,6 @@ import { defined } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
-import { Button, Form, Link, Submit } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState, useId } from '../../hooks/hooks';
@@ -44,6 +43,10 @@ import { ResourceView } from '../Forms/ResourceView';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { Form } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 function QueryButton({
   disabled,

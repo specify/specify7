@@ -20,13 +20,16 @@ import { parseResourceUrl } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Button, className, Link, Textarea } from '../Atoms/Basic';
 import { softFail } from '../Errors/ErrorBoundary';
 import { copyTextToClipboard } from './FilePicker';
 import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { usePref } from '../UserPreferences/Hooks';
 import { useCachedState } from '../../hooks/statecache';
+import { Textarea } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Link } from '../Atoms/Link';
 
 const MAX_HUE = 360;
 

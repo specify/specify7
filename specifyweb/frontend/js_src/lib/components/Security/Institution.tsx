@@ -13,7 +13,6 @@ import { schema } from '../DataModel/schema';
 import { policiesToTsv } from './utils';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Button, Container, DataEntry, Link, Ul } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
 import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
@@ -25,6 +24,10 @@ import { updateLibraryRole } from './LibraryRole';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Link } from '../Atoms/Link';
+import { Container, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();

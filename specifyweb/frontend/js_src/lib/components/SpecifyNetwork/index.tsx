@@ -27,7 +27,7 @@ import {
 } from './fetch';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { IR, RA, RR } from '../../utils/types';
-import { Link } from '../Atoms/Basic';
+import { Link } from '../Atoms/Link';
 import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';

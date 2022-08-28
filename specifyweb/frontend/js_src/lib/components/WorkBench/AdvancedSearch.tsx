@@ -9,11 +9,13 @@ import React from 'react';
 import { getCache, setCache } from '../../utils/cache';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { Button, H2, Input, Label, Select } from '../Atoms/Basic';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Input, Label, Select } from '../Atoms/Form';
+import { H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 
 type NavigationDirection = 'columnFirst' | 'rowFirst';
 type ReplaceMode = 'replaceAll' | 'replaceNext';

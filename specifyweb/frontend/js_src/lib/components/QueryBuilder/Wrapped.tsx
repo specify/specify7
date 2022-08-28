@@ -1,61 +1,56 @@
 import React from 'react';
 
-import type { RecordSet, SpQuery } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import { replaceItem } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { useResource } from '../../hooks/resource';
+import { useCachedState } from '../../hooks/statecache';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import { getInitialState, reducer } from './reducer';
-import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
-import { getModelById, schema } from '../DataModel/schema';
-import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
+import { replaceItem } from '../../utils/utils';
+import { Container, H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
+import { Submit } from '../Atoms/Submit';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModelById, schema } from '../DataModel/schema';
+import type { RecordSet, SpQuery } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { useMenuItem } from '../Header';
+import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { TableIcon } from '../Molecules';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
+import {
+  ProtectedAction,
+  ProtectedTable,
+} from '../Permissions/PermissionDenied';
+import { usePref } from '../UserPreferences/Hooks';
+import { getMappingLineProps } from '../WbPlanView/Components';
+import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
+import { MappingView } from '../WbPlanView/MapperComponents';
 import {
   anyTreeRank,
   formattedEntry,
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
-import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
-import {
-  Button,
-  Container,
-  Form,
-  H2,
-  Input,
-  Label,
-  Submit,
-} from '../Atoms/Basic';
-import { TableIcon } from '../Molecules';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
-import { useIsModified } from '../../hooks/useIsModified';
-import { icons } from '../Atoms/Icons';
-import { useUnloadProtect } from '../../hooks/navigation';
-import {
-  ProtectedAction,
-  ProtectedTable,
-} from '../Permissions/PermissionDenied';
-import { usePref } from '../UserPreferences/Hooks';
 import {
   MakeRecordSetButton,
   QueryExportButtons,
   QueryLoanReturn,
   SaveQueryButtons,
 } from './Components';
-import { QueryFields } from './Fields';
 import { QueryEditButton } from './Edit';
+import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
+import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
+import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsTable';
-import { useResource } from '../../hooks/resource';
-import { useCachedState } from '../../hooks/statecache';
-import { getMappingLineProps } from '../WbPlanView/Components';
-import { MappingView } from '../WbPlanView/MapperComponents';
-import { useMenuItem } from '../Header';
-import { useErrorContext } from '../../hooks/useErrorContext';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

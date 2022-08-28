@@ -9,7 +9,7 @@ import type { IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { Parser } from '../../utils/uiParse';
 import { getValidationAttributes } from '../../utils/uiParse';
-import { Input, Textarea } from '../Atoms/Basic';
+import { Input, Textarea } from '../Atoms/Form';
 import { Combobox } from './ComboBox';
 import { AutoGrowTextArea } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';

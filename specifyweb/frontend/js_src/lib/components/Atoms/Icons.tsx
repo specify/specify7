@@ -10,7 +10,7 @@
 import React from 'react';
 
 import type { RR } from '../../utils/types';
-import type { dialogIconTriggers } from './Basic';
+import { dialogIconTriggers } from './className';
 
 export const iconClassName = 'w-6 h-6 flex-shrink-0';
 

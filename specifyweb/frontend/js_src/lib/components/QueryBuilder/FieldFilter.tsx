@@ -21,7 +21,6 @@ import {
   pluralizeParser,
 } from '../../utils/uiParse';
 import { hasNativeErrors } from '../Forms/validationHelpers';
-import { Input, Select, selectMultipleSize } from '../Atoms/Basic';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import {
   useAsyncState,
@@ -29,6 +28,7 @@ import {
   useValidation,
 } from '../../hooks/hooks';
 import { mappingElementDivider } from '../WbPlanView/Components';
+import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.

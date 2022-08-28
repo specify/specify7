@@ -14,10 +14,11 @@ import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { fieldFormat, syncFieldFormat } from '../../utils/uiParse';
-import { Input, Link } from '../Atoms/Basic';
 import { useAsyncState, useLiveState } from '../../hooks/hooks';
 import { usePref } from '../UserPreferences/Hooks';
 import { queryIdField } from './ResultsTable';
+import { Link } from '../Atoms/Link';
+import { Input } from '../Atoms/Form';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>

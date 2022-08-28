@@ -9,11 +9,15 @@ import { formsText } from '../../localization/forms';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
-import { useAsyncState, useBooleanState, useLiveState } from '../../hooks/hooks';
+import {
+  useAsyncState,
+  useBooleanState,
+  useLiveState,
+} from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames, loadingBar } from '../Molecules/Dialog';
 
@@ -119,7 +123,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                 >
                   {commonText('delete')}
                 </Button.Red>
-                <span className="flex-1 -ml-2" />
+                <span className="-ml-2 flex-1" />
                 <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               </>
             }

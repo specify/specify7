@@ -17,15 +17,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { AdminStatusPlugin } from './AdminStatusPlugin';
-import {
-  Button,
-  className,
-  Input,
-  Label,
-  Link,
-  Select,
-  Ul,
-} from '../Atoms/Basic';
+import { Ul } from '../Atoms';
 import { Combobox } from '../FormFields/ComboBox';
 import { useLiveState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
@@ -36,6 +28,10 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import type { UserAgents } from './UserHooks';
 import { UserCollections } from './UserCollections';
+import { Input, Label, Select } from '../Atoms/Form';
+import { className } from '../Atoms/className';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
 
 export function SetSuperAdmin({
   institutionPolicies,

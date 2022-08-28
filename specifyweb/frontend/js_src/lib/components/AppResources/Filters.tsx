@@ -13,10 +13,12 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { appResourceSubTypes, appResourceTypes } from './Create';
 import type { AppResources } from './hooks';
-import { Button, Input, Label, Ul } from '../Atoms/Basic';
+import { Ul } from '../Atoms';
 import { useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { useCachedState } from '../../hooks/statecache';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 
 export function AppResourcesFilters({
   initialResources,

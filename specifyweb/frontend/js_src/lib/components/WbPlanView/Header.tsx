@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { Container } from '../Atoms/Basic';
+import { Container } from '../Atoms';
 import { useId } from '../../hooks/hooks';
 
 export function Layout(props: {

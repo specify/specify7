@@ -13,8 +13,12 @@ import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { Button, Select } from '../Atoms/Basic';
-import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
+import { Select } from '../Atoms/Form';
+import { Button } from '../Atoms/Button';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { LoadingContext } from '../Core/Contexts';
 import { useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';

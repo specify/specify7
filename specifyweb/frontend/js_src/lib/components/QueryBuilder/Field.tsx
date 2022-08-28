@@ -22,7 +22,6 @@ import {
   getTableFromMappingPath,
 } from '../WbPlanView/navigator';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
-import { Button, className, Select } from '../Atoms/Basic';
 import { join } from '../Molecules';
 import { customSelectElementBackground } from '../WbPlanView/CustomSelectElement';
 import { iconClassName, icons } from '../Atoms/Icons';
@@ -39,6 +38,9 @@ import {
   mappingElementDividerClassName,
 } from '../WbPlanView/Components';
 import type { MappingPath } from '../WbPlanView/Mapper';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Select } from '../Atoms/Form';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({

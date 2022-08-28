@@ -27,7 +27,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Link, Ul } from '../Atoms/Basic';
+import { Ul } from '../Atoms';
 import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAsyncState } from '../../hooks/hooks';
@@ -36,6 +36,7 @@ import { InteractionDialog } from './InteractionDialog';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { OverlayContext } from '../Router/Router';
+import { Link } from '../Atoms/Link';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables

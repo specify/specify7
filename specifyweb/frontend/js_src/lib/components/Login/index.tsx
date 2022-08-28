@@ -9,13 +9,15 @@ import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
-import { ErrorMessage, Form, Input, Label, Submit } from '../Atoms/Basic';
+import { ErrorMessage } from '../Atoms';
+import { Form, Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import { useValidation } from '../../hooks/hooks';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 import { SplashScreen } from '../Core/Entrypoint';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
+import { Submit } from '../Atoms/Submit';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {

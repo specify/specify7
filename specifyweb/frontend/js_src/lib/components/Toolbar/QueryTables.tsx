@@ -8,7 +8,6 @@ import { getModel, getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { Button, DataEntry, Link, Ul } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { useBooleanState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
@@ -16,6 +15,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
 import { QueryImport } from '../QueryBuilder/Import';
 import { QueryTablesEdit } from './QueryTablesEdit';
+import { Button } from '../Atoms/Button';
+import { Ul } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Link } from '../Atoms/Link';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',

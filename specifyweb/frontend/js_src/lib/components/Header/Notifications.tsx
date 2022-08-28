@@ -7,12 +7,13 @@ import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import type { IR, RA } from '../../utils/types';
-import { Button, Link } from '../Atoms/Basic';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { DateElement } from '../Molecules/DateElement';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;

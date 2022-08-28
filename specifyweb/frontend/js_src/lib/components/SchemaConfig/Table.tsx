@@ -6,12 +6,12 @@ import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
 import { filterFormatters } from './helpers';
 import { defined } from '../../utils/types';
-import { Input, Label } from '../Atoms/Basic';
 import { AutoGrowTextArea } from '../Molecules';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
 import type { SchemaData } from './SetupHooks';
+import { Input, Label } from '../Atoms/Form';
 
 export const maxSchemaValueLength = defined(
   schema.models.SpLocaleItemStr.getField('text')

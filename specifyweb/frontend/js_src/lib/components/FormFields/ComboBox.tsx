@@ -20,7 +20,7 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { isResourceOfType } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Input } from '../Atoms/Basic';
+import { Input } from '../Atoms/Form';
 import { useAsyncState, useLiveState } from '../../hooks/hooks';
 import { PickListComboBox } from '../PickLists';
 import { FieldsPickList } from '../PickLists/FieldsPickList';

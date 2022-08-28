@@ -16,13 +16,15 @@ import { userInformation } from '../InitialContext/userInformation';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
-import { Button, Link, Ul } from '../Atoms/Basic';
+import { Ul } from '../Atoms';
 import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { OverlayContext } from '../Router/Router';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 
 type AppResourceType = {
   readonly tableName: 'SpAppResource' | 'SpViewSetObject';

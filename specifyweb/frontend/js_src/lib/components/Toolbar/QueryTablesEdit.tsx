@@ -7,10 +7,11 @@ import { queryText } from '../../localization/query';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { Button, Label, Select } from '../Atoms/Basic';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/Hooks';
 import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
+import { Button } from '../Atoms/Button';
+import { Label, Select } from '../Atoms/Form';
 
 export function QueryTablesEdit({
   onClose: handleClose,

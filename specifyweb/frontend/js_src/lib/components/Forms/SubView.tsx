@@ -9,7 +9,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { TableIcon } from '../Molecules';
 import { fail } from '../Errors/ErrorBoundary';
 import { useBooleanState, useTriggerState } from '../../hooks/hooks';

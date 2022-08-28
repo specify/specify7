@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,13 +13,20 @@ import { schema } from '../DataModel/schema';
 import type { BackEndRole } from './utils';
 import { fetchRoles } from './utils';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { Button, H3, Ul } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { useAvailableCollections } from '../Forms/OtherCollectionView';
 import type { NewRole, Role } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
+import { Button } from '../Atoms/Button';
+import { H3 } from '../Atoms';
+
+class Ul extends React.Component<{ children: ReactNode }> {
+  render() {
+    return null;
+  }
+}
 
 export function CreateRole({
   scope,

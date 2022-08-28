@@ -17,7 +17,7 @@ import 'leaflet.featuregroup.subgroup';
 
 import { localityText } from '../../localization/locality';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import { className } from '../Atoms/Basic';
+import { className } from '../Atoms/className';
 
 /* This code is needed to properly load the images in the Leaflet's CSS */
 // @ts-expect-error

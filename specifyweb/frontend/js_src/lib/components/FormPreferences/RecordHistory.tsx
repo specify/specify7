@@ -9,7 +9,7 @@ import { formsText } from '../../localization/forms';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { schema } from '../DataModel/schema';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';

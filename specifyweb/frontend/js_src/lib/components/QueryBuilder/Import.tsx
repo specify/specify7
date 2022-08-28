@@ -9,12 +9,13 @@ import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { Form, Submit } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
 import { icons } from '../Atoms/Icons';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useNavigate } from 'react-router-dom';
+import { Form } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 export function QueryImport({
   onClose: handleClose,

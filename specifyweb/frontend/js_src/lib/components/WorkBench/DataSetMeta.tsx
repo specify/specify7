@@ -13,7 +13,6 @@ import { defined } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { Button, Form, Input, Label, Select, Submit } from '../Atoms/Basic';
 import { AutoGrowTextArea, FormattedResource, TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import {
@@ -29,6 +28,9 @@ import { createBackboneView } from '../Core/reactBackboneExtend';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { useNavigate } from 'react-router-dom';
 import { DateElement } from '../Molecules/DateElement';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label, Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({

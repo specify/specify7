@@ -24,16 +24,7 @@ import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {
-  Button,
-  className,
-  Container,
-  H2,
-  Input,
-  Label,
-  Link,
-  Select,
-} from '../Atoms/Basic';
+import { Container, H2 } from '../Atoms';
 import { useCollection } from '../../hooks/useCollection';
 import { loadingGif, TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
@@ -47,6 +38,10 @@ import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/SpecifyForm';
 import { useCachedState } from '../../hooks/statecache';
 import { useMenuItem } from '../Header';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { className } from '../Atoms/className';
+import { Input, Label, Select } from '../Atoms/Form';
 
 const tablesWithAttachments = f.store(() =>
   filterArray(

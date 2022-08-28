@@ -15,13 +15,15 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { formatUrl } from '../Router/queryString';
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
-import { Form, Input, Link, Select, Submit } from '../Atoms/Basic';
+import { Form, Input, Select } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import { useAsyncState } from '../../hooks/hooks';
 import type { MenuItem } from '../Core/Main';
 import { usePref } from '../UserPreferences/Hooks';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useSearchParam } from '../../hooks/navigation';
+import { Submit } from '../Atoms/Submit';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 

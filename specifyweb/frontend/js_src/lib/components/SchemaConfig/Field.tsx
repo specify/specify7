@@ -5,7 +5,6 @@ import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { javaTypeToHuman } from './helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import { Input, Label } from '../Atoms/Basic';
 import { AutoGrowTextArea } from '../Molecules';
 import type { ItemType } from './index';
 import { SchemaConfigColumn } from './Fields';
@@ -13,6 +12,7 @@ import { SchemaConfigFormat } from './Format';
 import type { SchemaData } from './SetupHooks';
 import { maxSchemaValueLength } from './Table';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
+import { Input, Label } from '../Atoms/Form';
 
 export function SchemaConfigField({
   schemaData,

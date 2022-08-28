@@ -14,7 +14,6 @@ import { jsonStringify, removeKey } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
 import { commonText } from '../../localization/common';
 import type { IR, WritableArray } from '../../utils/types';
-import { Button, Input, Label, Link } from '../Atoms/Basic';
 import {
   displayError,
   legacyLoadingContext,
@@ -34,6 +33,9 @@ import { unsafeTriggerNotFound } from '../Router/Router';
 import { userInformation } from '../InitialContext/userInformation';
 import { f } from '../../utils/functools';
 import { errorContext } from '../../hooks/useErrorContext';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
 
 type ErrorBoundaryState =
   | State<
@@ -281,11 +283,11 @@ export class ErrorBoundary extends React.Component<
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
 f.all({
-  tablePermissions: import('../Permissions').then(
-    ({ getTablePermissions }) => getTablePermissions()
+  tablePermissions: import('../Permissions').then(({ getTablePermissions }) =>
+    getTablePermissions()
   ),
-  systemInformation: import('../InitialContext/systemInfo').then(({ getSystemInfo }) =>
-    getSystemInfo()
+  systemInformation: import('../InitialContext/systemInfo').then(
+    ({ getSystemInfo }) => getSystemInfo()
   ),
   operationPermissions: import('../Permissions').then(
     ({ getOperationPermissions }) => getOperationPermissions()

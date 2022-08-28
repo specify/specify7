@@ -8,12 +8,8 @@ import { formsText } from '../../localization/forms';
 import type { IR, PartialBy, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import {
-  Button,
-  className,
-  columnDefinitionsToCss,
-  DataEntry,
-} from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
+import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helpers';
@@ -33,6 +29,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/Hooks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
+import { className } from '../Atoms/className';
 
 const cellToLabel = (
   model: SpecifyModel,

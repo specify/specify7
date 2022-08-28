@@ -12,7 +12,7 @@ import type { Input } from '../components/DataModel/saveBlockers';
 import type { RA } from '../utils/types';
 import type { Parser } from '../utils/uiParse';
 import { mergeParsers, parseValue, resolveParser } from '../utils/uiParse';
-import { className } from '../components/Atoms/Basic';
+import { className } from '../components/Atoms/className';
 import { FormContext } from '../components/Core/Contexts';
 import { useBooleanState, useValidation } from './hooks';
 

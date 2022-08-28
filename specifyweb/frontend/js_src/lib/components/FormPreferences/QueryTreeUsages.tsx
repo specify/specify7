@@ -3,7 +3,7 @@ import React from 'react';
 import type { AnyTree } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formsText } from '../../localization/forms';
-import { Link } from '../Atoms/Basic';
+import { Link } from '../Atoms/Link';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 
 export function QueryTreeUsages({

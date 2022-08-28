@@ -2,9 +2,11 @@ import React from 'react';
 
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { Button, Form, Input, Label, Submit } from '../Atoms/Basic';
 import { useBooleanState, useId, useValidation } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
+import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
+import { Form, Input, Label } from '../Atoms/Form';
 
 export const MIN_PASSWORD_LENGTH = 8;
 

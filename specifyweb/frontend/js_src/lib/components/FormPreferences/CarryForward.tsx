@@ -8,10 +8,13 @@ import { getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { Button, Form, H3, Input, Label, Submit, Ul } from '../Atoms/Basic';
+import { H3, Ul } from '../Atoms';
 import { useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { useCachedState } from '../../hooks/statecache';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 export function CarryForwardButton({
   model,

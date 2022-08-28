@@ -18,7 +18,7 @@ import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
-import { Container, H3 } from '../Atoms/Basic';
+import { Container, H3 } from '../Atoms';
 import { useAsyncState } from '../../hooks/hooks';
 
 export function AppResourceView(): JSX.Element {

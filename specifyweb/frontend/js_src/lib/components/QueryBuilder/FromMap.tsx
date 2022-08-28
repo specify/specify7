@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import type { QueryField } from './helpers';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { LeafletMap } from '../Molecules/Leaflet';
 
 const emptyArray: RA<never> = [];

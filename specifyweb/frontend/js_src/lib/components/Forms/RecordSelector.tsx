@@ -9,8 +9,9 @@ import { formsText } from '../../localization/forms';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { Button, Input } from '../Atoms/Basic';
 import { SearchDialog } from './SearchDialog';
+import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 
 export function Slider({
   value,

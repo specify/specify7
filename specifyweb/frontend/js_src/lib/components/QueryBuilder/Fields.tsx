@@ -4,7 +4,7 @@ import type { Tables } from '../DataModel/types';
 import type { QueryField } from './helpers';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { RA } from '../../utils/types';
-import { Ul } from '../Atoms/Basic';
+import { Ul } from '../Atoms';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useReadyEffect } from '../../hooks/hooks';
 import { QueryLine } from './Field';

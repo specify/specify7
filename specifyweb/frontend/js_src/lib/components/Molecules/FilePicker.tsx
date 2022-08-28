@@ -4,7 +4,7 @@ import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { softFail } from '../Errors/ErrorBoundary';
 import { useBooleanState } from '../../hooks/hooks';
-import { className } from '../Atoms/Basic';
+import { className } from '../Atoms/className';
 
 export function FilePicker({
   onSelected: handleSelected,

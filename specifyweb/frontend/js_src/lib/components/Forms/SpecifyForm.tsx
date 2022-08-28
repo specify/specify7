@@ -15,7 +15,7 @@ import { fetchView, parseViewDefinition } from '../FormParse';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
-import { DataEntry } from '../Atoms/Basic';
+import { DataEntry } from '../Atoms/DataEntry';
 import { loadingGif } from '../Molecules';
 import { useAsyncState, useId } from '../../hooks/hooks';
 import { usePref } from '../UserPreferences/Hooks';

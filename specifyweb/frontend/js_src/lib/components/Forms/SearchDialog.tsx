@@ -15,7 +15,6 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { Button, Form, Link, Submit, Ul } from '../Atoms/Basic';
 import { fail } from '../Errors/ErrorBoundary';
 import { useAsyncState, useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -23,6 +22,11 @@ import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { createQuery } from '../QueryBuilder';
 import { SpecifyForm } from './SpecifyForm';
+import { Button } from '../Atoms/Button';
+import { Form } from '../Atoms/Form';
+import { Ul } from '../Atoms';
+import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),

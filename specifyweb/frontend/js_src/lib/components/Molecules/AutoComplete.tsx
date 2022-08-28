@@ -6,14 +6,15 @@ import { listen } from '../../utils/events';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
-import type { TagProps } from '../Atoms/Basic';
-import { className, DialogContext } from '../Atoms/Basic';
+import type { TagProps } from '../Atoms/wrapper';
 import { Portal } from './index';
 import { softFail } from '../Errors/ErrorBoundary';
 import { useBooleanState, useTriggerState } from '../../hooks/hooks';
 import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import { usePref } from '../UserPreferences/Hooks';
+import { DialogContext } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 
 const debounceRate = 300;
 

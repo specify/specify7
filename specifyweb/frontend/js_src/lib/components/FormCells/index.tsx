@@ -12,7 +12,7 @@ import { hasPathPermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { DataEntry } from '../Atoms/Basic';
+import { DataEntry } from '../Atoms/DataEntry';
 import { TableIcon } from '../Molecules';
 import { FormTableInteraction } from './FormTableInteraction';
 import { useAsyncState } from '../../hooks/hooks';

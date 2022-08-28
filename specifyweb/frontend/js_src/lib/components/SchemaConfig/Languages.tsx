@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { hasToolPermission } from '../Permissions/helpers';
-import { Button, Form, Input, Label, Link, Submit, Ul } from '../Atoms/Basic';
 import { useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import type { SchemaData } from './SetupHooks';
+import { Link } from '../Atoms/Link';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();

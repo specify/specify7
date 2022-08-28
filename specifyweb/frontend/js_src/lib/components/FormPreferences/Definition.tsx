@@ -5,11 +5,13 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { Button, Input, Label, Link } from '../Atoms/Basic';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { useCachedState } from '../../hooks/statecache';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 
 export function Definition({
   model,

@@ -8,7 +8,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchLocalityDataFromLocalityResource } from '../Leaflet/localityRecordDataExtractor';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
-import { Button } from '../Atoms/Basic';
+import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useAsyncState, useBooleanState } from '../../hooks/hooks';
 import { LeafletMap } from '../Molecules/Leaflet';

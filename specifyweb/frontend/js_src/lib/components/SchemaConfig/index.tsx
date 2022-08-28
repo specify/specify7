@@ -12,7 +12,7 @@ import { createResource, saveResource } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { PartialBy } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { Container } from '../Atoms/Basic';
+import { Container } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { SchemaConfigHeader } from './Components';

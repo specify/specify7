@@ -15,10 +15,12 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import type { RA } from '../../utils/types';
-import { Button, Form, Input, Label, Submit } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState, useBooleanState, useId } from '../../hooks/hooks';
 import { Dialog } from '../Molecules/Dialog';
+import { Button } from '../Atoms/Button';
+import { Submit } from '../Atoms/Submit';
+import { Form, Input, Label } from '../Atoms/Form';
 
 function UserCollectionsUi({
   userId,

@@ -15,7 +15,6 @@ import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
-import { Select } from '../Atoms/Basic';
 import { fail, supportLink } from '../Errors/ErrorBoundary';
 import { useAsyncState } from '../../hooks/hooks';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -24,6 +23,7 @@ import type {
   PreferenceItemComponent,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
+import { Select } from '../Atoms/Form';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {

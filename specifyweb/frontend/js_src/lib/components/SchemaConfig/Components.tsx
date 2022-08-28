@@ -3,9 +3,11 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import type { IR, RA } from '../../utils/types';
-import { Button, H2, Select } from '../Atoms/Basic';
 import type { SchemaData } from './SetupHooks';
 import { useNavigate } from 'react-router-dom';
+import { H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Select } from '../Atoms/Form';
 
 export function SchemaConfigHeader({
   languages,

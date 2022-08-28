@@ -24,10 +24,13 @@ import {
 import type { IR, R, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { className, Input, Label, Link, Summary, Ul } from '../Atoms/Basic';
 import { TableIcon } from '../Molecules';
 import { useAsyncState, useId } from '../../hooks/hooks';
 import { useCachedState } from '../../hooks/statecache';
+import { Link } from '../Atoms/Link';
+import { Input, Label } from '../Atoms/Form';
+import { Summary, Ul } from '../Atoms';
+import { className } from '../Atoms/className';
 
 function ReasonExplanation({
   cell: { matching_role_policies, matching_user_policies },

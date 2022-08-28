@@ -15,7 +15,6 @@ import { fetchRoles } from './utils';
 import type { GetOrSet, IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { Button, Container, DataEntry, Link, Ul } from '../Atoms/Basic';
 import { LoadingContext } from '../Core/Contexts';
 import { useAsyncState, useBooleanState, useTitle } from '../../hooks/hooks';
 import { formatList } from '../Atoms/Internationalization';
@@ -31,6 +30,10 @@ import { ImportExport } from './ImportExport';
 import type { Role } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { Container, Ul } from '../Atoms';
+import { Link } from '../Atoms/Link';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
 
 export type RoleBase = {
   readonly roleId: number;
