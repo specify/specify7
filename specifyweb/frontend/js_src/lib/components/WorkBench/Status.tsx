@@ -157,12 +157,12 @@ export function WbStatus({
       header={title}
       onClose={undefined}
     >
-      <Label.Generic aria-atomic aria-live="polite">
+      <Label.Block aria-atomic aria-live="polite">
         {message}
         {status.taskstatus === 'PROGRESS' && (
           <Progress max={total} value={current} />
         )}
-      </Label.Generic>
+      </Label.Block>
     </Dialog>
   );
 }

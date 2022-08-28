@@ -43,7 +43,7 @@ export function AppResourcesFilters({
         >
           <Ul>
             <li>
-              <Label.ForCheckbox>
+              <Label.Inline>
                 <Input.Checkbox
                   checked={filters.viewSets}
                   onValueChange={(isChecked): void =>
@@ -58,10 +58,10 @@ export function AppResourcesFilters({
                   initialResources,
                   { appResources: [], viewSets: true }
                 )})`}
-              </Label.ForCheckbox>
+              </Label.Inline>
             </li>
             <li>
-              <Label.ForCheckbox>
+              <Label.Inline>
                 <Input.Checkbox
                   checked={hasAllAppResources(filters.appResources)}
                   onValueChange={(isChecked): void =>
@@ -76,12 +76,12 @@ export function AppResourcesFilters({
                   initialResources,
                   { appResources: allAppResources, viewSets: false }
                 )})`}
-              </Label.ForCheckbox>
+              </Label.Inline>
               <Ul className="pl-6">
                 {Object.entries(appResourceSubTypes).map(
                   ([key, { label, icon }]): JSX.Element => (
                     <li key={key}>
-                      <Label.ForCheckbox>
+                      <Label.Inline>
                         <Input.Checkbox
                           checked={filters.appResources.includes(key)}
                           onValueChange={(): void =>
@@ -99,7 +99,7 @@ export function AppResourcesFilters({
                           appResources: [key],
                           viewSets: false,
                         })})`}
-                      </Label.ForCheckbox>
+                      </Label.Inline>
                     </li>
                   )
                 )}

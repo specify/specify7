@@ -22,7 +22,7 @@ export function SubViewPreferences({
     subView;
   return (
     <>
-      <Label.Generic>
+      <Label.Block>
         {commonText('type')}
         <Select
           value={formType}
@@ -33,16 +33,16 @@ export function SubViewPreferences({
           <option value="form">{formsText('form')}</option>
           <option value="formTable">{formsText('formTable')}</option>
         </Select>
-      </Label.Generic>
+      </Label.Block>
       {/* BUG: this change does not apply until you add/remove subview record */}
-      <Label.Generic>
+      <Label.Block>
         {formsText('orderBy')}
         <OrderPicker
           model={model}
           order={sortField}
           onChange={handleChangeSortField}
         />
-      </Label.Generic>
+      </Label.Block>
     </>
   );
 }

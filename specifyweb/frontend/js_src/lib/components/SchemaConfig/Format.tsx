@@ -121,7 +121,7 @@ export function SchemaConfigFormat({
         },
       }).map(([key, { label, value, values, extraComponents }]) => (
         <div className={className.labelForCheckbox} key={key}>
-          <Label.ForCheckbox>
+          <Label.Inline>
             <Input.Radio
               checked={key === getItemType(item)}
               disabled={!isFormatterAvailable(field, key as ItemType)}
@@ -138,7 +138,7 @@ export function SchemaConfigFormat({
               }
             />
             {label}
-          </Label.ForCheckbox>
+          </Label.Inline>
           {values && (
             <PickList
               className="w-0 flex-1"

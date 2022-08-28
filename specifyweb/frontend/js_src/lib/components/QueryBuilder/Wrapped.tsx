@@ -533,13 +533,13 @@ export function QueryBuilder({
               }
             />
             <div className="flex flex-wrap gap-2" role="toolbar">
-              <Label.ForCheckbox>
+              <Label.Inline>
                 <Input.Checkbox
                   checked={showHiddenFields}
                   onValueChange={setShowHiddenFields}
                 />
                 {commonText('revealHiddenFormFields')}
-              </Label.ForCheckbox>
+              </Label.Inline>
               <span className="-ml-2 flex-1" />
               {hasPermission('/querybuilder/query', 'execute') && (
                 <>
@@ -548,7 +548,7 @@ export function QueryBuilder({
                    * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
                    */}
                   {!isTreeModel(model.name) && (
-                    <Label.ForCheckbox>
+                    <Label.Inline>
                       <Input.Checkbox
                         checked={query.selectDistinct ?? false}
                         disabled={!isEmpty}
@@ -560,7 +560,7 @@ export function QueryBuilder({
                         }
                       />
                       {queryText('distinct')}
-                    </Label.ForCheckbox>
+                    </Label.Inline>
                   )}
                   <Button.Small
                     disabled={!isEmpty}

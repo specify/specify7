@@ -113,13 +113,13 @@ export function BaseTableSelection({
         showHiddenTables={showHiddenTables}
         onChange={handleSelected}
       />
-      <Label.ForCheckbox>
+      <Label.Inline>
         <Input.Checkbox
           checked={showHiddenTables}
           onChange={(): void => setShowHiddenTables(!showHiddenTables)}
         />
         {wbText('showAdvancedTables')}
-      </Label.ForCheckbox>
+      </Label.Inline>
     </Dialog>
   );
 }

@@ -335,10 +335,10 @@ function TreeView({
                   <li key={action}>
                     <details>
                       <summary>
-                        <Label.ForCheckbox className="pointer-events-none">
+                        <Label.Inline className="pointer-events-none">
                           <Input.Checkbox checked={rest.allowed} disabled />
                           {actionToLabel(action)}
-                        </Label.ForCheckbox>
+                        </Label.Inline>
                       </summary>
                       <ReasonExplanation
                         cell={{ ...rest, resource }}

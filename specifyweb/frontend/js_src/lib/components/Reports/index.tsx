@@ -574,7 +574,7 @@ function ParametersDialog({
     >
       <Form id={id('form')} onSubmit={handleSubmitted}>
         {Object.entries(parameters).map(([name, value]) => (
-          <Label.Generic key={name}>
+          <Label.Block key={name}>
             {name}
             <Input.Text
               autoComplete="on"
@@ -584,7 +584,7 @@ function ParametersDialog({
                 setParameters(replaceKey(parameters, name, value))
               }
             />
-          </Label.Generic>
+          </Label.Block>
         ))}
       </Form>
     </Dialog>

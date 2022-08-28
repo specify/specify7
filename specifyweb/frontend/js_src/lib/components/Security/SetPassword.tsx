@@ -48,7 +48,7 @@ export function PasswordResetDialog({
           } else setValidation(adminText('passwordsDoNotMatchError'));
         }}
       >
-        <Label.Generic>
+        <Label.Block>
           {commonText('password')}
           <Input.Generic
             autoComplete="new-password"
@@ -58,8 +58,8 @@ export function PasswordResetDialog({
             value={password}
             onValueChange={setPassword}
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           {adminText('confirmPassword')}
           <Input.Generic
             autoComplete="new-password"
@@ -70,7 +70,7 @@ export function PasswordResetDialog({
             value={repeatPassword}
             onValueChange={setRepeatPassword}
           />
-        </Label.Generic>
+        </Label.Block>
       </Form>
     </Dialog>
   );

@@ -69,7 +69,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
           )
         }
       >
-        <Label.Generic>
+        <Label.Block>
           {commonText('userPassword')}
           <Input.Generic
             forwardRef={validationRef}
@@ -81,7 +81,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
               target.setCustomValidity('');
             }}
           />
-        </Label.Generic>
+        </Label.Block>
       </Form>
     </Dialog>
   );
@@ -101,7 +101,7 @@ function ShowKey({
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-2">
-        <Label.Generic className="contents">
+        <Label.Block className="contents">
           <span className="col-span-full">
             {commonText('masterKeyFieldLabel')}
           </span>
@@ -110,7 +110,7 @@ function ShowKey({
             isReadOnly
             value={masterKey}
           />
-        </Label.Generic>
+        </Label.Block>
         <CopyButton text={masterKey} />
       </div>
     </Dialog>

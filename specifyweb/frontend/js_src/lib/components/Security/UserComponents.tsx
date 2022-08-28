@@ -47,7 +47,7 @@ export function SetSuperAdmin({
   readonly onChange: (value: RA<Policy>) => void;
 }): JSX.Element {
   return typeof institutionPolicies === 'object' ? (
-    <Label.ForCheckbox>
+    <Label.Inline>
       <Input.Checkbox
         checked={isSuperAdmin}
         isReadOnly={!userInformation.isadmin || isCurrentUser}
@@ -86,7 +86,7 @@ export function SetSuperAdmin({
         }
       />
       {adminText('institutionAdmin')}
-    </Label.ForCheckbox>
+    </Label.Inline>
   ) : (
     <>{commonText('loading')}</>
   );
@@ -113,7 +113,7 @@ export function UserRoles({
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
           ? collectionRoles[collectionId]?.map((role) => (
               <li className="flex items-center gap-2" key={role.id}>
-                <Label.ForCheckbox>
+                <Label.Inline>
                   <Input.Checkbox
                     checked={userRoles?.[collectionId]?.some(
                       ({ roleId }) => roleId === role.id
@@ -148,7 +148,7 @@ export function UserRoles({
                     }
                   />
                   {role.name}
-                </Label.ForCheckbox>
+                </Label.Inline>
                 <Link.Icon
                   aria-label={commonText('edit')}
                   className={className.dataEntryEdit}
@@ -204,7 +204,7 @@ export function SetCollection({
   readonly onChange: (collectionId: number) => void;
 }): JSX.Element {
   return (
-    <Label.Generic className={className.limitedWidth}>
+    <Label.Block className={className.limitedWidth}>
       <span className="text-xl">{schema.models.Collection.label}</span>
       <Select
         value={collectionId}
@@ -216,7 +216,7 @@ export function SetCollection({
           </option>
         ))}
       </Select>
-    </Label.Generic>
+    </Label.Block>
   );
 }
 
@@ -260,7 +260,7 @@ export function CollectionAccess({
     <div className="flex flex-col gap-4">
       {hasPermission('/permissions/policies/user', 'read', collectionId) &&
       !isSuperAdmin ? (
-        <Label.ForCheckbox className={className.limitedWidth}>
+        <Label.Inline className={className.limitedWidth}>
           <Input.Checkbox
             checked={hasCollectionAccess}
             isReadOnly={
@@ -294,9 +294,9 @@ export function CollectionAccess({
             }
           />
           {adminText('collectionAccess')}
-        </Label.ForCheckbox>
+        </Label.Inline>
       ) : undefined}
-      <Label.Generic className={className.limitedWidth}>
+      <Label.Block className={className.limitedWidth}>
         {schema.models.Agent.label}
         {typeof collectionAddress === 'object' ? (
           <QueryComboBox
@@ -317,7 +317,7 @@ export function CollectionAccess({
         ) : (
           <Input.Text disabled value={commonText('loading')} />
         )}
-      </Label.Generic>
+      </Label.Block>
     </div>
   );
 }
@@ -334,10 +334,10 @@ export function UserIdentityProviders({
       <Ul className="flex flex-col gap-1 pl-2">
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
-            <Label.ForCheckbox>
+            <Label.Inline>
               <Input.Checkbox checked={isEnabled} isReadOnly />
               {title}
-            </Label.ForCheckbox>
+            </Label.Inline>
           </li>
         ))}
       </Ul>
@@ -378,7 +378,7 @@ export function LegacyPermissions({
       {f.var(
         defined(schema.models.SpecifyUser.getLiteralField('userType')),
         (userType) => (
-          <Label.Generic
+          <Label.Block
             className={className.limitedWidth}
             title={userType.getLocalizedDesc()}
           >
@@ -396,7 +396,7 @@ export function LegacyPermissions({
               pickListName={undefined}
               resource={userResource}
             />
-          </Label.Generic>
+          </Label.Block>
         )
       )}
     </section>

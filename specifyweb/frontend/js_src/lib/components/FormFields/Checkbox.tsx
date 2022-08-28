@@ -43,12 +43,10 @@ export function PrintOnSave({
     />
   );
   return typeof text === 'string' ? (
-    <Label.ForCheckbox
-      title={model.getField(fieldName ?? '')?.getLocalizedDesc()}
-    >
+    <Label.Inline title={model.getField(fieldName ?? '')?.getLocalizedDesc()}>
       {input}
       {text}
-    </Label.ForCheckbox>
+    </Label.Inline>
   ) : (
     input
   );
@@ -93,14 +91,14 @@ export function SpecifyFormCheckbox({
     />
   );
   return typeof text === 'string' ? (
-    <Label.ForCheckbox
+    <Label.Inline
       title={resource.specifyModel
         .getField(fieldName ?? '')
         ?.getLocalizedDesc()}
     >
       {input}
       {text}
-    </Label.ForCheckbox>
+    </Label.Inline>
   ) : (
     input
   );

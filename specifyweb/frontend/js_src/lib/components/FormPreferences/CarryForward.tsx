@@ -124,13 +124,13 @@ function CarryForwardConfig({
             onChange={handleChange}
           />
         </div>
-        <Label.ForCheckbox className="border-t pt-2 dark:border-neutral-700">
+        <Label.Inline className="border-t pt-2 dark:border-neutral-700">
           <Input.Checkbox
             checked={showHiddenFields}
             onValueChange={setShowHiddenFields}
           />
           {commonText('revealHiddenFormFields')}
-        </Label.ForCheckbox>
+        </Label.Inline>
       </Form>
     </Dialog>
   );
@@ -151,7 +151,7 @@ function CarryForwardCategory({
     <Ul>
       {fields.map(({ name, label }) => (
         <li key={name}>
-          <Label.ForCheckbox
+          <Label.Inline
             title={
               uniqueFields.includes(name)
                 ? formsText('carryForwardUniqueField')
@@ -166,7 +166,7 @@ function CarryForwardCategory({
               }
             />
             {label}
-          </Label.ForCheckbox>
+          </Label.Inline>
         </li>
       ))}
     </Ul>

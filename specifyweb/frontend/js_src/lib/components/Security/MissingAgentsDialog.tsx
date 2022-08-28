@@ -134,7 +134,7 @@ export function MissingAgentsDialog({
       >
         <Ul>
           {data.map(({ division, collections, address, isRequired }) => (
-            <Label.Generic key={division.id}>
+            <Label.Block key={division.id}>
               {division.name}
               <QueryComboBox
                 fieldName="agent"
@@ -160,7 +160,7 @@ export function MissingAgentsDialog({
                   {adminText('agentInUse')}
                 </ErrorMessage>
               )}
-            </Label.Generic>
+            </Label.Block>
           ))}
         </Ul>
       </Form>

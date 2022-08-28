@@ -67,22 +67,22 @@ export function EditFormTables({
           }
         }}
       >
-        <Label.ForCheckbox>
+        <Label.Inline>
           <Input.Radio
             checked={isLegacy}
             name={id('radio')}
             onChange={handleLegacy}
           />
           {formsText('inheritLegacySettings')}
-        </Label.ForCheckbox>
-        <Label.ForCheckbox>
+        </Label.Inline>
+        <Label.Inline>
           <Input.Radio
             checked={!isLegacy}
             name={id('radio')}
             onChange={handleModern}
           />
           {formsText('useCustomSettings')}
-        </Label.ForCheckbox>
+        </Label.Inline>
       </Form>
     </Dialog>
   );

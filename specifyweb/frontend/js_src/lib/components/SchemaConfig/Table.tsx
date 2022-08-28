@@ -44,7 +44,7 @@ export function SchemaConfigTable({
     <SchemaConfigColumn
       header={`${commonText('tableInline')} ${container.name}`}
     >
-      <Label.Generic>
+      <Label.Block>
         {commonText('caption')}
         <Input.Text
           isReadOnly={isReadOnly || name === undefined}
@@ -53,8 +53,8 @@ export function SchemaConfigTable({
           value={name?.text ?? ''}
           onValueChange={(text): void => handleChangeName({ ...name!, text })}
         />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('description')}
         <AutoGrowTextArea
           className="resize-y"
@@ -63,8 +63,8 @@ export function SchemaConfigTable({
           value={desc?.text ?? ''}
           onValueChange={(text): void => handleChangeDesc({ ...desc!, text })}
         />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('tableFormat')}
         <PickList
           disabled={isReadOnly}
@@ -77,8 +77,8 @@ export function SchemaConfigTable({
           value={container.format}
           onChange={(format): void => handleChange({ ...container, format })}
         />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('tableAggregation')}
         <PickList
           disabled={isReadOnly}
@@ -93,8 +93,8 @@ export function SchemaConfigTable({
             handleChange({ ...container, aggregator })
           }
         />
-      </Label.Generic>
-      <Label.ForCheckbox>
+      </Label.Block>
+      <Label.Inline>
         <Input.Checkbox
           checked={container.isHidden}
           isReadOnly={isReadOnly}
@@ -103,7 +103,7 @@ export function SchemaConfigTable({
           }
         />
         {commonText('hideTable')}
-      </Label.ForCheckbox>
+      </Label.Inline>
     </SchemaConfigColumn>
   );
 }

@@ -1042,7 +1042,7 @@ export const WBUtils = Backbone.View.extend({
           <Ul>
             {Object.values(options).map((entry, optionIndex) => (
               <li key={optionIndex}>
-                <Label.ForCheckbox>
+                <Label.Inline>
                   <Input.Radio
                     name="latLongFormat"
                     onChange={() => {
@@ -1052,12 +1052,12 @@ export const WBUtils = Backbone.View.extend({
                     }}
                   />
                   {entry.optionName}
-                </Label.ForCheckbox>
+                </Label.Inline>
               </li>
             ))}
             <br />
             <li>
-              <Label.ForCheckbox>
+              <Label.Inline>
                 <Input.Checkbox
                   defaultChecked={includeSymbols}
                   onValueChange={(newValue) => {
@@ -1067,10 +1067,10 @@ export const WBUtils = Backbone.View.extend({
                   }}
                 />
                 {wbText('includeDmsSymbols')}
-              </Label.ForCheckbox>
+              </Label.Inline>
             </li>
             <li>
-              <Label.ForCheckbox>
+              <Label.Inline>
                 <Input.Checkbox
                   defaultChecked={applyToAll}
                   onValueChange={(newValue) => {
@@ -1080,7 +1080,7 @@ export const WBUtils = Backbone.View.extend({
                   }}
                 />
                 {commonText('applyAll')}
-              </Label.ForCheckbox>
+              </Label.Inline>
             </li>
           </Ul>
         </>

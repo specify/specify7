@@ -78,7 +78,7 @@ function UserCollectionsUi({
         }
       >
         {allCollections.map((collection) => (
-          <Label.ForCheckbox key={collection.id}>
+          <Label.Inline key={collection.id}>
             <Input.Checkbox
               checked={selected.includes(collection.id)}
               isReadOnly={
@@ -89,7 +89,7 @@ function UserCollectionsUi({
               }
             />
             {collection.collectionName}
-          </Label.ForCheckbox>
+          </Label.Inline>
         ))}
       </Form>
     </Dialog>

@@ -75,7 +75,7 @@ function CheckboxLine({
   readonly setState: (state: SearchPreferences) => void;
 }): JSX.Element {
   return (
-    <Label.ForCheckbox>
+    <Label.Inline>
       <Input.Checkbox
         checked={state.search[property]}
         onChange={(): void =>
@@ -89,7 +89,7 @@ function CheckboxLine({
         }
       />
       {` ${label}`}
-    </Label.ForCheckbox>
+    </Label.Inline>
   );
 }
 
@@ -114,7 +114,7 @@ function PreferencesDialog({
     >
       <div>
         <H2>{wbText('navigationOptions')}</H2>
-        <Label.Generic>
+        <Label.Block>
           {wbText('cursorPriority')}
           <Select
             value={searchPreferences.navigation.direction}
@@ -131,7 +131,7 @@ function PreferencesDialog({
             <option value="columnFirst">{wbText('columnFirst')}</option>
             <option value="rowFirst">{wbText('rowFirst')}</option>
           </Select>
-        </Label.Generic>
+        </Label.Block>
       </div>
 
       <div className="flex flex-col">
@@ -168,7 +168,7 @@ function PreferencesDialog({
 
       <div>
         <H2>{wbText('replaceOptions')}</H2>
-        <Label.Generic>
+        <Label.Block>
           {wbText('replaceMode')}
           <Select
             value={searchPreferences.replace.replaceMode}
@@ -185,7 +185,7 @@ function PreferencesDialog({
             <option value="replaceAll">{wbText('replaceAll')}</option>
             <option value="replaceNext">{wbText('replaceNext')}</option>
           </Select>
-        </Label.Generic>
+        </Label.Block>
       </div>
     </Dialog>
   );

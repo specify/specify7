@@ -43,13 +43,13 @@ export function MappingsControlPanel({
           {wbText('addNewColumn')}
         </Button.Small>
       )}
-      <Label.ForCheckbox>
+      <Label.Inline>
         <Input.Checkbox
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
         {commonText('revealHiddenFormFields')}
-      </Label.ForCheckbox>
+      </Label.Inline>
     </div>
   );
 }
@@ -228,7 +228,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.ForCheckbox title={description}>
+                <Label.Inline title={description}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
@@ -237,7 +237,7 @@ export function mappingOptionsMenu({
                     onChange={(): void => handleChangeMatchBehaviour(id)}
                   />
                   {` ${title}`}
-                </Label.ForCheckbox>
+                </Label.Inline>
               </li>
             ))}
           </Ul>
@@ -246,20 +246,20 @@ export function mappingOptionsMenu({
     },
     nullAllowed: {
       optionLabel: (
-        <Label.ForCheckbox>
+        <Label.Inline>
           <Input.Checkbox
             checked={columnOptions.nullAllowed}
             disabled={isReadOnly}
             onValueChange={handleToggleAllowNulls}
           />{' '}
           {wbText('allowNullValues')}
-        </Label.ForCheckbox>
+        </Label.Inline>
       ),
     },
     default: {
       optionLabel: (
         <>
-          <Label.ForCheckbox>
+          <Label.Inline>
             <Input.Checkbox
               checked={columnOptions.default !== null}
               disabled={isReadOnly}
@@ -271,7 +271,7 @@ export function mappingOptionsMenu({
             />{' '}
             <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
             {columnOptions.default !== null && ':'}
-          </Label.ForCheckbox>
+          </Label.Inline>
           {typeof columnOptions.default === 'string' && (
             <>
               <br />

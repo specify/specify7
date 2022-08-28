@@ -65,13 +65,13 @@ export function SchemaConfigTables(): JSX.Element {
           </li>
         ))}
       </Ul>
-      <Label.ForCheckbox>
+      <Label.Inline>
         <Input.Checkbox
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
         {wbText('showAdvancedTables')}
-      </Label.ForCheckbox>
+      </Label.Inline>
     </Dialog>
   );
 }

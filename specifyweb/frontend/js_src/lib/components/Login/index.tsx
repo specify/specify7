@@ -116,7 +116,7 @@ function LegacyLogin({
           value={data.csrfToken}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
-        <Label.Generic>
+        <Label.Block>
           {commonText('username')}
           <Input.Text
             defaultValue=""
@@ -124,8 +124,8 @@ function LegacyLogin({
             name="username"
             required
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           {commonText('password')}
           <Input.Generic
             defaultValue=""
@@ -134,7 +134,7 @@ function LegacyLogin({
             required
             type="password"
           />
-        </Label.Generic>
+        </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
         <Submit.Fancy className="mt-1">{commonText('login')}</Submit.Fancy>

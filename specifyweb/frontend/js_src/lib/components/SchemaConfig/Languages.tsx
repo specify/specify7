@@ -82,7 +82,7 @@ export function AddLanguage(): JSX.Element {
           navigate(`/specify/schema-config/${code}/`);
         }}
       >
-        <Label.Generic>
+        <Label.Block>
           {commonText('language')}
           <Input.Text
             maxLength={2}
@@ -92,8 +92,8 @@ export function AddLanguage(): JSX.Element {
             value={language}
             onValueChange={setLanguage}
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           {commonText('country')}
           <Input.Text
             maxLength={2}
@@ -102,7 +102,7 @@ export function AddLanguage(): JSX.Element {
             value={country}
             onValueChange={setCountry}
           />
-        </Label.Generic>
+        </Label.Block>
       </Form>
     </Dialog>
   );

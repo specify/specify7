@@ -94,7 +94,7 @@ function AutoNumberingDialog({
       <Ul>
         {fields.map(({ name, label }) => (
           <li key={name}>
-            <Label.ForCheckbox>
+            <Label.Inline>
               <Input.Checkbox
                 checked={config.includes(name)}
                 onValueChange={(checked): void =>
@@ -104,7 +104,7 @@ function AutoNumberingDialog({
                 }
               />
               {label}
-            </Label.ForCheckbox>
+            </Label.Inline>
           </li>
         ))}
       </Ul>

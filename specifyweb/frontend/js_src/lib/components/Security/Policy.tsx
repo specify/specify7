@@ -223,7 +223,7 @@ function SecurityPolicy({
                   }
                   key={action}
                 >
-                  <Label.ForCheckbox
+                  <Label.Inline
                     className={orientation === 'vertical' ? undefined : 'mr-2'}
                   >
                     <Input.Checkbox
@@ -255,7 +255,7 @@ function SecurityPolicy({
                       }
                     />
                     {actionToLabel(action)}
-                  </Label.ForCheckbox>
+                  </Label.Inline>
                 </li>
               ))}
             </Ul>

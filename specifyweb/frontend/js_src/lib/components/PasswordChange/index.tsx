@@ -61,7 +61,7 @@ function ChangePassword({
           value={csrfToken ?? ''}
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
-        <Label.Generic>
+        <Label.Block>
           {commonText('oldPassword')}
           <Input.Generic
             autoComplete="current-password"
@@ -71,8 +71,8 @@ function ChangePassword({
             required
             type="password"
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           {commonText('newPassword')}
           <Input.Generic
             autoComplete="new-password"
@@ -83,8 +83,8 @@ function ChangePassword({
             required
             type="password"
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           {commonText('repeatPassword')}
           <Input.Generic
             autoComplete="new-password"
@@ -95,7 +95,7 @@ function ChangePassword({
             required
             type="password"
           />
-        </Label.Generic>
+        </Label.Block>
         <Submit.Fancy>{commonText('changePassword')}</Submit.Fancy>
       </Form>
     </SplashScreen>

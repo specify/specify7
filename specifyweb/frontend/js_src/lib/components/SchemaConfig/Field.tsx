@@ -36,7 +36,7 @@ export function SchemaConfigField({
     !field.overrides.isRequired && !field.isRelationship;
   return (
     <SchemaConfigColumn header={`${commonText('field')}: ${item.name}`}>
-      <Label.Generic>
+      <Label.Block>
         {commonText('caption')}
         <Input.Text
           isReadOnly={isReadOnly}
@@ -45,8 +45,8 @@ export function SchemaConfigField({
           value={item.strings.name.text}
           onValueChange={(value): void => handleChange('name', value)}
         />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('description')}
         <AutoGrowTextArea
           className="resize-y"
@@ -55,12 +55,12 @@ export function SchemaConfigField({
           value={item.strings.desc.text}
           onValueChange={(value): void => handleChange('desc', value)}
         />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('length')}
         <Input.Number isReadOnly value={field.length ?? ''} />
-      </Label.Generic>
-      <Label.Generic>
+      </Label.Block>
+      <Label.Block>
         {commonText('type')}
         <Input.Text
           isReadOnly
@@ -69,16 +69,16 @@ export function SchemaConfigField({
             field.isRelationship ? field.relatedModel.name : undefined
           )}
         />
-      </Label.Generic>
-      <Label.ForCheckbox>
+      </Label.Block>
+      <Label.Inline>
         <Input.Checkbox
           checked={item.isHidden}
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isHidden', value)}
         />
         {commonText('hideField')}
-      </Label.ForCheckbox>
-      <Label.ForCheckbox>
+      </Label.Inline>
+      <Label.Inline>
         <Input.Checkbox
           checked={
             canChangeIsRequired ? item.isRequired ?? false : field.isRequired
@@ -88,7 +88,7 @@ export function SchemaConfigField({
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
         {commonText('required')}
-      </Label.ForCheckbox>
+      </Label.Inline>
       <SchemaConfigFormat
         field={field}
         isReadOnly={isReadOnly}

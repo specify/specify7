@@ -153,7 +153,7 @@ export function TablesListEdit({
             onClick={handleMoveDown}
           />
         </div>
-        <Label.Generic>
+        <Label.Block>
           {commonText('selectedTables')}
           <Select
             className="flex-1"
@@ -170,7 +170,7 @@ export function TablesListEdit({
               </option>
             ))}
           </Select>
-        </Label.Generic>
+        </Label.Block>
         <div className="flex gap-2">
           <div className="flex items-center">
             <Button.Icon
@@ -187,7 +187,7 @@ export function TablesListEdit({
             />
           </div>
         </div>
-        <Label.Generic>
+        <Label.Block>
           {commonText('possibleTables')}
           <Select
             className="flex-1"
@@ -204,7 +204,7 @@ export function TablesListEdit({
               </option>
             ))}
           </Select>
-        </Label.Generic>
+        </Label.Block>
       </div>
     </Dialog>
   );

@@ -87,7 +87,7 @@ export function QuerySaveDialog({
           loading(doSave(query, name, isSaveAs).then(handleSaved))
         }
       >
-        <Label.Generic>
+        <Label.Block>
           {queryText('queryName')}
           <Input.Text
             autoComplete="on"
@@ -98,7 +98,7 @@ export function QuerySaveDialog({
             value={name}
             onValueChange={setName}
           />
-        </Label.Generic>
+        </Label.Block>
       </Form>
     </Dialog>
   ) : null;

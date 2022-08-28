@@ -91,7 +91,7 @@ export function DataSetMeta({
           )
         }
       >
-        <Label.Generic>
+        <Label.Block>
           <b>{wbText('dataSetName')}</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
@@ -100,11 +100,11 @@ export function DataSetMeta({
             value={name}
             onValueChange={setName}
           />
-        </Label.Generic>
-        <Label.Generic>
+        </Label.Block>
+        <Label.Block>
           <b>{wbText('remarks')}</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
-        </Label.Generic>
+        </Label.Block>
         <div className="flex flex-col">
           <b>{commonText('metadataInline')}</b>
           <span>
@@ -269,7 +269,7 @@ function ChangeOwner({
           )
         }
       >
-        <Label.Generic>
+        <Label.Block>
           <p>{wbText('changeDataSetOwnerDialogText')}</p>
           <Select
             size={10}
@@ -284,7 +284,7 @@ function ChangeOwner({
               </option>
             ))}
           </Select>
-        </Label.Generic>
+        </Label.Block>
       </Form>
     </Dialog>
   );

@@ -325,7 +325,7 @@ function Attachments(): JSX.Element {
         className={`flex items-center gap-2 ${className.hasAltBackground}`}
       >
         <H2>{commonText('attachments')}</H2>
-        <Label.ForCheckbox>
+        <Label.Inline>
           <span className="sr-only">{commonText('filter')}</span>
           <Select
             value={filter.type === 'byTable' ? filter.tableName : filter.type}
@@ -367,8 +367,8 @@ function Attachments(): JSX.Element {
                 ))}
             </optgroup>
           </Select>
-        </Label.ForCheckbox>
-        <Label.ForCheckbox>
+        </Label.Inline>
+        <Label.Inline>
           {formsText('orderBy')}
           <div>
             <OrderPicker
@@ -377,9 +377,9 @@ function Attachments(): JSX.Element {
               onChange={setOrder}
             />
           </div>
-        </Label.ForCheckbox>
+        </Label.Inline>
         <span className="-ml-2 flex-1" />
-        <Label.ForCheckbox>
+        <Label.Inline>
           {commonText('scale')}
           <Input.Generic
             max={maxScale}
@@ -388,7 +388,7 @@ function Attachments(): JSX.Element {
             value={scale}
             onValueChange={(value) => setScale(Number.parseInt(value))}
           />
-        </Label.ForCheckbox>
+        </Label.Inline>
       </header>
       <Gallery
         attachments={collection?.records ?? []}

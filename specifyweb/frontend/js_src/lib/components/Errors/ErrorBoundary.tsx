@@ -127,13 +127,13 @@ function ErrorDialog({
             {commonText('downloadErrorMessage')}
           </Button.Blue>
           <span className="-ml-2 flex-1" />
-          <Label.ForCheckbox>
+          <Label.Inline>
             <Input.Checkbox
               checked={clearCacheOnException}
               onValueChange={setClearCache}
             />
             {commonText('clearCache')}
-          </Label.ForCheckbox>
+          </Label.Inline>
           <Button.Red
             onClick={(): void =>
               legacyLoadingContext(

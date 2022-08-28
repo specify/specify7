@@ -132,7 +132,7 @@ function Wrapped({
           <>
             <div className="-ml-1 flex max-h-56 flex-col gap-2 overflow-y-auto pl-1">
               {availableCollections.map(({ id, collectionname }) => (
-                <Label.ForCheckbox key={id}>
+                <Label.Inline key={id}>
                   <Input.Radio
                     checked={selectedCollection === id}
                     name="collection"
@@ -141,7 +141,7 @@ function Wrapped({
                     onChange={(): void => setSelectedCollection(id)}
                   />
                   {collectionname}
-                </Label.ForCheckbox>
+                </Label.Inline>
               ))}
             </div>
             <input

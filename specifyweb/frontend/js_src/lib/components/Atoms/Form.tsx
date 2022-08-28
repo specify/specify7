@@ -6,10 +6,8 @@ import { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
 
 export const Label = {
-  // REFACTOR: rename this to Block
-  Generic: wrap('Label.Generic', 'label', className.label),
-  // REFACTOR: rename this to Inline
-  ForCheckbox: wrap('Label.ForCheckbox', 'label', className.labelForCheckbox),
+  Block: wrap('Label.Block', 'label', className.label),
+  Inline: wrap('Label.Inline', 'label', className.labelForCheckbox),
 };
 /**
  * Forms are used throughout for accessibility and usability reasons (helps

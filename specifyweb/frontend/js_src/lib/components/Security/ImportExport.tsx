@@ -135,7 +135,7 @@ export function ImportExport({
                             {category === 'unchanged' ? (
                               role.name
                             ) : (
-                              <Label.ForCheckbox>
+                              <Label.Inline>
                                 <Input.Checkbox
                                   checked={isChecked}
                                   onValueChange={(): void =>
@@ -152,7 +152,7 @@ export function ImportExport({
                                   }
                                 />
                                 {role.name}
-                              </Label.ForCheckbox>
+                              </Label.Inline>
                             )}
                           </li>
                         ))}

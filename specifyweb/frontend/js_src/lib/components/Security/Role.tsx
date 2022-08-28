@@ -101,7 +101,7 @@ export function RoleView({
       </Link.Default>
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
-          <Label.Generic className={className.limitedWidth}>
+          <Label.Block className={className.limitedWidth}>
             {commonText('name')}
             <Input.Text
               maxLength={roleNameMaxLength}
@@ -111,9 +111,9 @@ export function RoleView({
                 setRole(replaceKey(role, 'name', name))
               }
             />
-          </Label.Generic>
+          </Label.Block>
         )}
-        <Label.Generic className={className.limitedWidth}>
+        <Label.Block className={className.limitedWidth}>
           {commonText('description')}
           <AutoGrowTextArea
             isReadOnly={isReadOnly}
@@ -122,7 +122,7 @@ export function RoleView({
               setRole(replaceKey(role, 'description', description))
             }
           />
-        </Label.Generic>
+        </Label.Block>
         {roleUsers}
         <SecurityPoliciesWrapper
           collapsable={false}
