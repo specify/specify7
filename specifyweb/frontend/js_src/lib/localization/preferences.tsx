@@ -257,6 +257,10 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Алгоритм поиска (для деревьев)',
   },
   startsWith: {
+    'en-us': 'Starts with',
+    'ru-ru': 'Начинается с',
+  },
+  startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (без учета регистра)',
   },
@@ -279,6 +283,10 @@ export const preferencesText = createDictionary({
       'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
   },
   contains: {
+    'en-us': 'Contains',
+    'ru-ru': 'Содержит',
+  },
+  containsInsensitive: {
     'en-us': 'Contains (case-insensitive)',
     'ru-ru': 'Содержит (без учета регистра)',
   },
@@ -728,6 +736,14 @@ export const preferencesText = createDictionary({
   maxHeight: {
     'en-us': 'Max height',
     'ru-ru': 'Максимальная высота',
+  },
+  searchCaseSensitive: {
+    'en-us': 'Case-sensitive search',
+    'ru-ru': 'С учетом регистра',
+  },
+  searchField: {
+    'en-us': 'Search field',
+    'ru-ru': 'Поле поиска',
   },
 });
 /* eslint-enable react/jsx-no-literals */

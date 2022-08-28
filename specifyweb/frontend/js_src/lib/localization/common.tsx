@@ -260,6 +260,10 @@ export const commonText = createDictionary({
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
   },
+  fullName: {
+    'en-us': 'Full Name',
+    'ru-ru': 'Полное имя',
+  },
   view: {
     'en-us': 'View',
     'ru-ru': 'Смотреть',

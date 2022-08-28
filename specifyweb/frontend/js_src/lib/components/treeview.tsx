@@ -1,8 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { ajax } from '../ajax';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../collection';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -10,7 +8,7 @@ import type {
 } from '../datamodelutils';
 import { useErrorContext } from '../errorcontext';
 import { f } from '../functools';
-import { caseInsensitiveHash, sortFunction, toggleItem } from '../helpers';
+import { caseInsensitiveHash, toggleItem } from '../helpers';
 import type { SpecifyResource } from '../legacytypes';
 import { treeText } from '../localization/tree';
 import { getPref } from '../remoteprefs';
@@ -24,11 +22,10 @@ import {
   fetchStats,
   serializeConformation,
 } from '../treeviewutils';
-import type { IR, RA } from '../types';
-import { Autocomplete } from './autocomplete';
+import type { RA } from '../types.js';
 import { Button, Container, DataEntry, H2 } from './basic';
 import { TableIcon } from './common';
-import { ErrorBoundary, softFail } from './errorboundary';
+import { ErrorBoundary } from './errorboundary';
 import { useMenuItem } from './header';
 import { useAsyncState, useBooleanState, useId, useTitle } from './hooks';
 import { supportsBackdropBlur } from './modaldialog';
@@ -46,16 +43,16 @@ import { useCachedState } from './statecache';
 import { EditTreeDefinition } from './toolbar/treerepair';
 import { TreeViewActions } from './treeviewactions';
 import { TreeRow } from './treeviewrow';
+import { TreeViewSearch } from './treeviewsearch';
 
 const treeToPref = {
-  Geography: 'geography',
-  Taxon: 'taxon',
-  Storage: 'storage',
-  GeologicTimePeriod: 'geologicTimePeriod',
-  LithoStrat: 'lithoStrat',
-} as const;
-
-const defaultConformation: RA<never> = [];
+    Geography: 'geography',
+    Taxon: 'taxon',
+    Storage: 'storage',
+    GeologicTimePeriod: 'geologicTimePeriod',
+    LithoStrat: 'lithoStrat',
+  } as const,
+  defaultConformation: RA<never> = [];
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -68,19 +65,17 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = schema.models[tableName] as SpecifyModel<AnyTree>;
-  const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
-  const [collapsedRanks, setCollapsedRanks] = useCachedState(
-    'tree',
-    `collapsedRanks${tableName}`
-  );
-
-  const [urlConformation, setUrlConformation] =
-    useSearchParameter('conformation');
-  const [conformation = defaultConformation, setConformation] = useCachedState(
-    'tree',
-    `conformations${tableName}`
-  );
+  const table = schema.models[tableName] as SpecifyModel<AnyTree>,
+    rankIds = treeDefinitionItems.map(({ rankId }) => rankId),
+    [collapsedRanks, setCollapsedRanks] = useCachedState(
+      'tree',
+      `collapsedRanks${tableName}`
+    ),
+    [urlConformation, setUrlConformation] = useSearchParameter('conformation'),
+    [conformation = defaultConformation, setConformation] = useCachedState(
+      'tree',
+      `conformations${tableName}`
+    );
 
   React.useEffect(
     () => setUrlConformation(serializeConformation(conformation)),
@@ -95,62 +90,52 @@ function TreeView<SCHEMA extends AnyTree>({
   useTitle(treeText('treeViewTitle', table.label));
 
   // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
-  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
-    treeDefinition.id
-  }`;
-  const getRows = React.useCallback(
-    async (parentId: number | 'null') =>
-      fetchRows(`${baseUrl}/${parentId}/${sortField}`),
-    [baseUrl, sortField]
-  );
-
-  const statsThreshold = getPref(
-    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
-  );
-  const getStats = React.useCallback(
-    async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
-      rankId >= statsThreshold
-        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
-        : Promise.resolve({}),
-    [baseUrl, statsThreshold]
-  );
-
-  const [rows, setRows] = useAsyncState<RA<Row>>(
-    React.useCallback(async () => getRows('null'), [getRows]),
-    true
-  );
-
-  const id = useId('tree-view');
-
-  // FEATURE: synchronize focus path with the URL
-  const [focusPath = [], setFocusPath] = useCachedState(
-    'tree',
-    `focusPath${tableName}`
-  );
-  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
-    undefined
-  );
-  const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
-
-  const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
-  const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
-  const [searchValue, setSearchValue] = React.useState<string>('');
-
-  const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
-
-  const reduceTransparency = useReducedTransparency();
-  const highContrast = useHighContrast();
-  const [treeAccentColor] = usePref(
-    'treeEditor',
-    treeToPref[tableName],
-    'treeAccentColor'
-  );
-  const [synonymColor] = usePref(
-    'treeEditor',
-    treeToPref[tableName],
-    'synonymColor'
-  );
+  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`),
+    baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+      treeDefinition.id
+    }`,
+    getRows = React.useCallback(
+      async (parentId: number | 'null') =>
+        fetchRows(`${baseUrl}/${parentId}/${sortField}`),
+      [baseUrl, sortField]
+    ),
+    statsThreshold = getPref(
+      `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+    ),
+    getStats = React.useCallback(
+      async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
+        rankId >= statsThreshold
+          ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+          : Promise.resolve({}),
+      [baseUrl, statsThreshold]
+    ),
+    [rows, setRows] = useAsyncState<RA<Row>>(
+      React.useCallback(async () => getRows('null'), [getRows]),
+      true
+    ),
+    id = useId('tree-view'),
+    // FEATURE: synchronize focus path with the URL
+    [focusPath = [], setFocusPath] = useCachedState(
+      'tree',
+      `focusPath${tableName}`
+    ),
+    [focusedRow, setFocusedRow] = React.useState<Row | undefined>(undefined),
+    [actionRow, setActionRow] = React.useState<Row | undefined>(undefined),
+    searchBoxRef = React.useRef<HTMLInputElement | null>(null),
+    toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null),
+    [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState(),
+    reduceTransparency = useReducedTransparency(),
+    highContrast = useHighContrast(),
+    [treeAccentColor] = usePref(
+      'treeEditor',
+      treeToPref[tableName],
+      'treeAccentColor'
+    ),
+    [synonymColor] = usePref(
+      'treeEditor',
+      treeToPref[tableName],
+      'synonymColor'
+    );
 
   return rows === undefined ? null : (
     <Container.Full>
@@ -160,73 +145,12 @@ function TreeView<SCHEMA extends AnyTree>({
           {treeDefinition.get('name')}
         </H2>
         <EditTreeDefinition treeDefinition={treeDefinition} />
-        <div>
-          {/* A React component that is also a TypeScript generic */}
-          <Autocomplete<SerializedResource<SCHEMA>>
-            filterItems={false}
-            forwardRef={searchBoxRef}
-            inputProps={{
-              'aria-label': treeText('searchTreePlaceholder'),
-              placeholder: treeText('searchTreePlaceholder'),
-              title: treeText('searchTreePlaceholder'),
-            }}
-            source={async (value) =>
-              fetchCollection(
-                table.name,
-                {
-                  limit: DEFAULT_FETCH_LIMIT,
-                  orderBy: 'name',
-                  domainFilter: true,
-                },
-                {
-                  name__iStartsWith: value,
-                }
-              ).then(({ records }) =>
-                records.map((node) => {
-                  const rankDefinition = treeDefinitionItems.find(
-                    ({ rankId }) => rankId === node.rankId
-                  );
-                  const rankName =
-                    rankDefinition?.title || rankDefinition?.name;
-                  return {
-                    label: node.fullName ?? node.name,
-                    subLabel: rankName,
-                    data: node as SerializedResource<SCHEMA>,
-                  };
-                })
-              )
-            }
-            value={searchValue}
-            onChange={({ label, data }): void => {
-              setSearchValue(label as string);
-              ajax<
-                IR<string | { readonly rankid: number; readonly id: number }>
-              >(
-                `/api/specify_tree/${tableName.toLowerCase()}/${data.id}/path/`,
-                {
-                  headers: { Accept: 'application/json' },
-                }
-              )
-                .then(({ data }) =>
-                  setFocusPath(
-                    Object.values(data)
-                      .filter(
-                        (
-                          node
-                        ): node is {
-                          readonly rankid: number;
-                          readonly id: number;
-                        } => typeof node === 'object'
-                      )
-                      .sort(sortFunction(({ rankid }) => rankid))
-                      .map(({ id }) => id)
-                  )
-                )
-                .catch(softFail);
-            }}
-            onCleared={(): void => setSearchValue('')}
-          />
-        </div>
+        <TreeViewSearch<SCHEMA>
+          forwardRef={searchBoxRef}
+          tableName={tableName}
+          treeDefinitionItems={treeDefinitionItems}
+          onFocusPath={setFocusPath}
+        />
         <Button.Small
           aria-pressed={isEditingRanks}
           onClick={handleToggleEditingRanks}
@@ -388,12 +312,12 @@ function EditTreeRank({
 }: {
   readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
 }): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
+  const [isOpen, handleOpen, handleClose] = useBooleanState(),
+    resource = React.useMemo(() => deserializeResource(rank), [rank]);
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
-      {isOpen && (
+      {isOpen ? (
         <ResourceView
           canAddAnother={false}
           dialog="modal"
@@ -405,7 +329,7 @@ function EditTreeRank({
           onDeleted={undefined}
           onSaved={(): void => globalThis.location.reload()}
         />
-      )}
+      ) : null}
     </>
   );
 }
@@ -414,10 +338,9 @@ const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
-  const { tableName = '' } = useParams();
-  const treeName = getModel(tableName)?.name;
-
-  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  const { tableName = '' } = useParams(),
+    treeName = getModel(tableName)?.name,
+    [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
