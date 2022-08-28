@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { Key } from '../components/basic';
+import { Key } from '../components/Atoms/Basic';
 import { createDictionary } from './utils';
 
 const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
@@ -728,14 +728,6 @@ export const preferencesText = createDictionary({
   autoComplete: {
     'en-us': 'Auto complete',
     'ru-ru': 'Автозаполнение',
-  },
-  formTable: {
-    'en-us': 'Form table',
-    'ru-ru': 'Форма таблицы',
-  },
-  maxHeight: {
-    'en-us': 'Max height',
-    'ru-ru': 'Максимальная высота',
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',

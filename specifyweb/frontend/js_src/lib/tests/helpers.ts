@@ -1,5 +1,5 @@
-import { initialContext, unlockInitialContext } from '../initialcontext';
-import { treeRanksPromise } from '../treedefinitions';
+import { initialContext, unlockInitialContext } from '../components/InitialContext';
+import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 
 /**
  * Call this in test files that requite initial context to be fetched

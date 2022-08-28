@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup/setup';
 import type React from 'react';
 
-import type { RA } from '../types';
+import type { RA } from '../utils/types';
 
 /**
  * Named after https://github.com/RobPethick/jest-theories

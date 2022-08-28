@@ -10,7 +10,7 @@
 //    instead of grid-template-columns:repeat(n,1fr)
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./lib/components/**/*.tsx', './lib/*.{ts,js}'],
+  content: ['./lib/*.{ts,tsx,js}'],
   // Disable unneeded components to reduce performance impact
   corePlugins: {
     float: false,

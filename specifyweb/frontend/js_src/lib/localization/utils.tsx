@@ -4,10 +4,10 @@
  * @module
  */
 
-import { f } from '../functools';
-import { camelToHuman } from '../helpers';
-import type { IR, RA, RR } from '../types';
-import { isFunction } from '../types';
+import { f } from '../utils/functools';
+import { camelToHuman } from '../utils/utils';
+import type { IR, RA, RR } from '../utils/types';
+import { isFunction } from '../utils/types';
 
 export const languages = ['en-us', 'ru-ru'] as const;
 /** This allows to hide unfinished localizations in production */
@@ -38,22 +38,21 @@ export type Dictionary = IR<Value>;
 
 /**
  * Handle case when localization string is not found.
- * This should never happen if:
- *   all typescript errors are fixed
- *   and ./tests/testlocalization.ts did not find any errors
+ *
+ * This should never happen as long as:
+ *   all typescript errors are fixed, and
+ *   ./localization/__tests__/localization.ts did not find any errors
+ *
+ * If a .ts or .tsx file tries to access a non-existing key, a
+ * build-time error would be thrown.
+ * For .js and .jsx files, some errors may be shown in the editor depending on
+ * the IDE. The rest would be thrown at runtime.
+ * To prevent runtime errors, a ../localization/__tests__/localization.ts script has been
+ * added. It checks both for nonexistent key usages, invalid usages and unused
+ * keys. It also warns about duplicate localization strings.
+ *
  */
 function assertExhaustive(key: string): never {
-  /*
-   * If a .ts or .tsx file tries to access a non-existing key, a
-   * build-time error would be thrown.
-   * For .js and .jsx files, some errors may be shown in the editor depending on
-   * the IDE. The rest would be thrown at runtime.
-   * For templates (.html), no errors would be shown, and thus this exception
-   * may be thrown at runtime.
-   * To prevent runtime errors, a ../tests/testlocalization.ts script has been
-   * added. It checks both for nonexistent key usages, invalid usages and unused
-   * keys. It also warns about duplicate localization strings.
-   */
   const errorMessage = `
     Trying to access the value for a non-existent localization key "${key}"`;
   if (process.env.NODE_ENV === 'development') throw new Error(errorMessage);
@@ -99,7 +98,7 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
         ? (dictionary[key][LANGUAGE] as (...args: RA<unknown>) => Line)(...args)
         : dictionary[key][LANGUAGE] ?? assertExhaustive(key)
       : assertExhaustive(key)) as GetValueType<typeof dictionary[typeof key]>;
-  // This is used by ../tests/testlocalization.ts
+  // This is used by ../localization/__tests__/localization.ts
   resolver.dictionary = dictionary;
   return resolver;
 }

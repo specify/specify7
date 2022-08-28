@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { AjaxResponseObject } from '../../ajax';
-import { handleAjaxResponse } from '../../ajaxResponse';
-import { Http } from '../../ajaxUtils';
-import { f } from '../../functools';
-import type { RA } from '../../types';
+import type { AjaxResponseObject } from '../../utils/ajax';
+import { handleAjaxResponse } from '../../utils/ajax/response';
+import { Http } from '../../utils/ajax/helpers';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
 
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests

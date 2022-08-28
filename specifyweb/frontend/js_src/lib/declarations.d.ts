@@ -2,7 +2,7 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { IR, RA, RR } from './types';
+import type { IR, RA, RR } from './utils/types';
 
 /**
  * Typescript does not recognize the definition overwrite when using

@@ -13,7 +13,7 @@
   "main": "lib/main.ts",
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node testBuild/lib/tests/testlocalization.js",
+    "localizationTests": "node testBuild/lib/localization/__tests__/localization.js",
     "test": "npm run testBuild && npm run unitTests && npm run localizationTests",
     "testBuild": "tsc --build tsconfig.tests.json",
     "unitTests": "jest"
