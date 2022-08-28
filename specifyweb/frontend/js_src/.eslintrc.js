@@ -15,7 +15,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    '/Users/maxpatiiuk/site/git/dotfiles/npm/eslintrc-react/.eslintrc',
+    '@maxxxxxdlp/eslint-config-react',
   ],
   rules: {
     '@typescript-eslint/no-empty-interface': OFF,

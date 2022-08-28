@@ -65,7 +65,7 @@ describe('latLongUtils', () => {
     ].forEach((value) =>
       [Lat, Long, Coord].map((parser) =>
         test(`${value} on ${parser.name}`, () =>
-          expect(parser.parse(value)).toBe(undefined))
+          expect(parser.parse(value)).toBeUndefined())
       )
     ));
 
@@ -179,7 +179,7 @@ describe('latLongUtils', () => {
       [Coord, Lat, Long].map((type) =>
         test(`${raw} as ${type.name}`, () => {
           const result = type.parse(raw);
-          if (type === Lat) expect(result).toBe(undefined);
+          if (type === Lat) expect(result).toBeUndefined();
           else expect(result).toBeInstanceOf(Long);
         })
       )
