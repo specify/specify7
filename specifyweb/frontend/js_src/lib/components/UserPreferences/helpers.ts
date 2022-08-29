@@ -6,7 +6,6 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/helpers';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
-import { fail } from '../Errors/ErrorBoundary';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import type { Preferences } from './Definitions';
 import { preferenceDefinitions } from './Definitions';
@@ -22,6 +21,7 @@ import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { mergeParsers, parserFromType, parseValue } from '../../utils/uiParse';
+import { fail } from '../Errors/Crash';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,

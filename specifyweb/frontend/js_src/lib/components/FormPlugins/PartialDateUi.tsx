@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import {
   databaseDateFormat,
   fullDateFormat,
@@ -17,9 +16,10 @@ import { getValidationAttributes, resolveParser } from '../../utils/uiParse';
 import { Input, Select } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
 import { dateParts } from '../Atoms/Internationalization';
-import { usePref } from '../UserPreferences/Hooks';
 import { useSaveBlockers } from '../../hooks/resource';
-import {useValidation} from '../../hooks/useValidation';
+import { useValidation } from '../../hooks/useValidation';
+import { AnySchema } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 export function isInputSupported(type: string): boolean {
   const input = document.createElement('input');
@@ -111,6 +111,7 @@ function unsafeParseFullDate(
   return dayjs(new Date(year, month - 1, day));
 }
 
+// REFACTOR: split this component into smaller
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
   dateField,

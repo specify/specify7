@@ -2,7 +2,6 @@ import React from 'react';
 
 import { fetchCollection } from '../DataModel/collection';
 import type { SpLocaleContainer } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { serializeResource } from '../DataModel/helpers';
 import { fetchFormatters } from '../Forms/dataObjFormatters';
 import { index } from '../../utils/utils';
@@ -13,6 +12,7 @@ import { fetchContext as fetchUiFormatters } from '../Forms/uiFormatters';
 import { useSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../FormPlugins/WebLink';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export type SchemaData = {
   readonly languages: IR<string>;

@@ -8,13 +8,11 @@ import { useOutletContext } from 'react-router';
 import type { CollectionFetchFilters } from '../DataModel/collection';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpQuery } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { getModelById } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { SortIndicator, TableIcon, useSortConfig } from '../Molecules';
 import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryEditButton } from '../QueryBuilder/Edit';
@@ -25,6 +23,9 @@ import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {TableIcon} from '../Molecules/TableIcon';
+import {SortIndicator, useSortConfig} from '../Molecules/Sorting';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

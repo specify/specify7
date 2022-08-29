@@ -14,8 +14,6 @@ import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../Permissions/helpers';
 import type { RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import type { SortConfig } from '../Molecules';
-import { SortIndicator, useSortConfig } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DataSetMeta } from '../WorkBench/DataSetMeta';
 import { icons } from '../Atoms/Icons';
@@ -27,6 +25,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {SortConfig, SortIndicator, useSortConfig} from '../Molecules/Sorting';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(

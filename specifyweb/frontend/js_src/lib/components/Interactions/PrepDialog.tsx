@@ -1,38 +1,32 @@
 import React from 'react';
-import type { State } from 'typesafe-reducer';
+import { useNavigate } from 'react-router-dom';
 
+import { useId } from '../../hooks/useId';
+import { useLiveState } from '../../hooks/useLiveState';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import type { Preparations } from '../../utils/ajax/specifyApi';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { group, replaceItem } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { Form } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
+import { getModel, schema } from '../DataModel/schema';
+import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type {
   Disposal,
   DisposalPreparation,
-  ExchangeOut,
   Gift,
   GiftPreparation,
   Loan,
   LoanPreparation,
 } from '../DataModel/types';
-import { group, replaceItem } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
-import type { Preparations } from '../../utils/ajax/specifyApi';
-import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { toTable } from '../DataModel/specifyModel';
-import type { RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { syncFieldFormat } from '../../utils/uiParse';
-import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
-import { ResourceView } from '../Forms/ResourceView';
-import { useNavigate } from 'react-router-dom';
-import { serializeResource } from '../DataModel/helpers';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { Form, Input } from '../Atoms/Form';
-import { useId } from '../../hooks/useId';
-import { useLiveState } from '../../hooks/useLiveState';
+import { PrepDialogRow } from './PrepDialogRow';
 
 export function PrepDialog({
   onClose: handleClose,
@@ -216,7 +210,7 @@ export function PrepDialog({
           </thead>
           <tbody>
             {preparations.map((preparation, index) => (
-              <Row
+              <PrepDialogRow
                 key={index}
                 preparation={preparation}
                 selected={selected[index]}
@@ -229,167 +223,5 @@ export function PrepDialog({
         </table>
       </Form>
     </Dialog>
-  );
-}
-
-function Row({
-  preparation,
-  selected,
-  onChange: handleChange,
-}: {
-  readonly preparation: Preparations[number];
-  readonly selected: number;
-  readonly onChange: (newSelected: number) => void;
-}): JSX.Element {
-  const unavailableCount = preparation.countAmount - preparation.available;
-
-  const available = Math.max(0, preparation.available);
-  const checked = selected !== 0;
-  const loading = React.useContext(LoadingContext);
-  const [state, setState] = React.useState<
-    | State<
-        'ItemSelection',
-        {
-          readonly items: RR<
-            'ExchangeOut' | 'Gift' | 'Loan',
-            RA<{
-              readonly id: number;
-              readonly label: string;
-            }>
-          >;
-        }
-      >
-    | State<
-        'ResourceDialog',
-        {
-          readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
-        }
-      >
-    | State<'Main'>
-  >({ type: 'Main' });
-
-  return (
-    <>
-      <tr>
-        <td>
-          <Input.Checkbox
-            aria-label={formsText('selectAll')}
-            checked={checked}
-            title={formsText('selectAll')}
-            onValueChange={(): void => handleChange(checked ? 0 : available)}
-          />
-        </td>
-        <td className="justify-end tabular-nums">
-          {syncFieldFormat(
-            schema.models.CollectionObject.getLiteralField('catalogNumber'),
-            undefined,
-            preparation.catalogNumber
-          )}
-        </td>
-        <td>{preparation.taxon}</td>
-        <td>{preparation.prepType}</td>
-        <td>
-          <Input.Number
-            aria-label={formsText('selectedAmount')}
-            max={preparation.available}
-            min={0}
-            title={formsText('selectedAmount')}
-            value={selected}
-            onValueChange={handleChange}
-          />
-        </td>
-        <td className="justify-end tabular-nums">{preparation.available}</td>
-        <td className="justify-end tabular-nums">
-          {
-            /* If unavailable items, link to related interactions */
-            unavailableCount === 0 ? (
-              0
-            ) : (
-              <Button.LikeLink
-                onClick={(): void =>
-                  state.type === 'Main'
-                    ? loading(
-                        getInteractionsForPrepId(
-                          preparation.preparationId
-                        ).then(([_id, ...rawItems]) => {
-                          const [loans, gifts, exchangeOuts] = rawItems.map(
-                            (preparations) =>
-                              preparations
-                                ?.split(',')
-                                .map((object) => object.split('>|<'))
-                                .map(([id, label]) => ({
-                                  id: Number.parseInt(id),
-                                  label,
-                                })) ?? []
-                          );
-                          const count =
-                            loans.length + gifts.length + exchangeOuts.length;
-
-                          setState(
-                            count === 1
-                              ? {
-                                  type: 'ResourceDialog',
-                                  resource: new (loans.length === 1
-                                    ? schema.models.Loan
-                                    : gifts.length === 1
-                                    ? schema.models.Gift
-                                    : schema.models.ExchangeOut
-                                  ).Resource({
-                                    id: [...loans, ...gifts, ...exchangeOuts][0]
-                                      .id,
-                                  }),
-                                }
-                              : {
-                                  type: 'ItemSelection',
-                                  items: {
-                                    Loan: loans,
-                                    Gift: gifts,
-                                    ExchangeOut: exchangeOuts,
-                                  },
-                                }
-                          );
-                        })
-                      )
-                    : setState({ type: 'Main' })
-                }
-              >
-                {unavailableCount}
-              </Button.LikeLink>
-            )
-          }
-        </td>
-      </tr>
-      {state.type === 'ItemSelection' && (
-        <tr>
-          <td className="col-span-full">
-            {Object.entries(state.items).map(([tableName, items]) =>
-              items.map(({ id, label }) => (
-                <Button.LikeLink
-                  onClick={(): void =>
-                    setState({
-                      type: 'ResourceDialog',
-                      resource: new schema.models[tableName].Resource({ id }),
-                    })
-                  }
-                >{`${schema.models[tableName].label}: ${label}`}</Button.LikeLink>
-              ))
-            )}
-          </td>
-        </tr>
-      )}
-      {state.type === 'ResourceDialog' && (
-        <ResourceView
-          canAddAnother
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          mode="edit"
-          resource={state.resource}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
-      )}
-    </>
   );
 }

@@ -4,8 +4,8 @@ import { Http } from './helpers';
 import { formatList } from '../../components/Atoms/Internationalization';
 import { sortFunction } from '../utils';
 import { f } from '../functools';
-import { handleAjaxError } from '../../components/Errors/ErrorBoundary';
 import { AjaxResponseObject, MimeType } from './index';
+import { handleAjaxError } from '../../components/Errors/FormatError';
 
 /**
  * Handle network response (parse the data, handle possible errors)

@@ -2,14 +2,11 @@ import { GetOrSet, IR } from '../../utils/types';
 import { NewRole, Role } from './Role';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/helpers';
-import {
-  BackEndRole,
-  decompressPolicies,
-  processPolicies,
-} from './utils';
+import { BackEndRole } from './utils';
 import { removeKey } from '../../utils/utils';
 import { CreateRole } from './RoleTemplate';
 import React from 'react';
+import { decompressPolicies, processPolicies } from './policyConverter';
 
 export const createLibraryRole = async (
   handleChange: GetOrSet<IR<Role> | undefined>[1],

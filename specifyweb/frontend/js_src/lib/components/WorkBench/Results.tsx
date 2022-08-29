@@ -14,8 +14,8 @@ import { getModel } from '../DataModel/schema';
 import type { RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { H2, Ul } from '../Atoms';
-import { TableIcon } from '../Molecules';
 import { Button } from '../Atoms/Button';
+import {TableIcon} from '../Molecules/TableIcon';
 
 function TableResults({
   tableName,

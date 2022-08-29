@@ -2,6 +2,8 @@ import React from 'react';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -11,25 +13,18 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
-import { Container, H2 } from '../Atoms';
+import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Form, Input, Label } from '../Atoms/Form';
+import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { Submit } from '../Atoms/Submit';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModelById, schema } from '../DataModel/schema';
+import { getModelById } from '../DataModel/schema';
 import type { RecordSet, SpQuery } from '../DataModel/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
-import { TableIcon } from '../Molecules';
-import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import {
-  ProtectedAction,
-  ProtectedTable,
-} from '../Permissions/PermissionDenied';
-import { usePref } from '../UserPreferences/Hooks';
-import { getMappingLineProps } from '../WbPlanView/Components';
+import { useTitle } from '../Molecules/AppTitle';
+import { hasPermission } from '../Permissions/helpers';
+import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
@@ -38,21 +33,16 @@ import {
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
-import {
-  MakeRecordSetButton,
-  QueryExportButtons,
-  QueryLoanReturn,
-  SaveQueryButtons,
-} from './Components';
-import { QueryEditButton } from './Edit';
+import { MakeRecordSetButton } from './Components';
+import { QueryContainer } from './Container';
+import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
+import { QueryHeader } from './Header';
 import { mutateLineData, smoothScroll, unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
-import { QueryResultsWrapper } from './ResultsTable';
-import { useTitle } from '../../hooks/useTitle';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { QueryResultsWrapper } from './ResultsWrapper';
+import { QueryToolbar } from './Toolbar';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -67,6 +57,7 @@ const pendingState = {
   baseTableName: 'CollectionObject',
 } as const;
 
+// REFACTOR: split this component
 export function QueryBuilder({
   query: queryResource,
   isReadOnly,
@@ -212,12 +203,6 @@ export function QueryBuilder({
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [stickyScrolling] = usePref(
-    'queryBuilder',
-    'behavior',
-    'stickyScrolling'
-  );
-
   const [isQueryRunPending, handleQueryRunPending, handleNoQueryRunPending] =
     useBooleanState();
   React.useEffect(() => {
@@ -302,100 +287,28 @@ export function QueryBuilder({
           } else runQuery('regular');
         }}
       >
-        {
-          /* FEATURE: For embedded queries, add a button to open query in new tab */
-          !isEmbedded && (
-            <header className="flex items-center gap-2 whitespace-nowrap">
-              <TableIcon label name={model.name} />
-              <H2 className="overflow-x-auto">
-                {typeof recordSet === 'object'
-                  ? queryText(
-                      'queryRecordSetTitle',
-                      query.name,
-                      recordSet.get('name')
-                    )
-                  : queryText('queryTaskTitle', query.name)}
-              </H2>
-              {!queryResource.isNew() && <QueryEditButton query={query} />}
-              <span className="ml-2 flex-1" />
-              {!isScrolledTop && (
-                <Button.Small
-                  onClick={(): void =>
-                    container === null ? undefined : smoothScroll(container, 0)
-                  }
-                >
-                  {queryText('editQuery')}
-                </Button.Small>
-              )}
-              {state.baseTableName === 'LoanPreparation' && (
-                <ProtectedAction
-                  action="execute"
-                  resource="/querybuilder/query"
-                >
-                  <ProtectedTable action="update" tableName="Loan">
-                    <ProtectedTable
-                      action="create"
-                      tableName="LoanReturnPreparation"
-                    >
-                      <ProtectedTable action="read" tableName="LoanPreparation">
-                        <ErrorBoundary dismissable>
-                          <QueryLoanReturn
-                            fields={state.fields}
-                            getQueryFieldRecords={getQueryFieldRecords}
-                            queryResource={queryResource}
-                          />
-                        </ErrorBoundary>
-                      </ProtectedTable>
-                    </ProtectedTable>
-                  </ProtectedTable>
-                </ProtectedAction>
-              )}
-              {hasToolPermission(
-                'queryBuilder',
-                queryResource.isNew() ? 'create' : 'update'
-              ) && (
-                <SaveQueryButtons
-                  fields={state.fields}
-                  getQueryFieldRecords={getQueryFieldRecords}
-                  isReadOnly={isReadOnly}
-                  isValid={(): boolean =>
-                    formRef.current?.reportValidity() ?? false
-                  }
-                  queryResource={queryResource}
-                  saveRequired={saveRequired}
-                  unsetUnloadProtect={unsetUnloadProtect}
-                  onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
-                  onTriedToSave={(): boolean => {
-                    handleTriedToSave();
-                    const fieldLengthLimit =
-                      defined(
-                        schema.models.SpQueryField.getLiteralField('startValue')
-                      ).length ?? Number.POSITIVE_INFINITY;
-                    return state.fields.every((field) =>
-                      field.filters.every(
-                        ({ startValue }) => startValue.length < fieldLengthLimit
-                      )
-                    );
-                  }}
-                />
-              )}
-            </header>
-          )
-        }
-        <div
-          className={`
-            grid flex-1 grid-cols-1 gap-4 overflow-y-auto
-            ${stickyScrolling ? 'snap-y snap-proximity' : ''}
-            ${
-              isEmbedded
-                ? ''
-                : state.queryRunCount === 0
-                ? 'grid-rows-[100%]'
-                : 'grid-rows-[100%_100%]'
-            }
-            ${isEmbedded ? '' : '-mx-4 px-4'}
-          `}
-          ref={setContainer}
+        {/* FEATURE: For embedded queries, add a button to open query in new tab */}
+        {!isEmbedded && (
+          <QueryHeader
+            container={container}
+            formRef={formRef}
+            getQueryFieldRecords={getQueryFieldRecords}
+            isReadOnly={isReadOnly}
+            isScrolledTop={isScrolledTop}
+            query={query}
+            queryResource={queryResource}
+            recordSet={recordSet}
+            saveRequired={saveRequired}
+            state={state}
+            unsetUnloadProtect={unsetUnloadProtect}
+            onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
+            onTriedToSave={handleTriedToSave}
+          />
+        )}
+        <QueryContainer
+          forwardRef={setContainer}
+          isEmbedded={isEmbedded}
+          resultsShown={state.queryRunCount !== 0}
           onScroll={(): void =>
             /*
              * Dividing by 4 results in button appearing only once user scrolled
@@ -534,48 +447,20 @@ export function QueryBuilder({
                       })
               }
             />
-            <div className="flex flex-wrap gap-2" role="toolbar">
-              <Label.Inline>
-                <Input.Checkbox
-                  checked={showHiddenFields}
-                  onValueChange={setShowHiddenFields}
-                />
-                {commonText('revealHiddenFormFields')}
-              </Label.Inline>
-              <span className="-ml-2 flex-1" />
-              {hasPermission('/querybuilder/query', 'execute') && (
-                <>
-                  {/*
-                   * Query Distinct for trees is disabled because of
-                   * https://github.com/specify/specify7/pull/1019#issuecomment-973525594
-                   */}
-                  {!isTreeModel(model.name) && (
-                    <Label.Inline>
-                      <Input.Checkbox
-                        checked={query.selectDistinct ?? false}
-                        disabled={!isEmpty}
-                        onChange={(): void =>
-                          setQuery({
-                            ...query,
-                            selectDistinct: !(query.selectDistinct ?? false),
-                          })
-                        }
-                      />
-                      {queryText('distinct')}
-                    </Label.Inline>
-                  )}
-                  <Button.Small
-                    disabled={!isEmpty}
-                    onClick={(): void => runQuery('count')}
-                  >
-                    {queryText('countOnly')}
-                  </Button.Small>
-                  <Submit.Small disabled={!isEmpty}>
-                    {commonText('query')}
-                  </Submit.Small>
-                </>
-              )}
-            </div>
+            <QueryToolbar
+              isDistinct={query.selectDistinct ?? false}
+              isEmpty={isEmpty}
+              modelName={model.name}
+              showHiddenFields={showHiddenFields}
+              onRunCountOnly={(): void => runQuery('count')}
+              onToggleDistinct={(): void =>
+                setQuery({
+                  ...query,
+                  selectDistinct: !(query.selectDistinct ?? false),
+                })
+              }
+              onToggleHidden={setShowHiddenFields}
+            />
           </div>
           {hasPermission('/querybuilder/query', 'execute') && (
             <QueryResultsWrapper
@@ -621,7 +506,7 @@ export function QueryBuilder({
               }}
             />
           )}
-        </div>
+        </QueryContainer>
       </Form>
     </Container.Full>
   ) : null;

@@ -1,68 +1,51 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { ajax } from '../../utils/ajax';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import type { AnySchema } from '../DataModel/helpers';
-import { serializeResource } from '../DataModel/helpers';
-import { format, getMainTableFields } from '../Forms/dataObjFormatters';
-import { f } from '../../utils/functools';
-import { getParsedAttribute, keysToLowerCase } from '../../utils/utils';
-import { load } from '../InitialContext';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { getValidationAttributes } from '../../utils/uiParse';
+import { keysToLowerCase } from '../../utils/utils';
+import { DataEntry } from '../Atoms/DataEntry';
+import { LoadingContext } from '../Core/Contexts';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  fetchResource,
+  getResourceApiUrl,
+  resourceOn,
+} from '../DataModel/resource';
+import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode, FormType } from '../FormParse';
-import { columnToFieldMapper } from './parseselect';
-import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
-import type {
-  CollectionRelationships,
-  QueryComboBoxTreeData,
-  TypeSearch,
-} from './queryComboBoxUtils';
+import { format, getMainTableFields } from '../Forms/dataObjFormatters';
+import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
+import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
+import { SearchDialog } from '../Forms/SearchDialog';
+import { SubViewContext } from '../Forms/SubView';
+import {
+  isTreeModel,
+} from '../InitialContext/treeRanks';
+import { userInformation } from '../InitialContext/userInformation';
+import type { AutoCompleteItem } from '../Molecules/AutoComplete';
+import { AutoComplete } from '../Molecules/AutoComplete';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
 import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
   makeComboBoxQuery,
 } from './queryComboBoxUtils';
-import { formatUrl } from '../Router/queryString';
-import {
-  fetchResource,
-  getResourceApiUrl,
-  idFromUrl,
-  resourceOn,
-} from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { toTable, toTreeTable } from '../DataModel/specifyModel';
-import {
-  getTreeDefinitionItems,
-  isTreeModel,
-  treeRanksPromise,
-} from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { getValidationAttributes } from '../../utils/uiParse';
-import { userInformation } from '../InitialContext/userInformation';
-import type { AutoCompleteItem } from '../Molecules/AutoComplete';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import { LoadingContext } from '../Core/Contexts';
-import { formatList } from '../Atoms/Internationalization';
-import { Dialog } from '../Molecules/Dialog';
-import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
-import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
-import { SearchDialog } from '../Forms/SearchDialog';
-import { SubViewContext } from '../Forms/SubView';
-import { useResourceValue } from '../../hooks/useResourceValue';
-import { DataEntry } from '../Atoms/DataEntry';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import {useCollectionRelationships} from './useCollectionRelationships';
+import {useTreeData} from './useTreeData';
+import {useTypeSearch} from './useTypeSearch';
 
-const typeSearches = load<Element>(
-  formatUrl('/context/app.resource', { name: 'TypeSearches' }),
-  'application/xml'
-);
-
+// REFACTOR: split this component
 export function QueryComboBox({
   id,
   resource,
@@ -104,151 +87,10 @@ export function QueryComboBox({
       );
   }, [resource, field]);
 
-  const [treeData] = useAsyncState<QueryComboBoxTreeData | false>(
-    React.useCallback(() => {
-      const treeResource = toTreeTable(resource);
-      if (
-        treeResource === undefined ||
-        !hasTreeAccess(treeResource.specifyModel.name, 'read')
-      )
-        return false;
-      if (field?.name === 'parent') {
-        return f.all({
-          lowestChildRank: treeResource.isNew()
-            ? Promise.resolve(undefined)
-            : fetchCollection(
-                treeResource.specifyModel.name,
-                {
-                  limit: 1,
-                  orderBy: 'rankId',
-                },
-                {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  parent_id: treeResource.id,
-                }
-              ).then(({ records }) => records[0]?.rankId),
-          treeRanks: treeRanksPromise.then(() =>
-            defined(
-              getTreeDefinitionItems(treeResource.specifyModel.name, false)
-            ).map((rank) => ({
-              rankId: rank.rankId,
-              isEnforced: rank.isEnforced ?? false,
-            }))
-          ),
-        });
-      } else if (field?.name === 'acceptedParent') {
-        // Don't need to do anything. Form system prevents lookups/edits
-      } else if (
-        field?.name === 'hybridParent1' ||
-        field?.name === 'hybridParent2'
-      ) {
-        /*
-         * No idea what restrictions there should be, the only obviously
-         * required one — that a taxon is not a hybrid of itself, seems to
-         * already be enforced
-         */
-      }
-      return false;
-    }, [resource, field]),
-    false
-  );
 
-  const [collectionRelationships] = useAsyncState<
-    CollectionRelationships | false
-  >(
-    React.useCallback(
-      () =>
-        hasTablePermission('CollectionRelType', 'read')
-          ? f.maybe(toTable(resource, 'CollectionRelationship'), async () =>
-              f.all({
-                left: fetchCollection(
-                  'CollectionRelType',
-                  { limit: DEFAULT_FETCH_LIMIT },
-                  {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    leftsidecollection_id: schema.domainLevelIds.collection,
-                  }
-                ).then(({ records }) =>
-                  records.map((relationship) => ({
-                    id: relationship.id,
-                    collection: idFromUrl(
-                      relationship.rightSideCollection ?? ''
-                    ),
-                  }))
-                ),
-                right: fetchCollection(
-                  'CollectionRelType',
-                  { limit: DEFAULT_FETCH_LIMIT },
-                  {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    rightsidecollection_id: schema.domainLevelIds.collection,
-                  }
-                ).then(({ records }) =>
-                  records.map((relationship) => ({
-                    id: relationship.id,
-                    collection: idFromUrl(
-                      relationship.leftSideCollection ?? ''
-                    ),
-                  }))
-                ),
-              })
-            ) ?? false
-          : false,
-      [resource]
-    ),
-    false
-  );
-
-  const [typeSearch] = useAsyncState<TypeSearch | false>(
-    React.useCallback(async () => {
-      const relatedModel =
-        initialRelatedModel ??
-        (field?.isRelationship === true ? field.relatedModel : undefined);
-      if (relatedModel === undefined) return false;
-
-      const typeSearch =
-        typeof initialTypeSearch === 'object'
-          ? initialTypeSearch
-          : (await typeSearches).querySelector(
-              typeof initialTypeSearch === 'string'
-                ? `[name="${initialTypeSearch}"]`
-                : `[tableid="${relatedModel.tableId}"]`
-            );
-      if (typeSearch === undefined) return false;
-
-      const rawSearchFieldsNames =
-        typeSearch === null
-          ? []
-          : getParsedAttribute(typeSearch, 'searchField')
-              ?.split(',')
-              .map(f.trim)
-              .map(
-                typeof typeSearch?.textContent === 'string' &&
-                  typeSearch.textContent.trim().length > 0
-                  ? columnToFieldMapper(typeSearch.textContent)
-                  : f.id
-              ) ?? [];
-      const searchFields = rawSearchFieldsNames.map((searchField) =>
-        defined(relatedModel.getField(searchField))
-      );
-
-      const fieldTitles = searchFields.map((field) =>
-        filterArray([
-          field.model === relatedModel ? undefined : field.model.label,
-          field.label,
-        ]).join(' / ')
-      );
-
-      return {
-        title: queryText('queryBoxDescription', formatList(fieldTitles)),
-        searchFields,
-        relatedModel,
-        dataObjectFormatter:
-          typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
-      };
-    }, [initialTypeSearch, field, initialRelatedModel]),
-    false
-  );
+  const treeData = useTreeData(resource, field);
+  const collectionRelationships = useCollectionRelationships(resource);
+  const typeSearch = useTypeSearch(initialTypeSearch, field, initialRelatedModel);
 
   const isLoaded =
     treeData !== undefined &&
@@ -365,7 +207,7 @@ export function QueryComboBox({
   const handleOpenRelated = (): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
-      : typeof relatedCollectionId === 'number' &&
+      : (typeof relatedCollectionId === 'number' &&
         !userInformation.availableCollections.some(
           ({ id }) => id === relatedCollectionId
         )
@@ -377,7 +219,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState' });
+      : setState({ type: 'ViewResourceState' }));
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -492,8 +334,22 @@ export function QueryComboBox({
     <div className="flex w-full items-center">
       <AutoComplete<string>
         aria-label={undefined}
+        disabled={
+          !isLoaded ||
+          mode === 'view' ||
+          formType === 'formTable' ||
+          typeof typeSearch === 'undefined' ||
+          typeof formatted === 'undefined'
+        }
         filterItems={false}
         forwardRef={validationRef}
+        inputProps={{
+          id,
+          required: isRequired,
+          title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
+          ...getValidationAttributes(parser),
+          type: 'text',
+        }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
         value={formatted?.label ?? commonText('loading') ?? ''}
@@ -504,31 +360,17 @@ export function QueryComboBox({
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>
           field?.isRelationship === true
-            ? state.type === 'AddResourceState'
+            ? (state.type === 'AddResourceState'
               ? setState({ type: 'MainState' })
               : setState({
                   type: 'AddResourceState',
                   resource: pendingValueToResource(field),
-                })
+                }))
             : undefined
         }
-        disabled={
-          !isLoaded ||
-          mode === 'view' ||
-          formType === 'formTable' ||
-          typeof typeSearch === 'undefined' ||
-          typeof formatted === 'undefined'
-        }
-        inputProps={{
-          id,
-          required: isRequired,
-          title: typeof typeSearch === 'object' ? typeSearch.title : undefined,
-          ...getValidationAttributes(parser),
-          type: 'text',
-        }}
       />
       <span className="contents print:hidden">
-        {formType === 'formTable' ? undefined : mode === 'view' ? (
+        {formType === 'formTable' ? undefined : (mode === 'view' ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
             <DataEntry.View
@@ -630,7 +472,7 @@ export function QueryComboBox({
                                     operation: 'lessThan',
                                     values: [startValue],
                                   }
-                                : fieldName === 'nodeNumber'
+                                : (fieldName === 'nodeNumber'
                                 ? {
                                     field: 'nodeNumber',
                                     operation: 'notBetween',
@@ -645,7 +487,7 @@ export function QueryComboBox({
                                 : f.error(`extended filter not created`, {
                                     fieldName,
                                     startValue,
-                                  })
+                                  }))
                             )
                         ),
                       })
@@ -653,7 +495,7 @@ export function QueryComboBox({
               }
             />
           </>
-        )}
+        ))}
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
@@ -685,7 +527,7 @@ export function QueryComboBox({
               : (): void => setState({ type: 'MainState' })
           }
         />
-      ) : state.type === 'AddResourceState' ? (
+      ) : (state.type === 'AddResourceState' ? (
         <ResourceView
           canAddAnother={false}
           dialog="nonModal"
@@ -709,7 +551,7 @@ export function QueryComboBox({
               : undefined
           }
         />
-      ) : undefined}
+      ) : undefined)}
       {state.type === 'SearchState' ? (
         <SearchDialog
           extraFilters={state.extraConditions}

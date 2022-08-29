@@ -7,13 +7,11 @@ import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { formData, Http } from '../../utils/ajax/helpers';
 import type { SpecifyUser } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { addMissingFields, serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { getOperationPermissions } from '../Permissions';
 import {
   hasDerivedPermission,
   hasPermission,
@@ -21,11 +19,10 @@ import {
 } from '../Permissions/helpers';
 import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import { anyResource, decompressPolicies, getAllActions } from './utils';
+import { anyResource, getAllActions } from './utils';
 import type { IR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { AppTitle } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -39,27 +36,17 @@ import {
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
 import { deserializeResource } from '../../hooks/resource';
-import { augmentMode, BaseResourceView } from '../Forms/ResourceView';
+import { augmentMode } from '../Forms/ResourceView';
 import { SaveButton } from '../Forms/Save';
-import { SecurityPolicies, SecurityPoliciesWrapper } from './Policy';
 import { PreviewPermissions } from './Preview';
 import {
-  CollectionAccess,
   LegacyPermissions,
-  SetCollection,
   SetPasswordPrompt,
   SetSuperAdmin,
   UserIdentityProviders,
   UserRoles,
 } from './UserComponents';
-import {
-  useCollectionRoles,
-  useUserAgents,
-  useUserInstitutionalPolicies,
-  useUserPolicies,
-  useUserProviders,
-  useUserRoles,
-} from './UserHooks';
+import { useCollectionRoles, useUserAgents, useUserRoles } from './UserHooks';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import type { SetAgentsResponse } from './MissingAgentsDialog';
 import { MissingAgentsDialog } from './MissingAgentsDialog';
@@ -71,6 +58,18 @@ import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { BaseResourceView } from '../Forms/BaseResourceView';
+import { AppTitle } from '../Molecules/AppTitle';
+import { getOperationPermissions } from '../Permissions';
+import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
+import { decompressPolicies } from './policyConverter';
+import {
+  useUserInstitutionalPolicies,
+  useUserPolicies,
+  useUserProviders,
+} from './UserPolicyHooks';
+import { CollectionAccess, SetCollection } from './UserCollections';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();

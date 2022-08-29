@@ -22,7 +22,7 @@ import {
 } from '../../utils/uiParse';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { mappingElementDivider } from '../WbPlanView/Components';
+import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { useValidation } from '../../hooks/useValidation';
 import { useAsyncState } from '../../hooks/useAsyncState';

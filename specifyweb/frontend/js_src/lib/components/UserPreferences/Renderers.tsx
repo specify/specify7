@@ -6,7 +6,6 @@
 import React from 'react';
 
 import type { Collection } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { getAvailableFonts } from '../../utils/fonts';
 import { f } from '../../utils/functools';
 import { commonText } from '../../localization/common';
@@ -24,10 +23,11 @@ import {
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { iconClassName } from '../Atoms/Icons';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
-import { usePref } from './Hooks';
 import { Input, Select } from '../Atoms/Form';
 import { useValidation } from '../../hooks/useValidation';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { usePref } from './usePref';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({

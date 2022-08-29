@@ -12,7 +12,6 @@ import type { Options, TableSynonym } from './autoMapperDefinitions';
 import { autoMapperDefinitions } from './autoMapperDefinitions';
 import type { AutoMapperScope, MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
-import type { AnyTree } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { findArrayDivergencePoint } from '../../utils/utils';
 import { getModel } from '../DataModel/schema';
@@ -35,6 +34,9 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { isCircularRelationship } from './modelHelper';
+import { AnyTree } from '../DataModel/helperTypes';
+
+// REFACTOR: make code more readable. split into several files
 
 type AutoMapperNode = 'shortcutsAndTableSynonyms' | 'synonymsAndMatches';
 

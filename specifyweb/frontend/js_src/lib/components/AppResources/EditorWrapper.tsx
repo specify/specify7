@@ -9,7 +9,6 @@ import type {
   SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { fetchResource } from '../DataModel/resource';
 import { getUniqueName } from '../../utils/uniquifyName';
@@ -20,6 +19,7 @@ import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
 import { Container, H3 } from '../Atoms';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;

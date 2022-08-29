@@ -6,7 +6,6 @@
 
 import { error } from '../Errors/assert';
 import type { Agent, Tables } from './types';
-import type { AnySchema, AnyTree } from './helpers';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { load } from '../InitialContext';
@@ -17,6 +16,7 @@ import { LiteralField, Relationship } from './specifyField';
 import { SpecifyModel, type TableDefinition } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
+import {AnySchema, AnyTree} from './helperTypes';
 
 export type SchemaLocalization = {
   readonly name: string | null;

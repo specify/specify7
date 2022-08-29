@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
 import { formData } from '../../utils/ajax/helpers';
-import type { AnySchema, AnyTree } from '../DataModel/helpers';
 import { toLowerCase } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -21,6 +20,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {AnySchema, AnyTree} from '../DataModel/helperTypes';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 

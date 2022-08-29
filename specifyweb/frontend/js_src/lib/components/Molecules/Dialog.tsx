@@ -15,30 +15,14 @@ import { LoadingContext } from '../Core/Contexts';
 import { dialogIcons } from '../Atoms/Icons';
 import {
   useHighContrast,
-  usePref,
   useReducedTransparency,
   useTransitionDuration,
 } from '../UserPreferences/Hooks';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { Button, DialogContext } from '../Atoms/Button';
-import {useId} from '../../hooks/useId';
-import {useTitle} from '../../hooks/useTitle';
-
-/*
- * This must be accompanied by a label since loading bar is hidden from screen
- * readers
- */
-export const loadingBar = (
-  <div className="pt-5 hover:animate-hue-rotate">
-    <div
-      aria-hidden
-      className={`
-        h-7 animate-bounce rounded bg-gradient-to-r
-        from-orange-400 to-amber-200
-      `}
-    />
-  </div>
-);
+import { useId } from '../../hooks/useId';
+import { useTitle } from './AppTitle';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Modal dialog with a loading bar

@@ -6,13 +6,11 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
-import { toResource } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AppResourceIcon } from './EditorComponents';
@@ -27,6 +25,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { className } from '../Atoms/className';
 import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { toResource } from '../DataModel/helpers';
 
 export function AppResourcesTabs({
   label,

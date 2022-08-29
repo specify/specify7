@@ -8,7 +8,6 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import { formData, Http } from '../../utils/ajax/helpers';
 import { commonText } from '../../localization/common';
-import { CopyButton } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
@@ -17,6 +16,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import {useId} from '../../hooks/useId';
 import {useValidation} from '../../hooks/useValidation';
+import {CopyButton} from '../Molecules/Copy';
 
 export function MasterKeyOverlay(): JSX.Element | null {
   const [password, setPassword] = React.useState<string>('');

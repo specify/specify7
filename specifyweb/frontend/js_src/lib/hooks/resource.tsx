@@ -1,10 +1,5 @@
 import React from 'react';
 
-import type {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-} from '../components/DataModel/helpers';
 import { serializeResource } from '../components/DataModel/helpers';
 import { removeKey } from '../utils/utils';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
@@ -16,6 +11,11 @@ import type {
 } from '../components/DataModel/specifyField';
 import type { GetOrSet, IR } from '../utils/types';
 import { getValidationAttributes, resolveParser } from '../utils/uiParse';
+import {
+  AnySchema,
+  SerializedModel,
+  SerializedResource
+} from '../components/DataModel/helperTypes';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for

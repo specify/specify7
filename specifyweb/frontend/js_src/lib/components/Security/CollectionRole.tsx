@@ -2,29 +2,29 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
-import type { SpecifyUser } from '../DataModel/types';
-import { removeKey, replaceItem, replaceKey } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import { decompressPolicies } from './utils';
+import { Http } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
+import { removeKey, replaceItem, replaceKey } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
-import { LoadingScreen } from '../Molecules/Dialog';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpecifyUser } from '../DataModel/types';
 import { SearchDialog } from '../Forms/SearchDialog';
+import { userInformation } from '../InitialContext/userInformation';
+import { LoadingScreen } from '../Molecules/Dialog';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { createCollectionRole } from './CreateRole';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
-import { Ul } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
+import { decompressPolicies } from './policyConverter';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,

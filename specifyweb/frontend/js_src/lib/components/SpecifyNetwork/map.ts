@@ -10,10 +10,10 @@ import {
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
 import { schema } from '../DataModel/schema';
-import { toTable } from '../DataModel/specifyModel';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { toTable } from '../DataModel/helpers';
 
 export type OccurrenceData = {
   readonly collectionObjectId: number;

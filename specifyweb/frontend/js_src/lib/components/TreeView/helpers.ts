@@ -4,11 +4,11 @@ import _ from 'underscore';
 import { ajax } from '../../utils/ajax';
 import { formatNumber } from '../Atoms/Internationalization';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
-import type { AnyTree } from '../DataModel/helpers';
 import { treeText } from '../../localization/tree';
 import { getTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
+import {AnyTree} from '../DataModel/helperTypes';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<

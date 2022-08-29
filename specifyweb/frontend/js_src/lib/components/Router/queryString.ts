@@ -2,8 +2,8 @@
  * Parse URL Query parameters
  */
 
-import { keysToLowerCase } from '../../utils/utils';
 import type { IR } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 
 export function formatUrl(
   url: string,

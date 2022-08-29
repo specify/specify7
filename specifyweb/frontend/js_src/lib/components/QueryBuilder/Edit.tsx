@@ -4,13 +4,11 @@ import { ajax } from '../../utils/ajax';
 import { formData, Http } from '../../utils/ajax/helpers';
 import { error } from '../Errors/assert';
 import type { SpQuery, SpReport } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
-import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -24,6 +22,8 @@ import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
 
 export function QueryEditButton({
   query,

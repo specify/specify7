@@ -10,8 +10,8 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { schema } from '../DataModel/schema';
-import { TableIcon } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 
 export function SchemaConfigTables(): JSX.Element {

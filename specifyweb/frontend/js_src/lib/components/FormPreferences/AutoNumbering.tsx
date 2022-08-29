@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -14,6 +13,7 @@ import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {AnySchema} from '../DataModel/helperTypes';
 
 export function AutoNumbering({
   resource,

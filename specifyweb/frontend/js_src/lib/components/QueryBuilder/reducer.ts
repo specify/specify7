@@ -7,16 +7,19 @@ import { generateReducer } from 'typesafe-reducer';
 
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { SpQuery, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { QueryField } from './helpers';
 import { parseQueryFields } from './helpers';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { mappingPathIsComplete, mutateMappingPath } from '../WbPlanView/helpers';
+import {
+  mappingPathIsComplete,
+  mutateMappingPath,
+} from '../WbPlanView/helpers';
+import { SerializedResource } from '../DataModel/helperTypes';
 
-type MainState = State<
+export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;

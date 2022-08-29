@@ -9,13 +9,13 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/Hooks';
 import { TablesListEdit } from './QueryTablesEdit';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { usePref } from '../UserPreferences/usePref';
 
 export const defaultFormTablesConfig: RA<keyof Tables> = [
   'CollectionObject',

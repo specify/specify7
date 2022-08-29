@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { addFullScreenButton, showLeafletMap } from '../Leaflet/leaflet';
+import { showLeafletMap } from '../Leaflet/leaflet';
 import type L from '../Leaflet/leafletExtend';
 import type { LocalityData } from '../Leaflet/leafletHelpers';
 import { commonText } from '../../localization/common';
@@ -9,6 +9,7 @@ import type { RA } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from './Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {addFullScreenButton} from '../Leaflet/leafletAddOns';
 
 const resizeThrottle = 250;
 

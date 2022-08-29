@@ -1,17 +1,17 @@
 import React from 'react';
 
 import type { SpLocaleContainer, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
 import { filterFormatters } from './helpers';
 import { defined } from '../../utils/types';
-import { AutoGrowTextArea } from '../Molecules';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import { PickList } from './Components';
 import { SchemaConfigColumn } from './Fields';
 import type { SchemaData } from './SetupHooks';
 import { Input, Label } from '../Atoms/Form';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
 
 export const maxSchemaValueLength = defined(
   schema.models.SpLocaleItemStr.getField('text')

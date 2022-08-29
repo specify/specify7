@@ -1,11 +1,9 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { toTable } from '../DataModel/specifyModel';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -26,9 +24,11 @@ import { ShareRecord } from './ShareRecord';
 import { PrintOnSave } from '../FormFields/Checkbox';
 import { useCachedState } from '../../hooks/useCachedState';
 import { SubViewContext } from '../Forms/SubView';
-import { SubViewPreferences } from '../Forms/SubViewPreferences';
+import { SubViewPreferences } from './SubViewPreferences';
 import { GenerateLabel } from '../FormCommands';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
 
 export function FormPreferences({
   resource,

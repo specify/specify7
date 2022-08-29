@@ -1,10 +1,10 @@
 import { ajax } from '../../utils/ajax';
 import type { Taxon, TaxonTreeDefItem } from './types';
-import type { AnyTree } from './helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from './legacyTypes';
 import { treeText } from '../../localization/tree';
 import { formatUrl } from '../Router/queryString';
+import {AnyTree} from './helperTypes';
 
 export const initializeTreeRecord = (
   resource: SpecifyResource<AnyTree>

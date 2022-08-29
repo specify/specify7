@@ -156,7 +156,9 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         path: 'about',
         title: welcomeText('aboutSpecify'),
         element: () =>
-          import('../HomePage').then(({ AboutOverlay }) => AboutOverlay),
+          import('../HomePage/AboutSpecify').then(
+            ({ AboutOverlay }) => AboutOverlay
+          ),
       },
     ],
   },

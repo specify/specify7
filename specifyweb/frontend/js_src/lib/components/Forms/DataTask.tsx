@@ -5,35 +5,28 @@
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { deserializeResource } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { f } from '../../utils/functools';
+import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
-import type { CollectionObject, RecordSet } from '../DataModel/types';
-import type { AnySchema, SerializedResource } from '../DataModel/helpers';
 import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/domain';
-import { f } from '../../utils/functools';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { defined } from '../../utils/types';
+import type { CollectionObject, RecordSet } from '../DataModel/types';
+import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
-import { OtherCollection } from './OtherCollectionView';
-import {
-  ProtectedTable,
-  ProtectedTool,
-  TablePermissionDenied,
-} from '../Permissions/PermissionDenied';
-import { usePref } from '../UserPreferences/Hooks';
-import { deserializeResource } from '../../hooks/resource';
-import { ShowResource } from './ResourceView';
+import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import {useAsyncState} from '../../hooks/useAsyncState';
-
-const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
+import { OtherCollection } from './OtherCollectionView';
+import { DisplayResource, ShowResource } from './ShowResource';
+import { usePref } from '../UserPreferences/usePref';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -145,39 +138,6 @@ export function ViewResource(): JSX.Element {
   return <DisplayResource id={id} tableName={tableName} />;
 }
 
-/**
- * Shows user's individual resources which can optionally be in the context of
- * some recordset
- *
- * id may be a record id, or GUID (for Collection Objects)
- */
-function DisplayResource({
-  tableName,
-  id,
-}: {
-  readonly tableName: string;
-  readonly id: string | undefined;
-}): JSX.Element {
-  const model = getModel(tableName);
-  const resource = React.useMemo(
-    () => (typeof model === 'object' ? new model.Resource({ id }) : undefined),
-    [model, id]
-  );
-
-  if (model === undefined || resource === undefined) {
-    return <NotFoundView />;
-  } else if (typeof id === 'string' && !hasTablePermission(model.name, 'read'))
-    return <TablePermissionDenied action="read" tableName={model.name} />;
-  else if (reGuid.test(id ?? ''))
-    return <ViewResourceByGuid guid={id!} model={model} />;
-  else
-    return (
-      <CheckLoggedInCollection resource={resource}>
-        <ShowResource resource={resource} />
-      </CheckLoggedInCollection>
-    );
-}
-
 export function ViewResourceByGuid({
   model,
   guid,
@@ -286,7 +246,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
  * Check if it makes sense to view this resource when logged into current
  * collection
  */
-function CheckLoggedInCollection({
+export function CheckLoggedInCollection({
   resource,
   children,
 }: {

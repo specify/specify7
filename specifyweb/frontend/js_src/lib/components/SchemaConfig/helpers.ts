@@ -5,13 +5,13 @@ import type {
 } from './index';
 import type { DataObjectFormatter } from './SetupHooks';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { addMissingFields } from '../DataModel/helpers';
 import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
 import { commonText } from '../../localization/common';
 import { parseClassName } from '../DataModel/resource';
 import type { JavaType, LiteralField, Relationship } from '../DataModel/specifyField';
 import type { IR, RA } from '../../utils/types';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 let newStringId = 1;
 const defaultLanguage = 'en';

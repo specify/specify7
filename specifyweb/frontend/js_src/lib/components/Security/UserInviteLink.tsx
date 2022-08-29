@@ -2,16 +2,16 @@ import React from 'react';
 
 import { ajax } from '../../utils/ajax';
 import type { SpecifyUser } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import type { IR } from '../../utils/types';
-import { CopyButton } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {CopyButton} from '../Molecules/Copy';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to

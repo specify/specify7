@@ -3,11 +3,11 @@
  */
 
 import type { Agent, Collection, SpecifyUser } from '../DataModel/types';
-import type { SerializedModel, SerializedResource } from '../DataModel/helpers';
 import { serializeResource } from '../DataModel/helpers';
 import { load } from './index';
 import { fetchContext as fetchSchema } from '../DataModel/schema';
 import type { RA, Writable } from '../../utils/types';
+import {SerializedModel, SerializedResource} from '../DataModel/helperTypes';
 
 export type UserInformation = SerializedModel<SpecifyUser> & {
   readonly isauthenticated: boolean;

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
 import type { Collection } from '../DataModel/types';
-import type { SerializedModel } from '../DataModel/helpers';
 import { serializeResource } from '../DataModel/helpers';
 import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
 import { commonText } from '../../localization/common';
@@ -19,11 +18,12 @@ import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
-import { usePref } from '../UserPreferences/Hooks';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useSearchParam } from '../../hooks/navigation';
 import { Submit } from '../Atoms/Submit';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SerializedModel } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 

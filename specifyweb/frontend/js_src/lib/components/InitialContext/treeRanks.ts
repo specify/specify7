@@ -5,7 +5,6 @@
 
 import { fetchRelated } from '../DataModel/collection';
 import type { Tables } from '../DataModel/types';
-import type { AnySchema, AnyTree, SerializedResource } from '../DataModel/helpers';
 import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { caseInsensitiveHash, sortFunction, unCapitalize } from '../../utils/utils';
@@ -14,6 +13,7 @@ import { getModel, schema } from '../DataModel/schema';
 import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import {AnySchema, AnyTree, SerializedResource} from '../DataModel/helperTypes';
 
 export const getDomainResource = <
   LEVEL extends keyof typeof schema.domainLevelIds

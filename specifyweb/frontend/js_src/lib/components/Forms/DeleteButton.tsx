@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ajax } from '../../utils/ajax';
 import type { Tables } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -14,10 +13,12 @@ import { LoadingContext } from '../Core/Contexts';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
 import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames, loadingBar } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames} from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {AnySchema} from '../DataModel/helperTypes';
+import {loadingBar} from '../Molecules';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>

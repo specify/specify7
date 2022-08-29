@@ -3,9 +3,9 @@
  * and needs to be resolved by the user
  */
 
-import type { AnySchema } from './helpers';
 import type { SpecifyResource } from './legacyTypes';
 import type { R, RA } from '../../utils/types';
+import {AnySchema} from './helperTypes';
 
 /*
  * Propagate a save blocker even for independent resources, because

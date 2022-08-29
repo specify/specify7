@@ -8,9 +8,9 @@
  */
 
 import type { Tables } from './types';
-import type { TableFields } from './helpers';
 import { VALUE } from '../../utils/utils';
 import type { IR, RR } from '../../utils/types';
+import {TableFields} from './helperTypes';
 
 export type TableConfigOverwrite =
   /*

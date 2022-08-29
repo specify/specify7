@@ -11,12 +11,12 @@ import { error } from '../Errors/assert';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Progress } from '../Atoms';
-import { softFail } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
-import {useTitle} from '../../hooks/useTitle';
+import { softFail } from '../Errors/Crash';
+import {useTitle} from '../Molecules/AppTitle';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;

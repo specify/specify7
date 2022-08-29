@@ -7,7 +7,6 @@ import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
-import { decompressPolicies } from './utils';
 import type { GetOrSet, IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
@@ -17,6 +16,7 @@ import { createLibraryRole } from './CreateLibraryRole';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
+import { decompressPolicies } from './policyConverter';
 
 const closeUrl = '/specify/security/institution/';
 

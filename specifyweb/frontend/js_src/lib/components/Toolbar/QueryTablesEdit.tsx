@@ -8,10 +8,10 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { Dialog } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/Hooks';
 import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
+import { usePref } from '../UserPreferences/usePref';
 
 export function QueryTablesEdit({
   onClose: handleClose,

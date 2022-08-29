@@ -1,4 +1,4 @@
-import { columnToField, parseSqlQuery } from '../parseselect';
+import { columnToField, parseSqlQuery } from '../parseSelect';
 
 describe('parse', () => {
   test('collecting event', () => {

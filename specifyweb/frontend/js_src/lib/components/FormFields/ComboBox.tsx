@@ -5,7 +5,6 @@
 import React from 'react';
 
 import type { PickList } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import type { FormMode, FormType } from '../FormParse';
@@ -17,7 +16,6 @@ import {
 } from '../PickLists/fetch';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import { isResourceOfType } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
@@ -30,6 +28,8 @@ import { TreeLevelComboBox } from '../PickLists/TreeLevelPickList';
 import { UiField } from './Field';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { isResourceOfType } from '../DataModel/helpers';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

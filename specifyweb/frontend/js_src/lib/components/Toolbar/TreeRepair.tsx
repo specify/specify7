@@ -6,7 +6,6 @@ import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
 import type { TaxonTreeDef } from '../DataModel/types';
-import type { FilterTablesByEndsWith } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { toLowerCase } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -18,7 +17,6 @@ import {
   getDisciplineTrees,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import { TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { icons } from '../Atoms/Icons';
@@ -32,6 +30,8 @@ import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
+import {TableIcon} from '../Molecules/TableIcon';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);

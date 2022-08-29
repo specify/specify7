@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -13,13 +12,14 @@ import { schema } from '../DataModel/schema';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { DataEntry } from '../Atoms/DataEntry';
-import { TableIcon } from '../Molecules';
 import { FormTableInteraction } from './FormTableInteraction';
 import { RenderForm } from '../Forms/SpecifyForm';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnySchema} from '../DataModel/helperTypes';
+import {TableIcon} from '../Molecules/TableIcon';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {

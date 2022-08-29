@@ -7,15 +7,15 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import type { TagProps } from '../Atoms/wrapper';
-import { Portal } from './index';
-import { softFail } from '../Errors/ErrorBoundary';
 import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
-import { usePref } from '../UserPreferences/Hooks';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { softFail } from '../Errors/Crash';
+import { Portal } from './Portal';
+import { usePref } from '../UserPreferences/usePref';
 
 const debounceRate = 300;
 
@@ -43,6 +43,7 @@ const optionClassName = `p-0.5 active:bg-brand-100 dark:active:bg-brand-500
 const selectedClassName = 'text-brand-300';
 const activeClassName = 'bg-gray-100 dark:bg-neutral-800';
 
+// REFACTOR: split this into smaller components
 /**
  * An accessible autocomplete.
  *

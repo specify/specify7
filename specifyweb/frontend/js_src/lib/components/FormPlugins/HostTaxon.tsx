@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { fetchCollection } from '../DataModel/collection';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode, FormType } from '../FormParse';
@@ -12,6 +11,7 @@ import { Input } from '../Atoms/Form';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import { deserializeResource } from '../../hooks/resource';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnySchema} from '../DataModel/helperTypes';
 
 const template =
   typeof document === 'object' ? document.createElement('template') : undefined;

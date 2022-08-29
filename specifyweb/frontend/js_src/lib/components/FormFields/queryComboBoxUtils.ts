@@ -1,17 +1,19 @@
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import type { SpQuery, SpQueryField } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
+import type { RA, WritableArray } from '../../utils/types';
+import { toTable, toTreeTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getUserPref } from '../UserPreferences/helpers';
-import { flippedSortTypes } from '../QueryBuilder/helpers';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { toTable, toTreeTable } from '../DataModel/specifyModel';
-import type { RA, WritableArray } from '../../utils/types';
+import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { flippedSortTypes } from '../QueryBuilder/helpers';
+import { getUserPref } from '../UserPreferences/helpers';
+import type {CollectionRelationships} from './useCollectionRelationships';
+import {QueryComboBoxTreeData} from './useTreeData';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -54,9 +56,9 @@ export function makeComboBoxQuery({
       'startValue',
       searchAlgorithm === 'contains'
         ? `%${value}%`
-        : searchAlgorithm === 'startsWithCaseSensitive'
+        : (searchAlgorithm === 'startsWithCaseSensitive'
         ? `%${value}`
-        : value
+        : value)
     )
     .set(
       'operStart',
@@ -183,9 +185,9 @@ export const getRelatedCollectionId = (
 ): number | undefined =>
   (fieldName === 'rightSide'
     ? left
-    : fieldName === 'leftSide'
+    : (fieldName === 'leftSide'
     ? right
-    : undefined
+    : undefined)
   )?.find(
     ({ id }) =>
       id ===
@@ -195,24 +197,6 @@ export const getRelatedCollectionId = (
       )
   )?.collection;
 
-export type QueryComboBoxTreeData = {
-  readonly lowestChildRank: number | undefined;
-  readonly treeRanks: RA<{
-    readonly rankId: number;
-    readonly isEnforced: boolean;
-  }>;
-};
-
-export type CollectionRelationships = {
-  readonly left: RA<{
-    readonly id: number;
-    readonly collection: number | undefined;
-  }>;
-  readonly right: RA<{
-    readonly id: number;
-    readonly collection: number | undefined;
-  }>;
-};
 
 export type TypeSearch = {
   readonly title: string;

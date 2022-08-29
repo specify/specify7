@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { aggregate, format } from '../Forms/dataObjFormatters';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -22,10 +21,11 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Input } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { PartialDateUi } from '../FormPlugins/PartialDateUi';
-import { usePref } from '../UserPreferences/Hooks';
 import { getResourceAndField } from '../../hooks/resource';
 import { SpecifyFormCheckbox } from './Checkbox';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 export function UiField({
   id,

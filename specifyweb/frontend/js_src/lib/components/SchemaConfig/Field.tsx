@@ -1,11 +1,9 @@
 import React from 'react';
 
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { javaTypeToHuman } from './helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import { AutoGrowTextArea } from '../Molecules';
 import type { ItemType } from './index';
 import { SchemaConfigColumn } from './Fields';
 import { SchemaConfigFormat } from './Format';
@@ -13,6 +11,8 @@ import type { SchemaData } from './SetupHooks';
 import { maxSchemaValueLength } from './Table';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { Input, Label } from '../Atoms/Form';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
 
 export function SchemaConfigField({
   schemaData,

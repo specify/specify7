@@ -8,10 +8,8 @@ import { ping } from '../../utils/ajax/ping';
 import { formData } from '../../utils/ajax/helpers';
 import type { AppResourceFilters } from '../AppResources/filtersHelpers';
 import type { SpAppResource } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { commonText } from '../../localization/common';
-import { toResource } from '../DataModel/specifyModel';
 import { AppResourcesAside } from '../AppResources/Aside';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
@@ -20,6 +18,8 @@ import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { toResource } from '../DataModel/helpers';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();

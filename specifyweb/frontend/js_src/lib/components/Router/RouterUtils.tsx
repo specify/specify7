@@ -4,7 +4,7 @@ import type { RouteObject } from 'react-router/lib/router';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
-import {useTitle} from '../../hooks/useTitle';
+import {useTitle} from '../Molecules/AppTitle';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.

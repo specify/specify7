@@ -1,7 +1,3 @@
-/**
- * Entrypoint for the main front-end endpoint
- */
-
 import React from 'react';
 
 import { f } from '../../utils/functools';
@@ -17,7 +13,12 @@ const LOADING_TIMEOUT = 2000;
 
 const fetchContext = async (): Promise<true> => initialContext.then(f.true);
 
-export function Root(): JSX.Element | null {
+/**
+ * Load initial context
+ * Display loading screen while loading
+ * Display the main component afterward
+ */
+export function ContextLoader(): JSX.Element | null {
   const [isContextLoaded = false] = useAsyncState(fetchContext, false);
   /*
    * Show loading screen only if didn't finish loading within 2 seconds.

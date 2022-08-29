@@ -3,7 +3,6 @@ import type { QueryFieldFilter } from './FieldFilter';
 import { queryFieldFilters } from './FieldFilter';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { SpQueryField, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import { QueryFieldSpec } from './fieldSpec';
 import type { RA } from '../../utils/types';
@@ -12,6 +11,7 @@ import { parserFromType, parseValue } from '../../utils/uiParse';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { MappingLineData } from '../WbPlanView/navigator';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];

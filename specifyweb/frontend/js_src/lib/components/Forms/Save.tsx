@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { error } from '../Errors/assert';
-import type { AnySchema } from '../DataModel/helpers';
 import { listen } from '../../utils/events';
 import { camelToHuman, replaceKey } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -13,7 +12,6 @@ import { resourceOn } from '../DataModel/resource';
 import { defined } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { FormContext, LoadingContext } from '../Core/Contexts';
-import { fail } from '../Errors/ErrorBoundary';
 import { useIsModified } from '../../hooks/useIsModified';
 import { Dialog } from '../Molecules/Dialog';
 import { useUnloadProtect } from '../../hooks/navigation';
@@ -23,6 +21,8 @@ import { Submit } from '../Atoms/Submit';
 import { className } from '../Atoms/className';
 import { useId } from '../../hooks/useId';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { fail } from '../Errors/Crash';
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is

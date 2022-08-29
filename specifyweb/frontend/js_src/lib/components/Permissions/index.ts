@@ -3,20 +3,66 @@
  */
 
 import { ajax } from '../../utils/ajax';
-import { error } from '../Errors/assert';
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { IR, RA, RR } from '../../utils/types';
 import { group, split } from '../../utils/utils';
+import type { Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
+import {
+  fetchContext as fetchUser,
+  userInformation,
+} from '../InitialContext/userInformation';
 import type { anyAction, anyResource } from '../Security/utils';
 import {
   tableNameToResourceName,
   tablePermissionsPrefix,
 } from '../Security/utils';
-import type { IR, RA, RR } from '../../utils/types';
-import { fetchContext as fetchUser, userInformation } from '../InitialContext/userInformation';
+import type { derivedPolicies } from './definitions';
+import {
+  frontEndPermissions,
+  institutionPermissions,
+  operationPolicies,
+  tableActions,
+} from './definitions';
 
-export const tableActions = ['read', 'create', 'update', 'delete'] as const;
+let operationPermissions: RR<
+  number,
+  RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
+    readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
+      typeof frontEndPermissions[RESOURCE][number],
+      boolean
+    >;
+  } & {
+    readonly [RESOURCE in keyof typeof operationPolicies]: RR<
+      typeof operationPolicies[RESOURCE][number],
+      boolean
+    >;
+  }
+> = {};
+
+let tablePermissions: RR<
+  number,
+  {
+    readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
+      typeof tableActions[number],
+      boolean
+    >;
+  }
+> = {};
+
+let derivedPermissions: RR<
+  number,
+  {
+    readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
+      typeof derivedPolicies[RESOURCE][number],
+      boolean
+    >;
+  }
+> = {};
+export const getTablePermissions = () => tablePermissions;
+export const getOperationPermissions = () => operationPermissions;
+export const getDerivedPermissions = () => derivedPermissions;
 
 /**
  * List of policies is stored on the front-end to improve TypeScript typing
@@ -39,146 +85,6 @@ const checkRegistry = async (): Promise<void> =>
           ? undefined
           : error('Front-end has outdated list of operation policies')
       );
-
-export const collectionAccessResource = '/system/sp7/collection';
-export const operationPolicies = {
-  '/system/sp7/collection': ['access'],
-  '/admin/user/password': ['update'],
-  '/admin/user/agents': ['update'],
-  '/admin/user/sp6/is_admin': ['update'],
-  '/admin/user/invite_link': ['create'],
-  '/admin/user/oic_providers': ['read'],
-  '/admin/user/sp6/collection_access': ['read', 'update'],
-  '/report': ['execute'],
-  '/export/dwca': ['execute'],
-  '/export/feed': ['force_update'],
-  '/permissions/list_admins': ['read'],
-  '/permissions/policies/user': ['read', 'update'],
-  '/permissions/user/roles': ['read', 'update'],
-  '/permissions/roles': [
-    'read',
-    'create',
-    'update',
-    'delete',
-    'copy_from_library',
-  ],
-  '/permissions/library/roles': ['read', 'create', 'update', 'delete'],
-  '/tree/edit/taxon': ['merge', 'move', 'synonymize', 'desynonymize', 'repair'],
-  '/tree/edit/geography': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/tree/edit/storage': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/tree/edit/geologictimeperiod': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/tree/edit/lithostrat': [
-    'merge',
-    'move',
-    'synonymize',
-    'desynonymize',
-    'repair',
-  ],
-  '/querybuilder/query': [
-    'execute',
-    'export_csv',
-    'export_kml',
-    'create_recordset',
-  ],
-  '/workbench/dataset': [
-    'create',
-    'update',
-    'delete',
-    'upload',
-    'unupload',
-    'validate',
-    'transfer',
-  ],
-} as const;
-
-/**
- * These permissions have no effect on the collection level and should instead
- * be set on the institution level.
- */
-export const institutionPermissions = new Set([
-  '/admin/user/password',
-  '/admin/user/agents',
-  '/admin/user/sp6/is_admin',
-  '/admin/user/invite_link',
-  '/admin/user/oic_providers',
-  '/admin/user/sp6/collection_access',
-  '/export/feed',
-  '/permissions/library/roles',
-]);
-
-/**
- * Policies that are respected on the front-end, but ignored by the back-end.
- */
-export const frontEndPermissions = {
-  '/preferences/user': ['edit_protected'],
-} as const;
-
-/**
- * Front-end only policies that are not exposed in the security panel and
- * are derived based on the value of another policy.
- */
-export const derivedPolicies = {
-  /*
-   * This is true if "/permissions/policies/user" is given on the
-   * institutional level
-   */
-  '/permissions/institutional_policies/user': ['update', 'read'],
-} as const;
-
-let operationPermissions: RR<
-  number,
-  RR<typeof anyResource, RR<typeof anyAction, boolean>> & {
-    readonly [RESOURCE in keyof typeof frontEndPermissions]: RR<
-      typeof frontEndPermissions[RESOURCE][number],
-      boolean
-    >;
-  } & {
-    readonly [RESOURCE in keyof typeof operationPolicies]: RR<
-      typeof operationPolicies[RESOURCE][number],
-      boolean
-    >;
-  }
-> = {};
-let tablePermissions: RR<
-  number,
-  {
-    readonly [TABLE_NAME in keyof Tables as `${typeof tablePermissionsPrefix}${Lowercase<TABLE_NAME>}`]: RR<
-      typeof tableActions[number],
-      boolean
-    >;
-  }
-> = {};
-let derivedPermissions: RR<
-  number,
-  {
-    readonly [RESOURCE in keyof typeof derivedPolicies]: RR<
-      typeof derivedPolicies[RESOURCE][number],
-      boolean
-    >;
-  }
-> = {};
-
-export const getTablePermissions = () => tablePermissions;
-export const getOperationPermissions = () => operationPermissions;
-export const getDerivedPermissions = () => derivedPermissions;
 
 export type PermissionsQueryItem = {
   readonly action: string;

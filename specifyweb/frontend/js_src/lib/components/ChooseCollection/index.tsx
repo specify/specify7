@@ -7,7 +7,6 @@ import React from 'react';
 import { ping } from '../../utils/ajax/ping';
 import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrftoken';
 import type { Collection } from '../DataModel/types';
-import type { SerializedModel } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { commonText } from '../../localization/common';
@@ -16,11 +15,12 @@ import { scrollIntoView } from '../TreeView/helpers';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
-import { usePref } from '../UserPreferences/Hooks';
 import { SplashScreen } from '../Core/Entrypoint';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
+import { SerializedModel } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(

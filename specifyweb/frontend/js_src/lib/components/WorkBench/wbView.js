@@ -39,12 +39,11 @@ import {getIcon, unknownIcon} from '../InitialContext/icons';
 import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
 import {showDialog} from '../Molecules/LegacyDialog';
-import {dialogClassNames, loadingBar} from '../Molecules/Dialog';
+import {dialogClassNames} from '../Molecules/Dialog';
 import {format} from '../Forms/dataObjFormatters';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
 import {LANGUAGE} from '../../localization/utils';
 import {defined, filterArray} from '../../utils/types';
-import {crash} from '../Errors/ErrorBoundary';
 import {getTreeDefinitionItems} from '../InitialContext/treeRanks';
 import {serializeResource} from '../DataModel/helpers';
 import {fetchPickList} from '../PickLists/fetch';
@@ -64,6 +63,8 @@ import {pathStartsWith} from '../WbPlanView/helpers';
 import {getUserPref} from '../UserPreferences/helpers';
 import {createBackboneView} from '../Core/reactBackboneExtend';
 import {WbStatus} from './Status';
+import {crash} from '../Errors/Crash';
+import {loadingBar} from '../Molecules';
 
 const metaKeys = [
   'isNew',
@@ -84,6 +85,7 @@ const defaultMetaValues = Object.freeze([
 const WbUploadedView = createBackboneView(WbUploaded);
 const WbStatusView = createBackboneView(WbStatus);
 
+// REFACTOR: rewrite to React
 export const WBView = Backbone.View.extend({
   __name__: 'WbForm',
   tagName: 'section',

@@ -4,9 +4,9 @@
 
 import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/helpers';
-import { softFail } from '../Errors/ErrorBoundary';
 import { load } from './index';
 import { formatUrl } from '../Router/queryString';
+import { softFail } from '../Errors/Crash';
 
 type SystemInfo = {
   readonly version: string;

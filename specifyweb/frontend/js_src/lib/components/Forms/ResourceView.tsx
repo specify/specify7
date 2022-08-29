@@ -3,46 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
 import { getCache } from '../../utils/cache';
-import { fetchCollection } from '../DataModel/collection';
 import type { Tables } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
-import { format } from './dataObjFormatters';
-import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
-import { resourceOn } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
 import { Container } from '../Atoms';
-import { AppTitle, TableIcon } from '../Molecules';
-import type { FormMeta } from '../Core/Contexts';
-import { FormContext } from '../Core/Contexts';
 import { DeleteButton } from './DeleteButton';
-import { crash, ErrorBoundary, fail } from '../Errors/ErrorBoundary';
-import { FormPreferences } from '../FormPreferences';
-import { useMenuItem } from '../Header';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useIsModified } from '../../hooks/useIsModified';
-import { interactionTables } from '../Interactions/InteractionsDialog';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { useSearchParam } from '../../hooks/navigation';
-import { usePref } from '../UserPreferences/Hooks';
-import { RecordSet as RecordSetView } from './RecordSelectorUtils';
 import { ReportsView } from '../Reports';
 import { SaveButton } from './Save';
-import { SpecifyForm } from './SpecifyForm';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { useId } from '../../hooks/useId';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { BaseResourceView } from './BaseResourceView';
+import { AppTitle } from '../Molecules/AppTitle';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -88,119 +70,6 @@ export const NO_CLONE = new Set<keyof Tables>([
   'SpecifyUser',
 ]);
 
-export type ResourceViewProps<SCHEMA extends AnySchema> = {
-  readonly isLoading?: boolean;
-  readonly resource: SpecifyResource<SCHEMA> | undefined;
-  readonly mode: FormMode;
-  readonly viewName?: string;
-  readonly isSubForm: boolean;
-  readonly children: (props: {
-    readonly formElement: HTMLFormElement | null;
-    readonly formPreferences: JSX.Element;
-    readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
-    readonly title: string;
-    readonly formatted: string;
-    readonly jsxFormatted: JSX.Element | string;
-    readonly specifyNetworkBadge: JSX.Element | undefined;
-  }) => JSX.Element;
-};
-
-export function BaseResourceView<SCHEMA extends AnySchema>({
-  isLoading,
-  resource,
-  children,
-  mode,
-  viewName = resource?.specifyModel.view,
-  isSubForm,
-}: ResourceViewProps<SCHEMA>): JSX.Element | null {
-  // Update title when resource changes
-  const [formatted, setFormatted] = React.useState('');
-  React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText('loading'));
-    return typeof resource === 'object'
-      ? resourceOn(
-          resource,
-          'change',
-          (): void => {
-            if (resource === undefined) return undefined;
-            format(resource)
-              .then((title) => {
-                setFormatted(title ?? '');
-                return undefined;
-              })
-              .catch(fail);
-          },
-          true
-        )
-      : undefined;
-  }, [resource]);
-
-  const id = useId('resource-view');
-  const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = React.useState<FormMeta>({
-    triedToSubmit: false,
-  });
-
-  const specifyForm =
-    typeof resource === 'object' ? (
-      <SpecifyForm
-        display={isSubForm ? 'inline' : 'block'}
-        formType="form"
-        isLoading={isLoading}
-        mode={mode}
-        resource={resource}
-        viewName={viewName}
-      />
-    ) : (
-      <p>{formsText('noData')}</p>
-    );
-
-  const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
-  const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
-  const title = `${
-    resource === undefined
-      ? ''
-      : resource.isNew()
-      ? commonText('newResourceTitle', resource.specifyModel.label)
-      : resource.specifyModel.label
-  }${formatted.length > 0 ? `: ${formatted}` : ''}`;
-
-  return children({
-    formatted: tableNameInTitle ? title : formatted,
-    jsxFormatted:
-      formHeaderFormat === 'name' ? (
-        title
-      ) : (
-        <>
-          {typeof resource === 'object' && (
-            <TableIcon label name={resource.specifyModel.name} />
-          )}
-          {formHeaderFormat === 'full' && title}
-        </>
-      ),
-    title,
-    formElement: form,
-    formPreferences: <FormPreferences resource={resource} />,
-    form: (children, className) =>
-      isSubForm ? (
-        <>
-          {specifyForm}
-          {children}
-        </>
-      ) : (
-        <FormContext.Provider value={formMeta}>
-          <Form className={className} forwardRef={setForm} id={id('form')}>
-            {specifyForm}
-            {children}
-          </Form>
-        </FormContext.Provider>
-      ),
-    specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
-      <SpecifyNetworkBadge resource={resource} />
-    ) : undefined,
-  });
-}
-
 export function augmentMode(
   initialMode: FormMode,
   isNew: boolean,
@@ -214,6 +83,7 @@ export function augmentMode(
   else return initialMode;
 }
 
+// REFACTOR: split this into smaller components
 export function ResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
@@ -504,111 +374,5 @@ export function ResourceView<SCHEMA extends AnySchema>({
         }
       }}
     </BaseResourceView>
-  );
-}
-
-export function ShowResource({
-  resource: initialResource,
-}: {
-  readonly resource: SpecifyResource<AnySchema>;
-}): JSX.Element | null {
-  // Look to see if we are in the context of a recordset
-  const [recordsetid = ''] = useSearchParam('recordsetid');
-  const recordSetId = f.parseInt(recordsetid);
-  const recordSet = React.useMemo(
-    () =>
-      typeof recordSetId === 'number'
-        ? new schema.models.RecordSet.Resource({
-            id: recordSetId,
-          })
-        : undefined,
-    [recordSetId]
-  );
-  useErrorContext('recordSet', recordSet);
-
-  const [resource, setResource] = useTriggerState(initialResource);
-  useErrorContext('resource', resource);
-
-  React.useEffect(() => {
-    if (typeof recordSet === 'object')
-      // @ts-expect-error Assigning to read-only
-      resource.recordsetid = recordSet.id;
-  }, [recordSet, resource.recordsetid]);
-
-  useMenuItem(
-    typeof recordSet === 'object'
-      ? 'recordSets'
-      : interactionTables.has(resource.specifyModel.name)
-      ? 'interactions'
-      : 'dataEntry'
-  );
-
-  const [recordSetItemIndex] = useAsyncState(
-    React.useCallback(async () => {
-      await recordSet?.fetch();
-      if (resource.isNew()) return 0;
-      return typeof recordSet === 'object'
-        ? fetchCollection('RecordSetItem', {
-            recordSet: recordSet.id,
-            limit: 1,
-            recordId: resource.id,
-          })
-            .then(({ records }) =>
-              f.maybe(records[0]?.id, async (recordSetItemId) =>
-                fetchCollection(
-                  'RecordSetItem',
-                  {
-                    recordSet: recordSet.id,
-                    limit: 1,
-                  },
-                  { id__lt: recordSetItemId }
-                ).then(({ totalCount }) => totalCount)
-              )
-            )
-            .catch(crash)
-        : undefined;
-    }, [recordSet, resource]),
-    true
-  );
-
-  const navigate = useNavigate();
-  return typeof recordSet === 'object' ? (
-    recordSetItemIndex === undefined ? null : (
-      <RecordSetView
-        canAddAnother
-        defaultResourceIndex={recordSetItemIndex}
-        dialog={false}
-        mode="edit"
-        model={resource.specifyModel}
-        recordSet={recordSet}
-        onAdd={f.void}
-        onClose={(): void => navigate('/specify/')}
-        onSlide={f.void}
-      />
-    )
-  ) : (
-    <ResourceView
-      canAddAnother
-      dialog={false}
-      isDependent={false}
-      isSubForm={false}
-      mode="edit"
-      resource={resource}
-      viewName={resource.specifyModel.view}
-      onClose={f.never}
-      onDeleted={f.void}
-      onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object') setResource(newResource);
-        else if (wasNew) navigate(resource.viewUrl());
-        else {
-          const reloadResource = new resource.specifyModel.Resource({
-            id: resource.id,
-          });
-          // @ts-expect-error Assigning to read-only
-          reloadResource.recordsetid = resource.recordsetid;
-          reloadResource.fetch().then(async () => setResource(reloadResource));
-        }
-      }}
-    />
   );
 }

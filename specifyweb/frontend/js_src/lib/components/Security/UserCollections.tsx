@@ -5,24 +5,34 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
-import { fetchCollection } from '../DataModel/collection';
-import type { SpecifyUser } from '../DataModel/types';
-import { toggleItem } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
-import type { RA } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { Form, Input, Label } from '../Atoms/Form';
-import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
+import type { IR, RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { replaceKey, toggleItem } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Form, Input, Label, Select } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
+import type { Collection, SpecifyUser } from '../DataModel/types';
+import { QueryComboBox } from '../FormFields/QueryComboBox';
+import type { FormMode } from '../FormParse';
+import { Dialog } from '../Molecules/Dialog';
+import { collectionAccessResource } from '../Permissions/definitions';
+import { hasPermission } from '../Permissions/helpers';
+import type { Policy } from './Policy';
+import type { UserAgents } from './UserHooks';
 
 function UserCollectionsUi({
   userId,
@@ -129,5 +139,133 @@ export function UserCollections({
       </Button.Small>
       {isOpen && <UserCollectionsUi userId={user.id} onClose={handleClose} />}
     </>
+  );
+}
+
+export function SetCollection({
+  collectionId,
+  collections,
+  onChange: handleChange,
+}: {
+  readonly collectionId: number;
+  readonly collections: RA<SerializedResource<Collection>>;
+  readonly onChange: (collectionId: number) => void;
+}): JSX.Element {
+  return (
+    <Label.Block className={className.limitedWidth}>
+      <span className="text-xl">{schema.models.Collection.label}</span>
+      <Select
+        value={collectionId}
+        onValueChange={(value): void => handleChange(Number.parseInt(value))}
+      >
+        {collections.map((collection) => (
+          <option key={collection.id} value={collection.id}>
+            {collection.collectionName}
+          </option>
+        ))}
+      </Select>
+    </Label.Block>
+  );
+}
+
+export function CollectionAccess({
+  userPolicies,
+  onChange: handleChange,
+  onChangedAgent: handleChangeAgent,
+  collectionId,
+  userAgents,
+  mode,
+  isSuperAdmin,
+}: {
+  readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
+  readonly onChange: (
+    userPolicies: IR<RA<Policy> | undefined> | undefined
+  ) => void;
+  readonly onChangedAgent: () => void;
+  readonly collectionId: number;
+  readonly userAgents: UserAgents | undefined;
+  readonly mode: FormMode;
+  readonly isSuperAdmin: boolean;
+}): JSX.Element {
+  const hasCollectionAccess =
+    userPolicies?.[collectionId]?.some(
+      ({ resource, actions }) =>
+        resource === collectionAccessResource && actions.includes('access')
+    ) ?? false;
+  const collectionAddress = userAgents?.find(({ collections }) =>
+    collections.includes(collectionId)
+  )?.address;
+
+  React.useEffect(
+    () =>
+      typeof collectionAddress === 'object'
+        ? resourceOn(collectionAddress, 'change:parent', handleChangeAgent)
+        : undefined,
+    [collectionAddress, handleChangeAgent]
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      {hasPermission('/permissions/policies/user', 'read', collectionId) &&
+      !isSuperAdmin ? (
+        <Label.Inline className={className.limitedWidth}>
+          <Input.Checkbox
+            checked={hasCollectionAccess}
+            isReadOnly={
+              !hasPermission(
+                '/permissions/policies/user',
+                'update',
+                collectionId
+              ) || userPolicies === undefined
+            }
+            onValueChange={(): void =>
+              handleChange(
+                typeof userPolicies === 'object'
+                  ? replaceKey(
+                      userPolicies,
+                      collectionId.toString(),
+                      hasCollectionAccess
+                        ? defined(userPolicies[collectionId]).filter(
+                            ({ resource }) =>
+                              resource !== collectionAccessResource
+                          )
+                        : [
+                            ...defined(userPolicies[collectionId]),
+                            {
+                              resource: collectionAccessResource,
+                              actions: ['access'],
+                            },
+                          ]
+                    )
+                  : undefined
+              )
+            }
+          />
+          {adminText('collectionAccess')}
+        </Label.Inline>
+      ) : undefined}
+      <Label.Block className={className.limitedWidth}>
+        {schema.models.Agent.label}
+        {typeof collectionAddress === 'object' ? (
+          <QueryComboBox
+            fieldName="agent"
+            forceCollection={collectionId}
+            formType="form"
+            id={undefined}
+            isRequired={hasCollectionAccess || isSuperAdmin}
+            mode={
+              mode === 'view' || !hasPermission('/admin/user/agents', 'update')
+                ? 'view'
+                : 'edit'
+            }
+            relatedModel={schema.models.Agent}
+            resource={collectionAddress}
+            typeSearch={undefined}
+          />
+        ) : (
+          <Input.Text disabled value={commonText('loading')} />
+        )}
+      </Label.Block>
+    </div>
   );
 }

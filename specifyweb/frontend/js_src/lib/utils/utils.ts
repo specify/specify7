@@ -4,9 +4,9 @@
  * @module
  */
 
-import type { KeysToLowerCase } from '../components/DataModel/helpers';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
+import {KeysToLowerCase} from '../components/DataModel/helperTypes';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,

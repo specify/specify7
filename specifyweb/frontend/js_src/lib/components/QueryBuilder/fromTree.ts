@@ -6,7 +6,6 @@ import type {
   SpQueryField,
   TaxonTreeDefItem,
 } from '../DataModel/types';
-import type { AnyTree, SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { queryText } from '../../localization/query';
@@ -18,6 +17,7 @@ import { getDomainResource } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
+import {AnyTree, SerializedResource} from '../DataModel/helperTypes';
 
 function makeField(
   path: string,

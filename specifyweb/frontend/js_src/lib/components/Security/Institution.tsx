@@ -4,13 +4,11 @@ import { useLocation } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
 import type { Institution } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
-import { policiesToTsv } from './utils';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingContext } from '../Core/Contexts';
@@ -27,9 +25,11 @@ import { Link } from '../Atoms/Link';
 import { Container, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
-import { useTitle } from '../../hooks/useTitle';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { useTitle } from '../Molecules/AppTitle';
+import { policiesToTsv } from './registry';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();

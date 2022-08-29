@@ -17,13 +17,13 @@ import { getModel } from '../DataModel/schema';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { iconClassName, icons } from '../Atoms/Icons';
 import {
   TableIcon,
   tableIconEmpty,
   tableIconSelected,
-  tableIconUndefined,
-} from '../Molecules';
-import { iconClassName, icons } from '../Atoms/Icons';
+  tableIconUndefined
+} from '../Molecules/TableIcon';
 
 type Properties =
   /*

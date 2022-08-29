@@ -1,14 +1,12 @@
 import React from 'react';
 
 import { error } from '../Errors/assert';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { UiCommands } from '../FormParse/commands';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { toTable } from '../DataModel/specifyModel';
 import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
@@ -16,6 +14,8 @@ import { LoanReturn } from '../Interactions/PrepReturnDialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
 
 export function GenerateLabel({
   resource,

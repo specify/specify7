@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { error } from '../Errors/assert';
-import type { AnySchema, CommonFields } from '../DataModel/helpers';
 import { format } from './dataObjFormatters';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
@@ -15,7 +14,6 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { queryCbxExtendedSearch } from '../../utils/ajax/specifyApi';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { fail } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
@@ -29,6 +27,8 @@ import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema, CommonFields } from '../DataModel/helperTypes';
+import { fail } from '../Errors/Crash';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),

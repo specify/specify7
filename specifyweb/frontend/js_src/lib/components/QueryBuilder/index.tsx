@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import type { RecordSet, SpQuery } from '../DataModel/types';
-import type { AnyTree } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { queryText } from '../../localization/query';
@@ -19,6 +18,7 @@ import { QueryBuilder } from './Wrapped';
 import { deserializeResource } from '../../hooks/resource';
 import { useSearchParam } from '../../hooks/navigation';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnyTree} from '../DataModel/helperTypes';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParam('recordsetid');

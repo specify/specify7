@@ -28,14 +28,13 @@ import {
   getMustMatchTables,
   mappingPathIsComplete,
 } from './helpers';
-import { TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
-import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { icons } from '../Atoms/Icons';
 import { useUnloadProtect } from '../../hooks/navigation';
 import type { Dataset } from './Wrapped';
-import type { MappingElementProps } from './Components';
-import { getMappingLineProps, MappingLineComponent } from './Components';
+import type { MappingElementProps } from './LineComponents';
+import { getMappingLineProps, MappingLineComponent } from './LineComponents';
 import { Layout } from './Header';
 import {
   ChangeBaseTable,
@@ -52,7 +51,9 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { Ul } from '../Atoms';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
+import { softFail } from '../Errors/Crash';
+import { TableIcon } from '../Molecules/TableIcon';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -122,6 +123,7 @@ export const getDefaultMappingState = ({
   mustMatchPreferences,
 });
 
+// REFACTOR: split component into smaller components
 export function Mapper(props: {
   readonly isReadOnly: boolean;
   readonly dataset: Dataset;

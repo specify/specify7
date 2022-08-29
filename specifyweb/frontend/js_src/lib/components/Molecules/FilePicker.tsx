@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { softFail } from '../Errors/ErrorBoundary';
 import { className } from '../Atoms/className';
-import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function FilePicker({
   onSelected: handleSelected,
@@ -172,32 +171,3 @@ export const fileToText = async (file: File): Promise<string> =>
     fileReader.readAsText(file);
   });
 
-/** Based on https://stackoverflow.com/a/30810322/8584605 */
-async function fallbackCopyTextToClipboard(text: string) {
-  const textArea = document.createElement('textarea');
-  textArea.value = text;
-  textArea.classList.add('sr-only');
-
-  document.body.append(textArea);
-  textArea.focus();
-  textArea.select();
-
-  const promise = document.execCommand('copy')
-    ? Promise.resolve()
-    : Promise.reject(new Error('Failed to copy text to clipboard'));
-
-  textArea.remove();
-  return promise;
-}
-
-export const copyTextToClipboard = async (text: string): Promise<void> =>
-  /**
-   * "navigator.clipboard" is only available on HTTPs origins
-   * Not available over Http, unless on localhost
-   */
-  (
-    globalThis.navigator.clipboard?.writeText(text).catch(async (error) => {
-      console.error(error);
-      return fallbackCopyTextToClipboard(text);
-    }) ?? fallbackCopyTextToClipboard(text)
-  ).catch(softFail);

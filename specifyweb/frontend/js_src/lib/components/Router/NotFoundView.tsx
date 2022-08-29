@@ -5,7 +5,7 @@ import { commonText } from '../../localization/common';
 import { Container } from '../Atoms';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import {useTitle} from '../../hooks/useTitle';
+import {useTitle} from '../Molecules/AppTitle';
 
 export function NotFoundView(): JSX.Element {
   useTitle(commonText('pageNotFound'));

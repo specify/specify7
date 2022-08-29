@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { PickList } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -23,6 +22,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
 import {useValidation} from '../../hooks/useValidation';
+import {AnySchema} from '../DataModel/helperTypes';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {

@@ -48,9 +48,9 @@ const xmlErrorParsers = [
 
 const formatXmlError = (text: Text, error: string): Diagnostic =>
   mappedFind(xmlErrorParsers, (regex) => {
-    const match = regex.exec(error);
-    if (match === null) return undefined;
-    const { line, column, message } = match.groups ?? {};
+    const groups = regex.exec(error)?.groups;
+    if (groups === undefined) return undefined;
+    const { line, column, message } = groups;
     const lineDescriptor = text.line(Number.parseInt(line));
     const position = lineDescriptor.from - 1 + Number.parseInt(column);
     return {

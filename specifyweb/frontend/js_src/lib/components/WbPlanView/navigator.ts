@@ -10,7 +10,7 @@ import { dateParts } from '../Atoms/Internationalization';
 import type {
   HtmlGeneratorFieldData,
   MappingElementProps,
-} from './Components';
+} from './LineComponents';
 import type { MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
@@ -24,7 +24,10 @@ import { getUserPref } from '../UserPreferences/helpers';
 import { getFrontEndOnlyFields, getModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { getTreeDefinitionItems, isTreeModel } from '../InitialContext/treeRanks';
+import {
+  getTreeDefinitionItems,
+  isTreeModel,
+} from '../InitialContext/treeRanks';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import {
@@ -41,10 +44,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import {
-  getMaxToManyIndex,
-  isCircularRelationship,
-} from './modelHelper';
+import { getMaxToManyIndex, isCircularRelationship } from './modelHelper';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -371,6 +371,7 @@ export function getMappingLineData({
       );
     },
 
+    // REFACTOR: make this more readable
     handleSimpleFields: ({ model, parentRelationship }) =>
       commitInstanceData(
         'simple',

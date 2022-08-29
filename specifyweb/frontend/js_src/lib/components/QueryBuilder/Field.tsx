@@ -36,7 +36,7 @@ import {
   MappingElement,
   mappingElementDivider,
   mappingElementDividerClassName,
-} from '../WbPlanView/Components';
+} from '../WbPlanView/LineComponents';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';

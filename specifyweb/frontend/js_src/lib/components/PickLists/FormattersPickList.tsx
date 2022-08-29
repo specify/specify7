@@ -5,14 +5,15 @@ import { PickListTypes } from './fetch';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
-import { fail } from '../Errors/ErrorBoundary';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { PickListComboBox } from './index';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { fail } from '../Errors/Crash';
 
-export function FormattersPickList(
-  props: DefaultComboBoxProps
-): JSX.Element {
+export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   const fetchItems = React.useCallback(async () => {
     if (props.resource.get('type') !== PickListTypes.TABLE) return [];
     const { formatters } = await fetchFormatters;

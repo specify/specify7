@@ -4,12 +4,6 @@ import { Http } from '../../utils/ajax/helpers';
 import { businessRuleDefs } from './businessRuleDefs';
 import { getCache } from '../../utils/cache';
 import type { Tables } from './types';
-import type {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-  TableFields,
-} from './helpers';
 import {
   addMissingFields,
   serializeResource,
@@ -22,6 +16,12 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import {
+  AnySchema,
+  SerializedModel,
+  SerializedResource,
+  TableFields
+} from './helperTypes';
 
 /*
  * REFACTOR: experiment with an object singleton:

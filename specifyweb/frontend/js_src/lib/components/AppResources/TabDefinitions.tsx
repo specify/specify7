@@ -10,7 +10,6 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { UserPreferences } from '../UserPreferences/helpers';
@@ -21,11 +20,12 @@ import {
 import type { RR } from '../../utils/types';
 import { writable } from '../../utils/types';
 import { useCodeMirrorExtensions } from './EditorComponents';
-import type { appResourceSubTypes } from './Create';
 import { PreferencesContext, useDarkMode } from '../UserPreferences/Hooks';
-import { PreferencesContent } from '../Toolbar/Preferences';
+import { PreferencesContent } from '../UserPreferences';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
+import { appResourceSubTypes } from './types';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
@@ -40,7 +40,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   isReadOnly,
   resource,
   appResource,
-  data,
+  data = '',
   showValidationRef,
   onChange: handleChange,
 }): JSX.Element {
@@ -77,7 +77,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
       readOnly={isReadOnly}
       ref={handleRef}
       theme={isDarkMode ? okaidia : xcodeLight}
-      value={data ?? ''}
+      value={data}
       /*
        * FEATURE: provide supported attributes for autocomplete
        *   https://codemirror.net/examples/autocompletion/
@@ -93,7 +93,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
 
 const UserPreferencesEditor: AppResourceTab = function ({
   isReadOnly,
-  data,
+  data = '{}',
   onChange: handleChange,
 }): JSX.Element {
   const id = useId('user-preferences');
@@ -101,7 +101,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data ?? '{}') as UserPreferences;
+      const preferences = JSON.parse(data) as UserPreferences;
       const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (

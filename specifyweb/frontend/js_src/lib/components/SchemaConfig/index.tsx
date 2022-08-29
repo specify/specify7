@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { ping } from '../../utils/ajax/ping';
 import type { SpLocaleItemStr as SpLocaleItemString_ } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
@@ -21,6 +20,7 @@ import { SchemaConfigColumn, SchemaConfigFields } from './Fields';
 import { useContainer, useContainerItems, useContainerString } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;

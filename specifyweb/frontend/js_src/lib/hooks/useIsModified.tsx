@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { tap } from '../components/Errors/assert';
-import type { AnySchema } from '../components/DataModel/helpers';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
 import { useBooleanState } from './useBooleanState';
+import {AnySchema} from '../components/DataModel/helperTypes';
 
 export function useIsModified(
   resource: SpecifyResource<AnySchema> | undefined,

@@ -1,30 +1,27 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
-import { fetchCollection } from '../DataModel/collection';
-import type { Address, Collection, SpecifyUser } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
-import { serializeResource } from '../DataModel/helpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
-import { group, sortFunction } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import {
-  hasDerivedPermission,
-  hasPermission,
-  hasTablePermission,
-} from '../Permissions/helpers';
-import { fetchResource, getResourceApiUrl, idFromUrl } from '../DataModel/resource';
-import { schema } from '../DataModel/schema';
-import { fetchRoles, fetchUserRoles, processPolicies } from './utils';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { group } from '../../utils/utils';
+import { fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  fetchResource,
+  getResourceApiUrl,
+  idFromUrl,
+} from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
+import type { Address, Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
+import { hasTablePermission } from '../Permissions/helpers';
 import type { RoleBase } from './Collection';
-import type { Policy } from './Policy';
 import type { Role } from './Role';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { fetchRoles, fetchUserRoles } from './utils';
 
 /** Fetch roles from all collections */
 export function useCollectionRoles(
@@ -192,181 +189,4 @@ export function useUserAgents(
 
   useErrorContext('userAgents', userAgents);
   return userAgents;
-}
-
-/** Fetching user policies */
-export function useUserPolicies(
-  userResource: SpecifyResource<SpecifyUser>,
-  collections: RA<SerializedResource<Collection>>,
-  initialCollection: number | undefined
-): readonly [
-  userPolicies: IR<RA<Policy> | undefined> | undefined,
-  setUserPolicies: (value: IR<RA<Policy> | undefined> | undefined) => void,
-  initialPolicies: React.MutableRefObject<IR<RA<Policy> | undefined>>,
-  hasChanges: boolean
-] {
-  const initialUserPolicies = React.useRef<IR<RA<Policy> | undefined>>({});
-  const [userPolicies, setUserPolicies] = useAsyncState(
-    React.useCallback(
-      async () =>
-        userResource.isNew()
-          ? Object.fromEntries(
-              /*
-               * Automatically check "Collection Access" when creating user from
-               * the collection page
-               */
-              collections.map(({ id }) => [
-                id,
-                id === initialCollection
-                  ? [
-                      {
-                        resource: '/system/sp7/collection',
-                        actions: ['access'],
-                      },
-                    ]
-                  : [],
-              ])
-            )
-          : Promise.all(
-              collections.map(async (collection) =>
-                ajax<IR<RA<string>>>(
-                  `/permissions/user_policies/${collection.id}/${userResource.id}/`,
-                  {
-                    headers: { Accept: 'application/json' },
-                  },
-                  {
-                    /*
-                     * When looking at a different collection, it is not yet
-                     * know if user has read permission. Instead of waiting for
-                     * permission query to complete, query anyway and silently
-                     * handle the permission denied error
-                     */
-                    expectedResponseCodes: [Http.OK, Http.FORBIDDEN],
-                  }
-                ).then(
-                  ({ data, status }) =>
-                    [
-                      collection.id,
-                      status === Http.FORBIDDEN
-                        ? undefined
-                        : processPolicies(data),
-                    ] as const
-                )
-              )
-            )
-              .then((entries) => Object.fromEntries(entries))
-              .then((policies) => {
-                initialUserPolicies.current = policies;
-                return policies;
-              }),
-      [userResource, collections, initialCollection]
-    ),
-    false
-  );
-  const changedPolices =
-    typeof userPolicies === 'object' &&
-    JSON.stringify(userPolicies) !==
-      JSON.stringify(initialUserPolicies.current);
-
-  useErrorContext('userPolicies', userPolicies);
-  return [userPolicies, setUserPolicies, initialUserPolicies, changedPolices];
-}
-
-/** Fetching user institutional policies */
-export function useUserInstitutionalPolicies(
-  userResource: SpecifyResource<SpecifyUser>
-): readonly [
-  institutionPolicies: RA<Policy> | undefined,
-  setInstitutionPolicies: (value: RA<Policy>) => void,
-  initialInstitutionPolicies: React.MutableRefObject<RA<Policy>>,
-  hasChanges: boolean
-] {
-  const initialInstitutionPolicies = React.useRef<RA<Policy>>([]);
-  const [institutionPolicies, setInstitutionPolicies] = useAsyncState(
-    React.useCallback(
-      async () =>
-        userResource.isNew()
-          ? []
-          : hasDerivedPermission(
-              '/permissions/institutional_policies/user',
-              'read'
-            )
-          ? ajax<IR<RA<string>>>(
-              `/permissions/user_policies/institution/${userResource.id}/`,
-              {
-                headers: { Accept: 'application/json' },
-              }
-            ).then(({ data }) => {
-              const policies = processPolicies(data);
-              initialInstitutionPolicies.current = policies;
-              return policies;
-            })
-          : undefined,
-      [userResource]
-    ),
-    false
-  );
-  const changedInstitutionPolicies =
-    typeof institutionPolicies === 'object' &&
-    JSON.stringify(initialInstitutionPolicies.current) !==
-      JSON.stringify(institutionPolicies);
-
-  useErrorContext('institutionPolicies', institutionPolicies);
-  return [
-    institutionPolicies,
-    setInstitutionPolicies,
-    initialInstitutionPolicies,
-    changedInstitutionPolicies,
-  ];
-}
-
-/** Fetch User's OpenID Connect providers */
-export function useUserProviders(
-  userId: number | undefined
-): IR<boolean> | undefined {
-  const [providers] = useAsyncState<IR<boolean>>(
-    React.useCallback(
-      async () =>
-        hasPermission('/admin/user/oic_providers', 'read')
-          ? f
-              .all({
-                allProviders: ajax<
-                  RA<{ readonly provider: string; readonly title: string }>
-                >('/accounts/oic_providers/', {
-                  method: 'GET',
-                  headers: { Accept: 'application/json' },
-                }).then(({ data }) => data),
-                userProviders:
-                  typeof userId === 'number'
-                    ? ajax<
-                        RA<{
-                          readonly provider: string;
-                          readonly title: string;
-                        }>
-                      >(`/accounts/oic_providers/${userId}/`, {
-                        method: 'GET',
-                        headers: { Accept: 'application/json' },
-                      }).then(({ data }) => data)
-                    : [],
-              })
-              .then(({ allProviders, userProviders }) =>
-                Object.fromEntries(
-                  allProviders
-                    .map(({ title, provider }) => [
-                      title,
-                      userProviders.some(
-                        (entry) => entry.provider === provider
-                      ),
-                    ])
-                    .sort(sortFunction(([title]) => title))
-                )
-              )
-          : undefined,
-      [userId]
-    ),
-    false
-  );
-
-  useErrorContext('providers', providers);
-  return providers;
 }

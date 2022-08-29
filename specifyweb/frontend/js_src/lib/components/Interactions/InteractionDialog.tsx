@@ -12,7 +12,6 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
@@ -25,7 +24,6 @@ import {
 } from '../../utils/ajax/specifyApi';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
-import { toTable } from '../DataModel/specifyModel';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import type { InvalidParseResult, ValidParseResult } from '../../utils/uiParse';
@@ -36,14 +34,16 @@ import {
   resolveParser,
 } from '../../utils/uiParse';
 import { H3 } from '../Atoms';
-import { AutoGrowTextArea } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialog } from './PrepDialog';
 import { RecordSetsDialog } from '../QueryBuilder/RecordSets';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import {useValidation} from '../../hooks/useValidation';
+import { useValidation } from '../../hooks/useValidation';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
+import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -182,7 +182,7 @@ export function InteractionDialog({
   const showPrepSelectDlg = (
     prepsData: RA<PreparationRow>,
     problems: IR<RA<string>>
-  ) =>
+  ): void =>
     setState({
       type: 'PreparationSelectState',
       entries: prepsData.map((prepData) => ({
@@ -307,7 +307,6 @@ export function InteractionDialog({
               />
               <div>
                 <Button.Blue
-                  // Action-entry
                   disabled={
                     catalogNumbers.length === 0 ||
                     inputRef.current?.validity.valid !== true

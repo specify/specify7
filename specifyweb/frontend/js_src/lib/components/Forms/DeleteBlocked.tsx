@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { format } from './dataObjFormatters';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -10,10 +9,11 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { TableIcon } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ResourceView } from './ResourceView';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnySchema} from '../DataModel/helperTypes';
+import {TableIcon} from '../Molecules/TableIcon';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;

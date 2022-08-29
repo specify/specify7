@@ -1,6 +1,5 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -10,11 +9,12 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Button } from '../Atoms/Button';
-import { TableIcon } from '../Molecules';
-import { fail } from '../Errors/ErrorBoundary';
-import { IntegratedRecordSelector } from './RecordSelectorUtils';
+import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { fail } from '../Errors/Crash';
+import {TableIcon} from '../Molecules/TableIcon';
 
 export const SubViewContext = React.createContext<
   | {

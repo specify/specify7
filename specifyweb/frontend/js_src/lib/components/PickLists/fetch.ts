@@ -5,7 +5,6 @@
 import { error } from '../Errors/assert';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import type { AnySchema, SerializedResource } from '../DataModel/helpers';
 import { addMissingFields, serializeResource } from '../DataModel/helpers';
 import { format } from '../Forms/dataObjFormatters';
 import { f } from '../../utils/functools';
@@ -19,6 +18,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
 import { deserializeResource } from '../../hooks/resource';
+import {AnySchema, SerializedResource} from '../DataModel/helperTypes';
 
 export const PickListTypes = {
   // Items are defined in the PickListItems table

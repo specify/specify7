@@ -6,7 +6,7 @@ import type { FormType } from '../FormParse';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
 import { OrderPicker } from '../UserPreferences/Renderers';
-import type { SubViewContext } from './SubView';
+import type { SubViewContext } from '../Forms/SubView';
 
 export function SubViewPreferences({
   subView,

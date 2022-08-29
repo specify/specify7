@@ -1,18 +1,18 @@
 import React from 'react';
 
 import type { Collection } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Container, Ul } from '../Atoms';
-import { usePref } from '../UserPreferences/Hooks';
 import { useNavigate } from 'react-router-dom';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Even though available collections do not change during lifecycle of a page,

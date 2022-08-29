@@ -2,18 +2,18 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 
 import type { Locality } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { hasTablePermission } from '../Permissions/helpers';
-import { toTable, toTables } from '../DataModel/specifyModel';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable, toTables } from '../DataModel/helpers';
 
 type States =
   | State<

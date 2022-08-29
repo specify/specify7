@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { Tables } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -10,7 +9,6 @@ import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
 import { hasTablePermission } from '../Permissions/helpers';
-import { toTable } from '../DataModel/specifyModel';
 import { AttachmentsPlugin } from '../Attachments/Plugin';
 import { Button } from '../Atoms/Button';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
@@ -25,6 +23,8 @@ import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
 
 // FIXME: make sure plugins/cells/commands are in correct directories
 // FIXME: undo renaming exports

@@ -1,7 +1,5 @@
 import { fetchCollection } from './collection';
-import { fail } from '../Errors/ErrorBoundary';
 import type { CollectionObject } from './types';
-import type { AnySchema } from './helpers';
 import { f } from '../../utils/functools';
 import { capitalize } from '../../utils/utils';
 import type { SpecifyResource } from './legacyTypes';
@@ -10,9 +8,11 @@ import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getResourceApiUrl, idFromUrl } from './resource';
 import { schema } from './schema';
 import { globalEvents } from '../../utils/ajax/specifyApi';
-import { toTable } from './specifyModel';
 import { getDomainResource } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
+import { AnySchema } from './helperTypes';
+import { toTable } from './helpers';
+import { fail } from '../Errors/Crash';
 
 /**
  * Some tasks to do after a new resoure is created

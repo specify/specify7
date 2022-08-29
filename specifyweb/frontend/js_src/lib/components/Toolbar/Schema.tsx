@@ -19,15 +19,17 @@ import {
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { RA, RR } from '../../utils/types';
-import { resolveParser, syncFieldFormat } from '../../utils/uiParse';
-import { SortIndicator, TableIcon, useSortConfig } from '../Molecules';
-import { softFail } from '../Errors/ErrorBoundary';
+import { resolveParser } from '../../utils/uiParse';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatNumber } from '../Atoms/Internationalization';
 import { NotFoundView } from '../Router/NotFoundView';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { Container, H2, H3 } from '../Atoms';
+import { softFail } from '../Errors/Crash';
+import { TableIcon } from '../Molecules/TableIcon';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { syncFieldFormat } from '../../utils/fieldFormat';
 
 function Table<
   SORT_CONFIG extends

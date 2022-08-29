@@ -6,7 +6,6 @@ import type {
   SpLocaleContainerItem,
   Tables,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { group, replaceItem } from '../../utils/utils';
 import { getModel } from '../DataModel/schema';
@@ -18,6 +17,7 @@ import type { SchemaData } from './SetupHooks';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export function useContainer(
   tables: SchemaData['tables'],

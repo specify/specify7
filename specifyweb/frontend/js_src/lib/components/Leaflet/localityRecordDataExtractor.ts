@@ -7,7 +7,6 @@
 
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { Locality } from '../DataModel/types';
-import type { AnySchema, AnyTree } from '../DataModel/helpers';
 import { format } from '../Forms/dataObjFormatters';
 import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletConfig';
 import type { LocalityData } from './leafletHelpers';
@@ -34,6 +33,7 @@ import {
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { pathStartsWith } from '../WbPlanView/helpers';
+import {AnySchema, AnyTree} from '../DataModel/helperTypes';
 
 const splitMappingPath = (
   mappingPath: MappingPath,

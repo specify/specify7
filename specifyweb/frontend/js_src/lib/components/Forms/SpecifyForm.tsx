@@ -4,26 +4,20 @@
 
 import React from 'react';
 
-import { Http } from '../../utils/ajax/helpers';
-import { error } from '../Errors/assert';
-import type { AnySchema } from '../DataModel/helpers';
-import { f } from '../../utils/functools';
-import { autoGenerateViewDefinition } from './generateFormDefinition';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { FormMode, FormType, ViewDescription } from '../FormParse';
-import { fetchView, parseViewDefinition } from '../FormParse';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { webOnlyViews } from '../FormParse/webOnlyViews';
-import { DataEntry } from '../Atoms/DataEntry';
-import { loadingGif } from '../Molecules';
-import { usePref } from '../UserPreferences/Hooks';
-import { FormCell } from '../FormCells';
-import { useCachedState } from '../../hooks/useCachedState';
-import { unsafeTriggerNotFound } from '../Router/Router';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import {useId} from '../../hooks/useId';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useId } from '../../hooks/useId';
+import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/helpers';
+import { DataEntry } from '../Atoms/DataEntry';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { FormCell } from '../FormCells';
+import type { FormMode, FormType, ViewDescription } from '../FormParse';
+import { loadingGif } from '../Molecules';
+import { unsafeTriggerNotFound } from '../Router/Router';
+import { useViewDefinition } from './useViewDefinition';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -31,73 +25,6 @@ import {useAsyncState} from '../../hooks/useAsyncState';
  * viewName=originalAttachmentsView
  */
 export const originalAttachmentsView = 'originalObjectAttachment';
-
-/**
- * A hook to get information needed to display a form
- * Can be used independently of <SpecifyForm> if need to get form definition
- * for alternative purposes (i.e a different renderer)
- */
-export function useViewDefinition({
-  model,
-  viewName = model.view,
-  formType,
-  mode,
-}: {
-  readonly model: SpecifyModel;
-  readonly viewName?: string;
-  readonly formType: FormType;
-  readonly mode: FormMode;
-}): ViewDescription | undefined {
-  const [globalConfig = {}] = useCachedState('forms', 'useCustomForm');
-  const useCustomForm = globalConfig[model.name] ?? true;
-  const [viewDefinition] = useAsyncState<ViewDescription>(
-    React.useCallback(
-      async () =>
-        viewName === 'ObjectAttachment'
-          ? {
-              ...webOnlyViews().ObjectAttachment,
-              model,
-              formType,
-              mode,
-            }
-          : useCustomForm
-          ? fetchView(
-              viewName === originalAttachmentsView
-                ? 'ObjectAttachment'
-                : viewName
-            )
-              .then((viewDefinition) =>
-                typeof viewDefinition === 'object'
-                  ? parseViewDefinition(viewDefinition, formType, mode)
-                  : undefined
-              )
-              .then((viewDefinition) =>
-                typeof viewDefinition === 'object'
-                  ? viewDefinition.model === model
-                    ? viewDefinition
-                    : error(
-                        'View definition model does not match resource model'
-                      )
-                  : f.maybe(
-                      webOnlyViews()[viewName as keyof typeof webOnlyViews],
-                      ({ columns, rows }) => ({
-                        columns,
-                        rows,
-                        formType,
-                        mode,
-                        model,
-                      })
-                    ) ?? autoGenerateViewDefinition(model, formType, mode)
-              )
-          : autoGenerateViewDefinition(model, formType, mode),
-      [useCustomForm, viewName, formType, mode, model]
-    ),
-    false
-  );
-
-  useErrorContext('viewDefinition', viewDefinition);
-  return viewDefinition;
-}
 
 /** Renders a form and populates it with data from a resource */
 export function SpecifyForm({

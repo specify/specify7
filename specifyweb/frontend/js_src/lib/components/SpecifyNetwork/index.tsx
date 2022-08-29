@@ -8,16 +8,13 @@ import type { Action, State } from 'typesafe-reducer';
 import { generateDispatch } from 'typesafe-reducer';
 
 import type { CollectionObject, Taxon } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
-import { leafletTileServersPromise } from '../Leaflet/leaflet';
 import type { LocalityData } from '../Leaflet/leafletHelpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifynetwork';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
-import { toTable } from '../DataModel/specifyModel';
 import type { OccurrenceData } from './map';
 import { fetchLocalOccurrences } from './map';
 import {
@@ -28,9 +25,13 @@ import {
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { IR, RA, RR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
-import { ErrorBoundary, softFail } from '../Errors/ErrorBoundary';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
+import { softFail } from '../Errors/Crash';
+import {leafletLayersPromise} from '../Leaflet/leafletLayers';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 
@@ -52,7 +53,7 @@ type IncomingMessageExtended = IncomingMessage & {
 
 const dispatch = generateDispatch<IncomingMessageExtended>({
   LoadedAction: ({ state: { sendMessage, resource, occurrences } }) =>
-    void leafletTileServersPromise
+    void leafletLayersPromise
       .then((leafletLayers) =>
         sendMessage({
           type: 'BasicInformationAction',

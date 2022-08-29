@@ -1,33 +1,33 @@
 import React from 'react';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
-import { cachableUrl } from '../InitialContext';
-import { commonText } from '../../localization/common';
-import { fetchView } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
+import { Ul } from '../Atoms';
+import { DataEntry } from '../Atoms/DataEntry';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
 import { fetchContext as fetchSchema, getModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { TableIcon } from '../Molecules';
-import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
-import { icons } from '../Atoms/Icons';
+import type { Tables } from '../DataModel/types';
+import { fetchView } from '../FormParse';
+import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Ul } from '../Atoms';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
+import {TableIcon} from '../Molecules/TableIcon';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -51,7 +51,7 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : Array.isArray(forms) ? (
+  ) : (Array.isArray(forms) ? (
     <Dialog
       buttons={commonText('cancel')}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -87,7 +87,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null;
+  ) : null);
 }
 
 export type FormEntry = {

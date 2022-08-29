@@ -11,8 +11,8 @@ import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { getModel } from '../components/DataModel/schema';
 import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
-import { crash } from '../components/Errors/ErrorBoundary';
-import {useAsyncState} from './useAsyncState';
+import { useAsyncState } from './useAsyncState';
+import { crash } from '../components/Errors/Crash';
 
 type Buckets = {
   readonly [TABLE_NAME in keyof Tables as `/api/specify/${TABLE_NAME}/`]?: Record<

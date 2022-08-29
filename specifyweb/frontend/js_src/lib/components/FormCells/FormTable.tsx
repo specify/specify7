@@ -4,32 +4,31 @@ import type { State } from 'typesafe-reducer';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { IR, PartialBy, RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
-import { DependentCollection } from '../DataModel/collectionApi';
-import type { AnySchema } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition } from '../FormParse/cells';
 import { FormPreferences } from '../FormPreferences';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { SpecifyForm, useViewDefinition } from '../Forms/SpecifyForm';
-import type { SortConfig } from '../Molecules';
-import { loadingGif, SortIndicator } from '../Molecules';
+import { SpecifyForm } from '../Forms/SpecifyForm';
+import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { usePref } from '../UserPreferences/Hooks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 import { className } from '../Atoms/className';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
+import { AnySchema } from '../DataModel/helperTypes';
+import { useViewDefinition } from '../Forms/useViewDefinition';
+import { SortConfig, SortIndicator } from '../Molecules/Sorting';
+import { usePref } from '../UserPreferences/usePref';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -48,6 +47,7 @@ const cellToLabel = (
 const cellClassName =
   'sticky top-0 bg-[color:var(--form-foreground)] z-10 h-full -mx-1 pl-1 pt-1';
 
+// REFACTOR: split this component into smaller
 /**
  * Show several records in "grid view"
  */
@@ -415,66 +415,5 @@ export function FormTable<SCHEMA extends AnySchema>({
     >
       {children}
     </Dialog>
-  );
-}
-
-export function FormTableCollection({
-  collection,
-  onAdd: handleAdd,
-  onDelete: handleDelete,
-  ...props
-}: PartialBy<
-  Omit<
-    Parameters<typeof FormTable>[0],
-    'isDependent' | 'onFetchMore' | 'relationship' | 'resources'
-  >,
-  'onAdd' | 'onDelete'
-> & {
-  readonly collection: Collection<AnySchema>;
-}): JSX.Element {
-  const [records, setRecords] = React.useState(Array.from(collection.models));
-  React.useEffect(
-    () =>
-      resourceOn(
-        collection,
-        'add remove sort',
-        () => setRecords(Array.from(collection.models)),
-        true
-      ),
-    [collection]
-  );
-
-  const handleFetchMore = React.useCallback(async () => {
-    await collection.fetch();
-    setRecords(Array.from(collection.models));
-  }, [collection]);
-
-  const isDependent = collection instanceof DependentCollection;
-  const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field);
-  const disableAdding = isToOne && records.length > 0;
-  return (
-    <FormTable
-      isDependent={isDependent}
-      relationship={defined(collection.field?.getReverse())}
-      resources={records}
-      totalCount={collection._totalCount}
-      onAdd={
-        disableAdding
-          ? undefined
-          : handleAdd ??
-            ((resources): void => {
-              collection.add(resources);
-              setRecords(Array.from(collection.models));
-            })
-      }
-      onDelete={(resource): void => {
-        collection.remove(resource);
-        setRecords(Array.from(collection.models));
-        handleDelete?.(resource);
-      }}
-      onFetchMore={handleFetchMore}
-      {...props}
-    />
   );
 }

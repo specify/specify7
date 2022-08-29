@@ -315,7 +315,7 @@ export const routes: RA<EnhancedRoute> = [
     path: 'user-preferences',
     title: commonText('preferences'),
     element: () =>
-      import('../Toolbar/Preferences').then(
+      import('../UserPreferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
       ),
   },
@@ -385,7 +385,7 @@ export const routes: RA<EnhancedRoute> = [
         path: 'clear-cache',
         title: commonText('clearCache'),
         element: () =>
-          import('../Toolbar/CacheBuster').then(
+          import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
           ),
       },

@@ -1,164 +1,19 @@
-import type { Tables } from './types';
 import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { parserFromType } from '../../utils/uiParse';
+import { isTreeResource } from '../InitialContext/treeRanks';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type {
+  AnySchema,
+  AnyTree,
+  SerializedModel,
+  SerializedResource,
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
 import { getModel } from './schema';
-import type { IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { parserFromType } from '../../utils/uiParse';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-
-/**
- * Represents a schema for any table
- *
- * @remarks
- * This type is not meant for objects to be created directly of it.
- * Instead, use it in place of "any" as a generic argument to
- * SpecifyResource, SpecifyModel, Collection, SerializedResource or
- * SerializedModel when you don't care about a particular table.
- *
- * When need to work with a particular schema, import the necessary
- * schema form ./datamodel.ts and use it in place of AnySchema
- *
- * Note: typing support is not ideal when using AnySchema, as false type errors
- * may occur, thus prefer using specific table schema (or union of schemas)
- * whenever possible. Alternatively, your type/function can accept
- * a generic argument that extends AnySchema
- */
-export type AnySchema = {
-  readonly tableName: keyof Tables;
-  readonly fields: IR<boolean | number | string | null>;
-  readonly toOneDependent: IR<AnySchema | null>;
-  readonly toOneIndependent: IR<AnySchema | null>;
-  readonly toManyDependent: IR<RA<AnySchema>>;
-  readonly toManyIndependent: IR<RA<AnySchema>>;
-};
-
-/** A union of all field names of a given schema */
-export type TableFields<SCHEMA extends AnySchema> = string &
-  (
-    | keyof SCHEMA['fields']
-    | keyof SCHEMA['toManyDependent']
-    | keyof SCHEMA['toManyIndependent']
-    | keyof SCHEMA['toOneDependent']
-    | keyof SCHEMA['toOneIndependent']
-  );
-
-/**
- * Represents any tree table schema
- *
- * @remarks
- * All tables that contain independent -to-one called "definitionItem"
- * Intended to be used in place of AnySchema when a tree table is needed,
- * but don't know/don't care which particular tree table
- *
- */
-export type AnyTree = Extract<
-  Tables[keyof Tables],
-  {
-    readonly toOneIndependent: {
-      readonly definitionItem: AnySchema;
-    };
-  }
->;
-
-/**
- * Filter table schemas down to schemas for tables whose names end with a
- * particular substring
- */
-export type FilterTablesByEndsWith<ENDS_WITH extends string> = Tables[Extract<
-  keyof Tables,
-  `${string}${ENDS_WITH}`
->];
-
-export const resourceTypeEndsWith = <ENDS_WITH extends string>(
-  resource: SpecifyResource<AnySchema>,
-  endsWith: ENDS_WITH
-  // @ts-expect-error
-): resource is SpecifyResource<FilterTablesByEndsWith<ENDS_WITH>> =>
-  resource.specifyModel.name.endsWith(endsWith);
-
-/**
- * A record set information object attached to resources when fetched in a
- * context of a RecordSet (the recordset=<ID> GET parameter was passed when
- * fetching the resource)
- *
- */
-export type RecordSetInfo = {
-  readonly index: number;
-  readonly next: string | null;
-  readonly previous: string | null;
-  readonly recordsetid: number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly total_count: number;
-};
-
-/**
- * Meta-fields present in all resources
- */
-export type CommonFields = {
-  // BUG: These fields are undefined for newly created resources. Improve typing
-  readonly resource_uri: string;
-  readonly id: number;
-};
-
-/**
- * A representation of an object of a particular schema as received from the
- * back-end or returned by `resourceToJson(resource)`
- */
-export type SerializedModel<SCHEMA extends AnySchema> = KeysToLowerCase<
-  Omit<SerializedResource<SCHEMA>, '_tableName'>
->;
-
-/**
- * Like SerializedModel, but keys are in camelCase instead of lowercase
- *
- * This allows IDE's grammar checker to detect typos and prevent bugs
- */
-export type SerializedResource<SCHEMA extends AnySchema> = {
-  readonly [KEY in
-    | keyof CommonFields
-    | keyof SCHEMA['fields']
-    | keyof SCHEMA['toManyDependent']
-    | keyof SCHEMA['toManyIndependent']
-    | keyof SCHEMA['toOneDependent']
-    | keyof SCHEMA['toOneIndependent']]: KEY extends keyof CommonFields
-    ? CommonFields[KEY]
-    : KEY extends keyof SCHEMA['fields']
-    ? SCHEMA['fields'][KEY]
-    : KEY extends keyof SCHEMA['toOneDependent']
-    ?
-        | Exclude<SCHEMA['toOneDependent'][KEY], SCHEMA>
-        | Partial<
-            SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
-          >
-    : KEY extends keyof SCHEMA['toOneIndependent']
-    ? SCHEMA['toOneIndependent'][KEY] extends null
-      ? string | null
-      : string
-    : KEY extends keyof SCHEMA['toManyDependent']
-    ? RA<SerializedResource<SCHEMA['toManyDependent'][KEY][number]>>
-    : KEY extends keyof SCHEMA['toManyIndependent']
-    ? string
-    : never;
-} & {
-  readonly _tableName: SCHEMA['tableName'];
-};
-
-/** Convert type's keys to lowercase */
-export type KeysToLowerCase<DICTIONARY extends IR<unknown>> = {
-  readonly [KEY in keyof DICTIONARY as Lowercase<
-    KEY & string
-  >]: DICTIONARY[KEY] extends IR<unknown>
-    ? KeysToLowerCase<DICTIONARY[KEY]>
-    : DICTIONARY[KEY] extends RA<unknown>
-    ? RA<
-        DICTIONARY[KEY][number] extends IR<unknown>
-          ? KeysToLowerCase<DICTIONARY[KEY][number]>
-          : DICTIONARY[KEY][number]
-      >
-    : DICTIONARY[KEY];
-};
+import type { Tables } from './types';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -335,3 +190,35 @@ export const addMissingFields = <TABLE_NAME extends keyof Tables>(
     // REFACTOR: consider replacing this with a symbol
     _tableName: tableName,
   }));
+
+export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableName: TABLE_NAME
+  // @ts-expect-error
+): resource is SpecifyResource<Tables[TABLE_NAME]> =>
+  resource.specifyModel.name === tableName;
+
+export const toTable = <TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableName: TABLE_NAME
+): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
+  resource.specifyModel.name === tableName ? resource : undefined;
+
+export const toResource = <TABLE_NAME extends keyof Tables>(
+  resource: SerializedResource<AnySchema>,
+  tableName: TABLE_NAME
+): SerializedResource<Tables[TABLE_NAME]> | undefined =>
+  resource._tableName === tableName
+    ? (resource as SerializedResource<Tables[TABLE_NAME]>)
+    : undefined;
+
+export const toTreeTable = (
+  resource: SpecifyResource<AnySchema>
+): SpecifyResource<AnyTree> | undefined =>
+  isTreeResource(resource) ? resource : undefined;
+
+export const toTables = <TABLE_NAME extends keyof Tables>(
+  resource: SpecifyResource<AnySchema>,
+  tableNames: RA<TABLE_NAME>
+): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
+  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;

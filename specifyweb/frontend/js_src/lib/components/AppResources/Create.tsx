@@ -1,23 +1,19 @@
 import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
-
-import type { AppResourceMode } from './helpers';
 import type { SpAppResourceDir } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { addMissingFields, serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import type { IR, RR } from '../../utils/types';
+import type { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourcesTree } from './hooks';
 import { useResourcesTree } from './hooks';
 import { Ul } from '../Atoms';
-import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { deserializeResource } from '../../hooks/resource';
@@ -25,174 +21,13 @@ import { ResourceView } from '../Forms/ResourceView';
 import { OverlayContext } from '../Router/Router';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-
-type AppResourceType = {
-  readonly tableName: 'SpAppResource' | 'SpViewSetObject';
-  readonly icon: JSX.Element;
-  readonly label: string;
-};
-
-export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
-  appResources: {
-    tableName: 'SpAppResource',
-    icon: icons.cog,
-    label: adminText('appResource'),
-  },
-  viewSets: {
-    tableName: 'SpViewSetObject',
-    icon: icons.pencilAt,
-    label: adminText('formDefinitions'),
-  },
-};
-
-type AppResourceSubType = {
-  readonly mimeType: string | undefined;
-  readonly name: string | undefined;
-  readonly documentationUrl: string | undefined;
-  readonly icon: JSX.Element;
-  readonly label: string;
-};
-
-/**
- * The order of the subtypes matters. The filtering algorithm loops over these
- * in the order they are defined to find the first subType that matches the
- * current resource. Thus, subtypes should be sorted from the most
- * specific to the least specific.
- */
-export const appResourceSubTypes = {
-  label: {
-    mimeType: 'jrxml/label',
-    name: undefined,
-    documentationUrl:
-      'https://discourse.specifysoftware.org/c/7-docs/7-labels/63',
-    icon: icons.documentReport,
-    label: adminText('label'),
-  },
-  report: {
-    mimeType: 'jrxml/report',
-    name: undefined,
-    documentationUrl:
-      'https://discourse.specifysoftware.org/c/7-docs/7-labels/63',
-    icon: icons.ticket,
-    label: adminText('report'),
-  },
-  userPreferences: {
-    mimeType: 'application/json',
-    name: 'UserPreferences',
-    documentationUrl:
-      'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
-    icon: icons.cog,
-    label: adminText('userPreferences'),
-  },
-  defaultUserPreferences: {
-    mimeType: 'application/json',
-    name: 'DefaultUserPreferences',
-    documentationUrl:
-      'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
-    icon: icons.cog,
-    label: adminText('defaultUserPreferences'),
-  },
-  leafletLayers: {
-    mimeType: 'application/json',
-    name: 'leaflet-layers',
-    documentationUrl:
-      'https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers',
-    icon: icons.locationMarker,
-    label: adminText('leafletLayers'),
-  },
-  rssExportFeed: {
-    mimeType: 'text/xml',
-    name: 'ExportFeed',
-    documentationUrl:
-      'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
-    icon: icons.upload,
-    label: adminText('rssExportFeed'),
-  },
-  expressSearchConfig: {
-    mimeType: 'text/xml',
-    name: 'ExpressSearchConfig',
-    documentationUrl:
-      'https://discourse.specifysoftware.org/t/simple-search-config/183',
-    icon: icons.search,
-    label: adminText('expressSearchConfig'),
-  },
-  webLinks: {
-    mimeType: 'text/xml',
-    name: 'WebLinks',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/common/weblinks.xml',
-    icon: icons.externalLink,
-    label: adminText('webLinks'),
-  },
-  uiFormatters: {
-    mimeType: 'text/xml',
-    name: 'UIFormatters',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/uiformatters.xml',
-    icon: icons.hashtag,
-    label: adminText('uiFormatters'),
-  },
-  dataObjectFormatters: {
-    mimeType: 'text/xml',
-    name: 'DataObjFormatters',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
-    icon: icons.variable,
-    label: adminText('dataObjectFormatters'),
-  },
-  searchDialogDefinitions: {
-    mimeType: 'text/xml',
-    name: 'DialogDefs',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
-    icon: icons.documentSearch,
-    label: adminText('searchDialogDefinitions'),
-  },
-  dataEntryTables: {
-    mimeType: 'text/xml',
-    name: 'DataEntryTaskInit',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/fish/dataentry_task.xml',
-    icon: icons.pencilAt,
-    label: adminText('dataEntryTables'),
-  },
-  interactionsTables: {
-    mimeType: 'text/xml',
-    name: 'InteractionsTaskInit',
-    documentationUrl:
-      'https://github.com/specify/specify6/blob/master/config/common/interactionstask.xml',
-    icon: icons.chat,
-    label: adminText('interactionsTables'),
-  },
-  otherXmlResource: {
-    mimeType: 'text/xml',
-    name: undefined,
-    documentationUrl: undefined,
-    icon: icons.cog,
-    label: adminText('otherXmlResource'),
-  },
-  otherJsonResource: {
-    mimeType: 'application/json',
-    name: undefined,
-    documentationUrl: undefined,
-    icon: icons.cog,
-    label: adminText('otherJsonResource'),
-  },
-  otherPropertiesResource: {
-    mimeType: 'text/x-java-properties',
-    name: undefined,
-    documentationUrl: undefined,
-    icon: icons.cog,
-    label: adminText('otherPropertiesResource'),
-  },
-  otherAppResources: {
-    mimeType: undefined,
-    name: undefined,
-    documentationUrl: undefined,
-    icon: icons.cog,
-    label: adminText('otherAppResource'),
-  },
-} as const;
+import {
+  AppResourceSubType,
+  appResourceSubTypes,
+  AppResourceType,
+  appResourceTypes,
+} from './types';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 /**
  * Check if one type is a subtype of another
@@ -258,13 +93,13 @@ export function CreateAppResource(): JSX.Element {
         </thead>
         <tbody>
           {Object.entries(appResourceSubTypes).map(
-            ([key, { icon, mimeType, name, documentationUrl, label }]) => (
+            ([key, { icon, mimeType, name = '', documentationUrl, label }]) => (
               <tr key={key}>
                 <td>
                   <Button.LikeLink
                     onClick={(): void => {
                       setMimeType(mimeType);
-                      setName(name ?? '');
+                      setName(name);
                     }}
                   >
                     {icon}

@@ -3,7 +3,6 @@ import _ from 'underscore';
 
 import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { Tables } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { serializeResource } from '../DataModel/helpers';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
@@ -19,6 +18,7 @@ import { UiField } from '../FormFields/Field';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnySchema} from '../DataModel/helperTypes';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),

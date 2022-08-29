@@ -1,17 +1,14 @@
 import React from 'react';
 
 import type { SpQuery, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
 import { getModel, getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { TableIcon } from '../Molecules';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/Hooks';
 import { QueryImport } from '../QueryBuilder/Import';
 import { QueryTablesEdit } from './QueryTablesEdit';
 import { Button } from '../Atoms/Button';
@@ -19,6 +16,9 @@ import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Link } from '../Atoms/Link';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
+import { usePref } from '../UserPreferences/usePref';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',

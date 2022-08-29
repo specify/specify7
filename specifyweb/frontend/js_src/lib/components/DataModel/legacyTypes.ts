@@ -2,15 +2,15 @@
  * Type definitions for files that aren't yet converted to TypeScript
  */
 
-import type {
-  AnySchema,
-  CommonFields,
-  SerializedModel,
-  SerializedResource,
-} from './helpers';
 import type { SaveBlockers } from './saveBlockers';
 import type { Collection, SpecifyModel } from './specifyModel';
 import type { IR, RA } from '../../utils/types';
+import {
+  AnySchema,
+  CommonFields,
+  SerializedModel,
+  SerializedResource
+} from './helperTypes';
 
 /*
  * FEATURE: need to improve the typing to handle the following:

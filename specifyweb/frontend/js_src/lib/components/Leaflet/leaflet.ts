@@ -4,85 +4,22 @@
  * @module
  */
 
-import type { LayersControlEventHandlerFn } from 'leaflet';
-
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
-import { getCache, setCache } from '../../utils/cache';
+import { commonText } from '../../localization/common';
+import type { RA, WritableArray } from '../../utils/types';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
-import { capitalize, KEY } from '../../utils/utils';
+import { getUserPref } from '../UserPreferences/helpers';
+import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import {
-  cachableUrl,
-  contextUnlockedPromise,
-  foreverFetch,
-} from '../InitialContext';
-import {
-  leafletLayersEndpoint,
-  leafletTileServers,
-  mappingLocalityColumns,
-  preferredBaseLayer,
-  preferredOverlay,
-} from './leafletConfig';
+  addMarkersToMap,
+  addPrintMapButton,
+  rememberSelectedBaseLayers
+} from './leafletAddOns';
+import { mappingLocalityColumns } from './leafletConfig';
 import L from './leafletExtend';
 import type { Field, LocalityData } from './leafletHelpers';
-import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
-import { getUserPref } from '../UserPreferences/helpers';
-import { formatUrl } from '../Router/queryString';
-import type { IR, RA, RR, WritableArray } from '../../utils/types';
-import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
+import { leafletLayersPromise } from './leafletLayers';
 
 const DEFAULT_ZOOM = 5;
-
-// Try to fetch up-to-date tile servers. If fails, use the default tile servers
-const parseLayersFromJson = (json: IR<unknown>): typeof leafletTileServers =>
-  Object.fromEntries(
-    Object.entries(json).map(([layerGroup, layers]) => [
-      layerGroup,
-      Object.fromEntries(
-        Object.entries(
-          layers as IR<{
-            readonly endpoint: string;
-            readonly serverType: 'tileServer' | 'wms';
-            readonly layerOptions: IR<unknown>;
-          }>
-        ).map(([layerName, { endpoint, serverType, layerOptions }]) => [
-          layerName,
-          (serverType === 'wms' ? L.tileLayer.wms : L.tileLayer)(
-            endpoint,
-            layerOptions
-          ),
-        ])
-      ),
-    ])
-  ) as typeof leafletTileServers;
-
-export const leafletTileServersPromise: Promise<typeof leafletTileServers> =
-  contextUnlockedPromise.then(async (entrypoint) =>
-    entrypoint === 'main'
-      ? ajax<IR<unknown>>(
-          cachableUrl(
-            formatUrl('/context/app.resource', { name: 'leaflet-layers' })
-          ),
-          { headers: { Accept: 'application/json' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
-        )
-          .then(({ data, status }) =>
-            status === Http.NOT_FOUND
-              ? ajax<IR<unknown>>(
-                  cachableUrl(leafletLayersEndpoint),
-                  { headers: { Accept: 'application/json' } },
-                  { strict: false }
-                ).then(({ data }) => data)
-              : data
-          )
-          .then(parseLayersFromJson)
-          .catch((error) => {
-            console.error(error);
-            return leafletTileServers;
-          })
-      : foreverFetch<typeof leafletTileServers>()
-  );
 
 export async function showLeafletMap({
   container,
@@ -93,7 +30,7 @@ export async function showLeafletMap({
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
 }): Promise<L.Map> {
-  const tileLayers = await leafletTileServersPromise;
+  const tileLayers = await leafletLayersPromise;
 
   container.classList.add(
     'overflow-hidden',
@@ -153,174 +90,6 @@ export async function showLeafletMap({
   return map;
 }
 
-export type LeafletCacheSalt = string & ('CoMap' | 'MainMap');
-
-function rememberSelectedBaseLayers(
-  map: L.Map,
-  layers: IR<L.TileLayer>,
-  cacheSalt: LeafletCacheSalt
-): void {
-  const cacheName = `currentLayer${cacheSalt}` as const;
-  const currentLayer = getCache('leaflet', cacheName);
-  const baseLayer =
-    (typeof currentLayer === 'string' && currentLayer in layers
-      ? layers[currentLayer]
-      : layers[preferredBaseLayer]) ?? Object.values(layers)[0];
-  baseLayer.addTo(map);
-
-  map.on('baselayerchange', ({ name }: { readonly name: string }) => {
-    setCache('leaflet', cacheName, name);
-  });
-}
-
-function rememberSelectedOverlays(
-  map: L.Map,
-  layers: IR<L.FeatureGroup | L.TileLayer>,
-  defaultOverlays: IR<boolean> = {}
-): void {
-  const handleOverlayEvent: LayersControlEventHandlerFn = ({ layer, type }) => {
-    const layerName = Object.entries(layers).find(
-      ([_, layerObject]) => layerObject === layer
-    )?.[KEY];
-    if (typeof layerName === 'string')
-      setCache(
-        'leaflet',
-        `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const,
-        type === 'overlayadd'
-      );
-  };
-
-  Object.keys(layers)
-    .filter(
-      (layerName) =>
-        getCache(
-          'leaflet',
-          `show${capitalize(layerName) as Capitalize<MarkerLayerName>}` as const
-        ) ??
-        defaultOverlays[layerName] ??
-        false
-    )
-    .forEach((layerName) => layers[layerName].addTo(map));
-
-  map.on('overlayadd', handleOverlayEvent);
-  map.on('overlayremove', handleOverlayEvent);
-}
-
-export function addFullScreenButton(
-  map: L.Map,
-  callback: (isEnabled: boolean) => void
-): void {
-  // @ts-expect-error
-  new L.Control.FullScreen({ position: 'topleft', callback }).addTo(map);
-}
-
-function addPrintMapButton(map: L.Map): void {
-  // @ts-expect-error
-  new L.Control.PrintMap({ position: 'topleft' }).addTo(map);
-}
-
-const markerLayerName = [
-  'marker',
-  'polygon',
-  'polygonBoundary',
-  'errorRadius',
-] as const;
-
-export type MarkerLayerName = typeof markerLayerName[number];
-
-const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
-  marker: true,
-  polygon: true,
-  polygonBoundary: false,
-  errorRadius: false,
-};
-
-export function addMarkersToMap(
-  map: L.Map,
-  defaultOverlays: IR<L.TileLayer>,
-  controlLayers: L.Control.Layers,
-  markers: RA<MarkerGroups>,
-  labels?: Partial<RR<MarkerLayerName, string>>
-): void {
-  if (markers.length === 0) return;
-
-  // Initialize layer groups
-  const cluster = L.markerClusterGroup({
-    iconCreateFunction(cluster) {
-      const childCount = cluster.getChildCount();
-
-      const minHue = 10;
-      const maxHue = 90;
-      const maxValue = 200;
-      const hue = Math.max(
-        0,
-        Math.round((childCount / maxValue) * (minHue - maxHue) + maxHue)
-      );
-
-      const iconObject = new L.DivIcon({
-        html: `<div
-          style="background-color: hsl(${hue}deg, 50%, 50%, 0.7)"
-        ><span>${childCount}</span></div>`,
-        className: `marker-cluster marker-cluster-${
-          childCount < 10 ? 'small' : childCount < 100 ? 'medium' : 'large'
-        }`,
-        iconSize: new L.Point(40, 40),
-      });
-
-      const iconElement = iconObject.createIcon();
-      iconElement.classList.add('test');
-
-      return iconObject;
-    },
-  });
-  cluster.addTo(map);
-
-  const layerGroups = Object.fromEntries(
-    markerLayerName.map(
-      (groupName) =>
-        [groupName, L.featureGroup.subGroup(cluster)] as readonly [
-          MarkerLayerName,
-          L.FeatureGroup
-        ]
-    )
-  );
-
-  const groupsWithMarkers = new Set<string>();
-
-  // Sort markers by layer groups
-  markers.forEach((markers) =>
-    Object.entries(markers).forEach(([markerGroupName, markers]) =>
-      (markers as RA<Marker>).forEach((marker) => {
-        layerGroups[markerGroupName].addLayer(marker);
-        groupsWithMarkers.add(markerGroupName);
-      })
-    )
-  );
-
-  rememberSelectedOverlays(
-    map,
-    { ...defaultOverlays, ...layerGroups },
-    {
-      ...defaultMarkerGroupsState,
-      [preferredOverlay]: true,
-    }
-  );
-
-  const defaultLabels = {
-    marker: localityText('occurrencePoints'),
-    polygon: localityText('occurrencePolygons'),
-    polygonBoundary: localityText('polygonBoundaries'),
-    errorRadius: localityText('errorRadius'),
-  };
-
-  // Add layer groups' checkboxes to the layer control menu
-  Object.entries(labels ?? defaultLabels)
-    .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
-    .forEach(([key, label]) =>
-      controlLayers.addOverlay(layerGroups[key], label ?? defaultLabels[key])
-    );
-}
-
 export function isValidAccuracy(
   latlongaccuracy: string | undefined
 ): latlongaccuracy is string {
@@ -341,7 +110,7 @@ export type MarkerGroups = {
   readonly polygonBoundary: RA<L.Marker>;
   readonly errorRadius: RA<L.Circle>;
 };
-type Marker = L.Circle | L.Marker | L.Polygon | L.Polyline;
+export type LeafletMarker = L.Circle | L.Marker | L.Polygon | L.Polyline;
 
 const createLine = (
   // eslint-disable-next-line functional/prefer-readonly-type

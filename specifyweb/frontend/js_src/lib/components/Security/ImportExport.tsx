@@ -1,6 +1,12 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import {
   group,
   removeKey,
@@ -8,21 +14,15 @@ import {
   replaceKey,
   sortFunction,
 } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
-import type { IR, RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
-import { Dialog } from '../Molecules/Dialog';
-import type { NewRole, Role } from './Role';
+import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
-import { H3, Ul } from '../Atoms';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { LoadingContext } from '../Core/Contexts';
+import { Dialog } from '../Molecules/Dialog';
+import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
+import { hasPermission } from '../Permissions/helpers';
+import type { NewRole, Role } from './Role';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
@@ -31,6 +31,7 @@ const categoryLabels = {
   created: adminText('createNewRoles'),
 } as const;
 
+// REFACTOR: reduce size of this component
 export function ImportExport({
   roles,
   baseName,
@@ -71,21 +72,7 @@ export function ImportExport({
             {commonText('import')}
           </Button.Blue>
         )}
-      <Button.Blue
-        disabled={roles === undefined}
-        onClick={(): void =>
-          loading(
-            downloadFile(
-              `${adminText(
-                'userRoles'
-              )} - ${baseName} - ${new Date().toDateString()}.json`,
-              JSON.stringify(Object.values(defined(roles)), null, '\t')
-            )
-          )
-        }
-      >
-        {commonText('export')}
-      </Button.Blue>
+      <ExportButton baseName={baseName} roles={roles} />
       {isOpen && (
         <Dialog
           buttons={
@@ -234,5 +221,32 @@ export function ImportExport({
         </Dialog>
       )}
     </>
+  );
+}
+
+function ExportButton({
+  roles,
+  baseName,
+}: {
+  readonly roles: IR<Role> | undefined;
+  readonly baseName: string;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  return (
+    <Button.Blue
+      disabled={roles === undefined}
+      onClick={(): void =>
+        loading(
+          downloadFile(
+            `${adminText(
+              'userRoles'
+            )} - ${baseName} - ${new Date().toDateString()}.json`,
+            JSON.stringify(Object.values(defined(roles)), null, '\t')
+          )
+        )
+      }
+    >
+      {commonText('export')}
+    </Button.Blue>
   );
 }

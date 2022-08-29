@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpQuery } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { commonText } from '../../localization/common';
@@ -16,6 +15,7 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useNavigate } from 'react-router-dom';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export function QueryImport({
   onClose: handleClose,

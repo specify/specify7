@@ -1,11 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helpers';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
@@ -23,7 +18,6 @@ import {
   serializeConformation,
 } from './helpers';
 import type { RA } from '../../utils/types';
-import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
@@ -32,7 +26,6 @@ import { NotFoundView } from '../Router/NotFoundView';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import {
   useHighContrast,
-  usePref,
   useReducedTransparency,
 } from '../UserPreferences/Hooks';
 import { deserializeResource } from '../../hooks/resource';
@@ -46,9 +39,16 @@ import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { useId } from '../../hooks/useId';
-import { useTitle } from '../../hooks/useTitle';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
+import { useTitle } from '../Molecules/AppTitle';
+import { usePref } from '../UserPreferences/usePref';
 
 const treeToPref = {
     Geography: 'geography',

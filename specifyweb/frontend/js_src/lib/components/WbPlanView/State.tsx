@@ -11,10 +11,10 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { useCachedState } from '../../hooks/useCachedState';
 import { DataSetsDialog } from '../Toolbar/WbsDialog';
 import type { Dataset } from './Wrapped';
-import { ListOfBaseTables } from './Components';
 import { Input, Label } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { ListOfBaseTables } from './Components';
 
 function TemplateSelection({
   headers,

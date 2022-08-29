@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { KEY, sortFunction, split } from '../../utils/utils';
 import { commonText } from '../../localization/common';
@@ -17,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
 import {useId} from '../../hooks/useId';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export function SchemaConfigFormat({
   schemaData,

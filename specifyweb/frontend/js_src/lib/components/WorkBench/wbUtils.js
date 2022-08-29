@@ -34,6 +34,7 @@ import {filterArray} from '../../utils/types';
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
 
+// REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
   __name__: 'WbUtils',
   events: {

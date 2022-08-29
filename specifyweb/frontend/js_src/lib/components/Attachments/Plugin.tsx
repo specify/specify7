@@ -12,22 +12,22 @@ import {
   uploadFile,
 } from './attachments';
 import type { Attachment } from '../DataModel/types';
-import type { AnySchema, SerializedResource } from '../DataModel/helpers';
-import { serializeResource } from '../DataModel/helpers';
+import { serializeResource, toTable } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
-import { toTable } from '../DataModel/specifyModel';
 import { AttachmentCell } from './index';
 import { Progress } from '../Atoms';
-import { fail } from '../Errors/ErrorBoundary';
 import { FilePicker } from '../Molecules/FilePicker';
-import { Dialog, loadingBar } from '../Molecules/Dialog';
+import { Dialog} from '../Molecules/Dialog';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import { fail } from '../Errors/Crash';
+import {loadingBar} from '../Molecules';
 
 export function AttachmentsPlugin({
   resource,

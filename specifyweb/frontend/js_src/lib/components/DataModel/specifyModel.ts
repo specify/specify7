@@ -2,25 +2,24 @@
  * Class for a specify model (a database table)
  */
 
-import { error } from '../Errors/assert';
+import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
+import type { IR, R, RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { camelToHuman } from '../../utils/utils';
+import { error } from '../Errors/assert';
 import {
   DependentCollection,
   LazyCollection,
   ToOneCollection,
 } from './collectionApi';
-import type { Tables } from './types';
 import type {
   AnySchema,
-  AnyTree,
   CommonFields,
   SerializedModel,
   SerializedResource,
-} from './helpers';
-import { f } from '../../utils/functools';
-import { camelToHuman } from '../../utils/utils';
+} from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { commonText } from '../../localization/common';
 import { parseClassName } from './resource';
 import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './schema';
@@ -33,9 +32,6 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
-import { isTreeResource } from '../InitialContext/treeRanks';
-import type { IR, R, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 
 type FieldAlias = {
   readonly vname: string;
@@ -392,35 +388,3 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     return `[object ${this.name}]`;
   }
 }
-
-export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
-  resource: SpecifyResource<AnySchema>,
-  tableName: TABLE_NAME
-  // @ts-expect-error
-): resource is SpecifyResource<Tables[TABLE_NAME]> =>
-  resource.specifyModel.name === tableName;
-
-export const toTable = <TABLE_NAME extends keyof Tables>(
-  resource: SpecifyResource<AnySchema>,
-  tableName: TABLE_NAME
-): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  resource.specifyModel.name === tableName ? resource : undefined;
-
-export const toResource = <TABLE_NAME extends keyof Tables>(
-  resource: SerializedResource<AnySchema>,
-  tableName: TABLE_NAME
-): SerializedResource<Tables[TABLE_NAME]> | undefined =>
-  resource._tableName === tableName
-    ? (resource as SerializedResource<Tables[TABLE_NAME]>)
-    : undefined;
-
-export const toTreeTable = (
-  resource: SpecifyResource<AnySchema>
-): SpecifyResource<AnyTree> | undefined =>
-  isTreeResource(resource) ? resource : undefined;
-
-export const toTables = <TABLE_NAME extends keyof Tables>(
-  resource: SpecifyResource<AnySchema>,
-  tableNames: RA<TABLE_NAME>
-): SpecifyResource<Tables[TABLE_NAME]> | undefined =>
-  f.includes(tableNames, resource.specifyModel.name) ? resource : undefined;

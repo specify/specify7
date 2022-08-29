@@ -1,9 +1,9 @@
 import { ajax } from '../../utils/ajax';
-import { softFail } from '../Errors/ErrorBoundary';
 import type { CollectionObject } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formatUrl } from '../Router/queryString';
 import type { IR, RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 
 export const snServer = 'https://broker.spcoco.org';
 

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { error } from '../components/Errors/assert';
-import type { AnySchema } from '../components/DataModel/helpers';
 import { getDateInputValue } from '../utils/dayJs';
 import { listen } from '../utils/events';
 import { f } from '../utils/functools';
@@ -16,6 +15,7 @@ import { className } from '../components/Atoms/className';
 import { FormContext } from '../components/Core/Contexts';
 import { useValidation } from './useValidation';
 import { useBooleanState } from './useBooleanState';
+import {AnySchema} from '../components/DataModel/helperTypes';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

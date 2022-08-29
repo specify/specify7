@@ -4,7 +4,6 @@
 
 import { months } from '../Atoms/Internationalization';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import type { SerializedResource, TableFields } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -13,6 +12,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { createPickListItem, PickListTypes } from './fetch';
 import { schema } from '../DataModel/schema';
 import type { IR, R, RA } from '../../utils/types';
+import {SerializedResource, TableFields} from '../DataModel/helperTypes';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 

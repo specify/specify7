@@ -3,12 +3,12 @@
  */
 
 import type { Tables } from './types';
-import type { FilterTablesByEndsWith } from './helpers';
 import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
+import {FilterTablesByEndsWith} from './helperTypes';
 
 const treeDefinitionFields = [
   'fullNameSeparator',

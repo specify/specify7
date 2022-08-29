@@ -8,18 +8,23 @@ import type { IR, RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 import { getMappingLineData } from './navigator';
-import { AutoGrowTextArea, TableIcon } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { usePref } from '../UserPreferences/Hooks';
 import { useCachedState } from '../../hooks/useCachedState';
-import type { HtmlGeneratorFieldData, MappingElementProps } from './Components';
-import { ButtonWithConfirmation, MappingPathComponent } from './Components';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from './LineComponents';
+import { MappingPathComponent } from './LineComponents';
 import type { MappingPath } from './Mapper';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Ul } from '../Atoms';
 import { useId } from '../../hooks/useId';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { TableIcon } from '../Molecules/TableIcon';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { usePref } from '../UserPreferences/usePref';
+import { ButtonWithConfirmation } from './Components';
 
 export function MappingsControlPanel({
   showHiddenFields,

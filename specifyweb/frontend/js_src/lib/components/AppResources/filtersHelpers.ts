@@ -1,10 +1,10 @@
-import { appResourceSubTypes } from './Create';
 import type { AppResources } from './hooks';
 import type { SpAppResource } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { KEY, sortFunction } from '../../utils/utils';
 import type { RA } from '../../utils/types';
+import { appResourceSubTypes } from './types';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 export const allAppResources = Array.from(
   Object.keys(appResourceSubTypes)

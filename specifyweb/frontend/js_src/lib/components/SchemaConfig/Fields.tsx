@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { sortFunction, split } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -9,6 +8,7 @@ import type { RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Select } from '../Atoms/Form';
 import {useId} from '../../hooks/useId';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export function SchemaConfigFields({
   model,

@@ -1,17 +1,17 @@
 import { getCache } from '../../utils/cache';
 import type { Tables } from '../DataModel/types';
-import type { AnyTree } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
-import type { tableActions } from './index';
+import { schema } from '../DataModel/schema';
+import { tableNameToResourceName, toolDefinitions } from '../Security/utils';
+import type { RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { AnyTree } from '../DataModel/helperTypes';
+import { tableActions } from './definitions';
 import {
   getDerivedPermissions,
   getOperationPermissions,
   getTablePermissions,
 } from './index';
-import { schema } from '../DataModel/schema';
-import { tableNameToResourceName, toolDefinitions } from '../Security/utils';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
 
 const isReadOnly = getCache('forms', 'readOnlyMode') === true;
 

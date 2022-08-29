@@ -9,22 +9,22 @@ import type { State } from 'typesafe-reducer';
 
 import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
 import type { AppResourcesConformation } from '../../components/AppResources/Aside';
-import type { SortConfig } from '../../components/Molecules';
 import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
 import type {
   Attachment,
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type { AnyTree, TableFields } from '../../components/DataModel/helpers';
-import type {
-  LeafletCacheSalt,
-  MarkerLayerName,
-} from '../../components/Leaflet/leaflet';
 import type { UserPreferences } from '../../components/UserPreferences/helpers';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { IR, RA, RR } from '../types';
 import { ensure } from '../types';
+import {AnyTree, TableFields} from '../../components/DataModel/helperTypes';
+import {
+  LeafletCacheSalt,
+  MarkerLayerName
+} from '../../components/Leaflet/leafletAddOns';
+import {SortConfig} from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {

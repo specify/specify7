@@ -2,13 +2,11 @@ import React from 'react';
 
 import { fetchCollection } from '../DataModel/collection';
 import type { Geography } from '../DataModel/types';
-import type { AnyTree } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
-import { toTreeTable } from '../DataModel/specifyModel';
 import {
   getTreeDefinitionItems,
   isTreeResource,
@@ -16,8 +14,13 @@ import {
 } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { PickListComboBox } from './index';
+import { AnyTree } from '../DataModel/helperTypes';
+import { toTreeTable } from '../DataModel/helpers';
 
 const fetchPossibleRanks = async (
   lowestChildRank: number,

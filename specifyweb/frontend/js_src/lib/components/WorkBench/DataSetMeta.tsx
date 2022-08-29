@@ -5,7 +5,6 @@ import { formData, Http } from '../../utils/ajax/helpers';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyUser } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
@@ -13,7 +12,6 @@ import { defined } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
-import { AutoGrowTextArea, FormattedResource, TableIcon } from '../Molecules';
 import { LoadingContext } from '../Core/Contexts';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
@@ -26,9 +24,13 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
-import { useTitle } from '../../hooks/useTitle';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { FormattedResource } from '../Molecules/FormattedResource';
+import { useTitle } from '../Molecules/AppTitle';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({

@@ -1,15 +1,15 @@
 import React from 'react';
 
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formsText } from '../../localization/forms';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import { toTable } from '../DataModel/specifyModel';
 import { userInformation } from '../InitialContext/userInformation';
 import { Input } from '../Atoms/Form';
-import { CopyButton } from '../Molecules';
+import { AnySchema } from '../DataModel/helperTypes';
+import { toTable } from '../DataModel/helpers';
+import {CopyButton} from '../Molecules/Copy';
 
 export function ShareRecord({
   resource,

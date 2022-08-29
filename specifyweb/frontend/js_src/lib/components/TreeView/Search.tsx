@@ -2,16 +2,16 @@ import React from 'react';
 
 import { ajax } from '../../utils/ajax';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import type {
-  AnyTree,
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import { treeText } from '../../localization/tree';
 import type { IR, RA } from '../../utils/types';
 import { AutoComplete } from '../Molecules/AutoComplete';
-import { usePref } from '../UserPreferences/Hooks';
+import {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 const getSearchField = (
   searchCaseSensitive: boolean,

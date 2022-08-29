@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpQuery } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { format } from '../Forms/dataObjFormatters';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -16,6 +15,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import {AnySchema} from '../DataModel/helperTypes';
 
 export function RecordHistory({
   resource,

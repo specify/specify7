@@ -10,13 +10,13 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { FormTableCollection } from './FormTable';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { FormTableCollection } from './FormTableCollection';
 
 export function FormTableInteraction(
   props: Omit<

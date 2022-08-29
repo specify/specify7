@@ -12,7 +12,6 @@ import type {
   RecordSet,
   Tables,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { getBooleanAttribute, getParsedAttribute } from '../../utils/utils';
 import { cachableUrl } from '../InitialContext';
@@ -28,7 +27,6 @@ import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Ul } from '../Atoms';
-import { TableIcon } from '../Molecules';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { icons } from '../Atoms/Icons';
 import { InteractionDialog } from './InteractionDialog';
@@ -36,7 +34,9 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { OverlayContext } from '../Router/Router';
 import { Link } from '../Atoms/Link';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import {TableIcon} from '../Molecules/TableIcon';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -84,6 +84,9 @@ const supportedActions = [
   'PRINT_INVOICE',
 ] as const;
 
+/**
+ * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
+ */
 const stringLocalization = {
   RET_LOAN: formsText('returnLoan'),
   PRINT_INVOICE: formsText('printInvoice'),

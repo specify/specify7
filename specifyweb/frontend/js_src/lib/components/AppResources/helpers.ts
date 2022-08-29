@@ -7,10 +7,10 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export const getAppResource = (
   resources: AppResources,

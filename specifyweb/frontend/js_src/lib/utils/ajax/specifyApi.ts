@@ -4,12 +4,16 @@
 
 import { ajax } from './index';
 import { formData } from './helpers';
-import type { AnySchema, AnyTree, SerializedModel } from '../../components/DataModel/helpers';
 import { eventListener } from '../events';
 import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
 import { formatUrl } from '../../components/Router/queryString';
 import type { RA } from '../types';
 import { filterArray } from '../types';
+import {
+  AnySchema,
+  AnyTree,
+  SerializedModel
+} from '../../components/DataModel/helperTypes';
 
 export const globalEvents = eventListener<{
   readonly initResource: SpecifyResource<AnySchema>;

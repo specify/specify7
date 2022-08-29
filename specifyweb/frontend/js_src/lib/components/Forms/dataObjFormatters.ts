@@ -4,7 +4,6 @@
 
 import { ajax } from '../../utils/ajax';
 import type { Tables } from '../DataModel/types';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import {
   getAttribute,
@@ -30,7 +29,9 @@ import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { fieldFormat, resolveParser } from '../../utils/uiParse';
+import { resolveParser } from '../../utils/uiParse';
+import { AnySchema } from '../DataModel/helperTypes';
+import { fieldFormat } from '../../utils/fieldFormat';
 
 export type Formatter = {
   readonly name: string | undefined;

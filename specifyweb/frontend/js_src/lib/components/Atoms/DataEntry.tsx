@@ -7,9 +7,9 @@ import { className } from './className';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { AnySchema } from '../DataModel/helpers';
 import { Button } from './Button';
 import { Link } from './Link';
+import {AnySchema} from '../DataModel/helperTypes';
 
 const dataEntryButton = (
   className: string,

@@ -1,34 +1,30 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { commonText } from '../../localization/common';
-import type { IR, RA } from '../../utils/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { formatNumber } from '../Atoms/Internationalization';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { DateElement } from '../Molecules/DateElement';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { ajax } from '../../utils/ajax';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
+import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { formatNumber } from '../Atoms/Internationalization';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { DateElement } from '../Molecules/DateElement';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type {
+  GenericNotification} from './NotificationRenderers';
+import {
+  notificationRenderers
+} from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
-type Notification = {
-  readonly messageId: string;
-  readonly read: boolean;
-  readonly timestamp: string;
-  readonly type: string;
-  readonly payload: IR<string>;
-};
-
 export function Notifications(): JSX.Element {
   const [notifications, setNotifications] = React.useState<
-    RA<Notification> | undefined
+    RA<GenericNotification> | undefined
   >(undefined);
 
   const notificationCount = notifications?.length ?? 0;
@@ -63,7 +59,7 @@ export function Notifications(): JSX.Element {
         .then(async () =>
           ajax<
             RA<
-              Omit<Notification, 'messageId' | 'payload'> & {
+              Omit<GenericNotification, 'messageId' | 'payload'> & {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 readonly message_id: string;
               }
@@ -205,7 +201,7 @@ function NotificationComponent({
   notification,
   onDelete: handleDelete,
 }: {
-  readonly notification: Notification;
+  readonly notification: GenericNotification;
   readonly onDelete: (promise: Promise<void>) => void;
 }): JSX.Element {
   return (
@@ -254,107 +250,3 @@ function NotificationComponent({
   );
 }
 
-const notificationRenderers: IR<
-  (notification: Notification) => React.ReactNode
-> = {
-  'feed-item-updated'(notification) {
-    const filename = notification.payload.file;
-    return (
-      <>
-        {commonText('feedItemUpdated')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`/static/depository/export_feed/${filename}`}
-        >
-          {filename}
-        </Link.Green>
-      </>
-    );
-  },
-  'update-feed-failed'(notification) {
-    return (
-      <>
-        {commonText('updateFeedFailed')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`data:application/json:${JSON.stringify(notification.payload)}`}
-        >
-          {commonText('exception')}
-        </Link.Green>
-      </>
-    );
-  },
-  'dwca-export-complete'(notification) {
-    return (
-      <>
-        {commonText('dwcaExportCompleted')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`/static/depository/${notification.payload.file}`}
-        >
-          {commonText('download')}
-        </Link.Green>
-      </>
-    );
-  },
-  'dwca-export-failed'(notification) {
-    return (
-      <>
-        {commonText('dwcaExportFailed')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`data:application/json:${JSON.stringify(notification.payload)}`}
-        >
-          {commonText('exception')}
-        </Link.Green>
-      </>
-    );
-  },
-  'query-export-to-csv-complete'(notification) {
-    return (
-      <>
-        {commonText('queryExportToCsvCompleted')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`/static/depository/${notification.payload.file}`}
-        >
-          {commonText('download')}
-        </Link.Green>
-      </>
-    );
-  },
-  'query-export-to-kml-complete'(notification) {
-    return (
-      <>
-        {commonText('queryExportToKmlCompleted')}
-        <Link.Green
-          className="w-fit"
-          download
-          href={`/static/depository/${notification.payload.file}`}
-        >
-          {commonText('download')}
-        </Link.Green>
-      </>
-    );
-  },
-  'dataset-ownership-transferred'(notification) {
-    return commonText(
-      'dataSetOwnershipTransferred',
-      <i>{notification.payload['previous-owner-name']}</i>,
-      <Link.Default
-        href={`/specify/workbench/${notification.payload['dataset-id']}/`}
-      >
-        <i>{notification.payload['dataset-name']}</i>
-      </Link.Default>
-    );
-  },
-  default(notification) {
-    console.error('Unknown notification type', { notification });
-    return <pre>{JSON.stringify(notification, null, 2)}</pre>;
-  },
-};

@@ -9,12 +9,12 @@ import type {
   SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { addMissingFields } from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { userTypes } from '../PickLists/definitions';
 import type { RA } from '../../utils/types';
+import {SerializedResource} from '../DataModel/helperTypes';
 
 export const getAppResourceTree = (
   resources: AppResources

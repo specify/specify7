@@ -11,7 +11,7 @@ import { interceptLogs } from '../Errors/interceptLogs';
 import { commonText } from '../../localization/common';
 import { Contexts } from './Contexts';
 import { EntrypointRouter } from '../Router/EntrypointRouter';
-import { SetCssVariables } from '../UserPreferences/Hooks';
+import { SetCssVariables } from '../UserPreferences/ApplyPreferences';
 
 export function SplashScreen({
   children,

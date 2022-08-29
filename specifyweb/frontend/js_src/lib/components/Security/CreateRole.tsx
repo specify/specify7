@@ -5,13 +5,13 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/helpers';
 import { removeKey } from '../../utils/utils';
 import type { BackEndRole } from './utils';
-import { decompressPolicies, processPolicies } from './utils';
 import type { GetOrSet, IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { SecurityCollectionOutlet } from './Collection';
 import type { NewRole, Role } from './Role';
 import { CreateRole } from './RoleTemplate';
+import { decompressPolicies, processPolicies } from './policyConverter';
 
 export const createCollectionRole = async (
   setRoles: GetOrSet<IR<Role> | undefined>[1],

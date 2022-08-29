@@ -11,7 +11,6 @@ import {
 import { toggleItem } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { appResourceSubTypes, appResourceTypes } from './Create';
 import type { AppResources } from './hooks';
 import { Ul } from '../Atoms';
 import { Dialog } from '../Molecules/Dialog';
@@ -19,6 +18,7 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { appResourceSubTypes, appResourceTypes } from './types';
 
 export function AppResourcesFilters({
   initialResources,

@@ -5,35 +5,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
+import { defined } from '../../utils/types';
+import { Container, H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Form } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { hasPermission } from '../Permissions/helpers';
+import { PreferencesAside, useActiveCategory } from './Aside';
+import type {
+  GenericPreferencesCategories,
+  PreferenceItem,
+} from './Definitions';
+import { preferenceDefinitions } from './Definitions';
 import {
   awaitPrefsSynced,
   getPrefDefinition,
   preferencesPromise,
   setPref,
-} from '../UserPreferences/helpers';
-import type { WritableArray } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import type {
-  GenericPreferencesCategories,
-  PreferenceItem,
-} from '../UserPreferences/Definitions';
-import { preferenceDefinitions } from '../UserPreferences/Definitions';
-import { prefEvents, usePref } from '../UserPreferences/Hooks';
-import { DefaultPreferenceItemRender } from '../UserPreferences/Renderers';
-import { Container, H2 } from '../Atoms';
-import { Form } from '../Atoms/Form';
-import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
-import { useId } from '../../hooks/useId';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+} from './helpers';
+import { prefEvents } from './Hooks';
+import { DefaultPreferenceItemRender } from './Renderers';
+import { usePref } from './usePref';
 
 function Preferences(): JSX.Element {
   const [changesMade, handleChangesMade] = useBooleanState();
@@ -93,111 +94,8 @@ function Preferences(): JSX.Element {
   );
 }
 
-/** Update the active category on the sidebar as user scrolls */
-function useActiveCategory(): {
-  readonly activeCategory: number;
-  readonly forwardRefs: (index: number, element: HTMLElement | null) => void;
-  readonly containerRef: React.RefCallback<HTMLDivElement | null>;
-} {
-  const [activeCategory, setActiveCategory] = React.useState<number>(0);
-  const observer = React.useRef<IntersectionObserver | undefined>(undefined);
-  const references = React.useRef<WritableArray<HTMLElement | undefined>>([]);
-  React.useEffect(() => () => observer.current?.disconnect(), []);
-
-  // eslint-disable-next-line functional/prefer-readonly-type
-  const intersecting = React.useRef<Set<number>>(new Set());
-
-  function handleObserved({
-    isIntersecting,
-    target,
-  }: IntersectionObserverEntry): void {
-    const index = references.current.indexOf(target as HTMLElement);
-    intersecting.current[isIntersecting ? 'add' : 'delete'](index);
-    const intersection = Math.min(...Array.from(intersecting.current));
-    setActiveCategory(intersection);
-  }
-
-  return {
-    activeCategory,
-    forwardRefs: React.useCallback((index, element) => {
-      const oldElement = references.current[index];
-      if (typeof oldElement === 'object')
-        observer.current?.unobserve(oldElement);
-      references.current[index] = element ?? undefined;
-      if (element !== null) observer?.current?.observe(element);
-    }, []),
-    containerRef: React.useCallback((container): void => {
-      observer.current?.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => entries.map(handleObserved),
-        {
-          root: container,
-          rootMargin: '-200px 0px -100px 0px',
-          threshold: 0,
-        }
-      );
-      /*
-       * Since React 18, apps running in strict mode are mounted followed
-       * immediately by an unmount and the mount again when running in
-       * development. This causes observer not to fire. Can be fixed by either
-       * running React in non-strict mode (bad idea), or wrapping the following
-       * in setTimeout(()=>..., 0);
-       * More info:
-       * https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-strict-mode
-       */
-      setTimeout(
-        () =>
-          filterArray(references.current).forEach((value) =>
-            observer.current?.observe(value)
-          ),
-        0
-      );
-    }, []),
-  };
-}
-
-function PreferencesAside({
-  id,
-  activeCategory,
-}: {
-  readonly id: (prefix: string) => string;
-  readonly activeCategory: number;
-}): JSX.Element {
-  const definitions = useDefinitions();
-  const navigate = useNavigate();
-  React.useEffect(
-    () =>
-      navigate(
-        `/specify/user-preferences/#${id(definitions[activeCategory][0])}`,
-        {
-          replace: true,
-        }
-      ),
-    [definitions, activeCategory, id]
-  );
-  return (
-    <aside
-      className={`
-        top-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
-        md:sticky
-      `}
-    >
-      {definitions.map(([category, { title }], index) => (
-        <Link.Gray
-          aria-current={activeCategory === index ? 'page' : undefined}
-          href={`#${id(category)}`}
-          key={category}
-        >
-          {title}
-        </Link.Gray>
-      ))}
-    </aside>
-  );
-}
-
 /** Hide invisible preferences. Remote empty categories and subCategories */
-function useDefinitions() {
+export function usePrefDefinitions() {
   return React.useMemo(
     () =>
       Object.entries(preferenceDefinitions as GenericPreferencesCategories)
@@ -238,7 +136,7 @@ export function PreferencesContent({
   readonly isReadOnly: boolean;
   readonly forwardRefs?: (index: number, element: HTMLElement | null) => void;
 }): JSX.Element {
-  const definitions = useDefinitions();
+  const definitions = usePrefDefinitions();
   return (
     <div className="flex h-fit flex-col gap-6">
       {definitions.map(

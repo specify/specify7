@@ -6,7 +6,6 @@ import type {
   SpAppResource,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helpers';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -16,7 +15,6 @@ import { AppResourceIcon } from './EditorComponents';
 import { AppResourcesFilters, useFilteredAppResources } from './Filters';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
-import { ActiveLink } from '../Molecules';
 import { icons } from '../Atoms/Icons';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
@@ -24,7 +22,9 @@ import { Ul } from '../Atoms';
 import { className } from '../Atoms/className';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
+import {SerializedResource} from '../DataModel/helperTypes';
+import {ActiveLink} from '../Router/ActiveLink';
 
 export function AppResourcesAside({
   resources: initialResources,

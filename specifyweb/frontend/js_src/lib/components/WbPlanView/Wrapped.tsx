@@ -19,8 +19,8 @@ import type { MappingLine } from './Mapper';
 import { Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useTitle } from '../../hooks/useTitle';
 import { useLiveState } from '../../hooks/useLiveState';
+import {useTitle} from '../Molecules/AppTitle';
 
 // General definitions
 export type Status = {

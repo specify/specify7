@@ -1,17 +1,17 @@
 import { ajax } from '../../utils/ajax';
 import type { Tables } from './types';
-import type {
-  AnySchema,
-  CommonFields,
-  SerializedModel,
-  SerializedResource,
-} from './helpers';
 import { serializeResource } from './helpers';
 import { f } from '../../utils/functools';
 import { formatUrl } from '../Router/queryString';
 import { schema } from './schema';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
+import {
+  AnySchema,
+  CommonFields,
+  SerializedModel,
+  SerializedResource
+} from './helperTypes';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
   Exclude<SCHEMA['fields'], 'null'> &

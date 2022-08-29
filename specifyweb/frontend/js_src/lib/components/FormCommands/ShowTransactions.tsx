@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
-import type { AnySchema } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -14,6 +13,7 @@ import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
 import {useAsyncState} from '../../hooks/useAsyncState';
+import {AnySchema} from '../DataModel/helperTypes';
 
 function List({
   resources,

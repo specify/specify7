@@ -11,7 +11,7 @@ import { menuItemsPromise } from '../Header/menuItemDefinitions';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { RR } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
-import { crash, ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Notifications } from '../Header/Notifications';
@@ -21,6 +21,7 @@ import { UserTools } from '../Header/UserTools';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
+import { crash } from '../Errors/Crash';
 
 export type UserTool = {
   readonly title: string;
