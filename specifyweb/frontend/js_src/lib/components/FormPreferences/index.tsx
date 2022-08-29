@@ -30,6 +30,10 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 
+/**
+ * Form preferences host context aware user preferences and other meta-actions.
+ * List of available features: https://github.com/specify/specify7/issues/1330
+ */
 export function FormPreferences({
   resource,
   className,

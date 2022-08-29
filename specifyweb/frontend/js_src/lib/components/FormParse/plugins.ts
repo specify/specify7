@@ -1,5 +1,8 @@
 /**
  * Parse cell XML with a plugin definition into a JSON structure
+ *
+ * Documentation - https://github.com/specify/specify7/wiki/Form-System#plugin
+ * On any modifications, please check if documentation needs to be updated.
  */
 
 import type { State } from 'typesafe-reducer';

@@ -15,12 +15,12 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import { SplashScreen } from '../Core/Entrypoint';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePref } from '../UserPreferences/usePref';
+import { SplashScreen } from '../Core/SplashScreen';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(

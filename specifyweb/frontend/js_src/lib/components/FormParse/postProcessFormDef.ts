@@ -9,6 +9,7 @@ import type { ParsedFormDefinition } from './index';
 /**
  * Unfortunately, not all cell definitions can be parsed by looking at just
  * one cell at a time.
+ *
  * This method looks over all grid cells holistically and finishes parsing
  * them or fixes discovered issues.
  */

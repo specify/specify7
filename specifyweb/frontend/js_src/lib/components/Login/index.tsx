@@ -14,10 +14,10 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-import { SplashScreen } from '../Core/Entrypoint';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Submit } from '../Atoms/Submit';
-import {useValidation} from '../../hooks/useValidation';
+import { useValidation } from '../../hooks/useValidation';
+import { SplashScreen } from '../Core/SplashScreen';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {

@@ -11,7 +11,7 @@ import { sortFunction } from '../../utils/utils';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { schemaBase } from './schemaBase';
-import { schemaExtras } from './schemaextras';
+import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
 import { SpecifyModel, type TableDefinition } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';

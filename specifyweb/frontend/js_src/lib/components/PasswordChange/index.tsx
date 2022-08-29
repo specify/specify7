@@ -8,11 +8,11 @@ import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrftoken';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
-import { SplashScreen } from '../Core/Entrypoint';
 import { Form, Input, Label } from '../Atoms/Form';
 import { ErrorMessage } from '../Atoms';
 import { Submit } from '../Atoms/Submit';
-import {useValidation} from '../../hooks/useValidation';
+import { useValidation } from '../../hooks/useValidation';
+import { SplashScreen } from '../Core/SplashScreen';
 
 export function PasswordChange(): JSX.Element {
   return React.useMemo(

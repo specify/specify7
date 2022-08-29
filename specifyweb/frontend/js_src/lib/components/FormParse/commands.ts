@@ -1,5 +1,8 @@
 /**
  * Parse XML cell with a command definition into a JSON structure
+ *
+ * Documentation - https://github.com/specify/specify7/wiki/Form-System#command
+ * On any modifications, please check if documentation needs to be updated.
  */
 
 import type { State } from 'typesafe-reducer';

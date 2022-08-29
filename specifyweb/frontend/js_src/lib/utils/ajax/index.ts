@@ -24,12 +24,16 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
 };
 
 /**
+ * All front-end network requests should go through this utility.
+ *
  * Wraps native fetch in useful helpers
  * It is intended as a replacement for jQuery's ajax
  *
  * @remarks
  * Automatically adds CSRF token to non GET requests
  * Casts response to correct typescript type
+ * Parsers JSON and XML responses
+ * Handlers errors (including permission errors)
  */
 export const ajax = async <RESPONSE_TYPE = string>(
   url: string,
