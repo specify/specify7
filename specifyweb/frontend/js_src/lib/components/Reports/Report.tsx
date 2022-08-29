@@ -83,7 +83,7 @@ export function Report({
         typeof report === 'object'
           ? f.maybe(idFromUrl(report.query), async (id) =>
               fetchResource('SpQuery', id, false).then(
-                (resource) => resource ?? false
+                (resource = false) => resource
               )
             ) ?? false
           : undefined,

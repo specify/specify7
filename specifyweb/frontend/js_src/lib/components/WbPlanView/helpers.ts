@@ -165,7 +165,7 @@ export function getMustMatchTables({
   );
 
   const tables = arrayOfMappingLineData
-    .map(({ tableName }) => tableName ?? '')
+    .map(({ tableName='' }) => tableName)
     .filter(
       (tableName) =>
         getModel(tableName) === undefined ||

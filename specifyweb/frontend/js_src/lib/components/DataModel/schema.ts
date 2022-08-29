@@ -16,7 +16,7 @@ import { LiteralField, Relationship } from './specifyField';
 import { SpecifyModel, type TableDefinition } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
-import {AnySchema, AnyTree} from './helperTypes';
+import { AnySchema, AnyTree } from './helperTypes';
 
 export type SchemaLocalization = {
   readonly name: string | null;
@@ -49,7 +49,7 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
      * The sort order defined here affects the order of fields in the
      * WbPlanView, Query builder, Schema Config and all other places
      */
-  ].sort(sortFunction(({ label }) => label ?? ''));
+  ].sort(sortFunction(({ label = '' }) => label));
 
 let schemaLocalization: IR<SchemaLocalization> = undefined!;
 const fetchSchemaLocalization = f.store(async () =>

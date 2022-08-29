@@ -66,4 +66,4 @@ export const fetchOccurrenceName = async (
         remoteOccurrence ?? fetchLocalScientificName(resource)
     )
     .catch(softFail)
-    .then((occurrenceName) => occurrenceName ?? '');
+    .then((occurrenceName = '') => occurrenceName);

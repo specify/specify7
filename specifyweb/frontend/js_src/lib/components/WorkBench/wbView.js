@@ -998,7 +998,7 @@ export const WBView = Backbone.View.extend({
         visualCol,
         physicalRow,
         physicalCol,
-        oldValue,
+        oldValue='',
         newValue,
       }) => {
         if (
@@ -1009,7 +1009,7 @@ export const WBView = Backbone.View.extend({
             physicalRow,
             physicalCol,
             'originalValue',
-            oldValue ?? ''
+            oldValue
           );
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,

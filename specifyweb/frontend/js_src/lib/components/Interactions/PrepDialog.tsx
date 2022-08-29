@@ -61,8 +61,8 @@ export function PrepDialog({
     );
     itemCollection.models.forEach((preparation) => {
       if (!preparation.isNew()) return;
-      const preparationUrl = preparation.get('preparation');
-      const indexed = indexedPreparations[preparationUrl ?? ''];
+      const preparationUrl = preparation.get('preparation') ?? '';
+      const indexed = indexedPreparations[preparationUrl];
       if (indexed === undefined) return;
       const loanPreparation = toTable(preparation, 'LoanPreparation');
       if (loanPreparation === undefined) return;

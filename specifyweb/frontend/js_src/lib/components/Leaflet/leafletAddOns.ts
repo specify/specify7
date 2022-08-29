@@ -6,7 +6,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { capitalize, KEY } from '../../utils/utils';
 import type { LeafletMarker, MarkerGroups } from './leaflet';
 import L from './leafletExtend';
-import {preferredBaseLayer, preferredOverlay} from './leafletLayers';
+import { preferredBaseLayer, preferredOverlay } from './leafletLayers';
 
 export type LeafletCacheSalt = 'CoMap' | 'MainMap';
 
@@ -88,12 +88,19 @@ const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
   errorRadius: false,
 };
 
+const defaultLabels = {
+  marker: localityText('occurrencePoints'),
+  polygon: localityText('occurrencePolygons'),
+  polygonBoundary: localityText('polygonBoundaries'),
+  errorRadius: localityText('errorRadius'),
+};
+
 export function addMarkersToMap(
   map: L.Map,
   defaultOverlays: IR<L.TileLayer>,
   controlLayers: L.Control.Layers,
   markers: RA<MarkerGroups>,
-  labels?: Partial<RR<MarkerLayerName, string>>
+  labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
 ): void {
   if (markers.length === 0) return;
 
@@ -158,13 +165,6 @@ export function addMarkersToMap(
       [preferredOverlay]: true,
     }
   );
-
-  const defaultLabels = {
-    marker: localityText('occurrencePoints'),
-    polygon: localityText('occurrencePolygons'),
-    polygonBoundary: localityText('polygonBoundaries'),
-    errorRadius: localityText('errorRadius'),
-  };
 
   // Add layer groups' checkboxes to the layer control menu
   Object.entries(labels ?? defaultLabels)

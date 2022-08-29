@@ -77,7 +77,7 @@ const commandRenderers: {
       </>
     );
   },
-  ReturnLoan({ id, label, resource }) {
+  ReturnLoan({ id, label = '', resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
     return hasTablePermission('LoanPreparation', 'update') &&
       hasTablePermission('LoanReturnPreparation', 'update')
@@ -90,7 +90,7 @@ const commandRenderers: {
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
                   buttons={commonText('close')}
-                  header={label ?? ''}
+                  header={label}
                   onClose={handleHide}
                 >
                   {formsText('preparationsCanNotBeReturned')}
@@ -103,7 +103,7 @@ const commandRenderers: {
         )) ?? error('LoanReturnCommand can only be used with Loan resources')
       : null;
   },
-  Unsupported({ commandDefinition: { name }, id }) {
+  Unsupported({ commandDefinition: { name = commonText('nullInline') }, id }) {
     const [isClicked, handleShow, handleHide] = useBooleanState();
     return (
       <>
@@ -118,7 +118,7 @@ const commandRenderers: {
         >
           {formsText('unavailableCommandDialogText')}
           <br />
-          {`${formsText('commandName')} ${name ?? commonText('nullInline')}`}
+          {`${formsText('commandName')} ${name}`}
         </Dialog>
       </>
     );

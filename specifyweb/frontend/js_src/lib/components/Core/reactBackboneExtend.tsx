@@ -56,8 +56,10 @@ export const createBackboneView = <PROPS extends IR<unknown>>(
       // eslint-disable-next-line functional/prefer-readonly-type
       private setProps: (newProps: PROPS) => void;
 
-      public constructor(options?: PROPS & { readonly el?: HTMLElement }) {
-        const { el, ...rest } = options ?? {};
+      public constructor({
+        el,
+        ...rest
+      }: PROPS & { readonly el?: HTMLElement } = {}) {
         super({ el });
         this.options = (rest ?? {}) as PROPS;
         this.root = createRoot(this.el);

@@ -106,7 +106,7 @@ function useCsvPreview(
 }
 
 function ChooseEncoding({
-  encoding,
+  encoding='',
   onChange: handleChange,
 }: {
   readonly encoding: string;
@@ -115,7 +115,7 @@ function ChooseEncoding({
   return (
     <label className="contents">
       {wbText('characterEncoding')}
-      <Select value={encoding ?? ''} onValueChange={handleChange}>
+      <Select value={encoding} onValueChange={handleChange}>
         {encodings.map((encoding: string) => (
           <option key={encoding}>{encoding}</option>
         ))}

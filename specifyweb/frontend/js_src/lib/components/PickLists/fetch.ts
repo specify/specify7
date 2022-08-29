@@ -18,7 +18,7 @@ import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
 import { deserializeResource } from '../../hooks/resource';
-import {AnySchema, SerializedResource} from '../DataModel/helperTypes';
+import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 
 export const PickListTypes = {
   // Items are defined in the PickListItems table
@@ -144,7 +144,7 @@ async function fetchFromTable(
         format(model, pickList.get('formatter') ?? undefined, true).then(
           (title) => ({
             value: model.url(),
-            title: title ?? model.url(),
+            title: title!,
           })
         )
       )

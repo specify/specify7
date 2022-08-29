@@ -186,7 +186,7 @@ function parseClickEvent(
 
 function Overlay({
   overlay,
-  backgroundUrl,
+  backgroundUrl = '/specify/',
 }: {
   readonly overlay: JSX.Element | undefined;
   readonly backgroundUrl: string | undefined;
@@ -194,7 +194,7 @@ function Overlay({
   const navigate = useNavigate();
 
   const handleCloseOverlay = React.useCallback(
-    () => navigate(backgroundUrl ?? '/specify/'),
+    () => navigate(backgroundUrl),
     [backgroundUrl]
   );
 

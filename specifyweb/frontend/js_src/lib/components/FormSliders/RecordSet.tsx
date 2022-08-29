@@ -26,7 +26,7 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { EditRecordSet } from '../QueryBuilder/RecordSets';
 import type { RecordSelectorProps } from './RecordSelector';
-import {RecordSelectorFromIds} from './RecordSelectorFromIds';
+import { RecordSelectorFromIds } from './RecordSelectorFromIds';
 
 /** Fetch IDs of records in a record set at a given position */
 const fetchItems = async (
@@ -70,7 +70,7 @@ const fetchItems = async (
 
 export function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
-  defaultResourceIndex,
+  defaultResourceIndex = 0,
   dialog,
   mode,
   onClose: handleClose,
@@ -113,7 +113,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
     totalCount: 0,
     ids: [],
     newResource: undefined,
-    index: defaultResourceIndex ?? 0,
+    index: defaultResourceIndex,
   };
   const { totalCount, ids, newResource, index } =
     items ?? defaultRecordSetState;

@@ -75,7 +75,7 @@ const returnLoanPreps = async (
         loanId: Number.parseInt(loanId),
         loanNumber: loannumber,
         totalPreps: loanpreparations.reduce(
-          (count, { quantity }) => count + (quantity ?? 0),
+          (count, { quantity = 0 }) => count + quantity,
           0
         ),
       }))

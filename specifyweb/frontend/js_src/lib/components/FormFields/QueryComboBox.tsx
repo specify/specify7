@@ -28,9 +28,7 @@ import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SubViewContext } from '../Forms/SubView';
-import {
-  isTreeModel,
-} from '../InitialContext/treeRanks';
+import { isTreeModel } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -41,15 +39,15 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
 } from './queryComboBoxUtils';
-import {useCollectionRelationships} from './useCollectionRelationships';
-import {useTreeData} from './useTreeData';
-import {useTypeSearch} from './useTypeSearch';
+import { useCollectionRelationships } from './useCollectionRelationships';
+import { useTreeData } from './useTreeData';
+import { useTypeSearch } from './useTypeSearch';
 
 // REFACTOR: split this component
 export function QueryComboBox({
   id,
   resource,
-  fieldName: initialFieldName,
+  fieldName: initialFieldName = '',
   mode,
   formType,
   isRequired,
@@ -69,7 +67,7 @@ export function QueryComboBox({
   readonly forceCollection: number | undefined;
   readonly relatedModel: SpecifyModel | undefined;
 }): JSX.Element {
-  const field = resource.specifyModel.getField(initialFieldName ?? '');
+  const field = resource.specifyModel.getField(initialFieldName);
 
   React.useEffect(() => {
     if (!resource.isNew()) return;
@@ -87,10 +85,13 @@ export function QueryComboBox({
       );
   }, [resource, field]);
 
-
   const treeData = useTreeData(resource, field);
   const collectionRelationships = useCollectionRelationships(resource);
-  const typeSearch = useTypeSearch(initialTypeSearch, field, initialRelatedModel);
+  const typeSearch = useTypeSearch(
+    initialTypeSearch,
+    field,
+    initialRelatedModel
+  );
 
   const isLoaded =
     treeData !== undefined &&
@@ -207,7 +208,7 @@ export function QueryComboBox({
   const handleOpenRelated = (): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
-      : (typeof relatedCollectionId === 'number' &&
+      : typeof relatedCollectionId === 'number' &&
         !userInformation.availableCollections.some(
           ({ id }) => id === relatedCollectionId
         )
@@ -219,7 +220,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState' }));
+      : setState({ type: 'ViewResourceState' });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -360,17 +361,17 @@ export function QueryComboBox({
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>
           field?.isRelationship === true
-            ? (state.type === 'AddResourceState'
+            ? state.type === 'AddResourceState'
               ? setState({ type: 'MainState' })
               : setState({
                   type: 'AddResourceState',
                   resource: pendingValueToResource(field),
-                }))
+                })
             : undefined
         }
       />
       <span className="contents print:hidden">
-        {formType === 'formTable' ? undefined : (mode === 'view' ? (
+        {formType === 'formTable' ? undefined : mode === 'view' ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
             <DataEntry.View
@@ -472,7 +473,7 @@ export function QueryComboBox({
                                     operation: 'lessThan',
                                     values: [startValue],
                                   }
-                                : (fieldName === 'nodeNumber'
+                                : fieldName === 'nodeNumber'
                                 ? {
                                     field: 'nodeNumber',
                                     operation: 'notBetween',
@@ -487,7 +488,7 @@ export function QueryComboBox({
                                 : f.error(`extended filter not created`, {
                                     fieldName,
                                     startValue,
-                                  }))
+                                  })
                             )
                         ),
                       })
@@ -495,7 +496,7 @@ export function QueryComboBox({
               }
             />
           </>
-        ))}
+        )}
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
@@ -527,7 +528,7 @@ export function QueryComboBox({
               : (): void => setState({ type: 'MainState' })
           }
         />
-      ) : (state.type === 'AddResourceState' ? (
+      ) : state.type === 'AddResourceState' ? (
         <ResourceView
           canAddAnother={false}
           dialog="nonModal"
@@ -551,7 +552,7 @@ export function QueryComboBox({
               : undefined
           }
         />
-      ) : undefined)}
+      ) : undefined}
       {state.type === 'SearchState' ? (
         <SearchDialog
           extraFilters={state.extraConditions}

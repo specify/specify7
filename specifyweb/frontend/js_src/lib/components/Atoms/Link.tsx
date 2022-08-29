@@ -1,8 +1,8 @@
-import {IR, RR} from '../../utils/types';
-import {TagProps, wrap} from './wrapper';
-import {className} from './className';
-import {commonText} from '../../localization/common';
-import {IconProps, icons} from './Icons';
+import { IR, RR } from '../../utils/types';
+import { TagProps, wrap } from './wrapper';
+import { className } from './className';
+import { commonText } from '../../localization/common';
+import { IconProps, icons } from './Icons';
 import React from 'react';
 
 /**
@@ -47,11 +47,11 @@ export const Link = {
     'Link.Small',
     className.smallButton,
     ({
-       variant = className.defaultSmallButtonVariant,
-       className: classString,
-       ...props
-     }) => ({
-      className: `${classString ?? ''} ${variant}`,
+      variant = className.defaultSmallButtonVariant,
+      className: classString = '',
+      ...props
+    }) => ({
+      className: `${classString} ${variant}`,
       ...props,
     })
   ),

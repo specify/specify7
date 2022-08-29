@@ -481,8 +481,8 @@ export const WBUtils = Backbone.View.extend({
       nextCellOfType();
     }
   },
-  searchFunction(initialCellValue) {
-    let cellValue = initialCellValue ?? '';
+  searchFunction(initialCellValue='') {
+    let cellValue = initialCellValue;
 
     if (this.searchQuery === undefined) return false;
 

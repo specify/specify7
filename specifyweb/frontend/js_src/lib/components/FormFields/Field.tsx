@@ -197,7 +197,7 @@ function Field({
                 >
               )
                 .then(format)
-                .then((value) => value ?? '')
+                .then((value = '') => value)
             : commonText('noPermission')
           : undefined,
       /*

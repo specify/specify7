@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { className } from './className';
-import type { IconProps} from './Icons';
+import type { IconProps } from './Icons';
 import { icons } from './Icons';
 import { wrap } from './wrapper';
 
@@ -68,11 +68,11 @@ export const Button = {
     ({
       variant = className.defaultSmallButtonVariant,
       type,
-      className: classString,
+      className: classString = '',
       ...props
     }) => ({
       type: 'button',
-      className: `${classString ?? ''} ${variant}`,
+      className: `${classString} ${variant}`,
       ...props,
     })
   ),

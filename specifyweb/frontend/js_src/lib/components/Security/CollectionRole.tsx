@@ -63,7 +63,7 @@ export function SecurityCollectionRole(): JSX.Element {
   const role = React.useMemo(() => {
     if (typeof initialRole === 'object') return initialRole;
     if (roles === undefined) return undefined;
-    return roles?.[roleId ?? ''] ?? undefined;
+    return roles?.[roleId] ?? undefined;
   }, [roleId, roles, initialRole]);
 
   const roleUsers = React.useMemo(

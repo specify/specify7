@@ -57,14 +57,14 @@ export function ErrorDialog({
     'clearCacheOnException'
   );
 
-  const [unloadProtects, setUnloadProtects] = React.useContext(
+  const [unloadProtects = [], setUnloadProtects] = React.useContext(
     UnloadProtectsContext
   )!;
   /**
    * Clear unload protects when error occurs, but return them back if error
    * is dismissed
    */
-  const initialUnloadProtects = React.useRef(unloadProtects ?? []);
+  const initialUnloadProtects = React.useRef(unloadProtects);
   React.useCallback(() => setUnloadProtects?.([]), [setUnloadProtects]);
 
   return (

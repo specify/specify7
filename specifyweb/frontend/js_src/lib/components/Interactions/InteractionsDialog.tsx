@@ -36,7 +36,7 @@ import { OverlayContext } from '../Router/Router';
 import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -233,7 +233,7 @@ function Interactions({
       <Ul>
         {entries
           .filter(({ table }) => hasTablePermission(table, 'create'))
-          .map(({ label, table, action, tooltip, icon }, index) =>
+          .map(({ label, table, action, tooltip, icon = table }, index) =>
             action !== 'PRINT_INVOICE' ||
             hasPermission('/report', 'execute') ? (
               <li
@@ -261,7 +261,7 @@ function Interactions({
                       : undefined
                   }
                 >
-                  {f.maybe(icon ?? table, (icon) => (
+                  {f.maybe(icon, (icon) => (
                     <TableIcon label={false} name={icon} />
                   ))}
                   {typeof label === 'string'

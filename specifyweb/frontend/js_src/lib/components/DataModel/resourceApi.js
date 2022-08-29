@@ -207,7 +207,7 @@ function eventHandlerForToOne(related, field) {
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
         },
         set(key, value, options) {
-            // Set may get called with "null" or "undefined"
+            // This may get called with "null" or "undefined"
             const newValue = value ?? undefined;
             const oldValue = typeof key === 'string'
               ? this.attributes[key.toLowerCase()] ??

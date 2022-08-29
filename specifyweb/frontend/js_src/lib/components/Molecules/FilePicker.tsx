@@ -45,7 +45,7 @@ export function FilePicker({
   }
 
   function handleDragEnter(event: React.DragEvent): void {
-    setIsDragging(event.dataTransfer?.items?.length !== 0 ?? false);
+    setIsDragging((event.dataTransfer?.items?.length ?? 0) !== 0);
     preventPropagation(event);
   }
 
@@ -170,4 +170,3 @@ export const fileToText = async (file: File): Promise<string> =>
     );
     fileReader.readAsText(file);
   });
-

@@ -57,7 +57,7 @@ function RecordSetView({
           id: recordSetId,
         })
           .fetch()
-          .then((recordSet) => recordSet ?? false),
+          .then((recordSet = false) => recordSet),
       [recordSetId]
     ),
     true

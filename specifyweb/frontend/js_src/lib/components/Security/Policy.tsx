@@ -76,7 +76,7 @@ export function SecurityPolicy({
           }
         : {}),
     }))
-    .filter((items) => Object.keys(items ?? {}).length > 0);
+    .filter((items = {}) => Object.keys(items).length > 0);
   const isUnknownResource = registries.includes(undefined);
   const possibleActions = isUnknownResource
     ? actions

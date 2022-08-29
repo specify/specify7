@@ -114,8 +114,8 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 filterResults(resources, extraFilters).map(
                   async (resource) => ({
                     id: resource.id,
-                    formatted: await format(resource).then(
-                      (formatted) => formatted ?? resource.id.toString()
+                    formatted: await format(resource, undefined, true).then(
+                      (formatted) => formatted!
                     ),
                     resource,
                   })

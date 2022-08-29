@@ -37,8 +37,8 @@ export function CreateLibraryRole(): JSX.Element {
   return (
     <CreateRole
       closeUrl="/specify/security/institution/"
-      getCreatedUrl={(id): string =>
-        `/specify/security/institution/role/${id ?? 'new'}/`
+      getCreatedUrl={(id = 'new'): string =>
+        `/specify/security/institution/role/${id}/`
       }
       scope="institution"
     />

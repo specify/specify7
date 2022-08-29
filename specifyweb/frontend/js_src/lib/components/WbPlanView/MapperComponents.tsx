@@ -158,7 +158,7 @@ export function MappingView({
       ref={setMappingView}
       style={
         {
-          '--mapping-view-height': `${mappingViewHeight ?? ''}px`,
+          '--mapping-view-height': `${mappingViewHeight}px`,
         } as React.CSSProperties
       }
     >

@@ -88,7 +88,7 @@ type NavigationCallbacks = {
  */
 function navigator({
   callbacks,
-  recursivePayload = undefined,
+  recursivePayload = {},
   baseTableName,
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
@@ -105,7 +105,7 @@ function navigator({
     model = defined(getModel(defined(baseTableName))),
     parentRelationship = undefined,
     parentPartName = '',
-  } = recursivePayload ?? {};
+  } = recursivePayload;
 
   const next = callbacks.getNextDirection(model);
   if (next === undefined) return;
@@ -354,12 +354,12 @@ export function getMappingLineData({
                 : undefined,
               ...defined(
                 getTreeDefinitionItems(model.name as 'Geography', false)
-              ).map(({ name, title }) =>
+              ).map(({ name, title=name }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? ([
                       formatTreeRank(name),
                       {
-                        optionLabel: title ?? name,
+                        optionLabel: title,
                         isRelationship: true,
                         isDefault: name === defaultValue,
                         tableName: model.name,

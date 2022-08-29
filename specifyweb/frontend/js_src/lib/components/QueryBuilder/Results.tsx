@@ -51,7 +51,7 @@ export function QueryResults({
   onSortChange: handleSortChange,
   createRecordSet,
   extraButtons,
-  tableClassName,
+  tableClassName = '',
 }: {
   readonly model: SpecifyModel;
   readonly label?: string;
@@ -256,7 +256,7 @@ export function QueryResults({
         // REFACTOR: turn this into a reusable table component
         className={`
           grid-table auto-rows-min overflow-auto rounded
-          ${tableClassName ?? ''}
+          ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
           ${
             hasIdField

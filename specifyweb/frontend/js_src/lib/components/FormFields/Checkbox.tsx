@@ -6,7 +6,7 @@ import { Input, Label } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { useCachedState } from '../../hooks/useCachedState';
 import { f } from '../../utils/functools';
-import {AnySchema} from '../DataModel/helperTypes';
+import { AnySchema } from '../DataModel/helperTypes';
 
 export function PrintOnSave({
   id,
@@ -67,16 +67,18 @@ export function SpecifyFormCheckbox({
   readonly isReadOnly: boolean;
   readonly text: string | undefined;
 }): JSX.Element {
-  const { value, updateValue, validationRef } = useResourceValue<
-    boolean | string
-  >(
+  const {
+    value = false,
+    updateValue,
+    validationRef,
+  } = useResourceValue<boolean | string>(
     resource,
     fieldName,
     React.useMemo(() => ({ value: defaultValue }), [defaultValue])
   );
   const isChecked =
     !f.includes(falsyFields, value?.toString().toLowerCase().trim()) &&
-    Boolean(value ?? false);
+    Boolean(value);
   const input = (
     <Input.Checkbox
       checked={isChecked}

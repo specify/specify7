@@ -1,25 +1,28 @@
 import React from 'react';
 
-import {useSearchParam as useSearchParameter} from '../../hooks/navigation';
-import {useTriggerState} from '../../hooks/useTriggerState';
-import {f} from '../../utils/functools';
-import type {RA} from '../../utils/types';
-import {defined} from '../../utils/types';
-import {DataEntry} from '../Atoms/DataEntry';
-import {DependentCollection, LazyCollection,} from '../DataModel/collectionApi';
-import type {AnySchema} from '../DataModel/helperTypes';
-import type {SpecifyResource} from '../DataModel/legacyTypes';
-import {resourceOn,} from '../DataModel/resource';
-import type {Relationship} from '../DataModel/specifyField';
-import type {Collection} from '../DataModel/specifyModel';
-import {crash} from '../Errors/Crash';
-import {FormTableCollection} from '../FormCells/FormTableCollection';
-import type {FormMode, FormType} from '../FormParse';
-import {hasTablePermission} from '../Permissions/helpers';
-import {relationshipIsToMany} from '../WbPlanView/mappingHelpers';
-import type {RecordSelectorProps} from './RecordSelector';
-import {BaseRecordSelector} from './RecordSelector';
-import {augmentMode, ResourceView} from '../Forms/ResourceView';
+import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { DataEntry } from '../Atoms/DataEntry';
+import {
+  DependentCollection,
+  LazyCollection,
+} from '../DataModel/collectionApi';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import type { Relationship } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyModel';
+import { crash } from '../Errors/Crash';
+import { FormTableCollection } from '../FormCells/FormTableCollection';
+import type { FormMode, FormType } from '../FormParse';
+import { hasTablePermission } from '../Permissions/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import type { RecordSelectorProps } from './RecordSelector';
+import { BaseRecordSelector } from './RecordSelector';
+import { augmentMode, ResourceView } from '../Forms/ResourceView';
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
@@ -29,7 +32,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   onDelete: handleDelete,
   onSlide: handleSlide,
   children,
-  defaultIndex,
+  defaultIndex = collection._totalCount ?? 0,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -72,9 +75,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     [collection, getRecords]
   );
 
-  const [index, setIndex] = useTriggerState(
-    Math.max(0, defaultIndex ?? collection._totalCount ?? 0)
-  );
+  const [index, setIndex] = useTriggerState(Math.max(0, defaultIndex));
 
   // Fetch records if needed
   React.useEffect(() => {

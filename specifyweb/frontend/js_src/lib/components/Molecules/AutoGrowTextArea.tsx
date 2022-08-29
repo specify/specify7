@@ -4,7 +4,7 @@ import { className } from '../Atoms/className';
 import { Textarea } from '../Atoms/Form';
 
 export function AutoGrowTextArea({
-  containerClassName,
+  containerClassName = '',
   ...props
 }: Parameters<typeof Textarea>[0] & {
   readonly containerClassName?: string;
@@ -49,7 +49,7 @@ export function AutoGrowTextArea({
     <div
       className={`
         relative min-h-[calc(theme(spacing.7)*var(--rows))] overflow-hidden
-        ${containerClassName ?? ''}
+        ${containerClassName}
       `}
       style={{ '--rows': props.rows ?? 3 } as React.CSSProperties}
     >

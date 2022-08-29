@@ -153,7 +153,7 @@ function UserView({
   ] = useUserInstitutionalPolicies(userResource);
   const [changedAgent, handleChangedAgent] = useBooleanState();
 
-  const [password, setPassword] = useLiveState<string | undefined>(
+  const [password = '', setPassword] = useLiveState<string | undefined>(
     React.useCallback(
       () => (userResource.isNew() ? undefined : ''),
       [userResource]

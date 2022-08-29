@@ -30,7 +30,7 @@ function GeoLocate({
 }): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(
-      async () => getGeoLocateData(resource).then((data) => data ?? false),
+      async () => getGeoLocateData(resource).then((data = false) => data),
       [resource]
     ),
     true

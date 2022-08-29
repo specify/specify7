@@ -83,26 +83,28 @@ export function FormatPermissionError({
           </tr>
         </thead>
         <tbody>
-          {error.map(({ collectionid, userid, resource, action }, index) => (
-            <tr key={index}>
-              {[
-                actionToLabel(action),
-                resourceNameToLongLabel(resource),
-                <CollectionName
-                  collectionId={
-                    institutionPermissions.has(resource)
-                      ? undefined
-                      : collectionid ?? undefined
-                  }
-                />,
-                <UserName userId={userid} />,
-              ].map((value, index) => (
-                <td className="p-2" key={index}>
-                  {value}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {error.map(
+            ({ collectionid = undefined, userid, resource, action }, index) => (
+              <tr key={index}>
+                {[
+                  actionToLabel(action),
+                  resourceNameToLongLabel(resource),
+                  <CollectionName
+                    collectionId={
+                      institutionPermissions.has(resource)
+                        ? undefined
+                        : collectionid
+                    }
+                  />,
+                  <UserName userId={userid} />,
+                ].map((value, index) => (
+                  <td className="p-2" key={index}>
+                    {value}
+                  </td>
+                ))}
+              </tr>
+            )
+          )}
         </tbody>
       </table>
       {typeof url === 'string' && (

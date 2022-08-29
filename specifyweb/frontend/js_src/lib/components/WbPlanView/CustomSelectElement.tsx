@@ -335,7 +335,7 @@ function Option({
 }
 
 function OptionGroup({
-  selectGroupName,
+  selectGroupName='',
   selectGroupLabel,
   selectOptionsData,
   onClick: handleClick,
@@ -346,7 +346,7 @@ function OptionGroup({
     <section
       className={`
         flex flex-col bg-[color:var(--custom-select-b1)]
-        custom-select-group-${camelToKebab(selectGroupName ?? '')}
+        custom-select-group-${camelToKebab(selectGroupName)}
       `}
       role="group"
     >

@@ -8,7 +8,7 @@ import { treeText } from '../../localization/tree';
 import { getTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import {AnyTree} from '../DataModel/helperTypes';
+import { AnyTree } from '../DataModel/helperTypes';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -38,8 +38,8 @@ export const fetchRows = async (fetchUrl: string) =>
           nodeNumber,
           highestNodeNumber,
           rankId,
-          acceptedId,
-          acceptedName,
+          acceptedId = undefined,
+          acceptedName = undefined,
           children,
         ],
         index,
@@ -51,8 +51,8 @@ export const fetchRows = async (fetchUrl: string) =>
         nodeNumber,
         highestNodeNumber,
         rankId,
-        acceptedId: acceptedId ?? undefined,
-        acceptedName: acceptedName ?? undefined,
+        acceptedId,
+        acceptedName,
         children,
         isLastChild: index + 1 === length,
       })

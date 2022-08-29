@@ -174,10 +174,13 @@ const processCellType: {
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     const field = model?.getField(rawFieldName ?? '');
     if (field === undefined)
-      f.error(`Unknown field ${rawFieldName} when parsing form SubView`, {
-        cell,
-        model,
-      });
+      f.error(
+        `Unknown field ${rawFieldName ?? '(null)'} when parsing form SubView`,
+        {
+          cell,
+          model,
+        }
+      );
     const rawSortField = getProperty('sortField') ?? '';
     const sortField = field?.isRelationship
       ? field?.relatedModel?.getField(rawSortField)?.name ??

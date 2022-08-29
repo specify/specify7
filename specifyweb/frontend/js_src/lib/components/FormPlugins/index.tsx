@@ -244,7 +244,7 @@ const pluginRenderers: {
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
-  Unsupported({ pluginDefinition: { name }, id }) {
+  Unsupported({ pluginDefinition: { name = commonText('nullInline') }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
@@ -259,7 +259,7 @@ const pluginRenderers: {
         >
           {formsText('unavailablePluginDialogText')}
           <br />
-          {`${formsText('pluginName')} ${name ?? commonText('nullInline')}`}
+          {`${formsText('pluginName')} ${name}`}
         </Dialog>
       </>
     );

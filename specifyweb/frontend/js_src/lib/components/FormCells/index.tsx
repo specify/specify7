@@ -17,9 +17,9 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { UiCommand } from '../FormCommands';
 import { FormField } from '../FormFields';
 import { SubView } from '../Forms/SubView';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {AnySchema} from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {
@@ -100,9 +100,9 @@ const cellRenderers: {
     resource,
     mode,
     formType: parentFormType,
-    cellData: { fieldName, formType, isButton, icon, viewName, sortField },
+    cellData: { fieldName = '', formType, isButton, icon, viewName, sortField },
   }) {
-    const relationship = resource.specifyModel.getRelationship(fieldName ?? '');
+    const relationship = resource.specifyModel.getRelationship(fieldName);
 
     /*
      * SubView is turned into formTable if formTable is the default FormType for
@@ -228,14 +228,8 @@ const cellRenderers: {
   Blank() {
     return null;
   },
-  Unsupported({ cellData: { cellType } }) {
-    return (
-      <>
-        {`${formsText('unsupportedCellType')} ${
-          cellType ?? commonText('nullInline')
-        }`}
-      </>
-    );
+  Unsupported({ cellData: { cellType = commonText('nullInline') } }) {
+    return <>{`${formsText('unsupportedCellType')} ${cellType}`}</>;
   },
 };
 

@@ -9,7 +9,7 @@ import { formsText } from '../../localization/forms';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Button } from './Button';
 import { Link } from './Link';
-import {AnySchema} from '../DataModel/helperTypes';
+import { AnySchema } from '../DataModel/helperTypes';
 
 const dataEntryButton = (
   className: string,
@@ -65,14 +65,16 @@ export const DataEntry = {
     ({
       viewDefinition,
       display,
-      className: classNameString,
+      className: classNameString = '',
       flexibleColumnWidth,
       style,
       ...props
     }) => ({
-      className: `${display === 'inline' ? 'inline-grid' : 'grid'} ${
-        classNameString ?? ''
-      } ${viewDefinition.columns.length === 1 ? className.limitedWidth : ''}`,
+      className: `${
+        display === 'inline' ? 'inline-grid' : 'grid'
+      } ${classNameString} ${
+        viewDefinition.columns.length === 1 ? className.limitedWidth : ''
+      }`,
       style: {
         gridTemplateColumns: columnDefinitionsToCss(
           viewDefinition.columns,

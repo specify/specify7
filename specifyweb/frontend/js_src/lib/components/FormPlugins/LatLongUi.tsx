@@ -126,10 +126,10 @@ function CoordinatePoint({
   readonly isReadOnly: boolean;
   readonly step: number | undefined;
 }): JSX.Element {
-  const [latitude, setLatitude] = React.useState<string | undefined>(
+  const [latitude = '???', setLatitude] = React.useState<string | undefined>(
     commonText('notApplicable')
   );
-  const [longitude, setLongitude] = React.useState<string | undefined>(
+  const [longitude = '???', setLongitude] = React.useState<string | undefined>(
     commonText('notApplicable')
   );
   return (
@@ -168,9 +168,9 @@ function CoordinatePoint({
         </label>
       </td>
       <td>
-        <span>{latitude ?? '???'}</span>
+        <span>{latitude}</span>
         {', '}
-        <span>{longitude ?? '???'}</span>
+        <span>{longitude}</span>
       </td>
     </tr>
   );

@@ -43,7 +43,7 @@ export const processColRelationships = async (
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject).then(
-          (formatted) => formatted ?? collectionObject.id.toString()
+          (formatted = collectionObject.id.toString()) => formatted
         ),
         resource: collectionObject,
         relationship,
@@ -114,7 +114,7 @@ export async function fetchOtherCollectionData(
       href: otherCollection.viewUrl(),
       name: otherCollection.get('collectionName') ?? '',
       formatted: await formattedCollection.then(
-        (formatted) => formatted ?? otherCollection.id.toString()
+        (formatted = otherCollection.id.toString()) => formatted
       ),
     },
     side,

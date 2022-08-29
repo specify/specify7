@@ -1,8 +1,11 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 
-export function assert(value: unknown, message?: string): void {
-  if (!Boolean(value)) error(message ?? 'Assertion failed');
+export function assert(
+  value: unknown,
+  message: string = 'Assertion failed'
+): void {
+  if (!Boolean(value)) error(message);
 }
 
 /**

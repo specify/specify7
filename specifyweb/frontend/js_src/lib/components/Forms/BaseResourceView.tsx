@@ -54,8 +54,8 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           (): void => {
             if (resource === undefined) return undefined;
             format(resource)
-              .then((title) => {
-                setFormatted(title ?? '');
+              .then((title = '') => {
+                setFormatted(title);
                 return undefined;
               })
               .catch(fail);

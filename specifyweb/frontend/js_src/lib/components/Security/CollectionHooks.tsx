@@ -82,12 +82,12 @@ export function useCollectionUserRoles(
  */
 export const mergeCollectionUsers = (
   userRoles: UserRoles | undefined,
-  usersWithPolicies: RA<User> | undefined
+  usersWithPolicies: RA<User> | undefined = []
 ): UserRoles | undefined =>
   typeof userRoles === 'object'
     ? [
         ...userRoles.filter(({ roles }) => roles.length > 0),
-        ...(usersWithPolicies ?? [])
+        ...usersWithPolicies
           .filter(({ userId }) =>
             userRoles.every(
               (user) => user.userId !== userId || user.roles.length === 0
