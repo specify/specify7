@@ -2,7 +2,7 @@ import type { IR, RA } from '../../../utils/types';
 import type { SplitMappingPath } from '../mappingHelpers';
 import mappingLines1 from '../../../tests/fixtures/mappinglines.1.json';
 import { theories } from '../../../tests/utils';
-import { findRequiredMissingFields } from '../modelHelper';
+import { findRequiredMissingFields } from '../modelHelpers';
 import { requireContext } from '../../../tests/helpers';
 
 requireContext();

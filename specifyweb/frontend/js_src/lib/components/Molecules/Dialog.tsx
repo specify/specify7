@@ -341,8 +341,8 @@ export function Dialog({
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}
       // "overflow-x-hidden" is necessary for the "resize" handle to appear
       contentElement={draggableContainer}
-      // This can be called with undefined
-      contentRef={(container = null): void => {
+      contentRef={(ref: HTMLDivElement | undefined): void => {
+        const container = ref ?? null;
         // Save to state so that React.useEffect hooks are reRun
         setContainer(container);
         // Save to React.useRef so that React Draggable can have immediate access

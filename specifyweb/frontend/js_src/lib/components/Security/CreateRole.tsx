@@ -51,8 +51,8 @@ export function CreateCollectionRole(): JSX.Element {
   return typeof collection === 'object' ? (
     <CreateRole
       closeUrl={`/specify/security/collection/${collection.id}/`}
-      getCreatedUrl={(id = 'new'): string =>
-        `/specify/security/collection/${collection.id}/role/${id}/`
+      getCreatedUrl={(id): string =>
+        `/specify/security/collection/${collection.id}/role/${id ?? 'new'}/`
       }
       scope={collection.id}
     />

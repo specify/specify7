@@ -217,7 +217,7 @@ export const toolDefinitions = f.store(() =>
   } as const)
 );
 
-const toolTables = f.store(
+export const toolTables = f.store(
   () =>
     new Set(Object.values(toolDefinitions()).flatMap(({ tables }) => tables))
 );

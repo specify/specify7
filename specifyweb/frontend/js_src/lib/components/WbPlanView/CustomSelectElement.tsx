@@ -22,7 +22,7 @@ import {
   TableIcon,
   tableIconEmpty,
   tableIconSelected,
-  tableIconUndefined
+  tableIconUndefined,
 } from '../Molecules/TableIcon';
 
 type Properties =
@@ -335,7 +335,7 @@ function Option({
 }
 
 function OptionGroup({
-  selectGroupName='',
+  selectGroupName = '',
   selectGroupLabel,
   selectOptionsData,
   onClick: handleClick,

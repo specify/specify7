@@ -7,15 +7,16 @@ import {
   anyAction,
   anyResource,
   basicPermissions,
+  fieldPolicy,
   getAllActions,
   partsToResourceName,
   resourceNameToModel,
   resourceNameToParts,
   tableNameToResourceName,
   tablePermissionsPrefix,
-  toolDefinitions,
   toolPermissionPrefix,
 } from './utils';
+import { toolDefinitions, toolTables } from './registry';
 
 /**
  * Separate out tool tables from the raw list of policies received from the
@@ -26,7 +27,7 @@ export const processPolicies = (policies: IR<RA<string>>): RA<Policy> =>
     expandCatchAllActions(
       compressPermissionQuery(
         Object.entries(policies)
-          .filter(([resource]) => resource !== fieldResource)
+          .filter(([resource]) => resource !== fieldPolicy)
           .flatMap(([resource, actions]) =>
             actions.map((action) => ({
               resource: resource.toLowerCase(),

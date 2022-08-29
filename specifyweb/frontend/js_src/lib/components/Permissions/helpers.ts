@@ -1,12 +1,13 @@
 import { getCache } from '../../utils/cache';
-import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import { schema } from '../DataModel/schema';
-import { tableNameToResourceName, toolDefinitions } from '../Security/utils';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { AnyTree } from '../DataModel/helperTypes';
-import { tableActions } from './definitions';
+import type { AnyTree } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { toolDefinitions } from '../Security/registry';
+import { tableNameToResourceName } from '../Security/utils';
+import type { tableActions } from './definitions';
 import {
   getDerivedPermissions,
   getOperationPermissions,

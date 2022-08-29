@@ -20,7 +20,7 @@ import { defined } from '../../utils/types';
 import type { ColumnOptions } from './uploadPlanParser';
 import { columnOptionsAreDefault } from './linesGetter';
 import { reducer } from './mappingReducer';
-import { findRequiredMissingFields } from './modelHelper';
+import { findRequiredMissingFields } from './modelHelpers';
 import { getMappingLineData } from './navigator';
 import {
   fetchAutoMapperSuggestions,

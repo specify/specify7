@@ -131,7 +131,7 @@ function useInitialData(
         initialDataFrom === undefined
           ? false
           : fetchResource('SpAppResourceData', initialDataFrom).then(
-              ({ data = '' }) => data
+              ({ data }) => data ?? ''
             ),
       [initialDataFrom]
     ),

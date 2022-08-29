@@ -164,14 +164,14 @@ export const tableNameToResourceName = <TABLE_NAME extends keyof Tables>(
  * Field level permissions are not yet fully implemented, thus this resource
  * must be hidden in the UI, but present in all policy lists
  */
-const fieldResource = '/field/%';
+export const fieldPolicy = '/field/%';
 
 /**
  * Front-end enforces that each user that has collection access, also has the
  * following permissions:
  */
 export const basicPermissions: IR<RA<string>> = {
-  [fieldResource]: [anyAction],
+  [fieldPolicy]: [anyAction],
 };
 
 /**

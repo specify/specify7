@@ -33,7 +33,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import { isCircularRelationship } from './modelHelper';
+import { isCircularRelationship } from './modelHelpers';
 import { AnyTree } from '../DataModel/helperTypes';
 
 // REFACTOR: make code more readable. split into several files

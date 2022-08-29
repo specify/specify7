@@ -93,27 +93,25 @@ export function DeleteBlocked({
             </tr>
           </thead>
           <tbody>
-            {data.map(
-              ({ formatted = resource.viewUrl(), field, resource }, index) => (
-                <tr key={index}>
-                  <td>
-                    <Button.LikeLink
-                      className="text-left"
-                      onClick={(): void =>
-                        setPreview({
-                          resource,
-                          field: typeof field === 'object' ? field : undefined,
-                        })
-                      }
-                    >
-                      <TableIcon label name={resource.specifyModel.name} />
-                      {formatted}
-                    </Button.LikeLink>
-                  </td>
-                  <td>{typeof field === 'object' ? field.label : field}</td>
-                </tr>
-              )
-            )}
+            {data.map(({ formatted, field, resource }, index) => (
+              <tr key={index}>
+                <td>
+                  <Button.LikeLink
+                    className="text-left"
+                    onClick={(): void =>
+                      setPreview({
+                        resource,
+                        field: typeof field === 'object' ? field : undefined,
+                      })
+                    }
+                  >
+                    <TableIcon label name={resource.specifyModel.name} />
+                    {formatted ?? resource.viewUrl()}
+                  </Button.LikeLink>
+                </td>
+                <td>{typeof field === 'object' ? field.label : field}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </Dialog>

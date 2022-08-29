@@ -24,9 +24,9 @@ import { crash } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
-import { EditRecordSet } from '../QueryBuilder/RecordSets';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 
 /** Fetch IDs of records in a record set at a given position */
 const fetchItems = async (

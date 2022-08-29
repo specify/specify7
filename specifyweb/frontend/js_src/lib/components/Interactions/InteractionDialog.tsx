@@ -37,13 +37,13 @@ import { H3 } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepDialog } from './PrepDialog';
-import { RecordSetsDialog } from '../QueryBuilder/RecordSets';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { useValidation } from '../../hooks/useValidation';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
-import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { RecordSetsDialog } from '../Toolbar/RecordSets';
 
 export function InteractionDialog({
   recordSetsPromise,

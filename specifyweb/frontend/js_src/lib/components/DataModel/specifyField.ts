@@ -276,7 +276,9 @@ export class Relationship extends FieldBase {
     this.relatedModel = defined(getModel(relatedModelName));
 
     this.overrides.isRequired =
-      this.overrides.isRequired && !this.overrides.isReadOnly;
+      this.overrides.isRequired &&
+      !this.overrides.isReadOnly &&
+      !this.relatedModel.overrides.isSystem;
     this.overrides.isHidden ||=
       !this.overrides.isRequired && this.relatedModel.overrides.isHidden;
   }

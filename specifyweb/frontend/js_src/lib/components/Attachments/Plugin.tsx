@@ -19,15 +19,15 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormMode } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AttachmentCell } from './index';
 import { Progress } from '../Atoms';
 import { FilePicker } from '../Molecules/FilePicker';
-import { Dialog} from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
-import {loadingBar} from '../Molecules';
+import { loadingBar } from '../Molecules';
+import { AttachmentCell } from './Cell';
 
 export function AttachmentsPlugin({
   resource,

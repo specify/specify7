@@ -9,7 +9,7 @@ import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { formatUrl } from '../Router/queryString';
-import type { toolDefinitions } from '../Security/utils';
+import type { toolDefinitions } from '../Security/registry';
 import {
   partsToResourceName,
   tableNameToResourceName,

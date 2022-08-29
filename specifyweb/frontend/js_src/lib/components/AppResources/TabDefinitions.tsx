@@ -40,7 +40,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
   isReadOnly,
   resource,
   appResource,
-  data = '',
+  data,
   showValidationRef,
   onChange: handleChange,
 }): JSX.Element {
@@ -77,7 +77,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
       readOnly={isReadOnly}
       ref={handleRef}
       theme={isDarkMode ? okaidia : xcodeLight}
-      value={data}
+      value={data ?? ''}
       /*
        * FEATURE: provide supported attributes for autocomplete
        *   https://codemirror.net/examples/autocompletion/
@@ -93,7 +93,7 @@ export const AppResourceTextEditor: AppResourceTab = function ({
 
 const UserPreferencesEditor: AppResourceTab = function ({
   isReadOnly,
-  data = '{}',
+  data,
   onChange: handleChange,
 }): JSX.Element {
   const id = useId('user-preferences');
@@ -101,7 +101,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data) as UserPreferences;
+      const preferences = JSON.parse(data ?? '{}') as UserPreferences;
       const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (

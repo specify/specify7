@@ -69,11 +69,11 @@ function parse(rawValue: string): Coord | undefined {
 function makeLatLong(
   originalSign: number,
   components: RA<number>,
-  originalDirection?: 'e' | 'n' | 's' | 'w' = ''
+  originalDirection?: 'e' | 'n' | 's' | 'w'
 ): Coord | undefined {
   if (components.some(Number.isNaN)) return undefined;
 
-  const direction = toLowerCase(originalDirection);
+  const direction = toLowerCase(originalDirection ?? '');
   const sign = (direction === 's' || direction === 'w' ? -1 : 1) * originalSign;
 
   let result: Coord;

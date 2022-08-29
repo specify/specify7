@@ -128,7 +128,7 @@ const fieldRenderers: {
       React.useCallback(
         async () =>
           getResourceAndField(resource, fieldName).then(
-            (values = false) => values
+            (values) => values ?? false
           ),
         [resource, fieldName]
       ),

@@ -44,7 +44,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import { getMaxToManyIndex, isCircularRelationship } from './modelHelper';
+import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 
 type NavigationCallbackPayload = {
   readonly model: SpecifyModel;
@@ -88,7 +88,7 @@ type NavigationCallbacks = {
  */
 function navigator({
   callbacks,
-  recursivePayload = {},
+  recursivePayload,
   baseTableName,
 }: {
   // Callbacks can be modified depending on the need to make navigator versatile
@@ -105,7 +105,7 @@ function navigator({
     model = defined(getModel(defined(baseTableName))),
     parentRelationship = undefined,
     parentPartName = '',
-  } = recursivePayload;
+  } = recursivePayload ?? {};
 
   const next = callbacks.getNextDirection(model);
   if (next === undefined) return;
@@ -354,12 +354,12 @@ export function getMappingLineData({
                 : undefined,
               ...defined(
                 getTreeDefinitionItems(model.name as 'Geography', false)
-              ).map(({ name, title=name }) =>
+              ).map(({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? ([
                       formatTreeRank(name),
                       {
-                        optionLabel: title,
+                        optionLabel: title ?? name,
                         isRelationship: true,
                         isDefault: name === defaultValue,
                         tableName: model.name,

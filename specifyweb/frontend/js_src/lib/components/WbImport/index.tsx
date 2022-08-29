@@ -106,7 +106,7 @@ function useCsvPreview(
 }
 
 function ChooseEncoding({
-  encoding='',
+  encoding = '',
   onChange: handleChange,
 }: {
   readonly encoding: string;
