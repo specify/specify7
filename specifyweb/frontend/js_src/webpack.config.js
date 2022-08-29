@@ -74,7 +74,7 @@ module.exports = (_env, argv) =>
     // User recommended source map types appropriate for each mode
     devtool: argv.mode === 'development' ? 'eval-source-map' : 'source-map',
     entry: {
-      main: './lib/components/entrypoint.tsx',
+      main: './lib/components/Core/Entrypoint.tsx',
     },
     output: {
       path: outputPath,
