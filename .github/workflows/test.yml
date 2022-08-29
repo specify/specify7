@@ -31,12 +31,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: Specify6
-          key: specify6.8.00-cache
+          key: specify6.8.01-cache
 
       - name: Install Specify 6
         if: steps.cache-specify6.outputs.cache-hit != 'true'
         run: |
-          wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
+          wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
       - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
