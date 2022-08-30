@@ -9,10 +9,6 @@ import { group, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { load } from '../InitialContext';
-import {
-  fetchContext as fetchUser,
-  userInformation,
-} from '../InitialContext/userInformation';
 import type { anyAction, anyResource } from '../Security/utils';
 import {
   tableNameToResourceName,
@@ -222,9 +218,12 @@ export const fetchUserPermissions = async (
       schema: import('../DataModel/schemaBase').then(
         async ({ fetchContext }) => fetchContext
       ),
-      fetchUser,
+      userInformation: import('../InitialContext/userInformation').then(
+        ({ fetchContext, userInformation }) =>
+          fetchContext.then(() => userInformation)
+      ),
     })
-    .then(async ({ schema }) => {
+    .then(async ({ schema, userInformation }) => {
       const collection = collectionId ?? schema.domainLevelIds.collection;
       if (permissionPromises[collection] === undefined)
         permissionPromises[collection] =

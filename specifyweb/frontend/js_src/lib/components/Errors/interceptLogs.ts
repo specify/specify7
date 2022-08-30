@@ -22,6 +22,8 @@ export const consoleLog: WritableArray<{
 }> = [];
 
 export function interceptLogs(): void {
+  // FIXME: remove this
+  return;
   logTypes.forEach((logType) => {
     /**
      * Read this if you are coming here from DevTools:

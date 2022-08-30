@@ -1,34 +1,34 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { isTreeResource } from '../InitialContext/treeRanks';
+import { f } from '../../utils/functools';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { AutoNumbering } from './AutoNumbering';
-import { CarryForwardButton } from './CarryForward';
-import { Definition } from './Definition';
 import { icons } from '../Atoms/Icons';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { GenerateLabel } from '../FormCommands';
+import { PrintOnSave } from '../FormFields/Checkbox';
+import { SubViewContext } from '../Forms/SubView';
+import { isTreeResource } from '../InitialContext/treeRanks';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
+import { AutoNumbering } from './AutoNumbering';
+import { CarryForwardButton } from './CarryForward';
+import { Definition } from './Definition';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
-import { PrintOnSave } from '../FormFields/Checkbox';
-import { useCachedState } from '../../hooks/useCachedState';
-import { SubViewContext } from '../Forms/SubView';
 import { SubViewPreferences } from './SubViewPreferences';
-import { GenerateLabel } from '../FormCommands';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -47,8 +47,8 @@ export function FormPreferences({
     <>
       <Button.Small
         aria-label={commonText('preferences')}
-        title={commonText('preferences')}
         className={className}
+        title={commonText('preferences')}
         onClick={handleToggle}
       >
         {icons.cog}
@@ -84,9 +84,9 @@ function PreferencesDialog({
           <Definition model={resource.specifyModel} />
           <ReadOnlyMode isNew={resource.isNew()} />
           <GenerateLabel
-            resource={resource}
             id={undefined}
             label={formsText('printLabel')}
+            resource={resource}
           />
         </div>
         <PrintOnSave

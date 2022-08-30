@@ -6,15 +6,15 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers.js';
-import type { SpecifyUser } from '../DataModel/types.js';
-import type { SpecifyResource } from '../DataModel/legacyTypes.js';
-import { adminText } from '../../localization/admin.js';
-import { hasPermission } from '../Permissions/helpers.js';
-import { userInformation } from '../InitialContext/userInformation.js';
+import { formData } from '../../utils/ajax/helpers';
+import type { SpecifyUser } from '../DataModel/types';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { adminText } from '../../localization/admin';
+import { hasPermission } from '../Permissions/helpers';
+import { userInformation } from '../InitialContext/userInformation';
 import { Button } from '../Atoms/Button';
-import { LoadingContext } from '../Core/Contexts.js';
-import { useResource } from '../../hooks/resource.js';
+import { LoadingContext } from '../Core/Contexts';
+import { useResource } from '../../hooks/resource';
 
 export function AdminStatusPlugin({
   user: resource,

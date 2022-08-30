@@ -168,6 +168,7 @@ export function processViewDefinition(
     viewDefinition = viewDefinitions[altView.viewdef];
     return (
       typeof viewDefinition === 'object' &&
+      // BUG: this checks for "formTable". should it check for "table" instead?
       getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
         formType.toLowerCase()
     );
