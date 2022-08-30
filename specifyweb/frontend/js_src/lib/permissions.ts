@@ -126,6 +126,7 @@ export const institutionPermissions = new Set([
   '/admin/user/sp6/collection_access',
   '/export/feed',
   '/permissions/library/roles',
+  'permissions/list_admins',
 ]);
 
 /**
@@ -242,15 +243,29 @@ export const queryUserPermissions = async (
        * no effect
        */
       data.details
-        .map(({ resource, matching_user_policies, ...rest }) => ({
-          ...rest,
-          resource,
-          matching_user_policies: institutionPermissions.has(resource)
-            ? matching_user_policies.filter(
-                ({ collectionid }) => collectionid === null
-              )
-            : matching_user_policies,
-        }))
+        .map(
+          ({
+            resource,
+            matching_user_policies,
+            matching_role_policies,
+            ...rest
+          }) => ({
+            ...rest,
+            resource,
+            matching_user_policies: institutionPermissions.has(resource)
+              ? matching_user_policies.filter(
+                  ({ collectionid }) => collectionid === null
+                )
+              : matching_user_policies,
+            /*
+             * Since institutional policies can not be given in a role,
+             * ignore matching_role_policies
+             */
+            matching_role_policies: institutionPermissions.has(resource)
+              ? []
+              : matching_role_policies,
+          })
+        )
         .map(({ resource, allowed, matching_user_policies, ...rest }) => ({
           ...rest,
           resource,
