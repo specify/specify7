@@ -64,7 +64,7 @@ const schema: Writable<Schema> = {
   // Prefix for tree ranks
   treeSymbol: '$',
   // Separator for partial fields (date parts in Query Builder)
-  fieldPartSeparator: '_',
+  fieldPartSeparator: '-',
   /*
    * A symbol that is used to join multiple mapping path elements together when
    * there is a need to represent a mapping path as a string
