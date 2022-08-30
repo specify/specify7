@@ -1,5 +1,7 @@
 ## Data Mapper (WbPlanView)
 
+WbPlanView stands for WorkBench Upload Plan Viewer
+
 ### Concepts
 
 Tree rank names are prefixed with `$` (`$Kingdom`) and -to-many indexes with `#`
