@@ -3,9 +3,10 @@ import type { LiteralField } from '../components/DataModel/specifyField';
 import type { PickList } from '../components/DataModel/types';
 import { unsafeGetPickLists } from '../components/PickLists/definitions';
 import { fetchPickList, getPickListItems } from '../components/PickLists/fetch';
-import type { Parser } from './uiParse';
-import { parseValue, resolveParser } from './uiParse';
+import type { Parser } from './parser/definitions';
+import { resolveParser } from './parser/definitions';
 import { removeKey } from './utils';
+import { parseValue } from './parser/parse';
 
 /*
  * BUG: when formatting a date field, it uses the databaseDateFormat rather

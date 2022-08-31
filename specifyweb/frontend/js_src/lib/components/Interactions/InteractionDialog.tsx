@@ -26,13 +26,11 @@ import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import type { InvalidParseResult, ValidParseResult } from '../../utils/uiParse';
 import {
   getValidationAttributes,
-  parseValue,
   pluralizeParser,
   resolveParser,
-} from '../../utils/uiParse';
+} from '../../utils/parser/definitions';
 import { H3 } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
@@ -44,6 +42,11 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
+import {
+  InvalidParseResult,
+  parseValue,
+  ValidParseResult,
+} from '../../utils/parser/parse';
 
 export function InteractionDialog({
   recordSetsPromise,

@@ -14,8 +14,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
-import { resolveParser } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
+import { resolveParser } from '../../utils/parser/definitions';
 import {
   anyTreeRank,
   formatPartialField,

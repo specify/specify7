@@ -18,8 +18,7 @@ import {
   getValidationAttributes,
   mergeParsers,
   parserFromType,
-  parseValue,
-} from '../../utils/uiParse';
+} from '../../utils/parser/definitions';
 import { AutoComplete } from '../Molecules/AutoComplete';
 import { iconClassName } from '../Atoms/Icons';
 import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
@@ -28,6 +27,7 @@ import { useValidation } from '../../hooks/useValidation';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { usePref } from './usePref';
+import { parseValue } from '../../utils/parser/parse';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({

@@ -16,7 +16,7 @@ import { wbText } from '../../localization/workbench';
 import type { JavaType } from '../DataModel/specifyField';
 import type { IR, RA } from '../../utils/types';
 import { ensure } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
 import { Link } from '../Atoms/Link';
 import type { WelcomePageMode } from './Renderers';
 import {

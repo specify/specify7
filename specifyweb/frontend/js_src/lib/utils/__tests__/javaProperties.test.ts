@@ -6,7 +6,7 @@ import {
 } from '../javaProperties';
 
 theories(regexForJavaProperty, [
-  [['KEY_NAME.NAME'], /^KEY_NAME(?:\s|\s*[:=])\s*(.*)$/mu],
+  [['KEY_NAME.NAME'], /^KEY_NAME\.NAME(?:\s*[:=]|\s)\s*(.*)$/mu],
 ]);
 
 theories(unescapeJavaProperty, [

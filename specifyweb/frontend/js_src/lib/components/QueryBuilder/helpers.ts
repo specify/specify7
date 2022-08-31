@@ -7,11 +7,12 @@ import { group, KEY, removeKey, sortFunction, VALUE } from '../../utils/utils';
 import { QueryFieldSpec } from './fieldSpec';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { parserFromType, parseValue } from '../../utils/uiParse';
+import { parserFromType } from '../../utils/parser/definitions';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import type { MappingLineData } from '../WbPlanView/navigator';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { parseValue } from '../../utils/parser/parse';
 
 export type SortTypes = 'ascending' | 'descending' | undefined;
 export const sortTypes: RA<SortTypes> = [undefined, 'ascending', 'descending'];

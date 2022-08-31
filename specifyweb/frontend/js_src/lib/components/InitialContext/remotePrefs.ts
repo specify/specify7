@@ -8,8 +8,9 @@ import { cachableUrl, contextUnlockedPromise } from './index';
 import type { JavaType } from '../DataModel/specifyField';
 import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
-import { formatter, parsers, parseValue } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
+import { formatter, parsers } from '../../utils/parser/definitions';
+import { parseValue } from '../../utils/parser/parse';
 
 const preferences: R<string> = {};
 
@@ -105,43 +106,43 @@ export const remotePrefsDefinitions = f.store(
       'ui.formatting.scrdateformat': {
         description: 'Full Date format',
         defaultValue: 'YYYY-MM-DD',
-        formatters: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter.trim, formatter.toUpperCase],
         // Indicates that this remote pref is shared with Specify 6
         isLegacy: true,
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
         defaultValue: 'MM/YYYY',
-        formatters: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter.trim, formatter.toUpperCase],
       },
       'GeologicTimePeriod.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Taxon.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Geography.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'LithoStrat.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Storage.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
@@ -207,7 +208,7 @@ export const remotePrefsDefinitions = f.store(
       'form.definition.columnSource': {
         description: 'The platform to use as a source of columns',
         defaultValue: 'lnx',
-        formatter: [formatter().trim],
+        formatter: [formatter.trim],
         isLegacy: false,
       },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {

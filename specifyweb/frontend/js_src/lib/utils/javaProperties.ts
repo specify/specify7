@@ -15,7 +15,7 @@ export const getProperty = (
   );
 
 export const regexForJavaProperty = (key: string): RegExp =>
-  new RegExp(`^${escapeRegExp(key)}\\s*[\\s=:]\\s*(.*)$`, 'mu');
+  new RegExp(`^${escapeRegExp(key)}(?:\\s*[:=]|\\s)\\s*(.*)$`, 'mu');
 
 export const unescapeJavaProperty = (value: string): string =>
-  JSON.parse(`"${value.replaceAll(/"/gu, '\\"')}"`);
+  JSON.parse(`"${value.replaceAll(/\\/gu, '\\\\').replaceAll(/"/gu, '\\"')}"`);

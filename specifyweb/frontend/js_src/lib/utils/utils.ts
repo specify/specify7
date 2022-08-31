@@ -6,7 +6,7 @@
 
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import {KeysToLowerCase} from '../components/DataModel/helperTypes';
+import { KeysToLowerCase } from '../components/DataModel/helperTypes';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
@@ -30,10 +30,13 @@ export const lowerToHuman = (value: string): string =>
   value.toLowerCase().split('_').map(capitalize).join(' ');
 
 export const camelToKebab = (value: string): string =>
-  value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  value.replace(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
 export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
+  capitalize(value.replace(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+    /Dna\b/,
+    'DNA'
+  );
 
 /** Type-safe variant of toLowerCase */
 export const toLowerCase = <T extends string>(string: T): Lowercase<T> =>

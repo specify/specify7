@@ -1,18 +1,14 @@
+import { mockTime, testTime } from '../../tests/helpers';
 import { parseRelativeDate } from '../relativeDate';
 
-const now = new Date('2022-08-31T03:37:10.4');
-
-beforeAll(() => {
-  jest.useFakeTimers();
-  jest.setSystemTime(now);
-});
+mockTime();
 
 describe('parseRelativeDate', () => {
   test('empty case', () => expect(parseRelativeDate('')).toBeUndefined());
   test('invalid case', () => expect(parseRelativeDate('var')).toBeUndefined());
   test('absolute date', () =>
-    expect(parseRelativeDate(now.toJSON())).toEqual(now));
-  test('today', () => expect(parseRelativeDate('today')).toEqual(now));
+    expect(parseRelativeDate(testTime.toJSON())).toEqual(testTime));
+  test('today', () => expect(parseRelativeDate('today')).toEqual(testTime));
   test('today - 2 secondsss', () => {
     /*
      * Even though the date changes every time the test is run, this test

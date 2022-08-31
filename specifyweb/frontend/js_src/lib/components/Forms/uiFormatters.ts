@@ -36,9 +36,9 @@ export const fetchContext = load<Document>(
           const fields = filterArray(
             Array.from(formatter.getElementsByTagName('field'), (field) => {
               const FieldClass =
-                fieldMapper[
+                formatterTypeMapper[
                   (getParsedAttribute(field, 'type') ??
-                    '') as keyof typeof fieldMapper
+                    '') as keyof typeof formatterTypeMapper
                 ];
               if (FieldClass === undefined) return undefined;
               return new FieldClass({
@@ -250,7 +250,7 @@ class CatalogNumberNumeric extends UiFormatter {
   }
 }
 
-const fieldMapper = {
+export const formatterTypeMapper = {
   constant: ConstantField,
   year: YearField,
   alpha: AlphaField,

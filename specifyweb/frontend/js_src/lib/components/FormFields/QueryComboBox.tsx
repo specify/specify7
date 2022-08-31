@@ -8,7 +8,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { getValidationAttributes } from '../../utils/uiParse';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';

@@ -19,7 +19,7 @@ import {
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { RA, RR } from '../../utils/types';
-import { resolveParser } from '../../utils/uiParse';
+import { resolveParser } from '../../utils/parser/definitions';
 import { downloadFile } from '../Molecules/FilePicker';
 import { formatNumber } from '../Atoms/Internationalization';
 import { NotFoundView } from '../Router/NotFoundView';

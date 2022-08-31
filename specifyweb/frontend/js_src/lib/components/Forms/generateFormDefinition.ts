@@ -1,4 +1,3 @@
-
 import { sortFunction, split } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import type {
@@ -12,9 +11,9 @@ import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/uiParse';
+import { resolveParser } from '../../utils/parser/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import {AnySchema, TableFields} from '../DataModel/helperTypes';
+import { AnySchema, TableFields } from '../DataModel/helperTypes';
 
 /**
  * If form definition is missing, this function will generate one on the fly

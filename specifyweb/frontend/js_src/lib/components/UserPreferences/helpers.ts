@@ -20,8 +20,9 @@ import {
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { mergeParsers, parserFromType, parseValue } from '../../utils/uiParse';
+import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
+import { parseValue } from '../../utils/parser/parse';
 
 export const getPrefDefinition = <
   CATEGORY extends keyof Preferences,

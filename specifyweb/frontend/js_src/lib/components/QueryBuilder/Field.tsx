@@ -10,8 +10,8 @@ import type { DatePart } from './fieldSpec';
 import { getModel, schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
-import { resolveParser } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
+import { resolveParser } from '../../utils/parser/definitions';
 import {
   mappingPathToString,
   parsePartialField,

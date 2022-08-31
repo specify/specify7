@@ -29,7 +29,7 @@ import type { LiteralField } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/uiParse';
+import { resolveParser } from '../../utils/parser/definitions';
 import { AnySchema } from '../DataModel/helperTypes';
 import { fieldFormat } from '../../utils/fieldFormat';
 

@@ -12,7 +12,10 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { resourceOn } from '../DataModel/resource';
 import type { RR } from '../../utils/types';
-import { getValidationAttributes, resolveParser } from '../../utils/uiParse';
+import {
+  getValidationAttributes,
+  resolveParser,
+} from '../../utils/parser/definitions';
 import { Input, Select } from '../Atoms/Form';
 import { Button } from '../Atoms/Button';
 import { dateParts } from '../Atoms/Internationalization';

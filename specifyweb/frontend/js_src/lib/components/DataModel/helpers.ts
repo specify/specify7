@@ -1,7 +1,7 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import { parserFromType } from '../../utils/uiParse';
+import { parserFromType } from '../../utils/parser/definitions';
 import { isTreeResource } from '../InitialContext/treeRanks';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {

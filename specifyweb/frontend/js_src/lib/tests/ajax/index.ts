@@ -84,7 +84,7 @@ const formatResponse = <RESPONSE_TYPE>(
       extension === 'json'
         ? 'application/json'
         : extension === 'xml'
-        ? 'application/xml'
+        ? 'text/xml'
         : 'text/plain',
     response: f.var(
       getResponseCode(expectedResponseCodes),
