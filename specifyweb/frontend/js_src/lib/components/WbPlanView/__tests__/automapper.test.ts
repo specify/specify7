@@ -16,8 +16,8 @@ theories(
     return new AutoMapperConstructor(parameters).map();
   },
   [
-    [
-      [
+    {
+      in: [
         {
           getMappedFields: (): RA<string> => [],
           headers: [
@@ -103,7 +103,7 @@ theories(
           scope: 'autoMapper',
         },
       ],
-      {
+      out: {
         'Cataloged by': [['cataloger', 'lastName']],
         'Date Collected': [['collectingEvent', 'startDate']],
         'Collection Method': [['collectingEvent', 'method']],
@@ -195,6 +195,6 @@ theories(
           ['collectingEvent', 'locality', 'geography', '$Country', 'name'],
         ],
       },
-    ],
+    },
   ]
 );

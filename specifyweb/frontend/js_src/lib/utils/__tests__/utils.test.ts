@@ -30,26 +30,26 @@ import {
 } from '../utils';
 
 theories(capitalize, {
-  'simple case': [['capitalize'], 'Capitalize'],
-  'works with non-ascii characters': [['çA'], 'ÇA'],
-  'does not break emojis': [['❤️'], '❤️'],
+  'simple case': { in: ['capitalize'], out: 'Capitalize' },
+  'works with non-ascii characters': { in: ['çA'], out: 'ÇA' },
+  'does not break emojis': { in: ['❤️'], out: '❤️' },
 });
 
 theories(unCapitalize, {
-  'simple case': [['UnCAPITALIZE'], 'unCAPITALIZE'],
-  'works with non-ascii characters': [['ÇA'], 'çA'],
-  'does not break emojis': [['❤️'], '❤️'],
+  'simple case': { in: ['UnCAPITALIZE'], out: 'unCAPITALIZE' },
+  'works with non-ascii characters': { in: ['ÇA'], out: 'çA' },
+  'does not break emojis': { in: ['❤️'], out: '❤️' },
 });
 
-theories(upperToKebab, [[['UPPER_CASE'], 'upper-case']]);
+theories(upperToKebab, [{ in: ['UPPER_CASE'], out: 'upper-case' }]);
 
-theories(lowerToHuman, [[['lower_case'], 'Lower Case']]);
+theories(lowerToHuman, [{ in: ['lower_case'], out: 'Lower Case' }]);
 
-theories(camelToKebab, [[['camelCase'], 'camel-case']]);
+theories(camelToKebab, [{ in: ['camelCase'], out: 'camel-case' }]);
 
-theories(camelToHuman, [[['camelCase'], 'Camel Case']]);
+theories(camelToHuman, [{ in: ['camelCase'], out: 'Camel Case' }]);
 
-theories(toLowerCase, [[['AB'], 'ab']]);
+theories(toLowerCase, [{ in: ['AB'], out: 'ab' }]);
 
 theories(findArrayDivergencePoint, {
   'empty Array': { in: [[], []], out: 0 },
@@ -130,32 +130,13 @@ describe('sortFunction', () => {
 });
 
 theories(split, [
-  [
-    [[1, 2, 3, 4, 5, 6, 7, 8], (value: number) => value % 2 === 0],
-    [
+  {
+    in: [[1, 2, 3, 4, 5, 6, 7, 8], (value: number) => value % 2 === 0],
+    out: [
       [1, 3, 5, 7],
       [2, 4, 6, 8],
     ],
-  ],
-]);
-
-theories(group, [
-  [
-    [
-      [
-        ['a', 1],
-        ['a', 2],
-        ['b', 3],
-        ['c', 4],
-        ['a', 5],
-      ],
-    ],
-    [
-      ['a', [1, 2, 5]],
-      ['b', [3]],
-      ['c', [4]],
-    ],
-  ],
+  },
 ]);
 
 theories(group, [
@@ -177,18 +158,36 @@ theories(group, [
   },
 ]);
 
-theories(mappedFind, {
-  'Found value': {
+theories(group, [
+  {
     in: [
-      [undefined, 1, 2, 3, 4, 5],
-      (value) => (typeof value === 'number' ? value * 2 : undefined),
+      [
+        ['a', 1],
+        ['a', 2],
+        ['b', 3],
+        ['c', 4],
+        ['a', 5],
+      ],
     ],
-    out: 2,
+    out: [
+      ['a', [1, 2, 5]],
+      ['b', [3]],
+      ['c', [4]],
+    ],
   },
-  'Not found a value': {
-    in: [[undefined, undefined, undefined], f.id],
-    out: undefined,
-  },
+]);
+
+describe('mappedFind', () => {
+  test('Found value', () => {
+    expect(
+      mappedFind([undefined, 1, 2, 3, 4, 5], (value) =>
+        typeof value === 'number' ? value * 2 : undefined
+      )
+    ).toBe(2);
+  });
+  test('Not found a value', () => {
+    expect(mappedFind([undefined, undefined, undefined], f.id)).toBe(undefined);
+  });
 });
 
 theories(removeKey, {

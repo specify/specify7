@@ -5,8 +5,8 @@ import { requireContext } from '../../../tests/helpers';
 requireContext();
 
 theories(getMappingLineData, [
-  [
-    [
+  {
+    in: [
       {
         baseTableName: 'CollectionObject',
         mappingPath: ['determinations', '#1', 'taxon', '$Family', 'name'],
@@ -14,7 +14,7 @@ theories(getMappingLineData, [
         generateFieldData: 'all',
       },
     ],
-    [
+    out: [
       {
         customSelectSubtype: 'simple',
         selectLabel: 'Collection Object',
@@ -358,5 +358,5 @@ theories(getMappingLineData, [
         tableName: 'Taxon',
       },
     ],
-  ],
+  },
 ]);

@@ -10,12 +10,12 @@ describe('defined', () => {
 });
 
 theories(filterArray, [
-  [[[]], []],
-  [[[undefined]], []],
-  [[[1, undefined, null, 3]], [1, null, 3]],
+  { in: [[]], out: [] },
+  { in: [[undefined]], out: [] },
+  { in: [[1, undefined, null, 3]], out: [1, null, 3] },
 ]);
 
 theories(isFunction, [
-  [[f.true], true],
-  [['a'], false],
+  { in: [f.true], out: true },
+  { in: ['a'], out: false },
 ]);

@@ -240,31 +240,34 @@ describe('formatterToParser', () => {
 });
 
 theories(getValidationAttributes, [
-  [[{}], {}],
-  [
-    [{ required: true, pattern: /^a$/u }],
-    {
+  { in: [{}], out: {} },
+  {
+    in: [{ required: true, pattern: /^a$/u }],
+    out: {
       required: true as unknown as string,
       pattern: 'a',
     },
-  ],
-  [[{ min: 3, max: 4 }], { min: '3', max: '4' }],
-  [[{ placeholder: 'a', title: 'b' }], { placeholder: 'a', title: 'b' }],
+  },
+  { in: [{ min: 3, max: 4 }], out: { min: '3', max: '4' } },
+  {
+    in: [{ placeholder: 'a', title: 'b' }],
+    out: { placeholder: 'a', title: 'b' },
+  },
 ]);
 
 theories(browserifyRegex, [
-  [[/[5a]/u], '[5a]'],
-  [[/^a$/mu], 'a'],
+  { in: [/[5a]/u], out: '[5a]' },
+  { in: [/^a$/mu], out: 'a' },
 ]);
 
 theories(pluralizeParser, [
-  [
-    [{ title: 'a', pattern: /^a$/u }],
-    {
+  {
+    in: [{ title: 'a', pattern: /^a$/u }],
+    out: {
       title: 'a',
       pattern: new RegExp('^(?:|\\s*(?:a)\\s*(?:,\\s*(?:a)\\s*)*)$', 'u'),
     },
-  ],
+  },
 ]);
 
 theories(pluralizeRegex, [
@@ -272,6 +275,6 @@ theories(pluralizeRegex, [
 ]);
 
 theories(lengthToRegex, [
-  [[3, undefined], /^.{3,}$/u],
-  [[3, 5], /^.{3,5}$/u],
+  { in: [3, undefined], out: /^.{3,}$/u },
+  { in: [3, 5], out: /^.{3,5}$/u },
 ]);

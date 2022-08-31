@@ -1,9 +1,9 @@
 import { theories } from '../../../tests/utils';
 import { formatCacheKey, parseCacheKey } from '../index';
 
-theories(formatCacheKey, [[['aBc', 'bCd'], 'specify7-aBc-bCd']]);
+theories(formatCacheKey, [{ in: ['aBc', 'bCd'], out: 'specify7-aBc-bCd' }]);
 
 theories(parseCacheKey, [
-  [['specify7-aBc-bCd'], ['aBc', 'bCd']],
-  [['specify7-aBc-bCd-eFg'], undefined],
+  { in: ['specify7-aBc-bCd'], out: ['aBc', 'bCd'] },
+  { in: ['specify7-aBc-bCd-eFg'], out: undefined },
 ]);

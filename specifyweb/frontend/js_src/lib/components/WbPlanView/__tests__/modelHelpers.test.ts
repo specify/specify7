@@ -8,14 +8,14 @@ import { requireContext } from '../../../tests/helpers';
 requireContext();
 
 theories(findRequiredMissingFields, [
-  [
-    [
+  {
+    in: [
       mappingLines1.baseTableName as 'Accession',
       (mappingLines1.lines as RA<SplitMappingPath>).map(
         ({ mappingPath }) => mappingPath
       ),
       mappingLines1.mustMatchPreferences as IR<boolean>,
     ],
-    [['collectingEvent', 'locality', 'localityName']],
-  ],
+    out: [['collectingEvent', 'locality', 'localityName']],
+  },
 ]);

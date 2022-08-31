@@ -2,16 +2,16 @@ import { theories } from '../../../tests/utils';
 import { formData, isExternalUrl, toRelativeUrl } from '../helpers';
 
 theories(isExternalUrl, [
-  [['blob:https://localhost/'], true],
-  [['http://localhost/'], false],
-  [['http://google.com/'], true],
-  [['/page'], false],
+  { in: ['blob:https://localhost/'], out: true },
+  { in: ['http://localhost/'], out: false },
+  { in: ['http://google.com/'], out: true },
+  { in: ['/page'], out: false },
 ]);
 
 theories(toRelativeUrl, [
-  [['http://google.com/page?bar=#hash'], '/page?bar=#hash'],
-  [['/page?bar=#hash'], '/page?bar=#hash'],
-  [['http://google.com/page?bar=#hash'], undefined],
+  { in: ['http://google.com/page?bar=#hash'], out: '/page?bar=#hash' },
+  { in: ['/page?bar=#hash'], out: '/page?bar=#hash' },
+  { in: ['http://google.com/page?bar=#hash'], out: undefined },
 ]);
 
 describe('can convert object to formData', () => {

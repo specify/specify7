@@ -6,12 +6,12 @@ import {
 } from '../javaProperties';
 
 theories(regexForJavaProperty, [
-  [['KEY_NAME.NAME'], /^KEY_NAME\.NAME(?:\s*[:=]|\s)\s*(.*)$/mu],
+  { in: ['KEY_NAME.NAME'], out: /^KEY_NAME\.NAME(?:\s*[:=]|\s)\s*(.*)$/mu },
 ]);
 
 theories(unescapeJavaProperty, [
-  [[''], ''],
-  [['A"B'], 'A"B'],
+  { in: [''], out: '' },
+  { in: ['A"B'], out: 'A"B' },
 ]);
 
 const resource = `
@@ -22,12 +22,15 @@ attachment.path=
 `;
 
 theories(getProperty, [
-  [[resource, 'SymbiotaTask.SHOW_TASK_PREF.fish'], 'false'],
-  [
-    [resource, 'SymbiotaTask.BaseUrlPref'],
-    'http\\://pinkava.asu.edu/symbiota/sandbox/webservices/dwc/dwcaingesthandler.php',
-  ],
-  [[resource, 'recent_collection_id.abornstein.KU_Fish_Tissue'], '4'],
-  [[resource, 'attachment.path'], ''],
-  [[resource, 'unknown'], undefined],
+  { in: [resource, 'SymbiotaTask.SHOW_TASK_PREF.fish'], out: 'false' },
+  {
+    in: [resource, 'SymbiotaTask.BaseUrlPref'],
+    out: 'http\\://pinkava.asu.edu/symbiota/sandbox/webservices/dwc/dwcaingesthandler.php',
+  },
+  {
+    in: [resource, 'recent_collection_id.abornstein.KU_Fish_Tissue'],
+    out: '4',
+  },
+  { in: [resource, 'attachment.path'], out: '' },
+  { in: [resource, 'unknown'], out: undefined },
 ]);
