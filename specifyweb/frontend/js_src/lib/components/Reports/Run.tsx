@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useId } from '../../hooks/useId';
-import { csrfToken } from '../../utils/ajax/csrftoken';
+import { csrfToken } from '../../utils/ajax/csrfToken';
 import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';

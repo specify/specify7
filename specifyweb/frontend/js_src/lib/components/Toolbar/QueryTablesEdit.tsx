@@ -12,6 +12,7 @@ import { defaultQueryTablesConfig, useQueryModels } from './QueryTables';
 import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
 import { usePref } from '../UserPreferences/usePref';
+import { f } from '../../utils/functools';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -74,9 +75,8 @@ export function TablesListEdit({
     const selected: RA<SpecifyModel> = selectedSubset.map(
       (tableName) => schema.models[tableName]
     );
-    const firstIndex = Math.min(
-      ...selected.map((model) => selectedModels.indexOf(model))
-    );
+    const firstIndex =
+      f.min(...selected.map((model) => selectedModels.indexOf(model))) ?? 1;
     const insertionIndex = Math.max(0, firstIndex - 1);
     handleMove(selected, insertionIndex);
   }
@@ -85,9 +85,8 @@ export function TablesListEdit({
     const selected: RA<SpecifyModel> = selectedSubset.map(
       (tableName) => schema.models[tableName]
     );
-    const firstIndex = Math.min(
-      ...selected.map((model) => selectedModels.indexOf(model))
-    );
+    const firstIndex =
+      f.min(...selected.map((model) => selectedModels.indexOf(model))) ?? -1;
     const insertionIndex = firstIndex + 1;
     handleMove(selected, insertionIndex);
   }

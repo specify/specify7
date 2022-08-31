@@ -114,7 +114,7 @@ const url = cachableUrl(
 const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
     ajax<Element>(url, {
-      headers: { Accept: 'application/xml' },
+      headers: { Accept: 'text/xml' },
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
         Array.from(data.querySelectorAll('entry'), async (entry) =>

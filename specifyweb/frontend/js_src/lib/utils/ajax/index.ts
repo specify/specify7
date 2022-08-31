@@ -1,5 +1,5 @@
 import { csrfSafeMethod, Http, isExternalUrl } from './helpers';
-import { csrfToken } from './csrftoken';
+import { csrfToken } from './csrfToken';
 import type { IR, RA } from '../types';
 import { handleAjaxResponse } from './response';
 
@@ -7,14 +7,14 @@ import { handleAjaxResponse } from './response';
 
 // FEATURE: make all back-end endpoints accept JSON
 
-export type MimeType = 'application/json' | 'application/xml' | 'text/plain';
+export type MimeType = 'application/json' | 'text/xml' | 'text/plain';
 
 export type AjaxResponseObject<RESPONSE_TYPE> = {
   /*
    * Parsed response
    * Parser is selected based on the value of options.headers.Accept:
    *   - application/json - json
-   *   - application/xml - xml
+   *   - text/xml - xml
    *   - else (i.e text/plain) - string
    */
   readonly data: RESPONSE_TYPE;
@@ -49,7 +49,7 @@ export const ajax = async <RESPONSE_TYPE = string>(
     readonly body?: FormData | IR<unknown> | RA<unknown> | string;
     /**
      * Validates and parses response as JSON if 'Accept' header is 'application/json'
-     * Validates and parses response as XML if 'Accept' header is 'application/xml'
+     * Validates and parses response as XML if 'Accept' header is 'text/xml'
      */
     readonly headers: IR<string | undefined> & { readonly Accept?: MimeType };
   },

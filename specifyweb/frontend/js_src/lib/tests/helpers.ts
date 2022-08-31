@@ -1,4 +1,7 @@
-import { initialContext, unlockInitialContext } from '../components/InitialContext';
+import {
+  initialContext,
+  unlockInitialContext,
+} from '../components/InitialContext';
 import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 
 /**

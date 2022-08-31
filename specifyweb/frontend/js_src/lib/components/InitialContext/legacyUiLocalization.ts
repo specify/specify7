@@ -9,7 +9,7 @@
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
 import { LANGUAGE } from '../../localization/utils';
-import { getProperty } from '../../utils/javaProps';
+import { getProperty } from '../../utils/javaProperties';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =

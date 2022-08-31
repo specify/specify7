@@ -291,16 +291,10 @@ export function mergeParsers(base: Parser, extra: Parser): Parser {
         key,
         [...(base[key] ?? []), ...(extra[key] ?? [])],
       ]),
-      ...[
-        ...takeMin.map((key) => [
-          key,
-          Math.min(...filterArray([base[key], extra[key]])),
-        ]),
-        ...takeMax.map((key) => [
-          key,
-          Math.max(...filterArray([base[key], extra[key]])),
-        ]),
-      ].filter(([_key, value]) => Number.isFinite(value)),
+      ...takeMin.map((key) => [key, f.min(base[key], extra[key])]),
+      ...takeMax
+        .map((key) => [key, Math.max(...filterArray([base[key], extra[key]]))])
+        .filter(([_key, value]) => Number.isFinite(value)),
     ].filter(([_key, value]) => value !== undefined)
   );
 }

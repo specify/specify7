@@ -55,7 +55,7 @@ export const userTypes = [
   'Guest',
 ] as const;
 
-function definePicklist(
+export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {

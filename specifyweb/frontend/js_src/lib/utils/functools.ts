@@ -13,8 +13,6 @@ export const f = {
   /** Return void */
   void: (): void => undefined,
   undefined: (): undefined => undefined,
-  /** Call first argument */
-  exec: <T>(function_: (...args: RA<never>) => T): T => function_(),
   array: (): RA<never> => [],
   /** Create a new version of the passed function that accepts only 1 argument */
   unary:
@@ -109,7 +107,7 @@ export const f = {
    * Useful for debugging or logging
    */
   tap:
-    <ARGUMENTS extends RA<never>, RETURN>(
+    <ARGUMENTS extends RA<unknown>, RETURN>(
       tapFunction: (...args: ARGUMENTS) => void,
       action: (...args: ARGUMENTS) => RETURN
     ) =>

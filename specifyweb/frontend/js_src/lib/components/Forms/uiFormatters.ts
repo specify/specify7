@@ -19,7 +19,7 @@ import { filterArray } from '../../utils/types';
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
   formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-  'application/xml'
+  'text/xml'
 ).then((formatters) => {
   uiFormatters = Object.fromEntries(
     filterArray(

@@ -36,7 +36,7 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
             responseText: text,
           };
         }
-      } else if (response.ok && accept === 'application/xml') {
+      } else if (response.ok && accept === 'text/xml') {
         const parsed = parseXml(text);
         if (typeof parsed === 'object')
           return {

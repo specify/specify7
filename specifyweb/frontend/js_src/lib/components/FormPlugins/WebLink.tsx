@@ -11,18 +11,18 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode, FormType } from '../FormParse';
 import { formatUrl } from '../Router/queryString';
 import { resourceOn } from '../DataModel/resource';
-import { getTreePath } from '../../utils/ajax/specifyApi';
+import { fetchTreePath } from '../../utils/ajax/specifyApi';
 import type { IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { UiField } from '../FormFields/Field';
 import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {AnySchema} from '../DataModel/helperTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema } from '../DataModel/helperTypes';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),
-  'application/xml'
+  'text/xml'
 ).then((xml) =>
   Object.fromEntries(
     Array.from(
@@ -44,7 +44,7 @@ const specialResourcesFields: {
   ) => Promise<IR<string | undefined>>;
 } = {
   Taxon: async (resource) =>
-    getTreePath(resource).then((path) => ({
+    fetchTreePath(resource).then((path) => ({
       genus: path?.Genus?.name,
       species: path?.Species?.name,
     })),

@@ -4,7 +4,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-import { parseDjangoDump } from '../../utils/ajax/csrftoken';
+import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { interceptLogs } from '../Errors/interceptLogs';
 import type { getEntrypointName } from '../InitialContext';
 import { unlockInitialContext } from '../InitialContext';

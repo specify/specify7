@@ -70,7 +70,7 @@ export const fetchFormatters: Promise<{
         ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/xml' },
+          headers: { Accept: 'text/xml' },
         }
       ).then(({ data: definitions }) => ({
         formatters: filterArray(

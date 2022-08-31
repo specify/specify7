@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrftoken';
+import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';

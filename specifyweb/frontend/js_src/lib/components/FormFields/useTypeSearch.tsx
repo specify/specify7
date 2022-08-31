@@ -8,14 +8,14 @@ import { getParsedAttribute } from '../../utils/utils';
 import { formatList } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import {load} from '../InitialContext';
-import {formatUrl} from '../Router/queryString';
+import { load } from '../InitialContext';
+import { formatUrl } from '../Router/queryString';
 import { columnToFieldMapper } from './parseSelect';
 import type { TypeSearch } from './queryComboBoxUtils';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
-  'application/xml'
+  'text/xml'
 );
 
 export function useTypeSearch(

@@ -5,6 +5,7 @@ import type { WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { usePrefDefinitions } from './index';
+import { f } from '../../utils/functools';
 
 /** Update the active category on the sidebar as user scrolls */
 export function useActiveCategory(): {
@@ -26,7 +27,7 @@ export function useActiveCategory(): {
   }: IntersectionObserverEntry): void {
     const index = references.current.indexOf(target as HTMLElement);
     intersecting.current[isIntersecting ? 'add' : 'delete'](index);
-    const intersection = Math.min(...Array.from(intersecting.current));
+    const intersection = f.min(...Array.from(intersecting.current)) ?? 0;
     setActiveCategory(intersection);
   }
 

@@ -27,7 +27,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -51,7 +51,7 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : (Array.isArray(forms) ? (
+  ) : Array.isArray(forms) ? (
     <Dialog
       buttons={commonText('cancel')}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -87,7 +87,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null);
+  ) : null;
 }
 
 export type FormEntry = {
@@ -103,7 +103,7 @@ const fetchLegacyForms = f.store(
   async (): Promise<RA<FormEntry>> =>
     ajax<Document>(url, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/xml' },
+      headers: { Accept: 'text/xml' },
     }).then(async ({ data }) => {
       await fetchSchema;
       return Promise.all(
