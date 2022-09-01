@@ -7,7 +7,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { hasToolPermission } from '../Permissions/helpers';
-import { PickListTypes } from './fetch';
 import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
@@ -21,8 +20,9 @@ import type {
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
-import {useValidation} from '../../hooks/useValidation';
-import {AnySchema} from '../DataModel/helperTypes';
+import { useValidation } from '../../hooks/useValidation';
+import { AnySchema } from '../DataModel/helperTypes';
+import { PickListTypes } from './definitions';
 
 export function PickListComboBox(
   props: DefaultComboBoxProps & {

@@ -2,43 +2,28 @@
  * Pick list item fetching code
  */
 
-import { error } from '../Errors/assert';
-import type { PickListItemSimple } from '../FormFields/ComboBox';
-import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import { addMissingFields, serializeResource } from '../DataModel/helpers';
-import { format } from '../Forms/dataObjFormatters';
-import { f } from '../../utils/functools';
-import { sortFunction, toLowerCase } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
-import { getFrontEndPickLists, unsafeGetPickLists } from './definitions';
-import { getModel, schema } from '../DataModel/schema';
+import { deserializeResource } from '../../hooks/resource';
 import { fetchRows } from '../../utils/ajax/specifyApi';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
+import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
-import { deserializeResource } from '../../hooks/resource';
-import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-
-export const PickListTypes = {
-  // Items are defined in the PickListItems table
-  ITEMS: 0,
-  // Items are defined from formatted rows in some table
-  TABLE: 1,
-  // Items are defined from a column in some table
-  FIELDS: 2,
-} as const;
-
-export const createPickListItem = (
-  // It's weird that value can be null, but that's what the data model says
-  value: string | null,
-  title: string
-): SerializedResource<PickListItem> =>
-  addMissingFields('PickListItem', {
-    value: value ?? title,
-    title: title ?? value,
-    timestampCreated: new Date().toJSON(),
-  });
+import { serializeResource } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getModel, schema } from '../DataModel/schema';
+import type { PickList, PickListItem, Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import type { PickListItemSimple } from '../FormFields/ComboBox';
+import { format } from '../Forms/dataObjFormatters';
+import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
+import {
+  createPickListItem,
+  getFrontEndPickLists,
+  PickListTypes,
+  unsafeGetPickLists,
+} from './definitions';
 
 export async function fetchPickListItems(
   pickList: SpecifyResource<PickList>

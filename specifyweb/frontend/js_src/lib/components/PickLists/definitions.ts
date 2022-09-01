@@ -11,8 +11,8 @@ import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import { createPickListItem, PickListTypes } from './fetch';
 import { hasToolPermission } from '../Permissions/helpers';
+import { addMissingFields } from '../DataModel/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -54,6 +54,25 @@ export const userTypes = [
   'LimitedAccess',
   'Guest',
 ] as const;
+
+export const PickListTypes = {
+  // Items are defined in the PickListItems table
+  ITEMS: 0,
+  // Items are defined from formatted rows in some table
+  TABLE: 1,
+  // Items are defined from a column in some table
+  FIELDS: 2,
+} as const;
+export const createPickListItem = (
+  // It's weird that value can be null, but that's what the data model says
+  value: string | null,
+  title: string
+): SerializedResource<PickListItem> =>
+  addMissingFields('PickListItem', {
+    value: value ?? title,
+    title: title ?? value,
+    timestampCreated: new Date().toJSON(),
+  });
 
 export function definePicklist(
   name: string,

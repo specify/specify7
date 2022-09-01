@@ -69,8 +69,8 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
       throw {
         type: 'invalidResponseCode',
         statusText: `Invalid response code ${response.status}. Expected ${
-          expectedResponseCodes.length === 1 ? '' : 'one of'
-        } ${formatList(
+          expectedResponseCodes.length === 1 ? '' : 'one of '
+        }${formatList(
           Array.from(expectedResponseCodes)
             .sort(sortFunction(f.id))
             .map(f.toString)

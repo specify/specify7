@@ -3,3 +3,5 @@ Object.defineProperty(globalThis.document, 'fonts', {
     check: () => true,
   },
 });
+
+export {};

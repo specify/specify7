@@ -206,7 +206,7 @@ export const parsers = f.store(
       validators: [validators.number],
       // Caution: getMonth is 0-based
       value: (new Date().getMonth() + 1).toString(),
-      pickListName: monthsPickList().get('name'),
+      pickListName: monthsPickList?.().get('name'),
     },
 
     day: {

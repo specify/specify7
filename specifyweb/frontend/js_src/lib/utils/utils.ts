@@ -224,13 +224,17 @@ export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
 export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> =>
   array[index] === item
     ? array
-    : [...array.slice(0, index), item, ...array.slice(index + 1)];
+    : [
+        ...array.slice(0, index),
+        item,
+        ...(index === -1 ? [] : array.slice(index + 1)),
+      ];
 
 /** Create a new array without a given item */
-export const removeItem = <T>(array: RA<T>, index: number): RA<T> => [
-  ...array.slice(0, index),
-  ...array.slice(index + 1),
-];
+export const removeItem = <T>(array: RA<T>, index: number): RA<T> =>
+  index < 0
+    ? [...array.slice(0, index - 1), ...array.slice(index)]
+    : [...array.slice(0, index), ...array.slice(index + 1)];
 
 /** Remove item from array if present, otherwise, add it */
 export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>

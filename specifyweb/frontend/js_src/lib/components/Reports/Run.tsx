@@ -41,7 +41,7 @@ export function RunReport({
   }, [form, handleClose]);
   return (
     <form
-      action="/specifyweb/frontend/js_src/lib/components/Reports/index.tsx"
+      action="/report_runner/run/"
       className="hidden"
       method="post"
       ref={setForm}

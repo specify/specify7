@@ -1,0 +1,304 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` renders without errors 1`] = `
+<DocumentFragment>
+  <button
+    aria-label="Add"
+    class="icon link rounded !text-green-700 print:hidden "
+    icon="plus"
+    title="Add"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[` renders without errors 2`] = `
+<DocumentFragment>
+  <button
+    aria-label="View"
+    class="icon link rounded !text-orange-400 print:hidden "
+    icon="eye"
+    title="View"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 12a2 2 0 100-4 2 2 0 000 4z"
+      />
+      <path
+        clip-rule="evenodd"
+        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[` renders without errors 3`] = `
+<DocumentFragment>
+  <button
+    aria-label="Edit"
+    class="icon link rounded !text-orange-400 print:hidden "
+    icon="pencil"
+    title="Edit"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[` renders without errors 4`] = `
+<DocumentFragment>
+  <button
+    aria-label="Clone"
+    class="icon link rounded !text-amber-700 print:hidden "
+    icon="clipboard"
+    title="Clone"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+      />
+      <path
+        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[` renders without errors 5`] = `
+<DocumentFragment>
+  <button
+    aria-label="Search"
+    class="icon link rounded !text-blue-500 print:hidden "
+    icon="search"
+    title="Search"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[` renders without errors 6`] = `
+<DocumentFragment>
+  <button
+    aria-label="Remove"
+    class="icon link rounded !text-red-700 print:hidden "
+    icon="minus"
+    title="Remove"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-6 h-6 flex-shrink-0"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Cell colspan 1, align right 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col"
+    style="align-items: flex-end;"
+  >
+    Test
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Cell colspan 3, align left 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col"
+    style="grid-column: span 3 / span 3;"
+  >
+    Test
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Cell invisible 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col"
+    style="visibility: hidden;"
+  >
+    Test
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Grid renders without errors 1`] = `
+<DocumentFragment>
+  <div
+    class="grid overflow-x-auto items-center p-1 -ml-1 gap-2 "
+    style="grid-template-columns: 1fr 2fr 3fr auto;"
+  >
+    Test
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Header renders without errors 1`] = `
+<DocumentFragment>
+  <header
+    class="border-b-2 border-brand-300 flex items-center pb-2 gap-4"
+  >
+    Test
+  </header>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.SubForm renders without errors 1`] = `
+<DocumentFragment>
+  <fieldset
+    class="contents"
+  >
+    Test
+  </fieldset>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.SubFormHeader renders without errors 1`] = `
+<DocumentFragment>
+  <legend>
+    <span
+      class="gap-2 flex font-bold border-b border-gray-500 pt-5 pb-1 items-center"
+    >
+      Test
+    </span>
+  </legend>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.SubFormTitle renders without errors 1`] = `
+<DocumentFragment>
+  <h3
+    class="text-lg font-bold flex items-center gap-2"
+  >
+    Test
+  </h3>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.Title renders without errors 1`] = `
+<DocumentFragment>
+  <h2
+    class="font-semibold text-black dark:text-white text-lg font-bold flex items-center gap-2"
+  >
+    Test
+  </h2>
+</DocumentFragment>
+`;
+
+exports[`DataEntry.visit no resource 1`] = `<DocumentFragment />`;
+
+exports[`DataEntry.visit no resource 2`] = `
+<DocumentFragment>
+  <a
+    aria-label="Visit"
+    class="link !text-blue-700 print:hidden "
+    href="RESOURCE_VIEW_URL"
+    target="_blank"
+    title="Visit"
+  >
+    <span
+      title="(opens in a new tab)"
+    >
+      <span
+        class="sr-only"
+      >
+        (opens in a new tab)
+      </span>
+      <svg
+        aria-hidden="true"
+        class="w-6 h-6 flex-shrink-0"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"
+        />
+        <path
+          d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"
+        />
+      </svg>
+    </span>
+  </a>
+</DocumentFragment>
+`;
+
+exports[`FormFooter renders without errors 1`] = `
+<DocumentFragment>
+  <div
+    class="border-brand-300 border-t-2 flex print:hidden pt-2 gap-2"
+    role="toolbar"
+  >
+    Test
+  </div>
+</DocumentFragment>
+`;

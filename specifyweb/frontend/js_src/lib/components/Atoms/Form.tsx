@@ -1,9 +1,10 @@
-import { wrap } from './wrapper';
-import { className } from './className';
-import { Input as InputType } from '../DataModel/saveBlockers';
-import React from 'react';
-import { RA } from '../../utils/types';
+import type React from 'react';
+
+import type { RA } from '../../utils/types';
 import { split } from '../../utils/utils';
+import type { Input as InputType } from '../DataModel/saveBlockers';
+import { className } from './className';
+import { wrap } from './wrapper';
 
 export const Label = {
   Block: wrap('Label.Block', 'label', className.label),
@@ -83,18 +84,17 @@ export const Input = {
       },
       onBlur(event: React.FocusEvent<HTMLInputElement>): void {
         const input = event.target as HTMLInputElement;
-        if (input.classList.contains(className.notTouchedInput))
+        if (
+          input.classList.contains(className.notTouchedInput) &&
+          typeof props.name === 'string'
+        )
           Array.from(
             document.body.querySelectorAll(
-              `input[type="radio"].${className.notTouchedInput}`
+              `input[type="radio"][name="${props.name}"].${className.notTouchedInput}`
             )
-          )
-            .filter(
-              (target) => (target as HTMLInputElement).name === props.name
-            )
-            .forEach((input) =>
-              input.classList.remove(className.notTouchedInput)
-            );
+          ).forEach((input) =>
+            input.classList.remove(className.notTouchedInput)
+          );
         handleBlur?.(event);
       },
     })
@@ -293,7 +293,7 @@ export const Select = wrap<
       const [unselected, selected] = split(options, ({ selected }) => selected);
       /*
        * Selected options in an optional multiple select are clashing with
-       * the background both in dark-mode. This is a fix:
+       * the background in dark-mode. This is a fix:
        */
       if (props.required !== true && props.multiple === true) {
         selected.map((option) => option.classList.add('dark:bg-neutral-100'));

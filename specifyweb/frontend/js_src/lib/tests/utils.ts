@@ -3,7 +3,7 @@ import type { RenderOptions, RenderResult } from '@testing-library/react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup/setup';
-import type React from 'react';
+import React from 'react';
 
 import type { IR, RA } from '../utils/types';
 
@@ -88,10 +88,26 @@ export function mount<
   BASE_ELEMENT extends DocumentFragment | Element = CONTAINER
 >(
   ui: React.ReactElement,
-  options: RenderOptions<Q, CONTAINER, BASE_ELEMENT>
+  options: RenderOptions<Q, CONTAINER, BASE_ELEMENT> = {}
 ): RenderResult<Q, CONTAINER, BASE_ELEMENT> & {
   readonly user: UserEvent;
 } {
   const user = userEvent.setup();
   return { ...render(ui, options), user };
+}
+
+export function snapshot<PROPS extends IR<unknown>>(
+  component: (props: PROPS) => React.ReactElement | null,
+  props: PROPS,
+  testName?: string
+): void {
+  const { name, displayName = name } = component as unknown as {
+    readonly displayName: string;
+    readonly name: string;
+  };
+
+  test(testName ?? `${displayName} renders without errors`, () => {
+    const { asFragment } = mount(React.createElement(component, props));
+    expect(asFragment()).toMatchSnapshot();
+  });
 }

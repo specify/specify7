@@ -84,10 +84,7 @@ export function Main(): JSX.Element | null {
       >
         <div className="flex w-full items-center justify-between 2xl:contents">
           <h1 className="contents">
-            <a
-              className="order-1 m-4 flex items-center"
-              href="/specifyweb/frontend/js_src/lib/components/Core/Main"
-            >
+            <a className="order-1 m-4 flex items-center" href="/specify/">
               <img
                 alt=""
                 className="h-16 hover:animate-hue-rotate"

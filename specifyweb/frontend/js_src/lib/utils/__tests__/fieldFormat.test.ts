@@ -1,34 +1,48 @@
 import type { LiteralField } from '../../components/DataModel/specifyField';
-import { definePicklist } from '../../components/PickLists/definitions';
 import {
   createPickListItem,
-  fetchPickList,
-} from '../../components/PickLists/fetch';
+  definePicklist,
+} from '../../components/PickLists/definitions';
+import { fetchPickList } from '../../components/PickLists/fetch';
 import { queryText } from '../../localization/query';
 import { requireContext } from '../../tests/helpers';
-import { fieldFormat, formatPickList, formatValue } from '../fieldFormat';
+import {
+  fieldFormat,
+  formatPickList,
+  formatValue,
+  syncFieldFormat,
+} from '../fieldFormat';
 
 requireContext();
 
 jest.mock('../../components/PickLists/fetch', () => {
+  const definitions = jest.requireActual<{
+    readonly definePicklist: typeof definePicklist;
+    readonly createPickListItem: typeof createPickListItem;
+  }>('../../components/PickLists/definitions');
+  const actual = jest.requireActual<{}>('../../components/PickLists/fetch');
+  return {
+    ...actual,
+    fetchPickList: jest.fn(async () =>
+      definitions.definePicklist('PickList', [
+        definitions.createPickListItem('Value', 'Title'),
+      ])
+    ),
+  };
+});
+
+jest.mock('../../components/PickLists/definitions', () => {
   const actual = jest.requireActual<{
     readonly definePicklist: typeof definePicklist;
-  }>('../../components/PickLists/fetch');
-  const pickListFetch = jest.requireActual<{
     readonly createPickListItem: typeof createPickListItem;
-  }>('../../components/PickLists/fetch');
+  }>('../../components/PickLists/definitions');
   return {
     ...actual,
     unsafeGetPickLists: jest.fn(() => ({
       PickList: actual.definePicklist('PickList', [
-        pickListFetch.createPickListItem('Value', 'Title'),
+        actual.createPickListItem('Value', 'Title'),
       ]),
     })),
-    fetchPickList: jest.fn(async () =>
-      actual.definePicklist('PickList', [
-        pickListFetch.createPickListItem('Value', 'Title'),
-      ])
-    ),
   };
 });
 
@@ -39,10 +53,10 @@ const field = {
 
 describe('fieldFormat', () => {
   test('ignores undefined values', async () => {
-    await expect(fieldFormat(field, {}, undefined)).resolves.toBeUndefined();
+    await expect(fieldFormat(field, {}, undefined)).resolves.toBe('');
   });
   test('ignores null values', async () => {
-    await expect(fieldFormat(field, {}, null)).resolves.toBeUndefined();
+    await expect(fieldFormat(field, {}, null)).resolves.toBe('');
   });
   test('handles pick list in parser', async () => {
     const field = {
@@ -68,7 +82,7 @@ describe('formatPickList', () => {
   });
   test('return undefined on invalid value', () => {
     const pickList = definePicklist('PickList', []);
-    expect(formatPickList(pickList, 'SomeValue')).toBe('Title');
+    expect(formatPickList(pickList, 'SomeValue')).toBeUndefined();
   });
 });
 
@@ -78,5 +92,5 @@ test('formatValue resolves parser and formats value', () => {
 });
 
 test('syncFieldFormat formats pick list synchronously', () => {
-  expect(formatValue(field, undefined, true)).toBe('Value');
+  expect(syncFieldFormat(field, undefined, 'Value')).toBe('Title');
 });

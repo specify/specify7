@@ -9,11 +9,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import type { FormMode, FormType } from '../FormParse';
 import { hasToolPermission } from '../Permissions/helpers';
-import {
-  fetchPickList,
-  getPickListItems,
-  PickListTypes,
-} from '../PickLists/fetch';
+import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { RA } from '../../utils/types';
@@ -30,6 +26,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { isResourceOfType } from '../DataModel/helpers';
+import { PickListTypes } from '../PickLists/definitions';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;

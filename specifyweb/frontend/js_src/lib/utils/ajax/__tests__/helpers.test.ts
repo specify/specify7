@@ -9,9 +9,9 @@ theories(isExternalUrl, [
 ]);
 
 theories(toRelativeUrl, [
-  { in: ['http://google.com/page?bar=#hash'], out: '/page?bar=#hash' },
+  { in: ['http://localhost/page?bar=#hash'], out: '/page?bar=#hash' },
   { in: ['/page?bar=#hash'], out: '/page?bar=#hash' },
-  { in: ['http://google.com/page?bar=#hash'], out: undefined },
+  { in: ['https://google.com/page?bar=#hash'], out: undefined },
 ]);
 
 describe('can convert object to formData', () => {

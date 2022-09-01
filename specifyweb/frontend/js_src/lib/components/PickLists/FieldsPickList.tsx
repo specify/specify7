@@ -1,15 +1,16 @@
 import React from 'react';
 
-import { PickListTypes } from './fetch';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { PickListComboBox } from './index';
+import { PickListTypes } from './definitions';
 
-export function FieldsPickList(
-  props: DefaultComboBoxProps
-): JSX.Element {
+export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const getItems = React.useCallback(
     () =>
       props.resource.get('type') === PickListTypes.FIELDS

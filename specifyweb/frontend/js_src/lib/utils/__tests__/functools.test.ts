@@ -1,19 +1,15 @@
-import { breakpoint } from '../../components/Errors/assert';
 import { f } from '../functools';
 
 jest.mock('../../components/Errors/assert', () => ({
+  ...jest.requireActual('../../components/Errors/assert'),
   breakpoint: jest.fn(),
-  error: jest.fn(),
 }));
 
 test('f.void', () => expect(f.void()).toBeUndefined());
 
 test('f.undefined', () => expect(f.undefined()).toBeUndefined());
 
-test('f.array', () => {
-  expect(f.array()).toEqual([]);
-  expect(f.array()).toBe(f.array());
-});
+test('f.array', () => expect(f.array()).toEqual([]));
 
 test('f.unary', () => {
   // Force typescript to accept an invalid number of arguments
@@ -24,9 +20,10 @@ test('f.unary', () => {
 });
 
 test('f.zero', () => {
-  const args = ['a'];
+  // Force typescript to accept an invalid number of arguments
+  const args = ['a'] as unknown as readonly [];
   const callback = jest.fn((...args) => args);
-  expect(f.unary(callback)(args)).toEqual([]);
+  expect(f.zero(callback)(...args)).toEqual([]);
 });
 
 test('f.id', () => {
@@ -36,12 +33,11 @@ test('f.id', () => {
 
 test('f.trim', () => expect(f.trim('  \ta\n  ')).toBe('a'));
 
-test('f.error', () => {
+test('f.error', async () => {
   const consoleError = jest.fn();
   jest.spyOn(console, 'error').mockImplementation(consoleError);
 
   f.error('Console', 'error');
-  expect(breakpoint).toHaveBeenCalledWith();
   expect(consoleError).toHaveBeenCalledWith('Console', 'error');
 });
 
@@ -49,7 +45,7 @@ test('f.log', () => {
   const consoleLog = jest.fn();
   jest.spyOn(console, 'log').mockImplementation(consoleLog);
 
-  f.error('Console', 'log');
+  f.log('Console', 'log');
   expect(consoleLog).toHaveBeenCalledWith('Console', 'log');
 });
 
@@ -128,7 +124,7 @@ describe('f.unique', () => {
   test('empty case', () => expect(f.unique([])).toEqual([]));
   test('unique case', () => expect(f.unique([1, 2, 3])).toEqual([1, 2, 3]));
   test('duplicate case', () =>
-    expect(f.unique([1, 2, 3, 1])).toEqual([1, 2, 3, 1]));
+    expect(f.unique([1, 2, 3, 1])).toEqual([1, 2, 3]));
 });
 
 describe('f.parseInt', () => {
@@ -137,10 +133,10 @@ describe('f.parseInt', () => {
   test('invalid case', () => expect(f.parseInt('a-1.4')).toBeUndefined());
 });
 
-describe('f.parseInt', () => {
-  test('simple case', () => expect(f.parseInt('1')).toBe(1));
-  test('float case', () => expect(f.parseInt('-1.4')).toBe(-1.4));
-  test('invalid case', () => expect(f.parseInt('a-1.4')).toBeUndefined());
+describe('f.parseFloat', () => {
+  test('simple case', () => expect(f.parseFloat('1')).toBe(1));
+  test('float case', () => expect(f.parseFloat('-1.4')).toBe(-1.4));
+  test('invalid case', () => expect(f.parseFloat('a-1.4')).toBeUndefined());
 });
 
 describe('f.round', () => {
@@ -165,8 +161,8 @@ describe('f.toString', () => {
 describe('f.min', () => {
   test('empty case', () => expect(f.min()).toBeUndefined());
   test('undefined case', () => expect(f.min(undefined)).toBeUndefined());
-  test('simple case', () => expect(f.min(1, 2)).toBe(2));
+  test('simple case', () => expect(f.min(2, 1)).toBe(1));
   test('undefined and defined case', () =>
-    expect(f.min(undefined, 3, 1)).toBe(3));
-  test('duplicate case', () => expect(f.min(1, 3, 2, 3)).toBe(3));
+    expect(f.min(undefined, 3, 1)).toBe(1));
+  test('duplicate case', () => expect(f.min(3, 1, 2, 1)).toBe(1));
 });

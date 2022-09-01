@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { fetchFormatters } from '../Forms/dataObjFormatters';
-import { PickListTypes } from './fetch';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
@@ -12,6 +11,7 @@ import type {
 import { PickListComboBox } from './index';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { fail } from '../Errors/Crash';
+import { PickListTypes } from './definitions';
 
 export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   const fetchItems = React.useCallback(async () => {

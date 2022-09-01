@@ -27,6 +27,7 @@ import {
   validators,
 } from '../definitions';
 import { theories } from '../../../tests/utils';
+import { removeKey } from '../../utils';
 
 requireContext();
 
@@ -47,7 +48,7 @@ describe('parserFromType', () => {
       parsers()['java.lang.Double']
     ));
   test('unknown returns default parser', () =>
-    expect(parserFromType('unknown' as JavaType)).toBe(parsers().text));
+    expect(parserFromType('unknown' as JavaType)).toEqual(parsers().text));
 });
 
 const formatterFields = [
@@ -109,8 +110,17 @@ describe('resolveParser', () => {
       type: 'java.lang.String',
       getUiFormatter: () => uiFormatter,
     } as unknown as LiteralField;
-    expect(resolveParser(field)).toEqual({
-      ...formatterToParser(field, uiFormatter),
+    expect(
+      removeKey(resolveParser(field), 'formatters', 'parser', 'validators')
+    ).toEqual({
+      ...parserFromType('java.lang.String'),
+      required: false,
+      ...removeKey(
+        formatterToParser(field, uiFormatter),
+        'formatters',
+        'parser',
+        'validators'
+      ),
     });
   });
 });
