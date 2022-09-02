@@ -7,18 +7,18 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { getModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlocked } from './DeleteBlocked';
 import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames} from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import {AnySchema} from '../DataModel/helperTypes';
-import {loadingBar} from '../Molecules';
+import { AnySchema } from '../DataModel/helperTypes';
+import { loadingBar } from '../Molecules';
 
 const fetchBlockers = async (
   resource: SpecifyResource<AnySchema>
@@ -115,8 +115,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                     /*
                      * REFACTOR: move this into ResourceApi.js
                      */
-                    // @ts-expect-error Changing a read-only parameter
-                    resource.needsSaved = false;
+                    overwriteReadOnly(resource, 'needsSaved', false);
                     loading(resource.destroy().then(handleDeleted));
                   }}
                 >

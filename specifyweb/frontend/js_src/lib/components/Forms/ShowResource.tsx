@@ -16,9 +16,10 @@ import { interactionTables } from '../Interactions/InteractionsDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { TablePermissionDenied } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
-import {CheckLoggedInCollection, ViewResourceByGuid} from './DataTask';
+import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { RecordSet as RecordSetView } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
+import { overwriteReadOnly } from '../../utils/types';
 
 export function ShowResource({
   resource: initialResource,
@@ -44,16 +45,15 @@ export function ShowResource({
 
   React.useEffect(() => {
     if (typeof recordSet === 'object')
-      // @ts-expect-error Assigning to read-only
-      resource.recordsetid = recordSet.id;
+      overwriteReadOnly(resource, 'recordsetid', recordSet.id);
   }, [recordSet, resource.recordsetid]);
 
   useMenuItem(
     typeof recordSet === 'object'
       ? 'recordSets'
-      : (interactionTables.has(resource.specifyModel.name)
+      : interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
-      : 'dataEntry')
+      : 'dataEntry'
   );
 
   const [recordSetItemIndex] = useAsyncState(

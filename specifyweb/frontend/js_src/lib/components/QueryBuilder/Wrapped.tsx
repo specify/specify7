@@ -31,6 +31,7 @@ import {
   anyTreeRank,
   formattedEntry,
   formatTreeRank,
+  valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { MakeRecordSetButton } from './Components';
@@ -344,7 +345,8 @@ export function QueryBuilder({
                     const newMappingPath = filterArray([
                       ...state.mappingView.slice(0, -1),
                       typeof rest.newTableName === 'string' &&
-                      isTreeModel(rest.newTableName)
+                      isTreeModel(rest.newTableName) &&
+                      !valueIsTreeRank(state.mappingView.at(-2))
                         ? formatTreeRank(anyTreeRank)
                         : undefined,
                       formattedEntry,

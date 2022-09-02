@@ -2,6 +2,7 @@ import React from 'react';
 
 import { className } from '../Atoms/className';
 import { Textarea } from '../Atoms/Form';
+import { overwriteReadOnly } from '../../utils/types';
 
 export function AutoGrowTextArea({
   containerClassName = '',
@@ -42,8 +43,7 @@ export function AutoGrowTextArea({
       'current' in props.forwardRef
     )
       /* REFACTOR: improve typing to make this editable */
-      // @ts-expect-error Modifying a read-only property
-      props.forwardRef.current = textArea;
+      overwriteReadOnly(props.forwardRef, 'current', textArea);
   }, [textArea, props.forwardRef]);
   return (
     <div

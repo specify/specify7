@@ -1,5 +1,5 @@
-import { snapshot } from '../../../tests/utils';
 import { Submit } from '../Submit';
+import { snapshot } from '../../../tests/reactUtils';
 
 snapshot(Submit.Small, { children: 'Submit' });
 snapshot(Submit.Fancy, { children: 'Submit' });

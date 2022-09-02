@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
-import { mount, snapshot } from '../../../tests/utils';
 import { f } from '../../../utils/functools';
 import { Button, DialogContext } from '../Button';
 import { className } from '../className';
+import { mount, snapshot } from '../../../tests/reactUtils';
 
 test('DialogButton closes the dialog', async () => {
   const handleClose = jest.fn();

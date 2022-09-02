@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -79,8 +79,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         else if (records[index]?.id === id) return records[index];
         else {
           const resource = new model.Resource({ id });
-          // @ts-expect-error Setting a read-only value
-          if (typeof urlContext === 'number') resource.recordsetid = urlContext;
+          if (typeof urlContext === 'number')
+            overwriteReadOnly(resource, 'recordsetid', urlContext);
           return resource;
         }
       })

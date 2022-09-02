@@ -1,6 +1,6 @@
-import { snapshot } from '../../../tests/utils';
 import { className } from '../className';
 import { Link } from '../Link';
+import { snapshot } from '../../../tests/reactUtils';
 
 snapshot(Link.Default, { href: '#', children: 'Link' });
 snapshot(Link.NewTab, { href: '#', children: 'Link' });

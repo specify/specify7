@@ -1,8 +1,9 @@
-import { snapshot, theories } from '../../../tests/utils';
+import { theories } from '../../../tests/utils';
 import { columnDefinitionsToCss, DataEntry } from '../DataEntry';
 import { f } from '../../../utils/functools';
 import { SpecifyResource } from '../../DataModel/legacyTypes';
 import { AnySchema } from '../../DataModel/helperTypes';
+import { snapshot } from '../../../tests/reactUtils';
 
 theories(columnDefinitionsToCss, [
   { in: [[1, 2, 3], true], out: '1fr 2fr 3fr' },

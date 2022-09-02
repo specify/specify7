@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { commonText } from '../../../localization/common';
-import { mount, snapshot } from '../../../tests/utils';
 import { Container, ErrorMessage, H2, H3, Key, Summary, Ul } from '../index';
+import { mount, snapshot } from '../../../tests/reactUtils';
 
 snapshot(ErrorMessage, { children: commonText('title') });
 snapshot(Container.FullGray, { children: commonText('title') });

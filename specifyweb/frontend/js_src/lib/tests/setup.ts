@@ -5,6 +5,8 @@
 import '@testing-library/jest-dom';
 import './__mocks__/CSS';
 import './__mocks__/Response';
+import './__mocks__/performance';
+import './__mocks__/matchMedia';
 
 import { configure } from '@testing-library/dom';
 import failOnConsole from 'jest-fail-on-console';

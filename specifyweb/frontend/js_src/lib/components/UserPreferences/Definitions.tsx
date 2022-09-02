@@ -15,7 +15,7 @@ import { LANGUAGE } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import type { JavaType } from '../DataModel/specifyField';
 import type { IR, RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import { ensure, overwriteReadOnly } from '../../utils/types';
 import type { Parser } from '../../utils/parser/definitions';
 import { Link } from '../Atoms/Link';
 import type { WelcomePageMode } from './Renderers';
@@ -1390,19 +1390,28 @@ import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
       const trees = preferenceDefinitions.treeEditor.subCategories;
-      // @ts-expect-error Assigning to read-only
-      trees.geography.title = schema.models.Geography.label;
-      // @ts-expect-error Assigning to read-only
-      trees.taxon.title = schema.models.Taxon.label;
-      // @ts-expect-error Assigning to read-only
-      trees.storage.title = schema.models.Storage.label;
-      // @ts-expect-error Assigning to read-only
-      trees.geologicTimePeriod.title = schema.models.GeologicTimePeriod.label;
-      // @ts-expect-error Assigning to read-only
-      trees.lithoStrat.title = schema.models.LithoStrat.label;
-      // @ts-expect-error Assigning to read-only
-      preferenceDefinitions.form.subCategories.recordSet.title =
-        schema.models.RecordSet.label;
+      overwriteReadOnly(
+        trees.geography,
+        'title',
+        schema.models.Geography.label
+      );
+      overwriteReadOnly(trees.taxon, 'title', schema.models.Taxon.label);
+      overwriteReadOnly(trees.storage, 'title', schema.models.Storage.label);
+      overwriteReadOnly(
+        trees.geologicTimePeriod,
+        'title',
+        schema.models.GeologicTimePeriod.label
+      );
+      overwriteReadOnly(
+        trees.lithoStrat,
+        'title',
+        schema.models.LithoStrat.label
+      );
+      overwriteReadOnly(
+        preferenceDefinitions.form.subCategories.recordSet,
+        'title',
+        schema.models.RecordSet.label
+      );
     })
   )
   .catch(console.error);

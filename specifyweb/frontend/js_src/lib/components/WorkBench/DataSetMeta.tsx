@@ -8,7 +8,7 @@ import type { SpecifyUser } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
@@ -80,10 +80,9 @@ export function DataSetMeta({
                         expectedResponseCodes: [Http.NO_CONTENT],
                       }
                     ).then(() => {
-                      // @ts-expect-error Modifying readOnly value
-                      dataset.name = uniqueName;
-                      // @ts-expect-error Modifying readOnly value
-                      dataset.remarks = remarks.trim();
+                      // REFACTOR: replace this with a callback
+                      overwriteReadOnly(dataset, 'name', uniqueName);
+                      overwriteReadOnly(dataset, 'remarks', remarks.trim());
                       return uniqueName;
                     })
                 )

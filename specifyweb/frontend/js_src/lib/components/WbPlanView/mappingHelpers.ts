@@ -4,11 +4,11 @@
  * @module
  */
 
-import type { MappingPath } from './Mapper';
-import { schemaBase as schema } from '../DataModel/schemaBase';
-import type { Relationship } from '../DataModel/specifyField';
-import type { R, RA, WritableArray } from '../../utils/types';
-import type { ColumnOptions } from './uploadPlanParser';
+import type {MappingPath} from './Mapper';
+import {schemaBase as schema} from '../DataModel/schemaBase';
+import type {Relationship} from '../DataModel/specifyField';
+import type {R, RA, WritableArray} from '../../utils/types';
+import type {ColumnOptions} from './uploadPlanParser';
 
 /**
  * Returns whether relationship is a -to-many
@@ -22,12 +22,12 @@ export const relationshipIsToMany = (
   relationship?.type === 'zero-to-one';
 
 /** Returns whether a value is a -to-many index (e.x #1, #2, etc...) */
-export const valueIsToManyIndex = (value?: string): boolean =>
+export const valueIsToManyIndex = (value: string | undefined): boolean =>
   value?.slice(0, schema.referenceSymbol.length) === schema.referenceSymbol ||
   false;
 
 /** Returns whether a value is a tree rank name (e.x $Kingdom, $Order) */
-export const valueIsTreeRank = (value: string): boolean =>
+export const valueIsTreeRank = (value: string | undefined): boolean =>
   value?.startsWith(schema.treeSymbol) || false;
 
 /**

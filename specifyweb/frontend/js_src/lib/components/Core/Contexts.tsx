@@ -6,14 +6,10 @@ import { commonText } from '../../localization/common';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import type { GetOrSet, RA } from '../../utils/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import {
-  Dialog,
-  dialogClassNames,
-  LoadingScreen,
-} from '../Molecules/Dialog';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { crash } from '../Errors/Crash';
-import {loadingBar} from '../Molecules';
+import { loadingBar } from '../Molecules';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
@@ -53,24 +49,21 @@ export function Contexts({
   // Loading Context
   const holders = React.useRef<RA<number>>([]);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
-  const handle = React.useCallback(
+  const loadingHandler = React.useCallback(
     (promise: Promise<unknown>): void => {
       const holderId = holders.current.length;
       holders.current = [...holders.current, holderId];
       handleLoading();
       promise
-        .catch((error: Error) => {
-          crash(error);
-          throw error;
-        })
         .finally(() => {
           holders.current = holders.current.filter((item) => item !== holderId);
           if (holders.current.length === 0) handleLoaded();
-        });
+        })
+        .catch(crash);
     },
     [handleLoading, handleLoaded]
   );
-  legacyContext = handle;
+  legacyContext = loadingHandler;
 
   // Error Context
   const [errors, setErrors] = React.useState<RA<JSX.Element>>([]);
@@ -98,7 +91,7 @@ export function Contexts({
   React.useEffect(() => {
     // @ts-expect-error Exposing to global scope for easier debugging
     globalThis._unloadProtects = getSetProtects;
-  }, getSetProtects);
+  }, [getSetProtects]);
 
   // eslint-disable-next-line react/hook-use-state
   const menuContext = React.useState<MenuItemName | undefined>(undefined);
@@ -108,7 +101,7 @@ export function Contexts({
       <ErrorBoundary>
         <ErrorContext.Provider value={handleError}>
           {errors}
-          <LoadingContext.Provider key="loadingContext" value={handle}>
+          <LoadingContext.Provider key="loadingContext" value={loadingHandler}>
             <Dialog
               buttons={undefined}
               className={{ container: dialogClassNames.narrowContainer }}

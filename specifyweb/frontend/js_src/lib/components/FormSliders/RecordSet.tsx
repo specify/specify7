@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { clamp, removeItem } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -200,8 +200,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
           resources.map((resource) => {
             // If resource is not yet in a context of a record set, make it
             if (resource.recordsetid !== recordSet.id) {
-              // @ts-expect-error Setting a read-only value
-              resource.recordsetid = recordSet.id;
+              overwriteReadOnly(resource, 'recordsetid', recordSet.id);
               /*
                * For new resources, RecordSetItem would be created by the
                * back-end on save. For existing resources have to do that

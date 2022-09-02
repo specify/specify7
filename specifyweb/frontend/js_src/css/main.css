@@ -49,7 +49,7 @@
       ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
       text-[length:inherit] leading-[unset]
       [.has-alt-background_&]:optional:bg-white
-      [.has-alt-background_&]:optional:dark:bg-neutral-900;
+      dark:[.has-alt-background_&]:optional:bg-neutral-900;
   }
 
   input,
