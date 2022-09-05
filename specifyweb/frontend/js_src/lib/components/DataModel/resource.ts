@@ -1,27 +1,24 @@
 import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
 import { Http } from '../../utils/ajax/helpers';
-import { businessRuleDefs } from './businessRuleDefs';
+import { ping } from '../../utils/ajax/ping';
 import { getCache } from '../../utils/cache';
-import type { Tables } from './types';
-import {
-  addMissingFields,
-  serializeResource,
-} from './helpers';
 import { f } from '../../utils/functools';
-import { keysToLowerCase, removeKey } from '../../utils/utils';
-import type { SpecifyResource } from './legacyTypes';
-import { formatUrl } from '../Router/queryString';
-import { getModel, schema } from './schema';
-import type { SpecifyModel } from './specifyModel';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import {
+import { keysToLowerCase, removeKey } from '../../utils/utils';
+import { formatUrl } from '../Router/queryString';
+import { businessRuleDefs } from './businessRuleDefs';
+import { addMissingFields, serializeResource } from './helpers';
+import type {
   AnySchema,
   SerializedModel,
   SerializedResource,
-  TableFields
+  TableFields,
 } from './helperTypes';
+import type { SpecifyResource } from './legacyTypes';
+import { getModel, schema } from './schema';
+import type { SpecifyModel } from './specifyModel';
+import type { Tables } from './types';
 
 /*
  * REFACTOR: experiment with an object singleton:

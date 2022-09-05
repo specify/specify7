@@ -752,10 +752,12 @@ export const commonText = createDictionary({
     'ru-ru': 'Успешно удален.',
   },
   appTitle: {
-    'en-us': (baseTitle: string) =>
-      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
-    'ru-ru': (baseTitle: string) =>
-      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
+    'en-us': (baseTitle: string) => `${baseTitle} | Specify 7`,
+    'ru-ru': (baseTitle: string) => `${baseTitle} | Specify 7`,
+  },
+  baseAppTitle: {
+    'en-us': 'Specify 7',
+    'ru-ru': 'Specify 7',
   },
   // StartApp
   sessionTimeOutDialogHeader: {

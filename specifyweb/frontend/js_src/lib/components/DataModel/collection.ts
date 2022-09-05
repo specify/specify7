@@ -1,17 +1,17 @@
 import { ajax } from '../../utils/ajax';
-import type { Tables } from './types';
-import { serializeResource } from './helpers';
-import { f } from '../../utils/functools';
-import { formatUrl } from '../Router/queryString';
-import { schema } from './schema';
 import type { IR, RA, RR } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import {
+import { formatUrl } from '../Router/queryString';
+import { serializeResource } from './helpers';
+import type {
   AnySchema,
   CommonFields,
   SerializedModel,
-  SerializedResource
+  SerializedResource,
 } from './helperTypes';
+import { schema } from './schema';
+import type { Tables } from './types';
+import { parseResourceUrl } from './resource';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
   Exclude<SCHEMA['fields'], 'null'> &
@@ -104,7 +104,7 @@ export const fetchCollection = async <
  * Dependent collections are sent along by the api when requesting the parent
  * resource
  */
-export const fetchRelated = async <
+export async function fetchRelated<
   SCHEMA extends AnySchema,
   RELATIONSHIP extends string & keyof SCHEMA['toManyIndependent']
 >(
@@ -116,19 +116,21 @@ export const fetchRelated = async <
     SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
   >;
   readonly totalCount: number;
-}> =>
-  f.var(
-    defined(
-      schema.models[resource._tableName].getRelationship(relationshipName)
-    ),
-    async (relationship) =>
-      fetchCollection(relationship.relatedModel.name, {
-        limit,
-        [defined(relationship.getReverse()).name]: resource.id,
-      })
-  ) as Promise<{
+}> {
+  const [tableName, id] = parseResourceUrl(
+    (resource.resource_uri as string) ?? ''
+  ) ?? [resource._tableName, resource.id];
+  const relationship = defined(
+    schema.models[tableName].getRelationship(relationshipName)
+  );
+  const response = fetchCollection(relationship.relatedModel.name, {
+    limit,
+    [defined(relationship.getReverse()).name]: id,
+  });
+  return response as Promise<{
     readonly records: RA<
       SerializedResource<SCHEMA['toManyIndependent'][RELATIONSHIP][number]>
     >;
     readonly totalCount: number;
   }>;
+}
