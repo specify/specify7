@@ -32,9 +32,9 @@ export type GetOrSet<T> = readonly [
 export type WritableArray<T> = T[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
-export function defined<T>(value: T | undefined): T {
+export function defined<T>(value: T | undefined, message?: string): T {
   // eslint-disable-next-line functional/no-throw-statement
-  if (value === undefined) throw new Error('Value is not defined');
+  if (value === undefined) throw new Error(message ?? 'Value is not defined');
   else return value;
 }
 

@@ -8,7 +8,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
-import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
 import {
   fetchCollectionsForResource,
@@ -202,9 +201,10 @@ function ViewByCatalogProtected(): JSX.Element | null {
         return undefined;
       }
 
-      const formatter = defined(
-        schema.models.CollectionObject.getLiteralField('catalogNumber')
-      ).getUiFormatter();
+      const formatter =
+        schema.models.CollectionObject.strictGetLiteralField(
+          'catalogNumber'
+        ).getUiFormatter();
 
       let formattedNumber = catalogNumber;
       if (typeof formatter === 'object') {

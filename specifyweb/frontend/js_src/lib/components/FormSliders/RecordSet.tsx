@@ -298,7 +298,12 @@ export function RecordSet<SCHEMA extends AnySchema>({
                         }).then(async ({ records }) =>
                           deleteResource(
                             'RecordSetItem',
-                            defined(records[0]).id
+                            defined(
+                              records[0],
+                              `Failed to remove resource from the ` +
+                              `record set. RecordSetItem not found. RecordId: ` +
+                              `${ids[index]}. Record set: ${recordSet.id}`
+                            ).id
                           )
                         )
                       : Promise.resolve()

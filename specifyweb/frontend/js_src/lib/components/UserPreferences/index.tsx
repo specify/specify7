@@ -10,7 +10,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { defined } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -174,9 +173,8 @@ export function PreferencesContent({
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-                                defined(
-                                  getPrefDefinition(category, subcategory, name)
-                                ).defaultValue
+                                getPrefDefinition(category, subcategory, name)
+                                  .defaultValue
                               )
                             )
                           }

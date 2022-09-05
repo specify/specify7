@@ -6,7 +6,6 @@ import { Http } from '../../utils/ajax/helpers';
 import { removeKey } from '../../utils/utils';
 import type { BackEndRole } from './utils';
 import type { GetOrSet, IR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { SecurityCollectionOutlet } from './Collection';
 import type { NewRole, Role } from './Role';
@@ -21,7 +20,7 @@ export const createCollectionRole = async (
   typeof role.id === 'number'
     ? setRoles((roles) => ({
         ...roles,
-        [defined(role.id)]: {
+        [role.id!]: {
           ...(role as Role),
         },
       }))

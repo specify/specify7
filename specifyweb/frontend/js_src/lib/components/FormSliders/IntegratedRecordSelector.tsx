@@ -115,7 +115,12 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         setRecords(getRecords);
       }}
       onDelete={(_index, source): void => {
-        collection.remove(defined(records[index]));
+        collection.remove(
+          defined(
+            records[index],
+            `Trying to remove a record with index ${index} which doesn't exists`
+          )
+        );
         handleDelete?.(index, source);
         setRecords(getRecords);
       }}
@@ -223,7 +228,7 @@ export function IntegratedRecordSelector({
                   isDependent ? 'create' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Remove
-                    disabled={mode === 'view' || collection.models.length === 0}
+                    disabled={mode === 'view' || collection.models.length === 0 || resource === undefined}
                     onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}

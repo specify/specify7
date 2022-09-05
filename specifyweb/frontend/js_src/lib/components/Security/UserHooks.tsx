@@ -4,7 +4,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { serializeResource } from '../DataModel/helpers';
@@ -13,7 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
   getResourceApiUrl,
-  idFromUrl,
+  strictIdFromUrl,
 } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Address, Collection, SpecifyUser } from '../DataModel/types';
@@ -113,12 +112,12 @@ export function useUserAgents(
               await Promise.all(
                 group(
                   collections.map((collection) => [
-                    defined(idFromUrl(collection.discipline)),
+                    (strictIdFromUrl(collection.discipline)),
                     collection.id,
                   ])
                 ).map(async ([disciplineId, collections]) =>
                   fetchResource('Discipline', disciplineId)
-                    .then(({ division }) => defined(idFromUrl(division)))
+                    .then(({ division }) => (strictIdFromUrl(division)))
                     .then((divisionId) =>
                       collections.map(
                         (collectionId) => [divisionId, collectionId] as const
@@ -161,7 +160,7 @@ export function useUserAgents(
         ).then((rawAgents) => {
           const agents = Object.fromEntries(
             rawAgents.map((agent) => [
-              defined(idFromUrl(agent.division)),
+              (strictIdFromUrl(agent.division)),
               agent,
             ])
           );

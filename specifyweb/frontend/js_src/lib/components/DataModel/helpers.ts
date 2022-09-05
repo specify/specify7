@@ -10,7 +10,7 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
-import { getModel } from './schema';
+import { strictGetModel } from './schema';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
 
@@ -37,13 +37,12 @@ function serializeModel<SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA>,
   tableName?: keyof Tables
 ): SerializedResource<SCHEMA> {
-  const model = defined(
-    getModel(
-      defined(
-        (tableName as SCHEMA['tableName']) ??
-          resource._tablename ??
-          parseResourceUrl((resource.resource_uri as string) ?? '')?.[0]
-      )
+  const model = strictGetModel(
+    defined(
+      (tableName as SCHEMA['tableName']) ??
+        resource._tablename ??
+        parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
+      'Unable to serialize resource because table name is unknown'
     )
   );
   const fields = model.fields.map(({ name }) => name);

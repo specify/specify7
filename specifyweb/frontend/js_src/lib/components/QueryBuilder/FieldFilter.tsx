@@ -9,7 +9,6 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import type { QueryField } from './helpers';
 import { schema } from '../DataModel/schema';
 import type { RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
@@ -329,8 +328,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? defined(schema.models.SpQueryField.getLiteralField('startValue'))
-            .length
+        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

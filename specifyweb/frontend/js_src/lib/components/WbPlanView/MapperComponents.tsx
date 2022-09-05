@@ -3,9 +3,8 @@ import React from 'react';
 import type { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
 import { getMappingLineData } from './navigator';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -441,7 +440,7 @@ export function MustMatch({
                             htmlFor={id(`table-${tableName}`)}
                           >
                             <TableIcon label={false} name={tableName} />
-                            {defined(getModel(tableName)).label}
+                            {strictGetModel(tableName).label}
                           </label>
                         </td>
                         <td className="justify-center">

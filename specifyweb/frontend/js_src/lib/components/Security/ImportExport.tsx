@@ -6,7 +6,7 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   group,
   removeKey,
@@ -174,10 +174,7 @@ export function ImportExport({
                                     const groupName =
                                       typeof newRole.id === 'number'
                                         ? JSON.stringify(
-                                            removeKey(
-                                              defined(roles)[newRole.id],
-                                              'id'
-                                            )
+                                            removeKey(roles![newRole.id], 'id')
                                           ) ===
                                           JSON.stringify(
                                             removeKey(newRole, 'id')
@@ -239,7 +236,7 @@ function ExportButton({
             `${adminText(
               'userRoles'
             )} - ${baseName} - ${new Date().toDateString()}.json`,
-            JSON.stringify(Object.values(defined(roles)), null, '\t')
+            JSON.stringify(Object.values(roles!), null, '\t')
           )
         )
       }

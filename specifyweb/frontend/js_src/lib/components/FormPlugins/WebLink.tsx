@@ -19,6 +19,7 @@ import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
+import { xmlToString } from '../AppResources/codeMirrorLinters';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),
@@ -30,7 +31,8 @@ export const webLinks = load<Element>(
       (definition) =>
         [
           defined(
-            definition.querySelector(':scope > name')?.textContent ?? undefined
+            definition.querySelector(':scope > name')?.textContent ?? undefined,
+            `WebLink definition is missing a name: ${xmlToString(definition)}`
           ),
           definition,
         ] as const

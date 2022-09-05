@@ -52,7 +52,13 @@ export function Report({
           spAppResource: appResource.id,
         })
           .then(({ records }) =>
-            parseXml(defined(records[0].data ?? undefined))
+            parseXml(
+              defined(
+                records[0].data ?? undefined,
+                'Trying to create a report from an invalid AppResource. ' +
+                'App Resource must have valid XML content'
+              )
+            )
           )
           .then((parsed) =>
             typeof parsed === 'object'
@@ -173,7 +179,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
       const attachment = indexedAttachments[fileName];
       const imageUrl =
         typeof attachment === 'object' && attachmentsAvailable()
-          ? `"${defined(formatAttachmentUrl(attachment, undefined))}"`
+          ? `"${formatAttachmentUrl(attachment, undefined)!}"`
           : badImageUrl;
       imageExpressions.forEach((image) => {
         image.textContent = imageUrl;

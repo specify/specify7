@@ -6,6 +6,7 @@ import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
+import { xmlToString } from '../AppResources/codeMirrorLinters';
 
 export function RunReport({
   query,
@@ -53,9 +54,7 @@ export function RunReport({
         type="hidden"
       />
       <input
-        defaultValue={new XMLSerializer().serializeToString(
-          definition.documentElement
-        )}
+        defaultValue={xmlToString(definition.documentElement)}
         name="report"
         type="hidden"
       />

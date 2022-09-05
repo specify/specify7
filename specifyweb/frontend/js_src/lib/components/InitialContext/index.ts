@@ -25,7 +25,7 @@ export function cachableUrl(url: string): string {
 let entrypointName: 'chooseCollection' | 'login' | 'main' | 'passwordChange';
 
 export const getEntrypointName = (): typeof entrypointName =>
-  defined(entrypointName);
+  defined(entrypointName, 'Trying to get entrypoint name before it is set');
 
 let unlock: (entrypoint: typeof entrypointName) => void;
 

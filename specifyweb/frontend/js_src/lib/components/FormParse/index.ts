@@ -11,7 +11,7 @@ import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import { parseClassName } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import { cachableUrl } from '../InitialContext';
@@ -27,7 +27,10 @@ function getColumnDefinitions(viewDefinition: Element): string {
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  return defined(definition ?? getParsedAttribute(viewDefinition, 'colDef'));
+  return defined(
+    definition ?? getParsedAttribute(viewDefinition, 'colDef'),
+    'Form definition does not contain column definition'
+  );
 }
 
 const getColumnDefinition = (
@@ -190,7 +193,10 @@ export function processViewDefinition(
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
   const modelName = parseClassName(
-    defined(getParsedAttribute(actualViewDefinition, 'class'))
+    defined(
+      getParsedAttribute(actualViewDefinition, 'class'),
+      'Form definition does not contain a class attribute'
+    )
   );
   return {
     viewDefinition: actualViewDefinition,
@@ -199,8 +205,8 @@ export function processViewDefinition(
         (type) => type.toLowerCase() === newFormType?.toLowerCase()
       ) ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
-    model: defined(
-      getModel(modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName)
+    model: strictGetModel(
+      modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
     ),
   };
 }

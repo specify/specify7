@@ -4,7 +4,6 @@ import { getResourceAndField } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { IR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { Parser } from '../../utils/parser/definitions';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import { Input, Textarea } from '../Atoms/Form';
@@ -40,30 +39,34 @@ const fieldRenderers: {
     fieldName,
     fieldDefinition: { defaultValue, printOnSave, label },
   }) {
-    return (
-      <ErrorBoundary dismissable>
-        {printOnSave ? (
-          hasPermission('/report', 'execute') ? (
-            <PrintOnSave
-              defaultValue={defaultValue}
-              fieldName={fieldName}
-              id={id}
-              model={resource.specifyModel}
-              text={label}
-            />
-          ) : null
-        ) : (
+    if (printOnSave)
+      return hasPermission('/report', 'execute') ? (
+        <PrintOnSave
+          defaultValue={defaultValue}
+          fieldName={fieldName}
+          id={id}
+          model={resource.specifyModel}
+          text={label}
+        />
+      ) : null;
+    else if (fieldName === undefined) {
+      console.error(
+        `Trying to render a checkbox on a ${resource.specifyModel.name} form without a field name`
+      );
+      return null;
+    } else
+      return (
+        <ErrorBoundary dismissable>
           <SpecifyFormCheckbox
             defaultValue={defaultValue}
-            fieldName={defined(fieldName)}
+            fieldName={fieldName}
             id={id}
             isReadOnly={mode === 'view'}
             resource={resource}
             text={label}
           />
-        )}
-      </ErrorBoundary>
-    );
+        </ErrorBoundary>
+      );
   },
   TextArea({
     id,
@@ -76,7 +79,7 @@ const fieldRenderers: {
   }) {
     const { value, updateValue, validationRef, parser } = useResourceValue(
       resource,
-      defined(fieldName),
+      fieldName,
       React.useMemo(
         () => ({
           value: defaultValue,
@@ -97,6 +100,12 @@ const fieldRenderers: {
     const [autoGrow] = usePref('form', 'behavior', 'textAreaAutoGrow');
     const Component =
       autoGrow && formType !== 'formTable' ? AutoGrowTextArea : Textarea;
+
+    if (fieldName === undefined)
+      console.error(
+        `Trying to render a text area on the ${resource.specifyModel.name} form with unknown field name`,
+        { id, defaultValue }
+      );
 
     return (
       <ErrorBoundary dismissable>

@@ -5,7 +5,7 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { replaceItem, replaceKey, sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -154,7 +154,7 @@ export function UserRoles({
                 />
               </li>
             )) ??
-            defined(userRoles[collectionId]).map(({ roleId, roleName }) => (
+            userRoles[collectionId]!.map(({ roleId, roleName }) => (
               <li key={roleId}>{roleName}</li>
             ))
           : commonText('loading')}
@@ -227,9 +227,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = defined(
-    schema.models.SpecifyUser.getLiteralField('userType')
-  );
+  const userType = schema.models.SpecifyUser.strictGetLiteralField('userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{adminText('legacyPermissions')}</h4>

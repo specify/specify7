@@ -7,7 +7,7 @@ import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -204,9 +204,7 @@ async function formatField(
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string> {
-  const field = defined(
-    resource.specifyModel.getField(fieldName) as LiteralField
-  );
+  const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
   // Check if formatter contains a table withouth read access

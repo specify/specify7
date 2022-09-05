@@ -26,9 +26,19 @@ export function useSearchParam(
 
   const handleChange = React.useCallback(
     (value: string | undefined) =>
-      setQuery.current(value === undefined ? {} : { [defined(name)]: value }, {
-        replace: true,
-      }),
+      setQuery.current(
+        value === undefined
+          ? {}
+          : {
+              [defined(
+                name,
+                'Tried to change query string without providing a name'
+              )]: value,
+            },
+        {
+          replace: true,
+        }
+      ),
     [name]
   );
   return [

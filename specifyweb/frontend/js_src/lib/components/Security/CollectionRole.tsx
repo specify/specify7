@@ -88,7 +88,7 @@ export function SecurityCollectionRole(): JSX.Element {
             ({ roleId }) => roleId
           );
           // Noop if user is already part of this role
-          return currentUserRoles.includes(defined(role.id))
+          return currentUserRoles.includes(role.id!)
             ? undefined
             : ping(
                 `/permissions/user_roles/${collection.id}/${user.id}/`,
@@ -156,7 +156,7 @@ export function SecurityCollectionRole(): JSX.Element {
                   navigate(`/specify/security/collection/${collection.id}/`)
                 )
                 .then((): void =>
-                  setRoles(removeKey(roles, defined(role.id).toString()))
+                  setRoles(removeKey(roles, role.id!.toString()))
                 )
             )
           : undefined

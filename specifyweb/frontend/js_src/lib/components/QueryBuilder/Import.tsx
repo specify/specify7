@@ -6,7 +6,6 @@ import { removeKey, replaceKey } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { LoadingContext } from '../Core/Contexts';
 import { FilePicker, fileToText } from '../Molecules/FilePicker';
@@ -15,7 +14,7 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { useNavigate } from 'react-router-dom';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 export function QueryImport({
   onClose: handleClose,
@@ -61,8 +60,7 @@ export function QueryImport({
                     getUniqueName(
                       queryResource.get('name'),
                       queries.map(({ name }) => name),
-                      defined(schema.models.SpQuery.getLiteralField('name'))
-                        .length
+                      schema.models.SpQuery.strictGetLiteralField('name').length
                     )
                   )
                 )

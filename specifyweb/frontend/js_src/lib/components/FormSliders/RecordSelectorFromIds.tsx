@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -248,7 +248,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             onSaved={(payload): void =>
               handleSaved({
                 ...payload,
-                resource: defined(resource),
+                resource: resource!,
               })
             }
           />

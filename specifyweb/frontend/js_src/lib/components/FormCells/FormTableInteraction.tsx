@@ -48,7 +48,7 @@ export function FormTableInteraction(
           }
           model={schema.models.CollectionObject}
           recordSetsPromise={recordSetsPromise}
-          searchField={schema.models.CollectionObject.getLiteralField(
+          searchField={schema.models.CollectionObject.strictGetLiteralField(
             'catalogNumber'
           )}
           onClose={(): void => setRecordSetsPromise(undefined)}

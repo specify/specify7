@@ -10,12 +10,11 @@ import type { Tables } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
 
 function TableResults({
   tableName,
@@ -27,7 +26,7 @@ function TableResults({
   return (
     <li className="flex items-center gap-1">
       <TableIcon label={false} name={tableName} />
-      <span>{`${defined(getModel(tableName)).label}: ${recordCount}`}</span>
+      <span>{`${strictGetModel(tableName).label}: ${recordCount}`}</span>
     </li>
   );
 }

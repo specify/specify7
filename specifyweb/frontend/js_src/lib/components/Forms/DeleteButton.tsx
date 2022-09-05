@@ -5,9 +5,9 @@ import type { Tables } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import type { DeleteBlocker } from './DeleteBlocked';
@@ -40,7 +40,7 @@ const fetchBlockers = async (
   ).then(({ data }) =>
     data.map(({ table, ...rest }) => ({
       ...rest,
-      model: defined(getModel(table)),
+      model: strictGetModel(table),
     }))
   );
 

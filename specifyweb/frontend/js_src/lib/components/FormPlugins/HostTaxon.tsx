@@ -6,23 +6,16 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
-import { defined } from '../../utils/types';
 import { Input } from '../Atoms/Form';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import { deserializeResource } from '../../hooks/resource';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {AnySchema} from '../DataModel/helperTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema } from '../DataModel/helperTypes';
 
-const template =
-  typeof document === 'object' ? document.createElement('template') : undefined;
-if (typeof template === 'object')
-  template.innerHTML =
-    '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
-const hostTaxonTypeSearch = (
-  typeof template === 'object'
-    ? defined(template.content.firstChild ?? undefined)
-    : undefined
-) as Element;
+const template = document.createElement('template');
+template.innerHTML =
+  '<typesearch tableid="4" name="HostTaxon" searchfield="fullName" displaycols="fullName" format="%s" dataobjformatter="Taxon"/>';
+const hostTaxonTypeSearch = template.content.firstChild! as Element;
 
 export function HostTaxon({
   resource,

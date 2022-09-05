@@ -12,7 +12,7 @@ import { fetchCollection } from '../DataModel/collection';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
@@ -113,7 +113,7 @@ async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const model = defined(getModel(pickList.get('tableName')));
+  const model = strictGetModel(pickList.get('tableName'));
   if (!hasTablePermission(model.name, 'read')) return [];
   const collection = new model.LazyCollection({
     domainfilter: !f.includes(
@@ -140,14 +140,15 @@ async function fetchFromField(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  return fetchRows<AnySchema>(
-    defined(pickList.get('tableName') ?? undefined) as keyof Tables,
-    {
-      limit,
-      fields: [pickList.get('fieldName') ?? ''],
-      distinct: true,
-    }
-  ).then((rows) =>
+  const tableName = defined(
+    pickList.get('tableName') ?? undefined,
+    'Unable to fetch pick list item as pick list table is not set'
+  );
+  return fetchRows<AnySchema>(tableName as keyof Tables, {
+    limit,
+    fields: [pickList.get('fieldName') ?? ''],
+    distinct: true,
+  }).then((rows) =>
     rows.map((row) => row[0] ?? '').map((value) => ({ value, title: value }))
   );
 }

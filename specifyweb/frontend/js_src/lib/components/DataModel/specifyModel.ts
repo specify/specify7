@@ -321,8 +321,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       return this.getField(splitName.slice(1).join('.'));
     if (splitName.length === 1 || field === undefined) return field;
     else if (field.isRelationship)
-      return defined(field.relatedModel).getField(splitName.slice(1).join('.'));
+      return field.relatedModel.getField(splitName.slice(1).join('.'));
     else throw new Error('Field is not a relationship');
+  }
+
+  public strictGetField(unparsedName: string): LiteralField | Relationship {
+    const field = this.getField(unparsedName);
+    if (field === undefined)
+      throw new Error(`Tryied to get unknown field: ${unparsedName}`);
+    return field;
   }
 
   public getLiteralField(literalName: string): LiteralField | undefined {
@@ -336,11 +343,25 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     else return field;
   }
 
+  public strictGetLiteralField(unparsedName: string): LiteralField {
+    return defined(
+      this.getLiteralField(unparsedName),
+      `Tried to get unknown literal field: ${unparsedName}`
+    );
+  }
+
   public getRelationship(relationshipName: string): Relationship | undefined {
     const relationship = this.getField(relationshipName);
     if (relationship === undefined) return undefined;
     else if (relationship.isRelationship) return relationship;
     else throw new Error('Field is not a relationship');
+  }
+
+  public strictGetRelationship(unparsedName: string): Relationship {
+    return defined(
+      this.getRelationship(unparsedName),
+      `Tried to get unknown relationship field: ${unparsedName}`
+    );
   }
 
   public getFormat(): string | undefined {
@@ -374,7 +395,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     const up = this.getScopingRelationship();
     return up === undefined
       ? undefined
-      : [...defined(up.relatedModel?.getScopingPath()), up.name.toLowerCase()];
+      : [...defined(up.relatedModel.getScopingPath()), up.name.toLowerCase()];
   }
 
   /**

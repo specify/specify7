@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -17,7 +17,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
-import { fetchContext as fetchSchema, getModel } from '../DataModel/schema';
+import {
+  fetchContext as fetchSchema,
+  getModel,
+  strictGetModel,
+} from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { fetchView } from '../FormParse';
@@ -72,7 +76,7 @@ export function FormsDialog({
                     typeof handleSelected === 'function'
                       ? (event): void => {
                           event.preventDefault();
-                          handleSelected(defined(getModel(table)));
+                          handleSelected(strictGetModel(table));
                         }
                       : undefined
                   }
@@ -118,7 +122,7 @@ const fetchLegacyForms = f.store(
             >((form) => {
               if (form === undefined) return undefined;
               const modelName = parseClassName(form.class) as keyof Tables;
-              const model = defined(getModel(modelName));
+              const model = strictGetModel(modelName);
 
               return {
                 iconName: getParsedAttribute(view, 'iconName') ?? model.name,

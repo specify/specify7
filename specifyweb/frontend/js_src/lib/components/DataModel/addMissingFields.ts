@@ -1,9 +1,9 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';
-import { getModel } from './schema';
+import { strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Tables } from './types';
 
@@ -34,7 +34,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     optionalRelationships = 'define',
   }: Partial<ResourceSpec> = {}
 ): SerializedResource<Tables[TABLE_NAME]> {
-  const model = defined(getModel(tableName));
+  const model = strictGetModel(tableName);
   const spec = {
     requiredFields,
     optionalFields,

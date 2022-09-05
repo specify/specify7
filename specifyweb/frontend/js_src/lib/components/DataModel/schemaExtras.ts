@@ -7,8 +7,8 @@ import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import {FilterTablesByEndsWith} from './helperTypes';
+import { filterArray } from '../../utils/types';
+import { FilterTablesByEndsWith } from './helperTypes';
 
 const treeDefinitionFields = [
   'fullNameSeparator',
@@ -87,14 +87,14 @@ export const schemaExtras: {
       [],
       [currentDetermination],
       (): void => {
-        const collection = defined(model.getRelationship('collection'));
+        const collection = model.strictGetRelationship('collection');
         collection.otherSideName = 'collectionObjects';
 
         /*
          * Catalog number formatter is taken from the field on the collection,
          * if present
          */
-        const catalognumber = defined(model.getLiteralField('catalogNumber'));
+        const catalognumber = model.strictGetLiteralField('catalogNumber');
         catalognumber.getFormat = (): string | undefined =>
           schema.catalogNumFormatName ||
           LiteralField.prototype.getFormat.call(catalognumber);
@@ -118,7 +118,7 @@ export const schemaExtras: {
     [],
     [],
     (): void => {
-      defined(model.getRelationship('division')).otherSideName = 'accessions';
+      model.strictGetRelationship('division').otherSideName = 'accessions';
     },
   ],
   Loan(model) {
@@ -229,7 +229,7 @@ export const schemaExtras: {
       [isOnLoan],
       [],
       (): void => {
-        const preptype = defined(model.getRelationship('preptype'));
+        const preptype = model.strictGetRelationship('preptype');
         preptype.otherSideName = 'preparations';
       },
     ];

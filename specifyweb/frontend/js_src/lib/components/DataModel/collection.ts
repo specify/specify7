@@ -120,12 +120,15 @@ export async function fetchRelated<
   const [tableName, id] = parseResourceUrl(
     (resource.resource_uri as string) ?? ''
   ) ?? [resource._tableName, resource.id];
-  const relationship = defined(
-    schema.models[tableName].getRelationship(relationshipName)
-  );
+  const relationship =
+    schema.models[tableName].strictGetRelationship(relationshipName);
+  const reverseName = defined(
+    relationship.getReverse(),
+    `Trying to fetch related resource, but no reverse relationship exists for ${relationship.name} in ${tableName}`
+  ).name;
   const response = fetchCollection(relationship.relatedModel.name, {
     limit,
-    [defined(relationship.getReverse()).name]: id,
+    [reverseName]: id,
   });
   return response as Promise<{
     readonly records: RA<

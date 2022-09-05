@@ -4,7 +4,6 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -20,6 +19,7 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
+import {defined} from '../../utils/types';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -146,8 +146,16 @@ export function parseResourceUrl(
     : undefined;
 }
 
+export const strictParseResourceUrl = (
+  resourceUrl: string
+): readonly [modelName: keyof Tables, id: number]=>
+  defined(parseResourceUrl(resourceUrl),`Unable to parse resource API url: ${resourceUrl}`);
+
 export const idFromUrl = (url: string): number | undefined =>
   parseResourceUrl(url)?.[1];
+
+export const strictIdFromUrl = (url: string): number =>
+  defined(idFromUrl(url),`Unable to extract resource id from url: ${url}`);
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
@@ -244,4 +252,4 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
         typeof uniquenessRules === 'string' &&
         uniquenessRules in schema.domainLevelIds
     )
-    .map(([fieldName]) => defined(model.getField(fieldName)).name) ?? [];
+    .map(([fieldName]) => model.strictGetField(fieldName).name) ?? [];

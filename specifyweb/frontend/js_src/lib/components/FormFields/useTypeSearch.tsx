@@ -3,7 +3,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { formatList } from '../Atoms/Internationalization';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -53,7 +53,7 @@ export function useTypeSearch(
                   : f.id
               ) ?? [];
       const searchFields = rawSearchFieldsNames.map((searchField) =>
-        defined(relatedModel.getField(searchField))
+        relatedModel.strictGetField(searchField)
       );
 
       const fieldTitles = searchFields.map((field) =>

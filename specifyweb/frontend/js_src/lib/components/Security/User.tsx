@@ -21,7 +21,7 @@ import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { anyResource, getAllActions } from './utils';
 import type { IR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -452,7 +452,7 @@ function UserView({
                               method: 'POST',
                               headers: {},
                               body: filterArray(
-                                defined(userAgents).map(({ address }) =>
+                                userAgents!.map(({ address }) =>
                                   idFromUrl(address.get('agent') ?? '')
                                 )
                               ),

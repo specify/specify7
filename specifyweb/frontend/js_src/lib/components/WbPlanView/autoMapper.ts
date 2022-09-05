@@ -14,7 +14,7 @@ import type { AutoMapperScope, MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import { findArrayDivergencePoint } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
+import { getModel, strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import {
@@ -22,7 +22,7 @@ import {
   isTreeModel,
 } from '../InitialContext/treeRanks';
 import type { IR, R, RA, Writable, WritableArray } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -374,7 +374,7 @@ export class AutoMapper {
     // Whether to use getMappedFields to check for existing mappings
     this.checkForExistingMappings = scope === 'suggestion';
     this.pathOffset = path.length - pathOffset;
-    this.baseTable = defined(getModel(baseTableName));
+    this.baseTable = strictGetModel(baseTableName);
     this.startingTable = startingTable;
     this.startingPath = path;
     this.getMappedFields = getMappedFields;
@@ -617,7 +617,7 @@ export class AutoMapper {
     const treeTableName = tableName as AnyTree['tableName'];
     const ranksData = getTreeDefinitionItems(treeTableName, false);
 
-    const model = defined(getModel(tableName));
+    const model = strictGetModel(tableName);
     const fields = model.fields.filter(
       ({ overrides }) => !overrides.isHidden && !overrides.isReadOnly
     );

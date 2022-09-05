@@ -21,12 +21,12 @@ import {
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
-import { getFrontEndOnlyFields, getModel } from '../DataModel/schema';
+import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import {
-  getTreeDefinitionItems,
   isTreeModel,
+  strictGetTreeDefinitionItems,
 } from '../InitialContext/treeRanks';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -99,10 +99,12 @@ function navigator({
     readonly parentPartName: string;
     readonly parentRelationship?: Relationship;
   };
-  readonly baseTableName?: string;
+  readonly baseTableName: string | undefined;
 }): void {
   const {
-    model = defined(getModel(defined(baseTableName))),
+    model = strictGetModel(
+      defined(baseTableName, 'navigator() called withouth baseTableName')
+    ),
     parentRelationship = undefined,
     parentPartName = '',
   } = recursivePayload ?? {};
@@ -148,6 +150,7 @@ function navigator({
         parentRelationship: nextField,
         parentPartName: next.partName,
       },
+      baseTableName: undefined,
     });
 }
 
@@ -164,7 +167,7 @@ export function getTableFromMappingPath(
     fieldName,
   ]).join('.');
   if (fieldPath.length === 0) return baseTableName;
-  const field = defined(defined(getModel(baseTableName)).getField(fieldPath));
+  const field = strictGetModel(baseTableName).strictGetField(fieldPath);
   return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
@@ -352,8 +355,9 @@ export function getMappingLineData({
                     },
                   ]
                 : undefined,
-              ...defined(
-                getTreeDefinitionItems(model.name as 'Geography', false)
+              ...strictGetTreeDefinitionItems(
+                model.name as 'Geography',
+                false
               ).map(({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? ([
@@ -382,7 +386,7 @@ export function getMappingLineData({
               scope === 'queryBuilder' &&
               ((generateFieldData === 'all' &&
                 (!isTreeModel(model.name) ||
-                  mappingPath[internalState.position - 1] ==
+                  mappingPath[internalState.position - 1] ===
                     formatTreeRank(anyTreeRank) ||
                   queryBuilderTreeFields.has(formattedEntry))) ||
                 internalState.defaultValue === formattedEntry)
@@ -502,7 +506,7 @@ export function getMappingLineData({
                     // Hide most fields for non "any" tree ranks in query builder
                     (scope !== 'queryBuilder' ||
                       !isTreeModel(model.name) ||
-                      mappingPath[internalState.position - 1] ==
+                      mappingPath[internalState.position - 1] ===
                         formatTreeRank(anyTreeRank) ||
                       queryBuilderTreeFields.has(field.name)) &&
                     getFrontEndOnlyFields()[model.name]?.includes(

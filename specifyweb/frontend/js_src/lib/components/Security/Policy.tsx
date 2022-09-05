@@ -3,7 +3,7 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group, lowerToHuman, toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -141,7 +141,7 @@ export function SecurityPolicy({
               >
                 <option key="0" value="" />
                 {group(
-                  Object.entries(defined(registry)).map(
+                  Object.entries(registry).map(
                     ([partName, { groupName, ...rest }]) =>
                       [groupName, [partName, rest]] as const
                   )

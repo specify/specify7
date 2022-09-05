@@ -10,7 +10,7 @@ import type { CellTypes, FormCellDefinition } from '../FormParse/cells';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { resolveParser } from '../../utils/parser/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AnySchema, TableFields } from '../DataModel/helperTypes';
@@ -74,7 +74,7 @@ function generateFormTable(
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
   const fields = fieldsToShow
-    .map((fieldName) => defined(model.getField(fieldName)))
+    .map((fieldName) => model.strictGetField(fieldName))
     .filter(
       (field): field is LiteralField =>
         !field.isRelationship && !field.isHidden && !field.isReadOnly
@@ -105,7 +105,7 @@ function generateForm(
   fieldsToShow: RA<string>
 ): ParsedFormDefinition {
   const allFields = fieldsToShow.map((fieldName) =>
-    defined(model.getField(fieldName))
+    model.strictGetField(fieldName)
   );
   const [fields, relationships] = split<LiteralField, Relationship>(
     allFields,

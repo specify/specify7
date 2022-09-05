@@ -7,12 +7,11 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
 import {
-  getTreeDefinitionItems,
   isTreeResource,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
@@ -28,7 +27,7 @@ const fetchPossibleRanks = async (
 ): Promise<RA<PickListItemSimple>> =>
   treeRanksPromise
     .then(() =>
-      defined(getTreeDefinitionItems(treeName as 'Geography', false))
+      strictGetTreeDefinitionItems(treeName as 'Geography', false)
         .filter(
           ({ rankId }) =>
             rankId > parentRankId &&

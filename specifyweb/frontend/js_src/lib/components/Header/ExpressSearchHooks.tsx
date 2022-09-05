@@ -1,15 +1,15 @@
 import React from 'react';
 
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {ajax} from '../../utils/ajax';
-import {Http} from '../../utils/ajax/helpers';
-import type { IR, RA} from '../../utils/types';
-import {defined, filterArray} from '../../utils/types';
-import {getModel} from '../DataModel/schema';
-import type {SpecifyModel} from '../DataModel/specifyModel';
-import {contextUnlockedPromise, foreverFetch} from '../InitialContext';
-import {legacyLocalize} from '../InitialContext/legacyUiLocalization';
-import {formatUrl} from '../Router/queryString';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/helpers';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { strictGetModel } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { formatUrl } from '../Router/queryString';
 
 export type RawExpressSearchResult = {
   readonly model: SpecifyModel;
@@ -18,7 +18,9 @@ export type RawExpressSearchResult = {
   readonly ajaxUrl: string;
 };
 
-export function usePrimarySearch(ajaxUrl: string): RA<RawExpressSearchResult> | false | undefined {
+export function usePrimarySearch(
+  ajaxUrl: string
+): RA<RawExpressSearchResult> | false | undefined {
   const [primaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(
       async () =>
@@ -35,13 +37,13 @@ export function usePrimarySearch(ajaxUrl: string): RA<RawExpressSearchResult> | 
           status === Http.FORBIDDEN
             ? false
             : Object.entries(data)
-              .filter(([_tableName, { totalCount }]) => totalCount > 0)
-              .map(([tableName, tableResults]) => ({
-                model: defined(getModel(tableName)),
-                caption: defined(getModel(tableName)).label,
-                tableResults,
-                ajaxUrl,
-              }))
+                .filter(([_tableName, { totalCount }]) => totalCount > 0)
+                .map(([tableName, tableResults]) => ({
+                  model: strictGetModel(tableName),
+                  caption: strictGetModel(tableName).label,
+                  tableResults,
+                  ajaxUrl,
+                }))
         ),
       [ajaxUrl]
     ),
@@ -50,18 +52,16 @@ export function usePrimarySearch(ajaxUrl: string): RA<RawExpressSearchResult> | 
   return primaryResults;
 }
 
-
 const relatedSearchesPromise = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? ajax<RA<string>>(
-      '/context/available_related_searches.json',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      { headers: { Accept: 'application/json' } }
-    ).then(({ data }) => data)
+        '/context/available_related_searches.json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { headers: { Accept: 'application/json' } }
+      ).then(({ data }) => data)
     : foreverFetch<RA<string>>()
 );
 export const expressSearchFetchSize = 40;
-
 
 type FieldSpec = {
   readonly stringId: string;
@@ -73,7 +73,6 @@ export type QueryTableResult = {
   readonly results: RA<RA<number | string>>;
   readonly totalCount: number;
 };
-
 
 type RelatedTableResult = {
   readonly definition: {
@@ -87,7 +86,9 @@ type RelatedTableResult = {
   readonly totalCount: number;
 };
 
-export function useSecondarySearch(query: string): RA<RawExpressSearchResult> | undefined {
+export function useSecondarySearch(
+  query: string
+): RA<RawExpressSearchResult> | undefined {
   const [secondaryResults] = useAsyncState<RA<RawExpressSearchResult>>(
     React.useCallback(
       async () =>
@@ -121,7 +122,7 @@ export function useSecondarySearch(query: string): RA<RawExpressSearchResult> | 
             filterArray(results)
               .filter(([_ajaxUrl, { totalCount }]) => totalCount > 0)
               .map(([ajaxUrl, tableResult]) => {
-                const model = defined(getModel(tableResult.definition.root));
+                const model = strictGetModel(tableResult.definition.root);
                 const idFieldIndex = 0;
                 /*
                  * FEATURE: decide if this code is needed

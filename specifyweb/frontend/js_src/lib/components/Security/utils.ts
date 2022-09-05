@@ -3,14 +3,13 @@ import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import {
   lowerToHuman,
   replaceKey,
   sortFunction,
   toLowerCase,
 } from '../../utils/utils';
-import { getModel, schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import {
@@ -151,7 +150,7 @@ export const resourceNameToParts = (resourceName: string): RA<string> =>
   resourceName.split(permissionSeparator).filter(Boolean);
 
 export const resourceNameToModel = (resourceName: string): SpecifyModel =>
-  defined(getModel(resourceNameToParts(resourceName)[1]));
+  strictGetModel(resourceNameToParts(resourceName)[1]);
 
 export const partsToResourceName = (parts: RA<string>): string =>
   parts.length === 1 && parts[0] === anyResource

@@ -8,7 +8,7 @@ import type { SpecifyUser } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
@@ -260,7 +260,7 @@ function ChangeOwner({
               {
                 method: 'POST',
                 body: formData({
-                  specifyuserid: defined(newOwner),
+                  specifyuserid: newOwner!,
                 }),
               },
               { expectedResponseCodes: [Http.NO_CONTENT] }

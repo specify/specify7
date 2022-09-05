@@ -169,7 +169,10 @@ export async function queryFromTree(
   tableName: AnyTree['tableName'],
   nodeId: number
 ): Promise<SpecifyResource<SpQuery>> {
-  const tree = defined(getTreeModel(tableName));
+  const tree = defined(
+    getTreeModel(tableName),
+    `Unable to contract a tree query from the ${tableName} model`
+  );
   const node = new tree.Resource({ id: nodeId });
   await node.fetch();
 

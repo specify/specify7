@@ -33,7 +33,10 @@ export function hijackBackboneAjax<T>(
  */
 Backbone.ajax = function (request): JQueryXHR {
   if (request === undefined) throw new Error('Undefined Request');
-  const url = defined(request.url);
+  const url = defined(
+    request.url,
+    'Unable to make a Backbone.ajax call as URL is undefined'
+  );
   const requestCallbackCopy = requestCallback;
   return promiseToXhr(
     ajax(

@@ -4,29 +4,28 @@
 
 import React from 'react';
 
-import type { PickList } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import type { FormMode, FormType } from '../FormParse';
-import { hasToolPermission } from '../Permissions/helpers';
-import { fetchPickList, getPickListItems } from '../PickLists/fetch';
+import type { RA } from '../../utils/types';
+import { Input } from '../Atoms/Form';
+import { isResourceOfType } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
-import { Input } from '../Atoms/Form';
+import type { PickList } from '../DataModel/types';
+import type { FormMode, FormType } from '../FormParse';
+import { hasToolPermission } from '../Permissions/helpers';
 import { PickListComboBox } from '../PickLists';
+import { PickListTypes } from '../PickLists/definitions';
+import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { FieldsPickList } from '../PickLists/FieldsPickList';
 import { FormattersPickList } from '../PickLists/FormattersPickList';
 import { TablesPickList } from '../PickLists/TablesPickList';
-import { QueryComboBox } from './QueryComboBox';
 import { TreeLevelComboBox } from '../PickLists/TreeLevelPickList';
 import { UiField } from './Field';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useLiveState } from '../../hooks/useLiveState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { isResourceOfType } from '../DataModel/helpers';
-import { PickListTypes } from '../PickLists/definitions';
+import { QueryComboBox } from './QueryComboBox';
 
 export type DefaultComboBoxProps = {
   readonly id: string | undefined;
@@ -122,7 +121,7 @@ export function Combobox({
     return (
       <FieldsPickList
         {...props}
-        field={defined(schema.models.PickList.getField('fieldName'))}
+        field={schema.models.PickList.strictGetLiteralField('fieldName')}
       />
     );
   else if (
@@ -132,25 +131,27 @@ export function Combobox({
     return (
       <FormattersPickList
         {...props}
-        field={defined(schema.models.PickList.getField('formatter'))}
+        field={schema.models.PickList.strictGetLiteralField(
+          'fieldNameformatter'
+        )}
       />
     );
   else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
     return (
       <TablesPickList
         {...props}
-        field={defined(schema.models.PickList.getField('tableName'))}
+        field={schema.models.PickList.strictGetLiteralField('tableName')}
       />
     );
   else if (fieldName === 'definitionItem')
     return (
       <TreeLevelComboBox
         {...props}
-        field={defined(model.specifyModel.getField('definitionItem'))}
+        field={model.specifyModel.strictGetRelationship('definitionItem')}
       />
     );
   else if (fieldName === 'divisionCBX') {
-    const field = defined(resource.specifyModel.getField('division'));
+    const field = resource.specifyModel.strictGetRelationship('division');
     return (
       <QueryComboBox
         fieldName={field.name}
@@ -168,7 +169,7 @@ export function Combobox({
 
   const resolvedField =
     isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
-      ? defined(schema.models.PickList.getField('type'))
+      ? schema.models.PickList.strictGetLiteralField('type')
       : field;
 
   if (typeof resolvedField !== 'object') {

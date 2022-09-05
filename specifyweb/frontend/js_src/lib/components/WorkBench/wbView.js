@@ -21,7 +21,7 @@ import Papa from 'papaparse';
 
 import {Button} from '../Atoms/Button';
 import {Link} from '../Atoms/Link';
-import {getModel, schema} from '../DataModel/schema';
+import {getModel, schema, strictGetModel} from '../DataModel/schema';
 import {DataSetNameView} from './DataSetMeta';
 import {WbUploaded} from './Results';
 import {WBUtils} from './wbUtils';
@@ -43,8 +43,8 @@ import {dialogClassNames} from '../Molecules/Dialog';
 import {format} from '../Forms/dataObjFormatters';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
 import {LANGUAGE} from '../../localization/utils';
-import {defined, filterArray} from '../../utils/types';
-import {getTreeDefinitionItems} from '../InitialContext/treeRanks';
+import {filterArray} from '../../utils/types';
+import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
 import {serializeResource} from '../DataModel/helpers';
 import {fetchPickList} from '../PickLists/fetch';
 import {ajax} from '../../utils/ajax';
@@ -479,7 +479,7 @@ export const WBView = Backbone.View.extend({
                         .map(([tableName, recordId, label]) => {
                           const tableLabel =
                             label === ''
-                              ? defined(getModel(tableName)).label
+                              ? strictGetModel(tableName).label
                               : label;
                           const tableIcon = getIcon(tableName) ?? unknownIcon;
 
@@ -754,7 +754,7 @@ export const WBView = Backbone.View.extend({
           mappingGroup,
           physicalCol,
           rankId: Object.keys(
-            defined(getTreeDefinitionItems(tableName))
+            strictGetTreeDefinitionItems(tableName)
           ).findIndex(({ name }) => name === rankName),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {

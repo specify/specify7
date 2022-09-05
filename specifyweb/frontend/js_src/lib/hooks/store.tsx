@@ -8,7 +8,7 @@ import React from 'react';
 import type { Tables } from '../components/DataModel/types';
 import { f } from '../utils/functools';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
-import { getModel } from '../components/DataModel/schema';
+import { strictGetModel } from '../components/DataModel/schema';
 import type { GetOrSet } from '../utils/types';
 import { isFunction } from '../utils/types';
 import { useAsyncState } from './useAsyncState';
@@ -115,7 +115,7 @@ export function useRecord<TABLE_NAME extends keyof Tables>(
   return useStore(
     React.useCallback(
       (id: number) => {
-        const resource = new defined(getModel(tableName)).Resource({ id });
+        const resource = new (strictGetModel(tableName).Resource)({ id });
         return resource.fetch();
       },
       [tableName]

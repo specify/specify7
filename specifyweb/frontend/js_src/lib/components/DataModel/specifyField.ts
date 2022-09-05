@@ -7,13 +7,12 @@ import { camelToHuman } from '../../utils/utils';
 import type { SpecifyResource } from './legacyTypes';
 import { getFrontEndPickLists } from '../PickLists/definitions';
 import type { SchemaLocalization } from './schema';
-import { getModel, schema } from './schema';
+import { schema, strictGetModel } from './schema';
 import { unescape } from './schemaBase';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
 import type { SpecifyModel } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { getUiFormatters, type UiFormatter } from '../Forms/uiFormatters';
 
 export type JavaType =
@@ -273,7 +272,7 @@ export class Relationship extends FieldBase {
       relationshipDefinition.relatedModelName === 'UserGroupScope'
         ? 'Division'
         : relationshipDefinition.relatedModelName;
-    this.relatedModel = defined(getModel(relatedModelName));
+    this.relatedModel = strictGetModel(relatedModelName);
 
     this.overrides.isRequired =
       this.overrides.isRequired &&

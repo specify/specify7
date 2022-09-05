@@ -1,10 +1,9 @@
 import type { Tables } from '../DataModel/types';
 import { group, removeKey, split, toLowerCase } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type {
   ColumnDefinition,
   ColumnOptions,
@@ -15,10 +14,7 @@ import type {
 } from './uploadPlanParser';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
-import {
-  getNameFromTreeRankName,
-  valueIsToManyIndex,
-} from './mappingHelpers';
+import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 
 export const toColumnOptions = (
   headerName: string,
@@ -83,7 +79,7 @@ function toUploadTable(
           [
             fieldName.toLowerCase(),
             toUploadable(
-              defined(model.getRelationship(fieldName)).relatedModel,
+              model.strictGetRelationship(fieldName).relatedModel,
               lines,
               mustMatchPreferences
             ),
@@ -98,7 +94,7 @@ function toUploadTable(
             indexMappings(lines).map(([_index, lines]) =>
               removeKey(
                 toUploadTable(
-                  defined(model.getRelationship(fieldName)).relatedModel,
+                  model.strictGetRelationship(fieldName).relatedModel,
                   lines,
                   mustMatchPreferences
                 ),
@@ -145,7 +141,7 @@ export const uploadPlanBuilder = (
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
-    defined(getModel(baseTableName)),
+    strictGetModel(baseTableName),
     lines,
     Object.entries(mustMatchPreferences)
       .filter(([_, mustMatch]) => mustMatch)

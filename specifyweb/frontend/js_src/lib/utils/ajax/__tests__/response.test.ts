@@ -1,6 +1,7 @@
 import { handleAjaxError } from '../../../components/Errors/FormatError';
 import { Http } from '../helpers';
 import { handleAjaxResponse } from '../response';
+import { xmlToString } from '../../../components/AppResources/codeMirrorLinters';
 
 jest.mock('../../../components/Errors/FormatError', () => ({
   handleAjaxError: jest.fn(),
@@ -88,7 +89,7 @@ describe('handleAjaxResponse', () => {
     });
     expect({
       ...response,
-      data: new XMLSerializer().serializeToString(response.data),
+      data: xmlToString(response.data),
     }).toEqual({
       data: '<icons type="datamodel" subdir="datamodel">test</icons>',
       response: {

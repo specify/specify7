@@ -4,13 +4,13 @@
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { cachableUrl, contextUnlockedPromise } from './index';
-import type { JavaType } from '../DataModel/specifyField';
-import type { IR, R, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { Parser } from '../../utils/parser/definitions';
 import { formatter, parsers } from '../../utils/parser/definitions';
 import { parseValue } from '../../utils/parser/parse';
+import type { IR, R, RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import type { JavaType } from '../DataModel/specifyField';
+import { cachableUrl, contextUnlockedPromise } from './index';
 
 const preferences: R<string> = {};
 
@@ -59,7 +59,7 @@ type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
 ): TypeOf<Definitions[KEY]> =>
-  parsePref(preferences[key], defined(remotePrefsDefinitions()[key])) as TypeOf<
+  parsePref(preferences[key], defined(remotePrefsDefinitions()[key],`Trying to get unknown remote pref ${key}`)) as TypeOf<
     Definitions[KEY]
   >;
 
@@ -70,7 +70,7 @@ export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
   const fullKey = `${key}${collectionPrefsDefinitions[key].separator}${collectionId}`;
   return parsePref(
     preferences[fullKey],
-    defined(collectionPrefsDefinitions[key])
+    defined(collectionPrefsDefinitions[key], `Trying to get unknown collection-scoped remote pref ${key}`)
   ) as TypeOf<DefinitionOf<KEY>>;
 }
 
@@ -87,9 +87,9 @@ function parsePref(
       : undefined;
   return (
     typeof parsed === 'object'
-      ? parsed.isValid
+      ? (parsed.isValid
         ? parsed.parsed
-        : defaultValue
+        : defaultValue)
       : value ?? defaultValue
   ) as boolean | number | string;
 }

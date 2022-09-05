@@ -3,12 +3,13 @@
 import type { IR } from '../../utils/types';
 import { defined } from '../../utils/types';
 
-const reFrom = /from\s+(\w+)\s+(?:as\s+)?(\w+)/i;
-const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/gi;
+const reFrom = /from\s+(\w+)\s+(?:as\s+)?(\w+)/iu;
+const reJoin = /join\s+(\w+\.\w+)\s+(?:as\s+)?(\w+)/giu;
 
 export function parseSqlQuery(sqlSelectQuery: string): IR<string> {
   const [_match, table, tableAlias] = defined(
-    reFrom.exec(sqlSelectQuery) ?? undefined
+    reFrom.exec(sqlSelectQuery) ?? undefined,
+    `Unable to parse SQL query: ${sqlSelectQuery}`
   );
   const columnMapping = {
     [tableAlias]: table,

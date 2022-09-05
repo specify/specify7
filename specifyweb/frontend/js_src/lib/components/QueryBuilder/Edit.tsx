@@ -22,8 +22,8 @@ import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 
 export function QueryEditButton({
   query,
@@ -227,6 +227,6 @@ function QueryExport({
 
 const getMaxLength = (): number | undefined =>
   f.min(
-    schema.models.SpAppResource.getLiteralField('name')!.length,
-    schema.models.SpReport.getLiteralField('name')!.length
+    schema.models.SpAppResource.strictGetLiteralField('name').length,
+    schema.models.SpReport.strictGetLiteralField('name').length
   );

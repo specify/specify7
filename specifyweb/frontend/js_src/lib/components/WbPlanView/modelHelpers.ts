@@ -8,11 +8,14 @@
 import type { MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
 import { group } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { Relationship } from '../DataModel/specifyField';
-import { getTreeDefinitionItems, isTreeModel } from '../InitialContext/treeRanks';
+import {
+  getTreeDefinitionItems,
+  isTreeModel,
+} from '../InitialContext/treeRanks';
 import type { IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   formatTreeRank,
   getNumberFromToManyIndex,
@@ -49,7 +52,7 @@ export function findRequiredMissingFields(
   // Used internally in a recursion. Current mapping path
   path: MappingPath = []
 ): RA<MappingPath> {
-  const model = defined(getModel(tableName));
+  const model = strictGetModel(tableName);
 
   if (mappings === undefined) return [];
 

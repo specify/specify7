@@ -1,6 +1,6 @@
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
@@ -166,14 +166,14 @@ function bindLooseLabels(
   nextRowCell: FormCellDefinition | undefined
 ): LabelCell {
   if (typeof cell.labelForCellId === 'string') return cell;
-  if (typeof siblingCell?.id === 'string') {
-    const hasLabel =
-      initialLabelsForCells[defined(siblingCell.id)] !== undefined;
+  const siblingId = siblingCell?.id;
+  if (typeof siblingId === 'string') {
+    const hasLabel = initialLabelsForCells[siblingId] !== undefined;
     if (!hasLabel && canAutoBind(cell))
       return {
         // Assocate label with a field that follows it
         ...cell,
-        labelForCellId: siblingCell.id,
+        labelForCellId: siblingId,
       };
   }
   return {
@@ -183,8 +183,9 @@ function bindLooseLabels(
      * there is only one column
      */
     labelForCellId:
+      typeof nextRowCell === 'object' &&
       typeof nextRowCell?.id === 'string' &&
-      initialLabelsForCells[defined(nextRowCell.id)] === undefined &&
+      initialLabelsForCells[nextRowCell.id] === undefined &&
       canAutoBind(nextRowCell)
         ? nextRowCell.id
         : cell.labelForCellId,

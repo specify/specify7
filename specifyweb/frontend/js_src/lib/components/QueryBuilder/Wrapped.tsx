@@ -11,7 +11,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -82,7 +82,7 @@ export function QueryBuilder({
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
-  const model = defined(getModelById(query.contextTableId));
+  const model = getModelById(query.contextTableId);
   const buildInitialState = React.useCallback(
     () =>
       getInitialState({

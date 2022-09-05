@@ -2,7 +2,6 @@ import React from 'react';
 
 import { queryText } from '../../localization/query';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -105,7 +104,7 @@ export function QueryHeader({
           onTriedToSave={(): boolean => {
             handleTriedToSave();
             const fieldLengthLimit =
-              defined(schema.models.SpQueryField.getLiteralField('startValue'))
+              schema.models.SpQueryField.strictGetLiteralField('startValue')
                 .length ?? Number.POSITIVE_INFINITY;
             return state.fields.every((field) =>
               field.filters.every(

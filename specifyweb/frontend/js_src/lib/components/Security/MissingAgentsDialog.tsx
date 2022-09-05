@@ -12,7 +12,7 @@ import { hasPermission } from '../Permissions/helpers';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
@@ -21,8 +21,8 @@ import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { Form, Label } from '../Atoms/Form';
 import { ErrorMessage, Ul } from '../Atoms';
-import {useId} from '../../hooks/useId';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useId } from '../../hooks/useId';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;
@@ -93,7 +93,9 @@ export function MissingAgentsDialog({
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           {mode === 'edit' && (
-            <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+            <Submit.Blue disabled={userAgents === undefined} form={id('form')}>
+              {commonText('save')}
+            </Submit.Blue>
           )}
         </>
       }
@@ -117,7 +119,7 @@ export function MissingAgentsDialog({
                     method: 'POST',
                     headers: {},
                     body: filterArray(
-                      defined(userAgents).map(({ address }) =>
+                      userAgents!.map(({ address }) =>
                         idFromUrl(address.get('agent') ?? '')
                       )
                     ),

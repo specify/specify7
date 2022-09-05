@@ -79,7 +79,14 @@ export function CollectionView({
     React.useCallback(
       async () =>
         hasPermission('/permissions/roles', 'read', collection.id)
-          ? fetchRoles(collection.id).then((roles) => index(defined(roles)))
+          ? fetchRoles(collection.id).then((roles) =>
+              index(
+                defined(
+                  roles,
+                  `Unable to fetch list of roles for collection with id ${collection.id}`
+                )
+              )
+            )
           : undefined,
       [collection.id]
     ),

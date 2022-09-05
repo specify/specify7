@@ -4,7 +4,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { defined } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -47,10 +46,8 @@ export function PrepReturnRow({
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
-                    defined(
-                      schema.models.CollectionObject.getLiteralField(
-                        'catalogNumber'
-                      )
+                    schema.models.CollectionObject.strictGetLiteralField(
+                      'catalogNumber'
                     ),
                     undefined,
                     collectionObject.get('catalogNumber')

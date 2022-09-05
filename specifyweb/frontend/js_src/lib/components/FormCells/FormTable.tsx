@@ -5,7 +5,6 @@ import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
@@ -197,6 +196,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                 relationship.relatedModel,
                 cell
               );
+              const isSortable =
+                cell.type === 'Field' || cell.type === 'SubView';
+              const fieldName = isSortable ? cell.fieldName : undefined;
               return (
                 <DataEntry.Cell
                   align="center"
@@ -207,20 +209,19 @@ export function FormTable<SCHEMA extends AnySchema>({
                   title={title}
                   visible
                 >
-                  {(cell.type === 'Field' || cell.type === 'SubView') &&
-                  typeof cell.fieldName === 'string' ? (
+                  {isSortable && typeof fieldName === 'string' ? (
                     <Button.LikeLink
                       tabIndex={headerIsVisible ? undefined : -1}
                       onClick={(): void =>
                         setSortConfig({
-                          sortField: defined(cell.fieldName),
+                          sortField: fieldName,
                           ascending: !sortConfig.ascending,
                         })
                       }
                     >
                       {text}
                       <SortIndicator
-                        fieldName={cell.fieldName}
+                        fieldName={fieldName}
                         sortConfig={sortConfig}
                       />
                     </Button.LikeLink>
