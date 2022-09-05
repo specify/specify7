@@ -10,6 +10,7 @@ import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { crash } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
+import { useStableState } from '../../hooks/useContextState';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
@@ -86,15 +87,13 @@ export function Contexts({
   );
   setError = handleError;
 
-  // eslint-disable-next-line react/hook-use-state
-  const getSetProtects = React.useState<RA<string>>([]);
+  const getSetProtects = useStableState<RA<string>>([]);
   React.useEffect(() => {
     // @ts-expect-error Exposing to global scope for easier debugging
     globalThis._unloadProtects = getSetProtects;
   }, [getSetProtects]);
 
-  // eslint-disable-next-line react/hook-use-state
-  const menuContext = React.useState<MenuItemName | undefined>(undefined);
+  const menuContext = useStableState<MenuItemName | undefined>(undefined);
 
   return (
     <UnloadProtectsContext.Provider value={getSetProtects}>

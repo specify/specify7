@@ -17,6 +17,7 @@ import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { usePref } from '../UserPreferences/usePref';
+import { useStableState } from '../../hooks/useContextState';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -67,7 +68,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = React.useState<FormMeta>({
+  const formMeta = useStableState<FormMeta>({
     triedToSubmit: false,
   });
 
