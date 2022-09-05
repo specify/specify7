@@ -77,15 +77,16 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   WorkbenchTemplateMappingItem: 'hidden',
   SpVisualQuery: 'hidden',
   SpSymbiotaInstance: 'hidden',
-};
-
-/*
- * Same as tableOverwrites, but matches with tableName.endsWith(key),
- *  instead of tableName===key
- */
-const endsWithTableOverwrites: IR<TableConfigOverwrite> = {
-  Def: 'system',
-  Item: 'system',
+  GeographyTreeDef: 'system',
+  GeographyTreeDefItem: 'system',
+  GeologicTimePeriodTreeDef: 'system',
+  GeologicTimePeriodTreeDefItem: 'system',
+  LithoStratTreeDef: 'system',
+  LithoStratTreeDefItem: 'system',
+  StorageTreeDef: 'system',
+  StorageTreeDefItem: 'system',
+  TaxonTreeDef: 'system',
+  TaxonTreeDefItem: 'system',
 };
 
 // These field overrides apply to entire front-end
@@ -207,11 +208,7 @@ export const modelViews: Partial<RR<keyof Tables, string>> = {
 
 export const getTableOverwrite = (
   tableName: keyof Tables
-): TableConfigOverwrite | undefined =>
-  tableOverwrites[tableName] ??
-  Object.entries(endsWithTableOverwrites).find(([label]) =>
-    tableName.endsWith(label)
-  )?.[1];
+): TableConfigOverwrite | undefined => tableOverwrites[tableName];
 
 export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
