@@ -1,7 +1,4 @@
-import type {
-  AppResources,
-  AppResourcesTree,
-} from './hooks';
+import type { AppResources, AppResourcesTree } from './hooks';
 import type {
   Collection,
   Discipline,
@@ -9,12 +6,12 @@ import type {
   SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { addMissingFields } from '../DataModel/helpers';
 import { sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { userTypes } from '../PickLists/definitions';
 import type { RA } from '../../utils/types';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { addMissingFields } from '../DataModel/addMissingFields';
 
 export const getAppResourceTree = (
   resources: AppResources

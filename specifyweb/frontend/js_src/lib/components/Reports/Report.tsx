@@ -143,18 +143,14 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
   const fileNames = Object.fromEntries(
     group(
       filterArray(
-        Array.from(definition.querySelectorAll('imageExpression'), (image) =>
-          f.var(
-            image.classList.contains('java.net.URL')
-              ? undefined
-              : image.textContent
-                  ?.match(
-                    /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/
-                  )
-                  ?.slice(1)?.[0] ?? undefined,
-            (match) => (typeof match === 'string' ? [match, image] : undefined)
-          )
-        )
+        Array.from(definition.querySelectorAll('imageExpression'), (image) => {
+          const match = image.classList.contains('java.net.URL')
+            ? undefined
+            : image.textContent
+                ?.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/)
+                ?.slice(1)?.[0] ?? undefined;
+          return typeof match === 'string' ? [match, image] : undefined;
+        })
       )
     )
   );

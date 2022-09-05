@@ -7,12 +7,12 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
+import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
-import { addMissingFields } from '../DataModel/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -217,14 +217,11 @@ export const getFrontEndPickLists: () => {
 export const fetchPickLists = f.store(
   async (): Promise<IR<SpecifyResource<PickList>>> =>
     (hasToolPermission('pickLists', 'read')
-      ? f.var(
-          new schema.models.PickList.LazyCollection({
-            filters: {
-              domainfilter: true,
-            },
-          }),
-          async (collection) => collection.fetch({ limit: 0 })
-        )
+      ? new schema.models.PickList.LazyCollection({
+          filters: {
+            domainfilter: true,
+          },
+        }).fetch({ limit: 0 })
       : Promise.resolve({ models: [] })
     ).then(async ({ models }) => {
       getFrontEndPickLists();

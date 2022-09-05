@@ -83,27 +83,33 @@ export const fetchUserRoles = async (
           .sort(sortFunction(({ roleId }) => roleId))
   );
 
-export const resourceNameToLabel = (resource: string): string =>
-  resource.startsWith(tablePermissionsPrefix) && !resource.includes(anyResource)
-    ? /*
-       * "getRegistriesFromPath" does not work for system tables that are part
-       * of a tool, so have to handle that case here
-       */
-      resourceNameToModel(resource).label
-    : f.var(
-        resourceNameToParts(resource),
-        (parts) =>
-          getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label
-      ) ?? adminText('resource');
+export function resourceNameToLabel(resource: string): string {
+  if (
+    /*
+     * "getRegistriesFromPath" does not work for system tables that are part
+     * of a tool, so have to handle that case here
+     */
+    resource.startsWith(tablePermissionsPrefix) &&
+    !resource.includes(anyResource)
+  )
+    return resourceNameToModel(resource).label;
+  else {
+    const parts = resourceNameToParts(resource);
+    return (
+      getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label ??
+      adminText('resource')
+    );
+  }
+}
 
-export const resourceNameToLongLabel = (resource: string): string =>
-  f.var(resourceNameToParts(resource), (parts) =>
-    parts
-      .map((_, index) =>
-        resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
-      )
-      .join(' > ')
-  );
+export function resourceNameToLongLabel(resource: string): string {
+  const parts = resourceNameToParts(resource);
+  return parts
+    .map((_, index) =>
+      resourceNameToLabel(partsToResourceName(parts.slice(0, index + 1)))
+    )
+    .join(' > ');
+}
 
 /** Like getRegistriesFromPath, but excludes institutional policies */
 export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
@@ -178,26 +184,25 @@ export const basicPermissions: IR<RA<string>> = {
  * Get a union of all actions that can be done on descendants of a given
  * permission resource type
  */
-export const getAllActions = (path: string): RA<string> =>
-  path.startsWith(`${permissionSeparator}${toolPermissionPrefix}`)
-    ? tableActions
-    : f.var(
-        f.var(resourceNameToParts(path), (parts) =>
-          partsToResourceName(
-            parts.at(-1) === anyResource ? parts.slice(0, -1) : parts
-          )
+export function getAllActions(rawPath: string): RA<string> {
+  if (rawPath.startsWith(`${permissionSeparator}${toolPermissionPrefix}`))
+    return tableActions;
+  else {
+    const parts = resourceNameToParts(rawPath);
+    const path = partsToResourceName(
+      parts.at(-1) === anyResource ? parts.slice(0, -1) : parts
+    );
+    return f.unique(
+      [
+        ...Object.entries(operationPolicies),
+        ...Object.entries(frontEndPermissions),
+        ...Object.keys(schema.models).map(
+          (tableName) =>
+            [tableNameToResourceName(tableName), tableActions] as const
         ),
-        (path) =>
-          f.unique(
-            [
-              ...Object.entries(operationPolicies),
-              ...Object.entries(frontEndPermissions),
-              ...Object.keys(schema.models).map(
-                (tableName) =>
-                  [tableNameToResourceName(tableName), tableActions] as const
-              ),
-            ]
-              .filter(([key]) => key.startsWith(path))
-              .flatMap(([_key, actions]) => actions)
-          )
-      );
+      ]
+        .filter(([key]) => key.startsWith(path))
+        .flatMap(([_key, actions]) => actions)
+    );
+  }
+}

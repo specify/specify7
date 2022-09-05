@@ -49,8 +49,6 @@ test('f.log', () => {
   expect(consoleLog).toHaveBeenCalledWith('Console', 'log');
 });
 
-test('f.var', () => expect(f.var('a', (a) => `${a}${a}`)).toBe('aa'));
-
 test('f.all', async () => {
   await expect(
     f.all({

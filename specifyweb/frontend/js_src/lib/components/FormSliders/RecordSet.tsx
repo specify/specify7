@@ -135,20 +135,24 @@ export function RecordSet<SCHEMA extends AnySchema>({
         )
       )
         .then((updateIds) =>
-          setItems(({ ids, newResource, index } = defaultRecordSetState) =>
-            f.var(updateIds(ids), ({ totalCount, ids }) => ({
-              ids,
-              totalCount,
-              newResource:
-                newResource ??
-                (totalCount === 0
-                  ? f.var(
-                      getModelById(recordSet.get('dbTableId')),
-                      (model) => new model.Resource()
-                    )
-                  : undefined),
-              index,
-            }))
+          setItems(
+            ({ ids: oldIds, newResource, index } = defaultRecordSetState) => {
+              const { totalCount, ids } = updateIds(oldIds);
+              const model =
+                totalCount === 0
+                  ? getModelById(recordSet.get('dbTableId'))
+                  : undefined;
+              return {
+                ids,
+                totalCount,
+                newResource:
+                  newResource ??
+                  (typeof model === 'object'
+                    ? new model.Resource()
+                    : undefined),
+                index,
+              };
+            }
           )
         )
         .catch(crash);

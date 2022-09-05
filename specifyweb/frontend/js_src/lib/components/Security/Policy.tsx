@@ -145,57 +145,54 @@ export function SecurityPolicy({
                     ([partName, { groupName, ...rest }]) =>
                       [groupName, [partName, rest]] as const
                   )
-                ).map(([groupName, permissions]) =>
-                  f.var(
-                    permissions.map(
-                      (
-                        [partName, { label, actions, isInstitutional }],
-                        _index,
-                        { length }
-                      ) =>
-                        /*
-                         * Don't show Any if there is only one other option,
-                         * and it is the default value
-                         */
-                        partName === anyResource &&
-                        length <= 2 &&
-                        resourceParts[index] !== anyResource ? undefined : (
-                          <option
-                            disabled={
-                              /*
-                               * Disable terminal resource parts if they are
-                               * Already mapped
-                               */
-                              (actions.length > 0 &&
-                                isResourceMapped(
-                                  partsToResourceName([
-                                    ...resourceNameToParts(resource),
-                                    partName,
-                                  ])
-                                )) ||
-                              /*
-                               * Disable institutional policies on the
-                               * collection level
-                               */
-                              (scope !== 'institution' && isInstitutional)
-                            }
-                            key={partName}
-                            value={partName}
-                          >
-                            {label}
-                          </option>
-                        )
-                    ),
-                    (children) =>
-                      groupName === '' ? (
-                        children
-                      ) : (
-                        <optgroup key={groupName} label={groupName}>
-                          {children}
-                        </optgroup>
+                ).map(([groupName, permissions]) => {
+                  const children = permissions.map(
+                    (
+                      [partName, { label, actions, isInstitutional }],
+                      _index,
+                      { length }
+                    ) =>
+                      /*
+                       * Don't show Any if there is only one other option,
+                       * and it is the default value
+                       */
+                      partName === anyResource &&
+                      length <= 2 &&
+                      resourceParts[index] !== anyResource ? undefined : (
+                        <option
+                          disabled={
+                            /*
+                             * Disable terminal resource parts if they are
+                             * Already mapped
+                             */
+                            (actions.length > 0 &&
+                              isResourceMapped(
+                                partsToResourceName([
+                                  ...resourceNameToParts(resource),
+                                  partName,
+                                ])
+                              )) ||
+                            /*
+                             * Disable institutional policies on the
+                             * collection level
+                             */
+                            (scope !== 'institution' && isInstitutional)
+                          }
+                          key={partName}
+                          value={partName}
+                        >
+                          {label}
+                        </option>
                       )
-                  )
-                )}
+                  );
+                  return groupName === '' ? (
+                    children
+                  ) : (
+                    <optgroup key={groupName} label={groupName}>
+                      {children}
+                    </optgroup>
+                  );
+                })}
               </Select>
             </li>
           )

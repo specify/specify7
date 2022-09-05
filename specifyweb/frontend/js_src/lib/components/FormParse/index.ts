@@ -189,6 +189,9 @@ export function processViewDefinition(
   if (actualViewDefinition === undefined) return undefined;
 
   const newFormType = getParsedAttribute(viewDefinition, 'type');
+  const modelName = parseClassName(
+    defined(getParsedAttribute(actualViewDefinition, 'class'))
+  );
   return {
     viewDefinition: actualViewDefinition,
     formType:
@@ -197,15 +200,7 @@ export function processViewDefinition(
       ) ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: defined(
-      getModel(
-        f.var(
-          parseClassName(
-            defined(getParsedAttribute(actualViewDefinition, 'class'))
-          ),
-          (modelName) =>
-            modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
-        )
-      )
+      getModel(modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName)
     ),
   };
 }

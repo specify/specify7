@@ -83,22 +83,21 @@ const processUiPlugin: {
         ) ?? 'Point',
     };
   },
-  PartialDateUI: ({ getProperty, defaultValue }) => ({
-    type: 'PartialDateUI',
-    defaultValue: f.maybe(
-      defaultValue?.trim().toLowerCase(),
-      parseRelativeDate
-    ),
-    dateField: getProperty('df')?.toLowerCase(),
-    precisionField: getProperty('tp')?.toLowerCase(),
-    defaultPrecision: f.var(
-      getProperty('defaultPrecision')?.toLowerCase(),
-      (defaultPrecision) =>
-        f.includes(['year', 'month-year'], defaultPrecision)
-          ? (defaultPrecision as 'month-year' | 'year')
-          : 'full'
-    ),
-  }),
+  PartialDateUI({ getProperty, defaultValue }) {
+    const defaultPrecision = getProperty('defaultPrecision')?.toLowerCase();
+    return {
+      type: 'PartialDateUI',
+      defaultValue: f.maybe(
+        defaultValue?.trim().toLowerCase(),
+        parseRelativeDate
+      ),
+      dateField: getProperty('df')?.toLowerCase(),
+      precisionField: getProperty('tp')?.toLowerCase(),
+      defaultPrecision: f.includes(['year', 'month-year'], defaultPrecision)
+        ? (defaultPrecision as 'month-year' | 'year')
+        : 'full',
+    };
+  },
   CollectionRelOneToManyPlugin: ({ getProperty }) => ({
     type: 'CollectionRelOneToManyPlugin',
     relationship: getProperty('relName'),

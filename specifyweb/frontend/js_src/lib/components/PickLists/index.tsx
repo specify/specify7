@@ -1,27 +1,27 @@
 import React from 'react';
 
-import type { PickList } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { hasToolPermission } from '../Permissions/helpers';
+import { f } from '../../utils/functools';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Select } from '../Atoms/Form';
+import { LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import type { RA } from '../../utils/types';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import { Select } from '../Atoms/Form';
-import { Button } from '../Atoms/Button';
+import type { PickList } from '../DataModel/types';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
 } from '../FormFields/ComboBox';
-import { LoadingContext } from '../Core/Contexts';
+import { AutoComplete } from '../Molecules/AutoComplete';
 import { Dialog } from '../Molecules/Dialog';
-import { useSaveBlockers, useValidationAttributes } from '../../hooks/resource';
-import { useValidation } from '../../hooks/useValidation';
-import { AnySchema } from '../DataModel/helperTypes';
+import { hasToolPermission } from '../Permissions/helpers';
 import { PickListTypes } from './definitions';
 
 export function PickListComboBox(
@@ -147,6 +147,13 @@ export function PickListComboBox(
     props.mode !== 'search';
   const name = props.pickList?.get('name') ?? props.pickListName;
 
+  const sizeLimit = props.pickList?.get('sizeLimit');
+  const canAddNew =
+    typeof props.onAdd === 'function' &&
+    typeof sizeLimit === 'number' &&
+    sizeLimit > 0 &&
+    sizeLimit <= autocompleteItems.length;
+
   return (
     <>
       {props.pickList?.get('readOnly') === true || isDisabled ? (
@@ -187,37 +194,27 @@ export function PickListComboBox(
       ) : (
         <AutoComplete<string>
           aria-label={undefined}
+          disabled={isDisabled || props.mode === 'view'}
           filterItems
           forwardRef={validationRef}
-          source={autocompleteItems}
-          value={(currentValue?.title || value) ?? ''}
-          onChange={({ data }): void => updateValue(data)}
-          onCleared={(): void => updateValue('')}
-          onNewValue={
-            typeof props.onAdd === 'function'
-              ? f.var(props.pickList?.get('sizeLimit'), (sizeLimit) =>
-                  typeof sizeLimit === 'number' &&
-                  sizeLimit > 0 &&
-                  sizeLimit <= autocompleteItems.length
-                    ? undefined
-                    : addNewValue
-                )
-              : undefined
-          }
-          disabled={isDisabled || props.mode === 'view'}
           inputProps={{
             id: props.id,
             name,
             required: isRequired,
           }}
+          source={autocompleteItems}
+          value={(currentValue?.title || value) ?? ''}
+          onChange={({ data }): void => updateValue(data)}
+          onCleared={(): void => updateValue('')}
+          onNewValue={canAddNew ? addNewValue : undefined}
         />
       )}
       {typeof pendingNewValue === 'string' &&
         typeof props.pickList === 'object' &&
         typeof handleAdd === 'function' && (
           <AddingToPicklist
-            type={validationAttributes.type ?? 'string'}
             pickList={props.pickList}
+            type={validationAttributes.type ?? 'string'}
             value={pendingNewValue}
             onAdd={(): void => {
               handleAdd?.(pendingNewValue);
@@ -247,9 +244,9 @@ function AddingToPicklist({
   const isInvalidNumeric = type === 'number' && f.parseInt(value) === undefined;
   return isInvalidNumeric ? (
     <Dialog
+      buttons={commonText('close')}
       header={formsText('invalidType')}
       onClose={handleClose}
-      buttons={commonText('close')}
     >
       {formsText('invalidNumericPicklistValue')}
     </Dialog>

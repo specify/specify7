@@ -28,12 +28,11 @@ export function QueryToForms({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ids = useSelectedResults(results, selectedRows, isOpen);
 
-  const unParseIndex = (index: number): number =>
-    selectedRows.size === 0
-      ? index
-      : f.var(Array.from(selectedRows)[index], (deletedRecordId) =>
-          results.findIndex((row) => row![queryIdField] === deletedRecordId)
-        );
+  function unParseIndex(index: number): number {
+    if (selectedRows.size === 0) return index;
+    const deletedRecordId = Array.from(selectedRows)[index];
+    return results.findIndex((row) => row![queryIdField] === deletedRecordId);
+  }
 
   return (
     <>

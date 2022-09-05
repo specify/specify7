@@ -127,15 +127,13 @@ const formatResponse = <RESPONSE_TYPE>(
     text: response,
   });
 
-const createResponse = (expectedResponseCodes: RA<number>): Response =>
-  f.var(
-    getResponseCode(expectedResponseCodes),
-    (statusCode) =>
-      new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
-        status: statusCode,
-        statusText: undefined,
-      })
-  );
+function createResponse(expectedResponseCodes: RA<number>): Response {
+  const statusCode = getResponseCode(expectedResponseCodes);
+  return new Response(statusCode === Http.NO_CONTENT ? undefined : '', {
+    status: statusCode,
+    statusText: undefined,
+  });
+}
 
 const getResponseCode = (expectedResponseCodes: RA<number>): number =>
   expectedResponseCodes.find((code) =>

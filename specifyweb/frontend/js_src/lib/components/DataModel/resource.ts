@@ -8,7 +8,7 @@ import { defined } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { businessRuleDefs } from './businessRuleDefs';
-import { addMissingFields, serializeResource } from './helpers';
+import { serializeResource } from './helpers';
 import type {
   AnySchema,
   SerializedModel,
@@ -19,6 +19,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { addMissingFields } from './addMissingFields';
 
 /*
  * REFACTOR: experiment with an object singleton:

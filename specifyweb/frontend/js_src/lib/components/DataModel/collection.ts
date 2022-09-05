@@ -9,9 +9,9 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './helperTypes';
+import { parseResourceUrl } from './resource';
 import { schema } from './schema';
 import type { Tables } from './types';
-import { parseResourceUrl } from './resource';
 
 export type CollectionFetchFilters<SCHEMA extends AnySchema> = Partial<
   Exclude<SCHEMA['fields'], 'null'> &

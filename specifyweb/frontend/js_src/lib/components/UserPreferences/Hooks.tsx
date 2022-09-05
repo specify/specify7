@@ -58,12 +58,12 @@ export function useTransitionDuration(): number {
   );
 }
 
-const shouldReduceMotion = (): boolean =>
-  f.var(getUserPref('general', 'ui', 'reduceMotion'), (pref) =>
-    pref === 'system'
-      ? globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : pref === 'reduce'
-  );
+function shouldReduceMotion(): boolean {
+  const pref = getUserPref('general', 'ui', 'reduceMotion');
+  return pref === 'system'
+    ? globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : pref === 'reduce';
+}
 
 export const getTransitionDuration = (): number =>
   shouldReduceMotion() ? 0 : defaultTransitionDuration;

@@ -95,23 +95,17 @@ export const mappingPathToTableNames = (
 ): RA<keyof Tables> =>
   f.unique(
     filterArray(
-      mappingPath.flatMap((_, index) =>
-        index === 0 && ignoreBaseTable
-          ? undefined
-          : f.var(
-              schema.models[baseTableName].getField(
-                mappingPath.slice(index).join('.')
-              ),
-              (field) =>
-                typeof field === 'object'
-                  ? [
-                      field.model.name,
-                      field.isRelationship
-                        ? field.relatedModel.name
-                        : undefined,
-                    ]
-                  : undefined
-            )
-      )
+      mappingPath.flatMap((_, index) => {
+        if (index === 0 && ignoreBaseTable) return undefined;
+        const field = schema.models[baseTableName].getField(
+          mappingPath.slice(index).join('.')
+        );
+        return typeof field === 'object'
+          ? [
+              field.model.name,
+              field.isRelationship ? field.relatedModel.name : undefined,
+            ]
+          : undefined;
+      })
     )
   );

@@ -117,36 +117,32 @@ const fetchEntries = f.store(
       headers: { Accept: 'text/xml' },
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
-        Array.from(data.querySelectorAll('entry'), async (entry) =>
-          f.var(getParsedAttribute(entry, 'action'), async (action) =>
-            getBooleanAttribute(entry, 'isOnLeft') ?? false
-              ? ({
-                  action: f.includes(supportedActions, action)
-                    ? action
-                    : undefined,
-                  table:
-                    action === 'NEW_GIFT'
-                      ? 'Gift'
-                      : action === 'NEW_LOAN'
-                      ? 'Loan'
-                      : defined(
-                          (await f
-                            .maybe(getParsedAttribute(entry, 'view'), fetchView)
-                            ?.then((view) =>
-                              typeof view === 'object'
-                                ? (parseClassName(view.class) as keyof Tables)
-                                : undefined
-                            )) ??
-                            getModel(getParsedAttribute(entry, 'table') ?? '')
-                              ?.name
-                        ),
-                  label: getParsedAttribute(entry, 'label'),
-                  tooltip: getParsedAttribute(entry, 'tooltip'),
-                  icon: getParsedAttribute(entry, 'icon'),
-                } as const)
-              : undefined
-          )
-        )
+        Array.from(data.querySelectorAll('entry'), async (entry) => {
+          const action = getParsedAttribute(entry, 'action');
+          if (getBooleanAttribute(entry, 'isOnLeft') !== true) return undefined;
+          const table =
+            action === 'NEW_GIFT'
+              ? 'Gift'
+              : action === 'NEW_LOAN'
+              ? 'Loan'
+              : defined(
+                  (await f
+                    .maybe(getParsedAttribute(entry, 'view'), fetchView)
+                    ?.then((view) =>
+                      typeof view === 'object'
+                        ? (parseClassName(view.class) as keyof Tables)
+                        : undefined
+                    )) ??
+                    getModel(getParsedAttribute(entry, 'table') ?? '')?.name
+                );
+          return {
+            action: f.includes(supportedActions, action) ? action : undefined,
+            table,
+            label: getParsedAttribute(entry, 'label'),
+            tooltip: getParsedAttribute(entry, 'tooltip'),
+            icon: getParsedAttribute(entry, 'icon'),
+          } as const;
+        })
       ).then(filterArray)
     )
 );

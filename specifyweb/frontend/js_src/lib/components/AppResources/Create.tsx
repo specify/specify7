@@ -2,7 +2,7 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { SpAppResourceDir } from '../DataModel/types';
-import { addMissingFields, serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
@@ -28,6 +28,7 @@ import {
   appResourceTypes,
 } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { addMissingFields } from '../DataModel/addMissingFields';
 
 /**
  * Check if one type is a subtype of another

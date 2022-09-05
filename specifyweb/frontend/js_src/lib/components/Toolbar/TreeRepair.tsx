@@ -31,7 +31,7 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -93,42 +93,40 @@ export function TreeSelectDialog({
                     )
                   : hasTreeAccess(treeName, 'read')
               )
-              .map((treeName) =>
-                f.var(
-                  treeRanks[treeName]?.definition as
-                    | SpecifyResource<TaxonTreeDef>
-                    | undefined,
-                  (treeDefinition) => (
-                    <li key={treeName}>
-                      <div className="flex gap-2">
-                        <Link.Default
-                          className="flex-1"
-                          href={getLink(treeName)}
-                          title={treeDefinition?.get('remarks') ?? undefined}
-                          onClick={(event): void => {
-                            if (handleClick === undefined) return;
-                            event.preventDefault();
-                            loading(
-                              Promise.resolve(handleClick(treeName)).then(() =>
-                                typeof confirmationMessage === 'string'
-                                  ? setIsFinished()
-                                  : handleClose()
-                              )
-                            );
-                          }}
-                        >
-                          <TableIcon label={false} name={treeName} />
-                          {treeDefinition?.get('name') ??
-                            schema.models[treeName].label}
-                        </Link.Default>
-                        {typeof treeDefinition === 'object' && (
-                          <EditTreeDefinition treeDefinition={treeDefinition} />
-                        )}
-                      </div>
-                    </li>
-                  )
-                )
-              )}
+              .map((treeName) => {
+                const treeDefinition = treeRanks[treeName]?.definition as
+                  | SpecifyResource<TaxonTreeDef>
+                  | undefined;
+                return (
+                  <li key={treeName}>
+                    <div className="flex gap-2">
+                      <Link.Default
+                        className="flex-1"
+                        href={getLink(treeName)}
+                        title={treeDefinition?.get('remarks') ?? undefined}
+                        onClick={(event): void => {
+                          if (handleClick === undefined) return;
+                          event.preventDefault();
+                          loading(
+                            Promise.resolve(handleClick(treeName)).then(() =>
+                              typeof confirmationMessage === 'string'
+                                ? setIsFinished()
+                                : handleClose()
+                            )
+                          );
+                        }}
+                      >
+                        <TableIcon label={false} name={treeName} />
+                        {treeDefinition?.get('name') ??
+                          schema.models[treeName].label}
+                      </Link.Default>
+                      {typeof treeDefinition === 'object' && (
+                        <EditTreeDefinition treeDefinition={treeDefinition} />
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
           </Ul>
         </nav>
       )}

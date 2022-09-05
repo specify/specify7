@@ -141,48 +141,21 @@ export function SecurityPolicies({
             orientation={orientation}
             policy={policy}
             scope={scope}
-            onChange={(policy): void =>
-              handleChange(
-                typeof policy === 'object'
-                  ? replaceItem(
-                      policies,
-                      index,
-                      /*
-                       * Only auto-modify the list of actions if user changed
-                       * the resource, not if user changed actions
-                       */
-                      policies[index].resource === policy.resource
-                        ? policy
-                        : f.var(
-                            getAllActions(policy.resource),
-                            (possibleActions) =>
-                              f.var(
-                                // Filter out non-existing actions
-                                policy.actions.filter((action) =>
-                                  possibleActions.includes(action)
-                                ),
-                                (selectedActions) =>
-                                  replaceKey(
-                                    policy,
-                                    'actions',
-                                    /*
-                                     * If new policy has only one action,
-                                     * check it by default.
-                                     * If new policy is for a CRUD resource,
-                                     * check "read" by default
-                                     */
-                                    possibleActions.length === 1
-                                      ? possibleActions
-                                      : hasTableActions(possibleActions)
-                                      ? f.unique(['read', ...selectedActions])
-                                      : selectedActions
-                                  )
-                              )
-                          )
-                    )
-                  : removeItem(policies, index)
-              )
-            }
+            onChange={(policy): void => {
+              if (policy === undefined)
+                handleChange(removeItem(policies, index));
+              else {
+                const resourceChanged =
+                  policies[index].resource !== policy.resource;
+                const newItem =
+                  /*
+                   * Only auto-modify the list of actions if user changed
+                   * the resource, not if user changed actions
+                   */
+                  resourceChanged ? mutatePolicy(policy) : policy;
+                handleChange(replaceItem(policies, index, newItem));
+              }
+            }}
           />
         ))}
       </Ul>
@@ -209,5 +182,28 @@ export function SecurityPolicies({
     </>
   ) : (
     <>{commonText('loading')}</>
+  );
+}
+
+function mutatePolicy(policy: Policy): Policy {
+  const possibleActions = getAllActions(policy.resource);
+  // Filter out non-existing actions
+  const selectedActions = policy.actions.filter((action) =>
+    possibleActions.includes(action)
+  );
+  return replaceKey(
+    policy,
+    'actions',
+    /*
+     * If new policy has only one action,
+     * check it by default.
+     * If new policy is for a CRUD resource,
+     * check "read" by default
+     */
+    possibleActions.length === 1
+      ? possibleActions
+      : hasTableActions(possibleActions)
+      ? f.unique(['read', ...selectedActions])
+      : selectedActions
   );
 }

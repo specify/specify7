@@ -91,24 +91,22 @@ export const PickListSortType = {
  * TEST: make sure pick lists items are sorted properly everywhere (i.e, in the
  *   workbench)
  */
-export const getPickListItems = (
-  pickList: SpecifyResource<PickList>
-): RA<{
+export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
   readonly value: string;
   readonly title: string;
-}> =>
-  f
-    .var(serializeResource(pickList).pickListItems, (items) =>
-      pickList.get('sortType') === PickListSortType.TITLE_SORT
-        ? Array.from(items).sort(sortFunction(({ title }) => title))
-        : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-        ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-        : items
-    )
-    .map(({ value, title }) => ({
-      value: value ?? title,
-      title: title ?? value,
-    }));
+}> {
+  const items = serializeResource(pickList).pickListItems;
+  return (
+    pickList.get('sortType') === PickListSortType.TITLE_SORT
+      ? Array.from(items).sort(sortFunction(({ title }) => title))
+      : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
+      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+      : items
+  ).map(({ value, title }) => ({
+    value: value ?? title,
+    title: title ?? value,
+  }));
+}
 
 /** From the table picklist */
 async function fetchFromTable(

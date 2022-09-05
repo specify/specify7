@@ -7,22 +7,31 @@ import { fetchRelated } from '../DataModel/collection';
 import type { Tables } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
-import { caseInsensitiveHash, sortFunction, unCapitalize } from '../../utils/utils';
+import {
+  caseInsensitiveHash,
+  sortFunction,
+  unCapitalize,
+} from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel, schema } from '../DataModel/schema';
 import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import {AnySchema, AnyTree, SerializedResource} from '../DataModel/helperTypes';
+import {
+  AnySchema,
+  AnyTree,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 
 export const getDomainResource = <
   LEVEL extends keyof typeof schema.domainLevelIds
 >(
   level: LEVEL
 ): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) =>
-    f.var(defined(getModel(level)), (model) => new model.Resource({ id }))
-  );
+  f.maybe(schema.domainLevelIds[level], (id) => {
+    const model = defined(getModel(level));
+    return new model.Resource({ id });
+  });
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {

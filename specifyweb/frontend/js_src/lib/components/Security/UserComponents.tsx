@@ -46,39 +46,40 @@ export function SetSuperAdmin({
       <Input.Checkbox
         checked={isSuperAdmin}
         isReadOnly={!userInformation.isadmin || isCurrentUser}
-        onValueChange={(): void =>
-          handleChange(
-            isSuperAdmin
-              ? filterArray(
-                  institutionPolicies.filter(
-                    (policy) => policy.resource !== anyResource
+        onValueChange={(): void => {
+          if (isSuperAdmin)
+            handleChange(
+              filterArray(
+                institutionPolicies.filter(
+                  (policy) => policy.resource !== anyResource
+                )
+              )
+            );
+          else {
+            const index = institutionPolicies.findIndex(
+              ({ resource }) => resource === anyResource
+            );
+            handleChange(
+              index === -1
+                ? [
+                    ...institutionPolicies,
+                    {
+                      resource: anyResource,
+                      actions: allActions,
+                    },
+                  ]
+                : replaceItem(
+                    institutionPolicies,
+                    index,
+                    replaceKey(
+                      institutionPolicies[index],
+                      'actions',
+                      allActions
+                    )
                   )
-                )
-              : f.var(
-                  institutionPolicies.findIndex(
-                    ({ resource }) => resource === anyResource
-                  ),
-                  (index) =>
-                    index === -1
-                      ? [
-                          ...institutionPolicies,
-                          {
-                            resource: anyResource,
-                            actions: allActions,
-                          },
-                        ]
-                      : replaceItem(
-                          institutionPolicies,
-                          index,
-                          replaceKey(
-                            institutionPolicies[index],
-                            'actions',
-                            allActions
-                          )
-                        )
-                )
-          )
-        }
+            );
+          }
+        }}
       />
       {adminText('institutionAdmin')}
     </Label.Inline>
@@ -226,6 +227,9 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
+  const userType = defined(
+    schema.models.SpecifyUser.getLiteralField('userType')
+  );
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
@@ -242,30 +246,25 @@ export function LegacyPermissions({
           ) : undefined}
         </div>
       )}
-      {f.var(
-        defined(schema.models.SpecifyUser.getLiteralField('userType')),
-        (userType) => (
-          <Label.Block
-            className={className.limitedWidth}
-            title={userType.getLocalizedDesc()}
-          >
-            {userType.label}
-            <Combobox
-              defaultValue={undefined}
-              field={userType}
-              fieldName={userType.name}
-              formType="form"
-              id={undefined}
-              isDisabled={false}
-              isRequired
-              mode={mode}
-              model={userResource}
-              pickListName={undefined}
-              resource={userResource}
-            />
-          </Label.Block>
-        )
-      )}
+      <Label.Block
+        className={className.limitedWidth}
+        title={userType.getLocalizedDesc()}
+      >
+        {userType.label}
+        <Combobox
+          defaultValue={undefined}
+          field={userType}
+          fieldName={userType.name}
+          formType="form"
+          id={undefined}
+          isDisabled={false}
+          isRequired
+          mode={mode}
+          model={userResource}
+          pickListName={undefined}
+          resource={userResource}
+        />
+      </Label.Block>
     </section>
   );
 }

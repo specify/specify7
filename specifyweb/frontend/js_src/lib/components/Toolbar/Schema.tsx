@@ -377,51 +377,49 @@ const dataModelToTsv = (): string =>
       commonText('otherSideName'),
       commonText('dependent'),
     ],
-    ...Object.values(schema.models).flatMap((model) =>
-      f.var(
-        [
-          model.name,
-          model.label,
-          booleanFormatter(model.isSystem),
-          booleanFormatter(model.isHidden),
-          model.tableId,
-        ],
-        (commonColumns) => [
-          ...model.literalFields.map((field) => [
-            ...commonColumns,
-            field.name,
-            field.label,
-            field.getLocalizedDesc(),
-            booleanFormatter(field.isHidden),
-            booleanFormatter(field.isReadOnly),
-            booleanFormatter(field.isRequired),
-            booleanFormatter(false),
-            javaTypeToHuman(field.type, undefined),
-            field.length,
-            field.databaseColumn,
-            '',
-            '',
-            '',
-          ]),
-          ...model.relationships.map((relationship) => [
-            ...commonColumns,
-            relationship.name,
-            relationship.label,
-            relationship.getLocalizedDesc(),
-            booleanFormatter(relationship.isHidden),
-            booleanFormatter(relationship.isReadOnly),
-            booleanFormatter(relationship.isRequired),
-            booleanFormatter(true),
-            localizedRelationshipTypes[relationship.type] ?? relationship.type,
-            '',
-            relationship.databaseColumn,
-            relationship.relatedModel.name,
-            relationship.otherSideName,
-            booleanFormatter(relationship.isDependent()),
-          ]),
-        ]
-      )
-    ),
+    ...Object.values(schema.models).flatMap((model) => {
+      const commonColumns = [
+        model.name,
+        model.label,
+        booleanFormatter(model.isSystem),
+        booleanFormatter(model.isHidden),
+        model.tableId,
+      ];
+      return [
+        model.literalFields.map((field) => [
+          ...commonColumns,
+          field.name,
+          field.label,
+          field.getLocalizedDesc(),
+          booleanFormatter(field.isHidden),
+          booleanFormatter(field.isReadOnly),
+          booleanFormatter(field.isRequired),
+          booleanFormatter(false),
+          javaTypeToHuman(field.type, undefined),
+          field.length,
+          field.databaseColumn,
+          '',
+          '',
+          '',
+        ]),
+        model.relationships.map((relationship) => [
+          ...commonColumns,
+          relationship.name,
+          relationship.label,
+          relationship.getLocalizedDesc(),
+          booleanFormatter(relationship.isHidden),
+          booleanFormatter(relationship.isReadOnly),
+          booleanFormatter(relationship.isRequired),
+          booleanFormatter(true),
+          localizedRelationshipTypes[relationship.type] ?? relationship.type,
+          '',
+          relationship.databaseColumn,
+          relationship.relatedModel.name,
+          relationship.otherSideName,
+          booleanFormatter(relationship.isDependent()),
+        ]),
+      ];
+    }),
   ]
     .map((line) => line.join('\t'))
     .join('\n');

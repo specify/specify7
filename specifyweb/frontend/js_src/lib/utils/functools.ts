@@ -46,12 +46,6 @@ export const f = {
     console.log(...args);
     return undefined;
   },
-  // REFACTOR: reduse usages of f.var to produce more readable code
-  /** An alternative way to declare a variable */
-  var: <VALUE, RETURN>(
-    value: VALUE,
-    callback: (value: VALUE) => RETURN
-  ): RETURN => callback(value),
   /** Like Promise.all, but accepts a dictionary instead of an array */
   all: async <T extends IR<unknown>>(dictionary: {
     readonly [PROMISE_NAME in keyof T]:
@@ -145,19 +139,17 @@ export const f = {
    * Since TypeScript is unaware of the NaN type, returning undefined
    * is a safer choice
    */
-  parseInt: (value: string | undefined): number | undefined =>
-    value === undefined
-      ? undefined
-      : f.var(Number.parseInt(value), (number) =>
-          Number.isNaN(number) ? undefined : number
-        ),
+  parseInt(value: string | undefined): number | undefined {
+    if (value === undefined) return undefined;
+    const number = Number.parseInt(value);
+    return Number.isNaN(number) ? undefined : number;
+  },
   /** Like f.parseInt, but for floats */
-  parseFloat: (value: string | undefined): number | undefined =>
-    value === undefined
-      ? undefined
-      : f.var(Number.parseFloat(value), (number) =>
-          Number.isNaN(number) ? undefined : number
-        ),
+  parseFloat(value: string | undefined): number | undefined {
+    if (value === undefined) return undefined;
+    const number = Number.parseFloat(value);
+    return Number.isNaN(number) ? undefined : number;
+  },
   /**
    * Round a number to the nearest step value, where step could be a float
    *
@@ -175,8 +167,8 @@ export const f = {
   toString: (value: unknown): string =>
     (value as { readonly toString: () => string } | undefined)?.toString() ??
     '',
-  min: (...array: RA<number | undefined>): number | undefined =>
-    f.var(filterArray(array), (data) =>
-      data.length === 0 ? undefined : Math.min(...data)
-    ),
+  min(...array: RA<number | undefined>): number | undefined {
+    const data = filterArray(array);
+    return data.length === 0 ? undefined : Math.min(...data);
+  },
 } as const;

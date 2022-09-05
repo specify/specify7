@@ -82,21 +82,21 @@ const processFieldType: {
     getProperty: (name: string) => string | undefined
   ) => FieldTypes[KEY];
 } = {
-  Checkbox: (cell) =>
-    f.var(
+  Checkbox(cell) {
+    const printOnSave =
       (getBooleanAttribute(cell, 'ignore') ?? false) &&
-        ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
-          getParsedAttribute(cell, 'name')?.toLowerCase() ?? ''
-        ),
-      (printOnSave) => ({
-        type: 'Checkbox',
-        defaultValue: getBooleanAttribute(cell, 'default') ?? false,
-        label:
-          f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
-          (printOnSave ? formsText('printOnSave') : undefined),
-        printOnSave,
-      })
-    ),
+      ['printonsave', 'generateinvoice', 'generatelabelchk'].includes(
+        getParsedAttribute(cell, 'name')?.toLowerCase() ?? ''
+      );
+    return {
+      type: 'Checkbox',
+      defaultValue: getBooleanAttribute(cell, 'default') ?? false,
+      label:
+        f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
+        (printOnSave ? formsText('printOnSave') : undefined),
+      printOnSave,
+    };
+  },
   TextArea(cell) {
     const rows = f.parseInt(getParsedAttribute(cell, 'rows'));
     return {

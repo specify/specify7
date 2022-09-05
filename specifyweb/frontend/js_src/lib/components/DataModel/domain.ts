@@ -88,18 +88,22 @@ const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
  * This function tries to resolve collection ID for resource even the best it
  * can even if user does not have read access to the Collection table.
  */
-export const getCollectionForResource = (
+export function getCollectionForResource(
   resource: SpecifyResource<AnySchema>
-): number | undefined =>
-  (resource.get('collectionMemberId') as number | null) ??
-  f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
-    f.var(idFromUrl(resource.get(domainField.name) ?? ''), (domainResourceId) =>
-      schema.domainLevelIds[domainField.name as 'collection'] ===
-      domainResourceId
-        ? schema.domainLevelIds.collection
-        : undefined
-    )
-  );
+): number | undefined {
+  const collectionUrl = resource.get('collectionMemberId') as number | null;
+  if (typeof collectionUrl === 'number') return collectionUrl;
+
+  const domainField = resource.specifyModel.getScopingRelationship();
+  if (domainField === undefined) return undefined;
+
+  const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
+  return schema.domainLevelIds[domainField.name as 'collection'] ===
+    domainResourceId
+    ? schema.domainLevelIds.collection
+    : undefined;
+}
+
 export const fetchCollectionsForResource = async (
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> =>

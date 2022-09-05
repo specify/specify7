@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { f } from '../../utils/functools';
 import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { treeText } from '../../localization/tree';
@@ -214,9 +213,11 @@ function TreeView<SCHEMA extends AnyTree>({
       >
         <div role="none rowgroup">
           <div role="none row">
-            {treeDefinitionItems.map((rank, index, { length }) => (
-              <div
-                className={`
+            {treeDefinitionItems.map((rank, index, { length }) => {
+              const rankName = rank.title || rank.name;
+              return (
+                <div
+                  className={`
                   sticky top-0 whitespace-nowrap border border-transparent p-2
                   ${index === 0 ? '-ml-2 rounded-bl pl-4' : ''}
                   ${index + 1 === length ? '-mr-2 rounded-br pr-4' : ''}
@@ -226,32 +227,31 @@ function TreeView<SCHEMA extends AnyTree>({
                       : 'bg-gray-100/60 backdrop-blur-sm dark:bg-neutral-900/60'
                   }
                 `}
-                key={index}
-                role="columnheader"
-              >
-                <Button.LikeLink
-                  id={id(rank.rankId.toString())}
-                  onClick={
-                    Array.isArray(collapsedRanks)
-                      ? (): void =>
-                          setCollapsedRanks(
-                            toggleItem(collapsedRanks, rank.rankId)
-                          )
-                      : undefined
-                  }
+                  key={index}
+                  role="columnheader"
                 >
-                  {f.var(rank.title || rank.name, (rankName) =>
-                    collapsedRanks?.includes(rank.rankId) ?? false
+                  <Button.LikeLink
+                    id={id(rank.rankId.toString())}
+                    onClick={
+                      Array.isArray(collapsedRanks)
+                        ? (): void =>
+                            setCollapsedRanks(
+                              toggleItem(collapsedRanks, rank.rankId)
+                            )
+                        : undefined
+                    }
+                  >
+                    {collapsedRanks?.includes(rank.rankId) ?? false
                       ? rankName[0]
-                      : rankName
-                  )}
-                </Button.LikeLink>
-                {isEditingRanks &&
-                collapsedRanks?.includes(rank.rankId) !== true ? (
-                  <EditTreeRank rank={rank} />
-                ) : undefined}
-              </div>
-            ))}
+                      : rankName}
+                  </Button.LikeLink>
+                  {isEditingRanks &&
+                  collapsedRanks?.includes(rank.rankId) !== true ? (
+                    <EditTreeRank rank={rank} />
+                  ) : undefined}
+                </div>
+              );
+            })}
           </div>
         </div>
         <ul role="tree rowgroup">

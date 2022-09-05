@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  getAppResourceCount,
-  getAppResourceMode,
-} from './helpers';
+import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree } from './tree';
 import { fetchCollection } from '../DataModel/collection';
 import type {
@@ -15,11 +12,11 @@ import type {
   SpecifyUser,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { addMissingFields } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR, RA } from '../../utils/types';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { addMissingFields } from '../DataModel/addMissingFields';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;

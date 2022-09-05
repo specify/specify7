@@ -6,7 +6,6 @@ import type {
   SpQueryField,
   TaxonTreeDefItem,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { queryText } from '../../localization/query';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -17,7 +16,7 @@ import { getDomainResource } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
-import {AnyTree, SerializedResource} from '../DataModel/helperTypes';
+import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 
 function makeField(
   path: string,
@@ -97,8 +96,9 @@ const defaultFields: RR<
       startValue: nodeId.toString(),
     }),
   ],
-  GeologicTimePeriod: async (nodeId, rankName) =>
-    f.var(await fetchPaleoPath(), (paleoPath) => [
+  async GeologicTimePeriod(nodeId, rankName) {
+    const paleoPath = await fetchPaleoPath();
+    return [
       makeField('catalogNumber', {}),
       makeField('determinations.taxon.fullName', {
         sortType: flippedSortTypes.ascending,
@@ -121,9 +121,11 @@ const defaultFields: RR<
             ),
           ]
         : []),
-    ]),
-  LithoStrat: async (nodeId, rankName) =>
-    f.var(await fetchPaleoPath(), (paleoPath) => [
+    ];
+  },
+  async LithoStrat(nodeId, rankName) {
+    const paleoPath = await fetchPaleoPath();
+    return [
       makeField('catalogNumber', {}),
       makeField('determinations.taxon.fullName', {
         sortType: flippedSortTypes.ascending,
@@ -142,7 +144,8 @@ const defaultFields: RR<
             }),
           ]
         : []),
-    ]),
+    ];
+  },
 };
 
 const fetchPaleoPath = async (): Promise<string | undefined> =>

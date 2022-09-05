@@ -1,5 +1,4 @@
 import { parseDate } from '../components/FormPlugins/PartialDateUi';
-import { f } from './functools';
 import { mappedFind } from './utils';
 
 const reParse =
@@ -26,10 +25,9 @@ export function parseRelativeDate(value: string): Date | undefined {
     return date;
   }
   return (
-    mappedFind(['full', 'month-year', 'year'] as const, (precision) =>
-      f.var(parseDate(precision, value), (parsed) =>
-        parsed.isValid() ? parsed : undefined
-      )
-    )?.toDate() ?? undefined
+    mappedFind(['full', 'month-year', 'year'] as const, (precision) => {
+      const parsed = parseDate(precision, value);
+      return parsed.isValid() ? parsed : undefined;
+    })?.toDate() ?? undefined
   );
 }

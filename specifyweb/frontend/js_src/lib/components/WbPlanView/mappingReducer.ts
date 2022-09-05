@@ -21,10 +21,7 @@ import { replaceItem } from '../../utils/utils';
 import type { IR, RA } from '../../utils/types';
 import type { MatchBehaviors } from './uploadPlanParser';
 import { uniquifyHeaders } from './headerHelper';
-import {
-  defaultColumnOptions,
-  getLinesFromHeaders,
-} from './linesGetter';
+import { defaultColumnOptions, getLinesFromHeaders } from './linesGetter';
 import {
   deduplicateMappings,
   mappingPathIsComplete,
@@ -395,19 +392,18 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     ...state,
     lines,
   }),
-  ReRunAutoMapperAction: ({ state, action: { baseTableName } }) =>
-    f.var(
-      getLinesFromHeaders({
-        headers: state.lines.map(({ headerName }) => headerName),
-        runAutoMapper: true,
-        baseTableName,
-      }),
-      (lines) => ({
-        ...state,
-        changesMade:
-          state.changesMade ||
-          JSON.stringify(state.lines) !== JSON.stringify(lines),
-        lines,
-      })
-    ),
+  ReRunAutoMapperAction({ state, action: { baseTableName } }) {
+    const lines = getLinesFromHeaders({
+      headers: state.lines.map(({ headerName }) => headerName),
+      runAutoMapper: true,
+      baseTableName,
+    });
+    return {
+      ...state,
+      changesMade:
+        state.changesMade ||
+        JSON.stringify(state.lines) !== JSON.stringify(lines),
+      lines,
+    };
+  },
 });

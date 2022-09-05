@@ -258,25 +258,19 @@ export function CheckLoggedInCollection({
       () =>
         resource.isNew()
           ? false
-          : resource
-              .fetch()
-              .then((resource) =>
-                f.var(getCollectionForResource(resource), (collectionId) =>
-                  schema.domainLevelIds.collection === collectionId
-                    ? false
-                    : typeof collectionId === 'number'
-                    ? [collectionId]
-                    : fetchCollectionsForResource(resource).then(
-                        (collectionIds) =>
-                          !Array.isArray(collectionIds) ||
-                          collectionIds.includes(
-                            schema.domainLevelIds.collection
-                          )
-                            ? false
-                            : collectionIds
-                      )
-                )
-              ),
+          : resource.fetch().then((resource) => {
+              const collectionId = getCollectionForResource(resource);
+              return schema.domainLevelIds.collection === collectionId
+                ? false
+                : typeof collectionId === 'number'
+                ? [collectionId]
+                : fetchCollectionsForResource(resource).then((collectionIds) =>
+                    !Array.isArray(collectionIds) ||
+                    collectionIds.includes(schema.domainLevelIds.collection)
+                      ? false
+                      : collectionIds
+                  );
+            }),
       [resource]
     ),
     true
