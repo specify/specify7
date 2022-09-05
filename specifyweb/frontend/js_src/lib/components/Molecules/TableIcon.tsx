@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
 import { spanNumber } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
 import { getModel } from '../DataModel/schema';

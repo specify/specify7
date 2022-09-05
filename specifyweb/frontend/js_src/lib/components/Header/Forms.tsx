@@ -19,7 +19,6 @@ import { Link } from '../Atoms/Link';
 import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
 import {
   fetchContext as fetchSchema,
-  getModel,
   strictGetModel,
 } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';

@@ -16,7 +16,6 @@ import type {
   SelectElementPosition,
 } from './Mapper';
 import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
 import { replaceItem } from '../../utils/utils';
 import type { IR, RA } from '../../utils/types';
 import type { MatchBehaviors } from './uploadPlanParser';
