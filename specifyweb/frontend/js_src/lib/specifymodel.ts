@@ -243,6 +243,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       unique: true,
       readOnly: false,
     });
+    this.idField.isReadOnly = true;
+    this.idField.overrides.isReadOnly = true;
 
     this.label =
       typeof this.localization.name === 'string'
