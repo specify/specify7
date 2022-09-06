@@ -1,4 +1,6 @@
-import { columnToField, parseSqlQuery } from '../parseSelect';
+import { exportsForTests } from '../parseSelect';
+
+const { parseSqlQuery, columnToField } = exportsForTests;
 
 describe('parse', () => {
   test('collecting event', () => {

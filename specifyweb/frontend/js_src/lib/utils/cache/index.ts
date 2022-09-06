@@ -32,10 +32,10 @@ const cache: R<unknown> = {};
  * usages by this component from other components and third party libraries.
  */
 const cachePrefix = 'specify7';
-export const formatCacheKey = (category: string, key: string): string =>
+const formatCacheKey = (category: string, key: string): string =>
   [cachePrefix, category, key].join('-');
 
-export function parseCacheKey(
+function parseCacheKey(
   formattedKey: string
 ): readonly [string, string] | undefined {
   const parts = formattedKey.split('-');
@@ -145,3 +145,8 @@ function genericSet<T>(
 
   return value;
 }
+
+export const exportsForTests = {
+  formatCacheKey,
+  parseCacheKey,
+};

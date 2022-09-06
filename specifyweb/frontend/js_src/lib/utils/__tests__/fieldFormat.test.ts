@@ -7,13 +7,15 @@ import { fetchPickList } from '../../components/PickLists/fetch';
 import { queryText } from '../../localization/query';
 import { requireContext } from '../../tests/helpers';
 import {
+  exportsForTests,
   fieldFormat,
   formatPickList,
-  formatValue,
   syncFieldFormat,
 } from '../fieldFormat';
 
 requireContext();
+
+const { formatValue, formatPickList } = exportsForTests;
 
 jest.mock('../../components/PickLists/fetch', () => {
   const definitions = jest.requireActual<{

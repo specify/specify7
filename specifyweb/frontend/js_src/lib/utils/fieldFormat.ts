@@ -40,7 +40,7 @@ export async function fieldFormat(
   return formatValue(field, parser, value);
 }
 
-export function formatPickList(
+function formatPickList(
   pickList: SpecifyResource<PickList> | undefined,
   value: boolean | number | string
 ): string | undefined {
@@ -55,7 +55,7 @@ export function formatPickList(
  * Format fields value. Does not format pick list items.
  * Prefer using fieldFormat() or syncFieldFormat() instead
  */
-export function formatValue(
+function formatValue(
   field: LiteralField | undefined,
   parser: Parser | undefined,
   value: boolean | number | string
@@ -104,3 +104,8 @@ export function syncFieldFormat(
 
   return formatValue(field, parser, value);
 }
+
+export const exportsForTests = {
+  formatValue,
+  formatPickList,
+};

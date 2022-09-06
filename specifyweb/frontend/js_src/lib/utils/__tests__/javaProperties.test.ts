@@ -1,9 +1,7 @@
 import { theories } from '../../tests/utils';
-import {
-  getProperty,
-  regexForJavaProperty,
-  unescapeJavaProperty,
-} from '../javaProperties';
+import { exportsForTests, getProperty } from '../javaProperties';
+
+const { regexForJavaProperty, unescapeJavaProperty } = exportsForTests;
 
 theories(regexForJavaProperty, [
   { in: ['KEY_NAME.NAME'], out: /^KEY_NAME\.NAME(?:\s*[:=]|\s)\s*(.*)$/mu },

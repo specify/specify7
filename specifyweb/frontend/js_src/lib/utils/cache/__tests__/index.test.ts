@@ -1,5 +1,7 @@
 import { theories } from '../../../tests/utils';
-import { formatCacheKey, parseCacheKey } from '../index';
+import { exportsForTests } from '../index';
+
+const { formatCacheKey, parseCacheKey } = exportsForTests;
 
 theories(formatCacheKey, [{ in: ['aBc', 'bCd'], out: 'specify7-aBc-bCd' }]);
 
