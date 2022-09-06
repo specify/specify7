@@ -4,24 +4,24 @@
 
 import React from 'react';
 
-import { enableBusinessRules } from '../DataModel/businessRules';
 import { commonText } from '../../localization/common';
-import type { MenuItemName } from '../Header/menuItemDefinitions';
-import { menuItemsPromise } from '../Header/menuItemDefinitions';
-import { getSystemInfo } from '../InitialContext/systemInfo';
 import type { RR } from '../../utils/types';
-import { userInformation } from '../InitialContext/userInformation';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Notifications } from '../Header/Notifications';
-import type { Preferences } from '../UserPreferences/Definitions';
-import { Router } from '../Router/Router';
-import { UserTools } from '../Header/UserTools';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
+import { enableBusinessRules } from '../DataModel/businessRules';
 import { crash } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
+import type { MenuItemName } from '../Header/menuItemDefinitions';
+import { menuItemsPromise } from '../Header/menuItemDefinitions';
+import { Notifications } from '../Header/Notifications';
+import { UserTools } from '../Header/UserTools';
+import { getSystemInfo } from '../InitialContext/systemInfo';
+import { userInformation } from '../InitialContext/userInformation';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Router } from '../Router/Router';
+import type { Preferences } from '../UserPreferences/Definitions';
 
 export type UserTool = {
   readonly title: string;
@@ -31,6 +31,10 @@ export type UserTool = {
 
 export type MenuItem = UserTool & {
   readonly icon: JSX.Element;
+  /*
+   * A name of the user preference key responsible for determining whether
+   * the menu item is visible
+   */
   readonly visibilityKey: keyof Preferences['header']['subCategories']['menu']['items'];
 };
 

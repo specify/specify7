@@ -7,7 +7,7 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import { f } from '../../utils/functools';
 import { wbText } from '../../localization/workbench';
 import { schema } from '../DataModel/schema';
-import type { IR, RA } from '../../utils/types';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
 
@@ -65,6 +65,7 @@ export function extractHeader(
 export const parseCsv = async (
   file: File,
   encoding: string,
+  [delimiter, setDelimiter]: GetSet<string | undefined>,
   limit?: number
 ): Promise<RA<RA<string>>> =>
   new Promise((resolve, reject) =>
@@ -72,7 +73,10 @@ export const parseCsv = async (
       encoding,
       preview: limit,
       skipEmptyLines: true,
-      complete: ({ data, errors }) => {
+      delimiter,
+      complete: ({ data, errors, meta: { delimiter: detectedDelimiter } }) => {
+        if (delimiter !== detectedDelimiter) setDelimiter(detectedDelimiter);
+
         const rows = data as RA<RA<string>>;
         const maxWidth = Math.max(...rows.map((row) => row.length));
         /*

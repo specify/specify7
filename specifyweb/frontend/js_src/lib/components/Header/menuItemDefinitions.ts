@@ -1,11 +1,14 @@
+import { commonText } from '../../localization/common';
+import type { RR } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { icons } from '../Atoms/Icons';
 import {
   attachmentsAvailable,
   attachmentSettingsPromise,
 } from '../Attachments/attachments';
-import { icons } from '../Atoms/Icons';
 import type { MenuItem } from '../Core/Main';
-import { reportsAvailable } from '../Reports';
-import { commonText } from '../../localization/common';
+import { schema } from '../DataModel/schema';
+import { getDisciplineTrees } from '../InitialContext/treeRanks';
 import {
   fetchContext as fetchPermissions,
   getTablePermissions,
@@ -16,10 +19,7 @@ import {
   hasToolPermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { schema } from '../DataModel/schema';
-import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import type { RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
 
 export type MenuItemName =

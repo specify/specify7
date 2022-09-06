@@ -7,9 +7,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { encodings } from '../WorkBench/encodings';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
+import { useStableState } from '../../hooks/useContextState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
+import { Container, H2, H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Select } from '../Atoms/Form';
+import { LoadingContext } from '../Core/Contexts';
+import { useMenuItem } from '../Header';
+import { loadingGif } from '../Molecules';
+import type { AutoCompleteItem } from '../Molecules/AutoComplete';
+import { AutoComplete } from '../Molecules/AutoComplete';
+import { FilePicker } from '../Molecules/FilePicker';
+import { encodings } from '../WorkBench/encodings';
 import {
   createDataSet,
   extractFileName,
@@ -20,16 +33,6 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
-import { loadingGif } from '../Molecules';
-import { LoadingContext } from '../Core/Contexts';
-import { FilePicker } from '../Molecules/FilePicker';
-import { useCachedState } from '../../hooks/useCachedState';
-import { useMenuItem } from '../Header';
-import { Input, Select } from '../Atoms/Form';
-import { Container, H2, H3 } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useTriggerState } from '../../hooks/useTriggerState';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -61,7 +64,8 @@ function FilePicked({ file }: { readonly file: File }): JSX.Element {
 
 function CsvPicked({ file }: { readonly file: File }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
-  const preview = useCsvPreview(file, encoding);
+  const getSetDelimiter = useStableState<string | undefined>(undefined);
+  const preview = useCsvPreview(file, encoding, getSetDelimiter);
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   return (
@@ -70,7 +74,7 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
       preview={preview}
       onImport={(dataSetName, hasHeader): void =>
         loading(
-          parseCsv(file, encoding)
+          parseCsv(file, encoding, getSetDelimiter)
             .then(async (data) =>
               createDataSet({
                 dataSetName,
@@ -83,22 +87,35 @@ function CsvPicked({ file }: { readonly file: File }): JSX.Element {
         )
       }
     >
-      <ChooseEncoding encoding={encoding} onChange={setEncoding} />
+      <ChooseEncoding
+        encoding={encoding}
+        isDisabled={!Array.isArray(preview)}
+        onChange={setEncoding}
+      />
+      <ChooseDelimiter
+        isDisabled={!Array.isArray(preview)}
+        getSetDelimiter={getSetDelimiter}
+      />
     </Layout>
   );
 }
 
 function useCsvPreview(
   file: File,
-  encoding: string
+  encoding: string,
+  getSetDelimiter: GetSet<string | undefined>
 ): RA<RA<string>> | string | undefined {
+  const [delimiter, setDelimiter] = getSetDelimiter;
   const [preview] = useAsyncState<RA<RA<string>> | string>(
     React.useCallback(
       async () =>
-        parseCsv(file, encoding, wbImportPreviewSize).catch(
-          (error) => error.message
-        ),
-      [file, encoding]
+        parseCsv(
+          file,
+          encoding,
+          [delimiter, setDelimiter],
+          wbImportPreviewSize
+        ).catch((error) => error.message),
+      [file, encoding, delimiter, setDelimiter]
     ),
     false
   );
@@ -107,19 +124,78 @@ function useCsvPreview(
 
 function ChooseEncoding({
   encoding = '',
+  isDisabled,
   onChange: handleChange,
 }: {
   readonly encoding: string;
+  readonly isDisabled: boolean;
   readonly onChange: (encoding: string) => void;
 }): JSX.Element {
   return (
     <label className="contents">
       {wbText('characterEncoding')}
-      <Select value={encoding} onValueChange={handleChange}>
+      <Select
+        disabled={isDisabled}
+        value={encoding}
+        onValueChange={handleChange}
+      >
         {encodings.map((encoding: string) => (
           <option key={encoding}>{encoding}</option>
         ))}
       </Select>
+    </label>
+  );
+}
+
+const delimiters: RA<AutoCompleteItem<string>> = [
+  { label: wbText('comma'), searchValue: ',', data: ',' },
+  { label: wbText('tab'), searchValue: '\t', data: '\t' },
+  { label: wbText('semicolon'), searchValue: ';', data: ';' },
+  { label: wbText('space'), searchValue: ' ', data: ' ' },
+];
+
+function ChooseDelimiter({
+  isDisabled,
+  getSetDelimiter: [delimiter, handleChange],
+}: {
+  readonly isDisabled: boolean;
+  readonly getSetDelimiter: GetSet<string | undefined>;
+}): JSX.Element {
+  const [state, setState] = useTriggerState<string | undefined>(delimiter);
+
+  /**
+   * Don't disable the component if it is currently focused, as disabling it
+   * would lead to focus loss, which is bad UX and an accessibility issue.
+   */
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const isFocused = inputRef.current === document.activeElement;
+  const disabled = isDisabled && !isFocused;
+
+  return (
+    <label className="contents">
+      {wbText('delimiter')}
+      <AutoComplete<string>
+        aria-label={undefined}
+        delay={0}
+        filterItems
+        forwardRef={inputRef}
+        disabled={disabled}
+        inputProps={{
+          onBlur: () => {
+            if (state === undefined) handleChange(undefined);
+          },
+        }}
+        minLength={0}
+        source={delimiters}
+        value={
+          state ?? (state === delimiter ? wbText('determineAutomatically') : '')
+        }
+        onChange={({ data }): void => handleChange(data)}
+        onCleared={(): void => {
+          setState(undefined);
+        }}
+        onNewValue={handleChange}
+      />
     </label>
   );
 }
@@ -132,7 +208,7 @@ function Layout({
 }: {
   readonly fileName: string;
   readonly preview: RA<RA<string>> | string | undefined;
-  readonly children?: JSX.Element;
+  readonly children?: JSX.Element | RA<JSX.Element>;
   readonly onImport: (dataSetName: string, hasHeader: boolean) => void;
 }): JSX.Element {
   const [dataSetName, setDataSetName] = useTriggerState(
@@ -144,23 +220,30 @@ function Layout({
   );
   return typeof preview === 'string' ? (
     <BadImport error={preview} />
-  ) : Array.isArray(preview) ? (
+  ) : (
     <>
       <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
         <ChooseName name={dataSetName} onChange={setDataSetName} />
-        <ToggleHeader hasHeader={hasHeader} onChange={setHasHeader} />
+        <ToggleHeader
+          hasHeader={hasHeader}
+          isDisabled={!Array.isArray(preview)}
+          onChange={setHasHeader}
+        />
         <Button.Gray
           className="col-span-full justify-center text-center"
+          disabled={!Array.isArray(preview)}
           onClick={(): void => handleImport(dataSetName, hasHeader)}
         >
           {wbText('importFile')}
         </Button.Gray>
       </div>
-      <Preview hasHeader={hasHeader} preview={preview} />
+      {Array.isArray(preview) ? (
+        <Preview hasHeader={hasHeader} preview={preview} />
+      ) : (
+        loadingGif
+      )}
     </>
-  ) : (
-    loadingGif
   );
 }
 
@@ -187,9 +270,11 @@ function ChooseName({
 
 function ToggleHeader({
   hasHeader,
+  isDisabled,
   onChange: handleChange,
 }: {
   readonly hasHeader: boolean;
+  readonly isDisabled: boolean;
   readonly onChange: (hasHeader: boolean) => void;
 }): JSX.Element {
   return (
@@ -198,6 +283,7 @@ function ToggleHeader({
       <span>
         <Input.Checkbox
           checked={hasHeader}
+          disabled={isDisabled}
           onChange={(): void => handleChange(!hasHeader)}
         />
       </span>

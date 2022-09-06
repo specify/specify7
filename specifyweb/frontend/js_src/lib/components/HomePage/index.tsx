@@ -2,9 +2,9 @@ import React from 'react';
 
 import { welcomeText } from '../../localization/welcome';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
+import { usePref } from '../UserPreferences/usePref';
 import { AboutSpecify } from './AboutSpecify';
 import { TaxonTiles } from './TaxonTiles';
-import { usePref } from '../UserPreferences/usePref';
 
 export function WelcomeView(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');

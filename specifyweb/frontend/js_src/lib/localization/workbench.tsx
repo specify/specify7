@@ -556,6 +556,30 @@ export const wbText = createDictionary({
     'en-us': 'Character encoding:',
     'ru-ru': 'Кодировка символов:',
   },
+  delimiter: {
+    'en-us': 'Delimiter:',
+    'ru-ru': 'Разделитель:',
+  },
+  comma: {
+    'en-us': 'Comma',
+    'ru-ru': 'Запятая',
+  },
+  semicolon: {
+    'en-us': 'Semicolon',
+    'ru-ru': 'Точка с запятой',
+  },
+  tab: {
+    'en-us': 'Tab',
+    'ru-ru': 'Табуляция',
+  },
+  space: {
+    'en-us': 'Space',
+    'ru-ru': 'Пробел',
+  },
+  determineAutomatically: {
+    'en-us': 'Determine automatically',
+    'ru-ru': 'Определить автоматически',
+  },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
     'ru-ru': 'Имя для нового набора данных:',
