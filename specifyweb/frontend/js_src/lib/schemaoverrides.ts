@@ -103,28 +103,24 @@ const globalFieldOverrides: {
     timestampCreated: 'readOnly',
   },
   Taxon: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedTaxon: 'readOnly',
     fullName: 'readOnly',
   },
   Geography: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedGeography: 'readOnly',
     fullName: 'readOnly',
   },
   LithoStrat: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedLithoStrat: 'readOnly',
     fullName: 'readOnly',
   },
   GeologicTimePeriod: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedGeologicTimePeriod: 'readOnly',
