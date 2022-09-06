@@ -4,25 +4,30 @@
  * @module
  */
 
-import type { MappingLine } from './Mapper';
-import type { Tables } from '../DataModel/types';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
-import { generateMappingPathPreview } from './mappingPreview';
 import { getUniqueName } from '../../utils/uniquifyName';
+import type { Tables } from '../DataModel/types';
+import type { MappingLine } from './Mapper';
+import { generateMappingPathPreview } from './mappingPreview';
 
-export const uniquifyHeaders = (
-  headers: RA<string>,
+export function uniquifyHeaders(
+  rawHeaders: RA<string>,
   headersToUniquify: RA<number> | false = false
-): RA<string> =>
-  headers
-    .map((header) => (header ? header : wbText('noHeader')))
-    .map((header, index, headers) =>
+): RA<string> {
+  const headers = rawHeaders.map((header) =>
+    header.trim().length === 0 ? wbText('noHeader') : header
+  );
+  headers.forEach((header, index) => {
+    if (
       headers.indexOf(header) === index ||
       (Array.isArray(headersToUniquify) && !headersToUniquify.includes(index))
-        ? header
-        : getUniqueName(header, headers)
-    );
+    )
+      return;
+    headers[index] = getUniqueName(header, headers);
+  });
+  return headers;
+}
 
 export function renameNewlyCreatedHeaders(
   baseTableName: keyof Tables,
