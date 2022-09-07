@@ -10,7 +10,7 @@
 import type { Tables } from './types';
 import { VALUE } from '../../utils/utils';
 import type { IR, RR } from '../../utils/types';
-import {TableFields} from './helperTypes';
+import { TableFields } from './helperTypes';
 
 export type TableConfigOverwrite =
   /*
@@ -191,9 +191,6 @@ const fieldOverwrites: typeof globalFieldOverrides = {
 const endsWithFieldOverwrites: Partial<
   RR<keyof Tables | 'common', IR<FieldConfigOverwrite>>
 > = {
-  common: {
-    precision: 'readOnly',
-  },
   Attachment: {
     Attachments: 'hidden',
   },

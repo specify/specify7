@@ -1,14 +1,21 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { AjaxResponseObject } from '../../utils/ajax';
+import type { ajax, AjaxResponseObject } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/helpers';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 
-const overwrites: R<Document | IR<unknown> | RA<unknown> | string | undefined> =
-  {};
+const overwrites: R<
+  | {
+      readonly data: Document | IR<unknown> | RA<unknown> | string;
+      readonly responseCode: number | undefined;
+      readonly method: string | undefined;
+      readonly body: unknown;
+    }
+  | undefined
+> = {};
 
 /**
  * Overwrite the response to an ajax response for all fetch requests originating
@@ -16,10 +23,24 @@ const overwrites: R<Document | IR<unknown> | RA<unknown> | string | undefined> =
  */
 export function overwriteAjax(
   url: string,
-  response: Document | IR<unknown> | RA<unknown> | string
+  response: Document | IR<unknown> | RA<unknown> | string,
+  {
+    responseCode,
+    method,
+    body,
+  }: {
+    readonly responseCode?: number;
+    readonly method?: string;
+    readonly body?: unknown;
+  } = {}
 ): void {
   beforeAll(() => {
-    overwrites[url] = response;
+    overwrites[url] = {
+      data: response,
+      responseCode,
+      method,
+      body,
+    };
   });
   afterAll(() => {
     overwrites[url] = undefined;
@@ -39,7 +60,7 @@ export function overwriteAjax(
  */
 export async function ajaxMock<RESPONSE_TYPE>(
   url: string,
-  _options: unknown,
+  { method: requestMethod, body: requestBody }: Parameters<typeof ajax>[1],
   {
     expectedResponseCodes = [Http.OK],
   }: {
@@ -53,12 +74,15 @@ export async function ajaxMock<RESPONSE_TYPE>(
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
   const overwrittenData = overwrites[url] ?? overwrites[urlWithoutQuery];
   if (typeof overwrittenData !== 'undefined') {
+    const { data, responseCode, method, body } = overwrittenData;
     const response = createResponse(expectedResponseCodes);
-    return {
-      data: overwrittenData as RESPONSE_TYPE,
-      response,
-      status: response.status,
-    };
+    if (body !== undefined) expect(requestBody).toEqual(body);
+    if (method === undefined || method === requestMethod)
+      return {
+        data: data as RESPONSE_TYPE,
+        response,
+        status: responseCode ?? response.status,
+      };
   }
 
   const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);

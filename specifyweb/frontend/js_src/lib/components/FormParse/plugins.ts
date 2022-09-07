@@ -7,10 +7,11 @@
 
 import type { State } from 'typesafe-reducer';
 
-import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { f } from '../../utils/functools';
 import { parseRelativeDate } from '../../utils/relativeDate';
-import { CoordinateType, coordinateType } from '../FormPlugins/LatLongUi';
+import type { CoordinateType } from '../FormPlugins/LatLongUi';
+import { coordinateType } from '../FormPlugins/LatLongUi';
+import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -76,7 +77,7 @@ const processUiPlugin: {
     const latLongType = getProperty('latLongType') ?? '';
     return {
       type: 'LatLonUI',
-      step: f.parseInt(getProperty('step')),
+      step: f.parseFloat(getProperty('step')),
       latLongType:
         coordinateType.find(
           (type) => type.toLowerCase() === latLongType.toLowerCase()

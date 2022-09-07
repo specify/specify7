@@ -23,6 +23,7 @@ import {
   sortFunction,
   spanNumber,
   split,
+  takeBetween,
   toggleItem,
   toLowerCase,
   unCapitalize,
@@ -344,3 +345,11 @@ describe('getBooleanAttribute', () => {
     expect(getBooleanAttribute(input, 'data-attr')).toEqual(undefined);
   });
 });
+
+theories(takeBetween, [
+  { in: [[], '', ''], out: [] },
+  { in: [['a'], '', ''], out: [] },
+  { in: [['a', 'b', 'c'], 'a', 'b'], out: ['b'] },
+  { in: [['a', 'b', 'c'], 'a', 'c'], out: ['b', 'c'] },
+  { in: [['a', 'b', 'c'], 'a', 'd'], out: [] },
+]);

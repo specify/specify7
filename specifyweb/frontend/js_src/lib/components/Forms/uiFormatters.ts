@@ -12,7 +12,7 @@ import {
 } from '../../utils/utils';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import { parseClassName } from '../DataModel/resource';
+import { parseJavaClassName } from '../DataModel/resource';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 
@@ -29,7 +29,7 @@ export const fetchContext = load<Document>(
           ?.textContent?.trim();
         let resolvedFormatter;
         if (typeof external === 'string') {
-          if (parseClassName(external) === 'CatalogNumberUIFieldFormatter')
+          if (parseJavaClassName(external) === 'CatalogNumberUIFieldFormatter')
             resolvedFormatter = new CatalogNumberNumeric();
           else return undefined;
         } else {

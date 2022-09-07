@@ -7,7 +7,6 @@ import type { ParsedFormDefinition } from './index';
 
 type LabelCell = CellTypes['Label'] & FormCellDefinition;
 
-// TODO: split this function into smaller functions
 /**
  * Unfortunately, not all cell definitions can be parsed by looking at just
  * one cell at a time.
@@ -42,7 +41,8 @@ export function postProcessFormDef(
     columns,
     rows: rows.map((row) =>
       row.map((cell) =>
-        cell.id === undefined || typeof labelsForCells[cell.id] === 'object'
+        typeof cell.id === 'string' &&
+        typeof labelsForCells[cell.id] === 'object'
           ? removeRedundantLabel(cell)
           : addMissingLabel(cell, model)
       )
@@ -69,7 +69,7 @@ function createLabelsPostProcessor(
       rows[rowIndex][colIndex + 1],
       isSingleColumn ? rows[rowIndex + 1]?.[0] : undefined
     );
-    const processed = postProcessLabels(bound, isSingleColumn, fieldsById);
+    const processed = postProcessLabel(bound, isSingleColumn, fieldsById);
     const withTitle =
       typeof model === 'object' ? addLabelTitle(processed, model) : processed;
     return replaceBlankLabels(withTitle);
@@ -169,9 +169,13 @@ function bindLooseLabels(
   const siblingId = siblingCell?.id;
   if (typeof siblingId === 'string') {
     const hasLabel = initialLabelsForCells[siblingId] !== undefined;
-    if (!hasLabel && canAutoBind(cell))
+    if (
+      !hasLabel &&
+      typeof siblingCell === 'object' &&
+      canAutoBind(siblingCell)
+    )
       return {
-        // Assocate label with a field that follows it
+        // Associate label with a field that follows it
         ...cell,
         labelForCellId: siblingId,
       };
@@ -203,7 +207,7 @@ const canAutoBind = (cell: FormCellDefinition): boolean =>
   cell.type !== 'Field' ||
   !['Plugin', 'Checkbox'].includes(cell.fieldDefinition.type);
 
-const postProcessLabels = (
+const postProcessLabel = (
   cell: LabelCell,
   isSingleColumn: boolean,
   fieldsById: IR<IndexedField>
@@ -217,7 +221,7 @@ const postProcessLabels = (
           cell.text ??
           fieldsById[cell.labelForCellId]?.altLabel,
         // Get label fieldName from its field
-        fieldName: fieldsById[cell.labelForCellId]?.fieldName,
+        fieldName: fieldsById[cell.labelForCellId]?.fieldName ?? cell.fieldName,
       }
     : {}),
   // Don't right align labels if there is only one column
@@ -240,11 +244,15 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
         : undefined) ??
       (cell.fieldName?.toLowerCase() === 'this' ? undefined : cell.fieldName) ??
       '',
-    title: field?.getLocalizedDesc(),
+    title: cell?.title ?? field?.getLocalizedDesc(),
   };
 }
 
-/** Replace labels without text with blank cells */
+/**
+ * Replace labels without text with blank cells
+ *
+ * This is better for accessibility
+ */
 const replaceBlankLabels = (cell: LabelCell): FormCellDefinition =>
   (cell.text ?? '').length === 0
     ? ({
@@ -299,6 +307,9 @@ const removeRedundantLabel = (cell: FormCellDefinition): FormCellDefinition =>
       }
     : cell;
 
+/**
+ * Call this function on cells that don't have a label
+ */
 const addMissingLabel = (
   cell: FormCellDefinition,
   model: SpecifyModel | undefined
@@ -329,3 +340,17 @@ const addMissingLabel = (
           ? model?.getField(cell.fieldName ?? '')?.label
           : undefined),
 });
+
+export const exportsForTests = {
+  createLabelsPostProcessor,
+  indexFields,
+  indexLabels,
+  fixColumns,
+  bindLooseLabels,
+  postProcessLabel,
+  addLabelTitle,
+  replaceBlankLabels,
+  addBlankCell,
+  removeRedundantLabel,
+  addMissingLabel,
+};

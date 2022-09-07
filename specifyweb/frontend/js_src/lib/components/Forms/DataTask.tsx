@@ -23,9 +23,9 @@ import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { DisplayResource, ShowResource } from './ShowResource';
-import { usePref } from '../UserPreferences/usePref';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -254,25 +254,18 @@ export function CheckLoggedInCollection({
   readonly children: JSX.Element;
 }): JSX.Element | null {
   const [otherCollections] = useAsyncState(
-    React.useCallback(
-      () =>
-        resource.isNew()
-          ? false
-          : resource.fetch().then((resource) => {
-              const collectionId = getCollectionForResource(resource);
-              return schema.domainLevelIds.collection === collectionId
-                ? false
-                : typeof collectionId === 'number'
-                ? [collectionId]
-                : fetchCollectionsForResource(resource).then((collectionIds) =>
-                    !Array.isArray(collectionIds) ||
-                    collectionIds.includes(schema.domainLevelIds.collection)
-                      ? false
-                      : collectionIds
-                  );
-            }),
-      [resource]
-    ),
+    React.useCallback(async () => {
+      if (resource.isNew()) return false;
+      await resource.fetch();
+      const collectionId = getCollectionForResource(resource);
+      if (schema.domainLevelIds.collection === collectionId) return false;
+      else if (typeof collectionId === 'number') return [collectionId];
+      const collectionIds = await fetchCollectionsForResource(resource);
+      return !Array.isArray(collectionIds) ||
+        collectionIds.includes(schema.domainLevelIds.collection)
+        ? false
+        : collectionIds;
+    }, [resource]),
     true
   );
 

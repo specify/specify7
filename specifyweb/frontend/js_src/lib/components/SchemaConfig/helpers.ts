@@ -7,7 +7,7 @@ import type { DataObjectFormatter } from './SetupHooks';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
 import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
 import { commonText } from '../../localization/common';
-import { parseClassName } from '../DataModel/resource';
+import { parseJavaClassName } from '../DataModel/resource';
 import type {
   JavaType,
   LiteralField,
@@ -82,7 +82,7 @@ export const filterFormatters = (
     Object.entries(formatters)
       .filter(
         ([_name, { className }]) =>
-          parseClassName(className).toLowerCase() === tableName
+          parseJavaClassName(className).toLowerCase() === tableName
       )
       .map(([name, { title }]) => [name, title] as const)
   );

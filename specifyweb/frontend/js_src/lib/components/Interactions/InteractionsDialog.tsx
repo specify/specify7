@@ -20,7 +20,7 @@ import { formsText } from '../../localization/forms';
 import { fetchView } from '../FormParse';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
 import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
@@ -130,11 +130,11 @@ const fetchEntries = f.store(
                     .maybe(getParsedAttribute(entry, 'view'), fetchView)
                     ?.then((view) =>
                       typeof view === 'object'
-                        ? (parseClassName(view.class) as keyof Tables)
+                        ? (parseJavaClassName(view.class) as keyof Tables)
                         : undefined
                     )) ??
                     getModel(getParsedAttribute(entry, 'table') ?? '')?.name,
-                'Failed to get table name for interaction item. Set table or view attributes'
+                  'Failed to get table name for interaction item. Set table or view attributes'
                 );
           return {
             action: f.includes(supportedActions, action) ? action : undefined,
@@ -175,7 +175,8 @@ function Interactions({
     (action: typeof supportedActions[number], table: keyof Tables): void => {
       if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
       else {
-        const isRecordSetAction = action === 'NEW_GIFT' || action === 'NEW_LOAN';
+        const isRecordSetAction =
+          action === 'NEW_GIFT' || action === 'NEW_LOAN';
         const model = isRecordSetAction
           ? schema.models.CollectionObject
           : schema.models.Loan;

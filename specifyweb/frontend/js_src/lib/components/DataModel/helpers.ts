@@ -42,7 +42,10 @@ function serializeModel<SCHEMA extends AnySchema>(
       (tableName as SCHEMA['tableName']) ??
         resource._tablename ??
         parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
-      'Unable to serialize resource because table name is unknown'
+      `Unable to serialize resource because table name is unknown.` +
+        (process.env.NODE_ENV === 'test'
+          ? `\nMake sure your test file calls requireContext();`
+          : '')
     )
   );
   const fields = model.fields.map(({ name }) => name);

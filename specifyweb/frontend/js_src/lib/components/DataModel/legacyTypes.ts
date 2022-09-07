@@ -9,7 +9,7 @@ import {
   AnySchema,
   CommonFields,
   SerializedModel,
-  SerializedResource
+  SerializedResource,
 } from './helperTypes';
 
 /*
@@ -147,7 +147,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
                   | Collection<VALUE[number]>
                   | RA<SerializedResource<VALUE[number]>>
                   | RA<SpecifyResource<VALUE[number]>>
-              : VALUE extends null
+              : null extends VALUE
               ?
                   | SerializedResource<Exclude<VALUE, null>>
                   | SpecifyResource<Exclude<VALUE, null>>

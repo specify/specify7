@@ -76,8 +76,15 @@ export const ajax = async <RESPONSE_TYPE = string>(
    */
   // REFACTOR: replace this with a mcok
   process.env.NODE_ENV === 'test'
-    ? import('../../tests/ajax').then(({ ajaxMock }) =>
-        ajaxMock(url, {}, { expectedResponseCodes })
+    ? import('../../tests/ajax').then(async ({ ajaxMock }) =>
+        ajaxMock(
+          url,
+          {
+            headers: { Accept: accept, ...headers },
+            ...options,
+          },
+          { expectedResponseCodes }
+        )
       )
     : fetch(url, {
         ...options,

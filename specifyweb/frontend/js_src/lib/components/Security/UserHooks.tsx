@@ -112,12 +112,12 @@ export function useUserAgents(
               await Promise.all(
                 group(
                   collections.map((collection) => [
-                    (strictIdFromUrl(collection.discipline)),
+                    strictIdFromUrl(collection.discipline),
                     collection.id,
                   ])
                 ).map(async ([disciplineId, collections]) =>
                   fetchResource('Discipline', disciplineId)
-                    .then(({ division }) => (strictIdFromUrl(division)))
+                    .then(({ division }) => strictIdFromUrl(division))
                     .then((divisionId) =>
                       collections.map(
                         (collectionId) => [divisionId, collectionId] as const
@@ -160,7 +160,7 @@ export function useUserAgents(
         ).then((rawAgents) => {
           const agents = Object.fromEntries(
             rawAgents.map((agent) => [
-              (strictIdFromUrl(agent.division)),
+              strictIdFromUrl(agent.division ?? ''),
               agent,
             ])
           );

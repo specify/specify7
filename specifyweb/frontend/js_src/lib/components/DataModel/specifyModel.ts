@@ -20,7 +20,7 @@ import type {
   SerializedResource,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { parseClassName } from './resource';
+import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
@@ -188,7 +188,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = parseClassName(this.longName) as SCHEMA['tableName'];
+    this.name = parseJavaClassName(this.longName) as SCHEMA['tableName'];
     this.view =
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form

@@ -326,3 +326,6 @@ export function jsonStringify(
     space
   );
 }
+
+export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
+  array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);

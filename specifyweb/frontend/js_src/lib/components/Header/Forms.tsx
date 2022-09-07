@@ -16,7 +16,7 @@ import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
 import {
   fetchContext as fetchSchema,
   strictGetModel,
@@ -120,7 +120,7 @@ const fetchLegacyForms = f.store(
               FormEntry | undefined
             >((form) => {
               if (form === undefined) return undefined;
-              const modelName = parseClassName(form.class) as keyof Tables;
+              const modelName = parseJavaClassName(form.class) as keyof Tables;
               const model = strictGetModel(modelName);
 
               return {

@@ -44,6 +44,12 @@ export function parseXml(string: string): Document | string {
   else return parsedXml;
 }
 
+export function strictParseXml(xml: string): Element {
+  const parsed = parseXml(xml);
+  if (typeof parsed === 'string') throw new Error(parsed);
+  else return parsed.documentElement;
+}
+
 const xmlErrorParsers = [
   /(?<message>[^\n]+)\n[^\n]+\nLine Number (?<line>\d+), Column (?<column>\d+)/,
   /error on line (?<line>\d+) at column (?<column>\d+): (?<message>[\s\S]*)*/,

@@ -47,9 +47,9 @@ export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
     const {
       in: input,
       out: output,
-      name = `#${index}`,
+      name = undefined,
     } = Array.isArray(entry) ? { in: entry[0], out: entry[1] } : entry;
-    test(name, () => {
+    test(name ?? createName(input, index), () => {
       const expected = expect(testFunction(...input));
       if (output === undefined) expected.toBeUndefined();
       else if (output === null) expected.toBeNull();
@@ -73,4 +73,20 @@ export function theories<ARGUMENTS_TYPE extends RA<unknown>, RETURN_TYPE>(
       0
     );
   else describe(testFunction.name, () => items.forEach(runTest));
+}
+
+function createName(input: RA<unknown>, index: number): string {
+  if (input.length === 1) {
+    if (
+      typeof input[0] === 'string' &&
+      input[0].trim().length > 0 &&
+      input[0].length < 30
+    )
+      return input[0];
+    else if (input[0] === null) return 'null';
+    else if (input[0] === undefined) return 'undefined';
+    else if (typeof input[0] === 'number' || typeof input[0] === 'boolean')
+      return input[0].toString();
+  }
+  return `#${index + 1}`;
 }

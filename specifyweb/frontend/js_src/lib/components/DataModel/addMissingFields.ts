@@ -1,6 +1,7 @@
 import { parserFromType } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { formatUrl } from '../Router/queryString';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type { AnySchema, SerializedResource } from './helperTypes';
 import { strictGetModel } from './schema';
@@ -49,9 +50,8 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
     ...(Object.fromEntries(
       filterArray(
         model.fields.map((field) =>
-          shouldIncludeField(field, spec)
-            ? undefined
-            : [
+          shouldIncludeField(field, spec, record.id === undefined)
+            ? [
                 field.name,
                 field.isRelationship
                   ? handleRelationship(record, field, spec)
@@ -66,6 +66,7 @@ export function addMissingFields<TABLE_NAME extends keyof Tables>(
                       ? parserFromType(field.type).value
                       : null),
               ]
+            : undefined
         )
       )
     ) as SerializedResource<Tables[TABLE_NAME]>),
@@ -86,13 +87,19 @@ function shouldIncludeField(
     toManyRelationships,
     requiredRelationships,
     optionalRelationships,
-  }: ResourceSpec
+  }: ResourceSpec,
+  isNew: boolean
 ): boolean {
   if (field.isRelationship) {
-    return relationshipIsToMany(field)
-      ? toManyRelationships !== 'omit' && field.type !== 'many-to-many'
-      : (field.isRequired ? requiredRelationships : optionalRelationships) !==
-          'omit';
+    if (relationshipIsToMany(field)) {
+      return !field.isDependent() && isNew
+        ? false
+        : toManyRelationships !== 'omit' && field.type !== 'many-to-many';
+    } else
+      return (
+        (field.isRequired ? requiredRelationships : optionalRelationships) !==
+        'omit'
+      );
   } else return (field.isRequired ? requiredFields : optionalFields) !== 'omit';
 }
 
@@ -111,11 +118,17 @@ function handleRelationship<TABLE_NAME extends keyof Tables>(
           addMissingFields(field.relatedModel.name, record, spec)
         ) ?? (spec.toManyRelationships === 'set' ? [] : null)
       );
-    } else
+    } else {
+      const otherSideName = field.getReverse()?.name;
       return (
         record[field.name as keyof Tables[TABLE_NAME]['toManyIndependent']] ??
-        null
+        (typeof otherSideName === 'string' && typeof record.id === 'number'
+          ? formatUrl(`/api/specify/${field.relatedModel.name}`, {
+              [otherSideName]: record.id.toString(),
+            })
+          : undefined)
       );
+    }
   else {
     const shouldSet = field.isRequired
       ? spec.requiredRelationships === 'set'

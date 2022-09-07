@@ -4,6 +4,7 @@ import { ping } from '../../utils/ajax/ping';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { defined } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { businessRuleDefs } from './businessRuleDefs';
@@ -19,7 +20,6 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
-import {defined} from '../../utils/types';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -69,12 +69,22 @@ export const deleteResource = async (
 export const createResource = async <TABLE_NAME extends keyof Tables>(
   tableName: TABLE_NAME,
   data: Partial<SerializedResource<Tables[TABLE_NAME]>>
-) =>
+): Promise<SerializedResource<Tables[TABLE_NAME]>> =>
   ajax<SerializedModel<Tables[TABLE_NAME]>>(
     `/api/specify/${tableName.toLowerCase()}/`,
     {
       method: 'POST',
-      body: removeKey(keysToLowerCase(addMissingFields(tableName, data)), 'id'),
+      body: keysToLowerCase(
+        removeKey(
+          addMissingFields(tableName, data, {
+            optionalFields: 'omit',
+            toManyRelationships: 'omit',
+            optionalRelationships: 'omit',
+          }),
+          'id',
+          '_tableName'
+        )
+      ),
       headers: { Accept: 'application/json' },
     },
     { expectedResponseCodes: [Http.CREATED] }
@@ -148,14 +158,17 @@ export function parseResourceUrl(
 
 export const strictParseResourceUrl = (
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number]=>
-  defined(parseResourceUrl(resourceUrl),`Unable to parse resource API url: ${resourceUrl}`);
+): readonly [modelName: keyof Tables, id: number] =>
+  defined(
+    parseResourceUrl(resourceUrl),
+    `Unable to parse resource API url: ${resourceUrl}`
+  );
 
 export const idFromUrl = (url: string): number | undefined =>
   parseResourceUrl(url)?.[1];
 
 export const strictIdFromUrl = (url: string): number =>
-  defined(idFromUrl(url),`Unable to extract resource id from url: ${url}`);
+  defined(idFromUrl(url), `Unable to extract resource id from url: ${url}`);
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
@@ -164,24 +177,6 @@ export const strictIdFromUrl = (url: string): number =>
 export const resourceToJson = <SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA>
 ): SerializedModel<SCHEMA> => resource.toJSON() as SerializedModel<SCHEMA>;
-
-export async function getRelatedObjectCount<SCHEMA extends AnySchema>(
-  resource: SpecifyResource<SCHEMA>,
-  fieldName: string &
-    (keyof SCHEMA['toManyDependent'] | keyof SCHEMA['toManyIndependent'])
-): Promise<number | undefined> {
-  // Return the number of objects represented by a to-many field
-  if (resource.specifyModel.getField(fieldName)?.type !== 'one-to-many') {
-    throw new TypeError('field is not one-to-many');
-  }
-
-  // For unpersisted objects, this function doesn't make sense
-  if (resource.isNew()) return undefined;
-
-  return resource
-    .rgetCollection(fieldName)
-    .then(async (collection) => collection?.getTotalCount() ?? 0);
-}
 
 /*
  * Things to keep in mind:
@@ -216,7 +211,7 @@ export function resourceOn(
 }
 
 /** Extract model name from a Java class name */
-export const parseClassName = (className: string): string =>
+export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
 export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
@@ -253,3 +248,7 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
         uniquenessRules in schema.domainLevelIds
     )
     .map(([fieldName]) => model.strictGetField(fieldName).name) ?? [];
+
+export const exportsForTests = {
+  getFieldsToClone,
+};

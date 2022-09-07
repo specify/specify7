@@ -56,7 +56,7 @@ export function Report({
               defined(
                 records[0].data ?? undefined,
                 'Trying to create a report from an invalid AppResource. ' +
-                'App Resource must have valid XML content'
+                  'App Resource must have valid XML content'
               )
             )
           )
@@ -87,7 +87,7 @@ export function Report({
     React.useCallback(
       () =>
         typeof report === 'object'
-          ? f.maybe(idFromUrl(report.query), async (id) =>
+          ? f.maybe(idFromUrl(report.query ?? ''), async (id) =>
               fetchResource('SpQuery', id, false).then(
                 (resource) => resource ?? false
               )
