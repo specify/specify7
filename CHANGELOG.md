@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+##  [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
+
+- Rewrite Autocomplete to use HeadlessUI library ([#1986](https://github.com/specify/specify7/pull/1986))
+- Fix Schema Config failing on no description strings ([#2024](https://github.com/specify/specify7/pull/2024))
+- Fetch pick lists on demand ([#1988](https://github.com/specify/specify7/pull/1988))
+- Allow customizing SubView grid column widths ([#2035](https://github.com/specify/specify7/pull/2035))
+- Fix Sp7.7 not parsing QCB's TypeSearch correctly ([#2026](https://github.com/specify/specify7/pull/2026))
+- Allow customizing tree search algorithm  ([#2002](https://github.com/specify/specify7/pull/2002))
+- Convert "text" -> "java.lang.String" when creating report from query ([#2059](https://github.com/specify/specify7/pull/2059))
+- Don't use underscore for partial date fields ([#2066](https://github.com/specify/specify7/pull/2066))
+- Include credit to member institutions ([#2071](https://github.com/specify/specify7/pull/2071))
+- Unhide ExsiccataItem from the WorkBench ([#2088](https://github.com/specify/specify7/pull/2088))
+- Fix `Taxon.taxonId` field not getting populated ([#2087](https://github.com/specify/specify7/pull/2087))
+
 ##  [7.7.1](https://github.com/specify/specify7/compare/v7.7.0...v7.7.1) (29 August 2022)
 
 ### Added
