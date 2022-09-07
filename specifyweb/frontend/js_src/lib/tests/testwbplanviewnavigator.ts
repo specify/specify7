@@ -335,6 +335,14 @@ export function testWbPlanViewNavigator(): void {
                   isDefault: false,
                   isRelationship: false,
                 },
+                guid : {
+                  optionLabel: "GUID",
+                  isEnabled: true,
+                  isRequired: false,
+                  isHidden: false,
+                  isDefault: false,
+                  isRelationship: false,
+                },
                 name: {
                   optionLabel: 'Name',
                   isEnabled: true,
