@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased](https://github.com/specify/specify7/compare/v7.7.1...HEAD)
+
+### Added
+
+- You can now upload `GUIDs` for tree tables though the WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
+
+### Fixed
+
+- Fixed `taxonId` field on the forms not getting populated ([#2083](https://github.com/specify/specify7/issues/2083))
+- Fixed `ExsiccataItem` table being hidden in the WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - *Reported by CSIRO*
+
+
 ##  [7.7.1](https://github.com/specify/specify7/compare/v7.7.0...v7.7.1) (29 August 2022)
 
 ### Added
