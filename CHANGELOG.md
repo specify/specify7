@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- Allow customizing SubView grid column widths ([#2035](https://github.com/specify/specify7/pulls/2035))
+- Allow customizing SubView grid column widths ([#2035](https://github.com/specify/specify7/pull/2035))
 - Allow customizing tree search algorithm ([#2001](https://github.com/specify/specify7/issues/2001))
 - Added credits to institutions in the `CHANGELOG.md` file ([#2071](https://github.com/specify/specify7/issues/2071))
 
