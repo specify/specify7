@@ -159,25 +159,6 @@ theories(group, [
   },
 ]);
 
-theories(group, [
-  {
-    in: [
-      [
-        ['a', 1],
-        ['a', 2],
-        ['b', 3],
-        ['c', 4],
-        ['a', 5],
-      ],
-    ],
-    out: [
-      ['a', [1, 2, 5]],
-      ['b', [3]],
-      ['c', [4]],
-    ],
-  },
-]);
-
 describe('mappedFind', () => {
   test('Found value', () => {
     expect(
