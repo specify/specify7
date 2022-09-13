@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - You can now upload `GUIDs` for tree tables though the WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
+### Fixed
+
+- Fixed an issue with forms with pick lists based on table records not
+    loading  ([#2144](https://github.com/specify/specify7/issues/2144))
+
 ## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
 
 ### Added
