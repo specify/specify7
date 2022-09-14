@@ -998,19 +998,14 @@ export const WBView = Backbone.View.extend({
         visualCol,
         physicalRow,
         physicalCol,
-        oldValue='',
+        oldValue = '',
         newValue,
       }) => {
         if (
           this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
           undefined
         )
-          this.setCellMeta(
-            physicalRow,
-            physicalCol,
-            'originalValue',
-            oldValue
-          );
+          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue);
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
@@ -2031,16 +2026,22 @@ export const WBView = Backbone.View.extend({
                 this.$el.empty();
                 dialog.remove();
 
-                if (!this.checkDeletedFail(status))
-                  showDialog({
+                if (!this.checkDeletedFail(status)) {
+                  const dialog = showDialog({
                     header: wbText('dataSetDeletedDialogHeader'),
                     content: wbText('dataSetDeletedDialogText'),
                     buttons: (
-                      <Link.Blue href="/specify/">
+                      <Link.Blue
+                        href="/specify/"
+                        onClick={() => {
+                          dialog.remove();
+                        }}
+                      >
                         {commonText('close')}
                       </Link.Blue>
                     ),
                   });
+                }
               });
             }}
           >
