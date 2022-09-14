@@ -10,9 +10,9 @@ import {
 } from './resource';
 import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
-import {Http} from '../../utils/ajax/helpers';
 import {schema} from './schema';
 import {formatUrl} from '../Router/queryString';
+import {Http} from '../../utils/ajax/definitions';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {

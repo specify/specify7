@@ -3,10 +3,10 @@
  */
 
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { load } from './index';
 import { formatUrl } from '../Router/queryString';
 import { softFail } from '../Errors/Crash';
+import { Http } from '../../utils/ajax/definitions';
 
 type SystemInfo = {
   readonly version: string;

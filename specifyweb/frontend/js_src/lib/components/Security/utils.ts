@@ -1,6 +1,5 @@
 import { adminText } from '../../localization/admin';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import {
@@ -21,6 +20,7 @@ import type { RoleBase } from './Collection';
 import { processPolicies } from './policyConverter';
 import { getRegistriesFromPath } from './registry';
 import type { Role } from './Role';
+import { Http } from '../../utils/ajax/definitions';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;

@@ -1,5 +1,4 @@
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
@@ -20,6 +19,7 @@ import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
+import { Http } from '../../utils/ajax/definitions';
 
 /*
  * REFACTOR: experiment with an object singleton:

@@ -3,19 +3,6 @@ import { IR, RA } from '../types';
 // These HTTP methods do not require CSRF protection
 export const csrfSafeMethod = new Set(['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
-/* An enum of HTTP status codes back-end commonly returns */
-export const Http = {
-  // You may add others codes as needed
-  OK: 200,
-  CREATED: 201,
-  NO_CONTENT: 204,
-  BAD_REQUEST: 400,
-  NOT_FOUND: 404,
-  FORBIDDEN: 403,
-  CONFLICT: 409,
-  UNAVAILABLE: 503,
-} as const;
-
 export const isExternalUrl = (url: string): boolean =>
   /*
    * Blob URLs may point to the same origin, but should be treated as external

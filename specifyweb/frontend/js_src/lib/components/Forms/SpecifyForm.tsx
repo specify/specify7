@@ -8,7 +8,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { Http } from '../../utils/ajax/helpers';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -18,6 +17,7 @@ import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { useViewDefinition } from './useViewDefinition';
 import { usePref } from '../UserPreferences/usePref';
+import { Http } from '../../utils/ajax/definitions';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with

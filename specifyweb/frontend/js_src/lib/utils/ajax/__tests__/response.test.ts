@@ -1,7 +1,7 @@
 import { handleAjaxError } from '../../../components/Errors/FormatError';
-import { Http } from '../helpers';
 import { handleAjaxResponse } from '../response';
 import { xmlToString } from '../../../components/AppResources/codeMirrorLinters';
+import { Http } from '../definitions';
 
 jest.mock('../../../components/Errors/FormatError', () => ({
   handleAjaxError: jest.fn(),

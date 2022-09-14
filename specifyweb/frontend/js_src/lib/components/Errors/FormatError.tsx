@@ -1,16 +1,17 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { Http } from '../../utils/ajax/helpers';
-import type { WritableArray } from '../../utils/types';
+import { Http } from '../../utils/ajax/definitions';
+import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
+import { join } from '../Molecules';
+import { formatPermissionsError } from '../Permissions/FormatError';
 import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
-import { formatPermissionsError } from '../Permissions/FormatError';
 
 export function formatError(
   error: unknown,
@@ -55,16 +56,27 @@ export function formatError(
       console.error(error);
     } else if ('statusText' in error && 'responseText' in error) {
       const { statusText, responseText } = error as {
-        readonly statusText: string;
+        readonly statusText: RA<string> | string;
         readonly responseText: string;
       };
+      const statusTextArray = Array.isArray(statusText)
+        ? statusText
+        : [statusText];
       errorObject.push(
         <React.Fragment key="statusText">
-          <p>{statusText}</p>
+          <p className="whitespace-normal">
+            {join(
+              statusTextArray,
+              <>
+                <br />
+                <br />
+              </>
+            )}
+          </p>
           {formatErrorResponse(responseText)}
         </React.Fragment>
       );
-      errorMessage.push(statusText);
+      errorMessage.push(...statusTextArray);
       copiableMessage.push(error);
     } else {
       const serialized = jsonStringify(error, 4);

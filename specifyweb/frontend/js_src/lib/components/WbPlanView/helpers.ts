@@ -6,7 +6,6 @@
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { AutoMapper } from './autoMapper';
 import type { Dataset } from './Wrapped';
 import type {
@@ -34,6 +33,7 @@ import {
   valueIsTreeRank,
 } from './mappingHelpers';
 import { getMappingLineData } from './navigator';
+import { Http } from '../../utils/ajax/definitions';
 
 export async function savePlan({
   dataset,

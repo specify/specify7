@@ -1,6 +1,5 @@
 import { SpecifyModel } from '../DataModel/specifyModel';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { Http } from '../../utils/ajax/helpers';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import { Link } from '../Atoms/Link';
@@ -11,6 +10,7 @@ import { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';
 import { getModelById } from '../DataModel/schema';
 import { fieldFormat } from '../../utils/fieldFormat';
+import { Http } from '../../utils/ajax/definitions';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>

@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { strictGetModel } from '../DataModel/schema';
@@ -10,6 +9,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { contextUnlockedPromise, foreverFetch } from '../InitialContext';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { formatUrl } from '../Router/queryString';
+import { Http } from '../../utils/ajax/definitions';
 
 export type RawExpressSearchResult = {
   readonly model: SpecifyModel;

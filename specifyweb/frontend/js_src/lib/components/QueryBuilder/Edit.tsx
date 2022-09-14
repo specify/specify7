@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import { formData, Http } from '../../utils/ajax/helpers';
+import { formData } from '../../utils/ajax/helpers';
 import { error } from '../Errors/assert';
 import type { SpQuery, SpReport } from '../DataModel/types';
 import { f } from '../../utils/functools';
@@ -24,6 +24,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { Http } from '../../utils/ajax/definitions';
 
 export function QueryEditButton({
   query,

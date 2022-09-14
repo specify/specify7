@@ -1,11 +1,12 @@
-import { RA } from '../types';
 import { parseXml } from '../../components/AppResources/codeMirrorLinters';
-import { Http } from './helpers';
 import { formatList } from '../../components/Atoms/Internationalization';
-import { sortFunction } from '../utils';
-import { f } from '../functools';
-import { AjaxResponseObject, MimeType } from './index';
 import { handleAjaxError } from '../../components/Errors/FormatError';
+import { f } from '../functools';
+import type { RA } from '../types';
+import { filterArray } from '../types';
+import { sortFunction } from '../utils';
+import { Http, httpCodeToErrorMessage } from './definitions';
+import type { AjaxResponseObject, MimeType } from './index';
 
 /**
  * Handle network response (parse the data, handle possible errors)
@@ -68,13 +69,17 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
       console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',
-        statusText: `Invalid response code ${response.status}. Expected ${
-          expectedResponseCodes.length === 1 ? '' : 'one of '
-        }${formatList(
-          Array.from(expectedResponseCodes)
-            .sort(sortFunction(f.id))
-            .map(f.toString)
-        )}. Response:`,
+        statusText: filterArray([
+          `Invalid response code ${response.status}. Expected ${
+            expectedResponseCodes.length === 1 ? '' : 'one of '
+          }${formatList(
+            Array.from(expectedResponseCodes)
+              .sort(sortFunction(f.id))
+              .map(f.toString)
+          )}.`,
+          httpCodeToErrorMessage[response.status],
+          'Response:',
+        ]),
         responseText: text,
       };
     }

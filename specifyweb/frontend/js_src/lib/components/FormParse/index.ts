@@ -4,7 +4,6 @@
  */
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -20,6 +19,7 @@ import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
+import { Http } from '../../utils/ajax/definitions';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;

@@ -8,7 +8,6 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { hasPermission } from '../Permissions/helpers';
@@ -24,8 +23,9 @@ import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {SortConfig, SortIndicator, useSortConfig} from '../Molecules/Sorting';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { Http } from '../../utils/ajax/definitions';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(

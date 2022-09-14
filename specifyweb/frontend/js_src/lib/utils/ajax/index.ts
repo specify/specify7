@@ -1,7 +1,8 @@
-import { csrfSafeMethod, Http, isExternalUrl } from './helpers';
+import { csrfSafeMethod, isExternalUrl } from './helpers';
 import { csrfToken } from './csrfToken';
 import type { IR, RA } from '../types';
 import { handleAjaxResponse } from './response';
+import { Http } from './definitions';
 
 // REFACTOR: add a central place for all API endpoint definitions
 

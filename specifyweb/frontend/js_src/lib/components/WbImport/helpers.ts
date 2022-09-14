@@ -2,7 +2,6 @@ import Papa from 'papaparse';
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { f } from '../../utils/functools';
 import { wbText } from '../../localization/workbench';
@@ -10,6 +9,7 @@ import { schema } from '../DataModel/schema';
 import type { GetSet, IR, RA } from '../../utils/types';
 import { uniquifyHeaders } from '../WbPlanView/headerHelper';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { Http } from '../../utils/ajax/definitions';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>

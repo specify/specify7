@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
-import { formData, Http } from '../../utils/ajax/helpers';
+import { formData } from '../../utils/ajax/helpers';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyUser } from '../DataModel/types';
@@ -31,6 +31,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
+import { Http } from '../../utils/ajax/definitions';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({

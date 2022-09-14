@@ -1,7 +1,6 @@
 import { overwriteAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { Http } from '../../../utils/ajax/helpers';
 import type { RA } from '../../../utils/types';
 import { ensure } from '../../../utils/types';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
@@ -19,6 +18,7 @@ import {
 } from '../index';
 import { formatUrl } from '../../Router/queryString';
 import { removeKey } from '../../../utils/utils';
+import { Http } from '../../../utils/ajax/definitions';
 
 const {
   views,

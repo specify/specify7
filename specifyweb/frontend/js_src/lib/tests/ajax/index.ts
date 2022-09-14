@@ -2,10 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
+import { Http } from '../../utils/ajax/definitions';
 
 const overwrites: R<
   | {

@@ -3,7 +3,6 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -13,6 +12,7 @@ import type { Collection, SpecifyUser } from '../DataModel/types';
 import { hasDerivedPermission, hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import { processPolicies } from './policyConverter';
+import { Http } from '../../utils/ajax/definitions';
 
 /** Fetching user policies */
 export function useUserPolicies(

@@ -4,7 +4,6 @@
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import type { Preferences } from './Definitions';
@@ -23,6 +22,7 @@ import { filterArray } from '../../utils/types';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
 import { parseValue } from '../../utils/parser/parse';
+import { Http } from '../../utils/ajax/definitions';
 
 export function getPrefDefinition<
   CATEGORY extends keyof Preferences,

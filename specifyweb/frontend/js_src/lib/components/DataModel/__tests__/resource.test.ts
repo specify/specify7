@@ -1,7 +1,6 @@
 import { overwriteAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { Http } from '../../../utils/ajax/helpers';
 import { setCache } from '../../../utils/cache';
 import type { RA } from '../../../utils/types';
 import { addMissingFields } from '../addMissingFields';
@@ -27,6 +26,7 @@ import {
 } from '../resource';
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
+import { Http } from '../../../utils/ajax/definitions';
 
 const { getFieldsToClone } = exportsForTests;
 

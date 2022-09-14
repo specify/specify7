@@ -1,5 +1,4 @@
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import type { Attachment } from '../DataModel/types';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { load } from '../InitialContext';
@@ -11,6 +10,7 @@ import { schema } from '../DataModel/schema';
 import type { IR } from '../../utils/types';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { Http } from '../../utils/ajax/definitions';
 
 type AttachmentSettings = {
   readonly collection: string;

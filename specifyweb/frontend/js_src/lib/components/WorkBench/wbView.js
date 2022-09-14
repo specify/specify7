@@ -49,7 +49,6 @@ import {serializeResource} from '../DataModel/helpers';
 import {fetchPickList} from '../PickLists/fetch';
 import {ajax} from '../../utils/ajax';
 import {ping} from '../../utils/ajax/ping';
-import {Http} from '../../utils/ajax/helpers';
 import {
   hasPermission,
   hasTablePermission,
@@ -65,6 +64,7 @@ import {createBackboneView} from '../Core/reactBackboneExtend';
 import {WbStatus} from './Status';
 import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
+import {Http} from '../../utils/ajax/definitions';
 
 const metaKeys = [
   'isNew',

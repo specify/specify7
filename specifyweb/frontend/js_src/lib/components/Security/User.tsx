@@ -5,7 +5,7 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { formData, Http } from '../../utils/ajax/helpers';
+import { formData } from '../../utils/ajax/helpers';
 import type { SpecifyUser } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
@@ -71,6 +71,7 @@ import {
 } from './UserPolicyHooks';
 import { CollectionAccess, SetCollection } from './UserCollections';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { Http } from '../../utils/ajax/definitions';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();

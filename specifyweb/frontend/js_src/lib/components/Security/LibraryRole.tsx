@@ -3,7 +3,6 @@ import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { schema } from '../DataModel/schema';
@@ -17,6 +16,7 @@ import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { decompressPolicies } from './policyConverter';
+import { Http } from '../../utils/ajax/definitions';
 
 const closeUrl = '/specify/security/institution/';
 

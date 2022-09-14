@@ -1,10 +1,10 @@
 import { ajax } from './index';
-import { Http } from './helpers';
 import { Backbone } from '../../components/DataModel/backbone';
 import { formatUrl } from '../../components/Router/queryString';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
 import type { RA } from '../types';
 import { defined } from '../types';
+import { Http } from './definitions';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;

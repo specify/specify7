@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
@@ -23,6 +22,7 @@ import { Form, Label } from '../Atoms/Form';
 import { ErrorMessage, Ul } from '../Atoms';
 import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { Http } from '../../utils/ajax/definitions';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;

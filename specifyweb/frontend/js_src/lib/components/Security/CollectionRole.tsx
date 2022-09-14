@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { Http } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -25,6 +24,7 @@ import { createCollectionRole } from './CreateRole';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
 import { decompressPolicies } from './policyConverter';
+import { Http } from '../../utils/ajax/definitions';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,

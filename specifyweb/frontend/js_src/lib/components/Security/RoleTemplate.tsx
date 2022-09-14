@@ -3,7 +3,6 @@ import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -20,6 +19,7 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import { Button } from '../Atoms/Button';
 import { H3 } from '../Atoms';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { Http } from '../../utils/ajax/definitions';
 
 class Ul extends React.Component<{ children: ReactNode }> {
   render() {
