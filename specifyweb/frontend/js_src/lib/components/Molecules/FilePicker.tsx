@@ -27,7 +27,7 @@ export function FilePicker({
   }
 
   function handleFileDropped(event: React.DragEvent): void {
-    const file = event.dataTransfer?.items?.[0].getAsFile() ?? undefined;
+    const file = event.dataTransfer?.items?.[0]?.getAsFile() ?? undefined;
     handleFileChange(file);
     preventPropagation(event);
     setIsDragging(false);
