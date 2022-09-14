@@ -3,7 +3,6 @@ import React from 'react';
 import { welcomeText } from '../../localization/welcome';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
 import { usePref } from '../UserPreferences/usePref';
-import { AboutSpecify } from './AboutSpecify';
 import { TaxonTiles } from './TaxonTiles';
 
 export function WelcomeView(): JSX.Element {
@@ -24,7 +23,6 @@ export function WelcomeView(): JSX.Element {
       >
         {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
       </div>
-      <AboutSpecify />
     </div>
   );
 }

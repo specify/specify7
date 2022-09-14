@@ -1,12 +1,11 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { H3 } from '../Atoms';
-import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { fetchCollection } from '../DataModel/collection';
 import { schema } from '../DataModel/schema';
@@ -16,26 +15,10 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
-import { Http } from '../../utils/ajax/definitions';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return <AboutDialog isOpen onClose={handleClose} />;
-}
-
-export function AboutSpecify(): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <div className="flex-1 text-right">
-      <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
-        <img
-          alt={welcomeText('aboutSpecify')}
-          src="/static/img/specify_7_small.png"
-        />
-      </Button.LikeLink>
-      <AboutDialog isOpen={isOpen} onClose={handleClose} />
-    </div>
-  );
 }
 
 function AboutDialog({
