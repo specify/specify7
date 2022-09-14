@@ -1,7 +1,7 @@
-import { handleAjaxError } from '../../../components/Errors/FormatError';
-import { handleAjaxResponse } from '../response';
 import { xmlToString } from '../../../components/AppResources/codeMirrorLinters';
-import { Http } from '../definitions';
+import { handleAjaxError } from '../../../components/Errors/FormatError';
+import { Http, httpCodeToErrorMessage } from '../definitions';
+import { handleAjaxResponse } from '../response';
 
 jest.mock('../../../components/Errors/FormatError', () => ({
   handleAjaxError: jest.fn(),
@@ -138,7 +138,11 @@ describe('handleAjaxResponse', () => {
     expect(handleAjaxError).toHaveBeenLastCalledWith(
       {
         type: 'invalidResponseCode',
-        statusText: `Invalid response code ${Http.UNAVAILABLE}. Expected ${Http.OK}. Response:`,
+        statusText: [
+          `Invalid response code ${Http.UNAVAILABLE}. Expected ${Http.OK}.`,
+          httpCodeToErrorMessage[Http.UNAVAILABLE],
+          'Response:',
+        ],
         responseText: 'Service unavailable',
       },
       { ok: false, status: Http.UNAVAILABLE, statusText: '' },
@@ -161,7 +165,11 @@ describe('handleAjaxResponse', () => {
     expect(handleAjaxError).toHaveBeenLastCalledWith(
       {
         type: 'invalidResponseCode',
-        statusText: `Invalid response code ${Http.NOT_FOUND}. Expected one of ${Http.OK} and ${Http.NO_CONTENT}. Response:`,
+        statusText: [
+          `Invalid response code ${Http.NOT_FOUND}. Expected one of ${Http.OK} and ${Http.NO_CONTENT}.`,
+          httpCodeToErrorMessage[Http.NOT_FOUND],
+          'Response:',
+        ],
         responseText: 'Page not found',
       },
       { ok: false, status: Http.NOT_FOUND, statusText: '' },

@@ -4,6 +4,7 @@ import { requireContext } from '../../../tests/helpers';
 
 requireContext();
 
+// TEST: break this test into smaller tests
 theories(getMappingLineData, [
   {
     in: [
@@ -51,6 +52,15 @@ theories(getMappingLineData, [
             isDefault: false,
             isRelationship: false,
           },
+          leftSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Left Side Rels',
+            tableName: 'CollectionRelationship',
+          },
           altCatalogNumber: {
             optionLabel: 'Prev/Exch #',
             isEnabled: true,
@@ -82,6 +92,15 @@ theories(getMappingLineData, [
             isHidden: false,
             isDefault: false,
             isRelationship: false,
+          },
+          rightSideRels: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Right Side Rels',
+            tableName: 'CollectionRelationship',
           },
           fieldNumber: {
             optionLabel: 'Voucher',
@@ -153,6 +172,24 @@ theories(getMappingLineData, [
             isDefault: false,
             isRelationship: true,
             tableName: 'CollectingEvent',
+          },
+          collection: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection',
+            tableName: 'Collection',
+          },
+          collectionObjectAttachments: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Collection Object Attachments',
+            tableName: 'CollectionObjectAttachment',
           },
           preparations: {
             optionLabel: 'Preparations',
