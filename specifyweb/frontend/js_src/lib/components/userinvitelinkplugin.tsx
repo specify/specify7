@@ -30,7 +30,7 @@ export function UserInviteLinkPlugin({
      * If user can't read the list of configured identity providers, we can't check
      * if any are configured and have to just assume so
      */
-    !hasPermission('/admin/user/oic_providers', 'read') &&
+    !hasPermission('/admin/user/oic_providers', 'read') ||
     Object.keys(identityProviders ?? {}).length > 0;
 
   return (
