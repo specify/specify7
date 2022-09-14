@@ -14,7 +14,6 @@ export function WelcomeView(): JSX.Element {
         mx-auto flex h-full max-w-[1000px] flex-col justify-center gap-4  p-4
       `}
     >
-      <span className="flex-1" />
       <div
         className={`
           flex min-h-0 items-center justify-center
