@@ -12,7 +12,7 @@ theories(getTableOverwrite, [
 ]);
 
 theories(getGlobalFieldOverwrite, [
-  { in: ['Taxon', 'guid'], out: 'readOnly' },
+  { in: ['Taxon', 'isAccepted'], out: 'readOnly' },
   { in: ['Geography', 'timestampCreated'], out: 'readOnly' },
   { in: ['SpecifyUser', 'id'], out: undefined },
 ]);
