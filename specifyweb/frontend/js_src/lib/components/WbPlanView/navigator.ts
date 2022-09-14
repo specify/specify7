@@ -5,31 +5,31 @@
  * @module
  */
 
-import type { CustomSelectSubtype } from './CustomSelectElement';
-import { dateParts } from '../Atoms/Internationalization';
-import type {
-  HtmlGeneratorFieldData,
-  MappingElementProps,
-} from './LineComponents';
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { dateParts } from '../Atoms/Internationalization';
+import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
+import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import {
+  isTreeModel,
+  strictGetTreeDefinitionItems,
+} from '../InitialContext/treeRanks';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
-import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
-import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import {
-  isTreeModel,
-  strictGetTreeDefinitionItems,
-} from '../InitialContext/treeRanks';
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import type { CustomSelectSubtype } from './CustomSelectElement';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from './LineComponents';
+import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
   formatPartialField,
@@ -499,10 +499,6 @@ export function getMappingLineData({
                       // Display read only fields in query builder only
                       scope === 'queryBuilder' ||
                       !field.overrides.isReadOnly) &&
-                    // Hide relationships to system tables
-                    (isNoRestrictionsMode ||
-                      !field.isRelationship ||
-                      !field.relatedModel.overrides.isSystem) &&
                     // Hide most fields for non "any" tree ranks in query builder
                     (scope !== 'queryBuilder' ||
                       !isTreeModel(model.name) ||
