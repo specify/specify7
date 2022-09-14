@@ -4,67 +4,85 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## Unreleased
+## [Unreleased](https://github.com/specify/specify7/compare/v7.7.2...HEAD)
+
+### Added
+
+- You can now upload `GUIDs` for tree tables though the WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
 ### Fixed
 
-- Fix SubView Grid for dependent relationships displaying only first 20
-  items ([#1936](https://github.com/specify/specify7/issues/1936))
-- Fix filters for some picklists disappear from queries in the
-  UI. ([#1934](https://github.com/specify/specify7/issues/1934))
-- Fix text fields with the `uitype="checkbox"` being always
-  checked ([#1929](https://github.com/specify/specify7/issues/1929))
-- Cannot export distinct query results to
-  CSV ([#1956](https://github.com/specify/specify7/issues/1956))
-- Fix SubView's `sortField` being
-  ignored ([#1872](https://github.com/specify/specify7/issues/1872))
-- Fix Query Builder not supporting European date
-  format ([#1908](https://github.com/specify/specify7/issues/1908))
-- Fix poor WorkBench rollback performance
-  back ([#1663](https://github.com/specify/specify7/issues/1663))
+- Fix "Create Invite Link" having incorrect condition ([#2140](https://github.com/specify/specify7/pull/2140))
+
+## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
+
+### Added
+
+- Allow customizing SubView grid column widths ([#2035](https://github.com/specify/specify7/pull/2035))
+- Allow customizing tree search algorithm ([#2001](https://github.com/specify/specify7/issues/2001))
+- Added credits to institutions in the `CHANGELOG.md` file ([#2071](https://github.com/specify/specify7/issues/2071))
+
+### Changed
+
+- Rewrite Autocomplete to use HeadlessUI library ([#1986](https://github.com/specify/specify7/issues/1986))
+- Fetch pick lists on demand ([#1988](https://github.com/specify/specify7/pull/1988))
+
+### Fixed
+
+- Fixed `taxonId` field on the forms not getting populated ([#2083](https://github.com/specify/specify7/issues/2083))
+- Fixed `ExsiccataItem` table being hidden in the WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - _Reported by CSIRO_
+- Fix `Taxon.taxonId` field not getting populated ([#2087](https://github.com/specify/specify7/pull/2087))
+- Don't use underscore for partial date fields ([#2066](https://github.com/specify/specify7/pull/2066))
+- Convert "text" -> "java.lang.String" when creating report from query ([#2059](https://github.com/specify/specify7/pull/2059))
+- Fix Sp7.7 not parsing QCB's TypeSearch correctly ([#2026](https://github.com/specify/specify7/pull/2026))
+- Fix Schema Config failing on no description strings ([#2024](https://github.com/specify/specify7/pull/2024))
+
+## [7.7.1](https://github.com/specify/specify7/compare/v7.7.0...v7.7.1) (29 August 2022)
+
+### Added
+
+- Allow limiting the height of SubView Grid ([#290](https://github.com/specify/specify7/issues/290))
+- Allow making form fields invisible ([#1070](https://github.com/specify/specify7/issues/1070))
+- Rename "Add Another" to "Add" ([#1922](https://github.com/specify/specify7/issues/1922)) - _Reported by RBGE_
+- Add ability to modify some Locality Preferences ([#159](https://github.com/specify/specify7/issues/159)) - _Reported by CSIRO_
+- Display Git Hash in the Specify "About" dialog ([#1980](https://github.com/specify/specify7/issues/1980)) - _Reported by RBGE_
+- Make autocomplete search algorithm configurable ([#1921](https://github.com/specify/specify7/issues/1921), [#1935] - _Reported by RBGE_
+- In one to many displays in grid form, add border around each record ([#1933](https://github.com/specify/specify7/issues/1933))
+- Extend localization tests to catch misplaced strings ([#1739](https://github.com/specify/specify7/issues/1739))
+
+### Fixed
+
+- Fix SubView Grid for dependent relationships displaying only first 20 items ([#1936](https://github.com/specify/specify7/issues/1936)) - _Reported by RBGE_
+- Fix filters for some pick lists disappear from queries in the UI. ([#1934](https://github.com/specify/specify7/issues/1934)) - _Reported by RBGE_
+- Fix text fields with the `uitype="checkbox"` being always checked ([#1929](https://github.com/specify/specify7/issues/1929))
+- Cannot export distinct query results to CSV ([#1956](https://github.com/specify/specify7/issues/1956)) - _Reported by CSIRO_
+- Fix SubView's `sortField` being ignored ([#1872](https://github.com/specify/specify7/issues/1872)) - _Reported by RBGE_
+- Fix Query Builder not supporting European date format ([#1908](https://github.com/specify/specify7/issues/1908)) - _Reported by RBGE_
+- Fix poor WorkBench rollback performance back ([#1663](https://github.com/specify/specify7/issues/1663))
 - Fix changes not being preserved for embedded Collecting Events ([#1704](https://github.com/specify/specify7/issues/1704))
 
 Minor fixes:
 
-- Fix inconsistent wording in boolean dropdowns in Query Builder ([#1931](https://github.com/specify/specify7/issues/1931))
-- Fix WB crashing on some permission errors ([#1932](https://github.com/specify/specify7/issues/1932))
+- Fix inconsistent wording in boolean drop-downs in Query Builder ([#1931](https://github.com/specify/specify7/issues/1931)) - _Reported by RBGE_
+- Fix WB crashing on some permission errors ([#1932](https://github.com/specify/specify7/issues/1932)) - _Reported by KU Mammals_
 - Fix unable to remove record from record set on no record delete permission ([#1937](https://github.com/specify/specify7/issues/1937))
-- Fix unable to empty a field assigned to a non-read only pick list ([#1924](https://github.com/specify/specify7/issues/1924))
-- Fix Query Builder marking some non-hidden fields as hidden ([#1894](https://github.com/specify/specify7/issues/1894))
-- Fix table formatters displaying separators for empty fields ([#1873](https://github.com/specify/specify7/issues/1873))
+- Fix unable to empty a field assigned to a non-read only pick list ([#1924](https://github.com/specify/specify7/issues/1924)) - _Reported by KE Herbarium_
+- Fix Query Builder marking some non-hidden fields as hidden ([#1894](https://github.com/specify/specify7/issues/1894)) - _Reported by RBGE_
+- Fix table formatters displaying separators for empty fields ([#1873](https://github.com/specify/specify7/issues/1873)) - _Reported by RBGE_
 - Fix "Value is not defined" error on WB record disambiguation ([#1878](https://github.com/specify/specify7/issues/1878))
 - Fix Query Builder exposing front-end only fields ([#1896](https://github.com/specify/specify7/issues/1896))
 - Fix opening WbPlanView when "Results" is open crashing WB ([#1898](https://github.com/specify/specify7/issues/1898))
 - Fix unable to unset a value from a pick list ([#1892](https://github.com/specify/specify7/issues/1892))
-- Fix forms not supporting European date format ([#1875](https://github.com/specify/specify7/issues/1875))
-- Fix forms not supporting relative date as default ([#1874](https://github.com/specify/specify7/issues/1874))
+- Fix forms not supporting European date format ([#1875](https://github.com/specify/specify7/issues/1875)) - _Reported by Cornell University_
+- Fix forms not supporting relative date as default ([#1874](https://github.com/specify/specify7/issues/1874)) - _Reported by RBGE_
 - Fix Query Builder allowing to negate an "Any" filter ([#1876](https://github.com/specify/specify7/issues/1876))
-- Fix sorting by QB results table header not working when some fields are hidden ([#1880](https://github.com/specify/specify7/issues/1880))
+- Fix sorting by QB results table header not working when some fields are hidden ([#1880](https://github.com/specify/specify7/issues/1880)) - _Reported by RBGE_
 - Fix WB not handling nicely pick list values over length limit ([#1837](https://github.com/specify/specify7/issues/1837))
 - Fix QB crashing on invalid DataObjFormatter definitions ([#1675](https://github.com/specify/specify7/issues/1675))
 - Fix Specify 7 query stringids not match Specify 6 ([#724](https://github.com/specify/specify7/issues/724))
 - Fix front-end not showing HTML error messages ([#1652](https://github.com/specify/specify7/issues/1652))
 - Fix accessibility issue with dialog headings ([#1413](https://github.com/specify/specify7/issues/1413))
 - Fix accessibility issue with autocomplete ([#1986](https://github.com/specify/specify7/pull/1986))
-
-### Added
-
-- Fetch pick lists on demand ([#1988](https://github.com/specify/specify7/pull/1988))
-- Allow limiting the heigh of SubView Grid
-  ([#290](https://github.com/specify/specify7/issues/290))
-- Allow making form fields
-  invisible ([#1070](https://github.com/specify/specify7/issues/1070))
-- Rename "Add Another" to "
-  Add" ([#1922](https://github.com/specify/specify7/issues/1922))
-- Add ability to modify some Locality
-  Preferences ([#159](https://github.com/specify/specify7/issues/159))
-- Display Git Hash in the Specify "About"
-  dialog ([#1980](https://github.com/specify/specify7/issues/1980))
-- Make autocomplete search algorithm
-  configurable ([#1921](https://github.com/specify/specify7/issues/1921)
-  , [#1935](https://github.com/specify/specify7/issues/1935))
-- In one to many displays in grid form, add border around each record ([#1933](https://github.com/specify/specify7/issues/1933))
-- Extend localization tests to catch misplaced strings ([#1739](https://github.com/specify/specify7/issues/1739))
 
 ## [7.7.0](https://github.com/specify/specify7/compare/v7.6.1...v7.7.0) (1 July 2022)
 

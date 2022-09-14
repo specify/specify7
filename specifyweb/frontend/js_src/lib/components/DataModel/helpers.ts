@@ -48,7 +48,7 @@ function serializeModel<SCHEMA extends AnySchema>(
           : '')
     )
   );
-  const fields = model.fields.map(({ name }) => name);
+  const fields = [...model.fields.map(({ name }) => name), model.idField.name];
 
   return addMissingFields(
     model.name,

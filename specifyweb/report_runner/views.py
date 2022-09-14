@@ -153,7 +153,7 @@ def template_report_for_query(query_id, name):
            or field.isRelFld \
            or fieldspec.tree_rank \
            or fieldspec.date_part \
-           or field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date"):
+           or field_type in ("java.sql.Timestamp", "java.util.Calendar", "java.util.Date", "text"):
             field_type = 'java.lang.String'
 
         return dict(stringid=field.stringId, field_type=field_type)

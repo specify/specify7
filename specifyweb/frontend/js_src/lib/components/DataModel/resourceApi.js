@@ -159,6 +159,8 @@ function eventHandlerForToOne(related, field) {
             return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
         },
         get(attribute) {
+            if(attribute.toLowerCase() === this.specifyModel.idField.name.toLowerCase())
+                return this.id;
             // case insensitive
             return Backbone.Model.prototype.get.call(this, attribute.toLowerCase());
         },

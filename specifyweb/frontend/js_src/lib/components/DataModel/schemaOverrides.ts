@@ -76,15 +76,16 @@ const tableOverwrites: Partial<RR<keyof Tables, TableConfigOverwrite>> = {
   WorkbenchTemplateMappingItem: 'hidden',
   SpVisualQuery: 'hidden',
   SpSymbiotaInstance: 'hidden',
-};
-
-/*
- * Same as tableOverwrites, but matches with tableName.endsWith(key),
- *  instead of tableName===key
- */
-const endsWithTableOverwrites: IR<TableConfigOverwrite> = {
-  Def: 'system',
-  Item: 'system',
+  GeographyTreeDef: 'system',
+  GeographyTreeDefItem: 'system',
+  GeologicTimePeriodTreeDef: 'system',
+  GeologicTimePeriodTreeDefItem: 'system',
+  LithoStratTreeDef: 'system',
+  LithoStratTreeDefItem: 'system',
+  StorageTreeDef: 'system',
+  StorageTreeDefItem: 'system',
+  TaxonTreeDef: 'system',
+  TaxonTreeDefItem: 'system',
 };
 
 // These field overrides apply to entire front-end
@@ -102,28 +103,24 @@ const globalFieldOverrides: {
     timestampCreated: 'readOnly',
   },
   Taxon: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedTaxon: 'readOnly',
     fullName: 'readOnly',
   },
   Geography: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedGeography: 'readOnly',
     fullName: 'readOnly',
   },
   LithoStrat: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedLithoStrat: 'readOnly',
     fullName: 'readOnly',
   },
   GeologicTimePeriod: {
-    guid: 'readOnly',
     parent: 'required',
     isAccepted: 'readOnly',
     acceptedGeologicTimePeriod: 'readOnly',
@@ -203,11 +200,7 @@ export const modelViews: Partial<RR<keyof Tables, string>> = {
 
 export const getTableOverwrite = (
   tableName: keyof Tables
-): TableConfigOverwrite | undefined =>
-  tableOverwrites[tableName] ??
-  Object.entries(endsWithTableOverwrites).find(([label]) =>
-    tableName.endsWith(label)
-  )?.[VALUE];
+): TableConfigOverwrite | undefined => tableOverwrites[tableName];
 
 export const getGlobalFieldOverwrite = (
   tableName: keyof Tables,
