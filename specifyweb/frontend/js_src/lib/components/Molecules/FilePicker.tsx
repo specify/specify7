@@ -168,5 +168,6 @@ export const fileToText = async (file: File): Promise<string> =>
         ? resolve(target.result)
         : reject(new Error('File is not a text file'))
     );
+    fileReader.addEventListener('error', () => reject(fileReader.error));
     fileReader.readAsText(file);
   });

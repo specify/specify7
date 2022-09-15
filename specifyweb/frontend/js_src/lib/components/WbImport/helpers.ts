@@ -1,19 +1,20 @@
-import Papa from 'papaparse';
+import { parse } from 'csv-parse/browser/esm';
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
-import { ajax } from '../../utils/ajax';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { f } from '../../utils/functools';
 import { wbText } from '../../localization/workbench';
-import { schema } from '../DataModel/schema';
-import type { GetSet, IR, RA } from '../../utils/types';
-import { uniquifyHeaders } from '../WbPlanView/headerHelper';
-import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
+import type { GetSet, IR, RA } from '../../utils/types';
+import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { schema } from '../DataModel/schema';
+import { fileToText } from '../Molecules/FilePicker';
+import { uniquifyHeaders } from '../WbPlanView/headerHelper';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
-  fileName.replace(/\.[^.]*$/, '');
+  fileName.replace(/\.[^.]*$/u, '');
 
 export const wbImportPreviewSize = 100;
 
@@ -68,34 +69,44 @@ export const parseCsv = async (
   [delimiter, setDelimiter]: GetSet<string | undefined>,
   limit?: number
 ): Promise<RA<RA<string>>> =>
-  new Promise((resolve, reject) =>
-    Papa.parse(file, {
-      encoding,
-      preview: limit,
-      skipEmptyLines: true,
-      delimiter,
-      complete: ({ data, errors, meta: { delimiter: detectedDelimiter } }) => {
-        if (delimiter !== detectedDelimiter) setDelimiter(detectedDelimiter);
+  fileToText(file).then(
+    async (text) =>
+      new Promise((resolve, reject) => {
+        const resolvedDelimiter = delimiter ?? guessDelimiter(text);
+        parse(
+          text,
+          {
+            // TODO: test if all encodings are supported
+            encoding: encoding as BufferEncoding,
+            // Allow variable number of columns
+            relaxColumnCount: true,
+            relaxQuotes: true,
+            toLine: limit,
+            skipEmptyLines: true,
+            delimiter: resolvedDelimiter,
+          },
+          (error, rows: RA<RA<string>> | undefined = []) => {
+            if (delimiter !== resolvedDelimiter)
+              setDelimiter(resolvedDelimiter);
 
-        const rows = data as RA<RA<string>>;
-        const maxWidth = Math.max(...rows.map((row) => row.length));
-        /*
-         * If rows were returned, despite an error, then the error is probably
-         * not critical
-         */
-        if (errors.length > 0 && rows.length === 0)
-          reject(new Error(errors.map(({ message }) => message).join('. ')));
-        else if (maxWidth === 0 || rows.length === 0)
-          reject(new Error(wbText('corruptFile', file.name)));
-        else
-          resolve(
-            rows.map((row) => [
-              ...row,
-              ...Array.from({ length: maxWidth - row.length }).fill(''),
-            ])
-          );
-      },
-    })
+            const maxWidth = Math.max(...rows.map((row) => row.length));
+            /*
+             * If rows were returned, despite an error, then the error is probably
+             * not critical
+             */
+            if (typeof error === 'object') reject(error);
+            else if (maxWidth === 0 || rows.length === 0)
+              reject(new Error(wbText('corruptFile', file.name)));
+            else
+              resolve(
+                rows.map((row) => [
+                  ...row,
+                  ...Array.from({ length: maxWidth - row.length }).fill(''),
+                ])
+              );
+          }
+        );
+      })
   );
 
 export const parseXls = async (
@@ -115,6 +126,23 @@ export const parseXls = async (
       reject(new Error(error.message))
     );
   });
+
+// Ordered from the highest priority to the lowest priority
+const possibleDelimiters = [',', '\t', '|', ';'];
+
+/**
+ * Predict the delimiter based on most common delimiter in the first line
+ */
+function guessDelimiter(text: string): string {
+  const firstLine = text.split('\n')[0];
+  return possibleDelimiters
+    .map((delimiter) => [delimiter, firstLine.split(delimiter).length] as const)
+    .reduce(
+      ([currentDelimiter, currentMax], [delimiter, max]) =>
+        max > currentMax ? [delimiter, max] : [currentDelimiter, currentMax],
+      [',', 0]
+    )[0];
+}
 
 export const createDataSet = async ({
   dataSetName,
