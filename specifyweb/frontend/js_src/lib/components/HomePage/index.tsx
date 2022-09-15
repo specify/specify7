@@ -3,7 +3,17 @@ import React from 'react';
 import { welcomeText } from '../../localization/welcome';
 import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
 import { usePref } from '../UserPreferences/usePref';
-import { TaxonTiles } from './TaxonTiles';
+import { f } from '../../utils/functools';
+import { Async } from '../Router/RouterUtils';
+
+const taxonTiles = f.store(() => (
+  <Async
+    element={async (): Promise<React.FunctionComponent> =>
+      import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
+    }
+    title={undefined}
+  />
+));
 
 export function WelcomeView(): JSX.Element {
   const [mode] = usePref('welcomePage', 'general', 'mode');
@@ -20,7 +30,7 @@ export function WelcomeView(): JSX.Element {
           ${mode === 'embeddedWebpage' ? 'h-5/6' : ''}
         `}
       >
-        {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
+        {mode === 'taxonTiles' ? taxonTiles() : <WelcomeScreenContent />}
       </div>
     </div>
   );
