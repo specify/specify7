@@ -517,6 +517,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Filter pick list items',
     'ru-ru': 'Отфильтровать элементы списка выбора',
   },
+  exportFileDelimiter: {
+    'en-us': 'Export file delimiter',
+    'ru-ru': 'Разделитель полей в файле экспорта',
+  },
   caseSensitive: {
     'en-us': 'Case-sensitive',
     'ru-ru': 'С учетом регистра',

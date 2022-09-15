@@ -1256,7 +1256,7 @@ export const preferenceDefinitions = {
             ],
           }),
           exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
-            title: preferencesText('filterPickLists'),
+            title: preferencesText('exportFileDelimiter'),
             requiresReload: false,
             visible: true,
             defaultValue: '\t',
