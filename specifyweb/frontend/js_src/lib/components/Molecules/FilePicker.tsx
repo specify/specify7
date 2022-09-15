@@ -160,7 +160,10 @@ export const downloadFile = async (
     iframe.contentWindow?.document.close();
   });
 
-export const fileToText = async (file: File): Promise<string> =>
+export const fileToText = async (
+  file: File,
+  encoding = 'utf-8'
+): Promise<string> =>
   new Promise((resolve, reject) => {
     const fileReader = new FileReader();
     fileReader.addEventListener('load', ({ target }) =>
@@ -169,5 +172,5 @@ export const fileToText = async (file: File): Promise<string> =>
         : reject(new Error('File is not a text file'))
     );
     fileReader.addEventListener('error', () => reject(fileReader.error));
-    fileReader.readAsText(file);
+    fileReader.readAsText(file, encoding);
   });

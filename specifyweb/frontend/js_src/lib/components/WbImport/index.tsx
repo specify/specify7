@@ -219,27 +219,27 @@ function Layout({
     'wbImport',
     'hasHeader'
   );
-  return typeof preview === 'string' ? (
-    <BadImport error={preview} />
-  ) : (
+  return (
     <>
       <div className="grid w-96 grid-cols-2 items-center gap-2">
         {children}
         <ChooseName name={dataSetName} onChange={setDataSetName} />
         <ToggleHeader
           hasHeader={hasHeader}
-          isDisabled={!Array.isArray(preview)}
+          isDisabled={preview === undefined}
           onChange={setHasHeader}
         />
         <Button.Gray
           className="col-span-full justify-center text-center"
-          disabled={!Array.isArray(preview)}
+          disabled={preview === undefined}
           onClick={(): void => handleImport(dataSetName, hasHeader)}
         >
           {wbText('importFile')}
         </Button.Gray>
       </div>
-      {Array.isArray(preview) ? (
+      {typeof preview === 'string' ? (
+        <BadImport error={preview} />
+      ) : Array.isArray(preview) ? (
         <Preview hasHeader={hasHeader} preview={preview} />
       ) : (
         loadingGif

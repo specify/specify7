@@ -69,21 +69,23 @@ export const parseCsv = async (
   [delimiter, setDelimiter]: GetSet<string | undefined>,
   limit?: number
 ): Promise<RA<RA<string>>> =>
-  fileToText(file).then(
+  fileToText(file, encoding).then(
     async (text) =>
       new Promise((resolve, reject) => {
         const resolvedDelimiter = delimiter ?? guessDelimiter(text);
         parse(
           text,
           {
-            // TODO: test if all encodings are supported
-            encoding: encoding as BufferEncoding,
-            // Allow variable number of columns
-            relaxColumnCount: true,
-            relaxQuotes: true,
             toLine: limit,
             skipEmptyLines: true,
             delimiter: resolvedDelimiter,
+            // Allow variable number of columns
+            relaxColumnCount: true,
+            /*
+             * Handle cases like this gracefully:
+             * https://github.com/specify/specify7/issues/2150#issuecomment-1248288620
+             */
+            relaxQuotes: true,
           },
           (error, rows: RA<RA<string>> | undefined = []) => {
             if (delimiter !== resolvedDelimiter)
