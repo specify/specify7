@@ -152,6 +152,7 @@ const delimiters: RA<AutoCompleteItem<string>> = [
   { label: wbText('tab'), searchValue: '\t', data: '\t' },
   { label: wbText('semicolon'), searchValue: ';', data: ';' },
   { label: wbText('space'), searchValue: ' ', data: ' ' },
+  { label: wbText('pipe'), searchValue: '|', data: '|' },
 ];
 
 function ChooseDelimiter({

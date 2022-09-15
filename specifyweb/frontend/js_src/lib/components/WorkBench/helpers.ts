@@ -1,9 +1,8 @@
 import { stringify } from 'csv-stringify/browser/esm';
 
 import { downloadFile } from '../Molecules/FilePicker';
+import { getUserPref } from '../UserPreferences/helpers';
 import type { Dataset } from '../WbPlanView/Wrapped';
-
-const delimiter = '\t';
 
 export const downloadDataSet = async ({
   name,
@@ -11,11 +10,17 @@ export const downloadDataSet = async ({
   columns,
 }: Dataset): Promise<void> =>
   new Promise((resolve, reject) =>
-    stringify([columns, ...rows], { delimiter }, (error, output) => {
-      if (error === undefined)
-        resolve(
-          downloadFile(name.endsWith('.csv') ? name : `${name}.tsv`, output)
-        );
-      else reject(error);
-    })
+    stringify(
+      [columns, ...rows],
+      {
+        delimiter: getUserPref('workbench', 'editor', 'exportFileDelimiter'),
+      },
+      (error, output) => {
+        if (error === undefined)
+          resolve(
+            downloadFile(name.endsWith('.csv') ? name : `${name}.tsv`, output)
+          );
+        else reject(error);
+      }
+    )
   );

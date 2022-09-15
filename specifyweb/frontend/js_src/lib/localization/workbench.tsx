@@ -576,6 +576,10 @@ export const wbText = createDictionary({
     'en-us': 'Space',
     'ru-ru': 'Пробел',
   },
+  pipe: {
+    'en-us': 'Pipe',
+    'ru-ru': 'Вертикальная черта',
+  },
   determineAutomatically: {
     'en-us': 'Determine automatically',
     'ru-ru': 'Определить автоматически',
