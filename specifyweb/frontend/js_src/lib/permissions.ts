@@ -126,7 +126,7 @@ export const institutionPermissions = new Set([
   '/admin/user/sp6/collection_access',
   '/export/feed',
   '/permissions/library/roles',
-  'permissions/list_admins',
+  '/permissions/list_admins',
 ]);
 
 /**
