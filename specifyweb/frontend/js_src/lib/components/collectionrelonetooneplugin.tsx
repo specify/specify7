@@ -9,17 +9,21 @@ import { useAsyncState } from './hooks';
 export function CollectionOneToOnePlugin({
   resource,
   relationship,
+  formatting,
 }: {
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
+  readonly formatting: string | undefined;
 }): JSX.Element | null {
   const [data] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchOtherCollectionData(resource, relationship).catch((error) => {
-          console.error(error);
-          return undefined;
-        }),
+        fetchOtherCollectionData(resource, relationship, formatting).catch(
+          (error) => {
+            console.error(error);
+            return undefined;
+          }
+        ),
       [resource, relationship]
     ),
     true
