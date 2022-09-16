@@ -39,6 +39,7 @@ export type UiPlugins = {
     'ColRelTypePlugin',
     {
       readonly relationship: string | undefined;
+      readonly formatting: string | undefined;
     }
   >;
   readonly LocalityGeoRef: State<'LocalityGeoRef'>;
@@ -106,9 +107,10 @@ const processUiPlugin: {
     formatting: getParsedAttribute(cell, 'formatting'),
   }),
   // Collection one-to-one Relationship plugin
-  ColRelTypePlugin: ({ getProperty }) => ({
+  ColRelTypePlugin: ({ cell, getProperty }) => ({
     type: 'ColRelTypePlugin',
     relationship: getProperty('relName'),
+    formatting: getParsedAttribute(cell, 'formatting'),
   }),
   LocalityGeoRef: () => ({ type: 'LocalityGeoRef' }),
   WebLinkButton: ({ getProperty }) => ({
