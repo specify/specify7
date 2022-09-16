@@ -113,7 +113,7 @@ const pluginRenderers: {
   },
   CollectionRelOneToManyPlugin({
     resource,
-    pluginDefinition: { relationship },
+    pluginDefinition: { relationship, formatting },
   }) {
     if (typeof relationship === 'undefined') {
       console.error(
@@ -128,6 +128,7 @@ const pluginRenderers: {
             <CollectionOneToManyPlugin
               resource={collectionObject}
               relationship={relationship}
+              formatting={formatting}
             />
           )) ?? (
             <WrongTable resource={resource} allowedTable="CollectionObject" />

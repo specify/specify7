@@ -4,10 +4,12 @@
 
 import type { State } from 'typesafe-reducer';
 
+import type { CoordinateType } from './components/latlongui';
+import { coordinateType } from './components/latlongui';
 import type { PartialDatePrecision } from './components/partialdateui';
 import { f } from './functools';
+import { getParsedAttribute } from './helpers';
 import { parseRelativeDate } from './relativedate';
-import { CoordinateType, coordinateType } from './components/latlongui';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -30,6 +32,7 @@ export type UiPlugins = {
     'CollectionRelOneToManyPlugin',
     {
       readonly relationship: string | undefined;
+      readonly formatting: string | undefined;
     }
   >;
   readonly ColRelTypePlugin: State<
@@ -65,6 +68,7 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
+    readonly cell: Element;
     readonly getProperty: (name: string) => string | undefined;
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
@@ -96,9 +100,10 @@ const processUiPlugin: {
           : 'full'
     ),
   }),
-  CollectionRelOneToManyPlugin: ({ getProperty }) => ({
+  CollectionRelOneToManyPlugin: ({ cell, getProperty }) => ({
     type: 'CollectionRelOneToManyPlugin',
     relationship: getProperty('relName'),
+    formatting: getParsedAttribute(cell, 'formatting'),
   }),
   // Collection one-to-one Relationship plugin
   ColRelTypePlugin: ({ getProperty }) => ({
@@ -127,11 +132,12 @@ const processUiPlugin: {
 export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
+  cell: Element,
   getProperty: (name: string) => string | undefined,
   defaultValue: string | undefined
 ): PluginDefinition {
   const uiCommand =
     processUiPlugin[(getProperty('name') ?? '') as keyof UiPlugins] ??
     processUiPlugin.Unsupported;
-  return uiCommand({ getProperty, defaultValue });
+  return uiCommand({ cell, getProperty, defaultValue });
 }
