@@ -3,10 +3,7 @@ import errno
 import logging
 import traceback
 from zipfile import ZipFile
-from threading import Thread
-from datetime import datetime
 from email.utils import formatdate
-import json
 
 from xml.etree import ElementTree as ET
 
@@ -21,9 +18,10 @@ from ..notifications.models import Message
 from ..specify.models import Spquery
 from ..permissions.permissions import PermissionTarget, PermissionTargetAction, check_permission_targets
 
-from .dwca import make_dwca, prettify
+from .dwca import prettify
 from .extract_query import extract_query as extract
-from .feed import FEED_DIR, get_feed_resource, update_feed
+from .feed import FEED_DIR, get_feed_resource
+from . import tasks
 
 logger = logging.getLogger(__name__)
 
@@ -108,9 +106,6 @@ def export(request):
     """
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [DwCAPT.execute])
 
-    user = request.specify_user
-    collection = request.specify_collection
-
     try:
         dwca_resource = request.POST['definition']
     except KeyError as e:
@@ -118,36 +113,12 @@ def export(request):
 
     eml_resource = request.POST.get('metadata', None)
 
-    definition, _ = get_app_resource(collection, user, dwca_resource)
-
-    if eml_resource is not None:
-        eml, _ = get_app_resource(collection, user, eml_resource)
-    else:
-        eml = None
-
-    filename = 'dwca_export_%s.zip' % datetime.now().isoformat()
-    path = os.path.join(settings.DEPOSITORY_DIR, filename)
-
-    def do_export():
-        try:
-            make_dwca(collection, user, definition, path, eml=eml)
-        except Exception as e:
-            tb = traceback.format_exc()
-            logger.error('make_dwca failed: %s', tb)
-            Message.objects.create(user=user, content=json.dumps({
-                'type': 'dwca-export-failed',
-                'exception': str(e),
-                'traceback': tb if settings.DEBUG else None,
-            }))
-        else:
-            Message.objects.create(user=user, content=json.dumps({
-                'type': 'dwca-export-complete',
-                'file': filename
-            }))
-
-    thread = Thread(target=do_export)
-    thread.daemon = True
-    thread.start()
+    tasks.make_dwca.apply_async([
+        request.specify_collection.id,
+        request.specify_user.id,
+        dwca_resource,
+        eml_resource,
+    ])
     return HttpResponse('OK', content_type='text/plain')
 
 class ExportFeedPT(PermissionTarget):
@@ -163,22 +134,7 @@ def force_update(request):
     """
     check_permission_targets(None, request.specify_user.id, [ExportFeedPT.force_update])
 
-    user = request.specify_user # I don't want to close over the entire request.
-    def try_update_feed():
-        try:
-            update_feed(force=True, notify_user=user)
-        except Exception as e:
-            tb = traceback.format_exc()
-            logger.error('update_feed failed: %s', tb)
-            Message.objects.create(user=user, content=json.dumps({
-                'type': 'update-feed-failed',
-                'exception': str(e),
-                'traceback': tb if settings.DEBUG else None,
-            }))
-
-    thread = Thread(target=try_update_feed)
-    thread.daemon = True
-    thread.start()
+    tasks.update_feed.apply_async([request.specify_user.id, True])
     return HttpResponse('OK', content_type='text/plain')
 
 @login_maybe_required
