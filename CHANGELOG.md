@@ -11,6 +11,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
+### Changed
+
+- Relationshpips to the Address Of Record table should be added to the
+    forms in Query Combo Boxes, rather than SubViews. ([#2006](https://github.com/specify/specify7/issues/2006),
+    [#2155](https://github.com/specify/specify7/pull/2155))
+
 ### Fixes
 
 - Fix list of tables pick list not working on form

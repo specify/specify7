@@ -78,6 +78,11 @@ export function SubView({
          * and not rendering record count or record slider.
          */
         const resource = await parentResource.rgetPromise(relationship.name);
+        /*
+         * BUG: dependent relationship that does not have a reverse relationship
+         *  causes a crash here
+         *  See https://github.com/specify/specify7/issues/2006
+         */
         const collection = (
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
