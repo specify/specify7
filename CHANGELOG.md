@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
+- Fix an error when creating Funding Agent records
+  ([#715](https://github.com/specify/specify7/issues/715)) - _Reported
+  by CSIRO_
 
 ### Fixed
 
