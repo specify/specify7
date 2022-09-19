@@ -11,13 +11,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
-### Fixes
+### Changed
 
-- Fix list of tables pick list not working on form
-  load ([#2146](https://github.com/specify/specify7/issues/2146))
+- Having invalid query search parameters no longer prevents from running
+  the query ([#2185](https://github.com/specify/specify7/issues/2185))
 
 ### Fixed
 
+- Fix list of tables pick list not working on form
+  load ([#2146](https://github.com/specify/specify7/issues/2146))
 - Fix "Create Invite Link" having incorrect condition ([#2140](https://github.com/specify/specify7/pull/2140))
 
 ## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
