@@ -129,7 +129,8 @@ function QueryInputField({
     }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
       const input = target as HTMLInputElement;
 
-      if (strict && hasNativeErrors(input)) return;
+      const hasErrors = hasNativeErrors(input);
+      if (strict && hasErrors) return;
 
       const parseResults = extractValues(target)
         .map(f.trim)
@@ -139,7 +140,8 @@ function QueryInputField({
         .filter((result): result is InvalidParseResult => !result.isValid)
         .map(({ reason, value }) => `${reason} (${value})`);
 
-      if (errorMessages.length > 0) {
+      // Don't display validation messages if native errors are already shown
+      if (errorMessages.length > 0 && !hasErrors) {
         setValidation(errorMessages);
         if (strict) return;
       }
