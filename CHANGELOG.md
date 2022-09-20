@@ -18,6 +18,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix an error when creating Funding Agent records
   ([#715](https://github.com/specify/specify7/issues/715)) - _Reported
   by CSIRO_
+- Fix for focus loss when using Query Combo Box without a mouse 
+  ([#2142](https://github.com/specify/specify7/issues/2142)) - _Reported
+  by RGBE_
 
 ### Fixed
 
