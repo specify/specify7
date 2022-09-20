@@ -255,11 +255,8 @@ export function QueryComboBox({
     typeof treeData !== 'undefined' &&
     typeof collectionRelationships !== 'undefined' &&
     typeof typeSearch !== 'undefined';
-  const { value, updateValue, validationRef, parser } = useResourceValue(
-    resource,
-    field?.name,
-    undefined
-  );
+  const { value, updateValue, validationRef, inputRef, parser } =
+    useResourceValue(resource, field?.name, undefined);
 
   /**
    * When resource is saved, a new instance of dependent resources is created.
@@ -518,7 +515,12 @@ export function QueryComboBox({
           mode === 'view' ||
           formType === 'formTable' ||
           typeof typeSearch === 'undefined' ||
-          typeof formatted === 'undefined'
+          /**
+           * Don't disable the input if it is currenlty focused
+           * Fixes https://github.com/specify/specify7/issues/2142
+           */
+          (typeof formatted === 'undefined' &&
+            document.activeElement !== inputRef.current)
         }
         inputProps={{
           id,
