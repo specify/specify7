@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
+- Allow customizing the delimiter when entering the list of catalog
+  numbers when creating a new interaction
+  ([#2190](https://github.com/specify/specify7/issues/2190))
 
 ### Fixes
 
