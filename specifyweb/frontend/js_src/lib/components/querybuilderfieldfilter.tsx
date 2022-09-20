@@ -10,7 +10,7 @@ import type { QueryField } from '../querybuilderutils';
 import { schema } from '../schema';
 import type { RA, RR } from '../types';
 import { defined } from '../types';
-import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
+import type { InvalidParseResult, Parser } from '../uiparse';
 import {
   getValidationAttributes,
   parseValue,
@@ -54,6 +54,8 @@ export const filtersWithDefaultValue: Set<QueryFieldFilter> = new Set([
   'equal',
   'in',
 ]);
+
+const strict = false;
 
 function QueryInputField({
   currentValue,
@@ -127,7 +129,7 @@ function QueryInputField({
     }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
       const input = target as HTMLInputElement;
 
-      if (hasNativeErrors(input)) return;
+      if (strict && hasNativeErrors(input)) return;
 
       const parseResults = extractValues(target)
         .map(f.trim)
@@ -136,12 +138,20 @@ function QueryInputField({
       const errorMessages = parseResults
         .filter((result): result is InvalidParseResult => !result.isValid)
         .map(({ reason, value }) => `${reason} (${value})`);
+
       if (errorMessages.length > 0) {
         setValidation(errorMessages);
-        return;
+        if (strict) return;
       }
 
-      const validResults = parseResults as RA<ValidParseResult>;
+      const validResults = parseResults.map((result) =>
+        result.isValid
+          ? result
+          : {
+              ...result,
+              parsed: result.value,
+            }
+      );
       const parsed = validResults.some(
         ({ parsed }) => typeof parsed === 'object'
       )
