@@ -101,7 +101,9 @@ export function useTitle(title: string | undefined): void {
  * validation message. Thus, you can call it on keydown to implement live
  * validation
  */
-export function useValidation<T extends Input = HTMLInputElement>(
+export function useValidation<
+  T extends Input = HTMLInputElement | HTMLTextAreaElement
+>(
   // Can set validation message from state or a prop
   message: string | RA<string> = ''
 ): {

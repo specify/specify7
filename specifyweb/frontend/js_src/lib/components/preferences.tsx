@@ -442,6 +442,87 @@ export const preferenceDefinitions = {
       },
     },
   },
+  interactions: {
+    title: commonText('interactions'),
+    subCategories: {
+      createInteractions: {
+        title: preferencesText('createInteractions'),
+        items: {
+          useSpaceAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+            title: preferencesText('useSpaceAsDelimiter'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'auto',
+            values: [
+              {
+                value: 'auto',
+                title: preferencesText('detectAutomatically'),
+                description: preferencesText('detectAutomaticallyDescription'),
+              },
+              {
+                value: 'true',
+                title: preferencesText('use'),
+              },
+              {
+                value: 'false',
+                title: preferencesText('dontUse'),
+              },
+            ],
+          }),
+          useCommaAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+            title: preferencesText('useCommaAsDelimiter'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'auto',
+            values: [
+              {
+                value: 'auto',
+                title: preferencesText('detectAutomatically'),
+                description: preferencesText('detectAutomaticallyDescription'),
+              },
+              {
+                value: 'true',
+                title: preferencesText('use'),
+              },
+              {
+                value: 'false',
+                title: preferencesText('dontUse'),
+              },
+            ],
+          }),
+          useNewLineAsDelimiter: defineItem<'true' | 'false' | 'auto'>({
+            title: preferencesText('useNewLineAsDelimiter'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'auto',
+            values: [
+              {
+                value: 'auto',
+                title: preferencesText('detectAutomatically'),
+                description: preferencesText('detectAutomaticallyDescription'),
+              },
+              {
+                value: 'true',
+                title: preferencesText('use'),
+              },
+              {
+                value: 'false',
+                title: preferencesText('dontUse'),
+              },
+            ],
+          }),
+          useCustomDelimiters: defineItem<string>({
+            title: preferencesText('useCustomDelimiters'),
+            description: preferencesText('useCustomDelimitersDescription'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '',
+            type: 'text',
+          }),
+        },
+      },
+    },
+  },
   form: {
     title: commonText('forms'),
     subCategories: {
