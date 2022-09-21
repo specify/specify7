@@ -4,14 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.2...HEAD)
+## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...7.7.3) (26 September 2022)
 
 ### Added
 
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
+- Support customizing CO formatter in ColRels Plugin ([#2157](https://github.com/specify/specify7/pull/2157))
 
-### Fixes
+### Fixed
 
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
@@ -21,9 +22,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix for focus loss when using Query Combo Box without a mouse 
   ([#2142](https://github.com/specify/specify7/issues/2142)) - _Reported
   by RGBE_
-
-### Fixed
-
 - Fix "Create Invite Link" having incorrect condition ([#2140](https://github.com/specify/specify7/pull/2140))
 
 ## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
