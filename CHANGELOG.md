@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Fix "Create Invite Link" having incorrect condition ([#2140](https://github.com/specify/specify7/pull/2140))
+- Using invalid field names in checkboxes no longer breaks the form
+  ([#2200](https://github.com/specify/specify7/issue/2200))
 
 ## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
 
