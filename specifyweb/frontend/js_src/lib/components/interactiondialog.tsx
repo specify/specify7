@@ -382,7 +382,9 @@ function useParser(searchField: LiteralField | undefined): {
       useCommaAsDelimiter === 'true'
         ? ','
         : undefined,
-      ...useCustomDelimiters.split('\n'),
+      ...(useCustomDelimiters.length === 0
+        ? []
+        : useCustomDelimiters.split('\n')),
     ]);
     return {
       parser,
