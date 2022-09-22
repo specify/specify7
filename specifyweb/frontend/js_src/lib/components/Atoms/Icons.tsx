@@ -1,9 +1,7 @@
 /**
- * All icons are either from https://v1.heroicons.com/, or created manually
+ * All icons are either from https://heroicons.dev/, or created manually
  * Licenced under MIT
  * All icons have the "solid" style as it is better for small icons
- *
- * REFACTOR: update to HeroIcons v2
  *
  * Just for reference, the old jQuery-UI icons can be found here:
  * https://api.jqueryui.com/theming/icons/
