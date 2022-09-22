@@ -191,7 +191,7 @@ export function PrepDialog({
               </th>
               <th scope="col">
                 {
-                  schema.models.Determination.strictGetLiteralField('taxon')
+                  schema.models.Determination.strictGetRelationship('taxon')
                     .label
                 }
               </th>

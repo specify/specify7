@@ -338,7 +338,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     const field = this.getField(literalName);
     if (field === undefined) return undefined;
     else if (field.isRelationship)
-      error('Field is a relationship', {
+      error(`Field ${literalName} is a relationship`, {
         model: this,
         literalName,
       });
@@ -356,7 +356,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     const relationship = this.getField(relationshipName);
     if (relationship === undefined) return undefined;
     else if (relationship.isRelationship) return relationship;
-    else throw new Error('Field is not a relationship');
+    else throw new Error(`Field ${relationshipName} is not a relationship`);
   }
 
   public strictGetRelationship(unparsedName: string): Relationship {
