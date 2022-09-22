@@ -382,7 +382,8 @@ export function SecurityUser({
                   onSaving={(): undefined | false => {
                     if (
                       userResource.isNew() &&
-                      typeof password === 'undefined'
+                      typeof password === 'undefined' &&
+                      canSetPassword
                     ) {
                       setState({
                         type: 'SetPasswordDialog',
