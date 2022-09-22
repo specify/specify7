@@ -253,6 +253,7 @@ export function CollectionAccess({
   const collectionAddress = userAgents?.find(({ collections }) =>
     collections.includes(collectionId)
   )?.address;
+  const hasAgent = (collectionAddress?.get('agent')?.length ?? 0) > 0;
 
   React.useEffect(
     () =>
@@ -261,6 +262,41 @@ export function CollectionAccess({
         : undefined,
     [collectionAddress, handleChangeAgent]
   );
+
+  /**
+   * If collection access was checked by default, but the user does not have
+   * permission to assign an agent and no agent is assigned, uncheck
+   * collection access
+   */
+  const canAssignAgent = hasPermission('/admin/user/agents', 'update');
+  React.useEffect(
+    () =>
+      hasCollectionAccess && !canAssignAgent && !hasAgent
+        ? handleToggle()
+        : undefined,
+    [canAssignAgent, hasCollectionAccess, hasAgent]
+  );
+
+  const handleToggle = (): void =>
+    handleChange(
+      typeof userPolicies === 'object'
+        ? replaceKey(
+            userPolicies,
+            collectionId.toString(),
+            hasCollectionAccess
+              ? defined(userPolicies[collectionId]).filter(
+                  ({ resource }) => resource !== collectionAccessResource
+                )
+              : [
+                  ...defined(userPolicies[collectionId]),
+                  {
+                    resource: collectionAccessResource,
+                    actions: ['access'],
+                  },
+                ]
+          )
+        : undefined
+    );
 
   return (
     <div className="flex flex-col gap-4">
@@ -273,30 +309,11 @@ export function CollectionAccess({
                 '/permissions/policies/user',
                 'update',
                 collectionId
-              ) || typeof userPolicies === 'undefined'
+              ) ||
+              typeof userPolicies === 'undefined' ||
+              (!hasCollectionAccess && !canAssignAgent && !hasAgent)
             }
-            onValueChange={(): void =>
-              handleChange(
-                typeof userPolicies === 'object'
-                  ? replaceKey(
-                      userPolicies,
-                      collectionId.toString(),
-                      hasCollectionAccess
-                        ? defined(userPolicies[collectionId]).filter(
-                            ({ resource }) =>
-                              resource !== collectionAccessResource
-                          )
-                        : [
-                            ...defined(userPolicies[collectionId]),
-                            {
-                              resource: collectionAccessResource,
-                              actions: ['access'],
-                            },
-                          ]
-                    )
-                  : undefined
-              )
-            }
+            onValueChange={handleToggle}
             checked={hasCollectionAccess}
           />
           {adminText('collectionAccess')}
@@ -309,11 +326,7 @@ export function CollectionAccess({
             id={undefined}
             fieldName="agent"
             resource={collectionAddress}
-            mode={
-              mode === 'view' || !hasPermission('/admin/user/agents', 'update')
-                ? 'view'
-                : 'edit'
-            }
+            mode={mode === 'view' || !canAssignAgent ? 'view' : 'edit'}
             formType="form"
             isRequired={hasCollectionAccess || isSuperAdmin}
             relatedModel={schema.models.Agent}
