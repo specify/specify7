@@ -55,8 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed `taxonId` field on the forms not getting
   populated ([#2083](https://github.com/specify/specify7/issues/2083))
 - Fixed `ExsiccataItem` table being hidden in the
-  WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - _
-  Reported by CSIRO_
+  WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - _Reported by CSIRO_
 - Fix `Taxon.taxonId` field not getting
   populated ([#2087](https://github.com/specify/specify7/pull/2087))
 - Don't use underscore for partial date
@@ -80,14 +79,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Add" ([#1922](https://github.com/specify/specify7/issues/1922)) - _Reported by
   RBGE_
 - Add ability to modify some Locality
-  Preferences ([#159](https://github.com/specify/specify7/issues/159)) - _
-  Reported by CSIRO_
+  Preferences ([#159](https://github.com/specify/specify7/issues/159)) - _Reported by CSIRO_
 - Display Git Hash in the Specify "About"
   dialog ([#1980](https://github.com/specify/specify7/issues/1980)) - _Reported
   by RBGE_
 - Make autocomplete search algorithm
   configurable ([#1921](https://github.com/specify/specify7/issues/1921)
-  , [#1935] - _Reported by RBGE_
+  , [#1935](https://github.com/specify/specify7/issues/1935)) - _Reported by RBGE_
 - In one to many displays in grid form, add border around each
   record ([#1933](https://github.com/specify/specify7/issues/1933))
 - Extend localization tests to catch misplaced
