@@ -123,7 +123,6 @@ export function getResourceApiUrl(
 
 export function parseResourceUrl(
   resourceUrl: string
-  // BUG: id could actually be undefined (for url like /api/specify/agent/)
 ): Readonly<[modelName: keyof Tables, id: number | undefined] | undefined> {
   const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/
     .exec(resourceUrl)
