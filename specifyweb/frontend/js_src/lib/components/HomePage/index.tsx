@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { welcomeText } from '../../localization/welcome';
-import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
-import { usePref } from '../UserPreferences/usePref';
 import { f } from '../../utils/functools';
 import { Async } from '../Router/RouterUtils';
+import { defaultWelcomePageImage } from '../UserPreferences/Renderers';
+import { usePref } from '../UserPreferences/usePref';
 
 const taxonTiles = f.store(() => (
   <Async
@@ -46,11 +46,17 @@ function WelcomeScreenContent(): JSX.Element {
       src={source}
       title={welcomeText('pageTitle')}
     />
+  ) : mode === 'default' ? (
+    defaultSplashScreen
   ) : (
-    <img
-      alt=""
-      className="h-full"
-      src={mode === 'default' ? defaultWelcomePageImage : source}
-    />
+    <img alt="" className="h-full" src={source} />
   );
 }
+
+const defaultSplashScreen = (
+  <div className="relative">
+    <div className="absolute top-0 h-full w-[20%] bg-[linear-gradient(to_right,var(--background),transparent)]" />
+    <img alt="" className="w-[800px]" src={defaultWelcomePageImage} />
+    <div className="absolute top-0 right-0 h-full w-[20%] bg-[linear-gradient(to_left,var(--background),transparent)]" />
+  </div>
+);
