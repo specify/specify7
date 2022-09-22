@@ -11,6 +11,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
+### Changed
+
+- Pick List size limit is no longer enforced
+  ([#1025](https://github.com/specify/specify7/issues/1025)) -
+  _Requested by RGBE and others_
+
 ### Fixes
 
 - Fix list of tables pick list not working on form

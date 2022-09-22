@@ -17,7 +17,6 @@ from . import (
     interaction_rules,
     workbench_rules,
     user_rules,
-    picklist_rules,
     accessionagent_rules,
     fundingagent_rules,
 )
