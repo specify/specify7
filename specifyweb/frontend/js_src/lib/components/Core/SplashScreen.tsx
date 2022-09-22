@@ -25,7 +25,7 @@ export function SplashScreen({
           <img
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
-            src="/static/img/seven_logo.png"
+            src="/static/img/logo.svg"
           />
         </header>
         <main className="contents">{children}</main>

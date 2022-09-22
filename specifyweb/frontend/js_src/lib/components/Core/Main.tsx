@@ -92,7 +92,7 @@ export function Main(): JSX.Element | null {
               <img
                 alt=""
                 className="h-16 hover:animate-hue-rotate"
-                src="/static/img/seven_logo.png"
+                src="/static/img/logo.svg"
               />
               <span className="sr-only">{commonText('goToHomepage')}</span>
             </a>
