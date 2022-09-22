@@ -326,10 +326,17 @@ export function Autocomplete<T>({
     results.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     ) ?? currentValue;
+  const stableCurrentItemRef = React.useRef<string | Item<T>>(currentItem);
+  if (
+    typeof currentItem !== 'object' ||
+    typeof stableCurrentItemRef.current !== 'object' ||
+    JSON.stringify(currentItem) !== JSON.stringify(stableCurrentItemRef.current)
+  )
+    stableCurrentItemRef.current = currentItem;
 
   return (
     <Combobox
-      value={currentItem}
+      value={stableCurrentItemRef.current}
       onChange={(value: Item<T> | null | undefined | string): void => {
         if (value === null || value === undefined) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
@@ -361,17 +368,6 @@ export function Autocomplete<T>({
             : item?.searchValue ?? (item?.label as string) ?? ''
         }
         ref={forwardChildRef}
-        /*
-         *OnBlur={({ relatedTarget }): void => {
-         *  if (
-         *    relatedTarget === null ||
-         *    dataListRef.current?.contains(relatedTarget as Node) === false
-         *  ) {
-         *    handleBlur();
-         *    if (closeOnOutsideClick) setPendingValue(currentValue);
-         *  }
-         *}}
-         */
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*
