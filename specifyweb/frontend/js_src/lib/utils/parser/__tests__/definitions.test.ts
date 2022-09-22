@@ -2,6 +2,7 @@ import type {
   JavaType,
   LiteralField,
 } from '../../../components/DataModel/specifyField';
+import { Relationship } from '../../../components/DataModel/specifyField';
 import {
   formatterTypeMapper,
   UiFormatter,
@@ -121,6 +122,16 @@ describe('resolveParser', () => {
         'parser',
         'validators'
       ),
+    });
+  });
+  test('relationship parser is resolved to a simple text field', () => {
+    const field = {
+      type: 'one-to-one',
+      isRelationship: true,
+    } as unknown as Relationship;
+    expect(resolveParser(field)).toEqual({
+      required: false,
+      type: 'text',
     });
   });
 });

@@ -249,6 +249,8 @@ export function resolveParser(
   const fullField = { ...field, ...extras };
   let parser = parserFromType(fullField.type as ExtendedJavaType);
 
+  if (field.isRelationship === true) parser = { ...parser, value: undefined };
+
   if (
     parser.type === 'date' &&
     typeof fullField.datePart === 'string' &&
