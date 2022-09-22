@@ -110,11 +110,27 @@ export const ajax = async <RESPONSE_TYPE = string>(
       })
         .then(async (response) => Promise.all([response, response.text()]))
         .then(([response, text]: readonly [Response, string]) =>
-          handleAjaxResponse({
+          handleAjaxResponse<RESPONSE_TYPE>({
             expectedResponseCodes,
             accept,
             strict,
             response,
             text,
           })
-        );
+        )
+        // This happens when request is aborted (i.e, page is restarting)
+        .catch((error) => {
+          console.error(error);
+          const response = new Response(undefined, {
+            status: Http.MISDIRECTED,
+            statusText: error.toString(),
+          });
+          Object.defineProperty(response, 'url', { value: url });
+          return handleAjaxResponse({
+            expectedResponseCodes,
+            accept,
+            strict,
+            response,
+            text: error.toString(),
+          });
+        });

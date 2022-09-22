@@ -10,6 +10,7 @@ export const Http = {
   NOT_FOUND: 404,
   FORBIDDEN: 403,
   CONFLICT: 409,
+  MISDIRECTED: 421,
   HUGE_HEADER: 431,
   SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
@@ -36,6 +37,12 @@ export const httpCodeToErrorMessage: RR<number, string> = {
     This error happened because you tried to access a resource you don't have
     access to, or your session has expired. Please try logging in again, or
     repeat the action as a user with more permissions
+  `,
+  // This error code is used by the front-end when request was aborted
+  [Http.MISDIRECTED]: `
+    This error happened because Specify failed to send a request to the server.
+    Please try again, and if the problem persists, contact your system
+    administrator.
   `,
   [Http.CONFLICT]: `
     This error happened because the resource you tried to update has already
