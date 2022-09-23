@@ -49,13 +49,15 @@ export function QueryBuilder({
   isReadOnly,
   recordSet,
   model,
+  forceCollection,
   // If present, this callback is called when a query result is selected
   onSelected: handleSelected,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly isReadOnly: boolean;
-  readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
+  readonly model: SpecifyModel;
+  readonly forceCollection: number | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
@@ -514,6 +516,7 @@ export function QueryBuilder({
               baseTableName={state.baseTableName}
               model={model}
               queryResource={queryResource}
+              forceCollection={forceCollection}
               fields={state.fields}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}
