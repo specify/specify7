@@ -11,10 +11,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
 
+### Changed
+
+- Pick List size limit is no longer enforced
+  ([#1025](https://github.com/specify/specify7/issues/1025)) -
+  _Requested by RGBE and others_
+
 ### Fixes
 
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
+- Fix an error when creating Funding Agent records
+  ([#715](https://github.com/specify/specify7/issues/715)) - _Reported
+  by CSIRO_
+- Fix for focus loss when using Query Combo Box without a mouse 
+  ([#2142](https://github.com/specify/specify7/issues/2142)) - _Reported
+  by RGBE_
 
 ### Fixed
 
@@ -23,6 +35,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   _Reported by CSIRO_
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
+- Fix "Create Invite Link" having incorrect condition ([#2140](https://github.com/specify/specify7/pull/2140))
+- Using invalid field names in checkboxes no longer breaks the form
+  ([#2200](https://github.com/specify/specify7/issue/2200))
 
 ## [7.7.2](https://github.com/specify/specify7/compare/v7.7.1...v7.7.2) (12 September 2022)
 
@@ -47,8 +62,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed `taxonId` field on the forms not getting
   populated ([#2083](https://github.com/specify/specify7/issues/2083))
 - Fixed `ExsiccataItem` table being hidden in the
-  WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - _
-  Reported by CSIRO_
+  WorkBench ([#2077](https://github.com/specify/specify7/issues/2077)) - _Reported by CSIRO_
 - Fix `Taxon.taxonId` field not getting
   populated ([#2087](https://github.com/specify/specify7/pull/2087))
 - Don't use underscore for partial date
@@ -72,14 +86,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Add" ([#1922](https://github.com/specify/specify7/issues/1922)) - _Reported by
   RBGE_
 - Add ability to modify some Locality
-  Preferences ([#159](https://github.com/specify/specify7/issues/159)) - _
-  Reported by CSIRO_
+  Preferences ([#159](https://github.com/specify/specify7/issues/159)) - _Reported by CSIRO_
 - Display Git Hash in the Specify "About"
   dialog ([#1980](https://github.com/specify/specify7/issues/1980)) - _Reported
   by RBGE_
 - Make autocomplete search algorithm
   configurable ([#1921](https://github.com/specify/specify7/issues/1921)
-  , [#1935] - _Reported by RBGE_
+  , [#1935](https://github.com/specify/specify7/issues/1935)) - _Reported by RBGE_
 - In one to many displays in grid form, add border around each
   record ([#1933](https://github.com/specify/specify7/issues/1933))
 - Extend localization tests to catch misplaced
