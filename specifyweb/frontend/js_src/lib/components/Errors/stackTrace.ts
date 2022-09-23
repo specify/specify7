@@ -47,6 +47,7 @@ export const produceStackTrace = (message: unknown): string =>
     userInformation,
     href: globalThis.location.href,
     consoleLog,
+    pageHtml: document.documentElement.outerHTML,
     localStorage: { ...localStorage },
     // Network log and page load telemetry
     eventLog: globalThis.performance.getEntries(),
