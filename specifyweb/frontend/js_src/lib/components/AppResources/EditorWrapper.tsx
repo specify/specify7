@@ -91,8 +91,8 @@ export function Wrapper({
           ...resources,
           directories:
             resource.id === undefined && typeof directory.id === 'number'
-              ? resources.directories
-              : [...resources.directories, directory],
+              ? [...resources.directories, directory]
+              : resources.directories,
           [mode]: [
             ...resources[mode as 'appResources'].filter(
               ({ id }) => id !== appResource.id
