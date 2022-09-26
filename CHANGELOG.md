@@ -27,6 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix for focus loss when using Query Combo Box without a mouse 
   ([#2142](https://github.com/specify/specify7/issues/2142)) - _Reported
   by RGBE_
+- Fix Query Combo Box displaying "Add" for users that don't have
+  permission to create related record
+  ([#2216](https://github.com/specify/specify7/issues/2216))
 
 ### Fixed
 
