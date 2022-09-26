@@ -277,7 +277,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
-    return this.getFields(unparsedName)[0];
+    return this.getFields(unparsedName).at(-1);
   }
 
   // REFACTOR: use this where appropriate
