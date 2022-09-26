@@ -402,6 +402,11 @@ export function QueryComboBox({
       ) ?? {}
     );
 
+  const canAdd =
+    field?.isRelationship === true &&
+    !RESTRICT_ADDING.has(field.relatedModel.name) &&
+    hasTablePermission(field.relatedModel.name, 'create');
+
   return (
     <div className="flex items-center w-full">
       <Autocomplete<string>
@@ -496,14 +501,15 @@ export function QueryComboBox({
           updateValue(data);
         }}
         onCleared={(): void => updateValue('', false)}
-        onNewValue={(): void =>
-          field?.isRelationship === true
-            ? state.type === 'AddResourceState'
-              ? setState({ type: 'MainState' })
-              : setState({
-                  type: 'AddResourceState',
-                  resource: pendingValueToResource(field),
-                })
+        onNewValue={
+          formType !== 'formTable' && canAdd
+            ? (): void =>
+                state.type === 'AddResourceState'
+                  ? setState({ type: 'MainState' })
+                  : setState({
+                      type: 'AddResourceState',
+                      resource: pendingValueToResource(field),
+                    })
             : undefined
         }
         value={formatted?.label ?? commonText('loading') ?? ''}
@@ -554,23 +560,16 @@ export function QueryComboBox({
               }
               onClick={handleOpenRelated}
             />
-            {typeof field === 'undefined' ||
-            !field.isRelationship ||
-            (!RESTRICT_ADDING.has(field.relatedModel.name) &&
-              hasTablePermission(field.relatedModel.name, 'create')) ? (
+            {canAdd ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                disabled={field?.isRelationship !== true}
-                onClick={
-                  field?.isRelationship === true
-                    ? (): void =>
-                        state.type === 'AddResourceState'
-                          ? setState({ type: 'MainState' })
-                          : setState({
-                              type: 'AddResourceState',
-                              resource: pendingValueToResource(field),
-                            })
-                    : undefined
+                onClick={(): void =>
+                  state.type === 'AddResourceState'
+                    ? setState({ type: 'MainState' })
+                    : setState({
+                        type: 'AddResourceState',
+                        resource: pendingValueToResource(field),
+                      })
                 }
               />
             ) : undefined}
