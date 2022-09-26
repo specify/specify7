@@ -18,6 +18,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
             if conflicts.exists():
                 raise BusinessRuleException({
                     "type": "UNIQUENESS",
+                    "message": "{} must have unique {}".format(model.__name__, unique_field),
                     "table": model.__name__,
                     "field": (unique_field, value),
                     "conflicting": list(conflicts.values_list('id', flat=True)[:100]),
@@ -41,6 +42,7 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
             if conflicts.exists():
                 raise BusinessRuleException({
                     "type": "UNIQUENESS",
+                    "message": "{} must have unique {} in {}".format(model.__name__, unique_field, parent_field),
                     "table": model.__name__,
                     "field": (unique_field, value),
                     "within": (parent_field, parent),

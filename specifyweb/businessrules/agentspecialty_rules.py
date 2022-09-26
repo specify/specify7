@@ -1,5 +1,4 @@
 from .orm_signal_handler import orm_signal_handler
-from .exceptions import BusinessRuleException
 from specifyweb.specify.models import Agentspecialty
 
 from django.db.models import Max
