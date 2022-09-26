@@ -18,7 +18,6 @@ import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
 import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
-import { OverlayContext } from '../Router/Router';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import {
@@ -39,7 +38,7 @@ export const isAppResourceSubType = (type: string, subType: string): boolean =>
 ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
 export function CreateAppResource(): JSX.Element {
-  const handleClose = React.useContext(OverlayContext);
+  const navigate = useNavigate();
   const { directoryKey = '' } = useParams();
   const {
     getSet: [resources],
@@ -61,7 +60,7 @@ export function CreateAppResource(): JSX.Element {
     <Dialog
       buttons={commonText('cancel')}
       header={adminText('selectResourceType')}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify/resources/')}
     >
       <Ul className="flex flex-col">
         {Object.entries(appResourceTypes).map(([key, type]) => (
@@ -83,7 +82,7 @@ export function CreateAppResource(): JSX.Element {
     <Dialog
       buttons={commonText('cancel')}
       header={adminText('selectResourceTypeDialogHeader')}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify/resources/')}
     >
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
@@ -166,7 +165,6 @@ function EditAppResource({
     [directory, name, type, mimeType]
   );
 
-  const handleClose = React.useContext(OverlayContext);
   const navigate = useNavigate();
   const { directoryKey = '' } = useParams();
 
@@ -178,7 +176,7 @@ function EditAppResource({
       isSubForm={false}
       mode="edit"
       resource={resource}
-      onClose={handleClose}
+      onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
       onSaved={f.never}
       onSaving={(): false => {
