@@ -156,7 +156,7 @@ def adding_node(node):
         override = re.search(pattern, remote_prefs, re.MULTILINE)
         if override is None or override.group(1).lower() != "true":
             raise BusinessRuleException({
-                "type": "SYNONIMIZED_PARENT",
+                "type": "SYNONYMIZED_PARENT",
                 "nodeid": node.id,
                 "parentid": parent.id,
                 "message": f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}".'
