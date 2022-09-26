@@ -6,7 +6,6 @@ import type { State } from 'typesafe-reducer';
 
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
-import { f } from '../../utils/functools';
 import { commonText } from '../../localization/common';
 import { getUserPref } from '../UserPreferences/helpers';
 import { UnloadProtectsContext } from '../Core/Contexts';
@@ -205,7 +204,9 @@ function Overlay({
   );
 }
 
-export const OverlayContext = React.createContext<() => void>(f.never);
+export const OverlayContext = React.createContext<() => void>(() => {
+  throw new Error('Tried to close Overlay, when not in overlay');
+});
 OverlayContext.displayName = 'OverlayContext';
 
 function UnloadProtect({
