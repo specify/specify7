@@ -577,6 +577,7 @@ export function QueryResultsWrapper({
           headers: { Accept: 'application/json' },
           body: keysToLowerCase({
             ...queryResource.toJSON(),
+            collectionId: forceCollection,
             fields: unParseQueryFields(
               baseTableName,
               addAuditLogFields(baseTableName, fields)
@@ -587,7 +588,7 @@ export function QueryResultsWrapper({
           }),
         }
       ).then(({ data }) => data.results),
-    [fields, baseTableName, queryResource, recordSetId]
+    [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 
   /*
