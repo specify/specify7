@@ -113,7 +113,7 @@ const pluginRenderers: {
   },
   CollectionRelOneToManyPlugin({
     resource,
-    pluginDefinition: { relationship },
+    pluginDefinition: { relationship, formatting },
   }) {
     if (typeof relationship === 'undefined') {
       console.error(
@@ -128,12 +128,16 @@ const pluginRenderers: {
             <CollectionOneToManyPlugin
               resource={collectionObject}
               relationship={relationship}
+              formatting={formatting}
             />
           )) ?? (
             <WrongTable resource={resource} allowedTable="CollectionObject" />
           );
   },
-  ColRelTypePlugin({ resource, pluginDefinition: { relationship } }) {
+  ColRelTypePlugin({
+    resource,
+    pluginDefinition: { formatting, relationship },
+  }) {
     if (typeof relationship === 'undefined') {
       console.error(
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
@@ -148,6 +152,7 @@ const pluginRenderers: {
             <CollectionOneToOnePlugin
               resource={collectionObject}
               relationship={relationship}
+              formatting={formatting}
             />
           )) ?? (
             <WrongTable resource={resource} allowedTable="CollectionObject" />

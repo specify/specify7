@@ -216,7 +216,7 @@ export type CollectionRelationships = {
 
 export type TypeSearch = {
   readonly title: string;
-  readonly searchFields: RA<LiteralField | Relationship>;
+  readonly searchFields: RA<RA<LiteralField | Relationship>>;
   readonly relatedModel: SpecifyModel;
   readonly dataObjectFormatter: string | undefined;
 };

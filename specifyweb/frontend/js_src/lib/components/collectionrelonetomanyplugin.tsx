@@ -45,7 +45,8 @@ type Data = {
 
 const processRelationships = async (
   relationships: RA<SpecifyResource<CollectionRelationship>>,
-  otherSide: 'left' | 'right'
+  otherSide: 'left' | 'right',
+  formatting: string | undefined
 ): Promise<Data['collectionObjects']> =>
   Promise.all(
     relationships.map(async (relationship) =>
@@ -56,7 +57,7 @@ const processRelationships = async (
   ).then(async (resources) =>
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
-        formatted: await format(collectionObject).then(
+        formatted: await format(collectionObject, formatting).then(
           (formatted) => formatted ?? collectionObject.id.toString()
         ),
         resource: collectionObject,
@@ -67,7 +68,8 @@ const processRelationships = async (
 
 export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
-  relationship: string
+  relationship: string,
+  formatting: string | undefined
 ): Promise<Data> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
@@ -120,7 +122,11 @@ export async function fetchOtherCollectionData(
                   collectionreltype_id: relationshipType.id,
                 }
           ).then(async ({ records }) =>
-            processRelationships(records.map(deserializeResource), otherSide)
+            processRelationships(
+              records.map(deserializeResource),
+              otherSide,
+              formatting
+            )
           )
         : [],
     otherCollection: {
@@ -139,17 +145,21 @@ export async function fetchOtherCollectionData(
 export function CollectionOneToManyPlugin({
   resource,
   relationship,
+  formatting,
 }: {
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
+  readonly formatting: string | undefined;
 }): JSX.Element | null {
   const [data, setData] = useAsyncState<Data | false>(
     React.useCallback(
       async () =>
-        fetchOtherCollectionData(resource, relationship).catch((error) => {
-          console.error(error);
-          return false;
-        }),
+        fetchOtherCollectionData(resource, relationship, formatting).catch(
+          (error) => {
+            console.error(error);
+            return false;
+          }
+        ),
       [resource, relationship]
     ),
     false
@@ -303,7 +313,9 @@ export function CollectionOneToManyPlugin({
               resource
                 .rgetCollection(`${data.side}SideRels`)
                 .then((collection) => collection.add(toAdd))
-                .then(async () => processRelationships([toAdd], data.otherSide))
+                .then(async () =>
+                  processRelationships([toAdd], data.otherSide, formatting)
+                )
                 .then((relationships) =>
                   setData({
                     ...data,

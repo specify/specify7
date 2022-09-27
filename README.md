@@ -107,6 +107,8 @@ yum install -y \
   unzip
 ```
 
+Please make sure you have Node.js 18 or higher installed.
+
 ### Installing Specify 6
 
 A copy of the most recent Specify 6 release is required on the server
