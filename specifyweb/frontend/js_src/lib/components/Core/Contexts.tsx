@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { error } from '../Errors/assert';
-import { f } from '../../utils/functools';
-import { commonText } from '../../localization/common';
-import type { MenuItemName } from '../Header/menuItemDefinitions';
-import type { GetOrSet, RA } from '../../utils/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { crash } from '../Errors/Crash';
-import { loadingBar } from '../Molecules';
 import { useStableState } from '../../hooks/useContextState';
+import { commonText } from '../../localization/common';
+import { eventListener } from '../../utils/events';
+import { f } from '../../utils/functools';
+import type { GetOrSet, RA } from '../../utils/types';
+import { error } from '../Errors/assert';
+import { crash } from '../Errors/Crash';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import type { MenuItemName } from '../Header/menuItemDefinitions';
+import { loadingBar } from '../Molecules';
+import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 
 let setError: (
   error: (props: { readonly onClose: () => void }) => JSX.Element
@@ -28,6 +29,13 @@ export const displayError: typeof setError = (error) => setError(error);
 let legacyContext: (promise: Promise<unknown>) => void;
 export const legacyLoadingContext = (promise: Promise<unknown>) =>
   legacyContext(promise);
+
+export const unloadProtectEvents = eventListener<{
+  // Called when blockers changed, and there is more than one blocker
+  readonly blocked: RA<string>;
+  // Called when blockers changed, and there are no blockers left
+  readonly unblocked: undefined;
+}>();
 
 /**
  * Provide contexts used by other components
@@ -87,16 +95,33 @@ export function Contexts({
   );
   setError = handleError;
 
-  const getSetProtects = useStableState<RA<string>>([]);
-  React.useEffect(() => {
-    // @ts-expect-error Exposing to global scope for easier debugging
-    globalThis._unloadProtects = getSetProtects;
-  }, [getSetProtects]);
+  const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
+  const handleChangeUnloadProtects = React.useCallback(
+    (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void =>
+      setUnloadProtects((oldUnloadProtects) => {
+        const resolvedValue =
+          typeof value === 'function' ? value(oldUnloadProtects) : value;
+
+        if (resolvedValue.length > 0)
+          unloadProtectEvents.trigger('blocked', resolvedValue);
+        else unloadProtectEvents.trigger('unblocked');
+
+        // @ts-expect-error Exposing to global scope for easier debugging
+        globalThis._unloadProtects = resolvedValue;
+
+        return resolvedValue;
+      }),
+    []
+  );
+  const getSetUnloadProtect = React.useMemo(
+    () => [unloadProtects, handleChangeUnloadProtects] as const,
+    [unloadProtects, handleChangeUnloadProtects]
+  );
 
   const menuContext = useStableState<MenuItemName | undefined>(undefined);
 
   return (
-    <UnloadProtectsContext.Provider value={getSetProtects}>
+    <UnloadProtectsContext.Provider value={getSetUnloadProtect}>
       <ErrorBoundary>
         <ErrorContext.Provider value={handleError}>
           {errors}

@@ -34,9 +34,10 @@ export function EditRecordSet({
   ) : (
     <ResourceView
       canAddAnother={false}
+      // BUG: the message is stale if record set is renamed
       deletionMessage={formsText(
         'recordSetDeletionWarning',
-        recordSet.get('name')
+        recordSet.get('name') ?? ''
       )}
       dialog="modal"
       extraButtons={

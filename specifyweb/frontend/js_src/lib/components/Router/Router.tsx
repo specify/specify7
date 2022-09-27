@@ -8,7 +8,7 @@ import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
 import { commonText } from '../../localization/common';
 import { getUserPref } from '../UserPreferences/helpers';
-import { UnloadProtectsContext } from '../Core/Contexts';
+import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
 import { NotFoundView } from './NotFoundView';
@@ -205,7 +205,7 @@ function Overlay({
 }
 
 export const OverlayContext = React.createContext<() => void>(() => {
-  throw new Error('Tried to close Overlay, when not in overlay');
+  throw new Error('Tried to close Overlay outside of an overlay');
 });
 OverlayContext.displayName = 'OverlayContext';
 
@@ -219,7 +219,7 @@ function UnloadProtect({
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
 
-  useRouterBlocker(
+  const { block, unblock } = useRouterBlocker(
     React.useCallback(
       async (location) =>
         new Promise((resolve, reject) =>
@@ -228,9 +228,19 @@ function UnloadProtect({
             : resolve()
         ),
       [backgroundPath]
-    ),
-    unloadProtects.length > 0
+    )
   );
+  /*
+   * Need to use events rather than context because contexts take time to
+   * propagate, leading to false "Unsaved changes" warnings when unsetting
+   * unload protects and navigation are done one after another.
+   */
+  React.useEffect(() => unloadProtectEvents.on('blocked', block), [block]);
+  React.useEffect(
+    () => unloadProtectEvents.on('unblocked', unblock),
+    [unblock]
+  );
+
   return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
     <UnloadProtectDialog
       message={unloadProtects.at(-1)!}

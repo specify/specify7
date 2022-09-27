@@ -198,13 +198,13 @@ export function RecordSetsDialog({
           })
         }
       />
-    ) : (
+    ) : state.type === 'EditState' ? (
       <EditRecordSet
         isReadOnly={isReadOnly}
         recordSet={state.recordSet}
         onClose={handleClose}
       />
-    )
+    ) : null
   ) : null;
 }
 

@@ -65,7 +65,11 @@ function serializeModel<SCHEMA extends AnySchema>(
               resource
             );
         }
-        if (typeof value === 'object' && value !== null) {
+        if (
+          typeof value === 'object' &&
+          value !== null &&
+          !specialFields.has(camelFieldName)
+        ) {
           const field = model.getField(lowercaseFieldName);
           const tableName =
             field === undefined || !field.isRelationship
