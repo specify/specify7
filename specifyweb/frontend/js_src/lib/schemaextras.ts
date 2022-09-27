@@ -325,10 +325,30 @@ export const schemaExtras: {
       dependent: false,
     });
     preferredTaxonOf.isHidden = true;
-    preferredTaxonOf.isHidden = true;
+    preferredTaxonOf.overrides.isHidden = true;
 
     return [[], [preferredTaxonOf]];
   },
+  AddressOfRecord(model) {
+    const borrow = new Relationship(model, {
+      name: 'borrow',
+      required: false,
+      type: 'one-to-many',
+      otherSideName: 'addressOfRecord',
+      relatedModelName: 'Borrow',
+      dependent: false,
+    });
+    borrow.isHidden = true;
+    borrow.overrides.isHidden = true;
+    return [[], [borrow]];
+  },
+  Borrow: (model) => [
+    [],
+    [],
+    (): void => {
+      model.getRelationship('addressOfRecord')!.otherSideName = 'borrow';
+    },
+  ],
   SpecifyUser: (model) => [
     [
       new LiteralField(model, {

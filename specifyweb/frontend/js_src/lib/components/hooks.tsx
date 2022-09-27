@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { error, tap } from '../assert';
+import { tap } from '../assert';
 import type { AnySchema } from '../datamodelutils';
 import { getDateInputValue } from '../dayjs';
 import { listen } from '../events';
@@ -406,17 +406,18 @@ export function useResourceValue<
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
 
-  const field = React.useMemo(
-    () =>
-      typeof fieldName === 'string'
-        ? resource.specifyModel.getField(fieldName) ??
-          error(
-            `${fieldName} does not exist on ${resource.specifyModel.name}`,
-            { resource }
-          )
-        : undefined,
-    [fieldName, resource]
-  );
+  const field = React.useMemo(() => {
+    if (typeof fieldName === 'string') {
+      const field = resource.specifyModel.getField(fieldName);
+      if (field === undefined)
+        console.error(
+          `${fieldName} does not exist on ${resource.specifyModel.name}`,
+          { resource }
+        );
+      return field;
+    } else return undefined;
+  }, [fieldName, resource]);
+
 
   const [{ triedToSubmit }] = React.useContext(FormContext);
 
