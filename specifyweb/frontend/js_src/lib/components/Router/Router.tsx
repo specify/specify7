@@ -4,20 +4,21 @@ import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
+import { commonText } from '../../localization/common';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
-import { commonText } from '../../localization/common';
-import { getUserPref } from '../UserPreferences/helpers';
+import { setDevelopmentGlobal as setDevelopmentGlobal } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
+import { getUserPref } from '../UserPreferences/helpers';
 import { NotFoundView } from './NotFoundView';
 import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 
 let unsafeNavigate: NavigateFunction | undefined;
 let unsafeLocation: Location | undefined;
@@ -72,16 +73,13 @@ export function Router(): JSX.Element {
     state?.type === 'NoopRoute' ? state.originalLocation : undefined;
   const isNotFoundPage = state?.type === 'NotFoundPage';
 
-  // REFACTOR: replace usages of navigate with <a> where possible
-  // REFACTOR: replace <Button> with <Link> where possible
+  /*
+   * REFACTOR: replace usages of navigate with <a> where possible
+   * REFACTOR: replace <Button> with <Link> where possible
+   */
   const navigate = useNavigate();
   unsafeNavigate = navigate;
-  React.useEffect(() => {
-    // Leak navigate function in development for quicker development
-    if (process.env.NODE_ENV === 'development')
-      // @ts-expect-error Creating a global value
-      globalThis._goTo = navigate;
-  }, [navigate]);
+  React.useEffect(() => setDevelopmentGlobal('_goTo', navigate), [navigate]);
 
   useLinkIntercept(background);
 

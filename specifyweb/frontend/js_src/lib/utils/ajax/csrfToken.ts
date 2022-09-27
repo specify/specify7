@@ -4,6 +4,7 @@
  * See more: https://docs.djangoproject.com/en/4.0/ref/csrf/
  */
 
+import { setDevelopmentGlobal as setDevelopmentGlobal } from '../types';
 import { readCookie } from './cookies';
 
 /**
@@ -16,6 +17,4 @@ export const parseDjangoDump = <T>(id: string): T =>
 export const csrfToken =
   readCookie('csrftoken') ?? parseDjangoDump<string>('csrf-token');
 
-if (process.env.NODE_ENV !== 'production')
-  // @ts-expect-error Exposing token as global when in development
-  globalThis._csrf = csrfToken;
+setDevelopmentGlobal('_csrf', csrfToken);
