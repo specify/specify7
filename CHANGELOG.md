@@ -4,11 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.2...HEAD)
+## [Unreleased](https://github.com/specify/specify7/compare/v7.7.3...HEAD)
 
 No unreleased changes yet
 
-## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...7.7.3) (26 September 2022)
+## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...v7.7.3) (26 September 2022)
 
 ### Added
 
@@ -29,8 +29,7 @@ No unreleased changes yet
 ### Fixed
 
 - Fix "Create Invite Link" having incorrect
-  condition ([#2140](https://github.com/specify/specify7/pull/2140)) - _
-  Discovered by RGBE_
+  condition ([#2140](https://github.com/specify/specify7/pull/2140)) - _Discovered by RGBE_
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
 - Fix an error when creating Funding Agent records
