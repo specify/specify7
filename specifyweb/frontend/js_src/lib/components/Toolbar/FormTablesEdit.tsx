@@ -63,7 +63,7 @@ export function EditFormTables({
             setModels('legacy');
             handleClose();
           } else {
-            setModels([]);
+            if (models === 'legacy') setModels([]);
             handleProceed();
           }
         }}
