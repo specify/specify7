@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - You can now upload `GUIDs` for tree tables though the
   WorkBench ([#2097](https://github.com/specify/specify7/issues/2097))
+- Support customizing CO formatter in ColRels Plugin ([#2157](https://github.com/specify/specify7/pull/2157))
 
 ### Changed
 
