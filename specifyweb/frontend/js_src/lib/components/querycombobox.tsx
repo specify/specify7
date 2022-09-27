@@ -229,16 +229,22 @@ export function QueryComboBox({
                   ? columnToFieldMapper(typeSearch.textContent)
                   : f.id
               ) ?? [];
-      const searchFields = rawSearchFieldsNames.map((searchField) =>
-        defined(relatedModel.getField(searchField))
-      );
+      const searchFields = rawSearchFieldsNames
+        .map((searchField) => relatedModel.getFields(searchField))
+        .filter(({ length }) => length > 0);
 
-      const fieldTitles = searchFields.map((field) =>
-        filterArray([
-          field.model === relatedModel ? undefined : field.model.label,
-          field.label,
-        ]).join(' / ')
-      );
+      /*
+       * Can't use generateMappingPathPreview here as that function expects
+       * tree ranks to be loaded
+       */
+      const fieldTitles = searchFields
+        .map((fields) => fields.slice(-1)[0])
+        .map((field) =>
+          filterArray([
+            field.model === relatedModel ? undefined : field.model.label,
+            field.label,
+          ]).join(' / ')
+        );
 
       return {
         title: queryText('queryBoxDescription', formatList(fieldTitles)),
@@ -391,16 +397,21 @@ export function QueryComboBox({
       f.maybe(
         (typeof typeSearch === 'object'
           ? typeSearch.searchFields.find(
-              (searchField) =>
+              ([searchField]) =>
                 !searchField.isRelationship &&
                 searchField.model === relationship.relatedModel &&
                 !searchField.isReadOnly
-            )?.name
+            )?.[0].name
           : undefined) ??
           getMainTableFields(relationship.relatedModel.name)[0]?.name,
         (fieldName) => ({ [fieldName]: pendingValueRef.current })
       ) ?? {}
     );
+
+  const canAdd =
+    field?.isRelationship === true &&
+    !RESTRICT_ADDING.has(field.relatedModel.name) &&
+    hasTablePermission(field.relatedModel.name, 'create');
 
   return (
     <div className="flex items-center w-full">
@@ -411,9 +422,9 @@ export function QueryComboBox({
             isLoaded && typeof typeSearch === 'object'
               ? Promise.all(
                   typeSearch.searchFields
-                    .map(({ name: fieldName }) =>
+                    .map((fields) =>
                       makeComboBoxQuery({
-                        fieldName,
+                        fieldName: fields.map(({ name }) => name).join('.'),
                         value,
                         isTreeTable:
                           field?.isRelationship === true &&
@@ -421,7 +432,7 @@ export function QueryComboBox({
                         typeSearch,
                         specialConditions: getQueryComboBoxConditions({
                           resource,
-                          fieldName,
+                          fieldName: fields.map(({ name }) => name).join('.'),
                           collectionRelationships:
                             typeof collectionRelationships === 'object'
                               ? collectionRelationships
@@ -496,14 +507,15 @@ export function QueryComboBox({
           updateValue(data);
         }}
         onCleared={(): void => updateValue('', false)}
-        onNewValue={(): void =>
-          field?.isRelationship === true
-            ? state.type === 'AddResourceState'
-              ? setState({ type: 'MainState' })
-              : setState({
-                  type: 'AddResourceState',
-                  resource: pendingValueToResource(field),
-                })
+        onNewValue={
+          formType !== 'formTable' && canAdd
+            ? (): void =>
+                state.type === 'AddResourceState'
+                  ? setState({ type: 'MainState' })
+                  : setState({
+                      type: 'AddResourceState',
+                      resource: pendingValueToResource(field),
+                    })
             : undefined
         }
         value={formatted?.label ?? commonText('loading') ?? ''}
@@ -554,23 +566,16 @@ export function QueryComboBox({
               }
               onClick={handleOpenRelated}
             />
-            {typeof field === 'undefined' ||
-            !field.isRelationship ||
-            (!RESTRICT_ADDING.has(field.relatedModel.name) &&
-              hasTablePermission(field.relatedModel.name, 'create')) ? (
+            {canAdd ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                disabled={field?.isRelationship !== true}
-                onClick={
-                  field?.isRelationship === true
-                    ? (): void =>
-                        state.type === 'AddResourceState'
-                          ? setState({ type: 'MainState' })
-                          : setState({
-                              type: 'AddResourceState',
-                              resource: pendingValueToResource(field),
-                            })
-                    : undefined
+                onClick={(): void =>
+                  state.type === 'AddResourceState'
+                    ? setState({ type: 'MainState' })
+                    : setState({
+                        type: 'AddResourceState',
+                        resource: pendingValueToResource(field),
+                      })
                 }
               />
             ) : undefined}
