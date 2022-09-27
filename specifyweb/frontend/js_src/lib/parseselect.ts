@@ -29,9 +29,7 @@ function columnToField(columnMapping: IR<string>, columnName: string): string {
   const column = columnName.split('.');
   return column.length === 1
     ? columnName
-    : [...columnMapping[column[0]].split('.'), column[1]]
-        .slice(0, -1)
-        .join('.');
+    : [...columnMapping[column[0]].split('.'), column[1]].slice(1).join('.');
 }
 
 export const columnToFieldMapper = (
