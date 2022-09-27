@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.2...HEAD)
+## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...7.7.3) (26 September 2022)
 
 ### Added
 
@@ -18,22 +18,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ([#1025](https://github.com/specify/specify7/issues/1025)) -
   _Requested by RGBE and others_
 
-### Fixes
+### Fixed
 
 - Fix list of tables pick list not working on form
   load ([#2146](https://github.com/specify/specify7/issues/2146))
 - Fix an error when creating Funding Agent records
   ([#715](https://github.com/specify/specify7/issues/715)) - _Reported
   by CSIRO_
-- Fix for focus loss when using Query Combo Box without a mouse 
+- Fix for focus loss when using Query Combo Box without a mouse
   ([#2142](https://github.com/specify/specify7/issues/2142)) - _Reported
   by RGBE_
 - Fix Query Combo Box displaying "Add" for users that don't have
   permission to create related record
   ([#2216](https://github.com/specify/specify7/issues/2216))
-
-### Fixed
-
 - Fix error when adding Address of Record SubView to Borrow form
   ([#2006](https://github.com/specify/specify7/pull/2006)) -
   _Reported by CSIRO_
