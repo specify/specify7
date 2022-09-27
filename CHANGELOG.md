@@ -41,7 +41,7 @@ No unreleased changes yet
 - Fix for query builder not allowing "in" filter on numeric fields
   ([#2115](https://github.com/specify/specify7/issues/2115))
 - Using invalid field names in checkboxes no longer breaks the form
-  ([#2200](https://github.com/specify/specify7/issue/2200))
+  ([#2194](https://github.com/specify/specify7/issues/2194))
 - Fix Query Combo Box displaying "Add" for users that don't have
   permission to create related record
   ([#2216](https://github.com/specify/specify7/issues/2216))
