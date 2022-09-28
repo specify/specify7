@@ -8,10 +8,12 @@ from sqlalchemy.sql.expression import func, distinct
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.api import toJson
 from specifyweb.context import app_resource
-#from specifyweb.stored_queries.models import Determination, Taxon
+# from specifyweb.stored_queries.models import Determination, Taxon
 import logging
+
 logger = logging.getLogger(__name__)
 from django.db import connection
+
 
 @openapi(schema={
     'get': {
@@ -37,34 +39,30 @@ from django.db import connection
                                         }
                                     }
                                 },
-                                'preparationsbyTypeLots/Total':{
+                                'preparation': {
                                     'type': 'object',
-                                    'additionalProperties': 'true',
+                                    'additionalProperties': True,
                                 },
-                                'typeSpecimenCounts': {
+                                'typeSpecimen': {
                                     'type': 'object',
-                                    'additionalProperties': 'true',
+                                    'additionalProperties': True,
                                 },
-                                'locality/Geography':{
+                                'localityGeography': {
                                     'type': 'object',
                                     'properties': {
                                         'countries': {
                                             'type': 'integer'
                                         }
-                                        }
                                     }
                                 }
                             }
                         }
-            },
+                    }
+                },
+            }
         }
-    }
-}}, )
+    }}, )
 def collection_global(request) -> http.HttpResponse:
-    collection_stats_global_dict = {}
-    data, mimetype = app_resource.get_app_resource(request.specify_collection,
-                                                   request.specify_user,
-                                                   'StatsSummaryPanel')
     cursor = connection.cursor()
     # Holdings
     # Families
@@ -80,19 +78,16 @@ def collection_global(request) -> http.HttpResponse:
                    [request.specify_collection.id])
     holding_dict['generaRepresented'] = int(cursor.fetchone()[0])
 
-
     # UNQ_SPEC
     cursor.execute("""
        SELECT count(DISTINCT tx.TaxonID) FROM (SELECT DISTINCT tax.TaxonID,tax.nodenumber FROM (SELECT TaxonID FROM determination WHERE CollectionMemberID = %s AND determination.IsCurrent <> 0) as Genera1,taxon as tax WHERE tax.isaccepted <> 0 and tax.TaxonID = Genera1.TaxonID) as Genera2, taxon as tx WHERE tx.rankid = 220 and Genera2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber"""
-                   ,[request.specify_collection.id])
+                   , [request.specify_collection.id])
     holding_dict['speciesRepresented'] = int(cursor.fetchone()[0])
-
 
     # PREP_BY_TYPE_LOTS
     cursor.execute("""
        SELECT pt.Name, trim(cast(concat(count(PreparationID), ' / ',  sum(countAmt)) as char(50))) FROM preparation p INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID  WHERE CollectionMemberID = %s group by pt.Name""",
                    [request.specify_collection.id])
-    #logger.warning(f"Result: {(cursor.fetchall())}")
     prepbytypelots_result = cursor.fetchall()
 
     preptypelotstotal_dict = {}
@@ -111,18 +106,21 @@ def collection_global(request) -> http.HttpResponse:
        SELECT count(Name) FROM (SELECT DISTINCT Name FROM (SELECT g.GeographyID,g.nodenumber FROM locality as l inner join geography as g on l.GeographyID = g.GeographyID) as GEO, geography as g WHERE g.rankid = 200 and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2""")
     geography_dict['countries'] = int((cursor.fetchone()[0]))
 
-
     # TYPE_SPEC_CNT
     cursor.execute("""
            SELECT TypeStatusName, count(DeterminationID) AS DeterminationCount FROM determination WHERE CollectionMemberID = %s AND TypeStatusName is not null group by TypeStatusName""",
-                       [request.specify_collection.id])
+                   [request.specify_collection.id])
     type_specific_count_result = cursor.fetchall()
     type_spec_dict = {}
     for type_spec_stat in list(type_specific_count_result):
         type_spec_dict[type_spec_stat[0]] = int(type_spec_stat[1])
 
-    return_dict = {'holdings': holding_dict, 'preparation': preptypelotstotal_dict, 'typeSpecimen': type_spec_dict, 'localityGeography': geography_dict}
+    return_dict = {'holdings': holding_dict,
+                   'preparation': preptypelotstotal_dict,
+                   'typeSpecimen': type_spec_dict,
+                   'localityGeography': geography_dict}
     return http.JsonResponse(return_dict)
+
 
 def collection_user():
     return 'r'
