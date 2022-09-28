@@ -185,7 +185,7 @@ export function QueryResults({
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center items-stretch gap-2">
         <H3>{`${label}: (${
           selectedRows.size === 0
             ? totalCount ?? commonText('loading')
