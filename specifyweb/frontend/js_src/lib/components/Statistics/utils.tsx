@@ -6,11 +6,12 @@ import { ajax } from '../../utils/ajax';
 import type { IR, RA, RR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
-import { addMissingFields, serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
+import { addMissingFields } from '../DataModel/addMissingFields';
 
 /** Fetch statistics from the QueryBuilderAPI. */
 export function useStatAjaxHelper(
