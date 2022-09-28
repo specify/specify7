@@ -91,7 +91,7 @@ export function QueryBuilder({
         model,
         autoRun,
       }),
-    [query, queryResource, model, autoRun]
+    [queryResource, model, autoRun]
   );
   const [state, dispatch] = React.useReducer(reducer, pendingState);
   React.useEffect(() => {
