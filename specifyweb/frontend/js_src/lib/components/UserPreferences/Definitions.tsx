@@ -464,6 +464,13 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          showStatistics: defineItem<boolean>({
+            title: preferencesText('showStatistics'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: "java.lang.Boolean"
+          })
         },
       },
     },

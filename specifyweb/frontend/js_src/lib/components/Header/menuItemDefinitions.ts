@@ -29,6 +29,7 @@ export type MenuItemName =
   | 'queries'
   | 'recordSets'
   | 'reports'
+  | 'statistics'
   | 'trees'
   | 'workBench';
 
@@ -104,6 +105,12 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
       return attachmentsAvailable();
     },
   },
+  statistics: {
+    url: '/specify/statistics/',
+    title: commonText('statistics'),
+    icon: icons.link,
+    visibilityKey: 'showStatistics'
+  }
 } as const;
 
 export const menuItemsPromise = fetchPermissions

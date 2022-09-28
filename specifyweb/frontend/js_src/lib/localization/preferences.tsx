@@ -737,6 +737,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Search field',
     'ru-ru': 'Поле поиска',
   },
+  showStatistics: {
+    'en-us': 'Show Statistics',
+    'ru-ru': 'показать статистику'
+  }
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

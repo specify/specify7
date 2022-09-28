@@ -1196,6 +1196,10 @@ export const commonText = createDictionary({
     'en-us': 'Select',
     'ru-ru': 'Выбрать',
   },
+  statistics: {
+    'en-us': 'Statistics',
+    'ru-ru': 'статистика',
+  }
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */
