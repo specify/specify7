@@ -75,4 +75,4 @@ export type BackendStatType = State<
   { readonly value: number | string | undefined }
 >;
 
-export type Spec = BackendStatType | QueryBuildStatType;
+export type StatItemSpec = BackendStatType | QueryBuildStatType;
