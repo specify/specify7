@@ -730,7 +730,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Поделиться объектом:',
   },
   findUsages: {
-    'en-us': 'Find usagges',
+    'en-us': 'Find usages',
     'ru-ru': 'Найти использование',
   },
   usagesOfPickList: {
