@@ -61,7 +61,7 @@ export type BackendStatsResult = {
   readonly typeSpecimen: IR<number>;
 };
 
-export type QueryBuildStatType = State<
+export type QueryBuildStat = State<
   'Querybuildstat',
   {
     readonly tableName: keyof Tables;
@@ -71,9 +71,9 @@ export type QueryBuildStatType = State<
   }
 >;
 
-export type BackendStatType = State<
+export type BackendStat = State<
   'Backendstat',
   { readonly value: number | string | undefined }
 >;
 
-export type StatItemSpec = BackendStatType | QueryBuildStatType;
+export type StatItemSpec = BackendStat | QueryBuildStat;

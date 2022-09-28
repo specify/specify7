@@ -1200,8 +1200,8 @@ export const commonText = createDictionary({
   },
   statistics: {
     'en-us': 'Statistics',
-    'ru-ru': 'статистика',
-  }
+    'ru-ru': 'Статистика',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

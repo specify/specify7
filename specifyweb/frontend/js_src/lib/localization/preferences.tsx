@@ -743,8 +743,8 @@ export const preferencesText = createDictionary({
   },
   showStatistics: {
     'en-us': 'Show Statistics',
-    'ru-ru': 'показать статистику'
-  }
+    'ru-ru': 'Показать статистику',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

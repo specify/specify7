@@ -2,17 +2,13 @@ import { getDateInputValue } from '../../utils/dayJs';
 import type { IR } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import type {
-  BackendStatsResult,
-  BackendStatType,
-  StatItemSpec,
-} from './utils';
+import type { BackendStatsResult, BackendStat, StatItemSpec } from './utils';
 
 function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
   backendobject: BackendStatsResult[CATEGORY_NAME] | undefined,
   modifyfunction: (
     rawValue: BackendStatsResult[CATEGORY_NAME][keyof BackendStatsResult[CATEGORY_NAME]]
-  ) => BackendStatType['value']
+  ) => BackendStat['value']
 ): StatCategoryReturn {
   if (backendobject === undefined) {
     return undefined;
