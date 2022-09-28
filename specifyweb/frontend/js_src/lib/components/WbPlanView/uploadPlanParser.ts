@@ -1,9 +1,8 @@
 import type { MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
@@ -87,7 +86,7 @@ function parseTreeTypes(
 
 /** A fix for https://github.com/specify/specify7/issues/1378 */
 function resolveField(model: SpecifyModel, fieldName: string): RA<string> {
-  const field = defined(model.getField(fieldName));
+  const field = model.strictGetField(fieldName);
   if (field.isRelationship) {
     console.error('Upload plan has a column mapped to a relationship', {
       model,
@@ -121,10 +120,10 @@ const parseUploadTable = (
   ...parseWbCols(model, uploadPlan.wbcols, mappingPath),
   ...Object.entries(uploadPlan.toOne).flatMap(([relationshipName, mappings]) =>
     parseUploadable(
-      defined(model.getRelationship(relationshipName)).relatedModel,
+      model.strictGetRelationship(relationshipName).relatedModel,
       mappings,
       makeMustMatch,
-      [...mappingPath, defined(model.getRelationship(relationshipName)).name]
+      [...mappingPath, model.strictGetRelationship(relationshipName).name]
     )
   ),
   ...('toMany' in uploadPlan
@@ -132,12 +131,12 @@ const parseUploadTable = (
         ([relationshipName, mappings]) =>
           Object.values(mappings).flatMap((mapping, index) =>
             parseUploadTable(
-              defined(model.getRelationship(relationshipName)).relatedModel,
+              model.strictGetRelationship(relationshipName).relatedModel,
               mapping,
               makeMustMatch,
               [
                 ...mappingPath,
-                defined(model.getRelationship(relationshipName)).name,
+                model.strictGetRelationship(relationshipName).name,
                 formatToManyIndex(index + 1),
               ]
             )
@@ -185,7 +184,7 @@ export function parseUploadPlan(uploadPlan: UploadPlan): {
   const makeMustMatch = (model: SpecifyModel): void =>
     void mustMatchTables.add(model.name);
 
-  const baseTable = defined(getModel(uploadPlan.baseTableName));
+  const baseTable = strictGetModel(uploadPlan.baseTableName);
   return {
     baseTable,
     lines: parseUploadable(baseTable, uploadPlan.uploadable, makeMustMatch, []),

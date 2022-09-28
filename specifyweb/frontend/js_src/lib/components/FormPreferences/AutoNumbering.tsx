@@ -6,14 +6,13 @@ import { formsText } from '../../localization/forms';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { Dialog } from '../Molecules/Dialog';
 import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { Input, Label } from '../Atoms/Form';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import {AnySchema} from '../DataModel/helperTypes';
+import { AnySchema } from '../DataModel/helperTypes';
 
 export function AutoNumbering({
   resource,
@@ -62,8 +61,8 @@ function AutoNumberingDialog({
   function handleEnableAutoNumbering(fieldName: string): void {
     const stringValue = ((resource.get(fieldName) as string) ?? '').toString();
     if (stringValue.length === 0) {
-      const field = defined(resource.specifyModel.getLiteralField(fieldName));
-      const formatter = defined(field.getUiFormatter());
+      const field = resource.specifyModel.strictGetLiteralField(fieldName);
+      const formatter = field.getUiFormatter()!;
       const wildCard = formatter.valueOrWild();
       resource.set(fieldName, wildCard as never);
     }
@@ -71,8 +70,8 @@ function AutoNumberingDialog({
   }
 
   function handleDisableAutoNumbering(fieldName: string): void {
-    const field = defined(resource.specifyModel.getLiteralField(fieldName));
-    const formatter = defined(field.getUiFormatter());
+    const field = resource.specifyModel.strictGetLiteralField(fieldName);
+    const formatter = field.getUiFormatter()!;
     const wildCard = formatter.valueOrWild();
     if (resource.get(fieldName) === wildCard)
       resource.set(fieldName, null as never);

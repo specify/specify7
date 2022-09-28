@@ -43,7 +43,7 @@ export const parseSpecifyProperties = (props = ''): IR<string> =>
   Object.fromEntries(
     filterArray(
       props.split(';').map((line) => /([^=]+)=(.+)/.exec(line)?.slice(1, 3))
-    ).map(([key, value]) => [key.toLowerCase(), value])
+    ).map(([key, value]) => [key.trim().toLowerCase(), value.trim()])
   );
 
 export type CellTypes = {
@@ -134,23 +134,19 @@ const processCellType: {
       fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'LatLonUI'
         ? undefined
-        : (fieldDefinition.type === 'Plugin'
-            ? fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-              ? fieldDefinition.pluginDefinition.dateField
-              : fieldDefinition.pluginDefinition.type ===
-                  'CollectionRelOneToManyPlugin' ||
-                fieldDefinition.pluginDefinition.type === 'ColRelTypePlugin'
-              ? fieldDefinition.pluginDefinition.relationship
-              : undefined
-            : undefined) ?? rawFieldName;
+        : (fieldDefinition.type === 'Plugin' &&
+          fieldDefinition.pluginDefinition.type === 'PartialDateUI'
+            ? fieldDefinition.pluginDefinition.dateField
+            : undefined) ??
+          field?.name ??
+          rawFieldName;
     return {
       type: 'Field',
       fieldName,
       fieldDefinition,
       isRequired:
-        getBooleanAttribute(cell, 'isRequired') ??
-        field?.isRequiredBySchemaLocalization() ??
-        false,
+        (getBooleanAttribute(cell, 'isRequired') ?? false) ||
+        (field?.isRequiredBySchemaLocalization() ?? false),
     };
   },
   Label: ({ cell }) => ({
@@ -165,7 +161,7 @@ const processCellType: {
   }),
   Separator: ({ cell }) => ({
     type: 'Separator',
-    label: getParsedAttribute(cell, 'label'),
+    label: f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize),
     icon: getParsedAttribute(cell, 'icon'),
     forClass: f.maybe(
       getParsedAttribute(cell, 'forClass'),
@@ -177,7 +173,7 @@ const processCellType: {
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     const field = model?.getField(rawFieldName ?? '');
     if (field === undefined)
-      f.error(
+      console.error(
         `Unknown field ${rawFieldName ?? '(null)'} when parsing form SubView`,
         {
           cell,
@@ -211,7 +207,7 @@ const processCellType: {
     type: 'Panel',
     ...parseFormDefinition(cell, model),
     display:
-      getParsedAttribute(cell, 'paneltype')?.toLowerCase() === 'buttonbar'
+      getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
         ? 'inline'
         : 'block',
   }),
@@ -268,7 +264,7 @@ export function parseFormCell(
   );
   const getProperty = (name: string): string | undefined =>
     properties[name.toLowerCase()];
-  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colspan'));
+  const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
   return {
     id: getParsedAttribute(cellNode, 'id'),
@@ -294,9 +290,11 @@ export function parseFormCell(
      * To mitigate the above issues, Specify 7 form definitions are using
      * "invisible=true" instead of "visible=false" for making fields invisible
      */
-    visible: getBooleanAttribute(cellNode, 'invisible') !== true,
+    visible:
+      getBooleanAttribute(cellNode, 'invisible') !== true ||
+      parsedCell === processCellType.Unsupported,
     ...parsedCell({ cell: cellNode, model, getProperty }),
-    // This mag get filled out in postProcessRows or parseFormTableDefinition
+    // This may get filled out in postProcessRows or parseFormTableDefinition
     ariaLabel: undefined,
   };
 }

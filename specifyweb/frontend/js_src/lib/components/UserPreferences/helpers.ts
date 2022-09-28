@@ -4,7 +4,6 @@
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { cacheEvents, getCache, setCache } from '../../utils/cache';
 import { MILLISECONDS } from '../Atoms/Internationalization';
 import type { Preferences } from './Definitions';
@@ -20,10 +19,12 @@ import {
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { mergeParsers, parserFromType, parseValue } from '../../utils/uiParse';
+import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
+import { parseValue } from '../../utils/parser/parse';
+import { Http } from '../../utils/ajax/definitions';
 
-export const getPrefDefinition = <
+export function getPrefDefinition<
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
   ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
@@ -31,19 +32,15 @@ export const getPrefDefinition = <
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
-): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM] =>
-  f.var(
+): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM] {
+  const definition =
     // @ts-expect-error
-    preferenceDefinitions[category].subCategories[subcategory].items[item],
-    (definition) =>
-      f.var(
-        defaultPreferences[category]?.[subcategory]?.[item],
-        (defaultValue) =>
-          defaultValue === undefined
-            ? definition
-            : replaceKey(definition, 'defaultValue', defaultValue)
-      )
-  );
+    preferenceDefinitions[category].subCategories[subcategory].items[item];
+  const defaultValue = defaultPreferences[category]?.[subcategory]?.[item];
+  return defaultValue === undefined
+    ? definition
+    : replaceKey(definition, 'defaultValue', defaultValue);
+}
 
 /** Use usePref hook instead whenever possible as it comes with live updates */
 export const getUserPref = <

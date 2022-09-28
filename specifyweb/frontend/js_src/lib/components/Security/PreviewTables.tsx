@@ -2,7 +2,6 @@ import React from 'react';
 
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
@@ -33,13 +32,12 @@ export function PreviewTables({
                 resource in
                 getTablePermissions()[schema.domainLevelIds.collection]
             )
-            .map((entry) =>
-              f.var(resourceNameToModel(entry.resource), (model) =>
-                isSystem === (model.isSystem || model.isHidden)
-                  ? ([model.name, entry] as const)
-                  : undefined
-              )
-            )
+            .map((entry) => {
+              const model = resourceNameToModel(entry.resource);
+              return isSystem === (model.isSystem || model.isHidden)
+                ? ([model.name, entry] as const)
+                : undefined;
+            })
         )
       ).map(
         ([tableName, items]) =>

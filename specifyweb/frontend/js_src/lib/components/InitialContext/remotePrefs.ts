@@ -4,12 +4,13 @@
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { cachableUrl, contextUnlockedPromise } from './index';
-import type { JavaType } from '../DataModel/specifyField';
+import type { Parser } from '../../utils/parser/definitions';
+import { formatter, parsers } from '../../utils/parser/definitions';
+import { parseValue } from '../../utils/parser/parse';
 import type { IR, R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
-import { formatter, parsers, parseValue } from '../../utils/uiParse';
+import type { JavaType } from '../DataModel/specifyField';
+import { cachableUrl, contextUnlockedPromise } from './index';
 
 const preferences: R<string> = {};
 
@@ -58,7 +59,7 @@ type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
 ): TypeOf<Definitions[KEY]> =>
-  parsePref(preferences[key], defined(remotePrefsDefinitions()[key])) as TypeOf<
+  parsePref(preferences[key], defined(remotePrefsDefinitions()[key],`Trying to get unknown remote pref ${key}`)) as TypeOf<
     Definitions[KEY]
   >;
 
@@ -69,7 +70,7 @@ export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
   const fullKey = `${key}${collectionPrefsDefinitions[key].separator}${collectionId}`;
   return parsePref(
     preferences[fullKey],
-    defined(collectionPrefsDefinitions[key])
+    defined(collectionPrefsDefinitions[key], `Trying to get unknown collection-scoped remote pref ${key}`)
   ) as TypeOf<DefinitionOf<KEY>>;
 }
 
@@ -86,9 +87,9 @@ function parsePref(
       : undefined;
   return (
     typeof parsed === 'object'
-      ? parsed.isValid
+      ? (parsed.isValid
         ? parsed.parsed
-        : defaultValue
+        : defaultValue)
       : value ?? defaultValue
   ) as boolean | number | string;
 }
@@ -105,43 +106,43 @@ export const remotePrefsDefinitions = f.store(
       'ui.formatting.scrdateformat': {
         description: 'Full Date format',
         defaultValue: 'YYYY-MM-DD',
-        formatters: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter.trim, formatter.toUpperCase],
         // Indicates that this remote pref is shared with Specify 6
         isLegacy: true,
       },
       'ui.formatting.scrmonthformat': {
         description: 'Month Date format',
         defaultValue: 'MM/YYYY',
-        formatters: [formatter().trim, formatter().toUpperCase],
+        formatters: [formatter.trim, formatter.toUpperCase],
       },
       'GeologicTimePeriod.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Taxon.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Geography.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'LithoStrat.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'Storage.treeview_sort_field': {
         description: 'Sort order for nodes in the tree viewer',
         defaultValue: 'name',
-        formatters: [formatter().trim],
+        formatters: [formatter.trim],
         isLegacy: true,
       },
       'TreeEditor.Rank.Threshold.GeologicTimePeriod': {
@@ -207,7 +208,7 @@ export const remotePrefsDefinitions = f.store(
       'form.definition.columnSource': {
         description: 'The platform to use as a source of columns',
         defaultValue: 'lnx',
-        formatter: [formatter().trim],
+        formatter: [formatter.trim],
         isLegacy: false,
       },
       'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod': {

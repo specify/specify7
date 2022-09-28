@@ -20,7 +20,7 @@ import type {
   SerializedResource,
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
-import { parseClassName } from './resource';
+import { parseJavaClassName } from './resource';
 import { ResourceBase } from './resourceApi';
 import type { SchemaLocalization } from './schema';
 import { getSchemaLocalization, schema } from './schema';
@@ -188,7 +188,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
-    this.name = parseClassName(this.longName) as SCHEMA['tableName'];
+    this.name = parseJavaClassName(this.longName) as SCHEMA['tableName'];
     this.view =
       this.name === 'Attachment'
         ? // Render the attachment plugin rather than the form
@@ -255,6 +255,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       unique: true,
       readOnly: false,
     });
+    this.idField.isReadOnly = true;
+    this.idField.overrides.isReadOnly = true;
 
     this.label = useLabels
       ? typeof this.localization.name === 'string' &&
@@ -321,26 +323,47 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       return this.getField(splitName.slice(1).join('.'));
     if (splitName.length === 1 || field === undefined) return field;
     else if (field.isRelationship)
-      return defined(field.relatedModel).getField(splitName.slice(1).join('.'));
+      return field.relatedModel.getField(splitName.slice(1).join('.'));
     else throw new Error('Field is not a relationship');
+  }
+
+  public strictGetField(unparsedName: string): LiteralField | Relationship {
+    const field = this.getField(unparsedName);
+    if (field === undefined)
+      throw new Error(`Tryied to get unknown field: ${unparsedName}`);
+    return field;
   }
 
   public getLiteralField(literalName: string): LiteralField | undefined {
     const field = this.getField(literalName);
     if (field === undefined) return undefined;
     else if (field.isRelationship)
-      error('Field is a relationship', {
+      error(`Field ${literalName} is a relationship`, {
         model: this,
         literalName,
       });
     else return field;
   }
 
+  public strictGetLiteralField(unparsedName: string): LiteralField {
+    return defined(
+      this.getLiteralField(unparsedName),
+      `Tried to get unknown literal field: ${unparsedName}`
+    );
+  }
+
   public getRelationship(relationshipName: string): Relationship | undefined {
     const relationship = this.getField(relationshipName);
     if (relationship === undefined) return undefined;
     else if (relationship.isRelationship) return relationship;
-    else throw new Error('Field is not a relationship');
+    else throw new Error(`Field ${relationshipName} is not a relationship`);
+  }
+
+  public strictGetRelationship(unparsedName: string): Relationship {
+    return defined(
+      this.getRelationship(unparsedName),
+      `Tried to get unknown relationship field: ${unparsedName}`
+    );
   }
 
   public getFormat(): string | undefined {
@@ -374,7 +397,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     const up = this.getScopingRelationship();
     return up === undefined
       ? undefined
-      : [...defined(up.relatedModel?.getScopingPath()), up.name.toLowerCase()];
+      : [...defined(up.relatedModel.getScopingPath()), up.name.toLowerCase()];
   }
 
   /**

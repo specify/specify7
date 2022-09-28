@@ -27,6 +27,7 @@ from . import models
 from .autonumbering import autonumber_and_save, AutonumberOverflowException
 from .filter_by_col import filter_by_collection
 from .auditlog import auditlog
+from .calculated_fields import calculate_extra_fields
 
 ReadPermChecker = Callable[[Any], None]
 
@@ -702,36 +703,8 @@ def _obj_to_data(obj, perm_checker: ReadPermChecker) -> Dict[str, Any]:
                      and obj.specify_model.get_field(ro.get_accessor_name()) is not None))
     # Add a meta data field with the resource's URI.
     data['resource_uri'] = uri_for_model(obj.__class__.__name__.lower(), obj.id)
-    # Special cases
-    # TODO: move these into a "calculated fields" system
-    if isinstance(obj, get_model('Preparation')):
-        data['isonloan'] = obj.isonloan()
-    elif isinstance(obj, get_model('Specifyuser')):
-        data['isadmin'] = obj.userpolicy_set.filter(collection=None, resource='%', action='%').exists()
-    elif isinstance(obj, get_model('Collectionobject')):
-        dets = data['determinations']
-        currDets = [det['resource_uri'] for det in dets if det['iscurrent']] if dets is not None else []
-        data['currentdetermination'] = currDets[0] if len(currDets) > 0 else None;
-    elif isinstance(obj, get_model('Loan')):
-        preps = data['loanpreparations']
-        items = 0
-        quantities = 0
-        unresolvedItems = 0
-        unresolvedQuantities = 0
-        for prep in preps:
-            items = items + 1;
-            prep_quantity = prep['quantity'] if prep['quantity'] is not None else 0
-            prep_quantityresolved = prep['quantityresolved'] if prep['quantityresolved'] is not None else 0
-            quantities = quantities + prep_quantity
-            if not prep['isresolved']:
-                unresolvedItems = unresolvedItems + 1;
-                unresolvedQuantities = unresolvedQuantities + (prep_quantity - prep_quantityresolved)
-        data['totalPreps'] = items
-        data['totalItems'] = quantities
-        data['unresolvedPreps'] = unresolvedItems
-        data['unresolvedItems'] = unresolvedQuantities
-        data['resolvedPreps'] = items - unresolvedItems
-        data['resolvedItems'] = quantities - unresolvedQuantities
+
+    data.update(calculate_extra_fields(obj, data))
     return data
 
 def to_many_to_data(obj, rel, checker: ReadPermChecker) -> Union[str, List[Dict[str, Any]]]:

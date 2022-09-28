@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
-import { formData, Http } from '../../utils/ajax/helpers';
+import { formData } from '../../utils/ajax/helpers';
 import { Backbone } from '../DataModel/backbone';
 import { fetchCollection } from '../DataModel/collection';
 import type { SpecifyUser } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { getMaxDataSetLength } from '../WbImport/helpers';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
@@ -31,6 +31,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
+import { Http } from '../../utils/ajax/definitions';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -80,10 +81,9 @@ export function DataSetMeta({
                         expectedResponseCodes: [Http.NO_CONTENT],
                       }
                     ).then(() => {
-                      // @ts-expect-error Modifying readOnly value
-                      dataset.name = uniqueName;
-                      // @ts-expect-error Modifying readOnly value
-                      dataset.remarks = remarks.trim();
+                      // REFACTOR: replace this with a callback
+                      overwriteReadOnly(dataset, 'name', uniqueName);
+                      overwriteReadOnly(dataset, 'remarks', remarks.trim());
                       return uniqueName;
                     })
                 )
@@ -261,7 +261,7 @@ function ChangeOwner({
               {
                 method: 'POST',
                 body: formData({
-                  specifyuserid: defined(newOwner),
+                  specifyuserid: newOwner!,
                 }),
               },
               { expectedResponseCodes: [Http.NO_CONTENT] }

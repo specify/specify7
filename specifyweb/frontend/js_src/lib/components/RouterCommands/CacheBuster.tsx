@@ -5,11 +5,11 @@
 import React from 'react';
 
 import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/helpers';
 import { cachableUrls } from '../InitialContext';
 import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { Http } from '../../utils/ajax/definitions';
 
 export const clearCache = async (): Promise<true> =>
   Promise.all(

@@ -5,9 +5,9 @@ import type { State } from 'typesafe-reducer';
 
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { formData, Http } from '../../utils/ajax/helpers';
+import { formData } from '../../utils/ajax/helpers';
 import type { SpecifyUser } from '../DataModel/types';
-import { addMissingFields, serializeResource } from '../DataModel/helpers';
+import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { removeKey, replaceKey } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
@@ -21,7 +21,7 @@ import { idFromUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { anyResource, getAllActions } from './utils';
 import type { IR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingContext } from '../Core/Contexts';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -70,6 +70,8 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { CollectionAccess, SetCollection } from './UserCollections';
+import { addMissingFields } from '../DataModel/addMissingFields';
+import { Http } from '../../utils/ajax/definitions';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();
@@ -396,7 +398,7 @@ function UserView({
                   <LegacyPermissions mode={mode} userResource={userResource} />
                 </ErrorBoundary>
               </>,
-              '-mx-4 p-4 pt-0 flex-1 gap-8'
+              '-mx-4 p-4 pt-0 flex-1 gap-8 [&_input]:max-w-[min(100%,var(--max-field-width))]'
             )}
             <DataEntry.Footer>
               {changesMade ? (
@@ -451,7 +453,7 @@ function UserView({
                               method: 'POST',
                               headers: {},
                               body: filterArray(
-                                defined(userAgents).map(({ address }) =>
+                                userAgents!.map(({ address }) =>
                                   idFromUrl(address.get('agent') ?? '')
                                 )
                               ),

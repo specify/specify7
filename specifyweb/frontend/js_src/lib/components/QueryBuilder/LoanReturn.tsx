@@ -9,7 +9,6 @@ import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import { getDateInputValue } from '../../utils/dayJs';
 import type { RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -192,9 +191,8 @@ export function QueryLoanReturn({
                   <tr>
                     <th scope="col">
                       {
-                        defined(
-                          schema.models.Loan.getLiteralField('loanNumber')
-                        ).label
+                        schema.models.Loan.strictGetLiteralField('loanNumber')
+                          .label
                       }
                     </th>
                     <th scope="col">{commonText('quantity')}</th>

@@ -72,9 +72,7 @@ export const DataEntry = {
     }) => ({
       className: `${
         display === 'inline' ? 'inline-grid' : 'grid'
-      } ${classNameString} ${
-        viewDefinition.columns.length === 1 ? className.limitedWidth : ''
-      }`,
+      } ${classNameString}`,
       style: {
         gridTemplateColumns: columnDefinitionsToCss(
           viewDefinition.columns,

@@ -2,25 +2,24 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useParams } from 'react-router-dom';
 
-import { ping } from '../../utils/ajax/ping';
-import type { SpLocaleItemStr as SpLocaleItemString_ } from '../DataModel/types';
+import { useUnloadProtect } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../Permissions/helpers';
-import { formatUrl } from '../Router/queryString';
-import { createResource, saveResource } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
+import { ping } from '../../utils/ajax/ping';
 import type { PartialBy } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { Container } from '../Atoms';
 import { LoadingContext } from '../Core/Contexts';
-import { useUnloadProtect } from '../../hooks/navigation';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { createResource, saveResource } from '../DataModel/resource';
+import { strictGetModel } from '../DataModel/schema';
+import type { SpLocaleItemStr as SpLocaleItemString_ } from '../DataModel/types';
+import { hasToolPermission } from '../Permissions/helpers';
+import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
 import { SchemaConfigField } from './Field';
 import { SchemaConfigColumn, SchemaConfigFields } from './Fields';
-import { useContainer, useContainerItems, useContainerString } from './Hooks';
+import { useSchemaContainer, useContainerItems, useContainerString } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
-import {SerializedResource} from '../DataModel/helperTypes';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -29,14 +28,14 @@ export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 
 export function SchemaConfigMain(): JSX.Element {
   const { language: rawLanguage = '', tableName = '' } = useParams();
-  const model = defined(getModel(tableName));
+  const model = strictGetModel(tableName);
 
   const schemaData = useOutletContext<SchemaData>();
   const isReadOnly =
     !hasToolPermission('schemaConfig', 'update') ||
     !hasToolPermission('schemaConfig', 'create');
 
-  const [container, setContainer, isChanged] = useContainer(
+  const [container, setContainer, isChanged] = useSchemaContainer(
     schemaData.tables,
     model.name
   );

@@ -14,7 +14,8 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
+import { overwriteReadOnly } from '../../utils/types';
 
 export const SubViewContext = React.createContext<
   | {
@@ -73,9 +74,13 @@ export function SubView({
             const fieldName = sortField.startsWith('-')
               ? sortField.slice(1)
               : sortField;
-            // @ts-expect-error Overwriting the models on the collection
-            collection.models = Array.from(collection.models).sort(
-              sortFunction((resource) => resource.get(fieldName), isReverse)
+            // Overwriting the models on the collection
+            overwriteReadOnly(
+              collection,
+              'models',
+              Array.from(collection.models).sort(
+                sortFunction((resource) => resource.get(fieldName), isReverse)
+              )
             );
             return collection;
           });
@@ -98,10 +103,16 @@ export function SubView({
         ) as Collection<AnySchema>;
         if (typeof resource === 'object' && resource !== null)
           collection.add(resource);
-        // @ts-expect-error Overwriting read-only property
-        collection.related ??= parentResource;
-        // @ts-expect-error Overwriting read-only property
-        collection.field ??= relationship.getReverse();
+        overwriteReadOnly(
+          collection,
+          'related',
+          collection.related ?? parentResource
+        );
+        overwriteReadOnly(
+          collection,
+          'field',
+          collection.field ?? relationship.getReverse()
+        );
         return collection;
       }
     },

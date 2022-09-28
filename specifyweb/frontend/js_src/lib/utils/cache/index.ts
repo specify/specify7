@@ -32,10 +32,12 @@ const cache: R<unknown> = {};
  * usages by this component from other components and third party libraries.
  */
 const cachePrefix = 'specify7';
-const formatKey = (category: string, key: string): string =>
+const formatCacheKey = (category: string, key: string): string =>
   [cachePrefix, category, key].join('-');
 
-function parseKey(formattedKey: string): readonly [string, string] | undefined {
+function parseCacheKey(
+  formattedKey: string
+): readonly [string, string] | undefined {
   const parts = formattedKey.split('-');
   if (parts.length !== 3 || parts[0] !== cachePrefix) return undefined;
   return [parts[1], parts[2]];
@@ -55,7 +57,7 @@ function initialize(): void {
       // "key" is null only when running `localStorage.clear()`
       if (storageArea !== globalThis.localStorage || formattedKey === null)
         return;
-      const parsedKey = parseKey(formattedKey);
+      const parsedKey = parseCacheKey(formattedKey);
       if (parsedKey === undefined || newValue === null) return;
       /*
        * Safe to assume only JSON values would be in localStorage, as that's
@@ -101,7 +103,7 @@ function genericGet<TYPE>(
 ): TYPE | undefined {
   if (!eventListenerIsInitialized) initialize();
 
-  const formattedKey = formatKey(category, key);
+  const formattedKey = formatCacheKey(category, key);
   if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
 
   return cache[formattedKey] as TYPE | undefined;
@@ -128,14 +130,14 @@ function genericSet<T>(
 ): T {
   if (!eventListenerIsInitialized) initialize();
 
-  const formattedKey = formatKey(category, key);
+  const formattedKey = formatCacheKey(category, key);
   if (cache[formattedKey] === undefined) fetchBucket(formattedKey);
   if (cache[formattedKey] === value) return value;
 
   cache[formattedKey] = value;
 
   globalThis.localStorage.setItem(
-    formatKey(category, key),
+    formatCacheKey(category, key),
     JSON.stringify(value)
   );
 
@@ -143,3 +145,8 @@ function genericSet<T>(
 
   return value;
 }
+
+export const exportsForTests = {
+  formatCacheKey,
+  parseCacheKey,
+};

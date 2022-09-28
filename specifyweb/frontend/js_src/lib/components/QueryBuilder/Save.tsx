@@ -1,18 +1,18 @@
 import React from 'react';
 
-import type { SpQuery } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { schema } from '../DataModel/schema';
-import { userInformation } from '../InitialContext/userInformation';
 import { getUniqueName } from '../../utils/uniquifyName';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
 import { Form, Input, Label } from '../Atoms/Form';
-import {useId} from '../../hooks/useId';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { SpQuery } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -91,7 +91,9 @@ export function QuerySaveDialog({
           {queryText('queryName')}
           <Input.Text
             autoComplete="on"
-            maxLength={schema.models.SpQuery.getLiteralField('name')!.length}
+            maxLength={
+              schema.models.SpQuery.strictGetLiteralField('name').length
+            }
             name="queryName"
             required
             spellCheck="true"

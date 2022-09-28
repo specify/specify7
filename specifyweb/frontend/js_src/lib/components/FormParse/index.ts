@@ -4,14 +4,13 @@
  */
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { getParsedAttribute } from '../../utils/utils';
 import { parseXml } from '../AppResources/codeMirrorLinters';
-import { parseClassName } from '../DataModel/resource';
-import { getModel } from '../DataModel/schema';
+import { parseJavaClassName } from '../DataModel/resource';
+import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
 import { cachableUrl } from '../InitialContext';
@@ -20,23 +19,184 @@ import { formatUrl } from '../Router/queryString';
 import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
+import { Http } from '../../utils/ajax/definitions';
 
-function getColumnDefinitions(viewDefinition: Element): string {
-  const definition =
-    getColumnDefinition(
-      viewDefinition,
-      getPref('form.definition.columnSource')
-    ) ?? getColumnDefinition(viewDefinition, undefined);
-  return defined(definition ?? getParsedAttribute(viewDefinition, 'colDef'));
+export type ViewDescription = ParsedFormDefinition & {
+  readonly formType: FormType;
+  readonly mode: FormMode;
+  readonly model: SpecifyModel | undefined;
+};
+
+type AltView = {
+  readonly default?: 'false' | 'true';
+  readonly mode: FormMode;
+  readonly name: string;
+  readonly viewdef: string;
+};
+
+export type ViewDefinition = {
+  readonly altviews: IR<AltView>;
+  readonly busrules: string;
+  readonly class: string;
+  readonly name: string;
+  readonly resourcelabels: 'false' | 'true';
+  readonly viewdefs: IR<string>;
+  readonly viewsetLevel: string;
+  readonly viewsetName: string;
+  readonly viewsetSource: string;
+};
+
+export const formTypes = ['form', 'formTable'] as const;
+export type FormType = typeof formTypes[number];
+export type FormMode = 'edit' | 'search' | 'view';
+
+const views: R<ViewDefinition | undefined> = {};
+export const fetchView = async (
+  name: string
+): Promise<ViewDefinition | undefined> =>
+  name in views
+    ? Promise.resolve(views[name])
+    : ajax<ViewDefinition>(
+        /*
+         * NOTE: If getView hasn't yet been invoked, the view URLs won't be
+         * marked as cachable
+         */
+        cachableUrl(formatUrl('/context/view.json', { name })),
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        },
+        {
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+        }
+      ).then(({ data, status }) => {
+        views[name] = status === Http.NOT_FOUND ? undefined : data;
+        return views[name];
+      });
+
+export function parseViewDefinition(
+  view: ViewDefinition,
+  defaultType: FormType,
+  originalMode: FormMode
+): ViewDescription | undefined {
+  const resolved = resolveViewDefinition(view, defaultType, originalMode);
+  if (resolved === undefined) return undefined;
+  const { mode, formType, viewDefinition, model } = resolved;
+  const parser =
+    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+  return {
+    mode,
+    formType,
+    model,
+    ...parser(viewDefinition, model),
+  };
 }
 
-const getColumnDefinition = (
-  viewDefinition: Element,
-  os: string | undefined
-): string | undefined =>
-  viewDefinition.querySelector(
-    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
-  )?.textContent ?? undefined;
+export function resolveViewDefinition(
+  view: ViewDefinition,
+  formType: FormType,
+  mode: FormMode
+):
+  | {
+      readonly viewDefinition: Element;
+      readonly formType: FormType;
+      readonly mode: FormMode;
+      readonly model: SpecifyModel;
+    }
+  | undefined {
+  const viewDefinitions = parseViewDefinitions(view.viewdefs);
+  if (Object.keys(viewDefinitions).length === 0) {
+    console.error(`No view definitions found for the ${view.name} view`);
+    return undefined;
+  }
+
+  const { altView, viewDefinition } = resolveAltView(
+    view.altviews,
+    viewDefinitions,
+    formType,
+    mode
+  );
+
+  const definition =
+    viewDefinition?.getElementsByTagName('definition')[0]?.textContent;
+  const actualViewDefinition =
+    typeof definition === 'string'
+      ? viewDefinitions[definition]
+      : viewDefinition;
+
+  if (actualViewDefinition === undefined) return undefined;
+
+  const newFormType = getParsedAttribute(viewDefinition, 'type');
+  const modelName = parseJavaClassName(
+    defined(
+      getParsedAttribute(actualViewDefinition, 'class'),
+      'Form definition does not contain a class attribute'
+    )
+  );
+  return {
+    viewDefinition: actualViewDefinition,
+    formType:
+      formTypes.find(
+        (type) => type.toLowerCase() === newFormType?.toLowerCase()
+      ) ?? 'form',
+    mode: mode === 'search' ? mode : altView.mode,
+    model: strictGetModel(
+      modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
+    ),
+  };
+}
+
+const parseViewDefinitions = (
+  viewDefinitions: ViewDefinition['viewdefs']
+): IR<Element> =>
+  Object.fromEntries(
+    Object.entries(viewDefinitions).map(([name, xml]) => {
+      const parsed = parseXml(xml);
+      if (typeof parsed === 'string')
+        error(`Failed parsing XML for view definition`, {
+          error: parsed,
+          xml,
+        });
+      return [
+        name,
+        defined(
+          parsed.querySelector('viewdef') ?? undefined,
+          `Unable to find a <viewdef> tag for a ${name} view definition`
+        ),
+      ];
+    })
+  );
+
+function resolveAltView(
+  rawAltViews: ViewDefinition['altviews'],
+  viewDefinitions: IR<Element>,
+  formType: FormType,
+  mode: FormMode
+): {
+  readonly altView: ViewDefinition['altviews'][number];
+  readonly viewDefinition: Element;
+} {
+  let altViews: RA<AltView> = Object.values(rawAltViews).filter(
+    (altView) => altView.mode === mode
+  );
+  if (altViews.length === 0) altViews = Object.values(rawAltViews);
+
+  let viewDefinition: Element | undefined = undefined;
+  let altView = altViews.find((altView) => {
+    viewDefinition = viewDefinitions[altView.viewdef];
+    return (
+      typeof viewDefinition === 'object' &&
+      getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
+        formType.toLowerCase()
+    );
+  });
+  if (altView === undefined || viewDefinition === undefined) {
+    console.error('No altView for defaultType:', formType);
+    altView = altViews[0];
+    viewDefinition = viewDefinitions[altView.viewdef];
+  }
+  return { altView, viewDefinition };
+}
 
 export type ParsedFormDefinition = {
   // Define column sizes: either a number of pixels, or undefined for auto sizing
@@ -102,181 +262,65 @@ function parseFormTableColumns(
     getColumnDefinition(viewDefinition, 'table'),
     processColumnDefinition
   );
-  const columnDefinition =
-    typeof rawColumnDefinition === 'object'
-      ? [
-          ...rawColumnDefinition,
-          ...Array.from({
-            length: columnCount - rawColumnDefinition.length,
-          }).fill(undefined),
-        ]
-      : undefined;
-  return (
-    columnDefinition ??
-    Array.from({
-      length: columnCount,
-    }).fill(undefined)
-  );
+  return [
+    ...(rawColumnDefinition ?? []),
+    ...Array.from({
+      length: columnCount - (rawColumnDefinition ?? []).length,
+    }).fill(undefined),
+  ];
 }
 
+/**
+ * Can't use querySelectorAll here because it is not supported in JSDom
+ * See https://github.com/jsdom/jsdom/issues/2998
+ */
 export const parseFormDefinition = (
   viewDefinition: Element,
   model: SpecifyModel | undefined
 ): ParsedFormDefinition =>
   postProcessFormDef(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
-    Array.from(viewDefinition.querySelectorAll(':scope > rows > row'), (row) =>
-      Array.from(
-        row.querySelectorAll(':scope > cell'),
-        parseFormCell.bind(undefined, model)
-      )
-    ),
+    Array.from(
+      Array.from(viewDefinition.children).find(
+        ({ tagName }) => tagName === 'rows'
+      )?.children ?? []
+    )
+      .filter(({ tagName }) => tagName === 'row')
+      .map((row) =>
+        Array.from(row.children)
+          .filter(({ tagName }) => tagName === 'cell')
+          .map((cell) => parseFormCell(model, cell))
+      ),
     model
   );
 
-export function processViewDefinition(
-  view: ViewDefinition,
-  formType: FormType,
-  mode: FormMode
-):
-  | {
-      readonly viewDefinition: Element;
-      readonly formType: FormType;
-      readonly mode: FormMode;
-      readonly model: SpecifyModel;
-    }
-  | undefined {
-  let altViews: RA<AltView> = Object.values(view.altviews).filter(
-    (altView) => altView.mode === mode
-  );
-  if (altViews.length === 0) altViews = Object.values(view.altviews);
-
-  const viewDefinitions = Object.fromEntries(
-    Object.entries(view.viewdefs).map(([name, xml]) => {
-      const parsed = parseXml(xml);
-      if (typeof parsed === 'string')
-        error(`Failed parsing XML for view definition`, {
-          error: parsed,
-          xml,
-        });
-      return [name, parsed.getElementsByTagName('viewdef')[0]];
-    })
-  );
-
-  let viewDefinition;
-  let altView = altViews.find((altView) => {
-    viewDefinition = viewDefinitions[altView.viewdef];
-    return (
-      typeof viewDefinition === 'object' &&
-      // BUG: this checks for "formTable". should it check for "table" instead?
-      getParsedAttribute(viewDefinition, 'type')?.toLowerCase() ===
-        formType.toLowerCase()
-    );
-  });
-  if (altView === undefined || viewDefinition === undefined) {
-    console.error('No altView for defaultType:', formType);
-    altView = altViews[0];
-    viewDefinition = viewDefinitions[altView.viewdef];
-  }
-
+function getColumnDefinitions(viewDefinition: Element): string {
   const definition =
-    viewDefinition?.getElementsByTagName('definition')[0]?.textContent;
-  const actualViewDefinition =
-    typeof definition === 'string'
-      ? viewDefinitions[definition]
-      : viewDefinition;
-
-  if (actualViewDefinition === undefined) return undefined;
-
-  const newFormType = getParsedAttribute(viewDefinition, 'type');
-  return {
-    viewDefinition: actualViewDefinition,
-    formType:
-      formTypes.find(
-        (type) => type.toLowerCase() === newFormType?.toLowerCase()
-      ) ?? 'form',
-    mode: mode === 'search' ? mode : altView.mode,
-    model: defined(
-      getModel(
-        f.var(
-          parseClassName(
-            defined(getParsedAttribute(actualViewDefinition, 'class'))
-          ),
-          (modelName) =>
-            modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
-        )
-      )
-    ),
-  };
+    getColumnDefinition(
+      viewDefinition,
+      getPref('form.definition.columnSource')
+    ) ?? getColumnDefinition(viewDefinition, undefined);
+  return defined(
+    definition ?? getParsedAttribute(viewDefinition, 'colDef'),
+    'Form definition does not contain column definition'
+  );
 }
 
-export type ViewDescription = ParsedFormDefinition & {
-  readonly formType: FormType;
-  readonly mode: FormMode;
-  readonly model: SpecifyModel | undefined;
+const getColumnDefinition = (
+  viewDefinition: Element,
+  os: string | undefined
+): string | undefined =>
+  viewDefinition.querySelector(
+    `columnDef${typeof os === 'string' ? `[os="${os}"]` : ''}`
+  )?.textContent ?? undefined;
+
+export const exportsForTests = {
+  views,
+  fetchView,
+  parseViewDefinitions,
+  resolveAltView,
+  parseFormTableDefinition,
+  parseFormTableColumns,
+  getColumnDefinitions,
+  getColumnDefinition,
 };
-
-export function parseViewDefinition(
-  view: ViewDefinition,
-  defaultType: FormType,
-  originalMode: FormMode
-): ViewDescription | undefined {
-  const resolved = processViewDefinition(view, defaultType, originalMode);
-  if (resolved === undefined) return undefined;
-  const { mode, formType, viewDefinition, model } = resolved;
-  const parser =
-    formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
-  return {
-    mode,
-    formType,
-    model,
-    ...parser(viewDefinition, model),
-  };
-}
-
-type AltView = {
-  readonly default: 'false' | 'true';
-  readonly mode: FormMode;
-  readonly name: string;
-  readonly viewdef: string;
-};
-
-export type ViewDefinition = {
-  readonly altviews: IR<AltView>;
-  readonly busrules: string;
-  readonly class: string;
-  readonly name: string;
-  readonly resourcelabels: 'false' | 'true';
-  readonly viewdefs: IR<string>;
-  readonly viewsetLevel: string;
-  readonly viewsetName: string;
-  readonly viewsetSource: string;
-};
-
-const views: R<ViewDefinition | undefined> = {};
-export const fetchView = async (
-  name: string
-): Promise<ViewDefinition | undefined> =>
-  name in views
-    ? Promise.resolve(views[name])
-    : ajax<ViewDefinition>(
-        /*
-         * NOTE: If getView hasn't yet been invoked, the view URLs won't be
-         * marked as cachable
-         */
-        cachableUrl(formatUrl('/context/view.json', { name })),
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
-        },
-        {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
-        }
-      ).then(({ data, status }) => {
-        views[name] = status === Http.NOT_FOUND ? undefined : data;
-        return views[name];
-      });
-
-export const formTypes = ['form', 'formTable'] as const;
-export type FormType = typeof formTypes[number];
-export type FormMode = 'edit' | 'search' | 'view';

@@ -10,12 +10,12 @@ import { theories } from '../../../tests/utils';
 requireContext();
 
 theories(uploadPlanBuilder, [
-  [
-    [
+  {
+    in: [
       mappingLines1.baseTableName as 'Accession',
       mappingLines1.lines as RA<MappingLine>,
       mappingLines1.mustMatchPreferences as IR<boolean>,
     ],
-    uploadPlan1.uploadPlan as unknown as UploadPlan,
-  ],
+    out: uploadPlan1.uploadPlan as unknown as UploadPlan,
+  },
 ]);

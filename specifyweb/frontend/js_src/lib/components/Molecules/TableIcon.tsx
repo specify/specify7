@@ -1,11 +1,10 @@
 import React from 'react';
 
-import {commonText} from '../../localization/common';
-import {f} from '../../utils/functools';
-import {spanNumber} from '../../utils/utils';
-import {icons} from '../Atoms/Icons';
-import {getModel} from '../DataModel/schema';
-import {getIcon} from '../InitialContext/icons';
+import { commonText } from '../../localization/common';
+import { spanNumber } from '../../utils/utils';
+import { icons } from '../Atoms/Icons';
+import { getModel } from '../DataModel/schema';
+import { getIcon } from '../InitialContext/icons';
 
 const MAX_HUE = 360;
 
@@ -25,29 +24,27 @@ const getHue = spanNumber(
 );
 
 /** Generate an HSL color based on the first 2 characters of a string */
-export const stringToColor = (name: string): string =>
-  f.var(
-    name.toLowerCase(),
-    (name) =>
-      `hsl(${getHue(
-        // eslint-disable-next-line unicorn/prefer-code-point
-        (name[0] ?? 'a').charCodeAt(0) + (name[1] ?? 'a').charCodeAt(0)
-      )}, 70%, 50%)`
-  );
+export function stringToColor(rawName: string): string {
+  const name = rawName.toLowerCase();
+  return `hsl(${getHue(
+    // eslint-disable-next-line unicorn/prefer-code-point
+    (name[0] ?? 'a').charCodeAt(0) + (name[1] ?? 'a').charCodeAt(0)
+  )}, 70%, 50%)`;
+}
 
 /**
  * Renders a table icon or autogenerates a new one
  */
 export function TableIcon({
-                            name,
-                            label,
-                            /**
-                             * It is highly recommended to use the same icon size everywhere, as that
-                             * improves consistency, thus, this should be overwritten only if it is
-                             * strictly necessary.
-                             */
-                            className = 'w-table-icon h-table-icon flex-shrink-0',
-                          }: {
+  name,
+  label,
+  /**
+   * It is highly recommended to use the same icon size everywhere, as that
+   * improves consistency, thus, this should be overwritten only if it is
+   * strictly necessary.
+   */
+  className = 'w-table-icon h-table-icon flex-shrink-0',
+}: {
   readonly name: string;
   /**
    * Set this to false only if icon would be rendered adjacent to the table name.
@@ -61,9 +58,9 @@ export function TableIcon({
   const resolvedTableLabel =
     label === false
       ? undefined
-      : (typeof label === 'string'
-        ? label
-        : getModel(name)?.label ?? '');
+      : typeof label === 'string'
+      ? label
+      : getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')
@@ -73,7 +70,7 @@ export function TableIcon({
         aria-label={typeof role === 'string' ? resolvedTableLabel : undefined}
         className={`${className} bg-contain bg-center bg-no-repeat`}
         role={role}
-        style={{backgroundImage: `url('${tableIconSource}')`}}
+        style={{ backgroundImage: `url('${tableIconSource}')` }}
         title={resolvedTableLabel}
       />
     );
@@ -88,7 +85,7 @@ export function TableIcon({
         rounded-sm text-sm text-white
       `}
       role={role}
-      style={{backgroundColor: stringToColor(name)}}
+      style={{ backgroundColor: stringToColor(name) }}
       title={resolvedTableLabel}
     >
       {name.slice(0, 2).toUpperCase()}
@@ -123,5 +120,5 @@ export const tableIconSelected = (
 );
 
 export const tableIconEmpty = (
-  <span aria-hidden className="h-table-icon w-table-icon"/>
+  <span aria-hidden className="h-table-icon w-table-icon" />
 );

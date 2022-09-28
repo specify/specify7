@@ -17,9 +17,9 @@ import type { SchemaData } from './SetupHooks';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useLiveState } from '../../hooks/useLiveState';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
 
-export function useContainer(
+export function useSchemaContainer(
   tables: SchemaData['tables'],
   tableName: keyof Tables
 ): readonly [
@@ -35,7 +35,8 @@ export function useContainer(
       const container = defined(
         Object.values(tables).find(
           ({ name }) => name.toLowerCase() === tableName.toLowerCase()
-        )
+        ),
+        `Unable to find SpLocaleContainer for ${tableName}`
       );
       initialValue.current = container;
       return container;
@@ -196,7 +197,13 @@ export function useContainerItems(
       item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
     ) => {
       setChanged([...changed, index]);
-      setState(replaceItem(defined(state), index, item));
+      setState(
+        replaceItem(
+          defined(state, 'Trying to modify SpLocalContainerItem before load'),
+          index,
+          item
+        )
+      );
     },
     [state, setState, changed]
   );

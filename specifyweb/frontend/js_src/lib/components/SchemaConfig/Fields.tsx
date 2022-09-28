@@ -1,14 +1,14 @@
 import React from 'react';
 
-import type { SpLocaleContainerItem } from '../DataModel/types';
-import { sortFunction, split } from '../../utils/utils';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
+import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Select } from '../Atoms/Form';
-import {useId} from '../../hooks/useId';
-import {SerializedResource} from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { SpLocaleContainerItem } from '../DataModel/types';
 
 export function SchemaConfigFields({
   model,
@@ -25,6 +25,7 @@ export function SchemaConfigFields({
   const sortedItems = Object.values(items ?? []).sort(
     sortFunction(({ name }) => name)
   );
+  const currentId = items?.[index].id ?? 0;
   const [fields, relationships] = split(
     sortedItems,
     (item) => model.getField(item.name)!.isRelationship
@@ -36,8 +37,10 @@ export function SchemaConfigFields({
         className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
         disabled={!Array.isArray(items)}
         size={2}
-        value={index}
-        onValueChange={(index): void => handleChange(Number.parseInt(index))}
+        value={currentId}
+        onValueChange={(newId): void =>
+          handleChange(items!.findIndex(({ id }) => id.toString() === newId))
+        }
       >
         <optgroup label={commonText('fields')}>
           {fields.map((item) => (

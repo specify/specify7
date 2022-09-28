@@ -4,7 +4,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { group } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { serializeResource } from '../DataModel/helpers';
@@ -13,7 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
   getResourceApiUrl,
-  idFromUrl,
+  strictIdFromUrl,
 } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { Address, Collection, SpecifyUser } from '../DataModel/types';
@@ -107,79 +106,75 @@ export function useUserAgents(
 ): UserAgents | undefined {
   const [userAgents] = useAsyncState(
     React.useCallback(
-      async () =>
-        f.var(
-          hasTablePermission('Discipline', 'read')
-            ? group(
-                await Promise.all(
-                  group(
-                    collections.map((collection) => [
-                      defined(idFromUrl(collection.discipline)),
-                      collection.id,
-                    ])
-                  ).map(async ([disciplineId, collections]) =>
-                    fetchResource('Discipline', disciplineId)
-                      .then(({ division }) => defined(idFromUrl(division)))
-                      .then((divisionId) =>
-                        collections.map(
-                          (collectionId) => [divisionId, collectionId] as const
-                        )
+      async () => {
+        const divisions = hasTablePermission('Discipline', 'read')
+          ? group(
+              await Promise.all(
+                group(
+                  collections.map((collection) => [
+                    strictIdFromUrl(collection.discipline),
+                    collection.id,
+                  ])
+                ).map(async ([disciplineId, collections]) =>
+                  fetchResource('Discipline', disciplineId)
+                    .then(({ division }) => strictIdFromUrl(division))
+                    .then((divisionId) =>
+                      collections.map(
+                        (collectionId) => [divisionId, collectionId] as const
+                      )
+                    )
+                )
+              ).then(f.flat)
+            )
+          : ([
+              [
+                schema.domainLevelIds.division,
+                userInformation.availableCollections
+                  .filter(
+                    ({ discipline }) =>
+                      discipline ===
+                      getResourceApiUrl(
+                        'Discipline',
+                        schema.domainLevelIds.discipline
                       )
                   )
-                ).then(f.flat)
-              )
-            : ([
-                [
-                  schema.domainLevelIds.division,
-                  userInformation.availableCollections
-                    .filter(
-                      ({ discipline }) =>
-                        discipline ===
-                        getResourceApiUrl(
-                          'Discipline',
-                          schema.domainLevelIds.discipline
-                        )
-                    )
-                    .map(({ id }) => id),
-                ],
-              ] as const),
-          async (divisions) =>
-            (typeof userId === 'number'
-              ? hasTablePermission('Agent', 'read') &&
-                hasTablePermission('Division', 'read')
-                ? fetchCollection(
-                    'Agent',
-                    {
-                      limit: 1,
-                      specifyUser: userId,
-                    },
-                    {
-                      division__in: divisions.map(([id]) => id).join(','),
-                    }
-                  ).then(({ records }) => records)
-                : Promise.resolve([serializeResource(userInformation.agent)])
-              : Promise.resolve([])
-            ).then((agents) =>
-              f.var(
-                Object.fromEntries(
-                  agents.map((agent) => [
-                    defined(idFromUrl(agent.division)),
-                    agent,
-                  ])
-                ),
-                (agents) =>
-                  divisions.map(([divisionId, collections]) => ({
-                    divisionId,
-                    collections,
-                    address: new schema.models.Address.Resource({
-                      agent: f.maybe(agents[divisionId]?.id, (agentId) =>
-                        getResourceApiUrl('Agent', agentId)
-                      ),
-                    }),
-                  }))
-              )
-            )
-        ),
+                  .map(({ id }) => id),
+              ],
+            ] as const);
+        return (
+          typeof userId === 'number'
+            ? hasTablePermission('Agent', 'read') &&
+              hasTablePermission('Division', 'read')
+              ? fetchCollection(
+                  'Agent',
+                  {
+                    limit: 1,
+                    specifyUser: userId,
+                  },
+                  {
+                    division__in: divisions.map(([id]) => id).join(','),
+                  }
+                ).then(({ records }) => records)
+              : Promise.resolve([serializeResource(userInformation.agent)])
+            : Promise.resolve([])
+        ).then((rawAgents) => {
+          const agents = Object.fromEntries(
+            rawAgents.map((agent) => [
+              strictIdFromUrl(agent.division ?? ''),
+              agent,
+            ])
+          );
+          return divisions.map(([divisionId, collections]) => ({
+            divisionId,
+            collections,
+            address: new schema.models.Address.Resource({
+              agent: f.maybe(agents[divisionId]?.id, (agentId) =>
+                getResourceApiUrl('Agent', agentId)
+              ),
+            }),
+          }));
+        });
+      },
       // ReFetch user agents when user is saved
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [userId, collections, version]

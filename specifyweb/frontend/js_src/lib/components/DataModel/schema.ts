@@ -16,6 +16,7 @@ import { LiteralField, Relationship } from './specifyField';
 import { SpecifyModel, type TableDefinition } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { AnySchema, AnyTree } from './helperTypes';
 
 export type SchemaLocalization = {
@@ -84,8 +85,7 @@ export const fetchContext = f
     tables
       .map((tableDefinition) => {
         const model = new SpecifyModel(tableDefinition);
-        // @ts-expect-error Assigning to readOnly props
-        schemaBase.models[model.name] = model;
+        overwriteReadOnly(schemaBase.models, model.name, model);
         return [tableDefinition, model] as const;
       })
       .forEach(([tableDefinition, model]) => {
@@ -138,6 +138,9 @@ export function getModel(name: string): SpecifyModel | undefined {
           (model) => model.name.toLowerCase() === lowerCase
         );
 }
+
+export const strictGetModel = (name: string): SpecifyModel =>
+  defined(getModel(name), `Trying to get unknown model: ${name}`);
 
 export function getTreeModel(name: string): SpecifyModel<AnyTree> | undefined {
   const model = getModel(name);

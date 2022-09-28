@@ -9,13 +9,14 @@ import { parseRelativeDate } from '../utils/relativeDate';
 import { resourceOn } from '../components/DataModel/resource';
 import type { Input } from '../components/DataModel/saveBlockers';
 import type { RA } from '../utils/types';
-import type { Parser } from '../utils/uiParse';
-import { mergeParsers, parseValue, resolveParser } from '../utils/uiParse';
+import type { Parser } from '../utils/parser/definitions';
+import { mergeParsers, resolveParser } from '../utils/parser/definitions';
 import { className } from '../components/Atoms/className';
 import { FormContext } from '../components/Core/Contexts';
 import { useValidation } from './useValidation';
 import { useBooleanState } from './useBooleanState';
-import {AnySchema} from '../components/DataModel/helperTypes';
+import { AnySchema } from '../components/DataModel/helperTypes';
+import { parseValue } from '../utils/parser/parse';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

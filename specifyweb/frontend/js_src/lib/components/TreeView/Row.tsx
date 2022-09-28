@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -9,7 +8,7 @@ import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
 
 export function TreeRow({
   row,
@@ -139,7 +138,10 @@ export function TreeRow({
   return (
     <li role="treeitem row">
       {ranks.map((rankId) => {
-        if (row.rankId === rankId)
+        if (row.rankId === rankId) {
+          const stats =
+            typeof nodeStats === 'object' &&
+            formatTreeStats(nodeStats, row.children === 0);
           return (
             <Button.LikeLink
               aria-controls={id('children')}
@@ -226,19 +228,15 @@ export function TreeRow({
                     </span>
                   )}
                 </span>
-                {typeof nodeStats === 'object' &&
-                  f.var(
-                    formatTreeStats(nodeStats, row.children === 0),
-                    ({ title, text }) => (
-                      <span className="text-gray-500" title={title}>
-                        {text}
-                      </span>
-                    )
-                  )}
+                {typeof stats === 'object' && (
+                  <span className="text-gray-500" title={stats.title}>
+                    {stats.text}
+                  </span>
+                )}
               </span>
             </Button.LikeLink>
           );
-        else {
+        } else {
           const indexOfAncestor = path.findIndex(
             (node) => node.rankId === rankId
           );

@@ -5,31 +5,31 @@
  * @module
  */
 
-import type { CustomSelectSubtype } from './CustomSelectElement';
-import { dateParts } from '../Atoms/Internationalization';
-import type {
-  HtmlGeneratorFieldData,
-  MappingElementProps,
-} from './LineComponents';
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import type { IR, RA, WritableArray } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import { dateParts } from '../Atoms/Internationalization';
+import { getFrontEndOnlyFields, strictGetModel } from '../DataModel/schema';
+import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import {
+  isTreeModel,
+  strictGetTreeDefinitionItems,
+} from '../InitialContext/treeRanks';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
-import { getFrontEndOnlyFields, getModel } from '../DataModel/schema';
-import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import {
-  getTreeDefinitionItems,
-  isTreeModel,
-} from '../InitialContext/treeRanks';
-import type { IR, RA, WritableArray } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import type { CustomSelectSubtype } from './CustomSelectElement';
+import type {
+  HtmlGeneratorFieldData,
+  MappingElementProps,
+} from './LineComponents';
+import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
   formatPartialField,
@@ -99,10 +99,12 @@ function navigator({
     readonly parentPartName: string;
     readonly parentRelationship?: Relationship;
   };
-  readonly baseTableName?: string;
+  readonly baseTableName: string | undefined;
 }): void {
   const {
-    model = defined(getModel(defined(baseTableName))),
+    model = strictGetModel(
+      defined(baseTableName, 'navigator() called withouth baseTableName')
+    ),
     parentRelationship = undefined,
     parentPartName = '',
   } = recursivePayload ?? {};
@@ -148,6 +150,7 @@ function navigator({
         parentRelationship: nextField,
         parentPartName: next.partName,
       },
+      baseTableName: undefined,
     });
 }
 
@@ -164,7 +167,7 @@ export function getTableFromMappingPath(
     fieldName,
   ]).join('.');
   if (fieldPath.length === 0) return baseTableName;
-  const field = defined(defined(getModel(baseTableName)).getField(fieldPath));
+  const field = strictGetModel(baseTableName).strictGetField(fieldPath);
   return (field.isRelationship ? field.relatedModel : field.model).name;
 }
 
@@ -352,8 +355,9 @@ export function getMappingLineData({
                     },
                   ]
                 : undefined,
-              ...defined(
-                getTreeDefinitionItems(model.name as 'Geography', false)
+              ...strictGetTreeDefinitionItems(
+                model.name as 'Geography',
+                false
               ).map(({ name, title }) =>
                 name === defaultValue || generateFieldData === 'all'
                   ? ([
@@ -382,7 +386,7 @@ export function getMappingLineData({
               scope === 'queryBuilder' &&
               ((generateFieldData === 'all' &&
                 (!isTreeModel(model.name) ||
-                  mappingPath[internalState.position - 1] ==
+                  mappingPath[internalState.position - 1] ===
                     formatTreeRank(anyTreeRank) ||
                   queryBuilderTreeFields.has(formattedEntry))) ||
                 internalState.defaultValue === formattedEntry)
@@ -495,14 +499,10 @@ export function getMappingLineData({
                       // Display read only fields in query builder only
                       scope === 'queryBuilder' ||
                       !field.overrides.isReadOnly) &&
-                    // Hide relationships to system tables
-                    (isNoRestrictionsMode ||
-                      !field.isRelationship ||
-                      !field.relatedModel.overrides.isSystem) &&
                     // Hide most fields for non "any" tree ranks in query builder
                     (scope !== 'queryBuilder' ||
                       !isTreeModel(model.name) ||
-                      mappingPath[internalState.position - 1] ==
+                      mappingPath[internalState.position - 1] ===
                         formatTreeRank(anyTreeRank) ||
                       queryBuilderTreeFields.has(field.name)) &&
                     getFrontEndOnlyFields()[model.name]?.includes(

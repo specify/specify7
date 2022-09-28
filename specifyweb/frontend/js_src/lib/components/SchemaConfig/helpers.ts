@@ -5,10 +5,9 @@ import type {
 } from './index';
 import type { DataObjectFormatter } from './SetupHooks';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
-import { addMissingFields } from '../DataModel/helpers';
 import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
 import { commonText } from '../../localization/common';
-import { parseClassName } from '../DataModel/resource';
+import { parseJavaClassName } from '../DataModel/resource';
 import type {
   JavaType,
   LiteralField,
@@ -16,6 +15,7 @@ import type {
 } from '../DataModel/specifyField';
 import type { IR, RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { addMissingFields } from '../DataModel/addMissingFields';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -82,7 +82,7 @@ export const filterFormatters = (
     Object.entries(formatters)
       .filter(
         ([_name, { className }]) =>
-          parseClassName(className).toLowerCase() === tableName
+          parseJavaClassName(className).toLowerCase() === tableName
       )
       .map(([name, { title }]) => [name, title] as const)
   );

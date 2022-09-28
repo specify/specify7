@@ -20,8 +20,8 @@ import { formsText } from '../../localization/forms';
 import { fetchView } from '../FormParse';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -114,39 +114,36 @@ const url = cachableUrl(
 const fetchEntries = f.store(
   async (): Promise<RA<InteractionEntry>> =>
     ajax<Element>(url, {
-      headers: { Accept: 'application/xml' },
+      headers: { Accept: 'text/xml' },
     }).then<RA<InteractionEntry>>(async ({ data }) =>
       Promise.all(
-        Array.from(data.querySelectorAll('entry'), async (entry) =>
-          f.var(getParsedAttribute(entry, 'action'), async (action) =>
-            getBooleanAttribute(entry, 'isOnLeft') ?? false
-              ? ({
-                  action: f.includes(supportedActions, action)
-                    ? action
-                    : undefined,
-                  table:
-                    action === 'NEW_GIFT'
-                      ? 'Gift'
-                      : action === 'NEW_LOAN'
-                      ? 'Loan'
-                      : defined(
-                          (await f
-                            .maybe(getParsedAttribute(entry, 'view'), fetchView)
-                            ?.then((view) =>
-                              typeof view === 'object'
-                                ? (parseClassName(view.class) as keyof Tables)
-                                : undefined
-                            )) ??
-                            getModel(getParsedAttribute(entry, 'table') ?? '')
-                              ?.name
-                        ),
-                  label: getParsedAttribute(entry, 'label'),
-                  tooltip: getParsedAttribute(entry, 'tooltip'),
-                  icon: getParsedAttribute(entry, 'icon'),
-                } as const)
-              : undefined
-          )
-        )
+        Array.from(data.querySelectorAll('entry'), async (entry) => {
+          const action = getParsedAttribute(entry, 'action');
+          if (getBooleanAttribute(entry, 'isOnLeft') !== true) return undefined;
+          const table =
+            action === 'NEW_GIFT'
+              ? 'Gift'
+              : action === 'NEW_LOAN'
+              ? 'Loan'
+              : defined(
+                  (await f
+                    .maybe(getParsedAttribute(entry, 'view'), fetchView)
+                    ?.then((view) =>
+                      typeof view === 'object'
+                        ? (parseJavaClassName(view.class) as keyof Tables)
+                        : undefined
+                    )) ??
+                    getModel(getParsedAttribute(entry, 'table') ?? '')?.name,
+                  'Failed to get table name for interaction item. Set table or view attributes'
+                );
+          return {
+            action: f.includes(supportedActions, action) ? action : undefined,
+            table,
+            label: getParsedAttribute(entry, 'label'),
+            tooltip: getParsedAttribute(entry, 'tooltip'),
+            icon: getParsedAttribute(entry, 'icon'),
+          } as const;
+        })
       ).then(filterArray)
     )
 );
@@ -178,7 +175,8 @@ function Interactions({
     (action: typeof supportedActions[number], table: keyof Tables): void => {
       if (action === 'PRINT_INVOICE') setState({ type: 'ReportsState' });
       else {
-        const isRecordSetAction = action == 'NEW_GIFT' || action == 'NEW_LOAN';
+        const isRecordSetAction =
+          action === 'NEW_GIFT' || action === 'NEW_LOAN';
         const model = isRecordSetAction
           ? schema.models.CollectionObject
           : schema.models.Loan;
@@ -214,7 +212,7 @@ function Interactions({
       typeof action === 'string'
         ? f.maybe(
             entries.find((entry) => entry.action === action),
-            ({ action, table }) => handleAction(defined(action), table)
+            ({ action, table }) => handleAction(action!, table)
           )
         : undefined,
     [action, entries]
@@ -282,14 +280,12 @@ function Interactions({
       action={{ model: state.actionModel, name: state.action }}
       model={schema.models[state.table]}
       recordSetsPromise={state.recordSetsPromise}
-      searchField={defined(
-        defined(getModel(state.table)).getLiteralField(
-          state.table === 'Loan'
-            ? 'loanNumber'
-            : state.table === 'Disposal'
-            ? 'disposalNumber'
-            : 'catalogNumber'
-        )
+      searchField={strictGetModel(state.table).strictGetLiteralField(
+        state.table === 'Loan'
+          ? 'loanNumber'
+          : state.table === 'Disposal'
+          ? 'disposalNumber'
+          : 'catalogNumber'
       )}
       onClose={handleClose}
     />

@@ -8,7 +8,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
-import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
 import {
   fetchCollectionsForResource,
@@ -24,9 +23,9 @@ import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
+import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { DisplayResource, ShowResource } from './ShowResource';
-import { usePref } from '../UserPreferences/usePref';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -202,9 +201,10 @@ function ViewByCatalogProtected(): JSX.Element | null {
         return undefined;
       }
 
-      const formatter = defined(
-        schema.models.CollectionObject.getLiteralField('catalogNumber')
-      ).getUiFormatter();
+      const formatter =
+        schema.models.CollectionObject.strictGetLiteralField(
+          'catalogNumber'
+        ).getUiFormatter();
 
       let formattedNumber = catalogNumber;
       if (typeof formatter === 'object') {
@@ -254,31 +254,18 @@ export function CheckLoggedInCollection({
   readonly children: JSX.Element;
 }): JSX.Element | null {
   const [otherCollections] = useAsyncState(
-    React.useCallback(
-      () =>
-        resource.isNew()
-          ? false
-          : resource
-              .fetch()
-              .then((resource) =>
-                f.var(getCollectionForResource(resource), (collectionId) =>
-                  schema.domainLevelIds.collection === collectionId
-                    ? false
-                    : typeof collectionId === 'number'
-                    ? [collectionId]
-                    : fetchCollectionsForResource(resource).then(
-                        (collectionIds) =>
-                          !Array.isArray(collectionIds) ||
-                          collectionIds.includes(
-                            schema.domainLevelIds.collection
-                          )
-                            ? false
-                            : collectionIds
-                      )
-                )
-              ),
-      [resource]
-    ),
+    React.useCallback(async () => {
+      if (resource.isNew()) return false;
+      await resource.fetch();
+      const collectionId = getCollectionForResource(resource);
+      if (schema.domainLevelIds.collection === collectionId) return false;
+      else if (typeof collectionId === 'number') return [collectionId];
+      const collectionIds = await fetchCollectionsForResource(resource);
+      return !Array.isArray(collectionIds) ||
+        collectionIds.includes(schema.domainLevelIds.collection)
+        ? false
+        : collectionIds;
+    }, [resource]),
     true
   );
 

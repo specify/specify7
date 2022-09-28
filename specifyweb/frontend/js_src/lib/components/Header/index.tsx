@@ -179,7 +179,7 @@ export function ExpressSearch(): JSX.Element {
   const navigate = useNavigate();
   return (
     <Form
-      action="/specifyweb/frontend/js_src/lib/components/Header/index"
+      action="/specify/express-search/"
       className="contents"
       role="search"
       onSubmit={(): void => {

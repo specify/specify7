@@ -21,6 +21,7 @@ const debounceRate = 300;
 
 export type AutoCompleteItem<T> = {
   readonly label: JSX.Element | string;
+  // If label is a JSX.Element, need to provide a string label as a searchValue
   readonly searchValue?: string;
   readonly subLabel?: string;
   readonly icon?: JSX.Element;
@@ -94,7 +95,6 @@ export function AutoComplete<T>({
     | 'aria-controls'
     | 'aria-expanded'
     | 'disabled'
-    | 'onBlur'
     | 'onChange'
     | 'onClick'
     | 'onKeyDown'
@@ -369,20 +369,11 @@ export function AutoComplete<T>({
         displayValue={(item: AutoCompleteItem<T> | null): string =>
           typeof item === 'string'
             ? item
-            : item?.searchValue ?? (item?.label as string) ?? ''
+            : typeof item?.label === 'string'
+            ? item.label
+            : item?.searchValue ?? ''
         }
         ref={forwardChildRef}
-        /*
-         *OnBlur={({ relatedTarget }): void => {
-         *  if (
-         *    relatedTarget === null ||
-         *    dataListRef.current?.contains(relatedTarget as Node) === false
-         *  ) {
-         *    handleBlur();
-         *    if (closeOnOutsideClick) setPendingValue(currentValue);
-         *  }
-         *}}
-         */
       />
       {listHasItems && !disabled ? toggleButton : undefined}
       {/*

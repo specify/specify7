@@ -10,14 +10,13 @@ import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, Tables } from '../DataModel/types';
 import { fail } from '../Errors/Crash';
@@ -214,7 +213,7 @@ export function QueryResults({
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
                   getIds={(): RA<number> =>
-                    defined(loadedResults)
+                    loadedResults!
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
@@ -237,7 +236,7 @@ export function QueryResults({
               selectedRows={selectedRows}
               totalCount={totalCount}
               onDelete={(index): void => {
-                setTotalCount(defined(totalCount) - 1);
+                setTotalCount(totalCount! - 1);
                 setResults(removeItem(results, index));
                 setSelectedRows(
                   new Set(
@@ -458,7 +457,7 @@ function CreateRecordSet({
               ...serializeResource(state.recordSet),
               version: 1,
               type: 0,
-              dbTableId: defined(getModel(baseTableName)).tableId,
+              dbTableId: strictGetModel(baseTableName).tableId,
               /*
                * Back-end has an exception for RecordSet table allowing passing
                * inline data for record set items.

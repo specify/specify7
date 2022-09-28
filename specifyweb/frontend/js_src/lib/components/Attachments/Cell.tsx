@@ -1,25 +1,25 @@
-import { Attachment } from '../DataModel/types';
-import { SpecifyModel } from '../DataModel/specifyModel';
-import { f } from '../../utils/functools';
-import { getModelById } from '../DataModel/schema';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
-import { fetchThumbnail } from './attachments';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { LoadingContext } from '../Core/Contexts';
+
 import { deserializeResource } from '../../hooks/resource';
-import { hasTablePermission } from '../Permissions/helpers';
-import { Button } from '../Atoms/Button';
-import { fetchRelated } from '../DataModel/collection';
-import { idFromUrl } from '../DataModel/resource';
-import { caseInsensitiveHash } from '../../utils/utils';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { caseInsensitiveHash } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
+import { fetchRelated } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { idFromUrl } from '../DataModel/resource';
+import { getModelById } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
 import { originalAttachmentsView } from '../Forms/SpecifyForm';
-import { AttachmentPreview } from './Preview';
+import { TableIcon } from '../Molecules/TableIcon';
+import { hasTablePermission } from '../Permissions/helpers';
+import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
+import { AttachmentPreview } from './Preview';
 
 export function AttachmentCell({
   attachment,
@@ -30,13 +30,7 @@ export function AttachmentCell({
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
 }): JSX.Element {
-  const tableId = attachment?.tableID ?? undefined;
-  const model =
-    typeof tableId === 'number'
-      ? f.var(getModelById(tableId), (model) =>
-          tablesWithAttachments().includes(model) ? model : undefined
-        )
-      : undefined;
+  const model = getAttachmentModel(attachment.tableID);
 
   const [thumbnail] = useAsyncState(
     React.useCallback(async () => fetchThumbnail(attachment), [attachment]),
@@ -119,4 +113,12 @@ export function AttachmentCell({
       )}
     </div>
   );
+}
+
+function getAttachmentModel(
+  tableId: number | undefined
+): SpecifyModel | undefined {
+  if (tableId === undefined) return undefined;
+  const model = getModelById(tableId);
+  return tablesWithAttachments().includes(model) ? model : undefined;
 }

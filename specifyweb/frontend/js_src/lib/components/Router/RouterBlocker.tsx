@@ -23,9 +23,8 @@ type NavigationContextWithBlock = React.ContextType<
  * https://github.com/remix-run/react-router/commit/256cad70d3fd4500b1abcfea66f3ee622fb90874
  */
 export function useRouterBlocker(
-  callback: (location: Location) => Promise<void>,
-  enabled: boolean
-): void {
+  callback: (location: Location) => Promise<void>
+): { readonly block: () => void; readonly unblock: () => void } {
   const { navigator } = React.useContext(
     NavigationContext
   ) as NavigationContextWithBlock;
@@ -36,25 +35,27 @@ export function useRouterBlocker(
     [callback]
   );
 
-  React.useEffect(() => {
-    if (!enabled) return undefined;
+  const unblock = React.useRef<(() => void) | undefined>(undefined);
 
-    const unblock = navigator.block((transition: Transition) => {
-      const autoUnblockingTx: Transition = {
-        ...transition,
-        retry() {
-          /*
-           * Automatically unblock the transition so it can play all the way
-           * through before retrying it.
-           */
-          unblock();
-          transition.retry();
-        },
-      };
+  return {
+    block: React.useCallback(() => {
+      unblock.current?.();
+      unblock.current = navigator.block((transition: Transition) => {
+        const autoUnblockingTx: Transition = {
+          ...transition,
+          retry() {
+            /*
+             * Automatically unblock the transition so it can play all the way
+             * through before retrying it.
+             */
+            unblock.current?.();
+            transition.retry();
+          },
+        };
 
-      blocker(autoUnblockingTx).catch(f.void);
-    });
-
-    return unblock;
-  }, [navigator, blocker, enabled]);
+        blocker(autoUnblockingTx).catch(f.void);
+      });
+    }, [blocker]),
+    unblock: React.useCallback(() => unblock.current?.(), []),
+  };
 }

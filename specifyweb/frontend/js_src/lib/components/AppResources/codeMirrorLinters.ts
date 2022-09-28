@@ -23,6 +23,9 @@ export const xmlLinter = createLinter(({ state }) => {
 
 export const jsonLinter = createLinter(jsonParseLinter());
 
+export const xmlToString = (xml: Node): string =>
+  new XMLSerializer().serializeToString(xml);
+
 export function parseXml(string: string): Document | string {
   const parsedXml = new window.DOMParser().parseFromString(string, 'text/xml');
 
@@ -39,6 +42,12 @@ export function parseXml(string: string): Document | string {
       parsedXml.documentElement.innerHTML
     ).trim();
   else return parsedXml;
+}
+
+export function strictParseXml(xml: string): Element {
+  const parsed = parseXml(xml);
+  if (typeof parsed === 'string') throw new Error(parsed);
+  else return parsed.documentElement;
 }
 
 const xmlErrorParsers = [

@@ -7,7 +7,7 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import { formData } from '../../utils/ajax/helpers';
-import { csrfToken } from '../../utils/ajax/csrftoken';
+import { csrfToken } from '../../utils/ajax/csrfToken';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { cachableUrl } from '../InitialContext';

@@ -4,7 +4,7 @@ import type { RouteObject } from 'react-router/lib/router';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
-import {useTitle} from '../Molecules/AppTitle';
+import { useTitle } from '../Molecules/AppTitle';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -53,7 +53,7 @@ export const toReactRoutes = (
  * suspense on the top level prevents all components from being un-rendered
  * when any component is being loaded.
  */
-function Async({
+export function Async({
   element,
   title,
 }: {

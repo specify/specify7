@@ -225,7 +225,7 @@ export function CollectionAccess({
                       userPolicies,
                       collectionId.toString(),
                       hasCollectionAccess
-                        ? defined(userPolicies[collectionId]).filter(
+                        ? userPolicies[collectionId]!.filter(
                             ({ resource }) =>
                               resource !== collectionAccessResource
                           )

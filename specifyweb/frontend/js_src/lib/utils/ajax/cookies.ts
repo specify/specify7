@@ -6,18 +6,25 @@ import { DAY, MILLISECONDS } from '../../components/Atoms/Internationalization';
 
 const DEFAULT_DURATION = 90;
 
-export function createCookie(
+export const createCookieString = (
   name: string,
   value: string,
-  days: number = DEFAULT_DURATION
-): void {
-  document.cookie = Object.entries({
+  days: number
+): string =>
+  Object.entries({
     [name]: value,
     expires: new Date(Date.now() + days * DAY * MILLISECONDS).toUTCString(),
     path: '/',
   })
     .map(([key, value]) => `${key}=${value}`)
     .join('; ');
+
+export function createCookie(
+  name: string,
+  value: string,
+  days: number = DEFAULT_DURATION
+): void {
+  document.cookie = createCookieString(name, value, days);
 }
 
 export function readCookie(name: string): string | undefined {
@@ -29,5 +36,3 @@ export function readCookie(name: string): string | undefined {
     }
   return undefined;
 }
-
-export const eraseCookie = (name: string): void => createCookie(name, '', -1);

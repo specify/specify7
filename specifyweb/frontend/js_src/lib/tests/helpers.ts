@@ -1,4 +1,7 @@
-import { initialContext, unlockInitialContext } from '../components/InitialContext';
+import {
+  initialContext,
+  unlockInitialContext,
+} from '../components/InitialContext';
 import { treeRanksPromise } from '../components/InitialContext/treeRanks';
 
 /**
@@ -20,4 +23,12 @@ export const requireContext = (): void =>
     unlockInitialContext('main');
     await initialContext;
     await treeRanksPromise;
+  });
+
+export const testTime = new Date('2022-08-31T03:37:10.4');
+
+export const mockTime = (date = testTime): void =>
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(date);
   });

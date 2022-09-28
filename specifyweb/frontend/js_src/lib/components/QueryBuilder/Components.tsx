@@ -5,12 +5,11 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, getModelById, schema } from '../DataModel/schema';
+import { getModelById, schema, strictGetModel } from '../DataModel/schema';
 import type {
   RecordSet,
   SpQuery,
@@ -179,7 +178,7 @@ export function MakeRecordSetButton({
             queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new schema.models.RecordSet.Resource();
-          recordSet.set('dbTableId', defined(getModel(baseTableName)).tableId);
+          recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
           // @ts-expect-error Overwriting the resource back-end URL
@@ -243,10 +242,7 @@ export function RecordSetCreated({
       onClose={handleClose}
     >
       <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
-        <TableIcon
-          label
-          name={defined(getModelById(recordSet.get('dbTableId'))).name}
-        />
+        <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
         {recordSet.get('name')}
       </Link.Default>
     </Dialog>

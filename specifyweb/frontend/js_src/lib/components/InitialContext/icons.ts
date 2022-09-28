@@ -21,11 +21,9 @@ export const fetchContext = Promise.all(
     plugin: 'icons_plugins.xml',
     default: 'icons.xml',
   }).map(async ([iconGroup, fileName]) =>
-    load<Document>(`/static/config/${fileName}`, 'application/xml').then(
-      (xml) => {
-        iconGroups[iconGroup] = xml;
-      }
-    )
+    load<Document>(`/static/config/${fileName}`, 'text/xml').then((xml) => {
+      iconGroups[iconGroup] = xml;
+    })
   )
 );
 

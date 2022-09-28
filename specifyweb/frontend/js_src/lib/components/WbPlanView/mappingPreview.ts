@@ -10,8 +10,8 @@
 import type { MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
 import { camelToHuman } from '../../utils/utils';
-import { getModel } from '../DataModel/schema';
-import { defined, filterArray } from '../../utils/types';
+import { strictGetModel } from '../DataModel/schema';
+import { filterArray } from '../../utils/types';
 import {
   anyTreeRank,
   formatTreeRank,
@@ -80,7 +80,7 @@ export function generateMappingPathPreview(
     ...mappingLineData.map((mappingElementData) =>
       Object.keys(mappingElementData.fieldsData)[0] ===
       formatTreeRank(anyTreeRank)
-        ? defined(getModel(defined(mappingElementData.tableName))).label
+        ? strictGetModel(mappingElementData.tableName!).label
         : (Object.values(mappingElementData.fieldsData)[0]
             ?.optionLabel as string)
     ),

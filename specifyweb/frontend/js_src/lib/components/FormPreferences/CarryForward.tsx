@@ -68,13 +68,13 @@ function CarryForwardConfig({
     (globalConfig[model.name] as RA<string> | undefined)?.filter(
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
-  const handleChange = (fields: RA<string>): void =>
+  function handleChange(rawFields: RA<string>): void {
+    const fields = normalize(rawFields);
     setGlobalConfig({
       ...globalConfig,
-      [model.name]: f.var(normalize(fields), (fields) =>
-        isDefaultConfig(fields) ? undefined : fields
-      ),
+      [model.name]: isDefaultConfig(fields) ? undefined : fields,
     });
+  }
 
   const literalFields = model.literalFields.filter(
     ({ overrides }) => !overrides.isHidden || showHiddenFields

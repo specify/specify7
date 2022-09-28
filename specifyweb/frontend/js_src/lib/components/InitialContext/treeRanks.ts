@@ -3,26 +3,35 @@
  * given discipline.
  */
 
-import { fetchRelated } from '../DataModel/collection';
-import type { Tables } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
-import { caseInsensitiveHash, sortFunction, unCapitalize } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, schema } from '../DataModel/schema';
-import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import {AnySchema, AnyTree, SerializedResource} from '../DataModel/helperTypes';
+import {
+  caseInsensitiveHash,
+  sortFunction,
+  unCapitalize,
+} from '../../utils/utils';
+import { fetchRelated } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
+import type {
+  AnySchema,
+  AnyTree,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema, strictGetModel } from '../DataModel/schema';
+import { fetchContext as fetchDomain } from '../DataModel/schemaBase';
+import type { Tables } from '../DataModel/types';
 
 export const getDomainResource = <
   LEVEL extends keyof typeof schema.domainLevelIds
 >(
   level: LEVEL
 ): SpecifyResource<Tables[Capitalize<LEVEL>]> | undefined =>
-  f.maybe(schema.domainLevelIds[level], (id) =>
-    f.var(defined(getModel(level)), (model) => new model.Resource({ id }))
-  );
+  f.maybe(schema.domainLevelIds[level], (id) => {
+    const model = strictGetModel(level);
+    return new model.Resource({ id });
+  });
 
 let treeDefinitions: {
   readonly [TREE_NAME in AnyTree['tableName']]: {
@@ -70,7 +79,7 @@ export const treeRanksPromise = Promise.all([
       ? getDomainResource('discipline')
           ?.fetch()
           .then((discipline) => {
-            if (!paleoDiscs.has(defined(discipline?.get('type') ?? undefined)))
+            if (!f.has(paleoDiscs, discipline?.get('type')))
               disciplineTrees = commonTrees;
             return undefined;
           })
@@ -118,3 +127,14 @@ export function getTreeDefinitionItems<TREE_NAME extends AnyTree['tableName']>(
   const definition = caseInsensitiveHash(treeDefinitions, tableName);
   return definition?.ranks.slice(includeRoot ? 0 : 1);
 }
+
+export const strictGetTreeDefinitionItems = <
+  TREE_NAME extends AnyTree['tableName']
+>(
+  tableName: TREE_NAME,
+  includeRoot: boolean
+): typeof treeDefinitions[TREE_NAME]['ranks'] =>
+  defined(
+    getTreeDefinitionItems(tableName, includeRoot),
+    `Unable to get tree ranks for a ${tableName} table`
+  );

@@ -2,16 +2,15 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import { removeKey } from '../../utils/utils';
 import type { BackEndRole } from './utils';
 import type { GetOrSet, IR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { SecurityCollectionOutlet } from './Collection';
 import type { NewRole, Role } from './Role';
 import { CreateRole } from './RoleTemplate';
 import { decompressPolicies, processPolicies } from './policyConverter';
+import { Http } from '../../utils/ajax/definitions';
 
 export const createCollectionRole = async (
   setRoles: GetOrSet<IR<Role> | undefined>[1],
@@ -21,7 +20,7 @@ export const createCollectionRole = async (
   typeof role.id === 'number'
     ? setRoles((roles) => ({
         ...roles,
-        [defined(role.id)]: {
+        [role.id!]: {
           ...(role as Role),
         },
       }))

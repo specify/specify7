@@ -1,19 +1,20 @@
-import Papa from 'papaparse';
+import { parse } from 'csv-parse/browser/esm';
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
-import type { Dataset } from '../WbPlanView/Wrapped';
-import { f } from '../../utils/functools';
 import { wbText } from '../../localization/workbench';
-import { schema } from '../DataModel/schema';
-import type { IR, RA } from '../../utils/types';
-import { uniquifyHeaders } from '../WbPlanView/headerHelper';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { f } from '../../utils/functools';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { uniquifyDataSetName } from '../../utils/uniquifyName';
+import { schema } from '../DataModel/schema';
+import { fileToText } from '../Molecules/FilePicker';
+import { uniquifyHeaders } from '../WbPlanView/headerHelper';
+import type { Dataset } from '../WbPlanView/Wrapped';
 
 /** Remove the extension from the file name */
 export const extractFileName = (fileName: string): string =>
-  fileName.replace(/\.[^.]*$/, '');
+  fileName.replace(/\.[^.]*$/u, '');
 
 export const wbImportPreviewSize = 100;
 
@@ -47,7 +48,7 @@ export const getMaxDataSetLength = (): number | undefined =>
      * to check the length limit in both places. See more:
      * https://github.com/specify/specify7/issues/1203
      */
-    schema.models.RecordSet.getField('name')!.length,
+    schema.models.RecordSet.strictGetLiteralField('name').length,
     dataSetMaxLength
   );
 
@@ -65,33 +66,49 @@ export function extractHeader(
 export const parseCsv = async (
   file: File,
   encoding: string,
+  [delimiter, setDelimiter]: GetSet<string | undefined>,
   limit?: number
 ): Promise<RA<RA<string>>> =>
-  new Promise((resolve, reject) =>
-    Papa.parse(file, {
-      encoding,
-      preview: limit,
-      skipEmptyLines: true,
-      complete: ({ data, errors }) => {
-        const rows = data as RA<RA<string>>;
-        const maxWidth = Math.max(...rows.map((row) => row.length));
-        /*
-         * If rows were returned, despite an error, then the error is probably
-         * not critical
-         */
-        if (errors.length > 0 && rows.length === 0)
-          reject(new Error(errors.map(({ message }) => message).join('. ')));
-        else if (maxWidth === 0 || rows.length === 0)
-          reject(new Error(wbText('corruptFile', file.name)));
-        else
-          resolve(
-            rows.map((row) => [
-              ...row,
-              ...Array.from({ length: maxWidth - row.length }).fill(''),
-            ])
-          );
-      },
-    })
+  fileToText(file, encoding).then(
+    async (text) =>
+      new Promise((resolve, reject) => {
+        const resolvedDelimiter = delimiter ?? guessDelimiter(text);
+        parse(
+          text,
+          {
+            toLine: limit,
+            skipEmptyLines: true,
+            delimiter: resolvedDelimiter,
+            // Allow variable number of columns
+            relaxColumnCount: true,
+            /*
+             * Handle cases like this gracefully:
+             * https://github.com/specify/specify7/issues/2150#issuecomment-1248288620
+             */
+            relaxQuotes: true,
+          },
+          (error, rows: RA<RA<string>> | undefined = []) => {
+            if (delimiter !== resolvedDelimiter)
+              setDelimiter(resolvedDelimiter);
+
+            const maxWidth = Math.max(...rows.map((row) => row.length));
+            /*
+             * If rows were returned, despite an error, then the error is probably
+             * not critical
+             */
+            if (typeof error === 'object') reject(error);
+            else if (maxWidth === 0 || rows.length === 0)
+              reject(new Error(wbText('corruptFile', file.name)));
+            else
+              resolve(
+                rows.map((row) => [
+                  ...row,
+                  ...Array.from({ length: maxWidth - row.length }).fill(''),
+                ])
+              );
+          }
+        );
+      })
   );
 
 export const parseXls = async (
@@ -111,6 +128,23 @@ export const parseXls = async (
       reject(new Error(error.message))
     );
   });
+
+// Ordered from the highest priority to the lowest priority
+const possibleDelimiters = [',', '\t', '|', ';'];
+
+/**
+ * Predict the delimiter based on most common delimiter in the first line
+ */
+function guessDelimiter(text: string): string {
+  const firstLine = text.split('\n')[0];
+  return possibleDelimiters
+    .map((delimiter) => [delimiter, firstLine.split(delimiter).length] as const)
+    .reduce(
+      ([currentDelimiter, currentMax], [delimiter, max]) =>
+        max > currentMax ? [delimiter, max] : [currentDelimiter, currentMax],
+      [',', 0]
+    )[0];
+}
 
 export const createDataSet = async ({
   dataSetName,

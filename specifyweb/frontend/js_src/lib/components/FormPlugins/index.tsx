@@ -26,9 +26,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 
-// FIXME: make sure plugins/cells/commands are in correct directories
-// FIXME: undo renaming exports
-
 function WrongTable({
   resource,
   allowedTable,

@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
-import type { IR } from '../../utils/types';
-import { Input } from '../Atoms/Form';
-import { Link } from '../Atoms/Link';
-import { schema } from '../DataModel/schema';
-import type { Tables } from '../DataModel/types';
-import { TableIcon } from '../Molecules/TableIcon';
-import { tableActions } from '../Permissions/definitions';
-import type { PreviewCell } from './Preview';
-import { actionToLabel, resourceNameToLabel } from './utils';
+import {useId} from '../../hooks/useId';
+import {adminText} from '../../localization/admin';
+import type {IR} from '../../utils/types';
+import {Input} from '../Atoms/Form';
+import {Link} from '../Atoms/Link';
+import {schema} from '../DataModel/schema';
+import type {Tables} from '../DataModel/types';
+import {TableIcon} from '../Molecules/TableIcon';
+import {tableActions} from '../Permissions/definitions';
+import type {PreviewCell} from './Preview';
+import {actionToLabel, resourceNameToLabel} from './utils';
 
 export function PreviewRow({
   row,
@@ -57,7 +57,7 @@ export function PreviewRow({
         role="row"
       >
         {typeof view === 'string' && (
-          <div className="col-span-full py-2" role="cell">
+          <div className="col-span-full" role="cell">
             <PermissionExplanation
               cell={row[view]}
               getOpenRoleUrl={getOpenRoleUrl}
@@ -77,7 +77,7 @@ export function PermissionExplanation({
   readonly getOpenRoleUrl: (roleId: number) => string;
 }): JSX.Element {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 py-2">
       <div
         className="grid-table grid-cols-[auto_auto_auto] rounded border border-gray-500"
         role="table"

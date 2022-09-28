@@ -23,8 +23,8 @@ import { className } from '../Atoms/className';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { useId } from '../../hooks/useId';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {ActiveLink} from '../Router/ActiveLink';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { ActiveLink } from '../Router/ActiveLink';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -247,7 +247,7 @@ function ResourceItem({
       : `/specify/resources/view-set/${resource.id}/`;
   return (
     <ActiveLink
-      className="!text-neutral-500 hover:!text-brand-300"
+      className="[&:not([aria-current]):not(:hover)]:!text-neutral-500"
       href={url}
       onClick={
         typeof handleOpen === 'function'

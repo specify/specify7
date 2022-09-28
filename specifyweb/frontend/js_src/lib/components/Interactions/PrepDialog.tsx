@@ -7,7 +7,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { group, replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -15,7 +15,7 @@ import { Submit } from '../Atoms/Submit';
 import { serializeResource, toTable } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceApiUrl, getResourceViewUrl } from '../DataModel/resource';
-import { getModel, schema } from '../DataModel/schema';
+import { schema, strictGetModel } from '../DataModel/schema';
 import type { Collection, SpecifyModel } from '../DataModel/specifyModel';
 import type {
   Disposal,
@@ -130,8 +130,8 @@ export function PrepDialog({
       <Form
         id={id('form')}
         onSubmit={(): void => {
-          const itemModel = defined(
-            getModel(`${action.model.name}Preparation`)
+          const itemModel = strictGetModel(
+            `${action.model.name}Preparation`
           ) as SpecifyModel<
             DisposalPreparation | GiftPreparation | LoanPreparation
           >;
@@ -184,22 +184,20 @@ export function PrepDialog({
               </th>
               <th scope="col">
                 {
-                  defined(
-                    schema.models.CollectionObject.getLiteralField(
-                      'catalogNumber'
-                    )
+                  schema.models.CollectionObject.strictGetLiteralField(
+                    'catalogNumber'
                   ).label
                 }
               </th>
               <th scope="col">
                 {
-                  defined(schema.models.Determination.getRelationship('taxon'))
+                  schema.models.Determination.strictGetRelationship('taxon')
                     .label
                 }
               </th>
               <th scope="col">
                 {
-                  defined(schema.models.Preparation.getRelationship('prepType'))
+                  schema.models.Preparation.strictGetRelationship('prepType')
                     .label
                 }
               </th>

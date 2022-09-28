@@ -14,9 +14,8 @@ import { listen } from '../../utils/events';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { smoothScroll } from '../QueryBuilder/helpers';
-import { getModel } from '../DataModel/schema';
+import { strictGetModel } from '../DataModel/schema';
 import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type { ColumnOptions } from './uploadPlanParser';
 import { columnOptionsAreDefault } from './linesGetter';
 import { reducer } from './mappingReducer';
@@ -399,7 +398,7 @@ export function Mapper(props: {
           <TableIcon label name={props.baseTableName} />
           <span title={wbText('dataSetName')}>{props.dataset.name}</span>
           <span title={wbText('baseTable')}>
-            {` (${defined(getModel(props.baseTableName)).label})`}
+            {` (${strictGetModel(props.baseTableName).label})`}
           </span>
           {props.dataset.uploadresult?.success === true && (
             <span

@@ -3,10 +3,9 @@ import React from 'react';
 import type { SpQuery, Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { hasTablePermission, hasToolPermission } from '../Permissions/helpers';
-import { getModel, getModelById } from '../DataModel/schema';
+import { getModelById, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryImport } from '../QueryBuilder/Import';
@@ -76,7 +75,7 @@ export function useQueryModels(): GetSet<RA<SpecifyModel>> {
   const [tables, setTables] = usePref('queryBuilder', 'general', 'shownTables');
   const visibleTables =
     tables.length === 0
-      ? filterArray(defaultQueryTablesConfig.map(getModel))
+      ? defaultQueryTablesConfig.map(strictGetModel)
       : tables.map(getModelById);
   const accessibleTables = visibleTables.filter(({ name }) =>
     hasTablePermission(name, 'read')

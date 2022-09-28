@@ -1,7 +1,7 @@
 import { fetchCollection } from './collection';
 import type { CollectionObject } from './types';
 import { f } from '../../utils/functools';
-import { capitalize } from '../../utils/utils';
+import { capitalize, takeBetween } from '../../utils/utils';
 import type { SpecifyResource } from './legacyTypes';
 import { hasTablePermission } from '../Permissions/helpers';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
@@ -15,7 +15,7 @@ import { toTable } from './helpers';
 import { fail } from '../Errors/Crash';
 
 /**
- * Some tasks to do after a new resoure is created
+ * Some tasks to do after a new resource is created
  */
 globalEvents.on('newResource', (resource) => {
   const domainField = resource.specifyModel.getScopingRelationship();
@@ -78,9 +78,6 @@ globalEvents.on('newResource', (resource) => {
       .catch(fail);
 });
 
-const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
-  array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);
-
 /**
  * @returns a list of collections the resource belongs too.
  * @returns undefined if resource is not scoped to a collection
@@ -88,18 +85,26 @@ const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
  * This function tries to resolve collection ID for resource even the best it
  * can even if user does not have read access to the Collection table.
  */
-export const getCollectionForResource = (
+export function getCollectionForResource(
   resource: SpecifyResource<AnySchema>
-): number | undefined =>
-  (resource.get('collectionMemberId') as number | null) ??
-  f.maybe(resource.specifyModel.getScopingRelationship(), (domainField) =>
-    f.var(idFromUrl(resource.get(domainField.name) ?? ''), (domainResourceId) =>
-      schema.domainLevelIds[domainField.name as 'collection'] ===
-      domainResourceId
-        ? schema.domainLevelIds.collection
-        : undefined
-    )
-  );
+): number | undefined {
+  const collectionUrl = resource.get('collectionMemberId') as number | null;
+  if (typeof collectionUrl === 'number') return collectionUrl;
+
+  const domainField = resource.specifyModel.getScopingRelationship();
+  if (domainField === undefined) return undefined;
+
+  const domainResourceId = idFromUrl(resource.get(domainField.name) ?? '');
+  return schema.domainLevelIds[domainField.name as 'collection'] ===
+    domainResourceId
+    ? schema.domainLevelIds.collection
+    : undefined;
+}
+
+/**
+ * If resource has a getScopingRelationship, find all collections that resource
+ * belongs too
+ */
 export const fetchCollectionsForResource = async (
   resource: SpecifyResource<AnySchema>
 ): Promise<RA<number> | undefined> =>
@@ -107,6 +112,7 @@ export const fetchCollectionsForResource = async (
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
       .then(async (resource) => {
+        if (resource.specifyModel.name === 'Collection') return [resource.id];
         const fieldsBetween = takeBetween(
           schema.orgHierarchy,
           'Collection',

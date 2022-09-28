@@ -1,10 +1,10 @@
 import { ajax } from './index';
-import { Http } from './helpers';
 import { Backbone } from '../../components/DataModel/backbone';
 import { formatUrl } from '../../components/Router/queryString';
 import { promiseToXhr } from '../../components/DataModel/resourceApi';
 import type { RA } from '../types';
 import { defined } from '../types';
+import { Http } from './definitions';
 
 let expectedResponseCodes: RA<typeof Http[keyof typeof Http]> | undefined =
   undefined;
@@ -33,7 +33,10 @@ export function hijackBackboneAjax<T>(
  */
 Backbone.ajax = function (request): JQueryXHR {
   if (request === undefined) throw new Error('Undefined Request');
-  const url = defined(request.url);
+  const url = defined(
+    request.url,
+    'Unable to make a Backbone.ajax call as URL is undefined'
+  );
   const requestCallbackCopy = requestCallback;
   return promiseToXhr(
     ajax(

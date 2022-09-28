@@ -1,41 +1,28 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
+import { Http } from '../../utils/ajax/definitions';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
+import { LoadingContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { schema } from '../DataModel/schema';
 import { supportLink } from '../Errors/ErrorDialog';
+import { produceStackTrace } from '../Errors/stackTrace';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return <AboutDialog isOpen onClose={handleClose} />;
-}
-
-export function AboutSpecify(): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
-    <div className="flex-1 text-right">
-      <Button.LikeLink title={welcomeText('aboutSpecify')} onClick={handleOpen}>
-        <img
-          alt={welcomeText('aboutSpecify')}
-          src="/static/img/specify_7_small.png"
-        />
-      </Button.LikeLink>
-      <AboutDialog isOpen={isOpen} onClose={handleClose} />
-    </div>
-  );
 }
 
 function AboutDialog({
@@ -45,9 +32,30 @@ function AboutDialog({
   readonly isOpen: boolean;
   readonly onClose: () => void;
 }): JSX.Element {
+  const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      buttons={commonText('close')}
+      buttons={
+        <>
+          <Button.Green
+            onClick={(): void =>
+              loading(
+                downloadFile(
+                  `Specify 7 System Information - ${new Date().toJSON()}.txt`,
+                  produceStackTrace(
+                    `System Information report. Generated on ${new Date().toJSON()}`
+                  )
+                )
+              )
+            }
+          >
+            {welcomeText('downloadInformation')}
+          </Button.Green>
+          {/* REFACTOR: replace span elements like this with a separator */}
+          <span className="-ml-2 flex-1" />
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+        </>
+      }
       className={{
         container: `${dialogClassNames.normalContainer} w-[min(30rem,90%)]`,
         content: `${dialogClassNames.flexContent} pr-4`,

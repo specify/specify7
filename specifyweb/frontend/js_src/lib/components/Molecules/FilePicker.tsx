@@ -27,7 +27,7 @@ export function FilePicker({
   }
 
   function handleFileDropped(event: React.DragEvent): void {
-    const file = event.dataTransfer?.items?.[0].getAsFile() ?? undefined;
+    const file = event.dataTransfer?.items?.[0]?.getAsFile() ?? undefined;
     handleFileChange(file);
     preventPropagation(event);
     setIsDragging(false);
@@ -160,7 +160,10 @@ export const downloadFile = async (
     iframe.contentWindow?.document.close();
   });
 
-export const fileToText = async (file: File): Promise<string> =>
+export const fileToText = async (
+  file: File,
+  encoding = 'utf-8'
+): Promise<string> =>
   new Promise((resolve, reject) => {
     const fileReader = new FileReader();
     fileReader.addEventListener('load', ({ target }) =>
@@ -168,5 +171,6 @@ export const fileToText = async (file: File): Promise<string> =>
         ? resolve(target.result)
         : reject(new Error('File is not a text file'))
     );
-    fileReader.readAsText(file);
+    fileReader.addEventListener('error', () => reject(fileReader.error));
+    fileReader.readAsText(file, encoding);
   });

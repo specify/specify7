@@ -3,6 +3,7 @@
  *
  * @module
  */
+
 // Record
 export type R<V> = Record<string, V>;
 // Immutable record
@@ -31,9 +32,9 @@ export type GetOrSet<T> = readonly [
 export type WritableArray<T> = T[];
 
 /** Cast a type as defined. Throws at runtime if it is not defined */
-export function defined<T>(value: T | undefined): T {
+export function defined<T>(value: T | undefined, message?: string): T {
   // eslint-disable-next-line functional/no-throw-statement
-  if (value === undefined) throw new Error('Value is not defined');
+  if (value === undefined) throw new Error(message ?? 'Value is not defined');
   else return value;
 }
 
@@ -108,3 +109,21 @@ export const ensure =
   <T>() =>
   <V extends T>(value: V): V extends T ? V : never =>
     value as V extends T ? V : never;
+
+/**
+ * Allows to overwrite a read-only property in a type-safe way.
+ * In most cases it is recommended to change the typing rather or use a callback
+ * rather than use this utility.
+ * This utility is preferred over adding "// @ts-expect-error" because:
+ *  - This is more type safe (ts-expect-error disables all errors, not just
+ *    the read-only error)
+ *  - Using this utility makes it easy to see all the places that overwrite a
+ *    read only property
+ */
+export function overwriteReadOnly<
+  KEY extends string,
+  OBJECT extends { readonly [key in KEY]?: unknown }
+>(object: OBJECT, key: KEY, value: unknown): void {
+  // @ts-expect-error Overwriting read-only
+  object[key] = value;
+}

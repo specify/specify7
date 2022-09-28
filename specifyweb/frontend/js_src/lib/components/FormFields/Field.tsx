@@ -11,12 +11,12 @@ import { parseRelativeDate } from '../../utils/relativeDate';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
 import type { IR } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   mergeParsers,
   parserFromType,
-} from '../../utils/uiParse';
+} from '../../utils/parser/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { Input } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';

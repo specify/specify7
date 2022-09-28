@@ -35,7 +35,7 @@ export function Slider({
       </Button.Small>
       <Button.Small
         aria-label={formsText('previousRecord')}
-        className="bg-white px-4 dark:bg-neutral-500"
+        className="px-4 dark:bg-neutral-500"
         disabled={value === 0}
         title={formsText('previousRecord')}
         onClick={(): void => handleChange(value - 1)}
@@ -79,7 +79,7 @@ export function Slider({
       </div>
       <Button.Small
         aria-label={formsText('nextRecord')}
-        className="bg-white px-4 dark:bg-neutral-500"
+        className="px-4 dark:bg-neutral-500"
         disabled={value + 1 === count}
         title={formsText('nextRecord')}
         onClick={(): void => handleChange(value + 1)}

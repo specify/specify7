@@ -2,18 +2,16 @@ import React from 'react';
 
 import { fetchCollection } from '../DataModel/collection';
 import type { Geography } from '../DataModel/types';
-import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { hasTreeAccess } from '../Permissions/helpers';
 import { resourceOn } from '../DataModel/resource';
 import {
-  getTreeDefinitionItems,
   isTreeResource,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
@@ -29,7 +27,7 @@ const fetchPossibleRanks = async (
 ): Promise<RA<PickListItemSimple>> =>
   treeRanksPromise
     .then(() =>
-      defined(getTreeDefinitionItems(treeName as 'Geography', false))
+      strictGetTreeDefinitionItems(treeName as 'Geography', false)
         .filter(
           ({ rankId }) =>
             rankId > parentRankId &&
@@ -37,19 +35,16 @@ const fetchPossibleRanks = async (
         )
         .sort(sortFunction(({ rankId }) => rankId))
     )
-    .then((ranks) =>
+    .then((ranks) => {
+      const enforcedIndex = ranks.findIndex(({ isEnforced }) => isEnforced) + 1;
       // Remove ranks after enforced rank
-      f.var(
-        ranks.findIndex(({ isEnforced }) => isEnforced) + 1,
-        (enforcedIndex) =>
-          (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
-            (rank) => ({
-              value: rank.resource_uri,
-              title: rank.title || rank.name,
-            })
-          )
-      )
-    );
+      return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
+        (rank) => ({
+          value: rank.resource_uri,
+          title: rank.title || rank.name,
+        })
+      );
+    });
 
 export const fetchLowestChildRank = async (
   resource: SpecifyResource<AnyTree>

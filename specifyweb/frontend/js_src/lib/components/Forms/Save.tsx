@@ -9,7 +9,6 @@ import { formsText } from '../../localization/forms';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { resourceOn } from '../DataModel/resource';
-import { defined } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { FormContext, LoadingContext } from '../Core/Contexts';
 import { useIsModified } from '../../hooks/useIsModified';
@@ -287,10 +286,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                         <React.Fragment key={key}>
                           <dt>
                             {typeof blocker.fieldName === 'string'
-                              ? defined(
-                                  resource.specifyModel.getField(
-                                    blocker.fieldName
-                                  )
+                              ? resource.specifyModel.strictGetField(
+                                  blocker.fieldName
                                 ).label
                               : camelToHuman(key)}
                           </dt>

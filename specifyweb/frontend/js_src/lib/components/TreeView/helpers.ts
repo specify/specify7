@@ -5,9 +5,9 @@ import { ajax } from '../../utils/ajax';
 import { formatNumber } from '../Atoms/Internationalization';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
 import { treeText } from '../../localization/tree';
-import { getTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
 
 export const fetchRows = async (fetchUrl: string) =>
@@ -211,7 +211,7 @@ export function checkMoveViolatesEnforced(
   newParenRankId: number,
   currentRankId: number
 ): boolean {
-  const treeRanks = defined(getTreeDefinitionItems(tableName, true));
+  const treeRanks = strictGetTreeDefinitionItems(tableName, true);
   const currentRankIndex = treeRanks.findIndex(
     ({ rankId }) => rankId === currentRankId
   );

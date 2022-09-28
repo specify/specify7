@@ -11,8 +11,8 @@ import { theories } from '../../../tests/utils';
 requireContext();
 
 theories(getLinesFromHeaders, [
-  [
-    [
+  {
+    in: [
       {
         headers: [
           'BMSM No.',
@@ -30,7 +30,7 @@ theories(getLinesFromHeaders, [
         baseTableName: 'CollectionObject',
       },
     ],
-    [
+    out: [
       {
         mappingPath: ['0'],
         headerName: 'BMSM No.',
@@ -122,9 +122,9 @@ theories(getLinesFromHeaders, [
         },
       },
     ],
-  ],
-  [
-    [
+  },
+  {
+    in: [
       {
         headers: [
           'BMSM No.',
@@ -142,7 +142,7 @@ theories(getLinesFromHeaders, [
         baseTableName: 'CollectionObject',
       },
     ],
-    [
+    out: [
       {
         mappingPath: ['0'],
         headerName: 'BMSM No.',
@@ -234,7 +234,7 @@ theories(getLinesFromHeaders, [
         },
       },
     ],
-  ],
+  },
 ]);
 
 theories(getLinesFromUploadPlan, [

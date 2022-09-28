@@ -293,6 +293,7 @@ export function enableBusinessRules(e) {
     return enabled = e;
 }
 
+// REFACTOR: replace this with flippedPromise util in ../../utils/promise.ts
 /**
  * A promise that can be resolved from outside the promise
  * This is probably an anti-pattern and is included here only for compatability

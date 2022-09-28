@@ -1,5 +1,4 @@
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import type { IR, RR } from '../../utils/types';
 import {
   cachableUrl,
@@ -8,6 +7,7 @@ import {
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import L from './leafletExtend';
+import { Http } from '../../utils/ajax/definitions';
 
 export const leafletLayersEndpoint =
   'https://files.specifysoftware.org/specify7/7.7.0/leaflet-layers.json';
@@ -29,8 +29,7 @@ export const leafletLayersEndpoint =
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode
  */
-const defaultTileLayers: RR<'baseMaps' | 'overlays',
-  IR<L.TileLayer>> = {
+const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
   baseMaps: {
     'Street Map (OpenStreetMap)': L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

@@ -17,11 +17,10 @@ import React from 'react';
 import _ from 'underscore';
 import {Backbone} from '../DataModel/backbone';
 import Handsontable from 'handsontable';
-import Papa from 'papaparse';
 
 import {Button} from '../Atoms/Button';
 import {Link} from '../Atoms/Link';
-import {getModel, schema} from '../DataModel/schema';
+import {getModel, schema, strictGetModel} from '../DataModel/schema';
 import {DataSetNameView} from './DataSetMeta';
 import {WbUploaded} from './Results';
 import {WBUtils} from './wbUtils';
@@ -43,13 +42,12 @@ import {dialogClassNames} from '../Molecules/Dialog';
 import {format} from '../Forms/dataObjFormatters';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
 import {LANGUAGE} from '../../localization/utils';
-import {defined, filterArray} from '../../utils/types';
-import {getTreeDefinitionItems} from '../InitialContext/treeRanks';
+import {filterArray} from '../../utils/types';
+import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
 import {serializeResource} from '../DataModel/helpers';
 import {fetchPickList} from '../PickLists/fetch';
 import {ajax} from '../../utils/ajax';
 import {ping} from '../../utils/ajax/ping';
-import {Http} from '../../utils/ajax/helpers';
 import {
   hasPermission,
   hasTablePermission,
@@ -65,6 +63,8 @@ import {createBackboneView} from '../Core/reactBackboneExtend';
 import {WbStatus} from './Status';
 import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
+import {Http} from '../../utils/ajax/definitions';
+import {downloadDataSet} from './helpers';
 
 const metaKeys = [
   'isNew',
@@ -479,7 +479,7 @@ export const WBView = Backbone.View.extend({
                         .map(([tableName, recordId, label]) => {
                           const tableLabel =
                             label === ''
-                              ? defined(getModel(tableName)).label
+                              ? strictGetModel(tableName).label
                               : label;
                           const tableIcon = getIcon(tableName) ?? unknownIcon;
 
@@ -754,7 +754,7 @@ export const WBView = Backbone.View.extend({
           mappingGroup,
           physicalCol,
           rankId: Object.keys(
-            defined(getTreeDefinitionItems(tableName))
+            strictGetTreeDefinitionItems(tableName)
           ).findIndex(({ name }) => name === rankName),
         }))
         .reduce((groupedRanks, { mappingGroup, ...rankMapping }) => {
@@ -998,19 +998,14 @@ export const WBView = Backbone.View.extend({
         visualCol,
         physicalRow,
         physicalCol,
-        oldValue='',
+        oldValue = '',
         newValue,
       }) => {
         if (
           this.getCellMeta(physicalRow, physicalCol, 'originalValue') ===
           undefined
         )
-          this.setCellMeta(
-            physicalRow,
-            physicalCol,
-            'originalValue',
-            oldValue
-          );
+          this.setCellMeta(physicalRow, physicalCol, 'originalValue', oldValue);
         this.recalculateIsModifiedState(physicalRow, physicalCol, {
           visualRow,
           visualCol,
@@ -2031,16 +2026,22 @@ export const WBView = Backbone.View.extend({
                 this.$el.empty();
                 dialog.remove();
 
-                if (!this.checkDeletedFail(status))
-                  showDialog({
+                if (!this.checkDeletedFail(status)) {
+                  const dialog = showDialog({
                     header: wbText('dataSetDeletedDialogHeader'),
                     content: wbText('dataSetDeletedDialogText'),
                     buttons: (
-                      <Link.Blue href="/specify/">
+                      <Link.Blue
+                        href="/specify/"
+                        onClick={() => {
+                          dialog.remove();
+                        }}
+                      >
                         {commonText('close')}
                       </Link.Blue>
                     ),
                   });
+                }
               });
             }}
           >
@@ -2051,17 +2052,7 @@ export const WBView = Backbone.View.extend({
     });
   },
   export() {
-    const data = Papa.unparse({
-      fields: this.dataset.columns,
-      data: this.dataset.rows,
-    });
-    const wbName = this.dataset.name;
-    const filename = wbName.endsWith('.csv') ? wbName : `${wbName}.csv`;
-    const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = globalThis.URL.createObjectURL(blob);
-    a.setAttribute('download', filename);
-    a.click();
+    downloadDataSet(this.dataset).catch(crash);
   },
   revertChanges() {
     const dialog = showDialog({

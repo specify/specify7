@@ -4,8 +4,6 @@
 
 import React from 'react';
 
-import { error } from '../Errors/assert';
-import type { Collection } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { preferencesText } from '../../localization/preferences';
@@ -13,11 +11,17 @@ import { queryText } from '../../localization/query';
 import type { Language } from '../../localization/utils';
 import { LANGUAGE } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
-import type { JavaType } from '../DataModel/specifyField';
+import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
+import { ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
+import type { JavaType } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import {
+  LanguagePreferencesItem,
+  SchemaLanguagePreferenceItem,
+} from '../Toolbar/Language';
 import type { WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
@@ -26,10 +30,6 @@ import {
   FontFamilyPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import {
-  LanguagePreferencesItem,
-  SchemaLanguagePreferenceItem,
-} from '../Toolbar/Language';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -746,10 +746,10 @@ export const preferenceDefinitions = {
         title: preferencesText('autoComplete'),
         items: {
           searchAlgorithm: defineItem<
-            | 'startsWith'
-            | 'startsWithCaseSensitive'
             | 'contains'
             | 'containsCaseSensitive'
+            | 'startsWith'
+            | 'startsWithCaseSensitive'
           >({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
@@ -802,7 +802,7 @@ export const preferenceDefinitions = {
         title: preferencesText('queryComboBox'),
         items: {
           searchAlgorithm: defineItem<
-            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+            'contains' | 'startsWith' | 'startsWithCaseSensitive'
           >({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
@@ -833,7 +833,7 @@ export const preferenceDefinitions = {
             ],
           }),
           treeSearchAlgorithm: defineItem<
-            'startsWith' | 'startsWithCaseSensitive' | 'contains'
+            'contains' | 'startsWith' | 'startsWithCaseSensitive'
           >({
             title: preferencesText('treeSearchAlgorithm'),
             requiresReload: false,
@@ -947,7 +947,7 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          searchField: defineItem<'name' | 'fullName'>({
+          searchField: defineItem<'fullName' | 'name'>({
             title: preferencesText('searchField'),
             requiresReload: false,
             visible: true,
@@ -963,7 +963,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          searchAlgorithm: defineItem<'startsWith' | 'contains'>({
+          searchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -1262,6 +1262,34 @@ export const preferenceDefinitions = {
               },
             ],
           }),
+          exportFileDelimiter: defineItem<' ' | ',' | ';' | '\t' | '|'>({
+            title: preferencesText('exportFileDelimiter'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: '\t',
+            values: [
+              {
+                value: ',',
+                title: wbText('comma'),
+              },
+              {
+                value: '\t',
+                title: wbText('tab'),
+              },
+              {
+                value: ';',
+                title: wbText('semicolon'),
+              },
+              {
+                value: ' ',
+                title: wbText('space'),
+              },
+              {
+                value: '|',
+                title: wbText('pipe'),
+              },
+            ],
+          }),
         },
       },
       wbPlanView: {
@@ -1397,19 +1425,28 @@ import('../DataModel/schema')
   .then(async ({ fetchContext, schema }) =>
     fetchContext.then(() => {
       const trees = preferenceDefinitions.treeEditor.subCategories;
-      // @ts-expect-error Assigning to read-only
-      trees.geography.title = schema.models.Geography.label;
-      // @ts-expect-error Assigning to read-only
-      trees.taxon.title = schema.models.Taxon.label;
-      // @ts-expect-error Assigning to read-only
-      trees.storage.title = schema.models.Storage.label;
-      // @ts-expect-error Assigning to read-only
-      trees.geologicTimePeriod.title = schema.models.GeologicTimePeriod.label;
-      // @ts-expect-error Assigning to read-only
-      trees.lithoStrat.title = schema.models.LithoStrat.label;
-      // @ts-expect-error Assigning to read-only
-      preferenceDefinitions.form.subCategories.recordSet.title =
-        schema.models.RecordSet.label;
+      overwriteReadOnly(
+        trees.geography,
+        'title',
+        schema.models.Geography.label
+      );
+      overwriteReadOnly(trees.taxon, 'title', schema.models.Taxon.label);
+      overwriteReadOnly(trees.storage, 'title', schema.models.Storage.label);
+      overwriteReadOnly(
+        trees.geologicTimePeriod,
+        'title',
+        schema.models.GeologicTimePeriod.label
+      );
+      overwriteReadOnly(
+        trees.lithoStrat,
+        'title',
+        schema.models.LithoStrat.label
+      );
+      overwriteReadOnly(
+        preferenceDefinitions.form.subCategories.recordSet,
+        'title',
+        schema.models.RecordSet.label
+      );
     })
   )
   .catch(console.error);

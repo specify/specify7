@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import type { WritableArray } from '../../utils/types';
+import { listen } from '../../utils/events';
+import { f } from '../../utils/functools';
+import type { GetSet, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { usePrefDefinitions } from './index';
@@ -26,7 +28,7 @@ export function useActiveCategory(): {
   }: IntersectionObserverEntry): void {
     const index = references.current.indexOf(target as HTMLElement);
     intersecting.current[isIntersecting ? 'add' : 'delete'](index);
-    const intersection = Math.min(...Array.from(intersecting.current));
+    const intersection = f.min(...Array.from(intersecting.current)) ?? 0;
     setActiveCategory(intersection);
   }
 
@@ -89,6 +91,10 @@ export function PreferencesAside({
       ),
     [definitions, activeCategory, id]
   );
+
+  const [freezeCategory, setFreezeCategory] = useFrozenCategory();
+  const currentIndex = freezeCategory ?? activeCategory;
+
   return (
     <aside
       className={`
@@ -98,13 +104,68 @@ export function PreferencesAside({
     >
       {definitions.map(([category, { title }], index) => (
         <Link.Gray
-          aria-current={activeCategory === index ? 'page' : undefined}
+          aria-current={currentIndex === index ? 'page' : undefined}
           href={`#${id(category)}`}
           key={category}
+          onClick={(): void => setFreezeCategory(index)}
         >
           {title}
         </Link.Gray>
       ))}
     </aside>
   );
+}
+
+/**
+ * Clicking on a category scrolls that category to the top.
+ * The active category is determined based on which category is in the middle.
+ * Thus, clicking on a category might not make it active.
+ * This hack temporary makes the clicked category active, until user starts to
+ * scroll away
+ */
+function useFrozenCategory(): GetSet<number | undefined> {
+  const [freezeCategory, setFreezeCategory] = React.useState<
+    number | undefined
+  >(undefined);
+  React.useEffect(
+    () =>
+      typeof freezeCategory === 'number'
+        ? listen(
+            document.body,
+            'resize',
+            () => setFreezeCategory(undefined),
+            true
+          )
+        : undefined,
+    [freezeCategory]
+  );
+  React.useEffect(
+    () =>
+      typeof freezeCategory === 'number'
+        ? listen(
+            document.body,
+            'scroll',
+            () => {
+              if (ignoreScroll.current) ignoreScroll.current = false;
+              else setFreezeCategory(undefined);
+            },
+            true
+          )
+        : undefined,
+    [freezeCategory]
+  );
+
+  /*
+   * Clicking on a category scrolls to it. Need to ignore that initial scroll
+   * and only listen for subsequent scrolls
+   */
+  const ignoreScroll = React.useRef<boolean>(false);
+
+  return [
+    freezeCategory,
+    React.useCallback((value) => {
+      ignoreScroll.current = typeof value === 'number';
+      setFreezeCategory(value);
+    }, []),
+  ];
 }

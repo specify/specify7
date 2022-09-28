@@ -1,9 +1,7 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { parserFromType } from '../../utils/uiParse';
+import { defined } from '../../utils/types';
 import { isTreeResource } from '../InitialContext/treeRanks';
-import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import type {
   AnySchema,
   AnyTree,
@@ -12,8 +10,9 @@ import type {
 } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
-import { getModel } from './schema';
+import { strictGetModel } from './schema';
 import type { Tables } from './types';
+import { addMissingFields } from './addMissingFields';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -38,16 +37,18 @@ function serializeModel<SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA>,
   tableName?: keyof Tables
 ): SerializedResource<SCHEMA> {
-  const model = defined(
-    getModel(
-      defined(
-        (tableName as SCHEMA['tableName']) ??
-          resource._tablename ??
-          parseResourceUrl((resource.resource_uri as string) ?? '')?.[0]
-      )
+  const model = strictGetModel(
+    defined(
+      (tableName as SCHEMA['tableName']) ??
+        resource._tablename ??
+        parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
+      `Unable to serialize resource because table name is unknown.` +
+        (process.env.NODE_ENV === 'test'
+          ? `\nMake sure your test file calls requireContext();`
+          : '')
     )
   );
-  const fields = model.fields.map(({ name }) => name);
+  const fields = [...model.fields.map(({ name }) => name), model.idField.name];
 
   return addMissingFields(
     model.name,
@@ -64,7 +65,11 @@ function serializeModel<SCHEMA extends AnySchema>(
               resource
             );
         }
-        if (typeof value === 'object' && value !== null) {
+        if (
+          typeof value === 'object' &&
+          value !== null &&
+          !specialFields.has(camelFieldName)
+        ) {
           const field = model.getField(lowercaseFieldName);
           const tableName =
             field === undefined || !field.isRelationship
@@ -86,110 +91,6 @@ function serializeModel<SCHEMA extends AnySchema>(
     )
   ) as SerializedResource<SCHEMA>;
 }
-
-/**
- * This function can:
- * Set missing required fields to literals.
- * Set missing optional fields to null
- * Set missing -to-many relationships to null
- * Set missing dependent -to-one relationships to new objects
- * Do all of these recursively
- */
-export const addMissingFields = <TABLE_NAME extends keyof Tables>(
-  tableName: TABLE_NAME,
-  record: Partial<SerializedResource<Tables[TABLE_NAME]>>,
-  {
-    requiredFields = 'set',
-    optionalFields = 'define',
-    toManyRelationships = 'set',
-    requiredRelationships = 'set',
-    optionalRelationships = 'define',
-  }: {
-    readonly requiredFields?: 'define' | 'omit' | 'set';
-    readonly optionalFields?: 'define' | 'omit' | 'set';
-    readonly toManyRelationships?: 'define' | 'omit' | 'set';
-    readonly requiredRelationships?: 'define' | 'omit' | 'set';
-    readonly optionalRelationships?: 'define' | 'omit' | 'set';
-  } = {}
-): SerializedResource<Tables[TABLE_NAME]> =>
-  f.var(defined(getModel(tableName)), (model) => ({
-    // This is needed to preserve unknown fields
-    ...record,
-    ...(Object.fromEntries(
-      filterArray(
-        model.fields.map((field) =>
-          (
-            field.isRelationship
-              ? relationshipIsToMany(field)
-                ? toManyRelationships === 'omit' ||
-                  field.type === 'many-to-many'
-                : (field.isRequired
-                    ? requiredRelationships
-                    : optionalRelationships) === 'omit'
-              : field.isRequired
-              ? requiredFields
-              : optionalFields
-          )
-            ? undefined
-            : [
-                field.name,
-                field.isRelationship
-                  ? relationshipIsToMany(field)
-                    ? field.isDependent()
-                      ? (
-                          record[field.name as keyof typeof record] as
-                            | RA<Partial<SerializedResource<AnySchema>>>
-                            | undefined
-                        )?.map((record) =>
-                          addMissingFields(field.relatedModel.name, record, {
-                            requiredFields,
-                            optionalFields,
-                            toManyRelationships,
-                            requiredRelationships,
-                            optionalRelationships,
-                          })
-                        ) ?? (toManyRelationships === 'set' ? [] : null)
-                      : record[field.name as keyof typeof record] ?? null
-                    : record[field.name as keyof typeof record] ??
-                      (field.isDependent() &&
-                      (field.isRequired
-                        ? requiredRelationships === 'set'
-                        : optionalRelationships === 'set')
-                        ? addMissingFields(
-                            field.relatedModel.name,
-                            (record[
-                              field.name as keyof typeof record
-                            ] as Partial<SerializedResource<AnySchema>>) ?? {},
-                            {
-                              requiredFields,
-                              optionalFields,
-                              toManyRelationships,
-                              requiredRelationships,
-                              optionalRelationships,
-                            }
-                          )
-                        : null)
-                  : record[field.name as keyof typeof record] ??
-                    (field.name === 'version'
-                      ? 1
-                      : (
-                          field.isRequired
-                            ? requiredFields === 'set'
-                            : optionalFields === 'set'
-                        )
-                      ? parserFromType(field.type).value
-                      : null),
-              ]
-        )
-      )
-    ) as SerializedResource<Tables[TABLE_NAME]>),
-    /*
-     * REFACTOR: convert all usages of this to camel case
-     */
-    resource_uri: record.resource_uri,
-    // REFACTOR: consider replacing this with a symbol
-    _tableName: tableName,
-  }));
 
 export const isResourceOfType = <TABLE_NAME extends keyof Tables>(
   resource: SpecifyResource<AnySchema>,

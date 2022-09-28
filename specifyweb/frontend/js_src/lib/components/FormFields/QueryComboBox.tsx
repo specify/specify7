@@ -7,8 +7,8 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { getValidationAttributes } from '../../utils/uiParse';
+import { filterArray } from '../../utils/types';
+import { getValidationAttributes } from '../../utils/parser/definitions';
 import { keysToLowerCase } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -21,6 +21,7 @@ import {
   resourceOn,
 } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
+import { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode, FormType } from '../FormParse';
 import { format, getMainTableFields } from '../Forms/dataObjFormatters';
@@ -43,11 +44,27 @@ import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
 
-// REFACTOR: split this component
 export function QueryComboBox({
+  fieldName: initialFieldName = '',
+  ...props
+}: Omit<Parameters<typeof ProtectedQueryComboBox>[0], 'field'> & {
+  readonly fieldName: string | undefined;
+}): JSX.Element | null {
+  const field = props.resource.specifyModel.getField(initialFieldName);
+  if (field === undefined) {
+    console.error(
+      `Trying to render a combo box on the ${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
+      { id: props.id }
+    );
+    return null;
+  } else return <ProtectedQueryComboBox {...props} field={field} />;
+}
+
+// REFACTOR: split this component
+function ProtectedQueryComboBox({
   id,
   resource,
-  fieldName: initialFieldName = '',
+  field,
   mode,
   formType,
   isRequired,
@@ -58,7 +75,7 @@ export function QueryComboBox({
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly fieldName: string | undefined;
+  readonly field: LiteralField | Relationship;
   readonly mode: FormMode;
   readonly formType: FormType;
   readonly isRequired: boolean;
@@ -67,17 +84,15 @@ export function QueryComboBox({
   readonly forceCollection: number | undefined;
   readonly relatedModel: SpecifyModel | undefined;
 }): JSX.Element {
-  const field = resource.specifyModel.getField(initialFieldName);
-
   React.useEffect(() => {
     if (!resource.isNew()) return;
-    if (field?.name === 'cataloger')
+    if (field.name === 'cataloger')
       toTable(resource, 'CollectionObject')?.set(
         'cataloger',
         userInformation.agent.resource_uri,
         { silent: true }
       );
-    if (field?.name === 'receivedBy')
+    if (field.name === 'receivedBy')
       toTable(resource, 'LoanReturnPreparation')?.set(
         'receivedBy',
         userInformation.agent.resource_uri,
@@ -99,7 +114,7 @@ export function QueryComboBox({
     typeSearch !== undefined;
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
-    field?.name,
+    field.name,
     undefined
   );
 
@@ -132,7 +147,7 @@ export function QueryComboBox({
   }>(
     React.useCallback(
       async () =>
-        field?.isRelationship !== true ||
+        !field.isRelationship ||
         hasTablePermission(field.relatedModel.name, 'read') ||
         /*
          * If related resource is already provided, can display it
@@ -141,7 +156,7 @@ export function QueryComboBox({
          */
         typeof resource.getDependentResource(field.name) === 'object'
           ? resource
-              .rgetPromise<string, AnySchema>(field?.name ?? '')
+              .rgetPromise<string, AnySchema>(field.name)
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
@@ -161,7 +176,7 @@ export function QueryComboBox({
                       label:
                         formatted ??
                         `${
-                          field?.isRelationship === true
+                          field.isRelationship
                             ? field.relatedModel.label
                             : resource.specifyModel.label
                         }${
@@ -197,11 +212,7 @@ export function QueryComboBox({
 
   const relatedCollectionId =
     typeof collectionRelationships === 'object'
-      ? getRelatedCollectionId(
-          collectionRelationships,
-          resource,
-          field?.name ?? ''
-        )
+      ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
 
   const loading = React.useContext(LoadingContext);
@@ -257,7 +268,7 @@ export function QueryComboBox({
                   fieldName,
                   value,
                   isTreeTable:
-                    field?.isRelationship === true &&
+                    field.isRelationship &&
                     isTreeModel(field.relatedModel.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
@@ -309,7 +320,7 @@ export function QueryComboBox({
               .flatMap(({ data: { results } }) => results)
               .map(([id, label]) => ({
                 data: getResourceApiUrl(
-                  field?.isRelationship === true
+                  field.isRelationship
                     ? field.relatedModel.name
                     : resource.specifyModel.name,
                   id
@@ -360,7 +371,7 @@ export function QueryComboBox({
         }}
         onCleared={(): void => updateValue('', false)}
         onNewValue={(): void =>
-          field?.isRelationship === true
+          field.isRelationship
             ? state.type === 'AddResourceState'
               ? setState({ type: 'MainState' })
               : setState({
@@ -401,7 +412,7 @@ export function QueryComboBox({
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
                 onClick={
-                  field?.isRelationship === true
+                  field.isRelationship
                     ? (): void =>
                         state.type === 'AddResourceState'
                           ? setState({ type: 'MainState' })
@@ -420,14 +431,12 @@ export function QueryComboBox({
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
                     : loading(
-                        defined(formatted?.resource)
-                          .clone()
-                          .then((resource) =>
-                            setState({
-                              type: 'AddResourceState',
-                              resource,
-                            })
-                          )
+                        formatted!.resource!.clone().then((resource) =>
+                          setState({
+                            type: 'AddResourceState',
+                            resource,
+                          })
+                        )
                       )
                 }
               />
@@ -449,7 +458,7 @@ export function QueryComboBox({
                         extraConditions: filterArray(
                           getQueryComboBoxConditions({
                             resource,
-                            fieldName: defined(field?.name),
+                            fieldName: field.name,
                             collectionRelationships:
                               typeof collectionRelationships === 'object'
                                 ? collectionRelationships
@@ -512,18 +521,18 @@ export function QueryComboBox({
         <ResourceView
           canAddAnother={false}
           dialog="nonModal"
-          isDependent={field?.isDependent() ?? false}
+          isDependent={field.isDependent()}
           isSubForm={false}
           mode={mode}
           resource={formatted.resource}
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={(): void => {
-            resource.set(defined(field?.name), null as never);
+            resource.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
           onSaved={undefined}
           onSaving={
-            field?.isDependent() === true
+            field.isDependent()
               ? f.never
               : (): void => setState({ type: 'MainState' })
           }
@@ -539,13 +548,13 @@ export function QueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           onDeleted={undefined}
           onSaved={(): void => {
-            resource.set(defined(field?.name), state.resource as never);
+            resource.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
           onSaving={
-            field?.isDependent()
+            field.isDependent()
               ? (): false => {
-                  resource.set(defined(field?.name), state.resource as never);
+                  resource.set(field.name, state.resource as never);
                   setState({ type: 'MainState' });
                   return false;
                 }
@@ -562,7 +571,7 @@ export function QueryComboBox({
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics
-            void resource.set(defined(field?.name), selectedResource)
+            void resource.set(field.name, selectedResource)
           }
         />
       ) : undefined}

@@ -1,11 +1,12 @@
 import React from 'react';
 
 import { useId } from '../../hooks/useId';
-import { csrfToken } from '../../utils/ajax/csrftoken';
+import { csrfToken } from '../../utils/ajax/csrfToken';
 import type { IR } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQuery } from '../DataModel/types';
+import { xmlToString } from '../AppResources/codeMirrorLinters';
 
 export function RunReport({
   query,
@@ -41,7 +42,7 @@ export function RunReport({
   }, [form, handleClose]);
   return (
     <form
-      action="/specifyweb/frontend/js_src/lib/components/Reports/index.tsx"
+      action="/report_runner/run/"
       className="hidden"
       method="post"
       ref={setForm}
@@ -53,9 +54,7 @@ export function RunReport({
         type="hidden"
       />
       <input
-        defaultValue={new XMLSerializer().serializeToString(
-          definition.documentElement
-        )}
+        defaultValue={xmlToString(definition.documentElement)}
         name="report"
         type="hidden"
       />

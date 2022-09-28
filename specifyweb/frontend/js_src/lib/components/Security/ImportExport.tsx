@@ -6,7 +6,7 @@ import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   group,
   removeKey,
@@ -170,44 +170,39 @@ export function ImportExport({
                                       )?.id ?? undefined
                                     )
                                   )
-                                  .map((newRole) =>
-                                    f.var(
+                                  .map((newRole) => {
+                                    const groupName =
                                       typeof newRole.id === 'number'
                                         ? JSON.stringify(
-                                            removeKey(
-                                              defined(roles)[newRole.id],
-                                              'id'
-                                            )
+                                            removeKey(roles![newRole.id], 'id')
                                           ) ===
                                           JSON.stringify(
                                             removeKey(newRole, 'id')
                                           )
                                           ? 'unchanged'
                                           : 'changed'
-                                        : 'created',
-                                      (groupName) =>
-                                        (groupName === 'changed' &&
-                                          !hasPermission(
-                                            permissionName,
-                                            'update',
-                                            collectionId
-                                          )) ||
-                                        (groupName === 'created' &&
-                                          !hasPermission(
-                                            permissionName,
-                                            'create',
-                                            collectionId
-                                          ))
-                                          ? undefined
-                                          : [
-                                              groupName,
-                                              {
-                                                role: newRole,
-                                                isChecked: true,
-                                              },
-                                            ]
-                                    )
-                                  )
+                                        : 'created';
+                                    return (groupName === 'changed' &&
+                                      !hasPermission(
+                                        permissionName,
+                                        'update',
+                                        collectionId
+                                      )) ||
+                                      (groupName === 'created' &&
+                                        !hasPermission(
+                                          permissionName,
+                                          'create',
+                                          collectionId
+                                        ))
+                                      ? undefined
+                                      : [
+                                          groupName,
+                                          {
+                                            role: newRole,
+                                            isChecked: true,
+                                          },
+                                        ];
+                                  })
                               )
                             )
                           )
@@ -241,7 +236,7 @@ function ExportButton({
             `${adminText(
               'userRoles'
             )} - ${baseName} - ${new Date().toDateString()}.json`,
-            JSON.stringify(Object.values(defined(roles)), null, '\t')
+            JSON.stringify(Object.values(roles!), null, '\t')
           )
         )
       }

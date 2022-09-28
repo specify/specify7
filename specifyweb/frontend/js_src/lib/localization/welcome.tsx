@@ -21,6 +21,10 @@ export const welcomeText = createDictionary({
     'en-us': 'About Specify 7',
     'ru-ru': 'О Specify 7',
   },
+  downloadInformation: {
+    'en-us': 'Download Information',
+    'ru-ru': 'Скачать информацию',
+  },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
     'ru-ru': 'Плитки таксонов',

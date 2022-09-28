@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -16,8 +16,11 @@ import { Ul } from '../Atoms';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { getResourceViewUrl, parseClassName } from '../DataModel/resource';
-import { fetchContext as fetchSchema, getModel } from '../DataModel/schema';
+import { getResourceViewUrl, parseJavaClassName } from '../DataModel/resource';
+import {
+  fetchContext as fetchSchema,
+  strictGetModel,
+} from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { fetchView } from '../FormParse';
@@ -27,7 +30,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
-import {TableIcon} from '../Molecules/TableIcon';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -51,7 +54,7 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : (Array.isArray(forms) ? (
+  ) : Array.isArray(forms) ? (
     <Dialog
       buttons={commonText('cancel')}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -72,7 +75,7 @@ export function FormsDialog({
                     typeof handleSelected === 'function'
                       ? (event): void => {
                           event.preventDefault();
-                          handleSelected(defined(getModel(table)));
+                          handleSelected(strictGetModel(table));
                         }
                       : undefined
                   }
@@ -87,7 +90,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null);
+  ) : null;
 }
 
 export type FormEntry = {
@@ -103,7 +106,7 @@ const fetchLegacyForms = f.store(
   async (): Promise<RA<FormEntry>> =>
     ajax<Document>(url, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/xml' },
+      headers: { Accept: 'text/xml' },
     }).then(async ({ data }) => {
       await fetchSchema;
       return Promise.all(
@@ -117,8 +120,8 @@ const fetchLegacyForms = f.store(
               FormEntry | undefined
             >((form) => {
               if (form === undefined) return undefined;
-              const modelName = parseClassName(form.class) as keyof Tables;
-              const model = defined(getModel(modelName));
+              const modelName = parseJavaClassName(form.class) as keyof Tables;
+              const model = strictGetModel(modelName);
 
               return {
                 iconName: getParsedAttribute(view, 'iconName') ?? model.name,

@@ -9,17 +9,11 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import type { QueryField } from './helpers';
 import { schema } from '../DataModel/schema';
 import type { RA, RR } from '../../utils/types';
-import { defined } from '../../utils/types';
-import type {
-  InvalidParseResult,
-  Parser,
-  ValidParseResult,
-} from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
-  parseValue,
   pluralizeParser,
-} from '../../utils/uiParse';
+} from '../../utils/parser/definitions';
 import { hasNativeErrors } from '../Forms/validationHelpers';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
@@ -27,6 +21,11 @@ import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { useValidation } from '../../hooks/useValidation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import {
+  InvalidParseResult,
+  parseValue,
+  ValidParseResult,
+} from '../../utils/parser/parse';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -329,8 +328,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? defined(schema.models.SpQueryField.getLiteralField('startValue'))
-            .length
+        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

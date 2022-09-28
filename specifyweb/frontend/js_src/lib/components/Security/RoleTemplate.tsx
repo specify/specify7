@@ -3,8 +3,6 @@ import { useOutletContext } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
-import { f } from '../../utils/functools';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -20,7 +18,8 @@ import type { NewRole, Role } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { Button } from '../Atoms/Button';
 import { H3 } from '../Atoms';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { Http } from '../../utils/ajax/definitions';
 
 class Ul extends React.Component<{ children: ReactNode }> {
   render() {
@@ -118,51 +117,51 @@ export function CreateRole({
                   .map(([libraryRoleId, role]) => (
                     <li key={libraryRoleId}>
                       <Button.LikeLink
-                        onClick={(): void =>
-                          f.var(
-                            getUniqueName(role.name, currentRoleNames),
-                            (roleName) =>
-                              loading(
-                                (scope === 'institution' ||
-                                hasPermission(
-                                  '/permissions/roles',
-                                  'create',
-                                  collectionId
-                                )
-                                  ? Promise.resolve({
-                                      ...role,
-                                      id: undefined,
+                        onClick={(): void => {
+                          const roleName = getUniqueName(
+                            role.name,
+                            currentRoleNames
+                          );
+                          loading(
+                            (scope === 'institution' ||
+                            hasPermission(
+                              '/permissions/roles',
+                              'create',
+                              collectionId
+                            )
+                              ? Promise.resolve({
+                                  ...role,
+                                  id: undefined,
+                                  name: roleName,
+                                })
+                              : /*
+                                 * If don't have permission to create a role
+                                 * but have permission to copy from the library,
+                                 * must provide libraryRoleId in the request
+                                 * body
+                                 */
+                                ajax<BackEndRole>(
+                                  `/permissions/roles/${collectionId}/`,
+                                  {
+                                    headers: { Accept: 'application/json' },
+                                    method: 'POST',
+                                    body: keysToLowerCase({
+                                      libraryRoleId,
                                       name: roleName,
-                                    })
-                                  : /*
-                                     * If don't have permission to create a role
-                                     * but have permission to copy from the library,
-                                     * must provide libraryRoleId in the request
-                                     * body
-                                     */
-                                    ajax<BackEndRole>(
-                                      `/permissions/roles/${collectionId}/`,
-                                      {
-                                        headers: { Accept: 'application/json' },
-                                        method: 'POST',
-                                        body: keysToLowerCase({
-                                          libraryRoleId,
-                                          name: roleName,
-                                        }),
-                                      },
-                                      {
-                                        expectedResponseCodes: [Http.CREATED],
-                                      }
-                                    ).then(({ data }) => data)
-                                ).then((newRole) =>
-                                  handleCreated({
-                                    ...newRole,
-                                    policies: role.policies,
-                                  })
-                                )
-                              )
-                          )
-                        }
+                                    }),
+                                  },
+                                  {
+                                    expectedResponseCodes: [Http.CREATED],
+                                  }
+                                ).then(({ data }) => data)
+                            ).then((newRole) =>
+                              handleCreated({
+                                ...newRole,
+                                policies: role.policies,
+                              })
+                            )
+                          );
+                        }}
                       >
                         {role.name}
                       </Button.LikeLink>

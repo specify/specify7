@@ -6,7 +6,7 @@
 
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import {KeysToLowerCase} from '../components/DataModel/helperTypes';
+import { KeysToLowerCase } from '../components/DataModel/helperTypes';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
@@ -30,10 +30,13 @@ export const lowerToHuman = (value: string): string =>
   value.toLowerCase().split('_').map(capitalize).join(' ');
 
 export const camelToKebab = (value: string): string =>
-  value.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  value.replace(/([a-z])([A-Z])/gu, '$1-$2').toLowerCase();
 
 export const camelToHuman = (value: string): string =>
-  capitalize(value.replace(/([a-z])([A-Z])/g, '$1 $2')).replace(/Dna\b/, 'DNA');
+  capitalize(value.replace(/([a-z])([A-Z])/gu, '$1 $2')).replace(
+    /Dna\b/,
+    'DNA'
+  );
 
 /** Type-safe variant of toLowerCase */
 export const toLowerCase = <T extends string>(string: T): Lowercase<T> =>
@@ -221,13 +224,17 @@ export const insertItem = <T>(array: RA<T>, index: number, item: T): RA<T> => [
 export const replaceItem = <T>(array: RA<T>, index: number, item: T): RA<T> =>
   array[index] === item
     ? array
-    : [...array.slice(0, index), item, ...array.slice(index + 1)];
+    : [
+        ...array.slice(0, index),
+        item,
+        ...(index === -1 ? [] : array.slice(index + 1)),
+      ];
 
 /** Create a new array without a given item */
-export const removeItem = <T>(array: RA<T>, index: number): RA<T> => [
-  ...array.slice(0, index),
-  ...array.slice(index + 1),
-];
+export const removeItem = <T>(array: RA<T>, index: number): RA<T> =>
+  index < 0
+    ? [...array.slice(0, index - 1), ...array.slice(index)]
+    : [...array.slice(0, index), ...array.slice(index + 1)];
 
 /** Remove item from array if present, otherwise, add it */
 export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
@@ -319,3 +326,6 @@ export function jsonStringify(
     space
   );
 }
+
+export const takeBetween = <T>(array: RA<T>, first: T, last: T): RA<T> =>
+  array.slice(array.indexOf(first) + 1, array.indexOf(last) + 1);

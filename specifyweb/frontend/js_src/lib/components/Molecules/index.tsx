@@ -46,7 +46,7 @@ export const loadingBar = (
  */
 export const join = (
   // Don't need to add a [key] prop to these elements before passing in
-  elements: RA<JSX.Element>,
+  elements: RA<JSX.Element | string>,
   separator: JSX.Element
 ): RA<JSX.Element> =>
   elements.map((element, index, { length }) => (

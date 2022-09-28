@@ -12,14 +12,14 @@ import {
 } from '../../utils/utils';
 import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import { parseClassName } from '../DataModel/resource';
+import { parseJavaClassName } from '../DataModel/resource';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 
 let uiFormatters: IR<UiFormatter>;
 export const fetchContext = load<Document>(
   formatUrl('/context/app.resource', { name: 'UIFormatters' }),
-  'application/xml'
+  'text/xml'
 ).then((formatters) => {
   uiFormatters = Object.fromEntries(
     filterArray(
@@ -29,16 +29,16 @@ export const fetchContext = load<Document>(
           ?.textContent?.trim();
         let resolvedFormatter;
         if (typeof external === 'string') {
-          if (parseClassName(external) === 'CatalogNumberUIFieldFormatter')
+          if (parseJavaClassName(external) === 'CatalogNumberUIFieldFormatter')
             resolvedFormatter = new CatalogNumberNumeric();
           else return undefined;
         } else {
           const fields = filterArray(
             Array.from(formatter.getElementsByTagName('field'), (field) => {
               const FieldClass =
-                fieldMapper[
+                formatterTypeMapper[
                   (getParsedAttribute(field, 'type') ??
-                    '') as keyof typeof fieldMapper
+                    '') as keyof typeof formatterTypeMapper
                 ];
               if (FieldClass === undefined) return undefined;
               return new FieldClass({
@@ -250,7 +250,7 @@ class CatalogNumberNumeric extends UiFormatter {
   }
 }
 
-const fieldMapper = {
+export const formatterTypeMapper = {
   constant: ConstantField,
   year: YearField,
   alpha: AlphaField,

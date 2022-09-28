@@ -1,7 +1,7 @@
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
@@ -28,7 +28,7 @@ export function hasTablePermission(
 ): boolean {
   if (isReadOnly && action !== 'read') return false;
   if (
-    defined(getTablePermissions())[collectionId][
+    getTablePermissions()[collectionId][
       tableNameToResourceName(tableName)
     ][action]
   )
@@ -44,7 +44,7 @@ export const hasPermission = <
   action: keyof ReturnType<typeof getOperationPermissions>[number][RESOURCE],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  defined(getOperationPermissions())[collectionId][resource][action]
+  getOperationPermissions()[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
@@ -73,7 +73,7 @@ export const hasDerivedPermission = <
   action: keyof ReturnType<typeof getDerivedPermissions>[number][RESOURCE],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  defined(getDerivedPermissions())[collectionId][resource][action]
+  getDerivedPermissions()[collectionId][resource][action]
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
@@ -95,23 +95,17 @@ export const mappingPathToTableNames = (
 ): RA<keyof Tables> =>
   f.unique(
     filterArray(
-      mappingPath.flatMap((_, index) =>
-        index === 0 && ignoreBaseTable
-          ? undefined
-          : f.var(
-              schema.models[baseTableName].getField(
-                mappingPath.slice(index).join('.')
-              ),
-              (field) =>
-                typeof field === 'object'
-                  ? [
-                      field.model.name,
-                      field.isRelationship
-                        ? field.relatedModel.name
-                        : undefined,
-                    ]
-                  : undefined
-            )
-      )
+      mappingPath.flatMap((_, index) => {
+        if (index === 0 && ignoreBaseTable) return undefined;
+        const field = schema.models[baseTableName].getField(
+          mappingPath.slice(index).join('.')
+        );
+        return typeof field === 'object'
+          ? [
+              field.model.name,
+              field.isRelationship ? field.relatedModel.name : undefined,
+            ]
+          : undefined;
+      })
     )
   );

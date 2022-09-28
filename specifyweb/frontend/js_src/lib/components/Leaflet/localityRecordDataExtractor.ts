@@ -19,7 +19,10 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { Collection } from '../DataModel/specifyModel';
 import { deflateLocalityData } from '../SpecifyNetwork/utils';
-import { getTreeDefinitionItems, treeRanksPromise } from '../InitialContext/treeRanks';
+import {
+  strictGetTreeDefinitionItems,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import {
@@ -33,7 +36,7 @@ import {
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
 import { pathStartsWith } from '../WbPlanView/helpers';
-import {AnySchema, AnyTree} from '../DataModel/helperTypes';
+import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -101,23 +104,25 @@ async function recursiveResourceResolve(
     typeof resource === 'object' &&
     'fetch' in resource &&
     (!('related' in resource) || resource.related?.isNew() !== true)
-  )
+  ) {
+    const tableName =
+      ('specifyModel' in resource ? resource?.specifyModel?.name : undefined) ??
+      ('related' in resource
+        ? resource?.related?.specifyModel?.name
+        : undefined) ??
+      ('field' in resource ? resource?.field?.model.name : undefined);
     if (
       hasTablePermission(
         defined(
-          ('specifyModel' in resource
-            ? resource?.specifyModel?.name
-            : undefined) ??
-            ('related' in resource
-              ? resource?.related?.specifyModel?.name
-              : undefined) ??
-            ('field' in resource ? resource?.field?.model.name : undefined)
+          tableName,
+          `Unable to resolve table name for a resource: ${resource?.toJSON() ?? '(null)'}`
         ),
         'read'
       )
     )
       await resource.fetch();
     else return [];
+  }
 
   if (
     valueIsTreeRank(currentPart[0]) &&
@@ -127,8 +132,9 @@ async function recursiveResourceResolve(
     const treeTableName = getTableFromMappingPath('Locality', pastParts);
     if (!hasTreeAccess(treeTableName as AnyTree['tableName'], 'read'))
       return [];
-    const tableRanks = defined(
-      getTreeDefinitionItems(treeTableName as 'Geography', false)
+    const tableRanks = strictGetTreeDefinitionItems(
+      treeTableName as 'Geography',
+      false
     );
     const currentRank = tableRanks.find(
       ({ rankId }) => rankId === resource.get('rankId')

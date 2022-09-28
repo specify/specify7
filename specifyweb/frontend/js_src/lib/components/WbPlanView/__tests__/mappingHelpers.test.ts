@@ -41,28 +41,28 @@ theories(getNameFromTreeRankName, [
 ]);
 
 theories(findDuplicateMappings, [
-  [
-    [
+  {
+    in: [
       [
         ['collectionobject', 'collector', 'firstname'],
         ['collectionobject', 'collector', 'firstname'],
       ],
       false,
     ],
-    [1],
-  ],
-  [
-    [
+    out: [1],
+  },
+  {
+    in: [
       [
         ['collectionobject', 'collector', 'firstname'],
         ['collectionobject', 'collector', 'firstname'],
       ],
       1,
     ],
-    [0],
-  ],
-  [
-    [
+    out: [0],
+  },
+  {
+    in: [
       [
         ['collectionobject', 'collector', 'firstname'],
         ['collectionobject', 'collector', 'lastname'],
@@ -72,6 +72,6 @@ theories(findDuplicateMappings, [
       ],
       2,
     ],
-    [0, 4],
-  ],
+    out: [0, 4],
+  },
 ]);

@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, overwriteReadOnly } from '../../utils/types';
 import { clamp, removeItem } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -135,20 +135,24 @@ export function RecordSet<SCHEMA extends AnySchema>({
         )
       )
         .then((updateIds) =>
-          setItems(({ ids, newResource, index } = defaultRecordSetState) =>
-            f.var(updateIds(ids), ({ totalCount, ids }) => ({
-              ids,
-              totalCount,
-              newResource:
-                newResource ??
-                (totalCount === 0
-                  ? f.var(
-                      getModelById(recordSet.get('dbTableId')),
-                      (model) => new model.Resource()
-                    )
-                  : undefined),
-              index,
-            }))
+          setItems(
+            ({ ids: oldIds, newResource, index } = defaultRecordSetState) => {
+              const { totalCount, ids } = updateIds(oldIds);
+              const model =
+                totalCount === 0
+                  ? getModelById(recordSet.get('dbTableId'))
+                  : undefined;
+              return {
+                ids,
+                totalCount,
+                newResource:
+                  newResource ??
+                  (typeof model === 'object'
+                    ? new model.Resource()
+                    : undefined),
+                index,
+              };
+            }
           )
         )
         .catch(crash);
@@ -200,8 +204,7 @@ export function RecordSet<SCHEMA extends AnySchema>({
           resources.map((resource) => {
             // If resource is not yet in a context of a record set, make it
             if (resource.recordsetid !== recordSet.id) {
-              // @ts-expect-error Setting a read-only value
-              resource.recordsetid = recordSet.id;
+              overwriteReadOnly(resource, 'recordsetid', recordSet.id);
               /*
                * For new resources, RecordSetItem would be created by the
                * back-end on save. For existing resources have to do that
@@ -295,7 +298,12 @@ export function RecordSet<SCHEMA extends AnySchema>({
                         }).then(async ({ records }) =>
                           deleteResource(
                             'RecordSetItem',
-                            defined(records[0]).id
+                            defined(
+                              records[0],
+                              `Failed to remove resource from the ` +
+                              `record set. RecordSetItem not found. RecordId: ` +
+                              `${ids[index]}. Record set: ${recordSet.id}`
+                            ).id
                           )
                         )
                       : Promise.resolve()

@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { parseDjangoDump } from '../../utils/ajax/csrftoken';
+import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { commonText } from '../../localization/common';
 import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';

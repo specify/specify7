@@ -1,15 +1,29 @@
 import React from 'react';
 
+import { deserializeResource } from '../../hooks/resource';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { useIsModified } from '../../hooks/useIsModified';
+import { formsText } from '../../localization/forms';
+import { Container } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Form } from '../Atoms/Form';
+import { LoadingContext } from '../Core/Contexts';
+import { serializeResource, toTable } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { createResource } from '../DataModel/resource';
 import type {
   SpAppResource,
   SpAppResourceData,
   SpAppResourceDir,
   SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { serializeResource, toTable } from '../DataModel/helpers';
-import { formsText } from '../../localization/forms';
+import { BaseResourceView } from '../Forms/BaseResourceView';
+import { DeleteButton } from '../Forms/DeleteButton';
+import { SaveButton } from '../Forms/Save';
+import { AppTitle } from '../Molecules/AppTitle';
 import { hasToolPermission } from '../Permissions/helpers';
-import { createResource } from '../DataModel/resource';
+import { isAppResourceSubType } from './Create';
 import {
   AppResourceDownload,
   AppResourceEditButton,
@@ -18,20 +32,6 @@ import {
 } from './EditorComponents';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { LoadingContext } from '../Core/Contexts';
-import { DeleteButton } from '../Forms/DeleteButton';
-import { useIsModified } from '../../hooks/useIsModified';
-import { deserializeResource } from '../../hooks/resource';
-import { SaveButton } from '../Forms/Save';
-import { useErrorContext } from '../../hooks/useErrorContext';
-import { isAppResourceSubType } from './Create';
-import { Container } from '../Atoms';
-import { DataEntry } from '../Atoms/DataEntry';
-import { Button } from '../Atoms/Button';
-import { Form } from '../Atoms/Form';
-import { SerializedResource } from '../DataModel/helperTypes';
-import {BaseResourceView} from '../Forms/BaseResourceView';
-import {AppTitle} from '../Molecules/AppTitle';
 
 export function AppResourceEditor({
   resource,

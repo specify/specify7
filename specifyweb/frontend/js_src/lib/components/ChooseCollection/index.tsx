@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrftoken';
+import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';

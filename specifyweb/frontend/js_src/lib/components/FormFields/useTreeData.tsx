@@ -3,14 +3,13 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { fetchCollection } from '../DataModel/collection';
 import { toTreeTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import {
-  getTreeDefinitionItems,
+  strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
 import { hasTreeAccess } from '../Permissions/helpers';
@@ -51,8 +50,9 @@ export function useTreeData(
                 }
               ).then(({ records }) => records[0]?.rankId),
           treeRanks: treeRanksPromise.then(() =>
-            defined(
-              getTreeDefinitionItems(treeResource.specifyModel.name, false)
+            strictGetTreeDefinitionItems(
+              treeResource.specifyModel.name,
+              false
             ).map((rank) => ({
               rankId: rank.rankId,
               isEnforced: rank.isEnforced ?? false,

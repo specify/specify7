@@ -7,11 +7,11 @@ import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
+import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
-import { createPickListItem, PickListTypes } from './fetch';
 import { hasToolPermission } from '../Permissions/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
@@ -55,7 +55,26 @@ export const userTypes = [
   'Guest',
 ] as const;
 
-function definePicklist(
+export const PickListTypes = {
+  // Items are defined in the PickListItems table
+  ITEMS: 0,
+  // Items are defined from formatted rows in some table
+  TABLE: 1,
+  // Items are defined from a column in some table
+  FIELDS: 2,
+} as const;
+export const createPickListItem = (
+  // It's weird that value can be null, but that's what the data model says
+  value: string | null,
+  title: string
+): SerializedResource<PickListItem> =>
+  addMissingFields('PickListItem', {
+    value: value ?? title,
+    title: title ?? value,
+    timestampCreated: new Date().toJSON(),
+  });
+
+export function definePicklist(
   name: string,
   items: RA<SerializedResource<PickListItem>>
 ): SpecifyResource<PickList> {
@@ -198,14 +217,11 @@ export const getFrontEndPickLists: () => {
 export const fetchPickLists = f.store(
   async (): Promise<IR<SpecifyResource<PickList>>> =>
     (hasToolPermission('pickLists', 'read')
-      ? f.var(
-          new schema.models.PickList.LazyCollection({
-            filters: {
-              domainfilter: true,
-            },
-          }),
-          async (collection) => collection.fetch({ limit: 0 })
-        )
+      ? new schema.models.PickList.LazyCollection({
+          filters: {
+            domainfilter: true,
+          },
+        }).fetch({ limit: 0 })
       : Promise.resolve({ models: [] })
     ).then(async ({ models }) => {
       getFrontEndPickLists();

@@ -5,7 +5,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormMode, FormType } from '../FormParse';
-import { fetchView, processViewDefinition } from '../FormParse';
+import { fetchView, resolveViewDefinition } from '../FormParse';
 import type { cellAlign, CellTypes } from '../FormParse/cells';
 import { hasPathPermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
@@ -115,7 +115,7 @@ const cellRenderers: {
             ? fetchView(viewName ?? relationship.relatedModel.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? processViewDefinition(viewDefinition, formType, mode)
+                    ? resolveViewDefinition(viewDefinition, formType, mode)
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')

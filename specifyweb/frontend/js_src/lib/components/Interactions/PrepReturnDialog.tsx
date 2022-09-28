@@ -7,7 +7,6 @@ import { formsText } from '../../localization/forms';
 import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -214,16 +213,22 @@ function PreparationReturn({
               <td />
               <th className="text-center" scope="col">
                 {
-                  defined(
-                    schema.models.CollectionObject.getField('catalogNumber')
+                  schema.models.CollectionObject.strictGetLiteralField(
+                    'catalogNumber'
                   ).label
                 }
               </th>
               <th className="text-center" scope="col">
-                {defined(schema.models.Determination.getField('taxon')).label}
+                {
+                  schema.models.Determination.strictGetRelationship('taxon')
+                    .label
+                }
               </th>
               <th className="text-center" scope="col">
-                {defined(schema.models.Preparation.getField('prepType')).label}
+                {
+                  schema.models.Preparation.strictGetRelationship('prepType')
+                    .label
+                }
               </th>
               <th className="text-center" scope="col">
                 {formsText('unresolved')}

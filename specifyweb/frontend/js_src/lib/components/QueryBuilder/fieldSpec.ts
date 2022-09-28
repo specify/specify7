@@ -8,14 +8,14 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import { capitalize, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { getModel, getModelById, schema } from '../DataModel/schema';
+import { getModelById, schema, strictGetModel } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { RA, WritableArray } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
-import type { Parser } from '../../utils/uiParse';
-import { resolveParser } from '../../utils/uiParse';
+import type { Parser } from '../../utils/parser/definitions';
+import { resolveParser } from '../../utils/parser/definitions';
 import {
   anyTreeRank,
   formatPartialField,
@@ -193,8 +193,8 @@ export class QueryFieldSpec {
     baseTableName: keyof Tables,
     path: RA<string>
   ): QueryFieldSpec {
-    const rootTable = defined(getModel(baseTableName));
-    const fieldSpec = new QueryFieldSpec(defined(getModel(baseTableName)));
+    const rootTable = strictGetModel(baseTableName);
+    const fieldSpec = new QueryFieldSpec(strictGetModel(baseTableName));
 
     const joinPath: WritableArray<LiteralField | Relationship> = [];
     let node = rootTable;
@@ -210,12 +210,12 @@ export class QueryFieldSpec {
         fieldSpec.treeRank = getNameFromTreeRankName(fieldName);
         return true;
       }
-      const field = defined(node.getField(fieldName));
+      const field = node.strictGetField(fieldName);
 
       if (field.isTemporal()) fieldSpec.datePart = datePart ?? 'fullDate';
 
       joinPath.push(field);
-      if (field.isRelationship) node = defined(field.relatedModel);
+      if (field.isRelationship) node = field.relatedModel;
       else if (index + 1 !== path.length)
         throw new Error('Bad query field spec path');
       return true;
@@ -237,7 +237,7 @@ export class QueryFieldSpec {
     stringId: string,
     isRelationship: boolean
   ): QueryFieldSpec {
-    const match = defined(reStringId.exec(stringId) ?? undefined);
+    const match = defined(reStringId.exec(stringId) ?? undefined, `Unable to parse a string id: ${stringId}`);
     const [fullPath, _tableName, fullFieldName] = match.slice(1);
     const [baseTableId, ...path] = isRelationship
       ? fullPath.split(',').slice(0, -1)
@@ -249,7 +249,7 @@ export class QueryFieldSpec {
     const joinPath = path.map((element) => {
       const [tableId, fieldName] = element.split('-');
       const table = getModelById(Number.parseInt(tableId));
-      const field = defined(model.getField(fieldName ?? table.name));
+      const field = model.strictGetField(fieldName ?? table.name);
       model = table;
       return field;
     });
@@ -291,7 +291,7 @@ export class QueryFieldSpec {
             // If no field provided, use fullName
             (fieldSpec.joinPath.at(-1)?.isRelationship &&
             fieldSpec.treeRank !== anyTreeRank
-              ? defined(fieldSpec.table.getField('fullName'))
+              ? fieldSpec.table.strictGetLiteralField('fullName')
               : undefined)
           : undefined,
       ]);

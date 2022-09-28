@@ -2,9 +2,12 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
+import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
+import { fieldFormat } from '../../utils/fieldFormat';
+import { resolveParser } from '../../utils/parser/definitions';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import {
   getAttribute,
   getBooleanAttribute,
@@ -12,26 +15,23 @@ import {
   KEY,
   sortFunction,
 } from '../../utils/utils';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { schema } from '../DataModel/schema';
+import type { LiteralField } from '../DataModel/specifyField';
+import type { Collection } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
 import {
   cachableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { commonText } from '../../localization/common';
 import {
   hasTablePermission,
   mappingPathToTableNames,
 } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
-import { schema } from '../DataModel/schema';
-import type { LiteralField } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
-import { resolveParser } from '../../utils/uiParse';
-import { AnySchema } from '../DataModel/helperTypes';
-import { fieldFormat } from '../../utils/fieldFormat';
+import { SpecifyModel } from '../DataModel/specifyModel';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -70,7 +70,7 @@ export const fetchFormatters: Promise<{
         ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/xml' },
+          headers: { Accept: 'text/xml' },
         }
       ).then(({ data: definitions }) => ({
         formatters: filterArray(
@@ -162,29 +162,11 @@ export async function format<SCHEMA extends AnySchema>(
     formatterName ?? resource.specifyModel.getFormat();
 
   const { formatters } = await fetchFormatters;
-  const formatter = formatters.find(
-    ({ name }) => name === resolvedFormatterName
-  ) ??
-    formatters
-      .filter(({ className }) => className === resource.specifyModel.longName)
-      .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY] ?? {
-      // If formatter does not exist, generate one on the fly
-      isDefault: true,
-      switchFieldName: undefined,
-      fields: [
-        {
-          value: undefined,
-          fields: filterArray([
-            getMainTableFields(resource.specifyModel.name).map((field) => ({
-              fieldName: field.name,
-              separator: '',
-              formatter: '',
-              fieldFormatter: 'true',
-            }))[0],
-          ]),
-        },
-      ],
-    };
+  const formatter = resolveFormatter(
+    formatters,
+    resolvedFormatterName,
+    resource.specifyModel
+  );
 
   // Doesn't support switch fields that are in child objects
   const fields =
@@ -202,51 +184,94 @@ export async function format<SCHEMA extends AnySchema>(
    * Don't format resource if all relevant fields are empty, or formatter has
    * no fields
    */
-  return fields
+  const isEmptyResource = fields
     .map(({ fieldName }) => resource.get(fieldName.split('.')[0]))
-    .every((value) => value === undefined || value === null || value === '')
+    .every((value) => value === undefined || value === null || value === '');
+  return isEmptyResource
     ? automaticFormatter ?? undefined
     : Promise.all(
-        fields.map(
-          async ({ fieldName, formatter, separator, fieldFormatter }) => {
-            const field = defined(
-              resource.specifyModel.getField(fieldName) as LiteralField
-            );
-            const formatted =
-              typeof fieldFormatter === 'string' && fieldFormatter === ''
-                ? ''
-                : await f.var(
-                    mappingPathToTableNames(
-                      resource.specifyModel.name,
-                      fieldName.split('.'),
-                      true
-                    ).find(
-                      (tableName) => !hasTablePermission(tableName, 'read')
-                    ),
-                    (noAccessTable) =>
-                      typeof noAccessTable === 'string'
-                        ? tryBest
-                          ? naiveFormatter(resource)
-                          : commonText('noPermission')
-                        : (
-                            resource.rgetPromise(fieldName) as Promise<
-                              SpecifyResource<AnySchema> | string | undefined
-                            >
-                          ).then(async (value) =>
-                            formatter.length > 0 && typeof value === 'object'
-                              ? (await format(value, formatter)) ?? ''
-                              : fieldFormat(
-                                  field,
-                                  resolveParser(field),
-                                  value as string | undefined
-                                )
-                          )
-                  );
-            return formatted === '' ? '' : `${separator}${formatted}`;
-          }
-        )
+        fields.map((field) => formatField(field, resource, tryBest))
       ).then((values) => values.join(''));
 }
+
+async function formatField(
+  {
+    fieldName,
+    formatter,
+    separator,
+    fieldFormatter,
+  }: Formatter['fields'][number]['fields'][number],
+  resource: SpecifyResource<AnySchema>,
+  tryBest: boolean
+): Promise<string> {
+  const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
+  if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
+
+  // Check if formatter contains a table withouth read access
+  const noAccessTable = mappingPathToTableNames(
+    resource.specifyModel.name,
+    fieldName.split('.'),
+    true
+  ).find((tableName) => !hasTablePermission(tableName, 'read'));
+
+  const formatted =
+    typeof noAccessTable === 'string'
+      ? tryBest
+        ? naiveFormatter(resource)
+        : commonText('noPermission')
+      : await (
+          resource.rgetPromise(fieldName) as Promise<
+            SpecifyResource<AnySchema> | string | undefined
+          >
+        ).then(async (value) =>
+          formatter.length > 0 && typeof value === 'object'
+            ? (await format(value, formatter)) ?? ''
+            : fieldFormat(
+                field,
+                resolveParser(field),
+                value as string | undefined
+              )
+        );
+  return formatted === '' ? '' : `${separator}${formatted}`;
+}
+
+const resolveFormatter = (
+  formatters: RA<Formatter>,
+  formatterName: string | undefined,
+  model: SpecifyModel
+): Formatter =>
+  formatters.find(({ name }) => name === formatterName) ??
+  findDefaultFormatter(formatters, model.longName) ??
+  autoGenerateFormatter(model);
+
+const findDefaultFormatter = (
+  formatters: RA<Formatter>,
+  modelLongNmae: string
+): Formatter | undefined =>
+  formatters
+    .filter(({ className }) => className === modelLongNmae)
+    .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
+
+const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
+  name: model.name,
+  title: model.name,
+  className: model.longName,
+  isDefault: true,
+  switchFieldName: undefined,
+  fields: [
+    {
+      value: undefined,
+      fields: filterArray([
+        getMainTableFields(model.name).map((field) => ({
+          fieldName: field.name,
+          separator: '',
+          formatter: '',
+          fieldFormatter: 'true',
+        }))[0],
+      ]),
+    },
+  ],
+});
 
 export async function aggregate(
   collection: Collection<AnySchema>

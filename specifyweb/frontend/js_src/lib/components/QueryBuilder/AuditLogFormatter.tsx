@@ -1,16 +1,16 @@
 import { SpecifyModel } from '../DataModel/specifyModel';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { Http } from '../../utils/ajax/helpers';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import { Link } from '../Atoms/Link';
-import { defined, RA } from '../../utils/types';
+import { RA } from '../../utils/types';
 import { formsText } from '../../localization/forms';
 import React from 'react';
 import { QueryFieldSpec } from './fieldSpec';
 import { queryIdField } from './Results';
 import { getModelById } from '../DataModel/schema';
 import { fieldFormat } from '../../utils/fieldFormat';
+import { Http } from '../../utils/ajax/definitions';
 
 const needAuditLogFormatting = (fieldSpecs: RA<QueryFieldSpec>): boolean =>
   fieldSpecs.some(({ table }) =>
@@ -33,7 +33,7 @@ async function resourceToLink(
           hasTablePermission(resource.specifyModel.name, 'read') ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
-            defined(string)
+            string!
           )
         ),
     (status) => {

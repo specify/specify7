@@ -63,7 +63,9 @@ export function PrepDialogRow({
         </td>
         <td className="justify-end tabular-nums">
           {syncFieldFormat(
-            schema.models.CollectionObject.getLiteralField('catalogNumber'),
+            schema.models.CollectionObject.strictGetLiteralField(
+              'catalogNumber'
+            ),
             undefined,
             preparation.catalogNumber
           )}

@@ -1,5 +1,4 @@
 import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/helpers';
 import type { Attachment } from '../DataModel/types';
 import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { load } from '../InitialContext';
@@ -9,9 +8,9 @@ import { formatUrl } from '../Router/queryString';
 import { getPref } from '../InitialContext/remotePrefs';
 import { schema } from '../DataModel/schema';
 import type { IR } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { handleAjaxResponse } from '../../utils/ajax/response';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { Http } from '../../utils/ajax/definitions';
 
 type AttachmentSettings = {
   readonly collection: string;
@@ -140,79 +139,77 @@ export const fetchOriginalUrl = async (
       )
     : Promise.resolve(undefined);
 
-export const uploadFile = async (
+export async function uploadFile(
   file: File,
   handleProgress: (percentage: number | undefined) => void
-): Promise<SpecifyResource<Attachment> | undefined> =>
-  typeof settings === 'object'
-    ? ajax<
-        Partial<{ readonly token: string; readonly attachmentlocation: string }>
-      >(
-        formatUrl('/attachment_gw/get_upload_params/', {
-          fileName: file.name,
-        }),
-        {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        }
-      ).then(({ data }) => {
-        if (
-          data.attachmentlocation === undefined ||
-          data.token === undefined ||
-          settings === undefined
-        )
-          return undefined;
+): Promise<SpecifyResource<Attachment> | undefined> {
+  if (settings === undefined) return undefined;
+  const { data } = await ajax<
+    Partial<{ readonly token: string; readonly attachmentlocation: string }>
+  >(
+    formatUrl('/attachment_gw/get_upload_params/', {
+      fileName: file.name,
+    }),
+    {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    }
+  );
 
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('token', data.token);
-        formData.append('store', data.attachmentlocation);
-        formData.append('type', 'O');
-        formData.append('coll', settings.collection);
+  if (
+    data.attachmentlocation === undefined ||
+    data.token === undefined ||
+    settings === undefined
+  )
+    return undefined;
 
-        /*
-         * Using XMLHttpRequest rather than fetch() because need upload
-         * progress reporting, which is not yet supported by fetch API
-         */
-        const xhr = new XMLHttpRequest();
-        xhr.upload?.addEventListener('progress', (event) =>
-          handleProgress(
-            event.lengthComputable ? event.loaded / event.total : undefined
-          )
-        );
-        xhr.open('POST', settings.write);
-        xhr.send(formData);
-        const DONE = 4;
-        return new Promise((resolve) =>
-          xhr.addEventListener('readystatechange', () =>
-            xhr.readyState === DONE
-              ? resolve(
-                  handleAjaxResponse({
-                    expectedResponseCodes: [Http.OK],
-                    accept: undefined,
-                    response: {
-                      ok: xhr.status === Http.OK,
-                      status: xhr.status,
-                      url: defined(settings).write,
-                    } as Response,
-                    strict: true,
-                    text: xhr.responseText,
-                  })
-                )
-              : undefined
-          )
-        ).then(
-          () =>
-            new schema.models.Attachment.Resource({
-              attachmentlocation: data.attachmentlocation,
-              mimetype: fixMimeType(file.type),
-              origfilename: file.name,
-              title: file.name,
-              isPublic: getPref('attachment.is_public_default'),
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('token', data.token);
+  formData.append('store', data.attachmentlocation);
+  formData.append('type', 'O');
+  formData.append('coll', settings.collection);
+
+  /*
+   * Using XMLHttpRequest rather than fetch() because need upload
+   * progress reporting, which is not yet supported by fetch API
+   */
+  const xhr = new XMLHttpRequest();
+  xhr.upload?.addEventListener('progress', (event) =>
+    handleProgress(
+      event.lengthComputable ? event.loaded / event.total : undefined
+    )
+  );
+  xhr.open('POST', settings.write);
+  xhr.send(formData);
+  const DONE = 4;
+  await new Promise((resolve) =>
+    xhr.addEventListener('readystatechange', () =>
+      xhr.readyState === DONE
+        ? resolve(
+            handleAjaxResponse({
+              expectedResponseCodes: [Http.OK],
+              accept: undefined,
+              response: {
+                ok: xhr.status === Http.OK,
+                status: xhr.status,
+                url: settings!.write,
+              } as Response,
+              strict: true,
+              text: xhr.responseText,
             })
-        );
-      })
-    : Promise.resolve(undefined);
+          )
+        : undefined
+    )
+  );
+  return new schema.models.Attachment.Resource({
+    attachmentlocation: data.attachmentlocation,
+    mimetype: fixMimeType(file.type),
+    origfilename: file.name,
+    title: file.name,
+    isPublic: getPref('attachment.is_public_default'),
+  });
+}
 
 /**
  * A temporary workaround for mimeTypes for `.docx` and `.xlsx` files being
@@ -221,9 +218,8 @@ export const uploadFile = async (
  * REFACTOR: remove this once that issue is fixed
  */
 function fixMimeType(originalMimeType: string): string {
-  const maxLength = defined(
-    schema.models.Attachment.getLiteralField('mimeType')
-  ).length;
+  const maxLength =
+    schema.models.Attachment.strictGetLiteralField('mimeType').length;
   if (maxLength === undefined || originalMimeType.length < maxLength)
     return originalMimeType;
   else {

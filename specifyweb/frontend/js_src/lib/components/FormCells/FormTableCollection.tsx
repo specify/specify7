@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { PartialBy } from '../../utils/types';
-import { defined } from '../../utils/types';
 import { DependentCollection } from '../DataModel/collectionApi';
 import type { AnySchema } from '../DataModel/helperTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -22,7 +21,7 @@ export function FormTableCollection({
   'onAdd' | 'onDelete'
 > & {
   readonly collection: Collection<AnySchema>;
-}): JSX.Element {
+}): JSX.Element | null {
   const [records, setRecords] = React.useState(Array.from(collection.models));
   React.useEffect(
     () =>
@@ -41,13 +40,23 @@ export function FormTableCollection({
   }, [collection]);
 
   const isDependent = collection instanceof DependentCollection;
-  const field = defined(collection.field?.getReverse());
-  const isToOne = !relationshipIsToMany(field);
+  const relationship = collection.field?.getReverse();
+  if (relationship === undefined) {
+    console.error(
+      `Trying to render a FormTableCollection on a field that does not have reverse relationship`,
+      {
+        field: collection.field,
+        resource: collection.related,
+      }
+    );
+  }
+  const isToOne =
+    typeof relationship === 'object' && !relationshipIsToMany(relationship);
   const disableAdding = isToOne && records.length > 0;
-  return (
+  return typeof relationship === 'object' ? (
     <FormTable
       isDependent={isDependent}
-      relationship={defined(collection.field?.getReverse())}
+      relationship={relationship}
       resources={records}
       totalCount={collection._totalCount}
       onAdd={
@@ -67,5 +76,5 @@ export function FormTableCollection({
       onFetchMore={handleFetchMore}
       {...props}
     />
-  );
+  ) : null;
 }

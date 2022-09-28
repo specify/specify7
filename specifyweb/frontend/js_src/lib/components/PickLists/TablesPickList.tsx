@@ -1,10 +1,13 @@
 import React from 'react';
 
-import { getPickListItems, PickListTypes } from './fetch';
-import { pickListTablesPickList } from './definitions';
+import { getPickListItems } from './fetch';
+import { pickListTablesPickList, PickListTypes } from './definitions';
 import { resourceOn } from '../DataModel/resource';
 import type { RA } from '../../utils/types';
-import type { DefaultComboBoxProps, PickListItemSimple } from '../FormFields/ComboBox';
+import type {
+  DefaultComboBoxProps,
+  PickListItemSimple,
+} from '../FormFields/ComboBox';
 import { PickListComboBox } from './index';
 
 export function TablesPickList(

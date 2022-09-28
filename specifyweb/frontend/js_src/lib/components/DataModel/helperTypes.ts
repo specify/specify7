@@ -100,13 +100,13 @@ export type SerializedResource<SCHEMA extends AnySchema> = {
     : KEY extends keyof SCHEMA['fields']
     ? SCHEMA['fields'][KEY]
     : KEY extends keyof SCHEMA['toOneDependent']
-    ?
-        | Exclude<SCHEMA['toOneDependent'][KEY], SCHEMA>
-        | Partial<
-            SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
-          >
+    ? Partial<
+        SerializedResource<Exclude<SCHEMA['toOneDependent'][KEY], null>>
+      > | null extends SCHEMA['toOneDependent'][KEY]
+      ? null
+      : never
     : KEY extends keyof SCHEMA['toOneIndependent']
-    ? SCHEMA['toOneIndependent'][KEY] extends null
+    ? null extends SCHEMA['toOneIndependent'][KEY]
       ? string | null
       : string
     : KEY extends keyof SCHEMA['toManyDependent']

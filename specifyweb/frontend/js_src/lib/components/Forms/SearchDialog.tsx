@@ -32,7 +32,7 @@ import { fail } from '../Errors/Crash';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
-  'application/xml'
+  'text/xml'
 );
 
 const resourceLimit = 100;

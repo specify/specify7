@@ -10,11 +10,14 @@ import type {
   Relationship,
 } from '../components/DataModel/specifyField';
 import type { GetOrSet, IR } from '../utils/types';
-import { getValidationAttributes, resolveParser } from '../utils/uiParse';
+import {
+  getValidationAttributes,
+  resolveParser,
+} from '../utils/parser/definitions';
 import {
   AnySchema,
   SerializedModel,
-  SerializedResource
+  SerializedResource,
 } from '../components/DataModel/helperTypes';
 
 /**

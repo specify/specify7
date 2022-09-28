@@ -12,7 +12,7 @@ import { filterArray } from '../types';
 import {
   AnySchema,
   AnyTree,
-  SerializedModel
+  SerializedModel,
 } from '../../components/DataModel/helperTypes';
 
 export const globalEvents = eventListener<{
@@ -51,7 +51,7 @@ export const queryCbxExtendedSearch = async <SCHEMA extends AnySchema>(
     results.map((result) => new templateResource.specifyModel.Resource(result))
   );
 
-export const getTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
+export const fetchTreePath = async (treeResource: SpecifyResource<AnyTree>) =>
   typeof treeResource.id === 'number'
     ? ajax<{
         readonly Genus?: {
@@ -114,23 +114,6 @@ export const getPrepsAvailableForLoanCoIds = async (
     body: formData({
       id_fld: idField,
       co_ids: collectionObjectIds,
-    }),
-  }).then(({ data }) => data);
-
-export const returnAllLoanItems = async (
-  loanIds: RA<number>,
-  returnedById: number,
-  returnedDate: string,
-  selection: RA<number>
-) =>
-  ajax('/interactions/loan_return_all/', {
-    method: 'POST',
-    headers: { Accept: 'application/json' },
-    body: formData({
-      loanIds,
-      returnedById,
-      returnedDate,
-      selection,
     }),
   }).then(({ data }) => data);
 

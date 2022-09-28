@@ -40,7 +40,10 @@ export function useTitle(title: string | undefined): void {
 const titleStack = new Map<unknown, string>();
 
 function setTitle(title: string): void {
-  globalThis.document.title = commonText('appTitle', title);
+  globalThis.document.title =
+    title.length === 0
+      ? commonText('baseAppTitle')
+      : commonText('appTitle', title);
 }
 
 const refreshTitle = (): void =>
