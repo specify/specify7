@@ -4,6 +4,7 @@ import { createQuery } from './index';
 import type {
   SpQuery,
   SpQueryField,
+  Tables,
   TaxonTreeDefItem,
 } from '../DataModel/types';
 import { f } from '../../utils/functools';
@@ -17,16 +18,14 @@ import { getDomainResource } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
-import {AnyTree, SerializedResource} from '../DataModel/helperTypes';
+import { AnyTree, SerializedResource } from '../DataModel/helperTypes';
 
-function makeField(
+export function makeQueryField(
+  tableName: keyof Tables,
   path: string,
   options: Partial<SerializedResource<SpQueryField>>
 ): SpecifyResource<SpQueryField> {
-  const field = QueryFieldSpec.fromPath(
-    schema.models.CollectionObject.name,
-    path.split('.')
-  )
+  const field = QueryFieldSpec.fromPath(tableName, path.split('.'))
     .toSpQueryField()
     .set('sortType', flippedSortTypes.none);
 
@@ -39,6 +38,12 @@ function makeField(
 
   return field;
 }
+
+const makeField = (
+  path: string,
+  options: Partial<SerializedResource<SpQueryField>>
+): SpecifyResource<SpQueryField> =>
+  makeQueryField('CollectionObject', path, options);
 
 const defaultFields: RR<
   AnyTree['tableName'],
