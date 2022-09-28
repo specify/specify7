@@ -389,17 +389,14 @@ export const routes: RA<EnhancedRoute> = [
             ({ CacheBuster }) => CacheBuster
           ),
       },
-
     ],
   },
   {
-      path: 'statistics',
-      title: commonText('statistics'),
-      element: ()=>
-          import('../Statistics/index').then(
-              ({StatisticsWrapper})=>StatisticsWrapper
-          )
-    },
+    path: 'statistics',
+    title: commonText('statistics'),
+    element: () =>
+      import('../Statistics/index').then(({ StatsPage }) => StatsPage),
+  },
   {
     index: true,
     title: welcomeText('pageTitle'),
