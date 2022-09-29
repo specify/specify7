@@ -9,6 +9,8 @@ import type { State } from 'typesafe-reducer';
 
 import { getParsedAttribute } from '../../utils/utils';
 import type { IR } from '../../utils/types';
+import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
+import { f } from '../../utils/functools';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -51,6 +53,6 @@ export function parseUiCommand(cell: Element): CommandDefinition {
     processUiCommand.Unsupported;
   return {
     commandDefinition: uiCommand(name),
-    label,
+    label: f.maybe(label, legacyLocalize),
   };
 }
