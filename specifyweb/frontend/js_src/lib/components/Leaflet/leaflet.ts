@@ -12,7 +12,7 @@ import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import {
   addMarkersToMap,
   addPrintMapButton,
-  rememberSelectedBaseLayers
+  rememberSelectedBaseLayers,
 } from './leafletAddOns';
 import { mappingLocalityColumns } from './leafletConfig';
 import L from './leafletExtend';
@@ -21,17 +21,17 @@ import { leafletLayersPromise } from './leafletLayers';
 
 const DEFAULT_ZOOM = 5;
 
-export async function showLeafletMap({
+export function showLeafletMap({
+  tileLayers,
   container,
   localityPoints = [],
   markerClickCallback,
 }: {
+  readonly tileLayers: Awaited<typeof leafletLayersPromise>;
   readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
-}): Promise<L.Map> {
-  const tileLayers = await leafletLayersPromise;
-
+}): L.Map {
   container.classList.add(
     'overflow-hidden',
     'h-full',
