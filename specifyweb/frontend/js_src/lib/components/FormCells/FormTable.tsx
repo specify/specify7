@@ -1,14 +1,17 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
+import { useId } from '../../hooks/useId';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { columnDefinitionsToCss, DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -17,17 +20,15 @@ import type { FormCellDefinition } from '../FormParse/cells';
 import { FormPreferences } from '../FormPreferences';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SpecifyForm } from '../Forms/SpecifyForm';
+import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
+import type { SortConfig } from '../Molecules/Sorting';
+import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
+import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
-import { className } from '../Atoms/className';
-import { useId } from '../../hooks/useId';
-import { AnySchema } from '../DataModel/helperTypes';
-import { useViewDefinition } from '../Forms/useViewDefinition';
-import { SortConfig, SortIndicator } from '../Molecules/Sorting';
-import { usePref } from '../UserPreferences/usePref';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -245,6 +246,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         <Button.Small
                           aria-label={formsText('contract')}
                           title={formsText('contract')}
+                          className="h-full"
                           onClick={(): void =>
                             setExpandedRecords({
                               ...isExpanded,
@@ -275,6 +277,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       <div className="h-full" role="cell">
                         <Button.Small
                           aria-label={commonText('expand')}
+                          className="h-full"
                           title={commonText('expand')}
                           onClick={(): void =>
                             setExpandedRecords({
@@ -331,6 +334,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       )) ? (
                       <Button.Small
                         aria-label={commonText('remove')}
+                        className="h-full"
                         disabled={
                           !resource.isNew() &&
                           !hasTablePermission(
