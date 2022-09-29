@@ -29,7 +29,7 @@ export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
           .filter((line) => !line.startsWith('#'))
           .forEach((line) => {
             const match = /([^=]+)=(.+)/.exec(line);
-            if (match) preferences[match[1]] = match[2];
+            if (match) preferences[match[1].trim()] = match[2];
           })
       )
     : undefined
@@ -59,9 +59,13 @@ type DefinitionOf<KEY extends keyof CollectionDefinitions | keyof Definitions> =
 export const getPref = <KEY extends keyof Definitions>(
   key: KEY
 ): TypeOf<Definitions[KEY]> =>
-  parsePref(preferences[key], defined(remotePrefsDefinitions()[key],`Trying to get unknown remote pref ${key}`)) as TypeOf<
-    Definitions[KEY]
-  >;
+  parsePref(
+    preferences[key],
+    defined(
+      remotePrefsDefinitions()[key],
+      `Trying to get unknown remote pref ${key}`
+    )
+  ) as TypeOf<Definitions[KEY]>;
 
 export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
   key: KEY,
@@ -70,7 +74,10 @@ export function getCollectionPref<KEY extends keyof CollectionDefinitions>(
   const fullKey = `${key}${collectionPrefsDefinitions[key].separator}${collectionId}`;
   return parsePref(
     preferences[fullKey],
-    defined(collectionPrefsDefinitions[key], `Trying to get unknown collection-scoped remote pref ${key}`)
+    defined(
+      collectionPrefsDefinitions[key],
+      `Trying to get unknown collection-scoped remote pref ${key}`
+    )
   ) as TypeOf<DefinitionOf<KEY>>;
 }
 
@@ -87,9 +94,9 @@ function parsePref(
       : undefined;
   return (
     typeof parsed === 'object'
-      ? (parsed.isValid
+      ? parsed.isValid
         ? parsed.parsed
-        : defaultValue)
+        : defaultValue
       : value ?? defaultValue
   ) as boolean | number | string;
 }
