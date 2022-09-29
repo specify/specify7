@@ -266,7 +266,11 @@ function Between({
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
-  const [values, setValues] = React.useState(filter.startValue.split(','));
+  const splitValue = React.useMemo(
+    () => filter.startValue.split(','),
+    [filter.startValue]
+  );
+  const [values, setValues] = useTriggerState(splitValue);
   const updateValues =
     typeof handleChange === 'function'
       ? (index: 0 | 1, newValue: string): void => {
