@@ -15,7 +15,7 @@ import { hasTablePermission, hasToolPermission } from './permissions';
 import { getFrontEndPickLists, unsafeGetPickLists } from './picklists';
 import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';
-import type { RA } from './types';
+import type { R, RA } from './types';
 import { defined } from './types';
 import { fetchCollection } from './collection';
 import { deserializeResource } from './components/resource';
@@ -63,7 +63,7 @@ export async function fetchPickListItems(
   return items.map(({ value, title }) => createPickListItem(value, title));
 }
 
-export async function fetchPickList(
+async function unsafeFetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
   getFrontEndPickLists();
@@ -92,6 +92,16 @@ export async function fetchPickList(
     pickList.set('pickListItems', await fetchPickListItems(pickList));
 
   return pickList;
+}
+
+const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+  {};
+
+export async function fetchPickList(
+  pickListName: string
+): Promise<undefined | SpecifyResource<PickList>> {
+  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
+  return pickListFetchPromises[pickListName];
 }
 
 export const PickListSortType = {

@@ -53,11 +53,13 @@ const commandRenderers: {
     const [showLoans, handleShow, handleHide] = useBooleanState();
     return (
       <>
-        {resource.isNew() || !Boolean(resource.get('id')) ? undefined : (
-          <Button.Small id={id} onClick={handleShow}>
-            {label}
-          </Button.Small>
-        )}
+        <Button.Small
+          id={id}
+          onClick={handleShow}
+          disabled={resource.isNew() || !Boolean(resource.get('id'))}
+        >
+          {label}
+        </Button.Small>
         {showLoans && (
           <ShowLoansCommand resource={resource} onClose={handleHide} />
         )}
