@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Collection Relationships can now be uploaded though WorkBench
   Plugin ([#2043](https://github.com/specify/specify7/pull/2043))
 
+### Changed
+
+- Having invalid query search parameters no longer prevents from running
+  the query ([#2185](https://github.com/specify/specify7/issues/2185))
+
 ### Fixed
 
 - Fix for query builder not allowing "in" filter on numeric fields

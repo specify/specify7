@@ -57,8 +57,7 @@ class Term(namedtuple("Term", "term is_suffix is_prefix is_number maybe_year is_
                 container__name__iexact=table.name)
 
             if fieldinfo.format == 'CatalogNumberNumeric':
-                if not self.is_integer: return None
-                term = "%.9d" % int(self.term)
+                term = "%.9d" % int(self.term) if self.is_integer else self.term
                 return column == term
 
         filter_map = {
