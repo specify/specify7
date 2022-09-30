@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Collection Relationships can now be uploaded though WorkBench
   Plugin ([#2043](https://github.com/specify/specify7/pull/2043))
+- Allow customizing the delimiter when entering the list of catalog
+  numbers when creating a new interaction
+  ([#2190](https://github.com/specify/specify7/issues/2190))
 
 ### Changed
 

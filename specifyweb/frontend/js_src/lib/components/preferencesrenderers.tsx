@@ -27,6 +27,7 @@ import { useTriggerState, useValidation } from './hooks';
 import { iconClassName } from './icons';
 import type { PreferenceItem, PreferenceItemComponent } from './preferences';
 import { usePref } from './preferenceshooks';
+import { AutoGrowTextArea } from './common';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -279,6 +280,26 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         checked={value}
         onValueChange={handleChange}
         isReadOnly={isReadOnly}
+      />
+    ) : parser?.type === 'text' ? (
+      <AutoGrowTextArea
+        forwardRef={validationRef}
+        {...(validationAttributes ?? { type: 'text' })}
+        value={internalValue}
+        isReadOnly={isReadOnly}
+        onValueChange={(newValue): void => {
+          if (typeof parser === 'object' && inputRef.current !== null) {
+            const parsed = parseValue(
+              parser,
+              inputRef.current,
+              newValue,
+              false
+            );
+            if (parsed.isValid) handleChanged(newValue);
+            else setValidation(parsed.reason);
+          } else handleChanged(newValue);
+        }}
+        onBlur={handleBlur}
       />
     ) : (
       <Input.Generic
