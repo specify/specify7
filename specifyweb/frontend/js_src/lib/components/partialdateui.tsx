@@ -253,9 +253,17 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     }
     if (typeof moment === 'undefined') {
       resource.set(dateField, null as never);
+      if (precisionField !== undefined)
+        resource.set(precisionField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
+
+      if (
+        precisionField !== undefined &&
+        typeof resource.get(precisionField) !== 'number'
+      )
+        resource.set(precisionField, precisions[precision] as never);
 
       if (isSettingInitialMoment.current)
         /*
