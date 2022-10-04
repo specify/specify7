@@ -78,10 +78,9 @@ async function unsafeFetchPickList(
       // Pick list does not exist
       return undefined;
     if (!hasToolPermission('pickLists', 'read')) return undefined;
-    pickList = await fetchCollection('PickList', {
-      name: pickListName,
-      limit: 1,
-    }).then(({ records }) => f.maybe(records[0], deserializeResource));
+    pickList = await rawFetchPickList('PickList', true);
+    if (pickList === undefined)
+      pickList = await rawFetchPickList('PickList', false);
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
@@ -93,6 +92,16 @@ async function unsafeFetchPickList(
 
   return pickList;
 }
+
+const rawFetchPickList = async (
+  name: string,
+  domainFilter: boolean
+): Promise<SpecifyResource<PickList> | undefined> =>
+  fetchCollection('PickList', {
+    name,
+    limit: 1,
+    domainFilter,
+  }).then(({ records }) => f.maybe(records[0], deserializeResource));
 
 const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
   {};
