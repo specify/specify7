@@ -179,32 +179,6 @@ class ParsingTests(UploadTestsBase):
                 for a in r.picklistAdditions:
                     self.assertEqual(1, get_table('Spauditlog').objects.filter(recordid=a.id, action=auditcodes.INSERT, tablenum=get_table('Picklistitem').specify_model.tableId).count(), "New picklistitem recorded in audit log.")
 
-
-    def test_picklist_size_overflow(self) -> None:
-        plan = UploadTable(
-            name='Collectionobject',
-            wbcols={'catalognumber': parse_column_options('catno'), 'text1': parse_column_options('habitat')},
-            static={},
-            toOne={},
-            toMany={}
-        ).apply_scoping(self.collection)
-        data = [
-            {'catno': '1', 'habitat': 'River'},
-            {'catno': '2', 'habitat': 'Lake'},
-            {'catno': '3', 'habitat': 'Stream'},
-            {'catno': '4', 'habitat': 'Ocean'},
-            {'catno': '5', 'habitat': 'Lagoon'},
-        ]
-        results = do_upload(self.collection, data, plan, self.agent.id)
-        for result in results:
-            validate([result.to_json()], upload_results_schema)
-
-        self.assertIsInstance(results[0].record_result, Uploaded)
-        self.assertIsInstance(results[1].record_result, Uploaded)
-        self.assertIsInstance(results[2].record_result, Uploaded)
-        self.assertIsInstance(results[3].record_result, FailedBusinessRule)
-        self.assertIsInstance(results[4].record_result, FailedBusinessRule)
-
     def test_uiformatter_match(self) -> None:
         plan = UploadTable(
             name='Collectionobject',

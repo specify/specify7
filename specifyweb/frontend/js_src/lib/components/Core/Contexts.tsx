@@ -61,7 +61,7 @@ export function Contexts({
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const loadingHandler = React.useCallback(
     (promise: Promise<unknown>): void => {
-      const holderId = holders.current.length;
+      const holderId = Math.max(-1, ...holders.current) + 1;
       holders.current = [...holders.current, holderId];
       handleLoading();
       promise

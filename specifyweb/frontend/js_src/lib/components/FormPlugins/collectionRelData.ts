@@ -31,7 +31,8 @@ export type CollectionRelData = {
 
 export const processColRelationships = async (
   relationships: RA<SpecifyResource<CollectionRelationship>>,
-  otherSide: 'left' | 'right'
+  otherSide: 'left' | 'right',
+  formatting: string | undefined
 ): Promise<CollectionRelData['collectionObjects']> =>
   Promise.all(
     relationships.map(async (relationship) =>
@@ -42,7 +43,7 @@ export const processColRelationships = async (
   ).then(async (resources) =>
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
-        formatted: await format(collectionObject).then(
+        formatted: await format(collectionObject, formatting).then(
           (formatted = collectionObject.id.toString()) => formatted
         ),
         resource: collectionObject,
@@ -53,7 +54,8 @@ export const processColRelationships = async (
 
 export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
-  relationship: string
+  relationship: string,
+  formatting: string | undefined
 ): Promise<CollectionRelData> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
@@ -106,7 +108,11 @@ export async function fetchOtherCollectionData(
                   collectionreltype_id: relationshipType.id,
                 }
           ).then(async ({ records }) =>
-            processColRelationships(records.map(deserializeResource), otherSide)
+            processColRelationships(
+              records.map(deserializeResource),
+              otherSide,
+              formatting
+            )
           )
         : [],
     otherCollection: {

@@ -168,6 +168,11 @@ describe('strictParseResourceUrl', () => {
       'CollectionObject',
       1,
     ]));
+  test('valid url without id', () =>
+    expect(strictParseResourceUrl('/api/specify/collectionobject/')).toEqual([
+      'CollectionObject',
+      undefined,
+    ]));
   test('invalid url', () =>
     expect(() => strictParseResourceUrl('/api//1/')).toThrow(
       /^Unable to parse resource API url/u

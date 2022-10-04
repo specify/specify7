@@ -181,6 +181,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     </Dialog>
   ) : viewName === false ? (
     <QueryBuilderSearch
+      forceCollection={forceCollection}
       model={templateResource.specifyModel}
       multiple={multiple}
       onClose={handleClose}
@@ -222,11 +223,13 @@ const testFilter = <SCHEMA extends AnySchema>(
       });
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
+  forceCollection,
   model,
   onSelected: handleSelected,
   onClose: handleClose,
   multiple,
 }: {
+  readonly forceCollection: number | undefined;
   readonly model: SpecifyModel<SCHEMA>;
   readonly onClose: () => void;
   readonly onSelected: (resources: RA<SpecifyResource<SCHEMA>>) => void;
@@ -266,6 +269,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
         query={query}
         recordSet={undefined}
         onSelected={setSelected}
+        forceCollection={forceCollection}
       />
     </Dialog>
   );

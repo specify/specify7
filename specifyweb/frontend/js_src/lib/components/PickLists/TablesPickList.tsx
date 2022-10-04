@@ -23,11 +23,16 @@ export function TablesPickList(
   const [items, setItems] = React.useState<RA<PickListItemSimple>>([]);
   React.useEffect(
     () =>
-      resourceOn(props.resource, 'change:type', (): void => {
-        if (props.resource.get('type') === PickListTypes.ITEMS)
-          props.resource.set('tableName', null as never);
-        setItems(getItems);
-      }),
+      resourceOn(
+        props.resource,
+        'change:type',
+        (): void => {
+          if (props.resource.get('type') === PickListTypes.ITEMS)
+            props.resource.set('tableName', null as never);
+          setItems(getItems);
+        },
+        true
+      ),
     [props.resource, getItems]
   );
 

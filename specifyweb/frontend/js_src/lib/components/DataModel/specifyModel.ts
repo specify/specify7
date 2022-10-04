@@ -5,7 +5,7 @@
 import { commonText } from '../../localization/common';
 import { getCache } from '../../utils/cache';
 import type { IR, R, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { error } from '../Errors/assert';
 import {
@@ -284,35 +284,38 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    * Since field name can be invalid, this function can return undefined.
    * If you are absolutely sure that field exists, wrap the call to this.getField
    * in defined()
-   */
-
-  /*
+   *
    * REFACTOR: replace this with a direct access on indexed fields dict for static
    *   references
    */
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
-    if (unparsedName === '') return undefined;
+    return this.getFields(unparsedName).at(-1);
+  }
+
+  // REFACTOR: use this where appropriate
+  public getFields(unparsedName: string): RA<LiteralField | Relationship> {
+    if (unparsedName === '') return [];
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().split('.');
-    let field = this.fields.find(
-      (field) => field.name.toLowerCase() === splitName[0]
-    );
+    let fields = filterArray([
+      this.fields.find((field) => field.name.toLowerCase() === splitName[0]),
+    ]);
 
     // If can't find the field by name, try looking for aliases
-    if (field === undefined) {
+    if (fields.length === 0) {
       if (
         unparsedName.toLowerCase() === this.idField.name.toLowerCase() ||
         unparsedName.toLowerCase() === 'id'
       )
-        return this.idField;
+        return [this.idField];
 
       const alias = this.fieldAliases.find(
         (alias) => alias.vname.toLowerCase() === splitName[0]
       );
-      if (typeof alias === 'object') field = this.getField(alias.aname);
+      if (typeof alias === 'object') fields = this.getFields(alias.aname);
     }
 
     // Handle calls like localityModel.getField('Locality.localityName')
@@ -320,10 +323,16 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       splitName.length > 1 &&
       splitName[0].toLowerCase() === this.name.toLowerCase()
     )
-      return this.getField(splitName.slice(1).join('.'));
-    if (splitName.length === 1 || field === undefined) return field;
-    else if (field.isRelationship)
-      return field.relatedModel.getField(splitName.slice(1).join('.'));
+      return this.getFields(splitName.slice(1).join('.'));
+    if (splitName.length === 1) return fields;
+    else if (fields.length === 0) return [];
+    else if (splitName.length > 1 && fields[0].isRelationship)
+      return [
+        ...fields,
+        ...defined(fields[0].relatedModel).getFields(
+          splitName.slice(1).join('.')
+        ),
+      ];
     else throw new Error('Field is not a relationship');
   }
 

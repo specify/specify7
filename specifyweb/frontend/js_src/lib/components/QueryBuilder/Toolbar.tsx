@@ -17,6 +17,7 @@ export function QueryToolbar({
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
   onRunCountOnly: handleRunCountOnly,
+  onSubmitClick: handleSubmitClick,
 }: {
   readonly showHiddenFields: boolean;
   readonly modelName: keyof Tables;
@@ -25,6 +26,7 @@ export function QueryToolbar({
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
   readonly onRunCountOnly: () => void;
+  readonly onSubmitClick: () => void;
 }): JSX.Element {
   return (
     <div className="flex flex-wrap gap-2" role="toolbar">
@@ -46,7 +48,7 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isDistinct}
-                disabled={!isEmpty}
+                disabled={isEmpty}
                 onChange={handleToggleDistinct}
               />
               {queryText('distinct')}
@@ -55,7 +57,9 @@ export function QueryToolbar({
           <Button.Small disabled={!isEmpty} onClick={handleRunCountOnly}>
             {queryText('countOnly')}
           </Button.Small>
-          <Submit.Small disabled={!isEmpty}>{commonText('query')}</Submit.Small>
+          <Submit.Small disabled={isEmpty} onClick={handleSubmitClick}>
+            {commonText('query')}
+          </Submit.Small>
         </>
       )}
     </div>

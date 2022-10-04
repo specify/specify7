@@ -114,6 +114,13 @@ export function SecurityUser(): JSX.Element {
               resource: newUser,
             },
           });
+        else
+          navigate(`/specify/security/user/${changedUser.id}/`, {
+            state: {
+              initialCollectionId: state?.initialCollectionId,
+              resource: changedUser,
+            },
+          });
       }}
     />
   ) : (
@@ -445,6 +452,11 @@ function UserView({
                   resource={userResource}
                   saveRequired={isChanged}
                   onSaved={({ newResource }): void =>
+                    /*
+                     * Need to do requests in series rather than parallel as
+                     * some are expected to fail when user is not properly
+                     * assigned agents
+                     */
                     loading(
                       (hasPermission('/admin/user/agents', 'update')
                         ? ajax(
@@ -616,7 +628,11 @@ function UserView({
                     )
                   }
                   onSaving={(): false | undefined => {
-                    if (userResource.isNew() && password === undefined) {
+                    if (
+                      userResource.isNew() &&
+                      password === undefined &&
+                      canSetPassword
+                    ) {
                       setState({
                         type: 'SetPasswordDialog',
                       });

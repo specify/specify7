@@ -1,31 +1,31 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { removeKey } from '../../utils/utils';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { fetchPickList, getPickListItems } from '../PickLists/fetch';
-import type { QueryField } from './helpers';
-import { schema } from '../DataModel/schema';
-import type { RA, RR } from '../../utils/types';
+import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   pluralizeParser,
 } from '../../utils/parser/definitions';
-import { hasNativeErrors } from '../Forms/validationHelpers';
-import type { PickListItemSimple } from '../FormFields/ComboBox';
-import { mappingElementDivider } from '../WbPlanView/LineComponents';
-import { Input, Select, selectMultipleSize } from '../Atoms/Form';
-import { useValidation } from '../../hooks/useValidation';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import {
+import type {
   InvalidParseResult,
-  parseValue,
   ValidParseResult,
 } from '../../utils/parser/parse';
+import { parseValue } from '../../utils/parser/parse';
+import type { RA, RR } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
+import { Input, Select, selectMultipleSize } from '../Atoms/Form';
+import { schema } from '../DataModel/schema';
+import type { PickListItemSimple } from '../FormFields/ComboBox';
+import { hasNativeErrors } from '../Forms/validationHelpers';
+import { fetchPickList, getPickListItems } from '../PickLists/fetch';
+import { mappingElementDivider } from '../WbPlanView/LineComponents';
+import type { QueryField } from './helpers';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -204,9 +204,10 @@ function QueryInputField({
       <Input.Generic
         {...commonProps}
         {...validationAttributes}
-        className="!absolute inset-0"
+        type={listInput ? 'text' : validationAttributes.type}
         // This is the actual input that is visible to user
         value={value}
+        className="!absolute inset-0"
       />
     </span>
   );

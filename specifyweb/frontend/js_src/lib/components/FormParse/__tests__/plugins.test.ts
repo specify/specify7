@@ -2,26 +2,29 @@ import { mockTime } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { parseUiPlugin } from '../plugins';
 import { generateInit } from './helpers';
+import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 
 mockTime();
 
+const cell = strictParseXml(`<cell formatting="test" />`);
+
 theories(parseUiPlugin, [
   {
-    in: [generateInit({}), undefined],
+    in: [cell, generateInit({}), undefined],
     out: {
       type: 'Unsupported',
       name: undefined,
     },
   },
   {
-    in: [generateInit({ name: 'a' }), undefined],
+    in: [cell, generateInit({ name: 'a' }), undefined],
     out: {
       type: 'Unsupported',
       name: 'a',
     },
   },
   {
-    in: [generateInit({ name: 'LatLonUI' }), undefined],
+    in: [cell, generateInit({ name: 'LatLonUI' }), undefined],
     out: {
       type: 'LatLonUI',
       step: undefined,
@@ -30,6 +33,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({ name: 'LatLonUI', step: '-3.2', latLongType: 'Line' }),
       undefined,
     ],
@@ -40,7 +44,7 @@ theories(parseUiPlugin, [
     },
   },
   {
-    in: [generateInit({ name: 'PartialDateUI' }), undefined],
+    in: [cell, generateInit({ name: 'PartialDateUI' }), undefined],
     out: {
       type: 'PartialDateUI',
       defaultValue: undefined,
@@ -51,6 +55,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'PartialDateUI',
         df: 'ABC',
@@ -69,6 +74,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'CollectionRelOneToManyPlugin',
         relName: 'abc',
@@ -78,10 +84,12 @@ theories(parseUiPlugin, [
     out: {
       type: 'CollectionRelOneToManyPlugin',
       relationship: 'abc',
+      formatting: 'test',
     },
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'ColRelTypePlugin',
         relName: 'abc',
@@ -91,10 +99,12 @@ theories(parseUiPlugin, [
     out: {
       type: 'ColRelTypePlugin',
       relationship: 'abc',
+      formatting: 'test',
     },
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'LocalityGeoRef',
       }),
@@ -106,6 +116,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'WebLinkButton',
         webLink: 'abc',
@@ -121,6 +132,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'WebLinkButton',
       }),
@@ -134,6 +146,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'AttachmentPlugin',
       }),
@@ -145,6 +158,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'HostTaxonPlugin',
         relName: 'abc',
@@ -158,6 +172,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'LocalityGoogleEarth',
         relName: 'abc',
@@ -170,6 +185,7 @@ theories(parseUiPlugin, [
   },
   {
     in: [
+      cell,
       generateInit({
         name: 'PaleoMap',
       }),

@@ -17,8 +17,8 @@ import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from './Wrapped';
 import { deserializeResource } from '../../hooks/resource';
 import { useSearchParam } from '../../hooks/navigation';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {AnyTree} from '../DataModel/helperTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnyTree } from '../DataModel/helperTypes';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParam('recordsetid');
@@ -56,6 +56,7 @@ function QueryBuilderWrapper({
       }
       query={query}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
+      forceCollection={undefined}
     />
   );
 }

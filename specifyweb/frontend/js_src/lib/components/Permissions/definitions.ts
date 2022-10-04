@@ -80,6 +80,7 @@ export const institutionPermissions = new Set([
   '/admin/user/sp6/collection_access',
   '/export/feed',
   '/permissions/library/roles',
+  '/permissions/list_admins',
 ]);
 /**
  * Policies that are respected on the front-end, but ignored by the back-end.

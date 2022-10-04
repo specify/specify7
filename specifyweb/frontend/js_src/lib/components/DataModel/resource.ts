@@ -146,19 +146,19 @@ export function getResourceApiUrl(
 
 export function parseResourceUrl(
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number] | undefined {
+): readonly [modelName: keyof Tables, id: number | undefined] | undefined {
   const parsed = /^\/api\/specify\/(\w+)\/(?:(\d+)\/)?$/u
     .exec(resourceUrl)
     ?.slice(1);
   const tableName = getModel(parsed?.[0] ?? '')?.name;
   return Array.isArray(parsed) && typeof tableName === 'string'
-    ? [tableName, Number.parseInt(parsed[1])]
+    ? [tableName, f.parseInt(parsed[1])]
     : undefined;
 }
 
 export const strictParseResourceUrl = (
   resourceUrl: string
-): readonly [modelName: keyof Tables, id: number] =>
+): readonly [modelName: keyof Tables, id: number | undefined] =>
   defined(
     parseResourceUrl(resourceUrl),
     `Unable to parse resource API url: ${resourceUrl}`

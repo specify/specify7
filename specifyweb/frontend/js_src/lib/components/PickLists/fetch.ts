@@ -5,7 +5,7 @@
 import { deserializeResource } from '../../hooks/resource';
 import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
@@ -48,7 +48,7 @@ export async function fetchPickListItems(
   return items.map(({ value, title }) => createPickListItem(value, title));
 }
 
-export async function fetchPickList(
+async function unsafeFetchPickList(
   pickListName: string
 ): Promise<SpecifyResource<PickList> | undefined> {
   getFrontEndPickLists();
@@ -77,6 +77,16 @@ export async function fetchPickList(
     pickList.set('pickListItems', await fetchPickListItems(pickList));
 
   return pickList;
+}
+
+const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+  {};
+
+export async function fetchPickList(
+  pickListName: string
+): Promise<undefined | SpecifyResource<PickList>> {
+  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
+  return pickListFetchPromises[pickListName];
 }
 
 export const PickListSortType = {
