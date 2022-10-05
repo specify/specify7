@@ -73,7 +73,7 @@ export function AppResourcesTabs({
           title={localityText('toggleFullScreen')}
           onClick={handleToggleFullScreen}
         >
-          {icons.arrowsExpand}
+          {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Blue>
       </Tab.List>
       <Tab.Panels className="h-full overflow-auto">
