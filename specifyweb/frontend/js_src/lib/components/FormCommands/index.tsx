@@ -63,20 +63,25 @@ const commandRenderers: {
   ShowLoans({ label, resource, id }) {
     const [showLoans, handleShow, handleHide] = useBooleanState();
     return (
-      <>
-        <Button.Small
-          id={id}
-          onClick={handleShow}
-          disabled={resource.isNew() || !Boolean(resource.get('id'))}
-        >
-          {label}
-        </Button.Small>
-        {showLoans && (
-          <ErrorBoundary dismissable>
-            <ShowLoansCommand resource={resource} onClose={handleHide} />
-          </ErrorBoundary>
-        )}
-      </>
+      f.maybe(toTable(resource, 'Preparation'), (preparation) => (
+        <>
+          <Button.Small
+            id={id}
+            onClick={handleShow}
+            disabled={resource.isNew() || !Boolean(resource.get('id'))}
+          >
+            {label}
+          </Button.Small>
+          {showLoans && (
+            <ErrorBoundary dismissable>
+              <ShowLoansCommand
+                preparation={preparation}
+                onClose={handleHide}
+              />
+            </ErrorBoundary>
+          )}
+        </>
+      )) ?? error('ShowLoans command can only be used on the preparation form')
     );
   },
   ReturnLoan({ id, label = '', resource }) {

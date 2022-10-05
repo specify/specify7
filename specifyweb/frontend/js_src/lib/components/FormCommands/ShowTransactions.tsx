@@ -12,8 +12,9 @@ import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import { deserializeResource } from '../../hooks/resource';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {AnySchema} from '../DataModel/helperTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { AnySchema } from '../DataModel/helperTypes';
+import { Preparation } from '../DataModel/types';
 
 function List({
   resources,
@@ -58,10 +59,10 @@ function List({
 }
 
 export function ShowLoansCommand({
-  resource,
+  preparation,
   onClose: handleClose,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly preparation: SpecifyResource<Preparation>;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const [data] = useAsyncState(
@@ -69,49 +70,34 @@ export function ShowLoansCommand({
       async () =>
         f.all({
           openLoans: hasTablePermission('LoanPreparation', 'read')
-            ? fetchCollection(
-                'LoanPreparation',
-                {
-                  isResolved: false,
-                  limit: DEFAULT_FETCH_LIMIT,
-                },
-                {
-                  preparation_id: resource.get('id'),
-                }
-              ).then(({ records }) => records.map(deserializeResource))
+            ? fetchCollection('LoanPreparation', {
+                isResolved: false,
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+              }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           resolvedLoans: hasTablePermission('LoanPreparation', 'read')
-            ? fetchCollection(
-                'LoanPreparation',
-                {
-                  isResolved: true,
-                  limit: DEFAULT_FETCH_LIMIT,
-                },
-                {
-                  preparation_id: resource.get('id'),
-                }
-              ).then(({ records }) => records.map(deserializeResource))
+            ? fetchCollection('LoanPreparation', {
+                isResolved: true,
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+              }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           gifts: hasTablePermission('GiftPreparation', 'read')
-            ? fetchCollection(
-                'GiftPreparation',
-                { limit: DEFAULT_FETCH_LIMIT },
-                {
-                  preparation_id: resource.get('id'),
-                }
-              ).then(({ records }) => records.map(deserializeResource))
+            ? fetchCollection('GiftPreparation', {
+                limit: DEFAULT_FETCH_LIMIT,
+                preparation: preparation.get('id'),
+              }).then(({ records }) => records.map(deserializeResource))
             : undefined,
           exchanges: hasTablePermission('GiftPreparation', 'read')
-            ? fetchCollection(
-                'GiftPreparation',
-                { limit: DEFAULT_FETCH_LIMIT },
-                {
-                  preparation_id: resource.get('id'),
-                }
-              ).then(({ records }) => records.map(deserializeResource))
+            ? fetchCollection('GiftPreparation', {
+                limit: DEFAULT_FETCH_LIMIT,
+
+                preparation: preparation.get('id'),
+              }).then(({ records }) => records.map(deserializeResource))
             : undefined,
         }),
-      [resource]
+      [preparation]
     ),
     true
   );
