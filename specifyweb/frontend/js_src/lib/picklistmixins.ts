@@ -78,9 +78,9 @@ async function unsafeFetchPickList(
       // Pick list does not exist
       return undefined;
     if (!hasToolPermission('pickLists', 'read')) return undefined;
-    pickList = await rawFetchPickList('PickList', true);
+    pickList = await rawFetchPickList(pickListName, true);
     if (pickList === undefined)
-      pickList = await rawFetchPickList('PickList', false);
+      pickList = await rawFetchPickList(pickListName, false);
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
