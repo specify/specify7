@@ -33,6 +33,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   _Reported by CSIRO_
 - Fix Specify incorrectly checking for `Permissions -> List Admins ->
   read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
+- Fix Specify using wrong pick list when there are multiple pick lists
+  with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
 
 ## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...v7.7.3) (26 September 2022)
 
