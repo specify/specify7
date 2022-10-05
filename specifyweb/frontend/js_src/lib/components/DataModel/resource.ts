@@ -1,6 +1,5 @@
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
-import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -20,6 +19,7 @@ import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
 import { Http } from '../../utils/ajax/definitions';
+import { getUserPref } from '../UserPreferences/helpers';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -226,7 +226,7 @@ export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
 }
 
 const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  getCache('forms', 'carryForward')?.[model.name] ??
+  getUserPref('form', 'preferences', 'carryForward')?.[model.name] ??
   model.fields.map(({ name }) => name);
 
 // REFACTOR: move this into businessRuleDefs.ts

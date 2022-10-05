@@ -1,8 +1,9 @@
 import { overwriteAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { setCache } from '../../../utils/cache';
+import { Http } from '../../../utils/ajax/definitions';
 import type { RA } from '../../../utils/types';
+import { setPref } from '../../UserPreferences/helpers';
 import { addMissingFields } from '../addMissingFields';
 import { serializeResource } from '../helpers';
 import type { AnySchema, TableFields } from '../helperTypes';
@@ -26,7 +27,6 @@ import {
 } from '../resource';
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
-import { Http } from '../../../utils/ajax/definitions';
 
 const { getFieldsToClone } = exportsForTests;
 
@@ -216,7 +216,9 @@ describe('getFieldsToClone', () => {
       schema.models.SpQuery.fields.map(({ name }) => name)
     ));
   test('customize carry over fields', () => {
-    setCache('forms', 'carryForward', { Locality: ['localityName', 'text1'] });
+    setPref('form', 'preferences', 'carryForward', {
+      Locality: ['localityName', 'text1'],
+    });
     expect(getFieldsToClone(schema.models.Locality)).toEqual([
       'localityName',
       'text1',
@@ -235,7 +237,7 @@ describe('getUniqueFields', () => {
 });
 
 test('getFieldsToNotClone', () => {
-  setCache('forms', 'carryForward', {
+  setPref('form', 'preferences', 'carryForward', {
     CollectionObject: schema.models.CollectionObject.fields
       .filter(({ name }) => name !== 'text1')
       .map(({ name }) => name) as RA<TableFields<CollectionObject>>,

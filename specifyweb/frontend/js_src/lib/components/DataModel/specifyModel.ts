@@ -3,7 +3,6 @@
  */
 
 import { commonText } from '../../localization/common';
-import { getCache } from '../../utils/cache';
 import type { IR, R, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
@@ -32,6 +31,7 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
+import { getUserPref } from '../UserPreferences/helpers';
 
 type FieldAlias = {
   readonly vname: string;
@@ -219,7 +219,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    const useLabels = getCache('forms', 'useFieldLabels') ?? true;
+    const useLabels = getUserPref('form', 'preferences', 'useFieldLabels');
     this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
       items: {},
     };

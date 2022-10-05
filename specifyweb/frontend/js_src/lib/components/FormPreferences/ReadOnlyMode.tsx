@@ -2,15 +2,16 @@ import React from 'react';
 
 import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
-import { useCachedState } from '../../hooks/useCachedState';
+import { usePref } from '../UserPreferences/usePref';
 
 export function ReadOnlyMode({
   isNew,
 }: {
   readonly isNew: boolean;
 }): JSX.Element {
-  const [isReadOnly = false, setReadOnly] = useCachedState(
-    'forms',
+  const [isReadOnly, setReadOnly] = usePref(
+    'form',
+    'preferences',
     'readOnlyMode'
   );
   return (

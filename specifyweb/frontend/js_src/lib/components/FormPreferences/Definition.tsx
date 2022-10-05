@@ -7,12 +7,12 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { usePref } from '../UserPreferences/usePref';
 
 export function Definition({
   model,
@@ -51,8 +51,9 @@ function FormDefinitionDialog({
 }
 
 function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
-  const [globalConfig = {}, setGlobalConfig] = useCachedState(
-    'forms',
+  const [globalConfig, setGlobalConfig] = usePref(
+    'form',
+    'preferences',
     'useCustomForm'
   );
   const useCustomForm = globalConfig[model.name] ?? true;
@@ -68,8 +69,9 @@ function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
 }
 
 function UseLabels(): JSX.Element {
-  const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
-    'forms',
+  const [useFieldLabels, setUseFieldLabels] = usePref(
+    'form',
+    'preferences',
     'useFieldLabels'
   );
 

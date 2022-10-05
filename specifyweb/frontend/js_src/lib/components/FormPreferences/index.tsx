@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
@@ -29,6 +28,7 @@ import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewPreferences } from './SubViewPreferences';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -42,7 +42,7 @@ export function FormPreferences({
   readonly className?: string;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
+  const [isReadOnly] = usePref('form', 'preferences', 'readOnlyMode');
   return typeof resource === 'object' ? (
     <>
       <Button.Small

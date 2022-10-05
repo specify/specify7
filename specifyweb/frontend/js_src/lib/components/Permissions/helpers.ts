@@ -1,4 +1,3 @@
-import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -13,8 +12,7 @@ import {
   getOperationPermissions,
   getTablePermissions,
 } from './index';
-
-const isReadOnly = getCache('forms', 'readOnlyMode') === true;
+import { getUserPref } from '../UserPreferences/helpers';
 
 // REFACTOR: use <ProtectedTable> and etc in favor of this function
 /**
@@ -26,11 +24,12 @@ export function hasTablePermission(
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean {
+  const isReadOnly = getUserPref('form', 'preferences', 'readOnlyMode');
   if (isReadOnly && action !== 'read') return false;
   if (
-    getTablePermissions()[collectionId][
-      tableNameToResourceName(tableName)
-    ][action]
+    getTablePermissions()[collectionId][tableNameToResourceName(tableName)][
+      action
+    ]
   )
     return true;
   console.log(`No permission to ${action} ${tableName}`);

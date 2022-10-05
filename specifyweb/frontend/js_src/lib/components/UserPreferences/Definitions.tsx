@@ -13,10 +13,11 @@ import { LANGUAGE } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
-import { ensure, overwriteReadOnly } from '../../utils/types';
+import { ensure, overwriteReadOnly, RR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import type { JavaType } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/types';
+import { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import {
   LanguagePreferencesItem,
@@ -30,6 +31,7 @@ import {
   FontFamilyPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
+import { TableFields } from '../DataModel/helperTypes';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -969,6 +971,72 @@ export const preferenceDefinitions = {
             parser: {
               min: 100,
             },
+          }),
+        },
+      },
+      /*
+       * The items in this category are edited though the form preferences menu
+       * on forms
+       */
+      preferences: {
+        title: '(not visible to user) Preferences',
+        items: {
+          printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
+            title: 'Print label on form save',
+            requiresReload: false,
+            visible: false,
+            defaultValue: {},
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          carryForward: defineItem<{
+            readonly [TABLE_NAME in keyof Tables]?: RA<
+              TableFields<Tables[TABLE_NAME]>
+            >;
+          }>({
+            title: 'carryForward',
+            requiresReload: false,
+            visible: false,
+            defaultValue: {},
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          autoNumbering: defineItem<{
+            readonly [TABLE_NAME in keyof Tables]?: RA<
+              TableFields<Tables[TABLE_NAME]>
+            >;
+          }>({
+            title: 'autoNumbering',
+            requiresReload: false,
+            visible: false,
+            defaultValue: {},
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          useCustomForm: defineItem<Partial<RR<keyof Tables, boolean>>>({
+            title: 'useCustomForm',
+            requiresReload: false,
+            visible: false,
+            defaultValue: {},
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          carryForwardShowHidden: defineItem<boolean>({
+            title: 'carryForwardShowHidden',
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          useFieldLabels: defineItem<boolean>({
+            title: 'useFieldLabels',
+            requiresReload: false,
+            visible: false,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          readOnlyMode: defineItem<boolean>({
+            title: 'readOnlyMode',
+            requiresReload: false,
+            visible: false,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
           }),
         },
       },

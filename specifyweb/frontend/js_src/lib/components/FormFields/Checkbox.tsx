@@ -4,9 +4,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Input, Label } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
-import { useCachedState } from '../../hooks/useCachedState';
 import { f } from '../../utils/functools';
 import { AnySchema } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 export function PrintOnSave({
   id,
@@ -21,7 +21,7 @@ export function PrintOnSave({
   readonly text: string | undefined;
   readonly defaultValue: boolean | undefined;
 }): JSX.Element {
-  const [tables, setTables] = useCachedState('forms', 'printOnSave');
+  const [tables, setTables] = usePref('form', 'preferences', 'printOnSave');
   /*
    * Need to check for object explicitly, because this cache key stored
    * boolean in the past

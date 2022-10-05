@@ -17,37 +17,19 @@ import type {
 } from '../../components/DataModel/types';
 import type { UserPreferences } from '../../components/UserPreferences/helpers';
 import type { Conformations } from '../../components/TreeView/helpers';
-import type { IR, RA, RR } from '../types';
+import type { IR, RA } from '../types';
 import { ensure } from '../types';
-import {AnyTree, TableFields} from '../../components/DataModel/helperTypes';
+import { AnyTree } from '../../components/DataModel/helperTypes';
 import {
   LeafletCacheSalt,
-  MarkerLayerName
+  MarkerLayerName,
 } from '../../components/Leaflet/leafletAddOns';
-import {SortConfig} from '../../components/Molecules/Sorting';
+import { SortConfig } from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
   readonly general: {
     readonly clearCacheOnException: boolean;
-  };
-  readonly forms: {
-    /** Print label on form save */
-    readonly printOnSave: Partial<RR<keyof Tables, boolean>>;
-    readonly carryForward: {
-      readonly [TABLE_NAME in keyof Tables]?: RA<
-        TableFields<Tables[TABLE_NAME]>
-      >;
-    };
-    readonly autoNumbering: {
-      readonly [TABLE_NAME in keyof Tables]?: RA<
-        TableFields<Tables[TABLE_NAME]>
-      >;
-    };
-    readonly useCustomForm: Partial<RR<keyof Tables, boolean>>;
-    readonly carryForwardShowHidden: boolean;
-    readonly useFieldLabels: boolean;
-    readonly readOnlyMode: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */

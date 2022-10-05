@@ -2,9 +2,8 @@ import { errorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { jsonStringify, removeKey } from '../../utils/utils';
-import { userInformation } from '../InitialContext/userInformation';
-import { consoleLog } from './interceptLogs';
 import { softFail } from './Crash';
+import { consoleLog } from './interceptLogs';
 
 let resolvedStackTrace: IR<unknown> = { stackTrace: 'loading' };
 f.all({
@@ -44,7 +43,6 @@ export const produceStackTrace = (message: unknown): string =>
   jsonStringify({
     message,
     ...resolvedStackTrace,
-    userInformation,
     href: globalThis.location.href,
     consoleLog,
     pageHtml: document.documentElement.outerHTML,
