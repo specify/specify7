@@ -49,13 +49,15 @@ export function QueryBuilder({
   isReadOnly,
   recordSet,
   model,
+  forceCollection,
   // If present, this callback is called when a query result is selected
   onSelected: handleSelected,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly isReadOnly: boolean;
-  readonly model: SpecifyModel;
   readonly recordSet?: SpecifyResource<RecordSet>;
+  readonly model: SpecifyModel;
+  readonly forceCollection: number | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
 }): JSX.Element | null {
   const [treeRanks] = useAsyncState(
@@ -122,8 +124,8 @@ export function QueryBuilder({
       ],
     });
 
-  const isEmpty = state.fields.some(({ mappingPath }) =>
-    mappingPathIsComplete(mappingPath)
+  const isEmpty = state.fields.every(
+    ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
   );
 
   /*
@@ -145,7 +147,7 @@ export function QueryBuilder({
     mode: 'regular' | 'count',
     fields: typeof state.fields = state.fields
   ): void {
-    if (!isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
+    if (isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
       ...query,
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
@@ -477,7 +479,7 @@ export function QueryBuilder({
                   {!isTreeModel(model.name) && (
                     <Label.ForCheckbox>
                       <Input.Checkbox
-                        disabled={!isEmpty}
+                        disabled={isEmpty}
                         checked={query.selectDistinct ?? false}
                         onChange={(): void =>
                           setQuery({
@@ -490,12 +492,19 @@ export function QueryBuilder({
                     </Label.ForCheckbox>
                   )}
                   <Button.Small
-                    disabled={!isEmpty}
+                    disabled={isEmpty}
                     onClick={(): void => runQuery('count')}
                   >
                     {queryText('countOnly')}
                   </Button.Small>
-                  <Submit.Simple disabled={!isEmpty}>
+                  <Submit.Simple
+                    disabled={isEmpty}
+                    onClick={(): void =>
+                      formRef.current?.checkValidity() === false
+                        ? runQuery('regular')
+                        : undefined
+                    }
+                  >
                     {commonText('query')}
                   </Submit.Simple>
                 </>
@@ -507,6 +516,7 @@ export function QueryBuilder({
               baseTableName={state.baseTableName}
               model={model}
               queryResource={queryResource}
+              forceCollection={forceCollection}
               fields={state.fields}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}

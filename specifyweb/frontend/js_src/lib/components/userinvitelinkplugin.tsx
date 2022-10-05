@@ -45,7 +45,9 @@ export function UserInviteLinkPlugin({
               )
             : setLink('')
         }
-        disabled={typeof identityProviders === 'undefined'}
+        disabled={
+          typeof identityProviders === 'undefined' || user.id === undefined
+        }
       >
         {adminText('createInviteLink')}
       </Button.Small>

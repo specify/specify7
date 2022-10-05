@@ -544,6 +544,7 @@ export function QueryResultsWrapper({
   model,
   queryRunCount,
   queryResource,
+  forceCollection,
   fields,
   recordSetId,
   createRecordSet,
@@ -555,6 +556,7 @@ export function QueryResultsWrapper({
   readonly model: SpecifyModel;
   readonly queryRunCount: number;
   readonly queryResource: SpecifyResource<SpQuery>;
+  readonly forceCollection: number | undefined;
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
@@ -575,6 +577,7 @@ export function QueryResultsWrapper({
           headers: { Accept: 'application/json' },
           body: keysToLowerCase({
             ...queryResource.toJSON(),
+            collectionId: forceCollection,
             fields: unParseQueryFields(
               baseTableName,
               addAuditLogFields(baseTableName, fields)
@@ -585,7 +588,7 @@ export function QueryResultsWrapper({
           }),
         }
       ).then(({ data }) => data.results),
-    [fields, baseTableName, queryResource, recordSetId]
+    [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 
   /*
@@ -612,6 +615,7 @@ export function QueryResultsWrapper({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { Accept: 'application/json' },
         body: keysToLowerCase({
+          collectionId: forceCollection,
           ...queryResource.toJSON(),
           fields: unParseQueryFields(baseTableName, allFields),
           recordSetId,
@@ -669,6 +673,7 @@ export function QueryResultsWrapper({
     queryRunCount,
     recordSetId,
     model,
+    forceCollection,
   ]);
 
   return typeof props === 'undefined' ? (

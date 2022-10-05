@@ -55,6 +55,7 @@ function QueryBuilderWrapper({
       }
       model={defined(getModel(query.get('contextName')))}
       recordSet={typeof recordSet === 'object' ? recordSet : undefined}
+      forceCollection={undefined}
     />
   );
 }

@@ -91,7 +91,12 @@ export function setPref<
       typeof definition.parser === 'object'
         ? mergeParsers(baseParser, definition.parser)
         : baseParser;
-    const parseResult = parseValue(parser, undefined, value?.toString());
+    const parseResult = parseValue(
+      parser,
+      undefined,
+      value?.toString(),
+      parser.type !== 'text'
+    );
     if (parseResult.isValid) parsed = parseResult.parsed;
     else {
       console.error(`Failed parsing pref value`, {

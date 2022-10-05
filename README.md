@@ -1,4 +1,26 @@
-# Specify 7
+# [Specify 7](https://www.specifysoftware.org/products/specify-7/)
+
+The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased to offer Specify 7, a web implementation of our biological collections data management platform.
+
+We encourage members to use our [Dockerized compositions](https://github.com/specify/docker-compositions) of Specify 7. You can choose a version, make the necessary adjustments and then run a single command to get everything working. It is very simple and can be easily updated when new versions are released. Members can contact us at [support@specifysoftware.org](mailto:support@specifysoftware.org) to gain access to this repository.
+
+The new generation of Specify combines the interface design components and data management foundation of Specify 6 with the efficiency and ease-of-use of web-based data access and cloud computing. The Specify 7 web application uses the same interface layout language as Specify 6, so any user interface customization made in one product is mirrored in the other. Also Specify 6 and Specify 7 use the same data model and can work from the same Specify MySQL database, which means they can be run simultaneously with any Specify collection. By providing an easy migration path to the web, Specify 7 helps transition Specify 6 collections to cloud computing. It is also a great starting platform for collections which prefer zero workstation software installation and ubiquitous web browser access.
+
+Specify 7’s server/browser architecture open the door for computing support of collaborative digitization projects and for remote hosting of institutional or project specimen databases. Without the need for a local area or campus network to connect to the MySQL data server, Specify 7 gives you and your collaborators access to a shared specimen database through any web browser. Without adequate IT support to maintain a secure database server? With the Specify 7 server software supported on generic Linux servers, museums can utilize a server hosting service to provide support for the technical complexities of systems administration, security management, and backing-up. Want to create a joint database with remote collaborators for a collaborative digitizing effort? No problem! Host, hire a hosting service or use our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service for your Specify database, set up accounts and go. We provide the same efficient user interface and printed reports and labels customization, and help desk support for Specify 7 as we do for Specify 6.
+
+**Secure.**
+Support for Single Sign-On (SSO) integrates Specify 7 with a campus or institutional identity providers. It supports all identity providers (IdPs) that have an OpenID endpoints.
+
+The Security and Accounts tool allows administrators to give access based on roles and policies. Create, edit, and copy roles among collections and databases. Administrators can give users as many or few permissions as desired, from guest accounts to collection managers.
+
+**Accessible.**
+It is important that web applications work for people with disabilities. Specify 7 is developed with this top of mind, not only meeting international accessibility standards but also providing a better experience for everyone.
+
+Specify 7 is largely compliant with the main WWW accessibility standard – **WCAG 2.1 (AA)**. It supports screen readers and allows each user to customize their color scheme and appearance as well as reduce motion and resize all elements.
+
+This accessible design respects system and web browser preferences for date formats, language, theme, and animations.
+
+---
 
 The Specify Collections Consortium is funded by its member
 institutions. The Consortium web site is:
