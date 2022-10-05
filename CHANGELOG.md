@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix error when adding Address of Record SubView to Borrow form
   ([#2006](https://github.com/specify/specify7/pull/2006)) -
   _Reported by CSIRO_
+- Fix permission checking for ephemeral queries with collection override
+  ([#2208](https://github.com/specify/specify7/issues/2208))
 - Fix Specify incorrectly checking for `Permissions -> List Admins ->
   read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
 - Fix Specify using wrong pick list when there are multiple pick lists
