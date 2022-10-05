@@ -4,22 +4,22 @@
 
 import React from 'react';
 
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import type { AppResourceFilters } from '../AppResources/filtersHelpers';
-import type { SpAppResource } from '../DataModel/types';
-import { f } from '../../utils/functools';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import { AppResourcesAside } from '../AppResources/Aside';
+import type { AppResourceFilters } from '../AppResources/filtersHelpers';
 import type { AppResources } from '../AppResources/hooks';
 import { useAppResources } from '../AppResources/hooks';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import { toResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpAppResource } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { toResource } from '../DataModel/helpers';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();
@@ -97,8 +97,9 @@ function PickAppResource({
     >
       <AppResourcesAside
         initialFilters={initialFilters}
-        resources={resources}
+        isEmbedded
         isReadOnly
+        resources={resources}
         onOpen={(selected): void =>
           f.maybe(toResource(selected, 'SpAppResource'), handleSelected)
         }

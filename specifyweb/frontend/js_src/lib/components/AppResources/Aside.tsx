@@ -30,11 +30,13 @@ export function AppResourcesAside({
   resources: initialResources,
   isReadOnly,
   initialFilters,
+  isEmbedded,
   onOpen: handleOpen,
 }: {
   readonly resources: AppResources;
   readonly isReadOnly: boolean;
   readonly initialFilters?: AppResourceFiltersType;
+  readonly isEmbedded: boolean;
   readonly onOpen?: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>
   ) => void;
@@ -48,7 +50,11 @@ export function AppResourcesAside({
   useErrorContext('appResourcesTree', resourcesTree);
 
   return (
-    <aside className={className.containerBase}>
+    <aside
+      className={
+        isEmbedded ? className.containerBaseUnstyled : className.containerBase
+      }
+    >
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
         {resourcesTree.map((resources) => (
           <TreeItem

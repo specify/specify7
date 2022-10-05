@@ -14,9 +14,10 @@ export const dialogIconTriggers = {
 const buttonClassName = 'button';
 const grayButton = `${buttonClassName} hover:bg-gray-400 bg-gray-300 text-gray-800
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500`;
-const containerBase = `bg-[color:var(--form-foreground)] rounded p-4
-  shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
-  [overflow-y:overlay] [scrollbar-gutter:stable]`;
+const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable]`;
+const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
+  rounded p-4 shadow-gray-400 shadow-lg`;
 const containerFull = 'flex flex-col gap-4 h-full p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
@@ -63,6 +64,7 @@ export const className = {
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,
   containerFullGray: `${containerFull} bg-[color:var(--form-background)]`,
+  containerBaseUnstyled,
   containerBase,
   containerCenter: `${containerBase} max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full ${formStyles}`,
