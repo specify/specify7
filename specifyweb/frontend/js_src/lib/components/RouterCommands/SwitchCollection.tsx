@@ -2,9 +2,9 @@ import React from 'react';
 import type { NavigateFunction } from 'react-router/lib/hooks';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { ping } from '../../utils/ajax/ping';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { ping } from '../../utils/ajax/ping';
 
 export const switchCollection = (
   navigate: NavigateFunction,
@@ -13,7 +13,8 @@ export const switchCollection = (
 ): void =>
   navigate(`/specify/command/switch-collection/${collectionId}/`, {
     state: {
-      nextUrl,
+      nextUrl:
+        nextUrl ?? toRelativeUrl(globalThis.location.href) ?? '/specify/',
     },
   });
 
@@ -22,7 +23,7 @@ export function SwitchCollectionCommand(): null {
   const location = useLocation();
   const nextUrl =
     (location.state as { readonly nextUrl: string | undefined } | undefined)
-      ?.nextUrl ?? toRelativeUrl(globalThis.location.href);
+      ?.nextUrl ?? '/specify/';
 
   useAsyncState(
     React.useCallback(
@@ -30,11 +31,7 @@ export function SwitchCollectionCommand(): null {
         ping('/context/collection/', {
           method: 'POST',
           body: collectionId!.toString(),
-        }).then(() =>
-          typeof nextUrl === 'string'
-            ? globalThis.location.assign(nextUrl)
-            : globalThis.location.reload()
-        ),
+        }).then(() => globalThis.location.assign(nextUrl)),
       [collectionId, nextUrl]
     ),
     true
