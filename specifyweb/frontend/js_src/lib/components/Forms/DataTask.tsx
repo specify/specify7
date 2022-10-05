@@ -26,6 +26,7 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { DisplayResource, ShowResource } from './ShowResource';
+import { useSearchParameter } from '../../hooks/navigation';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -179,6 +180,7 @@ export function ViewByCatalog(): JSX.Element {
 
 function ViewByCatalogProtected(): JSX.Element | null {
   const { collectionCode = '', catalogNumber = '' } = useParams();
+  const [recordSetId] = useSearchParameter('recordsetid');
 
   const navigate = useNavigate();
   const [id] = useAsyncState<number | false>(
@@ -232,11 +234,14 @@ function ViewByCatalogProtected(): JSX.Element | null {
   React.useEffect(
     () =>
       typeof id === 'number'
-        ? navigate(getResourceViewUrl('CollectionObject', id), {
-            replace: true,
-          })
+        ? navigate(
+            getResourceViewUrl('CollectionObject', id, f.parseInt(recordSetId)),
+            {
+              replace: true,
+            }
+          )
         : undefined,
-    [navigate, id]
+    [navigate, id, recordSetId]
   );
 
   return id === false ? <NotFoundView /> : null;
