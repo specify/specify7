@@ -34,6 +34,8 @@ services:
       - "static-files:/volumes/static-files"
       - "./specifyweb:/opt/specify7/specifyweb"
       - "webpack-output:/opt/specify7/specifyweb/frontend/static/js:ro"
+    extra_hosts:
+      - "host.docker.internal:127.0.0.1"
     environment:
       - DATABASE_HOST=mariadb
       - DATABASE_PORT=3306
@@ -71,6 +73,8 @@ services:
       - "specify6:/opt/Specify:ro"
       - "static-files:/volumes/static-files"
       - "./specifyweb:/opt/specify7/specifyweb"
+    extra_hosts:
+      - "host.docker.internal:127.0.0.1"
     environment:
       - DATABASE_HOST=mariadb
       - DATABASE_PORT=3306
