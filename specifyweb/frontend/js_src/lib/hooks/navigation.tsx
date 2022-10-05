@@ -10,7 +10,7 @@ import type { GetSet } from '../utils/types';
 import { defined } from '../utils/types';
 import { UnloadProtectsContext } from '../components/Core/Contexts';
 
-export function useSearchParam(
+export function useSearchParameter(
   name: string | undefined
 ): GetSet<string | undefined> {
   const [queryString, setQueryString] = useSearchParams();

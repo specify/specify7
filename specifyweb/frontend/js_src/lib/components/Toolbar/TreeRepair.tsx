@@ -23,7 +23,7 @@ import { icons } from '../Atoms/Icons';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceView } from '../Forms/ResourceView';
 import { OverlayContext } from '../Router/Router';
-import { useSearchParam } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { Button } from '../Atoms/Button';
 import { Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
@@ -143,7 +143,7 @@ export function TreeRepairOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   const loading = React.useContext(LoadingContext);
 
-  const [tree, setTree] = useSearchParam('tree');
+  const [tree, setTree] = useSearchParameter('tree');
   React.useEffect(
     () =>
       tree === undefined

@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';

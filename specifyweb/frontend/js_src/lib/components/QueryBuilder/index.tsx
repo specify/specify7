@@ -16,12 +16,12 @@ import { NotFoundView } from '../Router/NotFoundView';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from './Wrapped';
 import { deserializeResource } from '../../hooks/resource';
-import { useSearchParam } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnyTree } from '../DataModel/helperTypes';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
-  const [recordsetid = ''] = useSearchParam('recordsetid');
+  const [recordsetid = ''] = useSearchParameter('recordsetid');
   const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
     React.useCallback(() => {
       if (!hasToolPermission('recordSets', 'read')) return false;

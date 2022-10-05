@@ -19,7 +19,7 @@ import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useSearchParam } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { Submit } from '../Atoms/Submit';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedModel } from '../DataModel/helperTypes';
@@ -175,7 +175,7 @@ export function CollectionSelector(): JSX.Element {
 }
 
 export function ExpressSearch(): JSX.Element {
-  const [searchQuery = '', setSearchQuery] = useSearchParam('q');
+  const [searchQuery = '', setSearchQuery] = useSearchParameter('q');
   const navigate = useNavigate();
   return (
     <Form

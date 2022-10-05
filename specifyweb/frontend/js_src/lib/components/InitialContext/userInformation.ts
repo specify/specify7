@@ -7,7 +7,8 @@ import { serializeResource } from '../DataModel/helpers';
 import { load } from './index';
 import { fetchContext as fetchSchema } from '../DataModel/schema';
 import type { RA, Writable } from '../../utils/types';
-import {SerializedModel, SerializedResource} from '../DataModel/helperTypes';
+import { setDevelopmentGlobal } from '../../utils/types';
+import { SerializedModel, SerializedResource } from '../DataModel/helperTypes';
 
 export type UserInformation = SerializedModel<SpecifyUser> & {
   readonly isauthenticated: boolean;
@@ -31,6 +32,7 @@ export const fetchContext = load<
     return fetchSchema.then(() => {
       userInfo.availableCollections =
         availableCollections.map(serializeResource);
+      setDevelopmentGlobal('_user', userInfo);
     });
   }
 );

@@ -9,7 +9,7 @@ import type { Language } from '../../localization/utils';
 import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
-import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';

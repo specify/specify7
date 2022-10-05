@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -228,7 +228,11 @@ export function IntegratedRecordSelector({
                   isDependent ? 'create' : 'read'
                 ) && typeof handleRemove === 'function' ? (
                   <DataEntry.Remove
-                    disabled={mode === 'view' || collection.models.length === 0 || resource === undefined}
+                    disabled={
+                      mode === 'view' ||
+                      collection.models.length === 0 ||
+                      resource === undefined
+                    }
                     onClick={(): void => handleRemove('minusButton')}
                   />
                 ) : undefined}
