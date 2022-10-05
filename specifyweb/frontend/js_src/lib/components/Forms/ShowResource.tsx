@@ -27,7 +27,7 @@ export function ShowResource({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
   // Look to see if we are in the context of a recordset
-  const [recordsetid = ''] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
   const recordSet = React.useMemo(
     () =>
