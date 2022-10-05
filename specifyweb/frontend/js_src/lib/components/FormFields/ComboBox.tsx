@@ -131,9 +131,7 @@ export function Combobox({
     return (
       <FormattersPickList
         {...props}
-        field={schema.models.PickList.strictGetLiteralField(
-          'fieldNameformatter'
-        )}
+        field={schema.models.PickList.strictGetLiteralField('formatter')}
       />
     );
   else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
