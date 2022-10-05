@@ -26,20 +26,17 @@ function List({
   readonly displayFieldName: string;
 }): JSX.Element {
   const [entries] = useAsyncState(
-    React.useCallback(
-      async () =>
-        Promise.all(
-          resources.map((resource) => resource.rgetPromise(fieldName))
-        ).then((resources: RA<SpecifyResource<AnySchema>>) =>
-          resources
-            .map((resource) => ({
-              label: resource.get(displayFieldName),
-              href: resource.viewUrl(),
-            }))
-            .sort(sortFunction(({ label }) => label))
-        ),
-      [resources, fieldName, displayFieldName]
-    ),
+    React.useCallback(async () => {
+      const interactions: RA<SpecifyResource<AnySchema>> = await Promise.all(
+        resources.map((resource) => resource.rgetPromise(fieldName))
+      );
+      return interactions
+        .map((resource) => ({
+          label: resource.get(displayFieldName),
+          href: resource.viewUrl(),
+        }))
+        .sort(sortFunction(({ label }) => label));
+    }, [resources, fieldName, displayFieldName]),
     false
   );
 
@@ -89,10 +86,9 @@ export function ShowLoansCommand({
                 preparation: preparation.get('id'),
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
-          exchanges: hasTablePermission('GiftPreparation', 'read')
-            ? fetchCollection('GiftPreparation', {
+          exchanges: hasTablePermission('ExchangeOutPrep', 'read')
+            ? fetchCollection('ExchangeOutPrep', {
                 limit: DEFAULT_FETCH_LIMIT,
-
                 preparation: preparation.get('id'),
               }).then(({ records }) => records.map(deserializeResource))
             : undefined,
