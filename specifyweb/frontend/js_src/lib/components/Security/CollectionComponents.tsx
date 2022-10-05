@@ -145,8 +145,8 @@ export function CollectionRoles({
           <CreateCollectionRoleButton
             collectionId={collection.id}
             isDisabled={
-              !Array.isArray(roles) &&
-              hasPermission('/permissions/user/roles', 'read', collection.id)
+              roles === undefined ||
+              !hasPermission('/permissions/user/roles', 'read', collection.id)
             }
           />
         ) : undefined}
