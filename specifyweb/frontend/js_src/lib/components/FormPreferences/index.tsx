@@ -82,7 +82,9 @@ function PreferencesDialog({
           <CarryForwardButton model={resource.specifyModel} />
           <AutoNumbering resource={resource} />
           <Definition model={resource.specifyModel} />
-          <ReadOnlyMode isNew={resource.isNew()} />
+          {subView === undefined ? (
+            <ReadOnlyMode isNew={resource.isNew()} />
+          ) : undefined}
           <GenerateLabel
             id={undefined}
             label={formsText('printLabel')}
