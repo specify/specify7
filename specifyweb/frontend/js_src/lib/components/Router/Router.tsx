@@ -69,6 +69,10 @@ export function Router(): JSX.Element {
   const state = location.state as States;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
+  const backgroundUrl =
+    typeof background === 'object'
+      ? `${background.pathname}${background.search}${background.hash}`
+      : undefined;
   const originalLocation =
     state?.type === 'NoopRoute' ? state.originalLocation : undefined;
   const isNotFoundPage = state?.type === 'NotFoundPage';
@@ -100,8 +104,8 @@ export function Router(): JSX.Element {
   ) : (
     <>
       {main}
-      <Overlay backgroundUrl={background?.pathname} overlay={overlay} />
-      <UnloadProtect backgroundPath={background?.pathname} />
+      <Overlay backgroundUrl={backgroundUrl} overlay={overlay} />
+      <UnloadProtect backgroundPath={backgroundUrl} />
     </>
   );
 }
