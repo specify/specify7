@@ -30,7 +30,10 @@ export function AttachmentCell({
     | ((model: SpecifyModel, recordId: number) => void)
     | undefined;
 }): JSX.Element {
-  const model = getAttachmentModel(attachment.tableID);
+  const model =
+    typeof attachment.tableID === 'number'
+      ? getAttachmentModel(attachment.tableID)
+      : undefined;
 
   const [thumbnail] = useAsyncState(
     React.useCallback(async () => fetchThumbnail(attachment), [attachment]),

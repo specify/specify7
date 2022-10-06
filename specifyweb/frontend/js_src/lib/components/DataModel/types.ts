@@ -600,7 +600,7 @@ export type Attachment = {
     readonly scopeType: number | null;
     readonly subjectOrientation: string | null;
     readonly subtype: string | null;
-    readonly tableID: number;
+    readonly tableID: number | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly title: string | null;
