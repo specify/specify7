@@ -98,7 +98,7 @@ export function CreateAppResource(): JSX.Element {
                 <td>
                   <Button.LikeLink
                     onClick={(): void => {
-                      setMimeType(mimeType);
+                      setMimeType(mimeType ?? '');
                       setName(name);
                     }}
                   >
@@ -122,7 +122,7 @@ export function CreateAppResource(): JSX.Element {
   ) : (
     <EditAppResource
       directory={directory}
-      mimeType={mimeType}
+      mimeType={mimeType || undefined}
       name={name}
       type={type}
     />
