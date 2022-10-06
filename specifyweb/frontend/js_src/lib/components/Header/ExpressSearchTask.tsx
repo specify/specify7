@@ -25,13 +25,18 @@ import {
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
+  /*
+   * Opening an overlay clears the query string, thus causing new stats
+   * requests, which fail
+   */
+  const queryRef = React.useRef(query);
   const ajaxUrl = formatUrl('/express_search/', {
-    q: query,
+    q: queryRef.current,
     limit: expressSearchFetchSize.toString(),
   });
 
   const primaryResults = usePrimarySearch(ajaxUrl);
-  const secondaryResults = useSecondarySearch(query);
+  const secondaryResults = useSecondarySearch(queryRef.current);
 
   return (
     <Container.Full>
