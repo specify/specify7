@@ -210,22 +210,26 @@ OverlayContext.displayName = 'OverlayContext';
 function UnloadProtect({
   backgroundPath,
 }: {
-  readonly backgroundPath?: string | undefined;
+  readonly backgroundPath: string | undefined;
 }): JSX.Element | null {
   const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
 
+  const backgroundPathRef = React.useRef<string | undefined>(backgroundPath);
+  React.useEffect(() => {
+    backgroundPathRef.current = backgroundPath;
+  }, [backgroundPath]);
   const { block, unblock } = useRouterBlocker(
     React.useCallback(
       async (location) =>
         new Promise((resolve, reject) =>
-          hasUnloadProtect(backgroundPath, location)
-            ? setUnloadProtect({ resolve, reject })
-            : resolve()
+          hasUnloadProtect(backgroundPathRef.current, location)
+            ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
+            : resolve('ignore')
         ),
-      [backgroundPath]
+      []
     )
   );
   /*
