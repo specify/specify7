@@ -7,7 +7,7 @@ import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
 import { listen } from '../../utils/events';
-import { setDevelopmentGlobal as setDevelopmentGlobal } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { unloadProtectEvents, UnloadProtectsContext } from '../Core/Contexts';

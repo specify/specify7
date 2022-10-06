@@ -4,7 +4,7 @@ import type {
   Discipline,
   SpAppResource,
   SpAppResourceDir,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
@@ -43,7 +43,7 @@ const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
 function getGlobalAllResources(resources: AppResources): {
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 } {
   const globalDirectories = resources.directories.filter(
     ({ discipline, collection }) => discipline === null && collection === null
@@ -98,7 +98,7 @@ const mergeDirectories = (
 
 type DirectoryChildren = {
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 };
 
 const getDirectoryChildren = (

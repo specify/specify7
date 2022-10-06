@@ -4,7 +4,7 @@
  * See more: https://docs.djangoproject.com/en/4.0/ref/csrf/
  */
 
-import { setDevelopmentGlobal as setDevelopmentGlobal } from '../types';
+import { setDevelopmentGlobal } from '../types';
 import { readCookie } from './cookies';
 
 /**

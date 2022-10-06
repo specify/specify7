@@ -6,10 +6,7 @@ import type { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import CodeMirror from '@uiw/react-codemirror';
 import React from 'react';
 
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { UserPreferences } from '../UserPreferences/helpers';
@@ -29,8 +26,8 @@ import { SerializedResource } from '../DataModel/helperTypes';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
-  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
+  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
   readonly data: string | null;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly onChange: (data: string | null) => void;

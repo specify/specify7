@@ -5,7 +5,7 @@
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
-import { setDevelopmentGlobal as setDevelopmentGlobal } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { group, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';

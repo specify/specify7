@@ -2,10 +2,7 @@ import React from 'react';
 
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { removeItem, replaceItem } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -38,7 +35,7 @@ export function AppResourcesAside({
   readonly initialFilters?: AppResourceFiltersType;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>
+    resource: SerializedResource<SpAppResource | SpViewSetObj>
   ) => void;
 }): JSX.Element {
   const [conformations = [], setConformations] = useCachedState(
@@ -118,7 +115,7 @@ function TreeItem({
   readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
@@ -198,7 +195,7 @@ function TreeItemResources({
   readonly resourcesTree: AppResourcesTree[number];
   readonly isReadOnly: boolean;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
@@ -242,9 +239,9 @@ function ResourceItem({
   resource,
   onOpen: handleOpen,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
     | undefined;
 }): JSX.Element {
   const url =

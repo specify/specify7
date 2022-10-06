@@ -11,11 +11,7 @@ import React from 'react';
 
 import { getAppResourceType } from './filtersHelpers';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-  SpViewSetObj as SpViewSetObject_,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
@@ -34,7 +30,7 @@ import { usePref } from '../UserPreferences/usePref';
 export function AppResourceIcon({
   resource,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
 }): JSX.Element {
   if (resource._tableName === 'SpViewSetObj')
     return appResourceTypes.viewSets.icon;
@@ -107,7 +103,7 @@ export function AppResourceDownload({
   resource,
   data,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly data: string;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
@@ -131,8 +127,8 @@ export function AppResourceDownload({
 
 const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
 export function useCodeMirrorExtensions(
-  resource: SerializedResource<SpAppResource | SpViewSetObject_>,
-  appResource: SpecifyResource<SpAppResource | SpViewSetObject_>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
+  appResource: SpecifyResource<SpAppResource | SpViewSetObj>
 ): RA<Extension> {
   const [lineWrap] = usePref('appResources', 'behavior', 'lineWrap');
   const [indentSize] = usePref('appResources', 'behavior', 'indentSize');
