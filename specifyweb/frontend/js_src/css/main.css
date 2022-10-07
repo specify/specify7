@@ -221,6 +221,10 @@
     @apply top-0;
   }
 
+  optgroup {
+    @apply font-bold;
+  }
+
 }
 
 /**
