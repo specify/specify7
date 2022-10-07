@@ -213,12 +213,11 @@ export function SecurityPanel(): JSX.Element | null {
                 ...users,
                 [changedUser.id.toString()]: changedUser,
               });
-              if (typeof newUser === 'object')
-                setState({
-                  type: 'UserState',
-                  initialCollection: state.initialCollection,
-                  user: newUser,
-                });
+              setState({
+                type: 'UserState',
+                initialCollection: state.initialCollection,
+                user: newUser ?? changedUser,
+              });
             }}
             onOpenRole={(collectionId, roleId): void =>
               setState({
