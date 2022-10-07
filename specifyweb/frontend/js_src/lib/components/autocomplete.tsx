@@ -330,7 +330,7 @@ export function Autocomplete<T>({
   if (
     typeof currentItem !== 'object' ||
     typeof stableCurrentItemRef.current !== 'object' ||
-    JSON.stringify(currentItem) !== JSON.stringify(stableCurrentItemRef.current)
+    currentItem.data !== stableCurrentItemRef.current.data
   )
     stableCurrentItemRef.current = currentItem;
 
