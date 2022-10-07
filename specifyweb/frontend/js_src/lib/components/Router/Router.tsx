@@ -32,17 +32,19 @@ export function unsafeTriggerNotFound(): boolean {
   return typeof unsafeNavigate === 'undefined';
 }
 
+export type BackgroundLocation = State<
+  'BackgroundLocation',
+  {
+    readonly location: Location;
+  }
+>;
+
 /*
  * Symbol() would be better suites for this, but it can't be used because
  * state must be serializable
  */
 type States =
-  | State<
-      'BackgroundLocation',
-      {
-        readonly location: Location;
-      }
-    >
+  | BackgroundLocation
   | State<
       'NoopRoute',
       {
@@ -206,9 +208,14 @@ function Overlay({
   );
 }
 
-export const OverlayContext = React.createContext<() => void>(() => {
+function defaultOverlayContext() {
   throw new Error('Tried to close Overlay outside of an overlay');
-});
+}
+export const isOverlay = (overlayContext: () => void): boolean =>
+  overlayContext !== defaultOverlayContext;
+export const OverlayContext = React.createContext<() => void>(
+  defaultOverlayContext
+);
 OverlayContext.displayName = 'OverlayContext';
 
 function UnloadProtect({

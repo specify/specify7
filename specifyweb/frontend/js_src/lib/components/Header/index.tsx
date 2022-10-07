@@ -24,6 +24,7 @@ import { Submit } from '../Atoms/Submit';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { useTriggerState } from '../../hooks/useTriggerState';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -175,11 +176,11 @@ export function CollectionSelector(): JSX.Element {
 }
 
 export function ExpressSearch(): JSX.Element {
-  const [searchQuery = '', setSearchQuery] = useSearchParameter('q');
+  const [urlSearchQuery] = useSearchParameter('q');
+  const [searchQuery = '', setSearchQuery] = useTriggerState(urlSearchQuery);
   const navigate = useNavigate();
   return (
     <Form
-      action="/specify/express-search/"
       className="contents"
       role="search"
       onSubmit={(): void => {

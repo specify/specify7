@@ -3,17 +3,30 @@
  */
 
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-import { removeItem } from '../utils/utils';
+import { UnloadProtectsContext } from '../components/Core/Contexts';
+import type { BackgroundLocation } from '../components/Router/Router';
+import { isOverlay, OverlayContext } from '../components/Router/Router';
 import type { GetSet } from '../utils/types';
 import { defined } from '../utils/types';
-import { UnloadProtectsContext } from '../components/Core/Contexts';
+import { removeItem } from '../utils/utils';
 
 export function useSearchParameter(
   name: string | undefined
 ): GetSet<string | undefined> {
   const [queryString, setQueryString] = useSearchParams();
+
+  const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
+  const location = useLocation();
+  const isOverlayOpen =
+    (location.state as BackgroundLocation | undefined)?.type ===
+    'BackgroundLocation';
+  /*
+   * If non-overlay listens for a query string, and you open an overlay, the
+   * previous query string value should be used
+   */
+  const freezeValue = isOverlayComponent !== isOverlayOpen;
 
   /*
    * Unfortunately, setQueryString changes whenever the URL changes, which can
@@ -41,10 +54,16 @@ export function useSearchParameter(
       ),
     [name]
   );
-  return [
-    typeof name === 'string' ? queryString.get(name) ?? undefined : undefined,
-    handleChange,
-  ];
+
+  const value =
+    typeof name === 'string' ? queryString.get(name) ?? undefined : undefined;
+  const valueRef = React.useRef(value);
+  React.useEffect(() => {
+    if (freezeValue) return;
+    valueRef.current = value;
+  }, [value, freezeValue]);
+
+  return [valueRef.current, handleChange];
 }
 
 export function useUnloadProtect(
