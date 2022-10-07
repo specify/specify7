@@ -15,7 +15,7 @@ import { hasTablePermission, hasToolPermission } from './permissions';
 import { getFrontEndPickLists, unsafeGetPickLists } from './picklists';
 import { getModel, schema } from './schema';
 import { fetchRows } from './specifyapi';
-import type { RA } from './types';
+import type { R, RA } from './types';
 import { defined } from './types';
 import { fetchCollection } from './collection';
 import { deserializeResource } from './components/resource';
@@ -63,7 +63,7 @@ export async function fetchPickListItems(
   return items.map(({ value, title }) => createPickListItem(value, title));
 }
 
-export async function fetchPickList(
+async function unsafeFetchPickList(
   pickListName: string
 ): Promise<undefined | SpecifyResource<PickList>> {
   getFrontEndPickLists();
@@ -78,10 +78,9 @@ export async function fetchPickList(
       // Pick list does not exist
       return undefined;
     if (!hasToolPermission('pickLists', 'read')) return undefined;
-    pickList = await fetchCollection('PickList', {
-      name: pickListName,
-      limit: 1,
-    }).then(({ records }) => f.maybe(records[0], deserializeResource));
+    pickList = await rawFetchPickList(pickListName, true);
+    if (pickList === undefined)
+      pickList = await rawFetchPickList(pickListName, false);
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
@@ -92,6 +91,26 @@ export async function fetchPickList(
     pickList.set('pickListItems', await fetchPickListItems(pickList));
 
   return pickList;
+}
+
+const rawFetchPickList = async (
+  name: string,
+  domainFilter: boolean
+): Promise<SpecifyResource<PickList> | undefined> =>
+  fetchCollection('PickList', {
+    name,
+    limit: 1,
+    domainFilter,
+  }).then(({ records }) => f.maybe(records[0], deserializeResource));
+
+const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+  {};
+
+export async function fetchPickList(
+  pickListName: string
+): Promise<undefined | SpecifyResource<PickList>> {
+  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
+  return pickListFetchPromises[pickListName];
 }
 
 export const PickListSortType = {

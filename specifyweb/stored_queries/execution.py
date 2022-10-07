@@ -369,10 +369,6 @@ def run_ephemeral_query(collection, user, spquery):
     limit = spquery.get('limit', 20)
     offset = spquery.get('offset', 0)
     recordsetid = spquery.get('recordsetid', None)
-    if 'collectionid' in spquery:
-        collection = Collection.objects.get(pk=spquery['collectionid'])
-        logger.debug('forcing collection to %s', collection.collectionname)
-
     distinct = spquery['selectdistinct']
     tableid = spquery['contexttableid']
     count_only = spquery['countonly']

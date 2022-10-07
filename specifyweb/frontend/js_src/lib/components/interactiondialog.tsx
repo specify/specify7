@@ -12,6 +12,7 @@ import type {
   LoanPreparation,
   RecordSet,
 } from '../datamodel';
+import type { SerializedResource } from '../datamodelutils';
 import { f } from '../functools';
 import { sortFunction } from '../helpers';
 import { commonText } from '../localization/common';
@@ -27,7 +28,7 @@ import type { Collection, SpecifyModel } from '../specifymodel';
 import { toTable } from '../specifymodel';
 import type { IR, RA } from '../types';
 import { filterArray } from '../types';
-import type { InvalidParseResult, ValidParseResult } from '../uiparse';
+import type { InvalidParseResult, Parser, ValidParseResult } from '../uiparse';
 import {
   getValidationAttributes,
   parseValue,
@@ -39,9 +40,9 @@ import { AutoGrowTextArea } from './common';
 import { LoadingContext } from './contexts';
 import { useValidation } from './hooks';
 import { Dialog } from './modaldialog';
+import { usePref } from './preferenceshooks';
 import { PrepDialog } from './prepdialog';
 import { RecordSetsDialog } from './recordsetsdialog';
-import { SerializedResource } from '../datamodelutils';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -79,30 +80,8 @@ export function InteractionDialog({
       >
   >({ type: 'MainState' });
 
-  const { parser, split, attributes } = React.useMemo(() => {
-    const parser = pluralizeParser(resolveParser(searchField ?? {}));
-    // Determine which delimiters are allowed
-    const formatter = searchField?.getUiFormatter();
-    const formatted =
-      formatter?.fields.map((field) => field.value).join('') ?? '';
-    const formatterHasSpaces = formatted.includes(' ');
-    const formatterHasCommas = formatted.includes(',');
-    const delimiters = filterArray([
-      '\n',
-      formatterHasSpaces ? undefined : ' ',
-      formatterHasCommas ? undefined : ',',
-    ]);
-    return {
-      parser,
-      split: (values: string): RA<string> =>
-        values
-          .replace(new RegExp(delimiters.join('|'), 'g'), '\t')
-          .split('\t')
-          .map(f.trim)
-          .filter(Boolean),
-      attributes: getValidationAttributes(parser),
-    };
-  }, [searchField]);
+  const { parser, split, attributes } = useParser(searchField);
+
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
@@ -320,7 +299,7 @@ export function InteractionDialog({
                 </Button.Blue>
               </div>
               {state.type === 'PreparationSelectState' &&
-              Object.keys(state.problems).length !== 0 ? (
+              Object.keys(state.problems).length > 0 ? (
                 <>
                   {formsText('problemsFound')}
                   {Object.entries(state.problems).map(
@@ -353,4 +332,75 @@ export function InteractionDialog({
       )}
     </RecordSetsDialog>
   );
+}
+
+function useParser(searchField: LiteralField | undefined): {
+  readonly parser: Parser;
+  readonly split: (values: string) => RA<string>;
+  readonly attributes: IR<string>;
+} {
+  const [useSpaceAsDelimiter] = usePref(
+    'interactions',
+    'createInteractions',
+    'useSpaceAsDelimiter'
+  );
+  const [useCommaAsDelimiter] = usePref(
+    'interactions',
+    'createInteractions',
+    'useCommaAsDelimiter'
+  );
+  const [useNewLineAsDelimiter] = usePref(
+    'interactions',
+    'createInteractions',
+    'useNewLineAsDelimiter'
+  );
+  const [useCustomDelimiters] = usePref(
+    'interactions',
+    'createInteractions',
+    'useCustomDelimiters'
+  );
+
+  return React.useMemo(() => {
+    const parser = pluralizeParser(resolveParser(searchField ?? {}));
+    // Determine which delimiters are allowed
+    const formatter = searchField?.getUiFormatter();
+    const formatted =
+      formatter?.fields.map((field) => field.value).join('') ?? '';
+    const formatterHasNewLine = formatted.includes('\n');
+    const formatterHasSpaces = formatted.includes(' ');
+    const formatterHasCommas = formatted.includes(',');
+    const delimiters = filterArray([
+      (useNewLineAsDelimiter === 'auto' && !formatterHasNewLine) ||
+      useNewLineAsDelimiter === 'true'
+        ? '\n'
+        : undefined,
+      (useSpaceAsDelimiter === 'auto' && !formatterHasSpaces) ||
+      useSpaceAsDelimiter === 'true'
+        ? ' '
+        : undefined,
+      (useCommaAsDelimiter === 'auto' && !formatterHasCommas) ||
+      useCommaAsDelimiter === 'true'
+        ? ','
+        : undefined,
+      ...(useCustomDelimiters.length === 0
+        ? []
+        : useCustomDelimiters.split('\n')),
+    ]);
+    return {
+      parser,
+      split: (values): RA<string> =>
+        values
+          .replace(new RegExp(delimiters.join('|'), 'g'), '\t')
+          .split('\t')
+          .map(f.trim)
+          .filter(Boolean),
+      attributes: getValidationAttributes(parser),
+    };
+  }, [
+    searchField,
+    useSpaceAsDelimiter,
+    useCommaAsDelimiter,
+    useNewLineAsDelimiter,
+    useCustomDelimiters,
+  ]);
 }
