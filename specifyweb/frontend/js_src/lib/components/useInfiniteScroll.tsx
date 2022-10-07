@@ -21,16 +21,14 @@ export function useInfiniteScroll(
     handleFetching();
     await handleFetch();
     isFetchingRef.current = false;
-    handleFetched();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     // Fetch until there is a scroll bar
-    setTimeout(
-      (): void =>
-        scrollerRef.current !== null &&
-        scrollerRef.current.scrollWidth !== scrollerRef.current.clientWidth
-          ? void doFetch().catch(crash)
-          : undefined,
-      0
-    );
+    if (
+      scrollerRef.current !== null &&
+      scrollerRef.current.scrollHeight === scrollerRef.current.clientHeight
+    )
+      doFetch().catch(crash);
+    handleFetched();
   }, [handleFetch, scrollerRef, handleFetching, handleFetched]);
 
   React.useEffect(() => void doFetch(), []);
