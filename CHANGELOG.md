@@ -35,6 +35,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ([#2208](https://github.com/specify/specify7/issues/2208))
 - Fix Specify incorrectly checking for `Permissions -> List Admins ->
   read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
+- Fix PickLists to relationship fields not being displayed correctly
+  ([#2230](https://github.com/specify/specify7/issues/2230))
 - Fix Specify using wrong pick list when there are multiple pick lists
   with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
 
