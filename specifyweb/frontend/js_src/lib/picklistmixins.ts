@@ -52,8 +52,7 @@ export async function fetchPickListItems(
     pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
   );
 
-  if (currentItems.length > 0 || type === PickListTypes.ITEMS)
-    return currentItems;
+  if (type === PickListTypes.ITEMS) return currentItems;
   else if (type === PickListTypes.TABLE)
     items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
