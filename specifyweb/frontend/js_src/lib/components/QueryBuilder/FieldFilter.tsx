@@ -120,6 +120,7 @@ function QueryInputField({
     forwardRef: validationRef,
     autoComplete: 'on',
     name: fieldName,
+    className: 'dark:ring dark:ring-neutral-600',
     title: label,
     'aria-label': label,
     disabled: handleChange === undefined,
@@ -207,7 +208,7 @@ function QueryInputField({
         type={listInput ? 'text' : validationAttributes.type}
         // This is the actual input that is visible to user
         value={value}
-        className="!absolute inset-0"
+        className={`!absolute inset-0 ${commonProps.className}`}
       />
     </span>
   );
