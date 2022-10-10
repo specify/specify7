@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   ([#2230](https://github.com/specify/specify7/issues/2230))
 - Fix Specify using wrong pick list when there are multiple pick lists
   with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
+- Fix for query results fetcher not detecting scroll bar [(#2301)](https://github.com/specify/specify7/issues/2301)
 
 ## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...v7.7.3) (26 September 2022)
 
