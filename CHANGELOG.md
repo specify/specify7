@@ -1,10 +1,11 @@
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.3...HEAD)
+## [7.7.4](https://github.com/specify/specify7/compare/v7.7.3...v7.7.4) (10 October 2022)
 
 ### Added
 
@@ -12,9 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Plugin ([#2043](https://github.com/specify/specify7/pull/2043))
 - Allow customizing the delimiter when entering the list of catalog
   numbers when creating a new interaction
-  ([#2190](https://github.com/specify/specify7/issues/2190)) -
-  _Requested by CSIRO_
-
+  ([#2190](https://github.com/specify/specify7/issues/2190)) - _Requested by CSIRO_
+ 
 ### Changed
 
 - Having invalid query search parameters no longer prevents from running
