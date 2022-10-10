@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Plugin ([#2043](https://github.com/specify/specify7/pull/2043))
 - Allow customizing the delimiter when entering the list of catalog
   numbers when creating a new interaction
-  ([#2190](https://github.com/specify/specify7/issues/2190))
+  ([#2190](https://github.com/specify/specify7/issues/2190)) -
+  _Requested by CSIRO_
 
 ### Changed
 
@@ -31,6 +32,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix error when adding Address of Record SubView to Borrow form
   ([#2006](https://github.com/specify/specify7/pull/2006)) -
   _Reported by CSIRO_
+- Fixed autocomplete bugs on backspace key press
+  ([#2203](https://github.com/specify/specify7/issues/2203)) - _Reported
+  by Natural Science Collections Facility_
 - Fix permission checking for ephemeral queries with collection override
   ([#2208](https://github.com/specify/specify7/issues/2208))
 - Fix Specify incorrectly checking for `Permissions -> List Admins ->
