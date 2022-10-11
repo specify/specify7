@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Plugin ([#2043](https://github.com/specify/specify7/pull/2043))
 - Allow customizing the delimiter when entering the list of catalog
   numbers when creating a new interaction
-  ([#2190](https://github.com/specify/specify7/issues/2190))
+  ([#2190](https://github.com/specify/specify7/issues/2190)) -
+  _Requested by CSIRO_
 
 ### Changed
 
@@ -31,8 +32,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix error when adding Address of Record SubView to Borrow form
   ([#2006](https://github.com/specify/specify7/pull/2006)) -
   _Reported by CSIRO_
+- Fixed autocomplete bugs on backspace key press
+  ([#2203](https://github.com/specify/specify7/issues/2203)) - _Reported
+  by Natural Science Collections Facility_
+- Fix permission checking for ephemeral queries with collection override
+  ([#2208](https://github.com/specify/specify7/issues/2208))
 - Fix Specify incorrectly checking for `Permissions -> List Admins ->
   read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
+- Fix PickLists to relationship fields not being displayed correctly
+  ([#2230](https://github.com/specify/specify7/issues/2230))
+- Fix Specify using wrong pick list when there are multiple pick lists
+  with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
+- Fix for query results fetcher not detecting scroll bar [(#2301)](https://github.com/specify/specify7/issues/2301)
 
 ## [7.7.3](https://github.com/specify/specify7/compare/v7.7.2...v7.7.3) (26 September 2022)
 

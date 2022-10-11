@@ -154,13 +154,11 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
 
-  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scroller
   );
-
-  // FEATURE: add <FormPreferences /> for formTable records when expanded
 
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
@@ -176,7 +174,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
-          forwardRef={scrollerRef}
+          forwardRef={setScroller}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(

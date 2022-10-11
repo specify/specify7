@@ -172,10 +172,10 @@ export function QueryResults({
     treeRanksLoaded;
   const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
 
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     canFetchMore ? handleFetchMore : undefined,
-    scrollRef
+    scroller
   );
 
   const undefinedResult = results?.indexOf(undefined);
@@ -263,7 +263,7 @@ export function QueryResults({
               : 'grid-cols-[repeat(var(--columns),auto)]'
           }
        `}
-        ref={scrollRef}
+        ref={setScroller}
         role="table"
         style={
           {

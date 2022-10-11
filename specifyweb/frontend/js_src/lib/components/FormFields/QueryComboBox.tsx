@@ -371,7 +371,11 @@ function ProtectedQueryComboBox({
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
-        value={formatted?.label ?? commonText('loading') ?? ''}
+        value={
+          formatted?.label ??
+          formattedRef.current?.formatted ??
+          commonText('loading')
+        }
         onChange={({ data, label }): void => {
           formattedRef.current = { value: data, formatted: label.toString() };
           updateValue(data);

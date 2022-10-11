@@ -82,7 +82,7 @@ export function definePicklist(
   pickList.set('name', name);
   pickList.set('readOnly', true);
   pickList.set('isSystem', true);
-  pickList.set('type', PickListTypes.TABLE);
+  pickList.set('type', PickListTypes.ITEMS);
   pickList.set('timestampCreated', new Date().toJSON());
   pickList.set('pickListItems', items);
   return pickList;
