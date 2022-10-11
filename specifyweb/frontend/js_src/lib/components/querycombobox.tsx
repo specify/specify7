@@ -518,7 +518,11 @@ export function QueryComboBox({
                     })
             : undefined
         }
-        value={formatted?.label ?? commonText('loading') ?? ''}
+        value={
+          formatted?.label ??
+          formattedRef.current?.formatted ??
+          commonText('loading')
+        }
         pendingValueRef={pendingValueRef}
         forwardRef={validationRef}
         aria-label={undefined}
