@@ -3,22 +3,47 @@ import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
-import type { IR, RA, RR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { formatNumber } from '../Atoms/Internationalization';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
-import type { SpQueryField, Tables } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { FrontEndStatsResultDialog } from './trial';
+import { Button } from '../Atoms/Button';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { deserializeResource } from '../../hooks/resource';
 
 /** Fetch statistics from the QueryBuilderAPI. */
-export function useStatAjaxHelper(
+export function useFrontEndStatsQuery(
   tableName: keyof Tables,
   fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >
+): SpecifyResource<SpQuery> {
+  return React.useMemo(
+    () =>
+      deserializeResource(
+        addMissingFields('SpQuery', {
+          name: 'get Stat',
+          contextName: tableName,
+          contextTableId: schema.models[tableName].tableId,
+          countOnly: false,
+          selectDistinct: false,
+          fields: fields.map(({ path, ...field }) =>
+            serializeResource(makeQueryField(tableName, path, field))
+          ),
+        })
+      ),
+    [tableName, fields]
+  );
+}
+export function useFrontEndStat(
+  query: SpecifyResource<SpQuery>
 ): string | undefined {
   const [countReturn] = useAsyncState(
     React.useCallback(
@@ -31,20 +56,12 @@ export function useStatAjaxHelper(
             // eslint-disable-next-line @typescript-eslint/naming-convention
             Accept: 'application/json',
           },
-          body: keysToLowerCase(
-            addMissingFields('SpQuery', {
-              name: 'get Stat',
-              contextName: tableName,
-              contextTableId: schema.models[tableName].tableId,
-              countOnly: true,
-              selectDistinct: false,
-              fields: fields.map(({ path, ...field }) =>
-                serializeResource(makeQueryField(tableName, path, field))
-              ),
-            })
-          ),
+          body: keysToLowerCase({
+            ...serializeResource(query),
+            countOnly: true,
+          }),
         }).then(({ data }) => formatNumber(data.count)),
-      [tableName, fields]
+      [query]
     ),
     false
   );
@@ -52,13 +69,17 @@ export function useStatAjaxHelper(
 }
 
 export type BackendStatsResult = {
-  readonly holdings: RR<
-    'familiesRepresented' | 'generaRepresented' | 'speciesRepresented',
-    number
-  >;
-  readonly preparation: IR<RR<'lots' | 'total', number>>;
-  readonly localityGeography: RR<'countries', number>;
-  readonly typeSpecimen: IR<number>;
+  readonly holdings: {
+    readonly familiesRepresented: number;
+    readonly generaRepresented: number;
+    readonly speciesRepresented: number;
+  };
+  readonly preparations: IR<{
+    readonly lots: number;
+    readonly total: number;
+  }>;
+  readonly localityGeography: { readonly countries: number };
+  readonly typeSpecimens: IR<number>;
 };
 
 export type QueryBuildStat = State<
@@ -77,3 +98,21 @@ export type BackendStat = State<
 >;
 
 export type StatItemSpec = BackendStat | QueryBuildStat;
+
+export function FrontEndStatsResult({
+  statValue,
+  query,
+}: {
+  readonly statValue: string | undefined;
+  readonly query: SpecifyResource<SpQuery>;
+}): JSX.Element {
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  return (
+    <>
+      <Button.LikeLink onClick={handleOpen}>{statValue}</Button.LikeLink>
+      {isOpen && (
+        <FrontEndStatsResultDialog query={query} onClose={handleClose} />
+      )}
+    </>
+  );
+}
