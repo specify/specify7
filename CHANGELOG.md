@@ -1,9 +1,12 @@
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [Unreleased](https://github.com/specify/specify7/compare/v7.7.3...HEAD)
+
+No unreleased changes
 
 ## [7.7.4](https://github.com/specify/specify7/compare/v7.7.3...v7.7.4) (10 October 2022)
 
@@ -14,11 +17,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Allow customizing the delimiter when entering the list of catalog
   numbers when creating a new interaction
   ([#2190](https://github.com/specify/specify7/issues/2190)) - _Requested by CSIRO_
- 
+
 ### Changed
 
 - Having invalid query search parameters no longer prevents from running
   the query ([#2185](https://github.com/specify/specify7/issues/2185))
+- Pick List size limit is no longer enforced
+  ([#1025](https://github.com/specify/specify7/issues/1025)) -
+  _Requested by RGBE and others_
 
 ### Fixed
 
@@ -37,8 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   by Natural Science Collections Facility_
 - Fix permission checking for ephemeral queries with collection override
   ([#2208](https://github.com/specify/specify7/issues/2208))
-- Fix Specify incorrectly checking for `Permissions -> List Admins ->
-  read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
+- Fix Specify incorrectly checking for `Permissions -> List Admins -> read` permission ([#2019](https://github.com/specify/specify7/issues/2019))
 - Fix PickLists to relationship fields not being displayed correctly
   ([#2230](https://github.com/specify/specify7/issues/2230))
 - Fix Specify using wrong pick list when there are multiple pick lists
@@ -54,12 +59,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Support customizing Collection Object formatter in Collection Relationship
   Plugin ([#2157](https://github.com/specify/specify7/pull/2157)) - _Requested
   by CSIRO and others_
-
-### Changed
-
-- Pick List size limit is no longer enforced
-  ([#1025](https://github.com/specify/specify7/issues/1025)) -
-  _Requested by RGBE and others_
 
 ### Fixed
 
