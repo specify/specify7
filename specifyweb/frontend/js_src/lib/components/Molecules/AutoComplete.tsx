@@ -108,12 +108,15 @@ export function AutoComplete<T>({
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
 }): JSX.Element {
-  const [results, setResults] = React.useState<RA<AutoCompleteItem<T>>>([]);
+  const [results, setResults] = React.useState<
+    RA<AutoCompleteItem<T>> | undefined
+  >(undefined);
+  const resultsRef = React.useRef<RA<AutoCompleteItem<T>> | undefined>(results);
 
   const [searchAlgorithm] = usePref('form', 'autoComplete', 'searchAlgorithm');
 
   const filterItems = React.useCallback(
-    (newResults: typeof results, pendingValue: string) =>
+    (newResults: RA<AutoCompleteItem<T>>, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
         : shouldFilterItems
@@ -152,6 +155,7 @@ export function AutoComplete<T>({
   const updateItems = React.useCallback(
     (items: RA<AutoCompleteItem<T>>, pendingValue: string): void => {
       setResults(items);
+      resultsRef.current = items;
       setFilteredItems(filterItems(items, pendingValue));
     },
     [filterItems]
@@ -171,6 +175,11 @@ export function AutoComplete<T>({
     ): void {
       if (typeof fetchItems !== 'function' || previousValue.current === value)
         return;
+
+      if (results === undefined) {
+        setResults([]);
+        resultsRef.current = [];
+      }
 
       previousValue.current = value;
 
@@ -207,7 +216,7 @@ export function AutoComplete<T>({
       pendingValueRef.current ??= currentValue;
   }, [currentValue, pendingValueRef]);
   React.useEffect(
-    () => setFilteredItems(filterItems(results, pendingValue)),
+    () => setFilteredItems(filterItems(results ?? [], pendingValue)),
     [pendingValue, filterItems, results]
   );
 
@@ -218,9 +227,9 @@ export function AutoComplete<T>({
    * thus the filtered list of items has only one item.
    */
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? results : filteredItems;
+  const itemSource = ignoreFilter ? results ?? [] : filteredItems;
 
-  const pendingItem = results.find(
+  const pendingItem = results?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
   );
   const showAdd =
@@ -331,10 +340,24 @@ export function AutoComplete<T>({
       [forwardRef]
     );
 
-  const currentItem =
-    results.find(
+  const [currentItem, setCurrentItem] = React.useState<
+    AutoCompleteItem<T> | string | undefined
+  >(undefined);
+  React.useEffect(() => {
+    const newCurrentItem = resultsRef.current?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
-    ) ?? currentValue;
+    );
+    setCurrentItem(
+      newCurrentItem === undefined
+        ? currentValue
+        : (currentItem) =>
+            currentItem === undefined ||
+            typeof currentItem === 'string' ||
+            newCurrentItem.data !== currentItem.data
+              ? newCurrentItem
+              : currentItem
+    );
+  }, [currentValue]);
 
   return (
     <Combobox
@@ -403,6 +426,11 @@ export function AutoComplete<T>({
              * Highlight relevant part of the string.
              * Note, if item.searchValue and item.value is different,
              * label might not be highlighted even if it matched
+             * Also, highlighting might be confusing as it highlights any part
+             * of the string (i.e, it behaves like case-insensitive "contains"
+             * search), where as the search algorithm might actually be
+             * case-sensitive and/or search for values with query as a prefix
+             * only
              */
             const stringLabel =
               typeof item.label === 'string' ? item.label : undefined;

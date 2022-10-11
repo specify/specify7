@@ -354,7 +354,7 @@ function ProtectedQueryComboBox({
           formType === 'formTable' ||
           typeSearch === undefined ||
           /**
-           * Don't disable the input if it is currenlty focused
+           * Don't disable the input if it is currently focused
            * Fixes https://github.com/specify/specify7/issues/2142
            */
           (formatted === undefined &&
