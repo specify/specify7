@@ -7,7 +7,14 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { RA } from '../../utils/types';
 import { StatCategoryReturn, statsSpec } from './StatsSpec';
-import { BackendStatsResult, useStatAjaxHelper } from './utils';
+import {
+  BackendStatsResult,
+  useFrontEndStat,
+  FrontEndStatsResult,
+  useFrontEndStatsQuery,
+} from './utils';
+import { H2, H3 } from '../Atoms';
+import { statsText } from '../../localization/stats';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -31,93 +38,46 @@ export function StatsPage(): JSX.Element {
   const backEndResult = useBackendApi();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100%',
-        gap: '1rem',
-        flexDirection: 'column',
-        margin: '0 auto',
-        padding: '5%',
-        paddingTop: '0',
-      }}
-      className="bg-gray-200"
-    >
-      <h1
-        style={{
-          fontSize: '2rem',
-          fontWeight: 'initial',
-        }}
-      >
-        Collection Statistics
-      </h1>
+    <div className="mx-auto mt-0 flex h-full flex-col gap-4 bg-gray-200 p-4">
+      <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(20rem,1fr))',
-          gridTemplateRows: 'masonry',
-          gap: '1rem',
-        }}
-      >
-        {Object.entries(statsObjectCombined).map(function getStatNameCat([
-          categoryName,
-          { label, categories },
-        ]) {
-          const statObject = (
-            categories as (
-              backendStatsResult:
-                | BackendStatsResult[typeof categoryName]
-                | undefined
-            ) => StatCategoryReturn
-          )(backEndResult?.[categoryName]);
-          return (
-            <div
-              className="border-[1px] bg-white"
-              style={{
-                display: 'block',
-                borderColor: 'black',
-                borderRadius: '1rem',
-                padding: '1rem',
-                alignContent: 'center',
-              }}
-            >
-              <h1>
-                <b>{label}</b>
-              </h1>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
+        {Object.entries(statsObjectCombined).map(
+          ([categoryName, { label, categories }]) => {
+            const statObject = (
+              categories as (
+                backendStatsResult:
+                  | BackendStatsResult[typeof categoryName]
+                  | undefined
+              ) => StatCategoryReturn
+            )(backEndResult?.[categoryName]);
+            return (
+              <div className="block content-center rounded border-[1px] border-black bg-white p-4">
+                <H3 className="font-bold">{label}</H3>
 
-              {statObject === undefined
-                ? commonText('loading')
-                : Object.entries(statObject).map(function getstatValue([
-                    key,
-                    { label, spec },
-                  ]) {
-                    const statValue =
-                      spec.type === 'Querybuildstat' ? (
-                        <QueryBuilderStat
-                          tableName={spec.tableName}
-                          fields={spec.fields}
-                        />
-                      ) : (
-                        spec.value ?? commonText('loading')
+                {statObject === undefined
+                  ? commonText('loading')
+                  : Object.entries(statObject).map(([key, { label, spec }]) => {
+                      const statValue =
+                        spec.type === 'Querybuildstat' ? (
+                          <QueryBuilderStat
+                            tableName={spec.tableName}
+                            fields={spec.fields}
+                          />
+                        ) : (
+                          spec.value ?? commonText('loading')
+                        );
+                      return (
+                        <p key={key} className="flex justify-between">
+                          <span>{label}</span>
+                          <span>{statValue}</span>
+                        </p>
                       );
-                    return (
-                      <div
-                        key={key}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <h4>{label}</h4>
-                        <h6>{statValue}</h6>
-                      </div>
-                    );
-                  })}
-            </div>
-          );
-        })}
+                    })}
+              </div>
+            );
+          }
+        )}
       </div>
     </div>
   );
@@ -132,9 +92,14 @@ function QueryBuilderStat({
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >;
 }): JSX.Element {
-  const sss = useStatAjaxHelper(
+  const frontEndQuery = useFrontEndStatsQuery(
     tableName,
     React.useMemo(() => fields, [])
   );
-  return <>{sss ?? commonText('loading')}</>;
+  const frontEndStatValue = useFrontEndStat(frontEndQuery);
+  return frontEndStatValue === 'undefined' ? (
+    <>{commonText('loading')}</>
+  ) : (
+    <FrontEndStatsResult statValue={frontEndStatValue} query={frontEndQuery} />
+  );
 }
