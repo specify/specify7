@@ -3,6 +3,7 @@ import type { IR } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import type { BackendStatsResult, BackendStat, StatItemSpec } from './utils';
+import { statsText } from '../../localization/stats';
 
 function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
   backendobject: BackendStatsResult[CATEGORY_NAME] | undefined,
@@ -49,11 +50,11 @@ type StatsSpec =
 
 export const statsSpec: StatsSpec = {
   holdings: {
-    label: 'Holdings',
+    label: statsText('holdings'),
     categories(backendStatsResult) {
       return {
-        specimen: {
-          label: 'Specimens',
+        specimens: {
+          label: statsText('specimens'),
 
           spec: {
             type: 'Querybuildstat',
@@ -61,16 +62,16 @@ export const statsSpec: StatsSpec = {
             fields: [],
           },
         },
-        preparation: {
-          label: 'Preparations',
+        preparations: {
+          label: statsText('preparations'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Preparation',
             fields: [{ position: 0, path: 'countAmt' }],
           },
         },
-        typeSpecimen: {
-          label: 'Type Specimens',
+        typeSpecimens: {
+          label: statsText('typeSpecimens'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Determination',
@@ -85,21 +86,21 @@ export const statsSpec: StatsSpec = {
           },
         },
         familiesRepresented: {
-          label: 'Families Represented',
+          label: statsText('familiesRepresented'),
           spec: {
             type: 'Backendstat',
             value: backendStatsResult?.familiesRepresented,
           },
         },
         generaRepresented: {
-          label: 'Genera Represented',
+          label: statsText('generaRepresented'),
           spec: {
             type: 'Backendstat',
             value: backendStatsResult?.generaRepresented,
           },
         },
         speciesRepresented: {
-          label: 'Species Represented',
+          label: statsText('speciesRepresented'),
           spec: {
             type: 'Backendstat',
             value: backendStatsResult?.speciesRepresented,
@@ -108,10 +109,10 @@ export const statsSpec: StatsSpec = {
       };
     },
   },
-  preparation: {
-    label: 'Preparations',
+  preparations: {
+    label: statsText('preparations'),
     categories: (backendStatsResult) =>
-      modifyBackendResult<'preparation'>(
+      modifyBackendResult<'preparations'>(
         backendStatsResult,
         (prepelement) =>
           `${formatNumber(prepelement.lots)} / ${formatNumber(
@@ -120,25 +121,25 @@ export const statsSpec: StatsSpec = {
       ),
   },
   loans: {
-    label: 'Loans',
+    label: statsText('loans'),
     categories() {
       return {
         itemsOnLoans: {
-          label: 'Items on Loans',
+          label: statsText('itemsOnLoans'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'LoanPreparation',
             fields: [
               {
                 position: 0,
-                path: 'Loan.isClosed',
+                path: 'loan.isClosed',
                 operStart: queryFieldFilters.falseOrNull.id,
               },
             ],
           },
         },
         openLoansCount: {
-          label: 'Open Loans Count',
+          label: statsText('openLoansCount'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Loan',
@@ -151,8 +152,8 @@ export const statsSpec: StatsSpec = {
             ],
           },
         },
-        overdueLoanCount: {
-          label: 'Overdue Loans Count',
+        overdueLoansCount: {
+          label: statsText('overdueLoansCount'),
 
           spec: {
             type: 'Querybuildstat',
@@ -176,11 +177,11 @@ export const statsSpec: StatsSpec = {
     },
   },
   taxonomicTree: {
-    label: 'Taxonomic Tree',
+    label: statsText('taxonomicTree'),
     categories() {
       return {
         classesCount: {
-          label: 'Classes',
+          label: statsText('classes'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Taxon',
@@ -195,7 +196,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         ordersCount: {
-          label: 'Orders',
+          label: statsText('orders'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Taxon',
@@ -210,7 +211,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         familiesCount: {
-          label: 'Families',
+          label: statsText('families'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Taxon',
@@ -225,7 +226,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         generaCount: {
-          label: 'Genera',
+          label: statsText('genera'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Taxon',
@@ -240,7 +241,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         speciesCount: {
-          label: 'Species',
+          label: statsText('species'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Taxon',
@@ -258,11 +259,11 @@ export const statsSpec: StatsSpec = {
     },
   },
   localityGeography: {
-    label: 'Locality / Geography',
+    label: statsText('localityGeography'),
     categories(backendStatsResult) {
       return {
         localityCount: {
-          label: 'Locality Count',
+          label: statsText('localityCount'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Locality',
@@ -276,7 +277,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         geographyEntryCount: {
-          label: 'Geography Entry Count',
+          label: statsText('geographyEntryCount'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Geography',
@@ -290,14 +291,14 @@ export const statsSpec: StatsSpec = {
           },
         },
         countriesCount: {
-          label: 'Countries',
+          label: statsText('countriesCount'),
           spec: {
             type: 'Backendstat',
             value: backendStatsResult?.countries,
           },
         },
         georeferencedLocalityCount: {
-          label: 'Georeferenced Localities Count',
+          label: statsText('georeferencedLocalityCount'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Locality',
@@ -314,13 +315,13 @@ export const statsSpec: StatsSpec = {
       };
     },
   },
-  typeSpecimen: {
-    label: 'Type Specimens',
+  typeSpecimens: {
+    label: statsText('typeSpecimens'),
     categories: (backendStatsResult) =>
-      modifyBackendResult<'typeSpecimen'>(backendStatsResult, formatNumber),
+      modifyBackendResult<'typeSpecimens'>(backendStatsResult, formatNumber),
   },
   catalogStats: {
-    label: 'Collection Catalogs',
+    label: statsText('catalogStats'),
     categories() {
       const local = new Date();
       const initialDate = getDateInputValue(local);
@@ -333,7 +334,7 @@ export const statsSpec: StatsSpec = {
       const initialDateYearPast = getDateInputValue(local);
       return {
         catalogedLast7Days: {
-          label: 'Cataloged Last 7 Days',
+          label: statsText('catalogedLast7Days'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
@@ -348,7 +349,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         catalogedLast30Days: {
-          label: 'Cataloged Last 30 Days',
+          label: statsText('catalogedLast30Days'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
@@ -363,7 +364,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         catalogedLastYear: {
-          label: 'Cataloged Last year',
+          label: statsText('catalogedLastYear'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
