@@ -142,10 +142,10 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
 
-  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scrollerRef
+    scroller
   );
 
   // FEATURE: add <FormPreferences /> for formTable records when expanded
@@ -176,7 +176,7 @@ export function FormTable<SCHEMA extends AnySchema>({
             }`,
             maxHeight: `${maxHeight}px`,
           }}
-          forwardRef={scrollerRef}
+          forwardRef={setScroller}
           onScroll={handleScroll}
         >
           <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
@@ -474,7 +474,7 @@ export function FormTableCollection({
         setRecords(Array.from(collection.models));
         handleDelete?.(resource);
       }}
-      onFetchMore={handleFetchMore}
+      onFetchMore={collection.isComplete() ? undefined : handleFetchMore}
       {...props}
     />
   );

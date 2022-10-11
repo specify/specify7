@@ -8,7 +8,7 @@ import { useBooleanState } from './hooks';
  */
 export function useInfiniteScroll(
   handleFetch: (() => Promise<void>) | undefined,
-  scrollerRef: React.RefObject<HTMLElement | null>
+  scroller: HTMLElement | null
 ): {
   readonly isFetching: boolean;
   readonly handleScroll: (event: React.UIEvent<HTMLElement>) => void;
@@ -23,15 +23,15 @@ export function useInfiniteScroll(
     isFetchingRef.current = false;
     await new Promise((resolve) => setTimeout(resolve, 0));
     // Fetch until there is a scroll bar
-    if (
-      scrollerRef.current !== null &&
-      scrollerRef.current.scrollHeight === scrollerRef.current.clientHeight
-    )
+    if (scroller !== null && scroller.scrollHeight === scroller.clientHeight)
       doFetch().catch(crash);
     handleFetched();
-  }, [handleFetch, scrollerRef, handleFetching, handleFetched]);
+  }, [handleFetch, scroller, handleFetching, handleFetched]);
 
-  React.useEffect(() => void doFetch(), []);
+  React.useEffect(
+    () => (typeof scroller === 'object' ? void doFetch() : undefined),
+    [scroller]
+  );
 
   return {
     isFetching,

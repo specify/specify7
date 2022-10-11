@@ -350,10 +350,10 @@ export function QueryResultsTable({
     treeRanksLoaded === true;
   const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
 
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     canFetchMore ? handleFetchMore : undefined,
-    scrollRef
+    scroller
   );
 
   return (
@@ -433,7 +433,7 @@ export function QueryResultsTable({
             '--columns': fieldSpecs.length,
           } as React.CSSProperties
         }
-        ref={scrollRef}
+        ref={setScroller}
         onScroll={
           showResults && (isFetching || !canFetchMore)
             ? undefined
