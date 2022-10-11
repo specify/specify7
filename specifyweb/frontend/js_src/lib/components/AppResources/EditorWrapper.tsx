@@ -7,7 +7,7 @@ import { getAppResourceMode } from './helpers';
 import type {
   SpAppResource,
   SpAppResourceDir,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { fetchResource } from '../DataModel/resource';
@@ -41,7 +41,7 @@ export function Wrapper({
   const navigate = useNavigate();
   const state = location.state as
     | {
-        readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
+        readonly resource?: SerializedResource<SpAppResource | SpViewSetObj>;
         readonly directoryKey?: string;
         readonly initialDataFrom?: number;
       }
@@ -107,10 +107,10 @@ export function Wrapper({
 }
 
 function useAppResource(
-  resource: SerializedResource<SpAppResource | SpViewSetObject> | undefined,
+  resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources,
   mode: AppResourceMode
-): SerializedResource<SpAppResource | SpViewSetObject> | undefined {
+): SerializedResource<SpAppResource | SpViewSetObj> | undefined {
   const { id } = useParams();
   return React.useMemo(
     () =>
@@ -141,7 +141,7 @@ function useInitialData(
 
 function useDirectory(
   directoryKey: string | undefined,
-  resource: SerializedResource<SpAppResource | SpViewSetObject> | undefined,
+  resource: SerializedResource<SpAppResource | SpViewSetObj> | undefined,
   resources: AppResources
 ): SerializedResource<SpAppResourceDir> | undefined {
   const resourcesTree = useResourcesTree(resources);

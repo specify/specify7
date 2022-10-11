@@ -12,7 +12,7 @@ import { Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
+import { getResourceApiUrl, resourceOn } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import type { PickList } from '../DataModel/types';
 import type {
@@ -39,6 +39,24 @@ export function PickListComboBox(
       ? (value as SpecifyResource<AnySchema>)?.url() ?? null
       : (value as number | string)?.toString() ?? null;
   }, [props.resource, props.field?.name]);
+
+  const relatedModel = props.field.isRelationship
+    ? props.field.relatedModel.name
+    : undefined;
+  const items = React.useMemo(
+    () =>
+      typeof relatedModel === 'string'
+        ? props.items?.map((item) =>
+            typeof f.parseInt(item.value) === 'number'
+              ? {
+                  ...item,
+                  value: getResourceApiUrl(relatedModel, item.value),
+                }
+              : item
+          )
+        : props.items,
+    [props.items, relatedModel]
+  );
 
   const [value, setValue] = React.useState<string | null>(getValue);
 
@@ -69,30 +87,30 @@ export function PickListComboBox(
     if (
       props.resource.isNew() &&
       typeof props.defaultValue === 'string' &&
-      Array.isArray(props.items) &&
+      Array.isArray(items) &&
       !Boolean(props.resource.get(props.field.name))
     ) {
       const defaultItem =
-        props.items.find(({ value }) => value === props.defaultValue) ??
-        props.items.find(({ title }) => title === props.defaultValue);
+        items.find(({ value }) => value === props.defaultValue) ??
+        items.find(({ title }) => title === props.defaultValue);
       if (typeof defaultItem === 'object') updateValue(defaultItem.value);
       else
         console.warn(
           'default value for picklist is not a member of the picklist',
-          [props.items, props.resource, props.defaultValue]
+          [items, props.resource, props.defaultValue]
         );
     }
-  }, [props.items, props.resource, props.defaultValue, updateValue]);
+  }, [items, props.resource, props.defaultValue, updateValue]);
 
   // Warn on duplicates
   React.useEffect(() => {
-    const values = props.items?.map(({ value }) => value) ?? [];
+    const values = items?.map(({ value }) => value) ?? [];
     if (values.length !== new Set(values).size)
       console.error('Duplicate picklist entries found', [
-        props.items,
+        items,
         props.resource,
       ]);
-  }, [props.items, props.resource]);
+  }, [items, props.resource]);
 
   const errors = useSaveBlockers({
     resource: props.model,
@@ -108,10 +126,10 @@ export function PickListComboBox(
   React.useEffect(
     () =>
       typeof pendingNewValue === 'string' &&
-      props.items?.some(({ value }) => value === pendingNewValue) === true
+      items?.some(({ value }) => value === pendingNewValue) === true
         ? updateValue(pendingNewValue)
         : undefined,
-    [props.items, pendingNewValue, updateValue]
+    [items, pendingNewValue, updateValue]
   );
 
   function addNewValue(value: string): void {
@@ -122,26 +140,26 @@ export function PickListComboBox(
     else throw new Error('adding item to wrong type of picklist');
   }
 
-  const currentValue = props.items?.find((item) => item.value === value);
+  const currentValue = items?.find((item) => item.value === value);
   const isExistingValue =
-    props.items === undefined || typeof currentValue === 'object';
+    items === undefined || typeof currentValue === 'object';
 
   const autocompleteItems = React.useMemo(
     () =>
-      props.items
+      items
         ?.filter(({ value }) => Boolean(value))
         .map((item) => ({
           label: item.title,
           data: item.value,
         })) ?? [],
-    [props.items]
+    [items]
   );
 
   const handleAdd = hasToolPermission('pickLists', 'create')
     ? props.onAdd
     : undefined;
 
-  const isDisabled = props.isDisabled || props.items === undefined;
+  const isDisabled = props.isDisabled || items === undefined;
   const isRequired =
     ('required' in validationAttributes || props.isRequired) &&
     props.mode !== 'search';
@@ -168,7 +186,7 @@ export function PickListComboBox(
           onValueChange={(newValue): void =>
             newValue === ''
               ? updateValue('')
-              : props.items?.some(({ value }) => value === newValue) === true
+              : items?.some(({ value }) => value === newValue) === true
               ? updateValue(newValue)
               : undefined
           }
@@ -184,7 +202,7 @@ export function PickListComboBox(
               {queryText('invalidPicklistValue', value)}
             </option>
           )}
-          {props.items?.map(({ title, value }) => (
+          {items?.map(({ title, value }) => (
             // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>
               {title}

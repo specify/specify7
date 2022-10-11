@@ -1,21 +1,25 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useSearchParameter } from '../../hooks/navigation';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { Input } from '../Atoms/Form';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
 import { userInformation } from '../InitialContext/userInformation';
-import { Input } from '../Atoms/Form';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
-import {CopyButton} from '../Molecules/Copy';
+import { CopyButton } from '../Molecules/Copy';
+import { formatUrl } from '../Router/queryString';
 
 export function ShareRecord({
   resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
+  const [recordsetid] = useSearchParameter('recordsetid');
+  const recordSetId = f.parseInt(recordsetid);
   const collectionCode =
     userInformation.availableCollections.find(
       ({ id }) => schema.domainLevelIds.collection === id
@@ -26,7 +30,14 @@ export function ShareRecord({
     ) ?? '';
   const rawUrl =
     collectionCode.length > 0 && catalogNumber.length > 0
-      ? `/specify/bycatalog/${collectionCode}/${catalogNumber}`
+      ? formatUrl(
+          `/specify/bycatalog/${collectionCode}/${catalogNumber}`,
+          typeof recordSetId === 'number'
+            ? {
+                recordSetId: recordSetId?.toString(),
+              }
+            : {}
+        )
       : getResourceViewUrl(
           resource.specifyModel.name,
           resource.id,

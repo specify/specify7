@@ -112,11 +112,8 @@ function ProtectedQueryComboBox({
     treeData !== undefined &&
     collectionRelationships !== undefined &&
     typeSearch !== undefined;
-  const { value, updateValue, validationRef, parser } = useResourceValue(
-    resource,
-    field.name,
-    undefined
-  );
+  const { value, updateValue, validationRef, inputRef, parser } =
+    useResourceValue(resource, field.name, undefined);
 
   /**
    * When resource is saved, a new instance of dependent resources is created.
@@ -247,11 +244,11 @@ function ProtectedQueryComboBox({
       f.maybe(
         (typeof typeSearch === 'object'
           ? typeSearch.searchFields.find(
-              (searchField) =>
+              ([searchField]) =>
                 !searchField.isRelationship &&
                 searchField.model === relationship.relatedModel &&
                 !searchField.isReadOnly
-            )?.name
+            )?.[0].name
           : undefined) ??
           getMainTableFields(relationship.relatedModel.name)[0]?.name,
         (fieldName) => ({ [fieldName]: pendingValueRef.current })
@@ -263,9 +260,9 @@ function ProtectedQueryComboBox({
       isLoaded && typeof typeSearch === 'object'
         ? Promise.all(
             typeSearch.searchFields
-              .map(({ name: fieldName }) =>
+              .map((fields) =>
                 makeComboBoxQuery({
-                  fieldName,
+                  fieldName: fields.map(({ name }) => name).join('.'),
                   value,
                   isTreeTable:
                     field.isRelationship &&
@@ -273,7 +270,7 @@ function ProtectedQueryComboBox({
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
-                    fieldName,
+                    fieldName: fields.map(({ name }) => name).join('.'),
                     collectionRelationships:
                       typeof collectionRelationships === 'object'
                         ? collectionRelationships
@@ -342,6 +339,11 @@ function ProtectedQueryComboBox({
     ]
   );
 
+  const canAdd =
+    field?.isRelationship === true &&
+    !RESTRICT_ADDING.has(field.relatedModel.name) &&
+    hasTablePermission(field.relatedModel.name, 'create');
+
   return (
     <div className="flex w-full items-center">
       <AutoComplete<string>
@@ -350,8 +352,13 @@ function ProtectedQueryComboBox({
           !isLoaded ||
           mode === 'view' ||
           formType === 'formTable' ||
-          typeof typeSearch === 'undefined' ||
-          typeof formatted === 'undefined'
+          typeSearch === undefined ||
+          /**
+           * Don't disable the input if it is currently focused
+           * Fixes https://github.com/specify/specify7/issues/2142
+           */
+          (formatted === undefined &&
+            document.activeElement !== inputRef.current)
         }
         filterItems={false}
         forwardRef={validationRef}
@@ -364,20 +371,25 @@ function ProtectedQueryComboBox({
         }}
         pendingValueRef={pendingValueRef}
         source={fetchSource}
-        value={formatted?.label ?? commonText('loading') ?? ''}
+        value={
+          formatted?.label ??
+          formattedRef.current?.formatted ??
+          commonText('loading')
+        }
         onChange={({ data, label }): void => {
           formattedRef.current = { value: data, formatted: label.toString() };
           updateValue(data);
         }}
         onCleared={(): void => updateValue('', false)}
-        onNewValue={(): void =>
-          field.isRelationship
-            ? state.type === 'AddResourceState'
-              ? setState({ type: 'MainState' })
-              : setState({
-                  type: 'AddResourceState',
-                  resource: pendingValueToResource(field),
-                })
+        onNewValue={
+          formType !== 'formTable' && canAdd
+            ? (): void =>
+                state.type === 'AddResourceState'
+                  ? setState({ type: 'MainState' })
+                  : setState({
+                      type: 'AddResourceState',
+                      resource: pendingValueToResource(field),
+                    })
             : undefined
         }
       />
@@ -405,22 +417,17 @@ function ProtectedQueryComboBox({
               }
               onClick={handleOpenRelated}
             />
-            {field === undefined ||
-            !field.isRelationship ||
-            (!RESTRICT_ADDING.has(field.relatedModel.name) &&
-              hasTablePermission(field.relatedModel.name, 'create')) ? (
+            {canAdd ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                onClick={
-                  field.isRelationship
-                    ? (): void =>
-                        state.type === 'AddResourceState'
-                          ? setState({ type: 'MainState' })
-                          : setState({
-                              type: 'AddResourceState',
-                              resource: pendingValueToResource(field),
-                            })
-                    : undefined
+                disabled={field?.isRelationship !== true}
+                onClick={(): void =>
+                  state.type === 'AddResourceState'
+                    ? setState({ type: 'MainState' })
+                    : setState({
+                        type: 'AddResourceState',
+                        resource: pendingValueToResource(field),
+                      })
                 }
               />
             ) : undefined}

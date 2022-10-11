@@ -30,6 +30,7 @@ export function QueryTablesEdit({
       defaultTables={defaultQueryTablesConfig}
       isNoRestrictionMode={isNoRestrictionMode}
       models={models}
+      header={queryText('configureQueryTables')}
       onChange={setModels}
       onClose={handleClose}
     />
@@ -39,12 +40,14 @@ export function QueryTablesEdit({
 export function TablesListEdit({
   isNoRestrictionMode,
   defaultTables,
+  header,
   models: selectedModels,
   onChange: handleRawChange,
   onClose: handleClose,
 }: {
   readonly isNoRestrictionMode: boolean;
   readonly defaultTables: RA<keyof Tables>;
+  readonly header: string;
   readonly models: RA<SpecifyModel>;
   readonly onChange: (models: RA<SpecifyModel>) => void;
   readonly onClose: () => void;
@@ -134,7 +137,7 @@ export function TablesListEdit({
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         </>
       }
-      header={queryText('configureQueryTables')}
+      header={header}
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_1fr_auto_1fr] grid-rows-1">

@@ -745,6 +745,52 @@ export const preferencesText = createDictionary({
     'en-us': 'Show Statistics',
     'ru-ru': 'Показать статистику',
   },
+  createInteractions: {
+    'en-us': 'Create interactions',
+    'ru-ru': 'Создать взаимодействия',
+  },
+  useSpaceAsDelimiter: {
+    'en-us': 'Use space as delimiter',
+    'ru-ru': 'Использовать пробел как разделитель',
+  },
+  useCommaAsDelimiter: {
+    'en-us': 'Use comma as delimiter',
+    'ru-ru': 'Использовать запятую как разделитель',
+  },
+  useNewLineAsDelimiter: {
+    'en-us': 'Use new line as delimiter',
+    'ru-ru': 'Использовать новую строку как разделитель',
+  },
+  detectAutomatically: {
+    'en-us': 'Detect automatically',
+    'ru-ru': 'Определить автоматически',
+  },
+  useCustomDelimiters: {
+    'en-us': 'Use custom delimiters',
+    'ru-ru': 'Использовать пользовательские разделители',
+  },
+  useCustomDelimitersDescription: {
+    'en-us': `
+      A list of delimiters to use, in addition to the ones defined above. Put
+      one delimiter per line
+    `,
+    'ru-ru': `
+      Список разделителей, которые будут использоваться в дополнение к тем,
+      которые определены выше. Поместите один разделитель на строку
+    `,
+  },
+  detectAutomaticallyDescription: {
+    'en-us': 'Detect automatically based on catalog number format',
+    'ru-ru': 'Определить автоматически на основе формата номера каталога',
+  },
+  use: {
+    'en-us': 'Use',
+    'ru-ru': 'Использовать',
+  },
+  dontUse: {
+    'en-us': 'Don’t use',
+    'ru-ru': 'Не использовать',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

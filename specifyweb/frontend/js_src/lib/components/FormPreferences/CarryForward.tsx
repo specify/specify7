@@ -1,36 +1,46 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
-import { sortFunction, toggleItem } from '../../utils/utils';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { getUniqueFields } from '../DataModel/resource';
-import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { sortFunction, toggleItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
-import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { getUniqueFields } from '../DataModel/resource';
+import type { LiteralField, Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import { Dialog } from '../Molecules/Dialog';
+import { usePref } from '../UserPreferences/usePref';
 
 export function CarryForwardButton({
   model,
+  type,
 }: {
   readonly model: SpecifyModel;
+  readonly type: 'button' | 'cog';
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Small
-        title={formsText('carryForwardDescription')}
-        onClick={handleOpen}
-      >
-        {formsText('carryForward')}
-      </Button.Small>
+      {type === 'button' ? (
+        <Button.Small
+          title={formsText('carryForwardDescription')}
+          onClick={handleOpen}
+        >
+          {formsText('carryForward')}
+        </Button.Small>
+      ) : (
+        <Button.Icon
+          icon="cog"
+          title={formsText('carryForwardDescription')}
+          onClick={handleOpen}
+        />
+      )}
       {isOpen && <CarryForwardConfig model={model} onClose={handleClose} />}
     </>
   );
@@ -46,13 +56,15 @@ function CarryForwardConfig({
   readonly model: SpecifyModel;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [showHiddenFields = true, setShowHiddenFields] = useCachedState(
-    'forms',
+  const [showHiddenFields, setShowHiddenFields] = usePref(
+    'form',
+    'preferences',
     'carryForwardShowHidden'
   );
 
-  const [globalConfig = {}, setGlobalConfig] = useCachedState(
-    'forms',
+  const [globalConfig, setGlobalConfig] = usePref(
+    'form',
+    'preferences',
     'carryForward'
   );
 
@@ -68,6 +80,7 @@ function CarryForwardConfig({
     (globalConfig[model.name] as RA<string> | undefined)?.filter(
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
+
   function handleChange(rawFields: RA<string>): void {
     const fields = normalize(rawFields);
     setGlobalConfig({
@@ -150,24 +163,27 @@ function CarryForwardCategory({
 }): JSX.Element {
   return (
     <Ul>
-      {fields.map(({ name, label }) => (
-        <li key={name}>
+      {fields.map((field) => (
+        <li className="flex gap-1" key={field.name}>
           <Label.Inline
             title={
-              uniqueFields.includes(name)
+              uniqueFields.includes(field.name)
                 ? formsText('carryForwardUniqueField')
                 : undefined
             }
           >
             <Input.Checkbox
-              checked={f.includes(carryForward, name)}
-              disabled={uniqueFields.includes(name)}
+              checked={f.includes(carryForward, field.name)}
+              disabled={uniqueFields.includes(field.name)}
               onValueChange={(): void =>
-                handleChange(toggleItem(carryForward, name))
+                handleChange(toggleItem(carryForward, field.name))
               }
             />
-            {label}
+            {field.label}
           </Label.Inline>
+          {field.isRelationship && (
+            <CarryForwardButton model={field.relatedModel} type="cog" />
+          )}
         </li>
       ))}
     </Ul>

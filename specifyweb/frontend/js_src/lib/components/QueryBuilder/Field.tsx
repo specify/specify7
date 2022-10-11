@@ -139,9 +139,7 @@ export function QueryLine({
             ? 'id'
             : parser.type ?? 'text';
 
-        canOpenMap =
-          baseTableName === 'Locality' &&
-          (fieldName === 'latitude1' || fieldName === 'longitude1');
+        canOpenMap = fieldName === 'latitude1' || fieldName === 'longitude1';
       }
 
       const updatedFilters = hasParser

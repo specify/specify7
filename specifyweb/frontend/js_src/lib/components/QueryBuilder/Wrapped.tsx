@@ -63,6 +63,7 @@ export function QueryBuilder({
   query: queryResource,
   isReadOnly,
   recordSet,
+  forceCollection,
   isEmbedded = false,
   autoRun = false,
   // If present, this callback is called when query results are selected
@@ -71,6 +72,7 @@ export function QueryBuilder({
   readonly query: SpecifyResource<SpQuery>;
   readonly isReadOnly: boolean;
   readonly recordSet?: SpecifyResource<RecordSet>;
+  readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
@@ -91,7 +93,7 @@ export function QueryBuilder({
         model,
         autoRun,
       }),
-    [query, queryResource, model, autoRun]
+    [queryResource, model, autoRun]
   );
   const [state, dispatch] = React.useReducer(reducer, pendingState);
   React.useEffect(() => {
@@ -146,8 +148,8 @@ export function QueryBuilder({
       ],
     });
 
-  const isEmpty = state.fields.some(({ mappingPath }) =>
-    mappingPathIsComplete(mappingPath)
+  const isEmpty = state.fields.every(
+    ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
   );
 
   /*
@@ -169,7 +171,7 @@ export function QueryBuilder({
     mode: 'count' | 'regular',
     fields: typeof state.fields = state.fields
   ): void {
-    if (!isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
+    if (isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
     setQuery({
       ...query,
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
@@ -461,6 +463,11 @@ export function QueryBuilder({
                   selectDistinct: !(query.selectDistinct ?? false),
                 })
               }
+              onSubmitClick={(): void =>
+                formRef.current?.checkValidity() === false
+                  ? runQuery('regular')
+                  : undefined
+              }
               onToggleHidden={setShowHiddenFields}
             />
           </div>
@@ -488,6 +495,7 @@ export function QueryBuilder({
               }
               fields={state.fields}
               model={model}
+              forceCollection={forceCollection}
               queryResource={queryResource}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}

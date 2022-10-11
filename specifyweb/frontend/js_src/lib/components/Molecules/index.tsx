@@ -14,6 +14,7 @@ export const loadingGif = (
     <div
       className={`
         spinner-border h-20 w-20 rounded-full border-8 border-brand-300
+        [.motion-normal_&]:m-px
         [.motion-normal_&]:animate-spin
         [.motion-normal_&]:border-r-transparent
       `}

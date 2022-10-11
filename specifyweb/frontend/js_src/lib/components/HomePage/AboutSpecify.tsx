@@ -35,6 +35,7 @@ function AboutDialog({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
+      icon="info"
       buttons={
         <>
           <Button.Green

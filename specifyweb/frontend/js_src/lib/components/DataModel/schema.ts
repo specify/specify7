@@ -16,7 +16,11 @@ import { LiteralField, Relationship } from './specifyField';
 import { SpecifyModel, type TableDefinition } from './specifyModel';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import type { IR, RA, RR } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import {
+  defined,
+  overwriteReadOnly,
+  setDevelopmentGlobal,
+} from '../../utils/types';
 import { AnySchema, AnyTree } from './helperTypes';
 
 export type SchemaLocalization = {
@@ -120,10 +124,7 @@ export const fetchContext = f
 
 export const schema = schemaBase;
 
-// Leak schema object when in development for easier debugging
-if (process.env.NODE_ENV !== 'production')
-  // @ts-expect-error Creating a global value
-  globalThis._schema = schema;
+setDevelopmentGlobal('_schema', schema);
 
 /**
  * Returns a schema model object describing the named Specify model

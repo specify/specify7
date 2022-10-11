@@ -1,18 +1,18 @@
 import React from 'react';
 
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import type { RA } from '../../utils/types';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RA } from '../../utils/types';
 import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { Button } from '../Atoms/Button';
-import { Ul } from '../Atoms';
-import { Input, Label } from '../Atoms/Form';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
+import { usePref } from '../UserPreferences/usePref';
 
 export function AutoNumbering({
   resource,
@@ -51,12 +51,14 @@ function AutoNumberingDialog({
   readonly fields: RA<LiteralField>;
   readonly onClose: () => void;
 }): JSX.Element {
-  const [globalConfig = {}, setGlobalConfig] = useCachedState(
-    'forms',
+  const [globalConfig, setGlobalConfig] = usePref(
+    'form',
+    'preferences',
     'autoNumbering'
   );
   const config =
-    (globalConfig[resource.specifyModel.name] as RA<string>) ?? fields;
+    (globalConfig[resource.specifyModel.name] as RA<string> | undefined) ??
+    fields.map(({ name }) => name);
 
   function handleEnableAutoNumbering(fieldName: string): void {
     const stringValue = ((resource.get(fieldName) as string) ?? '').toString();

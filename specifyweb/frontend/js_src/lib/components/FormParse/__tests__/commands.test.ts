@@ -1,6 +1,9 @@
 import { theories } from '../../../tests/utils';
 import { parseUiCommand } from '../commands';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
+import { requireContext } from '../../../tests/helpers';
+
+requireContext();
 
 theories(parseUiCommand, [
   {
@@ -24,12 +27,12 @@ theories(parseUiCommand, [
     },
   },
   {
-    in: [strictParseXml('<cell name="generateLabelBtn" />')],
+    in: [strictParseXml('<cell name="generateLabelBtn" label="FINDNEXT" />')],
     out: {
       commandDefinition: {
         type: 'GenerateLabel',
       },
-      label: undefined,
+      label: 'Find Next',
     },
   },
   {

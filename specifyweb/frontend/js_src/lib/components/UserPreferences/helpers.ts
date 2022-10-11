@@ -18,7 +18,7 @@ import {
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
+import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
 import { parseValue } from '../../utils/parser/parse';
@@ -89,7 +89,12 @@ export const setPrefsGenerator = (
         typeof definition.parser === 'object'
           ? mergeParsers(baseParser, definition.parser)
           : baseParser;
-      const parseResult = parseValue(parser, undefined, value?.toString());
+      const parseResult = parseValue(
+        parser,
+        undefined,
+        value?.toString(),
+        parser.type !== 'text'
+      );
       if (parseResult.isValid) parsed = parseResult.parsed;
       else {
         console.error(`Failed parsing pref value`, {
@@ -310,6 +315,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
 function initializePreferences(resource: ResourceWithData): ResourceWithData {
   userResource = resource;
   preferences = JSON.parse(userResource.data ?? '{}');
+  setDevelopmentGlobal('_preferences', preferences);
   prefEvents.trigger('update', undefined);
   commitToCache();
   setCache('userPreferences', 'defaultCached', defaultPreferences);
@@ -331,5 +337,6 @@ const registerChangeListener = (): void =>
     else if (key === 'defaultCached')
       defaultPreferences =
         getCache('userPreferences', 'defaultCached') ?? defaultPreferences;
+    setDevelopmentGlobal('_preferences', preferences);
     prefEvents.trigger('update', undefined);
   });

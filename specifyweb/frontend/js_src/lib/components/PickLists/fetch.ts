@@ -5,7 +5,7 @@
 import { deserializeResource } from '../../hooks/resource';
 import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { R, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
@@ -29,7 +29,6 @@ export async function fetchPickListItems(
   pickList: SpecifyResource<PickList>
 ): Promise<RA<SerializedResource<PickListItem>>> {
   const type = (pickList?.get('type') as 0 | 1 | 2 | undefined) ?? 0;
-  const currentItems = serializeResource(pickList).pickListItems ?? [];
   let items;
 
   const limit = Math.max(
@@ -37,8 +36,8 @@ export async function fetchPickListItems(
     pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
   );
 
-  if (currentItems.length > 0 || type === PickListTypes.ITEMS)
-    return currentItems;
+  if (type === PickListTypes.ITEMS)
+    return serializeResource(pickList).pickListItems ?? [];
   else if (type === PickListTypes.TABLE)
     items = await fetchFromTable(pickList, limit);
   else if (type === PickListTypes.FIELDS)
@@ -48,7 +47,7 @@ export async function fetchPickListItems(
   return items.map(({ value, title }) => createPickListItem(value, title));
 }
 
-export async function fetchPickList(
+async function unsafeFetchPickList(
   pickListName: string
 ): Promise<SpecifyResource<PickList> | undefined> {
   getFrontEndPickLists();
@@ -63,20 +62,37 @@ export async function fetchPickList(
       // Pick list does not exist
       return undefined;
     if (!hasToolPermission('pickLists', 'read')) return undefined;
-    pickList = await fetchCollection('PickList', {
-      name: pickListName,
-      limit: 1,
-    }).then(({ records }) => f.maybe(records[0], deserializeResource));
+    pickList = await rawFetchPickList(pickListName, true);
+    if (pickList === undefined)
+      pickList = await rawFetchPickList(pickListName, false);
     unsafeGetPickLists()[pickListName] = pickList;
   }
 
   if (typeof pickList === 'undefined') return undefined;
 
-  const currentItems = serializeResource(pickList).pickListItems;
-  if (currentItems.length === 0)
-    pickList.set('pickListItems', await fetchPickListItems(pickList));
+  pickList.set('pickListItems', await fetchPickListItems(pickList));
 
   return pickList;
+}
+
+const rawFetchPickList = async (
+  name: string,
+  domainFilter: boolean
+): Promise<SpecifyResource<PickList> | undefined> =>
+  fetchCollection('PickList', {
+    name,
+    limit: 1,
+    domainFilter,
+  }).then(({ records }) => f.maybe(records[0], deserializeResource));
+
+const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+  {};
+
+export async function fetchPickList(
+  pickListName: string
+): Promise<undefined | SpecifyResource<PickList>> {
+  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
+  return pickListFetchPromises[pickListName];
 }
 
 export const PickListSortType = {

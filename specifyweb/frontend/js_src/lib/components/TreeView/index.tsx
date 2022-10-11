@@ -20,7 +20,7 @@ import type { RA } from '../../utils/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { useMenuItem } from '../Header';
 import { supportsBackdropBlur } from '../Molecules/Dialog';
-import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { NotFoundView } from '../Router/NotFoundView';
 import { ProtectedTree } from '../Permissions/PermissionDenied';
 import {
@@ -94,52 +94,61 @@ function TreeView<SCHEMA extends AnyTree>({
   useTitle(treeText('treeViewTitle', table.label));
 
   // Node sort order
-  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`),
-    baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
-      treeDefinition.id
-    }`,
-    getRows = React.useCallback(
-      async (parentId: number | 'null') =>
-        fetchRows(`${baseUrl}/${parentId}/${sortField}`),
-      [baseUrl, sortField]
-    ),
-    statsThreshold = getPref(
-      `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
-    ),
-    getStats = React.useCallback(
-      async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
-        rankId >= statsThreshold
-          ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
-          : Promise.resolve({}),
-      [baseUrl, statsThreshold]
-    ),
-    [rows, setRows] = useAsyncState<RA<Row>>(
-      React.useCallback(async () => getRows('null'), [getRows]),
-      true
-    ),
-    id = useId('tree-view'),
-    // FEATURE: synchronize focus path with the URL
-    [focusPath = [], setFocusPath] = useCachedState(
-      'tree',
-      `focusPath${tableName}`
-    ),
-    [focusedRow, setFocusedRow] = React.useState<Row | undefined>(undefined),
-    [actionRow, setActionRow] = React.useState<Row | undefined>(undefined),
-    searchBoxRef = React.useRef<HTMLInputElement | null>(null),
-    toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null),
-    [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState(),
-    reduceTransparency = useReducedTransparency(),
-    highContrast = useHighContrast(),
-    [treeAccentColor] = usePref(
-      'treeEditor',
-      treeToPref[tableName],
-      'treeAccentColor'
-    ),
-    [synonymColor] = usePref(
-      'treeEditor',
-      treeToPref[tableName],
-      'synonymColor'
-    );
+  const sortField = getPref(`${tableName as 'Geography'}.treeview_sort_field`);
+
+  const baseUrl = `/api/specify_tree/${tableName.toLowerCase()}/${
+    treeDefinition.id
+  }`;
+
+  const getRows = React.useCallback(
+    async (parentId: number | 'null') =>
+      fetchRows(`${baseUrl}/${parentId}/${sortField}`),
+    [baseUrl, sortField]
+  );
+
+  const statsThreshold = getPref(
+    `TreeEditor.Rank.Threshold.${tableName as 'Geography'}`
+  );
+  const getStats = React.useCallback(
+    async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
+      rankId >= statsThreshold
+        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+        : Promise.resolve({}),
+    [baseUrl, statsThreshold]
+  );
+
+  const [rows, setRows] = useAsyncState<RA<Row>>(
+    React.useCallback(async () => getRows('null'), [getRows]),
+    true
+  );
+  const id = useId('tree-view');
+
+  // FEATURE: synchronize focus path with the URL
+  const [focusPath = [], setFocusPath] = useCachedState(
+    'tree',
+    `focusPath${tableName}`
+  );
+  const [focusedRow, setFocusedRow] = React.useState<Row | undefined>(
+    undefined
+  );
+  const [actionRow, setActionRow] = React.useState<Row | undefined>(undefined);
+
+  const searchBoxRef = React.useRef<HTMLInputElement | null>(null);
+  const toolbarButtonRef = React.useRef<HTMLAnchorElement | null>(null);
+  const [isEditingRanks, _, __, handleToggleEditingRanks] = useBooleanState();
+
+  const reduceTransparency = useReducedTransparency();
+  const highContrast = useHighContrast();
+  const [treeAccentColor] = usePref(
+    'treeEditor',
+    treeToPref[tableName],
+    'treeAccentColor'
+  );
+  const [synonymColor] = usePref(
+    'treeEditor',
+    treeToPref[tableName],
+    'synonymColor'
+  );
 
   return rows === undefined ? null : (
     <Container.Full>

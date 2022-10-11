@@ -1,8 +1,9 @@
-import {Input} from '../components/DataModel/saveBlockers';
-import {RA} from '../utils/types';
 import React from 'react';
-import {listen} from '../utils/events';
-import {isInputTouched} from '../components/Forms/validationHelpers';
+
+import type { Input } from '../components/DataModel/saveBlockers';
+import { isInputTouched } from '../components/Forms/validationHelpers';
+import { listen } from '../utils/events';
+import type { RA } from '../utils/types';
 
 /**
  * An integration into native browser error reporting mechanism.
@@ -14,7 +15,9 @@ import {isInputTouched} from '../components/Forms/validationHelpers';
  * validation message. Thus, you can call it on keydown to implement live
  * validation
  */
-export function useValidation<T extends Input = HTMLInputElement>(
+export function useValidation<
+  T extends Input = HTMLInputElement | HTMLTextAreaElement
+>(
   // Can set validation message from state or a prop
   message: RA<string> | string = ''
 ): {
@@ -66,26 +69,26 @@ export function useValidation<T extends Input = HTMLInputElement>(
   }, []);
 
   const setValidation = React.useCallback(function setValidation(
-      message: RA<string> | string,
-      type: 'auto' | 'focus' | 'silent' = 'auto'
-    ): void {
-      const joined = Array.isArray(message) ? message.join('\n') : message;
-      if (validationMessageRef.current === joined && type !== 'focus') return;
+    message: RA<string> | string,
+    type: 'auto' | 'focus' | 'silent' = 'auto'
+  ): void {
+    const joined = Array.isArray(message) ? message.join('\n') : message;
+    if (validationMessageRef.current === joined && type !== 'focus') return;
 
-      validationMessageRef.current = joined;
-      const input = inputRef.current;
-      if (!input) return;
-      // Empty string clears validation error
-      input.setCustomValidity(joined);
+    validationMessageRef.current = joined;
+    const input = inputRef.current;
+    if (!input) return;
+    // Empty string clears validation error
+    input.setCustomValidity(joined);
 
-      if (joined !== '' && isInputTouched(input) && type !== 'silent')
-        input.reportValidity();
-      else if (isFirstError.current) {
-        isFirstError.current = false;
-        input.reportValidity();
-      }
-    },
-    []);
+    if (joined !== '' && isInputTouched(input) && type !== 'silent')
+      input.reportValidity();
+    else if (isFirstError.current) {
+      isFirstError.current = false;
+      input.reportValidity();
+    }
+  },
+  []);
 
   React.useEffect(() => setValidation(message), [message, setValidation]);
 

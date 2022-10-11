@@ -19,9 +19,10 @@ export type InvalidParseResult = {
 export function parseValue(
   parser: Parser,
   input: Input | undefined,
-  value: string
+  value: string,
+  trim: boolean = true
 ): InvalidParseResult | ValidParseResult {
-  if (value.trim() === '')
+  if (trim && value.trim() === '')
     return parser.required === true
       ? {
           value,
@@ -43,7 +44,7 @@ export function parseValue(
   if (errorMessage === undefined) {
     formattedValue = (parser.formatters ?? []).reduce<unknown>(
       (value, formatter) => formatter(value),
-      value.trim()
+      trim ? value.trim() : value
     );
 
     errorMessage = mappedFind(parser.validators ?? [], (validator) =>

@@ -172,10 +172,10 @@ export function QueryResults({
     treeRanksLoaded;
   const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
 
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     canFetchMore ? handleFetchMore : undefined,
-    scrollRef
+    scroller
   );
 
   const undefinedResult = results?.indexOf(undefined);
@@ -185,7 +185,7 @@ export function QueryResults({
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center items-stretch gap-2">
         <H3>{`${label}: (${
           selectedRows.size === 0
             ? totalCount ?? commonText('loading')
@@ -263,7 +263,7 @@ export function QueryResults({
               : 'grid-cols-[repeat(var(--columns),auto)]'
           }
        `}
-        ref={scrollRef}
+        ref={setScroller}
         role="table"
         style={
           {

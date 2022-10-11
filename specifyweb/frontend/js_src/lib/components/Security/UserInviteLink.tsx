@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import type { SpecifyUser } from '../DataModel/types';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { hasPermission } from '../Permissions/helpers';
+import { ajax } from '../../utils/ajax';
 import type { IR } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {CopyButton} from '../Molecules/Copy';
+import { LoadingContext } from '../Core/Contexts';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyUser } from '../DataModel/types';
+import { CopyButton } from '../Molecules/Copy';
+import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to
@@ -37,7 +37,7 @@ export function UserInviteLink({
   return (
     <>
       <Button.Small
-        disabled={identityProviders === undefined}
+        disabled={identityProviders === undefined || user.id === undefined}
         onClick={(): void =>
           hasProvidersConfigured
             ? loading(

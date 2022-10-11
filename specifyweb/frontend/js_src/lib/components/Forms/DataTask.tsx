@@ -19,6 +19,7 @@ import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CollectionObject, RecordSet } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { formatUrl } from '../Router/queryString';
@@ -26,6 +27,7 @@ import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { DisplayResource, ShowResource } from './ShowResource';
+import { useSearchParameter } from '../../hooks/navigation';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -170,37 +172,38 @@ export function ViewResourceByGuid({
 export function ViewByCatalog(): JSX.Element {
   return (
     <ProtectedTable action="read" tableName="CollectionObject">
-      <ProtectedTable action="read" tableName="Collection">
-        <ViewByCatalogProtected />
-      </ProtectedTable>
+      <ViewByCatalogProtected />
     </ProtectedTable>
   );
 }
 
 function ViewByCatalogProtected(): JSX.Element | null {
   const { collectionCode = '', catalogNumber = '' } = useParams();
+  const [recordSetId] = useSearchParameter('recordsetid');
 
   const navigate = useNavigate();
   const [id] = useAsyncState<number | false>(
     React.useCallback(async () => {
-      const collections = await fetchCollection('Collection', {
-        code: collectionCode,
-        limit: 2,
-      }).then(({ records }) => records);
-      if (collections.length === 0) {
-        console.error('Unable to find the collection');
+      const collection = userInformation.availableCollections.find(
+        ({ code }) => code?.trim() === collectionCode.trim()
+      );
+      if (collection === undefined) {
+        console.error(
+          `Unable to find the collection with code ${collectionCode}\n` +
+            `Please make sure collection code is specificed correctly and ` +
+            `the user has access to the collection.`
+        );
         return false;
-      } else if (collections.length !== 1)
-        console.error('Multiple collections with the same code', {
-          collections,
-          collectionCode,
-        });
-      const collection = collections[0];
+      }
       if (collection.id !== schema.domainLevelIds.collection) {
         switchCollection(navigate, collection.id);
         return undefined;
       }
 
+      /*
+       * It's important that this is run after switchCollection() (if needed)
+       * so that the formatter for correct collection is fetched
+       */
       const formatter =
         schema.models.CollectionObject.strictGetLiteralField(
           'catalogNumber'
@@ -218,6 +221,7 @@ function ViewByCatalogProtected(): JSX.Element | null {
 
       return fetchCollection('CollectionObject', {
         catalogNumber: formattedNumber,
+        domainFilter: true,
         limit: 1,
       }).then(({ records }) => {
         const id = records[0]?.id;
@@ -232,11 +236,14 @@ function ViewByCatalogProtected(): JSX.Element | null {
   React.useEffect(
     () =>
       typeof id === 'number'
-        ? navigate(getResourceViewUrl('CollectionObject', id), {
-            replace: true,
-          })
+        ? navigate(
+            getResourceViewUrl('CollectionObject', id, f.parseInt(recordSetId)),
+            {
+              replace: true,
+            }
+          )
         : undefined,
-    [navigate, id]
+    [navigate, id, recordSetId]
   );
 
   return id === false ? <NotFoundView /> : null;

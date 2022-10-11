@@ -17,7 +17,11 @@ import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
 import { SchemaConfigField } from './Field';
 import { SchemaConfigColumn, SchemaConfigFields } from './Fields';
-import { useSchemaContainer, useContainerItems, useContainerString } from './Hooks';
+import {
+  useContainerItems,
+  useContainerString,
+  useSchemaContainer,
+} from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
 
@@ -187,7 +191,5 @@ const handleSaved = async (rawLanguage: string): Promise<void> =>
   )
     // Reload the page after schema changes
     .then((): void =>
-      globalThis.location.assign(
-        formatUrl('/specify/task/schema-config/', { rawLanguage })
-      )
+      globalThis.location.assign(`/specify/schema-config/${rawLanguage}/`)
     );

@@ -143,7 +143,7 @@ function Attachments(): JSX.Element {
   return (
     <Container.FullGray>
       <header
-        className={`flex items-center gap-2 ${className.hasAltBackground}`}
+        className={`flex flex-wrap items-center gap-2 ${className.hasAltBackground}`}
       >
         <H2>{commonText('attachments')}</H2>
         <Label.Inline>

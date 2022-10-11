@@ -260,7 +260,7 @@ export const WBUtils = Backbone.View.extend({
     const newState = this.el.classList.contains(cssClassName);
     const indicator =
       buttonContainer.getElementsByClassName('wb-navigation-text')[0];
-    indicator.ariaPressed = newState;
+    indicator.setAttribute('aria-pressed', newState);
     indicator.classList[newState ? 'add' : 'remove']('brightness-50');
     return newState;
   },
@@ -498,7 +498,7 @@ export const WBUtils = Backbone.View.extend({
   },
   toggleToolkit(event) {
     const toolkit = this.el.getElementsByClassName('wb-toolkit')[0];
-    event.target.ariaPressed = toolkit.style.display === 'none';
+    event.target.setAttribute('aria-pressed', toolkit.style.display === 'none');
     toolkit.style.display = toolkit.style.display === 'none' ? '' : 'none';
     this.wbview.handleResize();
   },
@@ -698,11 +698,11 @@ export const WBUtils = Backbone.View.extend({
     if (this.geoLocateDialog !== undefined) {
       this.geoLocateDialog.remove();
       this.geoLocateDialog = undefined;
-      event.target.ariaPressed = false;
+      event.target.setAttribute('aria-pressed', false);
       return;
     }
 
-    event.target.ariaPressed = true;
+    event.target.setAttribute('aria-pressed', true);
 
     const selection = this.getSelectedLocalities(true);
 
@@ -713,7 +713,7 @@ export const WBUtils = Backbone.View.extend({
 
     const handleDelete = () => {
       globalThis.removeEventListener('message', handleGeolocateResult, false);
-      event.target.ariaPressed = false;
+      event.target.setAttribute('aria-pressed', false);
       this.geoLocateDialog.remove();
       this.geoLocateDialog = undefined;
     };
@@ -802,10 +802,10 @@ export const WBUtils = Backbone.View.extend({
     if (this.geoMapDialog !== undefined) {
       this.geoMapDialog.remove();
       this.geoMapDialog = undefined;
-      event.target.ariaPressed = false;
+      event.target.setAttribute('aria-pressed', false);
       return;
     }
-    event.target.ariaPressed = true;
+    event.target.setAttribute('aria-pressed', true);
 
     const selection = this.getSelectedLocalities(false);
 
@@ -834,7 +834,7 @@ export const WBUtils = Backbone.View.extend({
       onClose: () => {
         this.geoMapDialog.remove();
         this.geoMapDialog = undefined;
-        event.target.ariaPressed = false;
+        event.target.setAttribute('aria-pressed', false);
       },
       modal: false,
     }).render();

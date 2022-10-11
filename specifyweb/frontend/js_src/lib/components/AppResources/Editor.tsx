@@ -16,7 +16,7 @@ import type {
   SpAppResource,
   SpAppResourceData,
   SpAppResourceDir,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
 import { BaseResourceView } from '../Forms/BaseResourceView';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -41,16 +41,16 @@ export function AppResourceEditor({
   onClone: handleClone,
   onDeleted: handleDeleted,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly initialData: string | undefined;
   readonly onDeleted: () => void;
   readonly onClone: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
+    resource: SerializedResource<SpAppResource | SpViewSetObj>,
     initialData: number
   ) => void;
   readonly onSaved: (
-    resource: SerializedResource<SpAppResource | SpViewSetObject>,
+    resource: SerializedResource<SpAppResource | SpViewSetObj>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
 }): JSX.Element | null {

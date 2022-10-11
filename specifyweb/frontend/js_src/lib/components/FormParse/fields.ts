@@ -131,6 +131,7 @@ const processFieldType: {
   Plugin: (cell, getProperty) => ({
     type: 'Plugin',
     pluginDefinition: parseUiPlugin(
+      cell,
       getProperty,
       withStringDefault(cell).defaultValue
     ),

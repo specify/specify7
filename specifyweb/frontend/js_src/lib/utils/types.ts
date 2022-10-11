@@ -127,3 +127,19 @@ export function overwriteReadOnly<
   // @ts-expect-error Overwriting read-only
   object[key] = value;
 }
+
+/**
+ * Set a global variable when in development mode.
+ *
+ * Exposing the variables in global scope makes debugging easier.
+ *
+ * @remarks
+ * Using this function helps easily find all the places were global variables
+ * were set, and removes the need to silence the TypeScript error separately
+ * in each place
+ */
+export function setDevelopmentGlobal(name: string, value: unknown): void {
+  if (process.env.NODE_ENV === 'development')
+    // @ts-expect-error
+    globalThis[name] = value;
+}

@@ -28,6 +28,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { usePref } from './usePref';
 import { parseValue } from '../../utils/parser/parse';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -287,6 +288,26 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
         checked={value}
         isReadOnly={isReadOnly}
         onValueChange={handleChange}
+      />
+    ) : parser?.type === 'text' ? (
+      <AutoGrowTextArea
+        forwardRef={validationRef}
+        {...(validationAttributes ?? { type: 'text' })}
+        value={internalValue}
+        isReadOnly={isReadOnly}
+        onValueChange={(newValue): void => {
+          if (typeof parser === 'object' && inputRef.current !== null) {
+            const parsed = parseValue(
+              parser,
+              inputRef.current,
+              newValue,
+              false
+            );
+            if (parsed.isValid) handleChanged(newValue);
+            else setValidation(parsed.reason);
+          } else handleChanged(newValue);
+        }}
+        onBlur={handleBlur}
       />
     ) : (
       <Input.Generic

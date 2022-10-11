@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
-import { getCache } from '../../utils/cache';
 import type { Tables } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
@@ -25,6 +24,7 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { BaseResourceView } from './BaseResourceView';
 import { AppTitle } from '../Molecules/AppTitle';
 import { usePref } from '../UserPreferences/usePref';
+import { getUserPref } from '../UserPreferences/helpers';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -200,7 +200,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
               form={formElement}
               resource={resource}
               onSaved={(payload): void => {
-                const printOnSave = getCache('forms', 'printOnSave') ?? {};
+                const printOnSave = getUserPref(
+                  'form',
+                  'preferences',
+                  'printOnSave'
+                );
                 if (
                   printOnSave[resource.specifyModel.name] === true &&
                   payload.wasChanged

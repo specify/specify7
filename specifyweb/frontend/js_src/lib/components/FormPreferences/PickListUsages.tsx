@@ -55,6 +55,7 @@ function PickListUsagesDialog({
         isReadOnly={false}
         query={query}
         recordSet={undefined}
+        forceCollection={undefined}
       />
     </Dialog>
   );

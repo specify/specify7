@@ -85,9 +85,17 @@ export function QueryFromMap({
 function extractState(filters: QueryField['filters']): Pair | undefined {
   const greaterFilter = parseFilter(filters, 'greaterOrEqual');
   const lessFilter = parseFilter(filters, 'lessOrEqual');
-  return typeof greaterFilter === 'number' && typeof lessFilter === 'number'
-    ? [greaterFilter, lessFilter]
-    : undefined;
+  const betweenFilter = filters.find(
+    ({ type }) => type === 'between'
+  )?.startValue;
+  if (typeof greaterFilter === 'number' && typeof lessFilter === 'number')
+    return [greaterFilter, lessFilter + 360];
+  else if (typeof betweenFilter === 'string') {
+    const [left, right] = betweenFilter.trim().split(',').map(f.parseFloat);
+    if (typeof left === 'number' && typeof right === 'number')
+      return [left, right];
+  }
+  return undefined;
 }
 
 const parseFilter = (
@@ -214,6 +222,7 @@ function getNewQueryLines(
   const definedField = fields[definedLineIndex];
 
   const commonPath = fields[definedLineIndex].mappingPath.slice(0, -1);
+  const latitudes = [latitude1, latitude2];
   const latitudeLine: QueryField = {
     id: fields.length,
     mappingPath: [...commonPath, 'latitude1'],
@@ -222,35 +231,43 @@ function getNewQueryLines(
     ...(fields[latitudeLineIndex] as Partial<QueryField>),
     filters: [
       {
-        type: 'greaterOrEqual',
-        startValue: latitude1.toString(),
-        isNot: false,
-      },
-      {
-        type: 'lessOrEqual',
-        startValue: latitude2.toString(),
+        type: 'between',
+        startValue: `${Math.min(...latitudes)},${Math.max(...latitudes)}`,
         isNot: false,
       },
     ],
   };
+  const longitudes = [longitude1, longitude2];
+  const longitudeStart = normalizeLongitude(Math.min(...longitudes));
+  const longitudeEnd = normalizeLongitude(Math.max(...longitudes));
+  const operator = longitudeStart > longitudeEnd ? 'greaterOrEqual' : 'between';
   const longitudeLine: QueryField = {
     id: fields.length + 1,
     mappingPath: [...commonPath, 'longitude1'],
     sortType: undefined,
     isDisplay: definedField.isDisplay,
     ...(fields[longitudeLineIndex] as Partial<QueryField>),
-    filters: [
-      {
-        type: 'greaterOrEqual',
-        startValue: longitude1.toString(),
-        isNot: false,
-      },
-      {
-        type: 'lessOrEqual',
-        startValue: longitude2.toString(),
-        isNot: false,
-      },
-    ],
+    filters:
+      operator === 'between'
+        ? [
+            {
+              type: 'between',
+              startValue: `${longitudeStart},${longitudeEnd}`,
+              isNot: false,
+            },
+          ]
+        : [
+            {
+              type: 'greaterOrEqual',
+              startValue: longitudeStart.toString(),
+              isNot: false,
+            },
+            {
+              type: 'lessOrEqual',
+              startValue: longitudeEnd.toString(),
+              isNot: false,
+            },
+          ],
   };
 
   if (latitudeLineIndex !== -1 && longitudeLineIndex !== -1)
@@ -272,3 +289,7 @@ function getNewQueryLines(
     );
   }
 }
+
+/** From https://gis.stackexchange.com/a/303362/146612 */
+const normalizeLongitude = (longitude: number): number =>
+  (((longitude % 360) + 540) % 360) - 180;

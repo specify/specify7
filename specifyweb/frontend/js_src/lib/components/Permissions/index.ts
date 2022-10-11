@@ -5,6 +5,7 @@
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { group, split } from '../../utils/utils';
 import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
@@ -141,15 +142,29 @@ export const queryUserPermissions = async (
        * no effect
        */
       data.details
-        .map(({ resource, matching_user_policies, ...rest }) => ({
-          ...rest,
-          resource,
-          matching_user_policies: institutionPermissions.has(resource)
-            ? matching_user_policies.filter(
-                ({ collectionid }) => collectionid === null
-              )
-            : matching_user_policies,
-        }))
+        .map(
+          ({
+            resource,
+            matching_user_policies,
+            matching_role_policies,
+            ...rest
+          }) => ({
+            ...rest,
+            resource,
+            matching_user_policies: institutionPermissions.has(resource)
+              ? matching_user_policies.filter(
+                  ({ collectionid }) => collectionid === null
+                )
+              : matching_user_policies,
+            /*
+             * Since institutional policies can not be given in a role,
+             * ignore matching_role_policies
+             */
+            matching_role_policies: institutionPermissions.has(resource)
+              ? []
+              : matching_role_policies,
+          })
+        )
         .map(({ resource, allowed, matching_user_policies, ...rest }) => ({
           ...rest,
           resource,
@@ -219,7 +234,7 @@ export const fetchUserPermissions = async (
         async ({ fetchContext }) => fetchContext
       ),
       userInformation: import('../InitialContext/userInformation').then(
-        ({ fetchContext, userInformation }) =>
+        async ({ fetchContext, userInformation }) =>
           fetchContext.then(() => userInformation)
       ),
     })
@@ -270,14 +285,11 @@ export const fetchUserPermissions = async (
               ...derivedPermissions,
               [collection]: derived,
             };
-            if (process.env.NODE_ENV !== 'production') {
-              // @ts-expect-error Declaring a global object
-              globalThis._permissions = {
-                table: tablePermissions,
-                operations: operationPermissions,
-                derived: derivedPermissions,
-              };
-            }
+            setDevelopmentGlobal('_permissions', {
+              table: tablePermissions,
+              operations: operationPermissions,
+              derived: derivedPermissions,
+            });
             return collection;
           });
       return permissionPromises[collection];

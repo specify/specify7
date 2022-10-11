@@ -46,7 +46,11 @@ function AppResourcesView({
     <Container.FullGray>
       <H2 className="text-2xl">{adminText('resources')}</H2>
       <div className="flex h-0 flex-1 gap-4">
-        <AppResourcesAside isReadOnly={false} resources={resources} />
+        <AppResourcesAside
+          isReadOnly={false}
+          resources={resources}
+          isEmbedded={false}
+        />
         <SafeOutlet<AppResourcesOutlet>
           getSet={getSet as GetOrSet<AppResources>}
         />

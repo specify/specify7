@@ -777,6 +777,10 @@ export const formsText = createDictionary({
     'en-us': 'Enable read-only mode',
     'ru-ru': 'Включить режим только для чтения',
   },
+  configureDataEntryTables: {
+    'en-us': 'Configure data entry tables',
+    'ru-ru': 'Настроить таблицы ввода данных',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -1,22 +1,16 @@
 import type { AppResourcesConformation } from './Aside';
-import type {
-  AppResources,
-  AppResourcesTree,
-} from './hooks';
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
+import type { AppResources, AppResourcesTree } from './hooks';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 export const getAppResource = (
   resources: AppResources,
-  model: SpecifyModel<SpAppResource | SpViewSetObject>,
+  model: SpecifyModel<SpAppResource | SpViewSetObj>,
   resourceId: number | undefined
-): SerializedResource<SpAppResource | SpViewSetObject> | false | undefined =>
+): SerializedResource<SpAppResource | SpViewSetObj> | false | undefined =>
   typeof resourceId === 'number'
     ? (
         (model.name === 'SpAppResource'
@@ -28,7 +22,7 @@ export const getAppResource = (
 export type AppResourceMode = 'appResources' | 'viewSets';
 
 export const getAppResourceMode = (
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): AppResourceMode =>
   resource._tableName === 'SpAppResource' ? 'appResources' : 'viewSets';
 

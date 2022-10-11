@@ -102,6 +102,9 @@ const globalFieldOverrides: {
   common: {
     timestampCreated: 'readOnly',
   },
+  Attachment: {
+    tableID: 'optional',
+  },
   Taxon: {
     parent: 'required',
     isAccepted: 'readOnly',

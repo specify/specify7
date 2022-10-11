@@ -10,7 +10,7 @@ import type {
   SpAppResourceData,
   SpAppResourceDir,
   SpecifyUser,
-  SpViewSetObj as SpViewSetObject,
+  SpViewSetObj,
 } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { GetOrSet, IR, RA } from '../../utils/types';
@@ -24,7 +24,7 @@ export type AppResources = {
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
 };
 
 export function useAppResources(): GetOrSet<AppResources | undefined> {
@@ -66,7 +66,7 @@ export type AppResourcesTree = RA<{
   readonly key: string;
   readonly directory: SerializedResource<SpAppResourceDir> | undefined;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
   readonly subCategories: AppResourcesTree;
 }>;
 
@@ -87,7 +87,7 @@ export function useAppResourceCount(
 }
 
 export function useAppResourceData(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>,
+  resource: SerializedResource<SpAppResource | SpViewSetObj>,
   initialData: string | undefined
 ): {
   readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
@@ -129,7 +129,7 @@ export function useAppResourceData(
 }
 
 export const getAppResourceExtension = (
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): string =>
   resource._tableName === 'SpViewSetObj'
     ? 'xml'

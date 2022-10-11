@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useSearchParam as useSearchParameter } from '../../hooks/navigation';
+import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
@@ -27,7 +27,7 @@ export function ShowResource({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
   // Look to see if we are in the context of a recordset
-  const [recordsetid = ''] = useSearchParameter('recordsetid');
+  const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
   const recordSet = React.useMemo(
     () =>

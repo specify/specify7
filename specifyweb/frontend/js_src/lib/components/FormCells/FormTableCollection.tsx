@@ -73,7 +73,7 @@ export function FormTableCollection({
         setRecords(Array.from(collection.models));
         handleDelete?.(resource);
       }}
-      onFetchMore={handleFetchMore}
+      onFetchMore={collection.isComplete() ? undefined : handleFetchMore}
       {...props}
     />
   ) : null;

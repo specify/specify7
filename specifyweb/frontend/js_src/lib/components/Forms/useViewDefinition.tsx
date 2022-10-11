@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -11,6 +10,7 @@ import { fetchView, parseViewDefinition } from '../FormParse';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 import { originalAttachmentsView } from './SpecifyForm';
+import { usePref } from '../UserPreferences/usePref';
 
 /**
  * A hook to get information needed to display a form
@@ -28,7 +28,7 @@ export function useViewDefinition({
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
-  const [globalConfig = {}] = useCachedState('forms', 'useCustomForm');
+  const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
   const useCustomForm = globalConfig[model.name] ?? true;
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(

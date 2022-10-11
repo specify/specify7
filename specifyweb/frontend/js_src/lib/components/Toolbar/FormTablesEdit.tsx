@@ -1,21 +1,21 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { hasTablePermission } from '../Permissions/helpers';
-import { getModel, getModelById } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { GetSet, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { Dialog } from '../Molecules/Dialog';
-import { TablesListEdit } from './QueryTablesEdit';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { getModel, getModelById } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
+import { Dialog } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
+import { TablesListEdit } from './QueryTablesEdit';
 
 export const defaultFormTablesConfig: RA<keyof Tables> = [
   'CollectionObject',
@@ -63,7 +63,7 @@ export function EditFormTables({
             setModels('legacy');
             handleClose();
           } else {
-            setModels([]);
+            if (models === 'legacy') setModels([]);
             handleProceed();
           }
         }}
@@ -122,6 +122,7 @@ function CustomEditTables({
   return (
     <TablesListEdit
       defaultTables={defaultFormTablesConfig}
+      header={formsText('configureDataEntryTables')}
       isNoRestrictionMode={false}
       models={models}
       onChange={handleChange}

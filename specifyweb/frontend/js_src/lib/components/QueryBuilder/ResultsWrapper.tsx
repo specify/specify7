@@ -29,6 +29,7 @@ export function QueryResultsWrapper({
   recordSetId,
   createRecordSet,
   extraButtons,
+  forceCollection,
   onSelected: handleSelected,
   onSortChange: handleSortChange,
 }: {
@@ -40,6 +41,7 @@ export function QueryResultsWrapper({
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element;
+  readonly forceCollection: number | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
     fieldIndex: number,
@@ -60,13 +62,14 @@ export function QueryResultsWrapper({
               baseTableName,
               addAuditLogFields(baseTableName, fields)
             ),
+            collectionId: forceCollection,
             recordSetId,
             limit: fetchSize,
             offset,
           }),
         }
       ).then(({ data }) => data.results),
-    [fields, baseTableName, queryResource, recordSetId]
+    [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 
   /*
@@ -97,6 +100,7 @@ export function QueryResultsWrapper({
       headers: { Accept: 'application/json' },
       body: keysToLowerCase({
         ...queryResource.toJSON(),
+        collectionId: forceCollection,
         fields: unParseQueryFields(baseTableName, allFields),
         recordSetId,
         countOnly: true,
@@ -151,6 +155,7 @@ export function QueryResultsWrapper({
     fields,
     baseTableName,
     fetchResults,
+    forceCollection,
     queryResource,
     queryRunCount,
     recordSetId,

@@ -101,7 +101,7 @@ test('<Contexts> is providing UnloadProtectsContext and MenuContext', () => {
   // Unload Protects
   const getSetUnloadProtects = handleUnloadProtect.mock.calls[0][0]!;
   expect(getSetUnloadProtects).toBeDefined();
-  expect(getSetUnloadProtects).toHaveLength(3);
+  expect(getSetUnloadProtects).toHaveLength(2);
   expect(getSetUnloadProtects[0]).toHaveLength(0);
   expect(getSetUnloadProtects[1]).toBeInstanceOf(Function);
 

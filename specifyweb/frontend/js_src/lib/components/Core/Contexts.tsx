@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
+import { setDevelopmentGlobal } from '../../utils/types';
 import { error } from '../Errors/assert';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
@@ -60,7 +61,7 @@ export function Contexts({
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const loadingHandler = React.useCallback(
     (promise: Promise<unknown>): void => {
-      const holderId = holders.current.length;
+      const holderId = Math.max(-1, ...holders.current) + 1;
       holders.current = [...holders.current, holderId];
       handleLoading();
       promise
@@ -106,8 +107,7 @@ export function Contexts({
           unloadProtectEvents.trigger('blocked', resolvedValue);
         else unloadProtectEvents.trigger('unblocked');
 
-        // @ts-expect-error Exposing to global scope for easier debugging
-        globalThis._unloadProtects = resolvedValue;
+        setDevelopmentGlobal('_unloadProtects', resolvedValue);
 
         return resolvedValue;
       }),

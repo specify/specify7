@@ -52,16 +52,22 @@ export function useTypeSearch(
                   ? columnToFieldMapper(typeSearch.textContent)
                   : f.id
               ) ?? [];
-      const searchFields = rawSearchFieldsNames.map((searchField) =>
-        relatedModel.strictGetField(searchField)
-      );
+      const searchFields = rawSearchFieldsNames
+        .map((searchField) => relatedModel.getFields(searchField))
+        .filter(({ length }) => length > 0);
 
-      const fieldTitles = searchFields.map((field) =>
-        filterArray([
-          field.model === relatedModel ? undefined : field.model.label,
-          field.label,
-        ]).join(' / ')
-      );
+      /*
+       * Can't use generateMappingPathPreview here as that function expects
+       * tree ranks to be loaded
+       */
+      const fieldTitles = searchFields
+        .map((fields) => fields.at(-1)!)
+        .map((field) =>
+          filterArray([
+            field.model === relatedModel ? undefined : field.model.label,
+            field.label,
+          ]).join(' / ')
+        );
 
       return {
         title: queryText('queryBoxDescription', formatList(fieldTitles)),

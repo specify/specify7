@@ -15,7 +15,7 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import {AnySchema} from '../DataModel/helperTypes';
+import { AnySchema } from '../DataModel/helperTypes';
 
 export function RecordHistory({
   resource,
@@ -62,6 +62,7 @@ function RecordHistoryDialog({
         isReadOnly={false}
         query={query}
         recordSet={undefined}
+        forceCollection={undefined}
       />
     </Dialog>
   ) : null;

@@ -1801,10 +1801,10 @@ export const WBView = Backbone.View.extend({
     );
 
     effects.push(() => {
-      event.target.ariaPressed = true;
+      event.target.setAttribute('aria-pressed', true);
     });
     effectsCleanup.push(() => {
-      event.target.ariaPressed = false;
+      event.target.setAttribute('aria-pressed', false);
     });
 
     effects.push(() => this.el.classList.add('wb-show-upload-results'));
@@ -2127,19 +2127,19 @@ export const WBView = Backbone.View.extend({
         this.triggerLiveValidation();
         this.wbutils.toggleCellTypes('newCells', 'remove');
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
-        event.target.ariaPressed = true;
+        event.target.setAttribute('aria-pressed', true);
         break;
       case 'static':
         this.getValidationResults();
         this.wbutils.toggleCellTypes('invalidCells', 'remove');
         this.liveValidationStack = [];
         this.liveValidationActive = false;
-        event.target.ariaPressed = false;
+        event.target.setAttribute('aria-pressed', false);
         break;
       case 'off':
         this.liveValidationStack = [];
         this.liveValidationActive = false;
-        event.target.ariaPressed = false;
+        event.target.setAttribute('aria-pressed', false);
         break;
     }
 

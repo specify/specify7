@@ -1,15 +1,16 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { showLeafletMap } from '../Leaflet/leaflet';
-import type L from '../Leaflet/leafletExtend';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { LoadingContext } from '../Core/Contexts';
+import { showLeafletMap } from '../Leaflet/leaflet';
+import { addFullScreenButton } from '../Leaflet/leafletAddOns';
+import type L from '../Leaflet/leafletExtend';
+import type { LocalityData } from '../Leaflet/leafletHelpers';
+import { leafletLayersPromise } from '../Leaflet/leafletLayers';
 import { Dialog, dialogClassNames } from './Dialog';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import {addFullScreenButton} from '../Leaflet/leafletAddOns';
 
 const resizeThrottle = 250;
 
@@ -36,26 +37,38 @@ export function LeafletMap({
     (() => void) | undefined
   >(undefined);
   const [isFullScreen, __, ___, handleToggleFullScreen] = useBooleanState();
-  const loading = React.useContext(LoadingContext);
+  const [tileLayers] = useAsyncState(
+    React.useCallback(async () => leafletLayersPromise, []),
+    true
+  );
+
+  const handleClickRef =
+    React.useRef<typeof markerClickCallback>(markerClickCallback);
   React.useEffect(() => {
-    if (container === null) return undefined;
-    let globalMap: L.Map | undefined;
-    loading(
-      showLeafletMap({
-        container,
-        localityPoints,
-        markerClickCallback,
-      }).then((map) => {
-        globalMap = map;
-        setHandleResize(() =>
-          _.throttle(() => map.invalidateSize(), resizeThrottle)
-        );
-        addFullScreenButton(map, handleToggleFullScreen);
-        forwardRef?.(map);
-      })
+    handleClickRef.current = markerClickCallback;
+  }, [markerClickCallback]);
+
+  React.useEffect(() => {
+    if (container === null || tileLayers === undefined) return undefined;
+    const map = showLeafletMap({
+      tileLayers,
+      container,
+      localityPoints,
+      markerClickCallback: (...args) => handleClickRef.current?.(...args),
+    });
+    setHandleResize(() =>
+      _.throttle(() => map.invalidateSize(), resizeThrottle)
     );
-    return (): void => void globalMap?.remove();
-  }, [container, loading, localityPoints, markerClickCallback, forwardRef]);
+    addFullScreenButton(map, handleToggleFullScreen);
+    forwardRef?.(map);
+    return (): void => void map.remove();
+  }, [
+    tileLayers,
+    container,
+    localityPoints,
+    forwardRef,
+    handleToggleFullScreen,
+  ]);
 
   return (
     <Dialog

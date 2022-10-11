@@ -40,7 +40,7 @@ const fetchPossibleRanks = async (
       // Remove ranks after enforced rank
       return (enforcedIndex === 0 ? ranks : ranks.slice(0, enforcedIndex)).map(
         (rank) => ({
-          value: rank.resource_uri,
+          value: rank.id.toString(),
           title: rank.title || rank.name,
         })
       );

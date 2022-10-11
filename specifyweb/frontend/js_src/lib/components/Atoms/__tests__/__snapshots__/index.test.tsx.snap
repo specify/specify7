@@ -15,9 +15,9 @@ exports[`Can use <summary> as a controlled component 1`] = `
 exports[`Container.Base renders without errors 1`] = `
 <DocumentFragment>
   <section
-    class="bg-[color:var(--form-foreground)] rounded p-4
-  shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
-  [overflow-y:overlay] [scrollbar-gutter:stable]"
+    class="flex flex-col gap-4 overflow-scroll
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable] bg-[color:var(--form-foreground)]
+  rounded p-4 shadow-gray-400 shadow-lg"
   >
     Title
   </section>
@@ -27,9 +27,9 @@ exports[`Container.Base renders without errors 1`] = `
 exports[`Container.Center renders without errors 1`] = `
 <DocumentFragment>
   <section
-    class="bg-[color:var(--form-foreground)] rounded p-4
-  shadow-gray-400 shadow-lg flex flex-col gap-4 overflow-scroll overflow-x-auto
-  [overflow-y:overlay] [scrollbar-gutter:stable] max-w-[min(100%,var(--form-max-width))]
+    class="flex flex-col gap-4 overflow-scroll
+  overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable] bg-[color:var(--form-foreground)]
+  rounded p-4 shadow-gray-400 shadow-lg max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]"
   >
     Title

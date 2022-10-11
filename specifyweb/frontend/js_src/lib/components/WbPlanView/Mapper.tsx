@@ -592,12 +592,11 @@ export function Mapper(props: {
             : lineData;
 
           return (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissable key={line}>
               <MappingLineComponent
                 headerName={headerName}
                 isFocused={line === state.focusedLine}
                 isReadOnly={props.isReadOnly}
-                key={line}
                 lineData={fullLineData}
                 // Same key bindings as in QueryBuilder
                 onClearMapping={(): void =>

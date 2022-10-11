@@ -19,27 +19,30 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import type {
-  CollectionRelData} from './collectionRelData';
+import type { CollectionRelData } from './collectionRelData';
 import {
   fetchOtherCollectionData,
-  processColRelationships
+  processColRelationships,
 } from './collectionRelData';
 
 export function CollectionOneToManyPlugin({
   resource,
   relationship,
+  formatting,
 }: {
   readonly resource: SpecifyResource<CollectionObject>;
   readonly relationship: string;
+  readonly formatting: string | undefined;
 }): JSX.Element | null {
   const [data, setData] = useAsyncState<CollectionRelData | false>(
     React.useCallback(
       async () =>
-        fetchOtherCollectionData(resource, relationship).catch((error) => {
-          console.error(error);
-          return false;
-        }),
+        fetchOtherCollectionData(resource, relationship, formatting).catch(
+          (error) => {
+            console.error(error);
+            return false;
+          }
+        ),
       [resource, relationship]
     ),
     false
@@ -199,7 +202,11 @@ export function CollectionOneToManyPlugin({
                 .rgetCollection(`${data.side}SideRels`)
                 .then((collection) => collection.add(addedRelationships))
                 .then(async () =>
-                  processColRelationships(addedRelationships, data.otherSide)
+                  processColRelationships(
+                    addedRelationships,
+                    data.otherSide,
+                    formatting
+                  )
                 )
                 .then((relationships) =>
                   setData({

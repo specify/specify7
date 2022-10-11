@@ -2,10 +2,7 @@ import { Tab } from '@headlessui/react';
 import React from 'react';
 
 import { getAppResourceType } from './filtersHelpers';
-import type {
-  SpAppResource,
-  SpViewSetObj as SpViewSetObject,
-} from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { adminText } from '../../localization/admin';
@@ -41,8 +38,8 @@ export function AppResourcesTabs({
   readonly label: string;
   readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
-  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
   readonly onChange: (data: string | null) => void;
@@ -73,7 +70,7 @@ export function AppResourcesTabs({
           title={localityText('toggleFullScreen')}
           onClick={handleToggleFullScreen}
         >
-          {icons.arrowsExpand}
+          {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Blue>
       </Tab.List>
       <Tab.Panels className="h-full overflow-auto">
@@ -113,7 +110,7 @@ export function AppResourcesTabs({
 }
 
 function useEditorTabs(
-  resource: SerializedResource<SpAppResource | SpViewSetObject>
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
 ): RA<{
   readonly label: string;
   readonly component: AppResourceTab;

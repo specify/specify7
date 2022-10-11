@@ -12,6 +12,7 @@ import { parseRelativeDate } from '../../utils/relativeDate';
 import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
+import { getParsedAttribute } from '../../utils/utils';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -34,12 +35,14 @@ export type UiPlugins = {
     'CollectionRelOneToManyPlugin',
     {
       readonly relationship: string | undefined;
+      readonly formatting: string | undefined;
     }
   >;
   readonly ColRelTypePlugin: State<
     'ColRelTypePlugin',
     {
       readonly relationship: string | undefined;
+      readonly formatting: string | undefined;
     }
   >;
   readonly LocalityGeoRef: State<'LocalityGeoRef'>;
@@ -69,6 +72,7 @@ export type UiPlugins = {
 
 const processUiPlugin: {
   readonly [KEY in keyof UiPlugins]: (props: {
+    readonly cell: Element;
     readonly getProperty: (name: string) => string | undefined;
     readonly defaultValue: string | undefined;
   }) => UiPlugins[KEY];
@@ -99,14 +103,16 @@ const processUiPlugin: {
         : 'full',
     };
   },
-  CollectionRelOneToManyPlugin: ({ getProperty }) => ({
+  CollectionRelOneToManyPlugin: ({ getProperty, cell }) => ({
     type: 'CollectionRelOneToManyPlugin',
     relationship: getProperty('relName'),
+    formatting: getParsedAttribute(cell, 'formatting'),
   }),
   // Collection one-to-one Relationship plugin
-  ColRelTypePlugin: ({ getProperty }) => ({
+  ColRelTypePlugin: ({ getProperty, cell }) => ({
     type: 'ColRelTypePlugin',
     relationship: getProperty('relName'),
+    formatting: getParsedAttribute(cell, 'formatting'),
   }),
   LocalityGeoRef: () => ({ type: 'LocalityGeoRef' }),
   WebLinkButton: ({ getProperty }) => ({
@@ -130,11 +136,12 @@ const processUiPlugin: {
 export type PluginDefinition = UiPlugins[keyof UiPlugins];
 
 export function parseUiPlugin(
+  cell: Element,
   getProperty: (name: string) => string | undefined,
   defaultValue: string | undefined
 ): PluginDefinition {
   const uiCommand =
     processUiPlugin[(getProperty('name') ?? '') as keyof UiPlugins] ??
     processUiPlugin.Unsupported;
-  return uiCommand({ getProperty, defaultValue });
+  return uiCommand({ cell, getProperty, defaultValue });
 }

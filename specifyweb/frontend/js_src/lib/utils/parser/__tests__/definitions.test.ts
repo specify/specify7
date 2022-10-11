@@ -9,7 +9,6 @@ import {
 } from '../../../components/Forms/uiFormatters';
 import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
-import { setCache } from '../../cache';
 import { f } from '../../functools';
 import type { Parser } from '../definitions';
 import {
@@ -29,6 +28,7 @@ import {
 } from '../definitions';
 import { theories } from '../../../tests/utils';
 import { removeKey } from '../../utils';
+import { setPref } from '../../../components/UserPreferences/helpers';
 
 requireContext();
 
@@ -253,7 +253,7 @@ describe('formatterToParser', () => {
       },
       name: 'altCatalogNumber',
     } as unknown as LiteralField;
-    setCache('forms', 'autoNumbering', {
+    setPref('form', 'preferences', 'autoNumbering', {
       CollectionObject: [],
     });
     expect(formatterToParser(field, uiFormatter).value).toBeUndefined();
