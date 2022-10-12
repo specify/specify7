@@ -6,7 +6,7 @@ import { queryFieldFilters } from './FieldFilter';
 import type { MappingPath } from '../WbPlanView/Mapper';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import { capitalize, replaceItem } from '../../utils/utils';
+import { capitalize, insertItem, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById, schema, strictGetModel } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -162,7 +162,10 @@ export class QueryFieldSpec {
 
     // Insert rank name (or anyRank) into the path
     if (typeof this.treeRank === 'string')
-      path = replaceItem(path, path.length - 2, formatTreeRank(this.treeRank));
+      path =
+        path.length === 1
+          ? insertItem(path, 0, formatTreeRank(this.treeRank))
+          : replaceItem(path, path.length - 2, formatTreeRank(this.treeRank));
     if (isTreeModel(this.baseTable.name) && !valueIsTreeRank(path[0]))
       path = [formatTreeRank(anyTreeRank), ...path];
 
@@ -237,7 +240,10 @@ export class QueryFieldSpec {
     stringId: string,
     isRelationship: boolean
   ): QueryFieldSpec {
-    const match = defined(reStringId.exec(stringId) ?? undefined, `Unable to parse a string id: ${stringId}`);
+    const match = defined(
+      reStringId.exec(stringId) ?? undefined,
+      `Unable to parse a string id: ${stringId}`
+    );
     const [fullPath, _tableName, fullFieldName] = match.slice(1);
     const [baseTableId, ...path] = isRelationship
       ? fullPath.split(',').slice(0, -1)
