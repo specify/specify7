@@ -28,7 +28,7 @@ import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewPreferences } from './SubViewPreferences';
-import { usePref } from '../UserPreferences/usePref';
+import { useCachedState } from '../../hooks/useCachedState';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -42,7 +42,8 @@ export function FormPreferences({
   readonly className?: string;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  const [isReadOnly] = usePref('form', 'preferences', 'readOnlyMode');
+  const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
+  const subView = React.useContext(SubViewContext);
   return typeof resource === 'object' ? (
     <>
       <Button.Small
@@ -52,7 +53,9 @@ export function FormPreferences({
         onClick={handleToggle}
       >
         {icons.cog}
-        {isReadOnly && commonText('readOnly')}
+        {subView === undefined && isReadOnly
+          ? commonText('readOnly')
+          : undefined}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (
         <PreferencesDialog resource={resource} onClose={handleClose} />
@@ -82,8 +85,8 @@ function PreferencesDialog({
           <CarryForwardButton model={resource.specifyModel} type="button" />
           <AutoNumbering resource={resource} />
           <Definition model={resource.specifyModel} />
-          {subView === undefined ? (
-            <ReadOnlyMode isNew={resource.isNew()} />
+          {subView === undefined && !resource.isNew() ? (
+            <ReadOnlyMode />
           ) : undefined}
           <GenerateLabel
             id={undefined}

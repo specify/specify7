@@ -31,6 +31,9 @@ export type CacheDefinitions = {
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
+  readonly forms: {
+    readonly readOnlyMode: boolean;
+  };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */
     readonly showHiddenTables: boolean;

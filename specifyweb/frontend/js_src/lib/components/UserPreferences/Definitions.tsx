@@ -1031,13 +1031,6 @@ export const preferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
-          readOnlyMode: defineItem<boolean>({
-            title: 'readOnlyMode',
-            requiresReload: false,
-            visible: false,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
         },
       },
     },
