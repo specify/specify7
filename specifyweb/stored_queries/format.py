@@ -42,7 +42,7 @@ class ObjectFormatter(object):
         def getFormatterFromSchema():
             try:
                 formatter_name = Splocalecontainer.objects.get(
-                    name=specify_model.name.lower,
+                    name=specify_model.name.lower(),
                     schematype=0,
                     discipline=self.collection.discipline
                 ).format
