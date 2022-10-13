@@ -45,7 +45,9 @@ export function getPrefDefinition<
 /** Use usePref hook instead whenever possible as it comes with live updates */
 export const getUserPref = <
   CATEGORY extends keyof Preferences,
-  SUBCATEGORY extends keyof Preferences[CATEGORY]['subCategories'],
+  SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
+    ? keyof Preferences[CATEGORY]['subCategories']
+    : never,
   ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,

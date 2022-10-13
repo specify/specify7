@@ -13,7 +13,7 @@ export const downloadDataSet = async ({
     stringify(
       [columns, ...rows],
       {
-        delimiter: getUserPref('workbench', 'editor', 'exportFileDelimiter'),
+        delimiter: getUserPref('workBench', 'editor', 'exportFileDelimiter'),
       },
       (error, output) => {
         if (error === undefined)
