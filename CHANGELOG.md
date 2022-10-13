@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.3...HEAD)
+## [Unreleased](https://github.com/specify/specify7/compare/v7.7.4.1...HEAD)
 
 No unreleased changes
+
+## [7.7.4.1](https://github.com/specify/specify7/compare/v7.7.4...v7.7.4.1) (12 October 2022)
+
+### Fixed
+- Fix an infinite fetch loop in FormTable ([#2309](https://github.com/specify/specify7/issues/2309))
 
 ## [7.7.4](https://github.com/specify/specify7/compare/v7.7.3...v7.7.4) (12 October 2022)
 
