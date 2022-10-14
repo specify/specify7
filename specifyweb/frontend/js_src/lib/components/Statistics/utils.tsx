@@ -13,7 +13,7 @@ import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { FrontEndStatsResultDialog } from './trial';
+import { FrontEndStatsResultDialog } from './ResultsDialog';
 import { Button } from '../Atoms/Button';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { deserializeResource } from '../../hooks/resource';
@@ -34,8 +34,10 @@ export function useFrontEndStatsQuery(
           contextTableId: schema.models[tableName].tableId,
           countOnly: false,
           selectDistinct: false,
-          fields: fields.map(({ path, ...field }) =>
-            serializeResource(makeQueryField(tableName, path, field))
+          fields: fields.map(({ path, ...field }, index) =>
+            serializeResource(
+              makeQueryField(tableName, path, { ...field, position: index })
+            )
           ),
         })
       ),
@@ -102,16 +104,22 @@ export type StatItemSpec = BackendStat | QueryBuildStat;
 export function FrontEndStatsResult({
   statValue,
   query,
+  statLabel,
 }: {
   readonly statValue: string | undefined;
   readonly query: SpecifyResource<SpQuery>;
+  readonly statLabel: string;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
       <Button.LikeLink onClick={handleOpen}>{statValue}</Button.LikeLink>
       {isOpen && (
-        <FrontEndStatsResultDialog query={query} onClose={handleClose} />
+        <FrontEndStatsResultDialog
+          query={query}
+          onClose={handleClose}
+          statLabel={statLabel}
+        />
       )}
     </>
   );

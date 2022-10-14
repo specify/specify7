@@ -34,7 +34,6 @@ function useBackendApi(): BackendStatsResult | undefined {
 }
 
 export function StatsPage(): JSX.Element {
-  const statsObjectCombined = statsSpec;
   const backEndResult = useBackendApi();
 
   return (
@@ -42,7 +41,7 @@ export function StatsPage(): JSX.Element {
       <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-        {Object.entries(statsObjectCombined).map(
+        {Object.entries(statsSpec).map(
           ([categoryName, { label, categories }]) => {
             const statObject = (
               categories as (
@@ -63,6 +62,7 @@ export function StatsPage(): JSX.Element {
                           <QueryBuilderStat
                             tableName={spec.tableName}
                             fields={spec.fields}
+                            statLabel={label}
                           />
                         ) : (
                           spec.value ?? commonText('loading')
@@ -86,11 +86,13 @@ export function StatsPage(): JSX.Element {
 function QueryBuilderStat({
   tableName,
   fields,
+  statLabel,
 }: {
   readonly tableName: keyof Tables;
   readonly fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >;
+  readonly statLabel: string;
 }): JSX.Element {
   const frontEndQuery = useFrontEndStatsQuery(
     tableName,
@@ -100,6 +102,10 @@ function QueryBuilderStat({
   return frontEndStatValue === 'undefined' ? (
     <>{commonText('loading')}</>
   ) : (
-    <FrontEndStatsResult statValue={frontEndStatValue} query={frontEndQuery} />
+    <FrontEndStatsResult
+      statValue={frontEndStatValue}
+      query={frontEndQuery}
+      statLabel={statLabel}
+    />
   );
 }

@@ -4,6 +4,7 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import type { BackendStatsResult, BackendStat, StatItemSpec } from './utils';
 import { statsText } from '../../localization/stats';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
 function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
   backendobject: BackendStatsResult[CATEGORY_NAME] | undefined,
@@ -59,7 +60,13 @@ export const statsSpec: StatsSpec = {
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
-            fields: [],
+            fields: [
+              {
+                path: formattedEntry,
+                isDisplay: true,
+                operStart: queryFieldFilters.any.id,
+              },
+            ],
           },
         },
         preparations: {
@@ -67,7 +74,12 @@ export const statsSpec: StatsSpec = {
           spec: {
             type: 'Querybuildstat',
             tableName: 'Preparation',
-            fields: [{ position: 0, path: 'countAmt' }],
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              { path: 'countAmt' },
+            ],
           },
         },
         typeSpecimens: {
@@ -77,7 +89,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'Determination',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'typeStatusName',
                 operStart: queryFieldFilters.equal.id,
                 isNot: true,
@@ -131,9 +145,12 @@ export const statsSpec: StatsSpec = {
             tableName: 'LoanPreparation',
             fields: [
               {
-                position: 0,
+                path: `loan.${formattedEntry}`,
+              },
+              {
                 path: 'loan.isClosed',
                 operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
               },
             ],
           },
@@ -145,9 +162,12 @@ export const statsSpec: StatsSpec = {
             tableName: 'Loan',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'isClosed',
                 operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
               },
             ],
           },
@@ -160,15 +180,17 @@ export const statsSpec: StatsSpec = {
             tableName: 'Loan',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'currentDueDate',
                 operStart: queryFieldFilters.lessOrEqual.id,
                 startValue: getDateInputValue(new Date()),
               },
               {
-                position: 1,
                 path: 'isClosed',
                 operStart: queryFieldFilters.false.id,
+                isDisplay: false,
               },
             ],
           },
@@ -187,10 +209,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Taxon',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'rankId',
                 operStart: queryFieldFilters.equal.id,
                 startValue: '60',
+                isDisplay: false,
               },
             ],
           },
@@ -202,10 +227,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Taxon',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'rankId',
                 operStart: queryFieldFilters.equal.id,
                 startValue: '100',
+                isDisplay: false,
               },
             ],
           },
@@ -217,10 +245,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Taxon',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'rankId',
                 operStart: queryFieldFilters.equal.id,
                 startValue: '140',
+                isDisplay: false,
               },
             ],
           },
@@ -232,10 +263,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Taxon',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'rankId',
                 operStart: queryFieldFilters.equal.id,
                 startValue: '180',
+                isDisplay: false,
               },
             ],
           },
@@ -247,10 +281,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Taxon',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'rankId',
                 operStart: queryFieldFilters.equal.id,
                 startValue: '220',
+                isDisplay: false,
               },
             ],
           },
@@ -269,7 +306,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'Locality',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'localityId',
                 operStart: queryFieldFilters.any.id,
               },
@@ -283,7 +322,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'Geography',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'geographyId',
                 operStart: queryFieldFilters.any.id,
               },
@@ -304,10 +345,13 @@ export const statsSpec: StatsSpec = {
             tableName: 'Locality',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'latitude1',
                 operStart: queryFieldFilters.empty.id,
                 isNot: true,
+                isDisplay: false,
               },
             ],
           },
@@ -340,7 +384,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'CollectionObject',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'catalogedDate',
                 operStart: queryFieldFilters.between.id,
                 startValue: `${initialDateSevenDaysPast},${initialDate}`,
@@ -355,7 +401,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'CollectionObject',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'catalogedDate',
                 operStart: queryFieldFilters.between.id,
                 startValue: `${initialDateThirtyDaysPast},${initialDate}`,
@@ -370,7 +418,9 @@ export const statsSpec: StatsSpec = {
             tableName: 'CollectionObject',
             fields: [
               {
-                position: 0,
+                path: formattedEntry,
+              },
+              {
                 path: 'catalogedDate',
                 operStart: queryFieldFilters.between.id,
                 startValue: `${initialDateYearPast},${initialDate}`,
