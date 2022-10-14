@@ -51,9 +51,10 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       () =>
         typeof props.pickListName === 'string'
           ? fetchPickList(props.pickListName).then((pickList) => {
-              if (pickList === undefined)
+              if (pickList === undefined) {
                 console.error('Unable to find pick list', props);
-              return false;
+                return false;
+              } else return pickList;
             })
           : undefined,
       [props.pickListName]

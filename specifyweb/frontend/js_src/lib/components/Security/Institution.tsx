@@ -99,7 +99,7 @@ function InstitutionView({
                       {commonText('create')}
                     </Link.Green>
                   )}
-                  {isOverlay && <SafeOutlet<SecurityOutlet> {...outletState} />}
+                  <SafeOutlet<SecurityOutlet> {...outletState} />
                   <ImportExport
                     baseName={institution.name ?? ''}
                     collectionId={schema.domainLevelIds.collection}
