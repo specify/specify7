@@ -307,6 +307,12 @@ export const queryText = createDictionary({
     'en-us': 'Open Map',
     'ru-ru': 'Открыть карту',
   },
+  queryMapSubset: {
+    'en-us': (plotted: number, total: number) =>
+      `Plotted ${plotted} of ${total} records`,
+    'ru-ru': (plotted: number, total: number) =>
+      `Отображено ${plotted} из ${total} записей`,
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -227,6 +227,7 @@ export function QueryResults({
             <QueryToMap
               fieldSpecs={fieldSpecs}
               model={model}
+              totalCount={totalCount}
               results={loadedResults}
               selectedRows={selectedRows}
             />

@@ -27,16 +27,19 @@ import { MappingPath } from '../WbPlanView/Mapper';
 import { schema } from '../DataModel/schema';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { queryText } from '../../localization/query';
 
 export function QueryToMap({
   results,
   selectedRows,
   model,
+  totalCount,
   fieldSpecs,
 }: {
   readonly results: RA<RA<number | string | null>>;
   readonly selectedRows: ReadonlySet<number>;
   readonly model: SpecifyModel;
+  readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -52,6 +55,7 @@ export function QueryToMap({
           ids={ids}
           localityMappings={localityMappings}
           onClose={handleClose}
+          totalCount={totalCount}
         />
       ) : undefined}
     </>
@@ -114,10 +118,12 @@ const fieldSpecsToMappingPaths = (
 function Dialog({
   ids,
   localityMappings,
+  totalCount,
   onClose: handleClose,
 }: {
   readonly ids: RA<number>;
   readonly localityMappings: RA<string>;
+  readonly totalCount: number | undefined;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const localities = useLocalities(ids, localityMappings);
@@ -135,6 +141,15 @@ function Dialog({
   return Array.isArray(localityPoints) ? (
     <LeafletMap
       localityPoints={localityPoints}
+      header={`${commonText('geoMap')}${
+        typeof totalCount === 'number'
+          ? ` - ${queryText(
+              'queryMapSubset',
+              localityPoints.length,
+              totalCount
+            )}`
+          : ''
+      }`}
       /*
        * FEATURE: show "loading" while fetching more data (here, and in other
        *   places that use map markers
