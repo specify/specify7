@@ -13,11 +13,8 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type {
-  GenericNotification} from './NotificationRenderers';
-import {
-  notificationRenderers
-} from './NotificationRenderers';
+import type { GenericNotification } from './NotificationRenderers';
+import { notificationRenderers } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -178,7 +175,7 @@ export function Notifications(): JSX.Element {
            */}
           <p>{commonText('mostRecentNotificationsTop')}</p>
           {notifications.map((notification, index) => (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissable key={index}>
               <NotificationComponent
                 key={index}
                 notification={notification}
@@ -249,4 +246,3 @@ function NotificationComponent({
     </article>
   );
 }
-

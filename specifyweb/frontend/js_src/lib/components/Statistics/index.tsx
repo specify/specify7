@@ -37,10 +37,10 @@ export function StatsPage(): JSX.Element {
   const backEndResult = useBackendApi();
 
   return (
-    <div className="mx-auto mt-0 flex h-full flex-col gap-4 bg-gray-200 p-4">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-[color:var(--form-background)] p-4">
       <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
+      <div className="grid h-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
         {Object.entries(statsSpec).map(
           ([categoryName, { label, categories }]) => {
             const statObject = (
@@ -51,29 +51,34 @@ export function StatsPage(): JSX.Element {
               ) => StatCategoryReturn
             )(backEndResult?.[categoryName]);
             return (
-              <div className="block content-center rounded border-[1px] border-black bg-white p-4">
+              <div
+                key={categoryName}
+                className="block content-center rounded border-[1px] border-black bg-white p-4"
+              >
                 <H3 className="font-bold">{label}</H3>
 
                 {statObject === undefined
                   ? commonText('loading')
-                  : Object.entries(statObject).map(([key, { label, spec }]) => {
-                      const statValue =
-                        spec.type === 'Querybuildstat' ? (
-                          <QueryBuilderStat
-                            tableName={spec.tableName}
-                            fields={spec.fields}
-                            statLabel={label}
-                          />
-                        ) : (
-                          spec.value ?? commonText('loading')
+                  : Object.entries(statObject).map(
+                      ([itemName, { label, spec }]) => {
+                        const statValue =
+                          spec.type === 'Querybuildstat' ? (
+                            <QueryBuilderStat
+                              tableName={spec.tableName}
+                              fields={spec.fields}
+                              statLabel={label}
+                            />
+                          ) : (
+                            spec.value ?? commonText('loading')
+                          );
+                        return (
+                          <p key={itemName} className="flex justify-between">
+                            <span>{label}</span>
+                            <span>{statValue ?? commonText('loading')}</span>
+                          </p>
                         );
-                      return (
-                        <p key={key} className="flex justify-between">
-                          <span>{label}</span>
-                          <span>{statValue}</span>
-                        </p>
-                      );
-                    })}
+                      }
+                    )}
               </div>
             );
           }
@@ -99,7 +104,7 @@ function QueryBuilderStat({
     React.useMemo(() => fields, [])
   );
   const frontEndStatValue = useFrontEndStat(frontEndQuery);
-  return frontEndStatValue === 'undefined' ? (
+  return frontEndStatValue === undefined ? (
     <>{commonText('loading')}</>
   ) : (
     <FrontEndStatsResult

@@ -33,6 +33,7 @@ export function FrontEndStatsResultDialog({
         isReadOnly={false}
         query={query}
         recordSet={undefined}
+        forceCollection={undefined}
       />
     </Dialog>
   ) : null;

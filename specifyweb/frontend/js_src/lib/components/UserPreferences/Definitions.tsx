@@ -471,8 +471,8 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: true,
             defaultValue: true,
-            type: "java.lang.Boolean"
-          })
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1515,6 +1515,19 @@ export const preferenceDefinitions = {
       },
     },
   },
+  /**statistics:{
+    title: commonText('statistics'),
+    subCategories: {
+      layout: {
+        title: preferencesText('layout'),
+        items: {
+          layoutObject: define
+        }
+      }
+
+    }
+  }
+    ,**/
   leaflet: {
     title: commonText('geoMap'),
     subCategories: {
