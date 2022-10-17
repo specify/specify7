@@ -32,7 +32,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   onDelete: handleDelete,
   onSlide: handleSlide,
   children,
-  defaultIndex = collection._totalCount ?? 0,
+  defaultIndex = 0,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -164,7 +164,7 @@ export function IntegratedRecordSelector({
   const mode = augmentMode(initialMode, false, relationship.relatedModel.name);
 
   const [rawIndex, setIndex] = useSearchParameter(urlParameter);
-  const index = f.parseInt(rawIndex) ?? collection.models.length - 1;
+  const index = f.parseInt(rawIndex) ?? 0;
   return formType === 'formTable' ? (
     <FormTableCollection
       collection={collection}
