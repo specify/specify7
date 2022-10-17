@@ -1,15 +1,15 @@
 import React from 'react';
 
-import type { Locality } from '../DataModel/types';
-import { Lat, Long, trimLatLong } from '../../utils/latLong';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useResourceValue } from '../../hooks/useResourceValue';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
-import type { FormMode } from '../FormParse';
-import { resourceOn } from '../DataModel/resource';
-import { useResourceValue } from '../../hooks/useResourceValue';
+import { Lat, Long, trimLatLong } from '../../utils/latLong';
 import { Input, Select } from '../Atoms/Form';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import type { Locality } from '../DataModel/types';
+import type { FormMode } from '../FormParse';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -37,22 +37,24 @@ function Coordinate({
   readonly step: number | undefined;
   readonly onFormatted: (value: string | undefined) => void;
 }): JSX.Element {
-  const { value, updateValue, validationRef, setValidation } = useResourceValue(
-    resource,
-    coordinateTextField,
-    undefined
-  );
+  const { value, updateValue, validationRef, setValidation, parser } =
+    useResourceValue(resource, coordinateTextField, undefined);
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(
     () =>
-      resourceOn(resource, `change:${coordinateTextField}`, () => {
-        if (isChanging.current) return;
-        if (
-          (resource.get(coordinateTextField) ?? '') === '' &&
-          (resource.get(coordinateField) ?? '') !== ''
-        )
-          resource.set(coordinateTextField, resource.get(coordinateField));
-      }),
+      resourceOn(
+        resource,
+        `change:${coordinateTextField}`,
+        () => {
+          if (isChanging.current) return;
+          if (
+            (resource.get(coordinateTextField) ?? '') === '' &&
+            (resource.get(coordinateField) ?? '') !== ''
+          )
+            resource.set(coordinateTextField, resource.get(coordinateField));
+        },
+        true
+      ),
     [resource, coordinateField, coordinateTextField]
   );
 
@@ -67,7 +69,11 @@ function Coordinate({
     [resource, coordinateField, updateValue, step, fieldType]
   );
 
+  const isLoading = React.useRef<boolean>(true);
   React.useEffect(() => {
+    if (isLoading.current && value === undefined) return;
+    else isLoading.current = false;
+
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
@@ -100,6 +106,7 @@ function Coordinate({
     step,
     handleFormatted,
     setValidation,
+    parser,
   ]);
 
   return (
