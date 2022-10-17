@@ -113,18 +113,17 @@ const processCellType: {
 } = {
   Field({ cell, model, getProperty }) {
     let rawFieldName = getParsedAttribute(cell, 'name');
-    const parts = rawFieldName?.split('.');
+    const parts = rawFieldName?.split('.') ?? [];
     /*
      * If model is attachment, and field name is attachment.type, replace it
      * with "type"
      */
     if (
-      Array.isArray(parts) &&
       parts.length > 1 &&
       parts[0].toLowerCase() === model?.name.toLowerCase()
     )
-      rawFieldName = parts?.slice(1).join('.');
-    const field = model?.getField(rawFieldName ?? '');
+      rawFieldName = parts.slice(1).join('.');
+    const fields = model?.getFields(rawFieldName ?? '');
     const fieldDefinition = parseFormField(cell, getProperty);
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
@@ -138,15 +137,16 @@ const processCellType: {
           fieldDefinition.pluginDefinition.type === 'PartialDateUI'
             ? fieldDefinition.pluginDefinition.dateField
             : undefined) ??
-          field?.name ??
+          fields?.map(({ name }) => name).join('.') ??
           rawFieldName;
     return {
       type: 'Field',
+      // REFACTOR: consider changing this to an array
       fieldName,
       fieldDefinition,
       isRequired:
         (getBooleanAttribute(cell, 'isRequired') ?? false) ||
-        (field?.isRequiredBySchemaLocalization() ?? false),
+        (fields?.at(-1)?.isRequiredBySchemaLocalization() ?? false),
     };
   },
   Label: ({ cell }) => ({

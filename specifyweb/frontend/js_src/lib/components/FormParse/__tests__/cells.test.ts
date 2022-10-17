@@ -217,6 +217,31 @@ describe('parseFormCell', () => {
       })
     ));
 
+  test('relationship field names are parsed correctly', () =>
+    expect(
+      parseFormCell(
+        schema.models.Collector,
+        strictParseXml(
+          '<cell type="field" uiType="text" name="agent.lastName" />'
+        )
+      )
+    ).toEqual(
+      cell({
+        type: 'Field',
+        // The field is required by the data model
+        isRequired: false,
+        fieldName: 'agent.lastName',
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          min: undefined,
+          step: undefined,
+          type: 'Text',
+        },
+      })
+    ));
+
   test('fieldName overwritten by the PartialDateUI plugin', () =>
     expect(
       parseFormCell(
