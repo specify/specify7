@@ -43,7 +43,7 @@ export type BackgroundLocation = State<
  * Symbol() would be better suites for this, but it can't be used because
  * state must be serializable
  */
-type States =
+export type LocationStates =
   | BackgroundLocation
   | State<
       'NoopRoute',
@@ -54,7 +54,7 @@ type States =
   | State<'NotFoundPage'>
   | undefined;
 // Wrap state object in this for type safety
-const createState = (state: States): States => state;
+const createState = (state: LocationStates): LocationStates => state;
 
 const transformedRoutes = toReactRoutes(routes);
 const transformedOverlays = toReactRoutes(overlayRoutes);
@@ -68,7 +68,7 @@ const transformedOverlays = toReactRoutes(overlayRoutes);
 export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
-  const state = location.state as States;
+  const state = location.state as LocationStates;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
   const backgroundUrl =
