@@ -200,7 +200,7 @@ export function CollectionAccess({
   React.useEffect(
     () =>
       typeof collectionAddress === 'object'
-        ? resourceOn(collectionAddress, 'change:parent', handleChangeAgent)
+        ? resourceOn(collectionAddress, 'change:agent', handleChangeAgent)
         : undefined,
     [collectionAddress, handleChangeAgent]
   );
