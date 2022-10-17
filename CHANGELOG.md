@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/specify/specify7/compare/v7.7.4.1...HEAD)
+## [7.7.5](https://github.com/specify/specify7/compare/v7.7.4.1...v7.7.5) (17 October 2022)
 
-No unreleased changes
+### Fixed
+
+- Fix query result table formatting to use correct formatter ([#2271](https://github.com/specify/specify7/pull/2271))
+- Fix DatePicker not allowing to change precision ([#2323](https://github.com/specify/specify7/pull/2323))
+
 
 ## [7.7.4.1](https://github.com/specify/specify7/compare/v7.7.4...v7.7.4.1) (12 October 2022)
 
