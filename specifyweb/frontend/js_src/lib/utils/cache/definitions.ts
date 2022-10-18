@@ -33,6 +33,7 @@ export type CacheDefinitions = {
   };
   readonly forms: {
     readonly readOnlyMode: boolean;
+    readonly useFieldLabels: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */

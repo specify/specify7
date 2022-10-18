@@ -1024,13 +1024,6 @@ export const preferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          useFieldLabels: defineItem<boolean>({
-            title: 'useFieldLabels',
-            requiresReload: false,
-            visible: false,
-            defaultValue: true,
-            type: 'java.lang.Boolean',
-          }),
         },
       },
     },

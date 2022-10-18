@@ -13,6 +13,7 @@ import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { usePref } from '../UserPreferences/usePref';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function Definition({
   model,
@@ -69,9 +70,8 @@ function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
 }
 
 function UseLabels(): JSX.Element {
-  const [useFieldLabels, setUseFieldLabels] = usePref(
-    'form',
-    'preferences',
+  const [useFieldLabels = true, setUseFieldLabels] = useCachedState(
+    'forms',
     'useFieldLabels'
   );
 

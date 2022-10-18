@@ -31,7 +31,7 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
-import { getUserPref } from '../UserPreferences/helpers';
+import { getCache } from '../../utils/cache';
 
 type FieldAlias = {
   readonly vname: string;
@@ -219,7 +219,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    const useLabels = getUserPref('form', 'preferences', 'useFieldLabels');
+    const useLabels = getCache('forms', 'useFieldLabels');
     this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
       items: {},
     };
