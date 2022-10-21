@@ -86,7 +86,8 @@ export function parseQueryFields(
               type: defined(
                 Object.entries(queryFieldFilters).find(
                   ([_, { id }]) => id === field.operStart
-                ), `Unknown SpQueryField.operStart value: ${field.operStart}`
+                ),
+                `Unknown SpQueryField.operStart value: ${field.operStart}`
               )[KEY],
               isNot,
               startValue,
@@ -197,7 +198,8 @@ export const unParseQueryFields = (
                 // Back-end treats "equal" with blank startValue as "any"
                 Object.entries(queryFieldFilters).find(
                   ([name]) => name === type
-                ), `Unknown query field filter type: ${type}`
+                ),
+                `Unknown query field filter type: ${type}`
               )[VALUE].id,
               startValue,
               isNot,

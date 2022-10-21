@@ -16,6 +16,7 @@ import { createQuery } from '../QueryBuilder';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
 export function RecordHistory({
   resource,
@@ -90,6 +91,11 @@ function useEditHistoryQuery(
               .set('isDisplay', false)
               .set('operStart', queryFieldFilters.equal.id)
               .set('startValue', resource.id.toString()),
+            QueryFieldSpec.fromPath('SpAuditLog', ['action']).toSpQueryField(),
+            QueryFieldSpec.fromPath('SpAuditLog', [
+              'modifiedByAgent',
+              formattedEntry,
+            ]).toSpQueryField(),
             QueryFieldSpec.fromPath('SpAuditLog', ['timestampModified'])
               .toSpQueryField()
               .set('sortType', flippedSortTypes.descending),

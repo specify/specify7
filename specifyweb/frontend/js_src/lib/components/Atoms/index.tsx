@@ -37,6 +37,7 @@ export const Container = {
    */
   Full: wrap('Container.Full', 'section', className.containerFull),
 };
+
 export const Progress = wrap<'progress', { readonly value: number }>(
   'Progress',
   'progress',
