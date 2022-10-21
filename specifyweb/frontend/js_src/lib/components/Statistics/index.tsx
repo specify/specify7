@@ -28,6 +28,8 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { handleAjaxError } from '../Errors/FormatError';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { defaultStatLayout } from './definitions';
+import { preferencesText } from '../../localization/preferences';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -72,8 +74,14 @@ export function StatsPage(): JSX.Element {
   const statsSpec = useStatsSpec();
   return (
     <div className="flex h-full flex-col gap-4 overflow-y-auto bg-[color:var(--form-background)] p-4">
-      <div className="flex justify-between">
+      <div className="flex gap-2">
         <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
+        <span className="-ml-2 flex-1" />
+        {isEditing && (
+          <Button.Red onClick={(): void => setLayout(defaultStatLayout)}>
+            {commonText('reset')}
+          </Button.Red>
+        )}
         <Button.Green onClick={handleToggle}>
           {isEditing ? commonText('save') : commonText('edit')}
         </Button.Green>

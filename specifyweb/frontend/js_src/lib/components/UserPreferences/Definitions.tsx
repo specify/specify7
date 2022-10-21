@@ -33,23 +33,8 @@ import {
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
 
-import { State } from 'typesafe-reducer';
 import { statsText } from '../../localization/stats';
-import { statsSpec } from '../Statistics/StatsSpec';
-
-type CustomStat = State<
-  'CustomStat',
-  {
-    readonly queryId: number;
-  }
->;
-type DefaultStat = State<
-  'DefaultStat',
-  {
-    readonly categoryName: keyof typeof statsSpec;
-    readonly itemName: string;
-  }
->;
+import { defaultStatLayout, StatLayout } from '../Statistics/definitions';
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
   readonly definition: PreferenceItem<VALUE>;
@@ -1531,25 +1516,11 @@ export const preferenceDefinitions = {
       appearance: {
         title: preferencesText('appearance'),
         items: {
-          layout: defineItem<IR<IR<RA<CustomStat | DefaultStat>>>>({
+          layout: defineItem<StatLayout>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
-            defaultValue: {
-              collection: {
-                [statsText('holdings')]: [
-                  {
-                    type: 'DefaultStat',
-                    categoryName: 'holdings',
-                    itemName: 'specimens',
-                  },
-                  {
-                    type: 'CustomStat',
-                    queryId: 45,
-                  },
-                ],
-              },
-            },
+            defaultValue: defaultStatLayout,
             renderer: () => <>{error('This should not get called')}</>,
           }),
         },
