@@ -33,6 +33,23 @@ import {
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
 
+import { State } from 'typesafe-reducer';
+import { statsText } from '../../localization/stats';
+import { statsSpec } from '../Statistics/StatsSpec';
+
+type CustomStat = State<
+  'CustomStat',
+  {
+    readonly queryId: number;
+  }
+>;
+type DefaultStat = State<
+  'DefaultStat',
+  {
+    readonly categoryName: keyof typeof statsSpec;
+    readonly itemName: string;
+  }
+>;
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
   readonly definition: PreferenceItem<VALUE>;
@@ -1515,19 +1532,37 @@ export const preferenceDefinitions = {
       },
     },
   },
-  /**statistics:{
+  statistics: {
     title: commonText('statistics'),
     subCategories: {
-      layout: {
-        title: preferencesText('layout'),
+      appearance: {
+        title: preferencesText('appearance'),
         items: {
-          layoutObject: define
-        }
-      }
-
-    }
-  }
-    ,**/
+          layout: defineItem<IR<IR<RA<CustomStat | DefaultStat>>>>({
+            title: 'Defines the layout of the stats page',
+            requiresReload: false,
+            visible: false,
+            defaultValue: {
+              collection: {
+                [statsText('holdings')]: [
+                  {
+                    type: 'DefaultStat',
+                    categoryName: 'holdings',
+                    itemName: 'specimens',
+                  },
+                  {
+                    type: 'CustomStat',
+                    queryId: 45,
+                  },
+                ],
+              },
+            },
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+        },
+      },
+    },
+  },
   leaflet: {
     title: commonText('geoMap'),
     subCategories: {
