@@ -163,6 +163,9 @@ export function UserRoles({
   ) : null;
 }
 
+/**
+ * A dialog that sets as a reminder to set a password
+ */
 export function SetPasswordPrompt({
   onClose: handleClose,
   onSet: handleSet,

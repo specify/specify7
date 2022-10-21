@@ -46,14 +46,15 @@ export type PickListItemSimple = {
 };
 
 function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
-  const [pickList] = useAsyncState<SpecifyResource<PickList>>(
+  const [pickList] = useAsyncState<SpecifyResource<PickList> | false>(
     React.useCallback(
       () =>
         typeof props.pickListName === 'string'
           ? fetchPickList(props.pickListName).then((pickList) => {
-              if (pickList === undefined)
+              if (pickList === undefined) {
                 console.error('Unable to find pick list', props);
-              return pickList;
+                return false;
+              } else return pickList;
             })
           : undefined,
       [props.pickListName]
@@ -75,7 +76,9 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
    */
   const mode =
     // Only PickListTypes.ITEMS pick lists are editable
-    pickList?.get('type') !== PickListTypes.ITEMS || pickList?.get('isSystem')
+    pickList === false ||
+    pickList?.get('type') !== PickListTypes.ITEMS ||
+    pickList?.get('isSystem')
       ? 'view'
       : props.mode;
 
@@ -103,7 +106,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       disabled
       required={props.isRequired}
       // BUG: required has no effect while disabled. Need a better solution
-      value={commonText('loading')}
+      value={pickList === false ? '' : commonText('loading')}
     />
   );
 }

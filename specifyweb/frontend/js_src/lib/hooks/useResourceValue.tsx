@@ -29,6 +29,9 @@ import { parseValue } from '../utils/parser/parse';
  * If field value is invalid, save blocker is set. It is cleared as soon
  * as field value is corrected
  *
+ * TEST: add tests for this hook
+ * REFACTOR: consider breaking this hook into smaller hooks
+ *
  */
 export function useResourceValue<
   T extends boolean | number | string | null,

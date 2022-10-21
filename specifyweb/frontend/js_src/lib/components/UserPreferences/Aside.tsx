@@ -7,6 +7,8 @@ import type { GetSet, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { usePrefDefinitions } from './index';
+import { useLocation } from 'react-router';
+import { LocationStates } from '../Router/Router';
 
 /** Update the active category on the sidebar as user scrolls */
 export function useActiveCategory(): {
@@ -53,9 +55,9 @@ export function useActiveCategory(): {
         }
       );
       /*
-       * Since React 18, apps running in strict mode are mounted followed
-       * immediately by an unmount and the mount again when running in
-       * development. This causes observer not to fire. Can be fixed by either
+       * Since React 18, apps running in strict mode in development are mounted
+       * followed immediately by an unmount and then mount again. This causes
+       * observer not to fire. Can be fixed by either
        * running React in non-strict mode (bad idea), or wrapping the following
        * in setTimeout(()=>..., 0);
        * More info:
@@ -81,15 +83,20 @@ export function PreferencesAside({
 }): JSX.Element {
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as LocationStates;
+  const isInOverlay = state?.type === 'BackgroundLocation';
   React.useEffect(
     () =>
-      navigate(
-        `/specify/user-preferences/#${id(definitions[activeCategory][0])}`,
-        {
-          replace: true,
-        }
-      ),
-    [definitions, activeCategory, id]
+      isInOverlay
+        ? undefined
+        : navigate(
+            `/specify/user-preferences/#${id(definitions[activeCategory][0])}`,
+            {
+              replace: true,
+            }
+          ),
+    [isInOverlay, definitions, activeCategory, id]
   );
 
   const [freezeCategory, setFreezeCategory] = useFrozenCategory();

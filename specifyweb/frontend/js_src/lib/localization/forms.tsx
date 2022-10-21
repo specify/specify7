@@ -142,7 +142,7 @@ export const formsText = createDictionary({
       Препараты не могут быть возвращены в этом контексте.`,
   },
   noUnresolvedPreparations: {
-    'en-us': 'There no unresolved preparations for this loan.',
+    'en-us': 'There are no unresolved preparations for this loan.',
     'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
   },
   remarks: {

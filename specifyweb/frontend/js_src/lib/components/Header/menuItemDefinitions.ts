@@ -21,6 +21,7 @@ import {
 } from '../Permissions/helpers';
 import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
+import { getCache } from '../../utils/cache';
 
 export type MenuItemName =
   | 'attachments'
@@ -40,6 +41,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
     icon: icons.pencilAt,
     visibilityKey: 'showDataEntry',
     enabled: () =>
+      getCache('forms', 'readOnlyMode') !== true &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
         getTablePermissions()[schema.domainLevelIds.collection]
@@ -59,10 +61,12 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
     icon: icons.chat,
     visibilityKey: 'showInteractions',
     enabled: () =>
+      getCache('forms', 'readOnlyMode') !== true &&
+      hasToolPermission('recordSets', 'read') &&
       // Show DataEntry only if has "create" permission to at least one table
       Object.values(
         getTablePermissions()[schema.domainLevelIds.collection]
-      ).some(({ create }) => create) && hasToolPermission('recordSets', 'read'),
+      ).some(({ create }) => create),
   },
   queries: {
     url: '/specify/overlay/queries/',

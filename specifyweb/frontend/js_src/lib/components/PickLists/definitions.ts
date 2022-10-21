@@ -121,13 +121,13 @@ export const monthsPickList = f.store(() =>
  * that pick lists would take precedence
  *
  */
-export const getFrontEndPickLists: () => {
+export const getFrontEndPickLists = f.store<{
   readonly [TABLE_NAME in keyof Tables]?: {
     readonly [FIELD_NAME in TableFields<
       Tables[TABLE_NAME]
     >]?: SpecifyResource<PickList>;
   };
-} = f.store(() => {
+}>(() => {
   const fullNameDirection = definePicklist('_fullNameDirection', [
     createPickListItem('-1', formsText('reverse')),
     createPickListItem('1', formsText('forward')),

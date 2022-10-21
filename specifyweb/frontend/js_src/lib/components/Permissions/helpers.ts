@@ -12,7 +12,7 @@ import {
   getOperationPermissions,
   getTablePermissions,
 } from './index';
-import { getUserPref } from '../UserPreferences/helpers';
+import { getCache } from '../../utils/cache';
 
 // REFACTOR: use <ProtectedTable> and etc in favor of this function
 /**
@@ -24,7 +24,7 @@ export function hasTablePermission(
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean {
-  const isReadOnly = getUserPref('form', 'preferences', 'readOnlyMode');
+  const isReadOnly = getCache('forms', 'readOnlyMode');
   if (isReadOnly && action !== 'read') return false;
   if (
     getTablePermissions()[collectionId][tableNameToResourceName(tableName)][
