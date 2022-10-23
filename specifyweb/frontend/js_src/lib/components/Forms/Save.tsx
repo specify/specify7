@@ -169,6 +169,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       )
         .then(() => {
           unsetUnloadProtect();
+          smoothScroll(form, 0);
           handleSaved?.({
             newResource,
             wasNew,
@@ -176,7 +177,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           });
         })
         .then(() => setIsSaving(false))
-        .then(() => smoothScroll(form, 0))
         .catch((error_) =>
           Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===
           hasSaveConflict
