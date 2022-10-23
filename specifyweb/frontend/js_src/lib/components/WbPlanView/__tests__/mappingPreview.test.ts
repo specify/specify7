@@ -1,10 +1,12 @@
 import { generateMappingPathPreview } from '../mappingPreview';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
+import { formattedEntry } from '../mappingHelpers';
 
 requireContext();
 
 theories(generateMappingPathPreview, [
+  [['SpAuditLog', ['fields', formattedEntry]], 'Fields'],
   [['CollectionObject', ['catalogNumber']], 'Cat #'],
   [['CollectionObject', ['guid']], 'Collection Object GUID'],
   [['CollectionObject', ['void']], 'Collection Object Void'],
@@ -16,6 +18,7 @@ theories(generateMappingPathPreview, [
     ['CollectionObject', ['accession', 'accessionAgents', '#1', 'role']],
     'Accession Agents Role',
   ],
+  [['SpAuditLog', ['modifiedByAgent', formattedEntry]], 'Modified By Agent'],
   [
     [
       'CollectionObject',

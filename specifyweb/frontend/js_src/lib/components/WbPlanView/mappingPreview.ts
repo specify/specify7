@@ -7,13 +7,15 @@
  * @module
  */
 
-import type { MappingPath } from './Mapper';
-import type { Tables } from '../DataModel/types';
+import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
 import { strictGetModel } from '../DataModel/schema';
-import { filterArray } from '../../utils/types';
+import type { Tables } from '../DataModel/types';
+import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
+  formattedEntry,
   formatTreeRank,
   getNameFromTreeRankName,
   getNumberFromToManyIndex,
@@ -41,6 +43,8 @@ const nonGenericFields = new Set<string>([
   'longitude1',
   'latitude2',
   'longitude2',
+  'action',
+  'fields',
 ]);
 
 /** Use parent table label instead of this table label (if possible) */
@@ -53,7 +57,9 @@ const genericTables = new Set<string>(['referenceWork']);
  * NOTE: subset is reversed so that array destructuring works right for mapping
  * paths shorter than 3 elements
  */
-const mappingPathSubset = (mappingPath: MappingPath): MappingPath => [
+const mappingPathSubset = <T extends string | undefined>(
+  mappingPath: RA<T | string>
+): RA<T | string> => [
   ...mappingPath
     .filter((mappingPathPart) => !valueIsToManyIndex(mappingPathPart))
     .reverse(),
@@ -64,7 +70,18 @@ const mappingPathSubset = (mappingPath: MappingPath): MappingPath => [
  * Generate a short and human friendly label from a potentially long
  * mapping path
  */
-export function generateMappingPathPreview(
+export const generateMappingPathPreview = (
+  baseTableName: keyof Tables,
+  mappingPath: MappingPath
+): string =>
+  generatePreview(
+    baseTableName,
+    mappingPath.at(-1) === formattedEntry
+      ? mappingPath.slice(0, -1)
+      : mappingPath
+  );
+
+function generatePreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
@@ -77,13 +94,14 @@ export function generateMappingPathPreview(
 
   const fieldLabels = [
     mappingLineData[0].selectLabel ?? '',
-    ...mappingLineData.map((mappingElementData) =>
-      Object.keys(mappingElementData.fieldsData)[0] ===
-      formatTreeRank(anyTreeRank)
+    ...mappingLineData.map((mappingElementData) => {
+      const entry = Object.entries(mappingElementData.fieldsData)[0];
+      if (entry === undefined) return undefined;
+      const [fieldName, { optionLabel }] = entry;
+      return fieldName === formatTreeRank(anyTreeRank)
         ? strictGetModel(mappingElementData.tableName!).label
-        : (Object.values(mappingElementData.fieldsData)[0]
-            ?.optionLabel as string)
-    ),
+        : (optionLabel as string);
+    }),
   ];
 
   const toManyLocation = Array.from(mappingPath)
@@ -109,6 +127,7 @@ export function generateMappingPathPreview(
   const fieldNameFormatted = fieldsToHide.has(databaseFieldName)
     ? undefined
     : fieldName;
+  // Treat fields whose label is single word as generic
   const fieldIsGeneric =
     (genericFields.has(databaseFieldName) &&
       fieldNameFormatted?.split(' ').length === 1) ||
@@ -136,5 +155,7 @@ export function generateMappingPathPreview(
       : tableNameFormatted),
     fieldNameFormatted,
     toManyIndexFormatted,
-  ]).join(' ');
+  ])
+    .filter(Boolean)
+    .join(' ');
 }

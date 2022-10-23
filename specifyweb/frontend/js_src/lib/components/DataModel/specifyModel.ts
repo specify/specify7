@@ -219,7 +219,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    const useLabels = getCache('forms', 'useFieldLabels');
+    const useLabels = getCache('forms', 'useFieldLabels') ?? true;
     this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
       items: {},
     };
