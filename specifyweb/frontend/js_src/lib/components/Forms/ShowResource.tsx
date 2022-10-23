@@ -20,6 +20,8 @@ import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { RecordSet as RecordSetView } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
 import { overwriteReadOnly } from '../../utils/types';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/helpers';
 
 export function ShowResource({
   resource: initialResource,
@@ -111,7 +113,17 @@ export function ShowResource({
       onClose={f.never}
       onDeleted={f.void}
       onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object') setResource(newResource);
+        if (typeof newResource === 'object')
+          navigate(
+            getResourceViewUrl(
+              newResource.specifyModel.name,
+              undefined,
+              recordSetId
+            ),
+            {
+              state: { resource: serializeResource(newResource) },
+            }
+          );
         else if (wasNew) navigate(resource.viewUrl());
         else {
           const reloadResource = new resource.specifyModel.Resource({
