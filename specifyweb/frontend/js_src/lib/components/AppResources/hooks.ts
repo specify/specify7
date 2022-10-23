@@ -140,7 +140,7 @@ function getResourceExtension(
 ): 'json' | 'properties' | 'txt' | 'xml' {
   const mimeType = resource.mimeType?.toLowerCase() ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
-  else if (mimeType.startsWith('jrxml')) return 'xml';
+  else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (resource.name === 'preferences' && mimeType === '')
     return 'properties';
   else return 'txt';
