@@ -87,6 +87,7 @@ export function QueryResults({
   const [results, setResults] = useTriggerState<
     RA<RA<number | string | null> | undefined> | undefined
   >(initialData);
+  const resultsRef = React.useRef(results);
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -120,12 +121,8 @@ export function QueryResults({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
-  async function handleFetchMore(
-    index?: number,
-    currentResults:
-      | RA<RA<number | string | null> | undefined>
-      | undefined = results
-  ): Promise<void> {
+  async function handleFetchMore(index?: number): Promise<void> {
+    const currentResults = resultsRef.current;
     const canFetch = Array.isArray(currentResults);
     if (!canFetch) return undefined;
     const alreadyFetched =
@@ -146,20 +143,27 @@ export function QueryResults({
 
     return fetchResults(fetchIndex)
       .then((newResults) => {
+        if (
+          process.env.NODE_ENV === 'development' &&
+          newResults.length > fetchSize
+        )
+          throw new Error(
+            `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+          );
+
         // Not using Array.from() so as not to expand the sparse array
-        const resultsCopy = currentResults.slice();
+        const combinedResults = currentResults.slice();
         /*
          * This extends the sparse array to fit new results. Without this,
          * splice won't place the results in the correct place.
          */
-        resultsCopy[fetchIndex] = resultsCopy[fetchIndex] ?? undefined;
-        resultsCopy.splice(fetchIndex, newResults.length, ...newResults);
-        return resultsCopy;
-      })
-      .then((combinedResults) => {
+        combinedResults[fetchIndex] = combinedResults[fetchIndex] ?? undefined;
+        combinedResults.splice(fetchIndex, newResults.length, ...newResults);
+
         setResults(combinedResults);
+        resultsRef.current = combinedResults;
         if (typeof index === 'number' && index >= combinedResults.length)
-          return handleFetchMore(index, combinedResults);
+          return handleFetchMore(index);
         return undefined;
       })
       .catch(fail);
@@ -238,7 +242,9 @@ export function QueryResults({
               totalCount={totalCount}
               onDelete={(index): void => {
                 setTotalCount(totalCount! - 1);
-                setResults(removeItem(results, index));
+                const newResults = removeItem(results, index);
+                setResults(newResults);
+                resultsRef.current = newResults;
                 setSelectedRows(
                   new Set(
                     Array.from(selectedRows).filter(

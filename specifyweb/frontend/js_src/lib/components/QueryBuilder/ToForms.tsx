@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { queryIdField } from './Results';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { queryIdField } from './Results';
 
 export function QueryToForms({
   model,
@@ -60,9 +60,12 @@ export function QueryToForms({
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
           onSaved={f.void}
-          onSlide={(index): void =>
-            selectedRows.size === 0 && results[index] === undefined
-              ? handleFetchMore?.(index)
+          onSlide={
+            typeof handleFetchMore === 'function'
+              ? (index): void =>
+                  selectedRows.size === 0 && results[index] === undefined
+                    ? handleFetchMore?.(index)
+                    : undefined
               : undefined
           }
         />

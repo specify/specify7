@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useBooleanState } from './useBooleanState';
 import { crash } from '../components/Errors/Crash';
+import { useBooleanState } from './useBooleanState';
 
 /**
  * Helps fetch more records when user is approaching the bottom of a list
@@ -15,6 +15,7 @@ export function useInfiniteScroll(
 } {
   const isFetchingRef = React.useRef<boolean>(false);
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
+
   const doFetch = React.useCallback(async (): Promise<void> => {
     if (isFetchingRef.current || handleFetch === undefined) return undefined;
     isFetchingRef.current = true;
@@ -23,15 +24,19 @@ export function useInfiniteScroll(
     isFetchingRef.current = false;
     await new Promise((resolve) => setTimeout(resolve, 0));
     // Fetch until there is a scroll bar
-    if (scroller !== null && scroller.scrollHeight === scroller.clientHeight)
+    if (
+      scroller !== null &&
+      // Check if element is rendered
+      scroller.scrollHeight !== 0 &&
+      scroller.scrollHeight === scroller.clientHeight
+    )
       doFetch().catch(crash);
     handleFetched();
   }, [handleFetch, scroller, handleFetching, handleFetched]);
 
-  React.useEffect(
-    () => (typeof scroller === 'object' ? void doFetch() : undefined),
-    [scroller]
-  );
+  React.useEffect(() => {
+    if (scroller !== null) void doFetch();
+  }, [scroller]);
 
   return {
     isFetching,

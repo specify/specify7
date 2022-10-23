@@ -137,7 +137,7 @@ export const getAppResourceExtension = (
 
 function getResourceExtension(
   resource: SerializedResource<SpAppResource>
-): 'json' | 'properties' | 'txt' | 'xml' {
+): 'json' | 'properties' | 'txt' | 'xml' | 'jrxml' {
   const mimeType = resource.mimeType?.toLowerCase() ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
   else if (mimeType.startsWith('jrxml')) return 'jrxml';

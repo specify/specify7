@@ -68,7 +68,14 @@ export function QueryResultsWrapper({
             offset,
           }),
         }
-      ).then(({ data }) => data.results),
+      )
+        .then(({ data }) => data.results)
+        .then(async (response) => {
+          // FIXME: remove this
+          if (offset === 40)
+            await new Promise((resolve) => setTimeout(resolve, 4000));
+          return response;
+        }),
     [forceCollection, fields, baseTableName, queryResource, recordSetId]
   );
 
