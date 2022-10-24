@@ -89,10 +89,10 @@ export function Wrapper({
       onSaved={(appResource, directory): void => {
         setResources({
           ...resources,
-          directories:
-            resource.id === undefined && typeof directory.id === 'number'
-              ? [...resources.directories, directory]
-              : resources.directories,
+          directories: [
+            ...resources.directories.filter(({ id }) => id !== directory.id),
+            directory,
+          ],
           [mode]: [
             ...resources[mode as 'appResources'].filter(
               ({ id }) => id !== appResource.id
