@@ -26,7 +26,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { Input } from '../Atoms/Form';
 import { className } from '../Atoms/className';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 function Navigation({
   name,
@@ -286,10 +286,7 @@ export function WorkBench(): JSX.Element | null {
   return dataSetId === undefined ? (
     <NotFoundView />
   ) : (
-    <section
-      ref={setContainer}
-      className={`wbs-form ${className.containerFull}`}
-    />
+    <div className="contents" ref={setContainer} />
   );
 }
 
@@ -327,8 +324,11 @@ function useWbView(
   React.useEffect(() => {
     if (!treeRanksLoaded || container === null || dataSet === undefined)
       return undefined;
+    const contained = document.createElement('section');
+    contained.setAttribute('class', `wbs-form ${className.containerFull}`);
+    container.appendChild(contained);
     const view = new WBView({
-      el: container,
+      el: contained,
       dataset: dataSet,
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
