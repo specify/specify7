@@ -85,6 +85,8 @@ function generatePreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
+  if (mappingPath.length === 0) return strictGetModel(baseTableName).label;
+
   const mappingLineData = getMappingLineData({
     baseTableName,
     mappingPath,

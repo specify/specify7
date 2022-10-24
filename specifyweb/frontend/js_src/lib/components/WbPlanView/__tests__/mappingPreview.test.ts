@@ -6,7 +6,6 @@ import { formattedEntry } from '../mappingHelpers';
 requireContext();
 
 theories(generateMappingPathPreview, [
-  [['SpAuditLog', ['fields', formattedEntry]], 'Fields'],
   [['CollectionObject', ['catalogNumber']], 'Cat #'],
   [['CollectionObject', ['guid']], 'Collection Object GUID'],
   [['CollectionObject', ['void']], 'Collection Object Void'],
@@ -19,6 +18,9 @@ theories(generateMappingPathPreview, [
     'Accession Agents Role',
   ],
   [['SpAuditLog', ['modifiedByAgent', formattedEntry]], 'Modified By Agent'],
+  [['SpAuditLog', ['fields', formattedEntry]], 'Fields'],
+  [['CollectionObject', []], 'Collection Object'],
+  [['CollectionObject', [formattedEntry]], 'Collection Object'],
   [
     [
       'CollectionObject',
