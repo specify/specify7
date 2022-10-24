@@ -1001,7 +1001,7 @@ export const WBUtils = Backbone.View.extend({
       const changes = originalState
         .map(([visualRow, visualCol, originalValue]) => {
           let value = originalValue;
-          if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
+          if (originalValue !== null && (applyToAll || selectedCells[visualRow]?.has(visualCol))) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
             const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(
