@@ -226,17 +226,30 @@ const pluginRenderers: {
         "Can't display HostTaxonPlugin because initialize.relname is not set"
       );
       return null;
-    } else
-      return hasTablePermission('CollectionRelType', 'read') ? (
-        <HostTaxon
-          formType={formType}
-          id={id}
-          isRequired={isRequired}
-          mode={mode}
-          relationship={relationship}
-          resource={resource}
-        />
-      ) : null;
+    } else if (!hasTablePermission('CollectionRelType', 'read')) return null;
+    else
+      return (
+        f.maybe(
+          toTable(resource, 'CollectingEventAttribute'),
+          (collectingEventAttribute) => (
+            <ErrorBoundary dismissable>
+              <HostTaxon
+                formType={formType}
+                id={id}
+                isRequired={isRequired}
+                mode={mode}
+                relationship={relationship}
+                resource={collectingEventAttribute}
+              />
+            </ErrorBoundary>
+          )
+        ) ?? (
+          <WrongTable
+            allowedTable="CollectingEventAttribute"
+            resource={resource}
+          />
+        )
+      );
   },
   LocalityGoogleEarth({ resource, id }) {
     return (

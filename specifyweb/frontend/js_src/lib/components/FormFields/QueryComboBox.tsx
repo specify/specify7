@@ -53,7 +53,8 @@ export function QueryComboBox({
   const field = props.resource.specifyModel.getField(initialFieldName);
   if (field === undefined) {
     console.error(
-      `Trying to render a combo box on the ${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
+      `Trying to render a query combo box on the ` +
+        `${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
       { id: props.id }
     );
     return null;

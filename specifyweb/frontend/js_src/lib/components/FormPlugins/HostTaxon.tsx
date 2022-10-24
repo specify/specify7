@@ -10,7 +10,7 @@ import { Input } from '../Atoms/Form';
 import { QueryComboBox } from '../FormFields/QueryComboBox';
 import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
+import { CollectingEventAttribute } from '../DataModel/types';
 
 const template = document.createElement('template');
 template.innerHTML =
@@ -25,7 +25,7 @@ export function HostTaxon({
   mode,
   formType,
 }: {
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<CollectingEventAttribute>;
   readonly relationship: string;
   readonly id: string | undefined;
   readonly isRequired: boolean;
@@ -53,7 +53,7 @@ export function HostTaxon({
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      fieldName={undefined}
+      fieldName="hostTaxon"
       forceCollection={rightSideCollection}
       formType={formType}
       id={id}
