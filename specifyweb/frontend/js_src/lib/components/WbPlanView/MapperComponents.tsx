@@ -91,7 +91,7 @@ export function ValidationResults(props: {
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
             className={`
-              flex-wrap rounded-none border-x-0
+              flex-wrap !justify-start border-x-0
               border-b-0 bg-transparent hover:bg-gray-300 hover:dark:bg-neutral-700
             `}
             key={index}
