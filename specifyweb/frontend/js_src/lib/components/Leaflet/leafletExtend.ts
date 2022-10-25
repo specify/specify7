@@ -79,7 +79,7 @@ L.Control.PrintMap = L.Control.extend({
     button.classList.add(
       className.button,
       'leaflet-print-map',
-      'px-2',
+      'p-2',
       'bg-black',
       '!cursor-pointer',
       // Hidden by default, until map enters the full-screen mode

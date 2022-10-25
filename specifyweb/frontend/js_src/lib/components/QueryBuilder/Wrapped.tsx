@@ -24,8 +24,8 @@ import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
 import { hasPermission } from '../Permissions/helpers';
-import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { getMappedFields, mappingPathIsComplete } from '../WbPlanView/helpers';
+import { getMappingLineProps } from '../WbPlanView/LineComponents';
 import { MappingView } from '../WbPlanView/MapperComponents';
 import {
   anyTreeRank,
@@ -457,16 +457,16 @@ export function QueryBuilder({
               modelName={model.name}
               showHiddenFields={showHiddenFields}
               onRunCountOnly={(): void => runQuery('count')}
+              onSubmitClick={(): void =>
+                formRef.current?.checkValidity() === false
+                  ? runQuery('regular')
+                  : undefined
+              }
               onToggleDistinct={(): void =>
                 setQuery({
                   ...query,
                   selectDistinct: !(query.selectDistinct ?? false),
                 })
-              }
-              onSubmitClick={(): void =>
-                formRef.current?.checkValidity() === false
-                  ? runQuery('regular')
-                  : undefined
               }
               onToggleHidden={setShowHiddenFields}
             />
@@ -494,8 +494,8 @@ export function QueryBuilder({
                 />
               }
               fields={state.fields}
-              model={model}
               forceCollection={forceCollection}
+              model={model}
               queryResource={queryResource}
               queryRunCount={state.queryRunCount}
               recordSetId={recordSet?.id}

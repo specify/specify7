@@ -82,11 +82,11 @@ function getGlobalAllResources(resources: AppResources): {
  * There may be other cases too. That is why the code always assumes that
  * more than one directory may be returned and merges them all together.
  */
-const mergeDirectories = (
+function mergeDirectories(
   directories: RA<SerializedResource<SpAppResourceDir>>,
   resources: AppResources
-): DirectoryChildren =>
-  directories
+): DirectoryChildren {
+  const { appResources, viewSets } = directories
     .map((directory) => getDirectoryChildren(directory, resources))
     .reduce<DirectoryChildren>(
       (combined, { appResources, viewSets }) => ({
@@ -95,6 +95,13 @@ const mergeDirectories = (
       }),
       { appResources: [], viewSets: [] }
     );
+  return {
+    appResources: Array.from(appResources).sort(
+      sortFunction(({ name }) => name)
+    ),
+    viewSets: Array.from(viewSets).sort(sortFunction(({ name }) => name)),
+  };
+}
 
 type DirectoryChildren = {
   readonly appResources: RA<SerializedResource<SpAppResource>>;
