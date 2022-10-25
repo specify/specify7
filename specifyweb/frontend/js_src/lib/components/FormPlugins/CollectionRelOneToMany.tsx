@@ -148,7 +148,8 @@ export function CollectionOneToManyPlugin({
           )}
         </tbody>
       </table>
-      {hasTablePermission('CollectionRelationship', 'create') && (
+      {hasTablePermission('CollectionRelationship', 'create') &&
+      typeof data === 'object' ? (
         <DataEntry.Add
           aria-pressed={state.type === 'SearchState'}
           onClick={(): void =>
@@ -169,7 +170,7 @@ export function CollectionOneToManyPlugin({
             )
           }
         />
-      )}
+      ) : undefined}
       {state.type === 'DeniedAccessState' && (
         <Dialog
           buttons={commonText('close')}
