@@ -1,3 +1,16 @@
+# This is a Development Docker Composition of Specify 7
+# It has nice features like hot reloading and debugging support
+# However, it is not suited for production use due to memory leaks and security
+# issues
+# Though, you can use it for evaluation of Specify 7
+#
+# Full Documentation for the Development Docker Composition:
+# https://github.com/specify/specify7/wiki/Docker-Workflow-for-Development
+#
+# Members of Specify Collections Consortium get access to production-ready
+# Docker compositions. Please contact us at support@specifysoftware.org
+# if you would like to get access
+#
 version: "3.7"
 services:
   mariadb:
