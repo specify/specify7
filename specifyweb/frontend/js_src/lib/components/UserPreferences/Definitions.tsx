@@ -890,9 +890,9 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'contains',
-                title: preferencesText('containsCaseSensitive'),
+                title: preferencesText('containsInsensitive'),
                 description: `${preferencesText(
-                  'containsCaseSensitiveDescription'
+                  'containsDescription'
                 )} ${preferencesText('containsSecondDescription')}`,
               },
             ],
@@ -911,7 +911,9 @@ export const preferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText('containsInsensitive'),
-                description: preferencesText('containsDescription'),
+                description: `${preferencesText(
+                  'containsDescription'
+                )} ${preferencesText('containsSecondDescription')}`,
               },
             ],
           }),
