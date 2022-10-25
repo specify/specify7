@@ -23,6 +23,8 @@ export function Slider({
         : setPendingValue(value),
     [value]
   );
+  const max = Math.max(1, count);
+  const resolvedValue = Number.isNaN(pendingValue) ? '' : pendingValue + 1;
   return count > 0 ? (
     <div className="flex justify-center gap-2 print:hidden">
       <Button.Small
@@ -61,12 +63,14 @@ export function Slider({
              * Count is 0 when input is invisible, which causes the field to be
              * invalid (as min is 1) which inhibits form submission
              */
-            max={Math.max(1, count)}
-            disabled={handleChange === undefined}
+            max={max}
+            disabled={
+              handleChange === undefined || (max === 1 && resolvedValue === 1)
+            }
             min={1}
             // Convert 0-based indexing to 1-based
             step={1}
-            value={Number.isNaN(pendingValue) ? '' : pendingValue + 1}
+            value={resolvedValue}
             onBlur={(): void => setPendingValue(value)}
             onValueChange={(value): void => {
               const newValue = clamp(0, value - 1, count - 1);

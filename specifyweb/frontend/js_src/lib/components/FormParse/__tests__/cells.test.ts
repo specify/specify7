@@ -200,7 +200,7 @@ describe('parseFormCell', () => {
     ).toEqual(
       cell({
         type: 'Field',
-        isRequired: true,
+        isRequired: false,
         fieldName: 'this',
         fieldDefinition: {
           defaultValue: undefined,
