@@ -149,7 +149,5 @@ function getResourceExtension(
 const mimeMapper: IR<'json' | 'properties' | 'txt' | 'xml'> = {
   'application/json': 'json',
   'text/xml': 'xml',
-  'jrxml/label': 'xml',
-  'jrxml/report': 'xml',
   'text/plain': 'txt',
 };
