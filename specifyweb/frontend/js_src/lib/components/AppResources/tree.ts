@@ -157,8 +157,7 @@ const getDisciplineAppResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.userType === null &&
-          directory.specifyUser === null
+          directory.userType === null
       );
       const directory =
         directories[0] ??
@@ -204,7 +203,7 @@ const getUserTypeResources = (
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
-        directory.specifyUser === null
+        !directory.isPersonal
     );
     const directory =
       directories[0] ??
@@ -229,7 +228,8 @@ const getUserResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.specifyUser === user.resource_uri
+          directory.specifyUser === user.resource_uri &&
+          directory.isPersonal
       );
       const directory =
         directories[0] ??
