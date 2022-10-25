@@ -106,7 +106,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           {typeof resource === 'object' && (
             <TableIcon label name={resource.specifyModel.name} />
           )}
-          {formHeaderFormat === 'full' && title}
+          {formHeaderFormat === 'full' ? title : formatted}
         </>
       ),
     title,
