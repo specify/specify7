@@ -342,11 +342,9 @@ export function ResourceView<SCHEMA extends AnySchema>({
                       {headerContent}
                     </>
                   )}
-                  {!isSubForm && (
-                    <div className="-mt-4 w-full border-b-2 border-brand-300" />
-                  )}
                 </>
               }
+              showOrangeBar={!isSubForm}
               icon="none"
               modal={dialog === 'modal' || makeFormDialogsModal}
               onClose={(): void => {
