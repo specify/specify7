@@ -191,6 +191,28 @@ describe('parseFormCell', () => {
       })
     ));
 
+  test('unknown field', () =>
+    expect(
+      parseFormCell(
+        schema.models.CollectionObject,
+        strictParseXml('<cell type="field" uiType="text" name="this" />')
+      )
+    ).toEqual(
+      cell({
+        type: 'Field',
+        isRequired: true,
+        fieldName: 'this',
+        fieldDefinition: {
+          defaultValue: undefined,
+          isReadOnly: false,
+          max: undefined,
+          min: undefined,
+          step: undefined,
+          type: 'Text',
+        },
+      })
+    ));
+
   test('fieldName unset by LatLonUI plugin', () =>
     expect(
       parseFormCell(

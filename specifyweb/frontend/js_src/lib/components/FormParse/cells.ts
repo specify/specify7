@@ -137,8 +137,7 @@ const processCellType: {
           fieldDefinition.pluginDefinition.type === 'PartialDateUI'
             ? fieldDefinition.pluginDefinition.dateField
             : undefined) ??
-          fields?.map(({ name }) => name).join('.') ??
-          rawFieldName;
+          (fields?.map(({ name }) => name).join('.') || rawFieldName);
     return {
       type: 'Field',
       // REFACTOR: consider changing this to an array
