@@ -169,7 +169,7 @@ function CarryForwardCategory({
             title={
               uniqueFields.includes(field.name)
                 ? formsText('carryForwardUniqueField')
-                : undefined
+                : field.getLocalizedDesc()
             }
           >
             <Input.Checkbox
