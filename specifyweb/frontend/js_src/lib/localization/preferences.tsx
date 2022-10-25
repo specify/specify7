@@ -276,12 +276,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
   },
-  startsWithCaseSensitiveSecondDescription: {
-    'en-us':
-      'Can use _ to match any single character or % to match any number of characters',
-    'ru-ru':
-      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
-  },
   contains: {
     'en-us': 'Contains',
     'ru-ru': 'Содержит',
