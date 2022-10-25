@@ -66,7 +66,7 @@ function Table<
     <div
       className={`
         grid-table flex-1 grid-cols-[repeat(var(--cols),auto)] overflow-auto
-        rounded border
+        rounded border border-neutral-500
       `}
       role="table"
       style={{ '--cols': Object.keys(headers).length } as React.CSSProperties}
@@ -74,7 +74,7 @@ function Table<
       <div role="row">
         {Object.entries(headers).map(([name, label]) => (
           <div
-            className="sticky top-0 border bg-[color:var(--background)] p-2 font-bold"
+            className="sticky top-0 border border-neutral-500 bg-[color:var(--background)] p-2 font-bold"
             key={name}
             role="columnheader"
           >
@@ -120,7 +120,7 @@ function Cell({
   readonly children: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="border p-2" role="cell">
+    <div className="border border-neutral-500 p-2" role="cell">
       {children}
     </div>
   );

@@ -1,12 +1,14 @@
-import { AttachmentThumbnail, fetchOriginalUrl } from './attachments';
-import { Attachment } from '../DataModel/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { LoadingScreen } from '../Molecules/Dialog';
-import { Link } from '../Atoms/Link';
 import { Button } from '../Atoms/Button';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { Link } from '../Atoms/Link';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { Attachment } from '../DataModel/types';
+import { LoadingScreen } from '../Molecules/Dialog';
+import type { AttachmentThumbnail } from './attachments';
+import { fetchOriginalUrl } from './attachments';
 
 export function AttachmentPreview({
   thumbnail,
@@ -28,14 +30,15 @@ export function AttachmentPreview({
       globalThis.open(originalUrl, '_blank');
     }
   }, [isPreviewPending, originalUrl, handleNoPreviewPending]);
+
   const children = (
     <>
       <img
         alt={attachment.title || thumbnail.alt}
         className={`
-              max-h-full max-w-full border-8 border-white object-contain
-              dark:border-black
-            `}
+          max-h-full max-w-full border-8 border-white object-contain
+          dark:border-black
+        `}
         src={thumbnail.src}
         style={{
           width: `${thumbnail.width}px`,
