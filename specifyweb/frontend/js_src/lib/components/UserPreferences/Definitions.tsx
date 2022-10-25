@@ -877,9 +877,7 @@ export const preferenceDefinitions = {
       queryComboBox: {
         title: preferencesText('queryComboBox'),
         items: {
-          searchAlgorithm: defineItem<
-            'contains' | 'startsWith' | 'startsWithCaseSensitive'
-          >({
+          searchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -891,15 +889,6 @@ export const preferenceDefinitions = {
                 description: preferencesText('startsWithDescription'),
               },
               {
-                value: 'startsWithCaseSensitive',
-                title: preferencesText('startsWithCaseSensitive'),
-                description: `${preferencesText(
-                  'startsWithCaseSensitiveDescription'
-                )} ${preferencesText(
-                  'startsWithCaseSensitiveSecondDescription'
-                )}`,
-              },
-              {
                 value: 'contains',
                 title: preferencesText('containsCaseSensitive'),
                 description: `${preferencesText(
@@ -908,9 +897,7 @@ export const preferenceDefinitions = {
               },
             ],
           }),
-          treeSearchAlgorithm: defineItem<
-            'contains' | 'startsWith' | 'startsWithCaseSensitive'
-          >({
+          treeSearchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText('treeSearchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -920,13 +907,6 @@ export const preferenceDefinitions = {
                 value: 'startsWith',
                 title: preferencesText('startsWithInsensitive'),
                 description: preferencesText('startsWithDescription'),
-              },
-              {
-                value: 'startsWithCaseSensitive',
-                title: preferencesText('startsWithCaseSensitive'),
-                description: preferencesText(
-                  'startsWithCaseSensitiveDescription'
-                ),
               },
               {
                 value: 'contains',
