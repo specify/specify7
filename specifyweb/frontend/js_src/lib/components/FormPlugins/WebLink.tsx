@@ -1,25 +1,26 @@
 import React from 'react';
 import _ from 'underscore';
 
-import { isExternalUrl } from '../../utils/ajax/helpers';
-import type { Tables } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { keysToLowerCase, removeKey } from '../../utils/utils';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { load } from '../InitialContext';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { FormMode, FormType } from '../FormParse';
-import { formatUrl } from '../Router/queryString';
-import { resourceOn } from '../DataModel/resource';
-import { fetchTreePath } from '../../utils/ajax/specifyApi';
-import type { IR } from '../../utils/types';
-import { defined } from '../../utils/types';
-import { UiField } from '../FormFields/Field';
-import { Link } from '../Atoms/Link';
-import { Button } from '../Atoms/Button';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
+import { isExternalUrl } from '../../utils/ajax/helpers';
+import { fetchTreePath } from '../../utils/ajax/specifyApi';
+import type { IR, RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { xmlToString } from '../AppResources/codeMirrorLinters';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { serializeResource } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
+import { UiField } from '../FormFields/Field';
+import type { FormMode, FormType } from '../FormParse';
+import { load } from '../InitialContext';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { formatUrl } from '../Router/queryString';
+import { SpecifyModel } from '../DataModel/specifyModel';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),
@@ -69,34 +70,7 @@ export function WebLink({
   readonly mode: FormMode;
   readonly id: string | undefined;
 }): JSX.Element {
-  const [data] = useAsyncState<{
-    readonly title: string;
-    readonly definition: Element | undefined;
-    readonly isExternal: boolean;
-  }>(
-    React.useCallback(async () => {
-      const fieldInfo = resource.specifyModel.getField(fieldName ?? '');
-      const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
-      const definition = await webLinks.then(
-        (definitions) => definitions[webLinkName ?? '']
-      );
-      const title =
-        definition?.querySelector(':scope > desc')?.textContent ?? '';
-      if (definition === undefined)
-        console.error("Couldn't determine weblink", {
-          resource,
-          fieldName,
-          webLinkName,
-        });
-
-      return {
-        title,
-        definition,
-        isExternal: false,
-      };
-    }, [resource, fieldName, webLink]),
-    false
-  );
+  const definition = useDefinition(resource.specifyModel, fieldName, webLink);
 
   const [{ url, isExternal }, setUrl] = React.useState<{
     readonly url: string | undefined;
@@ -104,31 +78,16 @@ export function WebLink({
   }>({ url: undefined, isExternal: false });
 
   React.useEffect(() => {
-    if (data === undefined) return;
+    if (definition === undefined || definition === false) return;
+    const { args, template } = definition;
 
     async function buildUrl(): Promise<string> {
-      const template =
-        data?.definition
-          ?.querySelector('baseURLStr')
-          ?.textContent?.replace(/<\s*this\s*>/g, '<_this>')
-          .replaceAll('AMP', '&')
-          .replaceAll('<', '<%= ')
-          .replaceAll('>', ' %>') ?? '';
-
-      let args = Object.fromEntries(
-        Array.from(
-          data?.definition?.querySelectorAll('weblinkdefarg > name') ?? [],
-          (parameter) => [
-            parameter.textContent === 'this'
-              ? '_this'
-              : parameter.textContent ?? '',
-            undefined,
-          ]
-        )
+      let parameters = Object.fromEntries(
+        args.map((name) => [name, undefined]) ?? []
       );
-      args = {
-        ...args,
-        ...keysToLowerCase(args),
+      parameters = {
+        ...parameters,
+        ...keysToLowerCase(parameters),
         // Lower case variants
         ...resource.toJSON(),
         // Camel case variants
@@ -136,8 +95,8 @@ export function WebLink({
         ...(await specialResourcesFields?.[resource.specifyModel.name]),
       };
       return _.template(template)({
-        ...args,
-        _this: args[fieldName ?? ''],
+        ...parameters,
+        _this: parameters[fieldName ?? ''],
       });
     }
 
@@ -153,11 +112,11 @@ export function WebLink({
         ),
       true
     );
-  }, [resource, fieldName, data, formType]);
+  }, [resource, fieldName, definition, formType]);
 
   const image = (
     <img
-      alt={data?.title ?? url}
+      alt={typeof definition === 'object' ? definition.title : url}
       className="max-h-[theme(spacing.5)] max-w-[theme(spacing.10)]"
       src={getIcon(icon) ?? unknownIcon}
     />
@@ -168,7 +127,7 @@ export function WebLink({
         formType === 'formTable' ? undefined : 'flex gap-2 print:hidden'
       }
     >
-      {typeof data === 'object' ? (
+      {typeof definition === 'object' ? (
         <>
           {formType === 'form' &&
           typeof fieldName === 'string' &&
@@ -185,12 +144,12 @@ export function WebLink({
               href={url}
               rel={isExternal ? 'noopener' : undefined}
               target={isExternal ? '_blank' : undefined}
-              title={data.title}
+              title={definition.title}
             >
               {image}
             </Link.Gray>
           ) : (
-            <Button.Gray title={data.title} onClick={undefined}>
+            <Button.Gray title={definition.title} onClick={undefined}>
               {image}
             </Button.Gray>
           )}
@@ -198,4 +157,67 @@ export function WebLink({
       ) : undefined}
     </div>
   );
+}
+
+type ParsedWebLink = {
+  readonly title: string;
+  readonly template: string;
+  readonly args: RA<string>;
+  readonly isExternal: boolean;
+};
+
+function useDefinition(
+  model: SpecifyModel,
+  fieldName: string | undefined,
+  webLink: string | undefined
+): ParsedWebLink | undefined | false {
+  const [definition] = useAsyncState<ParsedWebLink | false>(
+    React.useCallback(async () => {
+      const fieldInfo = model.getField(fieldName ?? '');
+      const webLinkName = fieldInfo?.getWebLinkName() ?? webLink;
+      const definition = await webLinks.then(
+        (definitions) => definitions[webLinkName ?? '']
+      );
+      if (typeof definition === 'object')
+        return parseWebLink(definition) ?? false;
+
+      console.error("Couldn't determine WebLink", {
+        tableName: model.name,
+        fieldName,
+        webLinkName,
+      });
+      return false;
+    }, [model, fieldName, webLink]),
+    false
+  );
+  return definition;
+}
+
+export function parseWebLink(definition: Element): ParsedWebLink | undefined {
+  const title =
+    definition?.querySelector(':scope > desc')?.textContent?.trim() ?? '';
+
+  const template =
+    definition
+      ?.querySelector('baseURLStr')
+      ?.textContent?.trim()
+      .replace(/<\s*this\s*>/g, '<_this>')
+      .replaceAll('AMP', '&')
+      .replaceAll('<', '<%= ')
+      .replaceAll('>', ' %>') ?? '';
+
+  const args = Array.from(
+    definition?.querySelectorAll('weblinkdefarg > name') ?? [],
+    (parameter) =>
+      parameter.textContent === 'this' ? '_this' : parameter.textContent ?? ''
+  );
+
+  return template === undefined
+    ? undefined
+    : {
+        title,
+        template,
+        args,
+        isExternal: false,
+      };
 }
