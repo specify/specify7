@@ -1,0 +1,27 @@
+{
+  "name": "ReferenceWork",
+  "class": "edu.ku.brc.specify.datamodel.ReferenceWork",
+  "isinternal": "false",
+  "resourcelabels": "false",
+  "altviews": {
+    "ReferenceWork View": {
+      "name": "ReferenceWork View",
+      "viewdef": "ReferenceWork",
+      "mode": "view",
+      "validated": "false",
+      "default": "true"
+    },
+    "ReferenceWork Edit": {
+      "name": "ReferenceWork Edit",
+      "viewdef": "ReferenceWork",
+      "mode": "edit",
+      "validated": "true"
+    }
+  },
+  "viewdefs": {
+    "ReferenceWork": "<viewdef type=\"form\" name=\"ReferenceWork\" class=\"edu.ku.brc.specify.datamodel.ReferenceWork\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>The ReferenceWork form</desc>\n\n            <columnDef>100px,2px,170px,5px,90px,2px,160px,5px,130px,2px,161px,0px,15px,p:g</columnDef>\n            <columnDef os=\"lnx\">115px,2px,176px,5px,100px,2px,175px,5px,160px,2px,175px,15px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,203px,5px,100px,2px,203px,5px,185px,2px,195px,15px,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,max(p;160px),5px:g,p,2px,150px,5px:g,p,2px,151px,p,p:g</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"2dlu\" />\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"8\" />\n                    <cell type=\"field\" id=\"8\" name=\"referenceWorkType\" uitype=\"combobox\" picklist=\"ReferenceWorkType\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"1\" />\n                    <cell type=\"field\" id=\"1\" name=\"title\" uitype=\"text\" cols=\"50\" colspan=\"9\" />\n                </row>\n\t\t\t\t<row>\n                    <cell type=\"label\" labelfor=\"100\" />\n                    <cell type=\"field\" id=\"100\" name=\"text1\" uitype=\"text\" cols=\"50\" colspan=\"9\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"2\" />\n                    <cell type=\"field\" id=\"2\" name=\"publisher\" uitype=\"text\" cols=\"50\" colspan=\"5\" />\n                    <cell type=\"label\" labelfor=\"3\" />\n                    <cell type=\"field\" id=\"3\" name=\"placeOfPublication\" uitype=\"text\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"5\" />\n                    <cell type=\"field\" id=\"5\" name=\"volume\" uitype=\"text\" cols=\"10\" />\n                    <cell type=\"label\" labelfor=\"6\" />\n                    <cell type=\"field\" id=\"6\" name=\"pages\" uitype=\"text\" />\n<cell type=\"label\" labelfor=\"116\" />\n                    <cell type=\"field\" id=\"116\" name=\"workDate\" uitype=\"text\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"18\" />\n                    <cell type=\"field\" id=\"18\" name=\"journal\" uitype=\"querycbx\" initialize=\"name=Journal;title=Journal\" colspan=\"5\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"20\" />\n                    <cell type=\"field\" id=\"20\" name=\"url\" uitype=\"plugin\" initialize=\"name=WebLinkButton;weblink=referencework\" colspan=\"8\" />\n\t\t\t\t</row>\n                <row>\n                    <cell type=\"label\" labelfor=\"19\" />\n                    <cell type=\"field\" id=\"19\" name=\"text2\" uitype=\"text\" colspan=\"9\" />\n\t\t\t\t</row>\n                <row>\n                     <cell type=\"label\" labelfor=\"11\" />\n                     <cell type=\"field\" id=\"11\" name=\"remarks\" uitype=\"textareabrief\" rows=\"2\" colspan=\"10\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"Authors\" id=\"10\" name=\"authors\" initialize=\"name=Agent\" colspan=\"12\" rows=\"3\" />\n                </row>\n                <row>\n                    <cell type=\"separator\" label=\"Attachments\" colspan=\"13\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" id=\"attachments\" viewname=\"ObjectAttachment\" name=\"referenceWorkAttachments\" initialize=\"btn=true;icon=ReferenceWorkAttachment\" />\n                </row>\n            </rows>\n        </viewdef>\n\n        "
+  },
+  "viewsetName": "Fish Views",
+  "viewsetLevel": "Collection",
+  "viewsetSource": "db"
+}

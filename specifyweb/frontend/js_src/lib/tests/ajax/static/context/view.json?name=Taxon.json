@@ -1,0 +1,26 @@
+{
+  "name": "Taxon",
+  "class": "edu.ku.brc.specify.datamodel.Taxon",
+  "busrules": "edu.ku.brc.specify.datamodel.busrules.TaxonBusRules",
+  "isinternal": "false",
+  "resourcelabels": "false",
+  "altviews": {
+    "Taxon View": {
+      "name": "Taxon View",
+      "viewdef": "Taxon",
+      "mode": "view"
+    },
+    "Taxon Edit": {
+      "name": "Taxon Edit",
+      "viewdef": "Taxon",
+      "mode": "edit",
+      "default": "true"
+    }
+  },
+  "viewdefs": {
+    "Taxon": "<viewdef name=\"Taxon\" type=\"form\" class=\"edu.ku.brc.specify.datamodel.Taxon\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\" useresourcelabels=\"true\">\n            <desc>New Taxon Node Form</desc>\n           <enableRules>\n               \n                <rule id=\"hybridParent1\">isHybrid.isSelected()</rule>\n                <rule id=\"hybridParent2\">isHybrid.isSelected()</rule>\n                <rule id=\"definitionItem\">parent.getValue() != null</rule>\n            </enableRules>\n\n            <columnDef>100px,2px,140px,5px,120px,2px,123px,5px,133px,2px,95px,10px,95px,0px,15px,p:g</columnDef>\n            <columnDef os=\"lnx\">115px,2px,188px,5px,83px,2px,170px,5px,135px,2px,95px,10px,105px,0px,15px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,208px,5px,103px,2px,190px,5px,155px,2px,105px,10px,115px,0px,15px,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,p:g,5px:g,p,2px,p:g,5px:g,p,2px,p:g(2),10px,p,0px,15px,p:g</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"2dlu\" />\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"name\" />\n                    <cell type=\"field\" id=\"name\" uitype=\"text\" name=\"name\" colspan=\"5\" />\n                    <cell type=\"label\" labelfor=\"definitionItem\" />\n                \t<cell type=\"field\" id=\"definitionItem\" uitype=\"combobox\" name=\"definitionItem\" colspan=\"3\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"parent\" />\n                \t<cell type=\"field\" id=\"parent\" uitype=\"querycbx\" isrequired=\"true\" initialize=\"name=Taxon;title=Taxon;editbtn=false;newbtn=false;editoncreate=true\" name=\"parent\" colspan=\"3\" />\n                    <cell type=\"label\" labelfor=\"commonName\" />\n                    <cell type=\"field\" id=\"commonName\" uitype=\"text\" name=\"commonName\" colspan=\"5\" />\n                </row>\n                <row>\n                \t<cell type=\"label\" labelfor=\"fullName\" />\n                \t<cell type=\"field\" id=\"fullName\" uitype=\"text\" name=\"fullName\" colspan=\"9\" readonly=\"true\" />\n                \t<cell type=\"field\" id=\"isAccepted\" uitype=\"checkbox\" name=\"isAccepted\" default=\"true\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"author\" />\n                    <cell type=\"field\" id=\"author\" uitype=\"text\" name=\"author\" colspan=\"3\" />\n                    <cell type=\"label\" labelfor=\"source\" />\n                    <cell type=\"field\" id=\"source\" uitype=\"text\" name=\"source\" colspan=\"3\" />\n                    <cell type=\"field\" id=\"WebLink\" name=\"this\" uitype=\"plugin\" initialize=\"name=WebLinkButton;weblink=FishBase;icon=FishBase\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"environmentalProtectionStatus\" />\n                    <cell type=\"field\" id=\"environmentalProtectionStatus\" uitype=\"text\" name=\"environmentalProtectionStatus\" colspan=\"12\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"TaxonSubform\" id=\"acceptedChildren\" name=\"acceptedChildren\" colspan=\"15\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"TaxonSubform\" id=\"children\" name=\"children\" colspan=\"15\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"remarks\" />\n                    <cell type=\"field\" id=\"remarks\" uitype=\"textareabrief\" rows=\"2\" name=\"remarks\" colspan=\"12\" />\n                </row>\n\t\t            <row>\n\t\t\t        <cell type=\"separator\" label=\"ATTACHMENTS\" colspan=\"14\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" id=\"attachments\" viewname=\"ObjectAttachment\" name=\"taxonAttachments\" initialize=\"btn=true;icon=TaxonAttachment\" />\n                    <cell type=\"subview\" viewname=\"TaxonCitation\" id=\"taxonCitations\" name=\"taxonCitations\" initialize=\"btn=true;align=right\" />\n                </row>\n            </rows>\n        </viewdef>\n\n    "
+  },
+  "viewsetName": "Fish Views",
+  "viewsetLevel": "Collection",
+  "viewsetSource": "db"
+}

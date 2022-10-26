@@ -1,0 +1,26 @@
+{
+  "name": "CollectingEvent",
+  "class": "edu.ku.brc.specify.datamodel.CollectingEvent",
+  "busrules": "edu.ku.brc.specify.datamodel.busrules.CollectingEventBusRules",
+  "isinternal": "false",
+  "resourcelabels": "false",
+  "altviews": {
+    "CollectingEvent View": {
+      "name": "CollectingEvent View",
+      "viewdef": "CollectingEvent",
+      "mode": "view",
+      "default": "true"
+    },
+    "CollectingEvent Edit": {
+      "name": "CollectingEvent Edit",
+      "viewdef": "CollectingEvent",
+      "mode": "edit"
+    }
+  },
+  "viewdefs": {
+    "CollectingEvent": "<viewdef type=\"form\" name=\"CollectingEvent\" class=\"edu.ku.brc.specify.datamodel.CollectingEvent\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>Collecting Event</desc>\n\n            <columnDef>100px,2px,200px,5px,70px,2px,210px,5px,66px,2px,165px,0px,15px,p:g</columnDef>\n            <columnDef os=\"lnx\">115px,2px,240px,5px,100px,2px,215px,5px,106px,2px,125px,0px,15px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,251px,5px,100px,2px,260px,5px,110px,2px,190px,0px,15px,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,max(p;190px),5px:g,p,2px,p,5px:g,p,2px,110px,p,p,p:g</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"2px\" />\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"1\" />\n                    <cell type=\"field\" id=\"1\" name=\"stationFieldNumber\" uitype=\"text\" />\n                    <cell type=\"label\" labelfor=\"2\" />\n                    <cell type=\"field\" id=\"2\" uitype=\"plugin\" name=\"this\" initialize=\"name=PartialDateUI;df=startDate;tp=startDatePrecision\" uifieldformatter=\"Date\" />\n                    <cell type=\"label\" labelfor=\"3\" />\n                    <cell type=\"field\" id=\"3\" name=\"method\" uitype=\"combobox\" picklist=\"Gear2\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"12\" />\n                    <cell type=\"field\" id=\"12\" name=\"collectingTrip\" uitype=\"querycbx\" initialize=\"name=CollectingTrip\" colspan=\"11\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"4\" />\n                    <cell type=\"field\" id=\"4\" name=\"locality\" uitype=\"querycbx\" initialize=\"name=Locality;clonebtn=true\" colspan=\"11\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"Collectors\" id=\"5\" name=\"collectors\" colspan=\"3\" rows=\"3\" />\n                    <cell type=\"label\" labelfor=\"6\" />\n                    <cell type=\"field\" id=\"6\" name=\"remarks\" uitype=\"textareabrief\" rows=\"4\" colspan=\"6\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"CollectionObjectSub\" id=\"11\" colspan=\"13\" rows=\"3\" name=\"collectionObjects\" initialize=\"addsearch=true\" />\n                </row>\n\t\t\t\t<row>\n                    <cell type=\"subview\" id=\"8\" name=\"collectingEventAuthorizations\" viewname=\"CollectingEventAuthorization\" initialize=\"btn=true;align=right\" />\n                    \n                </row>\n                <row>\n                    <cell type=\"separator\" label=\"Attachments\" colspan=\"13\" />\n                </row>\n\t\t\t\t<row>\n                    <cell type=\"subview\" id=\"attachments\" viewname=\"ObjectAttachment\" colspan=\"5\" name=\"collectingEventAttachments\" initialize=\"icon=CollectingEventAttachment\" defaulttype=\"icon\" />\n                </row>\n            </rows>\n        </viewdef>\n\n        "
+  },
+  "viewsetName": "Fish Views",
+  "viewsetLevel": "Collection",
+  "viewsetSource": "db"
+}

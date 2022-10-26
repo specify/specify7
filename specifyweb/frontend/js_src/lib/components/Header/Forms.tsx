@@ -145,3 +145,7 @@ const resolveModels = (
         title: model.label,
         table: model.name,
       }));
+
+export const exportsForTests = {
+  fetchLegacyForms,
+};
