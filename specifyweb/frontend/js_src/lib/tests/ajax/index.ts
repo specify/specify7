@@ -7,9 +7,11 @@ import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { Http } from '../../utils/ajax/definitions';
 
+type ResponseType = Document | IR<unknown> | RA<unknown> | string;
+
 const overwrites: R<
   | {
-      readonly data: Document | IR<unknown> | RA<unknown> | string;
+      readonly data: () => ResponseType;
       readonly responseCode: number | undefined;
       readonly method: string | undefined;
       readonly body: unknown;
@@ -23,7 +25,7 @@ const overwrites: R<
  */
 export function overwriteAjax(
   url: string,
-  response: Document | IR<unknown> | RA<unknown> | string,
+  response: ResponseType | (() => ResponseType),
   {
     responseCode,
     method,
@@ -36,7 +38,7 @@ export function overwriteAjax(
 ): void {
   beforeAll(() => {
     overwrites[url] = {
-      data: response,
+      data: typeof response === 'function' ? response : () => response,
       responseCode,
       method,
       body,
@@ -79,7 +81,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     if (body !== undefined) expect(requestBody).toEqual(body);
     if (method === undefined || method === requestMethod)
       return {
-        data: data as RESPONSE_TYPE,
+        data: data() as RESPONSE_TYPE,
         response,
         status: responseCode ?? response.status,
       };

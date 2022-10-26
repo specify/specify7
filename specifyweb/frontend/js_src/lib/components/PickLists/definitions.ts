@@ -2,12 +2,14 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
+import { deserializeResource } from '../../hooks/resource';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { IR, R, RA } from '../../utils/types';
 import { months } from '../Atoms/Internationalization';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource, TableFields } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
@@ -217,24 +219,20 @@ export const getFrontEndPickLists = f.store<{
 export const fetchPickLists = f.store(
   async (): Promise<IR<SpecifyResource<PickList>>> =>
     (hasToolPermission('pickLists', 'read')
-      ? new schema.models.PickList.LazyCollection({
-          filters: {
-            domainfilter: true,
-          },
-        }).fetch({ limit: 0 })
-      : Promise.resolve({ models: [] })
-    ).then(async ({ models }) => {
+      ? fetchCollection('PickList', {
+          domainFilter: true,
+          limit: 0,
+        }).then(({ records }) => records)
+      : Promise.resolve([])
+    ).then(async (records) => {
       getFrontEndPickLists();
       pickLists = {
         ...pickLists,
         ...Object.fromEntries(
-          models
-            .map((pickList) =>
-              pickList.get('type') === PickListTypes.ITEMS
-                ? pickList
-                : pickList.set('pickListItems', [])
-            )
-            .map((pickList) => [pickList.get('name'), pickList] as const)
+          records.map(
+            (pickList) =>
+              [pickList.name, deserializeResource(pickList)] as const
+          )
         ),
       };
       return pickLists as IR<SpecifyResource<PickList>>;
