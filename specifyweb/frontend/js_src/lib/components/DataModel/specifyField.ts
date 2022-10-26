@@ -227,6 +227,19 @@ abstract class FieldBase {
   public isDependent(): boolean {
     return false;
   }
+
+  /**
+   * Instead of serializing the entire object, return a string.
+   * Serializing entire object is not advisable as it has relationships to
+   * other tables resulting in entire data model getting serialized (which
+   * would result in 2.3mb of wasted space)
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public toJSON(): string {
+    return `[${this.isRelationship ? 'relationship' : 'literalField'} ${
+      this.name
+    }]`;
+  }
 }
 
 /** Non-relationship field */

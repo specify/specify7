@@ -417,6 +417,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public toJSON(): string {
-    return `[object ${this.name}]`;
+    return `[table ${this.name}]`;
   }
 }
