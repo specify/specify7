@@ -1,0 +1,24 @@
+{
+  "name": "Borrow",
+  "class": "edu.ku.brc.specify.datamodel.Borrow",
+  "busrules": "edu.ku.brc.specify.datamodel.busrules.BorrowBusRules",
+  "altviews": {
+    "Borrow View": {
+      "name": "Borrow View",
+      "viewdef": "Borrow",
+      "mode": "view",
+      "default": "true"
+    },
+    "Borrow Edit": {
+      "name": "Borrow Edit",
+      "viewdef": "Borrow",
+      "mode": "edit"
+    }
+  },
+  "viewdefs": {
+    "Borrow": "<viewdef type=\"form\" name=\"Borrow\" class=\"edu.ku.brc.specify.datamodel.Borrow\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n\n            <desc>Borrow viewing form.</desc>\n            <columnDef>105px,2px,122px,5px,125px,2px,120px,10px,132px,5px,80px,2px,122px,0px,15px,p:g</columnDef>\n            <columnDef os=\"lnx\">115px,2px,160px,5px,141px,2px,125px,10px,140px,15px,85px,2px,115px,0px,15px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,192px,5px,140px,2px,147px,10px,160px,5px,90px,2px,147px,0px,15px,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,p:g(2),5px:g,p,2px,p:g(2),10px,p,5px:g,p,2px,p:g(2),0px,p,p:g</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"1dlu\" />\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"1\" />\n                    <cell type=\"field\" id=\"1\" name=\"invoiceNumber\" uitype=\"text\" />\n                    <cell type=\"label\" labelfor=\"21\" />\n                    <cell type=\"field\" id=\"21\" name=\"originalDueDate\" uitype=\"formattedtext\" uifieldformatter=\"Date\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"3\" />\n                    <cell type=\"field\" id=\"3\" name=\"receivedDate\" uitype=\"formattedtext\" uifieldformatter=\"Date\" default=\"today\" />\n                    <cell type=\"label\" labelfor=\"12\" />\n                    <cell type=\"field\" id=\"12\" name=\"currentDueDate\" uitype=\"formattedtext\" uifieldformatter=\"Date\" />\n                    <cell type=\"field\" id=\"2\" name=\"isClosed\" uitype=\"checkbox\" initialize=\"editable=true\" />\n                    <cell type=\"label\" labelfor=\"4\" />\n                    <cell type=\"field\" id=\"4\" name=\"dateClosed\" uitype=\"formattedtext\" uifieldformatter=\"Date\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"5\" />\n                    <cell type=\"field\" id=\"5\" name=\"remarks\" uitype=\"textareabrief\" rows=\"2\" colspan=\"12\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"BorrowAgent\" id=\"6\" name=\"borrowAgents\" rows=\"2\" desc=\"Agents\" colspan=\"15\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"Shipment\" id=\"11\" name=\"shipments\" colspan=\"15\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" viewname=\"BorrowMaterial\" id=\"10\" name=\"borrowMaterials\" defaulttype=\"table\" colspan=\"15\" />\n                </row>\n                \n                <row>\n                    <cell type=\"separator\" label=\"Attachments\" colspan=\"15\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" id=\"attachments\" viewname=\"ObjectAttachment\" name=\"borrowAttachments\" initialize=\"btn=true;icon=BorrowAttachment\" colspan=\"7\" />\n                    <cell type=\"field\" id=\"13\" uitype=\"checkbox\" name=\"generateInvoice\" label=\"Generate Invoice on Save\" ignore=\"true\" default=\"true\" initialize=\"vis=false\" colspan=\"3\" />\n                            </row>\n\n            </rows>\n        </viewdef>\n\n\t\t"
+  },
+  "viewsetName": "Fish Views",
+  "viewsetLevel": "Collection",
+  "viewsetSource": "db"
+}
