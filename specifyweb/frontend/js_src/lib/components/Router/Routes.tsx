@@ -26,7 +26,7 @@ export const routes: RA<EnhancedRoute> = [
     element: <Redirect to="/specify/express-search/" />,
   },
   {
-    path: 'datamodel',
+    path: 'data-model',
     title: commonText('databaseSchema'),
     children: [
       {
@@ -45,6 +45,10 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
     ],
+  },
+  {
+    path: 'datamodel/*',
+    element: <Redirect to="/specify/data-model/" />,
   },
   {
     path: 'tree/:tableName',
@@ -186,7 +190,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'workbench-import',
-    element: <Redirect to="/specify/workbench-import" />,
+    element: <Redirect to="/specify/workbench/import" />,
   },
   {
     path: 'resources',

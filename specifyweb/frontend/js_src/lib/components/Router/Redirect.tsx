@@ -17,7 +17,10 @@ export function Redirect({ to }: { readonly to: string }): null {
   const navigate = useNavigate();
   React.useEffect(() => {
     const path = generatePath(to, parameters);
-    const url = new URL(path, globalThis.location?.origin);
+    const url = new URL(
+      `${path}${path.endsWith('/') ? '' : '/'}${parameters['*'] ?? ''}`,
+      globalThis.location?.origin
+    );
     url.hash = hash;
     url.search = search;
     const completeUrl = url.toString();
