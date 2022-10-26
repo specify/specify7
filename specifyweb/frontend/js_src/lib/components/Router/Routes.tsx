@@ -90,7 +90,7 @@ export const routes: RA<EnhancedRoute> = [
         ],
       },
       {
-        path: 'user/',
+        path: 'user',
         children: [
           {
             path: 'new',
@@ -247,7 +247,7 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
-    path: 'recordset/:id',
+    path: 'record-set/:id',
     children: [
       {
         index: true,

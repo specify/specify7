@@ -241,7 +241,7 @@ export function RecordSetCreated({
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
     >
-      <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
+      <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
         <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
         {recordSet.get('name')}
       </Link.Default>

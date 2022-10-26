@@ -28,7 +28,7 @@ export function ShowResource({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
-  // Look to see if we are in the context of a recordset
+  // Look to see if we are in the context of a Record Set
   const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
   const recordSet = React.useMemo(
@@ -142,7 +142,7 @@ const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
 
 /**
  * Shows user's individual resources which can optionally be in the context of
- * some recordset
+ * some Record Set
  *
  * id may be a record id, or GUID (for Collection Objects)
  */
