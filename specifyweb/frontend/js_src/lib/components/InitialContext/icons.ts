@@ -37,6 +37,17 @@ const iconDirectories = {
   default: '/images/',
 };
 
+export const unknownIcon = '/images/unknown.png';
+
+export function getIcon(icon: string): string | undefined {
+  for (const [group, xml] of Object.entries(iconGroups)) {
+    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
+    if (typeof iconFile === 'string')
+      return `${iconDirectories[group]}${iconFile}`;
+  }
+  return undefined;
+}
+
 function findIconInXml(
   icon: string,
   xml: Document,
@@ -49,15 +60,4 @@ function findIconInXml(
   return typeof alias === 'string'
     ? findIconInXml(alias, xml, [...cycleDetect, icon])
     : iconNode ?? undefined;
-}
-
-export const unknownIcon = '/images/unknown.png';
-
-export function getIcon(icon: string): string | undefined {
-  for (const [group, xml] of Object.entries(iconGroups)) {
-    const iconFile = findIconInXml(icon, xml)?.getAttribute('file');
-    if (typeof iconFile === 'string')
-      return `${iconDirectories[group]}${iconFile}`;
-  }
-  return undefined;
 }

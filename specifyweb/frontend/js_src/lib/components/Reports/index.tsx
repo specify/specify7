@@ -135,7 +135,7 @@ export function ReportsView({
             <h2>{commonText('reports')}</h2>
             <ReportRow
               cacheKey="listOfReports"
-              icon="/images/Reports16x16.png"
+              icon="/images/Reports32x32.png"
               resources={reports}
               onClick={setSelectedReport}
             />
@@ -144,7 +144,7 @@ export function ReportsView({
             <h2>{commonText('labels')}</h2>
             <ReportRow
               cacheKey="listOfLabels"
-              icon="/images/Label16x16.png"
+              icon="/images/Label32x32.png"
               resources={labels}
               onClick={setSelectedReport}
             />

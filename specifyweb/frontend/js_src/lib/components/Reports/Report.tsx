@@ -32,6 +32,7 @@ import { error } from '../Errors/assert';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ReportForRecord } from './ForRecord';
 import { ReportRecordSets } from './RecordSets';
+import { unknownIcon } from '../InitialContext/icons';
 
 export function Report({
   appResource,
@@ -173,7 +174,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
     attachments.map((record) => [record.title ?? '', record])
   );
 
-  const badImageUrl = `"${globalThis.location.origin}/images/unknown.png"`;
+  const badImageUrl = `"${globalThis.location.origin}${unknownIcon}"`;
   return filterArray(
     Object.entries(fileNames).map(([fileName, imageExpressions]) => {
       const attachment = indexedAttachments[fileName];
