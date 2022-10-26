@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test formatter fetching 1`] = `
+exports[`formatters are fetched and parsed correctly 1`] = `
 {
   "aggregators": [
     {
