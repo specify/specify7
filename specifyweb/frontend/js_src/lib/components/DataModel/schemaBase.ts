@@ -79,6 +79,7 @@ const domainLevels = [
   'institution',
 ] as const;
 
+// REFACTOR: separate schema base (domain.json) from the rest of the schema
 // Scoping information is loaded and populated here.
 export const fetchContext = load<
   Omit<Schema, 'domainLevelIds'> & Schema['domainLevelIds']

@@ -129,7 +129,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly searchDialog?: string;
 
-  private readonly fieldAliases: RA<FieldAlias>;
+  public readonly fieldAliases: RA<FieldAlias>;
 
   /**
    * A Backbone model resource for accessing the API for items of this type.
@@ -265,7 +265,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
         : camelToHuman(this.name)
       : this.name;
 
-    this.isHidden = this.localization.ishidden === 1;
+    this.isHidden = this.localization.ishidden;
 
     const tableOverride = getTableOverwrite(this.name);
     this.overrides = {
@@ -333,7 +333,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
           splitName.slice(1).join('.')
         ),
       ];
-    else throw new Error('Field is not a relationship');
+    else throw new Error(`Field ${unparsedName} is not a relationship`);
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {

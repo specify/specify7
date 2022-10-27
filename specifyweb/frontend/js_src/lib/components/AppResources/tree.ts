@@ -194,6 +194,7 @@ const getCollectionResources = (
     subCategories: getUserResources(collection, resources),
   },
 ];
+
 const getUserTypeResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
@@ -219,6 +220,7 @@ const getUserTypeResources = (
       subCategories: [],
     };
   });
+
 const getUserResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
