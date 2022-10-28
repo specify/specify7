@@ -1,35 +1,28 @@
 import React from 'react';
-
+import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import { ajax } from '../../utils/ajax';
-import type { SpQueryField, Tables } from '../DataModel/types';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { IR, RA } from '../../utils/types';
-import { StatCategoryReturn, statsSpec } from './StatsSpec';
-import { usePref } from '../UserPreferences/usePref';
-import {
-  BackendStatsResult,
-  useFrontEndStat,
-  FrontEndStatsResult,
-  useFrontEndStatsQuery,
-} from './utils';
-import { H2, H3 } from '../Atoms';
 import { statsText } from '../../localization/stats';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpQuery } from '../DataModel/types';
-import { fetchResource } from '../DataModel/resource';
-import { deserializeResource } from '../../hooks/resource';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { Submit } from '../Atoms/Submit';
+import { ajax } from '../../utils/ajax';
+import type { IR, RA } from '../../utils/types';
+import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { handleAjaxError } from '../Errors/FormatError';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { defaultStatLayout } from './definitions';
-import { preferencesText } from '../../localization/preferences';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { fetchResource } from '../DataModel/resource';
+import type { SpQueryField, Tables } from '../DataModel/types';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { usePref } from '../UserPreferences/usePref';
+import { StatLayout } from './definitions';
+import type { StatCategoryReturn } from './StatsSpec';
+import { statsSpec } from './StatsSpec';
+import type { BackendStatsResult } from './utils';
+import {
+  FrontEndStatsResult,
+  useFrontEndStat,
+  useFrontEndStatsQuery,
+} from './utils';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -48,51 +41,90 @@ function useBackendApi(): BackendStatsResult | undefined {
   return backendStatObject;
 }
 
-function useStatsSpec(): IR<StatCategoryReturn> {
+function useStatsSpec(): IR<{
+  readonly label: string;
+  readonly items: StatCategoryReturn;
+}> {
   const backEndResult = useBackendApi();
   return React.useMemo(
     () =>
       Object.fromEntries(
-        Object.entries(statsSpec).map(([categoryName, { categories }]) => [
-          categoryName,
-          (
-            categories as (
-              backendStatResult:
-                | BackendStatsResult[typeof categoryName]
-                | undefined
-            ) => StatCategoryReturn
-          )(backEndResult?.[categoryName]),
-        ])
+        Object.entries(statsSpec).map(
+          ([categoryName, { label, categories }]) => [
+            categoryName,
+            {
+              label,
+              items: (
+                categories as (
+                  backendStatResult:
+                    | BackendStatsResult[typeof categoryName]
+                    | undefined
+                ) => StatCategoryReturn
+              )(backEndResult?.[categoryName]),
+            },
+          ]
+        )
       ),
     [backEndResult]
   );
 }
 
 export function StatsPage(): JSX.Element {
-  const [layout, setLayout] = usePref('statistics', 'appearance', 'layout');
-  const [isEditing, _, __, handleToggle] = useBooleanState();
+  const [customLayout, setLayout] = usePref(
+    'statistics',
+    'appearance',
+    'layout'
+  );
   const statsSpec = useStatsSpec();
+  const defaultLayout = useDefaultLayout(statsSpec);
+  const layout = customLayout ?? defaultLayout;
+  const [state, setState] = React.useState<
+    | State<
+        'EditingState',
+        {
+          readonly addingItem:
+            | {
+                readonly pageName: string;
+                readonly categoryName: string;
+              }
+            | undefined;
+        }
+      >
+    | State<'DefaultState'>
+  >({ type: 'DefaultState' });
+  const isEditing = state.type === 'EditingState';
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-[color:var(--form-background)] p-4">
-      <div className="flex gap-2">
-        <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
-        <span className="-ml-2 flex-1" />
-        {isEditing && (
-          <Button.Red onClick={(): void => setLayout(defaultStatLayout)}>
-            {commonText('reset')}
-          </Button.Red>
-        )}
-        <Button.Green onClick={handleToggle}>
-          {isEditing ? commonText('save') : commonText('edit')}
-        </Button.Green>
-      </div>
+    <div className="h-full w-full bg-[color:var(--form-background)]">
+      <div className="mx-auto flex h-full max-w-[min(100%,var(--form-max-width))] flex-col gap-4 overflow-y-auto  p-4 ">
+        <div className="flex items-center gap-2">
+          <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
+          <span className="-ml-2 flex-1" />
+          {isEditing && (
+            <Button.Red onClick={(): void => setLayout(defaultLayout)}>
+              {commonText('reset')}
+            </Button.Red>
+          )}
+          <Button.Green
+            onClick={(): void =>
+              setState(
+                isEditing
+                  ? { type: 'DefaultState' }
+                  : {
+                      type: 'EditingState',
+                      addingItem: undefined,
+                    }
+              )
+            }
+          >
+            {isEditing ? commonText('save') : commonText('edit')}
+          </Button.Green>
+        </div>
 
-      <div className="grid h-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-        {Object.entries(layout.collection).map(([categoryLabel, items]) => {
-          return (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
+          {Object.entries(layout.collection).map(([categoryLabel, items]) => (
             <div
+              className="block h-auto max-h-80 content-center rounded border-[1px] border-black bg-white p-4"
               key={categoryLabel}
-              className="block h-min content-center rounded border-[1px] border-black bg-white p-4"
             >
               <H3 className="font-bold">{categoryLabel}</H3>
               {items?.map((item, itemIndex) => {
@@ -107,30 +139,57 @@ export function StatsPage(): JSX.Element {
                     },
                   });
 
-                if (item.type === 'DefaultStat') {
-                  return (
-                    <DefaultStat
-                      statsSpec={statsSpec}
-                      categoryName={item.categoryName}
-                      itemName={item.itemName}
-                      key={itemIndex}
-                      onRemove={isEditing ? handleRemove : undefined}
-                    />
-                  );
-                } else
-                  return (
-                    <CustomStat
-                      queryId={item.queryId}
-                      key={itemIndex}
-                      onRemove={isEditing ? handleRemove : undefined}
-                    />
-                  );
+                return item.type === 'DefaultStat' ? (
+                  <DefaultStat
+                    key={itemIndex}
+                    statsSpec={statsSpec}
+                    categoryName={item.categoryName}
+                    itemName={item.itemName}
+                    onRemove={isEditing ? handleRemove : undefined}
+                  />
+                ) : (
+                  <CustomStat
+                    key={itemIndex}
+                    queryId={item.queryId}
+                    onRemove={isEditing ? handleRemove : undefined}
+                  />
+                );
               })}
+              {isEditing && (
+                <Button.LikeLink>
+                  <span className={className.dataEntryAdd}>{icons.plus}</span>
+                  {commonText('add')}
+                </Button.LikeLink>
+              )}
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+function useDefaultLayout(
+  statsSpec: IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn | undefined;
+  }>
+): StatLayout {
+  return React.useMemo(
+    () => ({
+      collection: Object.fromEntries(
+        Object.entries(statsSpec).map(([categoryName, { label, items }]) => [
+          label,
+          Object.entries(items ?? {}).map(([itemName]) => ({
+            type: 'DefaultStat',
+            pageName: 'collection',
+            categoryName,
+            itemName,
+          })),
+        ])
+      ),
+    }),
+    [statsSpec]
   );
 }
 
@@ -172,12 +231,17 @@ function DefaultStat({
   itemName,
   onRemove: handleRemove,
 }: {
-  readonly statsSpec: IR<StatCategoryReturn>;
+  readonly statsSpec: IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>;
   readonly categoryName: keyof typeof statsSpec;
   readonly itemName: string;
-  readonly onRemove: undefined | (() => void);
+  readonly onRemove: (() => void) | undefined;
 }): JSX.Element {
-  const statSpecItem = statsSpec[categoryName]?.[itemName];
+  const statSpecItemObject = statsSpec[categoryName]?.items;
+  const statSpecItem =
+    statSpecItemObject === undefined ? undefined : statSpecItemObject[itemName];
   const statValue =
     statSpecItem === undefined ? undefined : statSpecItem.spec.type ===
       'Querybuildstat' ? (
@@ -204,19 +268,19 @@ function StatItemDisplay({
   onRemove: handleRemove,
 }: {
   readonly label: string | undefined;
-  readonly value: JSX.Element | string | number | undefined;
-  readonly onRemove: undefined | (() => void);
+  readonly value: JSX.Element | number | string | undefined;
+  readonly onRemove: (() => void) | undefined;
 }): JSX.Element {
   return (
     <>
       {label === undefined ? (
-        commonText('loading')
+        <div>{commonText('loading')}</div>
       ) : (
         <p className="flex gap-2">
           {typeof handleRemove === 'function' && (
             <Button.Icon
-              title={commonText('remove')}
               icon="trash"
+              title={commonText('remove')}
               onClick={handleRemove}
             />
           )}
@@ -235,7 +299,7 @@ function CustomStat({
   onRemove: handleRemove,
 }: {
   readonly queryId: number;
-  readonly onRemove: undefined | (() => void);
+  readonly onRemove: (() => void) | undefined;
 }): JSX.Element {
   const { tableName, fields, label } =
     useCustomStatQueryBuilderSpec(queryId) ?? {};
@@ -265,18 +329,15 @@ function QueryBuilderStat({
   >;
   readonly statLabel: string;
 }): JSX.Element {
-  const frontEndQuery = useFrontEndStatsQuery(
-    tableName,
-    React.useMemo(() => fields, [])
-  );
+  const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
   const frontEndStatValue = useFrontEndStat(frontEndQuery);
   return frontEndStatValue === undefined ? (
     <>{commonText('loading')}</>
   ) : (
     <FrontEndStatsResult
-      statValue={frontEndStatValue}
       query={frontEndQuery}
       statLabel={statLabel}
+      statValue={frontEndStatValue}
     />
   );
 }
