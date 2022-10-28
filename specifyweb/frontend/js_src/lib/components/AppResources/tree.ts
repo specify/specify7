@@ -82,11 +82,11 @@ function getGlobalAllResources(resources: AppResources): {
  * There may be other cases too. That is why the code always assumes that
  * more than one directory may be returned and merges them all together.
  */
-function mergeDirectories(
+const mergeDirectories = (
   directories: RA<SerializedResource<SpAppResourceDir>>,
   resources: AppResources
-): DirectoryChildren {
-  const { appResources, viewSets } = directories
+): DirectoryChildren =>
+  directories
     .map((directory) => getDirectoryChildren(directory, resources))
     .reduce<DirectoryChildren>(
       (combined, { appResources, viewSets }) => ({
@@ -95,13 +95,6 @@ function mergeDirectories(
       }),
       { appResources: [], viewSets: [] }
     );
-  return {
-    appResources: Array.from(appResources).sort(
-      sortFunction(({ name }) => name)
-    ),
-    viewSets: Array.from(viewSets).sort(sortFunction(({ name }) => name)),
-  };
-}
 
 type DirectoryChildren = {
   readonly appResources: RA<SerializedResource<SpAppResource>>;
@@ -112,16 +105,12 @@ const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
   resources: AppResources
 ): DirectoryChildren => ({
-  appResources: resources.appResources
-    .filter(
-      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-    )
-    .sort(sortFunction(({ name }) => name)),
-  viewSets: resources.viewSets
-    .filter(
-      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-    )
-    .sort(sortFunction(({ name }) => name)),
+  appResources: resources.appResources.filter(
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  ),
+  viewSets: resources.viewSets.filter(
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  ),
 });
 
 export const getScopedAppResources = (
@@ -143,7 +132,7 @@ export const getScopedAppResources = (
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
-      subCategories: getDisciplineAppResources(discipline, resources),
+      subCategories: sortTree(getDisciplineAppResources(discipline, resources)),
     };
   });
 
@@ -169,7 +158,7 @@ const getDisciplineAppResources = (
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
-        subCategories: getCollectionResources(collection, resources),
+        subCategories: sortTree(getCollectionResources(collection, resources)),
       };
     });
 
@@ -183,7 +172,7 @@ const getCollectionResources = (
     directory: undefined,
     appResources: [],
     viewSets: [],
-    subCategories: getUserTypeResources(collection, resources),
+    subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
   {
     label: adminText('users'),
@@ -191,7 +180,7 @@ const getCollectionResources = (
     directory: undefined,
     appResources: [],
     viewSets: [],
-    subCategories: getUserResources(collection, resources),
+    subCategories: sortTree(getUserResources(collection, resources)),
   },
 ];
 

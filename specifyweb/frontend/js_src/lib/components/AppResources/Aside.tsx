@@ -3,7 +3,7 @@ import React from 'react';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { removeItem, replaceItem } from '../../utils/utils';
+import { removeItem, replaceItem, sortFunction } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasToolPermission } from '../Permissions/helpers';
@@ -204,11 +204,13 @@ function TreeItemResources({
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
     <Ul aria-label={adminText('resources')} className="pl-4" role="group">
-      {resources.map((resource, index) => (
-        <li key={index}>
-          <ResourceItem resource={resource} onOpen={handleOpen} />
-        </li>
-      ))}
+      {Array.from(resources)
+        .sort(sortFunction(({ name }) => name))
+        .map((resource, index) => (
+          <li key={index}>
+            <ResourceItem resource={resource} onOpen={handleOpen} />
+          </li>
+        ))}
       {canCreate && (
         <li>
           <Link.Default href={`/specify/resources/create/${key}/`}>
