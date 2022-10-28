@@ -590,16 +590,33 @@ export const commonText = createDictionary({
       заново с безопасного места — домашней страницы.`,
   },
   errorBoundaryDialogSecondMessage: {
-    'en-us': (email: JSX.Element) => (
+    'en-us': (
+      email: JSX.Element,
+      memberLink: (label: string) => JSX.Element,
+      discourseLink: (label: string) => JSX.Element
+    ) => (
       <>
         If this issue persists, please contact your IT support or if this is a
         Specify Cloud database, contact {email}
+        <br />
+        <br />
+        Users from {memberLink('member institutions')} can search for answered
+        questions and ask for help on our {discourseLink('Community Forum')}.
       </>
     ),
-    'ru-ru': (email: JSX.Element) => (
+    'ru-ru': (
+      email: JSX.Element,
+      memberLink: (label: string) => JSX.Element,
+      discourseLink: (label: string) => JSX.Element
+    ) => (
       <>
         Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
         свяжитесь с нами: {email}
+        <br />
+        <br />
+        Пользователи из {memberLink('учреждений Консорциума')} могут искать
+        ответы на вопросы и обращаться за помощью на нашем
+        {discourseLink('форуме')}.
       </>
     ),
   },

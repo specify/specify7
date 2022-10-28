@@ -12,9 +12,10 @@ import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
 
+const supportEmail = 'support@specifysoftware.org';
 export const supportLink = (
-  <Link.NewTab href="mailto:support@specifysoftware.org" rel="noreferrer">
-    support@specifysoftware.org
+  <Link.NewTab href={`mailto:${supportEmail}`} rel="noreferrer">
+    {supportEmail}
   </Link.NewTab>
 );
 const errors = new Set<string>();
@@ -133,7 +134,22 @@ export function ErrorDialog({
         {!canClose && commonText('errorBoundaryCriticalDialogText')}
       </p>
       <br />
-      <p>{commonText('errorBoundaryDialogSecondMessage', supportLink)}</p>
+      <p>
+        {commonText(
+          'errorBoundaryDialogSecondMessage',
+          supportLink,
+          (label) => (
+            <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
+              {label}
+            </Link.NewTab>
+          ),
+          (label) => (
+            <Link.NewTab href="https://discourse.specifysoftware.org/">
+              {label}
+            </Link.NewTab>
+          )
+        )}
+      </p>
       <details
         className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV === 'development'}
