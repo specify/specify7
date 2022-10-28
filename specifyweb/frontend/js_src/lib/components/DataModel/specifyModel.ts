@@ -117,9 +117,16 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly isHidden: boolean;
 
+  /**
+   * Overrides are used to overwrite the default data model settings and the
+   * schema config settings. Overrides mostly affect Query Builder and the
+   * WorkBench mapper. They are used to force-hide unsupported fields and
+   * legacy fields
+   */
   public readonly overrides: {
     readonly isSystem: boolean;
     readonly isHidden: boolean;
+    // Common tables are prioritized when listing in the UI
     readonly isCommon: boolean;
   };
 
@@ -253,10 +260,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       column: tableDefinition.idFieldName,
       indexed: true,
       unique: true,
-      readOnly: false,
+      readOnly: true,
     });
-    this.idField.isReadOnly = true;
-    this.idField.overrides.isReadOnly = true;
 
     this.label = useLabels
       ? typeof this.localization.name === 'string' &&

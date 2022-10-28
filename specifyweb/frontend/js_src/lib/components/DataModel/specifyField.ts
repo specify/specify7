@@ -2,18 +2,18 @@
  * Classes for a specify field
  */
 
-import type { PickList, Tables } from './types';
+import type { IR } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import type { SpecifyResource } from './legacyTypes';
+import { getUiFormatters, type UiFormatter } from '../Forms/uiFormatters';
+import { isTreeModel } from '../InitialContext/treeRanks';
 import { getFrontEndPickLists } from '../PickLists/definitions';
+import type { SpecifyResource } from './legacyTypes';
 import type { SchemaLocalization } from './schema';
 import { schema, strictGetModel } from './schema';
 import { unescape } from './schemaBase';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
 import type { SpecifyModel } from './specifyModel';
-import { isTreeModel } from '../InitialContext/treeRanks';
-import type { IR } from '../../utils/types';
-import { getUiFormatters, type UiFormatter } from '../Forms/uiFormatters';
+import type { PickList, Tables } from './types';
 
 export type JavaType =
   // Strings
@@ -74,8 +74,6 @@ abstract class FieldBase {
 
   public readonly name: string;
 
-  public readonly dottedName: string;
-
   // eslint-disable-next-line functional/prefer-readonly-type
   public isHidden: boolean;
 
@@ -84,6 +82,12 @@ abstract class FieldBase {
 
   public readonly isRequired: boolean;
 
+  /**
+   * Overrides are used to overwrite the default data model settings and the
+   * schema config settings. Overrides mostly affect Query Builder and the
+   * WorkBench mapper. They are used to force-hide unsupported fields and
+   * legacy fields
+   */
   public readonly overrides: {
     // eslint-disable-next-line functional/prefer-readonly-type
     isRequired: boolean;
@@ -115,7 +119,6 @@ abstract class FieldBase {
     this.model = model;
 
     this.name = fieldDefinition.name;
-    this.dottedName = `${model.name}.${this.name}`;
 
     const globalFieldOverride = getGlobalFieldOverwrite(model.name, this.name);
 
@@ -149,10 +152,7 @@ abstract class FieldBase {
     let isRequired = fieldOverwrite !== 'optional' && this.isRequired;
     let isHidden = this.isHidden;
 
-    const isReadOnly =
-      this.isReadOnly ||
-      fieldOverwrite === 'readOnly' ||
-      (this.isRelationship && isTreeModel(this.model.name));
+    const isReadOnly = this.isReadOnly || fieldOverwrite === 'readOnly';
 
     // Overwritten hidden fields are made not required
     if (fieldOverwrite === 'hidden') {
@@ -205,14 +205,6 @@ abstract class FieldBase {
   // Returns the weblink definition name if any is assigned to the field.
   public getWebLinkName(): string | undefined {
     return this.localization.weblinkname ?? undefined;
-  }
-
-  /*
-   * Returns true if the field is required by the schema configuration.
-   * NB the field maybe required for other reasons.
-   */
-  public isRequiredBySchemaLocalization(): boolean {
-    return this.localization.isrequired;
   }
 
   // Returns true if the field represents a time value.
@@ -287,12 +279,16 @@ export class Relationship extends FieldBase {
         : relationshipDefinition.relatedModelName;
     this.relatedModel = strictGetModel(relatedModelName);
 
+    if (isTreeModel(this.model.name)) this.overrides.isReadOnly = true;
+
     this.overrides.isRequired =
       this.overrides.isRequired &&
       !this.overrides.isReadOnly &&
       !this.relatedModel.overrides.isSystem;
     this.overrides.isHidden ||=
-      !this.overrides.isRequired && this.relatedModel.overrides.isHidden;
+      !this.overrides.isRequired &&
+      this.relatedModel.overrides.isHidden &&
+      this.relatedModel !== this.model;
   }
 
   /*

@@ -310,7 +310,6 @@ test('id field is created', () => {
   expect(idField.label).toBe('ID');
   expect(idField.type).toBe('java.lang.Integer');
   expect(idField.databaseColumn).toBe('collectionObjectId');
-  expect(idField.dottedName).toBe('CollectionObject.collectionObjectId');
   expect(idField.name).toBe('collectionObjectId');
 });
 
