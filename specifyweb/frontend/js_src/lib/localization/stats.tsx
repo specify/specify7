@@ -18,9 +18,9 @@ export const statsText = createDictionary({
     'en-us': 'Holdings',
     'ru-ru': 'Холдинги',
   },
-  specimens: {
-    'en-us': 'Specimens',
-    'ru-ru': 'Образцы',
+  collectionObjects: {
+    'en-us': 'Collection Objects',
+    'ru-ru': 'Объекты коллекции',
   },
   preparations: {
     'en-us': 'Preparations',
@@ -54,13 +54,13 @@ export const statsText = createDictionary({
     'en-us': 'Items on Loans',
     'ru-ru': 'Предметы в кредит',
   },
-  openLoansCount: {
-    'en-us': 'Open Loans Count',
-    'ru-ru': 'Количество открытых кредитов',
+  openLoans: {
+    'en-us': 'Open Loans',
+    'ru-ru': 'Открытые кредиты',
   },
-  overdueLoansCount: {
-    'en-us': 'Overdue Loans Count',
-    'ru-ru': 'Количество просроченных кредитов',
+  overdueLoans: {
+    'en-us': 'Overdue Loans',
+    'ru-ru': 'Просроченные кредиты',
   },
   taxonomicTree: {
     'en-us': 'Taxonomic Tree',
@@ -90,37 +90,37 @@ export const statsText = createDictionary({
     'en-us': 'Locality / Geography',
     'ru-ru': 'Местность / География',
   },
-  localityCount: {
-    'en-us': 'Locality Count',
-    'ru-ru': 'Количество локаций',
+  localities: {
+    'en-us': 'Localities',
+    'ru-ru': 'Местности',
   },
-  geographyEntryCount: {
-    'en-us': 'Geography Entry Count',
-    'ru-ru': 'Количество входов по географии',
+  geographyEntries: {
+    'en-us': 'Geography Entries',
+    'ru-ru': 'География Записи',
   },
-  countriesCount: {
+  countries: {
     'en-us': 'Countries',
     'ru-ru': 'Страны',
   },
-  georeferencedLocalityCount: {
-    'en-us': 'Georeferenced Localities Count',
-    'ru-ru': 'Количество мест с географической привязкой',
+  georeferencedLocalities: {
+    'en-us': 'Georeferenced Localities',
+    'ru-ru': 'Места с географической привязкой',
   },
-  catalogStats: {
-    'en-us': 'Collection Catalogs',
-    'ru-ru': 'Каталоги коллекций',
+  computerization: {
+    'en-us': 'Computerization',
+    'ru-ru': 'Компьютеризация',
   },
-  catalogedLast7Days: {
-    'en-us': 'Cataloged Last 7 Days',
-    'ru-ru': 'В каталоге за последние 7 дней',
+  computerizedLast7Days: {
+    'en-us': 'Computerized Last 7 Days',
+    'ru-ru': 'Компьютеризировано за последние 7 дней',
   },
-  catalogedLast30Days: {
-    'en-us': 'Cataloged Last 30 Days',
-    'ru-ru': 'В каталоге за последние 30 дней',
+  computerizedLast30Days: {
+    'en-us': 'Computerized Last 30 Days',
+    'ru-ru': 'Компьютеризировано за последние 30 дней',
   },
-  catalogedLastYear: {
-    'en-us': 'Cataloged Last Year',
-    'ru-ru': 'Каталогизирован в прошлом году',
+  computerizedLastYear: {
+    'en-us': 'Computerized Last Year',
+    'ru-ru': 'Компьютеризация в прошлом году',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

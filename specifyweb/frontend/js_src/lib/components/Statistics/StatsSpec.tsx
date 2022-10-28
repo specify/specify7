@@ -55,8 +55,7 @@ export const statsSpec: StatsSpec = {
     categories(backendStatsResult) {
       return {
         specimens: {
-          label: statsText('specimens'),
-
+          label: statsText('collectionObjects'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
@@ -156,7 +155,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         openLoansCount: {
-          label: statsText('openLoansCount'),
+          label: statsText('openLoans'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Loan',
@@ -173,7 +172,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         overdueLoansCount: {
-          label: statsText('overdueLoansCount'),
+          label: statsText('overdueLoans'),
 
           spec: {
             type: 'Querybuildstat',
@@ -300,7 +299,7 @@ export const statsSpec: StatsSpec = {
     categories(backendStatsResult) {
       return {
         localityCount: {
-          label: statsText('localityCount'),
+          label: statsText('localities'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Locality',
@@ -316,7 +315,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         geographyEntryCount: {
-          label: statsText('geographyEntryCount'),
+          label: statsText('geographyEntries'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Geography',
@@ -332,14 +331,14 @@ export const statsSpec: StatsSpec = {
           },
         },
         countriesCount: {
-          label: statsText('countriesCount'),
+          label: statsText('countries'),
           spec: {
             type: 'Backendstat',
             value: backendStatsResult?.countries,
           },
         },
         georeferencedLocalityCount: {
-          label: statsText('georeferencedLocalityCount'),
+          label: statsText('georeferencedLocalities'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'Locality',
@@ -365,7 +364,7 @@ export const statsSpec: StatsSpec = {
       modifyBackendResult<'typeSpecimens'>(backendStatsResult, formatNumber),
   },
   catalogStats: {
-    label: statsText('catalogStats'),
+    label: statsText('computerization'),
     categories() {
       const local = new Date();
       const initialDate = getDateInputValue(local);
@@ -378,7 +377,7 @@ export const statsSpec: StatsSpec = {
       const initialDateYearPast = getDateInputValue(local);
       return {
         catalogedLast7Days: {
-          label: statsText('catalogedLast7Days'),
+          label: statsText('computerizedLast7Days'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
@@ -395,7 +394,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         catalogedLast30Days: {
-          label: statsText('catalogedLast30Days'),
+          label: statsText('computerizedLast30Days'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
@@ -412,7 +411,7 @@ export const statsSpec: StatsSpec = {
           },
         },
         catalogedLastYear: {
-          label: statsText('catalogedLastYear'),
+          label: statsText('computerizedLastYear'),
           spec: {
             type: 'Querybuildstat',
             tableName: 'CollectionObject',
