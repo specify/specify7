@@ -80,15 +80,17 @@ function InstitutionView({
                 <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>
                 {typeof libraryRoles === 'object' ? (
                   <ul>
-                    {Object.values(libraryRoles).map((role) => (
-                      <li key={role.id}>
-                        <Link.Default
-                          href={`/specify/security/institution/role/${role.id}/`}
-                        >
-                          {role.name}
-                        </Link.Default>
-                      </li>
-                    ))}
+                    {Object.values(libraryRoles)
+                      .sort(sortFunction(({ name }) => name))
+                      .map((role) => (
+                        <li key={role.id}>
+                          <Link.Default
+                            href={`/specify/security/institution/role/${role.id}/`}
+                          >
+                            {role.name}
+                          </Link.Default>
+                        </li>
+                      ))}
                   </ul>
                 ) : (
                   commonText('loading')

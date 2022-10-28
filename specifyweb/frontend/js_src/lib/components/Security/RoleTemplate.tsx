@@ -106,10 +106,10 @@ export function CreateRole({
               commonText('none')
             ) : (
               <Ul>
-                {Object.entries(libraryRoles)
-                  .sort(sortFunction(([_id, { name }]) => name))
-                  .map(([libraryRoleId, role]) => (
-                    <li key={libraryRoleId}>
+                {Object.values(libraryRoles)
+                  .sort(sortFunction(({ name }) => name))
+                  .map((role) => (
+                    <li key={role.id}>
                       <Button.LikeLink
                         onClick={(): void => {
                           const roleName = getUniqueName(
@@ -140,7 +140,7 @@ export function CreateRole({
                                     headers: { Accept: 'application/json' },
                                     method: 'POST',
                                     body: keysToLowerCase({
-                                      libraryRoleId,
+                                      libraryRoleId: role.id,
                                       name: roleName,
                                     }),
                                   },
