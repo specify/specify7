@@ -13,6 +13,7 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { createQuery } from '../QueryBuilder';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
 export function PickListUsages({
   pickList,
@@ -70,6 +71,13 @@ function usePickListQuery(
         formsText('usagesOfPickList', resource.get('name')),
         schema.models.SpLocaleContainerItem
       ).set('fields', [
+        QueryFieldSpec.fromPath('SpLocaleContainerItem', [
+          'container',
+          'discipline',
+          formattedEntry,
+        ])
+          .toSpQueryField()
+          .set('sortType', flippedSortTypes.ascending),
         QueryFieldSpec.fromPath('SpLocaleContainerItem', ['container', 'name'])
           .toSpQueryField()
           .set('sortType', flippedSortTypes.ascending),
