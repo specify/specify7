@@ -56,11 +56,11 @@ export const statsText = createDictionary({
   },
   openLoans: {
     'en-us': 'Open Loans',
-    'ru-ru': 'Открытые кредиты',
+    'ru-ru': 'Открытые Займы',
   },
   overdueLoans: {
     'en-us': 'Overdue Loans',
-    'ru-ru': 'Просроченные кредиты',
+    'ru-ru': 'Просроченные Займы',
   },
   taxonomicTree: {
     'en-us': 'Taxonomic Tree',
