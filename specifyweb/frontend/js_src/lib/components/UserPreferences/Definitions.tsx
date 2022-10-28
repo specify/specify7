@@ -33,8 +33,7 @@ import {
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
 
-import { statsText } from '../../localization/stats';
-import { defaultStatLayout, StatLayout } from '../Statistics/definitions';
+import { StatLayout } from '../Statistics/definitions';
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
   readonly definition: PreferenceItem<VALUE>;
@@ -1516,11 +1515,11 @@ export const preferenceDefinitions = {
       appearance: {
         title: preferencesText('appearance'),
         items: {
-          layout: defineItem<StatLayout>({
+          layout: defineItem<StatLayout | undefined>({
             title: 'Defines the layout of the stats page',
             requiresReload: false,
             visible: false,
-            defaultValue: defaultStatLayout,
+            defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
           }),
         },
