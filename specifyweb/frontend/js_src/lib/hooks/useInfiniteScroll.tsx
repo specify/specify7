@@ -8,7 +8,7 @@ import { useBooleanState } from './useBooleanState';
  */
 export function useInfiniteScroll(
   handleFetch: (() => Promise<void>) | undefined,
-  scroller: HTMLElement | null
+  scroller: React.RefObject<HTMLElement | null>
 ): {
   readonly isFetching: boolean;
   readonly handleScroll: (event: React.UIEvent<HTMLElement>) => void;
@@ -17,26 +17,28 @@ export function useInfiniteScroll(
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
 
   const doFetch = React.useCallback(async (): Promise<void> => {
-    if (isFetchingRef.current || handleFetch === undefined) return undefined;
+    if (isFetchingRef.current || handleFetchRef.current === undefined) return;
     isFetchingRef.current = true;
     handleFetching();
-    await handleFetch();
+    await handleFetchRef.current();
     isFetchingRef.current = false;
     await new Promise((resolve) => setTimeout(resolve, 0));
     // Fetch until there is a scroll bar
     if (
-      scroller !== null &&
+      scroller.current !== null &&
       // Check if element is rendered
-      scroller.scrollHeight !== 0 &&
-      scroller.scrollHeight === scroller.clientHeight
+      scroller.current.scrollHeight !== 0 &&
+      scroller.current.scrollHeight === scroller.current.clientHeight
     )
       doFetch().catch(crash);
     handleFetched();
-  }, [handleFetch, scroller, handleFetching, handleFetched]);
+  }, [scroller, handleFetching, handleFetched]);
 
+  const handleFetchRef = React.useRef(handleFetch);
   React.useEffect(() => {
-    if (scroller !== null) void doFetch();
-  }, [scroller]);
+    handleFetchRef.current = handleFetch;
+    if (scroller.current !== null) void doFetch();
+  }, [scroller, doFetch, handleFetch]);
 
   return {
     isFetching,

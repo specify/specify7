@@ -174,12 +174,15 @@ export function QueryResults({
     fieldSpecs.length > 0 &&
     pickListsLoaded &&
     treeRanksLoaded;
-  const canFetchMore = !Array.isArray(results) || results.length !== totalCount;
+  const canFetchMore =
+    !Array.isArray(results) ||
+    totalCount === undefined ||
+    results.length < totalCount;
 
-  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     canFetchMore ? handleFetchMore : undefined,
-    scroller
+    scrollerRef
   );
 
   const undefinedResult = results?.indexOf(undefined);
@@ -270,7 +273,7 @@ export function QueryResults({
               : 'grid-cols-[repeat(var(--columns),auto)]'
           }
        `}
-        ref={setScroller}
+        ref={scrollerRef}
         role="table"
         style={
           {

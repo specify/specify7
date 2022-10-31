@@ -154,10 +154,10 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
 
-  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scroller
+    scrollerRef
   );
 
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
@@ -173,7 +173,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
-          forwardRef={setScroller}
+          forwardRef={scrollerRef}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
