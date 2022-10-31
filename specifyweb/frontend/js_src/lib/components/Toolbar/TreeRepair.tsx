@@ -83,7 +83,7 @@ export function TreeSelectDialog({
         confirmationMessage
       ) : (
         <nav>
-          <Ul>
+          <Ul className="flex flex-col gap-1">
             {getDisciplineTrees()
               .filter((treeName) =>
                 permissionName === 'repair'
@@ -98,7 +98,7 @@ export function TreeSelectDialog({
                   | SpecifyResource<TaxonTreeDef>
                   | undefined;
                 return (
-                  <li key={treeName}>
+                  <li key={treeName} className="contents">
                     <div className="flex gap-2">
                       <Link.Default
                         className="flex-1"

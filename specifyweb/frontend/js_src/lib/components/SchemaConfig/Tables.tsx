@@ -53,9 +53,9 @@ export function SchemaConfigTables(): JSX.Element {
       header={commonText('tables')}
       onClose={(): void => navigate('/specify')}
     >
-      <Ul className="flex-1 overflow-y-auto">
+      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {sortedTables.map((model) => (
-          <li key={model.tableId}>
+          <li className="contents" key={model.tableId}>
             <Link.Default
               href={`/specify/schema-config/${language}/${model.name}/`}
             >
