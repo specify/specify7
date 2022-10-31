@@ -13,11 +13,8 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type {
-  GenericNotification} from './NotificationRenderers';
-import {
-  notificationRenderers
-} from './NotificationRenderers';
+import type { GenericNotification } from './NotificationRenderers';
+import { notificationRenderers } from './NotificationRenderers';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -150,24 +147,25 @@ export function Notifications(): JSX.Element {
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();
+            const hasUnread = notifications.some(({ read }) => !read);
+            if (!hasUnread) return;
             setNotifications(
               notifications.map((notification) => ({
                 ...notification,
                 read: true,
               }))
             );
-            if (notifications.length > 0)
-              freezeFetchPromise.current = ping(
-                '/notifications/mark_read/',
-                {
-                  method: 'POST',
-                  body: formData({
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    last_seen: notifications.at(-1)!.timestamp,
-                  }),
-                },
-                { strict: false }
-              ).then(() => undefined);
+            freezeFetchPromise.current = ping(
+              '/notifications/mark_read/',
+              {
+                method: 'POST',
+                body: formData({
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  last_seen: notifications[0]!.timestamp,
+                }),
+              },
+              { strict: false }
+            ).then(() => undefined);
           }}
         >
           {/*
@@ -178,9 +176,8 @@ export function Notifications(): JSX.Element {
            */}
           <p>{commonText('mostRecentNotificationsTop')}</p>
           {notifications.map((notification, index) => (
-            <ErrorBoundary dismissable>
+            <ErrorBoundary dismissable key={index}>
               <NotificationComponent
-                key={index}
                 notification={notification}
                 onDelete={(promise): void => {
                   freezeFetchPromise.current = promise;
@@ -249,4 +246,3 @@ function NotificationComponent({
     </article>
   );
 }
-
