@@ -48,7 +48,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'datamodel/*',
-    element: <Redirect to="/specify/data-model/" />,
+    element: <Redirect to="/specify/data-model/*" />,
   },
   {
     path: 'tree/:tableName',

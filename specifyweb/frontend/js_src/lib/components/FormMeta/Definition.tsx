@@ -121,7 +121,9 @@ function useFormDefinition(): string | undefined {
         )
           .then(({ records }) => records[0]?.id)
           .then((id) =>
-            typeof id === 'number' ? `/specify/viewsets/${id}/` : undefined
+            typeof id === 'number'
+              ? `/specify/resources/view-set/${id}/`
+              : undefined
           ),
       []
     ),

@@ -18,7 +18,7 @@ export function Redirect({ to }: { readonly to: string }): null {
   React.useEffect(() => {
     const path = generatePath(to, parameters);
     const url = new URL(
-      `${path}${path.endsWith('/') ? '' : '/'}${parameters['*'] ?? ''}`,
+      `${path}${path.endsWith('/') ? '' : '/'}`,
       globalThis.location?.origin
     );
     url.hash = hash;
