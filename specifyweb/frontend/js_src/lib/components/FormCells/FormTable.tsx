@@ -266,6 +266,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                           formType="form"
                           mode={mode}
                           resource={resource}
+                          viewName={viewName}
                         />
                       </DataEntry.Cell>
                     </>
