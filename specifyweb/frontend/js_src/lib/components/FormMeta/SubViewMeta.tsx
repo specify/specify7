@@ -8,7 +8,7 @@ import { Label, Select } from '../Atoms/Form';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import type { SubViewContext } from '../Forms/SubView';
 
-export function SubViewPreferences({
+export function SubViewMeta({
   subView,
   model,
 }: {

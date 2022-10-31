@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
@@ -27,14 +28,13 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
-import { SubViewPreferences } from './SubViewPreferences';
-import { useCachedState } from '../../hooks/useCachedState';
+import { SubViewMeta } from './SubViewMeta';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
  * List of available features: https://github.com/specify/specify7/issues/1330
  */
-export function FormPreferences({
+export function FormMeta({
   resource,
   className,
 }: {
@@ -47,9 +47,9 @@ export function FormPreferences({
   return typeof resource === 'object' ? (
     <>
       <Button.Small
-        aria-label={commonText('preferences')}
+        aria-label={formsText('formMeta')}
         className={className}
-        title={commonText('preferences')}
+        title={formsText('formMeta')}
         onClick={handleToggle}
       >
         {icons.cog}
@@ -58,13 +58,13 @@ export function FormPreferences({
           : undefined}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (
-        <PreferencesDialog resource={resource} onClose={handleClose} />
+        <MetaDialog resource={resource} onClose={handleClose} />
       ) : undefined}
     </>
   ) : null;
 }
 
-function PreferencesDialog({
+function MetaDialog({
   resource,
   onClose: handleClose,
 }: {
@@ -105,7 +105,7 @@ function PreferencesDialog({
       {typeof subView === 'object' ? (
         <div className="flex flex-col gap-2 pb-2">
           <H3>{formsText('recordSelectorConfiguration')}</H3>
-          <SubViewPreferences model={resource.specifyModel} subView={subView} />
+          <SubViewMeta model={resource.specifyModel} subView={subView} />
         </div>
       ) : undefined}
       <div className="flex flex-col gap-2 pb-2">

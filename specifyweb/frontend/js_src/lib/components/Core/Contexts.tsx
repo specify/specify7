@@ -179,7 +179,7 @@ export const MenuContext = React.createContext<
 >([undefined, f.never]);
 MenuContext.displayName = 'MenuContext';
 
-export type FormMeta = {
+export type FormMetaType = {
   /*
    * Whether user tried to submit a form. This causes deferred save blockers
    * to appear
@@ -189,9 +189,11 @@ export type FormMeta = {
 
 export const FormContext = React.createContext<
   readonly [
-    meta: FormMeta,
+    meta: FormMetaType,
     setMeta:
-      | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)
+      | ((
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+        ) => void)
       | undefined
   ]
 >([

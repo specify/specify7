@@ -781,6 +781,10 @@ export const formsText = createDictionary({
     'en-us': 'Configure data entry tables',
     'ru-ru': 'Настроить таблицы ввода данных',
   },
+  formMeta: {
+    'en-us': 'Form Meta',
+    'ru-ru': 'Мета-данные формы',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

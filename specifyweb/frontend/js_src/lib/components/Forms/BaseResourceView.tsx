@@ -4,14 +4,14 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Form } from '../Atoms/Form';
-import type { FormMeta } from '../Core/Contexts';
+import type { FormMetaType } from '../Core/Contexts';
 import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { fail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
-import { FormPreferences } from '../FormPreferences';
+import { FormMeta } from '../FormMeta';
 import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { format } from './dataObjFormatters';
 import { SpecifyForm } from './SpecifyForm';
@@ -68,7 +68,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = useStableState<FormMeta>({
+  const formMeta = useStableState<FormMetaType>({
     triedToSubmit: false,
   });
 
@@ -111,7 +111,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       ),
     title,
     formElement: form,
-    formPreferences: <FormPreferences resource={resource} />,
+    formPreferences: <FormMeta resource={resource} />,
     form: (children, className) =>
       isSubForm ? (
         <>

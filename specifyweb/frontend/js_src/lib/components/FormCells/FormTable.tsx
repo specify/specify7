@@ -17,7 +17,7 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition } from '../FormParse/cells';
-import { FormPreferences } from '../FormPreferences';
+import { FormMeta } from '../FormMeta';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
@@ -162,7 +162,6 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
-  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
       commonText('loading')
@@ -347,7 +346,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </Button.Small>
                     ) : undefined}
                     {isExpanded[resource.cid] && (
-                      <FormPreferences className="flex-1" resource={resource} />
+                      <FormMeta className="flex-1" resource={resource} />
                     )}
                   </div>
                 </div>
