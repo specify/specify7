@@ -72,7 +72,11 @@
   }
 
   :disabled:not(.link), [readonly] {
-    @apply !cursor-not-allowed ring-1 ring-gray-500 dark:ring-1;
+    @apply ring-1 ring-gray-500 dark:ring-1;
+  }
+
+  select, input[role='combox'] {
+    @apply disabled:cursor-default;
   }
 
   :is(:disabled, [readonly]):not(.link, [type='checkbox'], [type='radio']) {
@@ -91,7 +95,7 @@
   }
 
   :is([type='checkbox'], [type='radio']):is([readonly], :disabled) {
-    @apply bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
+    @apply cursor-default bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
       hover:ring-gray-500 checked:bg-current;
   }
 
