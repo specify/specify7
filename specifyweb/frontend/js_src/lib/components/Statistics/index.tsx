@@ -23,6 +23,8 @@ import {
   useFrontEndStat,
   useFrontEndStatsQuery,
 } from './utils';
+import { QueryList } from '../Toolbar/Query';
+import { removeItem, replaceItem } from '../../utils/utils';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -121,23 +123,27 @@ export function StatsPage(): JSX.Element {
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-          {Object.entries(layout.collection).map(([categoryLabel, items]) => (
+          {layout[0].categories.map(({ label, items }, categoryIndex) => (
             <div
               className="block h-auto max-h-80 content-center rounded border-[1px] border-black bg-white p-4"
-              key={categoryLabel}
+              key={categoryIndex}
             >
-              <H3 className="font-bold">{categoryLabel}</H3>
+              <H3 className="font-bold">{label}</H3>
               {items?.map((item, itemIndex) => {
                 const handleRemove = (): void =>
-                  setLayout({
-                    ...layout,
-                    collection: {
-                      ...layout.collection,
-                      [categoryLabel]: layout.collection[categoryLabel].filter(
-                        (_, index) => itemIndex !== index
+                  setLayout(
+                    replaceItem(layout, 0, {
+                      ...layout[0],
+                      categories: replaceItem(
+                        layout[0].categories,
+                        categoryIndex,
+                        {
+                          ...layout[0].categories[categoryIndex],
+                          items: removeItem(items, itemIndex),
+                        }
                       ),
-                    },
-                  });
+                    })
+                  );
 
                 return item.type === 'DefaultStat' ? (
                   <DefaultStat
@@ -169,6 +175,16 @@ export function StatsPage(): JSX.Element {
   );
 }
 
+/**function AddStat(closeCallBack, customCallBack, defaultCallBack) {
+  <QueryList
+    queries={}
+    isReadOnly={true}
+    getQuerySelectCallback={(query) => () => {
+      customCallBack(query);
+    }}
+  ></QueryList>;
+} **/
+
 function useDefaultLayout(
   statsSpec: IR<{
     readonly label: string;
@@ -176,19 +192,22 @@ function useDefaultLayout(
   }>
 ): StatLayout {
   return React.useMemo(
-    () => ({
-      collection: Object.fromEntries(
-        Object.entries(statsSpec).map(([categoryName, { label, items }]) => [
-          label,
-          Object.entries(items ?? {}).map(([itemName]) => ({
-            type: 'DefaultStat',
-            pageName: 'collection',
-            categoryName,
-            itemName,
-          })),
-        ])
-      ),
-    }),
+    () => [
+      {
+        label: 'collection',
+        categories: Object.entries(statsSpec).map(
+          ([categoryName, { label, items }]) => ({
+            label,
+            items: Object.entries(items ?? {}).map(([itemName]) => ({
+              type: 'DefaultStat',
+              pageName: 'collection',
+              categoryName,
+              itemName,
+            })),
+          })
+        ),
+      },
+    ],
     [statsSpec]
   );
 }

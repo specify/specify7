@@ -1,6 +1,7 @@
 import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
+
 type CustomStat = State<
   'CustomStat',
   {
@@ -16,4 +17,10 @@ type DefaultStat = State<
   }
 >;
 
-export type StatLayout = IR<IR<RA<CustomStat | DefaultStat>>>;
+export type StatLayout = RA<{
+  readonly label: string;
+  readonly categories: RA<{
+    readonly label: string;
+    readonly items: RA<CustomStat | DefaultStat>;
+  }>;
+}>;
