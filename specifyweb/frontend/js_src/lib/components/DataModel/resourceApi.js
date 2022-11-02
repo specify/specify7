@@ -112,8 +112,9 @@ function eventHandlerForToOne(related, field) {
             var newResource = Backbone.Model.prototype.clone.call(self);
             delete newResource.id;
             delete newResource.attributes.id;
-            
-            getFieldsToNotClone(this.specifyModel)
+
+            const exemptFields = getFieldsToNotClone(this.specifyModel);
+            exemptFields
               .map((fieldName)=>
                  delete newResource.attributes[fieldName.toLowerCase()]
               );
@@ -122,6 +123,7 @@ function eventHandlerForToOne(related, field) {
             newResource.recordsetid = self.recordsetid;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
+                if(exemptFields.includes(fieldName)) return;
                 var field = self.specifyModel.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one':
