@@ -93,6 +93,17 @@ UNIQUENESS_RULES = {
         },
     }
 
+
+# This check is provided to support the Specify 6.8.01
+# datamodel (schema version 2.9). When support for that
+# version is dropped it can be removed and this definition
+# can be included in the block above.
+if hasattr(models, 'Determiner'):
+    UNIQUENESS_RULES['Determiner'] = {
+        'agent': ['determination'],
+    }
+
+
 uniqueness_rules = [make_uniqueness_rule(model, parent_field, unique_field)
                     for model, rules in list(UNIQUENESS_RULES.items())
                     for unique_field, parent_fields in list(rules.items())

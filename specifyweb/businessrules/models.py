@@ -19,4 +19,5 @@ from . import (
     user_rules,
     accessionagent_rules,
     fundingagent_rules,
+    determiner_rules,
 )
