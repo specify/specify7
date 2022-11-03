@@ -30,7 +30,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   const loading = React.useContext(LoadingContext);
   const handleClose = React.useContext(OverlayContext);
-  const [isExporting, handleExporting, handleExported] = useBooleanState();
+  const [isExporting, handleExporting] = useBooleanState();
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
@@ -50,7 +50,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
         onClose={(): void => setDefinition(undefined)}
         onSelected={(metadata): void => {
           handleExporting();
-          loading(startExport(definition, metadata?.name).then(handleExported));
+          loading(startExport(definition, metadata?.name));
         }}
       />
       ;
