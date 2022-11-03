@@ -1,5 +1,14 @@
 import React from 'react';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
+import { toggleItem } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { Dialog } from '../Molecules/Dialog';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import {
   allAppResources,
@@ -8,16 +17,7 @@ import {
   filterAppResources,
   hasAllAppResources,
 } from './filtersHelpers';
-import { toggleItem } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
 import type { AppResources } from './hooks';
-import { Ul } from '../Atoms';
-import { Dialog } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { appResourceSubTypes, appResourceTypes } from './types';
 
 export function AppResourcesFilters({
@@ -116,9 +116,18 @@ export function useFilteredAppResources(
   initialResources: AppResources,
   initialFilters: AppResourceFiltersType | undefined = defaultAppResourceFilters
 ): AppResources {
-  const [filters = initialFilters] = useCachedState('appResources', 'filters');
+  const [filters, setFilters] = useCachedState('appResources', 'filters');
+
+  React.useEffect(() => {
+    if (initialFilters === defaultAppResourceFilters) return undefined;
+    setFilters(initialFilters);
+    const oldFilter = filters;
+    return (): void => setFilters(oldFilter);
+  }, [setFilters]);
+
+  const nonNullFilters = filters ?? initialFilters;
   return React.useMemo(
-    () => filterAppResources(initialResources, filters),
-    [filters, initialResources]
+    () => filterAppResources(initialResources, nonNullFilters),
+    [nonNullFilters, initialResources]
   );
 }
