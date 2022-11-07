@@ -86,6 +86,7 @@ function Row({
   readonly isLast: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
+  // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
     SpecifyResource<AnySchema> | false | undefined
   >(
