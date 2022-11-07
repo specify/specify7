@@ -269,6 +269,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       )
         resource.set(precisionField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+      setInputValue('');
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
 
