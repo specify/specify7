@@ -28,7 +28,7 @@ export function useInfiniteScroll(
       scroller.current !== null &&
       // Check if element is rendered
       scroller.current.scrollHeight !== 0 &&
-      scroller.current.scrollHeight === scroller.current.clientHeight
+      scroller.current.scrollHeight <= scroller.current.clientHeight
     )
       doFetch().catch(crash);
     handleFetched();
