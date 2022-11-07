@@ -822,7 +822,7 @@ export const WBUtils = Backbone.View.extend({
 
     this.geoMapDialog = new LeafletMapView({
       localityPoints,
-      markerClickCallback: (localityPoint) => {
+      onMarkerClick: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
         if (typeof rowNumber !== 'number')
           throw new Error('rowNumber must be a number');

@@ -25,12 +25,12 @@ export function showLeafletMap({
   tileLayers,
   container,
   localityPoints = [],
-  markerClickCallback,
+  onMarkerClick: handleMarkerClick,
 }: {
   readonly tileLayers: Awaited<typeof leafletLayersPromise>;
   readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
-  readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
+  readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
 }): L.Map {
   container.classList.add(
     'overflow-hidden',
@@ -79,7 +79,7 @@ export function showLeafletMap({
     localityPoints.map((pointDataDict, index) =>
       getMarkersFromLocalityData({
         localityData: pointDataDict,
-        markerClickCallback: markerClickCallback?.bind(undefined, index),
+        onMarkerClick: handleMarkerClick?.bind(undefined, index),
       })
     )
   );
@@ -167,11 +167,11 @@ export const formatLocalityData = (
 
 export function getMarkersFromLocalityData({
   localityData: { rowNumber: _rowNumber, ...localityData },
-  markerClickCallback,
+  onMarkerClick: handleMarkerClick,
   iconClass,
 }: {
   readonly localityData: LocalityData;
-  readonly markerClickCallback?: L.LeafletEventHandlerFn | string;
+  readonly onMarkerClick?: L.LeafletEventHandlerFn | string;
   readonly iconClass?: string;
 }): MarkerGroups {
   const markers: {
@@ -260,8 +260,8 @@ export function getMarkersFromLocalityData({
   Object.values(markers)
     .flat(2)
     .forEach((vector) => {
-      if (typeof markerClickCallback === 'function')
-        vector.on('click', markerClickCallback);
+      if (typeof handleMarkerClick === 'function')
+        vector.on('click', handleMarkerClick);
       vector.bindPopup(formatLocalityData(localityData, undefined, true));
     });
 

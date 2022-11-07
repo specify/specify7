@@ -16,7 +16,7 @@ const resizeThrottle = 250;
 
 export function LeafletMap({
   localityPoints,
-  markerClickCallback,
+  onMarkerClick: handleMarkerClick,
   forwardRef,
   header = commonText('geoMap'),
   buttons = commonText('close'),
@@ -24,7 +24,7 @@ export function LeafletMap({
   modal = true,
 }: {
   readonly localityPoints: RA<LocalityData>;
-  readonly markerClickCallback?: (index: number, event: L.LeafletEvent) => void;
+  readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: React.RefCallback<L.Map>;
   readonly header?: string;
   readonly buttons?: JSX.Element | string;
@@ -43,10 +43,10 @@ export function LeafletMap({
   );
 
   const handleClickRef =
-    React.useRef<typeof markerClickCallback>(markerClickCallback);
+    React.useRef<typeof handleMarkerClick>(handleMarkerClick);
   React.useEffect(() => {
-    handleClickRef.current = markerClickCallback;
-  }, [markerClickCallback]);
+    handleClickRef.current = handleMarkerClick;
+  }, [handleMarkerClick]);
 
   React.useEffect(() => {
     if (container === null || tileLayers === undefined) return undefined;
@@ -54,7 +54,7 @@ export function LeafletMap({
       tileLayers,
       container,
       localityPoints,
-      markerClickCallback: (...args) => handleClickRef.current?.(...args),
+      onMarkerClick: (...args) => handleClickRef.current?.(...args),
     });
     setHandleResize(() =>
       _.throttle(() => map.invalidateSize(), resizeThrottle)

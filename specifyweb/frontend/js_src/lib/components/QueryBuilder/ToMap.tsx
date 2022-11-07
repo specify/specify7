@@ -154,7 +154,7 @@ function Dialog({
        * FEATURE: show "loading" while fetching more data (here, and in other
        *   places that use map markers
        */
-      markerClickCallback={async (index, { target: marker }): Promise<void> =>
+      onMarkerClick={async (index, { target: marker }): Promise<void> =>
         (fullLocalityData.current[index] === undefined
           ? fetchLocalityDataFromLocalityResource(localities![index].resource)
           : Promise.resolve(fullLocalityData.current[index])
