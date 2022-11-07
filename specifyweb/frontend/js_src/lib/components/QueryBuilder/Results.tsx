@@ -121,53 +121,57 @@ export function QueryResults({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
-  async function handleFetchMore(index?: number): Promise<void> {
-    const currentResults = resultsRef.current;
-    const canFetch = Array.isArray(currentResults);
-    if (!canFetch) return undefined;
-    const alreadyFetched =
-      currentResults.length === totalCount &&
-      !currentResults.includes(undefined);
-    if (alreadyFetched) return undefined;
+  const handleFetchMore = React.useCallback(
+    async (index?: number): Promise<void> => {
+      const currentResults = resultsRef.current;
+      const canFetch = Array.isArray(currentResults);
+      if (!canFetch) return undefined;
+      const alreadyFetched =
+        currentResults.length === totalCount &&
+        !currentResults.includes(undefined);
+      if (alreadyFetched) return undefined;
 
-    const naiveFetchIndex = index ?? currentResults.length;
-    const fetchIndex =
-      /* If navigating backwards, fetch the previous 40 records */
-      typeof index === 'number' &&
-      typeof currentResults[index + 1] === 'object' &&
-      currentResults[index - 1] === undefined &&
-      index > fetchSize
-        ? naiveFetchIndex - fetchSize + 1
-        : naiveFetchIndex;
-    if (currentResults[fetchIndex] !== undefined) return undefined;
+      const naiveFetchIndex = index ?? currentResults.length;
+      const fetchIndex =
+        /* If navigating backwards, fetch the previous 40 records */
+        typeof index === 'number' &&
+        typeof currentResults[index + 1] === 'object' &&
+        currentResults[index - 1] === undefined &&
+        index > fetchSize
+          ? naiveFetchIndex - fetchSize + 1
+          : naiveFetchIndex;
+      if (currentResults[fetchIndex] !== undefined) return undefined;
 
-    return fetchResults(fetchIndex)
-      .then((newResults) => {
-        if (
-          process.env.NODE_ENV === 'development' &&
-          newResults.length > fetchSize
-        )
-          throw new Error(
-            `Returned ${newResults.length} results, when expected at most ${fetchSize}`
-          );
+      return fetchResults(fetchIndex)
+        .then((newResults) => {
+          if (
+            process.env.NODE_ENV === 'development' &&
+            newResults.length > fetchSize
+          )
+            throw new Error(
+              `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+            );
 
-        // Not using Array.from() so as not to expand the sparse array
-        const combinedResults = currentResults.slice();
-        /*
-         * This extends the sparse array to fit new results. Without this,
-         * splice won't place the results in the correct place.
-         */
-        combinedResults[fetchIndex] = combinedResults[fetchIndex] ?? undefined;
-        combinedResults.splice(fetchIndex, newResults.length, ...newResults);
+          // Not using Array.from() so as not to expand the sparse array
+          const combinedResults = currentResults.slice();
+          /*
+           * This extends the sparse array to fit new results. Without this,
+           * splice won't place the results in the correct place.
+           */
+          combinedResults[fetchIndex] =
+            combinedResults[fetchIndex] ?? undefined;
+          combinedResults.splice(fetchIndex, newResults.length, ...newResults);
 
-        setResults(combinedResults);
-        resultsRef.current = combinedResults;
-        if (typeof index === 'number' && index >= combinedResults.length)
-          return handleFetchMore(index);
-        return undefined;
-      })
-      .catch(fail);
-  }
+          setResults(combinedResults);
+          resultsRef.current = combinedResults;
+          if (typeof index === 'number' && index >= combinedResults.length)
+            return handleFetchMore(index);
+          return undefined;
+        })
+        .catch(fail);
+    },
+    [fetchResults, fetchSize, setResults, totalCount]
+  );
 
   const showResults =
     Array.isArray(results) &&
