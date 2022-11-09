@@ -11,7 +11,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { getAuditRecordFormatter } from './AuditLogFormatter';
 import type { QueryFieldSpec } from './fieldSpec';
-import { queryIdField } from './Results';
+import { queryIdField, QueryResultRow } from './Results';
 import { usePref } from '../UserPreferences/usePref';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 
@@ -26,7 +26,7 @@ export function QueryResultsTable({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
-  readonly results: RA<RA<number | string | null>>;
+  readonly results: RA<QueryResultRow>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
     index: number,
@@ -78,9 +78,9 @@ function Row({
   readonly model: SpecifyModel;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly hasIdField: boolean;
-  readonly result: RA<number | string | null>;
+  readonly result: QueryResultRow;
   readonly recordFormatter?: (
-    result: RA<number | string | null>
+    result: QueryResultRow
   ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
@@ -161,18 +161,20 @@ function Row({
       )}
       {result
         .filter((_, index) => !hasIdField || index !== queryIdField)
-        .map((value, index) => (
-          <Cell
-            condenseQueryResults={condenseQueryResults}
-            fieldSpec={
-              formattedValues?.[index] === undefined
-                ? fieldSpecs[index]
-                : undefined
-            }
-            key={index}
-            value={formattedValues?.[index] ?? value}
-          />
-        ))}
+        .map((value, index) =>
+          fieldSpecs[index].isPhantom ? undefined : (
+            <Cell
+              condenseQueryResults={condenseQueryResults}
+              fieldSpec={
+                formattedValues?.[index] === undefined
+                  ? fieldSpecs[index]
+                  : undefined
+              }
+              key={index}
+              value={formattedValues?.[index] ?? value}
+            />
+          )
+        )}
     </div>
   );
 }

@@ -76,7 +76,7 @@ export function QueryFromMap({
       }
       forwardRef={setMap}
       localityPoints={emptyArray}
-      markerClickCallback={f.never}
+      onMarkerClick={f.never}
       onClose={handleClose}
     />
   );

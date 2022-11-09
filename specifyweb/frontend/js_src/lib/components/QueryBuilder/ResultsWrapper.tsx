@@ -11,11 +11,11 @@ import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
 import type { QueryField } from './helpers';
 import {
-  addAuditLogFields,
+  augmentQueryFields,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import { QueryResults } from './Results';
+import { QueryResultRow, QueryResults } from './Results';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -50,7 +50,7 @@ export function QueryResultsWrapper({
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
     async (offset: number) =>
-      ajax<{ readonly results: RA<RA<number | string | null>> }>(
+      ajax<{ readonly results: RA<QueryResultRow> }>(
         '/stored_query/ephemeral/',
         {
           method: 'POST',
@@ -60,7 +60,7 @@ export function QueryResultsWrapper({
             ...queryResource.toJSON(),
             fields: unParseQueryFields(
               baseTableName,
-              addAuditLogFields(baseTableName, fields)
+              augmentQueryFields(baseTableName, fields, false)
             ),
             collectionId: forceCollection,
             recordSetId,
@@ -91,7 +91,8 @@ export function QueryResultsWrapper({
     // Display the loading GIF
     setProps(undefined);
 
-    const allFields = addAuditLogFields(baseTableName, fields);
+    const countOnly = queryResource.get('countOnly') === true;
+    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
@@ -111,8 +112,9 @@ export function QueryResultsWrapper({
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const initialData =
+      countOnly ||
       // Run as count only if there are no visible fields
-      queryResource.get('countOnly') === true || displayedFields.length === 0
+      displayedFields.length === 0
         ? Promise.resolve(undefined)
         : fetchResults(0);
     const fieldSpecs = queryFieldsToFieldSpecs(

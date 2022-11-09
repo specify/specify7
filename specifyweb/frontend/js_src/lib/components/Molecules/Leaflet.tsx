@@ -6,7 +6,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { showLeafletMap } from '../Leaflet/leaflet';
-import { addFullScreenButton } from '../Leaflet/leafletAddOns';
+import { addFullScreenButton, LeafletInstance } from '../Leaflet/leafletAddOns';
 import type L from '../Leaflet/leafletExtend';
 import type { LocalityData } from '../Leaflet/leafletHelpers';
 import { leafletLayersPromise } from '../Leaflet/leafletLayers';
@@ -25,7 +25,7 @@ export function LeafletMap({
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
-  readonly forwardRef?: React.RefCallback<L.Map>;
+  readonly forwardRef?: React.RefCallback<LeafletInstance>;
   readonly header?: string;
   readonly buttons?: JSX.Element | string;
   readonly onClose?: () => void;

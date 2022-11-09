@@ -9,8 +9,8 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
-import { removeItem } from '../../utils/utils';
+import type { R, RA } from '../../utils/types';
+import { removeItem, removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
@@ -36,6 +36,8 @@ import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 
+export type QueryResultRow = RA<number | string | null>;
+
 export function QueryResults({
   model,
   label = commonText('results'),
@@ -57,17 +59,15 @@ export function QueryResults({
   readonly hasIdField: boolean;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
-   * optimize fetch performance when user is using "Browse in forms" and going
+   * optimize fetch performance when using "Browse in forms" and going
    * backwards in the list from the end.
    */
   readonly fetchSize: number;
-  readonly fetchResults: (
-    offset: number
-  ) => Promise<RA<RA<number | string | null>>>;
+  readonly fetchResults: (offset: number) => Promise<RA<QueryResultRow>>;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
-  readonly initialData: RA<RA<number | string | null>> | undefined;
+  readonly initialData: RA<QueryResultRow> | undefined;
   readonly sortConfig?: RA<QueryField['sortType']>;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
@@ -85,8 +85,9 @@ export function QueryResults({
    * hundreds of thousands of results.
    */
   const [results, setResults] = useTriggerState<
-    RA<RA<number | string | null> | undefined> | undefined
+    RA<QueryResultRow | undefined> | undefined
   >(initialData);
+  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
   const resultsRef = React.useRef(results);
 
   const [pickListsLoaded = false] = useAsyncState(
@@ -114,6 +115,7 @@ export function QueryResults({
 
   const [totalCount, setTotalCount] = useTriggerState(initialTotalCount);
 
+  // Ids of selected records
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
   );
@@ -121,8 +123,11 @@ export function QueryResults({
   // Unselect all rows when query is reRun
   React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
 
+  // Queue for fetching
+  const fetchersRef = React.useRef<R<Promise<RA<QueryResultRow> | void>>>({});
+
   const handleFetchMore = React.useCallback(
-    async (index?: number): Promise<void> => {
+    async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
       if (!canFetch) return undefined;
@@ -142,7 +147,8 @@ export function QueryResults({
           : naiveFetchIndex;
       if (currentResults[fetchIndex] !== undefined) return undefined;
 
-      return fetchResults(fetchIndex)
+      // Prevent concurrent fetching in different places
+      fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
         .then((newResults) => {
           if (
             process.env.NODE_ENV === 'development' &&
@@ -152,8 +158,11 @@ export function QueryResults({
               `Returned ${newResults.length} results, when expected at most ${fetchSize}`
             );
 
+          // Results might have changed while fetching
+          const newCurrentResults = resultsRef.current ?? currentResults;
+
           // Not using Array.from() so as not to expand the sparse array
-          const combinedResults = currentResults.slice();
+          const combinedResults = newCurrentResults.slice();
           /*
            * This extends the sparse array to fit new results. Without this,
            * splice won't place the results in the correct place.
@@ -164,11 +173,18 @@ export function QueryResults({
 
           setResults(combinedResults);
           resultsRef.current = combinedResults;
+          fetchersRef.current = removeKey(
+            fetchersRef.current,
+            fetchIndex.toString()
+          );
+
           if (typeof index === 'number' && index >= combinedResults.length)
             return handleFetchMore(index);
-          return undefined;
+          return newResults;
         })
         .catch(fail);
+
+      return fetchersRef.current[fetchIndex];
     },
     [fetchResults, fetchSize, setResults, totalCount]
   );
@@ -192,7 +208,7 @@ export function QueryResults({
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
-  ) as RA<RA<number | string | null>> | undefined;
+  ) as RA<QueryResultRow> | undefined;
 
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
@@ -224,7 +240,7 @@ export function QueryResults({
                    */
                   baseTableName={fieldSpecs[0].baseTable.name}
                   getIds={(): RA<number> =>
-                    loadedResults!
+                    loadedResults
                       .filter((result) =>
                         selectedRows.has(result[queryIdField] as number)
                       )
@@ -241,6 +257,9 @@ export function QueryResults({
               totalCount={totalCount}
               results={loadedResults}
               selectedRows={selectedRows}
+              onFetchMore={
+                canFetchMore && !isFetching ? handleFetchMore : undefined
+              }
             />
             <QueryToForms
               model={model}
@@ -248,6 +267,8 @@ export function QueryResults({
               selectedRows={selectedRows}
               totalCount={totalCount}
               onDelete={(index): void => {
+                // Don't allow deleting while query results are being fetched
+                if (Object.keys(fetchersRef.current).length > 0) return;
                 setTotalCount(totalCount! - 1);
                 const newResults = removeItem(results, index);
                 setResults(newResults);
@@ -281,7 +302,7 @@ export function QueryResults({
         role="table"
         style={
           {
-            '--columns': fieldSpecs.length,
+            '--columns': visibleFieldSpecs.length,
           } as React.CSSProperties
         }
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
@@ -303,19 +324,21 @@ export function QueryResults({
                   />
                 </>
               )}
-              {fieldSpecs.map((fieldSpec, index) => (
-                <TableHeaderCell
-                  fieldSpec={fieldSpec}
-                  key={index}
-                  sortConfig={sortConfig?.[index]}
-                  onSortChange={
-                    typeof handleSortChange === 'function'
-                      ? (sortType): void =>
-                          handleSortChange?.(fieldSpec, sortType)
-                      : undefined
-                  }
-                />
-              ))}
+              {fieldSpecs.map((fieldSpec, index) =>
+                fieldSpec.isPhantom ? undefined : (
+                  <TableHeaderCell
+                    fieldSpec={fieldSpec}
+                    key={index}
+                    sortConfig={sortConfig?.[index]}
+                    onSortChange={
+                      typeof handleSortChange === 'function'
+                        ? (sortType): void =>
+                            handleSortChange?.(fieldSpec, sortType)
+                        : undefined
+                    }
+                  />
+                )
+              )}
             </div>
           </div>
         )}

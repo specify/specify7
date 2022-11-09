@@ -12,12 +12,14 @@ import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
 import {
   addMarkersToMap,
   addPrintMapButton,
+  LeafletInstance,
   rememberSelectedBaseLayers,
 } from './leafletAddOns';
 import { mappingLocalityColumns } from './leafletConfig';
 import L from './leafletExtend';
 import type { Field, LocalityData } from './leafletHelpers';
 import { leafletLayersPromise } from './leafletLayers';
+import { className } from '../Atoms/className';
 
 const DEFAULT_ZOOM = 5;
 
@@ -31,7 +33,7 @@ export function showLeafletMap({
   readonly container: HTMLDivElement;
   readonly localityPoints: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
-}): L.Map {
+}): LeafletInstance {
   container.classList.add(
     'overflow-hidden',
     'h-full',
@@ -72,7 +74,10 @@ export function showLeafletMap({
     .getElementsByClassName('leaflet-control-container')[0]
     ?.classList.add('print:hidden');
 
-  addMarkersToMap(
+  addPrintMapButton(map);
+  rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
+
+  return addMarkersToMap(
     map,
     tileLayers.overlays,
     controlLayers,
@@ -83,11 +88,6 @@ export function showLeafletMap({
       })
     )
   );
-
-  addPrintMapButton(map);
-  rememberSelectedBaseLayers(map, tileLayers.baseMaps, 'MainMap');
-
-  return map;
 }
 
 export function isValidAccuracy(
@@ -126,16 +126,13 @@ const createLine = (
 
 export const formatLocalityData = (
   localityData: LocalityData,
-  viewUrl?: string,
-  hideRedundant = false
+  viewUrl: string | undefined,
+  isLoaded: boolean
 ): string =>
   // REFACTOR: turn this into React, or React.render_to_string
   [
     ...Object.entries(localityData)
-      .filter(
-        ([fieldName]) =>
-          !hideRedundant || !mappingLocalityColumns.includes(fieldName)
-      )
+      .filter(([fieldName]) => !mappingLocalityColumns.includes(fieldName))
       .filter(
         // eslint-disable-next-line functional/prefer-readonly-type
         (entry): entry is [string, Field<number | string>] =>
@@ -146,13 +143,14 @@ export const formatLocalityData = (
           ? `<b>${field.value}</b>`
           : `<b>${field.headerName}</b>: ${field.value}`
       ),
-    ...(viewUrl
+    ...(typeof viewUrl === 'string'
       ? [
           `
           <br>
           <a
             href="${viewUrl}"
             target="_blank"
+            className="${className.link}"
             title="${commonText('opensInNewTab')}"
           >
             ${commonText('viewRecord')}
@@ -163,6 +161,7 @@ export const formatLocalityData = (
           </a>`,
         ]
       : []),
+    [...(isLoaded ? [] : [commonText('loading')])],
   ].join('<br>');
 
 export function getMarkersFromLocalityData({
@@ -262,7 +261,13 @@ export function getMarkersFromLocalityData({
     .forEach((vector) => {
       if (typeof handleMarkerClick === 'function')
         vector.on('click', handleMarkerClick);
-      vector.bindPopup(formatLocalityData(localityData, undefined, true));
+      vector.bindPopup(
+        formatLocalityData(
+          localityData,
+          undefined,
+          handleMarkerClick === undefined
+        )
+      );
     });
 
   return markers;

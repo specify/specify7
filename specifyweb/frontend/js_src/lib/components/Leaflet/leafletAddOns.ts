@@ -3,6 +3,7 @@ import type { LayersControlEventHandlerFn } from 'leaflet';
 import { localityText } from '../../localization/locality';
 import { getCache, setCache } from '../../utils/cache';
 import type { IR, RA, RR } from '../../utils/types';
+import { overwriteReadOnly } from '../../utils/types';
 import { capitalize, KEY } from '../../utils/utils';
 import type { LeafletMarker, MarkerGroups } from './leaflet';
 import L from './leafletExtend';
@@ -93,6 +94,10 @@ const defaultLabels = {
   polygon: localityText('occurrencePolygons'),
   polygonBoundary: localityText('polygonBoundaries'),
   errorRadius: localityText('errorRadius'),
+} as const;
+
+export type LeafletInstance = L.Map & {
+  readonly addMarkers: (markers: RA<MarkerGroups>) => void;
 };
 
 export function addMarkersToMap(
@@ -101,9 +106,7 @@ export function addMarkersToMap(
   controlLayers: L.Control.Layers,
   markers: RA<MarkerGroups>,
   labels: Partial<RR<MarkerLayerName, string>> = defaultLabels
-): void {
-  if (markers.length === 0) return;
-
+): LeafletInstance {
   // Initialize layer groups
   const cluster = L.markerClusterGroup({
     iconCreateFunction(cluster) {
@@ -145,18 +148,6 @@ export function addMarkersToMap(
     )
   );
 
-  const groupsWithMarkers = new Set<string>();
-
-  // Sort markers by layer groups
-  markers.forEach((markers) =>
-    Object.entries(markers).forEach(([markerGroupName, markers]) =>
-      (markers as RA<LeafletMarker>).forEach((marker) => {
-        layerGroups[markerGroupName].addLayer(marker);
-        groupsWithMarkers.add(markerGroupName);
-      })
-    )
-  );
-
   rememberSelectedOverlays(
     map,
     { ...defaultOverlays, ...layerGroups },
@@ -166,10 +157,28 @@ export function addMarkersToMap(
     }
   );
 
-  // Add layer groups' checkboxes to the layer control menu
-  Object.entries(labels ?? defaultLabels)
-    .filter(([markerGroupName]) => groupsWithMarkers.has(markerGroupName))
-    .forEach(([key, label]) =>
-      controlLayers.addOverlay(layerGroups[key], label ?? defaultLabels[key])
+  const addedGroups = new Set<MarkerLayerName>();
+
+  const addMarkers = (markers: RA<MarkerGroups>): void =>
+    // Sort markers by layer groups
+    markers.forEach((markers) =>
+      Object.entries(markers).forEach(([markerGroupName, markers]) =>
+        (markers as RA<LeafletMarker>).forEach((marker) => {
+          layerGroups[markerGroupName].addLayer(marker);
+
+          if (addedGroups.has(markerGroupName)) return;
+          // Add layer groups' checkboxes to the layer control menu
+          const label =
+            labels?.[markerGroupName] ?? defaultLabels[markerGroupName];
+          controlLayers.addOverlay(layerGroups[markerGroupName], label);
+          addedGroups.add(markerGroupName);
+        })
+      )
     );
+
+  addMarkers(markers);
+
+  const leafletMap = map as LeafletInstance;
+  overwriteReadOnly(leafletMap, 'addMarkers', addMarkers);
+  return leafletMap;
 }

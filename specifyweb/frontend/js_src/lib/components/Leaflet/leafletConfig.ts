@@ -1,18 +1,25 @@
-import type {RA} from '../../utils/types';
-import type {MappingPath} from '../WbPlanView/Mapper';
+import type { RA } from '../../utils/types';
+import type { MappingPath } from '../WbPlanView/Mapper';
 
 /* These fields should be present for locality to be mappable */
 export const requiredLocalityColumns: RA<string> = [
   'locality.latitude1',
   'locality.longitude1',
-] as const;
+];
 
+// All fields that can affect how locality is mapped
 export const mappingLocalityColumns: RA<string> = [
   ...requiredLocalityColumns,
   'locality.latitude2',
   'locality.longitude2',
   'locality.latlongtype',
   'locality.latlongaccuracy',
+];
+
+// Fields required to map locality in query builder
+export const queryMappingLocalityColumns: RA<string> = [
+  ...mappingLocalityColumns,
+  'locality.localityId',
 ];
 
 /**

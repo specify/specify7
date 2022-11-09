@@ -7,7 +7,7 @@ import { useBooleanState } from './useBooleanState';
  * Helps fetch more records when user is approaching the bottom of a list
  */
 export function useInfiniteScroll(
-  handleFetch: (() => Promise<void>) | undefined,
+  handleFetch: (() => Promise<unknown>) | undefined,
   scroller: React.RefObject<HTMLElement | null>
 ): {
   readonly isFetching: boolean;

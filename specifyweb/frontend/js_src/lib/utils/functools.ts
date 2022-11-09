@@ -81,7 +81,7 @@ export const f = {
    * ```
    */
   maybe: <VALUE, RETURN>(
-    value: VALUE | undefined,
+    value: VALUE | undefined | void,
     callback: (value: VALUE) => RETURN
   ): RETURN | undefined => (value === undefined ? undefined : callback(value)),
   /**

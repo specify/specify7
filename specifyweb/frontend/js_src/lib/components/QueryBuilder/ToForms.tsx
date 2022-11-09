@@ -8,7 +8,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
-import { queryIdField } from './Results';
+import { queryIdField, QueryResultRow } from './Results';
 
 export function QueryToForms({
   model,
@@ -19,7 +19,7 @@ export function QueryToForms({
   totalCount,
 }: {
   readonly model: SpecifyModel;
-  readonly results: RA<RA<number | string | null> | undefined>;
+  readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
   readonly onDelete: (index: number) => void;
@@ -74,22 +74,18 @@ export function QueryToForms({
   );
 }
 
-export function useSelectedResults(
-  results: RA<RA<number | string | null> | undefined>,
+function useSelectedResults(
+  results: RA<QueryResultRow | undefined>,
   selectedRows: ReadonlySet<number>,
   isOpen: boolean
 ): RA<number | undefined> {
-  const [ids, setIds] = React.useState<RA<number>>([]);
-  React.useEffect(
+  return React.useMemo(
     () =>
       isOpen
-        ? setIds(
-            selectedRows.size === 0
-              ? (results.map((row) => row?.[queryIdField]) as RA<number>)
-              : Array.from(selectedRows)
-          )
-        : undefined,
+        ? selectedRows.size === 0
+          ? (results.map((row) => row?.[queryIdField]) as RA<number>)
+          : Array.from(selectedRows)
+        : [],
     [results, isOpen, selectedRows]
   );
-  return ids;
 }
