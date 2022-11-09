@@ -73,12 +73,9 @@ export function AppResourcesTabs({
           {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
         </Button.Blue>
       </Tab.List>
-      <Tab.Panels className="h-full overflow-auto">
+      <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
         {tabs.map(({ component: Component }, index) => (
-          <Tab.Panel
-            className="h-full border border-brand-300 dark:border-none"
-            key={index}
-          >
+          <Tab.Panel className="h-full" key={index}>
             <ErrorBoundary dismissable>
               <Component
                 appResource={appResource}
