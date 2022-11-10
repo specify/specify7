@@ -71,7 +71,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
-    saveRequired,
+    saveRequired || externalSaveRequired,
     formsText('unsavedFormUnloadProtect')
   );
 
