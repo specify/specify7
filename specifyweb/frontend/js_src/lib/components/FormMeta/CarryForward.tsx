@@ -103,13 +103,36 @@ function CarryForwardConfig({
         <>
           <Button.Green
             disabled={isDefaultConfig(config)}
-            onClick={(): void => handleChange(defaultConfig)}
+            onClick={(): void =>
+              handleChange(
+                showHiddenFields
+                  ? defaultConfig
+                  : model.fields
+                      .filter(
+                        ({ name, overrides }) =>
+                          !overrides.isHidden || config.includes(name)
+                      )
+                      .map(({ name }) => name)
+              )
+            }
           >
             {formsText('selectAll')}
           </Button.Green>
           <Button.Green
             disabled={config.length === 0}
-            onClick={(): void => handleChange([])}
+            onClick={(): void =>
+              handleChange(
+                // Don't deselect hidden fields if they are not visible
+                showHiddenFields
+                  ? []
+                  : model.fields
+                      .filter(
+                        ({ name, overrides }) =>
+                          overrides.isHidden && config.includes(name)
+                      )
+                      .map(({ name }) => name)
+              )
+            }
           >
             {formsText('deselectAll')}
           </Button.Green>
@@ -121,7 +144,7 @@ function CarryForwardConfig({
       header={formsText('carryForwardDescription')}
       onClose={handleClose}
     >
-      <Form id={id('form')} onSubmit={handleClose}>
+      <Form id={id('form')} onSubmit={handleClose} className="overflow-hidden">
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
