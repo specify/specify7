@@ -62,7 +62,7 @@ function AutoNumberingDialog({
 
   function handleEnableAutoNumbering(fieldName: string): void {
     const stringValue = ((resource.get(fieldName) as string) ?? '').toString();
-    if (stringValue.length === 0) {
+    if (stringValue.length === 0 && resource.isNew()) {
       const field = resource.specifyModel.strictGetLiteralField(fieldName);
       const formatter = field.getUiFormatter()!;
       const wildCard = formatter.valueOrWild();
