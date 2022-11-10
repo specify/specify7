@@ -175,8 +175,8 @@ export function RoleView({
             href={closeUrl}
             onClick={(event): void => {
               event.preventDefault();
-              // REFACTOR: "noUnloadProtect" is no longer needed
-              navigate(closeUrl, { state: { noUnloadProtect: true } });
+              unsetUnloadProtect();
+              navigate(closeUrl);
             }}
           >
             {commonText('cancel')}
