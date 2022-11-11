@@ -45,6 +45,7 @@ function Navigation({
         className="wb-cell-navigation p-2 ring-0 brightness-80 hover:brightness-70"
         data-navigation-direction="previous"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
       >
         {'<'}
       </Button.Small>
@@ -55,6 +56,7 @@ function Navigation({
         `}
         title={wbText('clickToToggle')}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
       >
         {label} (<span className="wb-navigation-position text-center">0</span>/
         <span className="wb-navigation-total">0</span>)
@@ -64,6 +66,7 @@ function Navigation({
         data-navigation-direction="next"
         type="button"
         variant="bg-inherit text-gray-800 dark:text-gray-100"
+        onClick={f.never}
       >
         {'>'}
       </Button.Small>
@@ -92,6 +95,7 @@ function WbView({
           aria-haspopup="grid"
           aria-pressed="false"
           className="wb-show-toolkit"
+          onClick={f.never}
         >
           {commonText('tools')}
         </Button.Small>
@@ -102,6 +106,7 @@ function WbView({
             wb-show-plan
             ${process.env.NODE_ENV === 'development' ? '' : 'hidden'}
           `}
+          onClick={f.never}
         >
           [DEV] Show Plan
         </Button.Small>
@@ -111,28 +116,40 @@ function WbView({
           </Link.Small>
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
-          <Button.Small aria-haspopup="dialog" className="wb-validate" disabled>
+          <Button.Small
+            aria-haspopup="dialog"
+            className="wb-validate"
+            onClick={undefined}
+          >
             {wbText('validate')}
           </Button.Small>
         )}
         <Button.Small
           aria-haspopup="tree"
           className="wb-show-upload-view"
-          disabled
           title={wbText('wbUploadedUnavailable')}
+          onClick={undefined}
         >
           {commonText('results')}
         </Button.Small>
         {isUploaded ? (
           hasPermission('/workbench/dataset', 'unupload') && (
-            <Button.Small aria-haspopup="dialog" className="wb-unupload">
+            <Button.Small
+              aria-haspopup="dialog"
+              className="wb-unupload"
+              onClick={f.never}
+            >
               {wbText('rollback')}
             </Button.Small>
           )
         ) : (
           <>
             {hasPermission('/workbench/dataset', 'upload') && (
-              <Button.Small aria-haspopup="dialog" className="wb-upload">
+              <Button.Small
+                aria-haspopup="dialog"
+                className="wb-upload"
+                onClick={f.never}
+              >
                 {wbText('upload')}
               </Button.Small>
             )}
@@ -141,14 +158,14 @@ function WbView({
                 <Button.Small
                   aria-haspopup="dialog"
                   className="wb-revert"
-                  disabled
+                  onClick={undefined}
                 >
                   {wbText('revert')}
                 </Button.Small>
                 <Button.Small
                   aria-haspopup="dialog"
                   className="wb-save"
-                  disabled
+                  onClick={undefined}
                 >
                   {commonText('save')}
                 </Button.Small>
@@ -168,15 +185,20 @@ function WbView({
           <Button.Small
             aria-haspopup="dialog"
             className="wb-change-data-set-owner"
+            onClick={f.never}
           >
             {wbText('changeOwner')}
           </Button.Small>
         ) : undefined}
-        <Button.Small className="wb-export-data-set">
+        <Button.Small className="wb-export-data-set" onClick={f.never}>
           {commonText('export')}
         </Button.Small>
         {hasPermission('/workbench/dataset', 'delete') && (
-          <Button.Small aria-haspopup="dialog" className="wb-delete-data-set">
+          <Button.Small
+            aria-haspopup="dialog"
+            className="wb-delete-data-set"
+            onClick={f.never}
+          >
             {commonText('delete')}
           </Button.Small>
         )}
@@ -186,7 +208,7 @@ function WbView({
             <Button.Small
               aria-haspopup="dialog"
               className="wb-convert-coordinates"
-              disabled
+              onClick={undefined}
               title={wbText('unavailableWithoutLocality')}
             >
               {wbText('convertCoordinates')}
@@ -194,7 +216,7 @@ function WbView({
             <Button.Small
               aria-haspopup="dialog"
               className="wb-geolocate"
-              disabled
+              onClick={undefined}
               title={wbText('unavailableWithoutLocality')}
             >
               {localityText('geoLocate')}
@@ -204,7 +226,7 @@ function WbView({
         <Button.Small
           aria-haspopup="dialog"
           className="wb-leafletmap"
-          disabled
+          onClick={undefined}
           title={wbText('unavailableWithoutLocality')}
         >
           {commonText('geoMap')}

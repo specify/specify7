@@ -20,7 +20,7 @@ import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
-import {AnySchema, AnyTree} from '../DataModel/helperTypes';
+import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -74,7 +74,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               {commonText('query')}
             </Link.Small>
           ) : (
-            <Button.Small disabled>{commonText('query')}</Button.Small>
+            <Button.Small onClick={undefined}>
+              {commonText('query')}
+            </Button.Small>
           )}
         </li>
       )}
@@ -430,7 +432,7 @@ function NodeDeleteButton({
     [tableName, nodeId]
   );
   return disabled || resource === undefined ? (
-    <Button.Small disabled>{commonText('delete')}</Button.Small>
+    <Button.Small onClick={undefined}>{commonText('delete')}</Button.Small>
   ) : (
     <DeleteButton
       component={Button.Small}
