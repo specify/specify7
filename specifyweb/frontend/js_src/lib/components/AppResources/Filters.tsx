@@ -50,7 +50,7 @@ export function AppResourcesFilters({
         aria-pressed={filters.viewSets}
         onClick={handleToggleViewSets}
       >
-        {commonText('viewSets')}
+        {commonText('formDefinitions')}
       </Button.Blue>
       <Button.Blue aria-pressed={showResources} onClick={handleToggleResources}>
         {commonText('appResources')}
@@ -71,7 +71,7 @@ export function AppResourcesFilters({
                   onValueChange={handleToggleViewSets}
                 />
                 {appResourceTypes.viewSets.icon}
-                {`${commonText('viewSets')} (${countAppResources(
+                {`${commonText('formDefinitions')} (${countAppResources(
                   initialResources,
                   { appResources: [], viewSets: true }
                 )})`}

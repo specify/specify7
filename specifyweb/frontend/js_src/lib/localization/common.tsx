@@ -528,9 +528,9 @@ export const commonText = createDictionary({
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
   },
-  viewSets: {
-    'en-us': 'View Sets',
-    'ru-ru': 'Ресурсы для просмотров',
+  formDefinitions: {
+    'en-us': 'Form Definitions',
+    'ru-ru': 'Определения форм',
   },
   repairTree: {
     'en-us': 'Repair Tree',
