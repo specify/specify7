@@ -287,6 +287,14 @@ export const queryText = createDictionary({
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
   },
+  hideMappingEditor: {
+    'en-us' : 'Hide Map Editor',
+    'ru-ru' : 'Hide Map Editor'
+  },
+  showMappingEditor : {
+    'en-us' : 'Show Map Editor',
+    'ru-ru' : 'Show Map Editor',
+  },
   saveQuery: {
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',

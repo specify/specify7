@@ -108,6 +108,29 @@ export function SaveQueryButtons({
   );
 }
 
+export function ToggleMappingViewButton({
+  fields,
+  showMappingView,
+  queryResource,
+  onClick : handleClick,
+} : {
+  readonly fields : RA<QueryField>;
+  readonly showMappingView : boolean;
+  readonly queryResource : SpecifyResource<SpQuery>;
+  readonly onClick: () => void;
+}) : JSX.Element {
+  return (
+    <Button.Small aria-pressed={!showMappingView} 
+      onClick={handleClick} 
+      disabled={!queryResource.isNew() && (fields.length === 0)}>
+
+      {showMappingView
+      ? queryText('hideMappingEditor')
+      : queryText('showMappingEditor')}
+    </Button.Small>
+  )
+}
+
 export function QueryButton({
   disabled,
   children,

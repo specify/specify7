@@ -50,6 +50,7 @@ export type CacheDefinitions = {
   readonly queryBuilder: {
     /** Whether to show fields hidden in schema in the query builder */
     readonly showHiddenFields: boolean;
+    readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
   };
   readonly schemaConfig: {
