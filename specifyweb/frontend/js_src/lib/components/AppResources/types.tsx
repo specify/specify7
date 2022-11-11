@@ -43,7 +43,7 @@ export const appResourceSubTypes = {
     name: undefined,
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
-    icon: icons.documentReport,
+    icon: icons.ticket,
     label: adminText('label'),
   },
   report: {
@@ -51,7 +51,7 @@ export const appResourceSubTypes = {
     name: undefined,
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
-    icon: icons.ticket,
+    icon: icons.documentReport,
     label: adminText('report'),
   },
   userPreferences: {
