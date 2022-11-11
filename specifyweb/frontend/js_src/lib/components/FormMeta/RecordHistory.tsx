@@ -30,6 +30,7 @@ export function RecordHistory({
         disabled={resource.isNew()}
         title={resource.isNew() ? formsText('saveRecordFirst') : undefined}
         onClick={handleOpen}
+        className="normal-case"
       >
         {formsText('historyOfEdits')}
       </Button.Small>

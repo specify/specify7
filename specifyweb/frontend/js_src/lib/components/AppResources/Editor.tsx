@@ -1,13 +1,16 @@
 import React from 'react';
 
 import { deserializeResource } from '../../hooks/resource';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
 import { formsText } from '../../localization/forms';
+import { localityText } from '../../localization/locality';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { Form } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { serializeResource, toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -16,7 +19,7 @@ import type {
   SpAppResource,
   SpAppResourceData,
   SpAppResourceDir,
-  SpViewSetObj,
+  SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
 import { BaseResourceView } from '../Forms/BaseResourceView';
 import { DeleteButton } from '../Forms/DeleteButton';
@@ -41,16 +44,16 @@ export function AppResourceEditor({
   onClone: handleClone,
   onDeleted: handleDeleted,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly directory: SerializedResource<SpAppResourceDir>;
   readonly initialData: string | undefined;
   readonly onDeleted: () => void;
   readonly onClone: (
-    resource: SerializedResource<SpAppResource | SpViewSetObj>,
+    resource: SerializedResource<SpAppResource | SpViewSetObject>,
     initialData: number
   ) => void;
   readonly onSaved: (
-    resource: SerializedResource<SpAppResource | SpViewSetObj>,
+    resource: SerializedResource<SpAppResource | SpViewSetObject>,
     directory: SerializedResource<SpAppResourceDir>
   ) => void;
 }): JSX.Element | null {
@@ -77,6 +80,8 @@ export function AppResourceEditor({
   const loading = React.useContext(LoadingContext);
 
   const showValidationRef = React.useRef<(() => void) | null>(null);
+  const [isFullScreen, _, handleExitFullScreen, handleToggleFullScreen] =
+    useBooleanState();
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-hidden">
       <BaseResourceView
@@ -92,6 +97,14 @@ export function AppResourceEditor({
                 {form()}
               </AppResourceEditButton>
               <AppTitle title={formatted} type="form" />
+              <Button.Blue
+                aria-label={localityText('toggleFullScreen')}
+                aria-pressed={isFullScreen}
+                title={localityText('toggleFullScreen')}
+                onClick={handleToggleFullScreen}
+              >
+                {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
+              </Button.Blue>
               <span className="-ml-4 flex-1" />
               <AppResourceLoad
                 onLoaded={(data: string, mimeType: string): void => {
@@ -128,6 +141,7 @@ export function AppResourceEditor({
                   appResource={appResource}
                   data={resourceData.data}
                   headerButtons={headerButtons}
+                  isFullScreen={isFullScreen}
                   isReadOnly={isReadOnly}
                   label={formatted}
                   resource={resource}
@@ -135,6 +149,7 @@ export function AppResourceEditor({
                   onChange={(data): void =>
                     setResourceData({ ...resourceData, data })
                   }
+                  onExitFullScreen={handleExitFullScreen}
                 />
               </Form>
               <DataEntry.Footer>
