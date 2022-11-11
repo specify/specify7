@@ -8,6 +8,7 @@ import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
 import {
@@ -90,7 +91,7 @@ export function AppResourcesFilters({
               </Label.Inline>
               <Ul className="pl-6">
                 {Object.entries(appResourceSubTypes).map(
-                  ([key, { label, icon }]): JSX.Element => (
+                  ([key, { label, icon, documentationUrl }]): JSX.Element => (
                     <li key={key}>
                       <Label.Inline>
                         <Input.Checkbox
@@ -110,6 +111,14 @@ export function AppResourcesFilters({
                           appResources: [key],
                           viewSets: false,
                         })})`}
+                        {typeof documentationUrl === 'string' && (
+                          <Link.Icon
+                            href={documentationUrl}
+                            icon="externalLink"
+                            target="_blank"
+                            title={commonText('documentation')}
+                          />
+                        )}
                       </Label.Inline>
                     </li>
                   )
