@@ -1,27 +1,30 @@
 import React from 'react';
 
-import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
-import { buildAppResourceConformation, getAppResourceMode } from './helpers';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { removeItem, replaceItem, sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
-import { hasToolPermission } from '../Permissions/helpers';
-import type { RA } from '../../utils/types';
-import { AppResourceIcon } from './EditorComponents';
-import { AppResourcesFilters, useFilteredAppResources } from './Filters';
-import type { AppResources, AppResourcesTree } from './hooks';
-import { useAppResourceCount, useResourcesTree } from './hooks';
-import { icons } from '../Atoms/Icons';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { Ul } from '../Atoms';
-import { className } from '../Atoms/className';
-import { Button } from '../Atoms/Button';
-import { Link } from '../Atoms/Link';
 import { useId } from '../../hooks/useId';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
+import type { RA } from '../../utils/types';
+import { removeItem, replaceItem, sortFunction } from '../../utils/utils';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type {
+  SpAppResource,
+  SpViewSetObj as SpViewSetObject,
+} from '../DataModel/types';
+import { hasToolPermission } from '../Permissions/helpers';
 import { ActiveLink } from '../Router/ActiveLink';
+import { AppResourceIcon } from './EditorComponents';
+import { useFilteredAppResources } from './Filters';
+import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
+import { buildAppResourceConformation, getAppResourceMode } from './helpers';
+import type { AppResources, AppResourcesTree } from './hooks';
+import { useAppResourceCount, useResourcesTree } from './hooks';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -35,7 +38,7 @@ export function AppResourcesAside({
   readonly initialFilters?: AppResourceFiltersType;
   readonly isEmbedded: boolean;
   readonly onOpen?: (
-    resource: SerializedResource<SpAppResource | SpViewSetObj>
+    resource: SerializedResource<SpAppResource | SpViewSetObject>
   ) => void;
 }): JSX.Element {
   const [conformations = [], setConformations] = useCachedState(
@@ -48,9 +51,12 @@ export function AppResourcesAside({
 
   return (
     <aside
-      className={
-        isEmbedded ? className.containerBaseUnstyled : className.containerBase
-      }
+      className={`
+        !gap-2
+        ${
+          isEmbedded ? className.containerBaseUnstyled : className.containerBase
+        } 
+      `}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-auto" role="tree">
         {resourcesTree.map((resources) => (
@@ -65,7 +71,6 @@ export function AppResourcesAside({
         ))}
       </Ul>
       <div className="flex flex-wrap gap-2">
-        <AppResourcesFilters initialResources={initialResources} />
         <AppResourcesExpand
           resourcesTree={resourcesTree}
           onChange={setConformations}
@@ -90,13 +95,14 @@ function AppResourcesExpand({
   return (
     <>
       <Button.Blue
+        className="grow"
         onClick={(): void =>
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
         {commonText('expandAll')}
       </Button.Blue>
-      <Button.Blue onClick={(): void => handleChange([])}>
+      <Button.Blue className="grow" onClick={(): void => handleChange([])}>
         {commonText('collapseAll')}
       </Button.Blue>
     </>
@@ -115,7 +121,7 @@ function TreeItem({
   readonly isReadOnly: boolean;
   readonly onFold: (conformations: RA<AppResourcesConformation>) => void;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
 }): JSX.Element {
   const { label, key, subCategories } = resourcesTree;
@@ -195,7 +201,7 @@ function TreeItemResources({
   readonly resourcesTree: AppResourcesTree[number];
   readonly isReadOnly: boolean;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
@@ -241,9 +247,9 @@ function ResourceItem({
   resource,
   onOpen: handleOpen,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly onOpen:
-    | ((resource: SerializedResource<SpAppResource | SpViewSetObj>) => void)
+    | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
 }): JSX.Element {
   const url =

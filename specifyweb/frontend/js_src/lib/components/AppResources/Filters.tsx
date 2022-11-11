@@ -30,9 +30,30 @@ export function AppResourcesFilters({
     'filters'
   );
 
+  const handleToggleViewSets = (): void =>
+    setFilters({
+      ...filters,
+      viewSets: !filters.viewSets,
+    });
+  const showResources = hasAllAppResources(filters.appResources);
+  const handleToggleResources = (): void =>
+    setFilters({
+      ...filters,
+      appResources: showResources ? [] : allAppResources,
+    });
+
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
+      <Button.Blue
+        aria-pressed={filters.viewSets}
+        onClick={handleToggleViewSets}
+      >
+        {commonText('viewSets')}
+      </Button.Blue>
+      <Button.Blue aria-pressed={showResources} onClick={handleToggleResources}>
+        {commonText('appResources')}
+      </Button.Blue>
       <Button.Blue onClick={handleOpen}>{adminText('filters')}</Button.Blue>
       {isOpen && (
         <Dialog
@@ -46,12 +67,7 @@ export function AppResourcesFilters({
               <Label.Inline>
                 <Input.Checkbox
                   checked={filters.viewSets}
-                  onValueChange={(isChecked): void =>
-                    setFilters({
-                      ...filters,
-                      viewSets: isChecked,
-                    })
-                  }
+                  onValueChange={handleToggleViewSets}
                 />
                 {appResourceTypes.viewSets.icon}
                 {`${commonText('viewSets')} (${countAppResources(
@@ -63,13 +79,8 @@ export function AppResourcesFilters({
             <li>
               <Label.Inline>
                 <Input.Checkbox
-                  checked={hasAllAppResources(filters.appResources)}
-                  onValueChange={(isChecked): void =>
-                    setFilters({
-                      ...filters,
-                      appResources: isChecked ? allAppResources : [],
-                    })
-                  }
+                  checked={showResources}
+                  onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
                 {`${commonText('appResources')} (${countAppResources(
