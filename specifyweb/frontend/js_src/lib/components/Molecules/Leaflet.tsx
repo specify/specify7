@@ -19,6 +19,7 @@ export function LeafletMap({
   onMarkerClick: handleMarkerClick,
   forwardRef,
   header = commonText('geoMap'),
+  headerButtons,
   buttons = commonText('close'),
   onClose: handleClose,
   modal = true,
@@ -27,6 +28,7 @@ export function LeafletMap({
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: React.RefCallback<LeafletInstance>;
   readonly header?: string;
+  readonly headerButtons?: JSX.Element;
   readonly buttons?: JSX.Element | string;
   readonly onClose?: () => void;
   readonly modal?: boolean;
@@ -79,6 +81,7 @@ export function LeafletMap({
           : dialogClassNames.extraWideContainer,
       }}
       header={header}
+      headerButtons={headerButtons}
       modal={modal}
       onClose={handleClose}
       onResize={handleResize}

@@ -8,6 +8,7 @@ import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { schema } from '../DataModel/schema';
@@ -236,9 +237,19 @@ function Dialog({
             )}`
           : ''
       }`}
+      headerButtons={
+        typeof totalCount === 'number' && totalCount !== results.length ? (
+          <Progress
+            className="flex-1"
+            aria-hidden
+            max={totalCount}
+            value={results.length}
+          />
+        ) : undefined
+      }
       localityPoints={initialData.localityData}
-      onMarkerClick={initialData.onClick}
       onClose={handleClose}
+      onMarkerClick={initialData.onClick}
     />
   ) : (
     <LoadingScreen />
