@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -105,6 +106,28 @@ export function SaveQueryButtons({
         </QueryButton>
       )}
     </>
+  );
+}
+
+export function ToggleMappingViewButton({
+  fields,
+  showMappingView,
+  onClick: handleClick,
+}: {
+  readonly fields: RA<QueryField>;
+  readonly showMappingView: boolean;
+  readonly onClick: () => void;
+}): JSX.Element {
+  return (
+    <Button.Small
+      aria-pressed={!showMappingView}
+      onClick={handleClick}
+      disabled={fields.length === 0 && showMappingView}
+    >
+      {showMappingView
+        ? wbText('hideMappingEditor')
+        : wbText('showMappingEditor')}
+    </Button.Small>
   );
 }
 

@@ -15,7 +15,7 @@ import {
   ProtectedAction,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
-import { SaveQueryButtons } from './Components';
+import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
@@ -35,6 +35,7 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  toggleMapping: handleMapToggle,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -51,6 +52,7 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
+  readonly toggleMapping: () => void;
 }): JSX.Element {
   return (
     <header className="flex items-center gap-2 whitespace-nowrap">
@@ -88,6 +90,11 @@ export function QueryHeader({
           </ProtectedTable>
         </ProtectedAction>
       )}
+      <ToggleMappingViewButton
+        fields={state.fields}
+        showMappingView={state.showMappingView}
+        onClick={handleMapToggle}
+      />
       {hasToolPermission(
         'queryBuilder',
         queryResource.isNew() ? 'create' : 'update'

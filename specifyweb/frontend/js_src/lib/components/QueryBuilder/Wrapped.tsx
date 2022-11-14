@@ -51,6 +51,7 @@ const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 const pendingState = {
   type: 'MainState',
   fields: [],
+  showMappingView: true,
   mappingView: ['0'],
   queryRunCount: 0,
   openedElement: { line: 1, index: undefined },
@@ -306,6 +307,11 @@ export function QueryBuilder({
             unsetUnloadProtect={unsetUnloadProtect}
             onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
             onTriedToSave={handleTriedToSave}
+            toggleMapping={(): void => 
+              dispatch({
+                type: 'ToggleMappingViewAction',
+                isVisible: !state.showMappingView,
+              })}
           />
         )}
         <QueryContainer
@@ -324,6 +330,7 @@ export function QueryBuilder({
           }
         >
           <div className="flex snap-start flex-col gap-4">
+            {state.showMappingView && (
             <MappingView
               mappingElementProps={getMappingLineProps({
                 mappingLineData: mutateLineData(
@@ -380,6 +387,7 @@ export function QueryBuilder({
                 </Button.Small>
               )}
             </MappingView>
+            )}
             <QueryFields
               baseTableName={state.baseTableName}
               enforceLengthLimit={triedToSave}
