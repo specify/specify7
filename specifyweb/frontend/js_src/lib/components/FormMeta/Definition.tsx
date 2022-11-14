@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { fetchCollection } from '../DataModel/collection';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
+import { fetchCollection } from '../DataModel/collection';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
-import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
-import { Link } from '../Atoms/Link';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { usePref } from '../UserPreferences/usePref';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function Definition({
   model,
@@ -75,14 +75,26 @@ function UseLabels(): JSX.Element {
     'useFieldLabels'
   );
 
+  const initialValue = React.useRef(useFieldLabels);
+  const isChanged = React.useRef(false);
+  React.useEffect(() => {
+    isChanged.current = useFieldLabels !== initialValue.current;
+  }, [useFieldLabels]);
+
+  React.useEffect(
+    () => () => {
+      if (isChanged.current) {
+        globalThis.location.reload();
+      }
+    },
+    []
+  );
+
   return (
     <Label.Inline>
       <Input.Checkbox
         checked={useFieldLabels}
-        onValueChange={(checked): void => {
-          setUseFieldLabels(checked);
-          globalThis.location.reload();
-        }}
+        onValueChange={setUseFieldLabels}
       />
       {formsText('useFieldLabels')}
     </Label.Inline>
