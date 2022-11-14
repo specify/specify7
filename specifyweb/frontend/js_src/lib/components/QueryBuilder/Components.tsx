@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -111,24 +112,23 @@ export function SaveQueryButtons({
 export function ToggleMappingViewButton({
   fields,
   showMappingView,
-  queryResource,
-  onClick : handleClick,
-} : {
-  readonly fields : RA<QueryField>;
-  readonly showMappingView : boolean;
-  readonly queryResource : SpecifyResource<SpQuery>;
+  onClick: handleClick,
+}: {
+  readonly fields: RA<QueryField>;
+  readonly showMappingView: boolean;
   readonly onClick: () => void;
-}) : JSX.Element {
+}): JSX.Element {
   return (
-    <Button.Small aria-pressed={!showMappingView} 
-      onClick={handleClick} 
-      disabled={!queryResource.isNew() && (fields.length === 0)}>
-
+    <Button.Small
+      aria-pressed={!showMappingView}
+      onClick={handleClick}
+      disabled={fields.length === 0 && showMappingView}
+    >
       {showMappingView
-      ? queryText('hideMappingEditor')
-      : queryText('showMappingEditor')}
+        ? wbText('hideMappingEditor')
+        : wbText('showMappingEditor')}
     </Button.Small>
-  )
+  );
 }
 
 export function QueryButton({

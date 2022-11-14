@@ -90,17 +90,11 @@ export function QueryHeader({
           </ProtectedTable>
         </ProtectedAction>
       )}
-      {hasToolPermission(
-        'queryBuilder',
-        queryResource.isNew() ? 'create' : 'update'
-      ) && (
-        <ToggleMappingViewButton 
+      <ToggleMappingViewButton
         fields={state.fields}
         showMappingView={state.showMappingView}
-        queryResource={queryResource}
         onClick={handleMapToggle}
-        />
-      )}
+      />
       {hasToolPermission(
         'queryBuilder',
         queryResource.isNew() ? 'create' : 'update'
