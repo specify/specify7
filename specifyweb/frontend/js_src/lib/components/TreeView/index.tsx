@@ -1,14 +1,44 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
+import { useSearchParameter } from '../../hooks/navigation';
+import { deserializeResource } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useId } from '../../hooks/useId';
 import { treeText } from '../../localization/tree';
-import { getPref } from '../InitialContext/remotePrefs';
+import type { RA } from '../../utils/types';
+import { caseInsensitiveHash, toggleItem } from '../../utils/utils';
+import { Container, H2 } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { DataEntry } from '../Atoms/DataEntry';
+import type {
+  AnyTree,
+  FilterTablesByEndsWith,
+  SerializedResource,
+} from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModel, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ResourceView } from '../Forms/ResourceView';
+import { useMenuItem } from '../Header';
+import { getPref } from '../InitialContext/remotePrefs';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
+import { useTitle } from '../Molecules/AppTitle';
+import { supportsBackdropBlur } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
+import { ProtectedTree } from '../Permissions/PermissionDenied';
+import { NotFoundView } from '../Router/NotFoundView';
+import { EditTreeDefinition } from '../Toolbar/TreeRepair';
+import {
+  useHighContrast,
+  useReducedTransparency,
+} from '../UserPreferences/Hooks';
+import { usePref } from '../UserPreferences/usePref';
+import { TreeViewActions } from './Actions';
 import type { Conformations, Row, Stats } from './helpers';
 import {
   deserializeConformation,
@@ -16,47 +46,17 @@ import {
   fetchStats,
   serializeConformation,
 } from './helpers';
-import type { RA } from '../../utils/types';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useMenuItem } from '../Header';
-import { supportsBackdropBlur } from '../Molecules/Dialog';
-import { useSearchParameter } from '../../hooks/navigation';
-import { NotFoundView } from '../Router/NotFoundView';
-import { ProtectedTree } from '../Permissions/PermissionDenied';
-import {
-  useHighContrast,
-  useReducedTransparency,
-} from '../UserPreferences/Hooks';
-import { deserializeResource } from '../../hooks/resource';
-import { ResourceView } from '../Forms/ResourceView';
-import { useCachedState } from '../../hooks/useCachedState';
-import { EditTreeDefinition } from '../Toolbar/TreeRepair';
-import { TreeViewActions } from './Actions';
 import { TreeRow } from './Row';
 import { TreeViewSearch } from './Search';
-import { Container, H2 } from '../Atoms';
-import { Button } from '../Atoms/Button';
-import { DataEntry } from '../Atoms/DataEntry';
-import { useId } from '../../hooks/useId';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import {
-  AnyTree,
-  FilterTablesByEndsWith,
-  SerializedResource,
-} from '../DataModel/helperTypes';
-import { TableIcon } from '../Molecules/TableIcon';
-import { useTitle } from '../Molecules/AppTitle';
-import { usePref } from '../UserPreferences/usePref';
 
 const treeToPref = {
-    Geography: 'geography',
-    Taxon: 'taxon',
-    Storage: 'storage',
-    GeologicTimePeriod: 'geologicTimePeriod',
-    LithoStrat: 'lithoStrat',
-  } as const,
-  defaultConformation: RA<never> = [];
+  Geography: 'geography',
+  Taxon: 'taxon',
+  Storage: 'storage',
+  GeologicTimePeriod: 'geologicTimePeriod',
+  LithoStrat: 'lithoStrat',
+} as const;
+const defaultConformation: RA<never> = [];
 
 function TreeView<SCHEMA extends AnyTree>({
   tableName,
@@ -69,17 +69,22 @@ function TreeView<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
 }): JSX.Element | null {
-  const table = schema.models[tableName] as SpecifyModel<AnyTree>,
-    rankIds = treeDefinitionItems.map(({ rankId }) => rankId),
-    [collapsedRanks, setCollapsedRanks] = useCachedState(
-      'tree',
-      `collapsedRanks${tableName}`
-    ),
-    [urlConformation, setUrlConformation] = useSearchParameter('conformation'),
-    [conformation = defaultConformation, setConformation] = useCachedState(
-      'tree',
-      `conformations${tableName}`
-    );
+  const table = schema.models[tableName] as SpecifyModel<AnyTree>;
+
+  const rankIds = treeDefinitionItems.map(({ rankId }) => rankId);
+
+  const [collapsedRanks, setCollapsedRanks] = useCachedState(
+    'tree',
+    `collapsedRanks${tableName}`
+  );
+
+  const [urlConformation, setUrlConformation] =
+    useSearchParameter('conformation');
+
+  const [conformation = defaultConformation, setConformation] = useCachedState(
+    'tree',
+    `conformations${tableName}`
+  );
 
   React.useEffect(
     () => setUrlConformation(serializeConformation(conformation)),
@@ -241,13 +246,10 @@ function TreeView<SCHEMA extends AnyTree>({
                 >
                   <Button.LikeLink
                     id={id(rank.rankId.toString())}
-                    onClick={
-                      Array.isArray(collapsedRanks)
-                        ? (): void =>
-                            setCollapsedRanks(
-                              toggleItem(collapsedRanks, rank.rankId)
-                            )
-                        : undefined
+                    onClick={(): void =>
+                      setCollapsedRanks(
+                        toggleItem(collapsedRanks ?? [], rank.rankId)
+                      )
                     }
                   >
                     {collapsedRanks?.includes(rank.rankId) ?? false
@@ -326,8 +328,8 @@ function EditTreeRank({
 }: {
   readonly rank: SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>;
 }): JSX.Element {
-  const [isOpen, handleOpen, handleClose] = useBooleanState(),
-    resource = React.useMemo(() => deserializeResource(rank), [rank]);
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const resource = React.useMemo(() => deserializeResource(rank), [rank]);
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
@@ -352,9 +354,9 @@ const fetchTreeRanks = async (): typeof treeRanksPromise => treeRanksPromise;
 
 export function TreeViewWrapper(): JSX.Element | null {
   useMenuItem('trees');
-  const { tableName = '' } = useParams(),
-    treeName = getModel(tableName)?.name,
-    [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
+  const { tableName = '' } = useParams();
+  const treeName = getModel(tableName)?.name;
+  const [treeDefinitions] = useAsyncState(fetchTreeRanks, true);
   useErrorContext('treeDefinitions', treeDefinitions);
 
   const treeDefinition =
