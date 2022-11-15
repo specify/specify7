@@ -307,11 +307,12 @@ export function QueryBuilder({
             unsetUnloadProtect={unsetUnloadProtect}
             onSaved={(): void => dispatch({ type: 'SavedQueryAction' })}
             onTriedToSave={handleTriedToSave}
-            toggleMapping={(): void => 
+            toggleMapping={(): void =>
               dispatch({
                 type: 'ToggleMappingViewAction',
                 isVisible: !state.showMappingView,
-              })}
+              })
+            }
           />
         )}
         <QueryContainer
@@ -331,62 +332,62 @@ export function QueryBuilder({
         >
           <div className="flex snap-start flex-col gap-4">
             {state.showMappingView && (
-            <MappingView
-              mappingElementProps={getMappingLineProps({
-                mappingLineData: mutateLineData(
-                  getMappingLineData({
-                    baseTableName: state.baseTableName,
-                    mappingPath: state.mappingView,
-                    showHiddenFields,
-                    generateFieldData: 'all',
-                    scope: 'queryBuilder',
-                    getMappedFields: getMappedFieldsBind,
-                  })
-                ),
-                customSelectType: 'OPENED_LIST',
-                onChange({ isDoubleClick, ...rest }) {
-                  if (isDoubleClick && mapButtonEnabled) handleAddField();
-                  else if (
-                    isDoubleClick &&
-                    rest.isRelationship &&
-                    !isReadOnly
-                  ) {
-                    const newMappingPath = filterArray([
-                      ...state.mappingView.slice(0, -1),
-                      typeof rest.newTableName === 'string' &&
-                      isTreeModel(rest.newTableName) &&
-                      !valueIsTreeRank(state.mappingView.at(-2))
-                        ? formatTreeRank(anyTreeRank)
-                        : undefined,
-                      formattedEntry,
-                    ]);
-                    if (
-                      !getMappedFieldsBind(
-                        newMappingPath.slice(0, -1)
-                      ).includes(newMappingPath.at(-1)!)
-                    )
-                      handleAddField(newMappingPath);
-                  } else
-                    dispatch({
-                      type: 'ChangeSelectElementValueAction',
-                      line: 'mappingView',
-                      ...rest,
-                    });
-                },
-              })}
-            >
-              {isReadOnly ? undefined : (
-                <Button.Small
-                  aria-label={commonText('add')}
-                  className="justify-center p-2"
-                  disabled={!mapButtonEnabled}
-                  title={queryText('newButtonDescription')}
-                  onClick={f.zero(handleAddField)}
-                >
-                  {icons.plus}
-                </Button.Small>
-              )}
-            </MappingView>
+              <MappingView
+                mappingElementProps={getMappingLineProps({
+                  mappingLineData: mutateLineData(
+                    getMappingLineData({
+                      baseTableName: state.baseTableName,
+                      mappingPath: state.mappingView,
+                      showHiddenFields,
+                      generateFieldData: 'all',
+                      scope: 'queryBuilder',
+                      getMappedFields: getMappedFieldsBind,
+                    })
+                  ),
+                  customSelectType: 'OPENED_LIST',
+                  onChange({ isDoubleClick, ...rest }) {
+                    if (isDoubleClick && mapButtonEnabled) handleAddField();
+                    else if (
+                      isDoubleClick &&
+                      rest.isRelationship &&
+                      !isReadOnly
+                    ) {
+                      const newMappingPath = filterArray([
+                        ...state.mappingView.slice(0, -1),
+                        typeof rest.newTableName === 'string' &&
+                        isTreeModel(rest.newTableName) &&
+                        !valueIsTreeRank(state.mappingView.at(-2))
+                          ? formatTreeRank(anyTreeRank)
+                          : undefined,
+                        formattedEntry,
+                      ]);
+                      if (
+                        !getMappedFieldsBind(
+                          newMappingPath.slice(0, -1)
+                        ).includes(newMappingPath.at(-1)!)
+                      )
+                        handleAddField(newMappingPath);
+                    } else
+                      dispatch({
+                        type: 'ChangeSelectElementValueAction',
+                        line: 'mappingView',
+                        ...rest,
+                      });
+                  },
+                })}
+              >
+                {isReadOnly ? undefined : (
+                  <Button.Small
+                    aria-label={commonText('add')}
+                    className="justify-center p-2"
+                    disabled={!mapButtonEnabled}
+                    title={queryText('newButtonDescription')}
+                    onClick={f.zero(handleAddField)}
+                  >
+                    {icons.plus}
+                  </Button.Small>
+                )}
+              </MappingView>
             )}
             <QueryFields
               baseTableName={state.baseTableName}

@@ -53,7 +53,7 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
-  showMappingView : getCache('queryBuilder', 'showMappingView') ?? false,
+  showMappingView : getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
