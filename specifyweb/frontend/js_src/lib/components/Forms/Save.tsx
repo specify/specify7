@@ -1,27 +1,27 @@
 import React from 'react';
 
-import { error } from '../Errors/assert';
-import { listen } from '../../utils/events';
-import { camelToHuman, replaceKey } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
+import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { listen } from '../../utils/events';
+import { camelToHuman, replaceKey } from '../../utils/utils';
+import { H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Submit } from '../Atoms/Submit';
+import { FormContext, LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import { error } from '../Errors/assert';
+import { fail } from '../Errors/Crash';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
-import { resourceOn } from '../DataModel/resource';
-import { H3, Ul } from '../Atoms';
-import { FormContext, LoadingContext } from '../Core/Contexts';
-import { useIsModified } from '../../hooks/useIsModified';
-import { Dialog } from '../Molecules/Dialog';
-import { useUnloadProtect } from '../../hooks/navigation';
 import { NO_CLONE } from './ResourceView';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { className } from '../Atoms/className';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
@@ -55,6 +55,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: (
+    newResource: SpecifyResource<SCHEMA> | undefined,
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
   readonly onSaved?: (payload: {
@@ -107,7 +108,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const [formContext, setFormContext] = React.useContext(FormContext);
 
   async function handleSubmit(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | SubmitEvent,
+    event: React.MouseEvent<HTMLButtonElement> | SubmitEvent,
     mode: 'addAnother' | 'clone' | 'save' = 'save'
   ): Promise<void> {
     if (!form.reportValidity()) return;
@@ -161,7 +162,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * Save process is canceled if false was returned. This also allows to
      * implement custom save behavior
      */
-    if (handleSaving?.(unsetUnloadProtect) === false) return;
+    if (handleSaving?.(newResource, unsetUnloadProtect) === false) return;
 
     setIsSaving(true);
     loading(

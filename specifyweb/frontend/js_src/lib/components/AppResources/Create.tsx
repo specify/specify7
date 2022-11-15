@@ -183,7 +183,7 @@ function EditAppResource({
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
       onSaved={f.never}
-      onSaving={(unsetUnloadProtect): false => {
+      onSaving={(_newResource, unsetUnloadProtect): false => {
         unsetUnloadProtect();
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';

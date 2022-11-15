@@ -146,7 +146,8 @@ const getDisciplineAppResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.userType === null
+          directory.userType === null &&
+          !directory.isPersonal
       );
       const directory =
         directories[0] ??

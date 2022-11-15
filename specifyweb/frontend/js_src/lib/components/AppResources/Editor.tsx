@@ -3,8 +3,6 @@ import React from 'react';
 import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useIsModified } from '../../hooks/useIsModified';
-import { formsText } from '../../localization/forms';
 import { localityText } from '../../localization/locality';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -35,6 +33,8 @@ import {
 } from './EditorComponents';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { commonText } from '../../localization/common';
+import { getUniqueName } from '../../utils/uniquifyName';
 
 export function AppResourceEditor({
   resource,
@@ -50,7 +50,7 @@ export function AppResourceEditor({
   readonly onDeleted: () => void;
   readonly onClone: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
-    initialData: number
+    initialData: number | undefined
   ) => void;
   readonly onSaved: (
     resource: SerializedResource<SpAppResource | SpViewSetObject>,
@@ -62,8 +62,6 @@ export function AppResourceEditor({
     [resource]
   );
   useErrorContext('appResource', resource);
-
-  const isModified = useIsModified(appResource);
 
   const { resourceData, setResourceData, isChanged } = useAppResourceData(
     resource,
@@ -161,39 +159,20 @@ export function AppResourceEditor({
                   />
                 ) : undefined}
                 <span className="-ml-2 flex-1" />
-                {hasToolPermission('resources', 'create') && (
-                  <Button.Orange
-                    disabled={isChanged || isModified}
-                    onClick={(): void =>
-                      loading(
-                        appResource
-                          .clone()
-                          .then((appResourceClone) =>
-                            handleClone(
-                              serializeResource(appResourceClone),
-                              resourceData.id
-                            )
-                          )
-                      )
-                    }
-                  >
-                    {formsText('clone')}
-                  </Button.Orange>
-                )}
                 {formRef.current !== null &&
                 hasToolPermission(
                   'resources',
                   appResource.isNew() ? 'create' : 'update'
                 ) ? (
                   <SaveButton
-                    canAddAnother={false}
+                    canAddAnother
                     form={formRef.current}
                     resource={appResource}
                     saveRequired={isChanged}
                     onIgnored={(): void => {
                       showValidationRef.current?.();
                     }}
-                    onSaving={(unsetUnloadProtect): false => {
+                    onSaving={(newResource, unsetUnloadProtect): false => {
                       unsetUnloadProtect();
 
                       loading(
@@ -205,6 +184,30 @@ export function AppResourceEditor({
                                   'SpAppResourceDir',
                                   directory
                                 );
+
+                          if (typeof newResource === 'object') {
+                            const resource = serializeResource(newResource);
+                            const isClone =
+                              typeof resource.spAppResourceDir === 'string';
+                            handleClone(
+                              {
+                                ...resource,
+                                spAppResourceDir:
+                                  resourceDirectory.resource_uri,
+                                name:
+                                  resource.name.length > 0
+                                    ? getUniqueName(resource.name, [
+                                        resource.name,
+                                      ])
+                                    : commonText(
+                                        'newResourceTitle',
+                                        appResource.specifyModel.label
+                                      ),
+                              },
+                              isClone ? resourceData.id : undefined
+                            );
+                            return;
+                          }
 
                           if (appResource.isNew())
                             appResource.set(

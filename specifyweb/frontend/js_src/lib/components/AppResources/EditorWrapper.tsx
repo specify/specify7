@@ -11,7 +11,6 @@ import type {
 } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { fetchResource } from '../DataModel/resource';
-import { getUniqueName } from '../../utils/uniquifyName';
 import type { AppResourcesOutlet } from './index';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
@@ -63,13 +62,10 @@ export function Wrapper({
       directory={directory}
       initialData={initialData === false ? undefined : initialData}
       resource={resource}
-      onClone={(appResource, initialDataFrom): void =>
+      onClone={(resource, initialDataFrom): void =>
         navigate(`${baseHref}/new/`, {
           state: {
-            resource: {
-              ...appResource,
-              name: getUniqueName(appResource.name, [appResource.name]),
-            },
+            resource,
             directoryKey: state?.directoryKey,
             initialDataFrom,
           },
