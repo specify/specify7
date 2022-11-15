@@ -113,10 +113,10 @@ function eventHandlerForToOne(related, field) {
             delete newResource.id;
             delete newResource.attributes.id;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel);
+            const exemptFields = getFieldsToNotClone(this.specifyModel).map(fieldName=>fieldName.toLowerCase());
             exemptFields
               .map((fieldName)=>
-                 delete newResource.attributes[fieldName.toLowerCase()]
+                 delete newResource.attributes[fieldName]
               );
 
             newResource.needsSaved = self.needsSaved;
