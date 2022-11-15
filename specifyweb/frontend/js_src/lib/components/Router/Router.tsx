@@ -271,13 +271,9 @@ function UnloadProtect({
 
 function hasUnloadProtect(
   backgroundPath: string | undefined,
-  { pathname, state }: Location
+  { pathname }: Location
 ): boolean {
-  const noUnloadProtect =
-    (state as { readonly noUnloadProtect?: true } | undefined)
-      ?.noUnloadProtect === true;
   return (
-    !noUnloadProtect &&
     !pathIsOverlay(pathname) &&
     !isCurrentUrl(pathname) &&
     pathname !== backgroundPath

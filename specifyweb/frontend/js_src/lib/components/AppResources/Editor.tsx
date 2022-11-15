@@ -193,7 +193,9 @@ export function AppResourceEditor({
                     onIgnored={(): void => {
                       showValidationRef.current?.();
                     }}
-                    onSaving={(): false => {
+                    onSaving={(unsetUnloadProtect): false => {
+                      unsetUnloadProtect();
+
                       loading(
                         (async (): Promise<void> => {
                           const resourceDirectory =

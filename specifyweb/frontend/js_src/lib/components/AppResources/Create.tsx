@@ -183,14 +183,14 @@ function EditAppResource({
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
       onSaved={f.never}
-      onSaving={(): false => {
+      onSaving={(unsetUnloadProtect): false => {
+        unsetUnloadProtect();
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
         navigate(`/specify/resources/${path}/new/`, {
           state: {
             resource: serializeResource(resource),
             directoryKey,
-            noUnloadProtect: true,
           },
         });
         /*
