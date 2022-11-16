@@ -15,6 +15,7 @@ import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   mappingPathToString,
   splitJoinedMappingPath,
+  valueIsToManyIndex,
 } from '../WbPlanView/mappingHelpers';
 import type { MappingLineData } from '../WbPlanView/navigator';
 import type { QueryFieldFilter } from './FieldFilter';
@@ -129,9 +130,9 @@ export const queryFieldsToFieldSpecs = (
 const auditLogMappingPaths = [
   ['recordId'],
   ['tableNum'],
+  ['fields', 'fieldName'],
   ['fields', 'oldValue'],
   ['fields', 'newValue'],
-  ['fields', 'fieldName'],
 ];
 
 /**
@@ -155,12 +156,13 @@ const addQueryFields = (
   makeVisible: boolean
 ): RA<QueryField> => [
   ...fields.map((field) => {
+    const path = mappingPathToString(
+      field.mappingPath.filter((part) => !valueIsToManyIndex(part))
+    );
     const isPhantom =
       !field.isDisplay &&
       fieldsToAdd.some(
-        (mappingPath) =>
-          mappingPathToString(field.mappingPath) ===
-          mappingPathToString(mappingPath)
+        (mappingPath) => path === mappingPathToString(mappingPath)
       );
     return {
       ...field,
@@ -174,8 +176,9 @@ const addQueryFields = (
     .filter((mappingPath) =>
       fields.every(
         (field) =>
-          mappingPathToString(field.mappingPath) !==
-          mappingPathToString(mappingPath)
+          mappingPathToString(
+            field.mappingPath.filter((part) => !valueIsToManyIndex(part))
+          ) !== mappingPathToString(mappingPath)
       )
     )
     .map(
