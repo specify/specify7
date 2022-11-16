@@ -6,7 +6,7 @@ import { useId } from '../../hooks/useId';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { removeItem, replaceItem, sortFunction } from '../../utils/utils';
+import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -19,12 +19,14 @@ import type {
 } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { ActiveLink } from '../Router/ActiveLink';
-import { AppResourceIcon } from './EditorComponents';
+import { appResourceIcon } from './EditorComponents';
 import { useFilteredAppResources } from './Filters';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
+import { getResourceType } from './filtersHelpers';
 import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
+import { appResourceSubTypes } from './types';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -193,6 +195,8 @@ function TreeItem({
   );
 }
 
+const subTypes = Object.keys(appResourceSubTypes);
+
 function TreeItemResources({
   resourcesTree,
   isReadOnly,
@@ -205,18 +209,29 @@ function TreeItemResources({
     | undefined;
 }): JSX.Element | null {
   const { appResources, viewSets, directory, key } = resourcesTree;
-  const resources = [...appResources, ...viewSets];
   const canCreate = hasToolPermission('resources', 'create') && !isReadOnly;
+  const resources = React.useMemo(
+    () =>
+      Array.from([...appResources, ...viewSets], (resource) => ({
+        ...resource,
+        type: getResourceType(resource),
+      })).sort(
+        multiSortFunction(
+          ({ type }) => (type === 'viewSet' ? -1 : subTypes.indexOf(type)),
+          ({ name }) => name
+        )
+      ),
+    [appResources, viewSets]
+  );
+
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
     <Ul aria-label={adminText('resources')} className="pl-4" role="group">
-      {Array.from(resources)
-        .sort(sortFunction(({ name }) => name))
-        .map((resource, index) => (
-          <li key={index}>
-            <ResourceItem resource={resource} onOpen={handleOpen} />
-          </li>
-        ))}
+      {resources.map((resource, index) => (
+        <li key={index}>
+          <ResourceItem resource={resource} onOpen={handleOpen} />
+        </li>
+      ))}
       {canCreate && (
         <li>
           <Link.Default href={`/specify/resources/create/${key}/`}>
@@ -247,7 +262,9 @@ function ResourceItem({
   resource,
   onOpen: handleOpen,
 }: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject> & {
+    readonly type: ReturnType<typeof getResourceType>;
+  };
   readonly onOpen:
     | ((resource: SerializedResource<SpAppResource | SpViewSetObject>) => void)
     | undefined;
@@ -269,7 +286,7 @@ function ResourceItem({
           : undefined
       }
     >
-      <AppResourceIcon resource={resource} />
+      {appResourceIcon(resource.type)}
       {resource.name || commonText('nullInline')}
     </ActiveLink>
   );

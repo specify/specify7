@@ -30,11 +30,12 @@ import { isAppResourceSubType } from './Create';
 import {
   AppResourceDownload,
   AppResourceEditButton,
-  AppResourceIcon,
+  appResourceIcon,
   AppResourceLoad,
 } from './EditorComponents';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { getResourceType } from './filtersHelpers';
 
 export function AppResourceEditor({
   resource,
@@ -128,7 +129,7 @@ export function AppResourceEditor({
           return (
             <>
               <DataEntry.Header>
-                <AppResourceIcon resource={resource} />
+                {appResourceIcon(getResourceType(resource))}
                 <h3 className="overflow-auto whitespace-nowrap text-2xl">
                   {formatted}
                 </h3>

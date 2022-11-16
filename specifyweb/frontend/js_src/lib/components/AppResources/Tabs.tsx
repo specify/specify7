@@ -16,13 +16,13 @@ import type {
 } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { AppResourceIcon } from './EditorComponents';
-import { getAppResourceType } from './filtersHelpers';
+import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type { AppResourceTab } from './TabDefinitions';
 import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { appResourceIcon } from './EditorComponents';
 
 export function AppResourcesTabs({
   label,
@@ -89,7 +89,7 @@ export function AppResourcesTabs({
       }}
       header={label}
       headerButtons={headerButtons}
-      icon={<AppResourceIcon resource={resource} />}
+      icon={appResourceIcon(getResourceType(resource))}
       onClose={handleExitFullScreen}
     >
       {children}

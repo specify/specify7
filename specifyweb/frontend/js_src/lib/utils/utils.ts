@@ -4,9 +4,10 @@
  * @module
  */
 
+import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
-import { KeysToLowerCase } from '../components/DataModel/helperTypes';
+import { filterArray } from './types';
 
 /**
  * Instead of writing code like `Object.entries(dict).find(()=>...)[0]`,
@@ -139,18 +140,28 @@ export const sortFunction =
 
 /** Like sortFunction, but can sort based on multiple fields */
 export const multiSortFunction =
-  <
-    ORIGINAL_TYPE,
-    MAPPED_TYPE extends boolean | number | string | null | undefined | Date
-  >(
-    ...payload: readonly (readonly [
-      mapper: (value: ORIGINAL_TYPE) => MAPPED_TYPE,
-      reverse?: boolean
-    ])[]
+  <ORIGINAL_TYPE>(
+    ...payload: readonly (
+      | boolean
+      | ((value: ORIGINAL_TYPE) => Date | boolean | number | string)
+    )[]
   ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
   (left: ORIGINAL_TYPE, right: ORIGINAL_TYPE): -1 | 0 | 1 => {
-    for (const [mapper, reverse = false] of payload) {
-      const [leftValue, rightValue] = reverse
+    const mappers = filterArray(
+      payload.map((value, index) =>
+        typeof value === 'function'
+          ? ([
+              value,
+              typeof payload[index + 1] === 'boolean'
+                ? (payload[index + 1] as boolean)
+                : false,
+            ] as const)
+          : undefined
+      )
+    );
+
+    for (const [mapper, isReverse] of mappers) {
+      const [leftValue, rightValue] = isReverse
         ? [mapper(right), mapper(left)]
         : [mapper(left), mapper(right)];
       if (leftValue === rightValue) continue;

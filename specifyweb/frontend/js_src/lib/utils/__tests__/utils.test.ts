@@ -139,10 +139,12 @@ test('multiSortFunction', () => {
       { type: 'd', priority: 3 },
       { type: 'c', priority: 4 },
     ].sort(
-      multiSortFunction<
-        { readonly type: string; readonly priority: number },
-        string | number
-      >([({ type }) => type, false], [({ priority }) => priority, true])
+      multiSortFunction(
+        ({ type }) => type,
+        false,
+        ({ priority }) => priority,
+        true
+      )
     )
   ).toEqual([
     { type: 'c', priority: 4 },
