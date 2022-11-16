@@ -14,6 +14,8 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { userToolsPromise } from './userToolDefinitions';
+import { formsText } from '../../localization/forms';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function UserTools(): JSX.Element {
   // REFACTOR: get rid of usages of "px" units in the header
@@ -36,6 +38,12 @@ const fetchUserTools = async (): typeof userToolsPromise => userToolsPromise;
 export function UserToolsOverlay(): JSX.Element | null {
   const [userTools] = useAsyncState(fetchUserTools, true);
   const handleClose = React.useContext(OverlayContext);
+
+  const [isReadOnly = false, setIsReadOnly] = useCachedState(
+    'forms',
+    'readOnlyMode'
+  );
+
   return Array.isArray(userTools) ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
@@ -43,6 +51,16 @@ export function UserToolsOverlay(): JSX.Element | null {
       icon={<span className="text-blue-500">{icons.cog}</span>}
       onClose={handleClose}
     >
+      {isReadOnly && (
+        <Button.Blue
+          onClick={(): void => {
+            setIsReadOnly(false);
+            globalThis.location.reload();
+          }}
+        >
+          {formsText('disableReadOnly')}
+        </Button.Blue>
+      )}
       <nav className="flex gap-2">
         {userTools.map((groups, index) => (
           <UserToolsColumn groups={groups} key={index} />
