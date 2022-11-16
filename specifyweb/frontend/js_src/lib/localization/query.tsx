@@ -313,6 +313,10 @@ export const queryText = createDictionary({
     'ru-ru': (plotted: number, total: number) =>
       `Отображено ${plotted} из ${total} записей`,
   },
+  queryMapAll: {
+    'en-us': (plotted: string) => `Plotted ${plotted} records`,
+    'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */
