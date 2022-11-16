@@ -18,7 +18,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
 
-export function RecordHistory({
+export function EditHistory({
   resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
@@ -93,6 +93,18 @@ function useEditHistoryQuery(
               .set('operStart', queryFieldFilters.equal.id)
               .set('startValue', resource.id.toString()),
             QueryFieldSpec.fromPath('SpAuditLog', ['action']).toSpQueryField(),
+            QueryFieldSpec.fromPath('SpAuditLog', [
+              'fields',
+              'fieldName',
+            ]).toSpQueryField(),
+            QueryFieldSpec.fromPath('SpAuditLog', [
+              'fields',
+              'oldValue',
+            ]).toSpQueryField(),
+            QueryFieldSpec.fromPath('SpAuditLog', [
+              'fields',
+              'newValue',
+            ]).toSpQueryField(),
             QueryFieldSpec.fromPath('SpAuditLog', [
               'modifiedByAgent',
               formattedEntry,

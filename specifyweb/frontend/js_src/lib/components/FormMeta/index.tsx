@@ -26,7 +26,7 @@ import { Definition } from './Definition';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
-import { RecordHistory } from './RecordHistory';
+import { EditHistory } from './EditHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
 import { ViewDescription } from '../FormParse';
@@ -130,7 +130,7 @@ function MetaDialog({
         <div className="flex flex-wrap gap-2">
           <ProtectedTool action="read" tool="auditLog">
             <ProtectedAction action="execute" resource="/querybuilder/query">
-              <RecordHistory resource={resource} />
+              <EditHistory resource={resource} />
             </ProtectedAction>
           </ProtectedTool>
           {isTreeResource(resource) && <QueryTreeUsages resource={resource} />}
