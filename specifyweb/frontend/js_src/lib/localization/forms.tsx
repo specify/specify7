@@ -524,10 +524,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Поле из таблицы',
   },
   // Audit log actions
-  insert: {
-    'en-us': 'Insert',
-    'ru-ru': 'Создано',
-  },
   treeMerge: {
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',

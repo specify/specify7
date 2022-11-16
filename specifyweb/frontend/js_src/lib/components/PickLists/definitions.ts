@@ -35,7 +35,7 @@ const pickListTypes = [
 ] as const;
 
 const auditLogActions = [
-  formsText('insert'),
+  commonText('create'),
   commonText('update'),
   commonText('delete'),
   formsText('treeMerge'),
