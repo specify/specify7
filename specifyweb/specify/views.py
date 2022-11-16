@@ -438,11 +438,9 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
     with transaction.atomic():
         # Check to make sure both the old and new agent IDs exist in the table
-        cursor.execute("SELECT * FROM specify.agent WHERE AgentID = %s;", [old_agent_id])
-        if len(cursor.fetchall()) == 0:
+        if not models.Agent.objects.filter(id=old_agent_id).select_for_update().exists():
             return http.HttpResponseBadRequest("AgentID: " + old_agent_id + " does not exist.")
-        cursor.execute("SELECT * FROM specify.agent WHERE AgentID = %s;", [new_agent_id])
-        if len(cursor.fetchall()) == 0:
+        if not models.Agent.objects.filter(id=new_agent_id).select_for_update().exists():
             return http.HttpResponseBadRequest("AgentID: " + new_agent_id + " does not exist.")
 
         # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
