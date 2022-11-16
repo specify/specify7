@@ -21,6 +21,7 @@ import { fail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
+import { usePref } from '../UserPreferences/usePref';
 import { NO_CLONE } from './ResourceView';
 
 /*
@@ -107,9 +108,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [formContext, setFormContext] = React.useContext(FormContext);
 
+  const [globalCanCarryForward] = usePref(
+    'form',
+    'preferences',
+    'disableCarryForward'
+  );
+  const canCarryForward =
+    !globalCanCarryForward.includes(resource.specifyModel.name) &&
+    !NO_CLONE.has(resource.specifyModel.name);
+
   async function handleSubmit(
     event: React.MouseEvent<HTMLButtonElement> | SubmitEvent,
-    mode: 'addAnother' | 'clone' | 'save' = 'save'
+    mode: 'addAnother' | 'save' = 'save'
   ): Promise<void> {
     if (!form.reportValidity()) return;
 
@@ -150,10 +160,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * Eg. autonumber fields, the id, etc.
      */
     const newResource =
-      mode === 'clone'
-        ? await resource.clone()
-        : mode === 'addAnother'
-        ? new resource.specifyModel.Resource()
+      mode === 'addAnother'
+        ? canCarryForward
+          ? await resource.clone()
+          : new resource.specifyModel.Resource()
         : undefined;
     const wasNew = resource.isNew();
     const wasChanged = resource.needsSaved;
@@ -208,17 +218,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {canAddAnother && canCreate ? (
         <>
-          {!NO_CLONE.has(resource.specifyModel.name) && (
-            <ButtonComponent
-              className={saveBlocked ? '!cursor-not-allowed' : undefined}
-              disabled={isSaving || isChanged}
-              onClick={(event): void =>
-                void handleSubmit(event, 'clone').catch(fail)
-              }
-            >
-              {formsText('clone')}
-            </ButtonComponent>
-          )}
           <ButtonComponent
             className={saveBlocked ? '!cursor-not-allowed' : undefined}
             disabled={isSaving || isChanged}

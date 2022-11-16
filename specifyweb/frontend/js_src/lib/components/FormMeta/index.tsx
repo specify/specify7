@@ -82,7 +82,6 @@ function MetaDialog({
       <div className="flex flex-col gap-2 pb-2">
         <H3>{formsText('formConfiguration')}</H3>
         <div className="flex max-w-[theme(spacing.96)] flex-wrap gap-2">
-          <CarryForwardButton model={resource.specifyModel} type="button" />
           <AutoNumbering resource={resource} />
           <Definition model={resource.specifyModel} />
           {subView === undefined && !resource.isNew() ? (
@@ -101,6 +100,7 @@ function MetaDialog({
           model={resource.specifyModel}
           text={formsText('printOnSave')}
         />
+        <CarryForwardButton model={resource.specifyModel} type="button" />
       </div>
       {typeof subView === 'object' ? (
         <div className="flex flex-col gap-2 pb-2">

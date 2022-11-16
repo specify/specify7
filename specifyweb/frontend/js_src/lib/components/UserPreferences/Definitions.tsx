@@ -981,6 +981,14 @@ export const preferenceDefinitions = {
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
           }),
+          // Can temporary disable carry forward for a given table
+          disableCarryForward: defineItem<RA<keyof Tables>>({
+            title: 'disableCarryForward',
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
           autoNumbering: defineItem<{
             readonly [TABLE_NAME in keyof Tables]?: RA<
               TableFields<Tables[TABLE_NAME]>

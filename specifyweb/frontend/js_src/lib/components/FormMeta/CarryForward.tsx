@@ -10,10 +10,12 @@ import { sortFunction, toggleItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 
@@ -23,17 +25,34 @@ export function CarryForwardButton({
 }: {
   readonly model: SpecifyModel;
   readonly type: 'button' | 'cog';
-}): JSX.Element {
+}): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  return (
+  const [globalDisabled, setGlobalDisabled] = usePref(
+    'form',
+    'preferences',
+    'disableCarryForward'
+  );
+  const isEnabled = !globalDisabled.includes(model.name);
+  const canChange = !NO_CLONE.has(model.name);
+  return canChange ? (
     <>
       {type === 'button' ? (
-        <Button.Small
-          title={formsText('carryForwardDescription')}
-          onClick={handleOpen}
-        >
+        <Label.Inline className="rounded bg-[color:var(--foreground)]">
+          <Input.Checkbox
+            checked={isEnabled}
+            onChange={(): void =>
+              setGlobalDisabled(toggleItem(globalDisabled, model.name))
+            }
+          />
           {formsText('carryForward')}
-        </Button.Small>
+          <Button.Small
+            className="ml-2"
+            title={formsText('carryForwardDescription')}
+            onClick={handleOpen}
+          >
+            {icons.cog}
+          </Button.Small>
+        </Label.Inline>
       ) : (
         <Button.Icon
           icon="cog"
@@ -43,7 +62,7 @@ export function CarryForwardButton({
       )}
       {isOpen && <CarryForwardConfig model={model} onClose={handleClose} />}
     </>
-  );
+  ) : null;
 }
 
 const normalize = (fields: RA<string>): RA<string> =>
@@ -141,10 +160,10 @@ function CarryForwardConfig({
           </Submit.Blue>
         </>
       }
-      header={formsText('carryForwardDescription')}
+      header={`${formsText('carryForwardDescription')} (${model.label})`}
       onClose={handleClose}
     >
-      <Form id={id('form')} onSubmit={handleClose} className="overflow-hidden">
+      <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
@@ -204,9 +223,9 @@ function CarryForwardCategory({
             />
             {field.label}
           </Label.Inline>
-          {field.isRelationship && (
+          {field.isRelationship && field.isDependent() ? (
             <CarryForwardButton model={field.relatedModel} type="cog" />
-          )}
+          ) : undefined}
         </li>
       ))}
     </Ul>
