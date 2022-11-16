@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useStableState } from '../../hooks/useContextState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -10,14 +11,14 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { fail } from '../Errors/Crash';
-import type { FormMode } from '../FormParse';
 import { FormMeta } from '../FormMeta';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { format } from './dataObjFormatters';
-import { SpecifyForm } from './SpecifyForm';
+import type { FormMode } from '../FormParse';
 import { TableIcon } from '../Molecules/TableIcon';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
-import { useStableState } from '../../hooks/useContextState';
+import { format } from './dataObjFormatters';
+import { RenderForm } from './SpecifyForm';
+import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -72,15 +73,20 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     triedToSubmit: false,
   });
 
+  const viewDefinition = useViewDefinition({
+    model: resource?.specifyModel,
+    viewName,
+    formType: 'form',
+    mode,
+  });
+
   const specifyForm =
     typeof resource === 'object' ? (
-      <SpecifyForm
+      <RenderForm
         display={isSubForm ? 'inline' : 'block'}
-        formType="form"
         isLoading={isLoading}
-        mode={mode}
         resource={resource}
-        viewName={viewName}
+        viewDefinition={viewDefinition}
       />
     ) : (
       <p>{formsText('noData')}</p>
@@ -111,7 +117,9 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       ),
     title,
     formElement: form,
-    formPreferences: <FormMeta resource={resource} />,
+    formPreferences: (
+      <FormMeta viewDescription={viewDefinition} resource={resource} />
+    ),
     form: (children, className) =>
       isSubForm ? (
         <>

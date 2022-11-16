@@ -29,6 +29,7 @@ import { ReadOnlyMode } from './ReadOnlyMode';
 import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
+import { ViewDescription } from '../FormParse';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -37,9 +38,11 @@ import { SubViewMeta } from './SubViewMeta';
 export function FormMeta({
   resource,
   className,
+  viewDescription,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly className?: string;
+  readonly viewDescription: ViewDescription | undefined;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
   const [isReadOnly = false] = useCachedState('forms', 'readOnlyMode');
@@ -58,7 +61,11 @@ export function FormMeta({
           : undefined}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (
-        <MetaDialog resource={resource} onClose={handleClose} />
+        <MetaDialog
+          resource={resource}
+          onClose={handleClose}
+          viewDescription={viewDescription}
+        />
       ) : undefined}
     </>
   ) : null;
@@ -66,9 +73,11 @@ export function FormMeta({
 
 function MetaDialog({
   resource,
+  viewDescription,
   onClose: handleClose,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
+  readonly viewDescription: ViewDescription | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const subView = React.useContext(SubViewContext);
@@ -83,7 +92,10 @@ function MetaDialog({
         <H3>{formsText('formConfiguration')}</H3>
         <div className="flex max-w-[theme(spacing.96)] flex-wrap gap-2">
           <AutoNumbering resource={resource} />
-          <Definition model={resource.specifyModel} />
+          <Definition
+            model={resource.specifyModel}
+            viewDescription={viewDescription}
+          />
           {subView === undefined && !resource.isNew() ? (
             <ReadOnlyMode />
           ) : undefined}

@@ -19,7 +19,7 @@ import type { FormMode } from '../FormParse';
 import type { FormCellDefinition } from '../FormParse/cells';
 import { FormMeta } from '../FormMeta';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { SpecifyForm } from '../Forms/SpecifyForm';
+import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -130,6 +130,12 @@ export function FormTable<SCHEMA extends AnySchema>({
     model: relationship.relatedModel,
     viewName,
     formType: 'formTable',
+    mode,
+  });
+  const fullViewDefinition = useViewDefinition({
+    model: relationship.relatedModel,
+    viewName,
+    formType: 'form',
     mode,
   });
 
@@ -261,12 +267,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                         tabIndex={-1}
                         visible
                       >
-                        <SpecifyForm
+                        <RenderForm
                           display="inline"
-                          formType="form"
-                          mode={mode}
                           resource={resource}
-                          viewName={viewName}
+                          viewDefinition={fullViewDefinition}
                         />
                       </DataEntry.Cell>
                     </>
@@ -347,7 +351,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </Button.Small>
                     ) : undefined}
                     {isExpanded[resource.cid] && (
-                      <FormMeta className="flex-1" resource={resource} />
+                      <FormMeta
+                        className="flex-1"
+                        resource={resource}
+                        viewDescription={fullViewDefinition}
+                      />
                     )}
                   </div>
                 </div>

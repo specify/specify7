@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
@@ -8,17 +7,18 @@ import { formsText } from '../../localization/forms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
-import { fetchCollection } from '../DataModel/collection';
-import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { ViewDescription } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { usePref } from '../UserPreferences/usePref';
 
 export function Definition({
   model,
+  viewDescription,
 }: {
   readonly model: SpecifyModel;
+  readonly viewDescription: ViewDescription | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -26,18 +26,27 @@ export function Definition({
       <Button.Small onClick={handleOpen}>
         {commonText('formDefinition')}
       </Button.Small>
-      {isOpen && <FormDefinitionDialog model={model} onClose={handleClose} />}
+      {isOpen && (
+        <FormDefinitionDialog
+          model={model}
+          viewDescription={viewDescription}
+          onClose={handleClose}
+        />
+      )}
     </>
   );
 }
 
 function FormDefinitionDialog({
   model,
+  viewDescription,
   onClose: handleClose,
 }: {
   readonly model: SpecifyModel;
+  readonly viewDescription: ViewDescription | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
+  const viewSetId = viewDescription?.viewSetId;
   return (
     <Dialog
       buttons={commonText('close')}
@@ -46,7 +55,9 @@ function FormDefinitionDialog({
     >
       <UseAutoForm model={model} />
       <UseLabels />
-      <EditFormDefinition />
+      {typeof viewSetId === 'number' && (
+        <EditFormDefinition viewSetId={viewSetId} />
+      )}
     </Dialog>
   );
 }
@@ -101,45 +112,16 @@ function UseLabels(): JSX.Element {
   );
 }
 
-function EditFormDefinition(): JSX.Element {
-  const viewDefinitionLink = useFormDefinition();
+function EditFormDefinition({
+  viewSetId,
+}: {
+  readonly viewSetId: number;
+}): JSX.Element {
   return (
     <ProtectedTool action="read" tool="resources">
-      {typeof viewDefinitionLink === 'string' && (
-        <Link.NewTab href={viewDefinitionLink}>
-          {formsText('editFormDefinition')}
-        </Link.NewTab>
-      )}
+      <Link.NewTab href={`/specify/resources/view-set/${viewSetId}/`}>
+        {formsText('editFormDefinition')}
+      </Link.NewTab>
     </ProtectedTool>
   );
-}
-
-/*
- * BUG: this assumes that the ViewSet for current collection was the one used
- *   to render this form. That is not always the case.
- */
-function useFormDefinition(): string | undefined {
-  const [url] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection(
-          'SpViewSetObj',
-          {
-            limit: 1,
-          },
-          {
-            spAppResourceDir__Collection: schema.domainLevelIds.collection,
-          }
-        )
-          .then(({ records }) => records[0]?.id)
-          .then((id) =>
-            typeof id === 'number'
-              ? `/specify/resources/view-set/${id}/`
-              : undefined
-          ),
-      []
-    ),
-    false
-  );
-  return url;
 }

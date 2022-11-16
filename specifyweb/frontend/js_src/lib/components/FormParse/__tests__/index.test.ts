@@ -196,6 +196,7 @@ test('parseViewDefinition', () => {
     ...parsedTinyView,
     mode: 'view',
     formType: 'form',
+    viewSetId: undefined,
   });
 });
 

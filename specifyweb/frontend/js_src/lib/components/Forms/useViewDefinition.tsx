@@ -8,9 +8,9 @@ import { error } from '../Errors/assert';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
+import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
 import { originalAttachmentsView } from './SpecifyForm';
-import { usePref } from '../UserPreferences/usePref';
 
 /**
  * A hook to get information needed to display a form
@@ -19,59 +19,57 @@ import { usePref } from '../UserPreferences/usePref';
  */
 export function useViewDefinition({
   model,
-  viewName = model.view,
+  viewName,
   formType,
   mode,
 }: {
-  readonly model: SpecifyModel;
+  readonly model: SpecifyModel | undefined;
   readonly viewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
   const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
-  const useCustomForm = globalConfig[model.name] ?? true;
+  const useGeneratedForm = globalConfig[model?.name ?? 'Agent'] === false;
   const [viewDefinition] = useAsyncState<ViewDescription>(
-    React.useCallback(
-      async () =>
-        viewName === 'ObjectAttachment'
-          ? {
-              ...webOnlyViews().ObjectAttachment,
-              model,
-              formType,
-              mode,
-            }
-          : useCustomForm
-          ? fetchView(
-              viewName === originalAttachmentsView
-                ? 'ObjectAttachment'
-                : viewName
-            )
-              .then((viewDefinition) =>
-                typeof viewDefinition === 'object'
-                  ? parseViewDefinition(viewDefinition, formType, mode)
-                  : undefined
-              )
-              .then((viewDefinition) =>
-                typeof viewDefinition === 'object'
-                  ? viewDefinition.model === model
-                    ? viewDefinition
-                    : error(
-                        'View definition model does not match resource model'
-                      )
-                  : f.maybe(
-                      webOnlyViews()[viewName as keyof typeof webOnlyViews],
-                      ({ columns, rows }) => ({
-                        columns,
-                        rows,
-                        formType,
-                        mode,
-                        model,
-                      })
-                    ) ?? autoGenerateViewDefinition(model, formType, mode)
-              )
-          : autoGenerateViewDefinition(model, formType, mode),
-      [useCustomForm, viewName, formType, mode, model]
-    ),
+    React.useCallback(async () => {
+      if (model === undefined) return undefined;
+      else if (viewName === 'ObjectAttachment')
+        return {
+          ...webOnlyViews().ObjectAttachment,
+          model,
+          formType,
+          mode,
+        };
+      else if (useGeneratedForm)
+        return autoGenerateViewDefinition(model, formType, mode);
+      const resolvedViewName = viewName ?? model.view;
+      return fetchView(
+        resolvedViewName === originalAttachmentsView
+          ? 'ObjectAttachment'
+          : resolvedViewName
+      )
+        .then((viewDefinition) =>
+          typeof viewDefinition === 'object'
+            ? parseViewDefinition(viewDefinition, formType, mode)
+            : undefined
+        )
+        .then((viewDefinition) =>
+          typeof viewDefinition === 'object'
+            ? viewDefinition.model === model
+              ? viewDefinition
+              : error('View definition model does not match resource model')
+            : f.maybe(
+                webOnlyViews()[viewName as keyof typeof webOnlyViews],
+                ({ columns, rows }) => ({
+                  columns,
+                  rows,
+                  formType,
+                  mode,
+                  model,
+                })
+              ) ?? autoGenerateViewDefinition(model, formType, mode)
+        );
+    }, [useGeneratedForm, viewName, formType, mode, model]),
     false
   );
 
