@@ -420,6 +420,10 @@ export const adminText = createDictionary({
     'en-us': 'Filters',
     'ru-ru': 'Фильтры',
   },
+  custom: {
+    'en-us': 'Custom',
+    'ru-ru': 'Настроить',
+  },
   leafletLayers: {
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои Leaflet',

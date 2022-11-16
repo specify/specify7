@@ -1,3 +1,4 @@
+import { RadioGroup } from '@headlessui/react';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -7,7 +8,9 @@ import { commonText } from '../../localization/common';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
 import type { AppResourceFilters as AppResourceFiltersType } from './filtersHelpers';
@@ -18,8 +21,14 @@ import {
   filterAppResources,
   hasAllAppResources,
 } from './filtersHelpers';
+import type { AppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
+
+const labels = {
+  viewSets: commonText('formDefinitions'),
+  appResources: commonText('appResources'),
+};
 
 export function AppResourcesFilters({
   initialResources,
@@ -36,30 +45,74 @@ export function AppResourcesFilters({
       ...filters,
       viewSets: !filters.viewSets,
     });
-  const showResources = hasAllAppResources(filters.appResources);
+  const showAllResources = hasAllAppResources(filters.appResources);
+  const value: AppResourceMode | 'custom' = showAllResources
+    ? filters.viewSets
+      ? 'custom'
+      : 'appResources'
+    : filters.viewSets
+    ? 'viewSets'
+    : 'custom';
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
-      appResources: showResources ? [] : allAppResources,
+      appResources: showAllResources ? [] : allAppResources,
     });
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Blue
-        aria-pressed={filters.viewSets}
-        onClick={handleToggleViewSets}
+      <RadioGroup
+        className="flex rounded bg-[color:var(--background)]"
+        value={value}
+        onChange={(newValue): void =>
+          newValue === 'custom'
+            ? handleOpen()
+            : setFilters(
+                newValue === 'viewSets'
+                  ? {
+                      viewSets: true,
+                      appResources: [],
+                    }
+                  : {
+                      viewSets: false,
+                      appResources: allAppResources,
+                    }
+              )
+        }
       >
-        {commonText('formDefinitions')}
-      </Button.Blue>
-      <Button.Blue aria-pressed={showResources} onClick={handleToggleResources}>
-        {commonText('appResources')}
-      </Button.Blue>
-      <Button.Blue onClick={handleOpen}>{adminText('filters')}</Button.Blue>
+        <RadioGroup.Label className="sr-only">
+          {adminText('filters')}
+        </RadioGroup.Label>
+        {Object.entries(labels).map(([key, label]) => (
+          <RadioGroup.Option key={key} value={key}>
+            {({ checked }): JSX.Element => (
+              <span
+                className={`
+                  ${className.niceButton}
+                  hover:bg-gray-300 
+                  ${
+                    checked ? className.blueButton : 'hover:dark:bg-neutral-600'
+                  }
+                `}
+              >
+                {label}
+              </span>
+            )}
+          </RadioGroup.Option>
+        ))}
+        <Button.Blue
+          aria-label={adminText('custom')}
+          title={adminText('custom')}
+          onClick={handleOpen}
+        >
+          {icons.cog}
+        </Button.Blue>
+      </RadioGroup>
       {isOpen && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('filters')}
+          header={adminText('custom')}
           modal={false}
           onClose={handleClose}
         >
@@ -80,7 +133,7 @@ export function AppResourcesFilters({
             <li>
               <Label.Inline>
                 <Input.Checkbox
-                  checked={showResources}
+                  checked={showAllResources}
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
