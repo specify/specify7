@@ -23,5 +23,6 @@
   },
   "viewsetName": "Fish Views",
   "viewsetLevel": "Collection",
-  "viewsetSource": "db"
+  "viewsetSource": "db",
+  "viewssetId": 4
 }

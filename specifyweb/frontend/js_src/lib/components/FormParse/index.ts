@@ -44,6 +44,7 @@ export type ViewDefinition = {
   readonly viewsetLevel: string;
   readonly viewsetName: string;
   readonly viewsetSource: string;
+  readonly viewsetId: number | null;
 };
 
 export const formTypes = ['form', 'formTable'] as const;

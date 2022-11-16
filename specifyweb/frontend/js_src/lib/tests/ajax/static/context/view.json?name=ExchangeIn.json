@@ -19,5 +19,6 @@
   },
   "viewsetName": "Common",
   "viewsetLevel": "Common",
-  "viewsetSource": "disk"
+  "viewsetSource": "disk",
+  "viewssetId": null
 }

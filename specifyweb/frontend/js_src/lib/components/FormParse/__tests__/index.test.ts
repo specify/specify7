@@ -143,6 +143,7 @@ const viewDefinition: ViewDefinition = {
   viewsetLevel: '',
   viewsetName: '',
   viewsetSource: '',
+  viewsetId: null,
 };
 
 describe('fetchView', () => {
