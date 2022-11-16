@@ -30,9 +30,15 @@ import { usePref } from '../UserPreferences/usePref';
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
 ): JSX.Element =>
-  type === 'viewSet'
-    ? appResourceTypes.viewSets.icon
-    : appResourceSubTypes[type].icon;
+  type === 'viewSet' ? (
+    <span title={adminText('formDefinitions')} aria-hidden>
+      {appResourceTypes.viewSets.icon}
+    </span>
+  ) : (
+    <span title={appResourceSubTypes[type].label} aria-hidden>
+      {appResourceSubTypes[type].icon}
+    </span>
+  );
 
 export function AppResourceEditButton({
   title,
