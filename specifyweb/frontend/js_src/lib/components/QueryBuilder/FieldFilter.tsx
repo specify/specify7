@@ -172,7 +172,7 @@ function QueryInputField({
       <Select
         {...commonProps}
         multiple={listInput}
-        size={listInput ? selectMultipleSize : 1}
+        size={listInput ? selectMultipleSize : undefined}
         value={
           listInput
             ? value
