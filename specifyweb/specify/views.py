@@ -435,6 +435,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
 
     # Create database connection cursor
     cursor = connection.cursor()
+    db_name = connection.get_connection_params()['db']
 
     with transaction.atomic():
         # Check to make sure both the old and new agent IDs exist in the table
@@ -448,11 +449,11 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
         SELECT TABLE_NAME, COLUMN_NAME
         FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
         WHERE
-        REFERENCED_TABLE_SCHEMA = 'specify' AND
+        REFERENCED_TABLE_SCHEMA = '<db_name>' AND
         REFERENCED_TABLE_NAME = 'agent' AND
         REFERENCED_COLUMN_NAME = 'AgentID'
         ORDER BY TABLE_NAME;
-        """
+        """.replace('<db_name>', db_name)
         cursor.execute(sql_get_cols_ref_agent_id)
         foreign_key_cols = cursor.fetchall()
         
