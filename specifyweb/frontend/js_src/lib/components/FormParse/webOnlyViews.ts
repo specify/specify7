@@ -63,6 +63,12 @@ export const webOnlyViews = f.store(() =>
         'spReports',
       ])
     ),
+    [spAppResourceView]: autoGenerateViewDefinition(
+      schema.models.SpAppResource,
+      'form',
+      'edit',
+      ['name']
+    ),
     [spViewSetNameView]: autoGenerateViewDefinition(
       schema.models.SpViewSetObj,
       'form',
@@ -72,4 +78,5 @@ export const webOnlyViews = f.store(() =>
   } as const)
 );
 
+export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';

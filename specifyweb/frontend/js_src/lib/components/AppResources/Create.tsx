@@ -28,7 +28,10 @@ import {
 } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { spViewSetNameView } from '../FormParse/webOnlyViews';
+import {
+  spAppResourceView,
+  spViewSetNameView,
+} from '../FormParse/webOnlyViews';
 
 /**
  * Check if one type is a subtype of another
@@ -178,7 +181,9 @@ function EditAppResource({
       mode="edit"
       resource={resource}
       viewName={
-        type.tableName === 'SpAppResource' ? undefined : spViewSetNameView
+        type.tableName === 'SpAppResource'
+          ? spAppResourceView
+          : spViewSetNameView
       }
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
