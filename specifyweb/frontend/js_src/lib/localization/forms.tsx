@@ -733,17 +733,21 @@ export const formsText = createDictionary({
     'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
     'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
   },
-  printOnSave: {
-    'en-us': 'Print label on save',
-    'ru-ru': 'Печатать метку при сохранении',
-  },
   generateLabel: {
     'en-us': 'Generate label',
     'ru-ru': 'Сгенерировать метку',
   },
+  generateLabelOnSave: {
+    'en-us': 'Generate label on save',
+    'ru-ru': 'Генерировать метку при сохранении',
+  },
   generateReport: {
     'en-us': 'Generate report',
     'ru-ru': 'Сгенерировать отчет',
+  },
+  generateReportOnSave: {
+    'en-us': 'Generate report on save',
+    'ru-ru': 'Генерировать отчет при сохранении',
   },
   form: {
     'en-us': 'Subform',

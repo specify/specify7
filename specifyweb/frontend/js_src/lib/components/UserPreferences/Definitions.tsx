@@ -964,7 +964,7 @@ export const preferenceDefinitions = {
         title: '(not visible to user) Preferences',
         items: {
           printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
-            title: 'Print label on form save',
+            title: 'Generate label on form save',
             requiresReload: false,
             visible: false,
             defaultValue: {},

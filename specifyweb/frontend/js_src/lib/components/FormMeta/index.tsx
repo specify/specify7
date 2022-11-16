@@ -115,7 +115,11 @@ function MetaDialog({
           fieldName={undefined}
           id={undefined}
           model={resource.specifyModel}
-          text={formsText('printOnSave')}
+          text={
+            interactionTables.has(resource.specifyModel.name)
+              ? formsText('generateReportOnSave')
+              : formsText('generateLabelOnSave')
+          }
         />
         <CarryForwardButton model={resource.specifyModel} type="button" />
       </div>
