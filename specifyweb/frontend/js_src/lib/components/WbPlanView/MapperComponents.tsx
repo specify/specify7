@@ -129,6 +129,7 @@ export function MappingView({
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
     useCachedState('wbPlanViewUi', 'mappingViewHeight');
+  const initialHeight = React.useRef(mappingViewHeight);
   const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
     null
   );
@@ -157,7 +158,7 @@ export function MappingView({
       ref={setMappingView}
       style={
         {
-          '--mapping-view-height': `${mappingViewHeight}px`,
+          '--mapping-view-height': `${initialHeight.current}px`,
         } as React.CSSProperties
       }
     >

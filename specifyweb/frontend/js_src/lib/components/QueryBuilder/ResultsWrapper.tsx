@@ -169,12 +169,7 @@ export function QueryResultsWrapper({
       <div className="flex-1 snap-start">{loadingGif}</div>
     )
   ) : (
-    <div
-      className={`
-        flex flex-1 snap-start
-        ${typeof handleSelected === 'function' ? 'max-h-[70vh]' : ''}
-      `}
-    >
+    <div className="flex flex-1 snap-start overflow-hidden">
       <ErrorBoundary dismissable>
         <QueryResults {...props} totalCount={totalCount} />
       </ErrorBoundary>

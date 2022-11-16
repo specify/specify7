@@ -26,11 +26,10 @@ export function QueryHeader({
   query,
   queryResource,
   isScrolledTop,
-  container,
+  form,
   state,
   getQueryFieldRecords,
   isReadOnly,
-  formRef,
   saveRequired,
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
@@ -41,13 +40,12 @@ export function QueryHeader({
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly isScrolledTop: boolean;
-  readonly container: HTMLDivElement | null;
+  readonly form: HTMLFormElement | null;
   readonly state: MainState;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly isReadOnly: boolean;
-  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
   readonly saveRequired: boolean;
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
@@ -67,7 +65,7 @@ export function QueryHeader({
       {!isScrolledTop && (
         <Button.Small
           onClick={(): void =>
-            container === null ? undefined : smoothScroll(container, 0)
+            form === null ? undefined : smoothScroll(form, 0)
           }
         >
           {queryText('editQuery')}
@@ -103,7 +101,7 @@ export function QueryHeader({
           fields={state.fields}
           getQueryFieldRecords={getQueryFieldRecords}
           isReadOnly={isReadOnly}
-          isValid={(): boolean => formRef.current?.reportValidity() ?? false}
+          isValid={(): boolean => form?.reportValidity() ?? false}
           queryResource={queryResource}
           saveRequired={saveRequired}
           unsetUnloadProtect={unsetUnloadProtect}
