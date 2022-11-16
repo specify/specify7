@@ -127,8 +127,6 @@ export const queryFieldsToFieldSpecs = (
     });
 
 const auditLogMappingPaths = [
-  ['parentRecordId'],
-  ['parentTableNum'],
   ['recordId'],
   ['tableNum'],
   ['fields', 'oldValue'],
