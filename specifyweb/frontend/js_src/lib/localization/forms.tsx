@@ -741,9 +741,13 @@ export const formsText = createDictionary({
     'en-us': 'Print label on save',
     'ru-ru': 'Печатать метку при сохранении',
   },
-  printLabel: {
-    'en-us': 'Print label',
-    'ru-ru': 'Печатать метку',
+  generateLabel: {
+    'en-us': 'Generate label',
+    'ru-ru': 'Сгенерировать метку',
+  },
+  generateReport: {
+    'en-us': 'Generate report',
+    'ru-ru': 'Сгенерировать отчет',
   },
   form: {
     'en-us': 'Subform',

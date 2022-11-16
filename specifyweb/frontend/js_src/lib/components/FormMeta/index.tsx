@@ -30,6 +30,7 @@ import { RecordHistory } from './RecordHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
 import { ViewDescription } from '../FormParse';
+import { interactionTables } from '../Interactions/InteractionsDialog';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -101,7 +102,11 @@ function MetaDialog({
           ) : undefined}
           <GenerateLabel
             id={undefined}
-            label={formsText('printLabel')}
+            label={
+              interactionTables.has(resource.specifyModel.name)
+                ? formsText('generateReport')
+                : formsText('generateLabel')
+            }
             resource={resource}
           />
         </div>
