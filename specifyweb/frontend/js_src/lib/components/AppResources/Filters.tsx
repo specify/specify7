@@ -1,4 +1,3 @@
-import { RadioGroup } from '@headlessui/react';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -21,14 +20,8 @@ import {
   filterAppResources,
   hasAllAppResources,
 } from './filtersHelpers';
-import type { AppResourceMode } from './helpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
-
-const labels = {
-  viewSets: commonText('formDefinitions'),
-  appResources: commonText('appResources'),
-};
 
 export function AppResourcesFilters({
   initialResources,
@@ -40,19 +33,7 @@ export function AppResourcesFilters({
     'filters'
   );
 
-  const handleToggleViewSets = (): void =>
-    setFilters({
-      ...filters,
-      viewSets: !filters.viewSets,
-    });
   const showAllResources = hasAllAppResources(filters.appResources);
-  const value: AppResourceMode | 'custom' = showAllResources
-    ? filters.viewSets
-      ? 'custom'
-      : 'appResources'
-    : filters.viewSets
-    ? 'viewSets'
-    : 'custom';
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
@@ -60,47 +41,34 @@ export function AppResourcesFilters({
     });
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+
   return (
     <>
-      <RadioGroup
-        className="flex rounded bg-[color:var(--background)]"
-        value={value}
-        onChange={(newValue): void =>
-          newValue === 'custom'
-            ? handleOpen()
-            : setFilters(
-                newValue === 'viewSets'
-                  ? {
-                      viewSets: true,
-                      appResources: [],
-                    }
-                  : {
-                      viewSets: false,
-                      appResources: allAppResources,
-                    }
-              )
-        }
-      >
-        <RadioGroup.Label className="sr-only">
-          {adminText('filters')}
-        </RadioGroup.Label>
-        {Object.entries(labels).map(([key, label]) => (
-          <RadioGroup.Option key={key} value={key}>
-            {({ checked }): JSX.Element => (
-              <span
-                className={`
-                  ${className.niceButton}
-                  hover:bg-gray-300 
-                  ${
-                    checked ? className.blueButton : 'hover:dark:bg-neutral-600'
-                  }
-                `}
-              >
-                {label}
-              </span>
-            )}
-          </RadioGroup.Option>
-        ))}
+      <div className="flex gap-2 rounded bg-[color:var(--background)]">
+        <span className="sr-only">{adminText('filters')}</span>
+        <RadioButton
+          isPressed={filters.viewSets}
+          onClick={(): void =>
+            setFilters({
+              viewSets: showAllResources ? true : !filters.viewSets,
+              appResources: [],
+            })
+          }
+        >
+          {commonText('formDefinitions')}
+        </RadioButton>
+        <RadioButton
+          isPressed={showAllResources}
+          onClick={(): void =>
+            setFilters({
+              viewSets: false,
+              appResources:
+                filters.viewSets || !showAllResources ? allAppResources : [],
+            })
+          }
+        >
+          {commonText('appResources')}
+        </RadioButton>
         <Button.Blue
           aria-label={adminText('custom')}
           title={adminText('custom')}
@@ -108,7 +76,7 @@ export function AppResourcesFilters({
         >
           {icons.cog}
         </Button.Blue>
-      </RadioGroup>
+      </div>
       {isOpen && (
         <Dialog
           buttons={commonText('close')}
@@ -121,7 +89,12 @@ export function AppResourcesFilters({
               <Label.Inline>
                 <Input.Checkbox
                   checked={filters.viewSets}
-                  onValueChange={handleToggleViewSets}
+                  onValueChange={(): void =>
+                    setFilters({
+                      ...filters,
+                      viewSets: !filters.viewSets,
+                    })
+                  }
                 />
                 {appResourceTypes.viewSets.icon}
                 {`${commonText('formDefinitions')} (${countAppResources(
@@ -182,6 +155,34 @@ export function AppResourcesFilters({
         </Dialog>
       )}
     </>
+  );
+}
+
+function RadioButton({
+  isPressed,
+  children,
+  onClick: handleClick,
+}: {
+  readonly isPressed: boolean;
+  readonly children: string;
+  readonly onClick: () => void;
+}): JSX.Element {
+  return (
+    <button
+      aria-pressed={isPressed}
+      className={`
+        ${className.niceButton} aria-handled
+        ${
+          isPressed
+            ? className.blueButton
+            : 'hover:bg-gray-300 hover:dark:bg-neutral-600'
+        }
+      `}
+      type="button"
+      onClick={handleClick}
+    >
+      {children}
+    </button>
   );
 }
 
