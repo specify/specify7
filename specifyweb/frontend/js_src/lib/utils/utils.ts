@@ -137,6 +137,32 @@ export const sortFunction =
       : -1;
   };
 
+/** Like sortFunction, but can sort based on multiple fields */
+export const multiSortFunction =
+  <
+    ORIGINAL_TYPE,
+    MAPPED_TYPE extends boolean | number | string | null | undefined | Date
+  >(
+    ...payload: readonly (readonly [
+      mapper: (value: ORIGINAL_TYPE) => MAPPED_TYPE,
+      reverse?: boolean
+    ])[]
+  ): ((left: ORIGINAL_TYPE, right: ORIGINAL_TYPE) => -1 | 0 | 1) =>
+  (left: ORIGINAL_TYPE, right: ORIGINAL_TYPE): -1 | 0 | 1 => {
+    for (const [mapper, reverse = false] of payload) {
+      const [leftValue, rightValue] = reverse
+        ? [mapper(right), mapper(left)]
+        : [mapper(left), mapper(right)];
+      if (leftValue === rightValue) continue;
+      return typeof leftValue === 'string' && typeof rightValue === 'string'
+        ? (leftValue.localeCompare(rightValue) as -1 | 0 | 1)
+        : leftValue > rightValue
+        ? 1
+        : -1;
+    }
+    return 0;
+  };
+
 /** Split array in half according to a discriminator function */
 export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
   array: RA<LEFT_ITEM | RIGHT_ITEM>,
