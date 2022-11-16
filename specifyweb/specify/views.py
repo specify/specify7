@@ -421,7 +421,7 @@ def set_admin_status(request, userid):
         },
         "responses": {
             "204": {"description": "Success",},
-            "400": {"description": "The AgentID specified does not exist."}
+            "404": {"description": "The AgentID specified does not exist."}
         }
     },
 })
