@@ -5,6 +5,7 @@ A few non-business data resource end points
 import json
 import mimetypes
 from functools import wraps
+from itertools import groupby
 
 from django import http
 from django.conf import settings
@@ -391,3 +392,84 @@ def set_admin_status(request, userid):
     else:
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Replace a new agent for an old agent.",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "description": "The error.",
+                        "properties": {
+                            "old_agent_id": {
+                                "type": "integer",
+                                "description": "The old AgentID value of the agent record that is to be replaced by the new one."
+                            },
+                            "new_agent_id": {
+                                "type": "integer",
+                                "description": "The new AgentID value of the agent that is replacing the old one."
+                            }
+                        },
+                        'required': ['old_agent_id', 'new_agent_id'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "Success",},
+            "400": {"description": "The AgentID specified does not exist."}
+        }
+    },
+})
+@login_maybe_required
+@require_POST
+def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_id: int) -> http.HttpResponse:
+    """Replaces all the foreign keys referencing the old AgentID
+    with the new AgentID, and deletes the old agent record.
+    """
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [])
+
+    # Create database connection cursor
+    cursor = connection.cursor()
+
+    with transaction.atomic():
+        # Check to make sure both the old and new agent IDs exist in the table
+        cursor.execute("SELECT * FROM specify.agent WHERE AgentID = %s;", [old_agent_id])
+        if len(cursor.fetchall()) == 0:
+            return http.HttpResponseBadRequest("AgentID: " + old_agent_id + " does not exist.")
+        cursor.execute("SELECT * FROM specify.agent WHERE AgentID = %s;", [new_agent_id])
+        if len(cursor.fetchall()) == 0:
+            return http.HttpResponseBadRequest("AgentID: " + new_agent_id + " does not exist.")
+
+        # Get all of the columns in all of the tables of specify the are foreign keys referencing AgentID
+        sql_get_cols_ref_agent_id = """
+        SELECT TABLE_NAME, COLUMN_NAME
+        FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE
+        REFERENCED_TABLE_SCHEMA = 'specify' AND
+        REFERENCED_TABLE_NAME = 'agent' AND
+        REFERENCED_COLUMN_NAME = 'AgentID'
+        ORDER BY TABLE_NAME;
+        """
+        cursor.execute(sql_get_cols_ref_agent_id)
+        foreign_key_cols = cursor.fetchall()
+        
+        # Build query to update all of the records with foreign keys referencing the AgentID
+        sql_update = ""
+        for table_name, column_names in groupby(foreign_key_cols, lambda x: x[0]):
+            for col in [c[1] for c in column_names]:
+                sql_set_clause = col + " = " + new_agent_id
+                sql_where_clause = col + " = " + old_agent_id
+                sql_update += "UPDATE " + table_name + " SET " + sql_set_clause + " WHERE " + sql_where_clause + ";\n"
+        
+        # Execute update query for agent children
+        cursor.execute(sql_update)
+
+        # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
+        cursor.execute("DELETE FROM agent WHERE AgentID=%s", old_agent_id)
+        
+        return http.HttpResponse('', status=204)
