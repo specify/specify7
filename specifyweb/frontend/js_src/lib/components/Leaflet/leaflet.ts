@@ -150,7 +150,7 @@ export const formatLocalityData = (
           <a
             href="${viewUrl}"
             target="_blank"
-            className="${className.link}"
+            class="${className.link}"
             title="${commonText('opensInNewTab')}"
           >
             ${commonText('viewRecord')}
