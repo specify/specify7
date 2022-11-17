@@ -536,8 +536,8 @@ export const formsText = createDictionary({
     'en-us': 'Tree Synonymize',
     'ru-ru': 'Синонимизированный узел дерева',
   },
-  treeUnsynonymize: {
-    'en-us': 'Tree Unsynonymize',
+  treeDesynonymize: {
+    'en-us': 'Tree Desynonymize',
     'ru-ru': 'Отменено синонимизацию узла дерева',
   },
   unsupportedCellType: {

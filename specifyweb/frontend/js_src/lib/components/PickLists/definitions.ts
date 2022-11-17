@@ -41,7 +41,7 @@ const auditLogActions = [
   formsText('treeMerge'),
   formsText('treeMove'),
   formsText('treeSynonymize'),
-  formsText('treeUnsynonymize'),
+  formsText('treeDesynonymize'),
 ] as const;
 
 const pickListSortTypes = [
