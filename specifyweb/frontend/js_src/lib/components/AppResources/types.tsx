@@ -1,4 +1,4 @@
-import { RR } from '../../utils/types';
+import { ensure, IR, RR } from '../../utils/types';
 import { AppResourceMode } from './helpers';
 import { icons } from '../Atoms/Icons';
 import { adminText } from '../../localization/admin';
@@ -171,3 +171,5 @@ export const appResourceSubTypes = {
     label: adminText('otherAppResource'),
   },
 } as const;
+
+ensure<IR<AppResourceSubType>>()(appResourceSubTypes);

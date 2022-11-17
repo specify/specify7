@@ -7,8 +7,6 @@ import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourcesTree } from './hooks';
@@ -21,7 +19,6 @@ import { ResourceView } from '../Forms/ResourceView';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import {
-  AppResourceSubType,
   appResourceSubTypes,
   AppResourceType,
   appResourceTypes,
@@ -38,8 +35,6 @@ import {
  */
 export const isAppResourceSubType = (type: string, subType: string): boolean =>
   type === 'text/xml' && subType.includes('xml');
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
 export function CreateAppResource(): JSX.Element {
   const navigate = useNavigate();

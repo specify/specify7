@@ -204,7 +204,7 @@ const getUserTypeResources = (
       });
     return {
       label: userType,
-      key: `userType_${userType}`,
+      key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
       subCategories: [],
@@ -233,7 +233,7 @@ const getUserResources = (
 
       return {
         label: user.name,
-        key: `user_${user.id}`,
+        key: `collection_${collection.id}_user_${user.id}`,
         directory,
         ...mergeDirectories(directories, resources),
         subCategories: [],
