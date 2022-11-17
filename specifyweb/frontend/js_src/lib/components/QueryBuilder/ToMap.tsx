@@ -35,6 +35,7 @@ import {
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
+import { getResourceViewUrl } from '../DataModel/resource';
 
 export function QueryToMap({
   results,
@@ -64,6 +65,7 @@ export function QueryToMap({
           localityMappings={localityMappings}
           results={results}
           totalCount={totalCount}
+          tableName={model.name}
           onClose={handleClose}
           onFetchMore={selectedRows.size > 0 ? undefined : handleFetchMore}
         />
@@ -144,6 +146,7 @@ const fieldSpecsToMappingPaths = (
     }));
 
 type LocalityDataWithId = {
+  readonly recordId: number;
   readonly localityId: number;
   readonly localityData: LocalityData;
 };
@@ -152,12 +155,14 @@ function Dialog({
   results,
   totalCount,
   localityMappings,
+  tableName,
   onClose: handleClose,
   onFetchMore: handleFetchMore,
 }: {
   readonly results: RA<QueryResultRow>;
   readonly totalCount: number | undefined;
   readonly localityMappings: RA<RA<LocalityColumn>>;
+  readonly tableName: keyof Tables;
   readonly onClose: () => void;
   readonly onFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined;
 }): JSX.Element {
@@ -194,12 +199,12 @@ function Dialog({
               localityData: localityData.current.map(
                 ({ localityData }) => localityData
               ),
-              onClick: createClickCallback(localityData.current),
+              onClick: createClickCallback(tableName, localityData.current),
             }
       );
       markerEvents.trigger('updated');
     },
-    [localityMappings, markerEvents]
+    [tableName, localityMappings, markerEvents]
   );
 
   // Add initial results
@@ -211,12 +216,12 @@ function Dialog({
 
     function emptyQueue(): void {
       if (map === null) return;
-      addLeafletMarkers(map, localityData.current);
+      addLeafletMarkers(tableName, map, localityData.current);
       localityData.current = [];
     }
 
     return markerEvents.on('updated', emptyQueue, true);
-  }, [map, markerEvents]);
+  }, [tableName, map, markerEvents]);
 
   return typeof initialData === 'object' ? (
     <LeafletMap
@@ -258,7 +263,7 @@ function Dialog({
 const extractLocalities = (
   results: RA<QueryResultRow>,
   localityMappings: RA<RA<LocalityColumn>>
-): RA<{ readonly localityId: number; readonly localityData: LocalityData }> =>
+): RA<LocalityDataWithId> =>
   filterArray(
     results.flatMap((row) =>
       localityMappings.map((mappings) => {
@@ -278,12 +283,13 @@ const extractLocalities = (
         );
         return localityData === false || typeof localityId !== 'number'
           ? undefined
-          : { localityId, localityData };
+          : { recordId: row[queryIdField] as number, localityId, localityData };
       })
     )
   );
 
 function createClickCallback(
+  tableName: keyof Tables,
   points: RA<LocalityDataWithId>
 ): (index: number, event: L.LeafletEvent) => Promise<void> {
   const fullLocalityData: WritableArray<LocalityData | false | undefined> = [];
@@ -298,18 +304,23 @@ function createClickCallback(
       (marker as L.Marker)
         .getPopup()
         ?.setContent(
-          formatLocalityData(localityData!, resource.viewUrl(), true)
+          formatLocalityData(
+            localityData!,
+            getResourceViewUrl(tableName, points[index].recordId),
+            true
+          )
         );
   };
 }
 
 function addLeafletMarkers(
+  tableName: keyof Tables,
   map: LeafletInstance,
   points: RA<LocalityDataWithId>
 ): void {
   if (points.length === 0) return;
 
-  const handleMarkerClick = createClickCallback(points);
+  const handleMarkerClick = createClickCallback(tableName, points);
 
   const markers = points.map(({ localityData }, index) =>
     getMarkersFromLocalityData({
