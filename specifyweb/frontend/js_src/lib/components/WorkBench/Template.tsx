@@ -27,6 +27,7 @@ import { Link } from '../Atoms/Link';
 import { Input } from '../Atoms/Form';
 import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { legacyDialogs } from '../Molecules/LegacyDialog';
 
 function Navigation({
   name,
@@ -363,6 +364,9 @@ function useWbView(
         handleRefresh();
       })
       .render();
-    return () => view.remove();
+    return () => {
+      view.remove();
+      legacyDialogs.forEach((destructor) => destructor());
+    };
   }, [treeRanksLoaded, container, dataSet]);
 }
