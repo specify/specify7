@@ -14,11 +14,11 @@ import {
   addPrintMapButton,
   LeafletInstance,
   rememberSelectedBaseLayers,
-} from './leafletAddOns';
-import { mappingLocalityColumns } from './leafletConfig';
-import L from './leafletExtend';
-import type { Field, LocalityData } from './leafletHelpers';
-import { leafletLayersPromise } from './leafletLayers';
+} from './addOns';
+import { mappingLocalityColumns } from './config';
+import L from './extend';
+import type { Field, LocalityData } from './helpers';
+import { leafletLayersPromise } from './layers';
 import { className } from '../Atoms/className';
 
 const DEFAULT_ZOOM = 5;

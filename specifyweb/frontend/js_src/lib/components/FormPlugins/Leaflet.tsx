@@ -2,15 +2,15 @@ import type Leaflet from 'leaflet';
 import React from 'react';
 
 import type { Locality } from '../DataModel/types';
-import { formatLocalityData } from '../Leaflet/leaflet';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import { formatLocalityData } from '../Leaflet';
+import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { LeafletMap } from '../Molecules/Leaflet';
+import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';

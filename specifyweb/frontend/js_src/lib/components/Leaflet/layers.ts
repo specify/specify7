@@ -6,7 +6,7 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import L from './leafletExtend';
+import L from './extend';
 import { Http } from '../../utils/ajax/definitions';
 
 export const leafletLayersEndpoint =

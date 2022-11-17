@@ -27,7 +27,7 @@ import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
 import {showDialog} from '../Molecules/LegacyDialog';
 import {createBackboneView} from '../Core/reactBackboneExtend';
-import {LeafletMap} from '../Molecules/Leaflet';
+import {LeafletMap} from '../Leaflet/Map';
 import {localityText} from '../../localization/locality';
 import {filterArray} from '../../utils/types';
 

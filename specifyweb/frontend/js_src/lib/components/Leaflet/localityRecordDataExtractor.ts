@@ -30,13 +30,13 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletConfig';
-import type { LocalityData } from './leafletHelpers';
+import { localityPinFields, MAX_TO_MANY_INDEX } from './config';
+import type { LocalityData } from './helpers';
 import {
   findRanksInMappings,
   formatCoordinate,
   getLocalityData,
-} from './leafletHelpers';
+} from './helpers';
 
 const splitMappingPath = (
   mappingPath: MappingPath,

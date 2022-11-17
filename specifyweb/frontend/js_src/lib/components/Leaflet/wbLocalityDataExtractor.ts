@@ -17,15 +17,15 @@ import {
   mappingPathToString,
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
-import type { LocalityPinFields } from './leafletConfig';
-import { localityPinFields, requiredLocalityColumns } from './leafletConfig';
-import type { Field, LocalityData } from './leafletHelpers';
+import type { LocalityPinFields } from './config';
+import { localityPinFields, requiredLocalityColumns } from './config';
+import type { Field, LocalityData } from './helpers';
 import {
   findRanksInMappings,
   formatCoordinate,
   getField,
   getLocalityData,
-} from './leafletHelpers';
+} from './helpers';
 
 const addBaseTableName = (
   baseTableName: keyof Tables,

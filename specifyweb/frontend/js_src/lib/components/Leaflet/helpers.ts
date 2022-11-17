@@ -7,11 +7,8 @@
 
 import type { MappingPath } from '../WbPlanView/Mapper';
 import { Coord } from '../../utils/latLong';
-import { isValidAccuracy } from './leaflet';
-import {
-  mappingLocalityColumns,
-  requiredLocalityColumns,
-} from './leafletConfig';
+import { isValidAccuracy } from './index';
+import { mappingLocalityColumns, requiredLocalityColumns } from './config';
 import type { IR, RA } from '../../utils/types';
 import {
   mappingPathToString,

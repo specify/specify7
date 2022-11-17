@@ -15,20 +15,17 @@ import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
-import {
-  formatLocalityData,
-  getMarkersFromLocalityData,
-} from '../Leaflet/leaflet';
-import type { LeafletInstance } from '../Leaflet/leafletAddOns';
-import { queryMappingLocalityColumns } from '../Leaflet/leafletConfig';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import { formatLocalityData, getMarkersFromLocalityData } from '../Leaflet';
+import type { LeafletInstance } from '../Leaflet/addOns';
+import { queryMappingLocalityColumns } from '../Leaflet/config';
+import type { LocalityData } from '../Leaflet/helpers';
 import {
   fetchLocalityDataFromResource,
   formatLocalityDataObject,
 } from '../Leaflet/localityRecordDataExtractor';
 import { findLocalityColumnsInDataSet } from '../Leaflet/wbLocalityDataExtractor';
 import { LoadingScreen } from '../Molecules/Dialog';
-import { LeafletMap } from '../Molecules/Leaflet';
+import { LeafletMap } from '../Leaflet/Map';
 import { defaultColumnOptions } from '../WbPlanView/linesGetter';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {

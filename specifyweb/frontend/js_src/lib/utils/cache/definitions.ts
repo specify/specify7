@@ -23,7 +23,7 @@ import { AnyTree } from '../../components/DataModel/helperTypes';
 import {
   LeafletCacheSalt,
   MarkerLayerName,
-} from '../../components/Leaflet/leafletAddOns';
+} from '../../components/Leaflet/addOns';
 import { SortConfig } from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */

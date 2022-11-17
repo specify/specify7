@@ -1,7 +1,7 @@
 import { ajax } from '../../utils/ajax';
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   defaultRecordFilterFunction,

@@ -5,12 +5,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { showLeafletMap } from '../Leaflet/leaflet';
-import { addFullScreenButton, LeafletInstance } from '../Leaflet/leafletAddOns';
-import type L from '../Leaflet/leafletExtend';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
-import { leafletLayersPromise } from '../Leaflet/leafletLayers';
-import { Dialog, dialogClassNames } from './Dialog';
+import { showLeafletMap } from './index';
+import { addFullScreenButton, LeafletInstance } from './addOns';
+import type L from './extend';
+import type { LocalityData } from './helpers';
+import { leafletLayersPromise } from './layers';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 
 const resizeThrottle = 250;
 

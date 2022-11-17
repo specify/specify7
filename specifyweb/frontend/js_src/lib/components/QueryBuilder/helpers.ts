@@ -7,7 +7,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { queryMappingLocalityColumns } from '../Leaflet/leafletConfig';
+import { queryMappingLocalityColumns } from '../Leaflet/config';
 import { uniqueMappingPaths } from '../Leaflet/wbLocalityDataExtractor';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
