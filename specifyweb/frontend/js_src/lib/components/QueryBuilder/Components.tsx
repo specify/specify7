@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -123,9 +124,7 @@ export function ToggleMappingViewButton({
       onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
     >
-      {showMappingView
-        ? queryText('hideFieldMapper')
-        : queryText('showFieldMapper')}
+      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
     </Button.Small>
   );
 }

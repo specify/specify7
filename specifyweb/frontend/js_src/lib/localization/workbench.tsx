@@ -806,12 +806,12 @@ export const wbText = createDictionary({
     'en-us': 'Map Explorer',
     'ru-ru': 'Обзор сопоставлений',
   },
-  hideMappingEditor: {
-    'en-us': 'Hide Map Explorer',
+  hideFieldMapper: {
+    'en-us': 'Hide Field Mapper',
     'ru-ru': 'Спрятать обзор сопоставлений',
   },
-  showMappingEditor: {
-    'en-us': 'Show Map Explorer',
+  showFieldMapper: {
+    'en-us': 'Show Field Mapper',
     'ru-ru': 'Показать обзор сопоставлений',
   },
   mappings: {

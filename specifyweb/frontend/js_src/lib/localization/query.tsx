@@ -317,14 +317,6 @@ export const queryText = createDictionary({
     'en-us': (plotted: string) => `Plotted ${plotted} records`,
     'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
   },
-  showFieldMapper: {
-    'en-us': 'Show Field Mapper',
-    'ru-ru': 'Show Field Mapper', 
-  },
-  hideFieldMapper : {
-    'en-us' : 'Hide Field Mapper',
-    'ru-ru' : 'Hide Field Mapper',
-  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

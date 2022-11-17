@@ -357,9 +357,7 @@ export function ToggleMappingPath({
 }): JSX.Element {
   return (
     <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
-      {showMappingView
-        ? wbText('hideMappingEditor')
-        : wbText('showMappingEditor')}
+      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
     </Button.Small>
   );
 }
