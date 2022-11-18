@@ -58,16 +58,16 @@ export function OtherCollection({
             {collections.length > 1 ? (
               <>
                 <p>{commonText('selectCollection')}</p>
-                <Ul>
+                <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
-                      <Button.LikeLink
+                      <Button.Blue
                         onClick={(): void =>
                           switchCollection(navigate, collections[0].id)
                         }
                       >
                         {collectionName}
-                      </Button.LikeLink>
+                      </Button.Blue>
                     </li>
                   ))}
                 </Ul>
