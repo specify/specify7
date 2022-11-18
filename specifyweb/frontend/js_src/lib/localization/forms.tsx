@@ -680,8 +680,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Настройки клонирования',
   },
   carryForwardDescription: {
-    'en-us': 'Fields to carry forward on clone',
-    'ru-ru': 'Поля для переноса при клонировании',
+    'en-us': 'Fields to carry forward',
+    'ru-ru': 'Поля для переноса',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
