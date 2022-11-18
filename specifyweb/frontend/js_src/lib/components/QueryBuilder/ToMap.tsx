@@ -232,13 +232,15 @@ function Dialog({
       forwardRef={setMap}
       header={`${commonText('geoMap')}${
         typeof totalCount === 'number'
-          ? results.length === totalCount
-            ? queryText('queryMapAll', formatNumber(results.length))
-            : ` - ${queryText(
-                'queryMapSubset',
-                formatNumber(results.length),
-                formatNumber(totalCount)
-              )}`
+          ? ` - ${
+              results.length === totalCount
+                ? queryText('queryMapAll', formatNumber(results.length))
+                : queryText(
+                    'queryMapSubset',
+                    formatNumber(results.length),
+                    formatNumber(totalCount)
+                  )
+            }`
           : ''
       }`}
       headerButtons={
