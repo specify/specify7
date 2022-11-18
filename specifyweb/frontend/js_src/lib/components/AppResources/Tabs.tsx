@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { toResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -16,13 +17,13 @@ import type {
 } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { appResourceIcon } from './EditorComponents';
 import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type { AppResourceTab } from './TabDefinitions';
 import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { appResourceIcon } from './EditorComponents';
 
 export function AppResourcesTabs({
   label,
@@ -83,14 +84,18 @@ export function AppResourcesTabs({
   );
   return isFullScreen ? (
     <Dialog
-      buttons={commonText('close')}
+      buttons={
+        <Button.Blue onClick={handleExitFullScreen}>
+          {commonText('close')}
+        </Button.Blue>
+      }
       className={{
         container: dialogClassNames.fullScreen,
       }}
       header={label}
       headerButtons={headerButtons}
       icon={appResourceIcon(getResourceType(resource))}
-      onClose={handleExitFullScreen}
+      onClose={undefined}
     >
       {children}
     </Dialog>
