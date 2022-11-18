@@ -547,8 +547,8 @@ export const preferencesText = createDictionary({
       'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
   },
   tableNameInTitle: {
-    'en-us': 'Include table name in the page title',
-    'ru-ru': 'Включить название таблицы в заголовок страницы',
+    'en-us': 'Include table name in the browser page title',
+    'ru-ru': 'Включить название таблицы в заголовок страницы браузера',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
