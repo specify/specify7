@@ -29,7 +29,7 @@ export function unsafeTriggerNotFound(): boolean {
     replace: true,
     state: createState({ type: 'NotFoundPage' }),
   });
-  return typeof unsafeNavigate === 'undefined';
+  return typeof unsafeNavigate === 'function';
 }
 
 export type BackgroundLocation = State<
