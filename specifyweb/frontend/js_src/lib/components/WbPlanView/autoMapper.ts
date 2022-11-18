@@ -797,7 +797,12 @@ export class AutoMapper {
     });
 
     model.relationships
-      .filter(({ overrides }) => !overrides.isHidden && !overrides.isReadOnly)
+      .filter(
+        ({ overrides, relatedModel }) =>
+          !overrides.isHidden &&
+          !overrides.isReadOnly &&
+          !relatedModel.overrides.isSystem
+      )
       .forEach((relationship) => {
         const localPath = [...mappingPath, relationship.name];
 
