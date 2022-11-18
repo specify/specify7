@@ -249,7 +249,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
-    if (isReadOnly) return;
+    // if (isReadOnly) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
