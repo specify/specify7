@@ -249,7 +249,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
-    // if (isReadOnly) return;
+    if (isReadOnly) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -387,6 +387,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                     type: monthType,
                     placeholder: monthFormat(),
                     title: moment?.format(monthFormat()),
+                    value: moment?.format(inputMonthFormat),
                     ...(monthSupported
                       ? {}
                       : {
@@ -398,6 +399,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                     type: dateType,
                     placeholder: fullDateFormat(),
                     title: moment?.format(fullDateFormat()),
+                    value: moment?.format(inputFullFormat),
                     ...(dateSupported
                       ? {}
                       : {
