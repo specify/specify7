@@ -228,6 +228,8 @@ export function QueryLine({
   const filtersVisible =
     availableFilters.length > 1 || availableFilters[0][0] !== 'any';
 
+  const hasAny = field.filters.some(({ type }) => type === 'any');
+
   return (
     <li
       aria-current={isFocused ? 'location' : undefined}
@@ -304,30 +306,32 @@ export function QueryLine({
                 {index === 0 ? (
                   <>
                     {mappingElementDivider}
-                    <Button.Small
-                      aria-label={queryText('or')}
-                      aria-pressed={field.filters.length > 1}
-                      className={`
-                        aria-handled print:hidden
-                        ${isFieldComplete ? '' : 'invisible'}
-                      `}
-                      disabled={handleChange === undefined}
-                      title={queryText('or')}
-                      variant={
-                        field.filters.length > 1
-                          ? className.blueButton
-                          : className.grayButton
-                      }
-                      onClick={(): void =>
-                        handleFilterChange(field.filters.length, {
-                          type: 'any',
-                          isNot: false,
-                          startValue: '',
-                        })
-                      }
-                    >
-                      {icons.plus}
-                    </Button.Small>
+                    {!hasAny && (
+                      <Button.Small
+                        aria-label={queryText('or')}
+                        aria-pressed={field.filters.length > 1}
+                        className={`
+                          aria-handled print:hidden
+                          ${isFieldComplete ? '' : 'invisible'}
+                        `}
+                        disabled={handleChange === undefined}
+                        title={queryText('or')}
+                        variant={
+                          field.filters.length > 1
+                            ? className.blueButton
+                            : className.grayButton
+                        }
+                        onClick={(): void =>
+                          handleFilterChange(field.filters.length, {
+                            type: 'any',
+                            isNot: false,
+                            startValue: '',
+                          })
+                        }
+                      >
+                        {icons.plus}
+                      </Button.Small>
+                    )}
                   </>
                 ) : (
                   <>
