@@ -68,7 +68,7 @@ export function SecurityLibraryRole(): JSX.Element {
       }
     />
   ) : role === false ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : (
     <LoadingScreen />
   );

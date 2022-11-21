@@ -54,7 +54,7 @@ export function CreateAppResource(): JSX.Element {
   );
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   return directory === undefined ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : type === undefined ? (
     <Dialog
       buttons={commonText('cancel')}

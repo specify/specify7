@@ -5,7 +5,6 @@ import { ajax } from '../../utils/ajax';
 import { removeKey } from '../../utils/utils';
 import type { BackEndRole } from './utils';
 import type { GetOrSet, IR } from '../../utils/types';
-import { NotFoundView } from '../Router/NotFoundView';
 import type { SecurityCollectionOutlet } from './Collection';
 import type { NewRole, Role } from './Role';
 import { CreateRole } from './RoleTemplate';
@@ -47,7 +46,7 @@ export const createCollectionRole = async (
 
 export function CreateCollectionRole(): JSX.Element {
   const { collection } = useOutletContext<SecurityCollectionOutlet>();
-  return typeof collection === 'object' ? (
+  return (
     <CreateRole
       closeUrl={`/specify/security/collection/${collection.id}/`}
       getCreatedUrl={(id): string =>
@@ -55,7 +54,5 @@ export function CreateCollectionRole(): JSX.Element {
       }
       scope={collection.id}
     />
-  ) : (
-    <NotFoundView />
   );
 }

@@ -64,7 +64,7 @@ export function SecurityCollection(): JSX.Element {
       <CollectionView collection={collection} />
     </SetPermissionContext>
   ) : (
-    <NotFoundView />
+    <NotFoundView container={false} />
   );
 }
 
