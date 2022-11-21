@@ -9,16 +9,15 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { commonText } from '../../localization/common';
 import { fetchResource } from '../DataModel/resource';
 import type { AppResourcesOutlet } from './index';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
-import { Container, H3 } from '../Atoms';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { NotFoundView } from '../Router/NotFoundView';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -54,9 +53,7 @@ export function Wrapper({
   }`;
   return initialData === undefined ? null : resource === undefined ||
     directory === undefined ? (
-    <Container.Base className="flex-1">
-      <H3>{commonText('pageNotFound')}</H3>
-    </Container.Base>
+    <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
       directory={directory}
