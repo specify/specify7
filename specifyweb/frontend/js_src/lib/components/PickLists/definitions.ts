@@ -217,7 +217,7 @@ export const getFrontEndPickLists = f.store<{
 });
 
 export const fetchPickLists = f.store(
-  async (): Promise<IR<SpecifyResource<PickList>>> =>
+  async (): Promise<IR<SpecifyResource<PickList> | undefined>> =>
     (hasToolPermission('pickLists', 'read')
       ? fetchCollection('PickList', {
           domainFilter: true,
@@ -235,6 +235,6 @@ export const fetchPickLists = f.store(
           )
         ),
       };
-      return pickLists as IR<SpecifyResource<PickList>>;
+      return pickLists;
     })
 );
