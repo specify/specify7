@@ -48,6 +48,7 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
     ...fields,
     ...frontEndFields.map((field) => {
       field.overrides.isReadOnly = true;
+      field.isVirtual = true;
       return field;
     }),
     /*

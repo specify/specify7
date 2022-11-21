@@ -227,7 +227,7 @@ export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
 
 const getFieldsToClone = (model: SpecifyModel): RA<string> =>
   getUserPref('form', 'preferences', 'carryForward')?.[model.name] ??
-  model.fields.map(({ name }) => name);
+  model.fields.filter(({ isVirtual }) => !isVirtual).map(({ name }) => name);
 
 // REFACTOR: move this into businessRuleDefs.ts
 const businessRules = businessRuleDefs as {

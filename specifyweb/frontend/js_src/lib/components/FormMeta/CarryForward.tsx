@@ -89,6 +89,7 @@ function CarryForwardConfig({
 
   const uniqueFields = getUniqueFields(model);
   const defaultConfig = model.fields
+    .filter(({ isVirtual }) => !isVirtual)
     .map(({ name }) => name)
     .filter((fieldName) => !uniqueFields.includes(fieldName));
   const isDefaultConfig = (fields: RA<string>): boolean =>
@@ -109,10 +110,12 @@ function CarryForwardConfig({
   }
 
   const literalFields = model.literalFields.filter(
-    ({ overrides }) => !overrides.isHidden || showHiddenFields
+    ({ overrides, isVirtual }) =>
+      !isVirtual && (!overrides.isHidden || showHiddenFields)
   );
   const relationships = model.relationships.filter(
-    ({ overrides }) => !overrides.isHidden || showHiddenFields
+    ({ overrides, isVirtual }) =>
+      !isVirtual && (!overrides.isHidden || showHiddenFields)
   );
 
   const id = useId('form-carry-forward');
@@ -128,8 +131,9 @@ function CarryForwardConfig({
                   ? defaultConfig
                   : model.fields
                       .filter(
-                        ({ name, overrides }) =>
-                          !overrides.isHidden || config.includes(name)
+                        ({ name, isVirtual, overrides }) =>
+                          !isVirtual &&
+                          (!overrides.isHidden || config.includes(name))
                       )
                       .map(({ name }) => name)
               )
@@ -146,8 +150,10 @@ function CarryForwardConfig({
                   ? []
                   : model.fields
                       .filter(
-                        ({ name, overrides }) =>
-                          overrides.isHidden && config.includes(name)
+                        ({ name, isVirtual, overrides }) =>
+                          !isVirtual &&
+                          overrides.isHidden &&
+                          config.includes(name)
                       )
                       .map(({ name }) => name)
               )

@@ -80,6 +80,9 @@ abstract class FieldBase {
   // eslint-disable-next-line functional/prefer-readonly-type
   public isReadOnly: boolean;
 
+  // eslint-disable-next-line functional/prefer-readonly-type
+  public isVirtual: boolean = false;
+
   public readonly isRequired: boolean;
 
   /**
