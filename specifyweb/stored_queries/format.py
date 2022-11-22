@@ -109,7 +109,7 @@ class ObjectFormatter(object):
                 formatter_name = fieldNode.attrib.get('formatter', None)
                 query, expr = self.objformat(query, table, formatter_name)
             else:
-                expr = self._fieldformat(specify_field, getattr(table, specify_field.name))
+                expr = self._fieldformat(specify_field, getattr(table, specify_field.name.lower()))
 
             if 'format' in fieldNode.attrib:
                 expr = self.pseudo_sprintf(fieldNode.attrib['format'], expr)
@@ -140,7 +140,7 @@ class ObjectFormatter(object):
         if single:
             value, expr = cases[0]
         else:
-            control_field = getattr(orm_table, switchNode.attrib['field'])
+            control_field = getattr(orm_table, switchNode.attrib['field'].lower())
             expr = case(cases, control_field)
 
         return query, blank_nulls(expr)
@@ -155,7 +155,7 @@ class ObjectFormatter(object):
         logger.debug("using aggregator: %s", ElementTree.tostring(aggregatorNode))
         formatter_name = aggregatorNode.attrib.get('format', None)
         separator = aggregatorNode.attrib.get('separator', ',')
-        order_by = aggregatorNode.attrib.get('orderfieldname', '')
+        order_by = aggregatorNode.attrib.get('orderfieldname', '').lower()
 
         orm_table = getattr(models, field.relatedModelName)
         order_by = [getattr(orm_table, order_by)] if order_by != '' else []

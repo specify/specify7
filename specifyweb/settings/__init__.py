@@ -44,24 +44,28 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'specifyweb.hibernateboolsbackend.backends.mysql',
+        'ENGINE': (
+            'django.db.backends.postgresql'
+            if DATABASE_ENGINE == 'postgres' else
+            'specifyweb.hibernateboolsbackend.backends.mysql'
+        ),
         'NAME': DATABASE_NAME,
         'USER': MASTER_NAME,
         'PASSWORD': MASTER_PASSWORD,
         'HOST': DATABASE_HOST,
         'PORT': DATABASE_PORT,
         'OPTIONS': DATABASE_OPTIONS,
-        'TEST': {
-            }
+        'TEST': {}
     },
  }
 
-SA_DATABASE_URL = 'mysql://%s:%s@%s:%s/%s?charset=utf8' % (
-        MASTER_NAME,
-        MASTER_PASSWORD,
-        DATABASE_HOST,
-        DATABASE_PORT or 3306,
-        DATABASE_NAME)
+
+
+SA_DATABASE_URL = (
+    f'postgresql+psycopg2://{MASTER_NAME}:{MASTER_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT or 5432}/{DATABASE_NAME}'
+    if DATABASE_ENGINE == 'postgres' else
+    f'mysql://{MASTER_NAME}:{MASTER_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT or 3306}/{DATABASE_NAME}?charset=utf8'
+)
 
 # Prevent MySQL connection timeouts
 SA_POOL_RECYCLE = 3600
@@ -214,6 +218,8 @@ INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'specify.Specifyuser'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 AUTHENTICATION_BACKENDS = []
 if ALLOW_SUPPORT_LOGIN:
     AUTHENTICATION_BACKENDS.append('specifyweb.specify.support_login.SupportLoginBackend')
@@ -233,6 +239,10 @@ JAVA_PATH = '/usr/bin/java'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 419430400  # 300mb
 FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100mb
+
+SERIALIZATION_MODULES = {
+    'specify': 'specifyweb.specify.serializer',
+}
 
 try:
     from .local_logging_settings import LOGGING

@@ -2,7 +2,7 @@ import json
 from datetime import date
 from django import http
 from django.db import connection, transaction
-from django.db.models.fields import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist
 from django.views.decorators.http import require_GET, require_POST
 
 from specifyweb.permissions.permissions import check_table_permissions

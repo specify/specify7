@@ -50,7 +50,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version: 3.8
 
       - name: Install python dependencies
         run: |
@@ -82,7 +82,7 @@ jobs:
         run: VIRTUAL_ENV=./ve make typecheck
 
       - name: Run test suite
-        run: ./ve/bin/python manage.py test -k
+        run: ./ve/bin/python manage.py test --keepdb
 
       - name: Build frontend
         run: make frontend

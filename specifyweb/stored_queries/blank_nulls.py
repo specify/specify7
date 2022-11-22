@@ -11,4 +11,4 @@ def _blank_nulls(element, compiler, **kwargs):
     if isinstance(element.clauses.clauses[0], blank_nulls):
         return expr
     else:
-        return "IFNULL(%s, '')" % expr
+        return "coalesce(%s, '')" % expr
