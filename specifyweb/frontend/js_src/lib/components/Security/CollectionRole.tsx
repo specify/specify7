@@ -136,7 +136,7 @@ export function SecurityCollectionRole(): JSX.Element {
         <RoleUsers
           collectionId={collection.id}
           role={role}
-          userRoles={userRoles}
+          userRoles={roleUsers}
           onAddUsers={handleAddUsers}
         />
       }
