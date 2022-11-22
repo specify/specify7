@@ -760,6 +760,10 @@ export const commonText = createDictionary({
       'Some features of Specify 7 may therefore fail to operate correctly.',
     'ru-ru': 'Поэтому некоторые функции Specify 7 могут неработать.',
   },
+  versionMismatchThirdDialogText: {
+    'en-us': 'Instructions for resolving Specify schema mismatch',
+    'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
+  },
   resourceDeletedDialogHeader: {
     'en-us': 'Item deleted',
     'ru-ru': 'Удалено',
