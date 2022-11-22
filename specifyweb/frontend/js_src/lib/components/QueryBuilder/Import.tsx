@@ -47,7 +47,11 @@ export function QueryImport({
                           query,
                           'fields',
                           query.fields.map((field) =>
-                            replaceKey(field, 'id', null)
+                            replaceKey(
+                              field,
+                              'id',
+                              undefined as unknown as null
+                            )
                           )
                         ),
                         'id'
