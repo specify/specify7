@@ -15,7 +15,7 @@ import type { FieldTypes, FormFieldDefinition } from '../FormParse/fields';
 import { FormPlugin } from '../FormPlugins';
 import { hasPathPermission, hasPermission } from '../Permissions/helpers';
 import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
-import { Combobox } from './ComboBox';
+import { Combobox, resolvePickListField } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -133,33 +133,37 @@ const fieldRenderers: {
     formType,
     fieldDefinition: { defaultValue, pickList },
   }) {
+    const resolvedFieldName = React.useMemo(
+      () => resolvePickListField(resource, fieldName),
+      [resource, fieldName]
+    );
     const [data] = useAsyncState(
       React.useCallback(
         async () =>
-          getResourceAndField(resource, fieldName).then(
+          getResourceAndField(resource, resolvedFieldName).then(
             (values) => values ?? false
           ),
-        [resource, fieldName]
+        [resource, resolvedFieldName]
       ),
       false
     );
     return (
       <ErrorBoundary dismissable>
-        {data === undefined ? undefined : (
-          <Combobox
-            defaultValue={defaultValue}
-            field={data === false ? undefined : data.field}
-            fieldName={fieldName}
-            formType={formType}
-            id={id}
-            isDisabled={false}
-            isRequired={isRequired}
-            mode={mode}
-            model={resource}
-            pickListName={pickList}
-            resource={data === false ? resource : data.resource}
-          />
-        )}
+        <Combobox
+          defaultValue={defaultValue}
+          field={data === false ? undefined : data?.field}
+          fieldName={data === undefined ? undefined : resolvedFieldName}
+          formType={formType}
+          id={id}
+          isDisabled={false}
+          isRequired={isRequired}
+          mode={mode}
+          model={resource}
+          pickListName={data === undefined ? undefined : pickList}
+          resource={
+            data === false || data === undefined ? resource : data.resource
+          }
+        />
       </ErrorBoundary>
     );
   },

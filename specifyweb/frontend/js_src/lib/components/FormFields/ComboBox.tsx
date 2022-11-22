@@ -120,24 +120,21 @@ export function Combobox({
 }): JSX.Element | null {
   const { resource, field, model, id, mode, formType, isRequired } = props;
 
-  if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
+  if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldName')
     return (
       <FieldsPickList
         {...props}
         field={schema.models.PickList.strictGetLiteralField('fieldName')}
       />
     );
-  else if (
-    isResourceOfType(resource, 'PickList') &&
-    fieldName === 'formatterCBX'
-  )
+  else if (isResourceOfType(resource, 'PickList') && fieldName === 'formatter')
     return (
       <FormattersPickList
         {...props}
         field={schema.models.PickList.strictGetLiteralField('formatter')}
       />
     );
-  else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
+  else if (isResourceOfType(resource, 'PickList') && fieldName === 'tableName')
     return (
       <TablesPickList
         {...props}
@@ -151,7 +148,7 @@ export function Combobox({
         field={model.specifyModel.strictGetRelationship('definitionItem')}
       />
     );
-  else if (fieldName === 'divisionCBX') {
+  else if (fieldName === 'division') {
     const field = resource.specifyModel.strictGetRelationship('division');
     return (
       <QueryComboBox
@@ -210,4 +207,25 @@ export function Combobox({
       />
     );
   }
+}
+
+/**
+ * For some reasons, some pick lists in default forms are using made up field
+ * names that have to be resolved manually to database field names
+ */
+export function resolvePickListField(
+  resource: SpecifyResource<AnySchema>,
+  fieldName: string | undefined
+): string | undefined {
+  if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
+    return 'fieldName';
+  else if (
+    isResourceOfType(resource, 'PickList') &&
+    fieldName === 'formatterCBX'
+  )
+    return 'formatter';
+  else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
+    return 'tableName';
+  else if (fieldName === 'divisionCBX') return 'division';
+  else return fieldName;
 }
