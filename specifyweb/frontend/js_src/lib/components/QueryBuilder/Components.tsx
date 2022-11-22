@@ -199,6 +199,11 @@ export function MakeRecordSetButton({
             queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new schema.models.RecordSet.Resource();
+
+          if (!queryResource.isNew()) {
+            recordSet.set('name', queryResource.get('name'));
+          }
+
           recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
