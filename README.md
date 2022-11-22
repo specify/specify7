@@ -141,8 +141,8 @@ Linux system to avoid the need to install Java on the server.
 
 ```shell
 wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
-sh Specify_unix_64.sh -q -dir ./Specify6.8.01
-sudo ln -s $(pwd)/Specify6.8.01 /opt/Specify
+sh Specify_unix_64.sh -q -dir ./Specify6.8.02
+sudo ln -s $(pwd)/Specify6.8.02 /opt/Specify
 ```
 
 ### Cloning Specify 7 source repository
