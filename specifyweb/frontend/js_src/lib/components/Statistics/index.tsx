@@ -1,30 +1,31 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
+import { removeItem, replaceItem } from '../../utils/utils';
 import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { fetchResource } from '../DataModel/resource';
+import { fetchResource, strictIdFromUrl } from '../DataModel/resource';
 import type { SpQueryField, Tables } from '../DataModel/types';
+
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { QueryList, useQueries } from '../Toolbar/Query';
 import { usePref } from '../UserPreferences/usePref';
-import { StatLayout } from './definitions';
+import type { StatLayout } from './definitions';
+import type { CustomStat, DefaultStat } from './definitions';
 import type { StatCategoryReturn } from './StatsSpec';
 import { statsSpec } from './StatsSpec';
 import type { BackendStatsResult } from './utils';
-import {
-  FrontEndStatsResult,
-  useFrontEndStat,
-  useFrontEndStatsQuery,
-} from './utils';
-import { QueryList } from '../Toolbar/Query';
-import { removeItem, replaceItem } from '../../utils/utils';
+import { StatsResult, useFrontEndStat, useFrontEndStatsQuery } from './utils';
+import { userInformation } from '../InitialContext/userInformation';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -43,15 +44,17 @@ function useBackendApi(): BackendStatsResult | undefined {
   return backendStatObject;
 }
 
-function useStatsSpec(): IR<{
-  readonly label: string;
-  readonly items: StatCategoryReturn;
-}> {
+function useStatsSpec(): IR<
+  IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>
+> {
   const backEndResult = useBackendApi();
   return React.useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(statsSpec).map(
+    () => ({
+      collection: Object.fromEntries(
+        Object.entries(statsSpec.collection).map(
           ([categoryName, { label, categories }]) => [
             categoryName,
             {
@@ -67,8 +70,58 @@ function useStatsSpec(): IR<{
           ]
         )
       ),
+      personal: Object.fromEntries(
+        Object.entries(statsSpec.collection).map(
+          ([categoryName, { label, categories }]) => [
+            categoryName,
+            {
+              label,
+              items: (
+                categories as (
+                  backendStatResult:
+                    | BackendStatsResult[typeof categoryName]
+                    | undefined
+                ) => StatCategoryReturn
+              )(backEndResult?.[categoryName]),
+            },
+          ]
+        )
+      ),
+    }),
+
     [backEndResult]
   );
+}
+
+function useDefaultStatsToAdd(
+  layout: StatLayout,
+  defaultLayout: StatLayout
+): StatLayout {
+  return React.useMemo(() => {
+    const listToUse = layout[0].categories.flatMap(({ items }) =>
+      items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
+    );
+    return [
+      {
+        label: 'collection',
+        categories: defaultLayout[0].categories
+          .map(({ label, items }) => ({
+            label,
+            items: items.filter(
+              (defaultItem) =>
+                defaultItem.type === 'DefaultStat' &&
+                !listToUse.some(
+                  ({ pageName, categoryName, itemName }) =>
+                    pageName === defaultItem.pageName &&
+                    categoryName === defaultItem.categoryName &&
+                    itemName === defaultItem.itemName
+                )
+            ),
+          }))
+          .filter(({ items }) => items.length > 0),
+      },
+    ];
+  }, [layout, defaultLayout]);
 }
 
 export function StatsPage(): JSX.Element {
@@ -86,8 +139,8 @@ export function StatsPage(): JSX.Element {
         {
           readonly addingItem:
             | {
-                readonly pageName: string;
-                readonly categoryName: string;
+                readonly pageIndex: number;
+                readonly categoryIndex: number;
               }
             | undefined;
         }
@@ -95,107 +148,271 @@ export function StatsPage(): JSX.Element {
     | State<'DefaultState'>
   >({ type: 'DefaultState' });
   const isEditing = state.type === 'EditingState';
+  const isAddingItem = isEditing && state.addingItem !== undefined;
+  const defaultStatsToAdd = useDefaultStatsToAdd(layout, defaultLayout);
+  console.log(
+    'AGENT INFO',
+    strictIdFromUrl(userInformation.agent.resource_uri)
+  );
   return (
-    <div className="h-full w-full bg-[color:var(--form-background)]">
-      <div className="mx-auto flex h-full max-w-[min(100%,var(--form-max-width))] flex-col gap-4 overflow-y-auto  p-4 ">
-        <div className="flex items-center gap-2">
-          <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
-          <span className="-ml-2 flex-1" />
-          {isEditing && (
-            <Button.Red onClick={(): void => setLayout(defaultLayout)}>
-              {commonText('reset')}
-            </Button.Red>
-          )}
-          <Button.Green
-            onClick={(): void =>
-              setState(
-                isEditing
-                  ? { type: 'DefaultState' }
-                  : {
-                      type: 'EditingState',
-                      addingItem: undefined,
-                    }
-              )
-            }
-          >
-            {isEditing ? commonText('save') : commonText('edit')}
-          </Button.Green>
-        </div>
-
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-          {layout[0].categories.map(({ label, items }, categoryIndex) => (
-            <div
-              className="block h-auto max-h-80 content-center rounded border-[1px] border-black bg-white p-4"
-              key={categoryIndex}
+    <>
+      {isAddingItem && (
+        <AddStatDialog
+          defaultLayout={defaultStatsToAdd}
+          statsSpec={statsSpec.collection}
+          onAdd={(item): void =>
+            isAddingItem
+              ? setLayout(
+                  replaceItem(layout, 0, {
+                    ...layout[0],
+                    categories: replaceItem(
+                      layout[0].categories,
+                      state.addingItem.categoryIndex,
+                      {
+                        ...layout[0].categories[state.addingItem.categoryIndex],
+                        items: [
+                          ...layout[0].categories[
+                            state.addingItem.categoryIndex
+                          ].items,
+                          item,
+                        ],
+                      }
+                    ),
+                  })
+                )
+              : undefined
+          }
+          onClose={(): void =>
+            setState({
+              type: 'EditingState',
+              addingItem: undefined,
+            })
+          }
+        />
+      )}
+      <div className="h-full w-full bg-[color:var(--form-background)]">
+        <div className="mx-auto flex h-full max-w-[min(100%,var(--form-max-width))] flex-col gap-4 overflow-y-auto  p-4 ">
+          <div className="flex items-center gap-2">
+            <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
+            <span className="-ml-2 flex-1" />
+            {isEditing && (
+              <Button.Red onClick={(): void => setLayout(defaultLayout)}>
+                {commonText('reset')}
+              </Button.Red>
+            )}
+            <Button.Green
+              onClick={(): void =>
+                setState(
+                  isEditing
+                    ? { type: 'DefaultState' }
+                    : {
+                        type: 'EditingState',
+                        addingItem: undefined,
+                      }
+                )
+              }
             >
-              <H3 className="font-bold">{label}</H3>
-              {items?.map((item, itemIndex) => {
-                const handleRemove = (): void =>
-                  setLayout(
-                    replaceItem(layout, 0, {
-                      ...layout[0],
-                      categories: replaceItem(
-                        layout[0].categories,
-                        categoryIndex,
-                        {
-                          ...layout[0].categories[categoryIndex],
-                          items: removeItem(items, itemIndex),
-                        }
-                      ),
-                    })
-                  );
+              {isEditing ? commonText('save') : commonText('edit')}
+            </Button.Green>
+          </div>
 
-                return item.type === 'DefaultStat' ? (
-                  <DefaultStat
-                    key={itemIndex}
-                    statsSpec={statsSpec}
-                    categoryName={item.categoryName}
-                    itemName={item.itemName}
-                    onRemove={isEditing ? handleRemove : undefined}
-                  />
-                ) : (
-                  <CustomStat
-                    key={itemIndex}
-                    queryId={item.queryId}
-                    onRemove={isEditing ? handleRemove : undefined}
-                  />
-                );
-              })}
-              {isEditing && (
-                <Button.LikeLink>
-                  <span className={className.dataEntryAdd}>{icons.plus}</span>
-                  {commonText('add')}
-                </Button.LikeLink>
-              )}
-            </div>
-          ))}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
+            <ShowBigBoxes
+              goToEditingState={(categoryindex): void =>
+                setState({
+                  type: 'EditingState',
+                  addingItem: {
+                    pageIndex: 0,
+                    categoryIndex: categoryindex,
+                  },
+                })
+              }
+              isEditing={isEditing}
+              layout={layout}
+              setLayout={setLayout}
+              statsSpec={statsSpec.collection}
+              onClick={undefined}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
-/**function AddStat(closeCallBack, customCallBack, defaultCallBack) {
-  <QueryList
-    queries={}
-    isReadOnly={true}
-    getQuerySelectCallback={(query) => () => {
-      customCallBack(query);
-    }}
-  ></QueryList>;
-} **/
+function AddStatDialog({
+  onClose: handleClose,
+  onAdd: handleAdd,
+  defaultLayout,
+  statsSpec,
+}: {
+  readonly onClose: () => void;
+  readonly onAdd: (item: CustomStat | DefaultStat) => void;
+  readonly defaultLayout: StatLayout;
+  readonly statsSpec: IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>;
+}): JSX.Element | null {
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+    }),
+    []
+  );
+  const queries = useQueries(filters);
+
+  return Array.isArray(queries) ? (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header="SUP"
+      onClose={handleClose}
+    >
+      <div>
+        <h1>Select Custom Statistics</h1>
+        {Array.isArray(queries) && (
+          <QueryList
+            getQuerySelectCallback={(query) => () => {
+              handleAdd({ type: 'CustomStat', queryId: query.id });
+              handleClose();
+            }}
+            isReadOnly
+            queries={queries}
+          />
+        )}
+      </div>
+      <div>
+        <h1>Select Default Statistic</h1>
+        <div>
+          <ShowBigBoxes
+            goToEditingState={(): void => {}}
+            isEditing={false}
+            layout={defaultLayout}
+            setLayout={(): void => {}}
+            statsSpec={statsSpec}
+            onClick={(item): void => {
+              handleAdd(item);
+              handleClose();
+            }}
+          />
+        </div>
+      </div>
+    </Dialog>
+  ) : null;
+}
+
+function ShowBigBoxes({
+  layout,
+  setLayout,
+  statsSpec,
+  isEditing,
+  goToEditingState,
+  onClick: handleClick,
+}: {
+  readonly layout: StatLayout;
+  readonly setLayout: (layout: StatLayout) => void;
+  readonly statsSpec: IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>;
+  readonly isEditing: boolean;
+  readonly goToEditingState: (categoryIndex: number) => void;
+  readonly onClick: ((item: CustomStat | DefaultStat) => void) | undefined;
+}): JSX.Element {
+  return (
+    <>
+      {layout[0].categories.map(({ label, items }, categoryIndex) => (
+        <div
+          className="flex h-auto max-h-80 flex-col content-center rounded border-[1px] border-black bg-white p-4"
+          key={categoryIndex}
+        >
+          <H3 className="font-bold">{label}</H3>
+          <div className="overflow-auto pr-4">
+            {items?.map((item, itemIndex) => {
+              const handleRemove = (): void =>
+                setLayout(
+                  replaceItem(layout, 0, {
+                    ...layout[0],
+                    categories: replaceItem(
+                      layout[0].categories,
+                      categoryIndex,
+                      {
+                        ...layout[0].categories[categoryIndex],
+                        items: removeItem(items, itemIndex),
+                      }
+                    ),
+                  })
+                );
+
+              return item.type === 'DefaultStat' ? (
+                <DefaultStatItem
+                  categoryName={item.categoryName}
+                  itemName={item.itemName}
+                  key={itemIndex}
+                  statsSpec={statsSpec}
+                  onClick={
+                    handleClick !== undefined
+                      ? (): void => {
+                          handleClick({
+                            type: 'DefaultStat',
+                            pageName: 'collection',
+                            categoryName: item.categoryName,
+                            itemName: item.itemName,
+                          });
+                        }
+                      : undefined
+                  }
+                  onRemove={isEditing ? handleRemove : undefined}
+                />
+              ) : (
+                <CustomStatItem
+                  key={itemIndex}
+                  queryId={item.queryId}
+                  onClick={
+                    handleClick !== undefined
+                      ? (): void => {
+                          handleClick({
+                            type: 'CustomStat',
+                            queryId: item.queryId,
+                          });
+                        }
+                      : undefined
+                  }
+                  onRemove={isEditing ? handleRemove : undefined}
+                />
+              );
+            })}
+          </div>
+          {isEditing && (
+            <Button.LikeLink
+              onClick={(): void => goToEditingState(categoryIndex)}
+            >
+              <span className={className.dataEntryAdd}>{icons.plus}</span>
+              {commonText('add')}
+            </Button.LikeLink>
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
 
 function useDefaultLayout(
-  statsSpec: IR<{
-    readonly label: string;
-    readonly items: StatCategoryReturn | undefined;
-  }>
+  statsSpec: IR<
+    IR<{
+      readonly label: string;
+      readonly items: StatCategoryReturn | undefined;
+    }>
+  >
 ): StatLayout {
   return React.useMemo(
     () => [
       {
         label: 'collection',
-        categories: Object.entries(statsSpec).map(
+        categories: Object.entries(statsSpec.collection).map(
           ([categoryName, { label, items }]) => ({
             label,
             items: Object.entries(items ?? {}).map(([itemName]) => ({
@@ -244,11 +461,12 @@ function useCustomStatQueryBuilderSpec(queryId: number):
   return data;
 }
 
-function DefaultStat({
+function DefaultStatItem({
   statsSpec,
   categoryName,
   itemName,
   onRemove: handleRemove,
+  onClick: handleClick,
 }: {
   readonly statsSpec: IR<{
     readonly label: string;
@@ -257,6 +475,7 @@ function DefaultStat({
   readonly categoryName: keyof typeof statsSpec;
   readonly itemName: string;
   readonly onRemove: (() => void) | undefined;
+  readonly onClick: (() => void) | undefined;
 }): JSX.Element {
   const statSpecItemObject = statsSpec[categoryName]?.items;
   const statSpecItem =
@@ -265,60 +484,32 @@ function DefaultStat({
     statSpecItem === undefined ? undefined : statSpecItem.spec.type ===
       'Querybuildstat' ? (
       <QueryBuilderStat
-        tableName={statSpecItem.spec.tableName}
         fields={statSpecItem.spec.fields}
         statLabel={statSpecItem.label}
+        tableName={statSpecItem.spec.tableName}
+        onClick={handleClick}
+        onRemove={handleRemove}
       />
     ) : (
-      statSpecItem.spec.value ?? commonText('loading')
+      <StatsResult
+        query={undefined}
+        statLabel={statSpecItem?.label}
+        statValue={statSpecItem.spec.value}
+        onClick={handleClick}
+        onRemove={handleRemove}
+      />
     );
-  return (
-    <StatItemDisplay
-      label={statSpecItem?.label}
-      value={statValue}
-      onRemove={handleRemove}
-    />
-  );
+  return statValue ?? <p> {commonText('loading')}</p>;
 }
 
-function StatItemDisplay({
-  label,
-  value,
-  onRemove: handleRemove,
-}: {
-  readonly label: string | undefined;
-  readonly value: JSX.Element | number | string | undefined;
-  readonly onRemove: (() => void) | undefined;
-}): JSX.Element {
-  return (
-    <>
-      {label === undefined ? (
-        <div>{commonText('loading')}</div>
-      ) : (
-        <p className="flex gap-2">
-          {typeof handleRemove === 'function' && (
-            <Button.Icon
-              icon="trash"
-              title={commonText('remove')}
-              onClick={handleRemove}
-            />
-          )}
-
-          <span>{label}</span>
-          <span className="-ml-2 flex-1" />
-          <span>{value ?? commonText('loading')}</span>
-        </p>
-      )}
-    </>
-  );
-}
-
-function CustomStat({
+function CustomStatItem({
   queryId,
   onRemove: handleRemove,
+  onClick: handleClick,
 }: {
   readonly queryId: number;
   readonly onRemove: (() => void) | undefined;
+  readonly onClick: (() => void) | undefined;
 }): JSX.Element {
   const { tableName, fields, label } =
     useCustomStatQueryBuilderSpec(queryId) ?? {};
@@ -327,36 +518,42 @@ function CustomStat({
     fields === undefined ||
     label === undefined ? undefined : (
       <QueryBuilderStat
-        tableName={tableName}
         fields={fields}
         statLabel={label}
+        tableName={tableName}
+        onClick={handleClick}
+        onRemove={handleRemove}
       />
     );
-  return (
-    <StatItemDisplay label={label} value={statValue} onRemove={handleRemove} />
-  );
+  return statValue ?? <p>{commonText('loading')}</p>;
 }
 
 function QueryBuilderStat({
   tableName,
   fields,
   statLabel,
+  onRemove: handleRemove,
+  onClick: handleClick,
 }: {
   readonly tableName: keyof Tables;
   readonly fields: RA<
     Partial<SerializedResource<SpQueryField>> & { readonly path: string }
   >;
   readonly statLabel: string;
+  readonly onRemove: (() => void) | undefined;
+  readonly onClick: (() => void) | undefined;
 }): JSX.Element {
   const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
   const frontEndStatValue = useFrontEndStat(frontEndQuery);
   return frontEndStatValue === undefined ? (
-    <>{commonText('loading')}</>
+    <p>{commonText('loading')}</p>
   ) : (
-    <FrontEndStatsResult
+    <StatsResult
       query={frontEndQuery}
       statLabel={statLabel}
       statValue={frontEndStatValue}
+      onClick={handleClick}
+      onRemove={handleRemove}
     />
   );
 }
