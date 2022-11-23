@@ -298,7 +298,7 @@ def domain(request):
 @openapi(schema={
     "parameters": [
             {
-                "name" : "appresource_name",
+                "name" : "name",
                 "in":"query",
                 "required" : True,
                 "description" : "The name of the app resource to fetch"
@@ -313,7 +313,7 @@ def domain(request):
     "get" : {
         "responses": {
             "404": {
-                "description": "'appresource_name' was not provided, or App Resource was not found"
+                "description": "'name' parameter was not provided, or App Resource was not found"
             },
             "204": {
                 "description" : "App Resource was not found but 'quiet' flag was provided"
@@ -390,7 +390,7 @@ def schema_localization(request):
 @openapi(schema={
     "parameters": [
             {
-                "name" : "view_name",
+                "name" : "name",
                 "in":"query",
                 "required" : True,
                 "description" : "The name of the view to fetch"
@@ -405,7 +405,7 @@ def schema_localization(request):
     "get" : {
         "responses": {
             "404": {
-                "description": "'view_name' was not provided, or View was not found"
+                "description": "'name' parameter was not provided, or view was not found"
             },
             "204": {
                 "description" : "View was not found but 'quiet' flag was provided"
@@ -433,9 +433,9 @@ def view(request):
     # If view can not be found, return 204 if quiet and 404 otherwise
     try:
         data = get_view(collection, request.specify_user, view_name)
-    except Http404:
+    except Http404 as exception:
         if quiet: return HttpResponse(status=204)
-        raise Http404
+        raise exception
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @require_http_methods(['GET', 'HEAD'])
