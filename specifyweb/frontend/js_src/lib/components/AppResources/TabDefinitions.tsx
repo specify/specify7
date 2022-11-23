@@ -98,7 +98,7 @@ const UserPreferencesEditor: AppResourceTab = function ({
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data ?? '{}') as UserPreferences;
+      const preferences = JSON.parse(data || '{}') as UserPreferences;
       const setPrefs = setPrefsGenerator(() => preferences, false);
       return [
         (
