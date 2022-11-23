@@ -2,20 +2,20 @@ import { Combobox } from '@headlessui/react';
 import React from 'react';
 import _ from 'underscore';
 
-import { listen } from '../../utils/events';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
-import type { TagProps } from '../Atoms/wrapper';
-import { icons } from '../Atoms/Icons';
-import { compareStrings } from '../Atoms/Internationalization';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { icons } from '../Atoms/Icons';
+import { compareStrings } from '../Atoms/Internationalization';
+import type { TagProps } from '../Atoms/wrapper';
 import { softFail } from '../Errors/Crash';
-import { Portal } from './Portal';
 import { usePref } from '../UserPreferences/usePref';
+import { Portal } from './Portal';
 
 const debounceRate = 300;
 
@@ -39,10 +39,11 @@ const getScrollParent = (node: Element | undefined): Element =>
     ? node
     : getScrollParent(node.parentElement ?? undefined);
 
-const optionClassName = `p-0.5 active:bg-brand-100 dark:active:bg-brand-500
-  disabled:cursor-default rounded`;
-const selectedClassName = 'text-brand-300';
-const activeClassName = 'bg-gray-100 dark:bg-neutral-800';
+const optionClassName = `
+  p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  disabled:cursor-default rounded ui-selected:text-brand-300
+  ui-active:bg-gray-100 ui-active:dark:bg-neutral-800
+`;
 
 // REFACTOR: split this into smaller components
 /**
@@ -481,40 +482,27 @@ export function AutoComplete<T>({
               );
             return (
               <Combobox.Option as={React.Fragment} key={index} value={item}>
-                {({ active, selected }): JSX.Element => (
-                  <li
-                    className={`
-                      ${optionClassName}
-                      ${active ? activeClassName : ''}
-                      ${selected ? selectedClassName : ''}`}
-                  >
-                    {typeof item.icon === 'string' ? (
-                      <div className="flex items-center">
-                        {item.icon}
-                        {fullLabel}
-                      </div>
-                    ) : (
-                      fullLabel
-                    )}
-                  </li>
-                )}
+                <li className={optionClassName}>
+                  {typeof item.icon === 'string' ? (
+                    <div className="flex items-center">
+                      {item.icon}
+                      {fullLabel}
+                    </div>
+                  ) : (
+                    fullLabel
+                  )}
+                </li>
               </Combobox.Option>
             );
           })}
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
-              {({ active }) => (
-                <li
-                  className={`${optionClassName} ${
-                    active ? activeClassName : ''
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <span className={className.dataEntryAdd}>{icons.plus}</span>
-                    {commonText('add')}
-                  </div>
-                </li>
-              )}
+              <li className={optionClassName}>
+                <div className="flex items-center">
+                  <span className={className.dataEntryAdd}>{icons.plus}</span>
+                  {commonText('add')}
+                </div>
+              </li>
             </Combobox.Option>
           )}
           {!listHasItems && (

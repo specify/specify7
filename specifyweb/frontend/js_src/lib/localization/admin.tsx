@@ -413,12 +413,16 @@ export const adminText = createDictionary({
     'ru-ru': 'Другой Properties-ресурс',
   },
   otherAppResource: {
-    'en-us': 'Other app resource',
-    'ru-ru': 'Другой ресурс',
+    'en-us': 'Other Resource',
+    'ru-ru': 'Другой Ресурс',
   },
   filters: {
     'en-us': 'Filters',
     'ru-ru': 'Фильтры',
+  },
+  custom: {
+    'en-us': 'Custom',
+    'ru-ru': 'Настроить',
   },
   leafletLayers: {
     'en-us': 'Leaflet Layers',

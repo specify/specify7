@@ -172,7 +172,7 @@ function QueryInputField({
       <Select
         {...commonProps}
         multiple={listInput}
-        size={listInput ? selectMultipleSize : 1}
+        size={listInput ? selectMultipleSize : undefined}
         value={
           listInput
             ? value
@@ -548,6 +548,16 @@ export function QueryLineFilter({
     ),
     false
   );
+
+  // Fix for https://github.com/specify/specify7/issues/2296
+  React.useEffect(() => {
+    if (pickListItems === undefined || pickListItems === false) return;
+    const newStartValue = filter.startValue
+      .split(',')
+      .map((value) => resolveItem(pickListItems, value))
+      .join(',');
+    if (newStartValue !== filter.startValue) handleChange?.(newStartValue);
+  }, [pickListItems, filter]);
 
   const Component = queryFieldFilters[filter.type].component;
   return Component === undefined ? null : pickListItems === undefined ? (

@@ -276,12 +276,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
   },
-  startsWithCaseSensitiveSecondDescription: {
-    'en-us':
-      'Can use _ to match any single character or % to match any number of characters',
-    'ru-ru':
-      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
-  },
   contains: {
     'en-us': 'Contains',
     'ru-ru': 'Содержит',
@@ -295,8 +289,10 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (с учетом регистра)',
   },
   containsDescription: {
-    'en-us': 'Search for values that contain a given query string.',
-    'ru-ru': 'Поиск значений, содержащих заданную строку запроса.',
+    'en-us':
+      'Search for values that contain a given query string (case-insensitive)',
+    'ru-ru':
+      'Поиск значений, содержащих заданную строку запроса (без учета регистра)',
   },
   containsCaseSensitiveDescription: {
     'en-us':
@@ -551,8 +547,8 @@ export const preferencesText = createDictionary({
       'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
   },
   tableNameInTitle: {
-    'en-us': 'Include table name in the page title',
-    'ru-ru': 'Включить название таблицы в заголовок страницы',
+    'en-us': 'Include table name in the browser page title',
+    'ru-ru': 'Включить название таблицы в заголовок страницы браузера',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',

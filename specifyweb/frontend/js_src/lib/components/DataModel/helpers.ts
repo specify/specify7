@@ -40,7 +40,7 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = strictGetModel(
     defined(
       (tableName as SCHEMA['tableName']) ??
-        resource._tablename ??
+        resource._tableName ??
         parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
       `Unable to serialize resource because table name is unknown.` +
         (process.env.NODE_ENV === 'test'

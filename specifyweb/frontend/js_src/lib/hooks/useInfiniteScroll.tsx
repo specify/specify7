@@ -1,37 +1,44 @@
 import React from 'react';
 
-import { useBooleanState } from './useBooleanState';
 import { crash } from '../components/Errors/Crash';
+import { useBooleanState } from './useBooleanState';
 
 /**
  * Helps fetch more records when user is approaching the bottom of a list
  */
 export function useInfiniteScroll(
-  handleFetch: (() => Promise<void>) | undefined,
-  scroller: HTMLElement | null
+  handleFetch: (() => Promise<unknown>) | undefined,
+  scroller: React.RefObject<HTMLElement | null>
 ): {
   readonly isFetching: boolean;
   readonly handleScroll: (event: React.UIEvent<HTMLElement>) => void;
 } {
   const isFetchingRef = React.useRef<boolean>(false);
   const [isFetching, handleFetching, handleFetched] = useBooleanState();
+
   const doFetch = React.useCallback(async (): Promise<void> => {
-    if (isFetchingRef.current || handleFetch === undefined) return undefined;
+    if (isFetchingRef.current || handleFetchRef.current === undefined) return;
     isFetchingRef.current = true;
     handleFetching();
-    await handleFetch();
+    await handleFetchRef.current();
     isFetchingRef.current = false;
     await new Promise((resolve) => setTimeout(resolve, 0));
     // Fetch until there is a scroll bar
-    if (scroller !== null && scroller.scrollHeight === scroller.clientHeight)
+    if (
+      scroller.current !== null &&
+      // Check if element is rendered
+      scroller.current.scrollHeight !== 0 &&
+      scroller.current.scrollHeight <= scroller.current.clientHeight
+    )
       doFetch().catch(crash);
     handleFetched();
-  }, [handleFetch, scroller, handleFetching, handleFetched]);
+  }, [scroller, handleFetching, handleFetched]);
 
-  React.useEffect(
-    () => (typeof scroller === 'object' ? void doFetch() : undefined),
-    [scroller]
-  );
+  const handleFetchRef = React.useRef(handleFetch);
+  React.useEffect(() => {
+    handleFetchRef.current = handleFetch;
+    if (scroller.current !== null) void doFetch();
+  }, [scroller, doFetch, handleFetch]);
 
   return {
     isFetching,

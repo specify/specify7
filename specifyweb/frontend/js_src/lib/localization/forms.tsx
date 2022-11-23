@@ -524,10 +524,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Поле из таблицы',
   },
   // Audit log actions
-  insert: {
-    'en-us': 'Insert',
-    'ru-ru': 'Создано',
-  },
   treeMerge: {
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',
@@ -540,8 +536,8 @@ export const formsText = createDictionary({
     'en-us': 'Tree Synonymize',
     'ru-ru': 'Синонимизированный узел дерева',
   },
-  treeUnsynonymize: {
-    'en-us': 'Tree Unsynonymize',
+  treeDesynonymize: {
+    'en-us': 'Tree Desynonymize',
     'ru-ru': 'Отменено синонимизацию узла дерева',
   },
   unsupportedCellType: {
@@ -684,8 +680,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Настройки клонирования',
   },
   carryForwardDescription: {
-    'en-us': 'Fields to carry forward on clone',
-    'ru-ru': 'Поля для переноса при клонировании',
+    'en-us': 'Fields to carry forward',
+    'ru-ru': 'Поля для переноса',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
@@ -737,13 +733,21 @@ export const formsText = createDictionary({
     'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
     'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
   },
-  printOnSave: {
-    'en-us': 'Print label on save',
-    'ru-ru': 'Печатать метку при сохранении',
+  generateLabel: {
+    'en-us': 'Generate label',
+    'ru-ru': 'Сгенерировать метку',
   },
-  printLabel: {
-    'en-us': 'Print label',
-    'ru-ru': 'Печатать метку',
+  generateLabelOnSave: {
+    'en-us': 'Generate label on save',
+    'ru-ru': 'Генерировать метку при сохранении',
+  },
+  generateReport: {
+    'en-us': 'Generate report',
+    'ru-ru': 'Сгенерировать отчет',
+  },
+  generateReportOnSave: {
+    'en-us': 'Generate report on save',
+    'ru-ru': 'Генерировать отчет при сохранении',
   },
   form: {
     'en-us': 'Subform',
@@ -780,6 +784,10 @@ export const formsText = createDictionary({
   configureDataEntryTables: {
     'en-us': 'Configure data entry tables',
     'ru-ru': 'Настроить таблицы ввода данных',
+  },
+  formMeta: {
+    'en-us': 'Form Meta',
+    'ru-ru': 'Мета-данные формы',
   },
 });
 /* eslint-enable react/jsx-no-literals */

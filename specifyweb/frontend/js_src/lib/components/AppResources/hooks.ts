@@ -1,8 +1,11 @@
 import React from 'react';
 
-import { getAppResourceCount, getAppResourceMode } from './helpers';
-import { getAppResourceTree } from './tree';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { f } from '../../utils/functools';
+import type { GetOrSet, IR, RA } from '../../utils/types';
+import { addMissingFields } from '../DataModel/addMissingFields';
 import { fetchCollection } from '../DataModel/collection';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type {
   Collection,
   Discipline,
@@ -10,13 +13,10 @@ import type {
   SpAppResourceData,
   SpAppResourceDir,
   SpecifyUser,
-  SpViewSetObj,
+  SpViewSetObj as SpViewSetObject,
 } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { GetOrSet, IR, RA } from '../../utils/types';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { addMissingFields } from '../DataModel/addMissingFields';
+import { getAppResourceCount, getAppResourceMode } from './helpers';
+import { getAppResourceTree } from './tree';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;
@@ -24,7 +24,7 @@ export type AppResources = {
   readonly collections: RA<SerializedResource<Collection>>;
   readonly users: RA<SerializedResource<SpecifyUser>>;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
 };
 
 export function useAppResources(): GetOrSet<AppResources | undefined> {
@@ -66,7 +66,7 @@ export type AppResourcesTree = RA<{
   readonly key: string;
   readonly directory: SerializedResource<SpAppResourceDir> | undefined;
   readonly appResources: RA<SerializedResource<SpAppResource>>;
-  readonly viewSets: RA<SerializedResource<SpViewSetObj>>;
+  readonly viewSets: RA<SerializedResource<SpViewSetObject>>;
   readonly subCategories: AppResourcesTree;
 }>;
 
@@ -87,7 +87,7 @@ export function useAppResourceCount(
 }
 
 export function useAppResourceData(
-  resource: SerializedResource<SpAppResource | SpViewSetObj>,
+  resource: SerializedResource<SpAppResource | SpViewSetObject>,
   initialData: string | undefined
 ): {
   readonly resourceData: SerializedResource<SpAppResourceData> | undefined;
@@ -97,7 +97,9 @@ export function useAppResourceData(
   readonly isChanged: boolean;
 } {
   const initialValue = React.useRef<string | null>('');
-  const [resourceData, setResourceData] = useAsyncState(
+  const [resourceData, setResourceData] = useAsyncState<
+    SerializedResource<SpAppResourceData>
+  >(
     React.useCallback(async () => {
       const relationshipName =
         getAppResourceMode(resource) === 'appResources'
@@ -116,8 +118,9 @@ export function useAppResourceData(
               typeof records[0] === 'object' ? records[0] : newResource
             )
           : newResource;
-      initialValue.current = dataResource.data;
-      return dataResource;
+      const newData = fixLineBreaks(dataResource.data ?? '');
+      initialValue.current = newData;
+      return { ...dataResource, data: newData };
     }, [resource, initialData]),
     true
   );
@@ -128,8 +131,11 @@ export function useAppResourceData(
   };
 }
 
+const fixLineBreaks = (string: string): string =>
+  string.replace(/[\n\r]+/gu, '\n');
+
 export const getAppResourceExtension = (
-  resource: SerializedResource<SpAppResource | SpViewSetObj>
+  resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): string =>
   resource._tableName === 'SpViewSetObj'
     ? 'xml'
@@ -137,10 +143,10 @@ export const getAppResourceExtension = (
 
 function getResourceExtension(
   resource: SerializedResource<SpAppResource>
-): 'json' | 'properties' | 'txt' | 'xml' {
+): 'jrxml' | 'json' | 'properties' | 'txt' | 'xml' {
   const mimeType = resource.mimeType?.toLowerCase() ?? '';
   if (mimeType in mimeMapper) return mimeMapper[mimeType];
-  else if (mimeType.startsWith('jrxml')) return 'xml';
+  else if (mimeType.startsWith('jrxml')) return 'jrxml';
   else if (resource.name === 'preferences' && mimeType === '')
     return 'properties';
   else return 'txt';
@@ -149,7 +155,5 @@ function getResourceExtension(
 const mimeMapper: IR<'json' | 'properties' | 'txt' | 'xml'> = {
   'application/json': 'json',
   'text/xml': 'xml',
-  'jrxml/label': 'xml',
-  'jrxml/report': 'xml',
   'text/plain': 'txt',
 };

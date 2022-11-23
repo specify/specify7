@@ -235,7 +235,7 @@ function Row({
     <tr key={recordSet.id}>
       <td>
         <Link.Default
-          href={`/specify/recordset/${recordSet.id}/`}
+          href={`/specify/record-set/${recordSet.id}/`}
           title={recordSet.remarks ?? undefined}
           onClick={
             typeof handleSelect === 'function'

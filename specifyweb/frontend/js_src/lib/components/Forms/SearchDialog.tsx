@@ -18,7 +18,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { createQuery } from '../QueryBuilder';
-import { SpecifyForm } from './SpecifyForm';
+import { RenderForm } from './SpecifyForm';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
 import { Ul } from '../Atoms';
@@ -29,6 +29,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
+import { useViewDefinition } from './useViewDefinition';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -76,6 +77,14 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     ),
     true
   );
+
+  const viewDefinition = useViewDefinition({
+    model:
+      typeof viewName === 'string' ? templateResource.specifyModel : undefined,
+    viewName: typeof viewName === 'string' ? viewName : undefined,
+    formType: 'form',
+    mode: 'search',
+  });
 
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const [results, setResults] = React.useState<
@@ -130,12 +139,10 @@ export function SearchDialog<SCHEMA extends AnySchema>({
             .finally(handleLoaded);
         }}
       >
-        <SpecifyForm
+        <RenderForm
           display="inline"
-          formType="form"
-          mode="search"
           resource={templateResource}
-          viewName={viewName}
+          viewDefinition={viewDefinition}
         />
         <Ul
           className={`

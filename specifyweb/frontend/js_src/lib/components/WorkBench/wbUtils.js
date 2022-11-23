@@ -27,7 +27,7 @@ import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
 import {showDialog} from '../Molecules/LegacyDialog';
 import {createBackboneView} from '../Core/reactBackboneExtend';
-import {LeafletMap} from '../Molecules/Leaflet';
+import {LeafletMap} from '../Leaflet/Map';
 import {localityText} from '../../localization/locality';
 import {filterArray} from '../../utils/types';
 
@@ -822,7 +822,7 @@ export const WBUtils = Backbone.View.extend({
 
     this.geoMapDialog = new LeafletMapView({
       localityPoints,
-      markerClickCallback: (localityPoint) => {
+      onMarkerClick: (localityPoint) => {
         const rowNumber = localityPoints[localityPoint].rowNumber.value;
         if (typeof rowNumber !== 'number')
           throw new Error('rowNumber must be a number');
@@ -1001,7 +1001,7 @@ export const WBUtils = Backbone.View.extend({
       const changes = originalState
         .map(([visualRow, visualCol, originalValue]) => {
           let value = originalValue;
-          if (applyToAll || selectedCells[visualRow]?.has(visualCol)) {
+          if (originalValue !== null && (applyToAll || selectedCells[visualRow]?.has(visualCol))) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
             const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(

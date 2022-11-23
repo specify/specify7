@@ -91,7 +91,7 @@ export function ValidationResults(props: {
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
             className={`
-              flex-wrap rounded-none border-x-0
+              flex-wrap !justify-start border-x-0
               border-b-0 bg-transparent hover:bg-gray-300 hover:dark:bg-neutral-700
             `}
             key={index}
@@ -129,6 +129,7 @@ export function MappingView({
   // `resize` event listener for the mapping view
   const [mappingViewHeight = defaultValue, setMappingViewHeight] =
     useCachedState('wbPlanViewUi', 'mappingViewHeight');
+  const initialHeight = React.useRef(mappingViewHeight);
   const [mappingView, setMappingView] = React.useState<HTMLElement | null>(
     null
   );
@@ -157,7 +158,7 @@ export function MappingView({
       ref={setMappingView}
       style={
         {
-          '--mapping-view-height': `${mappingViewHeight}px`,
+          '--mapping-view-height': `${initialHeight.current}px`,
         } as React.CSSProperties
       }
     >
@@ -356,9 +357,7 @@ export function ToggleMappingPath({
 }): JSX.Element {
   return (
     <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
-      {showMappingView
-        ? wbText('hideMappingEditor')
-        : wbText('showMappingEditor')}
+      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
     </Button.Small>
   );
 }

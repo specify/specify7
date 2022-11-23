@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { f } from '../../utils/functools';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { queryIdField } from './Results';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { queryIdField, QueryResultRow } from './Results';
 
 export function QueryToForms({
   model,
@@ -19,7 +19,7 @@ export function QueryToForms({
   totalCount,
 }: {
   readonly model: SpecifyModel;
-  readonly results: RA<RA<number | string | null> | undefined>;
+  readonly results: RA<QueryResultRow | undefined>;
   readonly selectedRows: ReadonlySet<number>;
   readonly onFetchMore: ((index: number) => void) | undefined;
   readonly onDelete: (index: number) => void;
@@ -60,9 +60,12 @@ export function QueryToForms({
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
           onSaved={f.void}
-          onSlide={(index): void =>
-            selectedRows.size === 0 && results[index] === undefined
-              ? handleFetchMore?.(index)
+          onSlide={
+            typeof handleFetchMore === 'function'
+              ? (index): void =>
+                  selectedRows.size === 0 && results[index] === undefined
+                    ? handleFetchMore?.(index)
+                    : undefined
               : undefined
           }
         />
@@ -71,22 +74,18 @@ export function QueryToForms({
   );
 }
 
-export function useSelectedResults(
-  results: RA<RA<number | string | null> | undefined>,
+function useSelectedResults(
+  results: RA<QueryResultRow | undefined>,
   selectedRows: ReadonlySet<number>,
   isOpen: boolean
 ): RA<number | undefined> {
-  const [ids, setIds] = React.useState<RA<number>>([]);
-  React.useEffect(
+  return React.useMemo(
     () =>
       isOpen
-        ? setIds(
-            selectedRows.size === 0
-              ? (results.map((row) => row?.[queryIdField]) as RA<number>)
-              : Array.from(selectedRows)
-          )
-        : undefined,
+        ? selectedRows.size === 0
+          ? (results.map((row) => row?.[queryIdField]) as RA<number>)
+          : Array.from(selectedRows)
+        : [],
     [results, isOpen, selectedRows]
   );
-  return ids;
 }

@@ -31,7 +31,7 @@ import {
   LiteralField,
   type RelationshipDefinition,
 } from './specifyField';
-import { getUserPref } from '../UserPreferences/helpers';
+import { getCache } from '../../utils/cache';
 
 type FieldAlias = {
   readonly vname: string;
@@ -117,9 +117,16 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly isHidden: boolean;
 
+  /**
+   * Overrides are used to overwrite the default data model settings and the
+   * schema config settings. Overrides mostly affect Query Builder and the
+   * WorkBench mapper. They are used to force-hide unsupported fields and
+   * legacy fields
+   */
   public readonly overrides: {
     readonly isSystem: boolean;
     readonly isHidden: boolean;
+    // Common tables are prioritized when listing in the UI
     readonly isCommon: boolean;
   };
 
@@ -129,7 +136,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly searchDialog?: string;
 
-  private readonly fieldAliases: RA<FieldAlias>;
+  public readonly fieldAliases: RA<FieldAlias>;
 
   /**
    * A Backbone model resource for accessing the API for items of this type.
@@ -219,7 +226,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       model: this.Resource,
     });
 
-    const useLabels = getUserPref('form', 'preferences', 'useFieldLabels');
+    const useLabels = getCache('forms', 'useFieldLabels') ?? true;
     this.localization = getSchemaLocalization()[this.name.toLowerCase()] ?? {
       items: {},
     };
@@ -253,10 +260,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       column: tableDefinition.idFieldName,
       indexed: true,
       unique: true,
-      readOnly: false,
+      readOnly: true,
     });
-    this.idField.isReadOnly = true;
-    this.idField.overrides.isReadOnly = true;
 
     this.label = useLabels
       ? typeof this.localization.name === 'string' &&
@@ -265,7 +270,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
         : camelToHuman(this.name)
       : this.name;
 
-    this.isHidden = this.localization.ishidden === 1;
+    this.isHidden = this.localization.ishidden;
 
     const tableOverride = getTableOverwrite(this.name);
     this.overrides = {
@@ -333,7 +338,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
           splitName.slice(1).join('.')
         ),
       ];
-    else throw new Error('Field is not a relationship');
+    else throw new Error(`Field ${unparsedName} is not a relationship`);
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {
@@ -417,6 +422,6 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public toJSON(): string {
-    return `[object ${this.name}]`;
+    return `[table ${this.name}]`;
   }
 }

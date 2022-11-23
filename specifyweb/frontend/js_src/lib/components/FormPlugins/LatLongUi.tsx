@@ -92,7 +92,7 @@ function Coordinate({
     );
 
     isChanging.current = true;
-    resource.set(coordinateTextField, trimmedValue);
+    resource.set(coordinateTextField, trimmedValue || null);
     resource.set(coordinateField, parsed?.asFloat() ?? null);
     resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
     resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);

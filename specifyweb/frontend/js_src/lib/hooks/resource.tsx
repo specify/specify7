@@ -139,25 +139,23 @@ export async function getResourceAndField(
   | undefined
 > {
   const path = fieldName?.split('.') ?? [];
-  const getResource =
+  const resource =
     path.length === 0
-      ? Promise.resolve(undefined)
+      ? undefined
       : path.length === 1
-      ? model.fetch()
-      : model.rgetPromise(path.slice(0, -1).join('.'));
+      ? await model.fetch()
+      : await model.rgetPromise(path.slice(0, -1).join('.'));
 
-  return getResource.then((resource) => {
-    const field = model.specifyModel.getField(fieldName ?? '');
-    if (field === undefined)
-      console.error(`Unknown field ${fieldName ?? ''}`, { resource });
-    else if (resource === undefined || resource === null)
-      /*
-       * Actually this probably shouldn't be an error. it can
-       * happen, for instance, in the collectors list if
-       * the collector has not been defined yet.
-       */
-      console.error("resource doesn't exist");
-    else return { resource, field };
-    return undefined;
-  });
+  const field = model.specifyModel.getField(fieldName ?? '');
+  if (field === undefined)
+    console.error(`Unknown field ${fieldName ?? ''}`, { resource });
+  else if (resource === undefined || resource === null)
+    /*
+     * Actually this probably shouldn't be an error. it can
+     * happen, for instance, in the collectors list if
+     * the collector has not been defined yet.
+     */
+    console.error("resource doesn't exist");
+  else return { resource, field };
+  return undefined;
 }

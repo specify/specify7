@@ -18,11 +18,13 @@ import {
   mutateMappingPath,
 } from '../WbPlanView/helpers';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { getCache, setCache } from '../../utils/cache';
 
 export type MainState = State<
   'MainState',
   {
     readonly fields: RA<QueryField>;
+    readonly showMappingView : boolean;
     readonly mappingView: MappingPath;
     readonly openedElement: {
       readonly line: number;
@@ -51,6 +53,7 @@ export const getInitialState = ({
 }): MainState => ({
   type: 'MainState',
   fields: parseQueryFields(query.fields ?? []),
+  showMappingView : getCache('queryBuilder', 'showMappingView') ?? true,
   mappingView: ['0'],
   queryRunCount: autoRun ? 1 : 0,
   openedElement: { line: 1, index: undefined },
@@ -94,6 +97,7 @@ type Actions =
       'LineMoveAction',
       { readonly line: number; readonly direction: 'down' | 'up' }
     >
+  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>
   | Action<'RunQueryAction'>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>;
@@ -146,6 +150,14 @@ export const reducer = generateReducer<MainState, Actions>({
             state.fields[action.line],
             ...state.fields.slice(action.line + 2),
           ],
+  }),
+  ToggleMappingViewAction: ({ action, state}) => ({
+    ...state,
+    showMappingView: setCache(
+      'queryBuilder', 
+      'showMappingView',
+      action.isVisible
+    ),
   }),
   ChangeFieldsAction: ({ action, state }) => ({
     ...state,

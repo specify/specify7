@@ -8,7 +8,7 @@ import type { QueryField } from './helpers';
 import type { RA, Writable, WritableArray } from '../../utils/types';
 import { mappingPathToString } from '../WbPlanView/mappingHelpers';
 import { Button } from '../Atoms/Button';
-import { LeafletMap } from '../Molecules/Leaflet';
+import { LeafletMap } from '../Leaflet/Map';
 
 const emptyArray: RA<never> = [];
 const defaultPoint = [0, 10] as const;
@@ -76,7 +76,7 @@ export function QueryFromMap({
       }
       forwardRef={setMap}
       localityPoints={emptyArray}
-      markerClickCallback={f.never}
+      onMarkerClick={f.never}
       onClose={handleClose}
     />
   );

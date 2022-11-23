@@ -29,7 +29,7 @@ export function unsafeTriggerNotFound(): boolean {
     replace: true,
     state: createState({ type: 'NotFoundPage' }),
   });
-  return typeof unsafeNavigate === 'undefined';
+  return typeof unsafeNavigate === 'function';
 }
 
 export type BackgroundLocation = State<
@@ -271,13 +271,9 @@ function UnloadProtect({
 
 function hasUnloadProtect(
   backgroundPath: string | undefined,
-  { pathname, state }: Location
+  { pathname }: Location
 ): boolean {
-  const noUnloadProtect =
-    (state as { readonly noUnloadProtect?: true } | undefined)
-      ?.noUnloadProtect === true;
   return (
-    !noUnloadProtect &&
     !pathIsOverlay(pathname) &&
     !isCurrentUrl(pathname) &&
     pathname !== backgroundPath

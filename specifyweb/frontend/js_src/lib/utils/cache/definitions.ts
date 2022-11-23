@@ -23,7 +23,7 @@ import { AnyTree } from '../../components/DataModel/helperTypes';
 import {
   LeafletCacheSalt,
   MarkerLayerName,
-} from '../../components/Leaflet/leafletAddOns';
+} from '../../components/Leaflet/addOns';
 import { SortConfig } from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */
@@ -33,6 +33,7 @@ export type CacheDefinitions = {
   };
   readonly forms: {
     readonly readOnlyMode: boolean;
+    readonly useFieldLabels: boolean;
   };
   readonly wbPlanViewUi: {
     /** Whether to show less commonly used tables when selected base table */
@@ -49,6 +50,7 @@ export type CacheDefinitions = {
   readonly queryBuilder: {
     /** Whether to show fields hidden in schema in the query builder */
     readonly showHiddenFields: boolean;
+    readonly showMappingView: boolean;
     readonly mappingViewHeight: number;
   };
   readonly schemaConfig: {

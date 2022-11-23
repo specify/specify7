@@ -308,10 +308,14 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
   queryMapSubset: {
-    'en-us': (plotted: number, total: number) =>
+    'en-us': (plotted: string, total: string) =>
       `Plotted ${plotted} of ${total} records`,
     'ru-ru': (plotted: number, total: number) =>
       `Отображено ${plotted} из ${total} записей`,
+  },
+  queryMapAll: {
+    'en-us': (plotted: string) => `Plotted ${plotted} records`,
+    'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
   },
 });
 /* eslint-enable react/jsx-no-literals */

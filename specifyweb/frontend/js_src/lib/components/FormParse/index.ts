@@ -25,6 +25,7 @@ export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
   readonly model: SpecifyModel | undefined;
+  readonly viewSetId?: number;
 };
 
 type AltView = {
@@ -44,6 +45,7 @@ export type ViewDefinition = {
   readonly viewsetLevel: string;
   readonly viewsetName: string;
   readonly viewsetSource: string;
+  readonly viewsetId: number | null;
 };
 
 export const formTypes = ['form', 'formTable'] as const;
@@ -88,6 +90,7 @@ export function parseViewDefinition(
     mode,
     formType,
     model,
+    viewSetId: view.viewsetId ?? undefined,
     ...parser(viewDefinition, model),
   };
 }

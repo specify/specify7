@@ -25,26 +25,14 @@ import {
   unsafeGetPickLists,
 } from './definitions';
 
-export async function fetchPickListItems(
-  pickList: SpecifyResource<PickList>
-): Promise<RA<SerializedResource<PickListItem>>> {
-  const type = (pickList?.get('type') as 0 | 1 | 2 | undefined) ?? 0;
-  let items;
+const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
+  {};
 
-  const limit = Math.max(
-    0,
-    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
-  );
-
-  if (type === PickListTypes.ITEMS)
-    return serializeResource(pickList).pickListItems ?? [];
-  else if (type === PickListTypes.TABLE)
-    items = await fetchFromTable(pickList, limit);
-  else if (type === PickListTypes.FIELDS)
-    items = await fetchFromField(pickList, limit);
-  else error('Unknown picklist type', { pickList });
-
-  return items.map(({ value, title }) => createPickListItem(value, title));
+export async function fetchPickList(
+  pickListName: string
+): Promise<undefined | SpecifyResource<PickList>> {
+  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
+  return pickListFetchPromises[pickListName];
 }
 
 async function unsafeFetchPickList(
@@ -85,14 +73,26 @@ const rawFetchPickList = async (
     domainFilter,
   }).then(({ records }) => f.maybe(records[0], deserializeResource));
 
-const pickListFetchPromises: R<Promise<undefined | SpecifyResource<PickList>>> =
-  {};
+async function fetchPickListItems(
+  pickList: SpecifyResource<PickList>
+): Promise<RA<SerializedResource<PickListItem>>> {
+  const type = (pickList?.get('type') as 0 | 1 | 2 | undefined) ?? 0;
+  let items;
 
-export async function fetchPickList(
-  pickListName: string
-): Promise<undefined | SpecifyResource<PickList>> {
-  pickListFetchPromises[pickListName] ??= unsafeFetchPickList(pickListName);
-  return pickListFetchPromises[pickListName];
+  const limit = Math.max(
+    0,
+    pickList.get('readOnly') ? pickList.get('sizeLimit') ?? 0 : 0
+  );
+
+  if (type === PickListTypes.ITEMS)
+    return serializeResource(pickList).pickListItems ?? [];
+  else if (type === PickListTypes.TABLE)
+    items = await fetchFromTable(pickList, limit);
+  else if (type === PickListTypes.FIELDS)
+    items = await fetchFromField(pickList, limit);
+  else error('Unknown picklist type', { pickList });
+
+  return items.map(({ value, title }) => createPickListItem(value, title));
 }
 
 export const PickListSortType = {
@@ -103,50 +103,30 @@ export const PickListSortType = {
   ORDINAL_SORT: 2,
 };
 
-/*
- * TEST: make sure pick lists items are sorted properly everywhere (i.e, in the
- *   workbench)
- */
-export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
-  readonly value: string;
-  readonly title: string;
-}> {
-  const items = serializeResource(pickList).pickListItems;
-  return (
-    pickList.get('sortType') === PickListSortType.TITLE_SORT
-      ? Array.from(items).sort(sortFunction(({ title }) => title))
-      : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
-      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items
-  ).map(({ value, title }) => ({
-    value: value ?? title,
-    title: title ?? value,
-  }));
-}
-
 /** From the table picklist */
 async function fetchFromTable(
   pickList: SpecifyResource<PickList>,
   limit: number
 ): Promise<RA<PickListItemSimple>> {
-  const model = strictGetModel(pickList.get('tableName'));
-  if (!hasTablePermission(model.name, 'read')) return [];
-  const collection = new model.LazyCollection({
-    domainfilter: !f.includes(
+  const tableName = strictGetModel(pickList.get('tableName')).name;
+  if (!hasTablePermission(tableName, 'read')) return [];
+  const { records } = await fetchCollection(tableName, {
+    domainFilter: !f.includes(
       Object.keys(schema.domainLevelIds),
-      toLowerCase(model.name)
+      toLowerCase(tableName)
     ),
+    limit,
   });
-  return collection.fetch({ limit }).then(async ({ models }) =>
-    Promise.all(
-      models.map(async (model) =>
-        format(model, pickList.get('formatter') ?? undefined, true).then(
-          (title) => ({
-            value: model.url(),
-            title: title!,
-          })
-        )
-      )
+  return Promise.all(
+    records.map(async (record) =>
+      format(
+        deserializeResource(record),
+        pickList.get('formatter') ?? undefined,
+        true
+      ).then((title) => ({
+        value: record.id.toString(),
+        title: title!,
+      }))
     )
   );
 }
@@ -168,3 +148,30 @@ async function fetchFromField(
     rows.map((row) => row[0] ?? '').map((value) => ({ value, title: value }))
   );
 }
+
+/*
+ * TEST: make sure pick lists items are sorted properly everywhere (i.e, in the
+ *   workbench)
+ * Sort pick list items and extract value and title fields
+ */
+export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
+  readonly value: string;
+  readonly title: string;
+}> {
+  const items = serializeResource(pickList).pickListItems;
+  return (
+    pickList.get('sortType') === PickListSortType.TITLE_SORT
+      ? Array.from(items).sort(sortFunction(({ title }) => title))
+      : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
+      ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
+      : items
+  ).map(({ value, title }) => ({
+    value: value ?? title,
+    title: title ?? value,
+  }));
+}
+
+export const exportsForTests = {
+  unsafeFetchPickList,
+  fetchPickListItems,
+};

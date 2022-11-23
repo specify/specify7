@@ -143,6 +143,7 @@ const viewDefinition: ViewDefinition = {
   viewsetLevel: '',
   viewsetName: '',
   viewsetSource: '',
+  viewsetId: null,
 };
 
 describe('fetchView', () => {
@@ -195,6 +196,7 @@ test('parseViewDefinition', () => {
     ...parsedTinyView,
     mode: 'view',
     formType: 'form',
+    viewSetId: undefined,
   });
 });
 

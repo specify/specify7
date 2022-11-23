@@ -78,7 +78,10 @@ export function RoleView({
     role.id === undefined ||
     JSON.stringify(initialRole) !== JSON.stringify(role);
   const navigate = useNavigate();
-  useUnloadProtect(changesMade, commonText('leavePageDialogText'));
+  const unsetUnloadProtect = useUnloadProtect(
+    changesMade,
+    commonText('leavePageDialogText')
+  );
   const [state, setState] = useLiveState<
     | State<'MainState'>
     | State<
@@ -94,7 +97,13 @@ export function RoleView({
     !hasPermission(permissionName, 'update', collectionId);
 
   return (
-    <Form className="contents" onSubmit={(): void => handleSave(role)}>
+    <Form
+      className="contents"
+      onSubmit={(): void => {
+        unsetUnloadProtect();
+        handleSave(role);
+      }}
+    >
       <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
       <AppTitle title={role.name} type="form" />
       <Link.Default href={closeUrl}>
@@ -166,8 +175,8 @@ export function RoleView({
             href={closeUrl}
             onClick={(event): void => {
               event.preventDefault();
-              // REFACTOR: "noUnloadProtect" is no longer needed
-              navigate(closeUrl, { state: { noUnloadProtect: true } });
+              unsetUnloadProtect();
+              navigate(closeUrl);
             }}
           >
             {commonText('cancel')}

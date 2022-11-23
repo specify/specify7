@@ -23,61 +23,74 @@ export function useTypeSearch(
   field: LiteralField | Relationship | undefined,
   initialRelatedModel: SpecifyModel | undefined
 ): TypeSearch | false | undefined {
+  const relatedModel =
+    initialRelatedModel ??
+    (field?.isRelationship === true ? field.relatedModel : undefined);
   const [typeSearch] = useAsyncState<TypeSearch | false>(
-    React.useCallback(async () => {
-      const relatedModel =
-        initialRelatedModel ??
-        (field?.isRelationship === true ? field.relatedModel : undefined);
-      if (relatedModel === undefined) return false;
-
-      const typeSearch =
-        typeof initialTypeSearch === 'object'
-          ? initialTypeSearch
-          : (await typeSearches).querySelector(
-              typeof initialTypeSearch === 'string'
-                ? `[name="${initialTypeSearch}"]`
-                : `[tableid="${relatedModel.tableId}"]`
-            );
-      if (typeSearch === undefined) return false;
-
-      const rawSearchFieldsNames =
-        typeSearch === null
-          ? []
-          : getParsedAttribute(typeSearch, 'searchField')
-              ?.split(',')
-              .map(f.trim)
-              .map(
-                typeof typeSearch?.textContent === 'string' &&
-                  typeSearch.textContent.trim().length > 0
-                  ? columnToFieldMapper(typeSearch.textContent)
-                  : f.id
-              ) ?? [];
-      const searchFields = rawSearchFieldsNames
-        .map((searchField) => relatedModel.getFields(searchField))
-        .filter(({ length }) => length > 0);
-
-      /*
-       * Can't use generateMappingPathPreview here as that function expects
-       * tree ranks to be loaded
-       */
-      const fieldTitles = searchFields
-        .map((fields) => fields.at(-1)!)
-        .map((field) =>
-          filterArray([
-            field.model === relatedModel ? undefined : field.model.label,
-            field.label,
-          ]).join(' / ')
-        );
-
-      return {
-        title: queryText('queryBoxDescription', formatList(fieldTitles)),
-        searchFields,
-        relatedModel,
-        dataObjectFormatter:
-          typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
-      };
-    }, [initialTypeSearch, field, initialRelatedModel]),
+    React.useCallback(
+      () =>
+        relatedModel === undefined
+          ? false
+          : parseTypeSearch(relatedModel, initialTypeSearch),
+      [initialTypeSearch, relatedModel]
+    ),
     false
   );
   return typeSearch;
 }
+
+async function parseTypeSearch(
+  relatedModel: SpecifyModel,
+  initialTypeSearch: Element | string | undefined
+): Promise<TypeSearch | false> {
+  const typeSearch =
+    typeof initialTypeSearch === 'object'
+      ? initialTypeSearch
+      : (await typeSearches).querySelector(
+          typeof initialTypeSearch === 'string'
+            ? `[name="${initialTypeSearch}"]`
+            : `[tableid="${relatedModel.tableId}"]`
+        );
+  if (typeSearch === undefined) return false;
+
+  const rawSearchFieldsNames =
+    typeSearch === null
+      ? []
+      : getParsedAttribute(typeSearch, 'searchField')
+          ?.split(',')
+          .map(f.trim)
+          .map(
+            typeof typeSearch?.textContent === 'string' &&
+              typeSearch.textContent.trim().length > 0
+              ? columnToFieldMapper(typeSearch.textContent)
+              : f.id
+          ) ?? [];
+  const searchFields = rawSearchFieldsNames
+    .map((searchField) => relatedModel.getFields(searchField))
+    .filter(({ length }) => length > 0);
+
+  /*
+   * Can't use generateMappingPathPreview here as that function expects
+   * tree ranks to be loaded
+   */
+  const fieldTitles = searchFields
+    .map((fields) => fields.at(-1)!)
+    .map((field) =>
+      filterArray([
+        field.model === relatedModel ? undefined : field.model.label,
+        field.label,
+      ]).join(' / ')
+    );
+
+  return {
+    title: queryText('queryBoxDescription', formatList(fieldTitles)),
+    searchFields,
+    relatedModel,
+    dataObjectFormatter:
+      typeSearch?.getAttribute('dataObjFormatter') ?? undefined,
+  };
+}
+
+export const exportsForTests = {
+  parseTypeSearch,
+};

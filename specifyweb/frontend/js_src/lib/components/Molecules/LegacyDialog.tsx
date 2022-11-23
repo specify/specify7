@@ -44,6 +44,7 @@ function LegacyDialogWrapper({
 }
 
 const dialogClass = createBackboneView(LegacyDialogWrapper);
+export const legacyDialogs = new Set<() => void>();
 
 export const showDialog = (
   props: ConstructorParameters<typeof dialogClass>[0]
@@ -58,8 +59,10 @@ export const showDialog = (
     const originalDestructor = view.remove.bind(view);
     view.remove = (): typeof view => {
       originalDestructor();
+      legacyDialogs.delete(view.remove);
       return view;
     };
+    legacyDialogs.add(view.remove);
   }
 
   return view;

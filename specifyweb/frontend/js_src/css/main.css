@@ -72,7 +72,11 @@
   }
 
   :disabled:not(.link), [readonly] {
-    @apply !cursor-not-allowed ring-1 ring-gray-500 dark:ring-1;
+    @apply ring-1 ring-gray-500 dark:ring-1;
+  }
+
+  select, input[role='combox'] {
+    @apply disabled:cursor-default;
   }
 
   :is(:disabled, [readonly]):not(.link, [type='checkbox'], [type='radio']) {
@@ -91,7 +95,7 @@
   }
 
   :is([type='checkbox'], [type='radio']):is([readonly], :disabled) {
-    @apply bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
+    @apply cursor-default bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
       hover:ring-gray-500 checked:bg-current;
   }
 
@@ -142,7 +146,7 @@
   }
 
   .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
-    @apply brightness-[1.2] dark:brightness-[2];
+    @apply brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
@@ -155,7 +159,7 @@
   }
 
   a.link {
-    @apply hover:text-brand-300;
+    @apply hover:text-brand-400 dark:hover:text-brand-300;
   }
 
   .link[aria-current]:not(.aria-handled) {

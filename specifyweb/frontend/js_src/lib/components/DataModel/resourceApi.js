@@ -13,6 +13,7 @@ import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {schema} from './schema';
 import {formatUrl} from '../Router/queryString';
 import {Http} from '../../utils/ajax/definitions';
+import {removeKey} from '../../utils/utils';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -109,19 +110,23 @@ function eventHandlerForToOne(related, field) {
         },
         async clone() {
             var self = this;
-            var newResource = Backbone.Model.prototype.clone.call(self);
-            delete newResource.id;
-            delete newResource.attributes.id;
-            
-            getFieldsToNotClone(this.specifyModel)
-              .map((fieldName)=>
-                 delete newResource.attributes[fieldName.toLowerCase()]
-              );
+
+            const exemptFields = getFieldsToNotClone(this.specifyModel).map(fieldName=>fieldName.toLowerCase());
+
+            var newResource = new this.constructor(
+              removeKey(
+                this.attributes,
+                'resource_uri',
+                'id',
+                ...exemptFields
+              )
+            );
 
             newResource.needsSaved = self.needsSaved;
             newResource.recordsetid = self.recordsetid;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
+                if(exemptFields.includes(fieldName)) return;
                 var field = self.specifyModel.getField(fieldName);
                 switch (field.type) {
                 case 'many-to-one':

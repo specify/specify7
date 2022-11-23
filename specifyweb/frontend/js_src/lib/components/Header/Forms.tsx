@@ -64,11 +64,11 @@ export function FormsDialog({
       onClose={handleClose}
     >
       <nav>
-        <Ul>
+        <Ul className="flex flex-col gap-1">
           {forms
             .filter(({ table }) => hasTablePermission(table, 'create'))
             .map(({ iconName, title, table }, index) => (
-              <li key={index}>
+              <li key={index} className="contents">
                 <Link.Default
                   href={getResourceViewUrl(table)}
                   onClick={
@@ -145,3 +145,7 @@ const resolveModels = (
         title: model.label,
         table: model.name,
       }));
+
+export const exportsForTests = {
+  fetchLegacyForms,
+};

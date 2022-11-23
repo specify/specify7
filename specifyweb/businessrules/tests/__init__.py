@@ -10,6 +10,7 @@ from .collectionobject import *
 from .collection import *
 from .collector import *
 from .determination import *
+from .determiner import *
 from .discipline import *
 from .division import *
 from .geography import *

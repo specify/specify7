@@ -15,7 +15,7 @@ import type { FieldTypes, FormFieldDefinition } from '../FormParse/fields';
 import { FormPlugin } from '../FormPlugins';
 import { hasPathPermission, hasPermission } from '../Permissions/helpers';
 import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
-import { Combobox } from './ComboBox';
+import { Combobox, resolvePickListField } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -133,33 +133,46 @@ const fieldRenderers: {
     formType,
     fieldDefinition: { defaultValue, pickList },
   }) {
-    const [data] = useAsyncState(
+    const resolvedFieldName = React.useMemo(
+      () => resolvePickListField(resource, fieldName),
+      [resource, fieldName]
+    );
+    const field = React.useMemo(
+      () =>
+        resolvedFieldName === undefined
+          ? undefined
+          : resource.specifyModel.getField(resolvedFieldName),
+      [resource.specifyModel, resolvedFieldName]
+    );
+    const [resolvedResource] = useAsyncState(
       React.useCallback(
         async () =>
-          getResourceAndField(resource, fieldName).then(
-            (values) => values ?? false
+          getResourceAndField(resource, resolvedFieldName).then(
+            (values) => values?.resource ?? false
           ),
-        [resource, fieldName]
+        [resource, resolvedFieldName]
       ),
       false
     );
     return (
       <ErrorBoundary dismissable>
-        {data === undefined ? undefined : (
-          <Combobox
-            defaultValue={defaultValue}
-            field={data === false ? undefined : data.field}
-            fieldName={fieldName}
-            formType={formType}
-            id={id}
-            isDisabled={false}
-            isRequired={isRequired}
-            mode={mode}
-            model={resource}
-            pickListName={pickList}
-            resource={data === false ? resource : data.resource}
-          />
-        )}
+        <Combobox
+          defaultValue={defaultValue}
+          field={field}
+          fieldName={resolvedFieldName}
+          formType={formType}
+          id={id}
+          isDisabled={resolvedFieldName === undefined}
+          isRequired={isRequired}
+          mode={mode}
+          model={resource}
+          pickListName={pickList}
+          resource={
+            resolvedResource === false || resolvedResource === undefined
+              ? resource
+              : resolvedResource
+          }
+        />
       </ErrorBoundary>
     );
   },

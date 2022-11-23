@@ -54,6 +54,7 @@ export const fetchContext = load<SystemInfo>(
       {},
       { strict: false, expectedResponseCodes: [Http.NO_CONTENT] }
     ).catch(softFail);
+  return systemInfo;
 });
 
 export const getSystemInfo = (): SystemInfo => systemInfo;

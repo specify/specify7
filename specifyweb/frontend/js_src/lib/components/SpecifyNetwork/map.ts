@@ -1,11 +1,11 @@
 import { ajax } from '../../utils/ajax';
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   defaultRecordFilterFunction,
-  fetchLocalityDataFromLocalityResource,
+  fetchLocalityDataFromResource,
   formatLocalityDataObject,
   parseLocalityPinFields,
 } from '../Leaflet/localityRecordDataExtractor';
@@ -50,6 +50,7 @@ export const fetchLocalOccurrences = async (
 
   await treeRanksPromise;
 
+  // REFACTOR: create this query on the fly
   const {
     data: { results },
   } = await ajax<{
@@ -151,7 +152,7 @@ export const fetchLocalOccurrences = async (
           const locality = new schema.models.Locality.Resource({
             id: localityId,
           });
-          return fetchLocalityDataFromLocalityResource(
+          return fetchLocalityDataFromResource(
             await locality.fetch(),
             false,
             (mappingPathParts, resource) =>

@@ -1,23 +1,9 @@
 import type { AppResourcesConformation } from './Aside';
-import type { AppResources, AppResourcesTree } from './hooks';
+import type { AppResourcesTree } from './hooks';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
-
-export const getAppResource = (
-  resources: AppResources,
-  model: SpecifyModel<SpAppResource | SpViewSetObj>,
-  resourceId: number | undefined
-): SerializedResource<SpAppResource | SpViewSetObj> | false | undefined =>
-  typeof resourceId === 'number'
-    ? (
-        (model.name === 'SpAppResource'
-          ? resources.appResources
-          : resources.viewSets) as RA<SerializedResource<SpAppResource>>
-      ).find(({ id }) => id === resourceId) ?? false
-    : undefined;
 
 export type AppResourceMode = 'appResources' | 'viewSets';
 

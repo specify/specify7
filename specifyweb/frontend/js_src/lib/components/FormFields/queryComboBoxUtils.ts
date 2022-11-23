@@ -12,8 +12,8 @@ import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { flippedSortTypes } from '../QueryBuilder/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
-import type {CollectionRelationships} from './useCollectionRelationships';
-import {QueryComboBoxTreeData} from './useTreeData';
+import type { CollectionRelationships } from './useCollectionRelationships';
+import { QueryComboBoxTreeData } from './useTreeData';
 
 export function makeComboBoxQuery({
   fieldName,
@@ -52,18 +52,10 @@ export function makeComboBoxQuery({
   )
     .toSpQueryField()
     .set('isDisplay', false)
-    .set(
-      'startValue',
-      searchAlgorithm === 'contains'
-        ? `%${value}%`
-        : (searchAlgorithm === 'startsWithCaseSensitive'
-        ? `%${value}`
-        : value)
-    )
+    .set('startValue', searchAlgorithm === 'contains' ? `%${value}%` : value)
     .set(
       'operStart',
-      searchAlgorithm === 'contains' ||
-        searchAlgorithm === 'startsWithCaseSensitive'
+      searchAlgorithm === 'contains'
         ? queryFieldFilters.like.id
         : queryFieldFilters.startsWith.id
     );
@@ -185,9 +177,9 @@ export const getRelatedCollectionId = (
 ): number | undefined =>
   (fieldName === 'rightSide'
     ? left
-    : (fieldName === 'leftSide'
+    : fieldName === 'leftSide'
     ? right
-    : undefined)
+    : undefined
   )?.find(
     ({ id }) =>
       id ===
@@ -196,7 +188,6 @@ export const getRelatedCollectionId = (
           ''
       )
   )?.collection;
-
 
 export type TypeSearch = {
   readonly title: string;

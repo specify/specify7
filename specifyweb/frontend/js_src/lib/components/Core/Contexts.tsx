@@ -97,20 +97,20 @@ export function Contexts({
   setError = handleError;
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
+  const unloadProtectsRef = React.useRef(unloadProtects);
   const handleChangeUnloadProtects = React.useCallback(
-    (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void =>
-      setUnloadProtects((oldUnloadProtects) => {
-        const resolvedValue =
-          typeof value === 'function' ? value(oldUnloadProtects) : value;
+    (value: RA<string> | ((oldValue: RA<string>) => RA<string>)): void => {
+      const resolvedValue =
+        typeof value === 'function' ? value(unloadProtectsRef.current) : value;
+      setUnloadProtects(resolvedValue);
+      unloadProtectsRef.current = resolvedValue;
 
-        if (resolvedValue.length > 0)
-          unloadProtectEvents.trigger('blocked', resolvedValue);
-        else unloadProtectEvents.trigger('unblocked');
+      if (resolvedValue.length > 0)
+        unloadProtectEvents.trigger('blocked', resolvedValue);
+      else unloadProtectEvents.trigger('unblocked');
 
-        setDevelopmentGlobal('_unloadProtects', resolvedValue);
-
-        return resolvedValue;
-      }),
+      setDevelopmentGlobal('_unloadProtects', resolvedValue);
+    },
     []
   );
   const getSetUnloadProtect = React.useMemo(
@@ -179,7 +179,7 @@ export const MenuContext = React.createContext<
 >([undefined, f.never]);
 MenuContext.displayName = 'MenuContext';
 
-export type FormMeta = {
+export type FormMetaType = {
   /*
    * Whether user tried to submit a form. This causes deferred save blockers
    * to appear
@@ -189,9 +189,11 @@ export type FormMeta = {
 
 export const FormContext = React.createContext<
   readonly [
-    meta: FormMeta,
+    meta: FormMetaType,
     setMeta:
-      | ((newState: FormMeta | ((oldMeta: FormMeta) => FormMeta)) => void)
+      | ((
+          newState: FormMetaType | ((oldMeta: FormMetaType) => FormMetaType)
+        ) => void)
       | undefined
   ]
 >([

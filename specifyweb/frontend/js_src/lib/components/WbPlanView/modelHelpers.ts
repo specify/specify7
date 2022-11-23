@@ -119,6 +119,7 @@ export function findRequiredMissingFields(
           );
         else if (
           relationship.overrides.isRequired &&
+          !relationship.relatedModel.overrides.isSystem &&
           !mustMatchPreferences[tableName]
         )
           return [localPath];

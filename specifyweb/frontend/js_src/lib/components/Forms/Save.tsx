@@ -1,27 +1,28 @@
 import React from 'react';
 
-import { error } from '../Errors/assert';
-import { listen } from '../../utils/events';
-import { camelToHuman, replaceKey } from '../../utils/utils';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useUnloadProtect } from '../../hooks/navigation';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
+import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { listen } from '../../utils/events';
+import { camelToHuman, replaceKey } from '../../utils/utils';
+import { H3, Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Submit } from '../Atoms/Submit';
+import { FormContext, LoadingContext } from '../Core/Contexts';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
+import { error } from '../Errors/assert';
+import { fail } from '../Errors/Crash';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
-import { resourceOn } from '../DataModel/resource';
-import { H3, Ul } from '../Atoms';
-import { FormContext, LoadingContext } from '../Core/Contexts';
-import { useIsModified } from '../../hooks/useIsModified';
-import { Dialog } from '../Molecules/Dialog';
-import { useUnloadProtect } from '../../hooks/navigation';
+import { usePref } from '../UserPreferences/usePref';
 import { NO_CLONE } from './ResourceView';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { className } from '../Atoms/className';
-import { useId } from '../../hooks/useId';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
@@ -54,7 +55,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
    */
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
-  readonly onSaving?: () => boolean | undefined | void;
+  readonly onSaving?: (
+    newResource: SpecifyResource<SCHEMA> | undefined,
+    unsetUnloadProtect: () => void
+  ) => false | undefined | void;
   readonly onSaved?: (payload: {
     readonly newResource: SpecifyResource<SCHEMA> | undefined;
     readonly wasNew: boolean;
@@ -71,7 +75,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const id = useId('save-button');
   const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
-    saveRequired,
+    saveRequired || externalSaveRequired,
     formsText('unsavedFormUnloadProtect')
   );
 
@@ -104,9 +108,18 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [formContext, setFormContext] = React.useContext(FormContext);
 
+  const [globalCanCarryForward] = usePref(
+    'form',
+    'preferences',
+    'disableCarryForward'
+  );
+  const canCarryForward =
+    !globalCanCarryForward.includes(resource.specifyModel.name) &&
+    !NO_CLONE.has(resource.specifyModel.name);
+
   async function handleSubmit(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | SubmitEvent,
-    mode: 'addAnother' | 'clone' | 'save' = 'save'
+    event: React.MouseEvent<HTMLButtonElement> | SubmitEvent,
+    mode: 'addAnother' | 'save' = 'save'
   ): Promise<void> {
     if (!form.reportValidity()) return;
 
@@ -147,10 +160,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * Eg. autonumber fields, the id, etc.
      */
     const newResource =
-      mode === 'clone'
-        ? await resource.clone()
-        : mode === 'addAnother'
-        ? new resource.specifyModel.Resource()
+      mode === 'addAnother'
+        ? canCarryForward
+          ? await resource.clone()
+          : new resource.specifyModel.Resource()
         : undefined;
     const wasNew = resource.isNew();
     const wasChanged = resource.needsSaved;
@@ -159,7 +172,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
      * Save process is canceled if false was returned. This also allows to
      * implement custom save behavior
      */
-    if (handleSaving?.() === false) return;
+    if (handleSaving?.(newResource, unsetUnloadProtect) === false) return;
 
     setIsSaving(true);
     loading(
@@ -169,6 +182,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       )
         .then(() => {
           unsetUnloadProtect();
+          smoothScroll(form, 0);
           handleSaved?.({
             newResource,
             wasNew,
@@ -176,7 +190,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           });
         })
         .then(() => setIsSaving(false))
-        .then(() => smoothScroll(form, 0))
         .catch((error_) =>
           Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===
           hasSaveConflict
@@ -205,17 +218,6 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {canAddAnother && canCreate ? (
         <>
-          {!NO_CLONE.has(resource.specifyModel.name) && (
-            <ButtonComponent
-              className={saveBlocked ? '!cursor-not-allowed' : undefined}
-              disabled={isSaving || isChanged}
-              onClick={(event): void =>
-                void handleSubmit(event, 'clone').catch(fail)
-              }
-            >
-              {formsText('clone')}
-            </ButtonComponent>
-          )}
           <ButtonComponent
             className={saveBlocked ? '!cursor-not-allowed' : undefined}
             disabled={isSaving || isChanged}

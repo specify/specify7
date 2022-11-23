@@ -2,29 +2,29 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { State } from 'typesafe-reducer';
 
-import type { Tables } from '../DataModel/types';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { FormMode } from '../FormParse';
-import { hasTablePermission } from '../Permissions/helpers';
 import { Container } from '../Atoms';
-import { DeleteButton } from './DeleteButton';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { useIsModified } from '../../hooks/useIsModified';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ReportsView } from '../Reports';
-import { SaveButton } from './Save';
-import { Link } from '../Atoms/Link';
-import { DataEntry } from '../Atoms/DataEntry';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { BaseResourceView } from './BaseResourceView';
+import { DataEntry } from '../Atoms/DataEntry';
+import { Link } from '../Atoms/Link';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Tables } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import type { FormMode } from '../FormParse';
 import { AppTitle } from '../Molecules/AppTitle';
-import { usePref } from '../UserPreferences/usePref';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { hasTablePermission } from '../Permissions/helpers';
+import { ReportsView } from '../Reports';
 import { getUserPref } from '../UserPreferences/helpers';
+import { usePref } from '../UserPreferences/usePref';
+import { BaseResourceView } from './BaseResourceView';
+import { DeleteButton } from './DeleteButton';
+import { SaveButton } from './Save';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -118,7 +118,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
   readonly dialog: 'modal' | 'nonModal' | false;
-  readonly onSaving?: () => false | undefined | void;
+  readonly onSaving?: (
+    newResource: SpecifyResource<SCHEMA> | undefined,
+    unsetUnloadProtect: () => void
+  ) => false | undefined | void;
   readonly onSaved:
     | ((payload: {
         readonly newResource: SpecifyResource<SCHEMA> | undefined;
@@ -342,13 +345,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
                       {headerContent}
                     </>
                   )}
-                  {!isSubForm && (
-                    <div className="-mt-4 w-full border-b-2 border-brand-300" />
-                  )}
                 </>
               }
               icon="none"
               modal={dialog === 'modal' || makeFormDialogsModal}
+              showOrangeBar={!isSubForm}
               onClose={(): void => {
                 if (isModified) setShowUnloadProtect(true);
                 else handleClose();

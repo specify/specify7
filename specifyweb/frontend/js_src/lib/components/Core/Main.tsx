@@ -141,6 +141,11 @@ export function Main(): JSX.Element | null {
             )}
           </p>
           <p>{commonText('versionMismatchSecondDialogText')}</p>
+          <p>
+            <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
+              {commonText('versionMismatchThirdDialogText')}
+            </Link.NewTab>
+          </p>
         </Dialog>
       )}
       {hasAgent ? (

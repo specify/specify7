@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -25,6 +26,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
+import { recordSetView } from '../FormParse/webOnlyViews';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -108,6 +110,26 @@ export function SaveQueryButtons({
   );
 }
 
+export function ToggleMappingViewButton({
+  fields,
+  showMappingView,
+  onClick: handleClick,
+}: {
+  readonly fields: RA<QueryField>;
+  readonly showMappingView: boolean;
+  readonly onClick: () => void;
+}): JSX.Element {
+  return (
+    <Button.Small
+      aria-pressed={!showMappingView}
+      onClick={handleClick}
+      disabled={fields.length === 0 && showMappingView}
+    >
+      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+    </Button.Small>
+  );
+}
+
 export function QueryButton({
   disabled,
   children,
@@ -178,6 +200,11 @@ export function MakeRecordSetButton({
             queryResource.set('fields', getQueryFieldRecords());
 
           const recordSet = new schema.models.RecordSet.Resource();
+
+          if (!queryResource.isNew()) {
+            recordSet.set('name', queryResource.get('name'));
+          }
+
           recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
           recordSet.set('fromQuery', queryResource.toJSON());
@@ -198,6 +225,7 @@ export function MakeRecordSetButton({
               isSubForm={false}
               mode="edit"
               resource={recordSet}
+              viewName={recordSetView}
               onClose={(): void => setState(undefined)}
               onDeleted={f.never}
               onSaved={(): void => setState('saved')}
@@ -241,7 +269,7 @@ export function RecordSetCreated({
       header={queryText('recordSetCreatedDialogHeader')}
       onClose={handleClose}
     >
-      <Link.Default href={`/specify/recordset/${recordSet.id}/`}>
+      <Link.Default href={`/specify/record-set/${recordSet.id}/`}>
         <TableIcon label name={getModelById(recordSet.get('dbTableId')).name} />
         {recordSet.get('name')}
       </Link.Default>

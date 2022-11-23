@@ -138,6 +138,21 @@ const globalFieldOverrides: {
   SpecifyUser: {
     isAdmin: 'readOnly',
   },
+  TaxonTreeDef: {
+    fullNameDirection: 'readOnly',
+  },
+  GeographyTreeDef: {
+    fullNameDirection: 'readOnly',
+  },
+  StorageTreeDef: {
+    fullNameDirection: 'readOnly',
+  },
+  GeologicTimePeriodTreeDef: {
+    fullNameDirection: 'readOnly',
+  },
+  LithoStratTreeDef: {
+    fullNameDirection: 'readOnly',
+  },
 };
 
 /*
@@ -177,9 +192,6 @@ const fieldOverwrites: typeof globalFieldOverrides = {
   Determination: {
     preferredTaxon: 'readOnly',
     isCurrent: 'hidden',
-  },
-  Taxon: {
-    isAccepted: 'readOnly',
   },
 };
 

@@ -126,9 +126,9 @@ export function QueryTables({
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
-      <Ul>
+      <Ul className="flex flex-col gap-1">
         {tables.map(({ name, label }, index) => (
-          <li key={index}>
+          <li key={index} className="contents">
             <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
               <TableIcon label={false} name={name} />
               {label}

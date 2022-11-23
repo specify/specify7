@@ -5,27 +5,27 @@
  * @module
  */
 
-import type { MappingPath } from '../WbPlanView/Mapper';
-import type { Tables } from '../DataModel/types';
-import { toLowerCase } from '../../utils/utils';
-import type { LocalityPinFields } from './leafletConfig';
-import { localityPinFields, requiredLocalityColumns } from './leafletConfig';
-import type { Field, LocalityData } from './leafletHelpers';
-import {
-  findRanksInMappings,
-  formatCoordinate,
-  getField,
-  getLocalityData,
-} from './leafletHelpers';
 import type { IR, R, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { toLowerCase } from '../../utils/utils';
+import type { Tables } from '../DataModel/types';
+import { pathStartsWith } from '../WbPlanView/helpers';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import type { SplitMappingPath } from '../WbPlanView/mappingHelpers';
 import {
   getCanonicalMappingPath,
   mappingPathToString,
   splitJoinedMappingPath,
 } from '../WbPlanView/mappingHelpers';
-import { pathStartsWith } from '../WbPlanView/helpers';
+import type { LocalityPinFields } from './config';
+import { localityPinFields, requiredLocalityColumns } from './config';
+import type { Field, LocalityData } from './helpers';
+import {
+  findRanksInMappings,
+  formatCoordinate,
+  getField,
+  getLocalityData,
+} from './helpers';
 
 const addBaseTableName = (
   baseTableName: keyof Tables,
@@ -36,6 +36,14 @@ const addBaseTableName = (
     mappingPath: [baseTableName, ...mappingPath],
   }));
 
+export const uniqueMappingPaths = (
+  mappingPaths: RA<MappingPath | undefined>
+): RA<MappingPath> =>
+  Array.from(
+    new Set(filterArray(mappingPaths).map(mappingPathToString)),
+    splitJoinedMappingPath
+  ).map((path) => (path.length === 1 && path[0] === '' ? [] : path));
+
 const matchLocalityPinFields = (
   splitMappingPaths: SplitMappingPaths
 ): RA<
@@ -45,21 +53,16 @@ const matchLocalityPinFields = (
     .map(({ pathToRelationship, pathsToFields }) => ({
       pathsToFields: pathsToFields.map((path) => path.map(toLowerCase)),
       pathToRelationship: pathToRelationship.map(toLowerCase),
-      matchedPathsToRelationship: Array.from(
-        new Set(
-          filterArray(
-            splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
-              const subArrayPosition = findSubArray(
-                canonicalMappingPath.map(toLowerCase),
-                pathToRelationship.map(toLowerCase)
-              );
-              return subArrayPosition === -1
-                ? undefined
-                : mappingPathToString(mappingPath.slice(0, subArrayPosition));
-            })
-          )
-        ),
-        splitJoinedMappingPath
+      matchedPathsToRelationship: uniqueMappingPaths(
+        splitMappingPaths.map(({ mappingPath, canonicalMappingPath }) => {
+          const subArrayPosition = findSubArray(
+            canonicalMappingPath.map(toLowerCase),
+            pathToRelationship.map(toLowerCase)
+          );
+          return subArrayPosition === -1
+            ? undefined
+            : mappingPath.slice(0, subArrayPosition);
+        })
       ),
     }))
     .filter(

@@ -64,56 +64,71 @@ function TableResults({
       ) : Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText('noMatches')}</p>
       ) : (
-        queryResults.map(({ model, caption, tableResults, ajaxUrl }, index) => (
-          <details key={index}>
-            <summary
-              className="link list-item rounded bg-brand-200 p-1.5
-                hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400"
-            >
-              {`${caption} (${tableResults.totalCount})`}
-            </summary>
-            <ErrorBoundary dismissable>
-              <QueryResults
-                createRecordSet={undefined}
-                extraButtons={undefined}
-                fetchResults={async (
-                  offset: number
-                ): Promise<RA<RA<number | string>>> =>
-                  ajax<IR<QueryTableResult> | QueryTableResult>(
-                    formatUrl(ajaxUrl, {
-                      name: model.name,
-                      // The URL may already have a "name" parameter
-                      ...parseUrl(ajaxUrl),
-                      offset: offset.toString(),
-                    }),
-                    {
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      headers: { Accept: 'application/json' },
-                    }
-                  ).then(
-                    ({ data }) =>
-                      (model.name in data
-                        ? (data as IR<QueryTableResult>)[model.name]
-                        : (data as QueryTableResult)
-                      ).results
-                  )
-                }
-                fetchSize={expressSearchFetchSize}
-                fieldSpecs={tableResults.fieldSpecs.map(
-                  ({ stringId, isRelationship }) =>
-                    QueryFieldSpec.fromStringId(stringId, isRelationship)
-                )}
-                hasIdField
-                initialData={tableResults.results}
-                label={model.label}
-                model={model}
-                tableClassName="max-h-[70vh]"
-                totalCount={tableResults.totalCount}
-              />
-            </ErrorBoundary>
-          </details>
+        queryResults.map((results, index) => (
+          <TableResult key={index} {...results} />
         ))
       )}
     </section>
+  );
+}
+
+function TableResult({
+  model,
+  caption,
+  tableResults,
+  ajaxUrl,
+}: RawExpressSearchResult): JSX.Element {
+  const handleFetch = React.useCallback(
+    async (offset: number): Promise<RA<RA<number | string>>> =>
+      ajax<IR<QueryTableResult> | QueryTableResult>(
+        formatUrl(ajaxUrl, {
+          name: model.name,
+          // The URL may already have a "name" parameter
+          ...parseUrl(ajaxUrl),
+          offset: offset.toString(),
+        }),
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: { Accept: 'application/json' },
+        }
+      ).then(
+        ({ data }) =>
+          (model.name in data
+            ? (data as IR<QueryTableResult>)[model.name]
+            : (data as QueryTableResult)
+          ).results
+      ),
+    [ajaxUrl, model.name]
+  );
+
+  return (
+    <details>
+      <summary
+        className={`
+                link list-item rounded bg-brand-200 p-1.5
+                hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
+              `}
+      >
+        {`${caption} (${tableResults.totalCount})`}
+      </summary>
+      <ErrorBoundary dismissable>
+        <QueryResults
+          createRecordSet={undefined}
+          extraButtons={undefined}
+          fetchResults={handleFetch}
+          fetchSize={expressSearchFetchSize}
+          fieldSpecs={tableResults.fieldSpecs.map(
+            ({ stringId, isRelationship }) =>
+              QueryFieldSpec.fromStringId(stringId, isRelationship)
+          )}
+          hasIdField
+          initialData={tableResults.results}
+          label={model.label}
+          model={model}
+          tableClassName="max-h-[70vh]"
+          totalCount={tableResults.totalCount}
+        />
+      </ErrorBoundary>
+    </details>
   );
 }

@@ -9,17 +9,15 @@ import type {
   SpAppResourceDir,
   SpViewSetObj,
 } from '../DataModel/types';
-import { commonText } from '../../localization/common';
 import { fetchResource } from '../DataModel/resource';
-import { getUniqueName } from '../../utils/uniquifyName';
 import type { AppResourcesOutlet } from './index';
 import { findAppResourceDirectory } from './Create';
 import { AppResourceEditor } from './Editor';
 import type { AppResources } from './hooks';
 import { useResourcesTree } from './hooks';
-import { Container, H3 } from '../Atoms';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { NotFoundView } from '../Router/NotFoundView';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -55,21 +53,16 @@ export function Wrapper({
   }`;
   return initialData === undefined ? null : resource === undefined ||
     directory === undefined ? (
-    <Container.Base className="flex-1">
-      <H3>{commonText('pageNotFound')}</H3>
-    </Container.Base>
+    <NotFoundView container={false} />
   ) : (
     <AppResourceEditor
       directory={directory}
       initialData={initialData === false ? undefined : initialData}
       resource={resource}
-      onClone={(appResource, initialDataFrom): void =>
+      onClone={(resource, initialDataFrom): void =>
         navigate(`${baseHref}/new/`, {
           state: {
-            resource: {
-              ...appResource,
-              name: getUniqueName(appResource.name, [appResource.name]),
-            },
+            resource,
             directoryKey: state?.directoryKey,
             initialDataFrom,
           },
@@ -89,10 +82,10 @@ export function Wrapper({
       onSaved={(appResource, directory): void => {
         setResources({
           ...resources,
-          directories:
-            resource.id === undefined && typeof directory.id === 'number'
-              ? [...resources.directories, directory]
-              : resources.directories,
+          directories: [
+            ...resources.directories.filter(({ id }) => id !== directory.id),
+            directory,
+          ],
           [mode]: [
             ...resources[mode as 'appResources'].filter(
               ({ id }) => id !== appResource.id

@@ -93,14 +93,29 @@ export function SubView({
          * and not rendering record count or record slider.
          */
         const resource = await parentResource.rgetPromise(relationship.name);
+        const reverse = relationship.getReverse();
+        if (reverse === undefined)
+          throw new Error(
+            `Can't render a SubView for ` +
+              `${relationship.model.name}.${relationship.name} because ` +
+              `reverse relationship does not exist`
+          );
         const collection = (
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
                 related: parentResource,
                 field: relationship.getReverse(),
               })
-            : new relationship.relatedModel.LazyCollection()
+            : new relationship.relatedModel.LazyCollection({
+                filters: {
+                  [reverse.name]: parentResource.id,
+                },
+              })
         ) as Collection<AnySchema>;
+        if (relationship.isDependent() && parentResource.isNew())
+          // Prevent fetching related for newly created parent
+          overwriteReadOnly(collection, '_totalCount', 0);
+
         if (typeof resource === 'object' && resource !== null)
           collection.add(resource);
         overwriteReadOnly(

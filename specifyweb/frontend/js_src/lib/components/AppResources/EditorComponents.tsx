@@ -9,7 +9,7 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from 'codemirror';
 import React from 'react';
 
-import { getAppResourceType } from './filtersHelpers';
+import { getResourceType } from './filtersHelpers';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -27,18 +27,18 @@ import { appResourceSubTypes, appResourceTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 
-export function AppResourceIcon({
-  resource,
-}: {
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
-}): JSX.Element {
-  if (resource._tableName === 'SpViewSetObj')
-    return appResourceTypes.viewSets.icon;
-  const type = getAppResourceType(
-    resource as SerializedResource<SpAppResource>
+export const appResourceIcon = (
+  type: ReturnType<typeof getResourceType>
+): JSX.Element =>
+  type === 'viewSet' ? (
+    <span title={adminText('formDefinitions')} aria-hidden>
+      {appResourceTypes.viewSets.icon}
+    </span>
+  ) : (
+    <span title={appResourceSubTypes[type].label} aria-hidden>
+      {appResourceSubTypes[type].icon}
+    </span>
   );
-  return appResourceSubTypes[type].icon;
-}
 
 export function AppResourceEditButton({
   title,
@@ -126,6 +126,7 @@ export function AppResourceDownload({
 }
 
 const linterKey = `parseError:${'spAppResourceDatas'.toLowerCase()}`;
+
 export function useCodeMirrorExtensions(
   resource: SerializedResource<SpAppResource | SpViewSetObj>,
   appResource: SpecifyResource<SpAppResource | SpViewSetObj>

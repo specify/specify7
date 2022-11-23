@@ -147,24 +147,25 @@ export function Notifications(): JSX.Element {
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();
+            const hasUnread = notifications.some(({ read }) => !read);
+            if (!hasUnread) return;
             setNotifications(
               notifications.map((notification) => ({
                 ...notification,
                 read: true,
               }))
             );
-            if (notifications.length > 0)
-              freezeFetchPromise.current = ping(
-                '/notifications/mark_read/',
-                {
-                  method: 'POST',
-                  body: formData({
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    last_seen: notifications.at(-1)!.timestamp,
-                  }),
-                },
-                { strict: false }
-              ).then(() => undefined);
+            freezeFetchPromise.current = ping(
+              '/notifications/mark_read/',
+              {
+                method: 'POST',
+                body: formData({
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  last_seen: notifications[0]!.timestamp,
+                }),
+              },
+              { strict: false }
+            ).then(() => undefined);
           }}
         >
           {/*
@@ -177,7 +178,6 @@ export function Notifications(): JSX.Element {
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissable key={index}>
               <NotificationComponent
-                key={index}
                 notification={notification}
                 onDelete={(promise): void => {
                   freezeFetchPromise.current = promise;

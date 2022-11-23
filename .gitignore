@@ -28,4 +28,5 @@ seed-database
 /specifyweb/frontend/js_src/node_modules
 /specifyweb/frontend/js_src/testBuild
 /specifyweb/frontend/js_src/docs
+/specifyweb/frontend/js_src/coverage
 /local_specifyweb_apache.conf

@@ -53,7 +53,8 @@ export function QueryComboBox({
   const field = props.resource.specifyModel.getField(initialFieldName);
   if (field === undefined) {
     console.error(
-      `Trying to render a combo box on the ${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
+      `Trying to render a query combo box on the ` +
+        `${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
       { id: props.id }
     );
     return null;
@@ -86,18 +87,26 @@ function ProtectedQueryComboBox({
 }): JSX.Element {
   React.useEffect(() => {
     if (!resource.isNew()) return;
-    if (field.name === 'cataloger')
-      toTable(resource, 'CollectionObject')?.set(
+    if (field.name === 'cataloger') {
+      const record = toTable(resource, 'CollectionObject');
+      record?.set(
         'cataloger',
-        userInformation.agent.resource_uri,
-        { silent: true }
+        record?.get('cataloger') ?? userInformation.agent.resource_uri,
+        {
+          silent: true,
+        }
       );
-    if (field.name === 'receivedBy')
-      toTable(resource, 'LoanReturnPreparation')?.set(
+    }
+    if (field.name === 'receivedBy') {
+      const record = toTable(resource, 'LoanReturnPreparation');
+      record?.set(
         'receivedBy',
-        userInformation.agent.resource_uri,
-        { silent: true }
+        record?.get('receivedBy') ?? userInformation.agent.resource_uri,
+        {
+          silent: true,
+        }
       );
+    }
   }, [resource, field]);
 
   const treeData = useTreeData(resource, field);

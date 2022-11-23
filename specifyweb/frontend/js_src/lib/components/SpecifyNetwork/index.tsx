@@ -9,7 +9,7 @@ import { generateDispatch } from 'typesafe-reducer';
 
 import type { CollectionObject, Taxon } from '../DataModel/types';
 import { f } from '../../utils/functools';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { specifyNetworkText } from '../../localization/specifynetwork';
@@ -31,7 +31,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 import { softFail } from '../Errors/Crash';
-import {leafletLayersPromise} from '../Leaflet/leafletLayers';
+import { leafletLayersPromise } from '../Leaflet/layers';
 
 type LoadedAction = Action<'LoadedAction', { readonly version: string }>;
 

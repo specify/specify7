@@ -249,6 +249,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
+    if (isReadOnly) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -262,9 +263,13 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     }
     if (moment === undefined) {
       resource.set(dateField, null as never);
-      if (precisionField !== undefined)
+      if (
+        precisionField !== undefined &&
+        typeof resource.get(precisionField) !== 'number'
+      )
         resource.set(precisionField, null as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
+      setInputValue('');
     } else if (moment.isValid()) {
       const value = moment.format(databaseDateFormat);
 
@@ -350,9 +355,11 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               const precision = target.value as PartialDatePrecision;
               setPrecision(precision);
               const precisionIndex = precisions[precision];
-              if (typeof precisionField === 'string')
+              if (
+                typeof moment === 'object' &&
+                typeof precisionField === 'string'
+              )
                 resource.set(precisionField, precisionIndex as never);
-              resource.saveBlockers?.remove(`invaliddate:${dateField}`);
             }}
           >
             <option value="full">{commonText('fullDate')}</option>

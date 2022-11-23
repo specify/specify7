@@ -2,15 +2,15 @@ import type Leaflet from 'leaflet';
 import React from 'react';
 
 import type { Locality } from '../DataModel/types';
-import { formatLocalityData } from '../Leaflet/leaflet';
-import type { LocalityData } from '../Leaflet/leafletHelpers';
+import { formatLocalityData } from '../Leaflet';
+import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { fetchLocalityDataFromLocalityResource } from '../Leaflet/localityRecordDataExtractor';
+import { fetchLocalityDataFromResource } from '../Leaflet/localityRecordDataExtractor';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { Button } from '../Atoms/Button';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { LeafletMap } from '../Molecules/Leaflet';
+import { LeafletMap } from '../Leaflet/Map';
 import { Dialog } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -24,7 +24,7 @@ function LeafletDialog({
 }): JSX.Element | null {
   const [localityData] = useAsyncState(
     React.useCallback(
-      async () => fetchLocalityDataFromLocalityResource(locality, true),
+      async () => fetchLocalityDataFromResource(locality, true),
       [locality]
     ),
     true
@@ -45,18 +45,17 @@ function LeafletDialog({
   ) : (
     <LeafletMap
       localityPoints={[localityData]}
-      markerClickCallback={async (_, { target: marker }): Promise<void> =>
-        (fullLocalityData.current === undefined
-          ? fetchLocalityDataFromLocalityResource(locality)
-          : Promise.resolve(fullLocalityData.current)
-        ).then((localityData) => {
-          fullLocalityData.current = localityData;
-          if (localityData !== false)
-            (marker as Leaflet.Marker)
-              .getPopup()
-              ?.setContent(formatLocalityData(localityData, undefined, true));
-        })
-      }
+      onMarkerClick={async (_, { target: marker }): Promise<void> => {
+        fullLocalityData.current ??= await fetchLocalityDataFromResource(
+          locality
+        );
+        if (fullLocalityData.current === false) return;
+        (marker as Leaflet.Marker)
+          .getPopup()
+          ?.setContent(
+            formatLocalityData(fullLocalityData.current, undefined, true)
+          );
+      }}
       onClose={handleClose}
     />
   );

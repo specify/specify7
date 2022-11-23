@@ -83,7 +83,7 @@ function QueryById({
       async () => fetchResource('SpQuery', queryId).then(deserializeResource),
       [queryId]
     ),
-    false
+    true
   );
   const recordSet = useQueryRecordSet();
 

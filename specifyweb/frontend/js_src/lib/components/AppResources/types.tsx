@@ -1,4 +1,4 @@
-import { RR } from '../../utils/types';
+import { ensure, IR, RR } from '../../utils/types';
 import { AppResourceMode } from './helpers';
 import { icons } from '../Atoms/Icons';
 import { adminText } from '../../localization/admin';
@@ -42,23 +42,23 @@ export const appResourceSubTypes = {
     mimeType: 'jrxml/label',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/c/7-docs/7-labels/63',
-    icon: icons.documentReport,
+      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+    icon: icons.ticket,
     label: adminText('label'),
   },
   report: {
     mimeType: 'jrxml/report',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/c/7-docs/7-labels/63',
-    icon: icons.ticket,
+      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+    icon: icons.documentReport,
     label: adminText('report'),
   },
   userPreferences: {
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:
-      'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
+      'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: adminText('userPreferences'),
   },
@@ -146,28 +146,30 @@ export const appResourceSubTypes = {
     mimeType: 'text/xml',
     name: undefined,
     documentationUrl: undefined,
-    icon: icons.cog,
+    icon: icons.code,
     label: adminText('otherXmlResource'),
   },
   otherJsonResource: {
     mimeType: 'application/json',
     name: undefined,
     documentationUrl: undefined,
-    icon: icons.cog,
+    icon: icons.adjustments,
     label: adminText('otherJsonResource'),
   },
   otherPropertiesResource: {
     mimeType: 'text/x-java-properties',
     name: undefined,
     documentationUrl: undefined,
-    icon: icons.cog,
+    icon: icons.viewList,
     label: adminText('otherPropertiesResource'),
   },
   otherAppResources: {
     mimeType: undefined,
     name: undefined,
     documentationUrl: undefined,
-    icon: icons.cog,
+    icon: icons.document,
     label: adminText('otherAppResource'),
   },
 } as const;
+
+ensure<IR<AppResourceSubType>>()(appResourceSubTypes);

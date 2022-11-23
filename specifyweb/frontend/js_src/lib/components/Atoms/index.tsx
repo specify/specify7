@@ -37,6 +37,7 @@ export const Container = {
    */
   Full: wrap('Container.Full', 'section', className.containerFull),
 };
+
 export const Progress = wrap<'progress', { readonly value: number }>(
   'Progress',
   'progress',
@@ -47,6 +48,7 @@ export const Progress = wrap<'progress', { readonly value: number }>(
 );
 
 // Need to set explicit [role] for list without bullets to be announced as a list
+// REFACTOR: consider adding "flex flex-col gap-1" and .contents to <li>
 export const Ul = wrap('Ul', 'ul', '', { role: 'list' });
 
 export const H2 = wrap('H2', 'h2', className.headerPrimary);

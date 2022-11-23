@@ -885,9 +885,7 @@ export const preferenceDefinitions = {
       queryComboBox: {
         title: preferencesText('queryComboBox'),
         items: {
-          searchAlgorithm: defineItem<
-            'contains' | 'startsWith' | 'startsWithCaseSensitive'
-          >({
+          searchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText('searchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -899,26 +897,15 @@ export const preferenceDefinitions = {
                 description: preferencesText('startsWithDescription'),
               },
               {
-                value: 'startsWithCaseSensitive',
-                title: preferencesText('startsWithCaseSensitive'),
-                description: `${preferencesText(
-                  'startsWithCaseSensitiveDescription'
-                )} ${preferencesText(
-                  'startsWithCaseSensitiveSecondDescription'
-                )}`,
-              },
-              {
                 value: 'contains',
-                title: preferencesText('containsCaseSensitive'),
+                title: preferencesText('containsInsensitive'),
                 description: `${preferencesText(
-                  'containsCaseSensitiveDescription'
+                  'containsDescription'
                 )} ${preferencesText('containsSecondDescription')}`,
               },
             ],
           }),
-          treeSearchAlgorithm: defineItem<
-            'contains' | 'startsWith' | 'startsWithCaseSensitive'
-          >({
+          treeSearchAlgorithm: defineItem<'contains' | 'startsWith'>({
             title: preferencesText('treeSearchAlgorithm'),
             requiresReload: false,
             visible: true,
@@ -930,16 +917,11 @@ export const preferenceDefinitions = {
                 description: preferencesText('startsWithDescription'),
               },
               {
-                value: 'startsWithCaseSensitive',
-                title: preferencesText('startsWithCaseSensitive'),
-                description: preferencesText(
-                  'startsWithCaseSensitiveDescription'
-                ),
-              },
-              {
                 value: 'contains',
                 title: preferencesText('containsInsensitive'),
-                description: preferencesText('containsDescription'),
+                description: `${preferencesText(
+                  'containsDescription'
+                )} ${preferencesText('containsSecondDescription')}`,
               },
             ],
           }),
@@ -990,7 +972,7 @@ export const preferenceDefinitions = {
         title: '(not visible to user) Preferences',
         items: {
           printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
-            title: 'Print label on form save',
+            title: 'Generate label on form save',
             requiresReload: false,
             visible: false,
             defaultValue: {},
@@ -1005,6 +987,14 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: {},
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          // Can temporary disable carry forward for a given table
+          disableCarryForward: defineItem<RA<keyof Tables>>({
+            title: 'disableCarryForward',
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
           }),
           autoNumbering: defineItem<{
@@ -1030,13 +1020,6 @@ export const preferenceDefinitions = {
             requiresReload: false,
             visible: false,
             defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          useFieldLabels: defineItem<boolean>({
-            title: 'useFieldLabels',
-            requiresReload: false,
-            visible: false,
-            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },

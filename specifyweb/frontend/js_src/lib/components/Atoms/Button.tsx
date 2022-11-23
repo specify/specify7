@@ -60,6 +60,9 @@ export const Button = {
        * Split into a separate prop in order to add a default value
        */
       readonly variant?: string;
+      readonly onClick:
+        | ((event: React.MouseEvent<HTMLButtonElement>) => void)
+        | undefined;
     }
   >(
     'Button.Small',
@@ -69,10 +72,12 @@ export const Button = {
       variant = className.defaultSmallButtonVariant,
       type,
       className: classString = '',
+      disabled,
       ...props
     }) => ({
       type: 'button',
       className: `${classString} ${variant}`,
+      disabled: disabled === true || props.onClick === undefined,
       ...props,
     })
   ),

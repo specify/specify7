@@ -61,14 +61,14 @@ export function SecurityLibraryRole(): JSX.Element {
       onSave={(role): void =>
         loading(
           (typeof role.id === 'number'
-            ? createLibraryRole(handleChangeLibraryRoles, role as Role)
-            : updateLibraryRole(handleChangeLibraryRoles, role as Role)
+            ? updateLibraryRole(handleChangeLibraryRoles, role as Role)
+            : createLibraryRole(handleChangeLibraryRoles, role as Role)
           ).then((): void => navigate(closeUrl))
         )
       }
     />
   ) : role === false ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : (
     <LoadingScreen />
   );

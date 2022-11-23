@@ -311,3 +311,7 @@ export function InteractionsOverlay(): JSX.Element | null {
     </ErrorBoundary>
   ) : null;
 }
+
+export const exportsForTests = {
+  fetchEntries,
+};

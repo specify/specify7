@@ -62,12 +62,12 @@ export function getAuditRecordFormatter(
   );
 
   const modelIdIndex = fields.findIndex((field) => field?.name === 'tableNum');
-  if (modelIdIndex <= 0) return undefined;
+  if (modelIdIndex < 0) return undefined;
 
   const parentModelIdIndex = fields.findIndex(
     (field) => field?.name === 'parentTableNum'
   );
-  if (parentModelIdIndex <= 0) return undefined;
+  if (parentModelIdIndex < 0) return undefined;
 
   return async (resultRow): Promise<RA<JSX.Element | string>> =>
     Promise.all(

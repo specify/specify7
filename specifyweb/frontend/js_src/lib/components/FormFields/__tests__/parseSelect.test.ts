@@ -2,7 +2,7 @@ import { exportsForTests } from '../parseSelect';
 
 const { parseSqlQuery, columnToField } = exportsForTests;
 
-describe('parse', () => {
+describe('parseSqlQuery', () => {
   test('collecting event', () => {
     const string =
       'SELECT %s1 FROM CollectingEvent ce LEFT JOIN ce.locality loc LEFT JOIN loc.geography geo JOIN ce.discipline as dsp WHERE dsp.disciplineId = DSPLNID AND %s2 ORDER BY stationFieldNumber';

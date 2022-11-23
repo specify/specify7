@@ -7,8 +7,6 @@ import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourcesTree } from './hooks';
@@ -21,21 +19,22 @@ import { ResourceView } from '../Forms/ResourceView';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import {
-  AppResourceSubType,
   appResourceSubTypes,
   AppResourceType,
   appResourceTypes,
 } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import {
+  spAppResourceView,
+  spViewSetNameView,
+} from '../FormParse/webOnlyViews';
 
 /**
  * Check if one type is a subtype of another
  */
 export const isAppResourceSubType = (type: string, subType: string): boolean =>
   type === 'text/xml' && subType.includes('xml');
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
 
 export function CreateAppResource(): JSX.Element {
   const navigate = useNavigate();
@@ -55,7 +54,7 @@ export function CreateAppResource(): JSX.Element {
   );
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   return directory === undefined ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : type === undefined ? (
     <Dialog
       buttons={commonText('cancel')}
@@ -176,17 +175,22 @@ function EditAppResource({
       isSubForm={false}
       mode="edit"
       resource={resource}
+      viewName={
+        type.tableName === 'SpAppResource'
+          ? spAppResourceView
+          : spViewSetNameView
+      }
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
       onSaved={f.never}
-      onSaving={(): false => {
+      onSaving={(_newResource, unsetUnloadProtect): false => {
+        unsetUnloadProtect();
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
         navigate(`/specify/resources/${path}/new/`, {
           state: {
             resource: serializeResource(resource),
             directoryKey,
-            noUnloadProtect: true,
           },
         });
         /*

@@ -15,7 +15,7 @@ import {
   ProtectedAction,
   ProtectedTable,
 } from '../Permissions/PermissionDenied';
-import { SaveQueryButtons } from './Components';
+import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
@@ -26,31 +26,31 @@ export function QueryHeader({
   query,
   queryResource,
   isScrolledTop,
-  container,
+  form,
   state,
   getQueryFieldRecords,
   isReadOnly,
-  formRef,
   saveRequired,
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  toggleMapping: handleMapToggle,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
   readonly queryResource: SpecifyResource<SpQuery>;
   readonly isScrolledTop: boolean;
-  readonly container: HTMLDivElement | null;
+  readonly form: HTMLFormElement | null;
   readonly state: MainState;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
   readonly isReadOnly: boolean;
-  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
   readonly saveRequired: boolean;
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
+  readonly toggleMapping: () => void;
 }): JSX.Element {
   return (
     <header className="flex items-center gap-2 whitespace-nowrap">
@@ -65,7 +65,7 @@ export function QueryHeader({
       {!isScrolledTop && (
         <Button.Small
           onClick={(): void =>
-            container === null ? undefined : smoothScroll(container, 0)
+            form === null ? undefined : smoothScroll(form, 0)
           }
         >
           {queryText('editQuery')}
@@ -88,6 +88,11 @@ export function QueryHeader({
           </ProtectedTable>
         </ProtectedAction>
       )}
+      <ToggleMappingViewButton
+        fields={state.fields}
+        showMappingView={state.showMappingView}
+        onClick={handleMapToggle}
+      />
       {hasToolPermission(
         'queryBuilder',
         queryResource.isNew() ? 'create' : 'update'
@@ -96,7 +101,7 @@ export function QueryHeader({
           fields={state.fields}
           getQueryFieldRecords={getQueryFieldRecords}
           isReadOnly={isReadOnly}
-          isValid={(): boolean => formRef.current?.reportValidity() ?? false}
+          isValid={(): boolean => form?.reportValidity() ?? false}
           queryResource={queryResource}
           saveRequired={saveRequired}
           unsetUnloadProtect={unsetUnloadProtect}

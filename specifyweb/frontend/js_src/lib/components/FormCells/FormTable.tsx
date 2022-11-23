@@ -17,9 +17,9 @@ import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode } from '../FormParse';
 import type { FormCellDefinition } from '../FormParse/cells';
-import { FormPreferences } from '../FormPreferences';
+import { FormMeta } from '../FormMeta';
 import { SearchDialog } from '../Forms/SearchDialog';
-import { SpecifyForm } from '../Forms/SpecifyForm';
+import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -132,6 +132,12 @@ export function FormTable<SCHEMA extends AnySchema>({
     formType: 'formTable',
     mode,
   });
+  const fullViewDefinition = useViewDefinition({
+    model: relationship.relatedModel,
+    viewName,
+    formType: 'form',
+    mode,
+  });
 
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
@@ -154,15 +160,14 @@ export function FormTable<SCHEMA extends AnySchema>({
   const headerIsVisible =
     resources.length !== 1 || !isExpanded[resources[0].cid];
 
-  const [scroller, setScroller] = React.useState<HTMLDivElement | null>(null);
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
   const { isFetching, handleScroll } = useInfiniteScroll(
     handleFetchMore,
-    scroller
+    scrollerRef
   );
 
   const [maxHeight] = usePref('form', 'formTable', 'maxHeight');
 
-  // FEATURE: add <FormPreferences /> for formTable records when expanded
   const children =
     viewDefinition === undefined ? (
       commonText('loading')
@@ -174,7 +179,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           className={`sticky w-fit ${headerIsVisible ? 'pt-0' : ''}`}
           display="inline"
           flexibleColumnWidth={flexibleColumnWidth}
-          forwardRef={setScroller}
+          forwardRef={scrollerRef}
           role="table"
           style={{
             gridTemplateColumns: `min-content ${columnDefinitionsToCss(
@@ -262,11 +267,10 @@ export function FormTable<SCHEMA extends AnySchema>({
                         tabIndex={-1}
                         visible
                       >
-                        <SpecifyForm
+                        <RenderForm
                           display="inline"
-                          formType="form"
-                          mode={mode}
                           resource={resource}
+                          viewDefinition={fullViewDefinition}
                         />
                       </DataEntry.Cell>
                     </>
@@ -347,7 +351,11 @@ export function FormTable<SCHEMA extends AnySchema>({
                       </Button.Small>
                     ) : undefined}
                     {isExpanded[resource.cid] && (
-                      <FormPreferences className="flex-1" resource={resource} />
+                      <FormMeta
+                        className="flex-1"
+                        resource={resource}
+                        viewDescription={fullViewDefinition}
+                      />
                     )}
                   </div>
                 </div>

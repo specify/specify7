@@ -105,16 +105,12 @@ const getDirectoryChildren = (
   directory: SerializedResource<SpAppResourceDir>,
   resources: AppResources
 ): DirectoryChildren => ({
-  appResources: resources.appResources
-    .filter(
-      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-    )
-    .sort(sortFunction(({ name }) => name)),
-  viewSets: resources.viewSets
-    .filter(
-      ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
-    )
-    .sort(sortFunction(({ name }) => name)),
+  appResources: resources.appResources.filter(
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  ),
+  viewSets: resources.viewSets.filter(
+    ({ spAppResourceDir }) => spAppResourceDir === directory.resource_uri
+  ),
 });
 
 export const getScopedAppResources = (
@@ -136,7 +132,7 @@ export const getScopedAppResources = (
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
-      subCategories: getDisciplineAppResources(discipline, resources),
+      subCategories: sortTree(getDisciplineAppResources(discipline, resources)),
     };
   });
 
@@ -151,7 +147,7 @@ const getDisciplineAppResources = (
         (directory) =>
           directory.collection === collection.resource_uri &&
           directory.userType === null &&
-          directory.specifyUser === null
+          !directory.isPersonal
       );
       const directory =
         directories[0] ??
@@ -163,7 +159,7 @@ const getDisciplineAppResources = (
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
-        subCategories: getCollectionResources(collection, resources),
+        subCategories: sortTree(getCollectionResources(collection, resources)),
       };
     });
 
@@ -177,7 +173,7 @@ const getCollectionResources = (
     directory: undefined,
     appResources: [],
     viewSets: [],
-    subCategories: getUserTypeResources(collection, resources),
+    subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
   {
     label: adminText('users'),
@@ -185,9 +181,10 @@ const getCollectionResources = (
     directory: undefined,
     appResources: [],
     viewSets: [],
-    subCategories: getUserResources(collection, resources),
+    subCategories: sortTree(getUserResources(collection, resources)),
   },
 ];
+
 const getUserTypeResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
@@ -197,7 +194,7 @@ const getUserTypeResources = (
       (directory) =>
         directory.collection === collection.resource_uri &&
         directory.userType?.toLowerCase() === userType.toLowerCase() &&
-        directory.specifyUser === null
+        !directory.isPersonal
     );
     const directory =
       directories[0] ??
@@ -207,12 +204,13 @@ const getUserTypeResources = (
       });
     return {
       label: userType,
-      key: `userType_${userType}`,
+      key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
       subCategories: [],
     };
   });
+
 const getUserResources = (
   collection: SerializedResource<Collection>,
   resources: AppResources
@@ -222,7 +220,8 @@ const getUserResources = (
       const directories = resources.directories.filter(
         (directory) =>
           directory.collection === collection.resource_uri &&
-          directory.specifyUser === user.resource_uri
+          directory.specifyUser === user.resource_uri &&
+          directory.isPersonal
       );
       const directory =
         directories[0] ??
@@ -234,7 +233,7 @@ const getUserResources = (
 
       return {
         label: user.name,
-        key: `user_${user.id}`,
+        key: `collection_${collection.id}_user_${user.id}`,
         directory,
         ...mergeDirectories(directories, resources),
         subCategories: [],

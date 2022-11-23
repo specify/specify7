@@ -1,23 +1,24 @@
 import React from 'react';
 
+import { useStableState } from '../../hooks/useContextState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Form } from '../Atoms/Form';
-import type { FormMeta } from '../Core/Contexts';
+import type { FormMetaType } from '../Core/Contexts';
 import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { fail } from '../Errors/Crash';
+import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
-import { FormPreferences } from '../FormPreferences';
-import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
-import { format } from './dataObjFormatters';
-import { SpecifyForm } from './SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
+import { displaySpecifyNetwork, SpecifyNetworkBadge } from '../SpecifyNetwork';
 import { usePref } from '../UserPreferences/usePref';
-import { useStableState } from '../../hooks/useContextState';
+import { format } from './dataObjFormatters';
+import { RenderForm } from './SpecifyForm';
+import { useViewDefinition } from './useViewDefinition';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -68,19 +69,24 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = useStableState<FormMeta>({
+  const formMeta = useStableState<FormMetaType>({
     triedToSubmit: false,
+  });
+
+  const viewDefinition = useViewDefinition({
+    model: resource?.specifyModel,
+    viewName,
+    formType: 'form',
+    mode,
   });
 
   const specifyForm =
     typeof resource === 'object' ? (
-      <SpecifyForm
+      <RenderForm
         display={isSubForm ? 'inline' : 'block'}
-        formType="form"
         isLoading={isLoading}
-        mode={mode}
         resource={resource}
-        viewName={viewName}
+        viewDefinition={viewDefinition}
       />
     ) : (
       <p>{formsText('noData')}</p>
@@ -106,12 +112,14 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
           {typeof resource === 'object' && (
             <TableIcon label name={resource.specifyModel.name} />
           )}
-          {formHeaderFormat === 'full' && title}
+          {formHeaderFormat === 'full' ? title : formatted}
         </>
       ),
     title,
     formElement: form,
-    formPreferences: <FormPreferences resource={resource} />,
+    formPreferences: (
+      <FormMeta viewDescription={viewDefinition} resource={resource} />
+    ),
     form: (children, className) =>
       isSubForm ? (
         <>

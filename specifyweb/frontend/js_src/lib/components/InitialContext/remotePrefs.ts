@@ -23,15 +23,17 @@ export const fetchContext = contextUnlockedPromise.then((entrypoint) =>
   entrypoint === 'main'
     ? ajax(cachableUrl('/context/remoteprefs.properties'), {
         headers: { Accept: 'text/plain' },
-      }).then(({ data: text }) =>
-        text
-          .split('\n')
-          .filter((line) => !line.startsWith('#'))
-          .forEach((line) => {
-            const match = /([^=]+)=(.+)/.exec(line);
-            if (match) preferences[match[1].trim()] = match[2];
-          })
-      )
+      })
+        .then(({ data: text }) =>
+          text
+            .split('\n')
+            .filter((line) => !line.startsWith('#'))
+            .forEach((line) => {
+              const match = /([^=]+)=(.+)/.exec(line);
+              if (match) preferences[match[1].trim()] = match[2];
+            })
+        )
+        .then(() => preferences)
     : undefined
 );
 

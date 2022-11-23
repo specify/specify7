@@ -12,7 +12,6 @@ var Base =  Backbone.Collection.extend({
     function notSupported() { throw new Error("method is not supported"); }
 
     async function fakeFetch() {
-        console.error("fetch called on", this);
         return this;
     }
 

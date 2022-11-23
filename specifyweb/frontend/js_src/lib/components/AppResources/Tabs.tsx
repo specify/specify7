@@ -1,29 +1,29 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 
-import { getAppResourceType } from './filtersHelpers';
-import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { localityText } from '../../localization/locality';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { AppResourceIcon } from './EditorComponents';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { toResource } from '../DataModel/helpers';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type {
+  SpAppResource,
+  SpViewSetObj as SpViewSetObject,
+} from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { appResourceIcon } from './EditorComponents';
+import { getAppResourceType, getResourceType } from './filtersHelpers';
 import type { AppResourceTab } from './TabDefinitions';
 import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { icons } from '../Atoms/Icons';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { className } from '../Atoms/className';
-import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { SerializedResource } from '../DataModel/helperTypes';
-import { toResource } from '../DataModel/helpers';
 
 export function AppResourcesTabs({
   label,
@@ -33,47 +33,38 @@ export function AppResourcesTabs({
   appResource,
   resource,
   data,
+  isFullScreen,
+  onExitFullScreen: handleExitFullScreen,
   onChange: handleChange,
 }: {
   readonly label: string;
   readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
-  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObj>;
-  readonly resource: SerializedResource<SpAppResource | SpViewSetObj>;
+  readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
+  readonly resource: SerializedResource<SpAppResource | SpViewSetObject>;
   readonly headerButtons: JSX.Element;
   readonly data: string | null;
+  readonly isFullScreen: boolean;
+  readonly onExitFullScreen: () => void;
   readonly onChange: (data: string | null) => void;
 }): JSX.Element {
-  const [isFullScreen, _, handleExitFullScreen, handleToggleFullScreen] =
-    useBooleanState();
   const tabs = useEditorTabs(resource);
   const children = (
     <Tab.Group>
-      <Tab.List className="flex flex-wrap gap-2">
-        {tabs.map(({ label }, index, { length }) => (
+      <Tab.List
+        // Don't display tabs if there is only one tab
+        className={`flex flex-wrap gap-2 ${tabs.length === 1 ? 'sr-only' : ''}`}
+      >
+        {tabs.map(({ label }, index) => (
           <Tab
-            className={({ selected }): string => `
-              ${className.niceButton} ${className.blueButton}
-              ${selected ? 'brightness-150' : ''}
-              ${length === 1 ? 'sr-only' : ''}
-              aria-handled
-            `}
+            className={`${className.niceButton} ${className.blueButton}`}
             key={index}
           >
             {label}
           </Tab>
         ))}
-        <span className="-ml-2 flex-1" />
-        <Button.Blue
-          aria-label={localityText('toggleFullScreen')}
-          aria-pressed={isFullScreen}
-          title={localityText('toggleFullScreen')}
-          onClick={handleToggleFullScreen}
-        >
-          {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
-        </Button.Blue>
       </Tab.List>
-      <Tab.Panels className="h-full overflow-auto">
+      <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
         {tabs.map(({ component: Component }, index) => (
           <Tab.Panel className="h-full" key={index}>
             <ErrorBoundary dismissable>
@@ -93,14 +84,18 @@ export function AppResourcesTabs({
   );
   return isFullScreen ? (
     <Dialog
-      buttons={commonText('close')}
+      buttons={
+        <Button.Blue onClick={handleExitFullScreen}>
+          {commonText('close')}
+        </Button.Blue>
+      }
       className={{
         container: dialogClassNames.fullScreen,
       }}
       header={label}
       headerButtons={headerButtons}
-      icon={<AppResourceIcon resource={resource} />}
-      onClose={handleExitFullScreen}
+      icon={appResourceIcon(getResourceType(resource))}
+      onClose={undefined}
     >
       {children}
     </Dialog>
@@ -110,7 +105,7 @@ export function AppResourcesTabs({
 }
 
 function useEditorTabs(
-  resource: SerializedResource<SpAppResource | SpViewSetObj>
+  resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
   readonly label: string;
   readonly component: AppResourceTab;

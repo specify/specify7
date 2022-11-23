@@ -8,16 +8,15 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
+import { Http } from '../../utils/ajax/definitions';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { FormCell } from '../FormCells';
-import type { FormMode, FormType, ViewDescription } from '../FormParse';
+import type { ViewDescription } from '../FormParse';
 import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
-import { useViewDefinition } from './useViewDefinition';
 import { usePref } from '../UserPreferences/usePref';
-import { Http } from '../../utils/ajax/definitions';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -26,45 +25,12 @@ import { Http } from '../../utils/ajax/definitions';
  */
 export const originalAttachmentsView = 'originalObjectAttachment';
 
-/** Renders a form and populates it with data from a resource */
-export function SpecifyForm({
-  isLoading,
-  resource,
-  viewName = resource.specifyModel.view,
-  formType,
-  mode,
-  display,
-}: {
-  readonly isLoading?: boolean;
-  readonly resource: SpecifyResource<AnySchema>;
-  readonly viewName?: string;
-  readonly formType: FormType;
-  readonly mode: FormMode;
-  readonly display: 'block' | 'inline';
-}): JSX.Element {
-  const viewDefinition = useViewDefinition({
-    model: resource.specifyModel,
-    viewName,
-    formType,
-    mode,
-  });
-
-  return (
-    <RenderForm
-      display={display}
-      isLoading={isLoading}
-      resource={resource}
-      viewDefinition={viewDefinition}
-    />
-  );
-}
-
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
 
 /**
- * Renders a form from ViewDescription
- * Useful when need to render a hard-coded front-end only form
+ * Renders a form from ViewDescription and populates it with data from the
+ * resource
  */
 export function RenderForm<SCHEMA extends AnySchema>({
   isLoading,

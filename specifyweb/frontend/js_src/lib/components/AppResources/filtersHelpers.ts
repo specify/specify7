@@ -1,10 +1,11 @@
 import type { AppResources } from './hooks';
-import type { SpAppResource } from '../DataModel/types';
+import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import { KEY, sortFunction } from '../../utils/utils';
 import type { RA } from '../../utils/types';
 import { appResourceSubTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { toResource } from '../DataModel/helpers';
 
 export const allAppResources = Array.from(
   Object.keys(appResourceSubTypes)
@@ -48,6 +49,12 @@ export const filterAppResources = (
           filters.appResources.includes(getAppResourceType(resource))
         ),
 });
+
+export const getResourceType = (
+  resource: SerializedResource<SpAppResource | SpViewSetObj>
+): keyof typeof appResourceSubTypes | 'viewSet' =>
+  f.maybe(toResource(resource, 'SpAppResource'), getAppResourceType) ??
+  'viewSet';
 
 export const getAppResourceType = (
   resource: SerializedResource<SpAppResource>

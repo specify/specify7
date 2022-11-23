@@ -28,7 +28,7 @@ export type SchemaLocalization = {
   readonly desc: string | null;
   readonly format: string | null;
   readonly aggregator: string | null;
-  readonly ishidden: 0 | 1;
+  readonly ishidden: boolean;
   readonly items: IR<{
     readonly name: string | null;
     readonly desc: string | null;
@@ -48,6 +48,7 @@ const processFields = <FIELD_TYPE extends LiteralField | Relationship>(
     ...fields,
     ...frontEndFields.map((field) => {
       field.overrides.isReadOnly = true;
+      field.isVirtual = true;
       return field;
     }),
     /*

@@ -5,26 +5,21 @@
  * @module
  */
 
-import type { MappingPath } from '../WbPlanView/Mapper';
+import type { R, RA } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
+import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Collection } from '../DataModel/specifyModel';
 import type { Locality } from '../DataModel/types';
 import { format } from '../Forms/dataObjFormatters';
-import { localityPinFields, MAX_TO_MANY_INDEX } from './leafletConfig';
-import type { LocalityData } from './leafletHelpers';
-import {
-  findRanksInMappings,
-  formatCoordinate,
-  getLocalityData,
-} from './leafletHelpers';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
-import type { Collection } from '../DataModel/specifyModel';
-import { deflateLocalityData } from '../SpecifyNetwork/utils';
 import {
   strictGetTreeDefinitionItems,
   treeRanksPromise,
 } from '../InitialContext/treeRanks';
-import type { RA } from '../../utils/types';
-import { defined, filterArray } from '../../utils/types';
+import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
+import { deflateLocalityData } from '../SpecifyNetwork/utils';
+import { pathStartsWith } from '../WbPlanView/helpers';
+import type { MappingPath } from '../WbPlanView/Mapper';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -35,8 +30,13 @@ import {
 } from '../WbPlanView/mappingHelpers';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { pathStartsWith } from '../WbPlanView/helpers';
-import { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import { localityPinFields, MAX_TO_MANY_INDEX } from './config';
+import type { LocalityData } from './helpers';
+import {
+  findRanksInMappings,
+  formatCoordinate,
+  getLocalityData,
+} from './helpers';
 
 const splitMappingPath = (
   mappingPath: MappingPath,
@@ -115,7 +115,9 @@ async function recursiveResourceResolve(
       hasTablePermission(
         defined(
           tableName,
-          `Unable to resolve table name for a resource: ${resource?.toJSON() ?? '(null)'}`
+          `Unable to resolve table name for a resource: ${
+            resource?.toJSON() ?? '(null)'
+          }`
         ),
         'read'
       )
@@ -225,7 +227,7 @@ export const parseLocalityPinFields = (
   return filteredMappingPaths;
 };
 
-export async function fetchLocalityDataFromLocalityResource(
+export async function fetchLocalityDataFromResource(
   localityResource: SpecifyResource<Locality>,
   // Don't fetch related tables. Only return data from the locality resource
   quickFetch = false,
@@ -247,22 +249,28 @@ export async function fetchLocalityDataFromLocalityResource(
     : deflateLocalityData(localityData);
 }
 
+const pathLabel: R<string> = {};
+
 export function formatLocalityDataObject(
   results: RA<readonly [MappingPath, string | null]>
 ): LocalityData | false {
   const rawLocalityData = Object.fromEntries(
     results
       .filter(([, fieldValue]) => fieldValue !== null)
-      .map(
-        ([mappingPath, fieldValue]) =>
-          [
-            mappingPathToString(['locality', ...mappingPath]),
-            {
-              headerName: generateMappingPathPreview('Locality', mappingPath),
-              value: fieldValue?.toString() ?? '',
-            },
-          ] as const
-      )
+      .map(([mappingPath, fieldValue]) => {
+        const stringPath = mappingPathToString(['locality', ...mappingPath]);
+        pathLabel[stringPath] ??= generateMappingPathPreview(
+          'Locality',
+          mappingPath
+        );
+        return [
+          stringPath,
+          {
+            headerName: pathLabel[stringPath],
+            value: fieldValue?.toString() ?? '',
+          },
+        ] as const;
+      })
   );
 
   return getLocalityData(

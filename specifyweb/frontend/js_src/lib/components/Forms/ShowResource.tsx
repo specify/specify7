@@ -20,13 +20,15 @@ import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { RecordSet as RecordSetView } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
 import { overwriteReadOnly } from '../../utils/types';
+import { getResourceViewUrl } from '../DataModel/resource';
+import { serializeResource } from '../DataModel/helpers';
 
 export function ShowResource({
   resource: initialResource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
-  // Look to see if we are in the context of a recordset
+  // Look to see if we are in the context of a Record Set
   const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
   const recordSet = React.useMemo(
@@ -111,7 +113,17 @@ export function ShowResource({
       onClose={f.never}
       onDeleted={f.void}
       onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object') setResource(newResource);
+        if (typeof newResource === 'object')
+          navigate(
+            getResourceViewUrl(
+              newResource.specifyModel.name,
+              undefined,
+              recordSetId
+            ),
+            {
+              state: { resource: serializeResource(newResource) },
+            }
+          );
         else if (wasNew) navigate(resource.viewUrl());
         else {
           const reloadResource = new resource.specifyModel.Resource({
@@ -130,7 +142,7 @@ const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
 
 /**
  * Shows user's individual resources which can optionally be in the context of
- * some recordset
+ * some Record Set
  *
  * id may be a record id, or GUID (for Collection Objects)
  */
