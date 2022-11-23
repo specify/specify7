@@ -203,7 +203,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
-  const isSettingInitialMoment = React.useRef<boolean>(true);
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
@@ -212,7 +211,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         silent: true,
       });
 
-    isSettingInitialMoment.current = true;
     isInitialized.current = false;
 
     const destructor = resourceOn(
@@ -249,7 +247,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
-    if (isReadOnly) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -257,8 +254,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
      */
     if (!isInitialized.current) {
       isInitialized.current = true;
-      isSettingInitialMoment.current =
-        typeof resource.get(dateField) === 'string';
       return;
     }
     if (moment === undefined) {
@@ -279,16 +274,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       )
         resource.set(precisionField, precisions[precision] as never);
 
-      if (isSettingInitialMoment.current)
-        /*
-         * Don't set the value on the first run
-         * If this isn't done, unload protect would be needlessly triggered if
-         * current value in the date field does not exactly match the formatted
-         * value (i.e, happens for timestampModified fields since those include
-         * time, whereas formatted date doesn't)
-         */
-        isSettingInitialMoment.current = false;
-      else resource.set(dateField, value as never);
+      if (!isReadOnly) resource.set(dateField, value as never);
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));
