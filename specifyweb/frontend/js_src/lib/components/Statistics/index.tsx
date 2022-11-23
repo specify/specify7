@@ -71,7 +71,7 @@ function useStatsSpec(): IR<
         )
       ),
       personal: Object.fromEntries(
-        Object.entries(statsSpec.collection).map(
+        Object.entries(statsSpec.personal).map(
           ([categoryName, { label, categories }]) => [
             categoryName,
             {
@@ -94,33 +94,37 @@ function useStatsSpec(): IR<
 }
 
 function useDefaultStatsToAdd(
-  layout: StatLayout,
+  layout: {
+    readonly label: string;
+    readonly categories: RA<{
+      readonly label: string;
+      readonly items: RA<CustomStat | DefaultStat>;
+    }>;
+  },
   defaultLayout: StatLayout
 ): StatLayout {
-  return React.useMemo(() => {
-    const listToUse = layout[0].categories.flatMap(({ items }) =>
+  return React.useMemo((): StatLayout => {
+    const listToUse = layout.categories.flatMap(({ items }) =>
       items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
     );
-    return [
-      {
-        label: 'collection',
-        categories: defaultLayout[0].categories
-          .map(({ label, items }) => ({
-            label,
-            items: items.filter(
-              (defaultItem) =>
-                defaultItem.type === 'DefaultStat' &&
-                !listToUse.some(
-                  ({ pageName, categoryName, itemName }) =>
-                    pageName === defaultItem.pageName &&
-                    categoryName === defaultItem.categoryName &&
-                    itemName === defaultItem.itemName
-                )
-            ),
-          }))
-          .filter(({ items }) => items.length > 0),
-      },
-    ];
+    return defaultLayout.map((defaultLayoutPage) => ({
+      label: defaultLayoutPage.label,
+      categories: defaultLayoutPage.categories
+        .map(({ label, items }) => ({
+          label,
+          items: items.filter(
+            (defaultItem) =>
+              defaultItem.type === 'DefaultStat' &&
+              !listToUse.some(
+                ({ pageName, categoryName, itemName }) =>
+                  pageName === defaultItem.pageName &&
+                  categoryName === defaultItem.categoryName &&
+                  itemName === defaultItem.itemName
+              )
+          ),
+        }))
+        .filter(({ items }) => items.length > 0),
+    }));
   }, [layout, defaultLayout]);
 }
 
@@ -131,6 +135,7 @@ export function StatsPage(): JSX.Element {
     'layout'
   );
   const statsSpec = useStatsSpec();
+
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
   const [state, setState] = React.useState<
@@ -149,29 +154,33 @@ export function StatsPage(): JSX.Element {
   >({ type: 'DefaultState' });
   const isEditing = state.type === 'EditingState';
   const isAddingItem = isEditing && state.addingItem !== undefined;
-  const defaultStatsToAdd = useDefaultStatsToAdd(layout, defaultLayout);
-  console.log(
-    'AGENT INFO',
-    strictIdFromUrl(userInformation.agent.resource_uri)
+  const [activePageIndex] = React.useState<number>(0);
+  const defaultStatsToAdd = useDefaultStatsToAdd(
+    layout[activePageIndex],
+    defaultLayout
   );
+  console.log(defaultStatsToAdd);
+
   return (
     <>
       {isAddingItem && (
         <AddStatDialog
           defaultLayout={defaultStatsToAdd}
-          statsSpec={statsSpec.collection}
+          statsSpec={statsSpec}
           onAdd={(item): void =>
             isAddingItem
               ? setLayout(
-                  replaceItem(layout, 0, {
-                    ...layout[0],
+                  replaceItem(layout, activePageIndex, {
+                    ...layout[activePageIndex],
                     categories: replaceItem(
-                      layout[0].categories,
+                      layout[activePageIndex].categories,
                       state.addingItem.categoryIndex,
                       {
-                        ...layout[0].categories[state.addingItem.categoryIndex],
+                        ...layout[activePageIndex].categories[
+                          state.addingItem.categoryIndex
+                        ],
                         items: [
-                          ...layout[0].categories[
+                          ...layout[activePageIndex].categories[
                             state.addingItem.categoryIndex
                           ].items,
                           item,
@@ -217,21 +226,45 @@ export function StatsPage(): JSX.Element {
           </div>
 
           <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-            <ShowBigBoxes
+            <CategoriesBoxes
               goToEditingState={(categoryindex): void =>
                 setState({
                   type: 'EditingState',
                   addingItem: {
-                    pageIndex: 0,
+                    pageIndex: activePageIndex,
                     categoryIndex: categoryindex,
                   },
                 })
               }
               isEditing={isEditing}
-              layout={layout}
-              setLayout={setLayout}
-              statsSpec={statsSpec.collection}
+              pageLayout={layout[activePageIndex]}
+              statsSpec={statsSpec}
               onClick={undefined}
+              onRemove={
+                isEditing
+                  ? (categoryIndex, itemIndex): void =>
+                      setLayout(
+                        replaceItem(layout, activePageIndex, {
+                          ...layout[activePageIndex],
+                          categories: replaceItem(
+                            layout[activePageIndex].categories,
+                            categoryIndex,
+                            {
+                              ...layout[activePageIndex].categories[
+                                categoryIndex
+                              ],
+                              items: removeItem(
+                                layout[activePageIndex].categories[
+                                  categoryIndex
+                                ].items,
+                                itemIndex
+                              ),
+                            }
+                          ),
+                        })
+                      )
+                  : undefined
+              }
             />
           </div>
         </div>
@@ -249,10 +282,12 @@ function AddStatDialog({
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat) => void;
   readonly defaultLayout: StatLayout;
-  readonly statsSpec: IR<{
-    readonly label: string;
-    readonly items: StatCategoryReturn;
-  }>;
+  readonly statsSpec: IR<
+    IR<{
+      readonly label: string;
+      readonly items: StatCategoryReturn;
+    }>
+  >;
 }): JSX.Element | null {
   const filters = React.useMemo(
     () => ({
@@ -268,11 +303,11 @@ function AddStatDialog({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header="SUP"
+      header={statsText('chooseStatistics')}
       onClose={handleClose}
     >
       <div>
-        <h1>Select Custom Statistics</h1>
+        <H3>{statsText('selectCustomStatistics')}</H3>
         {Array.isArray(queries) && (
           <QueryList
             getQuerySelectCallback={(query) => () => {
@@ -284,47 +319,62 @@ function AddStatDialog({
           />
         )}
       </div>
-      <div>
-        <h1>Select Default Statistic</h1>
-        <div>
-          <ShowBigBoxes
-            goToEditingState={(): void => {}}
-            isEditing={false}
-            layout={defaultLayout}
-            setLayout={(): void => {}}
-            statsSpec={statsSpec}
-            onClick={(item): void => {
-              handleAdd(item);
-              handleClose();
-            }}
-          />
-        </div>
-      </div>
+      {defaultLayout
+        .filter(({ categories }) => categories.length > 0)
+        .map((defaultLayoutItem, index) => (
+          <div key={index}>
+            <H3>{statsText('selectDefaultStatistics')}</H3>
+
+            <div>
+              <CategoriesBoxes
+                goToEditingState={(): void => {}}
+                isEditing={false}
+                pageLayout={defaultLayoutItem}
+                statsSpec={statsSpec}
+                onClick={(item): void => {
+                  handleAdd(item);
+                  handleClose();
+                }}
+                onRemove={undefined}
+              />
+            </div>
+          </div>
+        ))}
     </Dialog>
   ) : null;
 }
 
-function ShowBigBoxes({
-  layout,
-  setLayout,
+function CategoriesBoxes({
+  pageLayout,
   statsSpec,
   isEditing,
   goToEditingState,
   onClick: handleClick,
+  onRemove: handleRemove,
 }: {
-  readonly layout: StatLayout;
-  readonly setLayout: (layout: StatLayout) => void;
-  readonly statsSpec: IR<{
+  readonly pageLayout: {
     readonly label: string;
-    readonly items: StatCategoryReturn;
-  }>;
+    readonly categories: RA<{
+      readonly label: string;
+      readonly items: RA<CustomStat | DefaultStat>;
+    }>;
+  };
+  readonly statsSpec: IR<
+    IR<{
+      readonly label: string;
+      readonly items: StatCategoryReturn;
+    }>
+  >;
   readonly isEditing: boolean;
   readonly goToEditingState: (categoryIndex: number) => void;
   readonly onClick: ((item: CustomStat | DefaultStat) => void) | undefined;
+  readonly onRemove:
+    | ((categoryIndex: number, itemIndex: number) => void)
+    | undefined;
 }): JSX.Element {
   return (
     <>
-      {layout[0].categories.map(({ label, items }, categoryIndex) => (
+      {pageLayout.categories.map(({ label, items }, categoryIndex) => (
         <div
           className="flex h-auto max-h-80 flex-col content-center rounded border-[1px] border-black bg-white p-4"
           key={categoryIndex}
@@ -332,25 +382,11 @@ function ShowBigBoxes({
           <H3 className="font-bold">{label}</H3>
           <div className="overflow-auto pr-4">
             {items?.map((item, itemIndex) => {
-              const handleRemove = (): void =>
-                setLayout(
-                  replaceItem(layout, 0, {
-                    ...layout[0],
-                    categories: replaceItem(
-                      layout[0].categories,
-                      categoryIndex,
-                      {
-                        ...layout[0].categories[categoryIndex],
-                        items: removeItem(items, itemIndex),
-                      }
-                    ),
-                  })
-                );
-
               return item.type === 'DefaultStat' ? (
                 <DefaultStatItem
                   categoryName={item.categoryName}
                   itemName={item.itemName}
+                  pageName={item.pageName}
                   key={itemIndex}
                   statsSpec={statsSpec}
                   onClick={
@@ -365,7 +401,11 @@ function ShowBigBoxes({
                         }
                       : undefined
                   }
-                  onRemove={isEditing ? handleRemove : undefined}
+                  onRemove={
+                    handleRemove === undefined
+                      ? undefined
+                      : () => handleRemove(categoryIndex, itemIndex)
+                  }
                 />
               ) : (
                 <CustomStatItem
@@ -381,7 +421,11 @@ function ShowBigBoxes({
                         }
                       : undefined
                   }
-                  onRemove={isEditing ? handleRemove : undefined}
+                  onRemove={
+                    handleRemove === undefined
+                      ? undefined
+                      : () => handleRemove(categoryIndex, itemIndex)
+                  }
                 />
               );
             })}
@@ -418,6 +462,20 @@ function useDefaultLayout(
             items: Object.entries(items ?? {}).map(([itemName]) => ({
               type: 'DefaultStat',
               pageName: 'collection',
+              categoryName,
+              itemName,
+            })),
+          })
+        ),
+      },
+      {
+        label: 'personal',
+        categories: Object.entries(statsSpec.personal).map(
+          ([categoryName, { label, items }]) => ({
+            label,
+            items: Object.entries(items ?? {}).map(([itemName]) => ({
+              type: 'DefaultStat',
+              pageName: 'personal',
               categoryName,
               itemName,
             })),
@@ -463,21 +521,26 @@ function useCustomStatQueryBuilderSpec(queryId: number):
 
 function DefaultStatItem({
   statsSpec,
+  pageName,
   categoryName,
   itemName,
   onRemove: handleRemove,
   onClick: handleClick,
 }: {
-  readonly statsSpec: IR<{
-    readonly label: string;
-    readonly items: StatCategoryReturn;
-  }>;
+  readonly statsSpec: IR<
+    IR<{
+      readonly label: string;
+      readonly items: StatCategoryReturn;
+    }>
+  >;
+  readonly pageName: string;
   readonly categoryName: keyof typeof statsSpec;
   readonly itemName: string;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
 }): JSX.Element {
-  const statSpecItemObject = statsSpec[categoryName]?.items;
+  const statSpecItemPage = statsSpec[pageName];
+  const statSpecItemObject = statSpecItemPage[categoryName]?.items;
   const statSpecItem =
     statSpecItemObject === undefined ? undefined : statSpecItemObject[itemName];
   const statValue =
