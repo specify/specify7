@@ -122,5 +122,18 @@ export const statsText = createDictionary({
     'en-us': 'Computerized Last Year',
     'ru-ru': 'Компьютеризация в прошлом году',
   },
+  chooseStatistics: {
+    'en-us': 'Choose Statistics',
+    'ru-ru': 'Выберите статистику'
+  },
+  selectCustomStatistics: {
+    'en-us': 'Select Custom Statistics',
+    'ru-ru': 'Выберите пользовательскую статистику'
+  },
+  selectDefaultStatistics :{
+    'en-us': 'Select Default Statistics',
+    'ru-ru': 'Выберите статистику по умолчанию'
+  }
+
 });
 /* eslint-enable @typescript-eslint/naming-convention */
