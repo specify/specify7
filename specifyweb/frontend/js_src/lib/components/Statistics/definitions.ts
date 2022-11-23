@@ -2,13 +2,13 @@ import type { State } from 'typesafe-reducer';
 
 import type { IR, RA } from '../../utils/types';
 
-type CustomStat = State<
+export type CustomStat = State<
   'CustomStat',
   {
     readonly queryId: number;
   }
 >;
-type DefaultStat = State<
+export type DefaultStat = State<
   'DefaultStat',
   {
     readonly pageName: string;
