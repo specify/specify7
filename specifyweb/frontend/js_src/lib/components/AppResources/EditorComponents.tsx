@@ -141,7 +141,7 @@ export function useCodeMirrorExtensions(
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {
       const hasErrors = results.length > 0;
-      if (hasErrors && !(mode === 'txt'))
+      if (hasErrors)
         appResource.saveBlockers?.add(
           linterKey,
           undefined,
