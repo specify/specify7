@@ -141,7 +141,7 @@ export function useCodeMirrorExtensions(
   React.useEffect(() => {
     function handleLinted(results: RA<Diagnostic>): void {
       const hasErrors = results.length > 0;
-      if (hasErrors)
+      if (hasErrors && !(mode === 'txt'))
         appResource.saveBlockers?.add(
           linterKey,
           undefined,
@@ -155,7 +155,9 @@ export function useCodeMirrorExtensions(
         ? [json(), jsonLinter(handleLinted)]
         : mode === 'properties'
         ? [StreamLanguage.define(properties)]
-        : [xml(), xmlLinter(handleLinted)];
+        : mode === 'jrxml' || mode === 'xml'
+        ? [xml(), xmlLinter(handleLinted)]
+        : [];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),
