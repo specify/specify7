@@ -152,7 +152,7 @@ const fieldRenderers: {
         <Combobox
           defaultValue={defaultValue}
           field={data === false ? undefined : data?.field}
-          fieldName={data === undefined ? undefined : resolvedFieldName}
+          fieldName={resolvedFieldName}
           formType={formType}
           id={id}
           isDisabled={false}
