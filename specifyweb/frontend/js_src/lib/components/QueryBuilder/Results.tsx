@@ -35,6 +35,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { recordSetView } from '../FormParse/webOnlyViews';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -485,6 +486,7 @@ function CreateRecordSet({
           isSubForm={false}
           mode="edit"
           resource={state.recordSet}
+          viewName={recordSetView}
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={f.never}
           onSaved={f.never}

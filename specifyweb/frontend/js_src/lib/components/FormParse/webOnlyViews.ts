@@ -75,8 +75,15 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['name']
     ),
+    [recordSetView]: autoGenerateViewDefinition(
+      schema.models.RecordSet,
+      'form',
+      'edit',
+      ['name', 'remarks']
+    ),
   } as const)
 );
 
 export const spAppResourceView = '_SpAppResourceView_name';
 export const spViewSetNameView = '_SpViewSetObj_name';
+export const recordSetView = '_RecordSet_name';

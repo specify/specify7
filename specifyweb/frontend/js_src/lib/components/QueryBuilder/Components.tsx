@@ -26,6 +26,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
+import { recordSetView } from '../FormParse/webOnlyViews';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -224,6 +225,7 @@ export function MakeRecordSetButton({
               isSubForm={false}
               mode="edit"
               resource={recordSet}
+              viewName={recordSetView}
               onClose={(): void => setState(undefined)}
               onDeleted={f.never}
               onSaved={(): void => setState('saved')}
