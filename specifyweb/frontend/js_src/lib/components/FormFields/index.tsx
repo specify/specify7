@@ -137,11 +137,18 @@ const fieldRenderers: {
       () => resolvePickListField(resource, fieldName),
       [resource, fieldName]
     );
-    const [data] = useAsyncState(
+    const field = React.useMemo(
+      () =>
+        resolvedFieldName === undefined
+          ? undefined
+          : resource.specifyModel.getField(resolvedFieldName),
+      [resource.specifyModel, resolvedFieldName]
+    );
+    const [resolvedResource] = useAsyncState(
       React.useCallback(
         async () =>
           getResourceAndField(resource, resolvedFieldName).then(
-            (values) => values ?? false
+            (values) => values?.resource ?? false
           ),
         [resource, resolvedFieldName]
       ),
@@ -151,17 +158,19 @@ const fieldRenderers: {
       <ErrorBoundary dismissable>
         <Combobox
           defaultValue={defaultValue}
-          field={data === false ? undefined : data?.field}
+          field={field}
           fieldName={resolvedFieldName}
           formType={formType}
           id={id}
-          isDisabled={false}
+          isDisabled={resolvedFieldName === undefined}
           isRequired={isRequired}
           mode={mode}
           model={resource}
-          pickListName={data === undefined ? undefined : pickList}
+          pickListName={pickList}
           resource={
-            data === false || data === undefined ? resource : data.resource
+            resolvedResource === false || resolvedResource === undefined
+              ? resource
+              : resolvedResource
           }
         />
       </ErrorBoundary>
