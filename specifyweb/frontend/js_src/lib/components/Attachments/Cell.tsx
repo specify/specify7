@@ -94,7 +94,6 @@ export function AttachmentCell({
       />
       {isMetaOpen && (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
@@ -104,6 +103,7 @@ export function AttachmentCell({
           viewName={originalAttachmentsView}
           onClose={handleMetaClose}
           onDeleted={undefined}
+          onAdd={undefined}
           onSaved={undefined}
         />
       )}

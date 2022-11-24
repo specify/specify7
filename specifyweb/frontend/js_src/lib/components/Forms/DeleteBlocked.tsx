@@ -134,7 +134,6 @@ function BlockerPreview({
 }): JSX.Element {
   return (
     <ResourceView
-      canAddAnother={false}
       dialog="modal"
       isDependent={false}
       isSubForm={false}
@@ -145,7 +144,8 @@ function BlockerPreview({
         handleDeleted();
         handleClose();
       }}
-      onSaved={() => {
+      onAdd={undefined}
+      onSaved={(): void => {
         if (
           typeof field === 'object' &&
           resource.get(field.name) !== parentResource.get('resource_uri')

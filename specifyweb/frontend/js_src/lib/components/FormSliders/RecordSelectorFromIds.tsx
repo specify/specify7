@@ -31,11 +31,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   dialog,
   isDependent,
   mode,
-  canAddAnother,
   canRemove = true,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
+  onClone: handleClone,
   onDelete: handleDelete,
   urlContext,
   ...rest
@@ -53,14 +53,12 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly isDependent: boolean;
   readonly mode: FormMode;
   readonly viewName?: string;
-  readonly canAddAnother: boolean;
   readonly canRemove?: boolean;
   readonly onClose: () => void;
-  readonly onSaved: (payload: {
-    readonly resource: SpecifyResource<SCHEMA>;
-    readonly newResource: SpecifyResource<SCHEMA> | undefined;
-    readonly wasNew: boolean;
-  }) => void;
+  readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
+  readonly onClone:
+    | ((newResource: SpecifyResource<SCHEMA>) => void)
+    | undefined;
   // Record set ID, or false to not update the URL
   readonly urlContext: number | false | undefined;
 }): JSX.Element | null {
@@ -173,7 +171,6 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       }): JSX.Element => (
         <>
           <ResourceView
-            canAddAnother={canAddAnother}
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
@@ -243,12 +240,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                 ? handleRemove?.bind(undefined, 'deleteButton')
                 : undefined
             }
-            onSaved={(payload): void =>
-              handleSaved({
-                ...payload,
-                resource: resource!,
-              })
-            }
+            onAdd={handleClone}
+            onSaved={(): void => handleSaved(resource!)}
           />
           {dialogs}
           {typeof unloadProtect === 'function' && (

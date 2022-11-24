@@ -17,7 +17,6 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import { error } from '../Errors/assert';
-import { fail } from '../Errors/Crash';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
@@ -37,16 +36,15 @@ import { NO_CLONE } from './ResourceView';
  */
 export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   resource,
-  canAddAnother,
   form,
   disabled = false,
   saveRequired: externalSaveRequired = false,
   onSaving: handleSaving,
   onSaved: handleSaved,
+  onAdd: handleAdd,
   onIgnored: handleIgnored,
 }: {
   readonly resource: SpecifyResource<SCHEMA>;
-  readonly canAddAnother: boolean;
   readonly form: HTMLFormElement;
   readonly disabled?: boolean;
   /*
@@ -56,14 +54,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   readonly saveRequired?: boolean;
   // Returning false would cancel the save proces (allowing to trigger custom behaviour)
   readonly onSaving?: (
-    newResource: SpecifyResource<SCHEMA> | undefined,
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
-  readonly onSaved?: (payload: {
-    readonly newResource: SpecifyResource<SCHEMA> | undefined;
-    readonly wasNew: boolean;
-    readonly wasChanged: boolean;
-  }) => void;
+  readonly onSaved?: () => void;
+  readonly onAdd?: (newResource: SpecifyResource<SCHEMA>) => void;
   /**
    * Sometimes a save button click is ignored (mostly because of a validation
    * error). By default, this would focus the first erroring field on the form.
@@ -117,96 +111,69 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     !globalCanCarryForward.includes(resource.specifyModel.name) &&
     !NO_CLONE.has(resource.specifyModel.name);
 
-  async function handleSubmit(
-    event: React.MouseEvent<HTMLButtonElement> | SubmitEvent,
-    mode: 'addAnother' | 'save' = 'save'
-  ): Promise<void> {
-    if (!form.reportValidity()) return;
-
-    setFormContext?.(replaceKey(formContext, 'triedToSubmit', true));
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (
-      // Cancel if don't have permission for this action
-      (mode === 'save' ? !canSave : !canCreate) ||
-      // Or save is blocked
-      saveBlocked ||
-      // Or trying to save a resources that doesn't need saving
-      (!saveRequired &&
-        !externalSaveRequired &&
-        mode === 'save' &&
-        !resource.isNew())
-    ) {
-      handleIgnored?.();
-      return;
-    }
-
-    await resource.businessRuleMgr?.pending;
-
-    const blockingResources = Array.from(
-      resource.saveBlockers?.blockingResources ?? []
-    );
-    blockingResources.forEach((resource) =>
-      resource.saveBlockers?.fireDeferredBlockers()
-    );
-    if (blockingResources.length > 0) {
-      setShowBlockedDialog(true);
-      return;
-    }
-
-    /*
-     * This has to be done before saving so that the data we get back isn't copied.
-     * Eg. autonumber fields, the id, etc.
-     */
-    const newResource =
-      mode === 'addAnother'
-        ? canCarryForward
-          ? await resource.clone()
-          : new resource.specifyModel.Resource()
-        : undefined;
-    const wasNew = resource.isNew();
-    const wasChanged = resource.needsSaved;
-
-    /*
-     * Save process is canceled if false was returned. This also allows to
-     * implement custom save behavior
-     */
-    if (handleSaving?.(newResource, unsetUnloadProtect) === false) return;
-
-    setIsSaving(true);
-    loading(
-      (resource.needsSaved || resource.isNew()
-        ? resource.save({ onSaveConflict: hasSaveConflict })
-        : Promise.resolve()
-      )
-        .then(() => {
-          unsetUnloadProtect();
-          smoothScroll(form, 0);
-          handleSaved?.({
-            newResource,
-            wasNew,
-            wasChanged,
-          });
-        })
-        .then(() => setIsSaving(false))
-        .catch((error_) =>
-          Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')?.value ===
-          hasSaveConflict
-            ? undefined
-            : error(error_)
-        )
-    );
-  }
-
   const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
   React.useEffect(
-    // FEATURE: if form save fails, should make the error message dismissable (if safe)
-    () => listen(form, 'submit', (event) => loading(handleSubmit(event))),
-    [loading, form, handleSubmit]
+    () =>
+      listen(form, 'submit', (event) => {
+        if (!form.reportValidity()) return;
+
+        setFormContext?.(replaceKey(formContext, 'triedToSubmit', true));
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (
+          // Cancel if don't have permission for this action
+          !canSave ||
+          // Or save is blocked
+          saveBlocked ||
+          // Or trying to save a resources that doesn't need saving
+          (!saveRequired && !externalSaveRequired && !resource.isNew())
+        ) {
+          handleIgnored?.();
+          return;
+        }
+
+        loading(
+          (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
+            const blockingResources = Array.from(
+              resource.saveBlockers?.blockingResources ?? []
+            );
+            blockingResources.forEach((resource) =>
+              resource.saveBlockers?.fireDeferredBlockers()
+            );
+            if (blockingResources.length > 0) {
+              setShowBlockedDialog(true);
+              return;
+            }
+
+            /*
+             * Save process is canceled if false was returned. This also allows to
+             * implement custom save behavior
+             */
+            if (handleSaving?.(unsetUnloadProtect) === false) return;
+
+            setIsSaving(true);
+            return resource
+              .save({ onSaveConflict: hasSaveConflict })
+              .catch((error_) =>
+                // FEATURE: if form save fails, should make the error message dismissable (if safe)
+                Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+                  ?.value === hasSaveConflict
+                  ? undefined
+                  : error(error_)
+              )
+              .finally(() => {
+                unsetUnloadProtect();
+                handleSaved?.();
+                setIsSaving(false);
+              });
+          })
+        );
+      }),
+    [loading, form]
   );
 
   // FEATURE: these buttons should use var(--brand-color), rather than orange
@@ -216,14 +183,20 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const isChanged = saveRequired || externalSaveRequired || resource.isNew();
   return (
     <>
-      {canAddAnother && canCreate ? (
+      {typeof handleAdd === 'function' && canCreate ? (
         <>
           <ButtonComponent
             className={saveBlocked ? '!cursor-not-allowed' : undefined}
             disabled={isSaving || isChanged}
-            onClick={(event): void =>
-              void handleSubmit(event, 'addAnother').catch(fail)
-            }
+            onClick={(): void => {
+              smoothScroll(form, 0);
+              loading(
+                (canCarryForward
+                  ? resource.clone()
+                  : Promise.resolve(new resource.specifyModel.Resource())
+                ).then(handleAdd)
+              );
+            }}
           >
             {formsText('addAnother')}
           </ButtonComponent>

@@ -33,9 +33,9 @@ import {
   appResourceIcon,
   AppResourceLoad,
 } from './EditorComponents';
+import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
-import { getResourceType } from './filtersHelpers';
 
 export function AppResourceEditor({
   resource,
@@ -166,50 +166,38 @@ export function AppResourceEditor({
                   appResource.isNew() ? 'create' : 'update'
                 ) ? (
                   <SaveButton
-                    canAddAnother
                     form={formRef.current}
                     resource={appResource}
                     saveRequired={isChanged}
+                    onAdd={(newResource): void => {
+                      const resource = serializeResource(newResource);
+                      const isClone =
+                        typeof resource.spAppResourceDir === 'string';
+                      handleClone(
+                        {
+                          ...resource,
+                          name:
+                            resource.name.length > 0
+                              ? getUniqueName(resource.name, [resource.name])
+                              : commonText(
+                                  'newResourceTitle',
+                                  appResource.specifyModel.label
+                                ),
+                        },
+                        isClone ? resourceData.id : undefined
+                      );
+                    }}
                     onIgnored={(): void => {
                       showValidationRef.current?.();
                     }}
-                    onSaving={(newResource, unsetUnloadProtect): false => {
+                    onSaving={(unsetUnloadProtect): false => {
                       unsetUnloadProtect();
 
                       loading(
-                        (async (): Promise<void> => {
-                          const resourceDirectory =
-                            typeof directory.id === 'number'
-                              ? directory
-                              : await createResource(
-                                  'SpAppResourceDir',
-                                  directory
-                                );
-
-                          if (typeof newResource === 'object') {
-                            const resource = serializeResource(newResource);
-                            const isClone =
-                              typeof resource.spAppResourceDir === 'string';
-                            handleClone(
-                              {
-                                ...resource,
-                                spAppResourceDir:
-                                  resourceDirectory.resource_uri,
-                                name:
-                                  resource.name.length > 0
-                                    ? getUniqueName(resource.name, [
-                                        resource.name,
-                                      ])
-                                    : commonText(
-                                        'newResourceTitle',
-                                        appResource.specifyModel.label
-                                      ),
-                              },
-                              isClone ? resourceData.id : undefined
-                            );
-                            return;
-                          }
-
+                        (typeof directory.id === 'number'
+                          ? Promise.resolve(directory)
+                          : createResource('SpAppResourceDir', directory)
+                        ).then(async (resourceDirectory) => {
                           if (appResource.isNew())
                             appResource.set(
                               'spAppResourceDir',
@@ -238,7 +226,7 @@ export function AppResourceEditor({
                           );
 
                           handleSaved(resource, resourceDirectory);
-                        })()
+                        })
                       );
 
                       return false;

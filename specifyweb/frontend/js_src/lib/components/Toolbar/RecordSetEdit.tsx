@@ -33,7 +33,6 @@ export function EditRecordSet({
     />
   ) : (
     <ResourceView
-      canAddAnother={false}
       // BUG: the message is stale if record set is renamed
       deletionMessage={formsText(
         'recordSetDeletionWarning',
@@ -59,6 +58,7 @@ export function EditRecordSet({
           : 'edit'
       }
       resource={recordSet}
+      onAdd={undefined}
       onClose={handleClose}
       onDeleted={undefined}
       onSaved={(): void =>

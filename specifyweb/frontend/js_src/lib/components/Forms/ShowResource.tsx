@@ -66,7 +66,6 @@ export function ShowResource({
     />
   ) : (
     <ResourceView
-      canAddAnother
       dialog={false}
       isDependent={false}
       isSubForm={false}
@@ -75,25 +74,23 @@ export function ShowResource({
       viewName={resource.specifyModel.view}
       onClose={f.never}
       onDeleted={f.void}
-      onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object')
-          navigate(
-            getResourceViewUrl(
-              newResource.specifyModel.name,
-              undefined,
-              recordSetId
-            ),
-            {
-              state: { resource: serializeResource(newResource) },
-            }
-          );
-        else if (wasNew) navigate(resource.viewUrl());
-        else {
-          const reloadResource = new resource.specifyModel.Resource({
-            id: resource.id,
-          });
-          reloadResource.fetch().then(async () => setResource(reloadResource));
-        }
+      onAdd={(newResource): void =>
+        navigate(
+          getResourceViewUrl(
+            newResource.specifyModel.name,
+            undefined,
+            recordSetId
+          ),
+          {
+            state: { resource: serializeResource(newResource) },
+          }
+        )
+      }
+      onSaved={(): void => {
+        const reloadResource = new resource.specifyModel.Resource({
+          id: resource.id,
+        });
+        reloadResource.fetch().then(async () => setResource(reloadResource));
       }}
     />
   );

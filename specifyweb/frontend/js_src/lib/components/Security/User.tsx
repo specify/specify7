@@ -72,6 +72,7 @@ import {
 import { CollectionAccess, SetCollection } from './UserCollections';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { Http } from '../../utils/ajax/definitions';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function SecurityUser(): JSX.Element {
   const location = useLocation();
@@ -102,25 +103,25 @@ export function SecurityUser(): JSX.Element {
         setUsers(removeKey(users, user.id.toString()));
         navigate('/specify/security/');
       }}
-      onSave={(changedUser, newUser): void => {
+      onAdd={(newUser): void => {
+        navigate(`/specify/security/user/new/`, {
+          state: {
+            initialCollectionId: state?.initialCollectionId,
+            resource: serializeResource(newUser),
+          },
+        });
+      }}
+      onSave={(changedUser): void => {
         setUsers({
           ...users,
           [changedUser.id.toString()]: changedUser,
         });
-        if (typeof newUser === 'object')
-          navigate(`/specify/security/user/new/`, {
-            state: {
-              initialCollectionId: state?.initialCollectionId,
-              resource: newUser,
-            },
-          });
-        else
-          navigate(`/specify/security/user/${changedUser.id}/`, {
-            state: {
-              initialCollectionId: state?.initialCollectionId,
-              resource: changedUser,
-            },
-          });
+        navigate(`/specify/security/user/${changedUser.id}/`, {
+          state: {
+            initialCollectionId: state?.initialCollectionId,
+            resource: changedUser,
+          },
+        });
       }}
     />
   ) : (
@@ -133,14 +134,13 @@ function UserView({
   user,
   initialCollectionId,
   onSave: handleSave,
+  onAdd: handleAdd,
   onDeleted: handleDeleted,
 }: {
   readonly user: SerializedResource<SpecifyUser>;
   readonly initialCollectionId: number | undefined;
-  readonly onSave: (
-    changedUser: SerializedResource<SpecifyUser>,
-    newUser?: SerializedResource<SpecifyUser>
-  ) => void;
+  readonly onSave: (changedUser: SerializedResource<SpecifyUser>) => void;
+  readonly onAdd: (resource: SpecifyResource<SpecifyUser>) => void;
   readonly onDeleted: () => void;
 }): JSX.Element {
   const collections = useAvailableCollections();
@@ -446,12 +446,12 @@ function UserView({
                       hasPermission('/permissions/user/roles', 'update', id)
                   )) ? (
                 <SaveButton
-                  canAddAnother={Array.isArray(userAgents)}
                   disabled={!changesMade || userAgents === undefined}
                   form={formElement}
                   resource={userResource}
                   saveRequired={isChanged}
-                  onSaved={({ newResource }): void =>
+                  onAdd={Array.isArray(userAgents) ? handleAdd : undefined}
+                  onSaved={(): void =>
                     /*
                      * Need to do requests in series rather than parallel as
                      * some are expected to fail when user is not properly
@@ -600,13 +600,9 @@ function UserView({
                                   ),
                               ])
                                 .then(() =>
-                                  handleSave(
-                                    serializeResource(userResource),
-                                    f.maybe(newResource, serializeResource)
-                                  )
+                                  handleSave(serializeResource(userResource))
                                 )
                                 .then(() => {
-                                  if (typeof newResource === 'object') return;
                                   // Sync initial values
                                   initialUserRoles.current = userRoles ?? {};
                                   initialUserPolicies.current =

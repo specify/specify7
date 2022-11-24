@@ -87,12 +87,11 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
 
   return totalCount === undefined || recordSetItemIndex === undefined ? null : (
     <RecordSet
-      canAddAnother
-      index={recordSetItemIndex}
-      record={resource}
       dialog={false}
+      index={recordSetItemIndex}
       mode="edit"
       model={resource.specifyModel}
+      record={resource}
       recordSet={recordSet}
       totalCount={totalCount}
       onAdd={undefined}
@@ -140,7 +139,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   dialog,
   mode,
   onClose: handleClose,
-  canAddAnother,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
@@ -160,7 +158,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
   readonly onClose: () => void;
-  readonly canAddAnother: boolean;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
@@ -236,7 +233,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     setTotalCount(oldTotalCount + 1);
     loading(
       Promise.all(
-        resources.map((resource) =>
+        resources.map(async (resource) =>
           createResource('RecordSetItem', {
             recordId: resource.id,
             recordSet: recordSet.get('resource_uri'),
@@ -252,7 +249,6 @@ function RecordSet<SCHEMA extends AnySchema>({
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
-        canAddAnother={canAddAnother}
         defaultIndex={currentIndex}
         dialog={dialog}
         headerButtons={<EditRecordSetButton recordSet={recordSet} />}
@@ -294,6 +290,9 @@ function RecordSet<SCHEMA extends AnySchema>({
                   }
                 })
             : undefined
+        }
+        onClone={(newResource): void =>
+          go(currentIndex + 1, undefined, newResource)
         }
         onClose={handleClose}
         onDelete={
@@ -343,13 +342,7 @@ function RecordSet<SCHEMA extends AnySchema>({
               }
             : undefined
         }
-        // FIXME: split this callback into two
-        onSaved={({ newResource, wasNew, resource }): void => {
-          if (typeof newResource === 'object') {
-            go(currentIndex + 1, undefined, newResource);
-          }
-          if (wasNew) handleAdd([resource]);
-        }}
+        onSaved={(resource): void => handleAdd([resource])}
         onSlide={(index): void => go(index, ids[index])}
       />
       {hasDuplicate && (

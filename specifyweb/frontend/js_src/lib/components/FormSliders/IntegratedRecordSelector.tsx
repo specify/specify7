@@ -198,7 +198,6 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
-            canAddAnother={false}
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
@@ -256,6 +255,7 @@ export function IntegratedRecordSelector({
              */
             onClose={handleClose}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
+            onAdd={undefined}
             onSaved={handleClose}
           />
           {dialogs}

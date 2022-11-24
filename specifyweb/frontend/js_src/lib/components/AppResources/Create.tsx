@@ -169,7 +169,6 @@ function EditAppResource({
 
   return (
     <ResourceView
-      canAddAnother={false}
       dialog="modal"
       isDependent={false}
       isSubForm={false}
@@ -182,8 +181,9 @@ function EditAppResource({
       }
       onClose={(): void => navigate('/specify/resources/')}
       onDeleted={undefined}
+      onAdd={undefined}
       onSaved={f.never}
-      onSaving={(_newResource, unsetUnloadProtect): false => {
+      onSaving={(unsetUnloadProtect): false => {
         unsetUnloadProtect();
         const path =
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';

@@ -219,13 +219,13 @@ export function MakeRecordSetButton({
         <>
           {typeof recordSet === 'object' && (
             <ResourceView
-              canAddAnother={false}
               dialog="modal"
               isDependent={false}
               isSubForm={false}
               mode="edit"
               resource={recordSet}
               viewName={recordSetView}
+              onAdd={undefined}
               onClose={(): void => setState(undefined)}
               onDeleted={f.never}
               onSaved={(): void => setState('saved')}

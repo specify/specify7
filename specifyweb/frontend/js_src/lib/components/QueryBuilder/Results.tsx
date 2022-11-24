@@ -480,7 +480,6 @@ function CreateRecordSet({
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
@@ -489,6 +488,7 @@ function CreateRecordSet({
           viewName={recordSetView}
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={f.never}
+          onAdd={undefined}
           onSaved={f.never}
           onSaving={(): false => {
             setState({ type: 'Saving' });

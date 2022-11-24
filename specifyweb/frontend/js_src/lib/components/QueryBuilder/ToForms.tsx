@@ -44,7 +44,6 @@ export function QueryToForms({
       </Button.Small>
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
-          canAddAnother={false}
           canRemove={false}
           defaultIndex={0}
           dialog="modal"
@@ -56,6 +55,7 @@ export function QueryToForms({
           title={queryText('queryResults', model.label)}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           urlContext={false}
+          onClone={undefined}
           onAdd={undefined}
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}

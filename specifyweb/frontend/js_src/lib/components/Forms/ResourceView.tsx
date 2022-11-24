@@ -89,12 +89,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
   resource,
   extraButtons,
   headerButtons,
-  canAddAnother,
   deletionMessage,
   dialog = false,
   onSaving: handleSaving,
   onClose: handleClose,
   onSaved: handleSaved = handleClose,
+  onAdd: handleAdd,
   onDeleted: handleDeleted = handleClose,
   children,
   mode: initialMode,
@@ -114,21 +114,14 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly headerButtons?: (
     specifyNetworkBadge: JSX.Element | undefined
   ) => JSX.Element;
-  readonly canAddAnother: boolean;
   readonly extraButtons?: JSX.Element | undefined;
   readonly deletionMessage?: string | undefined;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly onSaving?: (
-    newResource: SpecifyResource<SCHEMA> | undefined,
     unsetUnloadProtect: () => void
   ) => false | undefined | void;
-  readonly onSaved:
-    | ((payload: {
-        readonly newResource: SpecifyResource<SCHEMA> | undefined;
-        readonly wasNew: boolean;
-        readonly wasChanged: boolean;
-      }) => void)
-    | undefined;
+  readonly onSaved: (() => void) | undefined;
+  readonly onAdd: ((newResource: SpecifyResource<SCHEMA>) => void) | undefined;
   readonly onDeleted: (() => void) | undefined;
   readonly onClose: () => void;
   readonly children?: JSX.Element;
@@ -197,26 +190,25 @@ export function ResourceView<SCHEMA extends AnySchema>({
           typeof resource === 'object' &&
           formElement !== null ? (
             <SaveButton
-              canAddAnother={
-                canAddAnother && !NO_ADD_ANOTHER.has(resource.specifyModel.name)
-              }
               form={formElement}
               resource={resource}
-              onSaved={(payload): void => {
+              onAdd={
+                NO_ADD_ANOTHER.has(resource.specifyModel.name)
+                  ? undefined
+                  : handleAdd
+              }
+              onSaved={(): void => {
                 const printOnSave = getUserPref(
                   'form',
                   'preferences',
                   'printOnSave'
                 );
-                if (
-                  printOnSave[resource.specifyModel.name] === true &&
-                  payload.wasChanged
-                )
+                if (printOnSave[resource.specifyModel.name] === true)
                   setState({
                     type: 'Report',
-                    onDone: () => handleSaved(payload),
+                    onDone: () => handleSaved(),
                   });
-                else handleSaved(payload);
+                else handleSaved();
               }}
               onSaving={handleSaving}
             />

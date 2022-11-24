@@ -536,7 +536,6 @@ function ProtectedQueryComboBox({
       {typeof formatted?.resource === 'object' &&
       state.type === 'ViewResourceState' ? (
         <ResourceView
-          canAddAnother={false}
           dialog="nonModal"
           isDependent={field.isDependent()}
           isSubForm={false}
@@ -547,6 +546,7 @@ function ProtectedQueryComboBox({
             resource.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
+          onAdd={undefined}
           onSaved={undefined}
           onSaving={
             field.isDependent()
@@ -556,7 +556,6 @@ function ProtectedQueryComboBox({
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
-          canAddAnother={false}
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
@@ -568,6 +567,7 @@ function ProtectedQueryComboBox({
             resource.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
+          onAdd={undefined}
           onSaving={
             field.isDependent()
               ? (): false => {

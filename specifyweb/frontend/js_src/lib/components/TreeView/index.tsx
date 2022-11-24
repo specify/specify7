@@ -335,12 +335,12 @@ function EditTreeRank({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen ? (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={resource}
+          onAdd={undefined}
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={(): void => globalThis.location.reload()}

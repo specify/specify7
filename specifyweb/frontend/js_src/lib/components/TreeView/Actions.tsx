@@ -189,7 +189,6 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly onRefresh: () => void;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
-  const hasChanged = React.useRef(false);
 
   const [resource, setResource] = useLiveState<
     SpecifyResource<AnySchema> | undefined
@@ -218,22 +217,15 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
       </Button.Small>
       {isOpen && typeof resource === 'object' && (
         <ResourceView
-          canAddAnother
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={resource}
-          onClose={(): void =>
-            hasChanged.current ? handleRefresh() : handleClose()
-          }
+          onAdd={setResource}
+          onClose={handleClose}
           onDeleted={handleRefresh}
-          onSaved={({ newResource, wasChanged }): void => {
-            if (typeof newResource === 'object') {
-              setResource(newResource);
-              if (wasChanged) hasChanged.current = true;
-            } else handleRefresh();
-          }}
+          onSaved={handleRefresh}
         />
       )}
     </>
