@@ -5,7 +5,6 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
-from typing import List
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -20,6 +19,7 @@ from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.views.i18n import set_language
+from typing import List
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
@@ -301,13 +301,21 @@ def domain(request):
                 "name" : "name",
                 "in":"query",
                 "required" : True,
+                "schema": {
+                    "type": "string"
+                },
                 "description" : "The name of the app resource to fetch"
             },
             {
                 "name" : "quiet",
                 "in": "query",
                 "required" : False,
-                "description": "Flag to indicate that if the appresource does not exist, return response with code 204 instead of 404"
+                "schema": {
+                    "type": "boolean",
+                    "default": False,
+                },
+                "allowEmptyValue": True,
+                "description": "Flag to indicate that if the AppResource does not exist, return response with code 204 instead of 404"
             }
         ],
     "get" : {
@@ -330,7 +338,7 @@ def app_resource(request):
         resource_name = request.GET['name']
     except:
         raise Http404()
-    quiet = "quiet" in request.GET
+    quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
     result = get_app_resource(request.specify_collection,
                               request.specify_user,
                               resource_name)
@@ -393,12 +401,20 @@ def schema_localization(request):
                 "name" : "name",
                 "in":"query",
                 "required" : True,
+                "schema": {
+                    "type": "string"
+                },
                 "description" : "The name of the view to fetch"
             },
             {
                 "name" : "quiet",
                 "in": "query",
                 "required" : False,
+                "schema": {
+                    "type": "boolean",
+                    "default": False,
+                },
+                "allowEmptyValue": True,
                 "description": "Flag to indicate that if the view does not exist, return response with code 204 instead of 404"
             }
         ],
@@ -418,7 +434,7 @@ def schema_localization(request):
 @cache_control(max_age=86400, private=True)
 def view(request):
     """Return a Specify view definition by name taking into account the logged in user and collection."""
-    quiet = "quiet" in request.GET
+    quiet = "quiet" in request.GET and request.GET['quiet'].lower() != 'false'
     if 'collectionid' in request.GET:
         # Allow a URL parameter to override the logged in collection.
         collection = Collection.objects.get(id=request.GET['collectionid'])
