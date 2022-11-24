@@ -5,10 +5,11 @@ Implements the RESTful business data API
 import json
 import logging
 import re
-from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
-    NamedTuple, Callable
-from typing_extensions import TypedDict
 from urllib.parse import urlencode
+
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
+    Callable
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ from django.db import transaction
 from django.http import (HttpResponse, HttpResponseBadRequest,
                          Http404, HttpResponseNotAllowed, QueryDict)
 from django.core.exceptions import ObjectDoesNotExist, FieldError
-from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import DateTimeField, FieldDoesNotExist, FloatField, DecimalField
 # from django.utils.deprecation import CallableBool
 
@@ -750,10 +750,19 @@ CollectionPayload = TypedDict('CollectionPayload', {
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     """Return a list of structured data for the objects from 'model'
     subject to the request 'params'."""
+
+    objs = apply_filters(logged_in_collection, params, model, control_params)
+
+    try:
+        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
+    except FieldError as e:
+        raise OrderByError(e)
+
+def apply_filters(logged_in_collection, params, model, control_params=GetCollectionForm.defaults):
+    filters = {}
+
     if isinstance(model, str):
         model = get_model_or_404(model)
-
-    filters = {}
 
     for param, val in list(params.items()):
         if param in control_params:
@@ -769,6 +778,7 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
         objs = model.objects.filter(**filters)
     except (ValueError, FieldError) as e:
         raise FilterError(e)
+
     if control_params['domainfilter'] == 'true':
         objs = filter_by_collection(objs, logged_in_collection)
     if control_params['orderby']:
@@ -776,10 +786,8 @@ def get_collection(logged_in_collection, model, checker: ReadPermChecker, contro
             objs = objs.order_by(control_params['orderby'])
         except FieldError as e:
             raise OrderByError(e)
-    try:
-        return objs_to_data_(objs, checker, control_params['offset'], control_params['limit'])
-    except FieldError as e:
-        raise OrderByError(e)
+
+    return objs
 
 def objs_to_data(objs, offset=0, limit=20) -> CollectionPayload:
     """Wrapper for backwards compatibility."""
@@ -813,32 +821,48 @@ def uri_for_model(model, id=None) -> str:
         uri += '%d/' % int(id)
     return uri
 
-class RowsForm(forms.Form):
+class RowsForm(GetCollectionForm):
     fields = forms.CharField(required=True) # type: ignore
     distinct = forms.CharField(required=False)
-    limit = forms.IntegerField(required=False)
+    defaults = dict(
+        domainfilter=None,
+        limit=0,
+        offset=0,
+        orderby=None,
+        distinct=False,
+        fields=[],
+    )
 
 def rows(request, model_name: str) -> HttpResponse:
     enforce(request.specify_collection, request.specify_user_agent, [f'/table/{model_name.lower()}'], "read")
 
     form = RowsForm(request.GET)
+
     if not form.is_valid():
         return HttpResponseBadRequest(toJson(form.errors), content_type='application/json')
-    try:
-        model = get_model(model_name)
-    except AttributeError as e:
-        raise Http404(e)
-    query = model.objects.all()
+
+    query = apply_filters(request.specify_collection, request.GET, model_name, form.cleaned_data)
     fields = form.cleaned_data['fields'].split(',')
     try:
         query = query.values_list(*fields).order_by(*fields)
     except FieldError as e:
         return HttpResponseBadRequest(e)
-    query = filter_by_collection(query, request.specify_collection)
+    if form.cleaned_data['domainfilter'] == 'true':
+        query = filter_by_collection(query, request.specify_collection)
+    if form.cleaned_data['orderby']:
+        try:
+            query = query.order_by(form.cleaned_data['orderby'])
+        except FieldError as e:
+            raise OrderByError(e)
     if form.cleaned_data['distinct']:
         query = query.distinct()
+
     limit = form.cleaned_data['limit']
-    if limit:
-        query = query[:limit]
+    offset = form.cleaned_data['offset']
+    if limit == 0:
+        query = query[offset:]
+    else:
+        query = query[offset:offset + limit]
+
     data = list(query)
     return HttpResponse(toJson(data), content_type='application/json')
