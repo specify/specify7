@@ -82,14 +82,14 @@ export class UiFormatter {
     return this.fields.map((field) => field.getDefaultValue()).join('');
   }
 
-  public parseRegexp(): string {
+  public parseRegExp(): string {
     return `^${this.fields
       .map((field) => `(${field.wildOrValueRegexp()})`)
       .join('')}$`;
   }
 
   public parse(value: string): RA<string> | undefined {
-    const match = new RegExp(this.parseRegexp()).exec(value);
+    const match = new RegExp(this.parseRegExp()).exec(value);
     return match?.slice(1);
   }
 

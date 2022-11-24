@@ -298,7 +298,7 @@ export function formatterToParser(
   field: Partial<LiteralField | Relationship>,
   formatter: UiFormatter
 ): Parser {
-  const regExpString = formatter.parseRegexp();
+  const regExpString = formatter.parseRegExp();
   const title = formsText(
     'requiredFormat',
     formatter.pattern() ?? formatter.valueOrWild()

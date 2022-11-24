@@ -37,7 +37,7 @@ export function AutoNumbering({
   ) : null;
 }
 
-const getAutoNumberingFields = (model: SpecifyModel): RA<LiteralField> =>
+export const getAutoNumberingFields = (model: SpecifyModel): RA<LiteralField> =>
   model.literalFields.filter(
     (field) => field.getUiFormatter()?.canAutonumber() === true
   );
