@@ -45,13 +45,6 @@ export type BackgroundLocation = State<
  */
 export type LocationStates =
   | BackgroundLocation
-  | State<
-      // FIXME: get rid of this. It is buggy, and a bad idea
-      'NoopRoute',
-      {
-        readonly originalLocation: Location;
-      }
-    >
   | State<'NotFoundPage'>
   | undefined;
 // Wrap state object in this for type safety
@@ -76,8 +69,6 @@ export function Router(): JSX.Element {
     typeof background === 'object'
       ? `${background.pathname}${background.search}${background.hash}`
       : undefined;
-  const originalLocation =
-    state?.type === 'NoopRoute' ? state.originalLocation : undefined;
   const isNotFoundPage = state?.type === 'NotFoundPage';
 
   /*
@@ -91,11 +82,9 @@ export function Router(): JSX.Element {
   useLinkIntercept(background);
 
   const main =
-    useRoutes(transformedRoutes, originalLocation ?? background ?? location) ??
-    undefined;
+    useRoutes(transformedRoutes, background ?? location) ?? undefined;
 
-  const overlay =
-    useRoutes(transformedOverlays, originalLocation ?? location) ?? undefined;
+  const overlay = useRoutes(transformedOverlays, location) ?? undefined;
 
   const isNotFound = main === undefined && overlay === undefined;
   // If supposed to show an overlay, but it wasn't found, show <NotFoundView />

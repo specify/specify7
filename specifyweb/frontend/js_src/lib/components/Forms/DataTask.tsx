@@ -3,9 +3,7 @@
  */
 
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-
-import { deserializeResource } from '../../hooks/resource';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import { fetchCollection } from '../DataModel/collection';
@@ -13,7 +11,7 @@ import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/domain';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
@@ -26,7 +24,7 @@ import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
-import { DisplayResource, ShowResource } from './ShowResource';
+import { ViewResourceById } from './ShowResource';
 import { useSearchParameter } from '../../hooks/navigation';
 
 export function ViewRecordSet(): JSX.Element {
@@ -109,34 +107,17 @@ function DisplayRecordSet({
 }
 
 /** Begins the process of creating a new resource */
-export function NewResourceView(): JSX.Element {
-  const { tableName = '' } = useParams();
-  const { state } = useLocation();
-  const resource = (
-    state as { readonly resource: SerializedResource<AnySchema> | undefined }
-  )?.resource;
-  const record = React.useMemo(
-    () => f.maybe(resource, deserializeResource),
-    [resource]
-  );
+export function ViewResource(): JSX.Element {
+  const { tableName = '', id } = useParams();
   const parsedTableName = getModel(tableName)?.name;
 
   return typeof parsedTableName === 'string' ? (
     <ProtectedTable action="create" tableName={parsedTableName}>
-      {typeof record === 'object' ? (
-        <ShowResource resource={record} />
-      ) : (
-        <DisplayResource id={undefined} tableName={parsedTableName} />
-      )}
+      <ViewResourceById id={id} tableName={parsedTableName} />
     </ProtectedTable>
   ) : (
     <NotFoundView />
   );
-}
-
-export function ViewResource(): JSX.Element {
-  const { tableName = '', id } = useParams();
-  return <DisplayResource id={id} tableName={tableName} />;
 }
 
 export function ViewResourceByGuid({
@@ -169,7 +150,7 @@ export function ViewResourceByGuid({
   return id === false ? <NotFoundView /> : null;
 }
 
-export function ViewByCatalog(): JSX.Element {
+export function ViewResourceByCatalog(): JSX.Element {
   return (
     <ProtectedTable action="read" tableName="CollectionObject">
       <ViewByCatalogProtected />

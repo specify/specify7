@@ -10,7 +10,7 @@ import { defined } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { fetchCollection } from '../DataModel/collection';
 import { serializeResource } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
@@ -140,9 +140,13 @@ async function fetchFromField(
     pickList.get('tableName') ?? undefined,
     'Unable to fetch pick list item as pick list table is not set'
   );
-  return fetchRows<AnySchema>(tableName as keyof Tables, {
+  const fieldName = defined(
+    pickList.get('fieldName') ?? undefined,
+    'Unable to fetch pick list items as pick list field is not set'
+  );
+  return fetchRows(tableName as keyof Tables, {
     limit,
-    fields: [pickList.get('fieldName') ?? ''],
+    fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
   }).then((rows) =>
     rows.map((row) => row[0] ?? '').map((value) => ({ value, title: value }))

@@ -275,9 +275,7 @@ export const routes: RA<EnhancedRoute> = [
       {
         path: 'new',
         element: () =>
-          import('../Forms/DataTask').then(
-            ({ NewResourceView }) => NewResourceView
-          ),
+          import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
       },
       {
         path: ':id',
@@ -289,7 +287,9 @@ export const routes: RA<EnhancedRoute> = [
   {
     path: 'bycatalog/:collectionCode/:catalogNumber/',
     element: () =>
-      import('../Forms/DataTask').then(({ ViewByCatalog }) => ViewByCatalog),
+      import('../Forms/DataTask').then(
+        ({ ViewResourceByCatalog }) => ViewResourceByCatalog
+      ),
   },
   {
     path: 'query',
