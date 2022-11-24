@@ -20,6 +20,7 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
+import { webOnlyViews } from './webOnlyViews';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -63,16 +64,24 @@ export const fetchView = async (
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
          */
-        cachableUrl(formatUrl('/context/view.json', { name })),
+        cachableUrl(
+          formatUrl('/context/view.json', {
+            name,
+            ...(name in webOnlyViews() ? { quiet: '' } : {}),
+          })
+        ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           headers: { Accept: 'application/json' },
         },
         {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
-        views[name] = status === Http.NOT_FOUND ? undefined : data;
+        views[name] =
+          status === Http.NOT_FOUND || status === Http.NO_CONTENT
+            ? undefined
+            : data;
         return views[name];
       });
 

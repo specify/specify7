@@ -19,6 +19,7 @@ import {
 import { formatUrl } from '../../Router/queryString';
 import { removeKey } from '../../../utils/utils';
 import { Http } from '../../../utils/ajax/definitions';
+import { spAppResourceView } from '../webOnlyViews';
 
 const {
   views,
@@ -175,8 +176,21 @@ describe('fetchView', () => {
       responseCode: Http.NOT_FOUND,
     }
   );
+
   test('handles 404 errors gracefully', async () =>
     expect(fetchView(notFoundViewName)).resolves.toBeUndefined());
+
+  const frontEndOnlyView = spAppResourceView;
+  overrideAjax(
+    formatUrl('/context/view.json', { name: frontEndOnlyView, quiet: '' }),
+    viewDefinition,
+    {
+      responseCode: Http.NO_CONTENT,
+    }
+  );
+
+  test('handles 204 response gracefully', async () =>
+    expect(fetchView(frontEndOnlyView)).resolves.toBeUndefined());
 });
 
 test('parseViewDefinition', () => {

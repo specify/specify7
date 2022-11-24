@@ -289,12 +289,15 @@ export const preferencesPromise = contextUnlockedPromise.then(
                 ).then(({ data }) => data)
               ),
             defaultItems: ajax(
-              formatUrl('/context/app.resource', { name: defaultResourceName }),
+              formatUrl('/context/app.resource', {
+                name: defaultResourceName,
+                quiet: '',
+              }),
               {
                 headers: { Accept: 'text/plain' },
               },
               {
-                expectedResponseCodes: [Http.NOT_FOUND, Http.OK],
+                expectedResponseCodes: [Http.NO_CONTENT, Http.OK],
                 strict: false,
               }
             )
