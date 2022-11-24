@@ -52,43 +52,29 @@ function useStatsSpec(): IR<
 > {
   const backEndResult = useBackendApi();
   return React.useMemo(
-    () => ({
-      collection: Object.fromEntries(
-        Object.entries(statsSpec.collection).map(
-          ([categoryName, { label, categories }]) => [
-            categoryName,
-            {
-              label,
-              items: (
-                categories as (
-                  backendStatResult:
-                    | BackendStatsResult[typeof categoryName]
-                    | undefined
-                ) => StatCategoryReturn
-              )(backEndResult?.[categoryName]),
-            },
-          ]
-        )
+    () =>
+      Object.fromEntries(
+        Object.entries(statsSpec).map(([pageName, pageStatSpec]) => [
+          pageName,
+          Object.fromEntries(
+            Object.entries(pageStatSpec).map(
+              ([categoryName, { label, categories }]) => [
+                categoryName,
+                {
+                  label,
+                  items: (
+                    categories as (
+                      backendStatResult:
+                        | BackendStatsResult[typeof categoryName]
+                        | undefined
+                    ) => StatCategoryReturn
+                  )(backEndResult?.[categoryName]),
+                },
+              ]
+            )
+          ),
+        ])
       ),
-      personal: Object.fromEntries(
-        Object.entries(statsSpec.personal).map(
-          ([categoryName, { label, categories }]) => [
-            categoryName,
-            {
-              label,
-              items: (
-                categories as (
-                  backendStatResult:
-                    | BackendStatsResult[typeof categoryName]
-                    | undefined
-                ) => StatCategoryReturn
-              )(backEndResult?.[categoryName]),
-            },
-          ]
-        )
-      ),
-    }),
-
     [backEndResult]
   );
 }
@@ -154,7 +140,7 @@ export function StatsPage(): JSX.Element {
   >({ type: 'DefaultState' });
   const isEditing = state.type === 'EditingState';
   const isAddingItem = isEditing && state.addingItem !== undefined;
-  const [activePageIndex] = React.useState<number>(0);
+  const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
   const defaultStatsToAdd = useDefaultStatsToAdd(
     layout[activePageIndex],
     defaultLayout
@@ -296,7 +282,9 @@ function AddStatDialog({
     []
   );
   const queries = useQueries(filters);
-
+  const defaultStatsAddLeft = defaultLayout.filter(
+    ({ categories }) => categories.length > 0
+  );
   return Array.isArray(queries) ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
@@ -319,27 +307,31 @@ function AddStatDialog({
           />
         )}
       </div>
-      {defaultLayout
-        .filter(({ categories }) => categories.length > 0)
-        .map((defaultLayoutItem, index) => (
-          <div key={index}>
+      <div>
+        {defaultStatsAddLeft.length > 0 && (
+          <div>
             <H3>{statsText('selectDefaultStatistics')}</H3>
-
-            <div>
-              <CategoriesBoxes
-                goToEditingState={(): void => {}}
-                isEditing={false}
-                pageLayout={defaultLayoutItem}
-                statsSpec={statsSpec}
-                onClick={(item): void => {
-                  handleAdd(item);
-                  handleClose();
-                }}
-                onRemove={undefined}
-              />
-            </div>
+            {defaultStatsAddLeft.map((defaultLayoutItem, index) => (
+              <div key={index}>
+                <H3>{defaultLayoutItem.label}</H3>
+                <div>
+                  <CategoriesBoxes
+                    goToEditingState={(): void => {}}
+                    isEditing={false}
+                    pageLayout={defaultLayoutItem}
+                    statsSpec={statsSpec}
+                    onClick={(item): void => {
+                      handleAdd(item);
+                      handleClose();
+                    }}
+                    onRemove={undefined}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
+      </div>
     </Dialog>
   ) : null;
 }
@@ -394,7 +386,7 @@ function CategoriesBoxes({
                       ? (): void => {
                           handleClick({
                             type: 'DefaultStat',
-                            pageName: 'collection',
+                            pageName: item.pageName,
                             categoryName: item.categoryName,
                             itemName: item.itemName,
                           });
@@ -424,7 +416,7 @@ function CategoriesBoxes({
                   onRemove={
                     handleRemove === undefined
                       ? undefined
-                      : () => handleRemove(categoryIndex, itemIndex)
+                      : (): void => handleRemove(categoryIndex, itemIndex)
                   }
                 />
               );
@@ -453,36 +445,21 @@ function useDefaultLayout(
   >
 ): StatLayout {
   return React.useMemo(
-    () => [
-      {
-        label: 'collection',
-        categories: Object.entries(statsSpec.collection).map(
+    () =>
+      Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
+        label: pageName,
+        categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => ({
             label,
             items: Object.entries(items ?? {}).map(([itemName]) => ({
               type: 'DefaultStat',
-              pageName: 'collection',
+              pageName: pageName,
               categoryName,
               itemName,
             })),
           })
         ),
-      },
-      {
-        label: 'personal',
-        categories: Object.entries(statsSpec.personal).map(
-          ([categoryName, { label, items }]) => ({
-            label,
-            items: Object.entries(items ?? {}).map(([itemName]) => ({
-              type: 'DefaultStat',
-              pageName: 'personal',
-              categoryName,
-              itemName,
-            })),
-          })
-        ),
-      },
-    ],
+      })),
     [statsSpec]
   );
 }
