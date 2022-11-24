@@ -41,7 +41,7 @@ export function ShareRecord({
       : getResourceViewUrl(
           resource.specifyModel.name,
           resource.id,
-          resource.recordsetid
+          recordSetId
         );
   const url = new URL(rawUrl, globalThis.location.origin).href;
   return (

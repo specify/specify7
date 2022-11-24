@@ -8,7 +8,7 @@ import { formsText } from '../../localization/forms';
 import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
+import { defined } from '../../utils/types';
 import { clamp, removeItem } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
@@ -236,23 +236,20 @@ function RecordSet<SCHEMA extends AnySchema>({
     setTotalCount(oldTotalCount + 1);
     loading(
       Promise.all(
-        resources.map((resource) => {
-          // If resource is not yet in a context of a record set, make it
-          if (resource.recordsetid !== recordSet.id) {
-            overwriteReadOnly(resource, 'recordsetid', recordSet.id);
-            /*
-             * For new resources, RecordSetItem would be created by the
-             * back-end on save. For existing resources have to do that
-             * manually
-             */
-            return resource.isNew()
-              ? undefined
-              : createResource('RecordSetItem', {
-                  recordId: resource.id,
-                  recordSet: recordSet.get('resource_uri'),
-                });
-          } else return undefined;
-        })
+        resources.map((resource) =>
+          /*
+           * For new resources, RecordSetItem would be created by the
+           * back-end on save. For existing resources have to do that
+           * manually
+           * FIXME: create a record set item for resource on save
+           */
+          resource.isNew()
+            ? undefined
+            : createResource('RecordSetItem', {
+                recordId: resource.id,
+                recordSet: recordSet.get('resource_uri'),
+              })
+        )
       )
     );
     const hasNew = resources.some((resource) => resource.isNew());

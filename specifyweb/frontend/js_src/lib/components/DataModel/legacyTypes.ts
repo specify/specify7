@@ -27,7 +27,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
-  readonly recordsetid?: number;
   readonly noBusinessRules: boolean;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;

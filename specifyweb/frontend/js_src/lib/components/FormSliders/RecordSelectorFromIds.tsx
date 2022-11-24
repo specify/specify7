@@ -3,7 +3,6 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
-import { overwriteReadOnly } from '../../utils/types';
 import { removeItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -77,12 +76,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
       ids.map((id, index) => {
         if (id === undefined) return undefined;
         else if (records[index]?.id === id) return records[index];
-        else {
-          const resource = new model.Resource({ id });
-          if (typeof urlContext === 'number')
-            overwriteReadOnly(resource, 'recordsetid', urlContext);
-          return resource;
-        }
+        else return new model.Resource({ id });
       })
     );
 

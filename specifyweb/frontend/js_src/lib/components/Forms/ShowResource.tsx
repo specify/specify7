@@ -16,7 +16,6 @@ import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
-import { overwriteReadOnly } from '../../utils/types';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/helpers';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -49,12 +48,6 @@ export function ShowResource({
 
   const [resource, setResource] = useTriggerState(initialResource);
   useErrorContext('resource', resource);
-
-  React.useEffect(() => {
-    if (typeof recordSet === 'object')
-      // REFACTOR: get rid of this to decrease complexity of Resource.Base
-      overwriteReadOnly(resource, 'recordsetid', recordSet.id);
-  }, [recordSet, resource.recordsetid]);
 
   useMenuItem(
     typeof recordSet === 'object'
@@ -99,8 +92,6 @@ export function ShowResource({
           const reloadResource = new resource.specifyModel.Resource({
             id: resource.id,
           });
-          // @ts-expect-error Assigning to read-only
-          reloadResource.recordsetid = resource.recordsetid;
           reloadResource.fetch().then(async () => setResource(reloadResource));
         }
       }}

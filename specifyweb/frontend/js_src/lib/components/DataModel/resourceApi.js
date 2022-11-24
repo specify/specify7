@@ -4,14 +4,13 @@ import {Backbone} from './backbone';
 import {assert} from '../Errors/assert';
 import {globalEvents} from '../../utils/ajax/specifyApi';
 import {
-  getFieldsToNotClone,
-  getResourceApiUrl,
-  getResourceViewUrl,
-  resourceFromUrl
+    getFieldsToNotClone,
+    getResourceApiUrl,
+    getResourceViewUrl,
+    resourceFromUrl
 } from './resource';
 import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
-import {formatUrl} from '../Router/queryString';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
 
@@ -123,7 +122,6 @@ function eventHandlerForToOne(related, field) {
             );
 
             newResource.needsSaved = self.needsSaved;
-            newResource.recordsetid = self.recordsetid;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 if(exemptFields.includes(fieldName)) return;
@@ -150,12 +148,12 @@ function eventHandlerForToOne(related, field) {
             return newResource;
         },
         url() {
-            return getResourceApiUrl(this.specifyModel.name, this.id, this.recordsetid ?? undefined);
+            return getResourceApiUrl(this.specifyModel.name, this.id);
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
+            return getResourceViewUrl(this.specifyModel.name, this.id);
         },
         get(attribute) {
             if(attribute.toLowerCase() === this.specifyModel.idField.name.toLowerCase())
@@ -579,20 +577,9 @@ function eventHandlerForToOne(related, field) {
         },
         async sync(method, resource, options) {
             options = options || {};
-            switch (method) {
-            case 'delete':
-                // when deleting we don't send any data so put the version in a header
+            if(method === 'delete')
+                // When deleting we don't send any data so put the version in a header
                 options.headers = {'If-Match': resource.get('version')};
-                break;
-            case 'create':
-                // use the special recordSetId field to add the resource to a record set
-                if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = formatUrl(
-                        options.url || resource.url(),
-                        {recordSetId: resource.recordsetid});
-                }
-                break;
-            }
             return Backbone.sync(method, resource, options);
         },
         async getResourceAndField(fieldName) {
