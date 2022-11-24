@@ -19,7 +19,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -28,7 +28,7 @@ jobs:
 
       - name: Get Specify 6 from cache
         id: cache-specify6
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: Specify6
           key: specify6.8.01-cache
