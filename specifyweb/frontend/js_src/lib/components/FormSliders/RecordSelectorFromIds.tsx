@@ -9,11 +9,11 @@ import { DataEntry } from '../Atoms/DataEntry';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { FormMode } from '../FormParse';
+import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
 import { BaseRecordSelector } from './RecordSelector';
-import { ResourceView } from '../Forms/ResourceView';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their

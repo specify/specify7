@@ -178,7 +178,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const go = (
     index: number,
-    recordId = ids[index],
+    recordId: number | undefined,
     newResource?: SpecifyResource<SCHEMA>
   ): void =>
     typeof recordId === 'number'
@@ -237,26 +237,15 @@ function RecordSet<SCHEMA extends AnySchema>({
     loading(
       Promise.all(
         resources.map((resource) =>
-          /*
-           * For new resources, RecordSetItem would be created by the
-           * back-end on save. For existing resources have to do that
-           * manually
-           * FIXME: create a record set item for resource on save
-           */
-          resource.isNew()
-            ? undefined
-            : createResource('RecordSetItem', {
-                recordId: resource.id,
-                recordSet: recordSet.get('resource_uri'),
-              })
+          createResource('RecordSetItem', {
+            recordId: resource.id,
+            recordSet: recordSet.get('resource_uri'),
+          })
         )
       )
     );
-    const hasNew = resources.some((resource) => resource.isNew());
-    if (hasNew && resources.length > 1)
-      throw new Error("Can't add multiple new resources at once");
     go(oldTotalCount, resources[0].id, resources[0]);
-    if (!hasNew) setIds([...ids, ...resources.map(({ id }) => id)]);
+    setIds([...ids, ...resources.map(({ id }) => id)]);
   };
 
   return (
@@ -311,7 +300,8 @@ function RecordSet<SCHEMA extends AnySchema>({
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
           (!currentRecord.isNew() || totalCount !== 0)
             ? (_index, source): void => {
-                if (currentRecord.isNew()) go(currentIndex - 1);
+                if (currentRecord.isNew())
+                  go(currentIndex - 1, ids[currentIndex - 1]);
                 else
                   loading(
                     (source === 'minusButton'
@@ -353,13 +343,14 @@ function RecordSet<SCHEMA extends AnySchema>({
               }
             : undefined
         }
+        // FIXME: split this callback into two
         onSaved={({ newResource, wasNew, resource }): void => {
-          if (wasNew) {
-            handleAdd([resource]);
+          if (typeof newResource === 'object') {
+            go(currentIndex + 1, undefined, newResource);
           }
-          if (typeof newResource === 'object') handleAdd([newResource]);
+          if (wasNew) handleAdd([resource]);
         }}
-        onSlide={(index): void => go(Math.min(index, totalCount - 1))}
+        onSlide={(index): void => go(index, ids[index])}
       />
       {hasDuplicate && (
         <Dialog
