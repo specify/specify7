@@ -135,9 +135,11 @@ export function getResourceViewUrl(
  */
 export function getResourceApiUrl(
   tableName: keyof Tables,
-  resourceId: number | string,
+  resourceId: number | string | undefined,
   recordSetId?: number
 ): string {
+  if (resourceId === undefined)
+    return `/api/specify/${tableName.toLowerCase()}/`;
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
     ? formatUrl(url, { recordSetId: recordSetId.toString() })
@@ -169,6 +171,17 @@ export const idFromUrl = (url: string): number | undefined =>
 
 export const strictIdFromUrl = (url: string): number =>
   defined(idFromUrl(url), `Unable to extract resource id from url: ${url}`);
+
+export function resourceFromUrl(
+  resourceUrl: string,
+  options?: ConstructorParameters<SpecifyModel['Resource']>[1]
+): SpecifyResource<AnySchema> | undefined {
+  const parsed = parseResourceUrl(resourceUrl);
+  if (parsed === undefined) return undefined;
+  const [tableName, id] = parsed;
+  const model = new schema.models[tableName].Resource({ id }, options);
+  return model;
+}
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts

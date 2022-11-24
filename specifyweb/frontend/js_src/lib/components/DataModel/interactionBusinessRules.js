@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import {schema} from './schema';
 import {getPrepAvailability} from '../../utils/ajax/specifyApi';
+import {idFromUrl} from './resource';
 
 export const interactionBusinessRules = {
         previousReturned: [],
@@ -26,7 +27,7 @@ export const interactionBusinessRules = {
                 //return interactionprep.get('preparation').get('CountAmt');
                 var prepuri = interactionprep.get('preparation');
                 var pmod = schema.models.Preparation;
-                var prepId = pmod.Resource.fromUri(prepuri).id;
+                const prepId = idFromUrl(prepuri);
                 var iprepId = interactionprep.isNew() ? undefined : interactionprep.get('id');
                 var iprepName =  interactionprep.isNew() ? undefined : interactionprep.specifyModel.name;
                 getPrepAvailability(prepId, iprepId, iprepName).then(function(available) {

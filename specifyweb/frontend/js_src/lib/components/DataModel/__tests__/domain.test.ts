@@ -5,7 +5,7 @@ import {
 } from '../domain';
 import { getResourceApiUrl } from '../resource';
 import { schema } from '../schema';
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { formatUrl } from '../../Router/queryString';
 
 requireContext();
@@ -55,11 +55,11 @@ describe('getCollectionForResource', () => {
 
 describe('fetchCollectionsForResource', () => {
   const divisionId = 99;
-  overwriteAjax(`/api/specify/division/${divisionId}/`, {
+  overrideAjax(`/api/specify/division/${divisionId}/`, {
     resource_uri: getResourceApiUrl('Division', divisionId),
     id: divisionId,
   });
-  overwriteAjax(
+  overrideAjax(
     formatUrl('/api/specify/collection/', {
       limit: '0',
       discipline__division: divisionId.toString(),

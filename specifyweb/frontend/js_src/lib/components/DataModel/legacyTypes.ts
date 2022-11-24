@@ -181,7 +181,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): Promise<number | undefined>;
   format(): Promise<string>;
   url(): string;
-  placeInSameHierarchy(resource: SpecifyResource<AnySchema>): void;
+  placeInSameHierarchy(
+    resource: SpecifyResource<AnySchema>
+  ): SpecifyResource<AnySchema> | undefined;
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;

@@ -7,6 +7,7 @@ import {businessRuleDefs} from './businessRuleDefs';
 import {formsText} from '../../localization/forms';
 import {formatList} from '../Atoms/Internationalization';
 import {isTreeResource} from '../InitialContext/treeRanks';
+import {idFromUrl} from './resource';
 
 var enabled = true;
 
@@ -196,7 +197,7 @@ var enabled = true;
                 if (_.isNull(v) || typeof v == 'undefined')  {
                     return null;
                 } else {
-                    return _.isString(v) ? valueFieldInfo[idx].relatedModel.Resource.fromUri(v).id : v.id;
+                    return _.isString(v) ? idFromUrl(v) : v.id;
                 }
             } else {
                 return undefined;

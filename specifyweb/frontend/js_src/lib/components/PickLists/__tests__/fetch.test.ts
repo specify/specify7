@@ -1,5 +1,5 @@
 import { deserializeResource } from '../../../hooks/resource';
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { addMissingFields } from '../../DataModel/addMissingFields';
 import { serializeResource } from '../../DataModel/helpers';
@@ -29,7 +29,7 @@ describe('unsafeFetchPickList', () => {
   const pickList = {
     resource_uri: getResourceApiUrl('PickList', 1),
   };
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/picklist/?name=currentCollection&limit=1&domainfilter=true',
     {
       meta: {
@@ -44,7 +44,7 @@ describe('unsafeFetchPickList', () => {
     expect(serialized).toEqual(addMissingFields('PickList', pickList));
   });
 
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/picklist/?name=otherCollection&limit=1&domainfilter=true',
     {
       meta: {
@@ -56,7 +56,7 @@ describe('unsafeFetchPickList', () => {
   const otherPickList = {
     resource_uri: getResourceApiUrl('PickList', 2),
   };
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/picklist/?name=otherCollection&limit=1&domainfilter=false',
     {
       meta: {
@@ -71,7 +71,7 @@ describe('unsafeFetchPickList', () => {
     expect(serialized).toEqual(addMissingFields('PickList', otherPickList));
   });
 
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=false',
     {
       meta: {
@@ -81,7 +81,7 @@ describe('unsafeFetchPickList', () => {
     }
   );
 
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/picklist/?name=unknownPickList&limit=1&domainfilter=true',
     {
       meta: {
@@ -109,7 +109,7 @@ describe('fetchPickListItems', () => {
     await expect(fetchPickListItems(pickList)).resolves.toEqual(pickListItems);
   });
 
-  overwriteAjax('/api/specify/locality/?domainfilter=true&limit=0', {
+  overrideAjax('/api/specify/locality/?domainfilter=true&limit=0', {
     meta: {
       total_count: 1,
     },
@@ -132,7 +132,7 @@ describe('fetchPickListItems', () => {
     ]);
   });
 
-  overwriteAjax(
+  overrideAjax(
     '/api/specify_rows/locality/?fields=localityname&limit=0&distinct=true',
     [['abc']]
   );

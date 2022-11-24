@@ -1,4 +1,4 @@
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
@@ -20,6 +20,7 @@ import {
   idFromUrl,
   parseJavaClassName,
   parseResourceUrl,
+  resourceFromUrl,
   resourceToJson,
   saveResource,
   strictIdFromUrl,
@@ -37,9 +38,9 @@ describe('fetchResource', () => {
   const baseAgentRecord = {
     resource_uri: getResourceApiUrl('Agent', 1),
   };
-  overwriteAjax('/api/specify/agent/1/', baseAgentRecord);
+  overrideAjax('/api/specify/agent/1/', baseAgentRecord);
 
-  overwriteAjax('/api/specify/agent/2/', '', {
+  overrideAjax('/api/specify/agent/2/', '', {
     responseCode: Http.NOT_FOUND,
   });
 
@@ -51,7 +52,7 @@ describe('fetchResource', () => {
     expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
 });
 
-overwriteAjax('/api/specify/locality/1/', '', {
+overrideAjax('/api/specify/locality/1/', '', {
   method: 'DELETE',
   responseCode: Http.NO_CONTENT,
 });
@@ -59,7 +60,7 @@ overwriteAjax('/api/specify/locality/1/', '', {
 test('deleteResource', async () =>
   expect(deleteResource('Locality', 1)).resolves.toBeUndefined());
 
-overwriteAjax(
+overrideAjax(
   '/api/specify/locality/',
   {
     resource_uri: getResourceApiUrl('Locality', 2),
@@ -95,7 +96,7 @@ test('createResource', async () =>
   ));
 
 describe('saveResource', () => {
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/locality/3/',
     {
       resource_uri: getResourceApiUrl('Locality', 2),
@@ -198,6 +199,19 @@ describe('strictIdFromUrl', () => {
     expect(() => strictIdFromUrl('/api//1/')).toThrow(
       /^Unable to extract resource id from url/u
     ));
+});
+
+describe('resourceFromUrl', () => {
+  test('valid url', () => {
+    const resource = resourceFromUrl('/api/specify/collectionobject/123/', {
+      noBusinessRules: true,
+    })!;
+    expect(resource.specifyModel).toBe(schema.models.CollectionObject);
+    expect(resource.id).toBe(123);
+    expect(resource.noBusinessRules).toBe(true);
+  });
+  test('invalid url', () =>
+    expect(resourceFromUrl('/api//1/')).toBeUndefined());
 });
 
 test('resourceToJson', () => {

@@ -46,6 +46,7 @@ export type BackgroundLocation = State<
 export type LocationStates =
   | BackgroundLocation
   | State<
+      // FIXME: get rid of this. It is buggy, and a bad idea
       'NoopRoute',
       {
         readonly originalLocation: Location;

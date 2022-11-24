@@ -4,13 +4,13 @@ import {Backbone} from './backbone';
 import {assert} from '../Errors/assert';
 import {globalEvents} from '../../utils/ajax/specifyApi';
 import {
-    getFieldsToNotClone,
-    getResourceViewUrl,
-    parseResourceUrl
+  getFieldsToNotClone,
+  getResourceApiUrl,
+  getResourceViewUrl,
+  resourceFromUrl
 } from './resource';
 import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
-import {schema} from './schema';
 import {formatUrl} from '../Router/queryString';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
@@ -150,13 +150,7 @@ function eventHandlerForToOne(related, field) {
             return newResource;
         },
         url() {
-            // returns the api uri for this resource. if the resource is newly created
-            // (no id), return the uri for the collection it belongs to
-            // If url form changes, see idFromUrl method
-            var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
-                (!this.isNew() ? (this.id + '/') : '');
-            return this.recordsetid == null ? url :
-                formatUrl(url, {recordSetId: this.recordsetid});
+            return getResourceApiUrl(this.specifyModel.name, this.id, this.recordsetid ?? undefined);
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
@@ -442,7 +436,7 @@ function eventHandlerForToOne(related, field) {
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = related.Resource.fromUri(value, {noBusinessRules: options.noBusinessRules});
+                    toOne = resourceFromUrl(value, {noBusinessRules: options.noBusinessRules});
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
                         this.storeDependent(field, toOne);
@@ -517,6 +511,7 @@ function eventHandlerForToOne(related, field) {
             }
             var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
+            // BUG: should do this for dependent resources too
 
             let errorHandled = false;
             const save = ()=>Backbone.Model.prototype.save.apply(resource, [])
@@ -568,7 +563,7 @@ function eventHandlerForToOne(related, field) {
               // or if can't be populated by fetching
               this.isNew()
             )
-                return Promise.resolve(this);
+                return this;
             else if (this._fetch) return this._fetch;
             else
                 return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
@@ -603,32 +598,22 @@ function eventHandlerForToOne(related, field) {
         async getResourceAndField(fieldName) {
             return getResourceAndField(this, fieldName);
         },
-        placeInSameHierarchy(other) {
+        async placeInSameHierarchy(other) {
             var self = this;
             var myPath = self.specifyModel.getScopingPath();
             var otherPath = other.specifyModel.getScopingPath();
-            if (!myPath || !otherPath) return null;
-            if (myPath.length > otherPath.length) return null;
+            if (!myPath || !otherPath) return undefined;
+            if (myPath.length > otherPath.length) return undefined;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();
             return other.rget(diff.join('.')).then(function(common) {
+                if(common === undefined) return undefined;
                 self.set(_(diff).last(), common.url());
+                return common;
             });
         },
         getDependentResource(fieldName){
             return this.dependentResources[fieldName.toLowerCase()];
         }
-    }, {
-        fromUri(uri, options) {
-            const parsed = parseResourceUrl(uri);
-            if (parsed === undefined) return undefined;
-            const [tableName, id] = parsed;
-            const model = new schema.models[tableName].Resource(
-               { id },
-              options
-            );
-            assert(model.specifyModel === this.specifyModel);
-            return model;
-        },
     });
 
 export function promiseToXhr(promise) {

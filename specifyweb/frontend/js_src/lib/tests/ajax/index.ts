@@ -2,33 +2,35 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
-import { Http } from '../../utils/ajax/definitions';
+import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
 
-const overwrites: R<
-  | {
+// eslint-disable-next-line functional/prefer-readonly-type
+const overrides: {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  [URL in string]?: {
+    [METHOD in string]?: {
       readonly data: () => ResponseType;
       readonly responseCode: number | undefined;
-      readonly method: string | undefined;
       readonly body: unknown;
-    }
-  | undefined
-> = {};
+    };
+  };
+} = {};
 
 /**
  * Overwrite the response to an ajax response for all fetch requests originating
  * from the current test block
  */
-export function overwriteAjax(
+export function overrideAjax(
   url: string,
   response: ResponseType | (() => ResponseType),
   {
     responseCode,
-    method,
+    method = 'GET',
     body,
   }: {
     readonly responseCode?: number;
@@ -37,15 +39,15 @@ export function overwriteAjax(
   } = {}
 ): void {
   beforeAll(() => {
-    overwrites[url] = {
+    overrides[url] ??= {};
+    overrides[url]![method] = {
       data: typeof response === 'function' ? response : () => response,
       responseCode,
-      method,
       body,
     };
   });
   afterAll(() => {
-    overwrites[url] = undefined;
+    overrides[url]![method] = undefined;
   });
 }
 
@@ -62,7 +64,10 @@ export function overwriteAjax(
  */
 export async function ajaxMock<RESPONSE_TYPE>(
   url: string,
-  { method: requestMethod, body: requestBody }: Parameters<typeof ajax>[1],
+  {
+    method: requestMethod = 'GET',
+    body: requestBody,
+  }: Parameters<typeof ajax>[1],
   {
     expectedResponseCodes = [Http.OK],
   }: {
@@ -74,17 +79,18 @@ export async function ajaxMock<RESPONSE_TYPE>(
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
-  const overwrittenData = overwrites[url] ?? overwrites[urlWithoutQuery];
+  const overwrittenData =
+    overrides[url]?.[requestMethod] ??
+    overrides[urlWithoutQuery]?.[requestMethod];
   if (typeof overwrittenData !== 'undefined') {
-    const { data, responseCode, method, body } = overwrittenData;
+    const { data, responseCode, body } = overwrittenData;
     const response = createResponse(expectedResponseCodes);
     if (body !== undefined) expect(requestBody).toEqual(body);
-    if (method === undefined || method === requestMethod)
-      return {
-        data: data() as RESPONSE_TYPE,
-        response,
-        status: responseCode ?? response.status,
-      };
+    return {
+      data: data() as RESPONSE_TYPE,
+      response,
+      status: responseCode ?? response.status,
+    };
   }
 
   const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
@@ -109,9 +115,9 @@ export async function ajaxMock<RESPONSE_TYPE>(
 
   if (typeof targetFile === 'undefined')
     throw new Error(
-      `No static source found for URL ${url}.\n` +
+      `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +
-        `Alternatively, you can add overwriteAjax() to your test`
+        `Alternatively, you can add overrideAjax() to your test`
     );
 
   const file = await fs.promises.readFile(
