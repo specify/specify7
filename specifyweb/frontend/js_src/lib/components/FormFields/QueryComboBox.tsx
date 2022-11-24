@@ -62,6 +62,7 @@ export function QueryComboBox({
 }
 
 // REFACTOR: split this component
+// TEST: add tests for this
 function ProtectedQueryComboBox({
   id,
   resource,
