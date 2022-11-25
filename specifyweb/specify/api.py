@@ -5,10 +5,10 @@ Implements the RESTful business data API
 import json
 import logging
 import re
-from urllib.parse import urlencode
-
 from typing import Any, Dict, List, Optional, Tuple, Iterable, Union, \
     Callable
+from urllib.parse import urlencode
+
 from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
@@ -830,7 +830,7 @@ class RowsForm(GetCollectionForm):
         offset=0,
         orderby=None,
         distinct=False,
-        fields="",
+        fields=None,
     )
 
 def rows(request, model_name: str) -> HttpResponse:
