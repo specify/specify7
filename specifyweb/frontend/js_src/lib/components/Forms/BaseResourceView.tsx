@@ -19,6 +19,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
+import { LoadingScreen } from '../Molecules/Dialog';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -88,6 +89,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
         resource={resource}
         viewDefinition={viewDefinition}
       />
+    ) : isLoading === true ? (
+      <LoadingScreen />
     ) : (
       <p>{formsText('noData')}</p>
     );
