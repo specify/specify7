@@ -161,9 +161,7 @@ function CarryForwardConfig({
           >
             {formsText('deselectAll')}
           </Button.Green>
-          <Submit.Blue form={id('form')} onClick={handleClose}>
-            {commonText('close')}
-          </Submit.Blue>
+          <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
         </>
       }
       header={`${formsText('carryForwardDescription')} (${model.label})`}
