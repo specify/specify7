@@ -52,6 +52,7 @@ export function QueryToForms({
           isInRecordSet={false}
           mode="edit"
           model={model}
+          defaultIndex={0}
           newResource={undefined}
           title={queryText('queryResults', model.label)}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
