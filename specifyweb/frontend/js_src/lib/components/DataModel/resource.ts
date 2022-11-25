@@ -269,6 +269,11 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
     ...model.relationships
       .filter(({ relatedModel }) => relatedModel.name === 'Attachment')
       .map(({ name }) => name),
+    /*
+     * Disable carry over for GUIDs
+     * See https://github.com/specify/specify7/issues/2492#issuecomment-1327780411
+     */
+    'guid',
   ]);
 
 export const exportsForTests = {
