@@ -88,7 +88,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }
-      header={adminText('createRoleDialogHeader')}
+      header={adminText('createRole')}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||

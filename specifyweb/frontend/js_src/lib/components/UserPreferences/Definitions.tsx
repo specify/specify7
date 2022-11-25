@@ -484,7 +484,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -505,7 +505,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -526,7 +526,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -616,7 +616,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'name',
-                title: preferencesText('tableName'),
+                title: commonText('tableName'),
               },
               {
                 value: 'icon',
@@ -931,11 +931,11 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'first',
-                title: preferencesText('firstRecord'),
+                title: formsText('firstRecord'),
               },
               {
                 value: 'last',
-                title: preferencesText('lastRecord'),
+                title: formsText('lastRecord'),
               },
             ],
           }),
@@ -1089,11 +1089,11 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'startsWith',
-                title: preferencesText('startsWith'),
+                title: queryText('startsWith'),
               },
               {
                 value: 'contains',
-                title: preferencesText('contains'),
+                title: queryText('contains'),
               },
             ],
           }),

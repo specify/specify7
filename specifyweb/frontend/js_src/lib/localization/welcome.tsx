@@ -111,10 +111,6 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
   },
-  unknown: {
-    'en-us': 'Unknown',
-    'ru-ru': 'Неизвестно',
-  },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',

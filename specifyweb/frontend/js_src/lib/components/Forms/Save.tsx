@@ -220,7 +220,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
               );
             }}
           >
-            {formsText('addAnother')}
+            {commonText('add')}
           </ButtonComponent>
         </>
       ) : undefined}

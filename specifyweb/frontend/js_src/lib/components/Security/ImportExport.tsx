@@ -113,7 +113,7 @@ export function ImportExport({
                 <section key={category}>
                   <H3>{categoryLabels[category]}</H3>
                   {roles === undefined || roles.length === 0 ? (
-                    adminText('none')
+                    commonText('none')
                   ) : (
                     <Ul>
                       {Array.from(roles)

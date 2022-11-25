@@ -527,10 +527,13 @@ function ProtectedQueryComboBox({
       {state.type === 'AccessDeniedState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDeniedDialogHeader')}
+          header={commonText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
+          {commonText(
+            'collectionAccessDeniedDescription',
+            state.collectionName
+          )}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

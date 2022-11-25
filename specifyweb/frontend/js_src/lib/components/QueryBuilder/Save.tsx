@@ -71,7 +71,7 @@ export function QuerySaveDialog({
       header={
         isSaveAs
           ? queryText('saveClonedQueryDialogHeader')
-          : queryText('saveQueryDialogHeader')
+          : queryText('saveQuery')
       }
       onClose={handleClose}
     >

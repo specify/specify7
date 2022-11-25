@@ -212,10 +212,10 @@ export function RoleView({
               </Button.Red>
             </>
           }
-          header={adminText('deleteRoleDialogHeader')}
+          header={adminText('deleteRoleWithUsers')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {adminText('deleteRoleDialogText')}
+          {adminText('deleteRoleWithUsersDescription')}
         </Dialog>
       )}
     </Form>

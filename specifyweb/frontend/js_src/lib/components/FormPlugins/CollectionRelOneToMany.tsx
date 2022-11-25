@@ -174,10 +174,13 @@ export function CollectionOneToManyPlugin({
       {state.type === 'DeniedAccessState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDeniedDialogHeader')}
+          header={commonText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
+          {commonText(
+            'collectionAccessDeniedDescription',
+            state.collectionName
+          )}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

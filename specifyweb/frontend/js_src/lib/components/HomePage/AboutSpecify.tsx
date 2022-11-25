@@ -211,7 +211,7 @@ function BuildDate(): JSX.Element {
             expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
           }
         ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? welcomeText('unknown') : data
+          status === Http.NOT_FOUND ? commonText('unknown') : data
         ),
       []
     ),

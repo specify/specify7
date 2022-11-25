@@ -35,10 +35,6 @@ export const formsText = createDictionary({
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
   },
-  addAnother: {
-    'en-us': 'Add',
-    'ru-ru': 'Добавить',
-  },
   // BusinessRules
   valueMustBeUniqueToField: {
     'en-us': (fieldName: string) => `Value must be unique to ${fieldName}`,

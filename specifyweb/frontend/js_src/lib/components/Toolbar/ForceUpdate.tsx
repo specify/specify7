@@ -45,7 +45,7 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
           </Button.Blue>
         </>
       }
-      header={commonText('updateExportFeedDialogHeader')}
+      header={commonText('updateExportFeedDialogTitle')}
       onClose={handleClose}
     >
       {commonText('updateExportFeedDialogText')}

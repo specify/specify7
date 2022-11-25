@@ -128,7 +128,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
-                title: adminText('createRoleDialogHeader'),
+                title: adminText('createRole'),
                 element: () =>
                   import('../Security/CreateRole').then(
                     ({ CreateCollectionRole }) => CreateCollectionRole

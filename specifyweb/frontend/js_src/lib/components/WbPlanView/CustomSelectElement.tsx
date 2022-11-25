@@ -24,6 +24,7 @@ import {
   tableIconSelected,
   tableIconUndefined,
 } from '../Molecules/TableIcon';
+import { formsText } from '../../localization/forms';
 
 type Properties =
   /*
@@ -278,7 +279,7 @@ function Option({
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
-    isRelationship ? `(${wbText('relationshipInline')})` : '',
+    isRelationship ? `(${formsText('relationship')})` : '',
     isDefault ? `(${commonText('selected')})` : '',
   ]).join(' ');
 

@@ -647,10 +647,10 @@ function UserView({
       {state.type === 'NoAdminsError' && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('noAdminsErrorDialogHeader')}
+          header={adminText('cantRemoveLastAdmin')}
           onClose={(): void => setState({ type: 'Main' })}
         >
-          {adminText('noAdminsErrorDialogText')}
+          {adminText('cantRemoveLastAdminDescription')}
         </Dialog>
       )}
     </Container.Base>

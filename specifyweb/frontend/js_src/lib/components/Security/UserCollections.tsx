@@ -74,7 +74,7 @@ function UserCollectionsUi({
           )}
         </>
       }
-      header={adminText('userCollectionsPluginDialogTitle')}
+      header={adminText('configureCollectionAccess')}
       onClose={handleClose}
     >
       <Form

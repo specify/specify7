@@ -31,7 +31,7 @@ export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
 ): JSX.Element =>
   type === 'viewSet' ? (
-    <span title={adminText('formDefinitions')} aria-hidden>
+    <span title={commonText('formDefinitions')} aria-hidden>
       {appResourceTypes.viewSets.icon}
     </span>
   ) : (

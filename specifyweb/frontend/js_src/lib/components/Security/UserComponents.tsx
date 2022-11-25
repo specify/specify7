@@ -188,7 +188,7 @@ export function SetPasswordPrompt({
       header={adminText('setPassword')}
       onClose={handleClose}
     >
-      {adminText('setPasswordDialogText')}
+      {adminText('setPasswordBeforeSavePrompt')}
     </Dialog>
   );
 }

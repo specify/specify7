@@ -234,10 +234,10 @@ function ChangeOwner({
   return users === undefined ? null : isChanged ? (
     <Dialog
       buttons={commonText('close')}
-      header={wbText('dataSetOwnerChangedDialogHeader')}
+      header={wbText('dataSetOwnerChanged')}
       onClose={(): void => navigate('/specify/')}
     >
-      <p>{wbText('dataSetOwnerChangedDialogText')}</p>
+      <p>{wbText('dataSetOwnerChanged')}</p>
     </Dialog>
   ) : (
     <Dialog

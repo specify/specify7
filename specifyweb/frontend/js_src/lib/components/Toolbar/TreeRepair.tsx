@@ -39,7 +39,7 @@ export function TreeSelectOverlay(): JSX.Element {
     <TreeSelectDialog
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
-      title={commonText('treesDialogTitle')}
+      title={commonText('trees')}
       onClick={undefined}
       onClose={handleClose}
     />

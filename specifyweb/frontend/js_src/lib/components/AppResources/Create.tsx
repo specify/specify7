@@ -80,7 +80,7 @@ export function CreateAppResource(): JSX.Element {
   ) : mimeType === undefined ? (
     <Dialog
       buttons={commonText('cancel')}
-      header={adminText('selectResourceTypeDialogHeader')}
+      header={adminText('selectResourceType')}
       onClose={(): void => navigate('/specify/resources/')}
     >
       <table className="grid-table grid-cols-2 gap-2">

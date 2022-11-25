@@ -3,6 +3,7 @@ import { AppResourceMode } from './helpers';
 import { icons } from '../Atoms/Icons';
 import { adminText } from '../../localization/admin';
 import { Tables } from '../DataModel/types';
+import { commonText } from '../../localization/common';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
@@ -19,7 +20,7 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
-    label: adminText('formDefinitions'),
+    label: commonText('formDefinitions'),
   },
 };
 

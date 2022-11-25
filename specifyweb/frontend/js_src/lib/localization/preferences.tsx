@@ -111,7 +111,7 @@ export const preferencesText = createDictionary({
   },
   fieldBackground: {
     'en-us': 'Field background',
-    'ru-ru': 'Фон полей',
+    'ru-ru': 'Фон поля',
   },
   disabledFieldBackground: {
     'en-us': 'Disabled field background',
@@ -256,10 +256,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Search Algorithm (for relationships with tree tables)',
     'ru-ru': 'Алгоритм поиска (для деревьев)',
   },
-  startsWith: {
-    'en-us': 'Starts with',
-    'ru-ru': 'Начинается с',
-  },
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (без учета регистра)',
@@ -275,10 +271,6 @@ export const preferencesText = createDictionary({
   startsWithCaseSensitiveDescription: {
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
-  },
-  contains: {
-    'en-us': 'Contains',
-    'ru-ru': 'Содержит',
   },
   containsInsensitive: {
     'en-us': 'Contains (case-insensitive)',
@@ -636,15 +628,7 @@ export const preferencesText = createDictionary({
   },
   recordSetRecordToOpen: {
     'en-us': 'Record to open by default',
-    'ru-ru': 'Размыть содержимое за диалогом',
-  },
-  firstRecord: {
-    'en-us': 'First record',
-    'ru-ru': 'First record',
-  },
-  lastRecord: {
-    'en-us': 'Last record',
-    'ru-ru': 'Last record',
+    'ru-ru': 'Запись для открытия по умолчанию',
   },
   altClickToSupressNewTab: {
     'en-us': (
@@ -709,10 +693,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Icon and table name',
     'ru-ru': 'Иконка и название таблицы',
   },
-  tableName: {
-    'en-us': 'Table name',
-    'ru-ru': 'Название таблицы',
-  },
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
@@ -752,10 +732,6 @@ export const preferencesText = createDictionary({
   useNewLineAsDelimiter: {
     'en-us': 'Use new line as delimiter',
     'ru-ru': 'Использовать новую строку как разделитель',
-  },
-  detectAutomatically: {
-    'en-us': 'Detect automatically',
-    'ru-ru': 'Определить автоматически',
   },
   useCustomDelimiters: {
     'en-us': 'Use custom delimiters',

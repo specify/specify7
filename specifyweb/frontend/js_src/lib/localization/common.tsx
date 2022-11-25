@@ -39,11 +39,11 @@ export const commonText = createDictionary({
     'en-us': 'Return to homepage',
     'ru-ru': 'Вернуться на главную страницу',
   },
-  collectionAccessDeniedDialogHeader: {
+  collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
   },
-  collectionAccessDeniedDialogText: {
+  collectionAccessDeniedDescription: {
     'en-us': (collectionName: string) =>
       `The currently logged in account does not have access to the
        ${collectionName} collection.`,
@@ -51,11 +51,11 @@ export const commonText = createDictionary({
       `Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
        коллекции ${collectionName}.`,
   },
-  noAgentDialogHeader: {
+  noAgent: {
     'en-us': 'Current user does not have an agent assigned',
     'ru-ru': 'Текущему пользователю не назначен агент',
   },
-  noAgentDialogText: {
+  noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
     'ru-ru':
       'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
@@ -406,7 +406,7 @@ export const commonText = createDictionary({
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS фид',
   },
-  updateExportFeedDialogHeader: {
+  updateExportFeedDialogTitle: {
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
   },
@@ -444,10 +444,6 @@ export const commonText = createDictionary({
     'en-us': 'Generate Master Key',
     'ru-ru': 'Сгенерировать мастер-ключ',
   },
-  generateMasterKeyDialogHeader: {
-    'en-us': 'Generate Master Key',
-    'ru-ru': 'Сгенерировать мастер-ключ',
-  },
   userPassword: {
     'en-us': 'User Password:',
     'ru-ru': 'Пользовательский пароль:',
@@ -479,10 +475,6 @@ export const commonText = createDictionary({
   queriesDialogTitle: {
     'en-us': (count: number) => `Queries (${count})`,
     'ru-ru': (count: number) => `Запросы (${count})`,
-  },
-  newQueryDialogTitle: {
-    'en-us': 'New Query Type',
-    'ru-ru': 'Новый запрос',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
@@ -541,10 +533,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Ремонт дерева завершен.',
   },
   trees: {
-    'en-us': 'Trees',
-    'ru-ru': 'Деревья',
-  },
-  treesDialogTitle: {
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
   },
@@ -651,7 +639,7 @@ export const commonText = createDictionary({
   },
   unknown: {
     'en-us': 'Unknown',
-    'ru-ru': 'Неизвестный',
+    'ru-ru': 'Неизвестно',
   },
   // Unload Protection
   leavePageDialogHeader: {
@@ -913,7 +901,7 @@ export const commonText = createDictionary({
   },
   none: {
     'en-us': 'None',
-    'ru-ru': 'Нет',
+    'ru-ru': 'Никакой',
   },
   noneAvailable: {
     'en-us': 'None available',
@@ -1005,7 +993,7 @@ export const commonText = createDictionary({
   },
   relatedModel: {
     'en-us': 'Related Model',
-    'ru-ru': 'Таблица',
+    'ru-ru': 'Родственная Таблица',
   },
   otherSideName: {
     'en-us': 'Other side name',

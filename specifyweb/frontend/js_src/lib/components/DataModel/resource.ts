@@ -273,7 +273,7 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
      * Disable carry over for GUIDs
      * See https://github.com/specify/specify7/issues/2492#issuecomment-1327780411
      */
-    'guid',
+    ...(typeof model.getField('guid') === 'object' ? ['guid'] : []),
   ]);
 
 export const exportsForTests = {

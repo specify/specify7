@@ -377,10 +377,6 @@ export const wbText = createDictionary({
     'en-us': 'Data Set Upload cancelled.',
     'ru-ru': 'Загрузка набора данных отменена.',
   },
-  geoLocateDialogTitle: {
-    'en-us': 'GeoLocate',
-    'ru-ru': 'GeoLocate',
-  },
   coordinateConverterDialogTitle: {
     'en-us': 'Geocoordinate Format',
     'ru-ru': 'Геокоординатный формат',
@@ -473,10 +469,6 @@ export const wbText = createDictionary({
       'Количество новых записей, которые будут созданы в каждой таблице:',
   },
   // WbAdvancedSearch
-  wbAdvancedSearchDialogTitle: {
-    'en-us': 'Configure Search & Replace',
-    'ru-ru': 'Настроить поиск и замену',
-  },
   navigationOptions: {
     'en-us': 'Navigation Options',
     'ru-ru': 'Опции навигации',
@@ -735,10 +727,6 @@ export const wbText = createDictionary({
       `Relationship with the ${tableName} table`,
     'ru-ru': (tableName: string): string => `Связь с таблицей ${tableName}`,
   },
-  relationshipInline: {
-    'en-us': 'Relationship',
-    'ru-ru': 'Связь',
-  },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
     'ru-ru': 'Выберите базовую таблицу',
@@ -961,12 +949,8 @@ export const wbText = createDictionary({
     'en-us': 'Select New Owner:',
     'ru-ru': 'Выберите нового владельца:',
   },
-  dataSetOwnerChangedDialogHeader: {
+  dataSetOwnerChanged: {
     'en-us': 'Data Set owner changed',
-    'ru-ru': 'Владелец набора данных изменен',
-  },
-  dataSetOwnerChangedDialogText: {
-    'en-us': 'Data Set owner changed.',
     'ru-ru': 'Владелец набора данных изменен',
   },
   dataSet: {
