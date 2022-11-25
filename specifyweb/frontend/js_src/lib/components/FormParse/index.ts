@@ -59,7 +59,7 @@ export const fetchView = async (
 ): Promise<ViewDefinition | undefined> =>
   name in views
     ? Promise.resolve(views[name])
-    : ajax<ViewDefinition>(
+    : ajax<string>(
         /*
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
@@ -72,7 +72,7 @@ export const fetchView = async (
         ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
+          headers: { Accept: 'text/plain' },
         },
         {
           expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
@@ -81,7 +81,7 @@ export const fetchView = async (
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
-            : data;
+            : JSON.parse(data) as ViewDefinition;
         return views[name];
       });
 
