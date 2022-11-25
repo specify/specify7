@@ -123,6 +123,7 @@ export function AppResourceEditor({
       />
     </>
   );
+
   return typeof resourceData === 'object' ? (
     <Container.Base className="flex-1 overflow-hidden">
       <DataEntry.Header>

@@ -102,7 +102,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   }, [form, id]);
 
   const loading = React.useContext(LoadingContext);
-  const [formContext, setFormContext] = React.useContext(FormContext);
+  const [_, setFormContext] = React.useContext(FormContext);
 
   const [globalCanCarryForward] = usePref(
     'form',
@@ -117,63 +117,83 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
   const canSave = resource.isNew() ? canCreate : canUpdate;
 
+  const isSaveDisabled =
+    disabled ||
+    isSaving ||
+    !canSave ||
+    (!saveRequired &&
+      !externalSaveRequired &&
+      /*
+       * Don't disable the button if saveBlocked, so that clicking the
+       * button would make browser focus the invalid field
+       */
+      !saveBlocked &&
+      /*
+       * Enable the button for new resources, even if there are no
+       * unsaved changes so that empty resources can be saved. If that
+       * is not desirable, remove the following line
+       */
+      !resource.isNew());
+
+  function handleSubmit() {
+    if (typeof setFormContext === 'function')
+      setFormContext((formContext) =>
+        replaceKey(formContext, 'triedToSubmit', true)
+      );
+
+    if (isSaveDisabled) {
+      handleIgnored?.();
+      return;
+    }
+
+    loading(
+      (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
+        const blockingResources = Array.from(
+          resource.saveBlockers?.blockingResources ?? []
+        );
+        blockingResources.forEach((resource) =>
+          resource.saveBlockers?.fireDeferredBlockers()
+        );
+        if (blockingResources.length > 0) {
+          setShowBlockedDialog(true);
+          return;
+        }
+
+        /*
+         * Save process is canceled if false was returned. This also allows to
+         * implement custom save behavior
+         */
+        if (handleSaving?.(unsetUnloadProtect) === false) return;
+
+        setIsSaving(true);
+        return resource
+          .save({ onSaveConflict: hasSaveConflict })
+          .catch((error_) =>
+            // FEATURE: if form save fails, should make the error message dismissable (if safe)
+            Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
+              ?.value === hasSaveConflict
+              ? undefined
+              : error(error_)
+          )
+          .finally(() => {
+            unsetUnloadProtect();
+            handleSaved?.();
+            setIsSaving(false);
+          });
+      })
+    );
+  }
+
+  const handleSubmitRef = React.useRef(handleSubmit);
+  handleSubmitRef.current = handleSubmit;
+
   React.useEffect(
     () =>
       listen(form, 'submit', (event) => {
         if (!form.reportValidity()) return;
-
-        setFormContext?.(replaceKey(formContext, 'triedToSubmit', true));
         event.preventDefault();
         event.stopPropagation();
-
-        if (
-          // Cancel if don't have permission for this action
-          !canSave ||
-          // Or save is blocked
-          saveBlocked ||
-          // Or trying to save a resources that doesn't need saving
-          (!saveRequired && !externalSaveRequired && !resource.isNew())
-        ) {
-          handleIgnored?.();
-          return;
-        }
-
-        loading(
-          (resource.businessRuleMgr?.pending ?? Promise.resolve()).then(() => {
-            const blockingResources = Array.from(
-              resource.saveBlockers?.blockingResources ?? []
-            );
-            blockingResources.forEach((resource) =>
-              resource.saveBlockers?.fireDeferredBlockers()
-            );
-            if (blockingResources.length > 0) {
-              setShowBlockedDialog(true);
-              return;
-            }
-
-            /*
-             * Save process is canceled if false was returned. This also allows to
-             * implement custom save behavior
-             */
-            if (handleSaving?.(unsetUnloadProtect) === false) return;
-
-            setIsSaving(true);
-            return resource
-              .save({ onSaveConflict: hasSaveConflict })
-              .catch((error_) =>
-                // FEATURE: if form save fails, should make the error message dismissable (if safe)
-                Object.getOwnPropertyDescriptor(error_ ?? {}, 'handledBy')
-                  ?.value === hasSaveConflict
-                  ? undefined
-                  : error(error_)
-              )
-              .finally(() => {
-                unsetUnloadProtect();
-                handleSaved?.();
-                setIsSaving(false);
-              });
-          })
-        );
+        handleSubmitRef.current();
       }),
     [loading, form]
   );
@@ -207,23 +227,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       {canSave && (
         <SubmitComponent
           className={saveBlocked ? '!cursor-not-allowed' : undefined}
-          disabled={
-            disabled ||
-            isSaving ||
-            (!saveRequired &&
-              !externalSaveRequired &&
-              /*
-               * Don't disable the button if saveBlocked, so that clicking the
-               * button would make browser focus the invalid field
-               */
-              !saveBlocked &&
-              /*
-               * Enable the button for new resources, even if there are no
-               * unsaved changes so that empty resources can be saved. If that
-               * is not desirable, remove the following line
-               */
-              !resource.isNew())
-          }
+          disabled={isSaveDisabled}
           form={formId}
           onClick={(): void =>
             form.classList.remove(className.notSubmittedForm)
