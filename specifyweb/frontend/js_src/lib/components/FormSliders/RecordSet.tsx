@@ -66,6 +66,7 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       }).then(async ({ records }) => {
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
+          // Record is not part of a record set
           navigate(getResourceViewUrl(resource.specifyModel.name, resource.id));
           return;
         }
@@ -343,24 +344,11 @@ function RecordSet<SCHEMA extends AnySchema>({
                       const newTotalCount = totalCount - 1;
                       setTotalCount(newTotalCount);
                       setIds((oldIds = []) => {
-                        if (currentIndex === oldIds.length - 1)
-                          return oldIds.slice(0, -1);
                         const newIds = oldIds.slice();
+                        newIds.splice(currentIndex, 1);
                         newIds[currentIndex] = undefined;
                         return newIds;
                       });
-                      const newIndex = clamp(
-                        0,
-                        /*
-                         * Previous index decides which direction to go in
-                         * once item is deleted
-                         */
-                        previousIndex.current > currentIndex
-                          ? Math.max(0, currentIndex - 1)
-                          : currentIndex,
-                        newTotalCount - 1
-                      );
-                      go(ids[newIndex]!, newIndex);
                       if (newTotalCount === 0) handleClose();
                     })
                   );

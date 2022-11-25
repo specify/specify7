@@ -159,7 +159,10 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
               ? handleSlide(
                   clamp(
                     0,
-                    // New index depends on the direction you came from
+                    /*
+                     * Previous index decides which direction to go in
+                     * once item is deleted
+                     */
                     index < lastIndexRef.current ? index - 1 : index,
                     totalCount - 2
                   ),
