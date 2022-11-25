@@ -110,12 +110,12 @@ export const statsText = createDictionary({
     'en-us': 'Computerization',
     'ru-ru': 'Компьютеризация',
   },
-  computerizedLast7Days: {
+  computerizedLastSevenDays: {
     'en-us': 'Computerized Last 7 Days',
     'ru-ru': 'Компьютеризировано за последние 7 дней',
   },
-  computerizedLast30Days: {
-    'en-us': 'Computerized Last 30 Days',
+  computerizedLastMonth: {
+    'en-us': 'Computerized Last Month',
     'ru-ru': 'Компьютеризировано за последние 30 дней',
   },
   computerizedLastYear: {
@@ -124,16 +124,15 @@ export const statsText = createDictionary({
   },
   chooseStatistics: {
     'en-us': 'Choose Statistics',
-    'ru-ru': 'Выберите статистику'
+    'ru-ru': 'Выберите статистику',
   },
   selectCustomStatistics: {
     'en-us': 'Select Custom Statistics',
-    'ru-ru': 'Выберите пользовательскую статистику'
+    'ru-ru': 'Выберите пользовательскую статистику',
   },
-  selectDefaultStatistics :{
+  selectDefaultStatistics: {
     'en-us': 'Select Default Statistics',
-    'ru-ru': 'Выберите статистику по умолчанию'
-  }
-
+    'ru-ru': 'Выберите статистику по умолчанию',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
