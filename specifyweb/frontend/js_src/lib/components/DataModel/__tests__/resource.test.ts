@@ -247,7 +247,13 @@ describe('getUniqueFields', () => {
       'guid',
     ]));
   test('Locality', () =>
-    expect(getUniqueFields(schema.models.Locality)).toEqual([]));
+    expect(getUniqueFields(schema.models.Locality)).toEqual(['guid']));
+  test('AccessionAttachment', () =>
+    expect(getUniqueFields(schema.models.AccessionAttachment)).toEqual([
+      'attachment',
+    ]));
+  test('AccessionAgent', () =>
+    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([]));
 });
 
 test('getFieldsToNotClone', () => {

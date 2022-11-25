@@ -153,7 +153,7 @@ describe('fetchView', () => {
   const viewName = 'abc';
   overrideAjax(
     formatUrl('/context/view.json', { name: viewName }),
-    viewDefinition
+    JSON.stringify(viewDefinition)
   );
   test('caches fetched view', async () => {
     await expect(fetchView(viewName)).resolves.toEqual(viewDefinition);

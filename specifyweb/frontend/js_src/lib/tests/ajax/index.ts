@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
+import { MimeType } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
@@ -67,6 +68,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
   {
     method: requestMethod = 'GET',
     body: requestBody,
+    headers: { Accept: accept },
   }: Parameters<typeof ajax>[1],
   {
     expectedResponseCodes = [Http.OK],
@@ -75,7 +77,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
   } = {}
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
-    return formatResponse('', 'text/plain', expectedResponseCodes);
+    return formatResponse('', accept, expectedResponseCodes);
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
@@ -123,11 +125,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
   const file = await fs.promises.readFile(
     path.join(parsedPath.dir, targetFile)
   );
-  return formatResponse(
-    file.toString(),
-    splitFileName(targetFile).extension,
-    expectedResponseCodes
-  );
+  return formatResponse(file.toString(), accept, expectedResponseCodes);
 }
 
 function splitFileName(fileName: string): {
@@ -143,17 +141,12 @@ function splitFileName(fileName: string): {
 
 const formatResponse = <RESPONSE_TYPE>(
   response: string,
-  extension: string,
+  accept: MimeType | undefined,
   expectedResponseCodes: RA<number>
 ): AjaxResponseObject<RESPONSE_TYPE> =>
   handleAjaxResponse({
     expectedResponseCodes,
-    accept:
-      extension === 'json'
-        ? 'application/json'
-        : extension === 'xml'
-        ? 'text/xml'
-        : 'text/plain',
+    accept,
     response: createResponse(expectedResponseCodes),
     strict: true,
     text: response,
