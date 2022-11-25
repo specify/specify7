@@ -7,7 +7,7 @@ import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
-import { H2, H3 } from '../Atoms';
+import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -26,6 +26,14 @@ import { statsSpec } from './StatsSpec';
 import type { BackendStatsResult } from './utils';
 import { StatsResult, useFrontEndStat, useFrontEndStatsQuery } from './utils';
 import { userInformation } from '../InitialContext/userInformation';
+import { SpQuery } from '../DataModel/types';
+import { awaitPrefsSynced } from '../UserPreferences/helpers';
+import { softFail } from '../Errors/Crash';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { useId } from '../../hooks/useId';
+import { Form, Input, Label } from '../Atoms/Form';
+import { maxSchemaValueLength } from '../SchemaConfig/Table';
+import { Submit } from '../Atoms/Submit';
 
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
@@ -125,34 +133,252 @@ export function StatsPage(): JSX.Element {
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
   const [state, setState] = React.useState<
+    | State<'EditingState'>
     | State<
-        'EditingState',
+        'AddingState',
         {
-          readonly addingItem:
-            | {
-                readonly pageIndex: number;
-                readonly categoryIndex: number;
-              }
-            | undefined;
+          readonly pageIndex: number;
+          readonly categoryIndex: number;
         }
       >
     | State<'DefaultState'>
+    | State<
+        'DialogRenameState',
+        {
+          readonly pageIndex: number | undefined;
+        }
+      >
   >({ type: 'DefaultState' });
   const isEditing = state.type === 'EditingState';
-  const isAddingItem = isEditing && state.addingItem !== undefined;
+  const isAddingItem = state.type === 'AddingState';
   const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
   const defaultStatsToAdd = useDefaultStatsToAdd(
     layout[activePageIndex],
     defaultLayout
   );
   console.log(defaultStatsToAdd);
+  const filters = React.useMemo(
+    () => ({
+      specifyUser: userInformation.id,
+    }),
+    []
+  );
+  const queries = useQueries(filters, false);
+  const [isDialogOpen, handleDialogOpen, handleDialogClose] =
+    useBooleanState(false);
 
   return (
-    <>
-      {isAddingItem && (
+    <Form
+      className={className.containerFullGray}
+      onSubmit={(): void => {
+        setState({ type: 'DefaultState' });
+        awaitPrefsSynced().catch(softFail);
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <H2 className="text-2xl">{commonText('statistics')}</H2>
+        <span className="-ml-2 flex-1" />
+        {isEditing ? (
+          <>
+            <Button.Red onClick={(): void => setLayout(defaultLayout)}>
+              {commonText('reset')}
+            </Button.Red>
+            <Submit.Green>{commonText('save')}</Submit.Green>
+          </>
+        ) : (
+          <Button.Green
+            onClick={(): void =>
+              setState({
+                type: 'EditingState',
+              })
+            }
+          >
+            {commonText('edit')}
+          </Button.Green>
+        )}
+      </div>
+      <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-col gap-2 overflow-y-hidden  md:flex-row">
+          <aside
+            className={`
+                top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
+                md:sticky
+            `}
+          >
+            {layout.map(({ label }, pageIndex) => (
+              <PageButton
+                key={pageIndex}
+                label={label}
+                isActive={pageIndex === activePageIndex}
+                onDialogOpen={
+                  isEditing
+                    ? (): void => {
+                        setState({
+                          type: 'DialogRenameState',
+                          pageIndex,
+                        });
+                      }
+                    : undefined
+                }
+                onClick={(): void => {
+                  setActivePageIndex(pageIndex);
+                }}
+              />
+            ))}
+
+            {state.type === 'DialogRenameState' && (
+              <PageName
+                onClick={
+                  typeof state.pageIndex === 'number'
+                    ? (): void => {
+                        setLayout(removeItem(layout, state.pageIndex));
+                        setState({
+                          type: 'EditingState',
+                        });
+                      }
+                    : state.pageIndex
+                }
+                onRename={
+                  typeof state.pageIndex === 'number'
+                    ? (value): void => {
+                        setLayout(
+                          replaceItem(layout, state.pageIndex, {
+                            ...layout[state.pageIndex],
+                            label: value,
+                          })
+                        );
+                        setState({
+                          type: 'EditingState',
+                        });
+                      }
+                    : (value): void => {
+                        setLayout([
+                          ...layout,
+                          {
+                            label: value,
+                            categories: [],
+                          },
+                        ]);
+                        setState({
+                          type: 'EditingState',
+                        });
+                        setActivePageIndex(layout.length);
+                      }
+                }
+                onClose={(): void => {
+                  setState({ type: 'EditingState' });
+                }}
+                value={
+                  typeof state.pageIndex === 'number'
+                    ? layout[state.pageIndex].label
+                    : undefined
+                }
+              />
+            )}
+
+            {isEditing && (
+              <Button.Gray
+                onClick={(): void => {
+                  setState({
+                    type: 'DialogRenameState',
+                    pageIndex: undefined,
+                  });
+                }}
+              >
+                {commonText('add')}
+              </Button.Gray>
+            )}
+          </aside>
+
+          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto">
+            <CategoriesBoxes
+              onAdd={
+                isEditing
+                  ? (categoryindex): void =>
+                      typeof categoryindex === 'number'
+                        ? setState({
+                            type: 'AddingState',
+                            pageIndex: activePageIndex,
+                            categoryIndex: categoryindex,
+                          })
+                        : setLayout(
+                            replaceItem(layout, activePageIndex, {
+                              ...layout[activePageIndex],
+                              categories: [
+                                ...layout[activePageIndex].categories,
+                                {
+                                  label: '',
+                                  items: [],
+                                },
+                              ],
+                            })
+                          )
+                  : undefined
+              }
+              pageLayout={layout[activePageIndex]}
+              statsSpec={statsSpec}
+              onClick={undefined}
+              onRemove={
+                isEditing
+                  ? (categoryIndex, itemIndex): void =>
+                      setLayout(
+                        replaceItem(layout, activePageIndex, {
+                          ...layout[activePageIndex],
+                          categories:
+                            typeof itemIndex === 'number'
+                              ? replaceItem(
+                                  layout[activePageIndex].categories,
+                                  categoryIndex,
+                                  {
+                                    ...layout[activePageIndex].categories[
+                                      categoryIndex
+                                    ],
+                                    items: removeItem(
+                                      layout[activePageIndex].categories[
+                                        categoryIndex
+                                      ].items,
+                                      itemIndex
+                                    ),
+                                  }
+                                )
+                              : removeItem(
+                                  layout[activePageIndex].categories,
+                                  categoryIndex
+                                ),
+                        })
+                      )
+                  : undefined
+              }
+              onRename={
+                isEditing
+                  ? (newName, categoryIndex): void =>
+                      setLayout(
+                        replaceItem(layout, activePageIndex, {
+                          ...layout[activePageIndex],
+                          categories: replaceItem(
+                            layout[activePageIndex].categories,
+                            categoryIndex,
+                            {
+                              ...layout[activePageIndex].categories[
+                                categoryIndex
+                              ],
+                              label: newName,
+                            }
+                          ),
+                        })
+                      )
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      {state.type === 'AddingState' && (
         <AddStatDialog
           defaultLayout={defaultStatsToAdd}
           statsSpec={statsSpec}
+          queries={queries}
           onAdd={(item): void =>
             isAddingItem
               ? setLayout(
@@ -160,14 +386,14 @@ export function StatsPage(): JSX.Element {
                     ...layout[activePageIndex],
                     categories: replaceItem(
                       layout[activePageIndex].categories,
-                      state.addingItem.categoryIndex,
+                      state.categoryIndex,
                       {
                         ...layout[activePageIndex].categories[
-                          state.addingItem.categoryIndex
+                          state.categoryIndex
                         ],
                         items: [
                           ...layout[activePageIndex].categories[
-                            state.addingItem.categoryIndex
+                            state.categoryIndex
                           ].items,
                           item,
                         ],
@@ -180,93 +406,73 @@ export function StatsPage(): JSX.Element {
           onClose={(): void =>
             setState({
               type: 'EditingState',
-              addingItem: undefined,
             })
           }
         />
       )}
-      <div className="h-full w-full bg-[color:var(--form-background)]">
-        <div className="mx-auto flex h-full max-w-[min(100%,var(--form-max-width))] flex-col gap-4 overflow-y-auto  p-4 ">
-          <div className="flex items-center gap-2">
-            <H2 className="text-2xl">{statsText('collectionStatistics')}</H2>
-            <span className="-ml-2 flex-1" />
-            {isEditing && (
-              <Button.Red onClick={(): void => setLayout(defaultLayout)}>
-                {commonText('reset')}
-              </Button.Red>
-            )}
-            <Button.Green
-              onClick={(): void =>
-                setState(
-                  isEditing
-                    ? { type: 'DefaultState' }
-                    : {
-                        type: 'EditingState',
-                        addingItem: undefined,
-                      }
-                )
-              }
-            >
-              {isEditing ? commonText('save') : commonText('edit')}
-            </Button.Green>
-          </div>
+    </Form>
+  );
+}
 
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4">
-            <CategoriesBoxes
-              goToEditingState={(categoryindex): void =>
-                setState({
-                  type: 'EditingState',
-                  addingItem: {
-                    pageIndex: activePageIndex,
-                    categoryIndex: categoryindex,
-                  },
-                })
-              }
-              isEditing={isEditing}
-              pageLayout={layout[activePageIndex]}
-              statsSpec={statsSpec}
-              onClick={undefined}
-              onRemove={
-                isEditing
-                  ? (categoryIndex, itemIndex): void =>
-                      setLayout(
-                        replaceItem(layout, activePageIndex, {
-                          ...layout[activePageIndex],
-                          categories: replaceItem(
-                            layout[activePageIndex].categories,
-                            categoryIndex,
-                            {
-                              ...layout[activePageIndex].categories[
-                                categoryIndex
-                              ],
-                              items: removeItem(
-                                layout[activePageIndex].categories[
-                                  categoryIndex
-                                ].items,
-                                itemIndex
-                              ),
-                            }
-                          ),
-                        })
-                      )
-                  : undefined
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </>
+function PageName({
+  value,
+  onClick: handleClick,
+  onRename: handleRename,
+  onClose: handleClose,
+}: {
+  readonly value: string | undefined;
+  readonly onClick: (() => void) | undefined;
+  readonly onRename: (value: string) => void;
+  readonly onClose: () => void;
+}): JSX.Element {
+  const id = useId('stats');
+  const [pageName, setPageName] = React.useState<string | undefined>(value);
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          <span />
+          {typeof handleClick === 'function' ? (
+            <Button.Red onClick={handleClick}>
+              {commonText('remove')}
+            </Button.Red>
+          ) : null}
+        </>
+      }
+      header="Page Name"
+      onClose={handleClose}
+    >
+      <Form
+        id={id('form')}
+        onSubmit={() => {
+          handleRename(pageName ?? '');
+        }}
+      >
+        <Label.Block>
+          {commonText('name')}
+          <Input.Text
+            required
+            value={pageName}
+            onValueChange={(value): void => {
+              /*  */
+              setPageName(value);
+            }}
+          />
+        </Label.Block>
+      </Form>
+    </Dialog>
   );
 }
 
 function AddStatDialog({
-  onClose: handleClose,
-  onAdd: handleAdd,
   defaultLayout,
   statsSpec,
+  queries,
+  onClose: handleClose,
+  onAdd: handleAdd,
 }: {
-  readonly onClose: () => void;
-  readonly onAdd: (item: CustomStat | DefaultStat) => void;
+  readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultLayout: StatLayout;
   readonly statsSpec: IR<
     IR<{
@@ -274,14 +480,9 @@ function AddStatDialog({
       readonly items: StatCategoryReturn;
     }>
   >;
+  readonly onClose: () => void;
+  readonly onAdd: (item: CustomStat | DefaultStat) => void;
 }): JSX.Element | null {
-  const filters = React.useMemo(
-    () => ({
-      specifyUser: userInformation.id,
-    }),
-    []
-  );
-  const queries = useQueries(filters);
   const defaultStatsAddLeft = defaultLayout.filter(
     ({ categories }) => categories.length > 0
   );
@@ -316,15 +517,14 @@ function AddStatDialog({
                 <H3>{defaultLayoutItem.label}</H3>
                 <div>
                   <CategoriesBoxes
-                    goToEditingState={(): void => {}}
-                    isEditing={false}
+                    onAdd={undefined}
                     pageLayout={defaultLayoutItem}
                     statsSpec={statsSpec}
                     onClick={(item): void => {
                       handleAdd(item);
-                      handleClose();
                     }}
                     onRemove={undefined}
+                    onRename={undefined}
                   />
                 </div>
               </div>
@@ -339,10 +539,10 @@ function AddStatDialog({
 function CategoriesBoxes({
   pageLayout,
   statsSpec,
-  isEditing,
-  goToEditingState,
+  onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
+  onRename: handleRename,
 }: {
   readonly pageLayout: {
     readonly label: string;
@@ -357,22 +557,34 @@ function CategoriesBoxes({
       readonly items: StatCategoryReturn;
     }>
   >;
-  readonly isEditing: boolean;
-  readonly goToEditingState: (categoryIndex: number) => void;
+  readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick: ((item: CustomStat | DefaultStat) => void) | undefined;
   readonly onRemove:
-    | ((categoryIndex: number, itemIndex: number) => void)
+    | ((categoryIndex: number, itemIndex: number | undefined) => void)
+    | undefined;
+  readonly onRename:
+    | ((newName: string, categoryIndex: number) => void)
     | undefined;
 }): JSX.Element {
   return (
     <>
       {pageLayout.categories.map(({ label, items }, categoryIndex) => (
         <div
-          className="flex h-auto max-h-80 flex-col content-center rounded border-[1px] border-black bg-white p-4"
+          className="flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] border-black bg-white p-4"
           key={categoryIndex}
         >
-          <H3 className="font-bold">{label}</H3>
-          <div className="overflow-auto pr-4">
+          {handleRename === undefined ? (
+            <H3 className="font-bold">{label}</H3>
+          ) : (
+            <Input.Text
+              required
+              value={label}
+              onValueChange={(newname): void => {
+                handleRename(newname, categoryIndex);
+              }}
+            />
+          )}
+          <div className="flex-1 overflow-auto pr-4">
             {items?.map((item, itemIndex) => {
               return item.type === 'DefaultStat' ? (
                 <DefaultStatItem
@@ -422,16 +634,38 @@ function CategoriesBoxes({
               );
             })}
           </div>
-          {isEditing && (
-            <Button.LikeLink
-              onClick={(): void => goToEditingState(categoryIndex)}
-            >
-              <span className={className.dataEntryAdd}>{icons.plus}</span>
-              {commonText('add')}
-            </Button.LikeLink>
+          {handleAdd !== undefined && handleRemove !== undefined && (
+            <div className="flex gap-2">
+              <Button.Small
+                onClick={(): void => handleAdd(categoryIndex)}
+                variant={className.greenButton}
+              >
+                {commonText('add')}
+              </Button.Small>
+              <span className="-ml-2 flex-1" />
+              <Button.Small
+                onClick={(): void => handleRemove(categoryIndex, undefined)}
+                variant={className.redButton}
+              >
+                {commonText('delete')}
+              </Button.Small>
+            </div>
           )}
         </div>
       ))}
+      {handleAdd !== undefined && (
+        <div className="flex h-auto max-h-80 content-center items-center justify-center gap-2 rounded border-[1px] border-black bg-white p-4">
+          <Button.Small
+            variant={className.greenButton}
+            onClick={(): void => {
+              handleAdd(undefined);
+            }}
+            className="h-fit"
+          >
+            {commonText('add')}
+          </Button.Small>
+        </div>
+      )}
     </>
   );
 }
@@ -595,5 +829,35 @@ function QueryBuilderStat({
       onClick={handleClick}
       onRemove={handleRemove}
     />
+  );
+}
+
+function PageButton({
+  label,
+  isActive,
+  onClick: handleClick,
+  onDialogOpen: handleDialogOpen,
+}: {
+  readonly label: string;
+  readonly isActive: boolean;
+  readonly onClick: () => void;
+  readonly onDialogOpen: (() => void) | undefined;
+}): JSX.Element {
+  return (
+    <div>
+      <Button.Gray
+        onClick={handleClick}
+        aria-current={isActive ? 'page' : undefined}
+      >
+        {label}
+      </Button.Gray>
+      {handleDialogOpen !== undefined && (
+        <Button.Icon
+          title={'remove'}
+          icon={'pencil'}
+          onClick={handleDialogOpen}
+        ></Button.Icon>
+      )}
+    </div>
   );
 }
