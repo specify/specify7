@@ -7,10 +7,9 @@ import { statsText } from '../../localization/stats';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
 import { removeItem, replaceItem } from '../../utils/utils';
-import { Container, H2, H3 } from '../Atoms';
+import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { icons } from '../Atoms/Icons';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource, strictIdFromUrl } from '../DataModel/resource';
 import type { SpQueryField, Tables } from '../DataModel/types';
@@ -19,8 +18,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryList, useQueries } from '../Toolbar/Query';
 import { usePref } from '../UserPreferences/usePref';
-import type { StatLayout } from './definitions';
-import type { CustomStat, DefaultStat } from './definitions';
+import type { StatLayout } from './types';
+import type { CustomStat, DefaultStat } from './types';
 import type { StatCategoryReturn } from './StatsSpec';
 import { statsSpec } from './StatsSpec';
 import type { BackendStatsResult } from './utils';
@@ -29,12 +28,13 @@ import { userInformation } from '../InitialContext/userInformation';
 import { SpQuery } from '../DataModel/types';
 import { awaitPrefsSynced } from '../UserPreferences/helpers';
 import { softFail } from '../Errors/Crash';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { Form, Input, Label } from '../Atoms/Form';
-import { maxSchemaValueLength } from '../SchemaConfig/Table';
 import { Submit } from '../Atoms/Submit';
 
+/**
+ * Fetch backend statistics from the API
+ */
 function useBackendApi(): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
     React.useCallback(
@@ -149,14 +149,14 @@ export function StatsPage(): JSX.Element {
         }
       >
   >({ type: 'DefaultState' });
-  const isEditing = state.type === 'EditingState';
+
   const isAddingItem = state.type === 'AddingState';
+  const isEditing = state.type === 'EditingState' || isAddingItem;
   const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
   const defaultStatsToAdd = useDefaultStatsToAdd(
     layout[activePageIndex],
     defaultLayout
   );
-  console.log(defaultStatsToAdd);
   const filters = React.useMemo(
     () => ({
       specifyUser: userInformation.id,
@@ -164,8 +164,7 @@ export function StatsPage(): JSX.Element {
     []
   );
   const queries = useQueries(filters, false);
-  const [isDialogOpen, handleDialogOpen, handleDialogClose] =
-    useBooleanState(false);
+  const previousLayout = React.useRef(layout);
 
   return (
     <Form
@@ -183,15 +182,24 @@ export function StatsPage(): JSX.Element {
             <Button.Red onClick={(): void => setLayout(defaultLayout)}>
               {commonText('reset')}
             </Button.Red>
+            <Button.Red
+              onClick={(): void => {
+                setLayout(previousLayout.current);
+                setState({ type: 'DefaultState' });
+              }}
+            >
+              {commonText('cancel')}
+            </Button.Red>
             <Submit.Green>{commonText('save')}</Submit.Green>
           </>
         ) : (
           <Button.Green
-            onClick={(): void =>
+            onClick={(): void => {
               setState({
                 type: 'EditingState',
-              })
-            }
+              });
+              previousLayout.current = layout;
+            }}
           >
             {commonText('edit')}
           </Button.Green>
@@ -225,71 +233,69 @@ export function StatsPage(): JSX.Element {
                 }}
               />
             ))}
-
-            {state.type === 'DialogRenameState' && (
-              <PageName
-                onClick={
-                  typeof state.pageIndex === 'number'
-                    ? (): void => {
-                        setLayout(removeItem(layout, state.pageIndex));
-                        setState({
-                          type: 'EditingState',
-                        });
-                      }
-                    : state.pageIndex
-                }
-                onRename={
-                  typeof state.pageIndex === 'number'
-                    ? (value): void => {
-                        setLayout(
-                          replaceItem(layout, state.pageIndex, {
-                            ...layout[state.pageIndex],
-                            label: value,
-                          })
-                        );
-                        setState({
-                          type: 'EditingState',
-                        });
-                      }
-                    : (value): void => {
-                        setLayout([
-                          ...layout,
-                          {
-                            label: value,
-                            categories: [],
-                          },
-                        ]);
-                        setState({
-                          type: 'EditingState',
-                        });
-                        setActivePageIndex(layout.length);
-                      }
-                }
-                onClose={(): void => {
-                  setState({ type: 'EditingState' });
-                }}
-                value={
-                  typeof state.pageIndex === 'number'
-                    ? layout[state.pageIndex].label
-                    : undefined
-                }
-              />
-            )}
-
             {isEditing && (
-              <Button.Gray
+              <PageButton
                 onClick={(): void => {
                   setState({
                     type: 'DialogRenameState',
                     pageIndex: undefined,
                   });
                 }}
-              >
-                {commonText('add')}
-              </Button.Gray>
+                isActive={false}
+                label={commonText('add')}
+                onDialogOpen={undefined}
+              />
             )}
           </aside>
-
+          {state.type === 'DialogRenameState' && (
+            <PageName
+              onClick={
+                typeof state.pageIndex === 'number'
+                  ? (): void => {
+                      setLayout(removeItem(layout, state.pageIndex!));
+                      setState({
+                        type: 'EditingState',
+                      });
+                    }
+                  : undefined
+              }
+              onRename={
+                typeof state.pageIndex === 'number'
+                  ? (value): void => {
+                      setLayout(
+                        replaceItem(layout, state.pageIndex!, {
+                          ...layout[state.pageIndex!],
+                          label: value,
+                        })
+                      );
+                      setState({
+                        type: 'EditingState',
+                      });
+                    }
+                  : (value): void => {
+                      setLayout([
+                        ...layout,
+                        {
+                          label: value,
+                          categories: [],
+                        },
+                      ]);
+                      setState({
+                        type: 'EditingState',
+                      });
+                      setActivePageIndex(layout.length);
+                    }
+              }
+              onClose={(): void => {
+                setState({ type: 'EditingState' });
+              }}
+              value={
+                typeof state.pageIndex === 'number'
+                  ? layout[state.pageIndex].label
+                  : undefined
+              }
+            />
+          )}
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto">
             <CategoriesBoxes
               onAdd={
@@ -426,7 +432,7 @@ function PageName({
   readonly onClose: () => void;
 }): JSX.Element {
   const id = useId('stats');
-  const [pageName, setPageName] = React.useState<string | undefined>(value);
+  const [pageName, setPageName] = React.useState<string>(value ?? '');
   return (
     <Dialog
       buttons={
@@ -443,19 +449,13 @@ function PageName({
       header="Page Name"
       onClose={handleClose}
     >
-      <Form
-        id={id('form')}
-        onSubmit={() => {
-          handleRename(pageName ?? '');
-        }}
-      >
+      <Form id={id('form')} onSubmit={(): void => handleRename(pageName)}>
         <Label.Block>
           {commonText('name')}
           <Input.Text
             required
             value={pageName}
             onValueChange={(value): void => {
-              /*  */
               setPageName(value);
             }}
           />
@@ -608,7 +608,7 @@ function CategoriesBoxes({
                   onRemove={
                     handleRemove === undefined
                       ? undefined
-                      : () => handleRemove(categoryIndex, itemIndex)
+                      : (): void => handleRemove(categoryIndex, itemIndex)
                   }
                 />
               ) : (
@@ -654,17 +654,12 @@ function CategoriesBoxes({
         </div>
       ))}
       {handleAdd !== undefined && (
-        <div className="flex h-auto max-h-80 content-center items-center justify-center gap-2 rounded border-[1px] border-black bg-white p-4">
-          <Button.Small
-            variant={className.greenButton}
-            onClick={(): void => {
-              handleAdd(undefined);
-            }}
-            className="h-fit"
-          >
-            {commonText('add')}
-          </Button.Small>
-        </div>
+        <Button.Green
+          onClick={(): void => handleAdd(undefined)}
+          className="!p-4"
+        >
+          {commonText('add')}
+        </Button.Green>
       )}
     </>
   );
@@ -756,7 +751,7 @@ function DefaultStatItem({
     statSpecItemObject === undefined ? undefined : statSpecItemObject[itemName];
   const statValue =
     statSpecItem === undefined ? undefined : statSpecItem.spec.type ===
-      'Querybuildstat' ? (
+      'QueryBuilderStat' ? (
       <QueryBuilderStat
         fields={statSpecItem.spec.fields}
         statLabel={statSpecItem.label}
@@ -844,20 +839,20 @@ function PageButton({
   readonly onDialogOpen: (() => void) | undefined;
 }): JSX.Element {
   return (
-    <div>
+    <div className="flex">
       <Button.Gray
         onClick={handleClick}
         aria-current={isActive ? 'page' : undefined}
+        className="min-w-28 flex-1"
       >
         {label}
       </Button.Gray>
-      {handleDialogOpen !== undefined && (
-        <Button.Icon
-          title={'remove'}
-          icon={'pencil'}
-          onClick={handleDialogOpen}
-        ></Button.Icon>
-      )}
+      <Button.Icon
+        title="remove"
+        icon="pencil"
+        onClick={handleDialogOpen}
+        className={handleDialogOpen === undefined ? 'invisible' : undefined}
+      />
     </div>
   );
 }

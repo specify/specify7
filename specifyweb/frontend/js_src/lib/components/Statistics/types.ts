@@ -1,6 +1,6 @@
 import type { State } from 'typesafe-reducer';
 
-import type { IR, RA } from '../../utils/types';
+import type { RA } from '../../utils/types';
 
 export type CustomStat = State<
   'CustomStat',
