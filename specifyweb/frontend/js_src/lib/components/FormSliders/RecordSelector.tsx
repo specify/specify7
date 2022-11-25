@@ -118,7 +118,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     slider: <Slider count={totalCount} value={index} onChange={handleSlide} />,
     index,
     totalCount,
-    isLoading: records[index] === undefined,
+    isLoading: records[index] === undefined && totalCount !== 0,
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:

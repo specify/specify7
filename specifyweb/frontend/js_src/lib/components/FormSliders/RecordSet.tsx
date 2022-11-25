@@ -13,6 +13,7 @@ import { clamp, split } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -28,7 +29,6 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { serializeResource } from '../DataModel/helpers';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -54,7 +54,6 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
       return;
     }
     if (resource.isNew()) {
-      // FIXME: check if this should be equal to totalCount
       setIndex(0);
       return;
     }
@@ -98,9 +97,8 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
   return totalCount === undefined || index === undefined ? null : (
     <RecordSet
       dialog={false}
-      index={index}
+      index={resource.isNew() ? totalCount : index}
       mode="edit"
-      model={resource.specifyModel}
       record={resource}
       recordSet={recordSet}
       totalCount={totalCount}
@@ -158,6 +156,7 @@ function RecordSet<SCHEMA extends AnySchema>({
   | 'defaultIndex'
   | 'field'
   | 'index'
+  | 'model'
   | 'onDelete'
   | 'onSaved'
   | 'records'
@@ -182,16 +181,21 @@ function RecordSet<SCHEMA extends AnySchema>({
      * thousands of items), Also, an array with 40k elements in a React
      * State causes React DevTools to crash
      */
-    RA<number | undefined> | undefined
-  >(undefined);
+    RA<number | undefined>
+  >(() => {
+    const array = [];
+    array[totalCount - 1] = undefined;
+    return array;
+  });
 
   const go = (
     index: number,
-    recordId: number | undefined,
+    recordId: number | 'new' | undefined,
     newResource?: SpecifyResource<SCHEMA>
   ): void =>
-    typeof recordId === 'number'
-      ? navigate(
+    recordId === undefined
+      ? handleFetch(index)
+      : navigate(
           getResourceViewUrl(
             currentRecord.specifyModel.name,
             recordId,
@@ -203,13 +207,13 @@ function RecordSet<SCHEMA extends AnySchema>({
               resource: f.maybe(newResource, serializeResource),
             },
           }
-        )
-      : handleFetch(index);
+        );
 
   const previousIndex = React.useRef<number>(currentIndex);
   const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handleFetch = React.useCallback(
     (index: number): void => {
+      if (index >= totalCount) return;
       handleLoading();
       fetchItems(
         recordSet.id,
@@ -278,6 +282,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         isInRecordSet
         isLoading={isLoading}
         mode={mode}
+        model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
         totalCount={totalCount}
@@ -311,51 +316,49 @@ function RecordSet<SCHEMA extends AnySchema>({
                 })
             : undefined
         }
-        onClone={(newResource): void =>
-          go(currentIndex + 1, undefined, newResource)
-        }
+        onClone={(newResource): void => go(totalCount, 'new', newResource)}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
           (!currentRecord.isNew() || totalCount !== 0)
             ? (_index, source): void => {
-                if (currentRecord.isNew())
-                  go(currentIndex - 1, ids[currentIndex - 1]);
-                else
-                  loading(
-                    (source === 'minusButton'
-                      ? fetchCollection('RecordSetItem', {
-                          limit: 1,
-                          recordId: ids[currentIndex],
-                          recordSet: recordSet.id,
-                        }).then(async ({ records }) =>
-                          deleteResource(
-                            'RecordSetItem',
-                            defined(
-                              records[0],
-                              `Failed to remove resource from the ` +
-                                `record set. RecordSetItem not found. RecordId: ` +
-                                `${ids[currentIndex]}. Record set: ${recordSet.id}`
-                            ).id
-                          )
+                if (currentRecord.isNew()) return;
+                loading(
+                  (source === 'minusButton'
+                    ? fetchCollection('RecordSetItem', {
+                        limit: 1,
+                        recordId: ids[currentIndex],
+                        recordSet: recordSet.id,
+                      }).then(async ({ records }) =>
+                        deleteResource(
+                          'RecordSetItem',
+                          defined(
+                            records[0],
+                            `Failed to remove resource from the ` +
+                              `record set. RecordSetItem not found. RecordId: ` +
+                              `${ids[currentIndex]}. Record set: ${recordSet.id}`
+                          ).id
                         )
-                      : Promise.resolve()
-                    ).then(() => {
-                      const newTotalCount = totalCount - 1;
-                      setTotalCount(newTotalCount);
-                      setIds((oldIds = []) => {
-                        const newIds = oldIds.slice();
-                        newIds.splice(currentIndex, 1);
-                        newIds[currentIndex] = undefined;
-                        return newIds;
-                      });
-                      if (newTotalCount === 0) handleClose();
-                    })
-                  );
+                      )
+                    : Promise.resolve()
+                  ).then(() => {
+                    const newTotalCount = totalCount - 1;
+                    setTotalCount(newTotalCount);
+                    setIds((oldIds = []) => {
+                      const newIds = oldIds.slice();
+                      newIds.splice(currentIndex, 1);
+                      newIds[currentIndex] = undefined;
+                      return newIds;
+                    });
+                    if (newTotalCount === 0) handleClose();
+                  })
+                );
               }
             : undefined
         }
-        onSaved={(resource): void => handleAdd([resource])}
+        onSaved={(resource): void =>
+          ids[currentIndex] === resource.id ? undefined : handleAdd([resource])
+        }
         onSlide={(index): void => go(index, ids[index])}
       />
       {hasDuplicate && (

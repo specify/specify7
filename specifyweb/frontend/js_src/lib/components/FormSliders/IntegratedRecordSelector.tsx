@@ -27,6 +27,7 @@ import type {
 import { useRecordSelector } from './RecordSelector';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 
+// REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   collection,

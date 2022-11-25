@@ -122,17 +122,25 @@ export function ViewResourceById({
   );
   const isInRecordSet = 'recordSetItemIndex' in state;
 
+  const numericId = f.parseInt(id);
   const resource = React.useMemo(
     () =>
       typeof model === 'object'
-        ? record ?? new model.Resource({ id })
+        ? record ?? new model.Resource({ id: numericId })
         : undefined,
-    [model, record, id]
+    [model, record, numericId]
   );
 
-  if (model === undefined || resource === undefined) {
+  if (
+    (numericId === undefined && id?.toLowerCase() !== 'new') ||
+    model === undefined ||
+    resource === undefined
+  ) {
     return <NotFoundView />;
-  } else if (typeof id === 'string' && !hasTablePermission(model.name, 'read'))
+  } else if (
+    typeof numericId === 'number' &&
+    !hasTablePermission(model.name, 'read')
+  )
     return <TablePermissionDenied action="read" tableName={model.name} />;
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;

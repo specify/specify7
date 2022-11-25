@@ -273,11 +273,11 @@ export const routes: RA<EnhancedRoute> = [
     path: 'view/:tableName',
     children: [
       {
-        path: 'new',
-        element: () =>
-          import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
-      },
-      {
+        /*
+         * Id is set to "new" when adding new resource.
+         * Separate route was not used to prevent reloading everything when
+         * adding new items to record set
+         */
         path: ':id',
         element: () =>
           import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
