@@ -21,7 +21,7 @@ function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
       {
         label: key,
         spec: {
-          type: 'Backendstat',
+          type: 'BackEndStat',
           value: modifyfunction(value),
         },
       },
@@ -58,7 +58,7 @@ export const statsSpec: IR<StatsSpec> = {
           specimens: {
             label: statsText('collectionObjects'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
               fields: [
                 {
@@ -72,7 +72,7 @@ export const statsSpec: IR<StatsSpec> = {
           preparations: {
             label: statsText('preparations'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Preparation',
               fields: [
                 {
@@ -85,7 +85,7 @@ export const statsSpec: IR<StatsSpec> = {
           typeSpecimens: {
             label: statsText('typeSpecimens'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Determination',
               fields: [
                 {
@@ -102,21 +102,21 @@ export const statsSpec: IR<StatsSpec> = {
           familiesRepresented: {
             label: statsText('familiesRepresented'),
             spec: {
-              type: 'Backendstat',
+              type: 'BackEndStat',
               value: backendStatsResult?.familiesRepresented,
             },
           },
           generaRepresented: {
             label: statsText('generaRepresented'),
             spec: {
-              type: 'Backendstat',
+              type: 'BackEndStat',
               value: backendStatsResult?.generaRepresented,
             },
           },
           speciesRepresented: {
             label: statsText('speciesRepresented'),
             spec: {
-              type: 'Backendstat',
+              type: 'BackEndStat',
               value: backendStatsResult?.speciesRepresented,
             },
           },
@@ -141,7 +141,7 @@ export const statsSpec: IR<StatsSpec> = {
           itemsOnLoans: {
             label: statsText('itemsOnLoans'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'LoanPreparation',
               fields: [
                 {
@@ -158,7 +158,7 @@ export const statsSpec: IR<StatsSpec> = {
           openLoansCount: {
             label: statsText('openLoans'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Loan',
               fields: [
                 {
@@ -174,9 +174,8 @@ export const statsSpec: IR<StatsSpec> = {
           },
           overdueLoansCount: {
             label: statsText('overdueLoans'),
-
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Loan',
               fields: [
                 {
@@ -206,7 +205,7 @@ export const statsSpec: IR<StatsSpec> = {
           classesCount: {
             label: statsText('classes'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Taxon',
               fields: [
                 {
@@ -224,7 +223,7 @@ export const statsSpec: IR<StatsSpec> = {
           ordersCount: {
             label: statsText('orders'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Taxon',
               fields: [
                 {
@@ -242,7 +241,7 @@ export const statsSpec: IR<StatsSpec> = {
           familiesCount: {
             label: statsText('families'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Taxon',
               fields: [
                 {
@@ -260,7 +259,7 @@ export const statsSpec: IR<StatsSpec> = {
           generaCount: {
             label: statsText('genera'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Taxon',
               fields: [
                 {
@@ -278,7 +277,7 @@ export const statsSpec: IR<StatsSpec> = {
           speciesCount: {
             label: statsText('species'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Taxon',
               fields: [
                 {
@@ -303,7 +302,7 @@ export const statsSpec: IR<StatsSpec> = {
           localityCount: {
             label: statsText('localities'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Locality',
               fields: [
                 {
@@ -319,7 +318,7 @@ export const statsSpec: IR<StatsSpec> = {
           geographyEntryCount: {
             label: statsText('geographyEntries'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Geography',
               fields: [
                 {
@@ -335,14 +334,14 @@ export const statsSpec: IR<StatsSpec> = {
           countriesCount: {
             label: statsText('countries'),
             spec: {
-              type: 'Backendstat',
+              type: 'BackEndStat',
               value: backendStatsResult?.countries,
             },
           },
           georeferencedLocalityCount: {
             label: statsText('georeferencedLocalities'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Locality',
               fields: [
                 {
@@ -368,20 +367,26 @@ export const statsSpec: IR<StatsSpec> = {
     catalogStats: {
       label: statsText('computerization'),
       categories() {
-        const local = new Date();
-        const initialDate = getDateInputValue(local);
-        local.setDate(local.getDate() - 7);
-        const initialDateSevenDaysPast = getDateInputValue(local);
-        local.setDate(local.getDate() - 23);
-        const initialDateThirtyDaysPast = getDateInputValue(local);
-        local.setDate(local.getDate() + 30);
-        local.setFullYear(local.getFullYear() - 1);
-        const initialDateYearPast = getDateInputValue(local);
+        const currentDate = new Date();
+        const initialDate = getDateInputValue(currentDate);
+
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const initialDateSevenDaysPast = getDateInputValue(weekAgo);
+
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        const initialDateMonthPast = getDateInputValue(monthAgo);
+
+        const yearAgo = new Date();
+        yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+        const initialDateYearPast = getDateInputValue(yearAgo);
+
         return {
-          catalogedLast7Days: {
-            label: statsText('computerizedLast7Days'),
+          catalogedLastSevenDays: {
+            label: statsText('computerizedLastSevenDays'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
               fields: [
                 {
@@ -395,10 +400,10 @@ export const statsSpec: IR<StatsSpec> = {
               ],
             },
           },
-          catalogedLast30Days: {
-            label: statsText('computerizedLast30Days'),
+          catalogedLastMonth: {
+            label: statsText('computerizedLastMonth'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
               fields: [
                 {
@@ -407,7 +412,7 @@ export const statsSpec: IR<StatsSpec> = {
                 {
                   path: 'catalogedDate',
                   operStart: queryFieldFilters.between.id,
-                  startValue: `${initialDateThirtyDaysPast},${initialDate}`,
+                  startValue: `${initialDateMonthPast},${initialDate}`,
                 },
               ],
             },
@@ -415,7 +420,7 @@ export const statsSpec: IR<StatsSpec> = {
           catalogedLastYear: {
             label: statsText('computerizedLastYear'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'CollectionObject',
               fields: [
                 {
@@ -441,7 +446,7 @@ export const statsSpec: IR<StatsSpec> = {
           itemsOnLoans: {
             label: statsText('itemsOnLoans'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'LoanPreparation',
               fields: [
                 {
@@ -458,7 +463,7 @@ export const statsSpec: IR<StatsSpec> = {
           openLoansCount: {
             label: statsText('openLoans'),
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Loan',
               fields: [
                 {
@@ -476,7 +481,7 @@ export const statsSpec: IR<StatsSpec> = {
             label: statsText('overdueLoans'),
 
             spec: {
-              type: 'Querybuildstat',
+              type: 'QueryBuilderStat',
               tableName: 'Loan',
               fields: [
                 {
