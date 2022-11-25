@@ -23,6 +23,8 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { NO_CLONE } from './ResourceView';
 
+export const saveFormUnloadProtect = formsText('unsavedFormUnloadProtect');
+
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
  *   defined in the same place
@@ -70,7 +72,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const saveRequired = useIsModified(resource);
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired || externalSaveRequired,
-    formsText('unsavedFormUnloadProtect')
+    saveFormUnloadProtect
   );
 
   const [saveBlocked, setSaveBlocked] = React.useState(false);

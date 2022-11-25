@@ -8,7 +8,7 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import { UnloadProtectsContext } from '../components/Core/Contexts';
 import type { BackgroundLocation } from '../components/Router/Router';
 import { isOverlay, OverlayContext } from '../components/Router/Router';
-import type { GetSet } from '../utils/types';
+import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
 
@@ -75,14 +75,7 @@ export function useUnloadProtect(
   )!;
 
   const handleRemove = React.useCallback(
-    (): void =>
-      setUnloadProtects((unloadProtects) =>
-        /*
-         * If there are multiple unload protects with the same message, this makes
-         * sure to remove only one
-         */
-        removeItem(unloadProtects, unloadProtects.indexOf(message))
-      ),
+    (): void => unsetUnloadProtect(setUnloadProtects, message),
     [setUnloadProtects, message]
   );
 
@@ -97,3 +90,18 @@ export function useUnloadProtect(
     [setUnloadProtects, isEnabled]
   );
 }
+
+export const unsetUnloadProtect = (
+  setUnloadProtects: GetOrSet<RA<string>>[1],
+  message: string
+) =>
+  setUnloadProtects((unloadProtects) => {
+    const index = unloadProtects.indexOf(message);
+    if (index === -1) return unloadProtects;
+
+    /*
+     * If there are multiple unload protects with the same message, this makes
+     * sure to remove only one
+     */
+    return removeItem(unloadProtects, index);
+  });

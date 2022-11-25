@@ -27,6 +27,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { softFail } from '../Errors/Crash';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -44,34 +45,41 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     readonly recordSetItemIndex?: number;
   };
   const savedRecordSetItemIndex = state?.recordSetItemIndex;
-  const [recordSetItemIndex] = useAsyncState(
-    React.useCallback(async () => {
-      if (typeof savedRecordSetItemIndex === 'number')
-        return savedRecordSetItemIndex;
+  const [index, setIndex] = React.useState<number | undefined>(undefined);
+  const loading = React.useContext(LoadingContext);
+  React.useEffect(() => {
+    if (typeof savedRecordSetItemIndex === 'number') {
+      setIndex(savedRecordSetItemIndex);
+      return;
+    }
+    if (resource.isNew()) {
       // FIXME: check if this should be equal to totalCount
-      if (resource.isNew()) return 0;
-      const { records } = await fetchCollection('RecordSetItem', {
+      setIndex(0);
+      return;
+    }
+    loading(
+      fetchCollection('RecordSetItem', {
         recordSet: recordSet.id,
         limit: 1,
         recordId: resource.id,
-      });
-      const recordSetItemId = records[0]?.id;
-      if (recordSetItemId === undefined) {
-        navigate(getResourceViewUrl(resource.specifyModel.name, resource.id));
-        return undefined;
-      }
-      const { totalCount } = await fetchCollection(
-        'RecordSetItem',
-        {
-          recordSet: recordSet.id,
-          limit: 1,
-        },
-        { id__lt: recordSetItemId }
-      );
-      return totalCount;
-    }, [savedRecordSetItemIndex, recordSet.id, resource.id]),
-    true
-  );
+      }).then(async ({ records }) => {
+        const recordSetItemId = records[0]?.id;
+        if (recordSetItemId === undefined) {
+          navigate(getResourceViewUrl(resource.specifyModel.name, resource.id));
+          return;
+        }
+        const { totalCount } = await fetchCollection(
+          'RecordSetItem',
+          {
+            recordSet: recordSet.id,
+            limit: 1,
+          },
+          { id__lt: recordSetItemId }
+        );
+        setIndex(totalCount);
+      })
+    );
+  }, [savedRecordSetItemIndex, loading, recordSet.id, resource.id]);
 
   const [totalCount] = useAsyncState(
     React.useCallback(
@@ -85,10 +93,10 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
     true
   );
 
-  return totalCount === undefined || recordSetItemIndex === undefined ? null : (
+  return totalCount === undefined || index === undefined ? null : (
     <RecordSet
       dialog={false}
-      index={recordSetItemIndex}
+      index={index}
       mode="edit"
       model={resource.specifyModel}
       record={resource}
@@ -142,7 +150,6 @@ function RecordSet<SCHEMA extends AnySchema>({
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  | 'children'
   | 'defaultIndex'
   | 'field'
   | 'index'
@@ -195,26 +202,30 @@ function RecordSet<SCHEMA extends AnySchema>({
       : handleFetch(index);
 
   const previousIndex = React.useRef<number>(currentIndex);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
   const handleFetch = React.useCallback(
-    (index: number): void =>
-      loading(
-        fetchItems(
-          recordSet.id,
-          // If new index is smaller (i.e, going back), fetch previous 40 IDs
-          clamp(
-            0,
-            previousIndex.current > index ? index - fetchSize + 1 : index,
-            totalCount
-          )
-        ).then((updateIds) =>
+    (index: number): void => {
+      handleLoading();
+      fetchItems(
+        recordSet.id,
+        // If new index is smaller (i.e, going back), fetch previous 40 IDs
+        clamp(
+          0,
+          previousIndex.current > index ? index - fetchSize + 1 : index,
+          totalCount
+        )
+      )
+        .then((updateIds) =>
           setIds((oldIds = []) => {
+            handleLoaded();
             const newIds = updateIds(oldIds);
             go(index, newIds[index]);
             return newIds;
           })
         )
-      ),
-    [totalCount, recordSet.id, loading]
+        .catch(softFail);
+    },
+    [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
   );
 
   // Fetch ID of record at current index
@@ -254,11 +265,12 @@ function RecordSet<SCHEMA extends AnySchema>({
         headerButtons={<EditRecordSetButton recordSet={recordSet} />}
         ids={ids}
         isDependent={false}
+        isInRecordSet
         mode={mode}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
         totalCount={totalCount}
-        urlContext={recordSet.id}
+        isLoading={isLoading}
         onAdd={
           hasToolPermission('recordSets', 'create')
             ? async (resources) =>

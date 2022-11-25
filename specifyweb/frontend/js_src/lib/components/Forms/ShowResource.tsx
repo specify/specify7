@@ -1,27 +1,26 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { deserializeResource } from '../../hooks/resource';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { f } from '../../utils/functools';
-import type { AnySchema } from '../DataModel/helperTypes';
-import { SerializedResource } from '../DataModel/helperTypes';
+import { serializeResource } from '../DataModel/helpers';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
+import type { RecordSet } from '../DataModel/types';
+import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { TablePermissionDenied } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/helpers';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { deserializeResource } from '../../hooks/resource';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { RecordSet } from '../DataModel/types';
 
 export function ShowResource({
   resource: initialResource,
@@ -60,8 +59,8 @@ export function ShowResource({
   const navigate = useNavigate();
   return recordSet === undefined ? null : typeof recordSet === 'object' ? (
     <RecordSetWrapper
-      resource={resource}
       recordSet={recordSet}
+      resource={resource}
       onClose={(): void => navigate('/specify/')}
     />
   ) : (
@@ -72,8 +71,6 @@ export function ShowResource({
       mode="edit"
       resource={resource}
       viewName={resource.specifyModel.view}
-      onClose={f.never}
-      onDeleted={f.void}
       onAdd={(newResource): void =>
         navigate(
           getResourceViewUrl(
@@ -86,6 +83,8 @@ export function ShowResource({
           }
         )
       }
+      onClose={f.never}
+      onDeleted={f.void}
       onSaved={(): void => {
         const reloadResource = new resource.specifyModel.Resource({
           id: resource.id,
@@ -112,14 +111,16 @@ export function ViewResourceById({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
-  const { state } = useLocation();
-  const serializedResource = (
-    state as { readonly resource: SerializedResource<AnySchema> | undefined }
-  )?.resource;
+  const location = useLocation();
+  const state = (location.state ?? {}) as {
+    readonly resource: SerializedResource<AnySchema> | undefined;
+    readonly recordSetItemIndex?: number;
+  };
   const record = React.useMemo(
-    () => f.maybe(serializedResource, deserializeResource),
-    [serializedResource]
+    () => f.maybe(state?.resource, deserializeResource),
+    [state?.resource]
   );
+  const isInRecordSet = 'recordSetItemIndex' in state;
 
   const resource = React.useMemo(
     () =>
@@ -136,7 +137,9 @@ export function ViewResourceById({
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;
   else
-    return (
+    return isInRecordSet ? (
+      <ShowResource resource={resource} />
+    ) : (
       <CheckLoggedInCollection resource={resource}>
         <ShowResource resource={resource} />
       </CheckLoggedInCollection>

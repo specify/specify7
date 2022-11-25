@@ -115,15 +115,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   >({ type: 'Main' });
 
   return {
-    slider: (
-      <Slider
-        count={totalCount}
-        value={
-          typeof records[index] === 'object' ? index : lastIndexRef.current
-        }
-        onChange={handleSlide}
-      />
-    ),
+    slider: <Slider count={totalCount} value={index} onChange={handleSlide} />,
     index,
     totalCount,
     isLoading: records[index] === undefined,

@@ -20,6 +20,7 @@ import {
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly id: number;
+  // FEATURE: store original values to know when changes were reverted
   readonly needsSaved: boolean;
   readonly cid: string;
   readonly noValidation?: boolean;

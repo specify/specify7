@@ -14,6 +14,10 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { UnloadProtectsContext } from '../Core/Contexts';
+import { unsetUnloadProtect } from '../../hooks/navigation';
+import { saveFormUnloadProtect } from '../Forms/Save';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -32,12 +36,13 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   isDependent,
   mode,
   canRemove = true,
+  isLoading: isExternalLoading = false,
+  isInRecordSet = false,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
-  isInRecordSet = false,
   ...rest
 }: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
@@ -54,13 +59,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly canRemove?: boolean;
+  readonly isLoading?: boolean;
+  // Record set ID, or false to not update the URL
+  readonly isInRecordSet?: boolean;
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
-  // Record set ID, or false to not update the URL
-  readonly isInRecordSet?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -83,12 +89,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     };
   }, [ids, model]);
 
-  const [index, setIndex] = React.useState(defaultIndex ?? ids.length - 1);
-  React.useEffect(
-    () =>
-      typeof defaultIndex === 'number' ? setIndex(defaultIndex) : undefined,
-    [defaultIndex]
-  );
+  const [index, setIndex] = useTriggerState(defaultIndex ?? ids.length - 1);
   React.useEffect(
     () =>
       setIndex((index) =>
@@ -105,6 +106,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   const [unloadProtect, setUnloadProtect] = React.useState<
     (() => void) | undefined
   >(undefined);
+  const [_, setUnloadProtects] = React.useContext(UnloadProtectsContext)!;
 
   const {
     dialogs,
@@ -219,7 +221,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
           </>
         )}
         isDependent={isDependent}
-        isLoading={isLoading}
+        isLoading={isLoading || isExternalLoading}
         isSubForm={false}
         mode={mode}
         resource={resource}
@@ -242,6 +244,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
               <Button.Orange
                 onClick={(): void => {
+                  unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
+                  setUnloadProtects([]);
                   unloadProtect();
                   setUnloadProtect(undefined);
                 }}

@@ -201,6 +201,7 @@ function Overlay({
 function defaultOverlayContext() {
   throw new Error('Tried to close Overlay outside of an overlay');
 }
+
 export const isOverlay = (overlayContext: () => void): boolean =>
   overlayContext !== defaultOverlayContext;
 export const OverlayContext = React.createContext<() => void>(
@@ -217,6 +218,17 @@ function UnloadProtect({
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
+
+  const isEmpty = unloadProtects.length === 0;
+  const isSet = unloadProtect !== undefined;
+  const shouldUnset = isEmpty && isSet;
+  React.useEffect(
+    () =>
+      shouldUnset
+        ? setUnloadProtect((blocker) => void blocker?.resolve())
+        : undefined,
+    [isEmpty, isSet]
+  );
 
   const backgroundPathRef = React.useRef<string | undefined>(backgroundPath);
   React.useEffect(() => {
