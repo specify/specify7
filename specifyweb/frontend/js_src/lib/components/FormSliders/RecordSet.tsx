@@ -9,7 +9,7 @@ import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
-import { clamp, removeItem } from '../../utils/utils';
+import { clamp, split } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
@@ -21,13 +21,13 @@ import {
   getResourceViewUrl,
 } from '../DataModel/resource';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { softFail } from '../Errors/Crash';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -115,28 +115,31 @@ const fetchSize = DEFAULT_FETCH_LIMIT * 2;
 const fetchItems = async (
   recordSetId: number,
   offset: number
-): Promise<(ids: RA<number | undefined>) => RA<number | undefined>> =>
+): Promise<RA<readonly [index: number, id: number]>> =>
   fetchRows('RecordSetItem', {
     limit: fetchSize,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,
     fields: { recordId: ['number'] } as const,
-  }).then(
-    (records) => (ids: RA<number | undefined>) =>
-      records
-        .map(({ recordId }, index) => [offset + index, recordId] as const)
-        .reduce(
-          (items, [order, recordId]) => {
-            items[order] = recordId;
-            return items;
-          },
-          /*
-           * A trivial slice to create a shallow copy. Can't use Array.from
-           * because that decompresses the sparse array
-           */
-          ids.slice()
-        )
+  }).then((records) =>
+    records.map(({ recordId }, index) => [offset + index, recordId] as const)
+  );
+
+const updateIds = (
+  oldIds: RA<number | undefined>,
+  updates: RA<readonly [index: number, id: number]>
+): RA<number | undefined> =>
+  updates.reduce(
+    (items, [order, recordId]) => {
+      items[order] = recordId;
+      return items;
+    },
+    /*
+     * A trivial slice to create a shallow copy. Can't use Array.from
+     * because that decompresses the sparse array
+     */
+    oldIds.slice()
   );
 
 function RecordSet<SCHEMA extends AnySchema>({
@@ -215,10 +218,10 @@ function RecordSet<SCHEMA extends AnySchema>({
           totalCount
         )
       )
-        .then((updateIds) =>
+        .then((updates) =>
           setIds((oldIds = []) => {
             handleLoaded();
-            const newIds = updateIds(oldIds);
+            const newIds = updateIds(oldIds, updates);
             go(index, newIds[index]);
             return newIds;
           })
@@ -253,7 +256,12 @@ function RecordSet<SCHEMA extends AnySchema>({
       )
     );
     go(oldTotalCount, resources[0].id, resources[0]);
-    setIds([...ids, ...resources.map(({ id }) => id)]);
+    setIds((oldIds = []) =>
+      updateIds(
+        oldIds,
+        resources.map(({ id }, index) => [oldTotalCount + index, id])
+      )
+    );
   };
 
   return (
@@ -266,11 +274,11 @@ function RecordSet<SCHEMA extends AnySchema>({
         ids={ids}
         isDependent={false}
         isInRecordSet
+        isLoading={isLoading}
         mode={mode}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
         totalCount={totalCount}
-        isLoading={isLoading}
         onAdd={
           hasToolPermission('recordSets', 'create')
             ? async (resources) =>
@@ -289,16 +297,14 @@ function RecordSet<SCHEMA extends AnySchema>({
                     })
                   )
                 ).then((results) => {
-                  const hasDuplicate = results.some(
+                  const [nonDuplicates, duplicates] = split(
+                    results,
                     ({ isDuplicate }) => isDuplicate
                   );
-                  if (hasDuplicate && results.length === 1)
+                  if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
                   else {
-                    const resources = results
-                      .filter(({ isDuplicate }) => !isDuplicate)
-                      .map(({ resource }) => resource);
-                    handleAdd(resources);
+                    handleAdd(nonDuplicates.map(({ resource }) => resource));
                   }
                 })
             : undefined
@@ -335,7 +341,13 @@ function RecordSet<SCHEMA extends AnySchema>({
                     ).then(() => {
                       const newTotalCount = totalCount - 1;
                       setTotalCount(newTotalCount);
-                      setIds(removeItem(ids, currentIndex));
+                      setIds((oldIds = []) => {
+                        if (currentIndex === oldIds.length - 1)
+                          return oldIds.slice(0, -1);
+                        const newIds = oldIds.slice();
+                        newIds[currentIndex] = undefined;
+                        return newIds;
+                      });
                       const newIndex = clamp(
                         0,
                         /*
