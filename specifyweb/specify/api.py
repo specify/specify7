@@ -830,7 +830,7 @@ class RowsForm(GetCollectionForm):
         offset=0,
         orderby=None,
         distinct=False,
-        fields=[],
+        fields="",
     )
 
 def rows(request, model_name: str) -> HttpResponse:
