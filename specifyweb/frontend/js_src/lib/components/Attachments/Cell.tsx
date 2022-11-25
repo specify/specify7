@@ -14,12 +14,12 @@ import { getModelById } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
-import { originalAttachmentsView } from '../Forms/SpecifyForm';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasTablePermission } from '../Permissions/helpers';
 import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
+import { originalAttachmentsView } from '../Forms/useViewDefinition';
 
 export function AttachmentCell({
   attachment,

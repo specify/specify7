@@ -201,7 +201,7 @@ export function parseWebLink(definition: Element): ParsedWebLink | undefined {
     definition
       ?.querySelector('baseURLStr')
       ?.textContent?.trim()
-      .replace(/<\s*this\s*>/g, '<_this>')
+      .replace(/<\s*this\s*>/gu, '<_this>')
       .replaceAll('AMP', '&')
       .replaceAll('<', '<%= ')
       .replaceAll('>', ' %>') ?? '';

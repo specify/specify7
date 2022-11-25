@@ -8,7 +8,8 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
-import { queryIdField, QueryResultRow } from './Results';
+import type { QueryResultRow } from './Results';
+import { queryIdField } from './Results';
 
 export function QueryToForms({
   model,
@@ -49,14 +50,14 @@ export function QueryToForms({
           dialog="modal"
           ids={ids}
           isDependent={false}
+          isInRecordSet={false}
           mode="edit"
           model={model}
           newResource={undefined}
           title={queryText('queryResults', model.label)}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
-          urlContext={false}
-          onClone={undefined}
           onAdd={undefined}
+          onClone={undefined}
           onClose={handleClose}
           onDelete={(index): void => handleDelete(unParseIndex(index))}
           onSaved={f.void}

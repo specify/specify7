@@ -26,25 +26,25 @@ export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly mode: FormMode;
   readonly viewName?: string;
   readonly isSubForm: boolean;
-  readonly children: (props: {
-    readonly formElement: HTMLFormElement | null;
-    readonly formPreferences: JSX.Element;
-    readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
-    readonly title: string;
-    readonly formatted: string;
-    readonly jsxFormatted: JSX.Element | string;
-    readonly specifyNetworkBadge: JSX.Element | undefined;
-  }) => JSX.Element;
 };
 
-export function BaseResourceView<SCHEMA extends AnySchema>({
+export type ResourceViewState = {
+  readonly formElement: HTMLFormElement | null;
+  readonly formPreferences: JSX.Element;
+  readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
+  readonly title: string;
+  readonly formatted: string;
+  readonly jsxFormatted: JSX.Element | string;
+  readonly specifyNetworkBadge: JSX.Element | undefined;
+};
+
+export function useResourceView<SCHEMA extends AnySchema>({
   isLoading,
   resource,
-  children,
   mode,
   viewName = resource?.specifyModel.view,
   isSubForm,
-}: ResourceViewProps<SCHEMA>): JSX.Element | null {
+}: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState('');
   React.useEffect(() => {
@@ -102,7 +102,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
       : resource.specifyModel.label
   }${formatted.length > 0 ? `: ${formatted}` : ''}`;
 
-  return children({
+  return {
     formatted: tableNameInTitle ? title : formatted,
     jsxFormatted:
       formHeaderFormat === 'name' ? (
@@ -118,7 +118,7 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     title,
     formElement: form,
     formPreferences: (
-      <FormMeta viewDescription={viewDefinition} resource={resource} />
+      <FormMeta resource={resource} viewDescription={viewDefinition} />
     ),
     form: (children, className) =>
       isSubForm ? (
@@ -137,5 +137,5 @@ export function BaseResourceView<SCHEMA extends AnySchema>({
     specifyNetworkBadge: displaySpecifyNetwork(resource) ? (
       <SpecifyNetworkBadge resource={resource} />
     ) : undefined,
-  });
+  };
 }

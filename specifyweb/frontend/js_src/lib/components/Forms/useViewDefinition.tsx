@@ -10,7 +10,13 @@ import { fetchView, parseViewDefinition } from '../FormParse';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
-import { originalAttachmentsView } from './SpecifyForm';
+
+/**
+ * By default, Specify 7 replaces all ObjectAttachment forms with
+ * AttachmentPlugin. To see the original form, render SpecifyForm with
+ * viewName=originalAttachmentsView
+ */
+export const originalAttachmentsView = 'originalObjectAttachment';
 
 /**
  * A hook to get information needed to display a form

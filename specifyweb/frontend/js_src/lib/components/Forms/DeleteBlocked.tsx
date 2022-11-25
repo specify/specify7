@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { format } from './dataObjFormatters';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ResourceView } from './ResourceView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { format } from './dataObjFormatters';
+import { ResourceView } from './ResourceView';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;
@@ -139,12 +139,12 @@ function BlockerPreview({
       isSubForm={false}
       mode="edit"
       resource={resource}
+      onAdd={undefined}
       onClose={handleClose}
       onDeleted={(): void => {
         handleDeleted();
         handleClose();
       }}
-      onAdd={undefined}
       onSaved={(): void => {
         if (
           typeof field === 'object' &&

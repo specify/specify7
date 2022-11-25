@@ -22,7 +22,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { ReportsView } from '../Reports';
 import { getUserPref } from '../UserPreferences/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { BaseResourceView } from './BaseResourceView';
+import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 
@@ -158,218 +158,206 @@ export function ResourceView<SCHEMA extends AnySchema>({
     'makeFormDialogsModal'
   );
 
+  const {
+    formElement,
+    formPreferences,
+    form,
+    title,
+    formatted,
+    jsxFormatted,
+    specifyNetworkBadge,
+  } = useResourceView({
+    isLoading,
+    isSubForm,
+    mode,
+    resource,
+    viewName,
+  });
+
   const navigate = useNavigate();
-  return isDeleted ? (
+  if (isDeleted)
+    return (
+      <Dialog
+        buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
+        header={commonText('resourceDeletedDialogHeader')}
+        onClose={(): void => navigate('/specify/')}
+      >
+        {commonText('resourceDeletedDialogText')}
+      </Dialog>
+    );
+
+  const saveButtonElement =
+    !isDependent &&
+    !isSubForm &&
+    typeof resource === 'object' &&
+    formElement !== null ? (
+      <SaveButton
+        form={formElement}
+        resource={resource}
+        onAdd={
+          NO_ADD_ANOTHER.has(resource.specifyModel.name) ? undefined : handleAdd
+        }
+        onSaved={(): void => {
+          const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
+          if (printOnSave[resource.specifyModel.name] === true)
+            setState({
+              type: 'Report',
+              onDone: () => handleSaved(),
+            });
+          else handleSaved();
+        }}
+        onSaving={handleSaving}
+      />
+    ) : undefined;
+  const report =
+    state.type === 'Report' && typeof resource === 'object' ? (
+      <ReportsView
+        autoSelectSingle
+        model={resource.specifyModel}
+        resourceId={resource.id}
+        onClose={(): void => {
+          state.onDone();
+          setState({ type: 'Main' });
+        }}
+      />
+    ) : undefined;
+  const deleteButton =
+    !isDependent &&
+    !isSubForm &&
+    typeof resource === 'object' &&
+    !resource.isNew() &&
+    hasTablePermission(resource.specifyModel.name, 'delete') ? (
+      <ErrorBoundary dismissable>
+        <DeleteButton
+          deletionMessage={deletionMessage}
+          resource={resource}
+          onDeleted={handleDelete}
+        />
+      </ErrorBoundary>
+    ) : undefined;
+  const headerContent = (
+    <>
+      {specifyNetworkBadge}
+      {formPreferences}
+    </>
+  );
+
+  if (dialog === false) {
+    const formattedChildren = (
+      <>
+        {report}
+        {form(children, 'overflow-y-auto')}
+        {typeof deleteButton === 'object' ||
+        typeof saveButtonElement === 'object' ||
+        typeof extraButtons === 'object' ? (
+          <DataEntry.Footer>
+            {deleteButton}
+            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {saveButtonElement}
+          </DataEntry.Footer>
+        ) : undefined}
+      </>
+    );
+    const headerComponents = headerButtons?.(headerContent) ?? (
+      <>
+        <span className="-ml-2 flex-1" />
+        {headerContent}
+      </>
+    );
+    return isSubForm ? (
+      <DataEntry.SubForm>
+        <DataEntry.SubFormHeader>
+          <DataEntry.SubFormTitle>
+            {titleOverride ?? jsxFormatted}
+          </DataEntry.SubFormTitle>
+          {headerComponents}
+        </DataEntry.SubFormHeader>
+        {formattedChildren}
+      </DataEntry.SubForm>
+    ) : (
+      <Container.FullGray>
+        <Container.Center className="!w-auto">
+          <DataEntry.Header>
+            <AppTitle title={titleOverride ?? formatted} type="form" />
+            <DataEntry.Title>{titleOverride ?? jsxFormatted}</DataEntry.Title>
+            {headerComponents}
+          </DataEntry.Header>
+          {formattedChildren}
+        </Container.Center>
+      </Container.FullGray>
+    );
+  }
+
+  /*
+   * Make record selector dialog occupy full height so that the record
+   * navigation buttons don't jump around a lot as you navigate between
+   * records
+   */
+  const isFullHeight =
+    dialog === 'modal' && typeof headerButtons === 'function' && !isSubForm;
+  return (
     <Dialog
-      buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
-      header={commonText('resourceDeletedDialogHeader')}
-      onClose={(): void => navigate('/specify/')}
-    >
-      {commonText('resourceDeletedDialogText')}
-    </Dialog>
-  ) : (
-    <BaseResourceView
-      isLoading={isLoading}
-      isSubForm={isSubForm}
-      mode={mode}
-      resource={resource}
-      viewName={viewName}
-    >
-      {({
-        formElement,
-        formPreferences,
-        form,
-        title,
-        formatted,
-        jsxFormatted,
-        specifyNetworkBadge,
-      }): JSX.Element => {
-        const saveButtonElement =
-          !isDependent &&
-          !isSubForm &&
-          typeof resource === 'object' &&
-          formElement !== null ? (
-            <SaveButton
-              form={formElement}
-              resource={resource}
-              onAdd={
-                NO_ADD_ANOTHER.has(resource.specifyModel.name)
-                  ? undefined
-                  : handleAdd
-              }
-              onSaved={(): void => {
-                const printOnSave = getUserPref(
-                  'form',
-                  'preferences',
-                  'printOnSave'
-                );
-                if (printOnSave[resource.specifyModel.name] === true)
-                  setState({
-                    type: 'Report',
-                    onDone: () => handleSaved(),
-                  });
-                else handleSaved();
-              }}
-              onSaving={handleSaving}
-            />
-          ) : undefined;
-        const report =
-          state.type === 'Report' && typeof resource === 'object' ? (
-            <ReportsView
-              autoSelectSingle
-              model={resource.specifyModel}
-              resourceId={resource.id}
-              onClose={(): void => {
-                state.onDone();
-                setState({ type: 'Main' });
-              }}
-            />
-          ) : undefined;
-        const deleteButton =
-          !isDependent &&
-          !isSubForm &&
-          typeof resource === 'object' &&
-          !resource.isNew() &&
-          hasTablePermission(resource.specifyModel.name, 'delete') ? (
-            <ErrorBoundary dismissable>
-              <DeleteButton
-                deletionMessage={deletionMessage}
-                resource={resource}
-                onDeleted={handleDelete}
-              />
-            </ErrorBoundary>
-          ) : undefined;
-        const headerContent = (
+      buttons={
+        isSubForm ? undefined : (
           <>
-            {specifyNetworkBadge}
-            {formPreferences}
+            {deleteButton}
+            {extraButtons ?? <span className="-ml-2 flex-1" />}
+            {isModified && !isDependent ? (
+              <Button.Red onClick={handleClose}>
+                {commonText('cancel')}
+              </Button.Red>
+            ) : (
+              <Button.Blue onClick={handleClose}>
+                {commonText('close')}
+              </Button.Blue>
+            )}
+            {saveButtonElement}
           </>
-        );
-        if (dialog === false) {
-          const formattedChildren = (
+        )
+      }
+      className={{
+        container: `${dialogClassNames.normalContainer} ${
+          isFullHeight ? 'h-full' : ''
+        }`,
+        content: `${className.formStyles} ${dialogClassNames.flexContent}`,
+      }}
+      header={titleOverride ?? title}
+      headerButtons={
+        <>
+          {headerButtons?.(specifyNetworkBadge) ?? (
             <>
-              {report}
-              {form(children, 'overflow-y-auto')}
-              {typeof deleteButton === 'object' ||
-              typeof saveButtonElement === 'object' ||
-              typeof extraButtons === 'object' ? (
-                <DataEntry.Footer>
-                  {deleteButton}
-                  {extraButtons ?? <span className="-ml-2 flex-1" />}
-                  {saveButtonElement}
-                </DataEntry.Footer>
-              ) : undefined}
-            </>
-          );
-          const headerComponents = headerButtons?.(headerContent) ?? (
-            <>
-              <span className="-ml-2 flex-1" />
+              <DataEntry.Visit resource={resource} />
+              <span className="-ml-4 flex-1" />
               {headerContent}
             </>
-          );
-          return isSubForm ? (
-            <DataEntry.SubForm>
-              <DataEntry.SubFormHeader>
-                <DataEntry.SubFormTitle>
-                  {titleOverride ?? jsxFormatted}
-                </DataEntry.SubFormTitle>
-                {headerComponents}
-              </DataEntry.SubFormHeader>
-              {formattedChildren}
-            </DataEntry.SubForm>
-          ) : (
-            <Container.FullGray>
-              <Container.Center className="!w-auto">
-                <DataEntry.Header>
-                  <AppTitle title={titleOverride ?? formatted} type="form" />
-                  <DataEntry.Title>
-                    {titleOverride ?? jsxFormatted}
-                  </DataEntry.Title>
-                  {headerComponents}
-                </DataEntry.Header>
-                {formattedChildren}
-              </Container.Center>
-            </Container.FullGray>
-          );
-        } else {
-          /*
-           * Make record selector dialog occupy full height so that the record
-           * navigation buttons don't jump around a lot as you navigate between
-           * records
-           */
-          const isFullHeight =
-            dialog === 'modal' &&
-            typeof headerButtons === 'function' &&
-            !isSubForm;
-          return (
-            <Dialog
-              buttons={
-                isSubForm ? undefined : (
-                  <>
-                    {deleteButton}
-                    {extraButtons ?? <span className="-ml-2 flex-1" />}
-                    {isModified && !isDependent ? (
-                      <Button.Red onClick={handleClose}>
-                        {commonText('cancel')}
-                      </Button.Red>
-                    ) : (
-                      <Button.Blue onClick={handleClose}>
-                        {commonText('close')}
-                      </Button.Blue>
-                    )}
-                    {saveButtonElement}
-                  </>
-                )
-              }
-              className={{
-                container: `${dialogClassNames.normalContainer} ${
-                  isFullHeight ? 'h-full' : ''
-                }`,
-                content: `${className.formStyles} ${dialogClassNames.flexContent}`,
-              }}
-              header={titleOverride ?? title}
-              headerButtons={
-                <>
-                  {headerButtons?.(specifyNetworkBadge) ?? (
-                    <>
-                      <DataEntry.Visit resource={resource} />
-                      <span className="-ml-4 flex-1" />
-                      {headerContent}
-                    </>
-                  )}
-                </>
-              }
-              icon="none"
-              modal={dialog === 'modal' || makeFormDialogsModal}
-              showOrangeBar={!isSubForm}
-              onClose={(): void => {
-                if (isModified) setShowUnloadProtect(true);
-                else handleClose();
-              }}
-            >
-              {form(children, 'overflow-y-hidden')}
-              {showUnloadProtect && (
-                <Dialog
-                  buttons={
-                    <>
-                      <Button.DialogClose>
-                        {commonText('cancel')}
-                      </Button.DialogClose>
-                      <Button.Red onClick={handleClose}>
-                        {commonText('leave')}
-                      </Button.Red>
-                    </>
-                  }
-                  header={commonText('leavePageDialogHeader')}
-                  onClose={(): void => setShowUnloadProtect(false)}
-                >
-                  {formsText('unsavedFormUnloadProtect')}
-                </Dialog>
-              )}
-            </Dialog>
-          );
-        }
+          )}
+        </>
+      }
+      icon="none"
+      modal={dialog === 'modal' || makeFormDialogsModal}
+      showOrangeBar={!isSubForm}
+      onClose={(): void => {
+        if (isModified) setShowUnloadProtect(true);
+        else handleClose();
       }}
-    </BaseResourceView>
+    >
+      {form(children, 'overflow-y-hidden')}
+      {showUnloadProtect && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.Red onClick={handleClose}>
+                {commonText('leave')}
+              </Button.Red>
+            </>
+          }
+          header={commonText('leavePageDialogHeader')}
+          onClose={(): void => setShowUnloadProtect(false)}
+        >
+          {formsText('unsavedFormUnloadProtect')}
+        </Dialog>
+      )}
+    </Dialog>
   );
 }

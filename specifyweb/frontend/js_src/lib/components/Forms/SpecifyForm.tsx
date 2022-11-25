@@ -18,13 +18,6 @@ import { loadingGif } from '../Molecules';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { usePref } from '../UserPreferences/usePref';
 
-/**
- * By default, Specify 7 replaces all ObjectAttachment forms with
- * AttachmentPlugin. To see the original form, render SpecifyForm with
- * viewName=originalAttachmentsView
- */
-export const originalAttachmentsView = 'originalObjectAttachment';
-
 const FormLoadingContext = React.createContext<boolean>(false);
 FormLoadingContext.displayName = 'FormLoadingContext';
 
@@ -33,7 +26,7 @@ FormLoadingContext.displayName = 'FormLoadingContext';
  * resource
  */
 export function RenderForm<SCHEMA extends AnySchema>({
-  isLoading,
+  isLoading = false,
   resource,
   viewDefinition,
   display,
@@ -80,8 +73,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
   const showLoading =
-    !formIsLoaded ||
-    (!isAlreadyLoading && (isLoading === true || isShowingOldResource));
+    !formIsLoaded || (!isAlreadyLoading && (isLoading || isShowingOldResource));
   const [flexibleColumnWidth] = usePref(
     'form',
     'definition',

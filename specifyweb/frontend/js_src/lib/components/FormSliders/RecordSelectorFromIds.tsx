@@ -13,7 +13,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import type { RecordSelectorProps } from './RecordSelector';
-import { BaseRecordSelector } from './RecordSelector';
+import { useRecordSelector } from './RecordSelector';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -37,9 +37,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   onAdd: handleAdd,
   onClone: handleClone,
   onDelete: handleDelete,
-  urlContext,
+  isInRecordSet = false,
   ...rest
-}: Omit<RecordSelectorProps<SCHEMA>, 'children' | 'index' | 'records'> & {
+}: Omit<RecordSelectorProps<SCHEMA>, 'index' | 'records'> & {
   /*
    * Undefined IDs are placeholders for items with unknown IDs (e.g in record
    * sets or query results with thousands of items)
@@ -60,7 +60,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     | ((newResource: SpecifyResource<SCHEMA>) => void)
     | undefined;
   // Record set ID, or false to not update the URL
-  readonly urlContext: number | false | undefined;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element | null {
   const [records, setRecords] = React.useState<
     RA<SpecifyResource<SCHEMA> | undefined>
@@ -106,169 +106,156 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
     (() => void) | undefined
   >(undefined);
 
-  return (
-    <BaseRecordSelector<SCHEMA>
-      {...rest}
-      index={index}
-      model={model}
-      records={
-        typeof newResource === 'object' ? [...records, newResource] : records
-      }
-      totalCount={rest.totalCount + (typeof newResource === 'object' ? 1 : 0)}
-      onAdd={
-        typeof handleAdd === 'function'
-          ? (resources): void => {
-              if (currentResource?.needsSaved === true)
-                /*
-                 * Since React's setState has a special behavior when a function
-                 * argument is passed, need to wrap a function in a function
-                 */
-                setUnloadProtect(() => () => handleAdd(resources));
-              else handleAdd(resources);
+  const {
+    dialogs,
+    slider,
+    resource,
+    onAdd: handleAdding,
+    onRemove: handleRemove,
+    isLoading,
+  } = useRecordSelector({
+    ...rest,
+    index,
+    model,
+    records:
+      typeof newResource === 'object' ? [...records, newResource] : records,
+    totalCount: rest.totalCount + (typeof newResource === 'object' ? 1 : 0),
+    onAdd:
+      typeof handleAdd === 'function'
+        ? (resources): void => {
+            if (currentResource?.needsSaved === true)
+              /*
+               * Since React's setState has a special behavior when a function
+               * argument is passed, need to wrap a function in a function
+               */
+              setUnloadProtect(() => () => handleAdd(resources));
+            else handleAdd(resources);
+          }
+        : undefined,
+    onDelete:
+      typeof handleDelete === 'function'
+        ? (index, source): void => {
+            handleDelete(index, source);
+            setRecords(removeItem(records, index));
+            if (ids.length === 1) handleClose();
+          }
+        : undefined,
+    onSlide:
+      typeof handleSlide === 'function'
+        ? (index, callback): void => {
+            function doSlide(): void {
+              setIndex(index);
+              handleSlide?.(index);
+              callback?.();
             }
-          : undefined
-      }
-      onDelete={
-        typeof handleDelete === 'function'
-          ? (index, source): void => {
-              handleDelete(index, source);
-              setRecords(removeItem(records, index));
-              if (ids.length === 1) handleClose();
-            }
-          : undefined
-      }
-      onSlide={
-        typeof handleSlide === 'function'
-          ? (index, callback): void => {
-              function doSlide(): void {
-                setIndex(index);
-                handleSlide?.(index);
-                callback?.();
-              }
 
-              if (
-                currentResource?.needsSaved === true ||
-                /*
-                 * If adding new resource that hasn't yet been modified, show a
-                 * warning anyway because navigating away before saving in a
-                 * RecordSet cancels the record adding process
-                 */
-                currentResource?.isNew() === true
-              )
-                setUnloadProtect(() => doSlide);
-              else doSlide();
-            }
-          : undefined
-      }
-    >
-      {({
-        dialogs,
-        slider,
-        resource,
-        onAdd: handleAdd,
-        onRemove: handleRemove,
-        isLoading,
-      }): JSX.Element => (
-        <>
-          <ResourceView
-            dialog={dialog}
-            headerButtons={(specifyNetworkBadge): JSX.Element => (
-              <>
-                {headerButtons}
-                <DataEntry.Visit
-                  resource={
-                    !isDependent && dialog !== false ? resource : undefined
-                  }
-                />
-                {hasTablePermission(
-                  model.name,
-                  isDependent ? 'create' : 'read'
-                ) && typeof handleAdd === 'function' ? (
-                  <DataEntry.Add
-                    aria-label={
-                      typeof urlContext === 'number'
-                        ? formsText('addToRecordSet')
-                        : commonText('add')
-                    }
-                    disabled={mode === 'view'}
-                    title={
-                      typeof urlContext === 'number'
-                        ? formsText('addToRecordSet')
-                        : commonText('add')
-                    }
-                    onClick={handleAdd}
-                  />
-                ) : undefined}
-                {typeof handleRemove === 'function' && canRemove ? (
-                  <DataEntry.Remove
-                    aria-label={
-                      typeof urlContext === 'number'
-                        ? formsText('removeFromRecordSet')
-                        : commonText('delete')
-                    }
-                    disabled={resource === undefined || mode === 'view'}
-                    title={
-                      typeof urlContext === 'number'
-                        ? formsText('removeFromRecordSet')
-                        : commonText('delete')
-                    }
-                    onClick={(): void => handleRemove('minusButton')}
-                  />
-                ) : undefined}
-                {typeof newResource === 'object' ? (
-                  <p className="flex-1">{formsText('creatingNewRecord')}</p>
-                ) : (
-                  <span
-                    className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
-                  />
-                )}
-                {specifyNetworkBadge}
-                {slider}
-              </>
+            if (
+              currentResource?.needsSaved === true ||
+              /*
+               * If adding new resource that hasn't yet been modified, show a
+               * warning anyway because navigating away before saving in a
+               * RecordSet cancels the record adding process
+               */
+              currentResource?.isNew() === true
+            )
+              setUnloadProtect(() => doSlide);
+            else doSlide();
+          }
+        : undefined,
+  });
+
+  return (
+    <>
+      <ResourceView
+        dialog={dialog}
+        headerButtons={(specifyNetworkBadge): JSX.Element => (
+          <>
+            {headerButtons}
+            <DataEntry.Visit
+              resource={!isDependent && dialog !== false ? resource : undefined}
+            />
+            {hasTablePermission(model.name, isDependent ? 'create' : 'read') &&
+            typeof handleAdding === 'function' ? (
+              <DataEntry.Add
+                aria-label={
+                  isInRecordSet
+                    ? formsText('addToRecordSet')
+                    : commonText('add')
+                }
+                disabled={mode === 'view'}
+                title={
+                  isInRecordSet
+                    ? formsText('addToRecordSet')
+                    : commonText('add')
+                }
+                onClick={handleAdding}
+              />
+            ) : undefined}
+            {typeof handleRemove === 'function' && canRemove ? (
+              <DataEntry.Remove
+                aria-label={
+                  isInRecordSet
+                    ? formsText('removeFromRecordSet')
+                    : commonText('delete')
+                }
+                disabled={resource === undefined || mode === 'view'}
+                title={
+                  isInRecordSet
+                    ? formsText('removeFromRecordSet')
+                    : commonText('delete')
+                }
+                onClick={(): void => handleRemove('minusButton')}
+              />
+            ) : undefined}
+            {typeof newResource === 'object' ? (
+              <p className="flex-1">{formsText('creatingNewRecord')}</p>
+            ) : (
+              <span
+                className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
+              />
             )}
-            isDependent={isDependent}
-            isLoading={isLoading}
-            isSubForm={false}
-            mode={mode}
-            resource={resource}
-            title={title}
-            viewName={viewName}
-            onClose={handleClose}
-            onDeleted={
-              resource?.isNew() === true ||
-              hasTablePermission(model.name, 'delete')
-                ? handleRemove?.bind(undefined, 'deleteButton')
-                : undefined
-            }
-            onAdd={handleClone}
-            onSaved={(): void => handleSaved(resource!)}
-          />
-          {dialogs}
-          {typeof unloadProtect === 'function' && (
-            <Dialog
-              buttons={
-                <>
-                  <Button.DialogClose>
-                    {commonText('cancel')}
-                  </Button.DialogClose>
-                  <Button.Orange
-                    onClick={(): void => {
-                      unloadProtect();
-                      setUnloadProtect(undefined);
-                    }}
-                  >
-                    {commonText('proceed')}
-                  </Button.Orange>
-                </>
-              }
-              header={formsText('recordSelectorUnloadProtectDialogHeader')}
-              onClose={(): void => setUnloadProtect(undefined)}
-            >
-              {formsText('recordSelectorUnloadProtectDialogText')}
-            </Dialog>
-          )}
-        </>
+            {specifyNetworkBadge}
+            {slider}
+          </>
+        )}
+        isDependent={isDependent}
+        isLoading={isLoading}
+        isSubForm={false}
+        mode={mode}
+        resource={resource}
+        title={title}
+        viewName={viewName}
+        onClose={handleClose}
+        onDeleted={
+          resource?.isNew() === true || hasTablePermission(model.name, 'delete')
+            ? handleRemove?.bind(undefined, 'deleteButton')
+            : undefined
+        }
+        onAdd={handleClone}
+        onSaved={(): void => handleSaved(resource!)}
+      />
+      {dialogs}
+      {typeof unloadProtect === 'function' && (
+        <Dialog
+          buttons={
+            <>
+              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.Orange
+                onClick={(): void => {
+                  unloadProtect();
+                  setUnloadProtect(undefined);
+                }}
+              >
+                {commonText('proceed')}
+              </Button.Orange>
+            </>
+          }
+          header={formsText('recordSelectorUnloadProtectDialogHeader')}
+          onClose={(): void => setUnloadProtect(undefined)}
+        >
+          {formsText('recordSelectorUnloadProtectDialogText')}
+        </Dialog>
       )}
-    </BaseRecordSelector>
+    </>
   );
 }
