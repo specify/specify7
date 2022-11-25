@@ -28,6 +28,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
+import { serializeResource } from '../DataModel/helpers';
 
 export function RecordSetWrapper<SCHEMA extends AnySchema>({
   recordSet,
@@ -198,7 +199,7 @@ function RecordSet<SCHEMA extends AnySchema>({
           {
             state: {
               recordSetItemIndex: index,
-              resource: newResource,
+              resource: f.maybe(newResource, serializeResource),
             },
           }
         )
@@ -244,7 +245,7 @@ function RecordSet<SCHEMA extends AnySchema>({
     useBooleanState();
   const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void => {
     const oldTotalCount = totalCount;
-    setTotalCount(oldTotalCount + 1);
+    setTotalCount(oldTotalCount + resources.length);
     loading(
       Promise.all(
         resources.map(async (resource) =>
