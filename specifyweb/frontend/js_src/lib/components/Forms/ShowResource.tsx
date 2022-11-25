@@ -5,7 +5,6 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -23,7 +22,7 @@ import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
 
 export function ShowResource({
-  resource: initialResource,
+  resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
@@ -44,8 +43,6 @@ export function ShowResource({
   );
 
   useErrorContext('recordSet', recordSet);
-
-  const [resource, setResource] = useTriggerState(initialResource);
   useErrorContext('resource', resource);
 
   useMenuItem(
@@ -85,12 +82,7 @@ export function ShowResource({
       }
       onClose={f.never}
       onDeleted={f.void}
-      onSaved={(): void => {
-        const reloadResource = new resource.specifyModel.Resource({
-          id: resource.id,
-        });
-        reloadResource.fetch().then(async () => setResource(reloadResource));
-      }}
+      onSaved={(): void => navigate(resource.url())}
     />
   );
 }
