@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, toggleItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -21,9 +22,11 @@ import { usePref } from '../UserPreferences/usePref';
 
 export function CarryForwardButton({
   model,
+  parentModel,
   type,
 }: {
   readonly model: SpecifyModel;
+  readonly parentModel: SpecifyModel | undefined;
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -60,7 +63,13 @@ export function CarryForwardButton({
           onClick={handleOpen}
         />
       )}
-      {isOpen && <CarryForwardConfig model={model} onClose={handleClose} />}
+      {isOpen && (
+        <CarryForwardConfig
+          model={model}
+          parentModel={parentModel}
+          onClose={handleClose}
+        />
+      )}
     </>
   ) : null;
 }
@@ -70,9 +79,11 @@ const normalize = (fields: RA<string>): RA<string> =>
 
 function CarryForwardConfig({
   model,
+  parentModel,
   onClose: handleClose,
 }: {
   readonly model: SpecifyModel;
+  readonly parentModel: SpecifyModel | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const [showHiddenFields, setShowHiddenFields] = usePref(
@@ -109,13 +120,25 @@ function CarryForwardConfig({
     });
   }
 
+  const reverseRelationships = React.useMemo(
+    () =>
+      filterArray(
+        parentModel?.relationships
+          .filter(({ relatedModel }) => relatedModel === model)
+          .flatMap(({ otherSideName }) => otherSideName) ?? []
+      ),
+    [parentModel, model]
+  );
+
   const literalFields = model.literalFields.filter(
     ({ overrides, isVirtual }) =>
       !isVirtual && (!overrides.isHidden || showHiddenFields)
   );
   const relationships = model.relationships.filter(
-    ({ overrides, isVirtual }) =>
-      !isVirtual && (!overrides.isHidden || showHiddenFields)
+    ({ name, overrides, isVirtual }) =>
+      !reverseRelationships.includes(name) &&
+      !isVirtual &&
+      (!overrides.isHidden || showHiddenFields)
   );
 
   const id = useId('form-carry-forward');
@@ -133,6 +156,7 @@ function CarryForwardConfig({
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
+                          !reverseRelationships.includes(name) &&
                           (!overrides.isHidden || config.includes(name))
                       )
                       .map(({ name }) => name)
@@ -152,6 +176,7 @@ function CarryForwardConfig({
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
+                          !reverseRelationships.includes(name) &&
                           overrides.isHidden &&
                           config.includes(name)
                       )
@@ -230,7 +255,11 @@ function CarryForwardCategory({
             {field.label}
           </Label.Inline>
           {field.isRelationship && field.isDependent() ? (
-            <CarryForwardButton model={field.relatedModel} type="cog" />
+            <CarryForwardButton
+              model={field.relatedModel}
+              parentModel={field.model}
+              type="cog"
+            />
           ) : undefined}
         </li>
       ))}

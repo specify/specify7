@@ -121,7 +121,11 @@ function MetaDialog({
               : formsText('generateLabelOnSave')
           }
         />
-        <CarryForwardButton model={resource.specifyModel} type="button" />
+        <CarryForwardButton
+          model={resource.specifyModel}
+          parentModel={undefined}
+          type="button"
+        />
       </div>
       {typeof subView === 'object' ? (
         <div className="flex flex-col gap-2 pb-2">
