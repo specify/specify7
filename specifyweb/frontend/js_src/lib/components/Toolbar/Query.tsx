@@ -52,7 +52,8 @@ export type QueryListContextType = {
 };
 
 export function useQueries(
-  spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>
+  spQueryFilter?: Partial<CollectionFetchFilters<SpQuery>>,
+  showLoadingScreen: boolean = true
 ): RA<SerializedResource<SpQuery>> | undefined {
   return useAsyncState<RA<SerializedResource<SpQuery>>>(
     React.useCallback(
@@ -63,7 +64,7 @@ export function useQueries(
         }).then(({ records }) => records),
       [spQueryFilter]
     ),
-    true
+    showLoadingScreen
   )[0];
 }
 
