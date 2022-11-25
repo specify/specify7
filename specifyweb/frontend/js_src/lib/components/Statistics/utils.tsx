@@ -86,7 +86,7 @@ export type BackendStatsResult = {
 };
 
 export type QueryBuildStat = State<
-  'Querybuildstat',
+  'QueryBuilderStat',
   {
     readonly tableName: keyof Tables;
     readonly fields: RA<
@@ -96,7 +96,7 @@ export type QueryBuildStat = State<
 >;
 
 export type BackendStat = State<
-  'Backendstat',
+  'BackEndStat',
   { readonly value: number | string | undefined }
 >;
 
