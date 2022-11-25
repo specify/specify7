@@ -82,7 +82,7 @@ export function ShowResource({
       }
       onClose={f.never}
       onDeleted={f.void}
-      onSaved={(): void => navigate(resource.url())}
+      onSaved={(): void => navigate(resource.viewUrl())}
     />
   );
 }

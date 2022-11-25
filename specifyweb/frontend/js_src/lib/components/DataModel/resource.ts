@@ -254,13 +254,22 @@ const businessRules = businessRuleDefs as {
 };
 
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
-  Object.entries(businessRules[model.name]?.uniqueIn ?? {})
-    .filter(
-      ([_fieldName, uniquenessRules]) =>
-        typeof uniquenessRules === 'string' &&
-        uniquenessRules in schema.domainLevelIds
-    )
-    .map(([fieldName]) => model.strictGetField(fieldName).name) ?? [];
+  f.unique([
+    ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
+      .filter(
+        ([_fieldName, uniquenessRules]) =>
+          typeof uniquenessRules === 'string' &&
+          uniquenessRules in schema.domainLevelIds
+      )
+      .map(([fieldName]) => model.strictGetField(fieldName).name),
+    /*
+     * Each attachment is assumed to refer to a unique attachment file
+     * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
+     */
+    ...model.relationships
+      .filter(({ relatedModel }) => relatedModel.name === 'Attachment')
+      .map(({ name }) => name),
+  ]);
 
 export const exportsForTests = {
   getFieldsToClone,
