@@ -133,7 +133,7 @@ describe('fetchPickListItems', () => {
   });
 
   overrideAjax(
-    '/api/specify_rows/locality/?fields=localityname&limit=0&distinct=true',
+    '/api/specify_rows/locality/?limit=0&distinct=true&fields=localityname',
     [['abc']]
   );
   test('entire column', async () => {

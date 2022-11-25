@@ -149,7 +149,9 @@ async function fetchFromField(
     fields: { [fieldName]: ['string', 'number', 'boolean', 'null'] },
     distinct: true,
   }).then((rows) =>
-    rows.map((row) => row[0] ?? '').map((value) => ({ value, title: value }))
+    rows
+      .map((row) => row[fieldName] ?? '')
+      .map((value) => ({ value, title: value }))
   );
 }
 
