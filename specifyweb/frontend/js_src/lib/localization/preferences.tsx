@@ -39,7 +39,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Копирует значение из настроек вашей операционной системы',
   },
   light: {
-    'en-us': 'White',
+    'en-us': 'Light',
     'ru-ru': 'Белая',
   },
   dark: {

@@ -214,5 +214,5 @@ export function resolvePickListField(
     else if (fieldName === 'tablesCBX') return 'tableName';
     else if (fieldName === 'typesCBX') return 'type';
   } else if (fieldName === 'divisionCBX') return 'division';
-  else return fieldName;
+  return fieldName;
 }

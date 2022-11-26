@@ -25,7 +25,12 @@ import {
 import { getMappingLineData } from './navigator';
 
 /** Use table name instead of field name for the following fields: */
-const fieldsToHide = new Set<string>(['name', 'fullName', 'localityName']);
+const fieldsToHide = new Set<string>([
+  'name',
+  'fullName',
+  'localityName',
+  formattedEntry,
+]);
 
 /**
  * Use table name alongside field label (if field label consists of a single
@@ -70,18 +75,7 @@ const mappingPathSubset = <T extends string | undefined>(
  * Generate a short and human friendly label from a potentially long
  * mapping path
  */
-export const generateMappingPathPreview = (
-  baseTableName: keyof Tables,
-  mappingPath: MappingPath
-): string =>
-  generatePreview(
-    baseTableName,
-    mappingPath.at(-1) === formattedEntry
-      ? mappingPath.slice(0, -1)
-      : mappingPath
-  );
-
-function generatePreview(
+export function generateMappingPathPreview(
   baseTableName: keyof Tables,
   mappingPath: MappingPath
 ): string {
