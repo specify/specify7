@@ -18,7 +18,7 @@ export const clearCache = async (): Promise<true> =>
         endpoint,
         { method: 'HEAD', cache: 'no-cache' },
         {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
         // eslint-disable-next-line no-console
       ).then(() => console.log(`Cleaned cache from ${endpoint}`))
