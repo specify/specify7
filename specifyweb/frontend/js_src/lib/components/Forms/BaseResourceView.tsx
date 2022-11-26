@@ -77,6 +77,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const viewDefinition = useViewDefinition({
     model: resource?.specifyModel,
     viewName,
+    fallbackViewName: resource?.specifyModel.view,
     formType: 'form',
     mode,
   });

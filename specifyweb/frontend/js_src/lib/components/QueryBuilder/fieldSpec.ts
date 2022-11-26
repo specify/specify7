@@ -52,6 +52,7 @@ function extractDatePart(fieldName: string): {
       };
 }
 
+// TEST: add comprehensive unit tests for this
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyModel;
 

@@ -26,11 +26,14 @@ export const originalAttachmentsView = 'originalObjectAttachment';
 export function useViewDefinition({
   model,
   viewName,
+  // If can't find the view by viewName, could use a fallback view name
+  fallbackViewName,
   formType,
   mode,
 }: {
   readonly model: SpecifyModel | undefined;
   readonly viewName?: string;
+  readonly fallbackViewName?: string;
   readonly formType: FormType;
   readonly mode: FormMode;
 }): ViewDescription | undefined {
@@ -49,31 +52,18 @@ export function useViewDefinition({
       else if (useGeneratedForm)
         return autoGenerateViewDefinition(model, formType, mode);
       const resolvedViewName = viewName ?? model.view;
-      return fetchView(
-        resolvedViewName === originalAttachmentsView
-          ? 'ObjectAttachment'
-          : resolvedViewName
-      )
-        .then((viewDefinition) =>
-          typeof viewDefinition === 'object'
-            ? parseViewDefinition(viewDefinition, formType, mode)
-            : undefined
+      return fetchViewDefinition(resolvedViewName, model, formType, mode)
+        .then(
+          (definition) =>
+            definition ??
+            (typeof fallbackViewName === 'string' &&
+            fallbackViewName !== resolvedViewName
+              ? fetchViewDefinition(fallbackViewName, model, formType, mode)
+              : undefined)
         )
-        .then((viewDefinition) =>
-          typeof viewDefinition === 'object'
-            ? viewDefinition.model === model
-              ? viewDefinition
-              : error('View definition model does not match resource model')
-            : f.maybe(
-                webOnlyViews()[viewName as keyof typeof webOnlyViews],
-                ({ columns, rows }) => ({
-                  columns,
-                  rows,
-                  formType,
-                  mode,
-                  model,
-                })
-              ) ?? autoGenerateViewDefinition(model, formType, mode)
+        .then(
+          (definition) =>
+            definition ?? autoGenerateViewDefinition(model, formType, mode)
         );
     }, [useGeneratedForm, viewName, formType, mode, model]),
     false
@@ -82,3 +72,34 @@ export function useViewDefinition({
   useErrorContext('viewDefinition', viewDefinition);
   return viewDefinition;
 }
+
+const fetchViewDefinition = async (
+  viewName: string,
+  model: SpecifyModel,
+  formType: FormType,
+  mode: FormMode
+): Promise<ViewDescription | undefined> =>
+  fetchView(
+    viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName
+  )
+    .then((viewDefinition) =>
+      typeof viewDefinition === 'object'
+        ? parseViewDefinition(viewDefinition, formType, mode)
+        : undefined
+    )
+    .then((viewDefinition) =>
+      typeof viewDefinition === 'object'
+        ? viewDefinition.model === model
+          ? viewDefinition
+          : error('View definition model does not match resource model')
+        : f.maybe(
+            webOnlyViews()[viewName as keyof typeof webOnlyViews],
+            ({ columns, rows }) => ({
+              columns,
+              rows,
+              formType,
+              mode,
+              model,
+            })
+          )
+    );

@@ -81,7 +81,7 @@ export const fetchView = async (
         views[name] =
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
-            : JSON.parse(data) as ViewDefinition;
+            : (JSON.parse(data) as ViewDefinition);
         return views[name];
       });
 
@@ -148,9 +148,11 @@ export function resolveViewDefinition(
   return {
     viewDefinition: actualViewDefinition,
     formType:
-      formTypes.find(
-        (type) => type.toLowerCase() === newFormType?.toLowerCase()
-      ) ?? 'form',
+      formType === 'formTable'
+        ? 'formTable'
+        : formTypes.find(
+            (type) => type.toLowerCase() === newFormType?.toLowerCase()
+          ) ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: strictGetModel(
       modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName

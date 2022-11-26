@@ -82,6 +82,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     model:
       typeof viewName === 'string' ? templateResource.specifyModel : undefined,
     viewName: typeof viewName === 'string' ? viewName : undefined,
+    fallbackViewName: templateResource.specifyModel.view,
     formType: 'form',
     mode: 'search',
   });
