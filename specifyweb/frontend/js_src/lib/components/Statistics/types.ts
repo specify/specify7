@@ -1,6 +1,7 @@
 import type { State } from 'typesafe-reducer';
-
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
+import type { SpQueryField, Tables } from '../DataModel/types';
+import type { SerializedResource } from '../DataModel/helperTypes';
 
 export type CustomStat = State<
   'CustomStat',
@@ -24,3 +25,40 @@ export type StatLayout = RA<{
     readonly items: RA<CustomStat | DefaultStat>;
   }>;
 }>;
+
+export type StatCategoryReturn =
+  | IR<{ readonly label: string; readonly spec: StatItemSpec }>
+  | undefined;
+export type StatsSpec = IR<
+  IR<{
+    readonly label: string;
+    readonly items: StatCategoryReturn;
+  }>
+>;
+export type QueryBuilderStat = State<
+  'QueryBuilderStat',
+  {
+    readonly tableName: keyof Tables;
+    readonly fields: RA<
+      Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+    >;
+  }
+>;
+export type BackendStatsResult = {
+  readonly holdings: {
+    readonly familiesRepresented: number;
+    readonly generaRepresented: number;
+    readonly speciesRepresented: number;
+  };
+  readonly preparations: IR<{
+    readonly lots: number;
+    readonly total: number;
+  }>;
+  readonly localityGeography: { readonly countries: number };
+  readonly typeSpecimens: IR<number>;
+};
+export type BackEndStat = State<
+  'BackEndStat',
+  { readonly value: number | string | undefined }
+>;
+export type StatItemSpec = BackEndStat | QueryBuilderStat;
