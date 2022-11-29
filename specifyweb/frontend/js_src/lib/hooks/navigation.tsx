@@ -6,11 +6,11 @@ import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { UnloadProtectsContext } from '../components/Core/Contexts';
-import type { BackgroundLocation } from '../components/Router/Router';
 import { isOverlay, OverlayContext } from '../components/Router/Router';
 import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
+import { locationToState } from '../components/Router/RouterState';
 
 export function useSearchParameter(
   name: string | undefined
@@ -19,9 +19,8 @@ export function useSearchParameter(
 
   const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
   const location = useLocation();
-  const isOverlayOpen =
-    (location.state as BackgroundLocation | undefined)?.type ===
-    'BackgroundLocation';
+  const state = locationToState(location, 'BackgroundLocation');
+  const isOverlayOpen = typeof state === 'object';
   /*
    * If non-overlay listens for a query string, and you open an overlay, the
    * previous query string value should be used

@@ -189,6 +189,7 @@ function EditAppResource({
           type.tableName === 'SpAppResource' ? 'app-resource' : 'view-set';
         navigate(`/specify/resources/${path}/new/`, {
           state: {
+            type: 'AppResource',
             resource: serializeResource(resource),
             directoryKey,
           },

@@ -25,6 +25,7 @@ import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
 import { decompressPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -47,10 +48,8 @@ export const updateCollectionRole = async (
 export function SecurityCollectionRole(): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const state = location.state as
-    | { readonly role?: NewRole | Role }
-    | undefined;
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'SecurityRole');
   const initialRole = state?.role;
 
   const {

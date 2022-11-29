@@ -73,15 +73,11 @@ import {
   useUserProviders,
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function SecurityUser(): JSX.Element {
-  const location = useLocation();
-  const state = location.state as
-    | {
-        readonly user?: SerializedResource<SpecifyUser>;
-        readonly initialCollectionId?: number;
-      }
-    | undefined;
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'SecurityUser');
   const { userId = '' } = useParams();
   const {
     getSetUsers: [users, setUsers],
@@ -102,8 +98,9 @@ export function SecurityUser(): JSX.Element {
       onAdd={(newUser): void => {
         navigate(`/specify/security/user/new/`, {
           state: {
+            type: 'SecurityUser',
             initialCollectionId: state?.initialCollectionId,
-            resource: serializeResource(newUser),
+            user: serializeResource(newUser),
           },
         });
       }}
@@ -118,8 +115,9 @@ export function SecurityUser(): JSX.Element {
         });
         navigate(`/specify/security/user/${changedUser.id}/`, {
           state: {
+            type: 'SecurityUser',
             initialCollectionId: state?.initialCollectionId,
-            resource: changedUser,
+            user: changedUser,
           },
         });
       }}

@@ -171,7 +171,10 @@ export function PrepDialog({
               items as RA<SpecifyResource<DisposalPreparation>>
             );
             navigate(getResourceViewUrl(action.model.name, undefined), {
-              state: { resource: serializeResource(interaction) },
+              state: {
+                type: 'RecordSet',
+                resource: serializeResource(interaction),
+              },
             });
           }
         }}

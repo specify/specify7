@@ -7,7 +7,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
@@ -20,6 +20,7 @@ import { TablePermissionDenied } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function ShowResource({
   resource,
@@ -76,7 +77,10 @@ export function ShowResource({
             recordSetId
           ),
           {
-            state: { resource: serializeResource(newResource) },
+            state: {
+              type: 'RecordSet',
+              resource: serializeResource(newResource),
+            },
           }
         )
       }
@@ -103,16 +107,13 @@ export function ViewResourceById({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
-  const location = useLocation();
-  const state = (location.state ?? {}) as {
-    readonly resource: SerializedResource<AnySchema> | undefined;
-    readonly recordSetItemIndex?: number;
-  };
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'RecordSet');
   const record = React.useMemo(
     () => f.maybe(state?.resource, deserializeResource),
     [state?.resource]
   );
-  const isInRecordSet = 'recordSetItemIndex' in state;
+  const isInRecordSet = typeof state === 'object';
 
   const numericId = f.parseInt(id);
   const resource = React.useMemo(

@@ -42,6 +42,7 @@ export function CurrentUserLink({
         event.preventDefault();
         navigate(`/specify/security/user/${userInformation.id}/`, {
           state: {
+            type: 'SecurityUser',
             initialCollectionId: collectionId,
           },
         });

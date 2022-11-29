@@ -1,8 +1,5 @@
 import React from 'react';
-import type { NavigateFunction } from 'react-router/lib/hooks';
-import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
-import type { State } from 'typesafe-reducer';
 
 import { commonText } from '../../localization/common';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
@@ -19,36 +16,20 @@ import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
+import { SafeNavigateFunction } from 'react-router';
+import { SafeLocation } from 'history';
 
-let unsafeNavigate: NavigateFunction | undefined;
-let unsafeLocation: Location | undefined;
+let unsafeNavigate: SafeNavigateFunction | undefined;
+let unsafeLocation: SafeLocation | undefined;
 
 // Using this is not recommended. Render <NotFoundView /> instead.
 export function unsafeTriggerNotFound(): boolean {
   unsafeNavigate?.(unsafeLocation ?? '/specify/', {
     replace: true,
-    state: createState({ type: 'NotFoundPage' }),
+    state: { type: 'NotFoundPage' },
   });
   return typeof unsafeNavigate === 'function';
 }
-
-export type BackgroundLocation = State<
-  'BackgroundLocation',
-  {
-    readonly location: Location;
-  }
->;
-
-/*
- * Symbol() would be better suites for this, but it can't be used because
- * state must be serializable
- */
-export type LocationStates =
-  | BackgroundLocation
-  | State<'NotFoundPage'>
-  | undefined;
-// Wrap state object in this for type safety
-const createState = (state: LocationStates): LocationStates => state;
 
 const transformedRoutes = toReactRoutes(routes);
 const transformedOverlays = toReactRoutes(overlayRoutes);
@@ -62,7 +43,7 @@ const transformedOverlays = toReactRoutes(overlayRoutes);
 export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
-  const state = location.state as LocationStates;
+  const state = location.state;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
   const backgroundUrl =
@@ -110,11 +91,11 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
 
-function useLinkIntercept(background: Location | undefined): void {
+function useLinkIntercept(background: SafeLocation | undefined): void {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const resolvedLocation = React.useRef<Location>(background ?? location);
+  const resolvedLocation = React.useRef<SafeLocation>(background ?? location);
   React.useEffect(() => {
     // REFACTOR: consider adding a set() util like in @vueuse/core
     resolvedLocation.current = background ?? location;
@@ -130,10 +111,10 @@ function useLinkIntercept(background: Location | undefined): void {
           url,
           isOverlay
             ? {
-                state: createState({
+                state: {
                   type: 'BackgroundLocation',
                   location: resolvedLocation.current,
-                }),
+                },
               }
             : undefined
         );
@@ -273,7 +254,7 @@ function UnloadProtect({
 
 function hasUnloadProtect(
   backgroundPath: string | undefined,
-  { pathname }: Location
+  { pathname }: SafeLocation
 ): boolean {
   return (
     !pathIsOverlay(pathname) &&
