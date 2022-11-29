@@ -2,36 +2,36 @@ import { getDateInputValue } from '../../utils/dayJs';
 import type { IR } from '../../utils/types';
 import { formatNumber } from '../Atoms/Internationalization';
 import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
-import type { BackendStatsResult, BackendStat, StatItemSpec } from './utils';
 import { statsText } from '../../localization/stats';
 import { formattedEntry } from '../WbPlanView/mappingHelpers';
+import type {
+  BackEndStat,
+  BackendStatsResult,
+  StatCategoryReturn,
+} from './types';
 
 function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
   backendobject: BackendStatsResult[CATEGORY_NAME] | undefined,
   modifyfunction: (
     rawValue: BackendStatsResult[CATEGORY_NAME][keyof BackendStatsResult[CATEGORY_NAME]]
-  ) => BackendStat['value']
+  ) => BackEndStat['value']
 ): StatCategoryReturn {
-  if (backendobject === undefined) {
-    return undefined;
-  }
-  return Object.fromEntries(
-    Object.entries(backendobject).map(([key, value]) => [
-      key,
-      {
-        label: key,
-        spec: {
-          type: 'BackEndStat',
-          value: modifyfunction(value),
+  return (
+    backendobject &&
+    Object.fromEntries(
+      Object.entries(backendobject).map(([key, value]) => [
+        key,
+        {
+          label: key,
+          spec: {
+            type: 'BackEndStat',
+            value: modifyfunction(value),
+          },
         },
-      },
-    ])
+      ])
+    )
   );
 }
-
-export type StatCategoryReturn =
-  | IR<{ readonly label: string; readonly spec: StatItemSpec }>
-  | undefined;
 
 type StatsSpec =
   | {
@@ -53,75 +53,73 @@ export const statsSpec: IR<StatsSpec> = {
   collection: {
     holdings: {
       label: statsText('holdings'),
-      categories(backendStatsResult) {
-        return {
-          specimens: {
-            label: statsText('collectionObjects'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'CollectionObject',
-              fields: [
-                {
-                  path: formattedEntry,
-                  isDisplay: true,
-                  operStart: queryFieldFilters.any.id,
-                },
-              ],
-            },
+      categories: (backendStatsResult) => ({
+        specimens: {
+          label: statsText('collectionObjects'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: formattedEntry,
+                isDisplay: true,
+                operStart: queryFieldFilters.any.id,
+              },
+            ],
           },
-          preparations: {
-            label: statsText('preparations'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Preparation',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                { path: 'countAmt' },
-              ],
-            },
+        },
+        preparations: {
+          label: statsText('preparations'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Preparation',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              { path: 'countAmt' },
+            ],
           },
-          typeSpecimens: {
-            label: statsText('typeSpecimens'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Determination',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'typeStatusName',
-                  operStart: queryFieldFilters.equal.id,
-                  isNot: true,
-                },
-              ],
-            },
+        },
+        typeSpecimens: {
+          label: statsText('typeSpecimens'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Determination',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'typeStatusName',
+                operStart: queryFieldFilters.equal.id,
+                isNot: true,
+              },
+            ],
           },
-          familiesRepresented: {
-            label: statsText('familiesRepresented'),
-            spec: {
-              type: 'BackEndStat',
-              value: backendStatsResult?.familiesRepresented,
-            },
+        },
+        familiesRepresented: {
+          label: statsText('familiesRepresented'),
+          spec: {
+            type: 'BackEndStat',
+            value: backendStatsResult?.familiesRepresented,
           },
-          generaRepresented: {
-            label: statsText('generaRepresented'),
-            spec: {
-              type: 'BackEndStat',
-              value: backendStatsResult?.generaRepresented,
-            },
+        },
+        generaRepresented: {
+          label: statsText('generaRepresented'),
+          spec: {
+            type: 'BackEndStat',
+            value: backendStatsResult?.generaRepresented,
           },
-          speciesRepresented: {
-            label: statsText('speciesRepresented'),
-            spec: {
-              type: 'BackEndStat',
-              value: backendStatsResult?.speciesRepresented,
-            },
+        },
+        speciesRepresented: {
+          label: statsText('speciesRepresented'),
+          spec: {
+            type: 'BackEndStat',
+            value: backendStatsResult?.speciesRepresented,
           },
-        };
-      },
+        },
+      }),
     },
     preparations: {
       label: statsText('preparations'),
@@ -136,228 +134,221 @@ export const statsSpec: IR<StatsSpec> = {
     },
     loans: {
       label: statsText('loans'),
-      categories() {
-        return {
-          itemsOnLoans: {
-            label: statsText('itemsOnLoans'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'LoanPreparation',
-              fields: [
-                {
-                  path: `loan.${formattedEntry}`,
-                },
-                {
-                  path: 'loan.isClosed',
-                  operStart: queryFieldFilters.falseOrNull.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+      categories: () => ({
+        itemsOnLoans: {
+          label: statsText('itemsOnLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'LoanPreparation',
+            fields: [
+              {
+                path: `loan.${formattedEntry}`,
+              },
+              {
+                path: 'loan.isClosed',
+                operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
+              },
+            ],
           },
-          openLoansCount: {
-            label: statsText('openLoans'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Loan',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'isClosed',
-                  operStart: queryFieldFilters.falseOrNull.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        openLoansCount: {
+          label: statsText('openLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Loan',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'isClosed',
+                operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
+              },
+            ],
           },
-          overdueLoansCount: {
-            label: statsText('overdueLoans'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Loan',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'currentDueDate',
-                  operStart: queryFieldFilters.lessOrEqual.id,
-                  startValue: getDateInputValue(new Date()),
-                },
-                {
-                  path: 'isClosed',
-                  operStart: queryFieldFilters.false.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        overdueLoansCount: {
+          label: statsText('overdueLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Loan',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'currentDueDate',
+                operStart: queryFieldFilters.lessOrEqual.id,
+                startValue: getDateInputValue(new Date()),
+              },
+              {
+                path: 'isClosed',
+                operStart: queryFieldFilters.false.id,
+                isDisplay: false,
+              },
+            ],
           },
-        };
-      },
+        },
+      }),
     },
-
     taxonomicTree: {
       label: statsText('taxonomicTree'),
-      categories() {
-        return {
-          classesCount: {
-            label: statsText('classes'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '60',
-                  isDisplay: false,
-                },
-              ],
-            },
+      categories: () => ({
+        classesCount: {
+          label: statsText('classes'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '60',
+                isDisplay: false,
+              },
+            ],
           },
-          ordersCount: {
-            label: statsText('orders'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '100',
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        ordersCount: {
+          label: statsText('orders'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '100',
+                isDisplay: false,
+              },
+            ],
           },
-          familiesCount: {
-            label: statsText('families'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '140',
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        familiesCount: {
+          label: statsText('families'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '140',
+                isDisplay: false,
+              },
+            ],
           },
-          generaCount: {
-            label: statsText('genera'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '180',
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        generaCount: {
+          label: statsText('genera'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '180',
+                isDisplay: false,
+              },
+            ],
           },
-          speciesCount: {
-            label: statsText('species'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Taxon',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'rankId',
-                  operStart: queryFieldFilters.equal.id,
-                  startValue: '220',
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        speciesCount: {
+          label: statsText('species'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Taxon',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '220',
+                isDisplay: false,
+              },
+            ],
           },
-        };
-      },
+        },
+      }),
     },
     localityGeography: {
       label: statsText('localityGeography'),
-      categories(backendStatsResult) {
-        return {
-          localityCount: {
-            label: statsText('localities'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Locality',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'localityId',
-                  operStart: queryFieldFilters.any.id,
-                },
-              ],
-            },
+      categories: (backendStatsResult) => ({
+        localityCount: {
+          label: statsText('localities'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Locality',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'localityId',
+                operStart: queryFieldFilters.any.id,
+              },
+            ],
           },
-          geographyEntryCount: {
-            label: statsText('geographyEntries'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Geography',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'geographyId',
-                  operStart: queryFieldFilters.any.id,
-                },
-              ],
-            },
+        },
+        geographyEntryCount: {
+          label: statsText('geographyEntries'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Geography',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'geographyId',
+                operStart: queryFieldFilters.any.id,
+              },
+            ],
           },
-          countriesCount: {
-            label: statsText('countries'),
-            spec: {
-              type: 'BackEndStat',
-              value: backendStatsResult?.countries,
-            },
+        },
+        countriesCount: {
+          label: statsText('countries'),
+          spec: {
+            type: 'BackEndStat',
+            value: backendStatsResult?.countries,
           },
-          georeferencedLocalityCount: {
-            label: statsText('georeferencedLocalities'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Locality',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'latitude1',
-                  operStart: queryFieldFilters.empty.id,
-                  isNot: true,
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        georeferencedLocalityCount: {
+          label: statsText('georeferencedLocalities'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Locality',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'latitude1',
+                operStart: queryFieldFilters.empty.id,
+                isNot: true,
+                isDisplay: false,
+              },
+            ],
           },
-        };
-      },
+        },
+      }),
     },
     typeSpecimens: {
       label: statsText('typeSpecimens'),
@@ -441,67 +432,65 @@ export const statsSpec: IR<StatsSpec> = {
   personal: {
     loans: {
       label: statsText('loans'),
-      categories() {
-        return {
-          itemsOnLoans: {
-            label: statsText('itemsOnLoans'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'LoanPreparation',
-              fields: [
-                {
-                  path: `loan.${formattedEntry}`,
-                },
-                {
-                  path: 'loan.isClosed',
-                  operStart: queryFieldFilters.falseOrNull.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+      categories: () => ({
+        itemsOnLoans: {
+          label: statsText('itemsOnLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'LoanPreparation',
+            fields: [
+              {
+                path: `loan.${formattedEntry}`,
+              },
+              {
+                path: 'loan.isClosed',
+                operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
+              },
+            ],
           },
-          openLoansCount: {
-            label: statsText('openLoans'),
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Loan',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'isClosed',
-                  operStart: queryFieldFilters.falseOrNull.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+        },
+        openLoansCount: {
+          label: statsText('openLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Loan',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'isClosed',
+                operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
+              },
+            ],
           },
-          overdueLoansCount: {
-            label: statsText('overdueLoans'),
+        },
+        overdueLoansCount: {
+          label: statsText('overdueLoans'),
 
-            spec: {
-              type: 'QueryBuilderStat',
-              tableName: 'Loan',
-              fields: [
-                {
-                  path: formattedEntry,
-                },
-                {
-                  path: 'currentDueDate',
-                  operStart: queryFieldFilters.lessOrEqual.id,
-                  startValue: getDateInputValue(new Date()),
-                },
-                {
-                  path: 'isClosed',
-                  operStart: queryFieldFilters.false.id,
-                  isDisplay: false,
-                },
-              ],
-            },
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Loan',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'currentDueDate',
+                operStart: queryFieldFilters.lessOrEqual.id,
+                startValue: getDateInputValue(new Date()),
+              },
+              {
+                path: 'isClosed',
+                operStart: queryFieldFilters.false.id,
+                isDisplay: false,
+              },
+            ],
           },
-        };
-      },
+        },
+      }),
     },
   },
 };
