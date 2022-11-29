@@ -33,7 +33,7 @@ import {
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
 
-import { StatLayout } from '../Statistics/definitions';
+import { StatLayout } from '../Statistics/types';
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
   readonly definition: PreferenceItem<VALUE>;
