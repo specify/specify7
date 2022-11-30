@@ -466,7 +466,6 @@ function CreateRecordSet({
   const recordSet = new schema.models.RecordSet.Resource();
   if (!queryResource.isNew()) recordSet.set('name', queryResource.get('name'));
   const [state, setState] = React.useState<
-    | State<'Default', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Main'>
     | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }>
