@@ -200,7 +200,7 @@ const getUserTypeResources = (
       directories[0] ??
       addMissingFields('SpAppResourceDir', {
         collection: collection.resource_uri,
-        userType,
+        userType: userType.toLowerCase(),
       });
     return {
       label: userType,
