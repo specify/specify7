@@ -89,7 +89,13 @@ export function LanguageSelection<LANGUAGES extends string>({
 
 const url = cachableUrl('/context/language/');
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
-  function LanguagePreferencesItem({ isReadOnly, definition }) {
+  function LanguagePreferencesItem({
+    isReadOnly,
+    definition,
+    category,
+    subcategory,
+    item,
+  }) {
     const [languages] = useAsyncState<IR<string>>(
       React.useCallback(
         async () =>
@@ -135,7 +141,12 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            */
           handleLanguageChange(language).catch(fail);
           setLanguage(language);
-          prefEvents.trigger('update', definition as PreferenceItem<unknown>);
+          prefEvents.trigger('update', {
+            category,
+            subcategory,
+            item,
+            definition: definition as PreferenceItem<unknown>,
+          });
         }}
       />
     );

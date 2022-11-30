@@ -5,30 +5,30 @@
 
 import React from 'react';
 
-import type { Collection } from '../DataModel/types';
-import { getAvailableFonts } from '../../utils/fonts';
-import { f } from '../../utils/functools';
+import { useTriggerState } from '../../hooks/useTriggerState';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { welcomeText } from '../../localization/welcome';
-import { getPrefDefinition } from './helpers';
-import { schema } from '../DataModel/schema';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { getAvailableFonts } from '../../utils/fonts';
+import { f } from '../../utils/functools';
 import {
   getValidationAttributes,
   mergeParsers,
   parserFromType,
 } from '../../utils/parser/definitions';
-import { AutoComplete } from '../Molecules/AutoComplete';
-import { iconClassName } from '../Atoms/Icons';
-import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
-import { Input, Select } from '../Atoms/Form';
-import { useValidation } from '../../hooks/useValidation';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { usePref } from './usePref';
 import { parseValue } from '../../utils/parser/parse';
+import { Input, Select } from '../Atoms/Form';
+import { iconClassName } from '../Atoms/Icons';
+import type { AnySchema } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Collection } from '../DataModel/types';
+import { AutoComplete } from '../Molecules/AutoComplete';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import type { PreferenceItem, PreferenceItemComponent } from './Definitions';
+import { getPrefDefinition } from './helpers';
+import { usePref } from './usePref';
 
 export const ColorPickerPreferenceItem: PreferenceItemComponent<string> =
   function ColorPickerPreferenceItem({
@@ -224,15 +224,21 @@ export const WelcomePageModePreferenceItem: PreferenceItemComponent<WelcomePageM
     return (
       <>
         <DefaultPreferenceItemRender
+          category="welcomePage"
           definition={welcomePageModes}
           isReadOnly={isReadOnly}
+          item="mode"
+          subcategory="general"
           value={value}
           onChange={handleChange}
         />
         {value === 'customImage' || value === 'embeddedWebpage' ? (
           <DefaultPreferenceItemRender
+            category="welcomePage"
             definition={sourceDefinition}
             isReadOnly={isReadOnly}
+            item="source"
+            subcategory="general"
             value={source}
             onChange={setSource}
           />
@@ -293,8 +299,9 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
       <AutoGrowTextArea
         forwardRef={validationRef}
         {...(validationAttributes ?? { type: 'text' })}
-        value={internalValue}
         isReadOnly={isReadOnly}
+        value={internalValue}
+        onBlur={handleBlur}
         onValueChange={(newValue): void => {
           if (typeof parser === 'object' && inputRef.current !== null) {
             const parsed = parseValue(
@@ -307,7 +314,6 @@ export const DefaultPreferenceItemRender: PreferenceItemComponent<any> =
             else setValidation(parsed.reason);
           } else handleChanged(newValue);
         }}
-        onBlur={handleBlur}
       />
     ) : (
       <Input.Generic

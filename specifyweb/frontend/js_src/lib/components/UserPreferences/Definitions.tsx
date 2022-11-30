@@ -35,6 +35,9 @@ import { TableFields } from '../DataModel/helperTypes';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
+  readonly category: string;
+  readonly subcategory: string;
+  readonly item: string;
   readonly definition: PreferenceItem<VALUE>;
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;

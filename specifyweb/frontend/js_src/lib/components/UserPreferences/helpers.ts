@@ -154,7 +154,12 @@ export const setPrefsGenerator = (
       commitToCache();
       requestPreferencesSync();
     }
-    prefEvents.trigger('update', definition);
+    prefEvents.trigger('update', {
+      category,
+      subcategory: subcategory as string,
+      item: item as string,
+      definition,
+    });
   };
 export const setPref = setPrefsGenerator(getRawUserPreferences, true);
 

@@ -45,8 +45,8 @@ function Preferences(): JSX.Element {
 
   React.useEffect(
     () =>
-      prefEvents.on('update', (definition) => {
-        if (definition?.requiresReload === true) handleRestartNeeded();
+      prefEvents.on('update', (payload) => {
+        if (payload?.definition?.requiresReload === true) handleRestartNeeded();
         handleChangesMade();
       }),
     [handleChangesMade, handleRestartNeeded]
@@ -261,14 +261,18 @@ function Item({
   const Renderer =
     'renderer' in item ? item.renderer : DefaultPreferenceItemRender;
   const [value, setValue] = usePref(
+    // Asserting types just to simplify typing
     category as 'general',
     subcategory as 'ui',
     name as 'theme'
   );
   const children = (
     <Renderer
+      category={category}
       definition={item}
       isReadOnly={isReadOnly}
+      item={name}
+      subcategory={subcategory}
       value={value}
       onChange={setValue}
     />

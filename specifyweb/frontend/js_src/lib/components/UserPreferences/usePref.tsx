@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { GetSet } from '../../utils/types';
 import type { preferenceDefinitions, Preferences } from './Definitions';
-import { getPrefDefinition, getUserPref, setPref } from './helpers';
+import { getUserPref, setPref } from './helpers';
 import { PreferencesContext, prefEvents } from './Hooks';
 
 /**
@@ -34,11 +34,14 @@ export function usePref<
   const currentPref = React.useRef(pref);
   React.useEffect(
     () =>
-      prefEvents.on('update', (definition) => {
+      prefEvents.on('update', (payload) => {
         if (
-          definition !== undefined &&
-          // Ignore changes to other prefs
-          definition !== getPrefDefinition(category, subcategory, item)
+          // Don't ignore cases when preferences are reloaded from back-end
+          payload !== undefined &&
+          // But ignore local changes to other prefs
+          (payload.category !== category ||
+            payload.subcategory !== subcategory ||
+            payload.item !== item)
         )
           return;
         const newValue = getPref(category, subcategory, item);
