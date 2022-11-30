@@ -201,9 +201,8 @@ export function MakeRecordSetButton({
 
           const recordSet = new schema.models.RecordSet.Resource();
 
-          if (!queryResource.isNew()) {
+          if (!queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
-          }
 
           recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field

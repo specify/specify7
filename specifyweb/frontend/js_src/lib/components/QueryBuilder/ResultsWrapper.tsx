@@ -127,6 +127,7 @@ export function QueryResultsWrapper({
         setProps({
           model,
           hasIdField: queryResource.get('selectDistinct') !== true,
+          queryResource,
           fetchSize,
           fetchResults,
           fieldSpecs,

@@ -18,7 +18,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RecordSet, Tables } from '../DataModel/types';
+import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { fail } from '../Errors/Crash';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -43,6 +43,7 @@ export function QueryResults({
   model,
   label = commonText('results'),
   hasIdField,
+  queryResource,
   fetchSize,
   fetchResults,
   totalCount: initialTotalCount,
@@ -58,6 +59,7 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
+  readonly queryResource: SpecifyResource<SpQuery>;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
    * optimize fetch performance when using "Browse in forms" and going
@@ -247,6 +249,7 @@ export function QueryResults({
                       )
                       .map((result) => result[queryIdField] as number)
                   }
+                  queryResource={queryResource}
                 />
               ) : (
                 createRecordSet
@@ -454,11 +457,16 @@ function TableHeaderCell({
 function CreateRecordSet({
   getIds,
   baseTableName,
+  queryResource,
 }: {
   readonly getIds: () => RA<number>;
   readonly baseTableName: keyof Tables;
+  readonly queryResource: SpecifyResource<SpQuery>;
 }): JSX.Element {
+  const recordSet = new schema.models.RecordSet.Resource();
+  if (!queryResource.isNew()) recordSet.set('name', queryResource.get('name'));
   const [state, setState] = React.useState<
+    | State<'Default', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Main'>
     | State<'Saved', { readonly recordSet: SpecifyResource<RecordSet> }>
@@ -472,7 +480,7 @@ function CreateRecordSet({
         onClick={(): void =>
           setState({
             type: 'Editing',
-            recordSet: new schema.models.RecordSet.Resource(),
+            recordSet: recordSet,
           })
         }
       >
