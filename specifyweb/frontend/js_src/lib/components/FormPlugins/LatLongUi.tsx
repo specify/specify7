@@ -14,12 +14,6 @@ import type { FormMode } from '../FormParse';
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
 
-type Parsed = {
-  readonly format: (step: number | undefined) => string;
-  readonly asFloat: () => number;
-  readonly soCalledUnit: () => number;
-};
-
 function Coordinate({
   resource,
   coordinateField,
@@ -77,8 +71,7 @@ function Coordinate({
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
-      ? (((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ??
-          undefined) as Parsed | undefined)
+      ? (fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
@@ -94,7 +87,11 @@ function Coordinate({
     isChanging.current = true;
     resource.set(coordinateTextField, trimmedValue || null);
     resource.set(coordinateField, parsed?.asFloat() ?? null);
-    resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
+    if (hasValue)
+      resource.set(
+        'srcLatLongUnit',
+        parsed?.soCalledUnit() ?? resource.get('srcLatLongUnit') ?? 1
+      );
     resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
     isChanging.current = false;
   }, [
@@ -115,7 +112,6 @@ function Coordinate({
       isReadOnly={isReadOnly}
       value={value?.toString() ?? ''}
       onValueChange={updateValue}
-      // OnBlur={(): void => setCoordinate(trimLatLong(coordinate))}
     />
   );
 }
