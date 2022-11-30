@@ -54,7 +54,7 @@ export function QueryToolbar({
               {queryText('distinct')}
             </Label.Inline>
           )}
-          <Button.Small disabled={!isEmpty} onClick={handleRunCountOnly}>
+          <Button.Small disabled={isEmpty} onClick={handleRunCountOnly}>
             {queryText('countOnly')}
           </Button.Small>
           <Submit.Small disabled={isEmpty} onClick={handleSubmitClick}>
