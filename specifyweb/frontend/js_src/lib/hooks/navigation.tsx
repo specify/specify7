@@ -57,10 +57,7 @@ export function useSearchParameter(
   const value =
     typeof name === 'string' ? queryString.get(name) ?? undefined : undefined;
   const valueRef = React.useRef(value);
-  React.useEffect(() => {
-    if (freezeValue) return;
-    valueRef.current = value;
-  }, [value, freezeValue]);
+  if (!freezeValue) valueRef.current = value;
 
   return [valueRef.current, handleChange];
 }

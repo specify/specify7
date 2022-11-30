@@ -251,9 +251,7 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
-  const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void => {
-    const oldTotalCount = totalCount;
-    setTotalCount(oldTotalCount + resources.length);
+  const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void =>
     loading(
       Promise.all(
         resources.map(async (resource) =>
@@ -262,16 +260,18 @@ function RecordSet<SCHEMA extends AnySchema>({
             recordSet: recordSet.get('resource_uri'),
           })
         )
-      )
+      ).then(() => {
+        const oldTotalCount = totalCount;
+        setTotalCount(oldTotalCount + resources.length);
+        go(oldTotalCount, resources[0].id);
+        setIds((oldIds = []) =>
+          updateIds(
+            oldIds,
+            resources.map(({ id }, index) => [oldTotalCount + index, id])
+          )
+        );
+      })
     );
-    go(oldTotalCount, resources[0].id, resources[0]);
-    setIds((oldIds = []) =>
-      updateIds(
-        oldIds,
-        resources.map(({ id }, index) => [oldTotalCount + index, id])
-      )
-    );
-  };
 
   return (
     <>

@@ -79,10 +79,7 @@ export function useStableLocation(location: SafeLocation): SafeLocation {
   const freezeValue = isOverlayComponent !== isOverlayOpen;
 
   const locationRef = React.useRef(location);
-  React.useEffect(() => {
-    if (freezeValue) return;
-    locationRef.current = location;
-  }, [location, freezeValue]);
+  if (!freezeValue) locationRef.current = location;
 
   return locationRef.current;
 }
