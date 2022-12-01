@@ -108,7 +108,7 @@ export function QueryBuilder({
   /**
    * If tried to save a query, enforce the field length limit for the
    * startValue field.
-   * Until query is saved, that limit does not matter as ephermal query
+   * Until query is saved, that limit does not matter as ephemeral query
    * does not care about field length limits.
    * This allows for executing a query with a long value for the "IN" filter.
    */

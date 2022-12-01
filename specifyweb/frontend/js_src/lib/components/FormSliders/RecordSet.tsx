@@ -382,6 +382,7 @@ function EditRecordSetButton({
   readonly recordSet: SpecifyResource<RecordSetSchema>;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const navigate = useNavigate();
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
@@ -390,6 +391,7 @@ function EditRecordSetButton({
           isReadOnly={false}
           recordSet={recordSet}
           onClose={handleClose}
+          onDeleted={(): void => navigate('/specify/')}
         />
       )}
     </>
