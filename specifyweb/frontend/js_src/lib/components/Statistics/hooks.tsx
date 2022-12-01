@@ -125,24 +125,26 @@ export function useDefaultStatsToAdd(
     const listToUse = layout.categories.flatMap(({ items }) =>
       items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
     );
-    return defaultLayout.map((defaultLayoutPage) => ({
-      label: defaultLayoutPage.label,
-      categories: defaultLayoutPage.categories
-        .map(({ label, items }) => ({
-          label,
-          items: items.filter(
-            (defaultItem) =>
-              defaultItem.type === 'DefaultStat' &&
-              !listToUse.some(
-                ({ pageName, categoryName, itemName }) =>
-                  pageName === defaultItem.pageName &&
-                  categoryName === defaultItem.categoryName &&
-                  itemName === defaultItem.itemName
-              )
-          ),
-        }))
-        .filter(({ items }) => items.length > 0),
-    }));
+    return defaultLayout
+      .map((defaultLayoutPage) => ({
+        label: defaultLayoutPage.label,
+        categories: defaultLayoutPage.categories
+          .map(({ label, items }) => ({
+            label,
+            items: items.filter(
+              (defaultItem) =>
+                defaultItem.type === 'DefaultStat' &&
+                !listToUse.some(
+                  ({ pageName, categoryName, itemName }) =>
+                    pageName === defaultItem.pageName &&
+                    categoryName === defaultItem.categoryName &&
+                    itemName === defaultItem.itemName
+                )
+            ),
+          }))
+          .filter(({ items }) => items.length > 0),
+      }))
+      .filter(({ categories }) => categories.length > 0);
   }, [layout, defaultLayout]);
 }
 

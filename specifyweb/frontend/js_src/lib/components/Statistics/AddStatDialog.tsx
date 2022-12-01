@@ -24,9 +24,7 @@ export function AddStatDialog({
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat) => void;
 }): JSX.Element | null {
-  const defaultStatsAddLeft = defaultLayout.filter(
-    ({ categories }) => categories.length > 0
-  );
+  const defaultStatsAddLeft = defaultLayout;
   return Array.isArray(queries) ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
@@ -53,16 +51,14 @@ export function AddStatDialog({
         {defaultStatsAddLeft.length > 0 && (
           <div>
             <H3>{statsText('selectDefaultStatistics')}</H3>
-            {defaultStatsAddLeft.map((defaultLayoutItem, index) => (
+            {defaultStatsAddLeft.map((defaultLayoutPage, index) => (
               <div key={index}>
-                <H3>{defaultLayoutItem.label}</H3>
+                <h4>{defaultLayoutPage.label}</h4>
                 <div>
                   <Categories
-                    pageLayout={defaultLayoutItem}
+                    pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
-                    onClick={(item): void => {
-                      handleAdd(item);
-                    }}
+                    onClick={handleAdd}
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}
