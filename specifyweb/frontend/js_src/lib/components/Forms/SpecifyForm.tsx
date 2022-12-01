@@ -73,7 +73,7 @@ export function RenderForm<SCHEMA extends AnySchema>({
   // If parent resource is loading, don't duplicate the loading bar in children
   const isAlreadyLoading = React.useContext(FormLoadingContext);
   const showLoading =
-    !formIsLoaded || (!isAlreadyLoading && (isLoading || isShowingOldResource));
+    !isAlreadyLoading && (!formIsLoaded || isLoading || isShowingOldResource);
   const [flexibleColumnWidth] = usePref(
     'form',
     'definition',
