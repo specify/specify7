@@ -134,5 +134,9 @@ export const statsText = createDictionary({
     'en-us': 'Select Default Statistics',
     'ru-ru': 'Выберите статистику по умолчанию',
   },
+  pageName: {
+    'en-us': 'Page Name',
+    'ru-ru': 'Название страницы',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
