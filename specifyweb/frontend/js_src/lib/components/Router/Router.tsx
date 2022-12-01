@@ -1,4 +1,6 @@
+import type { SafeLocation } from 'history';
 import React from 'react';
+import type { SafeNavigateFunction } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
@@ -16,8 +18,7 @@ import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
-import { SafeNavigateFunction } from 'react-router';
-import { SafeLocation } from 'history';
+import { f } from '../../utils/functools';
 
 let unsafeNavigate: SafeNavigateFunction | undefined;
 let unsafeLocation: SafeLocation | undefined;
@@ -46,11 +47,9 @@ export function Router(): JSX.Element {
   const state = location.state;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
-  const backgroundUrl =
-    typeof background === 'object'
-      ? `${background.pathname}${background.search}${background.hash}`
-      : undefined;
-  const isNotFoundPage = state?.type === 'NotFoundPage';
+  const isNotFoundPage =
+    state?.type === 'NotFoundPage' ||
+    background?.state?.type === 'NotFoundPage';
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
@@ -67,18 +66,17 @@ export function Router(): JSX.Element {
 
   const overlay = useRoutes(transformedOverlays, location) ?? undefined;
 
-  const isNotFound = main === undefined && overlay === undefined;
-  // If supposed to show an overlay, but it wasn't found, show <NotFoundView />
-  const isNotFoundOverlay =
-    typeof background === 'object' && overlay === undefined;
+  const isNotFound =
+    (main === undefined && overlay === undefined) || isNotFoundPage;
 
-  return isNotFoundPage || isNotFound || isNotFoundOverlay ? (
-    <NotFoundView />
-  ) : (
+  return (
     <>
+      <UnloadProtect background={background} />
+      {isNotFound ? <NotFoundView /> : undefined}
+      {typeof overlay === 'object' && (
+        <Overlay background={background} overlay={overlay} />
+      )}
       {main}
-      <Overlay backgroundUrl={backgroundUrl} overlay={overlay} />
-      <UnloadProtect backgroundPath={backgroundUrl} />
     </>
   );
 }
@@ -158,18 +156,31 @@ function parseClickEvent(
   return undefined;
 }
 
+const locationToUrl = (location: SafeLocation): string =>
+  `${location.pathname}${location.search}${location.hash}`;
+
 function Overlay({
   overlay,
-  backgroundUrl = '/specify/',
+  background,
 }: {
   readonly overlay: JSX.Element | undefined;
-  readonly backgroundUrl: string | undefined;
+  // This happens when user opened the overlay directly by going to the URL
+  readonly background: SafeLocation | undefined;
 }): JSX.Element {
   const navigate = useNavigate();
 
+  function handleClose(): void {
+    const backgroundUrl =
+      typeof background === 'object' ? locationToUrl(background) : '/specify/';
+    navigate(backgroundUrl, { state: background?.state });
+  }
+
+  const handleCloseRef = React.useRef(handleClose);
+  handleCloseRef.current = handleClose;
+
   const handleCloseOverlay = React.useCallback(
-    () => navigate(backgroundUrl),
-    [backgroundUrl]
+    () => handleCloseRef.current(),
+    []
   );
 
   return (
@@ -191,9 +202,9 @@ export const OverlayContext = React.createContext<() => void>(
 OverlayContext.displayName = 'OverlayContext';
 
 function UnloadProtect({
-  backgroundPath,
+  background,
 }: {
-  readonly backgroundPath: string | undefined;
+  readonly background: SafeLocation | undefined;
 }): JSX.Element | null {
   const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
@@ -211,15 +222,14 @@ function UnloadProtect({
     [isEmpty, isSet]
   );
 
-  const backgroundPathRef = React.useRef<string | undefined>(backgroundPath);
-  React.useEffect(() => {
-    backgroundPathRef.current = backgroundPath;
-  }, [backgroundPath]);
+  const backgroundRef = React.useRef<SafeLocation | undefined>(background);
+  backgroundRef.current = background;
+
   const { block, unblock } = useRouterBlocker(
     React.useCallback(
       async (location) =>
         new Promise((resolve, reject) =>
-          hasUnloadProtect(backgroundPathRef.current, location)
+          hasUnloadProtect(location, backgroundRef.current)
             ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
             : resolve('ignore')
         ),
@@ -252,16 +262,14 @@ function UnloadProtect({
   ) : null;
 }
 
-function hasUnloadProtect(
-  backgroundPath: string | undefined,
-  { pathname }: SafeLocation
-): boolean {
-  return (
-    !pathIsOverlay(pathname) &&
-    !isCurrentUrl(pathname) &&
-    pathname !== backgroundPath
-  );
-}
+/** Decide whether a given URL change should trigger unload protect */
+const hasUnloadProtect = (
+  newLocation: SafeLocation,
+  background: SafeLocation | undefined
+): boolean =>
+  !pathIsOverlay(newLocation.pathname) &&
+  !isCurrentUrl(newLocation.pathname) &&
+  f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
 
 function UnloadProtectDialog({
   message,

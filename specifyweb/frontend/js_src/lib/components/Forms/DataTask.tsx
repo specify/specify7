@@ -26,6 +26,9 @@ import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
 import { ViewResourceById } from './ShowResource';
 import { useSearchParameter } from '../../hooks/navigation';
+import { RA } from '../../utils/types';
+import { State } from 'typesafe-reducer';
+import { crash } from '../Errors/Crash';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -237,27 +240,53 @@ function ViewByCatalogProtected(): JSX.Element | null {
 export function CheckLoggedInCollection({
   resource,
   children,
+  /*
+   * As a performance optimization, don't check if in record set. Safe to assume
+   * that if any record set item is from this collection, than all record set
+   * items are from this collection (this will initially be called with
+   * isInRecordSet=false when you open the record set)
+   */
+  isInRecordSet = false,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly children: JSX.Element;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element | null {
-  const [otherCollections] = useAsyncState(
-    React.useCallback(async () => {
-      if (resource.isNew()) return false;
-      await resource.fetch();
-      const collectionId = getCollectionForResource(resource);
-      if (schema.domainLevelIds.collection === collectionId) return false;
-      else if (typeof collectionId === 'number') return [collectionId];
-      const collectionIds = await fetchCollectionsForResource(resource);
-      return !Array.isArray(collectionIds) ||
-        collectionIds.includes(schema.domainLevelIds.collection)
-        ? false
-        : collectionIds;
-    }, [resource]),
-    true
-  );
+  const [otherCollections, setOtherCollections] = React.useState<
+    | State<'Accessible'>
+    | State<'Loading'>
+    | State<'Inaccessible', { readonly collectionIds: RA<number> }>
+  >({ type: 'Loading' });
+  React.useEffect(() => {
+    if (isInRecordSet || resource.isNew()) {
+      setOtherCollections({ type: 'Accessible' });
+      return;
+    }
+    setOtherCollections({ type: 'Loading' });
+    resource
+      .fetch()
+      .then<typeof otherCollections>(async () => {
+        const collectionId = getCollectionForResource(resource);
+        if (schema.domainLevelIds.collection === collectionId)
+          return { type: 'Accessible' };
+        else if (typeof collectionId === 'number')
+          return {
+            type: 'Inaccessible',
+            collectionIds: [collectionId],
+          } as const;
+        else {
+          const collectionIds = await fetchCollectionsForResource(resource);
+          return !Array.isArray(collectionIds) ||
+            collectionIds.includes(schema.domainLevelIds.collection)
+            ? { type: 'Accessible' }
+            : { type: 'Inaccessible', collectionIds };
+        }
+      })
+      .then(setOtherCollections)
+      .catch(crash);
+  }, [resource, isInRecordSet]);
 
-  return otherCollections === false ? (
+  return otherCollections.type === 'Accessible' ? (
     children
   ) : Array.isArray(otherCollections) ? (
     <OtherCollection collectionIds={otherCollections} />

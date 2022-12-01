@@ -138,10 +138,11 @@ export function ViewResourceById({
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;
   else
-    return isInRecordSet ? (
-      <ShowResource resource={resource} />
-    ) : (
-      <CheckLoggedInCollection resource={resource}>
+    return (
+      <CheckLoggedInCollection
+        resource={resource}
+        isInRecordSet={isInRecordSet}
+      >
         <ShowResource resource={resource} />
       </CheckLoggedInCollection>
     );

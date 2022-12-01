@@ -140,9 +140,8 @@ export function handleAjaxError(
   if (userInformation.agent === null) throw error;
 
   if (strict) {
-    const isNotFoundError =
-      response.status === Http.NOT_FOUND &&
-      process.env.NODE_ENV !== 'development';
+    const isNotFoundError = response.status === Http.NOT_FOUND;
+    // FIXME: revert this change
     // In production, uncaught 404 errors redirect to the NOT FOUND page
     if (isNotFoundError && unsafeTriggerNotFound()) {
       Object.defineProperty(error, 'handledBy', {
