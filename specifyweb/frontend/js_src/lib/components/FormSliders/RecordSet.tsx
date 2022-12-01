@@ -350,7 +350,6 @@ function RecordSet<SCHEMA extends AnySchema>({
                     setIds((oldIds = []) => {
                       const newIds = oldIds.slice();
                       newIds.splice(currentIndex, 1);
-                      newIds[currentIndex] = undefined;
                       return newIds;
                     });
                     if (newTotalCount === 0) handleClose();
