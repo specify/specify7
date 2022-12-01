@@ -10,28 +10,26 @@ import type {
   StatCategoryReturn,
 } from './types';
 
-function modifyBackendResult<CATEGORY_NAME extends keyof BackendStatsResult>(
-  backendobject: BackendStatsResult[CATEGORY_NAME] | undefined,
-  modifyfunction: (
+const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
+  backEndStats: BackendStatsResult[CATEGORY_NAME] | undefined,
+  modifyFunction: (
     rawValue: BackendStatsResult[CATEGORY_NAME][keyof BackendStatsResult[CATEGORY_NAME]]
   ) => BackEndStat['value']
-): StatCategoryReturn {
-  return (
-    backendobject &&
-    Object.fromEntries(
-      Object.entries(backendobject).map(([key, value]) => [
-        key,
-        {
-          label: key,
-          spec: {
-            type: 'BackEndStat',
-            value: modifyfunction(value),
+): StatCategoryReturn =>
+  backEndStats === undefined
+    ? undefined
+    : Object.fromEntries(
+        Object.entries(backEndStats).map(([key, value]) => [
+          key,
+          {
+            label: key,
+            spec: {
+              type: 'BackEndStat',
+              value: modifyFunction(value),
+            },
           },
-        },
-      ])
-    )
-  );
-}
+        ])
+      );
 
 type StatsSpec =
   | {
