@@ -136,7 +136,12 @@ function ProtectedQueryComboBox({
   const [version, setVersion] = React.useState(0);
   React.useEffect(
     () =>
-      resourceOn(resource, 'saved', () => setVersion((version) => version + 1)),
+      resourceOn(
+        resource,
+        'saved',
+        () => setVersion((version) => version + 1),
+        false
+      ),
     [resource]
   );
 

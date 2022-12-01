@@ -54,12 +54,17 @@ function Coordinate({
 
   React.useEffect(
     () =>
-      resourceOn(resource, `change:${coordinateField}`, () => {
-        if (isChanging.current) return;
-        const coordinate = resource.get(coordinateField)?.toString() ?? '';
-        const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
-        updateValue(parsed?.asFloat() ?? null);
-      }),
+      resourceOn(
+        resource,
+        `change:${coordinateField}`,
+        () => {
+          if (isChanging.current) return;
+          const coordinate = resource.get(coordinateField)?.toString() ?? '';
+          const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
+          updateValue(parsed?.asFloat() ?? null);
+        },
+        false
+      ),
     [resource, coordinateField, updateValue, step, fieldType]
   );
 
@@ -198,11 +203,15 @@ export function LatLongUi({
 
   React.useEffect(
     () =>
-      resourceOn(resource, 'change:latLongType', (): void =>
-        setCoordinateType(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          (resource.get('latLongType') as CoordinateType) ?? 'Point'
-        )
+      resourceOn(
+        resource,
+        'change:latLongType',
+        (): void =>
+          setCoordinateType(
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            (resource.get('latLongType') as CoordinateType) ?? 'Point'
+          ),
+        false
       ),
     [resource]
   );

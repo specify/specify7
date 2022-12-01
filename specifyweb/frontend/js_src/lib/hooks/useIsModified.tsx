@@ -4,7 +4,7 @@ import { tap } from '../components/Errors/assert';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
 import { useBooleanState } from './useBooleanState';
-import {AnySchema} from '../components/DataModel/helperTypes';
+import { AnySchema } from '../components/DataModel/helperTypes';
 
 export function useIsModified(
   resource: SpecifyResource<AnySchema> | undefined,
@@ -28,7 +28,7 @@ export function useIsModified(
   React.useEffect(
     () =>
       typeof resource === 'object'
-        ? resourceOn(resource, 'saveRequired', tap(handleNeedsSaving))
+        ? resourceOn(resource, 'saveRequired', tap(handleNeedsSaving), false)
         : undefined,
     [resource, handleNeedsSaving]
   );
@@ -37,7 +37,7 @@ export function useIsModified(
   React.useEffect(
     () =>
       typeof resource === 'object'
-        ? resourceOn(resource, 'saved', handleSaved)
+        ? resourceOn(resource, 'saved', handleSaved, false)
         : undefined,
     [resource, handleSaved]
   );

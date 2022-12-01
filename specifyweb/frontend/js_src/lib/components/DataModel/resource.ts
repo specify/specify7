@@ -216,7 +216,7 @@ export function resourceOn(
   },
   event: string,
   callback: (...args: RA<never>) => void,
-  immediate = false
+  immediate: boolean
 ): () => void {
   if (immediate) callback();
   resource.on(event.toLowerCase(), callback as () => void);

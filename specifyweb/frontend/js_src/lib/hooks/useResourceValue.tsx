@@ -87,14 +87,19 @@ export function useResourceValue<
         .filter(({ deferred }) => !deferred || triedToSubmit)
         .map(({ reason }) => reason) ?? [];
     blockers.current = getBlockers();
-    resourceOn(resource, 'blockersChanged', (): void => {
-      if (field === undefined) return;
-      blockers.current = getBlockers();
-      handleDontIgnoreError();
-      // Report validity only if not focused
-      if (document.activeElement !== inputRef.current)
-        setValidation(blockers.current);
-    });
+    resourceOn(
+      resource,
+      'blockersChanged',
+      (): void => {
+        if (field === undefined) return;
+        blockers.current = getBlockers();
+        handleDontIgnoreError();
+        // Report validity only if not focused
+        if (document.activeElement !== inputRef.current)
+          setValidation(blockers.current);
+      },
+      false
+    );
   }, [
     triedToSubmit,
     resource,

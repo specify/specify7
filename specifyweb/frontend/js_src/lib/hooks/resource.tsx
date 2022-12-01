@@ -38,12 +38,17 @@ export function useResource<SCHEMA extends AnySchema>(
 
   const isChanging = React.useRef<boolean>(false);
   React.useEffect(() =>
-    resourceOn(model, 'change', () => {
-      if (isChanging.current) return;
-      const newResource = serializeResource(model);
-      previousResourceRef.current = newResource;
-      setResource(newResource);
-    })
+    resourceOn(
+      model,
+      'change',
+      () => {
+        if (isChanging.current) return;
+        const newResource = serializeResource(model);
+        previousResourceRef.current = newResource;
+        setResource(newResource);
+      },
+      false
+    )
   );
 
   const previousResourceRef =
@@ -100,10 +105,14 @@ export function useSaveBlockers({
   );
   React.useEffect(
     () =>
-      resourceOn(resource, 'blockersChanged', (): void =>
-        setErrors(
-          resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
-        )
+      resourceOn(
+        resource,
+        'blockersChanged',
+        (): void =>
+          setErrors(
+            resource.saveBlockers?.getFieldErrors(fieldName).join('\n') ?? ''
+          ),
+        false
       ),
     [resource, fieldName]
   );
