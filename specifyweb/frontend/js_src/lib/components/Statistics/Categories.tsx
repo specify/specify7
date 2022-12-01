@@ -34,7 +34,11 @@ export function Categories({
           key={categoryIndex}
         >
           {handleRename === undefined ? (
-            <H3 className="font-bold">{label}</H3>
+            handleClick === undefined ? (
+              <H3 className="font-bold">{label}</H3>
+            ) : (
+              <h5 className="font-bold">{label}</h5>
+            )
           ) : (
             <Input.Text
               required
@@ -55,14 +59,13 @@ export function Categories({
                   statsSpec={statsSpec}
                   onClick={
                     typeof handleClick === 'function'
-                      ? (): void => {
+                      ? (): void =>
                           handleClick({
                             type: 'DefaultStat',
                             pageName: item.pageName,
                             categoryName: item.categoryName,
                             itemName: item.itemName,
-                          });
-                        }
+                          })
                       : undefined
                   }
                   onRemove={
@@ -94,7 +97,7 @@ export function Categories({
               )
             )}
           </div>
-          {handleAdd !== undefined && handleRemove !== undefined && (
+          {handleAdd !== undefined && handleRemove !== undefined ? (
             <div className="flex gap-2">
               <Button.Small
                 variant={className.greenButton}
@@ -110,7 +113,7 @@ export function Categories({
                 {commonText('delete')}
               </Button.Small>
             </div>
-          )}
+          ) : null}
         </div>
       ))}
       {handleAdd !== undefined && (
