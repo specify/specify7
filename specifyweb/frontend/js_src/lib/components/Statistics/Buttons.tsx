@@ -1,21 +1,21 @@
 import { Button } from '../Atoms/Button';
 import React from 'react';
 
-export function PageButton({
+export function StatsPageButton({
   label,
-  isActive,
+  isCurrent,
   onClick: handleClick,
-  onDialogOpen: handleDialogOpen,
+  onRename: handleRename,
 }: {
   readonly label: string;
-  readonly isActive: boolean;
+  readonly isCurrent: boolean;
   readonly onClick: () => void;
-  readonly onDialogOpen: (() => void) | undefined;
+  readonly onRename: (() => void) | undefined;
 }): JSX.Element {
   return (
     <div className="flex">
       <Button.Gray
-        aria-current={isActive ? 'page' : undefined}
+        aria-current={isCurrent ? 'page' : undefined}
         className="min-w-28 flex-1"
         onClick={handleClick}
       >
@@ -24,8 +24,8 @@ export function PageButton({
       <Button.Icon
         title="remove"
         icon="pencil"
-        className={handleDialogOpen === undefined ? 'invisible' : undefined}
-        onClick={handleDialogOpen}
+        className={handleRename === undefined ? 'invisible' : undefined}
+        onClick={handleRename}
       />
     </div>
   );
