@@ -5,8 +5,9 @@ import { Submit } from '../Atoms/Submit';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
+import { statsText } from '../../localization/stats';
 
-export function PageNameDialog({
+export function StatsPageEditing({
   label,
   onRemove: handleRemove,
   onRename: handleRename,
@@ -39,7 +40,7 @@ export function PageNameDialog({
           <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         </>
       }
-      header="Page Name"
+      header={statsText('pageName')}
       onClose={handleClose}
       className={{ buttonContainer: 'flex-1' }}
     >
@@ -55,13 +56,7 @@ export function PageNameDialog({
       >
         <Label.Block>
           {commonText('name')}
-          <Input.Text
-            required
-            value={pageName}
-            onValueChange={(value): void => {
-              setPageName(value);
-            }}
-          />
+          <Input.Text required value={pageName} onValueChange={setPageName} />
         </Label.Block>
       </Form>
     </Dialog>
