@@ -27,29 +27,26 @@ export function DefaultStatItem({
   readonly onClick: (() => void) | undefined;
 }): JSX.Element {
   const statSpecItemPage = statsSpec[pageName];
-  const statSpecItemObject = statSpecItemPage[categoryName]?.items;
-  const statSpecItem =
-    statSpecItemObject === undefined ? undefined : statSpecItemObject[itemName];
-  const statValue =
-    statSpecItem === undefined ? undefined : statSpecItem.spec.type ===
-      'QueryBuilderStat' ? (
-      <QueryBuilderStat
-        fields={statSpecItem.spec.fields}
-        statLabel={statSpecItem.label}
-        tableName={statSpecItem.spec.tableName}
-        onClick={handleClick}
-        onRemove={handleRemove}
-      />
-    ) : (
-      <StatsResult
-        query={undefined}
-        statLabel={statSpecItem?.label}
-        statValue={statSpecItem.spec.value}
-        onClick={handleClick}
-        onRemove={handleRemove}
-      />
-    );
-  return statValue ?? <p> {commonText('loading')}</p>;
+  const statSpecItem = statSpecItemPage[categoryName]?.items?.[itemName];
+  return statSpecItem === undefined ? (
+    <p> {commonText('loading')}</p>
+  ) : statSpecItem.spec.type === 'QueryBuilderStat' ? (
+    <QueryBuilderStat
+      fields={statSpecItem.spec.fields}
+      statLabel={statSpecItem.label}
+      tableName={statSpecItem.spec.tableName}
+      onClick={handleClick}
+      onRemove={handleRemove}
+    />
+  ) : (
+    <StatsResult
+      query={undefined}
+      statLabel={statSpecItem?.label}
+      statValue={statSpecItem.spec.value}
+      onClick={handleClick}
+      onRemove={handleRemove}
+    />
+  );
 }
 
 export function QueryBuilderStat({
@@ -92,17 +89,17 @@ export function CustomStatItem({
   readonly onClick: (() => void) | undefined;
 }): JSX.Element {
   const { tableName, fields, label } = useCustomStatQuery(queryId) ?? {};
-  const statValue =
-    tableName === undefined ||
+  return tableName === undefined ||
     fields === undefined ||
-    label === undefined ? undefined : (
-      <QueryBuilderStat
-        fields={fields}
-        statLabel={label}
-        tableName={tableName}
-        onClick={handleClick}
-        onRemove={handleRemove}
-      />
-    );
-  return statValue ?? <p>{commonText('loading')}</p>;
+    label === undefined ? (
+    <p>{commonText('loading')}</p>
+  ) : (
+    <QueryBuilderStat
+      fields={fields}
+      statLabel={label}
+      tableName={tableName}
+      onClick={handleClick}
+      onRemove={handleRemove}
+    />
+  );
 }
