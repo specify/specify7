@@ -15,8 +15,8 @@ import { Submit } from '../Atoms/Submit';
 import { useDefaultLayout, useDefaultStatsToAdd, useStatsSpec } from './hooks';
 import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
-import { PageNameDialog } from './PageNameDialog';
-import { PageButton } from './Buttons';
+import { StatsPageEditing } from './StatsPageEditing';
+import { StatsPageButton } from './Buttons';
 
 export function StatsPage(): JSX.Element {
   const [customLayout, setLayout] = usePref(
@@ -117,11 +117,11 @@ export function StatsPage(): JSX.Element {
             `}
           >
             {layout.map(({ label }, pageIndex) => (
-              <PageButton
+              <StatsPageButton
                 key={pageIndex}
                 label={label}
-                isActive={pageIndex === activePageIndex}
-                onDialogOpen={
+                isCurrent={pageIndex === activePageIndex}
+                onRename={
                   isEditing
                     ? (): void => {
                         setState({
@@ -137,21 +137,21 @@ export function StatsPage(): JSX.Element {
               />
             ))}
             {isEditing && (
-              <PageButton
+              <StatsPageButton
                 onClick={(): void => {
                   setState({
                     type: 'PageRenameState',
                     pageIndex: undefined,
                   });
                 }}
-                isActive={false}
+                isCurrent={false}
                 label={commonText('add')}
-                onDialogOpen={undefined}
+                onRename={undefined}
               />
             )}
           </aside>
           {state.type === 'PageRenameState' && (
-            <PageNameDialog
+            <StatsPageEditing
               onRemove={
                 typeof state.pageIndex === 'number'
                   ? layout.length > 1
@@ -197,10 +197,8 @@ export function StatsPage(): JSX.Element {
                       setActivePageIndex(layout.length);
                     }
               }
-              onClose={(): void => {
-                setState({ type: 'EditingState' });
-              }}
-              value={
+              onClose={(): void => setState({ type: 'EditingState' })}
+              label={
                 typeof state.pageIndex === 'number'
                   ? layout[state.pageIndex].label
                   : undefined
