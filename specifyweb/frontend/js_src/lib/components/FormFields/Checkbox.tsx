@@ -1,11 +1,11 @@
 import React from 'react';
 
-import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { SpecifyModel } from '../DataModel/specifyModel';
-import { Input, Label } from '../Atoms/Form';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import { f } from '../../utils/functools';
-import { AnySchema } from '../DataModel/helperTypes';
+import { Input, Label } from '../Atoms/Form';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { usePref } from '../UserPreferences/usePref';
 
 export function PrintOnSave({
@@ -27,19 +27,24 @@ export function PrintOnSave({
    * boolean in the past
    */
   const entry = typeof tables === 'object' ? tables[model.name] : undefined;
-  const checked =
-    entry === true || (entry === undefined && defaultValue === true);
+  const handleChange = React.useCallback(
+    (checked: boolean): void =>
+      setTables({
+        ...(typeof tables === 'object' ? tables : {}),
+        [model.name]: checked,
+      }),
+    [setTables, tables, model.name]
+  );
+  React.useEffect(() => {
+    if (entry === undefined && defaultValue === true) handleChange(true);
+  }, [defaultValue, entry, handleChange]);
+
   const input = (
     <Input.Checkbox
-      checked={checked}
+      checked={entry === true}
       id={id}
       name={fieldName}
-      onValueChange={(checked): void =>
-        setTables({
-          ...(typeof tables === 'object' ? tables : {}),
-          [model.name]: checked,
-        })
-      }
+      onValueChange={handleChange}
     />
   );
   return typeof text === 'string' ? (
