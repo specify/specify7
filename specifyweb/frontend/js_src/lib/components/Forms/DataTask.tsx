@@ -28,7 +28,7 @@ import { ViewResourceById } from './ShowResource';
 import { useSearchParameter } from '../../hooks/navigation';
 import { RA } from '../../utils/types';
 import { State } from 'typesafe-reducer';
-import { crash } from '../Errors/Crash';
+import { LoadingContext } from '../Core/Contexts';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -257,33 +257,35 @@ export function CheckLoggedInCollection({
     | State<'Loading'>
     | State<'Inaccessible', { readonly collectionIds: RA<number> }>
   >({ type: 'Loading' });
+  const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
     if (isInRecordSet || resource.isNew()) {
       setOtherCollections({ type: 'Accessible' });
       return;
     }
     setOtherCollections({ type: 'Loading' });
-    resource
-      .fetch()
-      .then<typeof otherCollections>(async () => {
-        const collectionId = getCollectionForResource(resource);
-        if (schema.domainLevelIds.collection === collectionId)
-          return { type: 'Accessible' };
-        else if (typeof collectionId === 'number')
-          return {
-            type: 'Inaccessible',
-            collectionIds: [collectionId],
-          } as const;
-        else {
-          const collectionIds = await fetchCollectionsForResource(resource);
-          return !Array.isArray(collectionIds) ||
-            collectionIds.includes(schema.domainLevelIds.collection)
-            ? { type: 'Accessible' }
-            : { type: 'Inaccessible', collectionIds };
-        }
-      })
-      .then(setOtherCollections)
-      .catch(crash);
+    loading(
+      resource
+        .fetch()
+        .then<typeof otherCollections>(async () => {
+          const collectionId = getCollectionForResource(resource);
+          if (schema.domainLevelIds.collection === collectionId)
+            return { type: 'Accessible' };
+          else if (typeof collectionId === 'number')
+            return {
+              type: 'Inaccessible',
+              collectionIds: [collectionId],
+            } as const;
+          else {
+            const collectionIds = await fetchCollectionsForResource(resource);
+            return !Array.isArray(collectionIds) ||
+              collectionIds.includes(schema.domainLevelIds.collection)
+              ? { type: 'Accessible' }
+              : { type: 'Inaccessible', collectionIds };
+          }
+        })
+        .then(setOtherCollections)
+    );
   }, [resource, isInRecordSet]);
 
   return otherCollections.type === 'Accessible' ? (
