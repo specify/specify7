@@ -150,6 +150,11 @@ export const augmentQueryFields = (
     ? addQueryFields(fields, auditLogMappingPaths, true)
     : addLocalityFields(baseTableName, fields, isDistinct);
 
+/**
+ * It is expected by QueryResultsWrapper that this function does not change
+ * field specs of existing fields, and does not change the indexes of fields
+ * that are already in the query
+ */
 const addQueryFields = (
   fields: RA<QueryField>,
   fieldsToAdd: RA<MappingPath>,

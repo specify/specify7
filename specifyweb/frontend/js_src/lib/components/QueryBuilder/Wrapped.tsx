@@ -12,7 +12,6 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { replaceItem } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -508,19 +507,12 @@ export function QueryBuilder({
             queryRunCount={state.queryRunCount}
             recordSetId={recordSet?.id}
             onSelected={handleSelected}
-            onSortChange={(index, sortType): void => {
+            onSortChange={(fields): void => {
               dispatch({
-                type: 'ChangeFieldAction',
-                line: index,
-                field: { ...state.fields[index], sortType },
+                type: 'ChangeFieldsAction',
+                fields,
               });
-              runQuery(
-                'regular',
-                replaceItem(state.fields, index, {
-                  ...state.fields[index],
-                  sortType,
-                })
-              );
+              runQuery('regular', fields);
             }}
           />
         )}
