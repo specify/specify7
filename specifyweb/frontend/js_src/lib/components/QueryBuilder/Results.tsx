@@ -59,7 +59,7 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
-  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly queryResource?: SpecifyResource<SpQuery>;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
    * optimize fetch performance when using "Browse in forms" and going
@@ -249,7 +249,9 @@ export function QueryResults({
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  queryResource={queryResource}
+                  queryResource={
+                    queryResource === undefined ? undefined : queryResource
+                  }
                 />
               ) : (
                 createRecordSet
@@ -461,10 +463,15 @@ function CreateRecordSet({
 }: {
   readonly getIds: () => RA<number>;
   readonly baseTableName: keyof Tables;
-  readonly queryResource: SpecifyResource<SpQuery>;
+  readonly queryResource?: SpecifyResource<SpQuery>;
 }): JSX.Element {
-  const recordSet = new schema.models.RecordSet.Resource();
-  if (!queryResource.isNew()) recordSet.set('name', queryResource.get('name'));
+  function autofilledRecordSet(queryResource?: SpecifyResource<SpQuery>) {
+    const newRecordSet = new schema.models.RecordSet.Resource();
+    if (queryResource !== undefined && !queryResource.isNew())
+      newRecordSet.set('name', queryResource.get('name'));
+    return newRecordSet;
+  }
+
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Main'>
@@ -479,7 +486,7 @@ function CreateRecordSet({
         onClick={(): void =>
           setState({
             type: 'Editing',
-            recordSet: recordSet,
+            recordSet: autofilledRecordSet(queryResource),
           })
         }
       >

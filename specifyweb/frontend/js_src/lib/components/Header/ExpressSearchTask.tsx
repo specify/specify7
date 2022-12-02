@@ -125,6 +125,7 @@ function TableResult({
           initialData={tableResults.results}
           label={model.label}
           model={model}
+          queryResource={undefined}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
         />
