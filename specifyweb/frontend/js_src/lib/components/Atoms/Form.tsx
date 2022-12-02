@@ -49,7 +49,7 @@ export const Form = wrap(
  * Don't highlight missing required and pattern mismatch fields until focus
  * loss
  */
-const withHandleBlur = <TYPE extends InputType>(
+export const withHandleBlur = <TYPE extends InputType>(
   handleBlur: ((event: React.FocusEvent<TYPE>) => void) | undefined
 ) => ({
   onBlur(event: React.FocusEvent<TYPE>): void {

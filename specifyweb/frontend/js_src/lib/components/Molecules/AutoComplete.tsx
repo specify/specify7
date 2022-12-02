@@ -10,6 +10,7 @@ import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { withHandleBlur } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
@@ -385,11 +386,18 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
+        onBlur={(event: React.FocusEvent<HTMLInputElement>): void =>
+          withHandleBlur(inputProps?.onBlur).onBlur(event)
+        }
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
          * styles for <select>
          */
-        className={`${inputProps.className ?? ''} w-full pr-[1.5em]`}
+        className={`
+          ${className.notTouchedInput}
+          ${inputProps.className ?? ''}
+          w-full pr-[1.5em]
+        `}
         displayValue={(item: AutoCompleteItem<T> | null): string =>
           typeof item === 'string'
             ? item
