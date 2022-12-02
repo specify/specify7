@@ -20,6 +20,7 @@ import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { fail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { loadingGif } from '../Molecules';
@@ -35,7 +36,6 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { recordSetView } from '../FormParse/webOnlyViews';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -139,7 +139,14 @@ export function QueryResults({
         !currentResults.includes(undefined);
       if (alreadyFetched) return undefined;
 
+      /*
+       * REFACTOR: make this smarter
+       *   when going to the last record, fetch 40 before the last
+       *   when somewhere in the middle, adjust the fetch region to get the
+       *   most unhatched records fetched
+       */
       const naiveFetchIndex = index ?? currentResults.length;
+      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
       const fetchIndex =
         /* If navigating backwards, fetch the previous 40 records */
         typeof index === 'number' &&
@@ -148,7 +155,6 @@ export function QueryResults({
         index > fetchSize
           ? naiveFetchIndex - fetchSize + 1
           : naiveFetchIndex;
-      if (currentResults[fetchIndex] !== undefined) return undefined;
 
       // Prevent concurrent fetching in different places
       fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
@@ -249,9 +255,7 @@ export function QueryResults({
                       )
                       .map((result) => result[queryIdField] as number)
                   }
-                  queryResource={
-                    queryResource === undefined ? undefined : queryResource
-                  }
+                  queryResource={queryResource}
                 />
               ) : (
                 createRecordSet
@@ -260,9 +264,9 @@ export function QueryResults({
             <QueryToMap
               fieldSpecs={fieldSpecs}
               model={model}
-              totalCount={totalCount}
               results={loadedResults}
               selectedRows={selectedRows}
+              totalCount={totalCount}
               onFetchMore={
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
@@ -465,13 +469,6 @@ function CreateRecordSet({
   readonly baseTableName: keyof Tables;
   readonly queryResource?: SpecifyResource<SpQuery>;
 }): JSX.Element {
-  function autofilledRecordSet(queryResource?: SpecifyResource<SpQuery>) {
-    const newRecordSet = new schema.models.RecordSet.Resource();
-    if (queryResource !== undefined && !queryResource.isNew())
-      newRecordSet.set('name', queryResource.get('name'));
-    return newRecordSet;
-  }
-
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
     | State<'Main'>
@@ -483,12 +480,15 @@ function CreateRecordSet({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        onClick={(): void =>
+        onClick={(): void => {
+          const recordSet = new schema.models.RecordSet.Resource();
+          if (queryResource !== undefined && !queryResource.isNew())
+            recordSet.set('name', queryResource.get('name'));
           setState({
             type: 'Editing',
-            recordSet: autofilledRecordSet(queryResource),
-          })
-        }
+            recordSet,
+          });
+        }}
       >
         {queryText('createRecordSet')}
       </Button.Small>
@@ -500,9 +500,9 @@ function CreateRecordSet({
           mode="edit"
           resource={state.recordSet}
           viewName={recordSetView}
+          onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={f.never}
-          onAdd={undefined}
           onSaved={f.never}
           onSaving={(): false => {
             setState({ type: 'Saving' });
