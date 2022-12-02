@@ -59,7 +59,7 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
-  readonly queryResource?: SpecifyResource<SpQuery>;
+  readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
    * optimize fetch performance when using "Browse in forms" and going
@@ -467,7 +467,7 @@ function CreateRecordSet({
 }: {
   readonly getIds: () => RA<number>;
   readonly baseTableName: keyof Tables;
-  readonly queryResource?: SpecifyResource<SpQuery>;
+  readonly queryResource: SpecifyResource<SpQuery> | undefined;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
