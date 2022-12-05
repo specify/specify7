@@ -35,6 +35,10 @@ export const formsText = createDictionary({
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
   },
+  cloneDescription: {
+    'en-us': 'Create a full copy of current record',
+    'ru-ru': 'Создать полную копию текущей записи',
+  },
   // BusinessRules
   valueMustBeUniqueToField: {
     'en-us': (fieldName: string) => `Value must be unique to ${fieldName}`,
@@ -673,15 +677,35 @@ export const formsText = createDictionary({
   },
   carryForward: {
     'en-us': 'Carry Forward',
-    'ru-ru': 'Настройки клонирования',
+    'ru-ru': 'Перенести',
   },
   carryForwardDescription: {
-    'en-us': 'Fields to carry forward',
-    'ru-ru': 'Поля для переноса',
+    'en-us': 'Create a new record with certain fields carried over',
+    'ru-ru': 'Создать новую запись с определенными полями, перенесенными',
+  },
+  carryForwardSettings: {
+    'en-us': 'Carry Forward',
+    'ru-ru': 'Настройки клонирования',
+  },
+  carryForwardSettingsDescription: {
+    'en-us': 'Configure fields to carry forward',
+    'ru-ru': 'Настройте поля для клонирования',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
     'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
+  },
+  cloneButtonEnabled: {
+    'en-us': 'Show Clone button',
+    'ru-ru': 'Показать кнопку клонирования',
+  },
+  addButtonEnabled: {
+    'en-us': 'Show Add button',
+    'ru-ru': 'Показать кнопку добавления',
+  },
+  addButtonDescription: {
+    'en-us': 'Create a new blank record',
+    'ru-ru': 'Создать новую пустую запись',
   },
   autoNumbering: {
     'en-us': 'Auto Numbering',

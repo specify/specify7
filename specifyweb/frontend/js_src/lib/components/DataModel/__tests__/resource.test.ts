@@ -262,9 +262,16 @@ test('getFieldsToNotClone', () => {
       .filter(({ name }) => name !== 'text1')
       .map(({ name }) => name) as RA<TableFields<CollectionObject>>,
   });
-  expect(getFieldsToNotClone(schema.models.CollectionObject)).toEqual([
+  expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
     'catalogNumber',
     'guid',
     'text1',
+  ]);
+  expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
+    'actualTotalCountAmt',
+    'catalogNumber',
+    'guid',
+    'totalCountAmt',
+    'currentDetermination',
   ]);
 });

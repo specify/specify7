@@ -227,8 +227,11 @@ export function resourceOn(
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
-export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
-  const fieldsToClone = getFieldsToClone(model);
+export function getFieldsToNotClone(
+  model: SpecifyModel,
+  cloneAll: boolean
+): RA<string> {
+  const fieldsToClone = getCarryOverPreference(model, cloneAll);
   const uniqueFields = getUniqueFields(model);
   return model.fields
     .map(({ name }) => name)
@@ -238,8 +241,15 @@ export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
     );
 }
 
+const getCarryOverPreference = (
+  model: SpecifyModel,
+  cloneAll: boolean
+): RA<string> =>
+  (cloneAll
+    ? getUserPref('form', 'preferences', 'carryForward')?.[model.name]
+    : undefined) ?? getFieldsToClone(model);
+
 const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  getUserPref('form', 'preferences', 'carryForward')?.[model.name] ??
   model.fields.filter(({ isVirtual }) => !isVirtual).map(({ name }) => name);
 
 // REFACTOR: move this into businessRuleDefs.ts

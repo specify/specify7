@@ -107,10 +107,10 @@ function eventHandlerForToOne(related, field) {
         handleChanged(){
             this.needsSaved = true;
         },
-        async clone() {
+        async clone(cloneAll = false) {
             var self = this;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel).map(fieldName=>fieldName.toLowerCase());
+            const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(fieldName=>fieldName.toLowerCase());
 
             var newResource = new this.constructor(
               removeKey(
@@ -131,15 +131,15 @@ function eventHandlerForToOne(related, field) {
                     // many-to-one wouldn't ordinarily be dependent, but
                     // this is the case for paleocontext. really more like
                     // a one-to-one.
-                    newResource.set(fieldName, await related?.clone());
+                    newResource.set(fieldName, await related?.clone(cloneAll));
                     break;
                 case 'one-to-many':
                     await newResource.rget(fieldName).then((newCollection)=>
-                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone())))
+                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
                     );
                     break;
                 case 'zero-to-one':
-                    newResource.set(fieldName, await related?.clone());
+                    newResource.set(fieldName, await related?.clone(cloneAll));
                     break;
                 default:
                     throw new Error('unhandled relationship type');

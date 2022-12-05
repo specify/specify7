@@ -31,14 +31,7 @@ import { SaveButton } from './Save';
  * or some additional things need to be done after resource is created, or
  * resource clone operation needs to be handled in a special way.
  */
-export const RESTRICT_ADDING = new Set<keyof Tables>([
-  // Shouldn't clone preparations
-  'Gift',
-  'Borrow',
-  'Loan',
-  'ExchangeIn',
-  'ExchangeOut',
-  // Shouldn't allow creating new resources of this type
+export const FORBID_ADDING = new Set<keyof Tables>([
   'TaxonTreeDef',
   'TaxonTreeDefItem',
   'GeographyTreeDef',
@@ -53,19 +46,28 @@ export const RESTRICT_ADDING = new Set<keyof Tables>([
   'Division',
   'Discipline',
   'Collection',
-]);
-
-/**
- * Like RESTRICT_ADDING, but also restricts cloning
- */
-export const NO_ADD_ANOTHER = new Set<keyof Tables>([
-  ...RESTRICT_ADDING,
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
 ]);
 
+/**
+ * Same as FORBID_ADDING, but only apply for query combo boxes
+ */
+export const RESTRICT_ADDING = new Set<keyof Tables>([
+  ...FORBID_ADDING,
+  // Preparations should be created though their own workflow (interactions dialog)
+  'Gift',
+  'Borrow',
+  'Loan',
+  'ExchangeIn',
+  'ExchangeOut',
+]);
+
+/**
+ * Same as FORBID_ADDING, but apply only to "Clone" and "Carry Forward"
+ */
 export const NO_CLONE = new Set<keyof Tables>([
-  ...NO_ADD_ANOTHER,
+  ...FORBID_ADDING,
   // To properly clone a user need to also clone their roles and policies
   'SpecifyUser',
 ]);
@@ -194,9 +196,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       <SaveButton
         form={formElement}
         resource={resource}
-        onAdd={
-          NO_ADD_ANOTHER.has(resource.specifyModel.name) ? undefined : handleAdd
-        }
+        onAdd={handleAdd}
         onSaved={(): void => {
           const printOnSave = getUserPref('form', 'preferences', 'printOnSave');
           if (printOnSave[resource.specifyModel.name] === true)

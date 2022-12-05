@@ -453,7 +453,7 @@ function ProtectedQueryComboBox({
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
                     : loading(
-                        formatted!.resource!.clone().then((resource) =>
+                        formatted!.resource!.clone(true).then((resource) =>
                           setState({
                             type: 'AddResourceState',
                             resource,

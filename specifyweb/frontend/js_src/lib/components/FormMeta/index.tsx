@@ -21,7 +21,7 @@ import {
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { AutoNumbering } from './AutoNumbering';
-import { CarryForwardButton } from './CarryForward';
+import { CarryForwardConfig } from './CarryForward';
 import { Definition } from './Definition';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
@@ -31,6 +31,7 @@ import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
 import { ViewDescription } from '../FormParse';
 import { interactionTables } from '../Interactions/InteractionsDialog';
+import { AddButtonConfig, CloneConfig } from './Clone';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -121,11 +122,13 @@ function MetaDialog({
               : formsText('generateLabelOnSave')
           }
         />
-        <CarryForwardButton
+        <CloneConfig model={resource.specifyModel} />
+        <CarryForwardConfig
           model={resource.specifyModel}
           parentModel={undefined}
           type="button"
         />
+        <AddButtonConfig model={resource.specifyModel} />
       </div>
       {typeof subView === 'object' ? (
         <div className="flex flex-col gap-2 pb-2">

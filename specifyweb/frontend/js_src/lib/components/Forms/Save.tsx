@@ -21,7 +21,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
-import { NO_CLONE } from './ResourceView';
+import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
 export const saveFormUnloadProtect = formsText('unsavedFormUnloadProtect');
 
@@ -104,14 +104,22 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const [globalCanCarryForward] = usePref(
+  const [disableCarryForward] = usePref(
     'form',
     'preferences',
     'disableCarryForward'
   );
+  const [disableClone] = usePref('form', 'preferences', 'disableClone');
+  const [disableAdd] = usePref('form', 'preferences', 'disableAdd');
   const canCarryForward =
-    !globalCanCarryForward.includes(resource.specifyModel.name) &&
+    !disableCarryForward.includes(resource.specifyModel.name) &&
     !NO_CLONE.has(resource.specifyModel.name);
+  const canClone =
+    !disableClone.includes(resource.specifyModel.name) &&
+    !NO_CLONE.has(resource.specifyModel.name);
+  const canAdd =
+    !disableAdd.includes(resource.specifyModel.name) &&
+    !FORBID_ADDING.has(resource.specifyModel.name);
 
   const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
@@ -202,26 +210,48 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const ButtonComponent = saveBlocked ? Button.Red : Button.Orange;
   const SubmitComponent = saveBlocked ? Submit.Red : Submit.Orange;
   // Don't allow cloning the resource if it changed
-  const isChanged = saveRequired || externalSaveRequired || resource.isNew();
+  const isChanged = saveRequired || externalSaveRequired;
+
+  const copyButton = (
+    label: string,
+    description: string,
+    handleClick: () => Promise<SpecifyResource<SCHEMA>>
+  ): JSX.Element => (
+    <ButtonComponent
+      className={saveBlocked ? '!cursor-not-allowed' : undefined}
+      title={description}
+      disabled={isSaving || isChanged}
+      onClick={(): void => {
+        smoothScroll(form, 0);
+        loading(handleClick().then(handleAdd));
+      }}
+    >
+      {label}
+    </ButtonComponent>
+  );
+
   return (
     <>
-      {typeof handleAdd === 'function' && canCreate ? (
+      {typeof handleAdd === 'function' && canCreate && !resource.isNew() ? (
         <>
-          <ButtonComponent
-            className={saveBlocked ? '!cursor-not-allowed' : undefined}
-            disabled={isSaving || isChanged}
-            onClick={(): void => {
-              smoothScroll(form, 0);
-              loading(
-                (canCarryForward
-                  ? resource.clone()
-                  : Promise.resolve(new resource.specifyModel.Resource())
-                ).then(handleAdd)
-              );
-            }}
-          >
-            {commonText('add')}
-          </ButtonComponent>
+          {canClone &&
+            copyButton(
+              formsText('clone'),
+              formsText('cloneDescription'),
+              async () => resource.clone(true)
+            )}
+          {canCarryForward &&
+            copyButton(
+              formsText('carryForward'),
+              formsText('carryForwardDescription'),
+              async () => resource.clone(false)
+            )}
+          {canAdd &&
+            copyButton(
+              commonText('add'),
+              formsText('addButtonDescription'),
+              async () => new resource.specifyModel.Resource()
+            )}
         </>
       ) : undefined}
       {canSave && (

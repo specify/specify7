@@ -20,7 +20,7 @@ import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 
-export function CarryForwardButton({
+export function CarryForwardConfig({
   model,
   parentModel,
   type,
@@ -50,7 +50,7 @@ export function CarryForwardButton({
           {formsText('carryForward')}
           <Button.Small
             className="ml-2"
-            title={formsText('carryForwardDescription')}
+            title={formsText('carryForwardSettingsDescription')}
             onClick={handleOpen}
           >
             {icons.cog}
@@ -59,12 +59,12 @@ export function CarryForwardButton({
       ) : (
         <Button.Icon
           icon="cog"
-          title={formsText('carryForwardDescription')}
+          title={formsText('carryForwardSettingsDescription')}
           onClick={handleOpen}
         />
       )}
       {isOpen && (
-        <CarryForwardConfig
+        <CarryForwardConfigDialog
           model={model}
           parentModel={parentModel}
           onClose={handleClose}
@@ -77,7 +77,7 @@ export function CarryForwardButton({
 const normalize = (fields: RA<string>): RA<string> =>
   Array.from(fields).sort(sortFunction(f.id));
 
-function CarryForwardConfig({
+function CarryForwardConfigDialog({
   model,
   parentModel,
   onClose: handleClose,
@@ -191,7 +191,9 @@ function CarryForwardConfig({
           </Submit.Blue>
         </>
       }
-      header={`${formsText('carryForwardDescription')} (${model.label})`}
+      header={`${formsText('carryForwardSettingsDescription')} (${
+        model.label
+      })`}
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
@@ -255,7 +257,7 @@ function CarryForwardCategory({
             {field.label}
           </Label.Inline>
           {field.isRelationship && field.isDependent() ? (
-            <CarryForwardButton
+            <CarryForwardConfig
               model={field.relatedModel}
               parentModel={field.model}
               type="cog"
