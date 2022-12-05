@@ -70,7 +70,7 @@ export function AppResourceEditor({
   );
   useErrorContext('resourceData', resourceData);
 
-  const formRef = React.useRef<HTMLFormElement | null>(null);
+  const [formElement, setForm] = React.useState<HTMLFormElement | null>(null);
   const isReadOnly = !hasToolPermission(
     'resources',
     appResource.isNew() ? 'create' : 'update'
@@ -133,7 +133,7 @@ export function AppResourceEditor({
         </h3>
         {headerButtons}
       </DataEntry.Header>
-      <Form className="flex-1 overflow-hidden" forwardRef={formRef}>
+      <Form className="flex-1 overflow-hidden" forwardRef={setForm}>
         <AppResourcesTabs
           appResource={appResource}
           data={resourceData.data}
@@ -152,32 +152,37 @@ export function AppResourceEditor({
           <DeleteButton resource={appResource} onDeleted={handleDeleted} />
         ) : undefined}
         <span className="-ml-2 flex-1" />
-        {formRef.current !== null &&
+        {formElement !== null &&
         hasToolPermission(
           'resources',
           appResource.isNew() ? 'create' : 'update'
         ) ? (
           <SaveButton
-            form={formRef.current}
+            form={formElement}
             resource={appResource}
             saveRequired={isChanged}
-            onAdd={(newResource): void => {
-              const resource = serializeResource(newResource);
-              const isClone = typeof resource.spAppResourceDir === 'string';
-              handleClone(
-                {
-                  ...resource,
-                  name:
-                    resource.name.length > 0
-                      ? getUniqueName(resource.name, [resource.name])
-                      : commonText(
-                          'newResourceTitle',
-                          appResource.specifyModel.label
-                        ),
-                },
-                isClone ? resourceData.id : undefined
-              );
-            }}
+            onAdd={
+              hasToolPermission('resources', 'create')
+                ? (newResource): void => {
+                    const resource = serializeResource(newResource);
+                    const isClone =
+                      typeof resource.spAppResourceDir === 'string';
+                    handleClone(
+                      {
+                        ...resource,
+                        name:
+                          resource.name.length > 0
+                            ? getUniqueName(resource.name, [resource.name])
+                            : commonText(
+                                'newResourceTitle',
+                                appResource.specifyModel.label
+                              ),
+                      },
+                      isClone ? resourceData.id : undefined
+                    );
+                  }
+                : undefined
+            }
             onIgnored={(): void => {
               showValidationRef.current?.();
             }}
