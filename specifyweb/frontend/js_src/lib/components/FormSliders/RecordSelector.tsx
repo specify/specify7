@@ -64,7 +64,7 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly index: number;
   // Event handler for index change
   readonly onSlide:
-    | ((newIndex: number, callback?: () => void) => void)
+    | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
   // Total number of elements in the collection
   readonly totalCount: number;
@@ -115,7 +115,17 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   >({ type: 'Main' });
 
   return {
-    slider: <Slider count={totalCount} value={index} onChange={handleSlide} />,
+    slider: (
+      <Slider
+        count={totalCount}
+        value={index}
+        onChange={
+          handleSlide === undefined
+            ? undefined
+            : (index) => handleSlide?.(index, false)
+        }
+      />
+    ),
     index,
     totalCount,
     isLoading: records[index] === undefined && totalCount !== 0,
@@ -166,6 +176,7 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
                     index < lastIndexRef.current ? index - 1 : index,
                     totalCount - 2
                   ),
+                  true,
                   () => handleDelete(index, source)
                 )
               : undefined

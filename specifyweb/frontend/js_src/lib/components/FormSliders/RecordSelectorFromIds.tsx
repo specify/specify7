@@ -144,10 +144,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         : undefined,
     onSlide:
       typeof handleSlide === 'function'
-        ? (index, callback): void => {
+        ? (index, replace, callback): void => {
             function doSlide(): void {
               setIndex(index);
-              handleSlide?.(index);
+              handleSlide?.(index, replace);
               callback?.();
             }
 

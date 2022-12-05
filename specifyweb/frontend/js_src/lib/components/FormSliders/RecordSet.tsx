@@ -190,7 +190,8 @@ function RecordSet<SCHEMA extends AnySchema>({
   const go = (
     index: number,
     recordId: number | 'new' | undefined,
-    newResource?: SpecifyResource<SCHEMA>
+    newResource?: SpecifyResource<SCHEMA>,
+    replace: boolean = false
   ): void =>
     recordId === undefined
       ? handleFetch(index)
@@ -209,6 +210,7 @@ function RecordSet<SCHEMA extends AnySchema>({
                 serializeResource
               ),
             },
+            replace,
           }
         );
 
@@ -361,7 +363,9 @@ function RecordSet<SCHEMA extends AnySchema>({
         onSaved={(resource): void =>
           ids[currentIndex] === resource.id ? undefined : handleAdd([resource])
         }
-        onSlide={(index): void => go(index, ids[index])}
+        onSlide={(index, replace): void =>
+          go(index, ids[index], undefined, replace)
+        }
       />
       {hasDuplicate && (
         <Dialog
