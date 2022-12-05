@@ -8,6 +8,7 @@ export const operationPolicies = {
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
+  '/replace/record': ['update', 'delete'],
   '/report': ['execute'],
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
@@ -81,6 +82,7 @@ export const institutionPermissions = new Set([
   '/export/feed',
   '/permissions/library/roles',
   '/permissions/list_admins',
+  '/report/record'
 ]);
 /**
  * Policies that are respected on the front-end, but ignored by the back-end.

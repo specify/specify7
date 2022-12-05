@@ -9,15 +9,18 @@ from itertools import groupby
 
 from django import http
 from django.conf import settings
-from django.db import router, transaction, connection
+from django.db import IntegrityError, router, transaction, connection
 from django.db.models.deletion import Collector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods, require_POST
+from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from specifyweb.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, PermissionsException, check_permission_targets
+from specifyweb.workbench.upload.upload_result import FailedBusinessRule
 from . import api, models
 from .specify_jar import specify_jar
+# from .upload_result import UploadResult
 
 
 def login_maybe_required(view):
@@ -393,6 +396,11 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
+class ReplaceRecordPT(PermissionTarget):
+    resource = "/replace/record"
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+
 @openapi(schema={
     'post': {
         "requestBody": {
@@ -421,7 +429,8 @@ def set_admin_status(request, userid):
         },
         "responses": {
             "204": {"description": "Success",},
-            "404": {"description": "The AgentID specified does not exist."}
+            "404": {"description": "The AgentID specified does not exist."},
+            "405": {"description": "A database rule was broken."}
         }
     },
 })
@@ -431,7 +440,7 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
     """Replaces all the foreign keys referencing the old AgentID
     with the new AgentID, and deletes the old agent record.
     """
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [])
+    check_permission_targets(None, request.specify_user.id, [ReplaceRecordPT.update, ReplaceRecordPT.delete])
 
     # Create database connection cursor
     cursor = connection.cursor()
@@ -466,7 +475,10 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
                 sql_update += "UPDATE " + table_name + " SET " + sql_set_clause + " WHERE " + sql_where_clause + ";\n"
         
         # Execute update query for agent children
-        cursor.execute(sql_update)
+        try:
+            cursor.execute(sql_update)
+        except (BusinessRuleException, IntegrityError) as e:
+            return http.HttpResponseNotAllowed(str(e))
 
         # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
         cursor.execute("DELETE FROM agent WHERE AgentID=%s", old_agent_id)
