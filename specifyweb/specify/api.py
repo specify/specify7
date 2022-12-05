@@ -365,6 +365,11 @@ def cleanData(model, data: Dict[str, Any], agent) -> Dict[str, Any]:
         del cleaned['timestampcreated']
     except KeyError:
         pass
+
+    # Password should be set though the /api/set_password/<id>/ endpoint
+    if model is get_model('Specifyuser') and 'password' in cleaned:
+        del cleaned['password']
+
     return cleaned
 
 def create_obj(collection, agent, model, data: Dict[str, Any], parent_obj=None):

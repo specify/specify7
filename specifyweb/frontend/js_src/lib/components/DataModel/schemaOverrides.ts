@@ -137,6 +137,7 @@ const globalFieldOverrides: {
   },
   SpecifyUser: {
     isAdmin: 'readOnly',
+    password: 'hidden',
   },
   TaxonTreeDef: {
     fullNameDirection: 'readOnly',
