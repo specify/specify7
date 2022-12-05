@@ -5034,13 +5034,15 @@ export type SpPrincipal = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
-    // NOTE: This is a -to-one relationship with collection, discipline or division
-    readonly scope: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
+    /*
+     * NOTE: This is a -to-one relationship with collection, discipline or division
+     * Don't know how to determine which it is
+     */
     readonly scope: Division | null;
   };
   readonly toManyDependent: RR<never, never>;

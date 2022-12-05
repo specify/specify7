@@ -280,9 +280,15 @@ function eventHandlerForToOne(related, field) {
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
 
             if (field.isRelationship) {
-                value = _.isString(value) ?
-                    this._handleUri(value, fieldName) :
-                    this._handleInlineDataOrResource(value, fieldName);
+                value = _.isString(value)
+                  ? this._handleUri(value, fieldName)
+                  : typeof value === 'number'
+                  ? this._handleUri(
+                      // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+                      getResourceApiUrl(field.model.name, value),
+                      fieldName
+                    )
+                  : this._handleInlineDataOrResource(value, fieldName);
             }
             return [fieldName, value];
         },
