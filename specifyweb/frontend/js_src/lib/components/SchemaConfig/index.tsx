@@ -11,7 +11,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
-import type { SpLocaleItemStr as SpLocaleItemString_ } from '../DataModel/types';
+import type { SpLocaleItemStr } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
@@ -24,8 +24,10 @@ import {
 } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
+import { fetchCollection } from '../DataModel/collection';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
-export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
+export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 
 export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
@@ -44,13 +46,26 @@ export function SchemaConfigMain(): JSX.Element {
     model.name
   );
   const [language, country = null] = rawLanguage.split('-');
+  const [containerStrings] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpLocaleItemStr', {
+          limit: 0,
+          containerName: container.id,
+        }).then(({ records }) => records),
+      [container.id]
+    ),
+    false
+  );
   const [name, setName, nameChanged] = useContainerString(
+    containerStrings,
     'containerName',
     container,
     language,
     country
   );
   const [desc, setDesc, descChanged] = useContainerString(
+    containerStrings,
     'containerDesc',
     container,
     language,
@@ -77,6 +92,7 @@ export function SchemaConfigMain(): JSX.Element {
     typeof items === 'object' &&
     typeof name === 'object' &&
     typeof desc === 'object';
+
   function handleSave(): void {
     if (!canSave) return;
     unsetUnloadProtect();
