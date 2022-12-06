@@ -115,12 +115,13 @@ export function QueryResultsWrapper({
       .catch(fail);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
-    const initialData =
+    const isCountOnly =
       countOnly ||
       // Run as "count only" if there are no visible fields
-      displayedFields.length === 0
-        ? Promise.resolve(undefined)
-        : fetchResults(0);
+      displayedFields.length === 0;
+    const initialData = isCountOnly
+      ? Promise.resolve(undefined)
+      : fetchResults(0);
     const fieldSpecs = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
@@ -133,7 +134,7 @@ export function QueryResultsWrapper({
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
-          fetchResults,
+          fetchResults: isCountOnly ? undefined : fetchResults,
           fieldSpecs,
           initialData,
           sortConfig: fields

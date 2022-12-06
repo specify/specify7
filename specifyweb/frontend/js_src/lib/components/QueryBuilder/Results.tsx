@@ -66,7 +66,9 @@ export function QueryResults({
    * backwards in the list from the end.
    */
   readonly fetchSize: number;
-  readonly fetchResults: (offset: number) => Promise<RA<QueryResultRow>>;
+  readonly fetchResults:
+    | ((offset: number) => Promise<RA<QueryResultRow>>)
+    | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
@@ -133,7 +135,7 @@ export function QueryResults({
     async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
-      if (!canFetch) return undefined;
+      if (!canFetch || fetchResults === undefined) return undefined;
       const alreadyFetched =
         currentResults.length === totalCount &&
         !currentResults.includes(undefined);
@@ -237,7 +239,8 @@ export function QueryResults({
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
-        results.length > 0 ? (
+        results.length > 0 &&
+        typeof fetchResults === 'function' ? (
           <>
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
