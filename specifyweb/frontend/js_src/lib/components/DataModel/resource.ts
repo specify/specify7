@@ -287,5 +287,5 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   ]);
 
 export const exportsForTests = {
-  getFieldsToClone,
+  getCarryOverPreference,
 };

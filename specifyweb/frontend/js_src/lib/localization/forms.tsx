@@ -683,10 +683,6 @@ export const formsText = createDictionary({
     'en-us': 'Create a new record with certain fields carried over',
     'ru-ru': 'Создать новую запись с определенными полями, перенесенными',
   },
-  carryForwardSettings: {
-    'en-us': 'Carry Forward',
-    'ru-ru': 'Настройки клонирования',
-  },
   carryForwardSettingsDescription: {
     'en-us': 'Configure fields to carry forward',
     'ru-ru': 'Настройте поля для клонирования',

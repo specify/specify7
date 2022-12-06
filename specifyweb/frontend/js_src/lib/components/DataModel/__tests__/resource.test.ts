@@ -29,7 +29,7 @@ import {
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
 
-const { getFieldsToClone } = exportsForTests;
+const { getCarryOverPreference } = exportsForTests;
 
 mockTime();
 requireContext();
@@ -224,16 +224,16 @@ theories(parseJavaClassName, [
   { in: ['edu.ku.brc.specify.datamodel.Accession'], out: 'Accession' },
   { in: ['TEST'], out: 'TEST' },
 ]);
-describe('getFieldsToClone', () => {
+describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
-    expect(getFieldsToClone(schema.models.SpQuery)).toEqual(
+    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
       schema.models.SpQuery.fields.map(({ name }) => name)
     ));
   test('customize carry over fields', () => {
     setPref('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getFieldsToClone(schema.models.Locality)).toEqual([
+    expect(getCarryOverPreference(schema.models.Locality, true)).toEqual([
       'localityName',
       'text1',
     ]);
