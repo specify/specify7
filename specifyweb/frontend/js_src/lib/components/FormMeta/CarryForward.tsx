@@ -48,7 +48,7 @@ export function CarryForwardConfig({
               setGlobalEnabled(toggleItem(globalEnabled, model.name))
             }
           />
-          {formsText('carryForward')}
+          {formsText('carryForwardEnabled')}
           <Button.Small
             className="ml-2"
             title={formsText('carryForwardSettingsDescription')}

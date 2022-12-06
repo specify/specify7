@@ -679,6 +679,10 @@ export const formsText = createDictionary({
     'en-us': 'Carry Forward',
     'ru-ru': 'Перенести',
   },
+  carryForwardEnabled: {
+    'en-us': 'Show Carry Forward button',
+    'ru-ru': 'Показать кнопку Перенести',
+  },
   carryForwardDescription: {
     'en-us': 'Create a new record with certain fields carried over',
     'ru-ru': 'Создать новую запись с определенными полями, перенесенными',
