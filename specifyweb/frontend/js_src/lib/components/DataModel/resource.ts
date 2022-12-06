@@ -246,8 +246,9 @@ const getCarryOverPreference = (
   cloneAll: boolean
 ): RA<string> =>
   (cloneAll
-    ? getUserPref('form', 'preferences', 'carryForward')?.[model.name]
-    : undefined) ?? getFieldsToClone(model);
+    ? undefined
+    : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
+  getFieldsToClone(model);
 
 const getFieldsToClone = (model: SpecifyModel): RA<string> =>
   model.fields.filter(({ isVirtual }) => !isVirtual).map(({ name }) => name);
@@ -288,4 +289,5 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
 
 export const exportsForTests = {
   getCarryOverPreference,
+  getFieldsToClone,
 };

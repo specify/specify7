@@ -29,7 +29,7 @@ import {
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
 
-const { getCarryOverPreference } = exportsForTests;
+const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 
 mockTime();
 requireContext();
@@ -258,19 +258,22 @@ describe('getUniqueFields', () => {
 
 test('getFieldsToNotClone', () => {
   setPref('form', 'preferences', 'carryForward', {
-    CollectionObject: schema.models.CollectionObject.fields
-      .filter(({ name }) => name !== 'text1')
-      .map(({ name }) => name) as RA<TableFields<CollectionObject>>,
+    CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
+      (name) => name !== 'text1'
+    ) as RA<TableFields<CollectionObject>>,
   });
   expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
+    'actualTotalCountAmt',
     'catalogNumber',
     'guid',
-    'text1',
+    'totalCountAmt',
+    'currentDetermination',
   ]);
   expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
     'guid',
+    'text1',
     'totalCountAmt',
     'currentDetermination',
   ]);
