@@ -560,7 +560,7 @@ class ReplaceRecordTests(ApiTests):
             collectingevent=collecting_event
         )
 
-        # Assert that the api rrequest ran successfully
+        # Assert that the api request ran successfully
         response = c.post(
             f'/api/specify/replace/agent/{agent_1.id}/{agent_2.id}/',
             data=[],
