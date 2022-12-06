@@ -233,10 +233,13 @@ describe('getCarryOverPreference', () => {
     setPref('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getCarryOverPreference(schema.models.Locality, true)).toEqual([
+    expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
       'localityName',
       'text1',
     ]);
+    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
+      schema.models.SpQuery.fields.map(({ name }) => name)
+    );
   });
 });
 
