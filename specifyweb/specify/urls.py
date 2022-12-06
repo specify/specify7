@@ -40,4 +40,7 @@ urlpatterns = [
     url(r'^set_password/(?P<userid>\d+)/$', views.set_password),
     url(r'^set_admin_status/(?P<userid>\d+)/$', views.set_admin_status),
     url(r'^set_agents/(?P<userid>\d+)/$', views.set_user_agents),
+
+    # replace agent
+    url(r'^specify/replace/agent/(?P<old_agent_id>\d+)/(?P<new_agent_id>\d+)/$', views.agent_record_replacement)
 ]
