@@ -41,7 +41,7 @@ export function QueryResultsWrapper({
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element;
+  readonly extraButtons: JSX.Element | undefined;
   readonly forceCollection: number | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (

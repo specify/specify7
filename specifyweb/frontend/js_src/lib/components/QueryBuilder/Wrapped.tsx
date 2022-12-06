@@ -493,12 +493,14 @@ export function QueryBuilder({
               ) : undefined
             }
             extraButtons={
-              <QueryExportButtons
-                baseTableName={state.baseTableName}
-                fields={state.fields}
-                getQueryFieldRecords={getQueryFieldRecords}
-                queryResource={queryResource}
-              />
+              query.countOnly ? undefined : (
+                <QueryExportButtons
+                  baseTableName={state.baseTableName}
+                  fields={state.fields}
+                  getQueryFieldRecords={getQueryFieldRecords}
+                  queryResource={queryResource}
+                />
+              )
             }
             fields={state.fields}
             forceCollection={forceCollection}
