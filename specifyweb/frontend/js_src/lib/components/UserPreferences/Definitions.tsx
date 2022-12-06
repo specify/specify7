@@ -984,18 +984,18 @@ export const preferenceDefinitions = {
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          /*
-           * Can temporary disable carry forward for a given table
-           * Since most tables are likely to have carry enabled, this pref is
-           * negated (so as not waste too much space)
-           */
-          disableCarryForward: defineItem<RA<keyof Tables>>({
-            title: 'disableCarryForward',
+          enableCarryForward: defineItem<RA<keyof Tables>>({
+            title: 'enableCarryForward',
             requiresReload: false,
             visible: false,
             defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
           }),
+          /*
+           * Can temporary disable clone for a given table
+           * Since most tables are likely to have carry enabled, this pref is
+           * negated (so as not waste too much space)
+           */
           disableClone: defineItem<RA<keyof Tables>>({
             title: 'disableClone',
             requiresReload: false,

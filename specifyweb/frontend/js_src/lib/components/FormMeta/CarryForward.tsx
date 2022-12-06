@@ -30,13 +30,14 @@ export function CarryForwardConfig({
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [globalDisabled, setGlobalDisabled] = usePref(
+  const [globalEnabled, setGlobalEnabled] = usePref(
     'form',
     'preferences',
-    'disableCarryForward'
+    'enableCarryForward'
   );
-  const isEnabled = !globalDisabled.includes(model.name);
+  const isEnabled = globalEnabled.includes(model.name);
   const canChange = !NO_CLONE.has(model.name);
+
   return canChange ? (
     <>
       {type === 'button' ? (
@@ -44,7 +45,7 @@ export function CarryForwardConfig({
           <Input.Checkbox
             checked={isEnabled}
             onChange={(): void =>
-              setGlobalDisabled(toggleItem(globalDisabled, model.name))
+              setGlobalEnabled(toggleItem(globalEnabled, model.name))
             }
           />
           {formsText('carryForward')}

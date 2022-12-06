@@ -16,6 +16,7 @@ import { FormContext, LoadingContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
+import type { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -104,22 +105,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const loading = React.useContext(LoadingContext);
   const [_, setFormContext] = React.useContext(FormContext);
 
-  const [disableCarryForward] = usePref(
-    'form',
-    'preferences',
-    'disableCarryForward'
+  const { showClone, showCarry, showAdd } = useEnabledButtons(
+    resource.specifyModel.name
   );
-  const [disableClone] = usePref('form', 'preferences', 'disableClone');
-  const [disableAdd] = usePref('form', 'preferences', 'disableAdd');
-  const canCarryForward =
-    !disableCarryForward.includes(resource.specifyModel.name) &&
-    !NO_CLONE.has(resource.specifyModel.name);
-  const canClone =
-    !disableClone.includes(resource.specifyModel.name) &&
-    !NO_CLONE.has(resource.specifyModel.name);
-  const canAdd =
-    !disableAdd.includes(resource.specifyModel.name) &&
-    !FORBID_ADDING.has(resource.specifyModel.name);
 
   const canCreate = hasTablePermission(resource.specifyModel.name, 'create');
   const canUpdate = hasTablePermission(resource.specifyModel.name, 'update');
@@ -219,8 +207,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
-      title={description}
       disabled={isSaving || isChanged}
+      title={description}
       onClick={(): void => {
         smoothScroll(form, 0);
         loading(handleClick().then(handleAdd));
@@ -234,19 +222,19 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     <>
       {typeof handleAdd === 'function' && canCreate && !resource.isNew() ? (
         <>
-          {canClone &&
+          {showClone &&
             copyButton(
               formsText('clone'),
               formsText('cloneDescription'),
               async () => resource.clone(true)
             )}
-          {canCarryForward &&
+          {showCarry &&
             copyButton(
               formsText('carryForward'),
               formsText('carryForwardDescription'),
               async () => resource.clone(false)
             )}
-          {canAdd &&
+          {showAdd &&
             copyButton(
               commonText('add'),
               formsText('addButtonDescription'),
@@ -315,4 +303,29 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
       ) : undefined}
     </>
   );
+}
+
+/**
+ * Decide which of the "new resource" buttons to show
+ */
+function useEnabledButtons(tableName: keyof Tables): {
+  readonly showClone: boolean;
+  readonly showCarry: boolean;
+  readonly showAdd: boolean;
+} {
+  const [enableCarryForward] = usePref(
+    'form',
+    'preferences',
+    'enableCarryForward'
+  );
+  const [disableClone] = usePref('form', 'preferences', 'disableClone');
+  const [disableAdd] = usePref('form', 'preferences', 'disableAdd');
+  const showCarry =
+    enableCarryForward.includes(tableName) && !NO_CLONE.has(tableName);
+  const showClone =
+    !disableClone.includes(tableName) && !NO_CLONE.has(tableName);
+  const showAdd =
+    !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
+
+  return { showClone, showCarry, showAdd };
 }
