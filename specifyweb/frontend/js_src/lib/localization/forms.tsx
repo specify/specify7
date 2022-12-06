@@ -737,6 +737,10 @@ export const formsText = createDictionary({
     'en-us': 'Form Configuration',
     'ru-ru': 'Конфигурация формы',
   },
+  formState: {
+    'en-us': 'Form State',
+    'ru-ru': 'Состояние формы',
+  },
   recordInformation: {
     'en-us': 'Record Information',
     'ru-ru': 'Информация об объекте',

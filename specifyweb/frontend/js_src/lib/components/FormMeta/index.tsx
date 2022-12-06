@@ -13,8 +13,10 @@ import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { GenerateLabel } from '../FormCommands';
 import { PrintOnSave } from '../FormFields/Checkbox';
+import type { ViewDescription } from '../FormParse';
 import { SubViewContext } from '../Forms/SubView';
 import { isTreeResource } from '../InitialContext/treeRanks';
+import { interactionTables } from '../Interactions/InteractionsDialog';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
@@ -22,16 +24,14 @@ import {
 } from '../Permissions/PermissionDenied';
 import { AutoNumbering } from './AutoNumbering';
 import { CarryForwardConfig } from './CarryForward';
+import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
+import { EditHistory } from './EditHistory';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
-import { EditHistory } from './EditHistory';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
-import { ViewDescription } from '../FormParse';
-import { interactionTables } from '../Interactions/InteractionsDialog';
-import { AddButtonConfig, CloneConfig } from './Clone';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -65,8 +65,8 @@ export function FormMeta({
       {isOpen && typeof resource === 'object' ? (
         <MetaDialog
           resource={resource}
-          onClose={handleClose}
           viewDescription={viewDescription}
+          onClose={handleClose}
         />
       ) : undefined}
     </>
@@ -90,27 +90,43 @@ function MetaDialog({
       modal={false}
       onClose={handleClose}
     >
-      <div className="flex flex-col gap-2 pb-2">
-        <H3>{formsText('formConfiguration')}</H3>
-        <div className="flex max-w-[theme(spacing.96)] flex-wrap gap-2">
-          <AutoNumbering resource={resource} />
+      <Section
+        buttons={
           <Definition
             model={resource.specifyModel}
             viewDescription={viewDescription}
           />
-          {subView === undefined && !resource.isNew() ? (
-            <ReadOnlyMode />
-          ) : undefined}
-          <GenerateLabel
-            id={undefined}
-            label={
-              interactionTables.has(resource.specifyModel.name)
-                ? formsText('generateReport')
-                : formsText('generateLabel')
-            }
-            resource={resource}
-          />
-        </div>
+        }
+        header={formsText('formConfiguration')}
+      >
+        <CloneConfig model={resource.specifyModel} />
+        <CarryForwardConfig
+          model={resource.specifyModel}
+          parentModel={undefined}
+          type="button"
+        />
+        <AddButtonConfig model={resource.specifyModel} />
+      </Section>
+      <Section
+        buttons={
+          <>
+            <AutoNumbering resource={resource} />
+            {subView === undefined && !resource.isNew() ? (
+              <ReadOnlyMode />
+            ) : undefined}
+            <GenerateLabel
+              id={undefined}
+              label={
+                interactionTables.has(resource.specifyModel.name)
+                  ? formsText('generateReport')
+                  : formsText('generateLabel')
+              }
+              resource={resource}
+            />
+          </>
+        }
+        header={formsText('formState')}
+      >
         <PrintOnSave
           defaultValue={false}
           fieldName={undefined}
@@ -122,39 +138,58 @@ function MetaDialog({
               : formsText('generateLabelOnSave')
           }
         />
-        <CloneConfig model={resource.specifyModel} />
-        <CarryForwardConfig
-          model={resource.specifyModel}
-          parentModel={undefined}
-          type="button"
-        />
-        <AddButtonConfig model={resource.specifyModel} />
-      </div>
+      </Section>
       {typeof subView === 'object' ? (
-        <div className="flex flex-col gap-2 pb-2">
-          <H3>{formsText('recordSelectorConfiguration')}</H3>
+        <Section header={formsText('recordSelectorConfiguration')}>
           <SubViewMeta model={resource.specifyModel} subView={subView} />
-        </div>
+        </Section>
       ) : undefined}
-      <div className="flex flex-col gap-2 pb-2">
-        <H3>{formsText('recordInformation')}</H3>
-        <div className="flex flex-wrap gap-2">
-          <ProtectedTool action="read" tool="auditLog">
-            <ProtectedAction action="execute" resource="/querybuilder/query">
-              <EditHistory resource={resource} />
-            </ProtectedAction>
-          </ProtectedTool>
-          {isTreeResource(resource) && <QueryTreeUsages resource={resource} />}
-          <ProtectedTool action="read" tool="pickLists">
-            <ProtectedAction action="execute" resource="/querybuilder/query">
-              {f.maybe(toTable(resource, 'PickList'), (pickList) => (
-                <PickListUsages pickList={pickList} />
-              ))}
-            </ProtectedAction>
-          </ProtectedTool>
-        </div>
+      <Section
+        buttons={
+          <>
+            <ProtectedTool action="read" tool="auditLog">
+              <ProtectedAction action="execute" resource="/querybuilder/query">
+                <EditHistory resource={resource} />
+              </ProtectedAction>
+            </ProtectedTool>
+            {isTreeResource(resource) && (
+              <QueryTreeUsages resource={resource} />
+            )}
+            <ProtectedTool action="read" tool="pickLists">
+              <ProtectedAction action="execute" resource="/querybuilder/query">
+                {f.maybe(toTable(resource, 'PickList'), (pickList) => (
+                  <PickListUsages pickList={pickList} />
+                ))}
+              </ProtectedAction>
+            </ProtectedTool>
+          </>
+        }
+        header={formsText('recordInformation')}
+      >
         {!resource.isNew() && <ShareRecord resource={resource} />}
-      </div>
+      </Section>
     </Dialog>
+  );
+}
+
+function Section({
+  header,
+  buttons,
+  children,
+}: {
+  readonly header: string;
+  readonly buttons?: JSX.Element;
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <div className="flex flex-col gap-2 pb-2">
+      <H3>{header}</H3>
+      {typeof buttons === 'object' && (
+        <div className="flex max-w-[theme(spacing.96)] flex-wrap gap-2">
+          {buttons}
+        </div>
+      )}
+      {children}
+    </div>
   );
 }
