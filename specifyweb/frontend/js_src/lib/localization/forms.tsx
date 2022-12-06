@@ -781,8 +781,8 @@ export const formsText = createDictionary({
     'en-us': 'Grid',
     'ru-ru': 'Таблица',
   },
-  recordSelectorConfiguration: {
-    'en-us': 'Subview configuration',
+  subviewConfiguration: {
+    'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
   },
   selectSourceOfTables: {

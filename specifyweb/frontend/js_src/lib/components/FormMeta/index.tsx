@@ -99,13 +99,17 @@ function MetaDialog({
         }
         header={formsText('formConfiguration')}
       >
-        <CloneConfig model={resource.specifyModel} />
-        <CarryForwardConfig
-          model={resource.specifyModel}
-          parentModel={undefined}
-          type="button"
-        />
-        <AddButtonConfig model={resource.specifyModel} />
+        {subView === undefined && (
+          <>
+            <CloneConfig model={resource.specifyModel} />
+            <CarryForwardConfig
+              model={resource.specifyModel}
+              parentModel={undefined}
+              type="button"
+            />
+            <AddButtonConfig model={resource.specifyModel} />
+          </>
+        )}
       </Section>
       <Section
         buttons={
@@ -127,23 +131,25 @@ function MetaDialog({
         }
         header={formsText('formState')}
       >
-        <PrintOnSave
-          defaultValue={false}
-          fieldName={undefined}
-          id={undefined}
-          model={resource.specifyModel}
-          text={
-            interactionTables.has(resource.specifyModel.name)
-              ? formsText('generateReportOnSave')
-              : formsText('generateLabelOnSave')
-          }
-        />
+        {subView === undefined && (
+          <PrintOnSave
+            defaultValue={false}
+            fieldName={undefined}
+            id={undefined}
+            model={resource.specifyModel}
+            text={
+              interactionTables.has(resource.specifyModel.name)
+                ? formsText('generateReportOnSave')
+                : formsText('generateLabelOnSave')
+            }
+          />
+        )}
       </Section>
-      {typeof subView === 'object' ? (
-        <Section header={formsText('recordSelectorConfiguration')}>
+      {subView !== undefined && (
+        <Section header={formsText('subviewConfiguration')}>
           <SubViewMeta model={resource.specifyModel} subView={subView} />
         </Section>
-      ) : undefined}
+      )}
       <Section
         buttons={
           <>
