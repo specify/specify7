@@ -24,8 +24,6 @@ import {
 } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
-import { fetchCollection } from '../DataModel/collection';
-import { useAsyncState } from '../../hooks/useAsyncState';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -46,26 +44,13 @@ export function SchemaConfigMain(): JSX.Element {
     model.name
   );
   const [language, country = null] = rawLanguage.split('-');
-  const [containerStrings] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('SpLocaleItemStr', {
-          limit: 0,
-          containerName: container.id,
-        }).then(({ records }) => records),
-      [container.id]
-    ),
-    false
-  );
   const [name, setName, nameChanged] = useContainerString(
-    containerStrings,
     'containerName',
     container,
     language,
     country
   );
   const [desc, setDesc, descChanged] = useContainerString(
-    containerStrings,
     'containerDesc',
     container,
     language,

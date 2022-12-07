@@ -22,22 +22,18 @@ const defaultLanguage = 'en';
 const defaultCountry = null;
 
 export function findString(
-  allStrings: RA<SpLocaleItemString> | undefined,
+  strings: RA<SpLocaleItemString> | undefined,
   language: string,
   country: string | null,
   itemType: 'containerDesc' | 'containerName' | 'itemDesc' | 'itemName',
   parentUrl: string
 ): NewSpLocaleItemString | SpLocaleItemString {
-  const targetStrings = allStrings?.filter(
-    (string) => string[itemType] === parentUrl
-  );
-
   /*
    * Start searching for matching string from the end. This would align
    * schema config behavior with the way back-end handles cases when there
    * are duplicate SpLocalteItemStr records for the same field and same language
    */
-  const targetString = Array.from(targetStrings ?? [])
+  const targetString = Array.from(strings ?? [])
     .reverse()
     .find(
       (object) =>
@@ -46,7 +42,7 @@ export function findString(
     );
   if (typeof targetString === 'object') return targetString;
 
-  const defaultItem = targetStrings?.find(
+  const defaultItem = strings?.find(
     (object) =>
       object.language === defaultLanguage && object.country === defaultCountry
   );

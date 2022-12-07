@@ -4,7 +4,6 @@ import { fetchCollection } from '../DataModel/collection';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
-  SpLocaleItemStr,
   Tables,
 } from '../DataModel/types';
 import { f } from '../../utils/functools';
@@ -51,7 +50,6 @@ export function useSchemaContainer(
 }
 
 export function useContainerString(
-  containerStrings: RA<SerializedResource<SpLocaleItemStr>> | undefined,
   itemType: 'containerDesc' | 'containerName',
   container: SerializedResource<SpLocaleContainer>,
   language: string,
@@ -67,17 +65,23 @@ export function useContainerString(
     NewSpLocaleItemString | SpLocaleItemString | undefined
   >(undefined);
   const [state, setState] = useAsyncState(
-    React.useCallback(async () => {
-      if (containerStrings === undefined) return undefined;
-      initialValue.current = findString(
-        containerStrings,
-        language,
-        country,
-        itemType,
-        container.resource_uri
-      );
-      return initialValue.current;
-    }, [containerStrings, itemType, container.resource_uri, language, country]),
+    React.useCallback(
+      async () =>
+        fetchCollection('SpLocaleItemStr', {
+          limit: 0,
+          [itemType]: container.id,
+        }).then(({ records }) => {
+          initialValue.current = findString(
+            records,
+            language,
+            country,
+            itemType,
+            container.resource_uri
+          );
+          return initialValue.current;
+        }),
+      [itemType, container.resource_uri, language, country]
+    ),
     false
   );
   return [
