@@ -253,7 +253,10 @@ function RecordSet<SCHEMA extends AnySchema>({
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
-  const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void =>
+  const handleAdd = (
+    resources: RA<SpecifyResource<SCHEMA>>,
+    wasNew: boolean
+  ): void =>
     loading(
       Promise.all(
         resources.map(async (resource) =>
@@ -265,7 +268,7 @@ function RecordSet<SCHEMA extends AnySchema>({
       ).then(() => {
         const oldTotalCount = totalCount;
         setTotalCount(oldTotalCount + resources.length);
-        go(oldTotalCount, resources[0].id);
+        go(oldTotalCount, resources[0].id, undefined, wasNew);
         setIds((oldIds = []) =>
           updateIds(
             oldIds,
@@ -315,9 +318,11 @@ function RecordSet<SCHEMA extends AnySchema>({
                   );
                   if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
-                  else {
-                    handleAdd(nonDuplicates.map(({ resource }) => resource));
-                  }
+                  else
+                    handleAdd(
+                      nonDuplicates.map(({ resource }) => resource),
+                      false
+                    );
                 })
             : undefined
         }
@@ -361,7 +366,9 @@ function RecordSet<SCHEMA extends AnySchema>({
             : undefined
         }
         onSaved={(resource): void =>
-          ids[currentIndex] === resource.id ? undefined : handleAdd([resource])
+          ids[currentIndex] === resource.id
+            ? undefined
+            : handleAdd([resource], true)
         }
         onSlide={(index, replace): void =>
           go(index, ids[index], undefined, replace)
