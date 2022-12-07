@@ -90,13 +90,15 @@ export async function ajaxMock<RESPONSE_TYPE>(
     overrides[urlWithoutQuery]?.[requestMethod];
   if (typeof overwrittenData !== 'undefined') {
     const { data, responseCode, body } = overwrittenData;
-    const response = createResponse(expectedResponseCodes);
     if (body !== undefined) expect(requestBody).toEqual(body);
-    return {
-      data: data() as RESPONSE_TYPE,
-      response,
-      status: responseCode ?? response.status,
-    };
+    const value = data();
+    const resolvedValue =
+      typeof value === 'object' ? JSON.stringify(value) : value;
+    return formatResponse(
+      resolvedValue,
+      accept,
+      typeof responseCode === 'number' ? [responseCode] : expectedResponseCodes
+    );
   }
 
   const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
