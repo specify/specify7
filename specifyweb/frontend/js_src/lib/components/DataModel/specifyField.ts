@@ -147,7 +147,8 @@ abstract class FieldBase {
         ? unescape(this.localization.name)
         : camelToHuman(this.name);
 
-    this.isHidden = this.localization.ishidden ?? false;
+    this.isHidden =
+      globalFieldOverride === 'hidden' || (this.localization.ishidden ?? false);
 
     // Apply overrides
     const fieldOverwrite = getFieldOverwrite(this.model.name, this.name);

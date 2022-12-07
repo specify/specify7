@@ -67,6 +67,7 @@ export const fetchView = async (
         cachableUrl(
           formatUrl('/context/view.json', {
             name,
+            // Don't spam the console with errors needlessly
             ...(name in webOnlyViews() ? { quiet: '' } : {}),
           })
         ),
