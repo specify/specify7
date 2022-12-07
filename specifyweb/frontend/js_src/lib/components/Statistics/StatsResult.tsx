@@ -1,10 +1,12 @@
 import React from 'react';
-import type { SpQuery } from '../DataModel/types';
+import type { SpQuery, SpQueryField } from '../DataModel/types';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FrontEndStatsResultDialog } from './ResultsDialog';
 import { Button } from '../Atoms/Button';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { RA } from '../../utils/types';
 
 export function StatsResult({
   statValue,
@@ -12,12 +14,20 @@ export function StatsResult({
   statLabel,
   onClick: handleClick,
   onRemove: handleRemove,
+  onSpecChanged: handleSpecChanged,
 }: {
   readonly statValue: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
   readonly statLabel: string;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
+  readonly onSpecChanged:
+    | ((
+        fields: RA<
+          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+        >
+      ) => void)
+    | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -51,6 +61,7 @@ export function StatsResult({
           query={query}
           onClose={handleClose}
           statLabel={statLabel}
+          onSpecChanged={handleSpecChanged}
         />
       ) : undefined}
     </>

@@ -6,7 +6,11 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 export type CustomStat = State<
   'CustomStat',
   {
-    readonly queryId: number;
+    readonly itemName: string;
+    readonly tableName: keyof Tables;
+    readonly fields: RA<
+      Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+    >;
   }
 >;
 export type DefaultStat = State<

@@ -161,6 +161,7 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
               pageName,
               categoryName,
               itemName,
+              newFields: undefined,
             })),
           })
         ),
@@ -223,4 +224,12 @@ export function useFrontEndStatsQuery(
       ),
     [tableName, fields]
   );
+}
+
+export function replaceLayout(
+  layout: StatLayout,
+  setLayout: (value: StatLayout | undefined) => void,
+  newLayoutFunction: (layout: StatLayout) => StatLayout
+): void {
+  setLayout(newLayoutFunction(layout));
 }

@@ -6,6 +6,9 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
 import React from 'react';
+import { RA } from '../../utils/types';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { SpQueryField } from '../DataModel/types';
 
 export function Categories({
   pageLayout,
@@ -14,6 +17,7 @@ export function Categories({
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
+  onSpecChanged: handleSpecChanged,
 }: {
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
@@ -24,6 +28,15 @@ export function Categories({
     | undefined;
   readonly onRename:
     | ((newName: string, categoryIndex: number) => void)
+    | undefined;
+  readonly onSpecChanged:
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        fields: RA<
+          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+        >
+      ) => void)
     | undefined;
 }): JSX.Element {
   return (
@@ -55,8 +68,15 @@ export function Categories({
                   categoryName={item.categoryName}
                   itemName={item.itemName}
                   pageName={item.pageName}
+                  itemSpec={item.newFields}
                   key={itemIndex}
                   statsSpec={statsSpec}
+                  onSpecChanged={
+                    handleSpecChanged !== undefined
+                      ? (newFields): void =>
+                          handleSpecChanged(categoryIndex, itemIndex, newFields)
+                      : undefined
+                  }
                   onClick={
                     typeof handleClick === 'function'
                       ? (): void =>
@@ -65,6 +85,7 @@ export function Categories({
                             pageName: item.pageName,
                             categoryName: item.categoryName,
                             itemName: item.itemName,
+                            newFields: item.newFields,
                           })
                       : undefined
                   }
@@ -84,6 +105,7 @@ export function Categories({
                           handleClick({
                             type: 'CustomStat',
                             queryId: item.queryId,
+                            newFields: item.newFields,
                           });
                         }
                       : undefined

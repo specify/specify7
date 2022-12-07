@@ -1,6 +1,6 @@
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SpQuery } from '../DataModel/types';
+import type {SpQuery, Tables} from '../DataModel/types';
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
@@ -39,7 +39,13 @@ export function AddStatDialog({
         {Array.isArray(queries) && (
           <QueryList
             getQuerySelectCallback={(query) => () => {
-              handleAdd({ type: 'CustomStat', queryId: query.id });
+              
+              handleAdd({
+                type: 'CustomStat',
+                itemName: 'nla',
+                tableName: query.contextName as keyof Tables,
+                fields: query.fields
+              });
               handleClose();
             }}
             isReadOnly
@@ -62,6 +68,7 @@ export function AddStatDialog({
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}
+                    onSpecChanged={undefined}
                   />
                 </div>
               </div>

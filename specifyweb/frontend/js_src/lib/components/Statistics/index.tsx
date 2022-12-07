@@ -17,6 +17,7 @@ import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
+import { StatLayout } from './types';
 
 export function StatsPage(): JSX.Element {
   const [customLayout, setLayout] = usePref(
@@ -27,6 +28,7 @@ export function StatsPage(): JSX.Element {
   const statsSpec = useStatsSpec();
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
+  setLayout(defaultLayout); //comment out!
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -63,6 +65,15 @@ export function StatsPage(): JSX.Element {
   );
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
+  const handleCategoryChange = (
+    newCategories: StatLayout[number]['categories']
+  ): void =>
+    setLayout(
+      replaceItem(layout, activePageIndex, {
+        ...layout[activePageIndex],
+        categories: newCategories,
+      })
+    );
 
   return (
     <Form
@@ -216,18 +227,13 @@ export function StatsPage(): JSX.Element {
                             pageIndex: activePageIndex,
                             categoryIndex: categoryindex,
                           })
-                        : setLayout(
-                            replaceItem(layout, activePageIndex, {
-                              ...layout[activePageIndex],
-                              categories: [
-                                ...layout[activePageIndex].categories,
-                                {
-                                  label: '',
-                                  items: [],
-                                },
-                              ],
-                            })
-                          )
+                        : handleCategoryChange([
+                            ...layout[activePageIndex].categories,
+                            {
+                              label: '',
+                              items: [],
+                            },
+                          ])
                   : undefined
               }
               pageLayout={layout[activePageIndex]}
@@ -236,53 +242,66 @@ export function StatsPage(): JSX.Element {
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void =>
-                      setLayout(
-                        replaceItem(layout, activePageIndex, {
-                          ...layout[activePageIndex],
-                          categories:
-                            typeof itemIndex === 'number'
-                              ? replaceItem(
-                                  layout[activePageIndex].categories,
-                                  categoryIndex,
-                                  {
-                                    ...layout[activePageIndex].categories[
-                                      categoryIndex
-                                    ],
-                                    items: removeItem(
-                                      layout[activePageIndex].categories[
-                                        categoryIndex
-                                      ].items,
-                                      itemIndex
-                                    ),
-                                  }
-                                )
-                              : removeItem(
-                                  layout[activePageIndex].categories,
+                      handleCategoryChange(
+                        typeof itemIndex === 'number'
+                          ? replaceItem(
+                              layout[activePageIndex].categories,
+                              categoryIndex,
+                              {
+                                ...layout[activePageIndex].categories[
                                   categoryIndex
+                                ],
+                                items: removeItem(
+                                  layout[activePageIndex].categories[
+                                    categoryIndex
+                                  ].items,
+                                  itemIndex
                                 ),
-                        })
+                              }
+                            )
+                          : removeItem(
+                              layout[activePageIndex].categories,
+                              categoryIndex
+                            )
                       )
                   : undefined
               }
               onRename={
                 isEditing
                   ? (newName, categoryIndex): void =>
-                      setLayout(
-                        replaceItem(layout, activePageIndex, {
-                          ...layout[activePageIndex],
-                          categories: replaceItem(
-                            layout[activePageIndex].categories,
-                            categoryIndex,
-                            {
-                              ...layout[activePageIndex].categories[
-                                categoryIndex
-                              ],
-                              label: newName,
-                            }
-                          ),
-                        })
+                      handleCategoryChange(
+                        replaceItem(
+                          layout[activePageIndex].categories,
+                          categoryIndex,
+                          {
+                            ...layout[activePageIndex].categories[
+                              categoryIndex
+                            ],
+                            label: newName,
+                          }
+                        )
                       )
                   : undefined
+              }
+              onSpecChanged={(categoryIndex, itemIndex, newFields): void =>
+                handleCategoryChange(
+                  replaceItem(
+                    layout[activePageIndex].categories,
+                    categoryIndex,
+                    {
+                      ...layout[activePageIndex].categories[categoryIndex],
+                      items: replaceItem(
+                        layout[activePageIndex].categories[categoryIndex].items,
+                        itemIndex,
+                        {
+                          ...layout[activePageIndex].categories[categoryIndex]
+                            .items[itemIndex],
+                          newFields,
+                        }
+                      ),
+                    }
+                  )
+                )
               }
             />
           </div>
@@ -296,25 +315,22 @@ export function StatsPage(): JSX.Element {
           queries={queries}
           onAdd={(item): void =>
             isAddingItem
-              ? setLayout(
-                  replaceItem(layout, activePageIndex, {
-                    ...layout[activePageIndex],
-                    categories: replaceItem(
-                      layout[activePageIndex].categories,
-                      state.categoryIndex,
-                      {
+              ? handleCategoryChange(
+                  replaceItem(
+                    layout[activePageIndex].categories,
+                    state.categoryIndex,
+                    {
+                      ...layout[activePageIndex].categories[
+                        state.categoryIndex
+                      ],
+                      items: [
                         ...layout[activePageIndex].categories[
                           state.categoryIndex
-                        ],
-                        items: [
-                          ...layout[activePageIndex].categories[
-                            state.categoryIndex
-                          ].items,
-                          item,
-                        ],
-                      }
-                    ),
-                  })
+                        ].items,
+                        item,
+                      ],
+                    }
+                  )
                 )
               : undefined
           }

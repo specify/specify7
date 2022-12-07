@@ -16,7 +16,7 @@ export function StatsPageButton({
     <div className="flex">
       <Button.Gray
         aria-current={isCurrent ? 'page' : undefined}
-        className="min-w-28 flex-1"
+        className="min-w-28 flex-1 normal-case"
         onClick={handleClick}
       >
         {label}
