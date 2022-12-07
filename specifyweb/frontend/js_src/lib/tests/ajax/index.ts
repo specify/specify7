@@ -39,6 +39,10 @@ export function overrideAjax(
     readonly body?: unknown;
   } = {}
 ): void {
+  if (!url.startsWith('/'))
+    throw new Error(
+      '"overrideAjax" must be called with a URL that starts with /'
+    );
   beforeAll(() => {
     overrides[url] ??= {};
     overrides[url]![method] = {

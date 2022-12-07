@@ -29,7 +29,7 @@ export const leafletLayersEndpoint =
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode
  */
-const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
+export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
   baseMaps: {
     'Street Map (OpenStreetMap)': L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
