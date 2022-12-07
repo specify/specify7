@@ -19,7 +19,7 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
-import type { RecordSet, SpQuery } from '../DataModel/types';
+import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
 import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -44,6 +44,7 @@ import { getInitialState, reducer } from './reducer';
 import { QueryResultsWrapper } from './ResultsWrapper';
 import { QueryToolbar } from './Toolbar';
 import { usePref } from '../UserPreferences/usePref';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 
@@ -69,6 +70,7 @@ export function QueryBuilder({
   autoRun = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
+  onFieldModify: handleFieldModify,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly isReadOnly: boolean;
@@ -77,6 +79,7 @@ export function QueryBuilder({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onFieldModify?: (fields: RA<SerializedResource<SpQueryField>>) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
 
@@ -103,6 +106,13 @@ export function QueryBuilder({
       state: buildInitialState(),
     });
   }, [buildInitialState]);
+  React.useEffect(
+    () =>
+      typeof handleFieldModify === 'function'
+        ? handleFieldModify(unParseQueryFields(state.baseTableName, state.fields))
+        : undefined,
+    [state.fields]
+  );
   useErrorContext('state', state);
 
   /**
@@ -128,7 +138,7 @@ export function QueryBuilder({
     queryText('queryUnloadProtectDialogText')
   );
 
-  const handleAddField = (mappingPath = state.mappingView): void =>
+  const handleAddField = (mappingPath = state.mappingView): void => {
     dispatch({
       type: 'ChangeFieldsAction',
       fields: [
@@ -148,7 +158,7 @@ export function QueryBuilder({
         },
       ],
     });
-
+  };
   const isEmpty = state.fields.every(
     ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
   );
@@ -403,7 +413,11 @@ export function QueryBuilder({
               isReadOnly
                 ? undefined
                 : (line, field): void =>
-                    dispatch({ type: 'ChangeFieldAction', line, field })
+                    dispatch({
+                      type: 'ChangeFieldAction',
+                      line,
+                      field,
+                    })
             }
             onClose={(): void =>
               dispatch({
