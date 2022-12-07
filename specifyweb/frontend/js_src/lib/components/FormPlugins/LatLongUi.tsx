@@ -95,9 +95,19 @@ function Coordinate({
     if (hasValue)
       resource.set(
         'srcLatLongUnit',
-        parsed?.soCalledUnit() ?? resource.get('srcLatLongUnit') ?? 1
+        parsed?.soCalledUnit() ??
+          // Don't trigger unload protect needlessly
+          (resource.needsSaved ? undefined : resource.get('srcLatLongUnit')) ??
+          1
       );
-    resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
+    resource.set(
+      'originalLatLongUnit',
+      parsed?.soCalledUnit() ??
+        (resource.needsSaved
+          ? undefined
+          : resource.get('originalLatLongUnit')) ??
+        null
+    );
     isChanging.current = false;
   }, [
     value,
