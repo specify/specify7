@@ -207,7 +207,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   ): JSX.Element => (
     <ButtonComponent
       className={saveBlocked ? '!cursor-not-allowed' : undefined}
-      disabled={isSaving || isChanged}
+      disabled={resource.isNew() || isChanged || isSaving}
       title={description}
       onClick={(): void => {
         smoothScroll(form, 0);
@@ -220,7 +220,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
 
   return (
     <>
-      {typeof handleAdd === 'function' && canCreate && !resource.isNew() ? (
+      {typeof handleAdd === 'function' && canCreate ? (
         <>
           {showClone &&
             copyButton(
