@@ -153,6 +153,7 @@ const getDisciplineAppResources = (
         directories[0] ??
         addMissingFields('SpAppResourceDir', {
           collection: collection.resource_uri,
+          discipline: collection.discipline,
         });
       return {
         label: collection.collectionName ?? '',
@@ -200,6 +201,7 @@ const getUserTypeResources = (
       directories[0] ??
       addMissingFields('SpAppResourceDir', {
         collection: collection.resource_uri,
+        discipline: collection.discipline,
         userType: userType.toLowerCase(),
       });
     return {
@@ -227,6 +229,7 @@ const getUserResources = (
         directories[0] ??
         addMissingFields('SpAppResourceDir', {
           collection: collection.resource_uri,
+          discipline: collection.resource_uri,
           specifyUser: user.resource_uri,
           isPersonal: true,
         });
