@@ -79,13 +79,14 @@ export function DeleteBlocked({
       <Dialog
         buttons={commonText('close')}
         className={{
-          container: dialogClassNames.narrowContainer,
+          container: dialogClassNames.wideContainer,
         }}
         header={formsText('deleteBlockedDialogHeader')}
         onClose={handleClose}
       >
         {formsText('deleteBlockedDialogText')}
-        <table className="grid-table grid-cols-[auto_auto] gap-2">
+        {/* BUG: apply these styles everywhere where necessary */}
+        <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
           <thead>
             <tr>
               <th scope="col">{formsText('record')}</th>
@@ -97,7 +98,8 @@ export function DeleteBlocked({
               <tr key={index}>
                 <td>
                   <Button.LikeLink
-                    className="text-left"
+                    // BUG: consider applying these styles everywhere
+                    className="max-w-full overflow-auto text-left"
                     onClick={(): void =>
                       setPreview({
                         resource,
