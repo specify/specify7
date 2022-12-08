@@ -13,12 +13,13 @@ import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { getUniqueFields } from '../DataModel/resource';
+import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function CarryForwardConfig({
   model,
@@ -100,10 +101,9 @@ function CarryForwardConfigDialog({
   );
 
   const uniqueFields = getUniqueFields(model);
-  const defaultConfig = model.fields
-    .filter(({ isVirtual }) => !isVirtual)
-    .map(({ name }) => name)
-    .filter((fieldName) => !uniqueFields.includes(fieldName));
+  const defaultConfig = getFieldsToClone(model).filter(
+    (fieldName) => !uniqueFields.includes(fieldName)
+  );
   const isDefaultConfig = (fields: RA<string>): boolean =>
     JSON.stringify(normalize(fields)) ===
     JSON.stringify(normalize(defaultConfig));
@@ -136,10 +136,11 @@ function CarryForwardConfigDialog({
       !isVirtual && (!overrides.isHidden || showHiddenFields)
   );
   const relationships = model.relationships.filter(
-    ({ name, overrides, isVirtual }) =>
-      !reverseRelationships.includes(name) &&
-      !isVirtual &&
-      (!overrides.isHidden || showHiddenFields)
+    (field) =>
+      !reverseRelationships.includes(field.name) &&
+      !field.isVirtual &&
+      (!field.overrides.isHidden || showHiddenFields) &&
+      (field.isDependent() || !relationshipIsToMany(field))
   );
 
   const id = useId('form-carry-forward');

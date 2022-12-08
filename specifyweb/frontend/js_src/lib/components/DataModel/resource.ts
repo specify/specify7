@@ -1,10 +1,13 @@
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
+import { getUserPref } from '../UserPreferences/helpers';
+import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
 import { serializeResource } from './helpers';
 import type {
@@ -17,9 +20,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { addMissingFields } from './addMissingFields';
-import { Http } from '../../utils/ajax/definitions';
-import { getUserPref } from '../UserPreferences/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -179,8 +180,7 @@ export function resourceFromUrl(
   const parsed = parseResourceUrl(resourceUrl);
   if (parsed === undefined) return undefined;
   const [tableName, id] = parsed;
-  const model = new schema.models[tableName].Resource({ id }, options);
-  return model;
+  return new schema.models[tableName].Resource({ id }, options);
 }
 
 /**
@@ -250,8 +250,16 @@ const getCarryOverPreference = (
     : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
   getFieldsToClone(model);
 
-const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  model.fields.filter(({ isVirtual }) => !isVirtual).map(({ name }) => name);
+export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
+  model.fields
+    .filter(
+      (field) =>
+        !field.isVirtual &&
+        (!field.isRelationship ||
+          field.isDependent() ||
+          !relationshipIsToMany(field))
+    )
+    .map(({ name }) => name);
 
 // REFACTOR: move this into businessRuleDefs.ts
 const businessRules = businessRuleDefs as {
