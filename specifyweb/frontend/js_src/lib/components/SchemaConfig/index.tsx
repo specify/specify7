@@ -83,12 +83,10 @@ export function SchemaConfigMain(): JSX.Element {
     unsetUnloadProtect();
 
     const requests = [
+      ...(nameChanged ? [saveString(name)] : []),
+      ...(descChanged ? [saveString(desc)] : []),
       ...(isChanged
-        ? [
-            saveResource('SpLocaleContainer', container.id, container),
-            saveString(name),
-            saveString(desc),
-          ]
+        ? [saveResource('SpLocaleContainer', container.id, container)]
         : []),
       ...items
         .filter((_item, index) => changedItems.includes(index))
