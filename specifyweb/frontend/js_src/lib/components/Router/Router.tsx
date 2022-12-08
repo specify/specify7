@@ -249,7 +249,6 @@ function UnloadProtect({
 
   return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
     <UnloadProtectDialog
-      message={unloadProtects.at(-1)!}
       onCancel={(): void => {
         unloadProtect.reject();
         setUnloadProtect(undefined);
@@ -258,7 +257,9 @@ function UnloadProtect({
         unloadProtect.resolve();
         setUnloadProtect(undefined);
       }}
-    />
+    >
+      {unloadProtects.at(-1)!}
+    </UnloadProtectDialog>
   ) : null;
 }
 
@@ -271,12 +272,12 @@ const hasUnloadProtect = (
   !isCurrentUrl(newLocation.pathname) &&
   f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
 
-function UnloadProtectDialog({
-  message,
+export function UnloadProtectDialog({
+  children,
   onCancel: handleCancel,
   onConfirm: handleConfirm,
 }: {
-  readonly message: string;
+  readonly children: string;
   readonly onCancel: () => void;
   readonly onConfirm: () => void;
 }): JSX.Element {
@@ -292,7 +293,7 @@ function UnloadProtectDialog({
       header={commonText('leavePageDialogHeader')}
       onClose={handleCancel}
     >
-      {message}
+      {children}
     </Dialog>
   );
 }

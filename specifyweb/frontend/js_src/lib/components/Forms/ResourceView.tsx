@@ -25,6 +25,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
+import { UnloadProtectDialog } from '../Router/Router';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -343,20 +344,12 @@ export function ResourceView<SCHEMA extends AnySchema>({
     >
       {form(children, 'overflow-y-hidden')}
       {showUnloadProtect && (
-        <Dialog
-          buttons={
-            <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-              <Button.Red onClick={handleClose}>
-                {commonText('leave')}
-              </Button.Red>
-            </>
-          }
-          header={commonText('leavePageDialogHeader')}
-          onClose={(): void => setShowUnloadProtect(false)}
+        <UnloadProtectDialog
+          onCancel={(): void => setShowUnloadProtect(false)}
+          onConfirm={handleClose}
         >
           {formsText('unsavedFormUnloadProtect')}
-        </Dialog>
+        </UnloadProtectDialog>
       )}
     </Dialog>
   );
