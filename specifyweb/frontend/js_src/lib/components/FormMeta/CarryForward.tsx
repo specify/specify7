@@ -77,10 +77,6 @@ export const dependentFields = f.store<IR<string>>(() => ({
   ...dependentFieldSeeker('unit'),
 }));
 
-const dependentFieldNames = f.store(
-  () => new Set(Object.keys(dependentFields()))
-);
-
 export function CarryForwardConfig({
   model,
   parentModel,
@@ -173,25 +169,11 @@ function CarryForwardConfigDialog({
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
 
-  function handleChange(rawFields: RA<string>): void {
-    const enabledFields = new Set(rawFields);
-    const fields = normalize(
-      f.unique([
-        ...rawFields.filter(
-          (name) =>
-            dependentFields()[name] === undefined ||
-            enabledFields.has(dependentFields()[name])
-        ),
-        ...model.literalFields
-          .filter(({ name }) => enabledFields.has(dependentFields()[name]))
-          .map(({ name }) => name),
-      ])
-    );
+  const handleChange = (fields: RA<string>): void =>
     setGlobalConfig({
       ...globalConfig,
       [model.name]: isDefaultConfig(fields) ? undefined : fields,
     });
-  }
 
   const reverseRelationships = React.useMemo(
     () =>
@@ -207,8 +189,7 @@ function CarryForwardConfigDialog({
     ({ name, overrides, isVirtual }) =>
       !isVirtual &&
       (!overrides.isHidden || showHiddenFields) &&
-      !invisibleCarry.has(name) &&
-      !dependentFieldNames().has(name)
+      !invisibleCarry.has(name)
   );
   const relationships = model.relationships.filter(
     (field) =>
@@ -278,6 +259,7 @@ function CarryForwardConfigDialog({
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
+            model={model}
             carryForward={config}
             fields={literalFields}
             uniqueFields={uniqueFields}
@@ -285,6 +267,7 @@ function CarryForwardConfigDialog({
           />
           <h3>{commonText('relationships')}</h3>
           <CarryForwardCategory
+            model={model}
             carryForward={config}
             fields={relationships}
             uniqueFields={uniqueFields}
@@ -304,11 +287,13 @@ function CarryForwardConfigDialog({
 }
 
 function CarryForwardCategory({
+  model,
   fields,
   uniqueFields,
   carryForward,
   onChange: handleChange,
 }: {
+  readonly model: SpecifyModel;
   readonly fields: RA<LiteralField | Relationship>;
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
@@ -328,9 +313,21 @@ function CarryForwardCategory({
             <Input.Checkbox
               checked={f.includes(carryForward, field.name)}
               disabled={uniqueFields.includes(field.name)}
-              onValueChange={(): void =>
-                handleChange(toggleItem(carryForward, field.name))
-              }
+              onValueChange={(isChecked): void => {
+                const dependents = filterArray(
+                  Object.entries(dependentFields())
+                    .filter(([_dependent, source]) => source === field.name)
+                    .map(([dependent]) => model.getField(dependent)?.name)
+                );
+                handleChange(
+                  isChecked
+                    ? f.unique([...carryForward, field.name, ...dependents])
+                    : carryForward.filter(
+                        (name) =>
+                          name !== field.name && !dependents.includes(name)
+                      )
+                );
+              }}
             />
             {field.label}
           </Label.Inline>
