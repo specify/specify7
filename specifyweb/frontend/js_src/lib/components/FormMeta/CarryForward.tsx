@@ -21,6 +21,24 @@ import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
+/**
+ * Fields to always carry forward (unless "Deselect All" is pressed), but not
+ * show in the UI.
+ */
+const invisibleCarry = new Set([
+  'collection',
+  'collections',
+  'discipline',
+  'disciplines',
+  'division',
+  'divisions',
+  // There is literally a database field with a typo in its name (in Address table)
+  'insitutions',
+  'institution',
+  'institutions',
+  'scope',
+]);
+
 export function CarryForwardConfig({
   model,
   parentModel,
@@ -132,15 +150,18 @@ function CarryForwardConfigDialog({
   );
 
   const literalFields = model.literalFields.filter(
-    ({ overrides, isVirtual }) =>
-      !isVirtual && (!overrides.isHidden || showHiddenFields)
+    ({ name, overrides, isVirtual }) =>
+      !isVirtual &&
+      (!overrides.isHidden || showHiddenFields) &&
+      !invisibleCarry.has(name)
   );
   const relationships = model.relationships.filter(
     (field) =>
       !reverseRelationships.includes(field.name) &&
       !field.isVirtual &&
       (!field.overrides.isHidden || showHiddenFields) &&
-      (field.isDependent() || !relationshipIsToMany(field))
+      (field.isDependent() || !relationshipIsToMany(field)) &&
+      !invisibleCarry.has(field.name)
   );
 
   const id = useId('form-carry-forward');

@@ -227,7 +227,7 @@ theories(parseJavaClassName, [
 describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
     expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      schema.models.SpQuery.fields.map(({ name }) => name)
+      getFieldsToClone(schema.models.SpQuery)
     ));
   test('customize carry over fields', () => {
     setPref('form', 'preferences', 'carryForward', {
@@ -238,7 +238,7 @@ describe('getCarryOverPreference', () => {
       'text1',
     ]);
     expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
-      schema.models.SpQuery.fields.map(({ name }) => name)
+      getFieldsToClone(schema.models.SpQuery)
     );
   });
 });
@@ -271,6 +271,7 @@ test('getFieldsToNotClone', () => {
     'guid',
     'totalCountAmt',
     'currentDetermination',
+    'projects',
   ]);
   expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
     'actualTotalCountAmt',
@@ -279,5 +280,6 @@ test('getFieldsToNotClone', () => {
     'text1',
     'totalCountAmt',
     'currentDetermination',
+    'projects',
   ]);
 });
