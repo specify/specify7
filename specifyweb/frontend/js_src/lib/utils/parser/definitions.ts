@@ -374,11 +374,12 @@ export const browserifyRegex = (regex: RegExp): string =>
 /** Modify the parser to be able to parse multiple values separated by commas */
 export function pluralizeParser(rawParser: Parser): Parser {
   const { minLength = 0, maxLength, ...parser } = rawParser;
+
   return {
     ...parser,
     pattern:
       f.maybe(parser.pattern, pluralizeRegex) ??
-      lengthToRegex(minLength, maxLength),
+      pluralizeRegex(lengthToRegex(minLength, maxLength)),
   };
 }
 
