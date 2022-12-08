@@ -290,7 +290,7 @@ export function CheckLoggedInCollection({
 
   return otherCollections.type === 'Accessible' ? (
     children
-  ) : Array.isArray(otherCollections) ? (
-    <OtherCollection collectionIds={otherCollections} />
+  ) : otherCollections.type === 'Inaccessible' ? (
+    <OtherCollection collectionIds={otherCollections.collectionIds} />
   ) : null;
 }
