@@ -3,7 +3,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
 import { getUserPref } from '../UserPreferences/helpers';
@@ -272,6 +272,14 @@ const businessRules = businessRuleDefs as {
   };
 };
 
+const uniqueFields = [
+  'guid',
+  'timestampCreated',
+  'version',
+  'isCurrent',
+  'timestampModified',
+];
+
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
   f.unique([
     ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
@@ -288,11 +296,9 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
     ...model.relationships
       .filter(({ relatedModel }) => relatedModel.name === 'Attachment')
       .map(({ name }) => name),
-    /*
-     * Disable carry over for GUIDs
-     * See https://github.com/specify/specify7/issues/2492#issuecomment-1327780411
-     */
-    ...(typeof model.getField('guid') === 'object' ? ['guid'] : []),
+    ...filterArray(
+      uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
+    ),
   ]);
 
 export const exportsForTests = {

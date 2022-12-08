@@ -5,7 +5,7 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction, toggleItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
@@ -14,6 +14,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
@@ -28,6 +29,8 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 const invisibleCarry = new Set([
   'collection',
   'collections',
+  'definition',
+  'definitionItem',
   'discipline',
   'disciplines',
   'division',
@@ -38,6 +41,45 @@ const invisibleCarry = new Set([
   'institutions',
   'scope',
 ]);
+
+/** Search for all dependent fields using a suffix */
+const dependentFieldSeeker = (suffix: string): IR<string> =>
+  Object.fromEntries(
+    Object.values(schema.models)
+      .flatMap(({ literalFields }) =>
+        literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
+      )
+      .map(
+        (v) =>
+          [
+            v.name,
+            v.model.getField(v.name.slice(0, -suffix.length))?.name,
+          ] as const
+      )
+      .filter(([_dependent, source]) => typeof source === 'string')
+  ) as IR<string>;
+
+/**
+ * Dependent -> Source
+ * When value in one field is based on another, don't show the dependent field in
+ * the UI, but copy its carry over settings from the source field
+ */
+export const dependentFields = f.store<IR<string>>(() => ({
+  lat1text: 'latitude1',
+  lat2text: 'latitude2',
+  long1text: 'longitude1',
+  long2text: 'longitude2',
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
+
+const dependentFieldNames = f.store(
+  () => new Set(Object.keys(dependentFields()))
+);
 
 export function CarryForwardConfig({
   model,
@@ -132,7 +174,19 @@ function CarryForwardConfigDialog({
     ) ?? defaultConfig;
 
   function handleChange(rawFields: RA<string>): void {
-    const fields = normalize(rawFields);
+    const enabledFields = new Set(rawFields);
+    const fields = normalize(
+      f.unique([
+        ...rawFields.filter(
+          (name) =>
+            dependentFields()[name] === undefined ||
+            enabledFields.has(dependentFields()[name])
+        ),
+        ...model.literalFields
+          .filter(({ name }) => enabledFields.has(dependentFields()[name]))
+          .map(({ name }) => name),
+      ])
+    );
     setGlobalConfig({
       ...globalConfig,
       [model.name]: isDefaultConfig(fields) ? undefined : fields,
@@ -153,7 +207,8 @@ function CarryForwardConfigDialog({
     ({ name, overrides, isVirtual }) =>
       !isVirtual &&
       (!overrides.isHidden || showHiddenFields) &&
-      !invisibleCarry.has(name)
+      !invisibleCarry.has(name) &&
+      !dependentFieldNames().has(name)
   );
   const relationships = model.relationships.filter(
     (field) =>

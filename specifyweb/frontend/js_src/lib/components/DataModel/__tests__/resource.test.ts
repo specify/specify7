@@ -248,15 +248,30 @@ describe('getUniqueFields', () => {
     expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
       'catalogNumber',
       'guid',
+      'timestampCreated',
+      'version',
+      'timestampModified',
     ]));
   test('Locality', () =>
-    expect(getUniqueFields(schema.models.Locality)).toEqual(['guid']));
+    expect(getUniqueFields(schema.models.Locality)).toEqual([
+      'guid',
+      'timestampCreated',
+      'version',
+      'timestampModified',
+    ]));
   test('AccessionAttachment', () =>
     expect(getUniqueFields(schema.models.AccessionAttachment)).toEqual([
       'attachment',
+      'timestampCreated',
+      'version',
+      'timestampModified',
     ]));
   test('AccessionAgent', () =>
-    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([]));
+    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([
+      'timestampCreated',
+      'version',
+      'timestampModified',
+    ]));
 });
 
 test('getFieldsToNotClone', () => {
@@ -268,17 +283,23 @@ test('getFieldsToNotClone', () => {
   expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
+    'timestampModified',
     'guid',
+    'timestampCreated',
     'totalCountAmt',
+    'version',
     'currentDetermination',
     'projects',
   ]);
   expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
     'actualTotalCountAmt',
     'catalogNumber',
+    'timestampModified',
     'guid',
     'text1',
+    'timestampCreated',
     'totalCountAmt',
+    'version',
     'currentDetermination',
     'projects',
   ]);
