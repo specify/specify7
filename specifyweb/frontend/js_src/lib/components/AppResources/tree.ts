@@ -229,7 +229,7 @@ const getUserResources = (
         directories[0] ??
         addMissingFields('SpAppResourceDir', {
           collection: collection.resource_uri,
-          discipline: collection.resource_uri,
+          discipline: collection.discipline,
           specifyUser: user.resource_uri,
           isPersonal: true,
         });
