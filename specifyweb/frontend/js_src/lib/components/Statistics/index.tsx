@@ -74,7 +74,7 @@ export function StatsPage(): JSX.Element {
         categories: newCategories,
       })
     );
-  const addStatCallback = (
+  const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
     itemIndex?: number
@@ -253,7 +253,7 @@ export function StatsPage(): JSX.Element {
               }
               pageLayout={layout[activePageIndex]}
               statsSpec={statsSpec}
-              onClick={addStatCallback}
+              onClick={handleAdd}
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void =>
@@ -328,7 +328,7 @@ export function StatsPage(): JSX.Element {
           defaultLayout={defaultStatsToAdd}
           statsSpec={statsSpec}
           queries={queries}
-          onAdd={(item, itemIndex): void => addStatCallback(item, itemIndex)}
+          onAdd={(item, itemIndex): void => handleAdd(item, itemIndex)}
           onClose={(): void =>
             setState({
               type: 'EditingState',
