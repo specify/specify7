@@ -248,12 +248,14 @@ describe('getUniqueFields', () => {
     expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
       'catalogNumber',
       'guid',
+      'collectionObjectAttachments',
       'timestampCreated',
       'version',
       'timestampModified',
     ]));
   test('Locality', () =>
     expect(getUniqueFields(schema.models.Locality)).toEqual([
+      'localityAttachments',
       'guid',
       'timestampCreated',
       'version',
@@ -288,6 +290,7 @@ test('getFieldsToNotClone', () => {
     'timestampCreated',
     'totalCountAmt',
     'version',
+    'collectionObjectAttachments',
     'currentDetermination',
     'projects',
   ]);
@@ -300,6 +303,7 @@ test('getFieldsToNotClone', () => {
     'timestampCreated',
     'totalCountAmt',
     'version',
+    'collectionObjectAttachments',
     'currentDetermination',
     'projects',
   ]);

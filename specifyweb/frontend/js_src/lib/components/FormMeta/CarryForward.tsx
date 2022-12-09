@@ -301,45 +301,48 @@ function CarryForwardCategory({
 }): JSX.Element {
   return (
     <Ul>
-      {fields.map((field) => (
-        <li className="flex gap-1" key={field.name}>
-          <Label.Inline
-            title={
-              uniqueFields.includes(field.name)
-                ? formsText('carryForwardUniqueField')
-                : field.getLocalizedDesc()
-            }
-          >
-            <Input.Checkbox
-              checked={f.includes(carryForward, field.name)}
-              disabled={uniqueFields.includes(field.name)}
-              onValueChange={(isChecked): void => {
-                const dependents = filterArray(
-                  Object.entries(dependentFields())
-                    .filter(([_dependent, source]) => source === field.name)
-                    .map(([dependent]) => model.getField(dependent)?.name)
-                );
-                handleChange(
-                  isChecked
-                    ? f.unique([...carryForward, field.name, ...dependents])
-                    : carryForward.filter(
-                        (name) =>
-                          name !== field.name && !dependents.includes(name)
-                      )
-                );
-              }}
-            />
-            {field.label}
-          </Label.Inline>
-          {field.isRelationship && field.isDependent() ? (
-            <CarryForwardConfig
-              model={field.relatedModel}
-              parentModel={field.model}
-              type="cog"
-            />
-          ) : undefined}
-        </li>
-      ))}
+      {fields.map((field) => {
+        const isUnique = uniqueFields.includes(field.name);
+        return (
+          <li className="flex gap-1" key={field.name}>
+            <Label.Inline
+              title={
+                isUnique
+                  ? formsText('carryForwardUniqueField')
+                  : field.getLocalizedDesc()
+              }
+            >
+              <Input.Checkbox
+                checked={f.includes(carryForward, field.name)}
+                disabled={isUnique}
+                onValueChange={(isChecked): void => {
+                  const dependents = filterArray(
+                    Object.entries(dependentFields())
+                      .filter(([_dependent, source]) => source === field.name)
+                      .map(([dependent]) => model.getField(dependent)?.name)
+                  );
+                  handleChange(
+                    isChecked
+                      ? f.unique([...carryForward, field.name, ...dependents])
+                      : carryForward.filter(
+                          (name) =>
+                            name !== field.name && !dependents.includes(name)
+                        )
+                  );
+                }}
+              />
+              {field.label}
+            </Label.Inline>
+            {field.isRelationship && field.isDependent() && !isUnique ? (
+              <CarryForwardConfig
+                model={field.relatedModel}
+                parentModel={field.model}
+                type="cog"
+              />
+            ) : undefined}
+          </li>
+        );
+      })}
     </Ul>
   );
 }

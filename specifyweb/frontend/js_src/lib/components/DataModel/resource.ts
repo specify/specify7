@@ -292,9 +292,10 @@ export const getUniqueFields = (model: SpecifyModel): RA<string> =>
     /*
      * Each attachment is assumed to refer to a unique attachment file
      * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
+     * Also, https://github.com/specify/specify7/issues/2562
      */
     ...model.relationships
-      .filter(({ relatedModel }) => relatedModel.name === 'Attachment')
+      .filter(({ relatedModel }) => relatedModel.name.endsWith('Attachment'))
       .map(({ name }) => name),
     ...filterArray(
       uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
