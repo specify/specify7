@@ -19,7 +19,12 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getModelById } from '../DataModel/schema';
-import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
+import type {
+  RecordSet,
+  SpQuery,
+  SpQueryField,
+  Tables,
+} from '../DataModel/types';
 import { useMenuItem } from '../Header';
 import { isTreeModel, treeRanksPromise } from '../InitialContext/treeRanks';
 import { useTitle } from '../Molecules/AppTitle';
@@ -79,7 +84,10 @@ export function QueryBuilder({
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
-  readonly onFieldModify?: (fields: RA<SerializedResource<SpQueryField>>) => void;
+  readonly onFieldModify?: (
+    tableName: keyof Tables,
+    fields: RA<SerializedResource<SpQueryField>>
+  ) => void;
 }): JSX.Element | null {
   useMenuItem('queries');
 
@@ -109,7 +117,10 @@ export function QueryBuilder({
   React.useEffect(
     () =>
       typeof handleFieldModify === 'function'
-        ? handleFieldModify(unParseQueryFields(state.baseTableName, state.fields))
+        ? handleFieldModify(
+            state.baseTableName,
+            unParseQueryFields(state.baseTableName, state.fields)
+          )
         : undefined,
     [state.fields]
   );
