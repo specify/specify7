@@ -114,6 +114,7 @@ export function Categories({
                 />
               ) : (
                 <QueryStat
+                  key={itemIndex}
                   tableName={item.tableName}
                   fields={item.fields}
                   statLabel={item.itemName}
