@@ -1,7 +1,7 @@
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { H3 } from '../Atoms';
 import { Input } from '../Atoms/Form';
-import { CustomStatItem, DefaultStatItem } from './StatItems';
+import { CustomStatItem, DefaultStatItem, QueryStat } from './StatItems';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
@@ -22,7 +22,14 @@ export function Categories({
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
-  readonly onClick: ((item: CustomStat | DefaultStat) => void) | undefined;
+  readonly onClick:
+    | ((
+        item: CustomStat | DefaultStat,
+        categoryIndex?: number,
+        itemIndex?: number
+      ) => void)
+    | ((item: CustomStat | DefaultStat) => void)
+    | undefined;
   readonly onRemove:
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
@@ -68,25 +75,35 @@ export function Categories({
                   categoryName={item.categoryName}
                   itemName={item.itemName}
                   pageName={item.pageName}
-                  itemSpec={item.newFields}
                   key={itemIndex}
                   statsSpec={statsSpec}
                   onSpecChanged={
-                    handleSpecChanged !== undefined
-                      ? (newFields): void =>
-                          handleSpecChanged(categoryIndex, itemIndex, newFields)
+                    handleSpecChanged !== undefined && handleClick !== undefined
+                      ? (tableName, newFields, itemName): void => {
+                          handleClick(
+                            {
+                              type: 'CustomStat',
+                              itemName: itemName,
+                              tableName,
+                              fields: newFields,
+                            },
+                            categoryIndex,
+                            itemIndex
+                          );
+                        }
                       : undefined
                   }
                   onClick={
                     typeof handleClick === 'function'
-                      ? (): void =>
-                          handleClick({
-                            type: 'DefaultStat',
-                            pageName: item.pageName,
-                            categoryName: item.categoryName,
-                            itemName: item.itemName,
-                            newFields: item.newFields,
-                          })
+                      ? handleSpecChanged === undefined
+                        ? (): void =>
+                            handleClick({
+                              type: 'DefaultStat',
+                              pageName: item.pageName,
+                              categoryName: item.categoryName,
+                              itemName: item.itemName,
+                            })
+                        : undefined
                       : undefined
                   }
                   onRemove={
@@ -96,25 +113,25 @@ export function Categories({
                   }
                 />
               ) : (
-                <CustomStatItem
-                  key={itemIndex}
-                  queryId={item.queryId}
-                  onClick={
-                    typeof handleClick === 'function'
-                      ? (): void => {
-                          handleClick({
-                            type: 'CustomStat',
-                            queryId: item.queryId,
-                            newFields: item.newFields,
-                          });
-                        }
-                      : undefined
-                  }
+                <QueryStat
+                  tableName={item.tableName}
+                  fields={item.fields}
+                  statLabel={item.itemName}
+                  onClick={undefined}
                   onRemove={
                     handleRemove === undefined
                       ? undefined
                       : (): void => handleRemove(categoryIndex, itemIndex)
                   }
+                  onSpecChanged={
+                    handleSpecChanged !== undefined
+                      ? (_, fields) =>
+                          handleSpecChanged(categoryIndex, itemIndex, fields)
+                      : undefined
+                  }
+                  // handleRemove === undefined
+                  //   ? undefined
+                  // : (): void => handleRemove(categoryIndex, itemIndex)
                 />
               )
             )}

@@ -16,7 +16,6 @@ export function DefaultStatItem({
   pageName,
   categoryName,
   itemName,
-  itemSpec,
   onRemove: handleRemove,
   onClick: handleClick,
   onSpecChanged: handleSpecChanged,
@@ -25,16 +24,15 @@ export function DefaultStatItem({
   readonly pageName: string;
   readonly categoryName: keyof typeof statsSpec;
   readonly itemName: string;
-  readonly itemSpec:
-    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
-    | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
     | ((
+        tableName: keyof Tables,
         fields: RA<
           Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
+        >,
+        itemName: string
       ) => void)
     | undefined;
 }): JSX.Element {
@@ -44,12 +42,18 @@ export function DefaultStatItem({
     <p> {commonText('loading')}</p>
   ) : statSpecItem.spec.type === 'QueryBuilderStat' ? (
     <QueryStat
-      fields={itemSpec !== undefined ? itemSpec : statSpecItem.spec.fields}
+      fields={statSpecItem.spec.fields}
       statLabel={statSpecItem.label}
       tableName={statSpecItem.spec.tableName}
       onClick={handleClick}
       onRemove={handleRemove}
-      onSpecChanged={handleSpecChanged}
+      onSpecChanged={
+        handleSpecChanged !== undefined
+          ? (tableName, fields) => {
+              handleSpecChanged(tableName, fields, statSpecItem.label);
+            }
+          : undefined
+      }
     />
   ) : (
     <StatsResult
@@ -80,7 +84,8 @@ export function QueryStat({
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
     | ((
-        itemSpec: RA<
+        tableName: keyof Tables,
+        fields: RA<
           Partial<SerializedResource<SpQueryField>> & { readonly path: string }
         >
       ) => void)

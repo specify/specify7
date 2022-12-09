@@ -18,7 +18,7 @@ export function StatsPageEditing({
   readonly onRemove: (() => void) | undefined;
   readonly onRename: ((value: string) => void) | undefined;
   readonly onClose: () => void;
-  readonly onAdd: ((value: string) => void) | undefined;
+  readonly onAdd: ((label: string) => void) | undefined;
 }): JSX.Element {
   const id = useId('stats');
   const [pageName, setPageName] = React.useState<string>(label ?? '');

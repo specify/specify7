@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SpQuery, SpQueryField } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FrontEndStatsResultDialog } from './ResultsDialog';
 import { Button } from '../Atoms/Button';
@@ -23,6 +23,7 @@ export function StatsResult({
   readonly onRemove: (() => void) | undefined;
   readonly onSpecChanged:
     | ((
+        tableName: keyof Tables,
         fields: RA<
           Partial<SerializedResource<SpQueryField>> & { readonly path: string }
         >

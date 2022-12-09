@@ -1,6 +1,6 @@
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import type {SpQuery, Tables} from '../DataModel/types';
+import type { SpQuery, Tables } from '../DataModel/types';
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
@@ -10,6 +10,7 @@ import { H3 } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
+import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 
 export function AddStatDialog({
   defaultLayout,
@@ -22,7 +23,7 @@ export function AddStatDialog({
   readonly defaultLayout: StatLayout;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
-  readonly onAdd: (item: CustomStat | DefaultStat) => void;
+  readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
 }): JSX.Element | null {
   const defaultStatsAddLeft = defaultLayout;
   return Array.isArray(queries) ? (
@@ -39,13 +40,23 @@ export function AddStatDialog({
         {Array.isArray(queries) && (
           <QueryList
             getQuerySelectCallback={(query) => () => {
-              
-              handleAdd({
-                type: 'CustomStat',
-                itemName: 'nla',
-                tableName: query.contextName as keyof Tables,
-                fields: query.fields
-              });
+              handleAdd(
+                {
+                  type: 'CustomStat',
+                  itemName: 'nla',
+                  tableName: query.contextName as keyof Tables,
+                  fields: query.fields.map((field) => ({
+                    ...field,
+                    path: QueryFieldSpec.fromStringId(
+                      field.stringId,
+                      field.isRelFld ?? false
+                    )
+                      .toMappingPath()
+                      .join('.'),
+                  })),
+                },
+                -1
+              );
               handleClose();
             }}
             isReadOnly
@@ -64,7 +75,9 @@ export function AddStatDialog({
                   <Categories
                     pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
-                    onClick={handleAdd}
+                    onClick={(item): void => {
+                      handleAdd(item, -1);
+                    }}
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}

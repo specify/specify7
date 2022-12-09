@@ -19,6 +19,11 @@ export type DefaultStat = State<
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
+    readonly fields?:
+      | RA<
+          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+        >
+      | undefined;
   }
 >;
 

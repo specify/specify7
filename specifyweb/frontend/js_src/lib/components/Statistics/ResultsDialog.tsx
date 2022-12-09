@@ -2,7 +2,7 @@ import React from 'react';
 
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 
-import { SpQuery, SpQueryField } from '../DataModel/types';
+import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
@@ -23,26 +23,38 @@ export function FrontEndStatsResultDialog({
   readonly statLabel: string;
   readonly onSpecChanged:
     | ((
-        itemSpec: RA<
+        tableName: keyof Tables,
+        fields: RA<
           Partial<SerializedResource<SpQueryField>> & { readonly path: string }
         >
       ) => void)
     | undefined;
 }): JSX.Element | null {
-  const [newFields, setNewFields] = React.useState<
-    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
-    | undefined
-  >(undefined);
+  const [queryData, setQueryData] = React.useState<{
+    readonly tableName: keyof Tables | undefined;
+    readonly fields:
+      | undefined
+      | RA<
+          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
+        >;
+  }>({ tableName: undefined, fields: undefined });
   return typeof query === 'object' ? (
     <Dialog
       buttons={
         <>
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          {typeof handleSpecChange === 'function' && newFields !== undefined ? (
+          {typeof handleSpecChange === 'function' &&
+          queryData.fields !== undefined &&
+          queryData.tableName !== undefined ? (
             <Button.Green
               onClick={(): void => {
-                handleSpecChange(newFields);
-                handleClose();
+                if (
+                  queryData.tableName !== undefined &&
+                  queryData.fields !== undefined
+                ) {
+                  handleSpecChange(queryData.tableName, queryData.fields);
+                  handleClose();
+                }
               }}
             >
               {commonText('save')}
@@ -65,9 +77,10 @@ export function FrontEndStatsResultDialog({
         forceCollection={undefined}
         onFieldModify={
           typeof handleSpecChange === 'function'
-            ? (fields): void => {
-                setNewFields(
-                  fields.map((field) => ({
+            ? (tableName, fields): void => {
+                setQueryData({
+                  tableName: tableName,
+                  fields: fields.map((field) => ({
                     ...field,
                     path: QueryFieldSpec.fromStringId(
                       field.stringId,
@@ -75,8 +88,8 @@ export function FrontEndStatsResultDialog({
                     )
                       .toMappingPath()
                       .join('.'),
-                  }))
-                );
+                  })),
+                });
               }
             : undefined
         }

@@ -17,7 +17,7 @@ import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
-import { StatLayout } from './types';
+import { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element {
   const [customLayout, setLayout] = usePref(
@@ -72,6 +72,21 @@ export function StatsPage(): JSX.Element {
       replaceItem(layout, activePageIndex, {
         ...layout[activePageIndex],
         categories: newCategories,
+      })
+    );
+  const addStatCallback = (
+    item: CustomStat | DefaultStat,
+    categoryIndex?: number,
+    itemIndex?: number
+  ): void =>
+    handleCategoryChange(
+      replaceItem(layout[activePageIndex].categories, categoryIndex ?? -1, {
+        ...layout[activePageIndex].categories[categoryIndex ?? -1],
+        items: replaceItem(
+          layout[activePageIndex].categories[categoryIndex ?? -1].items,
+          itemIndex === undefined ? -1 : itemIndex,
+          item
+        ),
       })
     );
 
@@ -194,11 +209,11 @@ export function StatsPage(): JSX.Element {
               onAdd={
                 typeof state.pageIndex === 'number'
                   ? undefined
-                  : (value): void => {
+                  : (label): void => {
                       setLayout([
                         ...layout,
                         {
-                          label: value,
+                          label,
                           categories: [],
                         },
                       ]);
@@ -238,7 +253,7 @@ export function StatsPage(): JSX.Element {
               }
               pageLayout={layout[activePageIndex]}
               statsSpec={statsSpec}
-              onClick={undefined}
+              onClick={addStatCallback}
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void =>
@@ -283,7 +298,7 @@ export function StatsPage(): JSX.Element {
                       )
                   : undefined
               }
-              onSpecChanged={(categoryIndex, itemIndex, newFields): void =>
+              onSpecChanged={(categoryIndex, itemIndex, fields): void =>
                 handleCategoryChange(
                   replaceItem(
                     layout[activePageIndex].categories,
@@ -296,7 +311,7 @@ export function StatsPage(): JSX.Element {
                         {
                           ...layout[activePageIndex].categories[categoryIndex]
                             .items[itemIndex],
-                          newFields,
+                          fields,
                         }
                       ),
                     }
@@ -313,27 +328,7 @@ export function StatsPage(): JSX.Element {
           defaultLayout={defaultStatsToAdd}
           statsSpec={statsSpec}
           queries={queries}
-          onAdd={(item): void =>
-            isAddingItem
-              ? handleCategoryChange(
-                  replaceItem(
-                    layout[activePageIndex].categories,
-                    state.categoryIndex,
-                    {
-                      ...layout[activePageIndex].categories[
-                        state.categoryIndex
-                      ],
-                      items: [
-                        ...layout[activePageIndex].categories[
-                          state.categoryIndex
-                        ].items,
-                        item,
-                      ],
-                    }
-                  )
-                )
-              : undefined
-          }
+          onAdd={(item, itemIndex): void => addStatCallback(item, itemIndex)}
           onClose={(): void =>
             setState({
               type: 'EditingState',
