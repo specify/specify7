@@ -75,7 +75,7 @@ function UseAutoForm({ model }: { readonly model: SpecifyModel }): JSX.Element {
   return (
     <Label.Inline>
       <Input.Checkbox
-        checked={!useCustomForm}
+        checked={useCustomForm}
         onValueChange={(): void =>
           setGlobalConfig(toggleItem(globalConfig, model.name))
         }
