@@ -257,16 +257,16 @@ function CarryForwardConfigDialog({
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
-          <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
+            header={commonText('fields')}
             model={model}
             carryForward={config}
             fields={literalFields}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
-          <h3>{commonText('relationships')}</h3>
           <CarryForwardCategory
+            header={commonText('relationships')}
             model={model}
             carryForward={config}
             fields={relationships}
@@ -287,62 +287,67 @@ function CarryForwardConfigDialog({
 }
 
 function CarryForwardCategory({
+  header,
   model,
   fields,
   uniqueFields,
   carryForward,
   onChange: handleChange,
 }: {
+  readonly header: string;
   readonly model: SpecifyModel;
   readonly fields: RA<LiteralField | Relationship>;
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
   readonly onChange: (carryForward: RA<string>) => void;
-}): JSX.Element {
-  return (
-    <Ul>
-      {fields.map((field) => {
-        const isUnique = uniqueFields.includes(field.name);
-        return (
-          <li className="flex gap-1" key={field.name}>
-            <Label.Inline
-              title={
-                isUnique
-                  ? formsText('carryForwardUniqueField')
-                  : field.getLocalizedDesc()
-              }
-            >
-              <Input.Checkbox
-                checked={f.includes(carryForward, field.name)}
-                disabled={isUnique}
-                onValueChange={(isChecked): void => {
-                  const dependents = filterArray(
-                    Object.entries(dependentFields())
-                      .filter(([_dependent, source]) => source === field.name)
-                      .map(([dependent]) => model.getField(dependent)?.name)
-                  );
-                  handleChange(
-                    isChecked
-                      ? f.unique([...carryForward, field.name, ...dependents])
-                      : carryForward.filter(
-                          (name) =>
-                            name !== field.name && !dependents.includes(name)
-                        )
-                  );
-                }}
-              />
-              {field.label}
-            </Label.Inline>
-            {field.isRelationship && field.isDependent() && !isUnique ? (
-              <CarryForwardConfig
-                model={field.relatedModel}
-                parentModel={field.model}
-                type="cog"
-              />
-            ) : undefined}
-          </li>
-        );
-      })}
-    </Ul>
-  );
+}): JSX.Element | null {
+  return fields.length > 0 ? (
+    <>
+      <H3>{header}</H3>
+      <Ul>
+        {fields.map((field) => {
+          const isUnique = uniqueFields.includes(field.name);
+          return (
+            <li className="flex gap-1" key={field.name}>
+              <Label.Inline
+                title={
+                  isUnique
+                    ? formsText('carryForwardUniqueField')
+                    : field.getLocalizedDesc()
+                }
+              >
+                <Input.Checkbox
+                  checked={f.includes(carryForward, field.name)}
+                  disabled={isUnique}
+                  onValueChange={(isChecked): void => {
+                    const dependents = filterArray(
+                      Object.entries(dependentFields())
+                        .filter(([_dependent, source]) => source === field.name)
+                        .map(([dependent]) => model.getField(dependent)?.name)
+                    );
+                    handleChange(
+                      isChecked
+                        ? f.unique([...carryForward, field.name, ...dependents])
+                        : carryForward.filter(
+                            (name) =>
+                              name !== field.name && !dependents.includes(name)
+                          )
+                    );
+                  }}
+                />
+                {field.label}
+              </Label.Inline>
+              {field.isRelationship && field.isDependent() && !isUnique ? (
+                <CarryForwardConfig
+                  model={field.relatedModel}
+                  parentModel={field.model}
+                  type="cog"
+                />
+              ) : undefined}
+            </li>
+          );
+        })}
+      </Ul>
+    </>
+  ) : null;
 }
