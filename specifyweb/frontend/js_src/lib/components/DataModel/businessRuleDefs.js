@@ -264,7 +264,7 @@ export const businessRuleDefs = Object.freeze({
         Permit: {
             unique: ['permitnumber']
         },
-        Picklist: {
+        PickList: {
             uniqueIn: {
                 name: 'collection'
             }
