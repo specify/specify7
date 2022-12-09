@@ -38,7 +38,8 @@ export function useViewDefinition({
   readonly mode: FormMode;
 }): ViewDescription | undefined {
   const [globalConfig] = usePref('form', 'preferences', 'useCustomForm');
-  const useGeneratedForm = globalConfig[model?.name ?? 'Agent'] === false;
+  const useGeneratedForm =
+    Array.isArray(globalConfig) && f.includes(globalConfig, model?.name);
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
       if (model === undefined) return undefined;

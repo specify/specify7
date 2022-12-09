@@ -966,6 +966,10 @@ export const preferenceDefinitions = {
       preferences: {
         title: '(not visible to user) Preferences',
         items: {
+          /*
+           * This has to be an object rather than an array to allow forms to
+           * override this value when this value is undefined for a given table
+           */
           printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
             title: 'Generate label on form save',
             requiresReload: false,
@@ -1021,11 +1025,11 @@ export const preferenceDefinitions = {
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          useCustomForm: defineItem<Partial<RR<keyof Tables, boolean>>>({
+          useCustomForm: defineItem<RA<keyof Tables>>({
             title: 'useCustomForm',
             requiresReload: false,
             visible: false,
-            defaultValue: {},
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
           }),
           carryForwardShowHidden: defineItem<boolean>({
