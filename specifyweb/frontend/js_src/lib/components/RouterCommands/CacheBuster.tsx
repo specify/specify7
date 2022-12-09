@@ -39,7 +39,7 @@ export function CacheBuster(): JSX.Element | null {
        * cache buster dialog again causing a perpetual loop.
        */
       header={commonText('clearCache')}
-      onClose={(): void => globalThis.location.assign('/specify/')}
+      onClose={(): void => globalThis.location.replace('/specify/')}
     >
       {commonText('clearedCacheDialogText')}
     </Dialog>

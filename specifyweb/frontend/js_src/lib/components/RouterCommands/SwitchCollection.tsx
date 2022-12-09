@@ -32,7 +32,7 @@ export function SwitchCollectionCommand(): null {
         ping('/context/collection/', {
           method: 'POST',
           body: collectionId!.toString(),
-        }).then(() => globalThis.location.assign(nextUrl)),
+        }).then(() => globalThis.location.replace(nextUrl)),
       [collectionId, nextUrl]
     ),
     true
