@@ -28,7 +28,7 @@ export function StatsPage(): JSX.Element {
   const statsSpec = useStatsSpec();
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
-  setLayout(defaultLayout); //comment out!
+  //setLayout(defaultLayout); //comment out!
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -67,18 +67,19 @@ export function StatsPage(): JSX.Element {
   const previousLayout = React.useRef(layout);
   const handleCategoryChange = (
     newCategories: StatLayout[number]['categories']
-  ): void =>
+  ): void => {
     setLayout(
       replaceItem(layout, activePageIndex, {
         ...layout[activePageIndex],
         categories: newCategories,
       })
     );
+  };
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
     itemIndex?: number
-  ): void =>
+  ): void => {
     handleCategoryChange(
       replaceItem(layout[activePageIndex].categories, categoryIndex ?? -1, {
         ...layout[activePageIndex].categories[categoryIndex ?? -1],
@@ -89,6 +90,7 @@ export function StatsPage(): JSX.Element {
         ),
       })
     );
+  };
 
   return (
     <Form
