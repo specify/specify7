@@ -36,6 +36,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { RecordMerging } from '../Merging';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -242,6 +243,7 @@ export function QueryResults({
         results.length > 0 &&
         typeof fetchResults === 'function' ? (
           <>
+            <RecordMerging model={model} selectedRows={selectedRows} />
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet

@@ -25,7 +25,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
-const specialFields = new Set([
+export const specialFields = new Set([
   'id',
   'resource_uri',
   'recordset_info',

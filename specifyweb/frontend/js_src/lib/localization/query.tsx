@@ -305,6 +305,10 @@ export const queryText = createDictionary({
     'en-us': (plotted: string) => `Plotted ${plotted} records`,
     'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
   },
+  mergeRecords: {
+    'en-us': 'Merge Records',
+    'ru-ru': 'Объединить записи',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */
