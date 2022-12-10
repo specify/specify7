@@ -313,6 +313,10 @@ export const queryText = createDictionary({
     'en-us': 'Merged Record',
     'ru-ru': 'Объединенная запись',
   },
+  showConflictingFieldsOnly: {
+    'en-us': 'Show conflicting fields only',
+    'ru-ru': 'Показать только конфликтующие поля',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

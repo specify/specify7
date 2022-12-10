@@ -6,6 +6,7 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
+import { specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
@@ -13,63 +14,132 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormField } from '../FormFields';
 import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { autoMerge } from './autoMerge';
+import { queryText } from '../../localization/query';
+import { DateElement } from '../Molecules/DateElement';
 
+// FIXME: split this file into smaller functions
 export function CompareRecords({
+  showMatching,
   model,
-  left,
-  merged,
-  right,
+  records,
 }: {
+  readonly showMatching: boolean;
   readonly model: SpecifyModel;
-  readonly left: SerializedResource<AnySchema>;
-  readonly merged: SpecifyResource<AnySchema>;
-  readonly right: SerializedResource<AnySchema>;
+  readonly records: RA<SerializedResource<AnySchema>>;
 }): JSX.Element {
-  const differingFields = React.useMemo(
-    () => findDiffering(model, [left, right]),
-    [model, left, right]
+  const merged = React.useMemo(
+    () => deserializeResource(autoMerge(model, records)),
+    [model, records]
   );
-  const leftResource = React.useMemo(() => deserializeResource(left), [left]);
-  const rightResource = React.useMemo(
-    () => deserializeResource(right),
-    [right]
+  const resources = React.useMemo(
+    () => records.map(deserializeResource),
+    [records]
   );
+  const left = resources[0];
+  const right = resources[1];
+  const conformation = useConformation(showMatching, model, records);
   return (
     <>
-      {differingFields.map((field) => (
+      <div>
+        {/* FEATURE: show record usages */}
+        <ResourceSummary model={model} record={records[0]} />
+        {/* FEATURE: add a button to preview a given record in a form */}
+      </div>
+      {/* FEATURE: add an all-left and all-right button */}
+      <div />
+      <div>{queryText('mergedRecord')}</div>
+      <div />
+      <div>
+        <ResourceSummary model={model} record={records[1]} />
+      </div>
+      {/* BUG: hide timestamp modified/created/version */}
+      {/* FEATURE: look for other fields to hide - and handle their merging */}
+      {/* FEATURE: allow for any number of records to merge*/}
+      {/* FEATURE: freeze the first column - labels */}
+      {/* FEATURE: add merge util to user tools */}
+      {/* FEATURE: add merge util to form meta */}
+      {conformation.map((field) => (
         <CompareField
           field={field}
           key={field.name}
-          left={leftResource}
+          left={left}
           merged={merged}
-          right={rightResource}
+          right={right}
         />
       ))}
     </>
   );
 }
 
+function ResourceSummary({
+  record,
+  model,
+}: {
+  readonly record: SerializedResource<AnySchema>;
+  readonly model: SpecifyModel;
+}): JSX.Element {
+  const createdField = model.getField('timestampCreated');
+  const modifiedField = model.getField('timestampModified');
+  return (
+    <>
+      {typeof createdField === 'object' && (
+        <Label.Block>
+          {createdField.label}
+          <DateElement date={record.timestampCreated as string} />
+        </Label.Block>
+      )}
+      {typeof modifiedField === 'object' && (
+        <Label.Block>
+          {modifiedField.label}
+          <DateElement date={record.timestampModified as string} />
+        </Label.Block>
+      )}
+    </>
+  );
+}
+
+function useConformation(
+  showMatching: boolean,
+  model: SpecifyModel,
+  records: RA<SerializedResource<AnySchema>>
+): RA<LiteralField | Relationship> {
+  return React.useMemo(
+    () => (showMatching ? model.fields : findDiffering(model, records)),
+    [showMatching, model, records]
+  );
+}
+
+const hiddenFields = new Set([
+  ...specialFields,
+  'timestampCreated',
+  'timestampModified',
+  'version',
+]);
+
 const findDiffering = (
   model: SpecifyModel,
   records: RA<SerializedResource<AnySchema>>
 ): RA<LiteralField | Relationship> =>
-  model.fields.filter(
-    (field) =>
-      (!field.isRelationship ||
-        field.isDependent() ||
-        !relationshipIsToMany(field)) &&
-      new Set(
-        records
-          .map((record) => record[field.name])
-          .map((value) =>
-            value === null ||
-            value === undefined ||
-            (Array.isArray(value) && value.length === 0)
-              ? ''
-              : value
-          )
-      ).size > 1
-  );
+  model.fields
+    .filter(
+      (field) =>
+        (!field.isRelationship ||
+          field.isDependent() ||
+          !relationshipIsToMany(field)) &&
+        new Set(
+          records
+            .map((record) => record[field.name])
+            .map((value) =>
+              value === null ||
+              value === undefined ||
+              (Array.isArray(value) && value.length === 0)
+                ? ''
+                : value
+            )
+        ).size > 1
+    )
+    .filter(({ name }) => !hiddenFields.has(name));
 
 function CompareField({
   field,

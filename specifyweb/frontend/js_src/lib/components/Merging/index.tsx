@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
@@ -8,16 +6,15 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { Button } from '../Atoms/Button';
-import { Form, Label } from '../Atoms/Form';
+import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
-import { autoMerge } from './autoMerge';
 import { CompareRecords } from './Compare';
+import { RA } from '../../utils/types';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function RecordMerging({
   model,
@@ -32,7 +29,7 @@ export function RecordMerging({
 
   return model.name === 'Agent' ? (
     <>
-      <Button.Small disabled={selectedRows.size !== 2} onClick={handleToggle}>
+      <Button.Small disabled={selectedRows.size === 0} onClick={handleToggle}>
         {queryText('mergeRecords')}
       </Button.Small>
       {isOpen && (
@@ -58,18 +55,25 @@ function MergingDialog({
   readonly onClose: () => void;
   readonly onMerged: () => void;
 }): JSX.Element | null {
-  const records = React.useMemo(() => Array.from(selectedRows), [selectedRows]);
-  const left = useResource(model, records[0]);
-  const right = useResource(model, records[1]);
-  const merged = useMerged(model, left, right);
+  const records = useResources(model, selectedRows);
+  const [showMatching = false, setShowMatching] = useCachedState(
+    'merging',
+    'showConflictingFieldsOnly'
+  );
 
   const id = useId('merging-dialog');
-  return left === undefined ||
-    right === undefined ||
-    merged === undefined ? null : (
+  return records === undefined ? null : (
     <Dialog
       buttons={
         <>
+          <Label.Inline>
+            <Input.Checkbox
+              checked={showMatching}
+              onValueChange={setShowMatching}
+            />
+            {queryText('showConflictingFieldsOnly')}
+          </Label.Inline>
+          <span className="-ml-2 flex-1" />
           <Button.BorderedGray onClick={handleClose}>
             {commonText('cancel')}
           </Button.BorderedGray>
@@ -86,83 +90,28 @@ function MergingDialog({
           handleMerged();
         }}
       >
-        <div>
-          {/* FEATURE: show record usages */}
-          <ResourceSummary model={model} record={left} />
-          {/* FEATURE: add a button to preview a given record in a form */}
-        </div>
-        {/* FEATURE: add an all-left and all-right button */}
-        <div />
-        <div>{queryText('mergedRecord')}</div>
-        <div />
-        <div>
-          <ResourceSummary model={model} record={right} />
-        </div>
-        {/* BUG: hide timestamp modified/created/version */}
-        {/* FEATURE: look for other fields to hide */}
-        {/* FEATURE: allow for any number of records to merge*/}
-        {/* FEATURE: freeze the first column - labels */}
-        {/* FEATURE: add merge util to user tools */}
-        {/* FEATURE: add merge util to form meta */}
         <CompareRecords
-          left={left}
-          merged={merged}
+          showMatching={showMatching}
+          records={records}
           model={model}
-          right={right}
         />
       </Form>
     </Dialog>
   );
 }
 
-function useResource(
+function useResources(
   model: SpecifyModel,
-  id: number
-): SerializedResource<AnySchema> | undefined {
-  const [resource] = useAsyncState(
-    React.useCallback(async () => fetchResource(model.name, id), [model, id]),
+  selectedRows: ReadonlySet<number>
+): RA<SerializedResource<AnySchema>> | undefined {
+  return useAsyncState(
+    React.useCallback(
+      async () =>
+        Promise.all(
+          Array.from(selectedRows, (id) => fetchResource(model.name, id))
+        ),
+      [model, selectedRows]
+    ),
     true
-  );
-  return resource;
-}
-
-function useMerged(
-  model: SpecifyModel,
-  left: SerializedResource<AnySchema> | undefined,
-  right: SerializedResource<AnySchema> | undefined
-): SpecifyResource<AnySchema> | undefined {
-  return React.useMemo(
-    () =>
-      left === undefined || right === undefined
-        ? undefined
-        : deserializeResource(autoMerge(model, [left, right])),
-    [model, left, right]
-  );
-}
-
-function ResourceSummary({
-  record,
-  model,
-}: {
-  readonly record: SerializedResource<AnySchema>;
-  readonly model: SpecifyModel;
-}): JSX.Element {
-  const createdField = model.getField('timestampCreated');
-  const modifiedField = model.getField('timestampModified');
-  return (
-    <>
-      {typeof createdField === 'object' && (
-        <Label.Block>
-          {createdField.label}
-          <DateElement date={record.timestampCreated as string} />
-        </Label.Block>
-      )}
-      {typeof modifiedField === 'object' && (
-        <Label.Block>
-          {modifiedField.label}
-          <DateElement date={record.timestampModified as string} />
-        </Label.Block>
-      )}
-    </>
-  );
+  )[0];
 }

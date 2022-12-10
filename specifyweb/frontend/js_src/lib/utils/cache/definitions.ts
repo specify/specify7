@@ -129,6 +129,9 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
   };
+  readonly merging: {
+    readonly showConflictingFieldsOnly: boolean;
+  };
 };
 
 export type SortConfigs = {
