@@ -1,15 +1,18 @@
 import React from 'react';
 
-import type { GetOrSet, RA } from '../../utils/types';
+import { deserializeResource } from '../../hooks/resource';
+import { treeText } from '../../localization/tree';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { treeText } from '../../localization/tree';
-import { icons } from '../Atoms/Icons';
-import { Input, Label } from '../Atoms/Form';
-import { deserializeResource } from '../../hooks/resource';
-import { SpecifyResource } from '../DataModel/legacyTypes';
+import { FormField } from '../FormFields';
+import type { FieldTypes } from '../FormParse/fields';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 export function CompareRecords({
   model,
@@ -19,7 +22,7 @@ export function CompareRecords({
 }: {
   readonly model: SpecifyModel;
   readonly left: SerializedResource<AnySchema>;
-  readonly merged: GetOrSet<SpecifyResource<AnySchema>>;
+  readonly merged: SpecifyResource<AnySchema>;
   readonly right: SerializedResource<AnySchema>;
 }): JSX.Element {
   const differingFields = React.useMemo(
@@ -27,7 +30,10 @@ export function CompareRecords({
     [model, left, right]
   );
   const leftResource = React.useMemo(() => deserializeResource(left), [left]);
-  const rightResource = React.useMemo(() => deserializeResource(left), [left]);
+  const rightResource = React.useMemo(
+    () => deserializeResource(right),
+    [right]
+  );
   return (
     <>
       {differingFields.map((field) => (
@@ -49,6 +55,9 @@ const findDiffering = (
 ): RA<LiteralField | Relationship> =>
   model.fields.filter(
     (field) =>
+      (!field.isRelationship ||
+        field.isDependent() ||
+        !relationshipIsToMany(field)) &&
       new Set(
         records
           .map((record) => record[field.name])
@@ -70,21 +79,21 @@ function CompareField({
 }: {
   readonly field: LiteralField | Relationship;
   readonly left: SpecifyResource<AnySchema>;
-  readonly merged: GetOrSet<SpecifyResource<AnySchema>>;
+  readonly merged: SpecifyResource<AnySchema>;
   readonly right: SpecifyResource<AnySchema>;
 }): JSX.Element {
   return (
     <>
       <div>
-        <Field field={field} resource={left} onChange={undefined} />
+        <Field field={field} isReadOnly resource={left} />
       </div>
-      <MergeButton from={left} to={merged} field={field} direction="right" />
+      <MergeButton direction="right" field={field} from={left} to={merged} />
       <div>
-        <Field field={field} resource={merged[0]} onChange={merged[1]} />
+        <Field field={field} resource={merged} />
       </div>
-      <MergeButton from={right} to={merged} field={field} direction="left" />
+      <MergeButton direction="left" field={field} from={right} to={merged} />
       <div>
-        <Field field={field} resource={right} onChange={undefined} />
+        <Field field={field} isReadOnly resource={right} />
       </div>
     </>
   );
@@ -93,16 +102,15 @@ function CompareField({
 function MergeButton({
   field,
   from,
-  to,
+  to: merged,
   direction,
 }: {
   readonly field: LiteralField | Relationship;
   readonly from: SpecifyResource<AnySchema>;
-  readonly to: GetOrSet<SpecifyResource<AnySchema>>;
+  readonly to: SpecifyResource<AnySchema>;
   readonly direction: 'left' | 'right';
 }): JSX.Element {
   const fromValue = from.get(field.name);
-  const [merged, handleChange] = to;
   const toValue = merged.get(field.name);
   const isSame = React.useMemo(
     () => JSON.stringify(fromValue) === JSON.stringify(toValue),
@@ -110,10 +118,10 @@ function MergeButton({
   );
   return (
     <Button.Blue
-      disabled={isSame}
-      onClick={(): void => handleChange({ ...merged, [field.name]: fromValue })}
-      title={treeText('merge')}
       aria-label={treeText('merge')}
+      disabled={isSame}
+      title={treeText('merge')}
+      onClick={(): void => void merged.set(field.name, fromValue)}
     >
       {direction === 'left' ? icons.chevronLeft : icons.chevronRight}
     </Button.Blue>
@@ -123,21 +131,77 @@ function MergeButton({
 function Field({
   field,
   resource,
-  onChange: handleChange,
+  isReadOnly = false,
 }: {
   readonly field: LiteralField | Relationship;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly onChange:
-    | ((newResource: SpecifyResource<AnySchema>) => void)
-    | undefined;
+  readonly isReadOnly?: boolean;
 }): JSX.Element {
+  const fieldDefinition = React.useMemo(
+    () => ({
+      ...fieldToDefinition(field),
+      isReadOnly: false,
+    }),
+    [field]
+  );
   return (
     <Label.Block>
       {field.label}
-      <Input.Text
-        onChange={undefined}
-        value={JSON.stringify(resource.get(field.name))}
-      />
+      {!field.isRelationship || !field.isDependent() ? (
+        <FormField
+          fieldDefinition={fieldDefinition}
+          fieldName={field.name}
+          formType="form"
+          id={undefined}
+          isRequired={false}
+          mode={isReadOnly ? 'view' : 'edit'}
+          resource={resource}
+        />
+      ) : (
+        <Input.Text
+          // FIXME: render this as a subview
+          value={JSON.stringify(resource.get(field.name))}
+          onChange={undefined}
+        />
+      )}
     </Label.Block>
   );
+}
+
+function fieldToDefinition(
+  field: LiteralField | Relationship
+): FieldTypes[keyof FieldTypes] {
+  if (field.isRelationship)
+    return {
+      type: 'QueryComboBox',
+      hasCloneButton: false,
+      typeSearch: undefined,
+    };
+  else if (field.type === 'java.lang.Boolean')
+    return {
+      type: 'Checkbox',
+      defaultValue: undefined,
+      label: undefined,
+      printOnSave: false,
+    };
+  else if (field.type === 'text')
+    return {
+      type: 'TextArea',
+      defaultValue: undefined,
+      rows: undefined,
+    };
+  else if (typeof field.getPickList() === 'string')
+    return {
+      type: 'ComboBox',
+      defaultValue: undefined,
+      pickList: undefined,
+    };
+  else
+    return {
+      type: 'Text',
+      defaultValue: undefined,
+      min: undefined,
+      max: undefined,
+      step: undefined,
+    };
 }

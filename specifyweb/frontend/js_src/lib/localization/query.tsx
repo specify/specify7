@@ -309,6 +309,10 @@ export const queryText = createDictionary({
     'en-us': 'Merge Records',
     'ru-ru': 'Объединить записи',
   },
+  mergedRecord: {
+    'en-us': 'Merged Record',
+    'ru-ru': 'Объединенная запись',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -412,7 +412,7 @@ export function Dialog({
          * "px-1 -mx-1" ensures that focus outline for checkboxes
          * and other inputs is not cut-off. You can also use "px-4 -mx-4" to
          * place container scroll bar at the very edge of the dialog, which
-         * looks nice, but is bad UX, because misclics can trigger dialog
+         * looks nice, but is bad UX, because mis-clicks can trigger dialog
          * close
          */}
         <div

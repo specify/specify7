@@ -1,25 +1,23 @@
 import React from 'react';
 
+import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
-import type { GetOrSet } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog } from '../Molecules/Dialog';
 import { autoMerge } from './autoMerge';
 import { CompareRecords } from './Compare';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { deserializeResource } from '../../hooks/resource';
 
 export function RecordMerging({
   model,
@@ -89,14 +87,23 @@ function MergingDialog({
         }}
       >
         <div>
+          {/* FEATURE: show record usages */}
           <ResourceSummary model={model} record={left} />
+          {/* FEATURE: add a button to preview a given record in a form */}
         </div>
+        {/* FEATURE: add an all-left and all-right button */}
         <div />
-        <div />
+        <div>{queryText('mergedRecord')}</div>
         <div />
         <div>
           <ResourceSummary model={model} record={right} />
         </div>
+        {/* BUG: hide timestamp modified/created/version */}
+        {/* FEATURE: look for other fields to hide */}
+        {/* FEATURE: allow for any number of records to merge*/}
+        {/* FEATURE: freeze the first column - labels */}
+        {/* FEATURE: add merge util to user tools */}
+        {/* FEATURE: add merge util to form meta */}
         <CompareRecords
           left={left}
           merged={merged}
@@ -104,10 +111,6 @@ function MergingDialog({
           right={right}
         />
       </Form>
-      {/* FEATURE: show record usages */}
-      {/* FEATURE: add a button to preview a given record in a form */}
-      {/* FEATURE: exclude certain fields from comparison */}
-      {/* FEATURE: add an all-left and all-right button */}
     </Dialog>
   );
 }
@@ -127,19 +130,14 @@ function useMerged(
   model: SpecifyModel,
   left: SerializedResource<AnySchema> | undefined,
   right: SerializedResource<AnySchema> | undefined
-): GetOrSet<SpecifyResource<AnySchema>> | undefined {
-  const getSet = useTriggerState(
-    React.useMemo(
-      () =>
-        left === undefined || right === undefined
-          ? undefined
-          : deserializeResource(autoMerge(model, [left, right])),
-      [model, left, right]
-    )
+): SpecifyResource<AnySchema> | undefined {
+  return React.useMemo(
+    () =>
+      left === undefined || right === undefined
+        ? undefined
+        : deserializeResource(autoMerge(model, [left, right])),
+    [model, left, right]
   );
-  return getSet[0] === undefined
-    ? undefined
-    : (getSet as GetOrSet<SpecifyResource<AnySchema>>);
 }
 
 function ResourceSummary({
