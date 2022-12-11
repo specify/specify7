@@ -12,13 +12,16 @@ export function StatsResult({
   statValue,
   query,
   statLabel,
+  statCachedValue,
   onClick: handleClick,
   onRemove: handleRemove,
   onSpecChanged: handleSpecChanged,
+  onValueLoad: handleValueLoad,
 }: {
   readonly statValue: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
   readonly statLabel: string;
+  readonly statCachedValue: number | string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onSpecChanged:
@@ -29,8 +32,14 @@ export function StatsResult({
         >
       ) => void)
     | undefined;
+  readonly onValueLoad: (statValue: string | number) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  React.useEffect(() => {
+    if (statValue !== undefined) {
+      handleValueLoad(statValue);
+    }
+  }, [statValue]);
   return (
     <>
       {statLabel === undefined ? (
@@ -52,7 +61,9 @@ export function StatsResult({
           >
             <span>{statLabel}</span>
             <span className="-ml-2 flex-1" />
-            <span>{statValue ?? commonText('loading')}</span>
+            <span>
+              {statValue ?? statCachedValue + ' CACHE' ?? commonText('loading')}
+            </span>
           </Button.LikeLink>
         </p>
       )}

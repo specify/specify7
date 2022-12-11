@@ -13,14 +13,17 @@ import { SpQueryField } from '../DataModel/types';
 export function Categories({
   pageLayout,
   statsSpec,
+  pageCache,
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
   onSpecChanged: handleSpecChanged,
+  onValueLoad: handleValueLoad,
 }: {
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
+  readonly pageCache: RA<RA<number | string>> | undefined;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick:
     | ((
@@ -45,6 +48,11 @@ export function Categories({
         >
       ) => void)
     | undefined;
+  readonly onValueLoad: (
+    categoryIndex: number,
+    itemIndex: number,
+    value: number | string
+  ) => void;
 }): JSX.Element {
   return (
     <>
@@ -77,6 +85,10 @@ export function Categories({
                   pageName={item.pageName}
                   key={itemIndex}
                   statsSpec={statsSpec}
+                  statCachedValue={pageCache?.[categoryIndex]?.[itemIndex]}
+                  onValueLoad={(statValue) =>
+                    handleValueLoad(categoryIndex, itemIndex, statValue)
+                  }
                   onSpecChanged={
                     handleSpecChanged !== undefined && handleClick !== undefined
                       ? (tableName, newFields, itemName): void => {
@@ -130,9 +142,10 @@ export function Categories({
                           handleSpecChanged(categoryIndex, itemIndex, fields)
                       : undefined
                   }
-                  // handleRemove === undefined
-                  //   ? undefined
-                  // : (): void => handleRemove(categoryIndex, itemIndex)
+                  onValueLoad={(statValue) =>
+                    handleValueLoad(categoryIndex, itemIndex, statValue)
+                  }
+                  statCachedValue={pageCache?.[categoryIndex]?.[itemIndex]}
                 />
               )
             )}

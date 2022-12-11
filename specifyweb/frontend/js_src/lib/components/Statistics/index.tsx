@@ -18,6 +18,7 @@ import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
 import { CustomStat, DefaultStat, StatLayout } from './types';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function StatsPage(): JSX.Element {
   const [customLayout, setPrevLayout] = usePref(
@@ -25,11 +26,14 @@ export function StatsPage(): JSX.Element {
     'appearance',
     'layout'
   );
+  const [layoutCache = [], setLayoutCache] = useCachedState(
+    'statistics',
+    'statsValue'
+  );
   const setLayout = (layout: StatLayout) => setPrevLayout(layout);
   const statsSpec = useStatsSpec();
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
-  //setLayout(defaultLayout); //comment out!
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -256,6 +260,7 @@ export function StatsPage(): JSX.Element {
               }
               pageLayout={layout[activePageIndex]}
               statsSpec={statsSpec}
+              pageCache={layoutCache?.[activePageIndex]}
               onClick={handleAdd}
               onRemove={
                 isEditing
@@ -321,6 +326,17 @@ export function StatsPage(): JSX.Element {
                   )
                 )
               }
+              onValueLoad={(categoryIndex, itemIndex, value) => {
+                setLayoutCache((oldValue) => {
+                  const tempPageArray = [...(oldValue ?? [])];
+                  const tempPage = [...(tempPageArray[activePageIndex] ?? [])];
+                  const tempCategory = [...(tempPage[categoryIndex] ?? [])];
+                  tempCategory[itemIndex] = value;
+                  tempPage[categoryIndex] = [...tempCategory];
+                  tempPageArray[activePageIndex] = [...tempPage];
+                  return tempPageArray;
+                });
+              }}
             />
           </div>
         </div>
