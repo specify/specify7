@@ -48,7 +48,7 @@ type StatsSpec =
     };
 
 export const statsSpec: IR<StatsSpec> = {
-  collection: {
+  [statsText('collection')]: {
     holdings: {
       label: statsText('holdings'),
       categories: (backendStatsResult) => ({
@@ -427,7 +427,7 @@ export const statsSpec: IR<StatsSpec> = {
       },
     },
   },
-  personal: {
+  [statsText('personal')]: {
     loans: {
       label: statsText('loans'),
       categories: () => ({

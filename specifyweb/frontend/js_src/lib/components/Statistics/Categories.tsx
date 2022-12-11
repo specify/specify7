@@ -1,7 +1,7 @@
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { H3 } from '../Atoms';
 import { Input } from '../Atoms/Form';
-import { CustomStatItem, DefaultStatItem, QueryStat } from './StatItems';
+import { DefaultStatItem, QueryStat } from './StatItems';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';

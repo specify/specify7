@@ -36,14 +36,14 @@ export function AddStatDialog({
       onClose={handleClose}
     >
       <div>
-        <H3>{statsText('selectCustomStatistics')}</H3>
+        <H3 className="text-lg">{statsText('selectFromQueries')}</H3>
         {Array.isArray(queries) && (
           <QueryList
             getQuerySelectCallback={(query) => () => {
               handleAdd(
                 {
                   type: 'CustomStat',
-                  itemName: 'nla',
+                  itemName: query.name,
                   tableName: query.contextName as keyof Tables,
                   fields: query.fields.map((field) => ({
                     ...field,
@@ -67,7 +67,7 @@ export function AddStatDialog({
       <div>
         {defaultStatsAddLeft.length > 0 && (
           <div>
-            <H3>{statsText('selectDefaultStatistics')}</H3>
+            <H3 className="text-lg">{statsText('selectFromDefault')}</H3>
             {defaultStatsAddLeft.map((defaultLayoutPage, index) => (
               <div key={index}>
                 <h4>{defaultLayoutPage.label}</h4>

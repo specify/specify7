@@ -20,11 +20,12 @@ import { StatsPageButton } from './Buttons';
 import { CustomStat, DefaultStat, StatLayout } from './types';
 
 export function StatsPage(): JSX.Element {
-  const [customLayout, setLayout] = usePref(
+  const [customLayout, setPrevLayout] = usePref(
     'statistics',
     'appearance',
     'layout'
   );
+  const setLayout = (layout: StatLayout) => setPrevLayout(layout);
   const statsSpec = useStatsSpec();
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
@@ -330,7 +331,9 @@ export function StatsPage(): JSX.Element {
           defaultLayout={defaultStatsToAdd}
           statsSpec={statsSpec}
           queries={queries}
-          onAdd={(item, itemIndex): void => handleAdd(item, itemIndex)}
+          onAdd={(item, itemIndex): void =>
+            handleAdd(item, state.categoryIndex, itemIndex)
+          }
           onClose={(): void =>
             setState({
               type: 'EditingState',

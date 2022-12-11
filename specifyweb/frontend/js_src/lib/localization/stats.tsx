@@ -126,17 +126,25 @@ export const statsText = createDictionary({
     'en-us': 'Choose Statistics',
     'ru-ru': 'Выберите статистику',
   },
-  selectCustomStatistics: {
-    'en-us': 'Select Custom Statistics',
-    'ru-ru': 'Выберите пользовательскую статистику',
+  selectFromQueries: {
+    'en-us': `${'Select ' + 'From ' + ' Queries'}`,
+    'ru-ru': 'Выбрать из запросов',
   },
-  selectDefaultStatistics: {
-    'en-us': 'Select Default Statistics',
-    'ru-ru': 'Выберите статистику по умолчанию',
+  selectFromDefault: {
+    'en-us': `${'Select ' + 'From ' + ' Default'}`,
+    'ru-ru': 'Выбрать по умолчанию',
   },
   pageName: {
     'en-us': 'Page Name',
     'ru-ru': 'Название страницы',
+  },
+  collection: {
+    'en-us': 'Collection',
+    'ru-ru': 'Коллекция',
+  },
+  personal: {
+    'en-us': 'Personal',
+    'ru-ru': 'Личный',
   },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
