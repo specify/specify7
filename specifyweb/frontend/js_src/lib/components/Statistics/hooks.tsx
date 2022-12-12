@@ -59,30 +59,34 @@ export function useCustomStatQuery(queryId: number):
 /**
  * Fetch backend statistics from the API
  */
-export function useBackendApi(): BackendStatsResult | undefined {
+export function useBackendApi(
+  cachedState: boolean
+): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
     React.useCallback(
-      async () =>
-        ajax<BackendStatsResult>('/statistics/collection/global/', {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
-        }).then(({ data }) => data),
-      []
+      !cachedState
+        ? async () =>
+            ajax<BackendStatsResult>('/statistics/collection/global/', {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+              },
+            }).then(({ data }) => data)
+        : () => undefined,
+      [cachedState]
     ),
     false
   );
   return backendStatObject;
 }
 
-export function useStatsSpec(): IR<
+export function useStatsSpec(cachedState: boolean): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
   }>
 > {
-  const backEndResult = useBackendApi();
+  const backEndResult = useBackendApi(cachedState);
   return React.useMemo(
     () =>
       Object.fromEntries(
@@ -171,25 +175,28 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
 }
 
 export function useFrontEndStat(
-  query: SpecifyResource<SpQuery>
-): string | undefined {
+  query: SpecifyResource<SpQuery> | undefined,
+  statCachedValue: string | number | undefined
+): string | number | undefined {
   const [countReturn] = useAsyncState(
     React.useCallback(
-      async () =>
-        ajax<{
-          readonly count: number;
-        }>('/stored_query/ephemeral/', {
-          method: 'POST',
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            Accept: 'application/json',
-          },
-          body: keysToLowerCase({
-            ...serializeResource(query),
-            countOnly: true,
-          }),
-        }).then(({ data }) => formatNumber(data.count)),
-      [query]
+      statCachedValue === undefined && query !== undefined
+        ? async () =>
+            ajax<{
+              readonly count: number;
+            }>('/stored_query/ephemeral/', {
+              method: 'POST',
+              headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Accept: 'application/json',
+              },
+              body: keysToLowerCase({
+                ...serializeResource(query),
+                countOnly: true,
+              }),
+            }).then(({ data }) => formatNumber(data.count))
+        : (): string | number | undefined => statCachedValue,
+      [query, statCachedValue]
     ),
     false
   );
@@ -198,30 +205,32 @@ export function useFrontEndStat(
 
 /** Build Queries for the QueryBuilderAPI */
 export function useFrontEndStatsQuery(
-  tableName: keyof Tables,
-  fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >
-): SpecifyResource<SpQuery> {
+  tableName: keyof Tables | undefined,
+  fields:
+    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
+    | undefined
+): SpecifyResource<SpQuery> | undefined {
   return React.useMemo(
-    () =>
-      deserializeResource(
-        addMissingFields('SpQuery', {
-          name: 'get Stat',
-          contextName: tableName,
-          contextTableId: schema.models[tableName].tableId,
-          countOnly: false,
-          selectDistinct: false,
-          fields: fields.map(({ path, ...field }, index) =>
-            serializeResource(
-              makeQueryField(tableName, path, {
-                ...field,
-                position: index,
-              })
-            )
-          ),
-        })
-      ),
+    tableName !== undefined && fields !== undefined
+      ? () =>
+          deserializeResource(
+            addMissingFields('SpQuery', {
+              name: 'get Stat',
+              contextName: tableName,
+              contextTableId: schema.models[tableName].tableId,
+              countOnly: false,
+              selectDistinct: false,
+              fields: fields.map(({ path, ...field }, index) =>
+                serializeResource(
+                  makeQueryField(tableName, path, {
+                    ...field,
+                    position: index,
+                  })
+                )
+              ),
+            })
+          )
+      : () => undefined,
     [tableName, fields]
   );
 }

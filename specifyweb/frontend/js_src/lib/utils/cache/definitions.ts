@@ -130,7 +130,9 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
   };
   readonly statistics: {
-    readonly statsValue: RA<RA<RA<number | string>>>;
+    readonly statsValue: RA<
+      RA<RA<{ readonly itemName: string; readonly value: number | string }>>
+    >;
   };
 };
 

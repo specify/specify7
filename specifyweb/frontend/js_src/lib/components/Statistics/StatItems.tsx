@@ -4,11 +4,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
 import { commonText } from '../../localization/common';
 import React from 'react';
-import {
-  useCustomStatQuery,
-  useFrontEndStat,
-  useFrontEndStatsQuery,
-} from './hooks';
+import { useFrontEndStat, useFrontEndStatsQuery } from './hooks';
 import type { StatsSpec } from './types';
 
 export function DefaultStatItem({
@@ -17,6 +13,7 @@ export function DefaultStatItem({
   categoryName,
   itemName,
   statCachedValue,
+  statCachedLabel,
   onRemove: handleRemove,
   onClick: handleClick,
   onSpecChanged: handleSpecChanged,
@@ -27,6 +24,7 @@ export function DefaultStatItem({
   readonly categoryName: keyof typeof statsSpec;
   readonly itemName: string;
   readonly statCachedValue: number | string | undefined;
+  readonly statCachedLabel: string | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
@@ -38,19 +36,17 @@ export function DefaultStatItem({
         itemName: string
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: number | string) => void;
+  readonly onValueLoad: (statValue: number | string, itemName: string) => void;
 }): JSX.Element {
   const statSpecItemPage = statsSpec[pageName];
   const statSpecItem = statSpecItemPage[categoryName]?.items?.[itemName];
-  return React.useMemo<JSX.Element>(
+  return React.useMemo(
     () =>
-      statSpecItem === undefined ? (
-        <p> {commonText('loading')}</p>
-      ) : statSpecItem.spec.type === 'QueryBuilderStat' ? (
+      statSpecItem?.spec.type === 'QueryBuilderStat' ? (
         <QueryStat
-          fields={statSpecItem.spec.fields}
-          statLabel={statSpecItem.label}
-          tableName={statSpecItem.spec.tableName}
+          fields={statSpecItem?.spec?.fields}
+          statLabel={statSpecItem?.label ?? statCachedLabel}
+          tableName={statSpecItem?.spec?.tableName}
           statCachedValue={statCachedValue}
           onValueLoad={handleValueLoad}
           onClick={handleClick}
@@ -66,8 +62,8 @@ export function DefaultStatItem({
       ) : (
         <StatsResult
           query={undefined}
-          statLabel={statSpecItem?.label}
-          statValue={statSpecItem.spec.value}
+          statLabel={statSpecItem?.label ?? statCachedLabel}
+          statValue={statSpecItem?.spec?.value}
           statCachedValue={statCachedValue}
           onClick={handleClick}
           onRemove={handleRemove}
@@ -75,7 +71,7 @@ export function DefaultStatItem({
           onValueLoad={handleValueLoad}
         />
       ),
-    [statSpecItem]
+    [statsSpec]
   );
 }
 
@@ -89,11 +85,11 @@ export function QueryStat({
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
 }: {
-  readonly tableName: keyof Tables;
-  readonly fields: RA<
-    Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-  >;
-  readonly statLabel: string;
+  readonly tableName: keyof Tables | undefined;
+  readonly fields:
+    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
+    | undefined;
+  readonly statLabel: string | undefined;
   readonly statCachedValue: number | string | undefined;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
@@ -105,10 +101,10 @@ export function QueryStat({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: number | string) => void;
+  readonly onValueLoad: (statValue: number | string, itemName: string) => void;
 }): JSX.Element {
   const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
-  const frontEndStatValue = useFrontEndStat(frontEndQuery);
+  const frontEndStatValue = useFrontEndStat(frontEndQuery, statCachedValue);
   return (
     <StatsResult
       query={frontEndQuery}

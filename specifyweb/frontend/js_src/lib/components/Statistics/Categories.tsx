@@ -23,7 +23,9 @@ export function Categories({
 }: {
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
-  readonly pageCache: RA<RA<number | string>> | undefined;
+  readonly pageCache:
+    | RA<RA<{ readonly itemName: string; readonly value: number | string }>>
+    | undefined;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick:
     | ((
@@ -51,7 +53,8 @@ export function Categories({
   readonly onValueLoad: (
     categoryIndex: number,
     itemIndex: number,
-    value: number | string
+    value: number | string,
+    itemName: string
   ) => void;
 }): JSX.Element {
   return (
@@ -81,13 +84,26 @@ export function Categories({
               item.type === 'DefaultStat' ? (
                 <DefaultStatItem
                   categoryName={item.categoryName}
-                  itemName={item.itemName}
+                  itemName={
+                    pageCache?.[categoryIndex]?.[itemIndex]?.itemName ??
+                    item.itemName
+                  }
                   pageName={item.pageName}
                   key={itemIndex}
                   statsSpec={statsSpec}
-                  statCachedValue={pageCache?.[categoryIndex]?.[itemIndex]}
-                  onValueLoad={(statValue) =>
-                    handleValueLoad(categoryIndex, itemIndex, statValue)
+                  statCachedValue={
+                    pageCache?.[categoryIndex]?.[itemIndex]?.value
+                  }
+                  statCachedLabel={
+                    pageCache?.[categoryIndex]?.[itemIndex]?.itemName
+                  }
+                  onValueLoad={(statValue, itemName) =>
+                    handleValueLoad(
+                      categoryIndex,
+                      itemIndex,
+                      statValue,
+                      itemName
+                    )
                   }
                   onSpecChanged={
                     handleSpecChanged !== undefined && handleClick !== undefined
@@ -143,9 +159,16 @@ export function Categories({
                       : undefined
                   }
                   onValueLoad={(statValue) =>
-                    handleValueLoad(categoryIndex, itemIndex, statValue)
+                    handleValueLoad(
+                      categoryIndex,
+                      itemIndex,
+                      statValue,
+                      item.itemName
+                    )
                   }
-                  statCachedValue={pageCache?.[categoryIndex]?.[itemIndex]}
+                  statCachedValue={
+                    pageCache?.[categoryIndex]?.[itemIndex].value
+                  }
                 />
               )
             )}

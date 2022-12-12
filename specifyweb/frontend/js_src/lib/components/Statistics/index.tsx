@@ -31,9 +31,6 @@ export function StatsPage(): JSX.Element {
     'statsValue'
   );
   const setLayout = (layout: StatLayout) => setPrevLayout(layout);
-  const statsSpec = useStatsSpec();
-  const defaultLayout = useDefaultLayout(statsSpec);
-  const layout = customLayout ?? defaultLayout;
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -50,8 +47,11 @@ export function StatsPage(): JSX.Element {
           readonly pageIndex: number | undefined;
         }
       >
-  >({ type: 'DefaultState' });
-
+    | State<'CacheState'>
+  >(layoutCache.length > 0 ? { type: 'CacheState' } : { type: 'DefaultState' });
+  const statsSpec = useStatsSpec(false);
+  const defaultLayout = useDefaultLayout(statsSpec);
+  const layout = customLayout ?? defaultLayout;
   const isAddingItem = state.type === 'AddingState';
   const isEditing =
     state.type === 'EditingState' ||
@@ -129,16 +129,29 @@ export function StatsPage(): JSX.Element {
             <Submit.Green>{commonText('save')}</Submit.Green>
           </>
         ) : (
-          <Button.Green
-            onClick={(): void => {
-              setState({
-                type: 'EditingState',
-              });
-              previousLayout.current = layout;
-            }}
-          >
-            {commonText('edit')}
-          </Button.Green>
+          <>
+            <Button.Green
+              onClick={(): void => {
+                setState({
+                  type: 'EditingState',
+                });
+                previousLayout.current = layout;
+              }}
+            >
+              {commonText('edit')}
+            </Button.Green>
+            {state.type === 'CacheState' && (
+              <Button.Green
+                onClick={(): void => {
+                  setState({
+                    type: 'DefaultState',
+                  });
+                }}
+              >
+                {commonText('update')}
+              </Button.Green>
+            )}
+          </>
         )}
       </div>
       <div className="flex flex-col overflow-hidden">
@@ -326,12 +339,12 @@ export function StatsPage(): JSX.Element {
                   )
                 )
               }
-              onValueLoad={(categoryIndex, itemIndex, value) => {
+              onValueLoad={(categoryIndex, itemIndex, value, itemName) => {
                 setLayoutCache((oldValue) => {
                   const tempPageArray = [...(oldValue ?? [])];
                   const tempPage = [...(tempPageArray[activePageIndex] ?? [])];
                   const tempCategory = [...(tempPage[categoryIndex] ?? [])];
-                  tempCategory[itemIndex] = value;
+                  tempCategory[itemIndex] = { itemName, value };
                   tempPage[categoryIndex] = [...tempCategory];
                   tempPageArray[activePageIndex] = [...tempPage];
                   return tempPageArray;

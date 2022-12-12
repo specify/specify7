@@ -20,7 +20,7 @@ export function StatsResult({
 }: {
   readonly statValue: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
-  readonly statLabel: string;
+  readonly statLabel: string | undefined;
   readonly statCachedValue: number | string | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onRemove: (() => void) | undefined;
@@ -32,50 +32,53 @@ export function StatsResult({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: string | number) => void;
+  readonly onValueLoad: (statValue: string | number, itemName: string) => void;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   React.useEffect(() => {
-    if (statValue !== undefined) {
-      handleValueLoad(statValue);
+    if (statValue !== undefined && statLabel !== undefined) {
+      handleValueLoad(statValue, statLabel);
     }
-  }, [statValue]);
-  return (
-    <>
-      {statLabel === undefined ? (
-        <div>{commonText('loading')}</div>
-      ) : (
-        <p className="flex gap-2">
-          {typeof handleRemove === 'function' && (
-            <Button.Icon
-              icon="trash"
-              title={commonText('remove')}
-              onClick={handleRemove}
-            />
-          )}
-          <Button.LikeLink
-            className="flex-1"
-            onClick={
-              handleClick ?? (query === undefined ? undefined : handleOpen)
-            }
-          >
-            <span>{statLabel}</span>
-            <span className="-ml-2 flex-1" />
-            <span>
-              {statValue ?? statCachedValue + ' CACHE' ?? commonText('loading')}
-            </span>
-          </Button.LikeLink>
-        </p>
-      )}
+  }, [statLabel, statValue]);
+  return React.useMemo(
+    () => (
+      <>
+        {statLabel === undefined ? (
+          <div>{commonText('loading')}</div>
+        ) : (
+          <p className="flex gap-2">
+            {typeof handleRemove === 'function' && (
+              <Button.Icon
+                icon="trash"
+                title={commonText('remove')}
+                onClick={handleRemove}
+              />
+            )}
+            <Button.LikeLink
+              className="flex-1"
+              onClick={
+                handleClick ?? (query === undefined ? undefined : handleOpen)
+              }
+            >
+              <span>{statLabel}</span>
+              <span className="-ml-2 flex-1" />
+              <span>
+                {statValue ?? statCachedValue ?? commonText('loading')}
+              </span>
+            </Button.LikeLink>
+          </p>
+        )}
 
-      {isOpen && query !== undefined ? (
-        <FrontEndStatsResultDialog
-          query={query}
-          onClose={handleClose}
-          statLabel={statLabel}
-          onSpecChanged={handleSpecChanged}
-        />
-      ) : undefined}
-    </>
+        {isOpen && query !== undefined && statLabel !== undefined ? (
+          <FrontEndStatsResultDialog
+            query={query}
+            onClose={handleClose}
+            statLabel={statLabel}
+            onSpecChanged={handleSpecChanged}
+          />
+        ) : undefined}
+      </>
+    ),
+    [statLabel, statValue, statCachedValue]
   );
 }
