@@ -90,8 +90,8 @@ function Coordinate({
     );
 
     isChanging.current = true;
-    resource.set(coordinateTextField, trimmedValue || null);
     resource.set(coordinateField, parsed?.asFloat() ?? null);
+    resource.set(coordinateTextField, trimmedValue || null);
     if (hasValue)
       resource.set(
         'srcLatLongUnit',
@@ -111,7 +111,10 @@ function Coordinate({
     isChanging.current = false;
   }, [
     value,
-    resource,
+    /*
+     * Don't update this when resource changes, as that case is handled by the
+     * useEffect hooks above
+     */
     coordinateField,
     coordinateTextField,
     fieldType,
