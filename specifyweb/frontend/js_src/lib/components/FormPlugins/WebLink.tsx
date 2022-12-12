@@ -127,33 +127,31 @@ export function WebLink({
         formType === 'formTable' ? undefined : 'flex gap-2 print:hidden'
       }
     >
+      {formType === 'form' &&
+      typeof fieldName === 'string' &&
+      fieldName !== 'this' ? (
+        <UiField
+          fieldName={fieldName}
+          id={id}
+          mode={mode}
+          resource={resource}
+        />
+      ) : undefined}
       {typeof definition === 'object' ? (
-        <>
-          {formType === 'form' &&
-          typeof fieldName === 'string' &&
-          fieldName !== 'this' ? (
-            <UiField
-              fieldName={fieldName}
-              id={id}
-              mode={mode}
-              resource={resource}
-            />
-          ) : undefined}
-          {typeof url === 'string' && url.length > 0 ? (
-            <Link.Gray
-              href={url}
-              rel={isExternal ? 'noopener' : undefined}
-              target={isExternal ? '_blank' : undefined}
-              title={definition.title}
-            >
-              {image}
-            </Link.Gray>
-          ) : (
-            <Button.Gray title={definition.title} onClick={undefined}>
-              {image}
-            </Button.Gray>
-          )}
-        </>
+        typeof url === 'string' && url.length > 0 ? (
+          <Link.Gray
+            href={url}
+            rel={isExternal ? 'noopener' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            title={definition.title}
+          >
+            {image}
+          </Link.Gray>
+        ) : (
+          <Button.Gray title={definition.title} onClick={undefined}>
+            {image}
+          </Button.Gray>
+        )
       ) : undefined}
     </div>
   );
