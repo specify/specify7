@@ -110,7 +110,12 @@ export function StatsPage(): JSX.Element {
         <span className="-ml-2 flex-1" />
         {isEditing ? (
           <>
-            <Button.Red onClick={(): void => setLayout(defaultLayout)}>
+            <Button.Red
+              onClick={(): void => {
+                setLayout(defaultLayout);
+                setLayoutCache([]);
+              }}
+            >
               {commonText('reset')}
             </Button.Red>
             <Button.Red
@@ -122,6 +127,7 @@ export function StatsPage(): JSX.Element {
                     ? previousLayout.current.length - 1
                     : activePageIndex
                 );
+                setLayoutCache([]);
               }}
             >
               {commonText('cancel')}
@@ -208,6 +214,11 @@ export function StatsPage(): JSX.Element {
                           type: 'EditingState',
                         });
                         setActivePageIndex(layout.length - 2);
+                        setLayoutCache((oldValue) =>
+                          oldValue !== undefined
+                            ? removeItem(oldValue, state.pageIndex!)
+                            : undefined
+                        );
                       }
                     : undefined
                   : undefined
@@ -278,7 +289,23 @@ export function StatsPage(): JSX.Element {
               onClick={handleAdd}
               onRemove={
                 isEditing
-                  ? (categoryIndex, itemIndex): void =>
+                  ? (categoryIndex, itemIndex): void => {
+                      setLayoutCache((oldValue) =>
+                        oldValue !== undefined && itemIndex !== undefined
+                          ? replaceItem(
+                              oldValue,
+                              activePageIndex,
+                              replaceItem(
+                                oldValue[activePageIndex],
+                                categoryIndex,
+                                removeItem(
+                                  oldValue[activePageIndex][categoryIndex],
+                                  itemIndex
+                                )
+                              )
+                            )
+                          : undefined
+                      );
                       handleCategoryChange(
                         typeof itemIndex === 'number'
                           ? replaceItem(
@@ -300,7 +327,8 @@ export function StatsPage(): JSX.Element {
                               layout[activePageIndex].categories,
                               categoryIndex
                             )
-                      )
+                      );
+                    }
                   : undefined
               }
               onRename={

@@ -77,6 +77,7 @@ export function AddStatDialog({
                     statsSpec={statsSpec}
                     onClick={(item: DefaultStat | CustomStat): void => {
                       handleAdd(item, -1);
+                      handleClose();
                     }}
                     pageCache={undefined}
                     onRemove={undefined}

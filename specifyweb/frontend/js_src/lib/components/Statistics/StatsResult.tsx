@@ -46,45 +46,40 @@ export function StatsResult({
       handleValueLoad(statValue, statLabel);
     }
   }, [statLabel, statValue]);
-  return React.useMemo(
-    () => (
-      <>
-        {statLabel === undefined ? (
-          <div>{commonText('loading')}</div>
-        ) : (
-          <p className="flex gap-2">
-            {typeof handleRemove === 'function' && (
-              <Button.Icon
-                icon="trash"
-                title={commonText('remove')}
-                onClick={handleRemove}
-              />
-            )}
-            <Button.LikeLink
-              className="flex-1"
-              onClick={
-                handleClick ?? (query === undefined ? undefined : handleOpen)
-              }
-            >
-              <span>{statLabel}</span>
-              <span className="-ml-2 flex-1" />
-              <span>
-                {statValue ?? statCachedValue ?? commonText('loading')}
-              </span>
-            </Button.LikeLink>
-          </p>
-        )}
+  return (
+    <>
+      {statLabel === undefined ? (
+        <div>{commonText('loading')}</div>
+      ) : (
+        <p className="flex gap-2">
+          {typeof handleRemove === 'function' && (
+            <Button.Icon
+              icon="trash"
+              title={commonText('remove')}
+              onClick={handleRemove}
+            />
+          )}
+          <Button.LikeLink
+            className="flex-1"
+            onClick={
+              handleClick ?? (query === undefined ? undefined : handleOpen)
+            }
+          >
+            <span>{statLabel}</span>
+            <span className="-ml-2 flex-1" />
+            <span>{statValue ?? statCachedValue ?? commonText('loading')}</span>
+          </Button.LikeLink>
+        </p>
+      )}
 
-        {isOpen && query !== undefined && statLabel !== undefined ? (
-          <FrontEndStatsResultDialog
-            query={query}
-            onClose={handleClose}
-            statLabel={statLabel}
-            onSpecChanged={handleSpecChanged}
-          />
-        ) : undefined}
-      </>
-    ),
-    [statLabel, statValue, statCachedValue]
+      {isOpen && query !== undefined && statLabel !== undefined ? (
+        <FrontEndStatsResultDialog
+          query={query}
+          onClose={handleClose}
+          statLabel={statLabel}
+          onSpecChanged={handleSpecChanged}
+        />
+      ) : undefined}
+    </>
   );
 }

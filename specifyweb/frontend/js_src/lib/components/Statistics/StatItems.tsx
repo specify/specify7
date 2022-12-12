@@ -41,38 +41,34 @@ export function DefaultStatItem({
 }): JSX.Element {
   const statSpecItemPage = statsSpec[pageName];
   const statSpecItem = statSpecItemPage[categoryName]?.items?.[itemName];
-  return React.useMemo(
-    () =>
-      statSpecItem?.spec.type === 'QueryBuilderStat' ? (
-        <QueryStat
-          fields={statSpecItem?.spec?.fields}
-          statLabel={statSpecItem?.label ?? statCachedLabel}
-          tableName={statSpecItem?.spec?.tableName}
-          statCachedValue={statCachedValue}
-          onValueLoad={handleValueLoad}
-          onClick={handleClick}
-          onRemove={handleRemove}
-          onSpecChanged={
-            handleSpecChanged !== undefined
-              ? (tableName, fields) => {
-                  handleSpecChanged(tableName, fields, statSpecItem.label);
-                }
-              : undefined
-          }
-        />
-      ) : (
-        <StatsResult
-          query={undefined}
-          statLabel={statSpecItem?.label ?? statCachedLabel}
-          statValue={statSpecItem?.spec?.value}
-          statCachedValue={statCachedValue}
-          onClick={handleClick}
-          onRemove={handleRemove}
-          onSpecChanged={undefined}
-          onValueLoad={handleValueLoad}
-        />
-      ),
-    [statsSpec]
+  return statSpecItem?.spec.type === 'QueryBuilderStat' ? (
+    <QueryStat
+      fields={statSpecItem?.spec?.fields}
+      statLabel={statSpecItem?.label ?? statCachedLabel}
+      tableName={statSpecItem?.spec?.tableName}
+      statCachedValue={statCachedValue}
+      onValueLoad={handleValueLoad}
+      onClick={handleClick}
+      onRemove={handleRemove}
+      onSpecChanged={
+        handleSpecChanged !== undefined
+          ? (tableName, fields) => {
+              handleSpecChanged(tableName, fields, statSpecItem.label);
+            }
+          : undefined
+      }
+    />
+  ) : (
+    <StatsResult
+      query={undefined}
+      statLabel={statSpecItem?.label ?? statCachedLabel}
+      statValue={statSpecItem?.spec?.value}
+      statCachedValue={statCachedValue}
+      onClick={handleClick}
+      onRemove={handleRemove}
+      onSpecChanged={undefined}
+      onValueLoad={handleValueLoad}
+    />
   );
 }
 
