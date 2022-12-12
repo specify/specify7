@@ -78,6 +78,7 @@ export function AddStatDialog({
                     onClick={(item: DefaultStat | CustomStat): void => {
                       handleAdd(item, -1);
                     }}
+                    pageCache={undefined}
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}

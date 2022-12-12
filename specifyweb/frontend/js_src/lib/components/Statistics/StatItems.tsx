@@ -102,7 +102,9 @@ export function QueryStat({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: number | string, itemName: string) => void;
+  readonly onValueLoad:
+    | ((statValue: number | string, itemName: string) => void)
+    | undefined;
 }): JSX.Element {
   const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
   const frontEndStatValue = useFrontEndStat(frontEndQuery, statCachedValue);

@@ -163,12 +163,14 @@ export function Categories({
                       : undefined
                   }
                   onValueLoad={(statValue) =>
-                    handleValueLoad(
-                      categoryIndex,
-                      itemIndex,
-                      statValue,
-                      item.itemName
-                    )
+                    typeof handleValueLoad === 'function'
+                      ? handleValueLoad(
+                          categoryIndex,
+                          itemIndex,
+                          statValue,
+                          item.itemName
+                        )
+                      : undefined
                   }
                   statCachedValue={
                     pageCache?.[categoryIndex]?.[itemIndex].value
