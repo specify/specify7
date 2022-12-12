@@ -73,7 +73,7 @@ export function Wrapper({
           ...resources,
           [mode]: resources[mode].filter((record) => record !== resource),
         });
-        navigate('/specify/resources/');
+        navigate('/specify/resources/', { replace: true });
       }}
       onSaved={(appResource, directory): void => {
         setResources({

@@ -99,7 +99,10 @@ function DisplayRecordSet({
                 records[0]?.recordId ?? 'new'
               ),
               { recordSetId: recordSet.id.toString() }
-            )
+            ),
+            {
+              replace: true,
+            }
           )
         ),
       [recordSet, resourceIndex, recordToOpen]
@@ -123,6 +126,7 @@ export function ViewResource(): JSX.Element {
   );
 }
 
+// FEATURE: consider displaying the resource without changing the URL
 export function ViewResourceByGuid({
   model,
   guid,

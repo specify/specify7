@@ -78,7 +78,7 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            navigate(`/specify/query/${queryId}/`);
+            navigate(`/specify/query/${queryId}/`, { replace: true });
           }}
         />
       )}

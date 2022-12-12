@@ -55,7 +55,7 @@ export function SecurityLibraryRole(): JSX.Element {
                     removeKey(libraryRoles, role.id!.toString())
                   )
                 )
-                .then((): void => navigate(closeUrl))
+                .then((): void => navigate(closeUrl, { replace: true }))
             )
           : undefined
       }

@@ -235,7 +235,7 @@ function ChangeOwner({
     <Dialog
       buttons={commonText('close')}
       header={wbText('dataSetOwnerChanged')}
-      onClose={(): void => navigate('/specify/')}
+      onClose={(): void => navigate('/specify/', { replace: true })}
     >
       <p>{wbText('dataSetOwnerChanged')}</p>
     </Dialog>

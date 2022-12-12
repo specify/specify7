@@ -152,7 +152,9 @@ export function SecurityCollectionRole(): JSX.Element {
                 { expectedResponseCodes: [Http.NO_CONTENT] }
               )
                 .then((): void =>
-                  navigate(`/specify/security/collection/${collection.id}/`)
+                  navigate(`/specify/security/collection/${collection.id}/`, {
+                    replace: true,
+                  })
                 )
                 .then((): void =>
                   setRoles(removeKey(roles, role.id!.toString()))

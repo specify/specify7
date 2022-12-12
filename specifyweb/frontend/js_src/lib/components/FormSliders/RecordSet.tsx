@@ -65,7 +65,10 @@ export function RecordSetWrapper<SCHEMA extends AnySchema>({
         const recordSetItemId = records[0]?.id;
         if (recordSetItemId === undefined) {
           // Record is not part of a record set
-          navigate(getResourceViewUrl(resource.specifyModel.name, resource.id));
+          navigate(
+            getResourceViewUrl(resource.specifyModel.name, resource.id),
+            { replace: true }
+          );
           return;
         }
         const { totalCount } = await fetchCollection(

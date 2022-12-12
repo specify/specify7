@@ -106,7 +106,7 @@ export function SecurityUser(): JSX.Element {
       }}
       onDeleted={(): void => {
         setUsers(removeKey(users, user.id.toString()));
-        navigate('/specify/security/');
+        navigate('/specify/security/', { replace: true });
       }}
       onSave={(changedUser): void => {
         setUsers({
@@ -119,6 +119,7 @@ export function SecurityUser(): JSX.Element {
             initialCollectionId: state?.initialCollectionId,
             user: changedUser,
           },
+          replace: true,
         });
       }}
     />

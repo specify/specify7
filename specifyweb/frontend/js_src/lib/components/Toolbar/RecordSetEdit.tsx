@@ -7,7 +7,6 @@ import { formsText } from '../../localization/forms';
 import { hasToolPermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
-import { getResourceViewUrl } from '../DataModel/resource';
 import { getModelById } from '../DataModel/schema';
 import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
@@ -66,15 +65,7 @@ export function EditRecordSet({
         handleDeleted?.();
         handleClose();
       }}
-      onSaved={(): void =>
-        navigate(
-          getResourceViewUrl(
-            getModelById(recordSet.get('dbTableId')).name,
-            undefined,
-            recordSet.id
-          )
-        )
-      }
+      onSaved={(): void => navigate(`/specify/record-set/${recordSet.id}/`)}
     />
   );
 }
