@@ -41,6 +41,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   readonly onChange: (row: Row | undefined) => void;
   readonly onRefresh: () => void;
 }): JSX.Element {
+  const isRoot = ranks[0] === focusedRow?.rankId;
+
   const [currentAction, setCurrentAction] = React.useState<Action | undefined>(
     undefined
   );
@@ -83,6 +85,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       <li className="contents">
         <EditRecordDialog<SCHEMA>
           addNew={false}
+          isRoot={isRoot}
           disabled={focusedRow === undefined}
           label={
             hasTablePermission(tableName, 'update')
@@ -114,6 +117,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
+            isRoot={false}
             label={commonText('addChild')}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
@@ -124,7 +128,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
           <Button.Small
-            disabled={disableButtons}
+            disabled={disableButtons || isRoot}
             onClick={(): void => setAction('move')}
           >
             {commonText('move')}
@@ -134,7 +138,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
           <Button.Small
-            disabled={disableButtons}
+            disabled={disableButtons || isRoot}
             onClick={(): void => setAction('merge')}
           >
             {treeText('merge')}
@@ -147,7 +151,11 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       ) && (
         <li className="contents">
           <Button.Small
-            disabled={disableButtons || (!isSynonym && focusedRow.children > 0)}
+            disabled={
+              disableButtons ||
+              isRoot ||
+              (!isSynonym && focusedRow.children > 0)
+            }
             onClick={(): void =>
               setAction(isSynonym ? 'desynonymize' : 'synonymize')
             }
@@ -179,6 +187,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   addNew,
   tableName,
   label,
+  isRoot,
   onRefresh: handleRefresh,
 }: {
   readonly nodeId: number | undefined;
@@ -186,6 +195,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly addNew: boolean;
   readonly tableName: SCHEMA['tableName'];
   readonly label: string;
+  readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
@@ -222,7 +232,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
           isSubForm={false}
           mode="edit"
           resource={resource}
-          onAdd={setResource}
+          onAdd={isRoot ? undefined : setResource}
           onClose={handleClose}
           onDeleted={handleRefresh}
           onSaved={handleRefresh}
