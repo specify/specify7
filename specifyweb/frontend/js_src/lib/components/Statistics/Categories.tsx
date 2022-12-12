@@ -50,12 +50,14 @@ export function Categories({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: (
-    categoryIndex: number,
-    itemIndex: number,
-    value: number | string,
-    itemName: string
-  ) => void;
+  readonly onValueLoad:
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        value: number | string,
+        itemName: string
+      ) => void)
+    | undefined;
 }): JSX.Element {
   return (
     <>
@@ -98,12 +100,14 @@ export function Categories({
                     pageCache?.[categoryIndex]?.[itemIndex]?.itemName
                   }
                   onValueLoad={(statValue, itemName) =>
-                    handleValueLoad(
-                      categoryIndex,
-                      itemIndex,
-                      statValue,
-                      itemName
-                    )
+                    typeof handleValueLoad === 'function'
+                      ? handleValueLoad(
+                          categoryIndex,
+                          itemIndex,
+                          statValue,
+                          itemName
+                        )
+                      : undefined
                   }
                   onSpecChanged={
                     handleSpecChanged !== undefined && handleClick !== undefined

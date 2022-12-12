@@ -2,7 +2,6 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
-import { commonText } from '../../localization/common';
 import React from 'react';
 import { useFrontEndStat, useFrontEndStatsQuery } from './hooks';
 import type { StatsSpec } from './types';
@@ -36,7 +35,9 @@ export function DefaultStatItem({
         itemName: string
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: number | string, itemName: string) => void;
+  readonly onValueLoad:
+    | ((statValue: number | string, itemName: string) => void)
+    | undefined;
 }): JSX.Element {
   const statSpecItemPage = statsSpec[pageName];
   const statSpecItem = statSpecItemPage[categoryName]?.items?.[itemName];

@@ -75,13 +75,14 @@ export function AddStatDialog({
                   <Categories
                     pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
-                    onClick={(item): void => {
+                    onClick={(item: DefaultStat | CustomStat): void => {
                       handleAdd(item, -1);
                     }}
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}
                     onSpecChanged={undefined}
+                    onValueLoad={undefined}
                   />
                 </div>
               </div>

@@ -32,11 +32,17 @@ export function StatsResult({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: (statValue: string | number, itemName: string) => void;
+  readonly onValueLoad:
+    | ((statValue: string | number, itemName: string) => void)
+    | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   React.useEffect(() => {
-    if (statValue !== undefined && statLabel !== undefined) {
+    if (
+      statValue !== undefined &&
+      statLabel !== undefined &&
+      handleValueLoad !== undefined
+    ) {
       handleValueLoad(statValue, statLabel);
     }
   }, [statLabel, statValue]);
