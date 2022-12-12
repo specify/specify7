@@ -45,7 +45,7 @@ function Coordinate({
             (resource.get(coordinateTextField) ?? '') === '' &&
             (resource.get(coordinateField) ?? '') !== ''
           )
-            resource.set(coordinateTextField, resource.get(coordinateField));
+            updateValue(resource.get(coordinateField));
         },
         true
       ),
@@ -63,7 +63,8 @@ function Coordinate({
           const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
           updateValue(parsed?.asFloat() ?? null);
         },
-        true
+        // Only run this when coordinate field is changed externally
+        false
       ),
     [resource, coordinateField, updateValue, step, fieldType]
   );
