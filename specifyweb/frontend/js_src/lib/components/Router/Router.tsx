@@ -20,16 +20,19 @@ import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 import { f } from '../../utils/functools';
 
-let unsafeNavigate: SafeNavigateFunction | undefined;
+let unsafeNavigateFunction: SafeNavigateFunction | undefined;
+export const unsafeNavigate = (
+  ...parameters: Parameters<SafeNavigateFunction>
+): void => unsafeNavigateFunction?.(...parameters);
 let unsafeLocation: SafeLocation | undefined;
 
 // Using this is not recommended. Render <NotFoundView /> instead.
 export function unsafeTriggerNotFound(): boolean {
-  unsafeNavigate?.(unsafeLocation ?? '/specify/', {
+  unsafeNavigateFunction?.(unsafeLocation ?? '/specify/', {
     replace: true,
     state: { type: 'NotFoundPage' },
   });
-  return typeof unsafeNavigate === 'function';
+  return typeof unsafeNavigateFunction === 'function';
 }
 
 const transformedRoutes = toReactRoutes(routes);
@@ -56,7 +59,7 @@ export function Router(): JSX.Element {
    * REFACTOR: replace <Button> with <Link> where possible
    */
   const navigate = useNavigate();
-  unsafeNavigate = navigate;
+  unsafeNavigateFunction = navigate;
   React.useEffect(() => setDevelopmentGlobal('_goTo', navigate), [navigate]);
 
   useLinkIntercept(background);
