@@ -275,7 +275,20 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       )
         resource.set(precisionField, precisions[precision] as never);
 
-      if (!isReadOnly) resource.set(dateField, value as never);
+      if (!isReadOnly) {
+        const oldRawDate = resource.get(dateField);
+        const oldDate =
+          typeof oldRawDate === 'string' ? new Date(oldRawDate) : undefined;
+        const newDate = moment.toDate();
+        /*
+         * Back-end may return a date in a date-time format, which when converted
+         * to date format causes front-end to trigger a needless unload protect
+         * See https://github.com/specify/specify7/issues/2578. This fixes that
+         */
+        const isChanged =
+          f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
+        resource.set(dateField, value as never, { silent: !isChanged });
+      }
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));

@@ -9,10 +9,11 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 dayJs.extend(advancedFormat);
 
-export function getDateInputValue(date: Date): string {
+export function getDateInputValue(date: Date): string | undefined {
   const local = new Date(date);
   local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-  return local.toJSON().slice(0, 10);
+  // "toJSON" returns undefined if received invalid date
+  return local.toJSON()?.slice(0, 10);
 }
 
 export { default as dayjs } from 'dayjs';

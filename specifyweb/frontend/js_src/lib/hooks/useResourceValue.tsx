@@ -265,7 +265,7 @@ export function useResourceValue<
               parseRelativeDate(
                 parser.value?.toString().trim().toLowerCase() ?? ''
               ) ?? new Date()
-            )
+            ) ?? new Date()
           : parser.value) as never,
         { silent: true }
       );
