@@ -49,7 +49,7 @@ export function StatsPage(): JSX.Element {
       >
     | State<'CacheState'>
   >(layoutCache.length > 0 ? { type: 'CacheState' } : { type: 'DefaultState' });
-  const statsSpec = useStatsSpec(false);
+  const statsSpec = useStatsSpec(state.type === 'CacheState');
   const defaultLayout = useDefaultLayout(statsSpec);
   const layout = customLayout ?? defaultLayout;
   const isAddingItem = state.type === 'AddingState';
@@ -146,6 +146,7 @@ export function StatsPage(): JSX.Element {
                   setState({
                     type: 'DefaultState',
                   });
+                  setLayoutCache([]);
                 }}
               >
                 {commonText('update')}
