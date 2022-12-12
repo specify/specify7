@@ -63,7 +63,7 @@ function Coordinate({
           const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
           updateValue(parsed?.asFloat() ?? null);
         },
-        false
+        true
       ),
     [resource, coordinateField, updateValue, step, fieldType]
   );
