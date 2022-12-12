@@ -356,7 +356,9 @@ export function QueryResults({
           </div>
         )}
         <div role="rowgroup">
-          {showResults && Array.isArray(loadedResults) ? (
+          {showResults &&
+          Array.isArray(loadedResults) &&
+          Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
