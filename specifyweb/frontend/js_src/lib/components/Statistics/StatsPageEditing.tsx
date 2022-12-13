@@ -32,12 +32,12 @@ export function StatsPageEditing({
             </Button.Red>
           )}
           <span className="-ml-2 flex-1" />
+          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
           <Submit.Green form={id('form')}>
             {typeof handleRename === 'function'
               ? commonText('save')
               : commonText('add')}
           </Submit.Green>
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
         </>
       }
       header={statsText('pageName')}

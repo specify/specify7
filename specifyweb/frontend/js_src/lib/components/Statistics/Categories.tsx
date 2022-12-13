@@ -63,7 +63,7 @@ export function Categories({
     <>
       {pageLayout.categories.map(({ label, items }, categoryIndex) => (
         <div
-          className="flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] border-black bg-white p-4"
+          className="flex h-auto max-h-80 flex-col content-center gap-2 rounded shadow-gray-300 shadow-md transition hover:shadow-lg hover:shadow-gray-400 bg-[color:var(--form-foreground)] border-[1px] p-4"
           key={categoryIndex}
         >
           {handleRename === undefined ? (
@@ -81,7 +81,7 @@ export function Categories({
               }}
             />
           )}
-          <div className="flex-1 overflow-auto pr-4">
+          <div className="flex-1 overflow-auto">
             {items?.map((item, itemIndex) =>
               item.type === 'DefaultStat' ? (
                 <DefaultStatItem
@@ -182,7 +182,7 @@ export function Categories({
           {handleAdd !== undefined && handleRemove !== undefined ? (
             <div className="flex gap-2">
               <Button.Small
-                variant={className.greenButton}
+                variant={className.blueButton}
                 onClick={(): void => handleAdd(categoryIndex)}
               >
                 {commonText('add')}
@@ -199,12 +199,12 @@ export function Categories({
         </div>
       ))}
       {handleAdd !== undefined && (
-        <Button.Green
-          className="!p-4"
+        <Button.Gray
+          className="!p-4 font-bold shadow-gray-300 shadow-md"
           onClick={(): void => handleAdd(undefined)}
         >
           {commonText('add')}
-        </Button.Green>
+        </Button.Gray>
       )}
     </>
   );

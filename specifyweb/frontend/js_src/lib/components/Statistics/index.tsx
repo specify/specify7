@@ -132,11 +132,11 @@ export function StatsPage(): JSX.Element {
             >
               {commonText('cancel')}
             </Button.Red>
-            <Submit.Green>{commonText('save')}</Submit.Green>
+            <Submit.Blue>{commonText('save')}</Submit.Blue>
           </>
         ) : (
           <>
-            <Button.Green
+            <Button.Blue
               onClick={(): void => {
                 setState({
                   type: 'EditingState',
@@ -145,9 +145,9 @@ export function StatsPage(): JSX.Element {
               }}
             >
               {commonText('edit')}
-            </Button.Green>
+            </Button.Blue>
             {state.type === 'CacheState' && (
-              <Button.Green
+              <Button.Blue
                 onClick={(): void => {
                   setState({
                     type: 'DefaultState',
@@ -156,16 +156,17 @@ export function StatsPage(): JSX.Element {
                 }}
               >
                 {commonText('update')}
-              </Button.Green>
+              </Button.Blue>
             )}
           </>
         )}
       </div>
       <div className="flex flex-col overflow-hidden">
+      <div className="flex-1 flex-col overflow-hidden">
         <div className="flex flex-col gap-2 overflow-y-hidden  md:flex-row">
           <aside
             className={`
-                top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
+               top-0 flex-1 min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
                 md:sticky
             `}
           >
@@ -263,7 +264,7 @@ export function StatsPage(): JSX.Element {
               }
             />
           )}
-          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto">
+          <div className="px-4 pb-6 grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto">
             <Categories
               onAdd={
                 isEditing
