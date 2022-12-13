@@ -222,13 +222,11 @@ function eventHandlerForToOne(related, field) {
                 else if(
                   /*
                    * Don't trigger unload protect if value changed from
-                   * string to numberr (back-end sends certain numeric fields
+                   * string to number (back-end sends certain numeric fields
                    * as strings. Front-end converts those to numbers)
                    * REFACTOR: this logic should be moved to this.parse()
                    */
-                  typeof oldValue === 'string' &&
-                  typeof newValue === 'number' &&
-                  Number.parseInt(oldValue) === newValue
+                  Number.parseInt(oldValue) === Number.parseInt(newValue)
                 )
                     options ??= {silent: true};
                 else if(

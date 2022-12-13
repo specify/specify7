@@ -1,4 +1,9 @@
 import { parse } from 'csv-parse/browser/esm';
+/**
+ * REFACTOR: add this ESLint rule:
+ *   https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-webpack-loader-syntax.md
+ *   and update the usages in code to fix that rule
+ */
 import ImportXLSWorker from 'worker-loader!./xls.worker';
 
 import { wbText } from '../../localization/workbench';
