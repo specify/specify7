@@ -108,7 +108,7 @@ export function AppResourceEditor({
               data,
             });
             const resource = toTable(appResource, 'SpAppResource');
-            if (typeof resource === 'object') {
+            if (typeof resource === 'object' && mimeType !== '') {
               const currentType = resource.get('mimeType') ?? '';
               // Don't widen the type unnecessarily.
               if (isAppResourceSubType(mimeType, currentType)) return;
