@@ -112,6 +112,7 @@ export const fetchCollectionsForResource = async (
     (resource as SpecifyResource<CollectionObject>)
       ?.rgetPromise(domainField.name as 'collection')
       .then(async (resource) => {
+        if (resource === undefined) return undefined;
         if (resource.specifyModel.name === 'Collection') return [resource.id];
         const fieldsBetween = takeBetween(
           schema.orgHierarchy,
