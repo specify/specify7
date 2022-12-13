@@ -8,6 +8,8 @@ import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const queryText = createDictionary({
   newQueryName: {
     'en-us': 'New Query',
@@ -29,7 +31,7 @@ export const queryText = createDictionary({
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
   },
-  saveQueryDialogHeader: {
+  saveQuery: {
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
   },
@@ -170,14 +172,6 @@ export const queryText = createDictionary({
     'en-us': 'Negate',
     'ru-ru': 'Отрицать',
   },
-  moveUp: {
-    'en-us': 'Move up',
-    'ru-ru': 'переместить вверх',
-  },
-  moveDown: {
-    'en-us': 'Move down',
-    'ru-ru': 'Переместить вниз',
-  },
   showButtonDescription: {
     'en-us': 'Show in results',
     'ru-ru': 'Показывать в результатах',
@@ -277,10 +271,6 @@ export const queryText = createDictionary({
     'en-us': 'Query Builder',
     'ru-ru': 'Конструктор запросов',
   },
-  returnLoan: {
-    'en-us': 'Return Loan',
-    'ru-ru': 'Return Loan',
-  },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных приготовлений к возвращению',
@@ -288,10 +278,6 @@ export const queryText = createDictionary({
   itemsReturned: {
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
-  },
-  saveQuery: {
-    'en-us': 'Save Query',
-    'ru-ru': 'Сохранить запрос',
   },
   queryResults: {
     'en-us': (tableName: string) => `Query Results: ${tableName}`,
@@ -301,4 +287,24 @@ export const queryText = createDictionary({
     'en-us': 'Edit Query',
     'ru-ru': 'Редактировать запрос',
   },
+  configureQueryTables: {
+    'en-us': 'Configure visible query tables',
+    'ru-ru': 'Настроить видимые таблицы запроса',
+  },
+  openMap: {
+    'en-us': 'Open Map',
+    'ru-ru': 'Открыть карту',
+  },
+  queryMapSubset: {
+    'en-us': (plotted: string, total: string) =>
+      `Plotted ${plotted} of ${total} records`,
+    'ru-ru': (plotted: number, total: number) =>
+      `Отображено ${plotted} из ${total} записей`,
+  },
+  queryMapAll: {
+    'en-us': (plotted: string) => `Plotted ${plotted} records`,
+    'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
+  },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

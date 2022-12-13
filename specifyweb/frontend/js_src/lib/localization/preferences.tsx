@@ -6,16 +6,17 @@
 
 import React from 'react';
 
-import { Key } from '../components/basic';
+import { Key } from '../components/Atoms';
 import { createDictionary } from './utils';
 
-const altKeyName =
-  typeof navigator === 'object' && navigator.appVersion.includes('Mac')
-    ? 'Option'
-    : 'Alt';
+const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
+  ? 'Option'
+  : 'Alt';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const preferencesText = createDictionary({
   general: {
     'en-us': 'General',
@@ -38,7 +39,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Копирует значение из настроек вашей операционной системы',
   },
   light: {
-    'en-us': 'White',
+    'en-us': 'Light',
     'ru-ru': 'Белая',
   },
   dark: {
@@ -62,6 +63,14 @@ export const preferencesText = createDictionary({
       components whenever possible (for example, table headers in tree view)`,
     'ru-ru': `Отключить ли полупрозрачный фон для пользовательского интерфейса,
       когда это возможно (например, заголовки таблиц в просмотрщике деревьев)`,
+  },
+  contrast: {
+    'en-us': 'Contrast',
+    'ru-ru': 'Контраст',
+  },
+  increase: {
+    'en-us': 'Increase',
+    'ru-ru': 'Увеличить',
   },
   reduce: {
     'en-us': 'Reduce',
@@ -102,7 +111,7 @@ export const preferencesText = createDictionary({
   },
   fieldBackground: {
     'en-us': 'Field background',
-    'ru-ru': 'Фон полей',
+    'ru-ru': 'Фон поля',
   },
   disabledFieldBackground: {
     'en-us': 'Disabled field background',
@@ -247,10 +256,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Search Algorithm (for relationships with tree tables)',
     'ru-ru': 'Алгоритм поиска (для деревьев)',
   },
-  startsWith: {
-    'en-us': 'Starts with',
-    'ru-ru': 'Начинается с',
-  },
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (без учета регистра)',
@@ -267,16 +272,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Search for values that begin with a given query string.',
     'ru-ru': 'Поиск значений, начинающихся с заданной строки запроса.',
   },
-  startsWithCaseSensitiveSecondDescription: {
-    'en-us':
-      'Can use _ to match any single character or % to match any number of characters',
-    'ru-ru':
-      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
-  },
-  contains: {
-    'en-us': 'Contains',
-    'ru-ru': 'Содержит',
-  },
   containsInsensitive: {
     'en-us': 'Contains (case-insensitive)',
     'ru-ru': 'Содержит (без учета регистра)',
@@ -286,8 +281,10 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (с учетом регистра)',
   },
   containsDescription: {
-    'en-us': 'Search for values that contain a given query string.',
-    'ru-ru': 'Поиск значений, содержащих заданную строку запроса.',
+    'en-us':
+      'Search for values that contain a given query string (case-insensitive)',
+    'ru-ru':
+      'Поиск значений, содержащих заданную строку запроса (без учета регистра)',
   },
   containsCaseSensitiveDescription: {
     'en-us':
@@ -313,10 +310,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Determines field captions, usage notes and table captions',
     'ru-ru':
       'Определяет заголовки полей, примечания по использованию и заголовки таблиц',
-  },
-  reset: {
-    'en-us': 'Reset',
-    'ru-ru': 'Сброс',
   },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
@@ -362,17 +355,6 @@ export const preferencesText = createDictionary({
   behavior: {
     'en-us': 'Behavior',
     'ru-ru': 'Поведение',
-  },
-  enableAutoNumbering: {
-    'en-us': 'Enable auto numbering',
-    'ru-ru': 'Включить автоматическую нумерацию',
-  },
-  enableAutoNumberingDescription: {
-    'en-us': `If field has a formatter, whose placeholder value was used, the
-      placeholder would be replaced with the auto numbered value`,
-    'ru-ru': `Если поле имеет средство форматирования, значение заполнителя
-      которого было использовано, заполнитель будет заменен значением с
-      автоматической нумерацией`,
   },
   noRestrictionsMode: {
     'en-us': 'No restrictions mode',
@@ -444,7 +426,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Таблица',
   },
   minSpareRows: {
-    'en-us': 'Number of blank rows at the bottom',
+    'en-us': 'Number of blank rows at the end',
     'ru-ru': 'Количество пустых строк внизу',
   },
   autoWrapCols: {
@@ -523,6 +505,10 @@ export const preferencesText = createDictionary({
     'en-us': 'Filter pick list items',
     'ru-ru': 'Отфильтровать элементы списка выбора',
   },
+  exportFileDelimiter: {
+    'en-us': 'Export file delimiter',
+    'ru-ru': 'Разделитель полей в файле экспорта',
+  },
   caseSensitive: {
     'en-us': 'Case-sensitive',
     'ru-ru': 'С учетом регистра',
@@ -553,8 +539,8 @@ export const preferencesText = createDictionary({
       'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
   },
   tableNameInTitle: {
-    'en-us': 'Include table name in the page title',
-    'ru-ru': 'Включить название таблицы в заголовок страницы',
+    'en-us': 'Include table name in the browser page title',
+    'ru-ru': 'Включить название таблицы в заголовок страницы браузера',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -579,10 +565,6 @@ export const preferencesText = createDictionary({
   scrollWheelZoom: {
     'en-us': 'Scroll wheel zoom',
     'ru-ru': 'Колесо прокрутки может масштабировать',
-  },
-  definition: {
-    'en-us': 'Definition',
-    'ru-ru': 'Схема',
   },
   flexibleColumnWidth: {
     'en-us': 'Flexible column width',
@@ -646,15 +628,7 @@ export const preferencesText = createDictionary({
   },
   recordSetRecordToOpen: {
     'en-us': 'Record to open by default',
-    'ru-ru': 'Размыть содержимое за диалогом',
-  },
-  firstRecord: {
-    'en-us': 'First record',
-    'ru-ru': 'First record',
-  },
-  lastRecord: {
-    'en-us': 'Last record',
-    'ru-ru': 'Last record',
+    'ru-ru': 'Запись для открытия по умолчанию',
   },
   altClickToSupressNewTab: {
     'en-us': (
@@ -691,9 +665,37 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Автоматически прокручивать страницу до сфокусированного узла дерева',
   },
-  autoComplete: {
-    'en-us': 'Auto complete',
-    'ru-ru': 'Автозаполнение',
+  lineWrap: {
+    'en-us': 'Line wrap',
+    'ru-ru': 'Перенос строк',
+  },
+  indentSize: {
+    'en-us': 'Indent size',
+    'ru-ru': 'Размер отступа',
+  },
+  indentWithTab: {
+    'en-us': (
+      <span>
+        Indent with <Key>Tab</Key>
+      </span>
+    ),
+    'ru-ru': (
+      <span>
+        Используйте <Key>Tab</Key> для отступа
+      </span>
+    ),
+  },
+  formHeaderFormat: {
+    'en-us': 'Form header format',
+    'ru-ru': 'Формат заголовка формы',
+  },
+  iconAndTableName: {
+    'en-us': 'Icon and table name',
+    'ru-ru': 'Иконка и название таблицы',
+  },
+  tableIcon: {
+    'en-us': 'Table icon',
+    'ru-ru': 'Иконка таблицы',
   },
   formTable: {
     'en-us': 'Form table',
@@ -702,6 +704,10 @@ export const preferencesText = createDictionary({
   maxHeight: {
     'en-us': 'Max height',
     'ru-ru': 'Максимальная высота',
+  },
+  autoComplete: {
+    'en-us': 'Auto complete',
+    'ru-ru': 'Автозаполнение',
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
@@ -726,10 +732,6 @@ export const preferencesText = createDictionary({
   useNewLineAsDelimiter: {
     'en-us': 'Use new line as delimiter',
     'ru-ru': 'Использовать новую строку как разделитель',
-  },
-  detectAutomatically: {
-    'en-us': 'Detect automatically',
-    'ru-ru': 'Определить автоматически',
   },
   useCustomDelimiters: {
     'en-us': 'Use custom delimiters',
@@ -758,3 +760,5 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Не использовать',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

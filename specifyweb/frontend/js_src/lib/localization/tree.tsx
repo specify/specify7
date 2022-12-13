@@ -8,6 +8,7 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const treeText = createDictionary({
   badStructure: {
     'en-us': 'Bad tree structure.',
@@ -52,11 +53,30 @@ export const treeText = createDictionary({
       дочерними элементами, под новым родительским элементом
       ${parentName}.`,
   },
+  cantMoveHere: {
+    'en-us': "Can't move this tree node here",
+    'ru-ru': 'Невозможно переместить этот узел в этот узел',
+  },
+  cantMergeHere: {
+    'en-us': "Can't merge this tree node here",
+    'ru-ru': 'Невозможно объединить этот узел в этот узел',
+  },
+  cantMoveToSynonym: {
+    'en-us': "Can't move to a synonym",
+    'ru-ru': 'Невозможно переместить в синоним',
+  },
+  cantMergeIntoSynonym: {
+    'en-us': "Can't merge into synonyms",
+    'ru-ru': 'Невозможно объединить в синонимы',
+  },
+
+  cantSynonymizeSynonym: {
+    'en-us': "Can't synonymize with a synonym",
+    'ru-ru': 'Невозможно сделать синонимом синонима',
+  },
   nodeMoveHintMessage: {
-    'en-us': (nodeName: string) =>
-      `Select a new parent for "${nodeName}" and press the button.`,
-    'ru-ru': (nodeName: string) =>
-      `Выберите нового родителя для «${nodeName}» и нажмите на кнопку.`,
+    'en-us': (nodeName: string) => `Select a new parent for "${nodeName}"`,
+    'ru-ru': (nodeName: string) => `Выберите нового родителя для «${nodeName}»`,
   },
   mergeNode: {
     'en-us': 'Merge node',
@@ -68,9 +88,9 @@ export const treeText = createDictionary({
   },
   mergeNodeHintMessage: {
     'en-us': (nodeName: string) =>
-      `Select a new target for "${nodeName}" to be merged into and press the button`,
+      `Select a new target for "${nodeName}" to be merged into`,
     'ru-ru': (nodeName: string) =>
-      `Выберите новый пункт назначения для слияния «${nodeName}А» и нажмите на кнопку`,
+      `Выберите новый пункт назначения для слияния «${nodeName}А» `,
   },
   mergeNodeMessage: {
     'en-us': (treeName: string, nodeName: string, parentName: string) => `
@@ -96,9 +116,9 @@ export const treeText = createDictionary({
   },
   synonymizeNodeHintMessage: {
     'en-us': (nodeName: string) =>
-      `Select a target for "${nodeName}" to be synonymized to and press the button`,
+      `Select a target for "${nodeName}" to be synonymized to `,
     'ru-ru': (nodeName: string) =>
-      `Выберите цель, синонимом которой будет «${nodeName}», и нажмите кнопку`,
+      `Выберите цель, синонимом которой будет «${nodeName}»`,
   },
   synonymizeMessage: {
     'en-us': (treeName: string, nodeName: string, synonymName: string) =>
@@ -113,11 +133,10 @@ export const treeText = createDictionary({
     'ru-ru': 'Отменить синонимизацию',
   },
   desynonymizeNodeMessage: {
-    'en-us': (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node "${nodeName}" will no longer be a
-      synonym of "${synonymName}".`,
-    'ru-ru': (treeName: string, nodeName: string, synonymName: string) =>
-      `Узел «${nodeName}» (${treeName}) больше не будет синонимом «${synonymName}».`,
+    'en-us': (nodeName: string, synonymName: string) =>
+      `"${nodeName}" will no longer be a synonym of "${synonymName}".`,
+    'ru-ru': (nodeName: string, synonymName: string) =>
+      `«${nodeName}» больше не будет синонимом «${synonymName}».`,
   },
   // TreeNodeView
   acceptedName: {
@@ -158,3 +177,4 @@ export const treeText = createDictionary({
     'ru-ru': 'Изменить ранги',
   },
 });
+/* eslint-enable @typescript-eslint/naming-convention */

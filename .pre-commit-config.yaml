@@ -25,7 +25,7 @@ repos:
     hooks:
       - id: regex-blacklist
         args:
-          - specifyweb/frontend/js_src/lib/tests/regex-blacklist.txt
+          - specifyweb/frontend/js_src/lib/tests/regexBlacklist.txt
 
   - repo: local
     hooks:
@@ -36,7 +36,6 @@ repos:
         language: script
         types: [python]
         pass_filenames: false
-
 
   #- repo: https://github.com/pre-commit/mirrors-mypy
   #- repo: https://github.com/pre-commit/mirrors-eslint
@@ -115,7 +114,7 @@ repos:
       - id: prettier
         additional_dependencies:
           - prettier@2.5.0
-          - '@prettier/plugin-xml@^0.13.1'
+          - "@prettier/plugin-xml@^0.13.1"
           - prettier-plugin-package@^1.3.0
           - prettier-plugin-sh@^0.8.1
           - prettier-plugin-tailwind-css@^1.5.0

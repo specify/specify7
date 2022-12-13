@@ -1,0 +1,27 @@
+{
+  "name": "Locality",
+  "class": "edu.ku.brc.specify.datamodel.Locality",
+  "busrules": "edu.ku.brc.specify.datamodel.busrules.LocalityBusRules",
+  "isinternal": "false",
+  "resourcelabels": "false",
+  "altviews": {
+    "Locality View": {
+      "name": "Locality View",
+      "viewdef": "Locality",
+      "mode": "view"
+    },
+    "Locality Edit": {
+      "name": "Locality Edit",
+      "viewdef": "Locality",
+      "mode": "edit",
+      "default": "true"
+    }
+  },
+  "viewdefs": {
+    "Locality": "<viewdef type=\"form\" name=\"Locality\" class=\"edu.ku.brc.specify.datamodel.Locality\" gettable=\"edu.ku.brc.af.ui.forms.DataGetterForObj\" settable=\"edu.ku.brc.af.ui.forms.DataSetterForObj\">\n            <desc>Locality</desc>\n\n            <columnDef>100px,2px,150px,5px,292px,2px,156px,120px,15px,p:g</columnDef>\n\t\t\t<columnDef os=\"lnx\">115px,2px,120px,5px,292px,2px,136px,245px,15px,p:g</columnDef>\n            <columnDef os=\"mac\">130px,2px,140px,5px,347px,2px,140px,266px,15px,p,p:g</columnDef>\n            <columnDef os=\"exp\">p,2px,140px,5px:g,p,2px,140px,5px:g,p,p:g</columnDef>\n            <rowDef auto=\"true\" cell=\"p\" sep=\"2dlu\" />\n            <enableRules>\n                <rule id=\"georef\">localityName.isNotEmpty() &amp;&amp; geography.isNotEmpty()</rule>\n            </enableRules>\n\n            <rows>\n                <row>\n                    <cell type=\"label\" labelfor=\"localityName\" />\n                    <cell type=\"field\" id=\"localityName\" name=\"localityName\" uitype=\"text\" colspan=\"8\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"geography\" />\n                    <cell type=\"field\" id=\"geography\" name=\"geography\" uitype=\"querycbx\" initialize=\"name=Geography\" colspan=\"8\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"5\" />\n                    <cell type=\"field\" id=\"5\" name=\"this\" uitype=\"plugin\" initialize=\"name=LatLonUI\" colspan=\"8\" />\n                </row>\n                <row>\n                    <cell type=\"label\" labelfor=\"6\" />\n                    <cell type=\"field\" id=\"6\" name=\"latLongMethod\" uitype=\"combobox\" />\n                   \t<cell type=\"label\" labelfor=\"2\" />\n                    <cell type=\"field\" id=\"2\" name=\"elevationMethod\" uitype=\"combobox\" />\n                </row>\n\t\t\t\t<row>\n                    <cell type=\"label\" labelfor=\"20\" />\n                    <cell type=\"field\" id=\"20\" name=\"datum\" uitype=\"text\" />\n                </row>\n                <row>\n                     <cell type=\"label\" labelfor=\"1\" />\n                     <cell type=\"field\" id=\"1\" name=\"remarks\" uitype=\"textareabrief\" rows=\"2\" colspan=\"6\" />\n                </row>\n                <row>\n                     <cell type=\"subview\" id=\"7\" name=\"geoCoordDetails\" viewname=\"GeoCoordDetail\" colspan=\"9\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" id=\"8\" name=\"localityDetails\" viewname=\"LocalityDetail\" colspan=\"9\" />\n                </row>\n                <row>\n                    <cell type=\"separator\" label=\"Plugins\" colspan=\"9\" />\n                </row>\n                <row>\n                    <cell type=\"panel\" id=\"outerPanel\" name=\"outerPanel\" coldef=\"p,f:p:g,p,f:p:g,p,f:p:g,p,f:p:g\" rowdef=\"p\" colspan=\"9\">\n                        <rows>\n                            <row>\n                                <cell type=\"label\" label=\" \" />\n                                <cell type=\"field\" id=\"georef\" name=\"this\" uitype=\"plugin\" initialize=\"name=LocalityGeoRef;title=Geo Ref;geoid=geography;locid=localityName;llid=5\" colspan=\"1\" />\n                                <cell type=\"field\" id=\"ge\" name=\"this\" uitype=\"plugin\" initialize=\"name=LocalityGoogleEarth;title=Google Earth;watch=5\" colspan=\"1\" />\n                            </row>\n                        </rows>\n                    </cell>\n                </row>\n                \n                <row>\n                    <cell type=\"separator\" label=\"Attachments\" colspan=\"9\" />\n                </row>\n                <row>\n                    <cell type=\"subview\" id=\"attachments\" viewname=\"ObjectAttachment\" name=\"localityAttachments\" colspan=\"9\" initialize=\"btn=true;icon=LocalityAttachment\" />\n                </row>\n            </rows>\n        </viewdef>\n\n        "
+  },
+  "viewsetName": "Fish Views",
+  "viewsetLevel": "Collection",
+  "viewsetSource": "db",
+  "viewssetId": 4
+}

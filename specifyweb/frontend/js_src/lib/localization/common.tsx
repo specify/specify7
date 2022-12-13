@@ -11,6 +11,9 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
+// REFACTOR: get rid of "exampleDialogText" in favor of just "example" ?
 export const commonText = createDictionary({
   specifySeven: {
     'en-us': 'Specify 7',
@@ -20,11 +23,27 @@ export const commonText = createDictionary({
     'en-us': 'Page Not Found',
     'ru-ru': 'Страница не найдена',
   },
-  collectionAccessDeniedDialogHeader: {
+  nothingWasFound: {
+    'en-us': 'Oops! Nothing was found',
+    'ru-ru': 'Ой! Ничего не найдено',
+  },
+  pageNotFoundDescription: {
+    'en-us': `
+      The page you are looking for might have been removed, had its name changed
+      or is temporarily unavailable.`,
+    'ru-ru': `
+      Возможно, страница, которую вы ищете, была удалена, ее название изменилось
+      или она временно недоступна.`,
+  },
+  returnToHomepage: {
+    'en-us': 'Return to homepage',
+    'ru-ru': 'Вернуться на главную страницу',
+  },
+  collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
   },
-  collectionAccessDeniedDialogText: {
+  collectionAccessDeniedDescription: {
     'en-us': (collectionName: string) =>
       `The currently logged in account does not have access to the
        ${collectionName} collection.`,
@@ -32,11 +51,11 @@ export const commonText = createDictionary({
       `Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
        коллекции ${collectionName}.`,
   },
-  noAgentDialogHeader: {
+  noAgent: {
     'en-us': 'Current user does not have an agent assigned',
     'ru-ru': 'Текущему пользователю не назначен агент',
   },
-  noAgentDialogText: {
+  noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
     'ru-ru':
       'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
@@ -52,6 +71,10 @@ export const commonText = createDictionary({
   back: {
     'en-us': 'Back',
     'ru-ru': 'Назад',
+  },
+  skip: {
+    'en-us': 'Skip',
+    'ru-ru': 'Пропустить',
   },
   create: {
     'en-us': 'Create',
@@ -379,23 +402,11 @@ export const commonText = createDictionary({
     'en-us': 'Create DwC Archive',
     'ru-ru': 'Создать DwC архив',
   },
-  definitionResourceNotFound: {
-    'en-us': (resourceName: string) =>
-      `Definition resource "${resourceName}" was not found.`,
-    'ru-ru': (resourceName: string) =>
-      `Ресурс определения "${resourceName}" не найден.`,
-  },
-  metadataResourceNotFound: {
-    'en-us': (resourceName: string) =>
-      `Metadata resource "${resourceName}" was not found.`,
-    'ru-ru': (resourceName: string) =>
-      `Ресурс метаданных "${resourceName}" не найден.`,
-  },
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS фид',
   },
-  updateExportFeedDialogHeader: {
+  updateExportFeedDialogTitle: {
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
   },
@@ -433,10 +444,6 @@ export const commonText = createDictionary({
     'en-us': 'Generate Master Key',
     'ru-ru': 'Сгенерировать мастер-ключ',
   },
-  generateMasterKeyDialogHeader: {
-    'en-us': 'Generate Master Key',
-    'ru-ru': 'Сгенерировать мастер-ключ',
-  },
   userPassword: {
     'en-us': 'User Password:',
     'ru-ru': 'Пользовательский пароль:',
@@ -468,10 +475,6 @@ export const commonText = createDictionary({
   queriesDialogTitle: {
     'en-us': (count: number) => `Queries (${count})`,
     'ru-ru': (count: number) => `Запросы (${count})`,
-  },
-  newQueryDialogTitle: {
-    'en-us': 'New Query Type',
-    'ru-ru': 'Новый запрос',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
@@ -513,21 +516,13 @@ export const commonText = createDictionary({
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы объектов',
   },
-  resources: {
-    'en-us': 'Resources',
-    'ru-ru': 'Ресурсы',
-  },
   appResources: {
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
   },
-  viewSets: {
-    'en-us': 'View Sets',
-    'ru-ru': 'Ресурсы для просмотров',
-  },
-  resourcesDialogHeader: {
-    'en-us': 'Choose the resource type you wish to edit:',
-    'ru-ru': 'Выберите тип ресурса, который хотите отредактировать:',
+  formDefinitions: {
+    'en-us': 'Form Definitions',
+    'ru-ru': 'Определения форм',
   },
   repairTree: {
     'en-us': 'Repair Tree',
@@ -538,10 +533,6 @@ export const commonText = createDictionary({
     'ru-ru': 'Ремонт дерева завершен.',
   },
   trees: {
-    'en-us': 'Trees',
-    'ru-ru': 'Деревья',
-  },
-  treesDialogTitle: {
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
   },
@@ -565,13 +556,9 @@ export const commonText = createDictionary({
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите DwCA',
   },
-  dwcaDefinition: {
-    'en-us': 'DwCA definition:',
-    'ru-ru': 'Определение DwCA:',
-  },
-  metadataResource: {
-    'en-us': 'Metadata resource:',
-    'ru-ru': 'Ресурс метаданных:',
+  chooseMetadataResource: {
+    'en-us': 'Choose Metadata resource',
+    'ru-ru': 'Выберите Ресурс метаданных',
   },
   // Error Boundary
   errorBoundaryDialogHeader: {
@@ -579,28 +566,45 @@ export const commonText = createDictionary({
     'ru-ru': 'Произошла неожиданная ошибка',
   },
   errorBoundaryDialogText: {
-    // TODO: display this message for recoverable errors:
-    // 'en-us': `We're sorry, it seems you have encountered an error in Specify 7
-    //   that we may not be aware of. You can press the back button and try again
-    //   or go to the home page`,
-    'en-us': `There is an unrecoverable error that will not allow us to safely
-      return to your current window. To avoid corrupting data records, we need
-      to start again from a safe spot--the Home page.`,
+    'en-us': `We're sorry, it seems you have encountered an error in Specify 7
+      that we may not be aware of.`,
     'ru-ru': `Произошла неисправимая ошибка, которая не позволит нам безопасно
-      вернуться к вашему текущему окну. Чтобы избежать повреждения записей
-      данных, нам нужно начать заново с безопасного места — домашней страницы.`,
+      вернуться к вашему текущему окну.`,
+  },
+  errorBoundaryCriticalDialogText: {
+    'en-us': `To avoid corrupting data records, we need to start again from a
+      safe spot--the Home page.`,
+    'ru-ru': `Чтобы избежать повреждения записей данных, нам нужно начать
+      заново с безопасного места — домашней страницы.`,
   },
   errorBoundaryDialogSecondMessage: {
-    'en-us': (email: JSX.Element) => (
+    'en-us': (
+      email: JSX.Element,
+      memberLink: (label: string) => JSX.Element,
+      discourseLink: (label: string) => JSX.Element
+    ) => (
       <>
         If this issue persists, please contact your IT support or if this is a
         Specify Cloud database, contact {email}
+        <br />
+        <br />
+        Users from {memberLink('member institutions')} can search for answered
+        questions and ask for help on our {discourseLink('Community Forum')}.
       </>
     ),
-    'ru-ru': (email: JSX.Element) => (
+    'ru-ru': (
+      email: JSX.Element,
+      memberLink: (label: string) => JSX.Element,
+      discourseLink: (label: string) => JSX.Element
+    ) => (
       <>
         Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
         свяжитесь с нами: {email}
+        <br />
+        <br />
+        Пользователи из {memberLink('учреждений Консорциума')} могут искать
+        ответы на вопросы и обращаться за помощью на нашем
+        {discourseLink('форуме')}.
       </>
     ),
   },
@@ -635,7 +639,7 @@ export const commonText = createDictionary({
   },
   unknown: {
     'en-us': 'Unknown',
-    'ru-ru': 'Неизвестный',
+    'ru-ru': 'Неизвестно',
   },
   // Unload Protection
   leavePageDialogHeader: {
@@ -744,6 +748,10 @@ export const commonText = createDictionary({
       'Some features of Specify 7 may therefore fail to operate correctly.',
     'ru-ru': 'Поэтому некоторые функции Specify 7 могут неработать.',
   },
+  versionMismatchThirdDialogText: {
+    'en-us': 'Instructions for resolving Specify schema mismatch',
+    'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
+  },
   resourceDeletedDialogHeader: {
     'en-us': 'Item deleted',
     'ru-ru': 'Удалено',
@@ -753,10 +761,12 @@ export const commonText = createDictionary({
     'ru-ru': 'Успешно удален.',
   },
   appTitle: {
-    'en-us': (baseTitle: string) =>
-      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
-    'ru-ru': (baseTitle: string) =>
-      `${baseTitle.length === 0 ? '' : `${baseTitle} | `}Specify 7`,
+    'en-us': (baseTitle: string) => `${baseTitle} | Specify 7`,
+    'ru-ru': (baseTitle: string) => `${baseTitle} | Specify 7`,
+  },
+  baseAppTitle: {
+    'en-us': 'Specify 7',
+    'ru-ru': 'Specify 7',
   },
   // StartApp
   sessionTimeOutDialogHeader: {
@@ -891,7 +901,7 @@ export const commonText = createDictionary({
   },
   none: {
     'en-us': 'None',
-    'ru-ru': 'Нет',
+    'ru-ru': 'Никакой',
   },
   noneAvailable: {
     'en-us': 'None available',
@@ -941,10 +951,6 @@ export const commonText = createDictionary({
     'en-us': 'Browse in Forms',
     'ru-ru': 'Открыть записи',
   },
-  selectRecord: {
-    'en-us': 'Select Record',
-    'ru-ru': 'Выбрать Элемент',
-  },
   preferences: {
     'en-us': 'Preferences',
     'ru-ru': 'Настройки',
@@ -987,7 +993,7 @@ export const commonText = createDictionary({
   },
   relatedModel: {
     'en-us': 'Related Model',
-    'ru-ru': 'Таблица',
+    'ru-ru': 'Родственная Таблица',
   },
   otherSideName: {
     'en-us': 'Other side name',
@@ -1157,8 +1163,50 @@ export const commonText = createDictionary({
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
   },
+  primary: {
+    'en-us': 'Primary',
+    'ru-ru': 'Основной',
+  },
+  revealHiddenFormFields: {
+    'en-us': 'Reveal Hidden Form Fields',
+    'ru-ru': 'Показать скрытые поля формы',
+  },
+  formDefinition: {
+    'en-us': 'Form Definition',
+    'ru-ru': 'Схема формы',
+  },
+  expandAll: {
+    'en-us': 'Expand All',
+    'ru-ru': 'Развернуть все',
+  },
+  collapseAll: {
+    'en-us': 'Collapse All',
+    'ru-ru': 'Свернуть все',
+  },
+  moveUp: {
+    'en-us': 'Move Up',
+    'ru-ru': 'Переместить вверх',
+  },
+  moveDown: {
+    'en-us': 'Move Down',
+    'ru-ru': 'Переместить вниз',
+  },
+  selectedTables: {
+    'en-us': 'Selected Tables',
+    'ru-ru': 'Выбранные таблицы',
+  },
+  possibleTables: {
+    'en-us': 'Possible Tables',
+    'ru-ru': 'Возможные таблицы',
+  },
+  reset: {
+    'en-us': 'Reset',
+    'ru-ru': 'Сброс',
+  },
   select: {
     'en-us': 'Select',
     'ru-ru': 'Выбрать',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

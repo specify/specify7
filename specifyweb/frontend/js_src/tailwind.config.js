@@ -1,21 +1,16 @@
-'use strict';
-
 /*
  * This config partially overwrites and extends the default Tailwind config:
  * https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
 
-// TODO: evaluate usages of arbitrary values in class names
-// TODO: consider changing defaults for values (i.e ring-1)
-// TODO: add col-span-{n} and col-span-[full-1]
-// TODO: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
+// REFACTOR: evaluate usages of arbitrary values in class names
+// REFACTOR: consider changing defaults for values (i.e ring-1)
+// REFACTOR: add col-span-{n} and col-span-[full-1]
+// REFACTOR: modify grid-col-{n} to resolve to grid-template-columns:repeat(n,auto)
 //    instead of grid-template-columns:repeat(n,1fr)
-// eslint-disable-next-line unicorn/prefer-module
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './lib/components/**/*.tsx',
-    './lib/*.{ts,js}',
-  ],
+  content: ['./lib/**/*.{ts,tsx,js}'],
   // Disable unneeded components to reduce performance impact
   corePlugins: {
     float: false,
@@ -77,21 +72,14 @@ module.exports = {
         'hue-rotate': {
           '0%': { filter: 'hue-rotate(0deg)' },
           '100%': { filter: 'hue-rotate(360deg)' },
-        }
+        },
       },
       animation: {
         'hue-rotate': '4s hue-rotate 2s linear infinite',
-      }
+      },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
-  /*
-   * Disable class name purge in development for convenience
-   * NOTE: this significantly increases build times
-   */
-  ...(process.env.NODE_ENV === 'production'
-    ? {}
-    : {
-        safelist: [{ pattern: /./ }],
-      }),
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 };

@@ -530,3 +530,54 @@ class UserApiTests(ApiTests):
             json.loads(response.content),
             {'AgentInUseException': [self.agent.id]}
         )
+
+class ReplaceRecordTests(ApiTests):
+    def test_replace_agents(self):
+        c = Client()
+        c.force_login(self.specifyuser)
+
+        # Create agents and a collector relationship
+        agent_1 = models.Agent.objects.create(
+            id=7,
+            agenttype=0,
+            firstname="agent",
+            lastname="007",
+            specifyuser=None)
+        agent_2 = models.Agent.objects.create(
+            id=6,
+            agenttype=0,
+            firstname="agent",
+            lastname="006",
+            specifyuser=None)
+        collecting_event = models.Collectingevent.objects.create(
+            discipline=self.discipline
+        )
+        collector = models.Collector.objects.create(
+            id=7,
+            isprimary=True,
+            ordernumber=1,
+            agent=agent_1,
+            collectingevent=collecting_event
+        )
+
+        # Assert that the api request ran successfully
+        response = c.post(
+            f'/api/specify/replace/agent/{agent_1.id}/{agent_2.id}/',
+            data=[],
+            content_type='text/plain')
+        self.assertEqual(response.status_code, 204)
+
+        # Assert that the collector relationship was updated correctly to the new agent
+        collector = models.Collector.objects.get(id=agent_1.id)
+        self.assertEqual(collector.agent.id, 6)
+
+        # Assert that the old agent was deleted
+        with self.assertRaises(models.Agent.DoesNotExist):
+            models.Agent.objects.get(id=7)
+
+        # Assert that a new api request will not find the old agent
+        response = c.post(
+            f'/api/specify/replace/agent/{agent_1.id}/{agent_2.id}/',
+            data=[],
+            content_type='text/plain')
+        self.assertEqual(response.status_code, 404)

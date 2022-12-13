@@ -43,6 +43,9 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true
+    /* Projects */
+    // REFACTOR: test perfornace imrovements of enabling this:
+    //    "composite": true
   },
   "noPropertyAccessFromIndexSignature": true
 }

@@ -91,7 +91,8 @@
 }
 
 .htContextMenu td.highlight,
-.handsontable.listbox :is(tr td.current, tr:hover td) {
+.handsontable.listbox tr td.current,
+.handsontable.listbox tr:hover td {
   @apply dark:!bg-neutral-600;
 }
 
