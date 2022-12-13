@@ -93,21 +93,23 @@ function Coordinate({
     isChanging.current = true;
     resource.set(coordinateField, parsed?.asFloat() ?? null);
     resource.set(coordinateTextField, trimmedValue || null);
-    if (hasValue)
-      resource.set(
-        'srcLatLongUnit',
-        parsed?.soCalledUnit() ??
-          // Don't trigger unload protect needlessly
-          (resource.needsSaved ? undefined : resource.get('srcLatLongUnit')) ??
-          1
-      );
+    // Since these fields are no used by sp7, they shouldn't trigger unload protect
+    resource.set(
+      'srcLatLongUnit',
+      parsed?.soCalledUnit() ??
+        // Don't trigger unload protect needlessly
+        (resource.needsSaved ? undefined : resource.get('srcLatLongUnit')) ??
+        1,
+      { silent: true }
+    );
     resource.set(
       'originalLatLongUnit',
       parsed?.soCalledUnit() ??
         (resource.needsSaved
           ? undefined
           : resource.get('originalLatLongUnit')) ??
-        null
+        null,
+      { silent: true }
     );
     isChanging.current = false;
   }, [
