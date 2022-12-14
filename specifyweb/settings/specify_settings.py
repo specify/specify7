@@ -109,3 +109,23 @@ OAUTH_LOGIN_PROVIDERS = {
     # },
 }
 
+# Configure Specify to authenticate by matching a Django request META
+# variable to a Specify user attribute. This is to support
+# authentication via Apache mod_shib which exposes SP session values
+# as META variables in requests. This setting should be a pair
+# consisting of the META variable and the Specify user attribute to
+# match. For example,
+#
+# AUTH_USING_META_VAR = ('REMOTE_USER', 'name')
+#
+# will login the the user with the user name given by the REMOTE_USER
+# META variable. This authentication occurs automatically when the
+# client GETs the /account/login/ URL which is the default login page
+# presented to the user unless OpenId Connect is configured. If the
+# META variable is not set or no matching user exists, the usual login
+# page will be returned. When using this form of authentication,
+# permission to modify the Specify user table must be restricted to
+# prevent users from compromising authentication by changing the
+# values in matching field of the user table. Set this option to None
+# to disable this form of authentication.
+AUTH_USING_META_VAR = None

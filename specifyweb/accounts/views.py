@@ -18,6 +18,7 @@ from django.utils import crypto
 from django.utils.http import is_safe_url, urlencode
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.http import require_GET, require_http_methods
+from django.contrib.auth import views as auth_views
 from typing import Union, Optional, Dict
 from typing_extensions import TypedDict
 
@@ -73,6 +74,26 @@ class InviteToken(TypedDict):
     sequence: Optional[int] # To prevent reuse of token.
     expires: int # A time.time() value after which the token is expired.
 
+
+def check_for_meta_var_login(request: http.HttpRequest):
+    if settings.AUTH_USING_META_VAR is not None:
+        meta_var, user_field = settings.AUTH_USING_META_VAR
+        identity = request.META.get(meta_var, None)
+        if identity is not None:
+            try:
+                return Specifyuser.objects.get(**{user_field: identity})
+            except Specifyuser.DoesNotExist:
+                return None
+    return None
+
+def legacy_login(request: http.HttpRequest) -> http.HttpResponse:
+    if request.method == 'GET':
+        user = check_for_meta_var_login(request)
+        if user is not None:
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return http.HttpResponseRedirect('/accounts/choose_collection/')
+
+    return auth_views.LoginView.as_view(template_name='login.html')(request)
 
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
