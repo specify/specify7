@@ -107,7 +107,10 @@ export function Main(): JSX.Element | null {
               {userInformation.isauthenticated ? (
                 <UserTools />
               ) : (
-                <Link.Default href="/accounts/login/">
+                <Link.Default
+                  href="/accounts/login/"
+                  className={className.navigationHandled}
+                >
                   {commonText('logIn')}
                 </Link.Default>
               )}
