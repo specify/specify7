@@ -60,7 +60,7 @@ export function AddStatDialog({
                       .join('.'),
                   })),
                 },
-                100
+                -1
               );
               handleClose();
             }}
@@ -81,7 +81,7 @@ export function AddStatDialog({
                     pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
                     onClick={(item: DefaultStat | CustomStat): void => {
-                      handleAdd(item, 100);
+                      handleAdd(item, -1);
                       handleClose();
                     }}
                     onRemove={undefined}

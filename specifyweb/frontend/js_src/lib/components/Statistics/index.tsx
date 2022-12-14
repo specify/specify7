@@ -1,7 +1,12 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
-import { keysToLowerCase, removeItem, replaceItem } from '../../utils/utils';
+import {
+  insertItem,
+  keysToLowerCase,
+  removeItem,
+  replaceItem,
+} from '../../utils/utils';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -59,9 +64,9 @@ export function StatsPage(): JSX.Element {
   const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
 
   const statsSpec = useStatsSpec(false);
-  const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
+  // const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
   // const customLayoutSpec = useDefaultLayout(statsSpec, layout);
-  setDefaultLayout(defaultLayoutSpec);
+  //setDefaultLayout(defaultLayoutSpec);
   //setLayout(defaultLayoutSpec);
   const defaultStatsToAdd = useDefaultStatsToAdd(
     layout?.[activePageIndex],
@@ -131,11 +136,18 @@ export function StatsPage(): JSX.Element {
     handleChange(
       replaceItem(layout[activePageIndex].categories, categoryIndex ?? -1, {
         ...layout[activePageIndex].categories[categoryIndex ?? -1],
-        items: replaceItem(
-          layout[activePageIndex].categories[categoryIndex ?? -1].items,
-          itemIndex === undefined ? -1 : itemIndex,
-          item
-        ),
+        items:
+          itemIndex === undefined || itemIndex === -1
+            ? [
+                ...layout[activePageIndex].categories[categoryIndex ?? -1]
+                  .items,
+                item,
+              ]
+            : replaceItem(
+                layout[activePageIndex].categories[categoryIndex ?? -1].items,
+                itemIndex,
+                item
+              ),
       })
     );
   };
@@ -312,7 +324,7 @@ export function StatsPage(): JSX.Element {
               }
             />
           )}
-          <div className="px-4 pb-6 grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto">
+          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
               onAdd={
                 isEditing
