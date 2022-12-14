@@ -1,8 +1,19 @@
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [7.8.0](https://github.com/specify/specify7/compare/v7.7.5...v7.8.0) (1 July 2022)
+
+This update introduces a new Form “Meta Menu”, reimplements the App Resource Editor, introduces spatial search in the Query Builder, adds numerous usability improvements and fixes many bugs.
+
+[Full Release Notes](https://discourse.specifysoftware.org/t/specify-7-8-release-notes/)
+
+[Full List of Improvements](https://github.com/specify/specify7/milestone/27?closed=1)
+
+[List of internal bug fixes](https://github.com/specify/specify7/milestone/28)
 
 ## [7.7.5](https://github.com/specify/specify7/compare/v7.7.4.1...v7.7.5) (17 October 2022)
 
