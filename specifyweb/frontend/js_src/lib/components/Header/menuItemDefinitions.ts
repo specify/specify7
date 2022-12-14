@@ -100,7 +100,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   attachments: {
     url: '/specify/attachments/',
     title: commonText('attachments'),
-    icon: icons.link,
+    icon: icons.photos,
     visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {
       if (!hasTablePermission('Attachment', 'read')) return false;
