@@ -22,6 +22,7 @@ import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
+import { useMenuItem } from '../Header';
 import { CustomStat, DefaultStat, StatLayout } from './types';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { ajax } from '../../utils/ajax';
@@ -32,6 +33,8 @@ import { SpQuery } from '../DataModel/types';
 import { RA } from '../../utils/types';
 
 export function StatsPage(): JSX.Element {
+  useMenuItem('statistics');
+  
   const [layout, setLayout] = usePref('statistics', 'appearance', 'layout');
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',

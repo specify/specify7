@@ -112,7 +112,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   statistics: {
     url: '/specify/statistics/',
     title: commonText('statistics'),
-    icon: icons.link,
+    icon: icons.stats,
     visibilityKey: 'showStatistics'
   }
 } as const;

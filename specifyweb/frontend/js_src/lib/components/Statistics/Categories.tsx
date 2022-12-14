@@ -65,7 +65,7 @@ export function Categories({
     <>
       {pageLayout.categories.map(({ label, items }, categoryIndex) => (
         <div
-          className="flex h-auto max-h-80 flex-col content-center gap-2 rounded shadow-gray-300 shadow-md transition hover:shadow-lg hover:shadow-gray-400 bg-[color:var(--form-foreground)] border-[1px] p-4"
+          className="flex h-auto max-h-80 flex-col content-center gap-2 rounded shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 bg-[color:var(--form-foreground)] border-[1px] p-4"
           key={categoryIndex}
         >
           {handleRename === undefined ? (
