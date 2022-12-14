@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
+
+- Attachments now uses a photo icon instead of a link ([#2530](https://github.com/specify/specify7/issues/2530))
+- Animated shadows are now used when viewing attachments
+- The log in button now operates correctly when accessing the database via an anonymous user ([#2651](https://github.com/specify/specify7/issues/2651))
+
 ## [7.8.0](https://github.com/specify/specify7/compare/v7.7.5...v7.8.0) (13 December 2022)
 
 This update introduces a new Form “Meta Menu”, reimplements the App Resource Editor, introduces spatial search in the Query Builder, adds numerous usability improvements and fixes many bugs.
