@@ -16,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
+import { className } from '../Atoms/className';
 
 export type OicProvider = {
   readonly provider: string;
@@ -82,6 +83,7 @@ export function OicLogin({
             href={formatUrl('/accounts/legacy_login/', {
               next,
             })}
+            className={className.navigationHandled}
           >
             {commonText('legacyLogin')}
           </Link.Fancy>

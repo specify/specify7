@@ -18,6 +18,11 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
+        path: 'legacy_login',
+        title: commonText('login'),
+        element: () => import('../Login').then(({ Login }) => Login),
+      },
+      {
         path: 'choose_collection',
         title: commonText('chooseCollection'),
         element: () =>
