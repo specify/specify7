@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
-import { removeItem, replaceItem } from '../../utils/utils';
+import { keysToLowerCase, removeItem, replaceItem } from '../../utils/utils';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -18,19 +18,21 @@ import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
 import { CustomStat, DefaultStat, StatLayout } from './types';
-import { useCachedState } from '../../hooks/useCachedState';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { ajax } from '../../utils/ajax';
+import { serializeResource } from '../DataModel/helpers';
+import { formatNumber } from '../Atoms/Internationalization';
+import { SpecifyResource } from '../DataModel/legacyTypes';
+import { SpQuery } from '../DataModel/types';
+import { RA } from '../../utils/types';
 
 export function StatsPage(): JSX.Element {
-  const [customLayout, setPrevLayout] = usePref(
+  const [layout, setLayout] = usePref('statistics', 'appearance', 'layout');
+  const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
     'appearance',
-    'layout'
+    'defaultLayout'
   );
-  const [layoutCache = [], setLayoutCache] = useCachedState(
-    'statistics',
-    'statsValue'
-  );
-  const setLayout = (layout: StatLayout) => setPrevLayout(layout);
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -48,18 +50,21 @@ export function StatsPage(): JSX.Element {
         }
       >
     | State<'CacheState'>
-  >(layoutCache.length > 0 ? { type: 'CacheState' } : { type: 'DefaultState' });
-  const statsSpec = useStatsSpec(state.type === 'CacheState');
-  const defaultLayout = useDefaultLayout(statsSpec);
-  const layout = customLayout ?? defaultLayout;
+  >(layout === undefined ? { type: 'DefaultState' } : { type: 'CacheState' });
   const isAddingItem = state.type === 'AddingState';
   const isEditing =
     state.type === 'EditingState' ||
     isAddingItem ||
     state.type === 'PageRenameState';
   const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
+
+  const statsSpec = useStatsSpec(false);
+  const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
+  // const customLayoutSpec = useDefaultLayout(statsSpec, layout);
+  setDefaultLayout(defaultLayoutSpec);
+  //setLayout(defaultLayoutSpec);
   const defaultStatsToAdd = useDefaultStatsToAdd(
-    layout[activePageIndex],
+    layout?.[activePageIndex],
     defaultLayout
   );
   const filters = React.useMemo(
@@ -70,7 +75,44 @@ export function StatsPage(): JSX.Element {
   );
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
-  const handleCategoryChange = (
+  const statNetworkCount = React.useRef(0);
+  const activeNetworkRequest = [];
+  const VINNY_STAT_CONSTANT = 20;
+  const useStatNetwork = async (
+    query: SpecifyResource<SpQuery> | undefined
+  ) => {
+    if (
+      statNetworkCount.current > VINNY_STAT_CONSTANT ||
+      statNetworkCount.current < 0 ||
+      query === undefined
+    )
+      return undefined;
+    statNetworkCount.current += 1;
+    while (statNetworkCount.current > VINNY_STAT_CONSTANT) {
+      await Promise.any(activeNetworkRequest).then((value) => {});
+    }
+    const statPromise = ajax<{
+      readonly count: number;
+    }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+      },
+      body: keysToLowerCase({
+        ...serializeResource(query),
+        countOnly: true,
+      }),
+    });
+    activeNetworkRequest.push(statPromise);
+    const x = await statPromise.then(({ data }) => {
+      statNetworkCount.current = statNetworkCount.current - 1;
+      return formatNumber(data.count);
+    });
+    return x;
+  };
+
+  const handleChange = (
     newCategories: StatLayout[number]['categories']
   ): void => {
     setLayout(
@@ -80,12 +122,13 @@ export function StatsPage(): JSX.Element {
       })
     );
   };
+
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
     itemIndex?: number
   ): void => {
-    handleCategoryChange(
+    handleChange(
       replaceItem(layout[activePageIndex].categories, categoryIndex ?? -1, {
         ...layout[activePageIndex].categories[categoryIndex ?? -1],
         items: replaceItem(
@@ -113,7 +156,6 @@ export function StatsPage(): JSX.Element {
             <Button.Red
               onClick={(): void => {
                 setLayout(defaultLayout);
-                setLayoutCache([]);
               }}
             >
               {commonText('reset')}
@@ -127,7 +169,6 @@ export function StatsPage(): JSX.Element {
                     ? previousLayout.current.length - 1
                     : activePageIndex
                 );
-                setLayoutCache([]);
               }}
             >
               {commonText('cancel')}
@@ -149,10 +190,23 @@ export function StatsPage(): JSX.Element {
             {state.type === 'CacheState' && (
               <Button.Blue
                 onClick={(): void => {
+                  layout !== undefined
+                    ? setLayout(
+                        layout.map((pageLayout) => ({
+                          label: pageLayout.label,
+                          categories: pageLayout.categories.map((category) => ({
+                            label: category.label,
+                            items: category.items.map((item) => ({
+                              ...item,
+                              cachedValue: undefined,
+                            })),
+                          })),
+                        }))
+                      )
+                    : undefined;
                   setState({
                     type: 'DefaultState',
                   });
-                  setLayoutCache([]);
                 }}
               >
                 {commonText('update')}
@@ -214,11 +268,6 @@ export function StatsPage(): JSX.Element {
                           type: 'EditingState',
                         });
                         setActivePageIndex(layout.length - 2);
-                        setLayoutCache((oldValue) =>
-                          oldValue !== undefined
-                            ? removeItem(oldValue, state.pageIndex!)
-                            : undefined
-                        );
                       }
                     : undefined
                   : undefined
@@ -274,7 +323,7 @@ export function StatsPage(): JSX.Element {
                             pageIndex: activePageIndex,
                             categoryIndex: categoryindex,
                           })
-                        : handleCategoryChange([
+                        : handleChange([
                             ...layout[activePageIndex].categories,
                             {
                               label: '',
@@ -285,28 +334,11 @@ export function StatsPage(): JSX.Element {
               }
               pageLayout={layout[activePageIndex]}
               statsSpec={statsSpec}
-              pageCache={layoutCache?.[activePageIndex]}
               onClick={handleAdd}
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void => {
-                      setLayoutCache((oldValue) =>
-                        oldValue !== undefined && itemIndex !== undefined
-                          ? replaceItem(
-                              oldValue,
-                              activePageIndex,
-                              replaceItem(
-                                oldValue[activePageIndex],
-                                categoryIndex,
-                                removeItem(
-                                  oldValue[activePageIndex][categoryIndex],
-                                  itemIndex
-                                )
-                              )
-                            )
-                          : undefined
-                      );
-                      handleCategoryChange(
+                      handleChange(
                         typeof itemIndex === 'number'
                           ? replaceItem(
                               layout[activePageIndex].categories,
@@ -334,7 +366,7 @@ export function StatsPage(): JSX.Element {
               onRename={
                 isEditing
                   ? (newName, categoryIndex): void =>
-                      handleCategoryChange(
+                      handleChange(
                         replaceItem(
                           layout[activePageIndex].categories,
                           categoryIndex,
@@ -349,7 +381,7 @@ export function StatsPage(): JSX.Element {
                   : undefined
               }
               onSpecChanged={(categoryIndex, itemIndex, fields): void =>
-                handleCategoryChange(
+                handleChange(
                   replaceItem(
                     layout[activePageIndex].categories,
                     categoryIndex,
@@ -368,17 +400,36 @@ export function StatsPage(): JSX.Element {
                   )
                 )
               }
-              onValueLoad={(categoryIndex, itemIndex, value, itemName) => {
-                setLayoutCache((oldValue) => {
-                  const tempPageArray = [...(oldValue ?? [])];
-                  const tempPage = [...(tempPageArray[activePageIndex] ?? [])];
-                  const tempCategory = [...(tempPage[categoryIndex] ?? [])];
-                  tempCategory[itemIndex] = { itemName, value };
-                  tempPage[categoryIndex] = [...tempCategory];
-                  tempPageArray[activePageIndex] = [...tempPage];
-                  return tempPageArray;
-                });
+              onValueLoad={(
+                categoryIndex,
+                itemIndex,
+                value,
+                itemName,
+                itemType
+              ) => {
+                handleChange(
+                  replaceItem(
+                    layout[activePageIndex].categories,
+                    categoryIndex,
+                    {
+                      ...layout[activePageIndex].categories[categoryIndex],
+                      items: replaceItem(
+                        layout[activePageIndex].categories[categoryIndex].items,
+                        itemIndex,
+                        {
+                          ...layout[activePageIndex].categories[categoryIndex]
+                            .items[itemIndex],
+                          cachedValue: value,
+                          ...(itemType === 'DefaultStat'
+                            ? { itemName: itemName }
+                            : { itemLabel: itemName }),
+                        }
+                      ),
+                    }
+                  )
+                );
               }}
+              onStatNetwork={useStatNetwork}
             />
           </div>
         </div>
@@ -397,6 +448,7 @@ export function StatsPage(): JSX.Element {
               type: 'EditingState',
             })
           }
+          onStatNetwork={useStatNetwork}
         />
       )}
     </Form>

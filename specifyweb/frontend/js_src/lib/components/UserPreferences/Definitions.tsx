@@ -1505,6 +1505,13 @@ export const preferenceDefinitions = {
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
           }),
+          defaultLayout: defineItem<StatLayout | undefined>({
+            title: 'Defines the layout of the default stats',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
         },
       },
     },

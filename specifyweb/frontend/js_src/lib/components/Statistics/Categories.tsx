@@ -8,24 +8,22 @@ import { commonText } from '../../localization/common';
 import React from 'react';
 import { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
-import { SpQueryField } from '../DataModel/types';
+import { SpQuery, SpQueryField } from '../DataModel/types';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function Categories({
   pageLayout,
   statsSpec,
-  pageCache,
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
   onRename: handleRename,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
+  onStatNetwork: handleStatNetwork,
 }: {
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
-  readonly pageCache:
-    | RA<RA<{ readonly itemName: string; readonly value: number | string }>>
-    | undefined;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick:
     | ((
@@ -55,9 +53,13 @@ export function Categories({
         categoryIndex: number,
         itemIndex: number,
         value: number | string,
-        itemName: string
+        itemName: string,
+        itemType: string
       ) => void)
     | undefined;
+  readonly onStatNetwork: (
+    query: SpecifyResource<SpQuery> | undefined
+  ) => Promise<string | undefined>;
 }): JSX.Element {
   return (
     <>
@@ -86,26 +88,19 @@ export function Categories({
               item.type === 'DefaultStat' ? (
                 <DefaultStatItem
                   categoryName={item.categoryName}
-                  itemName={
-                    pageCache?.[categoryIndex]?.[itemIndex]?.itemName ??
-                    item.itemName
-                  }
+                  itemName={item.itemName}
                   pageName={item.pageName}
+                  itemValue={item.cachedValue}
                   key={itemIndex}
                   statsSpec={statsSpec}
-                  statCachedValue={
-                    pageCache?.[categoryIndex]?.[itemIndex]?.value
-                  }
-                  statCachedLabel={
-                    pageCache?.[categoryIndex]?.[itemIndex]?.itemName
-                  }
                   onValueLoad={(statValue, itemName) =>
                     typeof handleValueLoad === 'function'
                       ? handleValueLoad(
                           categoryIndex,
                           itemIndex,
                           statValue,
-                          itemName
+                          itemName,
+                          item.type
                         )
                       : undefined
                   }
@@ -115,7 +110,7 @@ export function Categories({
                           handleClick(
                             {
                               type: 'CustomStat',
-                              itemName: itemName,
+                              itemLabel: itemName,
                               tableName,
                               fields: newFields,
                             },
@@ -143,13 +138,14 @@ export function Categories({
                       ? undefined
                       : (): void => handleRemove(categoryIndex, itemIndex)
                   }
+                  onStatNetwork={handleStatNetwork}
                 />
               ) : (
                 <QueryStat
                   key={itemIndex}
                   tableName={item.tableName}
                   fields={item.fields}
-                  statLabel={item.itemName}
+                  statLabel={item.itemLabel}
                   onClick={undefined}
                   onRemove={
                     handleRemove === undefined
@@ -168,13 +164,13 @@ export function Categories({
                           categoryIndex,
                           itemIndex,
                           statValue,
-                          item.itemName
+                          item.itemLabel,
+                          item.type
                         )
                       : undefined
                   }
-                  statCachedValue={
-                    pageCache?.[categoryIndex]?.[itemIndex].value
-                  }
+                  statValue={item.cachedValue}
+                  onStatNetwork={handleStatNetwork}
                 />
               )
             )}

@@ -16,14 +16,12 @@ import type {
   StatsSpec,
 } from './types';
 import { SpecifyResource } from '../DataModel/legacyTypes';
-import { keysToLowerCase } from '../../utils/utils';
 import { serializeResource } from '../DataModel/helpers';
 import { formatNumber } from '../Atoms/Internationalization';
 import { deserializeResource } from '../../hooks/resource';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-
 export function useCustomStatQuery(queryId: number):
   | {
       readonly tableName: keyof Tables;
@@ -116,16 +114,13 @@ export function useStatsSpec(cachedState: boolean): IR<
 }
 
 export function useDefaultStatsToAdd(
-  layout: {
-    readonly label: string;
-    readonly categories: RA<{
-      readonly label: string;
-      readonly items: RA<CustomStat | DefaultStat>;
-    }>;
-  },
-  defaultLayout: StatLayout
-): StatLayout {
-  return React.useMemo((): StatLayout => {
+  layout: StatLayout[number] | undefined,
+  defaultLayout: StatLayout | undefined
+): StatLayout | undefined {
+  return React.useMemo((): StatLayout | undefined => {
+    if (layout === undefined || defaultLayout === undefined) {
+      return undefined;
+    }
     const listToUse = layout.categories.flatMap(({ items }) =>
       items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
     );
@@ -152,51 +147,48 @@ export function useDefaultStatsToAdd(
   }, [layout, defaultLayout]);
 }
 
-export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
+export function useDefaultLayout(
+  statsSpec: StatsSpec,
+  defaultLayout: StatLayout | undefined
+): StatLayout {
   return React.useMemo(
     () =>
-      Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
-        label: pageName,
-        categories: Object.entries(pageStatsSpec).map(
-          ([categoryName, { label, items }]) => ({
-            label,
-            items: Object.entries(items ?? {}).map(([itemName]) => ({
-              type: 'DefaultStat',
-              pageName,
-              categoryName,
-              itemName,
-              newFields: undefined,
-            })),
-          })
-        ),
-      })),
+      defaultLayout === undefined
+        ? Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
+            label: pageName,
+            categories: Object.entries(pageStatsSpec).map(
+              ([categoryName, { label, items }]) => ({
+                label,
+                items: Object.entries(items ?? {}).map(
+                  ([itemName, { spec }]) => ({
+                    type: 'DefaultStat',
+                    pageName,
+                    categoryName,
+                    itemName,
+                    cachedValue:
+                      spec.type === 'BackEndStat' ? spec.value : undefined,
+                  })
+                ),
+              })
+            ),
+          }))
+        : defaultLayout,
     [statsSpec]
   );
 }
 
 export function useFrontEndStat(
   query: SpecifyResource<SpQuery> | undefined,
-  statCachedValue: string | number | undefined
+  onStatNetwork: (
+    query: SpecifyResource<SpQuery> | undefined
+  ) => Promise<string | undefined>,
+  statCachedValue?: string | number | undefined
 ): string | number | undefined {
   const [countReturn] = useAsyncState(
     React.useCallback(
-      statCachedValue === undefined && query !== undefined
-        ? async () =>
-            ajax<{
-              readonly count: number;
-            }>('/stored_query/ephemeral/', {
-              method: 'POST',
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                Accept: 'application/json',
-              },
-              body: keysToLowerCase({
-                ...serializeResource(query),
-                countOnly: true,
-              }),
-            }).then(({ data }) => formatNumber(data.count))
-        : (): string | number | undefined => statCachedValue,
-      [query, statCachedValue]
+      () =>
+        statCachedValue !== undefined ? statCachedValue : onStatNetwork(query),
+      [query]
     ),
     false
   );

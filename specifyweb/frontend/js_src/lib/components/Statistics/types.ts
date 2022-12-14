@@ -6,11 +6,12 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 export type CustomStat = State<
   'CustomStat',
   {
-    readonly itemName: string;
+    readonly itemLabel: string;
     readonly tableName: keyof Tables;
     readonly fields: RA<
       Partial<SerializedResource<SpQueryField>> & { readonly path: string }
     >;
+    readonly cachedValue?: string | number | undefined;
   }
 >;
 export type DefaultStat = State<
@@ -24,6 +25,8 @@ export type DefaultStat = State<
           Partial<SerializedResource<SpQueryField>> & { readonly path: string }
         >
       | undefined;
+    readonly cachedLabel?: string | undefined;
+    readonly cachedValue?: string | number | undefined;
   }
 >;
 

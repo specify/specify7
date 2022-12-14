@@ -11,6 +11,7 @@ import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { SpecifyResource } from '../DataModel/legacyTypes';
 
 export function AddStatDialog({
   defaultLayout,
@@ -18,12 +19,16 @@ export function AddStatDialog({
   queries,
   onClose: handleClose,
   onAdd: handleAdd,
+  onStatNetwork: handleStatNetwork,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultLayout: StatLayout;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
+  readonly onStatNetwork: (
+    query: SpecifyResource<SpQuery> | undefined
+  ) => Promise<string | undefined>;
 }): JSX.Element | null {
   const defaultStatsAddLeft = defaultLayout;
   return Array.isArray(queries) ? (
@@ -43,7 +48,7 @@ export function AddStatDialog({
               handleAdd(
                 {
                   type: 'CustomStat',
-                  itemName: query.name,
+                  itemLabel: query.name,
                   tableName: query.contextName as keyof Tables,
                   fields: query.fields.map((field) => ({
                     ...field,
@@ -55,7 +60,7 @@ export function AddStatDialog({
                       .join('.'),
                   })),
                 },
-                -1
+                100
               );
               handleClose();
             }}
@@ -76,15 +81,15 @@ export function AddStatDialog({
                     pageLayout={defaultLayoutPage}
                     statsSpec={statsSpec}
                     onClick={(item: DefaultStat | CustomStat): void => {
-                      handleAdd(item, -1);
+                      handleAdd(item, 100);
                       handleClose();
                     }}
-                    pageCache={undefined}
                     onRemove={undefined}
                     onRename={undefined}
                     onAdd={undefined}
                     onSpecChanged={undefined}
                     onValueLoad={undefined}
+                    onStatNetwork={handleStatNetwork}
                   />
                 </div>
               </div>
