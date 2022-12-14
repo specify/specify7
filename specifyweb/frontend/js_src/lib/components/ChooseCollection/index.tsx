@@ -27,16 +27,16 @@ export function ChooseCollection(): JSX.Element {
     () => (
       <Wrapped
         errors={[
-          parseDjangoDump<string>('form-errors'),
-          parseDjangoDump<string>('collection-errors'),
+          parseDjangoDump<string>('form-errors') ?? [],
+          parseDjangoDump<string>('collection-errors') ?? [],
         ]
           .flat()
           .filter(Boolean)}
         availableCollections={JSON.parse(
-          parseDjangoDump('available-collections')
+          parseDjangoDump('available-collections') ?? '[]'
         )}
         // REFACTOR: store this on the front-end?
-        initialValue={parseDjangoDump('initial-value')}
+        initialValue={parseDjangoDump('initial-value') ?? null}
         nextUrl={parseDjangoDump<string>('next-url') ?? '/specify/'}
       />
     ),

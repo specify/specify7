@@ -19,7 +19,8 @@ function entrypoint(): void {
 
   console.group('Specify App Starting');
   const entrypointName =
-    parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name');
+    parseDjangoDump<ReturnType<typeof getEntrypointName>>('entrypoint-name') ??
+    'main';
   console.log(entrypointName);
   unlockInitialContext(entrypointName);
 

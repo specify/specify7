@@ -22,14 +22,14 @@ import { SplashScreen } from '../Core/SplashScreen';
 export function Login(): JSX.Element {
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
-    const providers = parseDjangoDump<RA<OicProvider>>('providers');
+    const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
     return providers.length > 0 ? (
       <OicLogin
         data={{
-          inviteToken: parseDjangoDump('invite-token'),
+          inviteToken: parseDjangoDump('invite-token') ?? '',
           providers,
-          languages: parseDjangoDump('languages'),
-          csrfToken: parseDjangoDump('csrf-token'),
+          languages: parseDjangoDump('languages') ?? [],
+          csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
         nextUrl={
           // REFACTOR: use parseUrl() and formatUrl() instead
@@ -41,12 +41,12 @@ export function Login(): JSX.Element {
     ) : (
       <LegacyLogin
         data={{
-          formErrors: parseDjangoDump('form-errors'),
-          inputErrors: parseDjangoDump('input-errors'),
-          externalUser: parseDjangoDump('external-user'),
-          passwordErrors: parseDjangoDump('password-errors'),
-          languages: parseDjangoDump('languages'),
-          csrfToken: parseDjangoDump('csrf-token'),
+          formErrors: parseDjangoDump('form-errors') ?? [],
+          inputErrors: parseDjangoDump('input-errors') ?? [],
+          externalUser: parseDjangoDump('external-user') ?? '',
+          passwordErrors: parseDjangoDump('password-errors') ?? [],
+          languages: parseDjangoDump('languages') ?? [],
+          csrfToken: parseDjangoDump('csrf-token') ?? '',
         }}
         nextUrl={
           nextUrl.startsWith(nextDestination)
