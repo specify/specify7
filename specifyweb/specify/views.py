@@ -479,6 +479,6 @@ def agent_record_replacement(request: http.HttpRequest, old_agent_id, new_agent_
             return http.HttpResponseNotAllowed(str(e))
 
         # Dedupe by deleting the agent that is being replaced and updating the old AgentID to the new one
-        cursor.execute("DELETE FROM agent WHERE AgentID=%s", old_agent_id)
+        cursor.execute("DELETE FROM agent WHERE AgentID=%s", [old_agent_id])
         
         return http.HttpResponse('', status=204)
