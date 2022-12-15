@@ -42,5 +42,5 @@ urlpatterns = [
     url(r'^set_agents/(?P<userid>\d+)/$', views.set_user_agents),
 
     # replace agent
-    url(r'^specify/replace/agent/(?P<old_agent_id>\d+)/(?P<new_agent_id>\d+)/$', views.agent_record_replacement)
+    url(r'^specify/agent/replace/(?P<old_agent_id>\d+)/(?P<new_agent_id>\d+)/$', views.agent_record_replacement)
 ]
