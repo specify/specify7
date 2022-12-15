@@ -17,8 +17,8 @@ import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { autoMerge } from './autoMerge';
 import { MergingHeader } from './Header';
+import { resourceOn } from '../DataModel/resource';
 
-// FIXME: split this file into smaller functions
 export function CompareRecords({
   showMatching,
   model,
@@ -132,7 +132,19 @@ function MergeButton({
   readonly to: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const fromValue = from.get(field.name);
-  const toValue = merged.get(field.name);
+
+  const [toValue, setToValue] = React.useState(merged.get(field.name));
+  React.useEffect(
+    () =>
+      resourceOn(
+        merged,
+        `change:${field.name}`,
+        () => setToValue(merged.get(field.name)),
+        true
+      ),
+    [toValue, field.name]
+  );
+
   const isSame = React.useMemo(
     () => JSON.stringify(fromValue) === JSON.stringify(toValue),
     [fromValue, toValue]
