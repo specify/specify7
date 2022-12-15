@@ -12,25 +12,37 @@ import { Categories } from './Categories';
 import React from 'react';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { SpecifyResource } from '../DataModel/legacyTypes';
+import { useDefaultStatsToAdd } from './hooks';
 
 export function AddStatDialog({
-  defaultLayout,
+  defaultStatsAddLeft,
   statsSpec,
   queries,
   onClose: handleClose,
   onAdd: handleAdd,
+  onValueLoad: handleValueLoad,
   onStatNetwork: handleStatNetwork,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-  readonly defaultLayout: StatLayout;
+  readonly defaultStatsAddLeft: StatLayout;
+  readonly layout: StatLayout;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
   readonly onStatNetwork: (
     query: SpecifyResource<SpQuery> | undefined
   ) => Promise<string | undefined>;
+  readonly onValueLoad:
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        value: number | string,
+        itemName: string,
+        itemType: string,
+        pageIndexMod: number
+      ) => void)
+    | undefined;
 }): JSX.Element | null {
-  const defaultStatsAddLeft = defaultLayout;
   return Array.isArray(queries) ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
@@ -73,27 +85,48 @@ export function AddStatDialog({
         {defaultStatsAddLeft.length > 0 && (
           <div>
             <H3 className="text-lg">{statsText('selectFromDefault')}</H3>
-            {defaultStatsAddLeft.map((defaultLayoutPage, index) => (
-              <div key={index}>
-                <h4>{defaultLayoutPage.label}</h4>
-                <div>
-                  <Categories
-                    pageLayout={defaultLayoutPage}
-                    statsSpec={statsSpec}
-                    onClick={(item: DefaultStat | CustomStat): void => {
-                      handleAdd(item, -1);
-                      handleClose();
-                    }}
-                    onRemove={undefined}
-                    onRename={undefined}
-                    onAdd={undefined}
-                    onSpecChanged={undefined}
-                    onValueLoad={undefined}
-                    onStatNetwork={handleStatNetwork}
-                  />
+            {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
+              defaultLayoutPage.categories.every(({ items }) =>
+                items.every(
+                  (item) => item.type === 'DefaultStat' && item.absent === true
+                )
+              ) ? undefined : (
+                <div key={index}>
+                  <h4>{defaultLayoutPage.label}</h4>
+                  <div>
+                    <Categories
+                      pageLayout={defaultLayoutPage}
+                      statsSpec={statsSpec}
+                      onClick={(item: DefaultStat | CustomStat): void => {
+                        handleAdd(item, -1);
+                        handleClose();
+                      }}
+                      onRemove={undefined}
+                      onRename={undefined}
+                      onAdd={undefined}
+                      onSpecChanged={undefined}
+                      onValueLoad={(
+                        categoryIndex: number,
+                        itemIndex: number,
+                        value: number | string,
+                        itemName: string,
+                        itemType: string
+                      ) => {
+                        handleValueLoad(
+                          categoryIndex,
+                          itemIndex,
+                          value,
+                          itemName,
+                          itemType,
+                          index
+                        );
+                      }}
+                      onStatNetwork={handleStatNetwork}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         )}
       </div>

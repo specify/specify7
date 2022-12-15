@@ -9,6 +9,8 @@ import type {
   BackendStatsResult,
   StatCategoryReturn,
 } from './types';
+import React from 'react';
+import { userInformation } from '../InitialContext/userInformation';
 
 const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
   backEndStats: BackendStatsResult[CATEGORY_NAME] | undefined,
@@ -43,7 +45,7 @@ type StatsSpec =
   | {
       readonly [CATEGORY_NAME in string]: {
         readonly label: string;
-        readonly categories: () => StatCategoryReturn;
+        readonly categories: (userId?: string) => StatCategoryReturn;
       };
     };
 
@@ -428,62 +430,47 @@ export const statsSpec: IR<StatsSpec> = {
     },
   },
   [statsText('personal')]: {
-    loans: {
-      label: statsText('loans'),
-      categories: () => ({
-        itemsOnLoans: {
-          label: statsText('itemsOnLoans'),
+    holdings: {
+      label: statsText('collection'),
+      categories: (specifyUserName: string) => ({
+        collectionObjectsModified: {
+          label: statsText('collectionObjectsModified'),
           spec: {
             type: 'QueryBuilderStat',
-            tableName: 'LoanPreparation',
+            tableName: 'CollectionObject',
             fields: [
               {
-                path: `loan.${formattedEntry}`,
-              },
-              {
-                path: 'loan.isClosed',
-                operStart: queryFieldFilters.falseOrNull.id,
-                isDisplay: false,
+                path: 'modifiedByAgent.SpecifyUser.name',
+                startvalue: specifyUserName,
+                operstart: queryFieldFilters.equal.id,
               },
             ],
           },
         },
-        openLoansCount: {
-          label: statsText('openLoans'),
+        collectionObjectsCataloged: {
+          label: statsText('collectionObjectsCataloged'),
           spec: {
             type: 'QueryBuilderStat',
-            tableName: 'Loan',
+            tableName: 'CollectionObject',
             fields: [
               {
-                path: formattedEntry,
-              },
-              {
-                path: 'isClosed',
-                operStart: queryFieldFilters.falseOrNull.id,
-                isDisplay: false,
+                path: 'cataloger.SpecifyUser.name',
+                startvalue: specifyUserName,
+                operstart: queryFieldFilters.equal.id,
               },
             ],
           },
         },
-        overdueLoansCount: {
-          label: statsText('overdueLoans'),
-
+        collectionObjectsDetermined: {
+          label: statsText('collectionObjectsDetermined'),
           spec: {
             type: 'QueryBuilderStat',
-            tableName: 'Loan',
+            tableName: 'CollectionObject',
             fields: [
               {
-                path: formattedEntry,
-              },
-              {
-                path: 'currentDueDate',
-                operStart: queryFieldFilters.lessOrEqual.id,
-                startValue: getDateInputValue(new Date()),
-              },
-              {
-                path: 'isClosed',
-                operStart: queryFieldFilters.false.id,
-                isDisplay: false,
+                path: 'determinations.determiner.SpecifyUser.name',
+                startvalue: specifyUserName,
+                operstart: queryFieldFilters.equal.id,
               },
             ],
           },

@@ -86,60 +86,63 @@ export function Categories({
           <div className="flex-1 overflow-auto">
             {items?.map((item, itemIndex) =>
               item.type === 'DefaultStat' ? (
-                <DefaultStatItem
-                  categoryName={item.categoryName}
-                  itemName={item.itemName}
-                  pageName={item.pageName}
-                  itemValue={item.cachedValue}
-                  key={itemIndex}
-                  statsSpec={statsSpec}
-                  onValueLoad={(statValue, itemName) =>
-                    typeof handleValueLoad === 'function'
-                      ? handleValueLoad(
-                          categoryIndex,
-                          itemIndex,
-                          statValue,
-                          itemName,
-                          item.type
-                        )
-                      : undefined
-                  }
-                  onSpecChanged={
-                    handleSpecChanged !== undefined && handleClick !== undefined
-                      ? (tableName, newFields, itemName): void => {
-                          handleClick(
-                            {
-                              type: 'CustomStat',
-                              itemLabel: itemName,
-                              tableName,
-                              fields: newFields,
-                            },
+                item.absent === false || item.absent === undefined ? (
+                  <DefaultStatItem
+                    categoryName={item.categoryName}
+                    itemName={item.itemName}
+                    pageName={item.pageName}
+                    itemValue={item.cachedValue}
+                    key={itemIndex}
+                    statsSpec={statsSpec}
+                    onValueLoad={(statValue, itemName) =>
+                      typeof handleValueLoad === 'function'
+                        ? handleValueLoad(
                             categoryIndex,
-                            itemIndex
-                          );
-                        }
-                      : undefined
-                  }
-                  onClick={
-                    typeof handleClick === 'function'
-                      ? handleSpecChanged === undefined
-                        ? (): void =>
-                            handleClick({
-                              type: 'DefaultStat',
-                              pageName: item.pageName,
-                              categoryName: item.categoryName,
-                              itemName: item.itemName,
-                            })
+                            itemIndex,
+                            statValue,
+                            itemName,
+                            item.type
+                          )
                         : undefined
-                      : undefined
-                  }
-                  onRemove={
-                    handleRemove === undefined
-                      ? undefined
-                      : (): void => handleRemove(categoryIndex, itemIndex)
-                  }
-                  onStatNetwork={handleStatNetwork}
-                />
+                    }
+                    onSpecChanged={
+                      handleSpecChanged !== undefined &&
+                      handleClick !== undefined
+                        ? (tableName, newFields, itemName): void => {
+                            handleClick(
+                              {
+                                type: 'CustomStat',
+                                itemLabel: itemName,
+                                tableName,
+                                fields: newFields,
+                              },
+                              categoryIndex,
+                              itemIndex
+                            );
+                          }
+                        : undefined
+                    }
+                    onClick={
+                      typeof handleClick === 'function'
+                        ? handleSpecChanged === undefined
+                          ? (): void =>
+                              handleClick({
+                                type: 'DefaultStat',
+                                pageName: item.pageName,
+                                categoryName: item.categoryName,
+                                itemName: item.itemName,
+                              })
+                          : undefined
+                        : undefined
+                    }
+                    onRemove={
+                      handleRemove === undefined
+                        ? undefined
+                        : (): void => handleRemove(categoryIndex, itemIndex)
+                    }
+                    onStatNetwork={handleStatNetwork}
+                  />
+                ) : undefined
               ) : (
                 <QueryStat
                   key={itemIndex}

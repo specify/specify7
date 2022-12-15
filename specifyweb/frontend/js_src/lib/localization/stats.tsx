@@ -146,5 +146,17 @@ export const statsText = createDictionary({
     'en-us': 'Personal',
     'ru-ru': 'Личный',
   },
+  collectionObjectsModified: {
+    'en-us': 'Collection Objects Modified',
+    'ru-ru': 'Объекты коллекции изменены',
+  },
+  collectionObjectsCataloged: {
+    'en-us': 'Collection Objects Cataloged',
+    'ru-ru': 'Объекты коллекции каталогизированы',
+  },
+  collectionObjectsDetermined: {
+    'en-us': 'Collection Objects Determined',
+    'ru-ru': 'Объекты коллекции определены',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

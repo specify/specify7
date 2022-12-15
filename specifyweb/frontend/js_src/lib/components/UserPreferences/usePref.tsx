@@ -56,19 +56,17 @@ export function usePref<
         | ((
             oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
           ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'])
-    ): void =>
-      setUserPref(
-        category,
-        subcategory,
-        item,
+    ): void => {
+      let x =
         typeof newPref === 'function'
           ? (
               newPref as (
                 oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
               ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
             )(currentPref.current)
-          : newPref
-      ),
+          : newPref;
+      setUserPref(category, subcategory, item, x);
+    },
     [category, subcategory, item]
   );
 

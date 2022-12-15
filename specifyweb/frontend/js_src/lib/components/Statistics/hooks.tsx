@@ -22,6 +22,7 @@ import { deserializeResource } from '../../hooks/resource';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
+import { statsText } from '../../localization/stats';
 export function useCustomStatQuery(queryId: number):
   | {
       readonly tableName: keyof Tables;
@@ -78,7 +79,10 @@ export function useBackendApi(
   return backendStatObject;
 }
 
-export function useStatsSpec(cachedState: boolean): IR<
+export function useStatsSpec(
+  cachedState: boolean,
+  specifyUserName: string
+): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
@@ -100,16 +104,21 @@ export function useStatsSpec(cachedState: boolean): IR<
                     categories as (
                       backendStatResult:
                         | BackendStatsResult[typeof categoryName]
+                        | string
                         | undefined
                     ) => StatCategoryReturn
-                  )(backEndResult?.[categoryName]),
+                  )(
+                    pageName === statsText('personal')
+                      ? specifyUserName
+                      : backEndResult?.[categoryName]
+                  ),
                 },
               ]
             )
           ),
         ])
       ),
-    [backEndResult]
+    [backEndResult, specifyUserName]
   );
 }
 
@@ -130,16 +139,20 @@ export function useDefaultStatsToAdd(
         categories: defaultLayoutPage.categories
           .map(({ label, items }) => ({
             label,
-            items: items.filter(
-              (defaultItem) =>
-                defaultItem.type === 'DefaultStat' &&
-                !listToUse.some(
-                  ({ pageName, categoryName, itemName }) =>
-                    pageName === defaultItem.pageName &&
-                    categoryName === defaultItem.categoryName &&
-                    itemName === defaultItem.itemName
-                )
-            ),
+            items: items.map((defaultItem) => ({
+              ...defaultItem,
+              ...(defaultItem.type === 'DefaultStat' &&
+              !listToUse.some(
+                ({ pageName, categoryName, itemName }) =>
+                  pageName === defaultItem.pageName &&
+                  categoryName === defaultItem.categoryName &&
+                  itemName === defaultItem.itemName
+              )
+                ? {
+                    absent: false,
+                  }
+                : { absent: true }),
+            })),
           }))
           .filter(({ items }) => items.length > 0),
       }))
@@ -187,8 +200,12 @@ export function useFrontEndStat(
   const [countReturn] = useAsyncState(
     React.useCallback(
       () =>
-        statCachedValue !== undefined ? statCachedValue : onStatNetwork(query),
-      [query]
+        statCachedValue !== undefined
+          ? statCachedValue
+          : query !== undefined
+          ? onStatNetwork(query)
+          : undefined,
+      [query, statCachedValue]
     ),
     false
   );

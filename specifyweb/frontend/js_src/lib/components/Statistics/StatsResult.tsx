@@ -16,6 +16,7 @@ export function StatsResult({
   onRemove: handleRemove,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
+  cachedValue,
 }: {
   readonly statValue: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
@@ -31,13 +32,15 @@ export function StatsResult({
       ) => void)
     | undefined;
   readonly onValueLoad: ((statValue: string | number) => void) | undefined;
+  readonly cachedValue: string | number | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   React.useEffect(() => {
     if (
       statValue !== undefined &&
       statLabel !== undefined &&
-      handleValueLoad !== undefined
+      handleValueLoad !== undefined &&
+      statValue !== cachedValue
     ) {
       handleValueLoad(statValue);
     }
@@ -63,7 +66,7 @@ export function StatsResult({
           >
             <span>{statLabel}</span>
             <span className="-ml-2 flex-1" />
-            <span>{statValue ?? commonText('loading')}</span>
+            <span>{statValue ?? cachedValue ?? commonText('loading')}</span>
           </Button.LikeLink>
         </p>
       )}

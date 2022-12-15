@@ -73,7 +73,8 @@ export function DefaultStatItem({
     <StatsResult
       query={undefined}
       statLabel={statSpecItem?.label}
-      statValue={statSpecItem?.spec.value ?? itemValue}
+      statValue={statSpecItem?.spec.value}
+      cachedValue={itemValue}
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={undefined}
@@ -130,7 +131,8 @@ export function QueryStat({
     <StatsResult
       query={frontEndQuery}
       statLabel={statLabel}
-      statValue={frontEndStatValue ?? statValue}
+      statValue={frontEndStatValue}
+      cachedValue={statValue}
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={handleSpecChanged}

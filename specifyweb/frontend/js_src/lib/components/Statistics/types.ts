@@ -27,6 +27,7 @@ export type DefaultStat = State<
       | undefined;
     readonly cachedLabel?: string | undefined;
     readonly cachedValue?: string | number | undefined;
+    readonly absent?: boolean;
   }
 >;
 
