@@ -4,7 +4,8 @@ import { deserializeResource } from '../../hooks/resource';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { Input, Label } from '../Atoms/Form';
+import { className } from '../Atoms/className';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -15,8 +16,7 @@ import { FormField } from '../FormFields';
 import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { autoMerge } from './autoMerge';
-import { queryText } from '../../localization/query';
-import { DateElement } from '../Molecules/DateElement';
+import { MergingHeader } from './Header';
 
 // FIXME: split this file into smaller functions
 export function CompareRecords({
@@ -36,26 +36,15 @@ export function CompareRecords({
     () => records.map(deserializeResource),
     [records]
   );
-  const left = resources[0];
-  const right = resources[1];
   const conformation = useConformation(showMatching, model, records);
   return (
     <>
-      <div>
-        {/* FEATURE: show record usages */}
-        <ResourceSummary model={model} record={records[0]} />
-        {/* FEATURE: add a button to preview a given record in a form */}
-      </div>
+      <MergingHeader merged={merged} resources={resources} />
       {/* FEATURE: add an all-left and all-right button */}
-      <div />
-      <div>{queryText('mergedRecord')}</div>
-      <div />
-      <div>
-        <ResourceSummary model={model} record={records[1]} />
-      </div>
       {/* BUG: hide timestamp modified/created/version */}
       {/* FEATURE: look for other fields to hide - and handle their merging */}
       {/* FEATURE: allow for any number of records to merge*/}
+      {/* FEATURE: freeze top row */}
       {/* FEATURE: freeze the first column - labels */}
       {/* FEATURE: add merge util to user tools */}
       {/* FEATURE: add merge util to form meta */}
@@ -63,38 +52,10 @@ export function CompareRecords({
         <CompareField
           field={field}
           key={field.name}
-          left={left}
           merged={merged}
-          right={right}
+          resources={resources}
         />
       ))}
-    </>
-  );
-}
-
-function ResourceSummary({
-  record,
-  model,
-}: {
-  readonly record: SerializedResource<AnySchema>;
-  readonly model: SpecifyModel;
-}): JSX.Element {
-  const createdField = model.getField('timestampCreated');
-  const modifiedField = model.getField('timestampModified');
-  return (
-    <>
-      {typeof createdField === 'object' && (
-        <Label.Block>
-          {createdField.label}
-          <DateElement date={record.timestampCreated as string} />
-        </Label.Block>
-      )}
-      {typeof modifiedField === 'object' && (
-        <Label.Block>
-          {modifiedField.label}
-          <DateElement date={record.timestampModified as string} />
-        </Label.Block>
-      )}
     </>
   );
 }
@@ -143,29 +104,21 @@ const findDiffering = (
 
 function CompareField({
   field,
-  left,
+  resources,
   merged,
-  right,
 }: {
   readonly field: LiteralField | Relationship;
-  readonly left: SpecifyResource<AnySchema>;
+  readonly resources: RA<SpecifyResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema>;
-  readonly right: SpecifyResource<AnySchema>;
 }): JSX.Element {
   return (
-    <>
-      <div>
-        <Field field={field} isReadOnly resource={left} />
-      </div>
-      <MergeButton direction="right" field={field} from={left} to={merged} />
-      <div>
-        <Field field={field} resource={merged} />
-      </div>
-      <MergeButton direction="left" field={field} from={right} to={merged} />
-      <div>
-        <Field field={field} isReadOnly resource={right} />
-      </div>
-    </>
+    <tr>
+      <th scope="row">{field.label}</th>
+      <Field field={field} merged={undefined} resource={merged} />
+      {resources.map((resource, index) => (
+        <Field field={field} key={index} merged={merged} resource={resource} />
+      ))}
+    </tr>
   );
 }
 
@@ -173,12 +126,10 @@ function MergeButton({
   field,
   from,
   to: merged,
-  direction,
 }: {
   readonly field: LiteralField | Relationship;
   readonly from: SpecifyResource<AnySchema>;
   readonly to: SpecifyResource<AnySchema>;
-  readonly direction: 'left' | 'right';
 }): JSX.Element {
   const fromValue = from.get(field.name);
   const toValue = merged.get(field.name);
@@ -187,25 +138,26 @@ function MergeButton({
     [fromValue, toValue]
   );
   return (
-    <Button.Blue
+    <Button.Small
       aria-label={treeText('merge')}
       disabled={isSame}
       title={treeText('merge')}
+      variant={className.blueButton}
       onClick={(): void => void merged.set(field.name, fromValue)}
     >
-      {direction === 'left' ? icons.chevronLeft : icons.chevronRight}
-    </Button.Blue>
+      {icons.chevronLeft}
+    </Button.Small>
   );
 }
 
 function Field({
   field,
   resource,
-  isReadOnly = false,
+  merged,
 }: {
   readonly field: LiteralField | Relationship;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly isReadOnly?: boolean;
+  readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const fieldDefinition = React.useMemo(
     () => ({
@@ -215,18 +167,23 @@ function Field({
     [field]
   );
   return (
-    <Label.Block>
-      {field.label}
-      {!field.isRelationship || !field.isDependent() ? (
-        <FormField
-          fieldDefinition={fieldDefinition}
-          fieldName={field.name}
-          formType="form"
-          id={undefined}
-          isRequired={false}
-          mode={isReadOnly ? 'view' : 'edit'}
-          resource={resource}
-        />
+    <td>
+      {typeof merged === 'object' && (
+        <MergeButton field={field} from={resource} to={merged} />
+      )}
+      {!field.isRelationship ||
+      (!field.isDependent() && !relationshipIsToMany(field)) ? (
+        <div className="flex-1">
+          <FormField
+            fieldDefinition={fieldDefinition}
+            fieldName={field.name}
+            formType="form"
+            id={undefined}
+            isRequired={false}
+            mode={merged === undefined ? 'edit' : 'view'}
+            resource={resource}
+          />
+        </div>
       ) : (
         <Input.Text
           // FIXME: render this as a subview
@@ -234,7 +191,7 @@ function Field({
           onChange={undefined}
         />
       )}
-    </Label.Block>
+    </td>
   );
 }
 

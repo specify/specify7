@@ -26,7 +26,7 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { loadingGif } from '../Molecules';
 import { SortIndicator } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasToolPermission } from '../Permissions/helpers';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { fetchPickList } from '../PickLists/fetch';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { RecordSetCreated, recordSetFromQueryLoading } from './Components';
@@ -243,7 +243,9 @@ export function QueryResults({
         results.length > 0 &&
         typeof fetchResults === 'function' ? (
           <>
-            <RecordMerging model={model} selectedRows={selectedRows} />
+            {hasPermission('/replace/record', 'update') && (
+              <RecordMerging model={model} selectedRows={selectedRows} />
+            )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
                 <CreateRecordSet

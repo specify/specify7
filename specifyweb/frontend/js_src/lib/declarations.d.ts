@@ -59,6 +59,10 @@ declare global {
     // Prevent Object.keys() from widening the key type to string[]
     keys<KEY extends string>(object: RR<KEY, unknown>): RA<KEY>;
   }
+
+  interface PromiseConstructor {
+    all<T>(values: Iterable<T | PromiseLike<T>>): Promise<RA<Awaited<T>>>;
+  }
 }
 
 // Make router state more type safe

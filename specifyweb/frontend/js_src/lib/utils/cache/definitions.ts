@@ -130,7 +130,7 @@ export type CacheDefinitions = {
     readonly filters: AppResourceFilters;
   };
   readonly merging: {
-    readonly showConflictingFieldsOnly: boolean;
+    readonly showMatchingFields: boolean;
   };
 };
 

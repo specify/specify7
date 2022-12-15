@@ -1,10 +1,13 @@
 import React from 'react';
+
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
+import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
@@ -13,8 +16,6 @@ import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
-import { RA } from '../../utils/types';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function RecordMerging({
   model,
@@ -58,7 +59,7 @@ function MergingDialog({
   const records = useResources(model, selectedRows);
   const [showMatching = false, setShowMatching] = useCachedState(
     'merging',
-    'showConflictingFieldsOnly'
+    'showMatchingFields'
   );
 
   const id = useId('merging-dialog');
@@ -68,8 +69,8 @@ function MergingDialog({
         <>
           <Label.Inline>
             <Input.Checkbox
-              checked={showMatching}
-              onValueChange={setShowMatching}
+              checked={!showMatching}
+              onValueChange={(checked): void => setShowMatching(!checked)}
             />
             {queryText('showConflictingFieldsOnly')}
           </Label.Inline>
@@ -84,17 +85,28 @@ function MergingDialog({
       onClose={handleClose}
     >
       <Form
-        className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)]"
         onSubmit={(): void => {
           // FIXME: complete this
           handleMerged();
         }}
       >
-        <CompareRecords
-          showMatching={showMatching}
-          records={records}
-          model={model}
-        />
+        <table
+          className={`
+            grid-table grid-cols-[repeat(var(--columns),minmax(0,1fr))] gap-2
+            overflow-auto
+          `}
+          style={
+            {
+              '--columns': records.length + 2,
+            } as React.CSSProperties
+          }
+        >
+          <CompareRecords
+            model={model}
+            records={records}
+            showMatching={showMatching}
+          />
+        </table>
       </Form>
     </Dialog>
   );
@@ -108,7 +120,7 @@ function useResources(
     React.useCallback(
       async () =>
         Promise.all(
-          Array.from(selectedRows, (id) => fetchResource(model.name, id))
+          Array.from(selectedRows, async (id) => fetchResource(model.name, id))
         ),
       [model, selectedRows]
     ),

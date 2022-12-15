@@ -1,15 +1,17 @@
 import React from 'react';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
 import { Link } from '../Atoms/Link';
-import { strictParseResourceUrl } from '../DataModel/resource';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn, strictParseResourceUrl } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 
-export function FormattedResource({
+export function FormattedResourceUrl({
   resourceUrl,
   fallback = commonText('loading'),
 }: {
@@ -21,10 +23,32 @@ export function FormattedResource({
     const model = strictGetModel(tableName);
     return new model.Resource({ id });
   }, [resourceUrl]);
-  const [formatted = fallback] = useAsyncState(
-    React.useCallback(async () => format(resource).catch(softFail), [resource]),
-    false
+  return <FormattedResource fallback={fallback} resource={resource} />;
+}
+
+export function FormattedResource({
+  resource,
+  fallback = commonText('loading'),
+}: {
+  readonly resource: SpecifyResource<AnySchema>;
+  readonly fallback?: string;
+}): JSX.Element | null {
+  const [formatted, setFormatted] = React.useState<string>(fallback);
+
+  React.useEffect(
+    () =>
+      resourceOn(
+        resource,
+        'change',
+        () =>
+          void format(resource, undefined, true)
+            .then((formatted) => f.maybe(formatted, setFormatted))
+            .catch(softFail),
+        true
+      ),
+    [resource, fallback]
   );
+
   return typeof resource === 'object' &&
     hasTablePermission(resource.specifyModel.name, 'read') ? (
     <Link.Default href={resource.viewUrl()}>{formatted}</Link.Default>

@@ -317,6 +317,14 @@ export const queryText = createDictionary({
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показать только конфликтующие поля',
   },
+  referencesToRecord: {
+    'en-us': 'References to this record',
+    'ru-ru': 'Ссылки на эту запись',
+  },
+  preview: {
+    'en-us': 'Preview',
+    'ru-ru': 'Открыть',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

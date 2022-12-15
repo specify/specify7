@@ -4,7 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { GetOrSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -21,7 +21,7 @@ export type DeleteBlocker = {
   readonly id: number;
 };
 
-export function DeleteBlocked({
+export function DeleteBlockers({
   resource: parentResource,
   blockers,
   onClose: handleClose,
@@ -29,7 +29,7 @@ export function DeleteBlocked({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly blockers: RA<DeleteBlocker>;
-  readonly onClose: () => void;
+  readonly onClose: (() => void) | undefined;
   readonly onDeleted: () => void;
 }): JSX.Element | null {
   const [preview, setPreview] = React.useState<
@@ -40,32 +40,22 @@ export function DeleteBlocked({
     | undefined
   >(undefined);
 
-  const [data, setData] = useAsyncState(
-    React.useCallback(
-      async () =>
-        Promise.all(
-          blockers.map(async ({ model, field, id }) => {
-            const resource = new model.Resource({ id });
-            return f.all({
-              field:
-                parentResource.specifyModel.getRelationship(field) ?? field,
-              resource,
-              formatted: await format(resource, undefined, true),
-            });
-          })
-        ),
-      [blockers]
-    ),
-    true
+  const isEmbedded = handleClose === undefined;
+  const [data, setData] = useFormattedBlockers(
+    parentResource,
+    blockers,
+    !isEmbedded
   );
+
   React.useEffect(
     () =>
       Array.isArray(data) && data.length === 0 ? handleDeleted() : undefined,
     [data, handleDeleted]
   );
 
-  return Array.isArray(data) ? (
-    typeof preview === 'object' ? (
+  if (!Array.isArray(data)) return null;
+  else if (typeof preview === 'object')
+    return (
       <BlockerPreview
         field={preview.field}
         parentResource={parentResource}
@@ -75,50 +65,90 @@ export function DeleteBlocked({
           setData(data.filter(({ resource }) => resource !== preview.resource))
         }
       />
-    ) : (
-      <Dialog
-        buttons={commonText('close')}
-        className={{
-          container: dialogClassNames.wideContainer,
-        }}
-        header={formsText('deleteBlockedDialogHeader')}
-        onClose={handleClose}
+    );
+  const children = data.map(({ formatted, field, resource }, index) => {
+    const button = (
+      <Button.LikeLink
+        // BUG: consider applying these styles everywhere
+        className="max-w-full overflow-auto text-left"
+        onClick={(): void =>
+          setPreview({
+            resource,
+            field: typeof field === 'object' ? field : undefined,
+          })
+        }
       >
-        {formsText('deleteBlockedDialogText')}
-        {/* BUG: apply these styles everywhere where necessary */}
-        <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
-          <thead>
-            <tr>
-              <th scope="col">{formsText('record')}</th>
-              <th scope="col">{formsText('relationship')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map(({ formatted, field, resource }, index) => (
-              <tr key={index}>
-                <td>
-                  <Button.LikeLink
-                    // BUG: consider applying these styles everywhere
-                    className="max-w-full overflow-auto text-left"
-                    onClick={(): void =>
-                      setPreview({
-                        resource,
-                        field: typeof field === 'object' ? field : undefined,
-                      })
-                    }
-                  >
-                    <TableIcon label name={resource.specifyModel.name} />
-                    {formatted ?? resource.viewUrl()}
-                  </Button.LikeLink>
-                </td>
-                <td>{typeof field === 'object' ? field.label : field}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Dialog>
-    )
-  ) : null;
+        <TableIcon label name={resource.specifyModel.name} />
+        {formatted}
+      </Button.LikeLink>
+    );
+    return isEmbedded ? (
+      button
+    ) : (
+      <tr key={index}>
+        <td>{button}</td>
+        <td>{typeof field === 'object' ? field.label : field}</td>
+      </tr>
+    );
+  });
+  return isEmbedded ? (
+    <>{children}</>
+  ) : (
+    <Dialog
+      buttons={commonText('close')}
+      className={{
+        container: dialogClassNames.wideContainer,
+      }}
+      header={formsText('deleteBlockedDialogHeader')}
+      onClose={handleClose}
+    >
+      {formsText('deleteBlockedDialogText')}
+      {/* BUG: apply these styles everywhere where necessary */}
+      <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
+        <thead>
+          <tr>
+            <th scope="col">{formsText('record')}</th>
+            <th scope="col">{formsText('relationship')}</th>
+          </tr>
+        </thead>
+        <tbody>{children}</tbody>
+      </table>
+    </Dialog>
+  );
+}
+
+export function useFormattedBlockers(
+  parentResource: SpecifyResource<AnySchema>,
+  blockers: RA<DeleteBlocker> | undefined,
+  loadingScreen: boolean
+): GetOrSet<
+  | RA<{
+      readonly field: Relationship | string;
+      readonly resource: SpecifyResource<AnySchema>;
+      readonly formatted: string;
+    }>
+  | undefined
+> {
+  return useAsyncState(
+    React.useCallback(
+      async () =>
+        blockers === undefined
+          ? undefined
+          : Promise.all(
+              blockers.map(async ({ model, field, id }) => {
+                const resource = new model.Resource({ id });
+                return f.all({
+                  field:
+                    parentResource.specifyModel.getRelationship(field) ?? field,
+                  resource,
+                  formatted: (await format(resource, undefined, true))!,
+                });
+              })
+            ),
+      [parentResource, blockers]
+    ),
+    loadingScreen
+  );
 }
 
 function BlockerPreview({
