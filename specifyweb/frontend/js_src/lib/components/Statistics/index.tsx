@@ -30,10 +30,9 @@ import { serializeResource } from '../DataModel/helpers';
 import { formatNumber } from '../Atoms/Internationalization';
 import { SpecifyResource } from '../DataModel/legacyTypes';
 import { SpQuery } from '../DataModel/types';
-import {RA, WritableArray} from '../../utils/types';
+import { RA, WritableArray } from '../../utils/types';
 
 export function StatsPage(): JSX.Element {
-
   useMenuItem('statistics');
 
   const [layout, setPrevLayout] = usePref('statistics', 'appearance', 'layout');
@@ -96,28 +95,11 @@ export function StatsPage(): JSX.Element {
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
 
-  const statNetworkCount = React.useRef(0);
-  const activeNetworkRequest = [];
-  const VINNY_STAT_CONSTANT = 20;
-  const useStatNetwork = async (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => {
-    if (
-      statNetworkCount.current > VINNY_STAT_CONSTANT ||
-      statNetworkCount.current < 0 ||
-      query === undefined
-    )
-      return undefined;
-    statNetworkCount.current += 1;
-    while (statNetworkCount.current > VINNY_STAT_CONSTANT) {
-      await Promise.any(activeNetworkRequest).then((value) => {});
-
   const activeNetworkRequest = React.useRef<WritableArray[Promise]>([]);
   const VINNY_STAT_CONSTANT = 10;
   const useStatNetwork = async (query: SpecifyResource<SpQuery>) => {
     while (activeNetworkRequest.current.length > VINNY_STAT_CONSTANT) {
       await Promise.any(activeNetworkRequest.current);
-
     }
     const statPromise = ajax<{
       readonly count: number;
