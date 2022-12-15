@@ -14,45 +14,36 @@ import { DeleteBlockers } from '../Forms/DeleteBlocked';
 import { fetchBlockers } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
 import { DateElement } from '../Molecules/DateElement';
+import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
-import { dialogClassNames } from '../Molecules/Dialog';
 
 export function MergingHeader({
   merged,
   resources,
+  onDeleted: handleDeleted,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly onDeleted: (id: number) => void;
 }): JSX.Element {
   return (
     <>
       <HeaderLine merged={merged} resources={resources} />
-      <SummaryLines merged={merged} resources={resources} />
-      <UsagesLine resources={resources} />
-      <PreviewLine merged={merged} resources={resources} />
+      <tbody>
+        <SummaryLines merged={merged} resources={resources} />
+        <UsagesLine resources={resources} />
+        <PreviewLine
+          merged={merged}
+          resources={resources}
+          onDeleted={handleDeleted}
+        />
+      </tbody>
     </>
   );
 }
 
 const background = dialogClassNames.solidBackground;
-
-export function MergeRow({
-  header,
-  children,
-}: {
-  readonly header: string;
-  readonly children: React.ReactNode;
-}): JSX.Element {
-  return (
-    <tr>
-      <th className={`sticky left-0 text-left ${background}`} scope="row">
-        {header}
-      </th>
-      {children}
-    </tr>
-  );
-}
 
 function HeaderLine({
   merged,
@@ -62,15 +53,21 @@ function HeaderLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <tr>
-      <td className={background} />
-      {[merged, ...resources].map((resource, index) => (
-        <th className={`sticky top-0 ${background}`} key={index} scope="col">
-          <TableIcon label name={resource.specifyModel.name} />
-          <FormattedResource resource={resource} asLink={false} />
-        </th>
-      ))}
-    </tr>
+    <thead>
+      <tr>
+        <td className={background} />
+        {[merged, ...resources].map((resource, index) => (
+          <th
+            className={`sticky top-0 ${background} z-[20]`}
+            key={index}
+            scope="col"
+          >
+            <TableIcon label name={resource.specifyModel.name} />
+            <FormattedResource asLink={false} resource={resource} />
+          </th>
+        ))}
+      </tr>
+    </thead>
   );
 }
 
@@ -104,6 +101,26 @@ function SummaryLines({
         </MergeRow>
       )}
     </>
+  );
+}
+
+export function MergeRow({
+  header,
+  children,
+}: {
+  readonly header: string;
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <tr>
+      <th
+        className={`sticky left-0 text-left ${background} z-[10]`}
+        scope="row"
+      >
+        {header}
+      </th>
+      {children}
+    </tr>
   );
 }
 
@@ -151,14 +168,21 @@ function ResourceBlockers({
 function PreviewLine({
   merged,
   resources,
+  onDeleted: handleDeleted,
 }: {
   readonly merged: SpecifyResource<AnySchema>;
   readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly onDeleted: (id: number) => void;
 }): JSX.Element {
   return (
     <MergeRow header={queryText('preview')}>
       {[merged, ...resources].map((resource, index) => (
-        <RecordPreview key={index} resource={resource} index={index} />
+        <RecordPreview
+          index={index}
+          key={index}
+          resource={resource}
+          onDeleted={(): void => handleDeleted(resource.id)}
+        />
       ))}
     </MergeRow>
   );
@@ -167,15 +191,21 @@ function PreviewLine({
 function RecordPreview({
   resource,
   index,
+  onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly index: number;
+  readonly onDeleted: () => void;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(false);
 
   return (
-    <>
-      <Button.Gray aria-pressed={isOpen} onClick={handleToggle}>
+    <td>
+      <Button.Gray
+        aria-pressed={isOpen}
+        onClick={handleToggle}
+        className="flex-1"
+      >
         {index === 0
           ? queryText('previewMerged')
           : `${queryText('preview')} ${index}`}
@@ -189,11 +219,10 @@ function RecordPreview({
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}
-          // FIXME: handle this case
-          onDeleted={undefined}
+          onDeleted={handleDeleted}
           onSaved={undefined}
         />
       )}
-    </>
+    </td>
   );
 }

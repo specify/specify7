@@ -336,7 +336,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
       }
       icon="none"
       modal={dialog === 'modal' || makeFormDialogsModal}
-      showOrangeBar={!isSubForm}
+      specialMode={isSubForm ? undefined : 'orangeBar'}
       onClose={(): void => {
         if (isModified) setShowUnloadProtect(true);
         else handleClose();

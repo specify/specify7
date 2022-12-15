@@ -5,7 +5,7 @@ import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input } from '../Atoms/Form';
+import { Form, Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
@@ -21,12 +21,21 @@ import { MergeRow, MergingHeader } from './Header';
 
 export function CompareRecords({
   showMatching,
+  formId,
   model,
   records,
+  onMerge: handleMerge,
+  onDeleted: handleDeleted,
 }: {
   readonly showMatching: boolean;
+  readonly formId: string;
   readonly model: SpecifyModel;
   readonly records: RA<SerializedResource<AnySchema>>;
+  readonly onMerge: (
+    merged: SpecifyResource<AnySchema>,
+    resources: RA<SpecifyResource<AnySchema>>
+  ) => void;
+  readonly onDeleted: (id: number) => void;
 }): JSX.Element {
   const merged = React.useMemo(
     () => deserializeResource(autoMerge(model, records)),
@@ -38,20 +47,42 @@ export function CompareRecords({
   );
   const conformation = useConformation(showMatching, model, records);
   return (
-    <>
-      <MergingHeader merged={merged} resources={resources} />
-      {/* FEATURE: add an all-left and all-right button */}
-      {/* FEATURE: add merge util to user tools */}
-      {/* FEATURE: add merge util to form meta */}
-      {conformation.map((field) => (
-        <CompareField
-          field={field}
-          key={field.name}
+    <Form
+      id={formId}
+      onSubmit={(): void => handleMerge(merged, resources)}
+      className="overflow-hidden"
+    >
+      <table
+        className={`
+          grid-table grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
+          gap-2 overflow-auto
+        `}
+        style={
+          {
+            '--columns': records.length + 1,
+          } as React.CSSProperties
+        }
+      >
+        <MergingHeader
           merged={merged}
           resources={resources}
+          onDeleted={handleDeleted}
         />
-      ))}
-    </>
+        {/* FEATURE: add an all-left and all-right button */}
+        {/* FEATURE: add merge util to user tools */}
+        {/* FEATURE: add merge util to form meta */}
+        <tbody>
+          {conformation.map((field) => (
+            <CompareField
+              field={field}
+              key={field.name}
+              merged={merged}
+              resources={resources}
+            />
+          ))}
+        </tbody>
+      </table>
+    </Form>
   );
 }
 

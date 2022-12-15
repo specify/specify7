@@ -53,7 +53,7 @@ function eventHandlerForToOne(related, field) {
                 break;
             case 'add':
             case 'remove':
-                // annotate add and remove events with the field in which they occured
+                // annotate add and remove events with the field in which they occurred
                 args[0] = event + ':' + field.name.toLowerCase();
                 this.trigger.apply(this, args);
                 break;
@@ -204,6 +204,10 @@ function eventHandlerForToOne(related, field) {
             // cache it and set up event handlers
             this.dependentResources[field.name.toLowerCase()] = toMany;
             toMany.on('all', eventHandlerForToMany(toMany, field), this);
+        },
+        // Separate name to simplify typing
+        bulkSet(attributes,options) {
+            return this.set(attributes,options);
         },
         set(key, value, options) {
             // This may get called with "null" or "undefined"

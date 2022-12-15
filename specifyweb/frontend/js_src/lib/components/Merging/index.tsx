@@ -7,10 +7,15 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { Form, Input, Label } from '../Atoms/Form';
+import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -20,11 +25,11 @@ import { CompareRecords } from './Compare';
 export function RecordMerging({
   model,
   selectedRows,
-  onMerged: handleMerged,
+  onDeleted: handleDeleted,
 }: {
   readonly model: SpecifyModel;
   readonly selectedRows: ReadonlySet<number>;
-  readonly onMerged: () => void;
+  readonly onDeleted: (id: number) => void;
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
@@ -38,7 +43,7 @@ export function RecordMerging({
           model={model}
           selectedRows={selectedRows}
           onClose={handleClose}
-          onMerged={handleMerged}
+          onDeleted={handleDeleted}
         />
       )}
     </>
@@ -49,12 +54,12 @@ function MergingDialog({
   model,
   selectedRows,
   onClose: handleClose,
-  onMerged: handleMerged,
+  onDeleted: handleDeleted,
 }: {
   readonly model: SpecifyModel;
   readonly selectedRows: ReadonlySet<number>;
   readonly onClose: () => void;
-  readonly onMerged: () => void;
+  readonly onDeleted: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, selectedRows);
   const [showMatching = false, setShowMatching] = useCachedState(
@@ -62,7 +67,15 @@ function MergingDialog({
     'showMatchingFields'
   );
 
+  // Close the dialog when resources are deleted/unselected
+  React.useEffect(
+    () => (selectedRows.size < 2 ? handleClose() : undefined),
+    [selectedRows.size, handleClose]
+  );
+
   const id = useId('merging-dialog');
+  const loading = React.useContext(LoadingContext);
+  const [error, setError] = React.useState<string | undefined>(undefined);
   return records === undefined ? null : (
     <Dialog
       buttons={
@@ -82,33 +95,66 @@ function MergingDialog({
         </>
       }
       header={queryText('mergeRecords')}
+      // Disable gradient because table headers have solid backgrounds
+      specialMode="noGradient"
       onClose={handleClose}
     >
-      <Form
-        onSubmit={(): void => {
-          // FIXME: complete this. use the oldest resource as base (to preserve timestampCreated)
-          handleMerged();
+      {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
+      <CompareRecords
+        formId={id('form')}
+        model={model}
+        records={records}
+        showMatching={showMatching}
+        onDeleted={handleDeleted}
+        onMerge={(merged, rawResources): void => {
+          /*
+           * Use the oldest resource as base so as to preserve timestampCreated
+           * and, presumably the longest auditing history
+           */
+          const resources = Array.from(rawResources).sort(
+            sortFunction((resource) => resource.get('timestampCreated'))
+          );
+          const target = resources[0];
+          const clones = resources.slice(1);
+          loading(
+            target
+              .bulkSet(merged.toJSON())
+              .save()
+              .then(async () => {
+                /*
+                 * Make requests sequentially as they are expected to fail
+                 * (due to business rules). If we do them sequentially, we
+                 * can leave the UI in a state consistent with the back-end
+                 */
+                for (const clone of clones) {
+                  const response = await ajax(
+                    `/api/specify/replace/${model.name.toLowerCase()}/${
+                      clone.id
+                    }/${target.id}/`,
+                    {
+                      method: 'POST',
+                      headers: {
+                        Accept: 'text/plain',
+                      },
+                    },
+                    {
+                      expectedResponseCodes: [
+                        Http.NO_CONTENT,
+                        Http.NOT_ALLOWED,
+                      ],
+                    }
+                  );
+                  if (response.status === Http.NOT_ALLOWED) {
+                    setError(response.data);
+                    return;
+                  }
+                  handleDeleted(clone.id);
+                }
+                setError(undefined);
+              })
+          );
         }}
-        className="overflow-hidden"
-      >
-        <table
-          className={`
-            grid-table grid-cols-[auto,repeat(var(--columns),minmax(0,1fr))] gap-2
-            overflow-auto
-          `}
-          style={
-            {
-              '--columns': records.length + 1,
-            } as React.CSSProperties
-          }
-        >
-          <CompareRecords
-            model={model}
-            records={records}
-            showMatching={showMatching}
-          />
-        </table>
-      </Form>
+      />
     </Dialog>
   );
 }

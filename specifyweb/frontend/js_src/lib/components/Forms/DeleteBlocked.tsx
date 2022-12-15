@@ -69,6 +69,7 @@ export function DeleteBlockers({
   const children = data.map(({ formatted, field, resource }, index) => {
     const button = (
       <Button.LikeLink
+        key={index}
         // BUG: consider applying these styles everywhere
         className="max-w-full overflow-auto text-left"
         onClick={(): void =>

@@ -155,6 +155,8 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
               : SerializedResource<VALUE> | SpecifyResource<VALUE>),
     options?: { readonly silent: boolean }
   ): SpecifyResource<SCHEMA>;
+  // Not type safe
+  bulkSet(value: IR<unknown>): SpecifyResource<SCHEMA>;
   getDependentResource<FIELD_NAME extends keyof SCHEMA['toOneDependent']>(
     fieldName: FIELD_NAME
   ):
