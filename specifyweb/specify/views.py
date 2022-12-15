@@ -395,7 +395,7 @@ def set_admin_status(request, userid):
         return http.HttpResponse('false', content_type='text/plain')
 
 class ReplaceRecordPT(PermissionTarget):
-    resource = "/replace/record"
+    resource = "/record/replace"
     update = PermissionTargetAction()
     delete = PermissionTargetAction()
 

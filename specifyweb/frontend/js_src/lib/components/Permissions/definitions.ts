@@ -5,7 +5,7 @@ export const operationPolicies = {
   '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
-  '/replace/record': ['update', 'delete'],
+  '/record/replace': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],

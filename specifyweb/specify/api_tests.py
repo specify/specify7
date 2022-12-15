@@ -562,7 +562,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that the api request ran successfully
         response = c.post(
-            f'/api/specify/replace/agent/{agent_1.id}/{agent_2.id}/',
+            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
             data=[],
             content_type='text/plain')
         self.assertEqual(response.status_code, 204)
@@ -577,7 +577,7 @@ class ReplaceRecordTests(ApiTests):
 
         # Assert that a new api request will not find the old agent
         response = c.post(
-            f'/api/specify/replace/agent/{agent_1.id}/{agent_2.id}/',
+            f'/api/specify/agent/replace/{agent_1.id}/{agent_2.id}/',
             data=[],
             content_type='text/plain')
         self.assertEqual(response.status_code, 404)
