@@ -132,7 +132,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               ).then((results) =>
                 setResults(
-                  results.sort(sortFunction(({ formatted }) => formatted))
+                  Array.from(results).sort(
+                    sortFunction(({ formatted }) => formatted)
+                  )
                 )
               )
             )

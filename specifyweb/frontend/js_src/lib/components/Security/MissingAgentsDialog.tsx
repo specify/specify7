@@ -73,7 +73,9 @@ export function MissingAgentsDialog({
                 }))
               )
             ).then((userAgents) =>
-              userAgents.sort(sortFunction(({ division }) => division.name))
+              Array.from(userAgents).sort(
+                sortFunction(({ division }) => division.name)
+              )
             )
           : undefined,
       [userAgents, response]

@@ -283,6 +283,7 @@ export function QueryResults({
               results={results}
               selectedRows={selectedRows}
               totalCount={totalCount}
+              // BUG: test this when query returns same record twice
               onDelete={(index): void => {
                 // Don't allow deleting while query results are being fetched
                 if (Object.keys(fetchersRef.current).length > 0) return;
