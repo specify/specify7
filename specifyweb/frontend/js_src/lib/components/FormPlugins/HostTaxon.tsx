@@ -26,7 +26,7 @@ export function HostTaxon({
   formType,
 }: {
   readonly resource: SpecifyResource<CollectingEventAttribute>;
-  readonly relationship: string;
+  readonly relationship: string | undefined;
   readonly id: string | undefined;
   readonly isRequired: boolean;
   readonly mode: FormMode;
@@ -35,16 +35,18 @@ export function HostTaxon({
   const [rightSideCollection] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('CollectionRelType', {
-          limit: 1,
-          name: relationship,
-        })
-          .then(async ({ records }) =>
-            f
-              .maybe(records[0], deserializeResource)
-              ?.rgetPromise('rightSideCollection')
-          )
-          .then((collection) => collection?.get('id')),
+        relationship === undefined
+          ? false
+          : fetchCollection('CollectionRelType', {
+              limit: 1,
+              name: relationship,
+            })
+              .then(async ({ records }) =>
+                f
+                  .maybe(records[0], deserializeResource)
+                  ?.rgetPromise('rightSideCollection')
+              )
+              .then((collection) => collection?.get('id')),
       [relationship]
     ),
     false
@@ -54,7 +56,9 @@ export function HostTaxon({
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       fieldName="hostTaxon"
-      forceCollection={rightSideCollection}
+      forceCollection={
+        rightSideCollection === false ? undefined : rightSideCollection
+      }
       formType={formType}
       id={id}
       isRequired={isRequired}

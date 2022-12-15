@@ -221,12 +221,7 @@ const pluginRenderers: {
     isRequired,
     pluginDefinition: { relationship },
   }) {
-    if (relationship === undefined) {
-      console.error(
-        "Can't display HostTaxonPlugin because initialize.relname is not set"
-      );
-      return null;
-    } else if (!hasTablePermission('CollectionRelType', 'read')) return null;
+    if (!hasTablePermission('CollectionRelType', 'read')) return null;
     else
       return (
         f.maybe(
