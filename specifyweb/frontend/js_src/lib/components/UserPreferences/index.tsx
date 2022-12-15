@@ -209,11 +209,19 @@ export function PreferencesContent({
                                 justify-end text-right
                               `}
                             >
-                              {item.title}
+                              {typeof item.title === 'string' ? (
+                                item.title
+                              ) : (
+                                <span>{item.title}</span>
+                              )}
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-right text-gray-500">
-                                {item.description}
+                                {typeof item.description === 'string' ? (
+                                  item.description
+                                ) : (
+                                  <span>{item.description}</span>
+                                )}
                               </p>
                             )}
                           </div>

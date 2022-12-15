@@ -229,19 +229,19 @@ export const wbText = createDictionary({
   /* This value must match the one on the back-end exactly */
   picklistValidationFailed: {
     'en-us': (value: string) =>
-      whitespaceSensitive(
-        `${value ? `"${value}"` : ''} is not a legal value in this picklist
-      field.<br>
-
-      Click on the arrow to choose among available options.`
-      ),
+      whitespaceSensitive(`
+        ${value ? `"${value}"` : ''} is not a legal value in this picklist
+        field.<br>
+        <br>
+        Click on the arrow to choose among available options.
+      `),
     'ru-ru': (value: string) =>
-      whitespaceSensitive(
-        `${value ? `"${value}"` : ''} не является допустимым значением в этом
-      списке.<br>
-
-      Нажмите на стрелку, чтобы выбрать один из доступных вариантов.`
-      ),
+      whitespaceSensitive(`
+        ${value ? `"${value}"` : ''} не является допустимым значением в этом
+        списке.<br>
+        <br>
+        Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
+      `),
   },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
@@ -251,10 +251,12 @@ export const wbText = createDictionary({
   matchedMultipleErrorMessage: {
     'en-us': whitespaceSensitive(`
       This value matches two or more existing database records and the match
-      must be disambiguated before uploading.`),
+      must be disambiguated before uploading.
+    `),
     'ru-ru': whitespaceSensitive(`
       Это значение соответствует двум или более существующим записям базы
-      данных и совпадению`),
+      данных и совпадению
+    `),
   },
   validationNoErrorsDialogHeader: {
     'en-us': 'Validate Completed with No Errors',

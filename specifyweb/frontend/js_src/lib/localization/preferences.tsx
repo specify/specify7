@@ -443,28 +443,28 @@ export const preferencesText = createDictionary({
   },
   tabMoveDirection: {
     'en-us': (
-      <span>
+      <>
         Direction of movement when <Key>Tab</Key> key is pressed
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Направление движения при нажатии клавиши <Key>Tab</Key>
-      </span>
+      </>
     ),
   },
   tabMoveDirectionDescription: {
     'en-us': (
-      <span>
+      <>
         You can move in the opposite direction by pressing <Key>Shift</Key>+
         <Key>Tab</Key>
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Вы можете двигаться в противоположном направлении, нажав{' '}
         <Key>Shift</Key>+<Key>Tab</Key>
-      </span>
+      </>
     ),
   },
   column: {
@@ -477,28 +477,28 @@ export const preferencesText = createDictionary({
   },
   enterMoveDirection: {
     'en-us': (
-      <span>
+      <>
         Direction of movement when <Key>Enter</Key> key is pressed
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Направление движения при нажатии клавиши <Key>Enter</Key>
-      </span>
+      </>
     ),
   },
   enterMoveDirectionDescription: {
     'en-us': (
-      <span>
+      <>
         You can move in the opposite direction by pressing <Key>Shift</Key>+
         <Key>Enter</Key>
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Вы можете двигаться в противоположном направлении, нажав{' '}
         <Key>Shift</Key>+<Key>Enter</Key>
-      </span>
+      </>
     ),
   },
   filterPickLists: {
@@ -576,14 +576,14 @@ export const preferencesText = createDictionary({
   },
   closeOnEsc: {
     'en-us': (
-      <span>
+      <>
         Close on <Key>ESC</Key> key press
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Закрыть при нажатии клавиши <Key>ESC</Key>
-      </span>
+      </>
     ),
   },
   closeOnOutsideClick: {
@@ -632,28 +632,28 @@ export const preferencesText = createDictionary({
   },
   altClickToSupressNewTab: {
     'en-us': (
-      <span>
+      <>
         <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         <Key>{altKeyName}</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
-      </span>
+      </>
     ),
   },
   altClickToSupressNewTabDescription: {
     'en-us': (
-      <span>
+      <>
         <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
         in a new tab to open it in the current tab
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         <Key>{altKeyName}</Key>+<Key>Клик</Key> на ссылку, которая обычно
         открывается в новой вкладке, чтобы открыть ее в текущей вкладке
-      </span>
+      </>
     ),
   },
   makeFormDialogsModal: {
@@ -675,14 +675,14 @@ export const preferencesText = createDictionary({
   },
   indentWithTab: {
     'en-us': (
-      <span>
+      <>
         Indent with <Key>Tab</Key>
-      </span>
+      </>
     ),
     'ru-ru': (
-      <span>
+      <>
         Используйте <Key>Tab</Key> для отступа
-      </span>
+      </>
     ),
   },
   formHeaderFormat: {

@@ -190,10 +190,14 @@ export const queryText = createDictionary({
     'ru-ru': 'Подобно',
   },
   likeDescription: {
-    'en-us': whitespaceSensitive(`Use "%" to match any number of
-      characters.<br>Use "_" to match a single character`),
-    'ru-ru': whitespaceSensitive(`Используйте «%» для соответствия любому
-      количеству символов.<br>Используйте «_» для соответствия одному символу`),
+    'en-us': whitespaceSensitive(`
+      Use "%" to match any number of characters.<br>
+      Use "_" to match a single character
+    `),
+    'ru-ru': whitespaceSensitive(`
+      Используйте «%» для соответствия любому количеству символов.<br>
+      Используйте «_» для соответствия одному символу
+    `),
   },
   equal: {
     'en-us': 'Equal',

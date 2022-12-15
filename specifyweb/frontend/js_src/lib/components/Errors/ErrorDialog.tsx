@@ -135,9 +135,11 @@ export function ErrorDialog({
       </p>
       <br />
       <p>
+        {commonText('errorBoundaryDialogMessage', supportLink)}
+        <br />
+        <br />
         {commonText(
           'errorBoundaryDialogSecondMessage',
-          supportLink,
           (label) => (
             <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
               {label}
