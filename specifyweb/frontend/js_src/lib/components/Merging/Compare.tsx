@@ -10,14 +10,14 @@ import { icons } from '../Atoms/Icons';
 import { specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormField } from '../FormFields';
 import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { autoMerge } from './autoMerge';
-import { MergingHeader } from './Header';
-import { resourceOn } from '../DataModel/resource';
+import { MergeRow, MergingHeader } from './Header';
 
 export function CompareRecords({
   showMatching,
@@ -41,11 +41,6 @@ export function CompareRecords({
     <>
       <MergingHeader merged={merged} resources={resources} />
       {/* FEATURE: add an all-left and all-right button */}
-      {/* BUG: hide timestamp modified/created/version */}
-      {/* FEATURE: look for other fields to hide - and handle their merging */}
-      {/* FEATURE: allow for any number of records to merge*/}
-      {/* FEATURE: freeze top row */}
-      {/* FEATURE: freeze the first column - labels */}
       {/* FEATURE: add merge util to user tools */}
       {/* FEATURE: add merge util to form meta */}
       {conformation.map((field) => (
@@ -112,13 +107,12 @@ function CompareField({
   readonly merged: SpecifyResource<AnySchema>;
 }): JSX.Element {
   return (
-    <tr>
-      <th scope="row">{field.label}</th>
+    <MergeRow header={field.label}>
       <Field field={field} merged={undefined} resource={merged} />
       {resources.map((resource, index) => (
         <Field field={field} key={index} merged={merged} resource={resource} />
       ))}
-    </tr>
+    </MergeRow>
   );
 }
 

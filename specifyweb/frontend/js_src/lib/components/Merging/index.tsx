@@ -86,18 +86,19 @@ function MergingDialog({
     >
       <Form
         onSubmit={(): void => {
-          // FIXME: complete this
+          // FIXME: complete this. use the oldest resource as base (to preserve timestampCreated)
           handleMerged();
         }}
+        className="overflow-hidden"
       >
         <table
           className={`
-            grid-table grid-cols-[repeat(var(--columns),minmax(0,1fr))] gap-2
+            grid-table grid-cols-[auto,repeat(var(--columns),minmax(0,1fr))] gap-2
             overflow-auto
           `}
           style={
             {
-              '--columns': records.length + 2,
+              '--columns': records.length + 1,
             } as React.CSSProperties
           }
         >

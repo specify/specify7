@@ -15,6 +15,8 @@ import { fetchBlockers } from '../Forms/DeleteButton';
 import { ResourceView } from '../Forms/ResourceView';
 import { DateElement } from '../Molecules/DateElement';
 import { FormattedResource } from '../Molecules/FormattedResource';
+import { TableIcon } from '../Molecules/TableIcon';
+import { dialogClassNames } from '../Molecules/Dialog';
 
 export function MergingHeader({
   merged,
@@ -33,6 +35,25 @@ export function MergingHeader({
   );
 }
 
+const background = dialogClassNames.solidBackground;
+
+export function MergeRow({
+  header,
+  children,
+}: {
+  readonly header: string;
+  readonly children: React.ReactNode;
+}): JSX.Element {
+  return (
+    <tr>
+      <th className={`sticky left-0 text-left ${background}`} scope="row">
+        {header}
+      </th>
+      {children}
+    </tr>
+  );
+}
+
 function HeaderLine({
   merged,
   resources,
@@ -42,13 +63,11 @@ function HeaderLine({
 }): JSX.Element {
   return (
     <tr>
-      <td />
-      <th scope="col">
-        <FormattedResource resource={merged} />
-      </th>
-      {resources.map((resource, index) => (
-        <th key={index} scope="col">
-          <FormattedResource resource={resource} />
+      <td className={background} />
+      {[merged, ...resources].map((resource, index) => (
+        <th className={`sticky top-0 ${background}`} key={index} scope="col">
+          <TableIcon label name={resource.specifyModel.name} />
+          <FormattedResource resource={resource} asLink={false} />
         </th>
       ))}
     </tr>
@@ -67,24 +86,22 @@ function SummaryLines({
   return (
     <>
       {typeof createdField === 'object' && (
-        <tr>
-          <th scope="row">{createdField.label}</th>
+        <MergeRow header={createdField.label}>
           {[merged, ...resources].map((resource, index) => (
             <td key={index}>
-              <DateElement date={resource.get('timestampCreated')} />
+              <DateElement date={resource.get('timestampCreated')} flipDates />
             </td>
           ))}
-        </tr>
+        </MergeRow>
       )}
       {typeof modifiedField === 'object' && (
-        <tr>
-          <th scope="row">{modifiedField.label}</th>
+        <MergeRow header={modifiedField.label}>
           {[merged, ...resources].map((resource, index) => (
             <td key={index}>
-              <DateElement date={resource.get('timestampModified')} />
+              <DateElement date={resource.get('timestampModified')} flipDates />
             </td>
           ))}
-        </tr>
+        </MergeRow>
       )}
     </>
   );
@@ -96,13 +113,12 @@ function UsagesLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <tr>
-      <th scope="row">{queryText('referencesToRecord')}</th>
+    <MergeRow header={queryText('referencesToRecord')}>
       <td>{commonText('notApplicable')}</td>
       {resources.map((resource, index) => (
         <ResourceBlockers key={index} resource={resource} />
       ))}
-    </tr>
+    </MergeRow>
   );
 }
 
@@ -131,6 +147,7 @@ function ResourceBlockers({
   );
 }
 
+// FEATURE: display number in dialog heading
 function PreviewLine({
   merged,
   resources,
@@ -139,26 +156,29 @@ function PreviewLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <tr>
-      <th scope="row">{queryText('preview')}</th>
+    <MergeRow header={queryText('preview')}>
       {[merged, ...resources].map((resource, index) => (
-        <RecordPreview key={index} resource={resource} />
+        <RecordPreview key={index} resource={resource} index={index} />
       ))}
-    </tr>
+    </MergeRow>
   );
 }
 
 function RecordPreview({
   resource,
+  index,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
+  readonly index: number;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(false);
 
   return (
     <>
       <Button.Gray aria-pressed={isOpen} onClick={handleToggle}>
-        {queryText('preview')}
+        {index === 0
+          ? queryText('previewMerged')
+          : `${queryText('preview')} ${index}`}
       </Button.Gray>
       {isOpen && (
         <ResourceView

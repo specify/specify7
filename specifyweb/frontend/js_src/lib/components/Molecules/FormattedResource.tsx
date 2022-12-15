@@ -29,9 +29,11 @@ export function FormattedResourceUrl({
 export function FormattedResource({
   resource,
   fallback = commonText('loading'),
+  asLink = true,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fallback?: string;
+  readonly asLink?: boolean;
 }): JSX.Element | null {
   const [formatted, setFormatted] = React.useState<string>(fallback);
 
@@ -50,7 +52,8 @@ export function FormattedResource({
   );
 
   return typeof resource === 'object' &&
-    hasTablePermission(resource.specifyModel.name, 'read') ? (
+    hasTablePermission(resource.specifyModel.name, 'read') &&
+    asLink ? (
     <Link.Default href={resource.viewUrl()}>{formatted}</Link.Default>
   ) : (
     <>{formatted}</>

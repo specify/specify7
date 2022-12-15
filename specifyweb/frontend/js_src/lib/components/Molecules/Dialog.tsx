@@ -53,6 +53,13 @@ export const dialogClassNames = {
   extraWideContainer: `${commonContainer} max-h-[90%] min-w-[min(20rem,90%)]
     w-[min(60rem,90%)] h-[60rem]`,
   flexContent: 'flex flex-col gap-2',
+  solidBackground: 'bg-white dark:bg-neutral-900',
+  transparentBackground: 'bg-white/40 backdrop-blur-lg dark:bg-transparent',
+  legacyTransparentBackground: 'bg-white/70 dark:bg-black/70',
+  gradientBackground: `
+    bg-gradient-to-bl from-gray-200 via-white
+    to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900
+  `,
 } as const;
 
 /*
@@ -330,13 +337,12 @@ export function Dialog({
         ${modal ? '' : 'pointer-events-auto border border-gray-500'}
         ${
           reduceTransparency || highContrast
-            ? 'bg-white dark:bg-neutral-900'
+            ? dialogClassNames.solidBackground
             : transparentDialog && modal
             ? supportsBackdropBlur
-              ? 'bg-white/40 backdrop-blur-lg dark:bg-transparent'
-              : 'bg-white/70 dark:bg-black/70'
-            : `bg-gradient-to-bl from-gray-200 via-white
-                to-white dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900`
+              ? dialogClassNames.transparentBackground
+              : dialogClassNames.legacyTransparentBackground
+            : dialogClassNames.gradientBackground
         }
       `}
       closeTimeoutMS={transitionDuration === 0 ? undefined : transitionDuration}

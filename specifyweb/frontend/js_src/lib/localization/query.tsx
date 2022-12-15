@@ -321,6 +321,10 @@ export const queryText = createDictionary({
     'en-us': 'References to this record',
     'ru-ru': 'Ссылки на эту запись',
   },
+  previewMerged: {
+    'en-us': 'Preview merged',
+    'ru-ru': 'Посмотреть результат',
+  },
   preview: {
     'en-us': 'Preview',
     'ru-ru': 'Открыть',
