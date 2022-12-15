@@ -5,7 +5,6 @@
 import React from 'react';
 
 import { csrfToken, parseDjangoDump } from '../../utils/ajax/csrfToken';
-import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -13,6 +12,7 @@ import { ErrorMessage } from '../Atoms';
 import { Submit } from '../Atoms/Submit';
 import { useValidation } from '../../hooks/useValidation';
 import { SplashScreen } from '../Core/SplashScreen';
+import { userText } from '../../localization/user';
 
 export function PasswordChange(): JSX.Element {
   return React.useMemo(
@@ -62,7 +62,7 @@ function ChangePassword({
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Block>
-          {commonText('oldPassword')}
+          {userText('oldPassword')}
           <Input.Generic
             autoComplete="current-password"
             defaultValue=""
@@ -73,7 +73,7 @@ function ChangePassword({
           />
         </Label.Block>
         <Label.Block>
-          {commonText('newPassword')}
+          {userText('newPassword')}
           <Input.Generic
             autoComplete="new-password"
             defaultValue=""
@@ -85,7 +85,7 @@ function ChangePassword({
           />
         </Label.Block>
         <Label.Block>
-          {commonText('repeatPassword')}
+          {userText('repeatPassword')}
           <Input.Generic
             autoComplete="new-password"
             defaultValue=""
@@ -96,7 +96,7 @@ function ChangePassword({
             type="password"
           />
         </Label.Block>
-        <Submit.Fancy>{commonText('changePassword')}</Submit.Fancy>
+        <Submit.Fancy>{userText('changePassword')}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
@@ -12,6 +11,7 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
+import { mainText } from '../../localization/main';
 
 export function formatError(
   error: unknown,
@@ -182,7 +182,7 @@ export function handleAjaxError(
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
-        header={commonText('errorBoundaryDialogHeader')}
+        header={mainText('errorBoundaryDialogHeader')}
         onClose={handleClose}
       >
         {errorObject}
@@ -215,7 +215,7 @@ function ErrorIframe({
     <iframe
       className="h-full"
       ref={iframeRef}
-      title={commonText('errorBoundaryDialogHeader')}
+      title={mainText('errorBoundaryDialogHeader')}
     />
   );
 }

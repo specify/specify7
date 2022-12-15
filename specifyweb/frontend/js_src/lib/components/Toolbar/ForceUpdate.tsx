@@ -11,6 +11,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { headerText } from '../../localization/header';
 
 export function ForceUpdateFeedOverlay(): JSX.Element {
   const loading = React.useContext(LoadingContext);
@@ -20,10 +21,10 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
   return isActivated ? (
     <Dialog
       buttons={commonText('close')}
-      header={commonText('feedExportStartedDialogHeader')}
+      header={headerText('feedExportStartedDialogHeader')}
       onClose={handleClose}
     >
-      {commonText('feedExportStartedDialogText')}
+      {headerText('feedExportStartedDialogText')}
     </Dialog>
   ) : (
     <Dialog
@@ -45,10 +46,10 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
           </Button.Blue>
         </>
       }
-      header={commonText('updateExportFeedDialogTitle')}
+      header={headerText('updateExportFeedDialogTitle')}
       onClose={handleClose}
     >
-      {commonText('updateExportFeedDialogText')}
+      {headerText('updateExportFeedDialogText')}
     </Dialog>
   );
 }

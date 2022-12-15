@@ -8,7 +8,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useIsModified } from '../../hooks/useIsModified';
 import { useLiveState } from '../../hooks/useLiveState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -74,6 +73,7 @@ import {
 } from './UserPolicyHooks';
 import { anyResource, getAllActions } from './utils';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { userText } from '../../localization/user';
 
 export function SecurityUser(): JSX.Element {
   const location = useStableLocation(useLocation());
@@ -234,7 +234,7 @@ function UserView({
         <>
           {canSetPassword || canCreateInviteLink ? (
             <section>
-              <h4 className="text-xl">{adminText('accountSetupOptions')}</h4>
+              <h4 className="text-xl">{userText('accountSetupOptions')}</h4>
               <div className="flex items-center gap-2">
                 <ErrorBoundary dismissable>
                   {canSetPassword && (
@@ -277,7 +277,7 @@ function UserView({
                       ) && (
                         <SecurityPoliciesWrapper
                           collapsable
-                          header={adminText('institutionPolicies')}
+                          header={userText('institutionPolicies')}
                           policies={institutionPolicies}
                         >
                           <SecurityPolicies
@@ -352,7 +352,7 @@ function UserView({
                   ) ? (
                     <SecurityPoliciesWrapper
                       collapsable={false}
-                      header={adminText('customUserPolices')}
+                      header={userText('customUserPolices')}
                       policies={userPolicies?.[collectionId]}
                     >
                       <SecurityPolicies
@@ -646,10 +646,10 @@ function UserView({
       {state.type === 'NoAdminsError' && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('cantRemoveLastAdmin')}
+          header={userText('cantRemoveLastAdmin')}
           onClose={(): void => setState({ type: 'Main' })}
         >
-          {adminText('cantRemoveLastAdminDescription')}
+          {userText('cantRemoveLastAdminDescription')}
         </Dialog>
       )}
     </Container.Base>

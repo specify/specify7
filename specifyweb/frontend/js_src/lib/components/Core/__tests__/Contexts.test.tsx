@@ -12,6 +12,7 @@ import {
   UnloadProtectsContext,
 } from '../Contexts';
 import { crash } from '../../Errors/Crash';
+import { mainText } from '../../../localization/main';
 
 jest.mock('../../Errors/Crash', () => ({
   ...jest.requireActual('../../Errors/Crash'),
@@ -33,7 +34,7 @@ test('<Contexts> is providing error context', async () => {
   act(() =>
     emitError(({ onClose: handleClose }) => (
       <button type="button" onClick={handleClose}>
-        {commonText('errorMessage')}
+        {mainText('errorMessage')}
       </button>
     ))
   );

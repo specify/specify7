@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormType } from '../FormParse';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import type { SubViewContext } from '../Forms/SubView';
+import { schemaText } from '../../localization/schema';
 
 export function SubViewMeta({
   subView,
@@ -23,7 +23,7 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {commonText('type')}
+        {schemaText('type')}
         <Select
           value={formType}
           onValueChange={(formType): void =>

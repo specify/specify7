@@ -11,6 +11,8 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { clearCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
+import { mainText } from '../../localization/main';
+import { headerText } from '../../localization/header';
 
 const supportEmail = 'support@specifysoftware.org';
 export const supportLink = (
@@ -21,7 +23,7 @@ export const supportLink = (
 const errors = new Set<string>();
 
 export function ErrorDialog({
-  header = commonText('errorBoundaryDialogHeader'),
+  header = mainText('errorBoundaryDialogHeader'),
   children,
   copiableMessage,
   // Error dialog is only closable in Development
@@ -95,7 +97,7 @@ export function ErrorDialog({
               checked={clearCacheOnException}
               onValueChange={setClearCache}
             />
-            {commonText('clearCache')}
+            {headerText('clearCache')}
           </Label.Inline>
           <Button.Red
             onClick={(): void =>
@@ -130,15 +132,15 @@ export function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {commonText('errorBoundaryDialogText')}{' '}
-        {!canClose && commonText('errorBoundaryCriticalDialogText')}
+        {mainText('errorBoundaryDialogText')}{' '}
+        {!canClose && mainText('errorBoundaryCriticalDialogText')}
       </p>
       <br />
       <p>
-        {commonText('errorBoundaryDialogMessage', supportLink)}
+        {mainText('errorBoundaryDialogMessage', supportLink)}
         <br />
         <br />
-        {commonText(
+        {mainText(
           'errorBoundaryDialogSecondMessage',
           (label) => (
             <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
@@ -156,7 +158,7 @@ export function ErrorDialog({
         className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV === 'development'}
       >
-        <summary>{commonText('errorMessage')}</summary>
+        <summary>{mainText('errorMessage')}</summary>
         {children}
       </details>
     </Dialog>

@@ -6,6 +6,7 @@ import type { RA } from '../../utils/types';
 import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
+import { userText } from '../../localization/user';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const entrypointRoutes: RA<EnhancedRoute> = [
@@ -32,7 +33,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'password_change',
-        title: commonText('changePassword'),
+        title: userText('changePassword'),
         element: () =>
           import('../PasswordChange').then(
             ({ PasswordChange }) => PasswordChange

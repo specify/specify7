@@ -24,6 +24,7 @@ import {
   hasTreeAccess,
 } from './helpers';
 import type { getOperationPermissions } from './index';
+import { userText } from '../../localization/user';
 
 export type PermissionErrorSchema = {
   readonly NoMatchingRuleException: RA<{
@@ -219,7 +220,7 @@ export function PermissionError({
           )}
         </>
       }
-      header={commonText('permissionDeniedError')}
+      header={userText('permissionDeniedError')}
       onClose={handleClose}
     >
       {error}
@@ -228,14 +229,14 @@ export function PermissionError({
     <Dialog
       buttons={commonText('logIn')}
       forceToTop
-      header={commonText('sessionTimeOutDialogHeader')}
+      header={userText('sessionTimeOutDialogHeader')}
       onClose={(): void =>
         globalThis.location.assign(
           formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
     >
-      {commonText('sessionTimeOutDialogText')}
+      {userText('sessionTimeOutDialogText')}
     </Dialog>
   );
 }

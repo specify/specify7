@@ -4,8 +4,6 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -249,64 +247,56 @@ export const wbText = createDictionary({
       'Нет соответствующей записи для таблицы обязательного соответствия.',
   },
   matchedMultipleErrorMessage: {
-    'en-us': whitespaceSensitive(`
+    'en-us': `
       This value matches two or more existing database records and the match
       must be disambiguated before uploading.
-    `),
-    'ru-ru': whitespaceSensitive(`
+    `,
+    'ru-ru': `
       Это значение соответствует двум или более существующим записям базы
       данных и совпадению
-    `),
+    `,
   },
   validationNoErrorsDialogHeader: {
     'en-us': 'Validate Completed with No Errors',
     'ru-ru': 'Проверка завершена без ошибок',
   },
-  validationNoErrorsDialogText: {
-    'en-us': (
-      <>
-        Validation found no errors, it is ready to be uploaded into the
-        database.
-        <br />
-        <br />
-        Note: If this Data Set is edited and re-saved, Validate should be re-run
-        prior to Uploading to verify that no errors have been introduced.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Проверка завершена без ошибок. Этот набора данных готов к загрузке в
-        базу данных.
-        <br />
-        <br />
-        Примечание: Если этот набор данных отредактирован и повторно сохранен,
-        начать проверку снова, чтобы убедиться, что ошибок не было введено.
-      </>
-    ),
+  validationNoErrorsDescription: {
+    'en-us': `
+      Validation found no errors, it is ready to be uploaded into the
+      database.
+    `,
+    'ru-ru': `
+      Проверка завершена без ошибок. Этот набора данных готов к загрузке в
+      базу данных.
+    `,
+  },
+  validationNoErrorsSecondDescription: {
+    'en-us': `
+      Note: If this Data Set is edited and re-saved, Validate should be re-run
+      prior to Uploading to verify that no errors have been introduced.
+    `,
+    'ru-ru': `
+      Примечание: Если этот набор данных отредактирован и повторно сохранен,
+      начать проверку снова, чтобы убедиться, что ошибок не было введено.
+    `,
   },
   validationErrorsDialogHeader: {
     'en-us': 'Validate Completed with Errors',
     'ru-ru': 'Проверка завершена с ошибками',
   },
-  validationErrorsDialogText: {
-    'en-us': (
-      <>
-        Validation found errors in the Data Set.
-        <br />
-        <br />
-        Note: If this Data Set is edited and re-saved, Validate should be re-run
-        prior to Uploading to verify that no errors have been introduced.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Проверка обнаружила ошибки в наборе данных.
-        <br />
-        <br />
-        Примечание: Если этот набор данных отредактирован и повторно сохранен,
-        начать проверку снова, чтобы убедиться, что ошибок не было введено.
-      </>
-    ),
+  validationErrorsDescription: {
+    'en-us': 'Validation found errors in the Data Set.',
+    'ru-ru': 'Проверка обнаружила ошибки в наборе данных.',
+  },
+  validationErrorsSecondDescription: {
+    'en-us': `
+      Note: If this Data Set is edited and re-saved, Validate should be re-run
+      prior to Uploading to verify that no errors have been introduced.
+    `,
+    'ru-ru': `
+      Примечание: Если этот набор данных отредактирован и повторно сохранен,
+      начать проверку снова, чтобы убедиться, что ошибок не было введено.
+    `,
   },
   uploadNoErrorsDialogHeader: {
     'en-us': 'Upload Completed with No Errors',
@@ -324,26 +314,21 @@ export const wbText = createDictionary({
     'en-us': 'Upload Failed due to Error Cells',
     'ru-ru': 'Ошибка загрузки из-за ошибок',
   },
-  uploadErrorsDialogText: {
-    'en-us': (
-      <>
-        The upload failed due to one or more cell value errors.
-        <br />
-        <br />
-        Validate the Data Set and review the mouseover hints for each error
-        cell, then make the appropriate corrections. Save and retry the Upload.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Загрузка не удалась из-за одной или нескольких ошибок значений ячеек.
-        <br />
-        <br />
-        Проверте набор данных и наведите указатель мыши на каждую ячейку с
-        ошибкой, затем сделайте соответствующие исправления, сохраните и
-        повторите попытку.
-      </>
-    ),
+  uploadErrorsDescription: {
+    'en-us': 'The upload failed due to one or more cell value errors.',
+    'ru-ru':
+      'Загрузка не удалась из-за одной или нескольких ошибок значений ячеек.',
+  },
+  uploadErrorsSecondDescription: {
+    'en-us': `
+      Validate the Data Set and review the mouseover hints for each error
+      cell, then make the appropriate corrections. Save and retry the Upload.
+    `,
+    'ru-ru': `
+      Проверте набор данных и наведите указатель мыши на каждую ячейку с
+      ошибкой, затем сделайте соответствующие исправления, сохраните и
+      повторите попытку.
+    `,
   },
   dataSetRollbackDialogHeader: {
     'en-us': 'Data Set was rolled back successfully',
@@ -407,10 +392,10 @@ export const wbText = createDictionary({
   wbValidateUnavailable: {
     'en-us':
       'An Upload Plan needs to defined before this Data Set can be Validated',
-    'ru-ru': whitespaceSensitive(`
+    'ru-ru': `
       План загрузки должен быть определен до того, как этот набор данных
       может быть проверен
-    `),
+    `,
   },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
@@ -418,10 +403,10 @@ export const wbText = createDictionary({
   },
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
-    'ru-ru': whitespaceSensitive(`
+    'ru-ru': `
       Загрузка недоступна, в то время как в некоторых ячейках есть ошибки
       проверки
-    `),
+    `,
   },
   unavailableWhileViewingResults: {
     'en-us': 'This action is unavailable while viewing the upload results',
@@ -619,6 +604,10 @@ export const wbText = createDictionary({
     'en-us': 'Hidden Fields',
     'ru-ru': 'Скрытые поля',
   },
+  revealHiddenFormFields: {
+    'en-us': 'Reveal Hidden Form Fields',
+    'ru-ru': 'Показать скрытые поля формы',
+  },
   mappingOptions: {
     'en-us': 'Mapping Options',
     'ru-ru': 'Параметры сопоставления',
@@ -628,46 +617,46 @@ export const wbText = createDictionary({
     'ru-ru': 'Игнорировать, когда пусто',
   },
   ignoreWhenBlankDescription: {
-    'en-us': whitespaceSensitive(`
+    'en-us': `
       When set to "Ignore when Blank" blank values in this column will not be
       considered for matching purposes. Blank values are ignored when matching
       even if a default value is provided
-    `),
-    'ru-ru': whitespaceSensitive(`
+    `,
+    'ru-ru': `
       Если задано значение «Игнорировать, когда пусто», пустые значения в
       этом столбце не будет рассматривается для целей сопоставления.
       Пустые значения игнорируются при сопоставлении даже если указано
       значение по умолчанию
-    `),
+    `,
   },
   ignoreAlways: {
     'en-us': 'Always Ignore',
     'ru-ru': 'Всегда игнорировать',
   },
   ignoreAlwaysDescription: {
-    'en-us': whitespaceSensitive(`
+    'en-us': `
       When set to "Ignore Always" the value in this column will never be
       considered for matching purposes, only for uploading.
-    `),
-    'ru-ru': whitespaceSensitive(`
+    `,
+    'ru-ru': `
       Если задано значение «Всегда игнорировать», значение в этом столбце
       никогда не будет рассматривается для целей сопоставления, только для
       загрузки
-    `),
+    `,
   },
   ignoreNever: {
     'en-us': 'Never Ignore',
     'ru-ru': 'Никогда не игнорировать',
   },
   ignoreNeverDescription: {
-    'en-us': whitespaceSensitive(`
+    'en-us': `
       This column would always be considered for matching purposes, regardless
       of it's value
-    `),
-    'ru-ru': whitespaceSensitive(`
+    `,
+    'ru-ru': `
       Этот столбец всегда будет учитываться для целей сопоставления,
       независимо от содержимое столбца
-    `),
+    `,
   },
   allowNullValues: {
     'en-us': 'Allow Null Values',
@@ -748,13 +737,13 @@ export const wbText = createDictionary({
   dataSetUploadedDescription: {
     'en-us': whitespaceSensitive(`
       You are viewing the mappings for an uploaded dataset.<br>
-
+      <br>
       To edit the mappings, rollback the uploaded data or create a new
       dataset
     `),
     'ru-ru': whitespaceSensitive(`
       Вы просматриваете сопоставления для загруженного набора данных.<br>
-
+      <br>
       Чтобы изменить сопоставления, откатите загруженные данные или создайте
       новый набор данных
     `),
@@ -816,23 +805,19 @@ export const wbText = createDictionary({
     'en-us': 'Empty Data Set',
     'ru-ru': 'Пустой набор данных',
   },
-  emptyDataSetDialogText: {
-    'en-us': (
-      <>
-        This Data Set doesn&apos;t have any columns.
-        <br />
-        Press the &quot;Add New Column&quot; button below the mapping lines to
-        add new columns.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        В этом наборе данных нет столбцов.
-        <br />
-        Нажмите кнопку &quot;Добавить новый столбец&quot; под строками
-        сопоставления, чтобы добавить новые столбцы.
-      </>
-    ),
+  emptyDataSetDescription: {
+    'en-us': "This Data Set doesn't have any columns.",
+    'ru-ru': 'В этом наборе данных нет столбцов.',
+  },
+  emptyDataSetSecondDescription: {
+    'en-us': `
+      Press the "Add New Column" button below the mapping lines to add new
+      columns.
+    `,
+    'ru-ru': `
+      Нажмите кнопку "Добавить новый столбец" под строками сопоставления,
+      чтобы добавить новые столбцы.
+    `,
   },
   reRunAutoMapperDialogHeader: {
     'en-us': 'Automap to start a new Upload Plan?',
@@ -997,29 +982,21 @@ export const wbText = createDictionary({
     'ru-ru': (operationName: string, current: number, total: number) =>
       `${operationName} строка ${current}/${total}`,
   },
-  wbStatusPendingDialogText: {
-    'en-us': (operationName: string) => (
-      <>
-        {operationName} of this Data Set should begin shortly.
-        <br />
-        <br />
-        If this message persists for longer than 30 seconds, the {
-          operationName
-        }{' '}
-        process is busy with another Data Set. Please try again later.
-      </>
-    ),
-    'ru-ru': (operationName: string) => (
-      <>
-        {operationName} этого набора данных должно начаться в ближайшее время.
-        <br />
-        <br />
-        Если это сообщение отображается дольше 30 секунд Процесс {
-          operationName
-        }{' '}
-        занят другим набором данных. Пожалуйста, попробуй снова позже.
-      </>
-    ),
+  wbStatusPendingDescription: {
+    'en-us': (operationName: string) =>
+      `${operationName} of this Data Set should begin shortly.`,
+    'ru-ru': (operationName: string) =>
+      `${operationName} этого набора данных должно начаться в ближайшее время.`,
+  },
+  wbStatusPendingSecondDescription: {
+    'en-us': (operationName: string) => `
+       If this message persists for longer than 30 seconds, the ${operationName}
+       process is busy with another Data Set. Please try again later. 
+    `,
+    'ru-ru': (operationName: string) => `
+      Если это сообщение отображается дольше 30 секунд процесс ${operationName}
+      занят другим набором данных. Пожалуйста, попробуй снова позже.
+    `,
   },
   wbStatusErrorDialogText: {
     'en-us': (operationName: string) =>

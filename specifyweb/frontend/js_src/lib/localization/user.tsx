@@ -1,8 +1,10 @@
 /**
- * Localization strings for app resources and user management
+ * Localization strings used in security panel, permissions and login screen
  *
  * @module
  */
+
+import React from 'react';
 
 import { createDictionary } from './utils';
 
@@ -10,7 +12,175 @@ import { createDictionary } from './utils';
 
 /* eslint-disable react/jsx-no-literals */
 /* eslint-disable @typescript-eslint/naming-convention */
-export const adminText = createDictionary({
+export const userText = createDictionary({
+  collectionAccessDenied: {
+    'en-us': 'You do not have access to this collection',
+    'ru-ru': 'У вас нет доступа к этой коллекции',
+  },
+  collectionAccessDeniedDescription: {
+    'en-us': (collectionName: string) =>
+      `The currently logged in account does not have access to the
+       ${collectionName} collection.`,
+    'ru-ru': (collectionName: string) =>
+      `Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
+       коллекции ${collectionName}.`,
+  },
+  changePassword: {
+    'en-us': 'Change Password',
+    'ru-ru': 'Изменить пароль',
+  },
+  oldPassword: {
+    'en-us': 'Old password',
+    'ru-ru': 'Предыдущий пароль',
+  },
+  newPassword: {
+    'en-us': 'New password',
+    'ru-ru': 'iНовый пароль',
+  },
+  repeatPassword: {
+    'en-us': 'Repeat new password',
+    'ru-ru': 'Повторите новый пароль',
+  },
+  logOut: {
+    'en-us': 'Log Out',
+    'ru-ru': 'Выйти',
+  },
+  noAgent: {
+    'en-us': 'Current user does not have an agent assigned',
+    'ru-ru': 'Текущему пользователю не назначен агент',
+  },
+  noAgentDescription: {
+    'en-us': 'Please log in as admin and assign an agent to this user',
+    'ru-ru':
+      'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
+  },
+  helloMessage: {
+    'en-us': (userName: string) => `Hello, ${userName}!`,
+    'ru-ru': (userName: string) => `Привет, ${userName}!`,
+  },
+  oicWelcomeMessage: {
+    'en-us': `
+      You've been invited to associate an external login to
+      your Specify user account. This will enable you to log in to Specify with
+      your chosen provider going forward.
+    `,
+    'ru-ru': `
+      Вам было предложено связать внешний логин с вашей учетной записью
+      пользователя Specify. Это позволит вам войти в Specify с выбранным вами
+      провайдером в будущем.
+    `,
+  },
+  legacyLogin: {
+    'en-us': 'Sign in with Specify Account',
+    'ru-ru': 'Войти с помощью Профиля Specify',
+  },
+  unknownOicUser: {
+    'en-us': (providerName: string) => `There is currently no Specify user
+      associated with your ${providerName} account. If you have a Specify user
+      name and password, you can enter them below to associate that user with
+      your ${providerName} account for future logins.
+    `,
+    'ru-ru': (providerName: string) => `В настоящее время нет пользователя
+      Specify, связанного с вашей учетной записью ${providerName}. Если у вас
+      есть Specify имя пользователя и пароль, вы можете ввести их ниже, чтобы
+      связать этого пользователя с вашей учетной записью ${providerName} для
+      будущих входов в систему.
+    `,
+  },
+  generateMasterKey: {
+    'en-us': 'Generate Master Key',
+    'ru-ru': 'Сгенерировать мастер-ключ',
+  },
+  userPassword: {
+    'en-us': 'User Password:',
+    'ru-ru': 'Пользовательский пароль:',
+  },
+  masterKeyDialogHeader: {
+    'en-us': 'Master key generated',
+    'ru-ru': 'Мастер-ключ создан',
+  },
+  masterKeyFieldLabel: {
+    'en-us': 'Master Key:',
+    'ru-ru': 'Мастер ключ:',
+  },
+  incorrectPassword: {
+    'en-us': 'Password was incorrect.',
+    'ru-ru': 'Пароль неверный.',
+  },
+  noAccessToResource: {
+    'en-us': `
+      You do not have access to any collection containing this resource
+      through the currently logged in account`,
+    'ru-ru': `
+      У вас нет доступа ни к одной коллекции, содержащей этот ресурс
+      через текущую учетную запись`,
+  },
+  resourceInaccessible: {
+    'en-us': `
+      The requested resource cannot be accessed while logged into the
+      current collection.`,
+    'ru-ru': `
+      Запрошенный ресурс недоступен в текущей коллекция.`,
+  },
+  selectCollection: {
+    'en-us': 'Select one of the following collections:',
+    'ru-ru': 'Выберите одну из следующих коллекций:',
+  },
+  loginToProceed: {
+    'en-us': 'You can login to the collection, to proceed:',
+    'ru-ru': 'Вы можете войти в коллекцию, чтобы продолжить:',
+  },
+  sessionTimeOutDialogHeader: {
+    'en-us': 'Insufficient Privileges',
+    'ru-ru': 'Insufficient Privileges',
+  },
+  sessionTimeOutDialogText: {
+    'en-us': `
+      You lack sufficient privileges for that action, or your current
+      session has been logged out.`,
+    'ru-ru': `
+      У вас недостаточно прав для этого действия, или текещий сеанс был
+      отключен.`,
+  },
+  /*
+   * Used in field formatter if user doesn't have read access to the related
+   * table
+   */
+  noPermission: {
+    'en-us': 'NO PERMISSION',
+    'ru-ru': 'ОТСУТСТВУЕТ РАЗРЕШЕНИЕ',
+  },
+  permissionDeniedError: {
+    'en-us': 'Permission denied error',
+    'ru-ru': 'В доступе отказано',
+  },
+  permissionDeniedDialogText: {
+    'en-us': `You don't have any policy or role that gives you permission to do
+      the following action:`,
+    'ru-ru': `У вас нет политики или роли, которая дает вам разрешение на
+      выполнение следующих действий:`,
+  },
+  permissionDeniedDialogSecondText: {
+    'en-us': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
+    'ru-ru': (url: JSX.Element) => (
+      <>Разрешение не было дано при доступе к {url}</>
+    ),
+  },
+  noAccessToCollections: {
+    'en-us': `
+      The logged in user has not been given access to any collections in this
+      database. You must login as another user.
+    `,
+    'ru-ru': `
+      Пользователь, вошедший в систему, не получил доступа ни к каким
+      коллекциям в этой базе данных. Вы должны войти в систему как другой
+      пользователь.
+    `,
+  },
+  userAccount: {
+    'en-us': 'User Account',
+    'ru-ru': 'Учетная запись',
+  },
   removeAdmin: {
     'en-us': 'Remove Admin',
     'ru-ru': 'Забрать администратора',
@@ -31,22 +201,6 @@ export const adminText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер',
   },
-  loadFile: {
-    'en-us': 'Load File',
-    'ru-ru': 'Загрузить файл',
-  },
-  globalResources: {
-    'en-us': 'Global Resources',
-    'ru-ru': 'Глобальные ресурсы',
-  },
-  disciplineResources: {
-    'en-us': 'Discipline Resources',
-    'ru-ru': 'Ресурсы дисциплины',
-  },
-  userTypes: {
-    'en-us': 'User Types',
-    'ru-ru': 'Типы пользователей',
-  },
   users: {
     'en-us': 'User Accounts',
     'ru-ru': 'Пользователи',
@@ -58,10 +212,6 @@ export const adminText = createDictionary({
   collectionUsers: {
     'en-us': 'User Accounts Assigned to this Collection',
     'ru-ru': 'Пользователи',
-  },
-  selectResourceType: {
-    'en-us': 'Select Resource Type',
-    'ru-ru': 'Выберите тип ресурса',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -107,10 +257,6 @@ export const adminText = createDictionary({
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
     'ru-ru': 'Назначенные роли пользователя',
-  },
-  table: {
-    'en-us': 'Table',
-    'ru-ru': 'Таблица',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
@@ -323,106 +469,6 @@ export const adminText = createDictionary({
   accountSetupOptions: {
     'en-us': 'Account Setup Options',
     'ru-ru': 'Параметры учетной записи',
-  },
-  resources: {
-    'en-us': 'Resources',
-    'ru-ru': 'Ресурсы',
-  },
-  subCategories: {
-    'en-us': 'Sub-categories',
-    'ru-ru': 'Подкатегории',
-  },
-  addResource: {
-    'en-us': 'Add Resource',
-    'ru-ru': 'Добавить ресурс',
-  },
-  appResource: {
-    'en-us': 'App Resource',
-    'ru-ru': 'Ресурс приложения',
-  },
-  label: {
-    'en-us': 'Label',
-    'ru-ru': 'Этикетка',
-  },
-  report: {
-    'en-us': 'Report',
-    'ru-ru': 'Отчет',
-  },
-  userPreferences: {
-    'en-us': 'User Preferences',
-    'ru-ru': 'Пользовательские настройки',
-  },
-  defaultUserPreferences: {
-    'en-us': 'Default User Preferences',
-    'ru-ru': 'Пользовательские настройки по умолчанию',
-  },
-  rssExportFeed: {
-    'en-us': 'RSS Export Feed',
-    'ru-ru': 'RSS-канал экспорта',
-  },
-  expressSearchConfig: {
-    'en-us': 'Express Search Config',
-    'ru-ru': 'Конфигурация быстрого поиска',
-  },
-  webLinks: {
-    'en-us': 'Web Links',
-    'ru-ru': 'Веб-ссылки',
-  },
-  uiFormatters: {
-    'en-us': 'Field formatters',
-    'ru-ru': 'Форматировщики полей',
-  },
-  dataObjectFormatters: {
-    'en-us': 'Record Formatters',
-    'ru-ru': 'Форматировщики записей',
-  },
-  searchDialogDefinitions: {
-    'en-us': 'Search Dialog Definitions',
-    'ru-ru': 'Макеты диалогового окна поиска',
-  },
-  dataEntryTables: {
-    'en-us': 'Data Entry Tables',
-    'ru-ru': 'Таблицы ввода данных',
-  },
-  interactionsTables: {
-    'en-us': 'Interactions Tables',
-    'ru-ru': 'Таблицы взаимодействий',
-  },
-  otherXmlResource: {
-    'en-us': 'Other XML Resource',
-    'ru-ru': 'Другой XML-ресурс',
-  },
-  otherJsonResource: {
-    'en-us': 'Other JSON Resource',
-    'ru-ru': 'Другой JSON-ресурс',
-  },
-  otherPropertiesResource: {
-    'en-us': 'Other Properties Resource',
-    'ru-ru': 'Другой Properties-ресурс',
-  },
-  otherAppResource: {
-    'en-us': 'Other Resource',
-    'ru-ru': 'Другой Ресурс',
-  },
-  filters: {
-    'en-us': 'Filters',
-    'ru-ru': 'Фильтры',
-  },
-  custom: {
-    'en-us': 'Custom',
-    'ru-ru': 'Настроить',
-  },
-  leafletLayers: {
-    'en-us': 'Leaflet Layers',
-    'ru-ru': 'Слои Leaflet',
-  },
-  textEditor: {
-    'en-us': 'Text Editor',
-    'ru-ru': 'Текстовый редактор',
-  },
-  visualEditor: {
-    'en-us': 'Visual Editor',
-    'ru-ru': 'Визуальный редактор',
   },
 });
 /* eslint-enable react/jsx-no-literals */

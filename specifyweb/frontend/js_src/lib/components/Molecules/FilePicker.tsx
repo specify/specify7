@@ -108,7 +108,7 @@ export function FilePicker({
             <>
               <br />
               <br />
-              <b>{commonText('selectedFileName', fileName)}</b>
+              <b>{`${commonText('selectedFileName')}: ${fileName}`}</b>
             </>
           )}
         </span>

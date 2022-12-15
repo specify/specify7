@@ -161,6 +161,21 @@ type Dictionary = IR<Key>;
                       )
                     );
 
+                  // Make sure functions are declared as lambdas
+                  Object.entries(strings).forEach(([language, string]) =>
+                    typeof string === 'function' &&
+                    string.toString().startsWith('function')
+                      ? error(
+                          [
+                            `Unexpected "function" keyword for string`,
+                            `${dictionaryName}.${key} for language ${language}.\n`,
+                            `Expected a lambda function.\n` + string.toString(),
+                          ].join('')
+                        )
+                      : undefined
+                  );
+
+                  // Search for blacklisted characters
                   Object.entries(strings).forEach(([language, string]) =>
                     characterBlacklist[language as Language]
                       ?.split('')

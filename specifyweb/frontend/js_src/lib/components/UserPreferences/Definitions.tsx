@@ -32,6 +32,8 @@ import {
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
+import { schemaText } from '../../localization/schema';
+import { headerText } from '../../localization/header';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -386,7 +388,7 @@ export const preferenceDefinitions = {
             title: preferencesText('content'),
             description: (
               <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
-                {commonText('documentation')}
+                {headerText('documentation')}
               </Link.NewTab>
             ),
             requiresReload: false,
@@ -570,7 +572,7 @@ export const preferenceDefinitions = {
         },
       },
       schema: {
-        title: commonText('schemaConfig'),
+        title: schemaText('schemaConfig'),
         items: {
           language: defineItem<string>({
             title: preferencesText('language'),
@@ -619,7 +621,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'name',
-                title: commonText('tableName'),
+                title: schemaText('tableName'),
               },
               {
                 value: 'icon',

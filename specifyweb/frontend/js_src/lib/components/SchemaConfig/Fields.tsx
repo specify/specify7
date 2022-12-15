@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useId } from '../../hooks/useId';
-import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
@@ -9,6 +8,7 @@ import { Select } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import { schemaText } from '../../localization/schema';
 
 export function SchemaConfigFields({
   model,
@@ -31,7 +31,7 @@ export function SchemaConfigFields({
     (item) => model.getField(item.name)!.isRelationship
   );
   return (
-    <SchemaConfigColumn header={commonText('fields')} id={id('fields-label')}>
+    <SchemaConfigColumn header={schemaText('fields')} id={id('fields-label')}>
       <Select
         aria-labelledby={id('fields-label')}
         className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
@@ -42,7 +42,7 @@ export function SchemaConfigFields({
           handleChange(items!.findIndex(({ id }) => id.toString() === newId))
         }
       >
-        <optgroup label={commonText('fields')}>
+        <optgroup label={schemaText('fields')}>
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
@@ -50,7 +50,7 @@ export function SchemaConfigFields({
           ))}
         </optgroup>
         {relationships.length > 0 && (
-          <optgroup label={commonText('relationships')}>
+          <optgroup label={schemaText('relationships')}>
             {relationships.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}

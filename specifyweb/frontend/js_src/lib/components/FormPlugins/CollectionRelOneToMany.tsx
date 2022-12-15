@@ -24,6 +24,7 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
+import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -174,13 +175,10 @@ export function CollectionOneToManyPlugin({
       {state.type === 'DeniedAccessState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDenied')}
+          header={userText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText(
-            'collectionAccessDeniedDescription',
-            state.collectionName
-          )}
+          {userText('collectionAccessDeniedDescription', state.collectionName)}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

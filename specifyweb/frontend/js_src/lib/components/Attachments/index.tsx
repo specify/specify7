@@ -22,6 +22,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
+import { schemaText } from '../../localization/schema';
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
@@ -175,7 +176,7 @@ function Attachments(): JSX.Element {
                   : ''}
               </option>
             )}
-            <optgroup label={commonText('tables')}>
+            <optgroup label={schemaText('tables')}>
               {tablesWithAttachments()
                 .filter(({ name }) => collectionSizes?.byTable[name] !== 0)
                 .map(({ name, label }) => (

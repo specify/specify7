@@ -1,4 +1,3 @@
-import { adminText } from '../../localization/admin';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -21,6 +20,7 @@ import { processPolicies } from './policyConverter';
 import { getRegistriesFromPath } from './registry';
 import type { Role } from './Role';
 import { Http } from '../../utils/ajax/definitions';
+import { userText } from '../../localization/user';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;
@@ -96,7 +96,7 @@ export function resourceNameToLabel(resource: string): string {
     const parts = resourceNameToParts(resource);
     return (
       getRegistriesFromPath(parts)[parts.length - 1]?.[parts.at(-1)!].label ??
-      adminText('resource')
+      userText('resource')
     );
   }
 }
@@ -127,7 +127,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
               ? replaceKey(
                   data,
                   'groupName',
-                  adminText('excludedInstitutionalPolicies')
+                  userText('excludedInstitutionalPolicies')
                 )
               : data,
           ])
@@ -139,7 +139,7 @@ export function getCollectionRegistriesFromPath(resourceParts: RA<string>) {
  * Localize action name
  */
 export const actionToLabel = (action: string): string =>
-  action === anyAction ? adminText('allActions') : lowerToHuman(action);
+  action === anyAction ? userText('allActions') : lowerToHuman(action);
 
 export const toolPermissionPrefix = 'tools';
 export const anyAction = '%';

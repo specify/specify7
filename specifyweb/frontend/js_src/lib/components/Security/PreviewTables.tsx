@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -12,6 +11,8 @@ import { getTablePermissions } from '../Permissions';
 import type { PreviewCell } from './Preview';
 import { PreviewRow } from './PreviewComponents';
 import { resourceNameToModel } from './utils';
+import { userText } from '../../localization/user';
+import { schemaText } from '../../localization/schema';
 
 export function PreviewTables({
   query,
@@ -60,11 +61,11 @@ export function PreviewTables({
     >
       <div role="row">
         {[
-          adminText('read'),
+          userText('read'),
           commonText('create'),
           commonText('update'),
           commonText('delete'),
-          adminText('table'),
+          schemaText('table'),
         ].map((header, index, { length }) => (
           <div
             className={`

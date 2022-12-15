@@ -32,6 +32,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { headerText } from '../../localization/header';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -154,12 +155,12 @@ export function TreeRepairOverlay(): JSX.Element {
 
   return (
     <TreeSelectDialog
-      confirmationMessage={commonText('treeRepairComplete')}
+      confirmationMessage={headerText('treeRepairComplete')}
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
       permissionName="repair"
-      title={commonText('repairTree')}
+      title={headerText('repairTree')}
       onClick={setTree}
       onClose={handleClose}
     />

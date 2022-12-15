@@ -1,4 +1,3 @@
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
@@ -23,6 +22,8 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -61,9 +62,9 @@ const buildRegistry = f.store(
         .filter(({ name }) => !f.has(toolTables(), name))
         .map(({ name, label, isHidden, isSystem }) => ({
           resource: tableNameToResourceName(name),
-          localized: [adminText('table'), label],
+          localized: [schemaText('table'), label],
           actions: tableActions,
-          groupName: isSystem || isHidden ? adminText('advancedTables') : '',
+          groupName: isSystem || isHidden ? userText('advancedTables') : '',
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
@@ -96,7 +97,7 @@ const buildRegistry = f.store(
                   : {
                       [anyResource]: {
                         label: tablePermissionsPrefix.includes(part)
-                          ? adminText('allTables')
+                          ? userText('allTables')
                           : commonText('all'),
                         children: {},
                         actions: getAllActions(
@@ -186,7 +187,7 @@ export const toolDefinitions = f.store(() =>
     }>
   >()({
     schemaConfig: {
-      label: commonText('schemaConfig'),
+      label: schemaText('schemaConfig'),
       tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
     },
     queryBuilder: {
@@ -207,7 +208,7 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: commonText('pickList'),
+      label: schemaText('pickList'),
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {

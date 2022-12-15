@@ -12,7 +12,7 @@ import { f } from '../../utils/functools';
 import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
-import { specifyNetworkText } from '../../localization/specifynetwork';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { OccurrenceData } from './map';

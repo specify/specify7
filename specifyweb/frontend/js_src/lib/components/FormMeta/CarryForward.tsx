@@ -21,6 +21,8 @@ import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { wbText } from '../../localization/workbench';
+import { schemaText } from '../../localization/schema';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -258,7 +260,7 @@ function CarryForwardConfigDialog({
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           <CarryForwardCategory
-            header={commonText('fields')}
+            header={schemaText('fields')}
             model={model}
             carryForward={config}
             fields={literalFields}
@@ -266,7 +268,7 @@ function CarryForwardConfigDialog({
             onChange={handleChange}
           />
           <CarryForwardCategory
-            header={commonText('relationships')}
+            header={schemaText('relationships')}
             model={model}
             carryForward={config}
             fields={relationships}
@@ -279,7 +281,7 @@ function CarryForwardConfigDialog({
             checked={showHiddenFields}
             onValueChange={setShowHiddenFields}
           />
-          {commonText('revealHiddenFormFields')}
+          {wbText('revealHiddenFormFields')}
         </Label.Inline>
       </Form>
     </Dialog>

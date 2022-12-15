@@ -22,10 +22,11 @@ import { SafeOutlet } from '../Router/RouterUtils';
 import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
-import {SortIndicator, useSortConfig} from '../Molecules/Sorting';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { queryText } from '../../localization/query';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -90,7 +91,7 @@ export function QueryListDialog({
           )}
         </>
       }
-      header={commonText('queriesDialogTitle', queries.length)}
+      header={queryText('queriesDialogTitle', queries.length)}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >

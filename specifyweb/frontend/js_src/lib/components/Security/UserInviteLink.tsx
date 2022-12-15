@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import type { IR } from '../../utils/types';
@@ -12,6 +11,7 @@ import type { SpecifyUser } from '../DataModel/types';
 import { CopyButton } from '../Molecules/Copy';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { userText } from '../../localization/user';
 
 /**
  * Generate an invite link for a given user to connect their Specify account to
@@ -48,17 +48,17 @@ export function UserInviteLink({
             : setLink('')
         }
       >
-        {adminText('createInviteLink')}
+        {userText('createInviteLink')}
       </Button.Small>
       {typeof link === 'string' && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('userInviteLink')}
+          header={userText('userInviteLink')}
           onClose={(): void => setLink(undefined)}
         >
           {hasProvidersConfigured ? (
             <>
-              {adminText('userInviteLinkDescription', user.name)}
+              {userText('userInviteLinkDescription', user.name)}
               <div className="flex gap-2">
                 <Input.Text
                   className="flex-1 !cursor-pointer"
@@ -69,7 +69,7 @@ export function UserInviteLink({
               </div>
             </>
           ) : (
-            adminText('noProvidersForUserInviteLink')
+            userText('noProvidersForUserInviteLink')
           )}
         </Dialog>
       )}

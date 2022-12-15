@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
@@ -22,6 +22,7 @@ import {
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
+import { headerText } from '../../localization/header';
 
 export function AppResourcesFilters({
   initialResources,
@@ -45,7 +46,7 @@ export function AppResourcesFilters({
   return (
     <>
       <div className="flex gap-2 rounded bg-[color:var(--background)]">
-        <span className="sr-only">{adminText('filters')}</span>
+        <span className="sr-only">{resourcesText('filters')}</span>
         <RadioButton
           isPressed={filters.viewSets}
           onClick={(): void =>
@@ -70,8 +71,8 @@ export function AppResourcesFilters({
           {commonText('appResources')}
         </RadioButton>
         <Button.Blue
-          aria-label={adminText('custom')}
-          title={adminText('custom')}
+          aria-label={resourcesText('custom')}
+          title={resourcesText('custom')}
           onClick={handleOpen}
         >
           {icons.cog}
@@ -80,7 +81,7 @@ export function AppResourcesFilters({
       {isOpen && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('custom')}
+          header={resourcesText('custom')}
           modal={false}
           onClose={handleClose}
         >
@@ -142,7 +143,7 @@ export function AppResourcesFilters({
                             href={documentationUrl}
                             icon="externalLink"
                             target="_blank"
-                            title={commonText('documentation')}
+                            title={headerText('documentation')}
                           />
                         )}
                       </Label.Inline>

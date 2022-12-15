@@ -9,12 +9,12 @@ import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import type { SpecifyUser } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { adminText } from '../../localization/admin';
 import { hasPermission } from '../Permissions/helpers';
 import { userInformation } from '../InitialContext/userInformation';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
 import { useResource } from '../../hooks/resource';
+import { userText } from '../../localization/user';
 
 export function AdminStatusPlugin({
   user: resource,
@@ -36,18 +36,18 @@ export function AdminStatusPlugin({
         !hasPermission('/admin/user/sp6/is_admin', 'update') ||
         resource.isNew() ||
         // Only managers can be admins
-        user.userType != 'Manager' ||
+        user.userType !== 'Manager' ||
         // Can't remove admin status from yourself
         (isAdmin && isCurrentUser)
       }
       title={
         resource.isNew()
-          ? adminText('saveUserFirst')
+          ? userText('saveUserFirst')
           : isAdmin && isCurrentUser
-          ? adminText('canNotRemoveYourself')
+          ? userText('canNotRemoveYourself')
           : user.userType === 'Manager'
           ? undefined
-          : adminText('mustBeManager')
+          : userText('mustBeManager')
       }
       onClick={(): void =>
         loading(
@@ -63,7 +63,7 @@ export function AdminStatusPlugin({
         )
       }
     >
-      {isAdmin ? adminText('removeAdmin') : adminText('makeAdmin')}
+      {isAdmin ? userText('removeAdmin') : userText('makeAdmin')}
     </Button.Small>
   );
 }

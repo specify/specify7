@@ -13,6 +13,7 @@ import { Button } from '../Atoms/Button';
 import { Label, Select } from '../Atoms/Form';
 import { usePref } from '../UserPreferences/usePref';
 import { f } from '../../utils/functools';
+import { schemaText } from '../../localization/schema';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -156,7 +157,7 @@ export function TablesListEdit({
           />
         </div>
         <Label.Block>
-          {commonText('selectedTables')}
+          {schemaText('selectedTables')}
           <Select
             className="flex-1"
             multiple
@@ -190,7 +191,7 @@ export function TablesListEdit({
           </div>
         </div>
         <Label.Block>
-          {commonText('possibleTables')}
+          {schemaText('possibleTables')}
           <Select
             className="flex-1"
             multiple

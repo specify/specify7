@@ -41,7 +41,7 @@ import {showDialog} from '../Molecules/LegacyDialog';
 import {dialogClassNames} from '../Molecules/Dialog';
 import {format} from '../Forms/dataObjFormatters';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {LANGUAGE} from '../../localization/utils';
+import {LANGUAGE, whitespaceSensitive} from '../../localization/utils';
 import {filterArray} from '../../utils/types';
 import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
 import {serializeResource} from '../DataModel/helpers';
@@ -271,7 +271,7 @@ export const WBView = Backbone.View.extend({
               });
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop('title', wbText('wbValidateUnavailable'));
+                .prop('title', whitespaceSensitive(wbText('wbValidateUnavailable')));
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -2308,7 +2308,7 @@ export const WBView = Backbone.View.extend({
       });
       setMetaCallback(
         'issues',
-        wbText('matchedMultipleErrorMessage'),
+        whitespaceSensitive(wbText('matchedMultipleErrorMessage')),
         statusData.info.columns,
         resolveColumns
       );
@@ -2491,15 +2491,16 @@ export const WBView = Backbone.View.extend({
     });
 
     const uploadButton = this.$el.find('.wb-upload');
+    const title = whitespaceSensitive(wbText('uploadUnavailableWhileHasErrors'));
     if (
       !uploadButton.attr('disabled') ||
-      uploadButton.attr('title') === wbText('uploadUnavailableWhileHasErrors')
+      uploadButton.attr('title') === title
     ) {
       const hasErrors = cellCounts.invalidCells > 0;
       uploadButton.prop('disabled', hasErrors);
       uploadButton.attr(
         'title',
-        hasErrors ? wbText('uploadUnavailableWhileHasErrors') : undefined
+        hasErrors ? title : undefined
       );
     }
 
@@ -2513,11 +2514,21 @@ export const WBView = Backbone.View.extend({
         cellCounts.invalidCells === 0
           ? {
               header: wbText('validationNoErrorsDialogHeader'),
-              message: wbText('validationNoErrorsDialogText'),
+              message: <>
+                {wbText('validationNoErrorsDescription')}
+                <br />
+                <br />
+                {wbText('validationNoErrorsSecondDescription')}
+              </>,
             }
           : {
               header: wbText('validationErrorsDialogHeader'),
-              message: wbText('validationErrorsDialogText'),
+              message: <>
+                {wbText('validationErrorsDescription')}
+                <br />
+                <br />
+                {wbText('validationErrorsSecondDescription')}
+              </>,
             },
       upload:
         cellCounts.invalidCells === 0
@@ -2527,7 +2538,12 @@ export const WBView = Backbone.View.extend({
             }
           : {
               header: wbText('uploadErrorsDialogHeader'),
-              message: wbText('uploadErrorsDialogText'),
+              message: <>
+                {wbText('uploadErrorsDescription')}
+                <br />
+                <br />
+                {wbText('uploadErrorsSecondDescription')}
+              </>,
             },
       unupload: {
         header: wbText('dataSetRollbackDialogHeader'),

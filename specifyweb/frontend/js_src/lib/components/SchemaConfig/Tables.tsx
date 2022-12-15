@@ -13,6 +13,7 @@ import { schema } from '../DataModel/schema';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { schemaText } from '../../localization/schema';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -50,7 +51,7 @@ export function SchemaConfigTables(): JSX.Element {
           </Button.Gray>
         </>
       }
-      header={commonText('tables')}
+      header={schemaText('tables')}
       onClose={(): void => navigate('/specify')}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">

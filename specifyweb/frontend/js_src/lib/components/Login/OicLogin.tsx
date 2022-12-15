@@ -17,6 +17,7 @@ import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
 import { className } from '../Atoms/className';
+import { userText } from '../../localization/user';
 
 export type OicProvider = {
   readonly provider: string;
@@ -50,9 +51,9 @@ export function OicLogin({
       <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (
           <p>
-            {commonText('helloMessage', data.inviteToken.username)}
+            {userText('helloMessage', data.inviteToken.username)}
             <br />
-            {commonText('oicWelcomeMessage')}
+            {userText('oicWelcomeMessage')}
           </p>
         )}
         <input
@@ -85,7 +86,7 @@ export function OicLogin({
             })}
             className={className.navigationHandled}
           >
-            {commonText('legacyLogin')}
+            {userText('legacyLogin')}
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />

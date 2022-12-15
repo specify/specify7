@@ -25,6 +25,8 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Http } from '../../utils/ajax/definitions';
+import { headerText } from '../../localization/header';
+import { queryText } from '../../localization/query';
 
 export function QueryEditButton({
   query,
@@ -92,15 +94,15 @@ function EditQueryDialog({
         <div className="flex flex-col">
           <p>{commonText('actions')}</p>
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {commonText('exportQueryForDwca')}
+            {queryText('exportQueryForDwca')}
           </Button.LikeLink>
           {hasPermission('/report', 'execute') && (
             <>
               <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {commonText('exportQueryAsReport')}
+                {queryText('exportQueryAsReport')}
               </Button.LikeLink>
               <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {commonText('exportQueryAsLabel')}
+                {queryText('exportQueryAsLabel')}
               </Button.LikeLink>
             </>
           )}
@@ -145,7 +147,7 @@ function DwcaQueryExport({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={commonText('exportQueryForDwcaDialogHeader')}
+      header={queryText('exportQueryForDwcaDialogHeader')}
       onClose={handleClose}
     >
       <AutoGrowTextArea isReadOnly value={exported} />
@@ -177,8 +179,8 @@ function QueryExport({
       }
       header={
         asLabel
-          ? commonText('createLabelDialogHeader')
-          : commonText('createReportDialogHeader')
+          ? headerText('createLabelDialogHeader')
+          : headerText('createReportDialogHeader')
       }
       onClose={handleClose}
     >
@@ -215,7 +217,7 @@ function QueryExport({
         <Input.Text
           maxLength={getMaxLength()}
           placeholder={
-            asLabel ? commonText('labelName') : commonText('reportName')
+            asLabel ? headerText('labelName') : headerText('reportName')
           }
           required
           value={name}

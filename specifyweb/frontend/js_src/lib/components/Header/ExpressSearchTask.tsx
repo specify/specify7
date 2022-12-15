@@ -22,6 +22,7 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
+import { headerText } from '../../localization/header';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = ''] = useSearchParameter('q');
@@ -37,12 +38,12 @@ export function ExpressSearchView(): JSX.Element {
     <Container.Full>
       {primaryResults !== false && (
         <TableResults
-          header={commonText('primarySearch')}
+          header={headerText('primarySearch')}
           queryResults={primaryResults}
         />
       )}
       <TableResults
-        header={commonText('secondarySearch')}
+        header={headerText('secondarySearch')}
         queryResults={secondaryResults}
       />
     </Container.Full>

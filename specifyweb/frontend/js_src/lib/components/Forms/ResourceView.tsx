@@ -182,10 +182,10 @@ export function ResourceView<SCHEMA extends AnySchema>({
     return (
       <Dialog
         buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
-        header={commonText('resourceDeletedDialogHeader')}
+        header={formsText('resourceDeletedDialogHeader')}
         onClose={(): void => navigate('/specify/', { replace: true })}
       >
-        {commonText('resourceDeletedDialogText')}
+        {formsText('resourceDeletedDialogText')}
       </Dialog>
     );
 

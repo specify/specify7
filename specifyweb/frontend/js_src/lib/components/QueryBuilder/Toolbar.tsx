@@ -8,6 +8,7 @@ import { Submit } from '../Atoms/Submit';
 import type { Tables } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
+import { wbText } from '../../localization/workbench';
 
 export function QueryToolbar({
   showHiddenFields,
@@ -35,7 +36,7 @@ export function QueryToolbar({
           checked={showHiddenFields}
           onValueChange={handleToggleHidden}
         />
-        {commonText('revealHiddenFormFields')}
+        {wbText('revealHiddenFormFields')}
       </Label.Inline>
       <span className="-ml-2 flex-1" />
       {hasPermission('/querybuilder/query', 'execute') && (

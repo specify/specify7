@@ -2,7 +2,6 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
@@ -26,6 +25,7 @@ import { RoleView } from './Role';
 import { decompressPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { userText } from '../../localization/user';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -195,7 +195,7 @@ function RoleUsers({
   return typeof role.id === 'number' &&
     hasPermission('/permissions/user/roles', 'read', collectionId) ? (
     <fieldset className="flex flex-col gap-2">
-      <legend>{adminText('users')}</legend>
+      <legend>{userText('users')}</legend>
       {typeof userRoles === 'object' ? (
         <>
           <Ul className="flex max-h-[theme(spacing.96)] flex-col gap-2 overflow-auto">

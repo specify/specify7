@@ -31,6 +31,7 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
 import { TableIcon } from '../Molecules/TableIcon';
+import { headerText } from '../../localization/header';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -58,7 +59,7 @@ export function FormsDialog({
     <Dialog
       buttons={commonText('cancel')}
       className={{ container: dialogClassNames.narrowContainer }}
-      header={commonText('dataEntry')}
+      header={headerText('dataEntry')}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       onClose={handleClose}

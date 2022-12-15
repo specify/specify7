@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -122,12 +122,12 @@ function useEditorTabs(
     return filterArray([
       typeof visualEditor === 'function'
         ? {
-            label: adminText('visualEditor'),
+            label: resourcesText('visualEditor'),
             component: visualEditor,
           }
         : undefined,
       {
-        label: adminText('textEditor'),
+        label: resourcesText('textEditor'),
         component: AppResourceTextEditor,
       },
     ]);

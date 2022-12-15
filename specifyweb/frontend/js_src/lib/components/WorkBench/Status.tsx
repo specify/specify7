@@ -100,7 +100,14 @@ export function WbStatus({
 
   if (aborted === 'pending') message = wbText('aborting');
   else if (status.taskstatus === 'PENDING')
-    message = wbText('wbStatusPendingDialogText', mappedOperation);
+    message = (
+      <>
+        {wbText('wbStatusPendingDescription', mappedOperation)}
+        <br />
+        <br />
+        {wbText('wbStatusPendingSecondDescription', mappedOperation)}
+      </>
+    );
   else if (status.taskstatus === 'PROGRESS') {
     if (current === total)
       message =

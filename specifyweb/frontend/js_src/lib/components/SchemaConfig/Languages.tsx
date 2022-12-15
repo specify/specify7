@@ -11,7 +11,8 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
+import { schemaText } from '../../localization/schema';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -22,14 +23,14 @@ export function ChooseSchemaLanguage(): JSX.Element {
         <>
           {hasToolPermission('schemaConfig', 'create') && (
             <Link.Blue href="/specify/schema-config/add-language/">
-              {commonText('addLanguage')}
+              {schemaText('addLanguage')}
             </Link.Blue>
           )}
           <span className="-ml-2 flex-1" />
           <Button.DialogClose>{commonText('close')}</Button.DialogClose>
         </>
       }
-      header={commonText('schemaConfig')}
+      header={schemaText('schemaConfig')}
       onClose={(): void => navigate('/specify/')}
     >
       {commonText('language')}
@@ -68,7 +69,7 @@ export function AddLanguage(): JSX.Element {
           <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
         </>
       }
-      header={commonText('addLanguageDialogHeader')}
+      header={schemaText('addLanguageDialogHeader')}
       onClose={(): void => navigate('/specify/')}
     >
       <Form

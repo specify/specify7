@@ -13,7 +13,7 @@ import { getResourceType } from './filtersHelpers';
 import { jsonLinter, xmlLinter } from './codeMirrorLinters';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { getAppResourceExtension } from './hooks';
@@ -26,6 +26,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { appResourceSubTypes, appResourceTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { notificationsText } from '../../localization/notifications';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -75,12 +76,12 @@ export function AppResourceLoad({
   return (
     <>
       <Button.Green className="whitespace-nowrap" onClick={handleOpen}>
-        {adminText('loadFile')}
+        {resourcesText('loadFile')}
       </Button.Green>
       {isOpen && (
         <Dialog
           buttons={commonText('cancel')}
-          header={adminText('loadFile')}
+          header={resourcesText('loadFile')}
           onClose={handleClose}
         >
           <FilePicker
@@ -120,7 +121,7 @@ export function AppResourceDownload({
         )
       }
     >
-      {commonText('download')}
+      {notificationsText('download')}
     </Button.Green>
   );
 }

@@ -6,7 +6,6 @@ import type {
 import type { DataObjectFormatter } from './SetupHooks';
 import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
 import type { Aggregator, Formatter } from '../Forms/dataObjFormatters';
-import { commonText } from '../../localization/common';
 import { parseJavaClassName } from '../DataModel/resource';
 import type {
   JavaType,
@@ -16,6 +15,7 @@ import type {
 import type { IR, RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { schemaText } from '../../localization/schema';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -117,10 +117,10 @@ export function isFormatterAvailable(
 }
 
 export const localizedRelationshipTypes: IR<string> = {
-  'one-to-one': commonText('oneToOne'),
-  'one-to-many': commonText('oneToMany'),
-  'many-to-one': commonText('manyToOne'),
-  'many-to-many': commonText('manyToMany'),
+  'one-to-one': schemaText('oneToOne'),
+  'one-to-many': schemaText('oneToMany'),
+  'many-to-one': schemaText('manyToOne'),
+  'many-to-many': schemaText('manyToMany'),
 };
 
 /**

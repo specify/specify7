@@ -21,6 +21,7 @@ import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { SplashScreen } from '../Core/SplashScreen';
+import { userText } from '../../localization/user';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
@@ -151,7 +152,7 @@ function Wrapped({
         ) : (
           <>
             <ErrorMessage>
-              <span>{commonText('noAccessToCollections')}</span>
+              <span>{userText('noAccessToCollections')}</span>
             </ErrorMessage>
             <Button.Fancy
               onClick={(): void =>

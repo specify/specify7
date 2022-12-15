@@ -22,6 +22,7 @@ import {
 import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
 import { getCache } from '../../utils/cache';
+import { headerText } from '../../localization/header';
 
 export type MenuItemName =
   | 'attachments'
@@ -36,7 +37,7 @@ export type MenuItemName =
 const rawMenuItems: RR<MenuItemName, MenuItem> = {
   dataEntry: {
     url: '/specify/overlay/data-entry/',
-    title: commonText('dataEntry'),
+    title: headerText('dataEntry'),
     icon: icons.pencilAt,
     visibilityKey: 'showDataEntry',
     enabled: () =>

@@ -3,7 +3,6 @@ import React from 'react';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import type { FormMode } from '../FormParse';
@@ -23,6 +22,7 @@ import { ErrorMessage, Ul } from '../Atoms';
 import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Http } from '../../utils/ajax/definitions';
+import { userText } from '../../localization/user';
 
 export type SetAgentsResponse = Partial<{
   readonly AgentInUseException: RA<number>;
@@ -102,7 +102,7 @@ export function MissingAgentsDialog({
       header={formsText('userAgentsPluginDialogTitle')}
       onClose={handleClose}
     >
-      <p>{adminText('setAgentsDialogText')}</p>
+      <p>{userText('setAgentsDialogText')}</p>
       {/* Not formatting this error nicely, as it shouldn't ever happen */}
       {Array.isArray(response.MultipleAgentsException) && (
         <pre>{JSON.stringify(response, null, 2)}</pre>
@@ -160,7 +160,7 @@ export function MissingAgentsDialog({
                 idFromUrl(address.get('agent') ?? '')
               ) && (
                 <ErrorMessage className="mt-2">
-                  {adminText('agentInUse')}
+                  {userText('agentInUse')}
                 </ErrorMessage>
               )}
             </Label.Block>

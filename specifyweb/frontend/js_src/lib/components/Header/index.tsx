@@ -25,6 +25,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { headerText } from '../../localization/header';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -155,9 +156,9 @@ export function CollectionSelector(): JSX.Element {
   const navigate = useNavigate();
   return (
     <Select
-      aria-label={commonText('currentCollection')}
+      aria-label={headerText('currentCollection')}
       className="flex-1"
-      title={commonText('currentCollection')}
+      title={headerText('currentCollection')}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')

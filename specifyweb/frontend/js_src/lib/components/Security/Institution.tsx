@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { ajax } from '../../utils/ajax';
 import type { Institution } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
@@ -30,6 +29,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
+import { userText } from '../../localization/user';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -77,7 +77,7 @@ function InstitutionView({
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
-                <h4 className="text-xl">{adminText('userRoleLibrary')}</h4>
+                <h4 className="text-xl">{userText('userRoleLibrary')}</h4>
                 {typeof libraryRoles === 'object' ? (
                   <ul>
                     {Object.values(libraryRoles)
@@ -132,7 +132,7 @@ function InstitutionView({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('institutionUsers')}</h4>
+              <h4 className="text-xl">{userText('institutionUsers')}</h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>
@@ -147,11 +147,11 @@ function InstitutionView({
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
                               admins?.admins.has(user.id) === true
-                                ? ` ${adminText('specifyAdmin')}`
+                                ? ` ${userText('specifyAdmin')}`
                                 : ''
                             }${
                               admins?.legacyAdmins.has(user.id) === true
-                                ? ` ${adminText('legacyAdmin')}`
+                                ? ` ${userText('legacyAdmin')}`
                                 : ''
                             }`}</span>
                           </>
@@ -183,7 +183,7 @@ function InstitutionView({
                 commonText('loading')
               )}
               {typeof users === 'object' && admins === undefined && (
-                <p>{adminText('loadingAdmins')}</p>
+                <p>{userText('loadingAdmins')}</p>
               )}
             </section>
           </div>

@@ -43,6 +43,7 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { userText } from '../../localization/user';
 
 export function QueryComboBox({
   fieldName: initialFieldName = '',
@@ -199,7 +200,7 @@ function ProtectedQueryComboBox({
                       resource,
                     }))
               )
-          : { label: commonText('noPermission'), resource: undefined },
+          : { label: userText('noPermission'), resource: undefined },
       [version, value, resource, field, typeSearch]
     ),
     false
@@ -532,13 +533,10 @@ function ProtectedQueryComboBox({
       {state.type === 'AccessDeniedState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDenied')}
+          header={userText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText(
-            'collectionAccessDeniedDescription',
-            state.collectionName
-          )}
+          {userText('collectionAccessDeniedDescription', state.collectionName)}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

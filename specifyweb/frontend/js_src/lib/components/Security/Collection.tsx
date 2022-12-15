@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -35,6 +34,7 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
+import { userText } from '../../localization/user';
 
 export type RoleBase = {
   readonly roleId: number;
@@ -147,7 +147,7 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('collectionUsers')}</h4>
+              <h4 className="text-xl">{userText('collectionUsers')}</h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
                   commonText('none')

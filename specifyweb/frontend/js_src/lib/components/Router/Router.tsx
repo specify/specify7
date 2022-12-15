@@ -19,6 +19,7 @@ import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 import { f } from '../../utils/functools';
+import { mainText } from '../../localization/main';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -289,11 +290,11 @@ export function UnloadProtectDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Red onClick={handleConfirm}>{commonText('leave')}</Button.Red>
+          <Button.Red onClick={handleConfirm}>{mainText('leave')}</Button.Red>
         </>
       }
       forceToTop
-      header={commonText('leavePageDialogHeader')}
+      header={mainText('leavePageDialogHeader')}
       onClose={handleCancel}
     >
       {children}

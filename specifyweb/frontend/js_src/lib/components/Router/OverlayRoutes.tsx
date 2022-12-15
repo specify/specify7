@@ -3,6 +3,8 @@ import { welcomeText } from '../../localization/welcome';
 import type { RA } from '../../utils/types';
 import type { EnhancedRoute } from './RouterUtils';
 import { queryText } from '../../localization/query';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -27,7 +29,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'user-tools',
-        title: commonText('userToolsDialogTitle'),
+        title: headerText('userToolsDialogTitle'),
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
@@ -35,7 +37,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'data-entry',
-        title: commonText('dataEntry'),
+        title: headerText('dataEntry'),
         element: () =>
           import('../Header/Forms').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
@@ -123,7 +125,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'tree-repair',
-        title: commonText('repairTree'),
+        title: headerText('repairTree'),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeRepairOverlay }) => TreeRepairOverlay
@@ -131,7 +133,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'master-key',
-        title: commonText('generateMasterKey'),
+        title: userText('generateMasterKey'),
         element: () =>
           import('../Toolbar/MasterKey').then(
             ({ MasterKeyOverlay }) => MasterKeyOverlay
@@ -139,7 +141,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'make-dwca',
-        title: commonText('makeDwca'),
+        title: headerText('makeDwca'),
         element: () =>
           import('../Toolbar/Dwca').then(
             ({ MakeDwcaOverlay }) => MakeDwcaOverlay
@@ -147,7 +149,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'force-update-feed',
-        title: commonText('updateExportFeed'),
+        title: headerText('updateExportFeed'),
         element: () =>
           import('../Toolbar/ForceUpdate').then(
             ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay

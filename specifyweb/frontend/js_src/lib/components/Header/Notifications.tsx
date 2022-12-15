@@ -15,6 +15,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
+import { notificationsText } from '../../localization/notifications';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -129,7 +130,7 @@ export function Notifications(): JSX.Element {
         forwardRef={buttonRef}
         onClick={handleOpen}
       >
-        {commonText(
+        {notificationsText(
           'notifications',
           typeof notifications?.length === 'number'
             ? formatNumber(notifications.length)
@@ -143,7 +144,7 @@ export function Notifications(): JSX.Element {
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
-          header={commonText('notificationsDialogTitle')}
+          header={notificationsText('notificationsDialogTitle')}
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();
@@ -174,7 +175,7 @@ export function Notifications(): JSX.Element {
            * https://github.com/specify/specify7/issues/641
            * After it is fixed, this message can be removed
            */}
-          <p>{commonText('mostRecentNotificationsTop')}</p>
+          <p>{notificationsText('mostRecentNotificationsTop')}</p>
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissable key={index}>
               <NotificationComponent

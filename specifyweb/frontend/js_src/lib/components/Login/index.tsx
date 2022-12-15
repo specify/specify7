@@ -18,6 +18,7 @@ import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Submit } from '../Atoms/Submit';
 import { useValidation } from '../../hooks/useValidation';
 import { SplashScreen } from '../Core/SplashScreen';
+import { userText } from '../../localization/user';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {
@@ -104,9 +105,9 @@ function LegacyLogin({
       />
       {typeof data.externalUser === 'object' && (
         <p>
-          {commonText('helloMessage', data.externalUser.name)}
+          {userText('helloMessage', data.externalUser.name)}
           <br />
-          {commonText('unknownOicUser', data.externalUser.provider_title)}
+          {userText('unknownOicUser', data.externalUser.provider_title)}
         </p>
       )}
       <Form method="post">

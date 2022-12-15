@@ -18,6 +18,7 @@ import { useId } from '../../hooks/useId';
 import { useValidation } from '../../hooks/useValidation';
 import { CopyButton } from '../Molecules/Copy';
 import { Http } from '../../utils/ajax/definitions';
+import { userText } from '../../localization/user';
 
 export function MasterKeyOverlay(): JSX.Element | null {
   const [password, setPassword] = React.useState<string>('');
@@ -39,7 +40,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
           <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
         </>
       }
-      header={commonText('generateMasterKey')}
+      header={userText('generateMasterKey')}
       onClose={handleClose}
     >
       <Form
@@ -63,7 +64,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
             )
               .then(({ data, status }) =>
                 status === Http.FORBIDDEN
-                  ? setValidation(commonText('incorrectPassword'))
+                  ? setValidation(userText('incorrectPassword'))
                   : setMasterKey(data)
               )
               // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -72,7 +73,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
         }
       >
         <Label.Block>
-          {commonText('userPassword')}
+          {userText('userPassword')}
           <Input.Generic
             forwardRef={validationRef}
             required
@@ -99,13 +100,13 @@ function ShowKey({
   return (
     <Dialog
       buttons={commonText('close')}
-      header={commonText('masterKeyDialogHeader')}
+      header={userText('masterKeyDialogHeader')}
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-2">
         <Label.Block className="contents">
           <span className="col-span-full">
-            {commonText('masterKeyFieldLabel')}
+            {userText('masterKeyFieldLabel')}
           </span>
           <Input.Text
             className="!cursor-pointer"

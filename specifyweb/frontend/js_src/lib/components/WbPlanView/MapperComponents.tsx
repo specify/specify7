@@ -24,6 +24,8 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { usePref } from '../UserPreferences/usePref';
 import { ButtonWithConfirmation } from './Components';
+import { whitespaceSensitive } from '../../localization/utils';
+import { schemaText } from '../../localization/schema';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -53,7 +55,7 @@ export function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        {commonText('revealHiddenFormFields')}
+        {wbText('revealHiddenFormFields')}
       </Label.Inline>
     </div>
   );
@@ -193,7 +195,10 @@ export function EmptyDataSetDialog({
       isOpen={showDialog}
       onClose={handleClose}
     >
-      {wbText('emptyDataSetDialogText')}
+      {wbText('emptyDataSetDescription')}
+      <br />
+      <br />
+      {wbText('emptyDataSetSecondDescription')}
     </Dialog>
   );
 }
@@ -234,7 +239,7 @@ export function mappingOptionsMenu({
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
-                <Label.Inline title={description}>
+                <Label.Inline title={whitespaceSensitive(description)}>
                   <Input.Radio
                     checked={columnOptions.matchBehavior === id}
                     isReadOnly={isReadOnly}
@@ -308,7 +313,7 @@ export function ChangeBaseTable({
         <>
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
           <Button.Orange onClick={confirm}>
-            {commonText('changeBaseTable')}
+            {schemaText('changeBaseTable')}
           </Button.Orange>
         </>
       )}
@@ -422,7 +427,7 @@ export function MustMatch({
                 <thead>
                   <tr>
                     <th className="justify-center" scope="col">
-                      {commonText('tableName')}
+                      {schemaText('tableName')}
                     </th>
                     <th className="justify-center" scope="col">
                       {wbText('mustMatch')}

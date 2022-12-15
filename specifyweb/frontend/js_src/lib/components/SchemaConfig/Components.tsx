@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { schemaText } from '../../localization/schema';
 
 export function SchemaConfigHeader({
   languages,
@@ -22,13 +23,13 @@ export function SchemaConfigHeader({
   return (
     <header className="flex gap-2">
       <H2 className="flex items-center">
-        {commonText('schemaConfig')} (
+        {schemaText('schemaConfig')} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}
       >
-        {commonText('changeBaseTable')}
+        {schemaText('changeBaseTable')}
       </Button.Small>
       <span className="-ml-2 flex-1" />
       <Button.Small onClick={handleSave}>{commonText('save')}</Button.Small>

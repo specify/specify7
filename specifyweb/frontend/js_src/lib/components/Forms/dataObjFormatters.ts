@@ -2,7 +2,6 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
-import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -32,6 +31,7 @@ import {
   mappingPathToTableNames,
 } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { userText } from '../../localization/user';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -216,7 +216,7 @@ async function formatField(
     typeof noAccessTable === 'string'
       ? tryBest
         ? naiveFormatter(resource)
-        : commonText('noPermission')
+        : userText('noPermission')
       : await (
           resource.rgetPromise(fieldName) as Promise<
             SpecifyResource<AnySchema> | string | undefined

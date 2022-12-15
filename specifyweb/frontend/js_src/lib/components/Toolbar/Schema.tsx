@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { getModel, schema } from '../DataModel/schema';
@@ -30,6 +29,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
 
 function Table<
   SORT_CONFIG extends
@@ -163,14 +163,14 @@ export function DataModelTable(): JSX.Element {
 
 const fieldColumns = {
   name: commonText('name'),
-  label: commonText('label'),
-  description: commonText('description'),
-  isHidden: commonText('hidden'),
-  isReadOnly: commonText('readOnly'),
-  isRequired: commonText('required'),
-  type: commonText('type'),
-  length: commonText('length'),
-  databaseColumn: commonText('databaseColumn'),
+  label: schemaText('label'),
+  description: schemaText('description'),
+  isHidden: schemaText('hidden'),
+  isReadOnly: schemaText('readOnly'),
+  isRequired: schemaText('required'),
+  type: schemaText('type'),
+  length: schemaText('length'),
+  databaseColumn: schemaText('databaseColumn'),
 } as const;
 
 type Value =
@@ -209,7 +209,7 @@ function DataModelFields({
         <TableIcon label={false} name={model.name} />
         <H2 className="text-2xl">{model.name}</H2>
       </div>
-      <H3>{commonText('fields')}</H3>
+      <H3>{schemaText('fields')}</H3>
       <Table
         data={data}
         getLink={undefined}
@@ -222,16 +222,16 @@ function DataModelFields({
 
 const relationshipColumns = {
   name: commonText('name'),
-  label: commonText('label'),
-  description: commonText('description'),
-  isHidden: commonText('hidden'),
-  isReadOnly: commonText('readOnly'),
-  isRequired: commonText('required'),
-  type: commonText('type'),
-  databaseColumn: commonText('databaseColumn'),
-  relatedModel: commonText('relatedModel'),
-  otherSideName: commonText('otherSideName'),
-  isDependent: commonText('dependent'),
+  label: schemaText('label'),
+  description: schemaText('description'),
+  isHidden: schemaText('hidden'),
+  isReadOnly: schemaText('readOnly'),
+  isRequired: schemaText('required'),
+  type: schemaText('type'),
+  databaseColumn: schemaText('databaseColumn'),
+  relatedModel: schemaText('relatedModel'),
+  otherSideName: schemaText('otherSideName'),
+  isDependent: schemaText('dependent'),
 } as const;
 
 const getRelationships = (
@@ -265,7 +265,7 @@ function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
   return (
     <>
-      <H3>{commonText('relationships')}</H3>
+      <H3>{schemaText('relationships')}</H3>
       <Table
         data={data}
         getLink={({ relatedModel }): string =>
@@ -282,12 +282,12 @@ function DataModelRelationships({
 
 const tableColumns = {
   name: commonText('name'),
-  label: commonText('label'),
-  isSystem: commonText('system'),
-  isHidden: commonText('hidden'),
-  tableId: commonText('tableId'),
-  fieldCount: commonText('fieldCount'),
-  relationshipCount: commonText('relationshipCount'),
+  label: schemaText('label'),
+  isSystem: schemaText('system'),
+  isHidden: schemaText('hidden'),
+  tableId: schemaText('tableId'),
+  fieldCount: schemaText('fieldCount'),
+  relationshipCount: schemaText('relationshipCount'),
 } as const;
 const getTables = (): RA<Row<keyof typeof tableColumns>> =>
   Object.values(schema.models).map((model) => ({
@@ -335,7 +335,7 @@ export function DataModelTables(): JSX.Element {
           download
           href="/context/datamodel.json"
         >
-          {commonText('downloadAsJson')}
+          {schemaText('downloadAsJson')}
         </Link.Green>
         <Button.Green
           className="print:hidden"
@@ -346,7 +346,7 @@ export function DataModelTables(): JSX.Element {
             ).catch(softFail)
           }
         >
-          {commonText('downloadAsTsv')}
+          {schemaText('downloadAsTsv')}
         </Button.Green>
       </div>
       <Table
@@ -364,24 +364,24 @@ export function DataModelTables(): JSX.Element {
 const dataModelToTsv = (): string =>
   [
     [
-      adminText('table'),
-      commonText('label'),
-      commonText('system'),
-      commonText('hidden'),
-      commonText('tableId'),
+      schemaText('table'),
+      schemaText('label'),
+      schemaText('system'),
+      schemaText('hidden'),
+      schemaText('tableId'),
       commonText('name'),
-      commonText('label'),
-      commonText('description'),
-      commonText('hidden'),
-      commonText('readOnly'),
-      commonText('required'),
+      schemaText('label'),
+      schemaText('description'),
+      schemaText('hidden'),
+      schemaText('readOnly'),
+      schemaText('required'),
       formsText('relationship'),
-      commonText('type'),
-      commonText('length'),
-      commonText('databaseColumn'),
-      commonText('relatedModel'),
-      commonText('otherSideName'),
-      commonText('dependent'),
+      schemaText('type'),
+      schemaText('length'),
+      schemaText('databaseColumn'),
+      schemaText('relatedModel'),
+      schemaText('otherSideName'),
+      schemaText('dependent'),
     ],
     ...Object.values(schema.models).flatMap((model) => {
       const commonColumns = [

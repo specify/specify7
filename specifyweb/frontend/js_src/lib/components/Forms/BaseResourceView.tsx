@@ -102,7 +102,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
     resource === undefined
       ? ''
       : resource.isNew()
-      ? commonText('newResourceTitle', resource.specifyModel.label)
+      ? formsText('newResourceTitle', resource.specifyModel.label)
       : resource.specifyModel.label
   }${formatted.length > 0 ? `: ${formatted}` : ''}`;
 

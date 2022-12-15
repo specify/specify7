@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
@@ -23,12 +22,13 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import type { NewRole, Role } from './Role';
+import { userText } from '../../localization/user';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
-  changed: adminText('updateExistingRoles'),
-  unchanged: adminText('unchangedRoles'),
-  created: adminText('createNewRoles'),
+  changed: userText('updateExistingRoles'),
+  unchanged: userText('unchangedRoles'),
+  created: userText('createNewRoles'),
 } as const;
 
 // REFACTOR: reduce size of this component
@@ -233,7 +233,7 @@ function ExportButton({
       onClick={(): void =>
         loading(
           downloadFile(
-            `${adminText(
+            `${userText(
               'userRoles'
             )} - ${baseName} - ${new Date().toDateString()}.json`,
             JSON.stringify(Object.values(roles!), null, '\t')

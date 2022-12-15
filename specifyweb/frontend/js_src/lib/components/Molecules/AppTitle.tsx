@@ -4,8 +4,8 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { usePref } from '../UserPreferences/usePref';
+import { mainText } from '../../localization/main';
 
 export function AppTitle({
   title,
@@ -41,9 +41,7 @@ const titleStack = new Map<unknown, string>();
 
 function setTitle(title: string): void {
   globalThis.document.title =
-    title.length === 0
-      ? commonText('baseAppTitle')
-      : commonText('appTitle', title);
+    title.length === 0 ? mainText('baseAppTitle') : mainText('appTitle', title);
 }
 
 const refreshTitle = (): void =>

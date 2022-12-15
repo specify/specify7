@@ -6,7 +6,6 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -27,6 +26,9 @@ import type { UserRoles } from './Collection';
 import { ImportExport } from './ImportExport';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
 import type { Policy } from './Policy';
+import { mainText } from '../../localization/main';
+import { userText } from '../../localization/user';
+import { schemaText } from '../../localization/schema';
 
 export type NewRole = {
   readonly id: number | undefined;
@@ -80,7 +82,7 @@ export function RoleView({
   const navigate = useNavigate();
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
-    commonText('leavePageDialogText')
+    mainText('leavePageDialogText')
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>
@@ -104,7 +106,7 @@ export function RoleView({
         handleSave(role);
       }}
     >
-      <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
+      <h3 className="text-xl">{`${userText('role')} ${role.name}`}</h3>
       <AppTitle title={role.name} type="form" />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}
@@ -125,7 +127,7 @@ export function RoleView({
           </Label.Block>
         )}
         <Label.Block className={className.limitedWidth}>
-          {commonText('description')}
+          {schemaText('description')}
           <AutoGrowTextArea
             isReadOnly={isReadOnly}
             value={role.description}
@@ -137,7 +139,7 @@ export function RoleView({
         {roleUsers}
         <SecurityPoliciesWrapper
           collapsable={false}
-          header={adminText('rolePolicies')}
+          header={userText('rolePolicies')}
           policies={role.policies}
         >
           <SecurityPolicies
@@ -212,10 +214,10 @@ export function RoleView({
               </Button.Red>
             </>
           }
-          header={adminText('deleteRoleWithUsers')}
+          header={userText('deleteRoleWithUsers')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {adminText('deleteRoleWithUsersDescription')}
+          {userText('deleteRoleWithUsersDescription')}
         </Dialog>
       )}
     </Form>

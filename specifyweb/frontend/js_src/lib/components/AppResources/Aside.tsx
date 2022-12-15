@@ -3,7 +3,6 @@ import React from 'react';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { multiSortFunction, removeItem, replaceItem } from '../../utils/utils';
@@ -27,6 +26,7 @@ import { buildAppResourceConformation, getAppResourceMode } from './helpers';
 import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
+import { resourcesText } from '../../localization/resources';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -169,7 +169,7 @@ function TreeItem({
           />
           {subCategories.length > 0 && (
             <Ul
-              aria-label={adminText('subCategories')}
+              aria-label={resourcesText('subCategories')}
               className="flex flex-col gap-2 pl-4"
               role="group"
             >
@@ -226,7 +226,7 @@ function TreeItemResources({
 
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
-    <Ul aria-label={adminText('resources')} className="pl-4" role="group">
+    <Ul aria-label={resourcesText('resources')} className="pl-4" role="group">
       {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem resource={resource} onOpen={handleOpen} />
@@ -236,7 +236,7 @@ function TreeItemResources({
         <li>
           <Link.Default href={`/specify/resources/create/${key}/`}>
             <span className={className.dataEntryAdd}>{icons.plus}</span>
-            {adminText('addResource')}
+            {resourcesText('addResource')}
           </Link.Default>
         </li>
       )}

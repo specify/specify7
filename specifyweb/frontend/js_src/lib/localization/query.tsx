@@ -309,6 +309,27 @@ export const queryText = createDictionary({
     'en-us': (plotted: string) => `Plotted ${plotted} records`,
     'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
   },
+
+  queriesDialogTitle: {
+    'en-us': (count: number) => `Queries (${count})`,
+    'ru-ru': (count: number) => `Запросы (${count})`,
+  },
+  exportQueryForDwca: {
+    'en-us': 'Export query for DwCA definition',
+    'ru-ru': 'Экспорт запрос для DwCA',
+  },
+  exportQueryForDwcaDialogHeader: {
+    'en-us': 'Query XML for DwCA definition',
+    'ru-ru': 'XML Запроса для определения DwCA',
+  },
+  exportQueryAsReport: {
+    'en-us': 'Define report based on query',
+    'ru-ru': 'Определите отчет на основе запроса',
+  },
+  exportQueryAsLabel: {
+    'en-us': 'Define label based on query',
+    'ru-ru': 'Определите метку на основе запроса',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

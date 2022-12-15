@@ -20,6 +20,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { headerText } from '../../localization/header';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();
@@ -34,7 +35,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
-      header={commonText('chooseDwcaDialogTitle')}
+      header={headerText('chooseDwcaDialogTitle')}
       resources={resources}
       onClose={handleClose}
       onSelected={(definition): void => setDefinition(definition?.name)}
@@ -44,7 +45,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
   ) : (
     <>
       <PickAppResource
-        header={commonText('chooseMetadataResource')}
+        header={headerText('chooseMetadataResource')}
         resources={resources}
         skippable
         onClose={(): void => setDefinition(undefined)}
@@ -116,10 +117,10 @@ function ExportStarted({
   return (
     <Dialog
       buttons={commonText('close')}
-      header={commonText('dwcaExportStartedDialogHeader')}
+      header={headerText('dwcaExportStartedDialogHeader')}
       onClose={handleClose}
     >
-      {commonText('dwcaExportStartedDialogText')}
+      {headerText('dwcaExportStartedDialogText')}
     </Dialog>
   );
 }

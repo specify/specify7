@@ -25,6 +25,7 @@ import { Select } from '../Atoms/Form';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { supportLink } from '../Errors/ErrorDialog';
 import { fail } from '../Errors/Crash';
+import { headerText } from '../../localization/header';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -56,10 +57,10 @@ export function LanguageSelection<LANGUAGES extends string>({
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={commonText('helpLocalizeSpecify')}
+          header={headerText('helpLocalizeSpecify')}
           onClose={(): void => setShowSupportDialog(false)}
         >
-          <p>{commonText('helpLocalizeSpecifyDialogText', supportLink)}</p>
+          <p>{headerText('helpLocalizeSpecifyDialogText', supportLink)}</p>
         </Dialog>
       )}
       {typeof languages === 'object' ? (
@@ -79,7 +80,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             </option>
           ))}
           <option value="supportLocalization">
-            {commonText('helpLocalizeSpecify')}
+            {headerText('helpLocalizeSpecify')}
           </option>
         </Select>
       ) : undefined}

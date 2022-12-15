@@ -18,6 +18,22 @@ const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
 /* eslint-disable react/jsx-no-literals */
 /* eslint-disable @typescript-eslint/naming-convention */
 export const preferencesText = createDictionary({
+  preferences: {
+    'en-us': 'Preferences',
+    'ru-ru': 'Настройки',
+  },
+  customization: {
+    'en-us': 'Customization',
+    'ru-ru': 'Настройка',
+  },
+  userPreferences: {
+    'en-us': 'User Preferences',
+    'ru-ru': 'Пользовательские настройки',
+  },
+  defaultUserPreferences: {
+    'en-us': 'Default User Preferences',
+    'ru-ru': 'Пользовательские настройки по умолчанию',
+  },
   general: {
     'en-us': 'General',
     'ru-ru': 'Основные',

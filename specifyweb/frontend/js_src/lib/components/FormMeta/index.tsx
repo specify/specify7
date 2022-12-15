@@ -32,6 +32,7 @@ import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
+import { schemaText } from '../../localization/schema';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -59,7 +60,7 @@ export function FormMeta({
       >
         {icons.cog}
         {subView === undefined && isReadOnly
-          ? commonText('readOnly')
+          ? schemaText('readOnly')
           : undefined}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (

@@ -22,6 +22,9 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import type { Preferences } from '../UserPreferences/Definitions';
+import { mainText } from '../../localization/main';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
 
 export type UserTool = {
   readonly title: string;
@@ -75,7 +78,7 @@ export function Main(): JSX.Element | null {
           mainRef.current.removeAttribute('tabindex');
         }}
       >
-        {commonText('skipToContent')}
+        {headerText('skipToContent')}
       </Button.Small>
 
       <header
@@ -133,20 +136,20 @@ export function Main(): JSX.Element | null {
             </Button.Orange>
           }
           forceToTop
-          header={commonText('versionMismatchDialogHeader')}
+          header={mainText('versionMismatchDialogHeader')}
           onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
-            {commonText(
+            {mainText(
               'versionMismatchDialogText',
               getSystemInfo().specify6_version,
               getSystemInfo().database_version
             )}
           </p>
-          <p>{commonText('versionMismatchSecondDialogText')}</p>
+          <p>{mainText('versionMismatchSecondDialogText')}</p>
           <p>
             <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-              {commonText('versionMismatchThirdDialogText')}
+              {mainText('versionMismatchThirdDialogText')}
             </Link.NewTab>
           </p>
         </Dialog>
@@ -161,17 +164,17 @@ export function Main(): JSX.Element | null {
         <Dialog
           buttons={
             <Button.DialogClose component={Button.Red}>
-              {commonText('logOut')}
+              {userText('logOut')}
             </Button.DialogClose>
           }
           className={{
             container: `${dialogClassNames.narrowContainer}`,
           }}
           forceToTop
-          header={commonText('noAgent')}
+          header={userText('noAgent')}
           onClose={(): void => globalThis.location.assign('/accounts/logout/')}
         >
-          {commonText('noAgentDescription')}
+          {userText('noAgentDescription')}
         </Dialog>
       )}
     </>

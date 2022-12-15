@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
 import { keysToLowerCase, sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { hasPermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
@@ -20,6 +19,7 @@ import { Button } from '../Atoms/Button';
 import { H3, Ul } from '../Atoms';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Http } from '../../utils/ajax/definitions';
+import { userText } from '../../localization/user';
 
 export function CreateRole({
   scope,
@@ -80,7 +80,7 @@ export function CreateRole({
               onClick={(): void =>
                 handleCreated({
                   id: undefined,
-                  name: adminText('newRole'),
+                  name: userText('newRole'),
                   description: '',
                   policies: [],
                 })
@@ -93,7 +93,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }
-      header={adminText('createRole')}
+      header={userText('createRole')}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||
@@ -105,7 +105,7 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
         hasPermission('/permissions/library/roles', 'read', collectionId)) ? (
         <section>
-          <H3>{adminText('fromLibrary')}</H3>
+          <H3>{userText('fromLibrary')}</H3>
           {typeof libraryRoles === 'object' ? (
             Object.keys(libraryRoles).length === 0 ? (
               commonText('none')
@@ -177,7 +177,7 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
       (!Array.isArray(roles) || roles.length > 0) ? (
         <section>
-          <H3>{adminText('fromExistingRole')}</H3>
+          <H3>{userText('fromExistingRole')}</H3>
           {typeof roles === 'object' ? (
             <div className="flex flex-col gap-4">
               {roles.map(([collection, roles]) => (

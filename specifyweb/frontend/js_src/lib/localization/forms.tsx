@@ -5,8 +5,6 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
@@ -396,30 +394,27 @@ export const formsText = createDictionary({
     'en-us': 'Exchanges',
     'ru-ru': 'Обмены',
   },
-  // SpecifyCommands
   unavailableCommandButton: {
     'en-us': 'Command N/A',
     'ru-ru': 'Команда недоступна',
   },
-  unavailableCommandDialogHeader: {
+  commandUnavailable: {
     'en-us': 'Command Not Available',
     'ru-ru': 'Команда недоступна',
   },
-  unavailableCommandDialogText: {
-    'en-us': (
-      <>
-        This command is currently unavailable for <i>Specify 7</i>.<br />
-        It was probably included on this form from <i>Specify 6</i> and may be
-        supported in the future.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Эта команда в настоящее время недоступна для <i>Specify 7</i>.<br />
-        Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
-        поддерживаним в будущем.
-      </>
-    ),
+  commandUnavailableDescription: {
+    'en-us': 'This command is currently unavailable for Specify 7.',
+    'ru-ru': 'Эта команда в настоящее время недоступна для Specify 7.',
+  },
+  commandUnavailableSecondDescription: {
+    'en-us': `
+      It was probably included on this form from Specify 6 and may be
+      supported in the future.
+    `,
+    'ru-ru': `
+      Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
+      поддерживаним в будущем.
+    `,
   },
   commandName: {
     'en-us': 'Command name:',
@@ -430,25 +425,23 @@ export const formsText = createDictionary({
     'en-us': 'Plugin N/A',
     'ru-ru': 'Плагин недоступен',
   },
-  unavailablePluginDialogHeader: {
+  pluginNotAvailable: {
     'en-us': 'Plugin Not Available',
     'ru-ru': 'Плагин недоступен',
   },
-  unavailablePluginDialogText: {
-    'en-us': (
-      <>
-        This plugin is currently unavailable for <i>Specify 7</i>
-        It was probably included on this form from <i>Specify 6</i> and may be
-        supported in the future.
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Этот плагин в настоящее время недоступна для <i>Specify 7</i>
-        Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
-        поддерживаним в будущем.
-      </>
-    ),
+  pluginNotAvailableDescription: {
+    'en-us': 'This plugin is currently unavailable for Specify 7',
+    'ru-ru': `Этот плагин в настоящее время недоступна для Specify 7`,
+  },
+  pluginNotAvailableSecondDescription: {
+    'en-us': `
+      It was probably included on this form from Specify 6 and may be
+      supported in the future.
+    `,
+    'ru-ru': `
+      Вероятно, он был включен на етой форме в Specify 6 м может бить
+      поддерживаним в будущем.
+    `,
   },
   wrongTablePluginDialogText: {
     'en-us': (currentTable: string, correctTable: string) => `
@@ -812,6 +805,18 @@ export const formsText = createDictionary({
   formMeta: {
     'en-us': 'Form Meta',
     'ru-ru': 'Мета-данные формы',
+  },
+  newResourceTitle: {
+    'en-us': (resourceName: string) => `New ${resourceName}`,
+    'ru-ru': (resourceName: string) => `Новый ${resourceName}`,
+  },
+  resourceDeletedDialogHeader: {
+    'en-us': 'Item deleted',
+    'ru-ru': 'Удалено',
+  },
+  resourceDeletedDialogText: {
+    'en-us': 'Item was deleted successfully.',
+    'ru-ru': 'Успешно удален.',
   },
 });
 /* eslint-enable react/jsx-no-literals */

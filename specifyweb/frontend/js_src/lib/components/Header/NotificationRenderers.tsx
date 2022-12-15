@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {commonText} from '../../localization/common';
-import type {IR} from '../../utils/types';
-import {Link} from '../Atoms/Link';
+import type { IR } from '../../utils/types';
+import { Link } from '../Atoms/Link';
+import { notificationsText } from '../../localization/notifications';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -12,12 +12,14 @@ export type GenericNotification = {
   readonly payload: IR<string>;
 };
 
-export const notificationRenderers: IR<(notification: GenericNotification) => React.ReactNode> = {
+export const notificationRenderers: IR<
+  (notification: GenericNotification) => React.ReactNode
+> = {
   'feed-item-updated'(notification) {
     const filename = notification.payload.file;
     return (
       <>
-        {commonText('feedItemUpdated')}
+        {notificationsText('feedItemUpdated')}
         <Link.Green
           className="w-fit"
           download
@@ -31,13 +33,13 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
   'update-feed-failed'(notification) {
     return (
       <>
-        {commonText('updateFeedFailed')}
+        {notificationsText('updateFeedFailed')}
         <Link.Green
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
-          {commonText('exception')}
+          {notificationsText('exception')}
         </Link.Green>
       </>
     );
@@ -45,13 +47,13 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
   'dwca-export-complete'(notification) {
     return (
       <>
-        {commonText('dwcaExportCompleted')}
+        {notificationsText('dwcaExportCompleted')}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {commonText('download')}
+          {notificationsText('download')}
         </Link.Green>
       </>
     );
@@ -59,13 +61,13 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
   'dwca-export-failed'(notification) {
     return (
       <>
-        {commonText('dwcaExportFailed')}
+        {notificationsText('dwcaExportFailed')}
         <Link.Green
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
-          {commonText('exception')}
+          {notificationsText('exception')}
         </Link.Green>
       </>
     );
@@ -73,13 +75,13 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToCsvCompleted')}
+        {notificationsText('queryExportToCsvCompleted')}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {commonText('download')}
+          {notificationsText('download')}
         </Link.Green>
       </>
     );
@@ -87,19 +89,19 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {commonText('queryExportToKmlCompleted')}
+        {notificationsText('queryExportToKmlCompleted')}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {commonText('download')}
+          {notificationsText('download')}
         </Link.Green>
       </>
     );
   },
   'dataset-ownership-transferred'(notification) {
-    return commonText(
+    return notificationsText(
       'dataSetOwnershipTransferred',
       <i>{notification.payload['previous-owner-name']}</i>,
       <Link.Default
@@ -110,7 +112,7 @@ export const notificationRenderers: IR<(notification: GenericNotification) => Re
     );
   },
   default(notification) {
-    console.error('Unknown notification type', {notification});
+    console.error('Unknown notification type', { notification });
     return <pre>{JSON.stringify(notification, null, 2)}</pre>;
   },
 };

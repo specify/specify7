@@ -119,11 +119,13 @@ const commandRenderers: {
         </Button.Small>
         <Dialog
           buttons={commonText('close')}
-          header={formsText('unavailableCommandDialogHeader')}
+          header={formsText('commandUnavailable')}
           isOpen={isClicked}
           onClose={handleHide}
         >
-          {formsText('unavailableCommandDialogText')}
+          {formsText('commandUnavailableDescription')}
+          <br />
+          {formsText('commandUnavailableSecondDescription')}
           <br />
           {`${formsText('commandName')} ${name}`}
         </Dialog>
