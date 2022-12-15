@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { GetSet } from '../../utils/types';
+import type { GetOrSet, GetSet } from '../../utils/types';
 import type { preferenceDefinitions, Preferences } from './Definitions';
 import { getPrefDefinition, getUserPref, setPref } from './helpers';
 import { PreferencesContext, prefEvents } from './Hooks';
@@ -19,7 +19,7 @@ export function usePref<
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
-): GetSet<
+): GetOrSet<
   Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
   const [getPref, setUserPref] = React.useContext(PreferencesContext) ?? [
@@ -51,8 +51,24 @@ export function usePref<
 
   const updatePref = React.useCallback(
     (
-      newPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-    ): void => setUserPref(category, subcategory, item, newPref),
+      newPref:
+        | Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+        | ((
+            oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+          ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'])
+    ): void =>
+      setUserPref(
+        category,
+        subcategory,
+        item,
+        typeof newPref === 'function'
+          ? (
+              newPref as (
+                oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+              ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+            )(currentPref.current)
+          : newPref
+      ),
     [category, subcategory, item]
   );
 
