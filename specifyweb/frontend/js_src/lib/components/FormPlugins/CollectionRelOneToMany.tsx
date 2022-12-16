@@ -68,7 +68,9 @@ export function CollectionOneToManyPlugin({
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   return data === false ? null : (
-    <div className="w-fit rounded bg-[color:var(--form-background)] p-2">
+    <div className="w-fit rounded bg-[color:var(--form-background)] p-2
+    ring-1 ring-gray-500 dark:ring-0 disabled:ring-gray-500 disabled:dark:ring-neutral-500
+    ">
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
