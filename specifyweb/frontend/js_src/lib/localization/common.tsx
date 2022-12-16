@@ -584,8 +584,9 @@ export const commonText = createDictionary({
       discourseLink: (label: string) => JSX.Element
     ) => (
       <>
-        If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact {email}
+        If this issue persists, please contact your IT support.
+        If this is a Specify Cloud database, please download the error
+        message and send it to {email}.
         <br />
         <br />
         Users from {memberLink('member institutions')} can search for answered
