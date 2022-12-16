@@ -470,6 +470,6 @@ export const userText = createDictionary({
     'en-us': 'Account Setup Options',
     'ru-ru': 'Параметры учетной записи',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

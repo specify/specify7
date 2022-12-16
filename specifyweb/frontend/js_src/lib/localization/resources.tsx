@@ -123,6 +123,6 @@ export const resourcesText = createDictionary({
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

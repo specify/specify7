@@ -4,10 +4,13 @@
  * @module
  */
 
+import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+import { typesafeI18nObject } from 'typesafe-i18n';
+
+import { error } from '../components/Errors/assert';
 import { f } from '../utils/functools';
-import { camelToHuman } from '../utils/utils';
-import type { IR, RA, RR } from '../utils/types';
-import { isFunction } from '../utils/types';
+import type { IR, RR } from '../utils/types';
 
 export const languages = ['en-us', 'ru-ru'] as const;
 /** This allows to hide unfinished localizations in production */
@@ -22,84 +25,31 @@ export const LANGUAGE: Language =
     ? document.documentElement.lang
     : undefined) ?? DEFAULT_LANGUAGE;
 
-type Line = JSX.Element | string;
-export type Value =
-  | RR<Language, (...args: RA<never>) => Line>
-  | RR<Language, Line>;
-type GetValueType<VALUE extends Value> = VALUE extends RR<
-  Language,
-  infer ValueType
->
-  ? ValueType extends (...args: RA<never>) => Line
-    ? ReturnType<ValueType>
-    : ValueType
-  : never;
+export const localizationMetaKeys = ['comment'] as const;
+type MetaKeys = typeof localizationMetaKeys[number];
+export type Value = Partial<RR<MetaKeys, string>> & RR<Language, string>;
 export type Dictionary = IR<Value>;
 
-/**
- * Handle case when localization string is not found.
- *
- * This should never happen as long as:
- *   all typescript errors are fixed, and
- *   ./localization/__tests__/localization.ts did not find any errors
- *
- * If a .ts or .tsx file tries to access a non-existing key, a
- * build-time error would be thrown.
- * For .js and .jsx files, some errors may be shown in the editor depending on
- * the IDE. The rest would be thrown at runtime.
- * To prevent runtime errors, a ../localization/__tests__/localization.ts script has been
- * added. It checks both for nonexistent key usages, invalid usages and unused
- * keys. It also warns about duplicate localization strings.
- *
- */
-function assertExhaustive(key: string): never {
-  const errorMessage = `
-    Trying to access the value for a non-existent localization key "${key}"`;
-  if (process.env.NODE_ENV === 'development') throw new Error(errorMessage);
-  else {
-    console.error(errorMessage);
-    // Convert a camel case key to a human readable form
-    const value: any = camelToHuman(key);
+type ExtractLanguage<DICT extends Dictionary> = {
+  readonly [KEY in keyof DICT]: DICT[KEY][typeof DEFAULT_LANGUAGE];
+};
 
-    /*
-     * Since the language key normally resolves to either function or string,
-     * we need to create a "Frankenstein" function that also behaves like a
-     * string
-     */
-    const defaultValue: any = (): string => value;
-    Object.getOwnPropertyNames(Object.getPrototypeOf(value)).forEach(
-      (proto) => {
-        defaultValue[proto] =
-          typeof value[proto] === 'function'
-            ? value[proto].bind(value)
-            : value[proto];
-      }
-    );
-    return defaultValue as never;
-  }
-}
-
+export const rawDictionary: unique symbol = Symbol('Raw Dictionary');
+// FIXME: allow missing localizations for non-base language?
 /**
  * Wrap localization strings in a resolver.
  * Localization string may accept some arguments.
  */
 export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
-  const resolver = <KEY extends string & keyof typeof dictionary>(
-    key: KEY,
-    ...args: typeof dictionary[typeof key][Language] extends (
-      ...args: RA<never>
-    ) => Line
-      ? Parameters<typeof dictionary[typeof key][Language]>
-      : RA<never>
-  ): GetValueType<typeof dictionary[typeof key]> =>
-    (key in dictionary
-      ? typeof dictionary[key][LANGUAGE] === 'function' &&
-        isFunction(dictionary[key][LANGUAGE])
-        ? (dictionary[key][LANGUAGE] as (...args: RA<unknown>) => Line)(...args)
-        : dictionary[key][LANGUAGE] ?? assertExhaustive(key)
-      : assertExhaustive(key)) as GetValueType<typeof dictionary[typeof key]>;
-  // This is used by ../localization/__tests__/localization.ts
-  resolver.dictionary = dictionary;
+  const resolver = typesafeI18nObject(
+    LANGUAGE,
+    Object.fromEntries(
+      Object.entries(dictionary).map(([key, value]) => [key, value[LANGUAGE]])
+    ) as ExtractLanguage<typeof dictionary>,
+    {}
+  );
+  // @ts-expect-error This is used by ./__tests__/localization.ts
+  resolver[rawDictionary] = dictionary;
   return resolver;
 }
 
@@ -117,3 +67,68 @@ export const whitespaceSensitive = (string: string): string =>
     .filter(Boolean)
     .join(' ')
     .replace(/<br>\s?/u, '\n');
+
+const reJsx = /<(?<name>\w+)(?:>(?<label>[^<]*)<\/\k<name>>|\s?\/>)/gu;
+
+/**
+ * Convert a string to JSX elements. See tests for usages
+ *
+ * Inspired by
+ * https://github.com/ivanhofer/typesafe-i18n#how-do-i-render-a-component-inside-a-translation
+ *
+ * Note: tested JSX expressions are not supported
+ */
+export function StringToJsx({
+  string,
+  components,
+}: {
+  readonly string: LocalizedString;
+  readonly components: IR<(label: string) => JSX.Element>;
+}): JSX.Element {
+  let index = 0;
+  const usedComponents = new Set<string>();
+  const groups = string.matchAll(reJsx);
+  const result = Array.from(groups, (group, groupIndex) => {
+    const prefix = string.slice(index, group.index);
+    index += prefix.length + group[0].length;
+
+    const name = group.groups?.name ?? '';
+    const component = components[name];
+    if (component === undefined)
+      error(`Trying to convert invalid string to JSX`, {
+        string,
+        group,
+        components: Object.keys(components),
+        index,
+      });
+    usedComponents.add(name);
+
+    const jsx = (
+      <React.Fragment key={groupIndex}>
+        {component(group.groups?.label ?? '')}
+      </React.Fragment>
+    );
+
+    return [prefix, jsx];
+  }).flat();
+
+  // Check for unused components. Allows to catch localization mistakes
+  if (process.env.NODE_END === 'development') {
+    const unusedGroups = Object.keys(components).filter(
+      (name) => !usedComponents.has(name)
+    );
+    if (unusedGroups.length > 0)
+      error(`JSX string has unused components`, {
+        string,
+        components: Object.keys(components),
+        unusedGroups,
+      });
+  }
+
+  return (
+    <>
+      {result}
+      {string.slice(index)}
+    </>
+  );
+}

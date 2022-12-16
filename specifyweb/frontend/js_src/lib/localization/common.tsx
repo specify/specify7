@@ -8,11 +8,14 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
 /* eslint-disable @typescript-eslint/naming-convention */
 // REFACTOR: get rid of "exampleDialogText" in favor of just "example" ?
 export const commonText = createDictionary({
   specifySeven: {
+    comment: `
+      This is an example of how to provide comments. Comments are visible to
+      translators.
+    `,
     'en-us': 'Specify 7',
     'ru-ru': 'Specify 7',
   },
@@ -255,7 +258,6 @@ export const commonText = createDictionary({
     'en-us': 'Choose Collection',
     'ru-ru': 'Выбрать коллекцию',
   },
-
   attachments: {
     'en-us': 'Attachments',
     'ru-ru': 'Вложения',
@@ -472,6 +474,5 @@ export const commonText = createDictionary({
     'en-us': 'None available',
     'ru-ru': 'Нет доступных вариантов',
   },
-});
-/* eslint-enable react/jsx-no-literals */
+} as const);
 /* eslint-enable @typescript-eslint/naming-convention */

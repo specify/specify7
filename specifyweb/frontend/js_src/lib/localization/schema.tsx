@@ -191,6 +191,6 @@ export const schemaText = createDictionary({
     'en-us': 'Possible Tables',
     'ru-ru': 'Возможные таблицы',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

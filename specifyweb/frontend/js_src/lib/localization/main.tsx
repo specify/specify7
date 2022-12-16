@@ -73,6 +73,11 @@ export const mainText = createDictionary({
     ),
   },
   errorBoundaryDialogSecondMessage: {
+    'en-us': `
+      Users from <memberLink>member institutions<memberLink> can search for
+      answered questions and ask for help on our <discourseLink>Community
+      Forum<discourseLink>
+    `,
     'en-us': (
       memberLink: (label: string) => JSX.Element,
       discourseLink: (label: string) => JSX.Element
@@ -131,6 +136,6 @@ export const mainText = createDictionary({
     'en-us': 'Instructions for resolving Specify schema mismatch',
     'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

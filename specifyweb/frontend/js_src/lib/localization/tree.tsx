@@ -176,5 +176,5 @@ export const treeText = createDictionary({
     'en-us': 'Edit Ranks',
     'ru-ru': 'Изменить ранги',
   },
-});
+} as const);
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -228,14 +228,14 @@ export const wbText = createDictionary({
   picklistValidationFailed: {
     'en-us': (value: string) =>
       whitespaceSensitive(`
-        ${value ? `"${value}"` : ''} is not a legal value in this picklist
+        ${value} is not a legal value in this picklist
         field.<br>
         <br>
         Click on the arrow to choose among available options.
       `),
     'ru-ru': (value: string) =>
       whitespaceSensitive(`
-        ${value ? `"${value}"` : ''} не является допустимым значением в этом
+        ${value} не является допустимым значением в этом
         списке.<br>
         <br>
         Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
@@ -714,9 +714,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
   },
   relationship: {
-    'en-us': (tableName: string): string =>
-      `Relationship with the ${tableName} table`,
-    'ru-ru': (tableName: string): string => `Связь с таблицей ${tableName}`,
+    'en-us': (tableName: string) => `Relationship with the ${tableName} table`,
+    'ru-ru': (tableName: string) => `Связь с таблицей ${tableName}`,
   },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
@@ -848,12 +847,12 @@ export const wbText = createDictionary({
     'ru-ru': 'Это сопоставление не было сохранено.',
   },
   newDataSetName: {
-    'en-us': (date: string): string => `New Data Set ${date}`,
-    'ru-ru': (date: string): string => `Новый набор данных ${date}`,
+    'en-us': (date: string) => `New Data Set ${date}`,
+    'ru-ru': (date: string) => `Новый набор данных ${date}`,
   },
   newHeaderName: {
-    'en-us': (index: number): string => `New Column ${index}`,
-    'ru-ru': (index: number): string => `Новый столбец ${index}`,
+    'en-us': (index: number) => `New Column ${index}`,
+    'ru-ru': (index: number) => `Новый столбец ${index}`,
   },
   noHeader: {
     'en-us': '(no header)',
@@ -1014,6 +1013,6 @@ export const wbText = createDictionary({
     'ru-ru': `Выбранный набор данных не имеет плана загрузки. Выберите другой
       набор данных.`,
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

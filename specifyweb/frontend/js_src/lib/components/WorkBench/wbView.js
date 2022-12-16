@@ -839,7 +839,7 @@ export const WBView = Backbone.View.extend({
      * This is the only type of validation that is done on the front-end
      */
     const newIssues = f.unique([
-      ...(isValid ? [] : [wbText('picklistValidationFailed', value)]),
+      ...(isValid ? [] : [wbText('picklistValidationFailed', `"${value}"`)]),
       ...issues.filter(
         (issue) => !issue.endsWith(wbText('picklistValidationFailed', ''))
       ),

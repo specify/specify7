@@ -330,6 +330,6 @@ export const queryText = createDictionary({
     'en-us': 'Define label based on query',
     'ru-ru': 'Определите метку на основе запроса',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

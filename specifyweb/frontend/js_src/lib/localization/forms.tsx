@@ -9,10 +9,8 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
 /* eslint-disable @typescript-eslint/naming-convention */
 export const formsText = createDictionary({
-  // Attachments
   orderBy: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
@@ -37,28 +35,23 @@ export const formsText = createDictionary({
     'en-us': 'Create a full copy of current record',
     'ru-ru': 'Создать полную копию текущей записи',
   },
-  // BusinessRules
   valueMustBeUniqueToField: {
-    'en-us': (fieldName: string) => `Value must be unique to ${fieldName}`,
-    'ru-ru': (fieldName: string) =>
-      `Значение ${fieldName} должно быть уникальным`,
+    'en-us': 'Value must be unique to {fieldName:string}',
+    'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
   },
   valuesOfMustBeUniqueToField: {
-    'en-us': (fieldName: string, values: string) =>
-      `Values of ${values} must be unique to ${fieldName}}`,
-    'ru-ru': (fieldName: string, values: string) =>
-      `Значения ${values} в ${fieldName} должны быть уникальным`,
+    'en-us': 'Values of {values:string} must be unique to {fieldName:string}',
+    'ru-ru':
+      'Значения {values:string} в {fieldName:string} должны быть уникальным',
   },
   database: {
     'en-us': 'database',
     'ru-ru': 'база данных',
   },
-  // CollectionReLoneToManyPlugin
   collectionObject: {
     'en-us': 'Collection Object',
     'ru-ru': 'Объект коллекции',
   },
-  // Data View
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted...',
     'ru-ru': 'Проверка возможности удаления ресурса...',
@@ -86,18 +79,17 @@ export const formsText = createDictionary({
     'en-us': 'Contract',
     'ru-ru': 'Договор',
   },
-  // Interactions
   addItems: {
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
   },
   recordReturn: {
-    'en-us': (modelName: string) => `${modelName} Return`,
-    'ru-ru': (modelName: string) => `Возврат ${modelName}`,
+    'en-us': '{modelName:string} Return',
+    'ru-ru': 'Возврат {modelName:string}',
   },
   createRecord: {
-    'en-us': (modelName: string) => `Create ${modelName}`,
-    'ru-ru': (modelName: string) => `Создать ${modelName}`,
+    'en-us': 'Create {modelName:string}',
+    'ru-ru': 'Создать {modelName:string}',
   },
   missing: {
     'en-us': 'Missing:',
@@ -111,14 +103,14 @@ export const formsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
   },
+  // FIXME: convert to keyed plural?
   recordSetCaption: {
-    'en-us': (count: number) =>
-      `By choosing a recordset (${count === 0 ? 'none' : count} available)`,
-    'ru-ru': (count: number) => `Выбрав набор записей (доступно ${count})`,
+    'en-us': 'By choosing a recordset ({{ none | one | ?? }} available)',
+    'ru-ru': 'Выбрав набор записей (доступно {count:number})',
   },
   entryCaption: {
-    'en-us': (fieldName: string) => `By entering ${fieldName}s`,
-    'ru-ru': (fieldName: string) => `Ввести ${fieldName}`,
+    'en-us': 'By entering {fieldName:string}s',
+    'ru-ru': 'Ввести {fieldName:string}',
   },
   noPreparationsCaption: {
     'en-us': 'Without preparations',
@@ -128,7 +120,6 @@ export const formsText = createDictionary({
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
   },
-  // Loan Return
   preparationsDialogTitle: {
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
@@ -187,7 +178,6 @@ export const formsText = createDictionary({
     'en-us': 'Resolved Amount',
     'ru-ru': 'Решенный',
   },
-  // PaleoLocationPlugin
   paleoMap: {
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
@@ -213,30 +203,31 @@ export const formsText = createDictionary({
   unsupportedFormDialogText: {
     'en-us': `
       This plugin cannot be used on this form. Try moving it to the locality,
-      collecting event or collection object forms.`,
+      collecting event or collection object forms.
+    `,
     'ru-ru': `
       Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
-      форму местности, события сбора или объекта коллекции.`,
+      форму местности, события сбора или объекта коллекции.
+    `,
   },
-  // DateParser
   invalidDate: {
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',
   },
-  // DeleteButton
   deleteConfirmationDialogHeader: {
-    'en-us': (tableName: string) =>
-      `Are you sure you want to permanently delete this ${tableName} from the
-      database?`,
-    'ru-ru': (tableName: string) =>
-      `Вы уверены, что хотите навсегда удалить этот ${tableName} из базы
-      данных?`,
+    'en-us': `
+      Are you sure you want to permanently delete this {tableName:string} from the
+      database?
+    `,
+    'ru-ru': `
+      Вы уверены, что хотите навсегда удалить этот {tableName:string} из базы
+      данных?
+    `,
   },
   deleteConfirmationDialogText: {
     'en-us': 'This action cannot be undone.',
     'ru-ru': 'Это действие не может быть отменено.',
   },
-  // PartialDateUi
   datePrecision: {
     'en-us': 'Date Precision',
     'ru-ru': 'Точность даты',
@@ -257,16 +248,15 @@ export const formsText = createDictionary({
     'en-us': 'Set to current date',
     'ru-ru': 'Установить на текущую дату',
   },
-  // PickListBox
   addToPickListConfirmationDialogHeader: {
     'en-us': 'Add to pick list?',
     'ru-ru': 'Добавить в список выбора?',
   },
   addToPickListConfirmationDialogText: {
-    'en-us': (value: string, pickListName: string) =>
-      `Add value "${value}" to the pick list named ${pickListName}?`,
-    'ru-ru': (value: string, pickListName: string) =>
-      `Добавить значение "${value}" в список выбора ${pickListName}?`,
+    'en-us':
+      'Add value "{value:string}" to the pick list named {pickListName:string}?',
+    'ru-ru':
+      'Добавить значение "{value:string}" в список выбора {pickListName:string}?',
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -276,25 +266,24 @@ export const formsText = createDictionary({
     'en-us': 'Only numeric values are supported in this pick list',
     'ru-ru': 'В этом списке выбора допускаются только числовые значения',
   },
-  // ReadOnlyPickListComboBox
   noData: {
     'en-us': 'No Data.',
     'ru-ru': 'Нет данных.',
   },
-  // RecordSetsDialog
   recordSetsDialogTitle: {
-    'en-us': (count: number) => `Record Sets (${count})`,
-    'ru-ru': (count: number) => `Наборы объектов (${count})`,
+    'en-us': 'Record Sets ({count:string})',
+    'ru-ru': 'Наборы объектов ({count:string})',
   },
   recordSetDeletionWarning: {
-    'en-us': (recordSetName: string) => `
-      The record set "${recordSetName}" will be deleted. The referenced
-      records will NOT be deleted from the database.`,
-    'ru-ru': (recordSetName: string) => `
-      Набор объектов "${recordSetName}" будет удален. Связанные записи не будут
-      удалены из базы данных.`,
+    'en-us': `
+      The record set "{recordSetName:string}" will be deleted. The referenced
+      records will NOT be deleted from the database.
+    `,
+    'ru-ru': `
+      Набор объектов "{recordSetName:string}" будет удален. Связанные записи не
+      будут удалены из базы данных.
+    `,
   },
-  // Reports
   saveRecordFirst: {
     'en-us': 'Save record first',
     'ru-ru': 'Сначала нужко сохранить запись',
@@ -311,7 +300,6 @@ export const formsText = createDictionary({
     'en-us': 'Missing attachments',
     'ru-ru': 'Отсутствующие вложения',
   },
-  // A verb
   fix: {
     'en-us': 'Fix',
     'ru-ru': 'Исправить',
@@ -346,10 +334,9 @@ export const formsText = createDictionary({
     'ru-ru': 'Следующий объект',
   },
   currentRecord: {
-    'en-us': (total: number): string => `Current object (out of ${total})`,
-    'ru-ru': (total: number): string => `Текущий объект (из ${total})`,
+    'en-us': 'Current object (out of {total:string})',
+    'ru-ru': 'Текущий объект (из {total:string})',
   },
-  // SaveButton
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
     'ru-ru': 'Эта форма не была сохранена.',
@@ -362,11 +349,13 @@ export const formsText = createDictionary({
     'en-us': `
       The data shown on this page has been changed by another user or in
       another browser tab and is out of date. The page must be reloaded to
-      prevent inconsistent data from being saved.`,
+      prevent inconsistent data from being saved.
+    `,
     'ru-ru': `
       Данные, отображаемые на этой странице, были изменены другим пользователем,
       или другоц вкладке браузера. Страницу необходимо перезагрузить
-      чтобы предотвратить сохранение несогласованных данных.`,
+      чтобы предотвратить сохранение несогласованных данных.
+    `,
   },
   saveBlockedDialogHeader: {
     'en-us': 'Save blocked',
@@ -376,12 +365,10 @@ export const formsText = createDictionary({
     'en-us': 'Form cannot be saved while the following errors exist:',
     'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
   },
-  // ShowTransCommand
   resolvedLoans: {
     'en-us': 'Resolved Loans',
     'ru-ru': 'Решение Заемы',
   },
-  // Open is a noun
   openLoans: {
     'en-us': 'Open Loans',
     'ru-ru': 'Открытые займы',
@@ -420,7 +407,6 @@ export const formsText = createDictionary({
     'en-us': 'Command name:',
     'ru-ru': 'Имя команды:',
   },
-  // SpecifyPlugins
   unavailablePluginButton: {
     'en-us': 'Plugin N/A',
     'ru-ru': 'Плагин недоступен',
@@ -444,23 +430,23 @@ export const formsText = createDictionary({
     `,
   },
   wrongTablePluginDialogText: {
-    'en-us': (currentTable: string, correctTable: string) => `
-      The plugin cannot be used on the ${currentTable} form.
-      It can only be used on the ${correctTable} form.`,
-    'ru-ru': (currentTable: string, correctTable: string) => `
-      Этот плагин нельзя использовать в форме ${currentTable}. Его можно
-      использовать только в форме ${correctTable}.`,
+    'en-us': `
+      The plugin cannot be used on the {currentTable:string} form.
+      It can only be used on the {correctTable:string} form.
+    `,
+    'ru-ru': `
+      Этот плагин нельзя использовать в форме {currentTable:string}. Его можно
+      использовать только в форме {correctTable:string}.
+    `,
   },
   pluginName: {
     'en-us': 'Plugin name:',
     'ru-ru': 'Название плагина:',
   },
-  // SubViewHeader
   visit: {
     'en-us': 'Visit',
     'ru-ru': 'Открыть',
   },
-  // UiParse
   illegalBool: {
     'en-us': 'Illegal value for a Yes/No field',
     'ru-ru': 'Недопустимое значение для поля Да / Нет',
@@ -474,19 +460,17 @@ export const formsText = createDictionary({
     'ru-ru': 'Недопустимое значение',
   },
   requiredFormat: {
-    'en-us': (format: string) => `Required Format: ${format}.`,
-    'ru-ru': (format: string) => `Обязательный формат: ${format}.`,
+    'en-us': 'Required Format: {format:string}.',
+    'ru-ru': 'Обязательный формат: {format:string}.',
   },
   inputTypeNumber: {
     'en-us': `Value must be a number`,
     'ru-ru': `Значение должно быть числом`,
   },
-  // UserAgentsPlugin
   userAgentsPluginDialogTitle: {
     'en-us': 'Set User Agents',
     'ru-ru': 'Настроить пользовательских агентов',
   },
-  // AgentTypeComboBox
   organization: {
     'en-us': 'Organization',
     'ru-ru': 'Организация',
@@ -503,7 +487,6 @@ export const formsText = createDictionary({
     'en-us': 'Group',
     'ru-ru': 'Группа',
   },
-  // PickListTypeComboBox
   userDefinedItems: {
     'en-us': 'User Defined Items',
     'ru-ru': 'Пользовательские элементы',
@@ -516,7 +499,6 @@ export const formsText = createDictionary({
     'en-us': 'Field From Table',
     'ru-ru': 'Поле из таблицы',
   },
-  // Audit log actions
   treeMerge: {
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',
@@ -566,19 +548,18 @@ export const formsText = createDictionary({
     'ru-ru': 'Обратный',
   },
   tooLongErrorMessage: {
-    'en-us': (maxLength: number) =>
-      `Field value is too long. Max allowed length is ${maxLength}`,
-    'ru-ru': (maxLength: number) =>
-      `Значение поля слишком длинное. Максимально допустимая длина ${maxLength}`,
+    'en-us':
+      'Field value is too long. Max allowed length is {maxLength:number}',
+    'ru-ru':
+      'Значение поля слишком длинное. Максимально допустимая длина {maxLength:number}',
   },
   returnedPreparations: {
     'en-us': 'Returned Preparations',
     'ru-ru': 'Возвращенные препараты',
   },
   returnedAndSaved: {
-    'en-us': (number: string) =>
-      `${number} preparations have been returned and saved.`,
-    'ru-ru': (number: string) => `${number} препарата возвращены и сохранены.`,
+    'en-us': '{number:number} preparations have been returned and saved.',
+    'ru-ru': '{number:number} препарата возвращены и сохранены.',
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -721,10 +702,8 @@ export const formsText = createDictionary({
     'ru-ru': 'История изменений',
   },
   historyOfEditsQueryName: {
-    'en-us': (formattedRecord: string) =>
-      `History of edits for "${formattedRecord}"`,
-    'ru-ru': (formattedRecord: string) =>
-      `История изменений для "${formattedRecord}"`,
+    'en-us': 'History of edits for "{formattedRecord:string}"',
+    'ru-ru': 'История изменений для "{formattedRecord:string}"',
   },
   formConfiguration: {
     'en-us': 'Form Configuration',
@@ -747,8 +726,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Найти использование',
   },
   usagesOfPickList: {
-    'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
-    'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
+    'en-us': 'Usages of "{pickList:string}" pick list',
+    'ru-ru': 'Использование "{pickList:string}" списка выбора',
   },
   generateLabel: {
     'en-us': 'Generate label',
@@ -807,8 +786,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Мета-данные формы',
   },
   newResourceTitle: {
-    'en-us': (resourceName: string) => `New ${resourceName}`,
-    'ru-ru': (resourceName: string) => `Новый ${resourceName}`,
+    'en-us': 'New {resourceName:string}',
+    'ru-ru': 'Новый {resourceName:string}',
   },
   resourceDeletedDialogHeader: {
     'en-us': 'Item deleted',
@@ -818,6 +797,5 @@ export const formsText = createDictionary({
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Успешно удален.',
   },
-});
-/* eslint-enable react/jsx-no-literals */
+} as const);
 /* eslint-enable @typescript-eslint/naming-convention */

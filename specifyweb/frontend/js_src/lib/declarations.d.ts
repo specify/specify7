@@ -2,9 +2,10 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
+import type { Key, Path, To } from 'history';
+
+import type { LocationState } from './components/Router/RouterState';
 import type { IR, RA, RR } from './utils/types';
-import { LocationState } from './components/Router/RouterState';
-import { Key, Path, To } from 'history';
 
 /**
  * Typescript does not recognize the definition overwrite when using

@@ -25,7 +25,6 @@ export const headerText = createDictionary({
     'en-us': 'Current Collection',
     'ru-ru': 'Текущая коллекция',
   },
-  // Menu Bar & User Tools
   dataEntry: {
     'en-us': 'Data Entry',
     'ru-ru': 'Ввод данных',
@@ -169,6 +168,6 @@ export const headerText = createDictionary({
     'en-us': 'Technical Docs',
     'ru-ru': 'Тех. Документы',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

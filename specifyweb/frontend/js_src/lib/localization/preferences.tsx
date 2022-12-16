@@ -775,6 +775,6 @@ export const preferencesText = createDictionary({
     'en-us': 'Don’t use',
     'ru-ru': 'Не использовать',
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

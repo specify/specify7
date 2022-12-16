@@ -71,6 +71,6 @@ export const notificationsText = createDictionary({
       </>
     ),
   },
-});
+} as const);
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

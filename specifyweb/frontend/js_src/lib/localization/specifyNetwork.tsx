@@ -25,4 +25,4 @@ export const specifyNetworkText = createDictionary({
       повторите попытку.
     `,
   },
-});
+} as const);

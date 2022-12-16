@@ -19,7 +19,12 @@ import type {
   Language,
   Value,
 } from '../utils';
-import { DEFAULT_LANGUAGE, languages } from '../utils';
+import {
+  DEFAULT_LANGUAGE,
+  languages,
+  localizationMetaKeys,
+  rawDictionary,
+} from '../utils';
 import type { IR, R, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { split } from '../../utils/utils';
@@ -95,6 +100,7 @@ type Key = {
 };
 
 type Dictionary = IR<Key>;
+// FIXME: modify localization tests to catch usages like formsText.recordReturn
 
 // This allows to call await at the top level
 (async (): Promise<void> => {
@@ -105,7 +111,7 @@ type Dictionary = IR<Key>;
         await Promise.all(
           localizationFiles.map<Promise<undefined | [string, Dictionary]>>(
             async (fileName) => {
-              if (!path.extname(fileName).includes('ts')) return undefined;
+              if (!path.extname(fileName).endsWith('tsx')) return undefined;
 
               const compiledFilePath = path.join(
                 compiledLocalizationDirectory,
@@ -129,14 +135,15 @@ type Dictionary = IR<Key>;
                 return undefined;
               }
               const dictionaryName = dictionaries[0];
-              const dictionary = dictionaryFile?.[dictionaryName ?? '']
-                ?.dictionary as LanguageDictionary | undefined;
+              const dictionary = Object.getOwnPropertyDescriptor(
+                dictionaryFile?.[dictionaryName ?? ''],
+                rawDictionary
+              )?.value as LanguageDictionary | undefined;
               if (
                 typeof dictionaryName !== 'string' ||
                 typeof dictionary !== 'object'
               ) {
-                // This is not thrown as an error because of "utils.tsx"
-                warn(`Unable to find a dictionary in ${fileName}`);
+                error(`Unable to find a dictionary in ${fileName}`);
                 return undefined;
               }
               debug(`Found a ${dictionaryName} dictionary in ${fileName}`);
@@ -151,7 +158,11 @@ type Dictionary = IR<Key>;
               const entries = Object.fromEntries(
                 Object.entries(dictionary).map(([key, strings]) => {
                   Object.keys(strings)
-                    .filter((language) => !f.includes(languages, language))
+                    .filter(
+                      (language) =>
+                        !f.includes(languages, language) &&
+                        !f.includes(localizationMetaKeys, language)
+                    )
                     .forEach((language) =>
                       error(
                         [
@@ -161,26 +172,14 @@ type Dictionary = IR<Key>;
                       )
                     );
 
-                  // Make sure functions are declared as lambdas
-                  Object.entries(strings).forEach(([language, string]) =>
-                    typeof string === 'function' &&
-                    string.toString().startsWith('function')
-                      ? error(
-                          [
-                            `Unexpected "function" keyword for string`,
-                            `${dictionaryName}.${key} for language ${language}.\n`,
-                            `Expected a lambda function.\n` + string.toString(),
-                          ].join('')
-                        )
-                      : undefined
-                  );
-
                   // Search for blacklisted characters
-                  Object.entries(strings).forEach(([language, string]) =>
+                  Object.entries(strings).forEach(([language, string]) => {
+                    if (f.includes(localizationMetaKeys, language)) return;
+
                     characterBlacklist[language as Language]
                       ?.split('')
                       .forEach((character) =>
-                        string.toString().toLowerCase().includes(character)
+                        string!.toString().toLowerCase().includes(character)
                           ? error(
                               [
                                 `String ${dictionaryName}.${key} for language `,
@@ -189,8 +188,8 @@ type Dictionary = IR<Key>;
                               ].join('')
                             )
                           : undefined
-                      )
-                  );
+                      );
+                  });
 
                   return [
                     key,
@@ -239,78 +238,88 @@ type Dictionary = IR<Key>;
     let foundUsages = false;
 
     Object.entries(dictionaries).forEach(([dictionaryName, entries]) => {
-      const regex = new RegExp(
-        `${dictionaryName}\\s*\\(\\s*((?<parameters>[^)]+))`,
-        'g'
+      const usages = fileContent.matchAll(
+        new RegExp(
+          `${dictionaryName}\\s*(?<follower>.)(?<keyName>\\w*)(?:(?<openBracket>\\()\\s*(?<followCharacter>.))?`,
+          'gu'
+        )
       );
+      // FIXME: handle the commonText.text usage too
 
-      Array.from(fileContent.matchAll(regex)).forEach(({ groups, index }) => {
+      Array.from(fileContent.matchAll(usages)).forEach(({ groups, index }) => {
         if (groups === undefined || index === undefined) return;
 
-        const parameters = groups.parameters;
-        const [rawPaddedKeyName, ...args] = parameters.split(',');
-        const hasArguments = args.join('').length > 0;
-
-        const paddedKeyName = rawPaddedKeyName.trim();
-        const keyName = paddedKeyName.slice(1, -1);
+        const followingCharacter = groups.follower ?? '';
 
         const position = fileContent.slice(
           index - lookAroundLength,
-          index + lookAroundLength + dictionaryName.length + keyName.length
+          index + lookAroundLength + dictionaryName.length + 20
         );
         const lineNumber = (fileContent.slice(0, index).match(/\n/g) ?? [])
           .length;
 
-        if (
-          !`'"\``.includes(paddedKeyName[0]) ||
-          !paddedKeyName.endsWith(paddedKeyName[0])
-        ) {
+        const report = (...message: RA<string>): void =>
           error(
             [
-              `Found invalid key ${dictionaryName}[${paddedKeyName}] in ${fileName}\n`,
-              `Key must be a string literal, not a variable or function call.\n`,
-              `\n`,
+              ...message,
+              `\n\n`,
               `On line ${lineNumber}:\n`,
               `${position}`,
             ].join('')
+          );
+        // FIXME: test all of these checks
+
+        // Matched an import statement (i.e, import { commonText } from ...)
+        if (followingCharacter === '}') return;
+        if (followingCharacter !== '.') {
+          report(
+            `Unexpected dynamic usage of a ${dictionaryName} dictionary`,
+            'Only static usages are supported to allow for static analysis.',
+            followingCharacter === '['
+              ? '\nDid you mean to use object index notation instead of array index notation?'
+              : ''
+          );
+          return;
+        }
+
+        const keyName = groups.keyName ?? '';
+        if (keyName.length === 0) {
+          report(
+            `Unexpected usage of a ${dictionaryName} dictionary without a `,
+            'localization key'
           );
           return;
         }
 
         if (!(keyName in entries)) {
-          error(
-            [
-              `Found unknown key ${dictionaryName}.${keyName} in ${fileName}\n`,
-              `\n`,
-              `On line ${lineNumber}:\n`,
-              `${position}`,
-            ].join('')
+          report(
+            `Found unknown key ${dictionaryName}.${keyName} in ${fileName}`
           );
           return;
         }
 
+        if (groups.openBracket !== '(') {
+          report(
+            `Unexpected usage of a ${dictionaryName}.${keyName} key`,
+            `Expected a function call (i.e ${dictionaryName}.${keyName}()`
+          );
+          return;
+        }
+
+        const hasArguments = groups.followCharacter !== ')';
         const expectsArguments =
           typeof entries[keyName].strings[DEFAULT_LANGUAGE] === 'function';
+
         if (expectsArguments !== hasArguments) {
           if (hasArguments)
-            error(
-              [
-                `${fileName} provides arguments to ${dictionaryName}.${keyName} `,
-                `but it is not supposed to.\n`,
-                `\n`,
-                `On line ${lineNumber}:\n`,
-                `${position}`,
-              ].join('')
+            report(
+              `${fileName} provides arguments to ${dictionaryName}.${keyName} `,
+              `but it is not supposed to.`
             );
           else
-            error(
-              [
-                `${fileName} does not provide arguments to `,
-                `${dictionaryName}.${keyName} but it is supposed to.\n`,
-                `\n`,
-                `On line ${lineNumber}:\n`,
-                `${position}`,
-              ].join('')
+            report(
+              `${fileName} does not provide arguments to `,
+              `${dictionaryName}.${keyName} but it is supposed to.`
             );
         }
 
@@ -339,6 +348,7 @@ type Dictionary = IR<Key>;
   >((compoundDictionaries, [fileName, entries]) => {
     Object.entries(entries).forEach(([key, { strings }]) =>
       Object.entries(strings).forEach(([language, value]) => {
+        if (f.includes(localizationMetaKeys, language)) return;
         const valueString =
           typeof value === 'string'
             ? value
