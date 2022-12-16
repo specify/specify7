@@ -66,7 +66,7 @@ export function StatsResult({
           >
             <span>{statLabel}</span>
             <span className="-ml-2 flex-1" />
-            <span>{statValue ?? cachedValue ?? commonText('loading')}</span>
+            <span>{cachedValue ?? commonText('loading')}</span>
           </Button.LikeLink>
         </p>
       )}

@@ -6,7 +6,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { H3 } from '../Atoms';
+import { H2, H3 } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
@@ -92,7 +92,7 @@ export function AddStatDialog({
                 )
               ) ? undefined : (
                 <div key={index}>
-                  <h4>{defaultLayoutPage.label}</h4>
+                  <h1>{defaultLayoutPage.label}</h1>
                   <div>
                     <Categories
                       pageLayout={defaultLayoutPage}

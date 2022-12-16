@@ -192,9 +192,11 @@ export function useDefaultLayout(
 
 export function useFrontEndStat(
   query: SpecifyResource<SpQuery> | undefined,
-  onStatNetwork: (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => Promise<string | undefined>,
+  onStatNetwork:
+    | ((
+        query: SpecifyResource<SpQuery> | undefined
+      ) => Promise<string | undefined>)
+    | undefined,
   statCachedValue?: string | number | undefined
 ): string | number | undefined {
   const [countReturn] = useAsyncState(

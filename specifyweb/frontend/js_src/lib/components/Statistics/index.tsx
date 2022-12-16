@@ -87,15 +87,18 @@ export function StatsPage(): JSX.Element {
   const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
-  React.useEffect(() => {
+   */ React.useEffect(() => {
     console.log('set: ', defaultLayoutSpec);
     setDefaultLayout(defaultLayoutSpec);
     setLayout(defaultLayoutSpec);
-  }, [defaultLayoutSpec]);*/
+  }, [defaultLayoutSpec]);
+
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
 
-  const activeNetworkRequest = React.useRef<WritableArray[Promise]>([]);
+  const activeNetworkRequest = React.useRef<
+    WritableArray<Promise<string | number | undefined>>
+  >([]);
   const VINNY_STAT_CONSTANT = 10;
   const useStatNetwork = async (query: SpecifyResource<SpQuery>) => {
     while (activeNetworkRequest.current.length > VINNY_STAT_CONSTANT) {
@@ -179,13 +182,15 @@ export function StatsPage(): JSX.Element {
         <span className="-ml-2 flex-1" />
         {isEditing ? (
           <>
-            <Button.Red
-              onClick={(): void => {
-                setLayout(defaultLayout); //chang
-              }}
-            >
-              {commonText('reset')}
-            </Button.Red>
+            {
+              <Button.Red
+                onClick={(): void => {
+                  setLayout(defaultLayout); //chang
+                }}
+              >
+                {commonText('reset')}
+              </Button.Red>
+            }
             <Button.Red
               onClick={(): void => {
                 setLayout(previousLayout.current);
