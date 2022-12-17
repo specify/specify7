@@ -109,21 +109,21 @@ export function Report({
   );
   return query === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('missingReportQueryDialogHeader')}
+      buttons={commonText.close()}
+      header={formsText.missingReportQueryDialogHeader()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('missingReportQueryDialogText')}
+      {formsText.missingReportQueryDialogText()}
     </Dialog>
   ) : report === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('missingReportDialogHeader')}
+      buttons={commonText.close()}
+      header={formsText.missingReportDialogHeader()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('missingReportDialogText')}
+      {formsText.missingReportDialogText()}
     </Dialog>
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
@@ -208,24 +208,24 @@ function FixImagesDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Orange onClick={handleIgnore}>
-            {commonText('ignore')}
+            {commonText.ignore()}
           </Button.Orange>
         </>
       }
-      header={formsText('reportProblemsDialogTitle')}
+      header={formsText.reportProblemsDialogTitle()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('reportsProblemsDialogText')}
-      <H3>{formsText('missingAttachments')}</H3>
+      {formsText.reportsProblemsDialogText()}
+      <H3>{formsText.missingAttachments()}</H3>
       <Ul>
         {missingAttachments.map((fileName, index) => (
           <Button.LikeLink
-            aria-label={formsText('fix')}
+            aria-label={formsText.fix()}
             key={fileName}
-            title={formsText('fix')}
+            title={formsText.fix()}
             onClick={(): void => setIndex(index)}
           >
             {fileName}
@@ -235,8 +235,8 @@ function FixImagesDialog({
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText('cancel')}
-      header={formsText('missingAttachmentsFixDialogTitle')}
+      buttons={commonText.cancel()}
+      header={formsText.missingAttachmentsFixDialogTitle()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
@@ -322,11 +322,11 @@ function ParametersDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Green form={id('form')}>{commonText('save')}</Submit.Green>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
         </>
       }
-      header={formsText('reportParameters')}
+      header={formsText.reportParameters()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >

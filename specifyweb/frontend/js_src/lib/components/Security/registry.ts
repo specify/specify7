@@ -62,13 +62,13 @@ const buildRegistry = f.store(
         .filter(({ name }) => !f.has(toolTables(), name))
         .map(({ name, label, isHidden, isSystem }) => ({
           resource: tableNameToResourceName(name),
-          localized: [schemaText('table'), label],
+          localized: [schemaText.table(), label],
           actions: tableActions,
-          groupName: isSystem || isHidden ? userText('advancedTables') : '',
+          groupName: isSystem || isHidden ? userText.advancedTables() : '',
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
-        localized: [commonText('tool'), label],
+        localized: [commonText.tool(), label],
         actions: tableActions,
         groupName: '',
       })),
@@ -97,8 +97,8 @@ const buildRegistry = f.store(
                   : {
                       [anyResource]: {
                         label: tablePermissionsPrefix.includes(part)
-                          ? userText('allTables')
-                          : commonText('all'),
+                          ? userText.allTables()
+                          : commonText.all(),
                         children: {},
                         actions: getAllActions(
                           partsToResourceName(resourceParts.slice(0, index + 1))
@@ -126,7 +126,7 @@ const buildRegistry = f.store(
       },
       {
         [anyResource]: {
-          label: commonText('all'),
+          label: commonText.all(),
           children: {},
           actions: getAllActions(partsToResourceName([])),
           groupName: '',
@@ -187,19 +187,19 @@ export const toolDefinitions = f.store(() =>
     }>
   >()({
     schemaConfig: {
-      label: schemaText('schemaConfig'),
+      label: schemaText.schemaConfig(),
       tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
     },
     queryBuilder: {
-      label: queryText('queryBuilder'),
+      label: queryText.queryBuilder(),
       tables: ['SpQuery', 'SpQueryField'],
     },
     recordSets: {
-      label: commonText('recordSets'),
+      label: commonText.recordSets(),
       tables: ['RecordSet', 'RecordSetItem'],
     },
     resources: {
-      label: commonText('appResources'),
+      label: commonText.appResources(),
       tables: [
         'SpAppResource',
         'SpAppResourceData',
@@ -208,7 +208,7 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: schemaText('pickList'),
+      label: schemaText.pickList(),
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {

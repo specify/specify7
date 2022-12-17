@@ -115,6 +115,7 @@ export function Dialog({
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
 }: {
   readonly isOpen?: boolean;
+  // FIXME: replace all applicable usages of string with LocalizedString
   readonly header: string;
   readonly headerButtons?: React.ReactNode;
   readonly showOrangeBar?: boolean;

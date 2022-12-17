@@ -216,7 +216,7 @@ async function formatField(
     typeof noAccessTable === 'string'
       ? tryBest
         ? naiveFormatter(resource)
-        : userText('noPermission')
+        : userText.noPermission()
       : await (
           resource.rgetPromise(fieldName) as Promise<
             SpecifyResource<AnySchema> | string | undefined

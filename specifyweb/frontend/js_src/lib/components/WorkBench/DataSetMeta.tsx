@@ -55,11 +55,11 @@ export function DataSetMeta({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
-      header={wbText('dataSetMetaDialogTitle')}
+      header={wbText.dataSetMetaDialogTitle()}
       icon={<span className="text-blue-500">{icons.table}</span>}
       onClose={handleClose}
     >
@@ -92,7 +92,7 @@ export function DataSetMeta({
         }
       >
         <Label.Block>
-          <b>{wbText('dataSetName')}</b>
+          <b>{wbText.dataSetName()}</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
@@ -102,32 +102,32 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{wbText('remarks')}</b>
+          <b>{wbText.remarks()}</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
-          <b>{commonText('metadataInline')}</b>
+          <b>{commonText.metadataInline()}</b>
           <span>
-            {wbText('numberOfRows')} <i>{formatNumber(getRowCount())}</i>
+            {wbText.numberOfRows()} <i>{formatNumber(getRowCount())}</i>
           </span>
           <span>
-            {wbText('numberOfColumns')}{' '}
+            {wbText.numberOfColumns()}{' '}
             <i>{formatNumber(dataset.columns.length)}</i>
           </span>
           <span>
-            {wbText('created')}{' '}
+            {wbText.created()}{' '}
             <i>
               <DateElement date={dataset.timestampcreated} flipDates />
             </i>
           </span>
           <span>
-            {wbText('modified')}{' '}
+            {wbText.modified()}{' '}
             <i>
               <DateElement date={dataset.timestampmodified} flipDates />
             </i>
           </span>
           <span>
-            {wbText('uploaded')}{' '}
+            {wbText.uploaded()}{' '}
             <i>
               <DateElement
                 date={
@@ -135,30 +135,30 @@ export function DataSetMeta({
                     ? dataset.uploadresult?.timestamp
                     : undefined
                 }
-                fallback={commonText('no')}
+                fallback={commonText.no()}
                 flipDates
               />
             </i>
           </span>
           <span>
-            {commonText('createdBy')}{' '}
+            {commonText.createdBy()}{' '}
             <i>
               <FormattedResource resourceUrl={dataset.createdbyagent} />
             </i>
           </span>
           <span>
-            {commonText('modifiedBy')}{' '}
+            {commonText.modifiedBy()}{' '}
             <i>
               {typeof dataset.modifiedbyagent === 'string' ? (
                 <FormattedResource resourceUrl={dataset.modifiedbyagent} />
               ) : (
-                commonText('notApplicable')
+                commonText.notApplicable()
               )}
             </i>
           </span>
           <span>
-            {wbText('importedFileName')}{' '}
-            <i>{dataset.importedfilename || wbText('noFileName')}</i>
+            {wbText.importedFileName()}{' '}
+            <i>{dataset.importedfilename || wbText.noFileName()}</i>
           </span>
         </div>
       </Form>
@@ -185,12 +185,12 @@ function DataSetName({
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />
         )}
-        {`${wbText('dataSet')} ${name}`}
+        {`${wbText.dataSet()} ${name}`}
         {dataset.uploadresult?.success === true && (
-          <span className="text-red-600">{wbText('dataSetUploadedLabel')}</span>
+          <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
         )}
       </h2>
-      <Button.Small onClick={handleOpen}>{commonText('metadata')}</Button.Small>
+      <Button.Small onClick={handleOpen}>{commonText.metadata()}</Button.Small>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
@@ -232,23 +232,23 @@ function ChangeOwner({
 
   return users === undefined ? null : isChanged ? (
     <Dialog
-      buttons={commonText('close')}
-      header={wbText('dataSetOwnerChanged')}
+      buttons={commonText.close()}
+      header={wbText.dataSetOwnerChanged()}
       onClose={(): void => unsafeNavigate('/specify/', { replace: true })}
     >
-      <p>{wbText('dataSetOwnerChanged')}</p>
+      <p>{wbText.dataSetOwnerChanged()}</p>
     </Dialog>
   ) : (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
-            {wbText('changeOwner')}
+            {wbText.changeOwner()}
           </Submit.Blue>
         </>
       }
-      header={wbText('changeDataSetOwnerDialogHeader')}
+      header={wbText.changeDataSetOwnerDialogHeader()}
       onClose={handleClose}
     >
       <Form
@@ -269,7 +269,7 @@ function ChangeOwner({
         }
       >
         <Label.Block>
-          <p>{wbText('changeDataSetOwnerDialogText')}</p>
+          <p>{wbText.changeDataSetOwnerDialogText()}</p>
           <Select
             size={10}
             value={newOwner}

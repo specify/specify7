@@ -62,7 +62,7 @@ function ChangePassword({
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Block>
-          {userText('oldPassword')}
+          {userText.oldPassword()}
           <Input.Generic
             autoComplete="current-password"
             defaultValue=""
@@ -73,7 +73,7 @@ function ChangePassword({
           />
         </Label.Block>
         <Label.Block>
-          {userText('newPassword')}
+          {userText.newPassword()}
           <Input.Generic
             autoComplete="new-password"
             defaultValue=""
@@ -85,7 +85,7 @@ function ChangePassword({
           />
         </Label.Block>
         <Label.Block>
-          {userText('repeatPassword')}
+          {userText.repeatPassword()}
           <Input.Generic
             autoComplete="new-password"
             defaultValue=""
@@ -96,7 +96,7 @@ function ChangePassword({
             type="password"
           />
         </Label.Block>
-        <Submit.Fancy>{userText('changePassword')}</Submit.Fancy>
+        <Submit.Fancy>{userText.changePassword()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

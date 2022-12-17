@@ -34,7 +34,7 @@ test('<Contexts> is providing error context', async () => {
   act(() =>
     emitError(({ onClose: handleClose }) => (
       <button type="button" onClick={handleClose}>
-        {mainText('errorMessage')}
+        {mainText.errorMessage()}
       </button>
     ))
   );
@@ -62,7 +62,7 @@ test('<Contexts> provide a loading context', async () => {
   act(() => loading(promise));
   act(() => loading(promise2));
 
-  const heading = await findByRole('heading', { name: commonText('loading') });
+  const heading = await findByRole('heading', { name: commonText.loading() });
 
   promise.resolve();
   promise2.resolve();
@@ -73,7 +73,7 @@ test('<Contexts> provide a loading context', async () => {
   const rejectedPromise = flippedPromise();
   act(() => loading(rejectedPromise));
   const newHeading = await findByRole('heading', {
-    name: commonText('loading'),
+    name: commonText.loading(),
   });
   expect(crash).not.toHaveBeenCalled();
   jest.spyOn(console, 'error').mockImplementation();

@@ -92,9 +92,9 @@ export function AppResourceEditor({
       <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
       <AppTitle title={formatted} type="form" />
       <Button.Blue
-        aria-label={localityText('toggleFullScreen')}
+        aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}
-        title={localityText('toggleFullScreen')}
+        title={localityText.toggleFullScreen()}
         onClick={handleToggleFullScreen}
       >
         {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
@@ -173,8 +173,7 @@ export function AppResourceEditor({
                         name:
                           resource.name.length > 0
                             ? getUniqueName(resource.name, [resource.name])
-                            : formsText(
-                                'newResourceTitle',
+                            : formsText.newResourceTitle(
                                 appResource.specifyModel.label
                               ),
                       },

@@ -41,7 +41,7 @@ const titleStack = new Map<unknown, string>();
 
 function setTitle(title: string): void {
   globalThis.document.title =
-    title.length === 0 ? mainText('baseAppTitle') : mainText('appTitle', title);
+    title.length === 0 ? mainText.baseAppTitle() : mainText.appTitle(title);
 }
 
 const refreshTitle = (): void =>

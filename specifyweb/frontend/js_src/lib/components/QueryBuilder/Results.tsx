@@ -41,7 +41,7 @@ export type QueryResultRow = RA<number | string | null>;
 
 export function QueryResults({
   model,
-  label = commonText('results'),
+  label = commonText.results(),
   hasIdField,
   queryResource,
   fetchSize,
@@ -226,12 +226,12 @@ export function QueryResults({
       <div className="flex items-center items-stretch gap-2">
         <H3>{`${label}: (${
           selectedRows.size === 0
-            ? totalCount ?? commonText('loading')
-            : `${selectedRows.size}/${totalCount ?? commonText('loading')}`
+            ? totalCount ?? commonText.loading()
+            : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
         })`}</H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
-            {formsText('deselectAll')}
+            {formsText.deselectAll()}
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
@@ -495,7 +495,7 @@ function CreateRecordSet({
           });
         }}
       >
-        {queryText('createRecordSet')}
+        {queryText.createRecordSet()}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView

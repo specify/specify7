@@ -18,13 +18,13 @@ export const getAppResourceTree = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: resourcesText('globalResources'),
+    label: resourcesText.globalResources(),
     key: 'globalResources',
     ...getGlobalAllResources(resources),
     subCategories: [],
   },
   {
-    label: resourcesText('disciplineResources'),
+    label: resourcesText.disciplineResources(),
     key: 'disciplineResources',
     directory: undefined,
     appResources: [],
@@ -170,7 +170,7 @@ const getCollectionResources = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: resourcesText('userTypes'),
+    label: resourcesText.userTypes(),
     key: 'userTypes',
     directory: undefined,
     appResources: [],
@@ -178,7 +178,7 @@ const getCollectionResources = (
     subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
   {
-    label: userText('users'),
+    label: userText.users(),
     key: 'users',
     directory: undefined,
     appResources: [],

@@ -202,7 +202,7 @@ export function PickListComboBox(
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
-              {queryText('invalidPicklistValue', value)}
+              {queryText.invalidPicklistValue(value)}
             </option>
           )}
           {items?.map(({ title, value }) => (
@@ -265,11 +265,11 @@ function AddingToPicklist({
   const isInvalidNumeric = type === 'number' && f.parseInt(value) === undefined;
   return isInvalidNumeric ? (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('invalidType')}
+      buttons={commonText.close()}
+      header={formsText.invalidType()}
       onClose={handleClose}
     >
-      {formsText('invalidNumericPicklistValue')}
+      {formsText.invalidNumericPicklistValue()}
     </Dialog>
   ) : (
     <Dialog
@@ -292,16 +292,15 @@ function AddingToPicklist({
               )
             }
           >
-            {commonText('add')}
+            {commonText.add()}
           </Button.Green>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={formsText('addToPickListConfirmationDialogHeader')}
+      header={formsText.addToPickListConfirmationDialogHeader()}
       onClose={handleClose}
     >
-      {formsText(
-        'addToPickListConfirmationDialogText',
+      {formsText.addToPickListConfirmationDialogText(
         value,
         pickList.get('name')
       )}

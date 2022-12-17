@@ -234,7 +234,7 @@ function UserView({
         <>
           {canSetPassword || canCreateInviteLink ? (
             <section>
-              <h4 className="text-xl">{userText('accountSetupOptions')}</h4>
+              <h4 className="text-xl">{userText.accountSetupOptions()}</h4>
               <div className="flex items-center gap-2">
                 <ErrorBoundary dismissable>
                   {canSetPassword && (
@@ -277,7 +277,7 @@ function UserView({
                       ) && (
                         <SecurityPoliciesWrapper
                           collapsable
-                          header={userText('institutionPolicies')}
+                          header={userText.institutionPolicies()}
                           policies={institutionPolicies}
                         >
                           <SecurityPolicies
@@ -352,7 +352,7 @@ function UserView({
                   ) ? (
                     <SecurityPoliciesWrapper
                       collapsable={false}
-                      header={userText('customUserPolices')}
+                      header={userText.customUserPolices()}
                       policies={userPolicies?.[collectionId]}
                     >
                       <SecurityPolicies
@@ -402,11 +402,9 @@ function UserView({
       )}
       <DataEntry.Footer>
         {changesMade ? (
-          <Link.Gray href="/specify/security/">
-            {commonText('cancel')}
-          </Link.Gray>
+          <Link.Gray href="/specify/security/">{commonText.cancel()}</Link.Gray>
         ) : (
-          <Link.Blue href="/specify/security/">{commonText('close')}</Link.Blue>
+          <Link.Blue href="/specify/security/">{commonText.close()}</Link.Blue>
         )}
         {!userResource.isNew() &&
         hasTablePermission('SpecifyUser', 'delete') &&
@@ -645,11 +643,11 @@ function UserView({
       )}
       {state.type === 'NoAdminsError' && (
         <Dialog
-          buttons={commonText('close')}
-          header={userText('cantRemoveLastAdmin')}
+          buttons={commonText.close()}
+          header={userText.cantRemoveLastAdmin()}
           onClose={(): void => setState({ type: 'Main' })}
         >
-          {userText('cantRemoveLastAdminDescription')}
+          {userText.cantRemoveLastAdminDescription()}
         </Dialog>
       )}
     </Container.Base>

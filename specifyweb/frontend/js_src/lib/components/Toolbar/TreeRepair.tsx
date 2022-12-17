@@ -40,7 +40,7 @@ export function TreeSelectOverlay(): JSX.Element {
     <TreeSelectDialog
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
-      title={commonText('trees')}
+      title={commonText.trees()}
       onClick={undefined}
       onClose={handleClose}
     />
@@ -73,7 +73,7 @@ export function TreeSelectDialog({
     <Dialog
       buttons={
         <Button.Gray onClick={handleClose}>
-          {isFinished ? commonText('close') : commonText('cancel')}
+          {isFinished ? commonText.close() : commonText.cancel()}
         </Button.Gray>
       }
       header={title}
@@ -155,12 +155,12 @@ export function TreeRepairOverlay(): JSX.Element {
 
   return (
     <TreeSelectDialog
-      confirmationMessage={headerText('treeRepairComplete')}
+      confirmationMessage={headerText.treeRepairComplete()}
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
       permissionName="repair"
-      title={headerText('repairTree')}
+      title={headerText.repairTree()}
       onClick={setTree}
       onClose={handleClose}
     />

@@ -77,7 +77,7 @@ function EditQueryDialog({
               );
             }}
           >
-            {commonText('export')}
+            {commonText.export()}
           </Button.Green>
         </>
       }
@@ -92,17 +92,17 @@ function EditQueryDialog({
     >
       {queryResource.isNew() ? undefined : (
         <div className="flex flex-col">
-          <p>{commonText('actions')}</p>
+          <p>{commonText.actions()}</p>
           <Button.LikeLink onClick={(): void => setState('dwcaExport')}>
-            {queryText('exportQueryForDwca')}
+            {queryText.exportQueryForDwca()}
           </Button.LikeLink>
           {hasPermission('/report', 'execute') && (
             <>
               <Button.LikeLink onClick={(): void => setState('reportExport')}>
-                {queryText('exportQueryAsReport')}
+                {queryText.exportQueryAsReport()}
               </Button.LikeLink>
               <Button.LikeLink onClick={(): void => setState('labelExport')}>
-                {queryText('exportQueryAsLabel')}
+                {queryText.exportQueryAsLabel()}
               </Button.LikeLink>
             </>
           )}
@@ -143,11 +143,11 @@ function DwcaQueryExport({
 
   return typeof exported === 'string' ? (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={queryText('exportQueryForDwcaDialogHeader')}
+      header={queryText.exportQueryForDwcaDialogHeader()}
       onClose={handleClose}
     >
       <AutoGrowTextArea isReadOnly value={exported} />
@@ -173,14 +173,14 @@ function QueryExport({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('create')}</Submit.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.create()}</Submit.Blue>
         </>
       }
       header={
         asLabel
-          ? headerText('createLabelDialogHeader')
-          : headerText('createReportDialogHeader')
+          ? headerText.createLabelDialogHeader()
+          : headerText.createReportDialogHeader()
       }
       onClose={handleClose}
     >
@@ -217,7 +217,7 @@ function QueryExport({
         <Input.Text
           maxLength={getMaxLength()}
           placeholder={
-            asLabel ? headerText('labelName') : headerText('reportName')
+            asLabel ? headerText.labelName() : headerText.reportName()
           }
           required
           value={name}

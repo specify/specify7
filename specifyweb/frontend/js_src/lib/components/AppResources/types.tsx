@@ -16,12 +16,12 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   appResources: {
     tableName: 'SpAppResource',
     icon: icons.cog,
-    label: resourcesText('appResource'),
+    label: resourcesText.appResource(),
   },
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
-    label: commonText('formDefinitions'),
+    label: commonText.formDefinitions(),
   },
 };
 
@@ -46,7 +46,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.ticket,
-    label: resourcesText('label'),
+    label: resourcesText.label(),
   },
   report: {
     mimeType: 'jrxml/report',
@@ -54,7 +54,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.documentReport,
-    label: resourcesText('report'),
+    label: resourcesText.report(),
   },
   userPreferences: {
     mimeType: 'application/json',
@@ -62,7 +62,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
-    label: preferencesText('userPreferences'),
+    label: preferencesText.userPreferences(),
   },
   defaultUserPreferences: {
     mimeType: 'application/json',
@@ -70,7 +70,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
     icon: icons.cog,
-    label: preferencesText('defaultUserPreferences'),
+    label: preferencesText.defaultUserPreferences(),
   },
   leafletLayers: {
     mimeType: 'application/json',
@@ -78,7 +78,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers',
     icon: icons.locationMarker,
-    label: resourcesText('leafletLayers'),
+    label: resourcesText.leafletLayers(),
   },
   rssExportFeed: {
     mimeType: 'text/xml',
@@ -86,7 +86,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
     icon: icons.upload,
-    label: resourcesText('rssExportFeed'),
+    label: resourcesText.rssExportFeed(),
   },
   expressSearchConfig: {
     mimeType: 'text/xml',
@@ -94,7 +94,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/simple-search-config/183',
     icon: icons.search,
-    label: resourcesText('expressSearchConfig'),
+    label: resourcesText.expressSearchConfig(),
   },
   webLinks: {
     mimeType: 'text/xml',
@@ -102,7 +102,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/common/weblinks.xml',
     icon: icons.externalLink,
-    label: resourcesText('webLinks'),
+    label: resourcesText.webLinks(),
   },
   uiFormatters: {
     mimeType: 'text/xml',
@@ -110,7 +110,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/uiformatters.xml',
     icon: icons.hashtag,
-    label: resourcesText('uiFormatters'),
+    label: resourcesText.uiFormatters(),
   },
   dataObjectFormatters: {
     mimeType: 'text/xml',
@@ -118,7 +118,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
     icon: icons.variable,
-    label: resourcesText('dataObjectFormatters'),
+    label: resourcesText.dataObjectFormatters(),
   },
   searchDialogDefinitions: {
     mimeType: 'text/xml',
@@ -126,7 +126,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
     icon: icons.documentSearch,
-    label: resourcesText('searchDialogDefinitions'),
+    label: resourcesText.searchDialogDefinitions(),
   },
   dataEntryTables: {
     mimeType: 'text/xml',
@@ -134,7 +134,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/fish/dataentry_task.xml',
     icon: icons.pencilAt,
-    label: resourcesText('dataEntryTables'),
+    label: resourcesText.dataEntryTables(),
   },
   interactionsTables: {
     mimeType: 'text/xml',
@@ -142,35 +142,35 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/common/interactionstask.xml',
     icon: icons.chat,
-    label: resourcesText('interactionsTables'),
+    label: resourcesText.interactionsTables(),
   },
   otherXmlResource: {
     mimeType: 'text/xml',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.code,
-    label: resourcesText('otherXmlResource'),
+    label: resourcesText.otherXmlResource(),
   },
   otherJsonResource: {
     mimeType: 'application/json',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.adjustments,
-    label: resourcesText('otherJsonResource'),
+    label: resourcesText.otherJsonResource(),
   },
   otherPropertiesResource: {
     mimeType: 'text/x-java-properties',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.viewList,
-    label: resourcesText('otherPropertiesResource'),
+    label: resourcesText.otherPropertiesResource(),
   },
   otherAppResources: {
     mimeType: undefined,
     name: undefined,
     documentationUrl: undefined,
     icon: icons.document,
-    label: resourcesText('otherAppResource'),
+    label: resourcesText.otherAppResource(),
   },
 } as const;
 

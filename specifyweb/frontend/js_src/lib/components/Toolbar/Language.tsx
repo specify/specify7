@@ -4,28 +4,32 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { csrfToken } from '../../utils/ajax/csrfToken';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { cachableUrl } from '../InitialContext';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
+import {
+  enabledLanguages,
+  LANGUAGE,
+  StringToJsx,
+} from '../../localization/utils';
+import { ajax } from '../../utils/ajax';
+import { csrfToken } from '../../utils/ajax/csrfToken';
+import { formData } from '../../utils/ajax/helpers';
+import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
+import { fail } from '../Errors/Crash';
+import { supportLink } from '../Errors/ErrorDialog';
+import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
-import { Select } from '../Atoms/Form';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { supportLink } from '../Errors/ErrorDialog';
-import { fail } from '../Errors/Crash';
-import { headerText } from '../../localization/header';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -53,19 +57,26 @@ export function LanguageSelection<LANGUAGES extends string>({
     <>
       {showSupportDialog && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={headerText('helpLocalizeSpecify')}
+          header={headerText.helpLocalizeSpecify()}
           onClose={(): void => setShowSupportDialog(false)}
         >
-          <p>{headerText('helpLocalizeSpecifyDialogText', supportLink)}</p>
+          <p>
+            <StringToJsx
+              components={{
+                emailLink: supportLink,
+              }}
+              string={headerText.helpLocalizeSpecifyDialogText()}
+            />
+          </p>
         </Dialog>
       )}
       {typeof languages === 'object' ? (
         <Select
-          aria-label={commonText('language')}
+          aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
           onChange={({ target }): void =>
@@ -80,7 +91,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             </option>
           ))}
           <option value="supportLocalization">
-            {headerText('helpLocalizeSpecify')}
+            {headerText.helpLocalizeSpecify()}
           </option>
         </Select>
       ) : undefined}
@@ -131,7 +142,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     return (
       <LanguageSelection<Language>
         isReadOnly={isReadOnly || isRedirecting || languages === undefined}
-        languages={languages ?? { loading: commonText('loading') }}
+        languages={languages ?? { loading: commonText.loading() }}
         value={language}
         onChange={(language): void => {
           /*
@@ -213,7 +224,7 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     return (
       <LanguageSelection<string>
         isReadOnly={isReadOnly || languages === undefined}
-        languages={languages ?? { loading: commonText('loading') }}
+        languages={languages ?? { loading: commonText.loading() }}
         value={value}
         onChange={handleChange}
       />

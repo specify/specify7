@@ -23,16 +23,16 @@ export function SchemaConfigHeader({
   return (
     <header className="flex gap-2">
       <H2 className="flex items-center">
-        {schemaText('schemaConfig')} (
+        {schemaText.schemaConfig()} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}
       >
-        {schemaText('changeBaseTable')}
+        {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Small onClick={handleSave}>{commonText('save')}</Button.Small>
+      <Button.Small onClick={handleSave}>{commonText.save()}</Button.Small>
     </header>
   );
 }
@@ -64,11 +64,11 @@ export function PickList({
     >
       {Object.keys(groups).length === 0 ? (
         <option disabled value="0">
-          {commonText('noneAvailable')}
+          {commonText.noneAvailable()}
         </option>
       ) : (
         <>
-          <option value="0">{commonText('none')}</option>
+          <option value="0">{commonText.none()}</option>
           {/*
            * If current value is not present in the list, add it, and mark as
            * invalid
@@ -81,8 +81,7 @@ export function PickList({
                 : Object.values(group)
             )
             .includes(value) ? undefined : (
-            <option value={value}>{`${queryText(
-              'invalidPicklistValue',
+            <option value={value}>{`${queryText.invalidPicklistValue(
               value
             )}`}</option>
           )}

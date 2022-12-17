@@ -5,18 +5,14 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const mainText = createDictionary({
   appTitle: {
-    'en-us': (baseTitle: string) => `${baseTitle} | Specify 7`,
-    'ru-ru': (baseTitle: string) => `${baseTitle} | Specify 7`,
+    'en-us': '{baseTitle:string} | Specify 7',
+    'ru-ru': '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     'en-us': 'Specify 7',
@@ -59,44 +55,26 @@ export const mainText = createDictionary({
       заново с безопасного места — домашней страницы.`,
   },
   errorBoundaryDialogMessage: {
-    'en-us': (email: JSX.Element) => (
-      <>
-        If this issue persists, please contact your IT support or if this is a
-        Specify Cloud database, contact {email}
-      </>
-    ),
-    'ru-ru': (email: JSX.Element) => (
-      <>
-        Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-        свяжитесь с нами: {email}
-      </>
-    ),
+    'en-us': `
+      If this issue persists, please contact your IT support or if this is a
+      Specify Cloud database, contact <email />
+    `,
+    'ru-ru': `
+      Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
+      свяжитесь с нами: <email />
+    `,
   },
   errorBoundaryDialogSecondMessage: {
     'en-us': `
-      Users from <memberLink>member institutions<memberLink> can search for
+      Users from <memberLink>member institutions</memberLink> can search for
       answered questions and ask for help on our <discourseLink>Community
-      Forum<discourseLink>
+      Forum</discourseLink>.
     `,
-    'en-us': (
-      memberLink: (label: string) => JSX.Element,
-      discourseLink: (label: string) => JSX.Element
-    ) => (
-      <>
-        Users from {memberLink('member institutions')} can search for answered
-        questions and ask for help on our {discourseLink('Community Forum')}.
-      </>
-    ),
-    'ru-ru': (
-      memberLink: (label: string) => JSX.Element,
-      discourseLink: (label: string) => JSX.Element
-    ) => (
-      <>
-        Пользователи из {memberLink('учреждений Консорциума')} могут искать
-        ответы на вопросы и обращаться за помощью на нашем
-        {discourseLink('форуме')}.
-      </>
-    ),
+    'ru-ru': `
+      Пользователи из <memberLink>учреждений Консорциума</memberLink> могут
+      искать ответы на вопросы и обращаться за помощью на нашем
+      <discourseLink>форуме</discourseLink>.
+    `,
   },
   errorMessage: {
     'en-us': 'Error Message',
@@ -120,12 +98,14 @@ export const mainText = createDictionary({
     'ru-ru': 'Specify версия не соответствует версии базы данных',
   },
   versionMismatchDialogText: {
-    'en-us': (specifySixVersion: string, databaseVersion: string) => `
-      The Specify version ${specifySixVersion} does not match the database
-      version ${databaseVersion}.`,
-    'ru-ru': (specifySixVersion: string, databaseVersion: string) => `
-      Specify версия ${specifySixVersion} не соответствует версии базы
-      данных ${databaseVersion}.`,
+    'en-us': `
+      The Specify version {specifySixVersion:string} does not match the database
+      version {databaseVersion:string}.
+    `,
+    'ru-ru': `
+      Specify версия {specifySixVersion:string} не соответствует версии базы
+      данных {databaseVersion:string}.
+    `,
   },
   versionMismatchSecondDialogText: {
     'en-us':
@@ -137,5 +117,3 @@ export const mainText = createDictionary({
     'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

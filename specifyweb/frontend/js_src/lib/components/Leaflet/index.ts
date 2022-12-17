@@ -151,17 +151,17 @@ export const formatLocalityData = (
             href="${viewUrl}"
             target="_blank"
             class="${className.link}"
-            title="${commonText('opensInNewTab')}"
+            title="${commonText.opensInNewTab()}"
           >
-            ${commonText('viewRecord')}
+            ${commonText.viewRecord()}
             <span
-              title="${commonText('opensInNewTab')}"
-              aria-label="${commonText('opensInNewTab')}"
+              title="${commonText.opensInNewTab()}"
+              aria-label="${commonText.opensInNewTab()}"
             >${legacyNonJsxIcons.link}</span>
           </a>`,
         ]
       : []),
-    [...(isLoaded ? [] : [commonText('loading')])],
+    [...(isLoaded ? [] : [commonText.loading()])],
   ].join('<br>');
 
 export function getMarkersFromLocalityData({

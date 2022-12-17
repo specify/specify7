@@ -89,7 +89,7 @@ export function AttachmentCell({
         aria-pressed={isMetaOpen}
         className="absolute top-0 right-0"
         icon="informationCircle"
-        title={commonText('metadata')}
+        title={commonText.metadata()}
         onClick={handleMetaToggle}
       />
       {isMetaOpen && (
@@ -111,7 +111,7 @@ export function AttachmentCell({
         <AttachmentPreview attachment={attachment} thumbnail={thumbnail} />
       ) : (
         <div className="flex h-10 w-10 items-center justify-center">
-          {commonText('loading')}
+          {commonText.loading()}
         </div>
       )}
     </div>

@@ -96,7 +96,7 @@ export function SecurityPanel(): JSX.Element | null {
    */
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{userText('securityPanel')}</H2>
+      <H2 className="text-2xl">{userText.securityPanel()}</H2>
       <div className="flex h-0 flex-1 gap-4">
         <Aside institution={institution} />
         <ErrorBoundary dismissable>
@@ -124,7 +124,7 @@ function Aside({
         </section>
       )}
       <section>
-        <H3>{userText('collections')}</H3>
+        <H3>{userText.collections()}</H3>
         <ul>
           {availableCollections.map((collection, index) => (
             <li key={index}>

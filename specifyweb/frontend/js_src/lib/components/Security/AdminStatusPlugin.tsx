@@ -42,12 +42,12 @@ export function AdminStatusPlugin({
       }
       title={
         resource.isNew()
-          ? userText('saveUserFirst')
+          ? userText.saveUserFirst()
           : isAdmin && isCurrentUser
-          ? userText('canNotRemoveYourself')
+          ? userText.canNotRemoveYourself()
           : user.userType === 'Manager'
           ? undefined
-          : userText('mustBeManager')
+          : userText.mustBeManager()
       }
       onClick={(): void =>
         loading(
@@ -63,7 +63,7 @@ export function AdminStatusPlugin({
         )
       }
     >
-      {isAdmin ? userText('removeAdmin') : userText('makeAdmin')}
+      {isAdmin ? userText.removeAdmin() : userText.makeAdmin()}
     </Button.Small>
   );
 }

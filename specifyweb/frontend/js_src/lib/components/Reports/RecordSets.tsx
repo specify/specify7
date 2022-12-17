@@ -96,7 +96,7 @@ export function ReportRecordSets({
         dialog(
           children,
           <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
-            {commonText('query')}
+            {commonText.query()}
           </Button.Blue>
         )
       }

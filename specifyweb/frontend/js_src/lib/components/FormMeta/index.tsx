@@ -53,14 +53,14 @@ export function FormMeta({
   return typeof resource === 'object' ? (
     <>
       <Button.Small
-        aria-label={formsText('formMeta')}
+        aria-label={formsText.formMeta()}
         className={className}
-        title={formsText('formMeta')}
+        title={formsText.formMeta()}
         onClick={handleToggle}
       >
         {icons.cog}
         {subView === undefined && isReadOnly
-          ? schemaText('readOnly')
+          ? schemaText.readOnly()
           : undefined}
       </Button.Small>
       {isOpen && typeof resource === 'object' ? (
@@ -86,7 +86,7 @@ function MetaDialog({
   const subView = React.useContext(SubViewContext);
   return (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       header={resource.specifyModel.label}
       modal={false}
       onClose={handleClose}
@@ -98,7 +98,7 @@ function MetaDialog({
             viewDescription={viewDescription}
           />
         }
-        header={formsText('formConfiguration')}
+        header={formsText.formConfiguration()}
       >
         {subView === undefined && (
           <>
@@ -123,14 +123,14 @@ function MetaDialog({
               id={undefined}
               label={
                 interactionTables.has(resource.specifyModel.name)
-                  ? formsText('generateReport')
-                  : formsText('generateLabel')
+                  ? formsText.generateReport()
+                  : formsText.generateLabel()
               }
               resource={resource}
             />
           </>
         }
-        header={formsText('formState')}
+        header={formsText.formState()}
       >
         {subView === undefined && (
           <PrintOnSave
@@ -140,14 +140,14 @@ function MetaDialog({
             model={resource.specifyModel}
             text={
               interactionTables.has(resource.specifyModel.name)
-                ? formsText('generateReportOnSave')
-                : formsText('generateLabelOnSave')
+                ? formsText.generateReportOnSave()
+                : formsText.generateLabelOnSave()
             }
           />
         )}
       </Section>
       {subView !== undefined && (
-        <Section header={formsText('subviewConfiguration')}>
+        <Section header={formsText.subviewConfiguration()}>
           <SubViewMeta model={resource.specifyModel} subView={subView} />
         </Section>
       )}
@@ -171,7 +171,7 @@ function MetaDialog({
             </ProtectedTool>
           </>
         }
-        header={formsText('recordInformation')}
+        header={formsText.recordInformation()}
       >
         {!resource.isNew() && <ShareRecord resource={resource} />}
       </Section>

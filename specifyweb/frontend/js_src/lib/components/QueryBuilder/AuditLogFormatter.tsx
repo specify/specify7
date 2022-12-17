@@ -41,7 +41,7 @@ async function resourceToLink(
     }
   ).catch((error) => {
     if (errorHandled)
-      return `${model.name} #${id} ${formsText('deletedInline')}`;
+      return `${model.name} #${id} ${formsText.deletedInline()}`;
     else throw error;
   });
 }

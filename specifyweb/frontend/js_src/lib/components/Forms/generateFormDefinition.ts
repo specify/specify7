@@ -123,7 +123,7 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: schemaText('fields'),
+              label: schemaText.fields(),
               icon: undefined,
               forClass: undefined,
               ...cellAttributes,
@@ -161,7 +161,7 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: schemaText('relationships'),
+              label: schemaText.relationships(),
               ...cellAttributes,
               icon: undefined,
               forClass: undefined,

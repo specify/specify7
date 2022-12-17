@@ -91,40 +91,40 @@ export function PrepDialog({
     <Dialog
       buttons={
         isReadOnly ? (
-          commonText('close')
+          commonText.close()
         ) : (
           <>
-            <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             <Button.Blue
               disabled={!canSelectAll}
-              title={formsText('selectAllAvailablePreparations')}
+              title={formsText.selectAllAvailablePreparations()}
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
             >
-              {formsText('selectAll')}
+              {formsText.selectAll()}
             </Button.Blue>
             <Button.Blue
               disabled={!canDeselect}
-              title={commonText('clearAll')}
+              title={commonText.clearAll()}
               onClick={(): void => setSelected(Array.from(selected).fill(0))}
             >
-              {formsText('deselectAll')}
+              {formsText.deselectAll()}
             </Button.Blue>
             <Submit.Green
               form={id('form')}
               title={
                 typeof itemCollection === 'object'
-                  ? formsText('addItems')
-                  : formsText('createRecord', action.model.label)
+                  ? formsText.addItems()
+                  : formsText.createRecord(action.model.label)
               }
             >
-              {commonText('apply')}
+              {commonText.apply()}
             </Submit.Green>
           </>
         )
       }
-      header={formsText('preparationsDialogTitle')}
+      header={formsText.preparationsDialogTitle()}
       onClose={handleClose}
     >
       <Form
@@ -183,7 +183,7 @@ export function PrepDialog({
           <thead>
             <tr>
               <th scope="col">
-                <span className="sr-only">{formsText('selectAll')}</span>
+                <span className="sr-only">{formsText.selectAll()}</span>
               </th>
               <th scope="col">
                 {
@@ -204,9 +204,9 @@ export function PrepDialog({
                     .label
                 }
               </th>
-              <th scope="col">{commonText('selected')}</th>
-              <th scope="col">{formsText('available')}</th>
-              <th scope="col">{formsText('unavailable')}</th>
+              <th scope="col">{commonText.selected()}</th>
+              <th scope="col">{formsText.available()}</th>
+              <th scope="col">{formsText.unavailable()}</th>
             </tr>
           </thead>
           <tbody>

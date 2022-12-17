@@ -61,12 +61,12 @@ export function CreateCollectionRoleButton({
   readonly collectionId: number;
 }): JSX.Element {
   return isDisabled ? (
-    <Button.Green onClick={undefined}>{commonText('create')}</Button.Green>
+    <Button.Green onClick={undefined}>{commonText.create()}</Button.Green>
   ) : (
     <Link.Green
       href={`/specify/security/collection/${collectionId}/role/create/`}
     >
-      {commonText('create')}
+      {commonText.create()}
     </Link.Green>
   );
 }
@@ -117,7 +117,7 @@ export function CollectionRoles({
 
   return (
     <section className="flex flex-col gap-1">
-      <h4 className="text-xl">{userText('collectionUserRoles')}</h4>
+      <h4 className="text-xl">{userText.collectionUserRoles()}</h4>
       {typeof roles === 'object' ? (
         <Ul>
           {Object.values(roles)
@@ -133,7 +133,7 @@ export function CollectionRoles({
             ))}
         </Ul>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
       <div className="flex gap-2">
         {hasPermission('/permissions/roles', 'create', collection.id) ||

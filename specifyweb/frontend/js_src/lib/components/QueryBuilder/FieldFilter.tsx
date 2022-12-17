@@ -65,7 +65,7 @@ function QueryInputField({
   // Used only to help browsers with autocomplete
   fieldName,
   parser,
-  label = commonText('searchQuery'),
+  label = commonText.searchQuery(),
   pickListItems,
   listInput = false,
   onChange: handleChange,
@@ -109,8 +109,7 @@ function QueryInputField({
       inputRef.current?.checkValidity() === true
     )
       setValidation(
-        formsText(
-          'tooLongErrorMessage',
+        formsText.tooLongErrorMessage(
           Number.parseInt(validationAttributes.maxLength)
         )
       );
@@ -227,7 +226,7 @@ function SingleField({
   parser,
   pickListItems,
   fieldName,
-  label = commonText('searchQuery'),
+  label = commonText.searchQuery(),
   onChange: handleChange,
 }: {
   readonly filter: QueryField['filters'][number];
@@ -297,16 +296,16 @@ function Between({
       <QueryInputField
         currentValue={values[0] ?? ''}
         fieldName={fieldName}
-        label={queryText('startValue')}
+        label={queryText.startValue()}
         parser={parser}
         pickListItems={pickListItems}
         onChange={updateValues?.bind(undefined, 0)}
       />
-      <span className="flex items-center">{queryText('and')}</span>
+      <span className="flex items-center">{queryText.and()}</span>
       <QueryInputField
         currentValue={values[1] ?? ''}
         fieldName={fieldName}
-        label={queryText('endValue')}
+        label={queryText.endValue()}
         parser={parser}
         pickListItems={pickListItems}
         onChange={updateValues?.bind(undefined, 1)}
@@ -343,7 +342,7 @@ function In({
     <QueryInputField
       currentValue={filter.startValue}
       fieldName={fieldName}
-      label={queryText('startValue')}
+      label={queryText.startValue()}
       listInput
       parser={pluralizedParser}
       pickListItems={pickListItems}
@@ -368,15 +367,15 @@ export const queryFieldFilters: RR<
 > = {
   any: {
     id: 8,
-    label: queryText('any'),
+    label: queryText.any(),
     description: undefined,
     renderPickList: false,
     hasParser: false,
   },
   like: {
     id: 0,
-    label: queryText('like'),
-    description: queryText('likeDescription'),
+    label: queryText.like(),
+    description: queryText.likeDescription(),
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
     component: SingleField,
@@ -384,7 +383,7 @@ export const queryFieldFilters: RR<
   },
   equal: {
     id: 1,
-    label: queryText('equal'),
+    label: queryText.equal(),
     description: undefined,
     renderPickList: true,
     component: SingleField,
@@ -393,7 +392,7 @@ export const queryFieldFilters: RR<
   },
   greater: {
     id: 2,
-    label: queryText('greaterThan'),
+    label: queryText.greaterThan(),
     description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
@@ -402,7 +401,7 @@ export const queryFieldFilters: RR<
   },
   less: {
     id: 3,
-    label: queryText('lessThan'),
+    label: queryText.lessThan(),
     description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
@@ -411,7 +410,7 @@ export const queryFieldFilters: RR<
   },
   greaterOrEqual: {
     id: 4,
-    label: queryText('greaterOrEqualTo'),
+    label: queryText.greaterOrEqualTo(),
     description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
@@ -420,7 +419,7 @@ export const queryFieldFilters: RR<
   },
   lessOrEqual: {
     id: 5,
-    label: queryText('lessOrEqualTo'),
+    label: queryText.lessOrEqualTo(),
     description: undefined,
     renderPickList: false,
     types: ['number', 'date', 'id'],
@@ -429,7 +428,7 @@ export const queryFieldFilters: RR<
   },
   true: {
     id: 6,
-    label: queryText('true'),
+    label: queryText.true(),
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
@@ -437,7 +436,7 @@ export const queryFieldFilters: RR<
   },
   false: {
     id: 7,
-    label: queryText('false'),
+    label: queryText.false(),
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
@@ -445,7 +444,7 @@ export const queryFieldFilters: RR<
   },
   between: {
     id: 9,
-    label: queryText('between'),
+    label: queryText.between(),
     description: undefined,
     renderPickList: false,
     types: ['text', 'number', 'date', 'id'],
@@ -454,8 +453,8 @@ export const queryFieldFilters: RR<
   },
   in: {
     id: 10,
-    label: queryText('in'),
-    description: queryText('inDescription'),
+    label: queryText.in(),
+    description: queryText.inDescription(),
     renderPickList: true,
     /*
      * Can't use "date" for IN because date picker does not allow separating
@@ -467,7 +466,7 @@ export const queryFieldFilters: RR<
   },
   contains: {
     id: 11,
-    label: queryText('contains'),
+    label: queryText.contains(),
     description: undefined,
     renderPickList: false,
     component: SingleField,
@@ -476,7 +475,7 @@ export const queryFieldFilters: RR<
   },
   startsWith: {
     id: 15,
-    label: queryText('startsWith'),
+    label: queryText.startsWith(),
     description: undefined,
     renderPickList: false,
     component: SingleField,
@@ -485,14 +484,14 @@ export const queryFieldFilters: RR<
   },
   empty: {
     id: 12,
-    label: queryText('empty'),
+    label: queryText.empty(),
     description: undefined,
     renderPickList: false,
     hasParser: false,
   },
   trueOrNull: {
     id: 13,
-    label: queryText('trueOrNull'),
+    label: queryText.trueOrNull(),
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
@@ -500,7 +499,7 @@ export const queryFieldFilters: RR<
   },
   falseOrNull: {
     id: 14,
-    label: queryText('falseOrNull'),
+    label: queryText.falseOrNull(),
     description: undefined,
     renderPickList: false,
     types: ['checkbox'],
@@ -561,7 +560,7 @@ export function QueryLineFilter({
 
   const Component = queryFieldFilters[filter.type].component;
   return Component === undefined ? null : pickListItems === undefined ? (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   ) : (
     <>
       {mappingElementDivider}

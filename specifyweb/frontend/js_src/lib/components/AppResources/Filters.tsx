@@ -46,7 +46,7 @@ export function AppResourcesFilters({
   return (
     <>
       <div className="flex gap-2 rounded bg-[color:var(--background)]">
-        <span className="sr-only">{resourcesText('filters')}</span>
+        <span className="sr-only">{resourcesText.filters()}</span>
         <RadioButton
           isPressed={filters.viewSets}
           onClick={(): void =>
@@ -56,7 +56,7 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('formDefinitions')}
+          {commonText.formDefinitions()}
         </RadioButton>
         <RadioButton
           isPressed={showAllResources}
@@ -68,11 +68,11 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('appResources')}
+          {commonText.appResources()}
         </RadioButton>
         <Button.Blue
-          aria-label={resourcesText('custom')}
-          title={resourcesText('custom')}
+          aria-label={resourcesText.custom()}
+          title={resourcesText.custom()}
           onClick={handleOpen}
         >
           {icons.cog}
@@ -80,8 +80,8 @@ export function AppResourcesFilters({
       </div>
       {isOpen && (
         <Dialog
-          buttons={commonText('close')}
-          header={resourcesText('custom')}
+          buttons={commonText.close()}
+          header={resourcesText.custom()}
           modal={false}
           onClose={handleClose}
         >
@@ -98,7 +98,7 @@ export function AppResourcesFilters({
                   }
                 />
                 {appResourceTypes.viewSets.icon}
-                {`${commonText('formDefinitions')} (${countAppResources(
+                {`${commonText.formDefinitions()} (${countAppResources(
                   initialResources,
                   { appResources: [], viewSets: true }
                 )})`}
@@ -111,7 +111,7 @@ export function AppResourcesFilters({
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
-                {`${commonText('appResources')} (${countAppResources(
+                {`${commonText.appResources()} (${countAppResources(
                   initialResources,
                   { appResources: allAppResources, viewSets: false }
                 )})`}
@@ -143,7 +143,7 @@ export function AppResourcesFilters({
                             href={documentationUrl}
                             icon="externalLink"
                             target="_blank"
-                            title={headerText('documentation')}
+                            title={headerText.documentation()}
                           />
                         )}
                       </Label.Inline>

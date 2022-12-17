@@ -224,19 +224,19 @@ function SpecifyNetwork({
       {isPending && <LoadingScreen />}
       {hasFailure && (
         <Dialog
-          buttons={commonText('close')}
-          header={specifyNetworkText('failedToOpenPopUpDialogHeader')}
+          buttons={commonText.close()}
+          header={specifyNetworkText.failedToOpenPopUpDialogHeader()}
           onClose={handleNoFailure}
         >
-          {specifyNetworkText('failedToOpenPopUpDialogText')}
+          {specifyNetworkText.failedToOpenPopUpDialogText()}
         </Dialog>
       )}
       <Link.Default
-        aria-label={specifyNetworkText('specifyNetwork')}
+        aria-label={specifyNetworkText.specifyNetwork()}
         href={getLink()}
         rel="opener noreferrer"
         target="_blank"
-        title={specifyNetworkText('specifyNetwork')}
+        title={specifyNetworkText.specifyNetwork()}
         onClick={(event): void => {
           event.preventDefault();
           if (occurrenceName === undefined) handlePending();

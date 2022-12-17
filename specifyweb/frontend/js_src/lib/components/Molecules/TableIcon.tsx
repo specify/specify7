@@ -95,7 +95,7 @@ export function TableIcon({
 
 export const tableIconUndefined = (
   <span
-    aria-label={commonText('unmapped')}
+    aria-label={commonText.unmapped()}
     className={`
       flex h-table-icon w-table-icon items-center justify-center font-bold
       text-red-600
@@ -108,7 +108,7 @@ export const tableIconUndefined = (
 
 export const tableIconSelected = (
   <span
-    aria-label={commonText('mapped')}
+    aria-label={commonText.mapped()}
     className={`
       flex h-table-icon w-table-icon items-center justify-center font-bold
       text-green-500

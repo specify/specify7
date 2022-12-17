@@ -117,10 +117,10 @@ export function isFormatterAvailable(
 }
 
 export const localizedRelationshipTypes: IR<string> = {
-  'one-to-one': schemaText('oneToOne'),
-  'one-to-many': schemaText('oneToMany'),
-  'many-to-one': schemaText('manyToOne'),
-  'many-to-many': schemaText('manyToMany'),
+  'one-to-one': schemaText.oneToOne(),
+  'one-to-many': schemaText.oneToMany(),
+  'many-to-one': schemaText.manyToOne(),
+  'many-to-many': schemaText.manyToMany(),
 };
 
 /**

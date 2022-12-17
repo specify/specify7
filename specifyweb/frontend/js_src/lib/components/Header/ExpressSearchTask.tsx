@@ -38,12 +38,12 @@ export function ExpressSearchView(): JSX.Element {
     <Container.Full>
       {primaryResults !== false && (
         <TableResults
-          header={headerText('primarySearch')}
+          header={headerText.primarySearch()}
           queryResults={primaryResults}
         />
       )}
       <TableResults
-        header={headerText('secondarySearch')}
+        header={headerText.secondarySearch()}
         queryResults={secondaryResults}
       />
     </Container.Full>
@@ -61,9 +61,9 @@ function TableResults({
     <section className="flex flex-col gap-1">
       <H3>{header}</H3>
       {queryResults === undefined ? (
-        <p aria-live="polite">{commonText('running')}</p>
+        <p aria-live="polite">{commonText.running()}</p>
       ) : Object.keys(queryResults).length === 0 ? (
-        <p aria-live="polite">{commonText('noMatches')}</p>
+        <p aria-live="polite">{commonText.noMatches()}</p>
       ) : (
         queryResults.map((results, index) => (
           <TableResult key={index} {...results} />

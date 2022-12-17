@@ -121,7 +121,7 @@ function Wrapped({
   return (
     <SplashScreen>
       <Form forwardRef={formRef} method="post">
-        <h2>{commonText('chooseCollection')}:</h2>
+        <h2>{commonText.chooseCollection()}:</h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>
@@ -146,13 +146,13 @@ function Wrapped({
             />
             <input name="next" type="hidden" value={nextUrl} />
             <Submit.Fancy forwardRef={submitRef}>
-              {commonText('open')}
+              {commonText.open()}
             </Submit.Fancy>
           </>
         ) : (
           <>
             <ErrorMessage>
-              <span>{userText('noAccessToCollections')}</span>
+              <span>{userText.noAccessToCollections()}</span>
             </ErrorMessage>
             <Button.Fancy
               onClick={(): void =>
@@ -165,7 +165,7 @@ function Wrapped({
                 )
               }
             >
-              {commonText('login')}
+              {commonText.login()}
             </Button.Fancy>
           </>
         )}

@@ -80,20 +80,20 @@ export function CreateRole({
               onClick={(): void =>
                 handleCreated({
                   id: undefined,
-                  name: userText('newRole'),
+                  name: userText.newRole(),
                   description: '',
                   policies: [],
                 })
               }
             >
-              {commonText('new')}
+              {commonText.new()}
             </Button.Blue>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={userText('createRole')}
+      header={userText.createRole()}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||
@@ -105,10 +105,10 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
         hasPermission('/permissions/library/roles', 'read', collectionId)) ? (
         <section>
-          <H3>{userText('fromLibrary')}</H3>
+          <H3>{userText.fromLibrary()}</H3>
           {typeof libraryRoles === 'object' ? (
             Object.keys(libraryRoles).length === 0 ? (
-              commonText('none')
+              commonText.none()
             ) : (
               <Ul>
                 {Object.values(libraryRoles)
@@ -169,7 +169,7 @@ export function CreateRole({
               </Ul>
             )
           ) : (
-            commonText('loading')
+            commonText.loading()
           )}
         </section>
       ) : undefined}
@@ -177,7 +177,7 @@ export function CreateRole({
         hasPermission('/permissions/roles', 'create', collectionId)) &&
       (!Array.isArray(roles) || roles.length > 0) ? (
         <section>
-          <H3>{userText('fromExistingRole')}</H3>
+          <H3>{userText.fromExistingRole()}</H3>
           {typeof roles === 'object' ? (
             <div className="flex flex-col gap-4">
               {roles.map(([collection, roles]) => (
@@ -205,7 +205,7 @@ export function CreateRole({
               ))}
             </div>
           ) : (
-            commonText('loading')
+            commonText.loading()
           )}
         </section>
       ) : undefined}

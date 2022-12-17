@@ -55,9 +55,9 @@ export function PrepDialogRow({
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={formsText.selectAll()}
             checked={checked}
-            title={formsText('selectAll')}
+            title={formsText.selectAll()}
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
@@ -74,10 +74,10 @@ export function PrepDialogRow({
         <td>{preparation.prepType}</td>
         <td>
           <Input.Number
-            aria-label={formsText('selectedAmount')}
+            aria-label={formsText.selectedAmount()}
             max={preparation.available}
             min={0}
-            title={formsText('selectedAmount')}
+            title={formsText.selectedAmount()}
             value={selected}
             onValueChange={handleChange}
           />

@@ -49,7 +49,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   // Update title when resource changes
   const [formatted, setFormatted] = React.useState('');
   React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText('loading'));
+    setFormatted(resource?.specifyModel.label ?? commonText.loading());
     return typeof resource === 'object'
       ? resourceOn(
           resource,
@@ -93,7 +93,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
     ) : isLoading === true ? (
       <LoadingScreen />
     ) : (
-      <p>{formsText('noData')}</p>
+      <p>{formsText.noData()}</p>
     );
 
   const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
@@ -102,7 +102,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
     resource === undefined
       ? ''
       : resource.isNew()
-      ? formsText('newResourceTitle', resource.specifyModel.label)
+      ? formsText.newResourceTitle(resource.specifyModel.label)
       : resource.specifyModel.label
   }${formatted.length > 0 ? `: ${formatted}` : ''}`;
 

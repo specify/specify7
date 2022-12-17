@@ -78,7 +78,7 @@ export function Main(): JSX.Element | null {
           mainRef.current.removeAttribute('tabindex');
         }}
       >
-        {headerText('skipToContent')}
+        {headerText.skipToContent()}
       </Button.Small>
 
       <header
@@ -97,7 +97,7 @@ export function Main(): JSX.Element | null {
                 className="h-16 hover:animate-hue-rotate"
                 src="/static/img/logo.svg"
               />
-              <span className="sr-only">{commonText('goToHomepage')}</span>
+              <span className="sr-only">{commonText.goToHomepage()}</span>
             </a>
           </h1>
           <div
@@ -114,7 +114,7 @@ export function Main(): JSX.Element | null {
                   href="/accounts/login/"
                   className={className.navigationHandled}
                 >
-                  {commonText('logIn')}
+                  {commonText.logIn()}
                 </Link.Default>
               )}
               <CollectionSelector />
@@ -132,24 +132,23 @@ export function Main(): JSX.Element | null {
         <Dialog
           buttons={
             <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
-              {commonText('close')}
+              {commonText.close()}
             </Button.Orange>
           }
           forceToTop
-          header={mainText('versionMismatchDialogHeader')}
+          header={mainText.versionMismatchDialogHeader()}
           onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
-            {mainText(
-              'versionMismatchDialogText',
+            {mainText.versionMismatchDialogText(
               getSystemInfo().specify6_version,
               getSystemInfo().database_version
             )}
           </p>
-          <p>{mainText('versionMismatchSecondDialogText')}</p>
+          <p>{mainText.versionMismatchSecondDialogText()}</p>
           <p>
             <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-              {mainText('versionMismatchThirdDialogText')}
+              {mainText.versionMismatchThirdDialogText()}
             </Link.NewTab>
           </p>
         </Dialog>
@@ -164,17 +163,17 @@ export function Main(): JSX.Element | null {
         <Dialog
           buttons={
             <Button.DialogClose component={Button.Red}>
-              {userText('logOut')}
+              {userText.logOut()}
             </Button.DialogClose>
           }
           className={{
             container: `${dialogClassNames.narrowContainer}`,
           }}
           forceToTop
-          header={userText('noAgent')}
+          header={userText.noAgent()}
           onClose={(): void => globalThis.location.assign('/accounts/logout/')}
         >
-          {userText('noAgentDescription')}
+          {userText.noAgentDescription()}
         </Dialog>
       )}
     </>

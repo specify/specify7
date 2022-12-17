@@ -22,7 +22,7 @@ export const routes: RA<EnhancedRoute> = [
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: headerText('expressSearch'),
+    title: headerText.expressSearch(),
     navigatable: false,
   },
   {
@@ -31,11 +31,11 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'data-model',
-    title: schemaText('databaseSchema'),
+    title: schemaText.databaseSchema(),
     children: [
       {
         index: true,
-        title: schemaText('databaseSchema'),
+        title: schemaText.databaseSchema(),
         element: () =>
           import('../Toolbar/Schema').then(
             ({ DataModelTables }) => DataModelTables
@@ -61,7 +61,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'security',
-    title: userText('securityPanel'),
+    title: userText.securityPanel(),
     element: () =>
       import('../Toolbar/Security').then(({ SecurityPanel }) => SecurityPanel),
     children: [
@@ -132,7 +132,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
-                title: userText('createRole'),
+                title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateRole').then(
                     ({ CreateCollectionRole }) => CreateCollectionRole
@@ -140,7 +140,7 @@ export const routes: RA<EnhancedRoute> = [
               },
               {
                 path: 'new',
-                title: userText('newRole'),
+                title: userText.newRole(),
                 element: () =>
                   import('../Security/CollectionRole').then(
                     ({ SecurityCollectionRole }) => SecurityCollectionRole
@@ -161,7 +161,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: commonText('attachments'),
+    title: commonText.attachments(),
     element: () =>
       import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
   },
@@ -175,7 +175,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'import',
-        title: wbText('importDataSet'),
+        title: wbText.importDataSet(),
         element: () =>
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
@@ -198,7 +198,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'resources',
-    title: commonText('appResources'),
+    title: commonText.appResources(),
     element: () =>
       import('../AppResources').then(
         ({ AppResourcesWrapper }) => AppResourcesWrapper
@@ -206,7 +206,7 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'create/:directoryKey',
-        title: resourcesText('addResource'),
+        title: resourcesText.addResource(),
         element: () =>
           import('../AppResources/Create').then(
             ({ CreateAppResource }) => CreateAppResource
@@ -323,7 +323,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'user-preferences',
-    title: preferencesText('preferences'),
+    title: preferencesText.preferences(),
     element: () =>
       import('../UserPreferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
@@ -331,7 +331,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'schema-config',
-    title: schemaText('schemaConfig'),
+    title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
         ({ SchemaConfig }) => SchemaConfig
@@ -346,7 +346,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'add-language',
-        title: schemaText('addLanguageDialogHeader'),
+        title: schemaText.addLanguageDialogHeader(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ AddLanguage }) => AddLanguage
@@ -357,7 +357,7 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            title: schemaText('tables'),
+            title: schemaText.tables(),
             element: () =>
               import('../SchemaConfig/Tables').then(
                 ({ SchemaConfigTables }) => SchemaConfigTables
@@ -393,7 +393,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'clear-cache',
-        title: headerText('clearCache'),
+        title: headerText.clearCache(),
         element: () =>
           import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
@@ -403,7 +403,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     index: true,
-    title: welcomeText('pageTitle'),
+    title: welcomeText.pageTitle(),
     element: <WelcomeView />,
   },
   /*

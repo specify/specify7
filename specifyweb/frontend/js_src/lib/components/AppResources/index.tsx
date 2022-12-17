@@ -46,7 +46,7 @@ function AppResourcesView({
   return (
     <Container.FullGray>
       <div className="flex items-center gap-4">
-        <H2 className="text-2xl">{resourcesText('resources')}</H2>
+        <H2 className="text-2xl">{resourcesText.resources()}</H2>
         <div className="flex flex-wrap gap-2">
           <AppResourcesFilters initialResources={resources} />
         </div>

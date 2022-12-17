@@ -51,13 +51,13 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          userText('noAccessToResource')
+          userText.noAccessToResource()
         ) : (
           <>
-            <p>{userText('resourceInaccessible')}</p>
+            <p>{userText.resourceInaccessible()}</p>
             {collections.length > 1 ? (
               <>
-                <p>{userText('selectCollection')}</p>
+                <p>{userText.selectCollection()}</p>
                 <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
@@ -74,7 +74,7 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{userText('loginToProceed')}</p>
+                <p>{userText.loginToProceed()}</p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>

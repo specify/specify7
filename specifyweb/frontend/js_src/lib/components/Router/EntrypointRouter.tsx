@@ -15,17 +15,17 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'login',
-        title: commonText('login'),
+        title: commonText.login(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'legacy_login',
-        title: commonText('login'),
+        title: commonText.login(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'choose_collection',
-        title: commonText('chooseCollection'),
+        title: commonText.chooseCollection(),
         element: () =>
           import('../ChooseCollection').then(
             ({ ChooseCollection }) => ChooseCollection
@@ -33,7 +33,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'password_change',
-        title: userText('changePassword'),
+        title: userText.changePassword(),
         element: () =>
           import('../PasswordChange').then(
             ({ PasswordChange }) => PasswordChange

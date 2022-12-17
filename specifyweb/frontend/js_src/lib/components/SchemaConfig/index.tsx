@@ -69,7 +69,7 @@ export function SchemaConfigMain(): JSX.Element {
     isChanged || nameChanged || descChanged || changedItems.length > 0;
   const unsetUnloadProtect = useUnloadProtect(
     isModified,
-    schemaText('unsavedSchemaUnloadProtect')
+    schemaText.unsavedSchemaUnloadProtect()
   );
 
   const canSave =
@@ -160,8 +160,8 @@ export function SchemaConfigMain(): JSX.Element {
             }
           />
         ) : (
-          <SchemaConfigColumn header={commonText('loading')}>
-            {commonText('loading')}
+          <SchemaConfigColumn header={commonText.loading()}>
+            {commonText.loading()}
           </SchemaConfigColumn>
         )}
       </div>

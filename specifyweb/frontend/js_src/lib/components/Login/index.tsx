@@ -105,9 +105,11 @@ function LegacyLogin({
       />
       {typeof data.externalUser === 'object' && (
         <p>
-          {userText('helloMessage', data.externalUser.name)}
+          {userText.helloMessage({ userName: data.externalUser.name })}
           <br />
-          {userText('unknownOicUser', data.externalUser.provider_title)}
+          {userText.unknownOicUser({
+            providerName: data.externalUser.provider_title,
+          })}
         </p>
       )}
       <Form method="post">
@@ -118,7 +120,7 @@ function LegacyLogin({
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Block>
-          {commonText('username')}
+          {commonText.username()}
           <Input.Text
             defaultValue=""
             forwardRef={validationRef}
@@ -127,7 +129,7 @@ function LegacyLogin({
           />
         </Label.Block>
         <Label.Block>
-          {commonText('password')}
+          {commonText.password()}
           <Input.Generic
             defaultValue=""
             forwardRef={passwordRef}
@@ -138,7 +140,7 @@ function LegacyLogin({
         </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
-        <Submit.Fancy className="mt-1">{commonText('login')}</Submit.Fancy>
+        <Submit.Fancy className="mt-1">{commonText.login()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

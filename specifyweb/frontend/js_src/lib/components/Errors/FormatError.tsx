@@ -140,8 +140,9 @@ export function handleAjaxError(
   if (userInformation.agent === null) throw error;
 
   if (strict) {
-    const isNotFoundError = response.status === Http.NOT_FOUND;
-    // FIXME: revert this change
+    const isNotFoundError =
+      response.status === Http.NOT_FOUND &&
+      process.env.NODE_ENV !== 'development';
     // In production, uncaught 404 errors redirect to the NOT FOUND page
     if (isNotFoundError && unsafeTriggerNotFound()) {
       Object.defineProperty(error, 'handledBy', {
@@ -182,7 +183,7 @@ export function handleAjaxError(
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
-        header={mainText('errorBoundaryDialogHeader')}
+        header={mainText.errorBoundaryDialogHeader()}
         onClose={handleClose}
       >
         {errorObject}
@@ -215,7 +216,7 @@ function ErrorIframe({
     <iframe
       className="h-full"
       ref={iframeRef}
-      title={mainText('errorBoundaryDialogHeader')}
+      title={mainText.errorBoundaryDialogHeader()}
     />
   );
 }

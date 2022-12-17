@@ -51,9 +51,9 @@ export function OicLogin({
       <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (
           <p>
-            {userText('helloMessage', data.inviteToken.username)}
+            {userText.helloMessage({ userName: data.inviteToken.username })}
             <br />
-            {userText('oicWelcomeMessage')}
+            {userText.oicWelcomeMessage()}
           </p>
         )}
         <input
@@ -86,11 +86,11 @@ export function OicLogin({
             })}
             className={className.navigationHandled}
           >
-            {userText('legacyLogin')}
+            {userText.legacyLogin()}
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />
-        <Submit.Fancy className="sr-only">{commonText('login')}</Submit.Fancy>
+        <Submit.Fancy className="sr-only">{commonText.login()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

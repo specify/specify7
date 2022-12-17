@@ -92,7 +92,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('save') : undefined
           }
         >
-          {queryText('saveQuery')}
+          {queryText.saveQuery()}
         </QueryButton>
       )}
       {isReadOnly || queryResource.isNew() ? undefined : (
@@ -103,7 +103,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('saveAs') : undefined
           }
         >
-          {queryText('saveAs')}
+          {queryText.saveAs()}
         </QueryButton>
       )}
     </>
@@ -125,7 +125,7 @@ export function ToggleMappingViewButton({
       onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
     >
-      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+      {showMappingView ? wbText.hideFieldMapper() : wbText.showFieldMapper()}
     </Button.Small>
   );
 }
@@ -145,14 +145,12 @@ export function QueryButton({
     <ButtonWithConfirmation
       dialogButtons={(confirm): JSX.Element => (
         <>
-          <Button.Orange onClick={confirm}>
-            {commonText('remove')}
-          </Button.Orange>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Orange onClick={confirm}>{commonText.remove()}</Button.Orange>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
-      dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
-      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
+      dialogHeader={queryText.queryDeleteIncompleteDialogHeader()}
+      dialogMessage={queryText.queryDeleteIncompleteDialogText()}
       disabled={disabled}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -212,7 +210,7 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText('createRecordSet')}
+        {queryText.createRecordSet()}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -247,10 +245,10 @@ export function MakeRecordSetButton({
 export const recordSetFromQueryLoading = (
   <Dialog
     buttons={undefined}
-    header={queryText('recordSetToQueryDialogHeader')}
+    header={queryText.recordSetToQueryDialogHeader()}
     onClose={undefined}
   >
-    {queryText('recordSetToQueryDialogText')}
+    {queryText.recordSetToQueryDialogText()}
     {loadingBar}
   </Dialog>
 );
@@ -264,8 +262,8 @@ export function RecordSetCreated({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-      header={queryText('recordSetCreatedDialogHeader')}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={queryText.recordSetCreatedDialogHeader()}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>

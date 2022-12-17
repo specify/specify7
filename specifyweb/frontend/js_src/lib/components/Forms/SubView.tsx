@@ -197,7 +197,7 @@ export function SubView({
             <TableIcon className="h-8 w-8" label={false} name={icon} />
           )}
           <span className="rounded border-gray-500 bg-white p-1 font-bold dark:bg-neutral-800">
-            {collection?.models.length ?? commonText('loading')}
+            {collection?.models.length ?? commonText.loading()}
           </span>
         </Button.BorderedGray>
       )}

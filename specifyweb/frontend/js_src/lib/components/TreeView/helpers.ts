@@ -190,10 +190,10 @@ export const formatTreeStats = (
   readonly text: string;
 } => ({
   title: filterArray([
-    `${treeText('directCollectionObjectCount')}: ${nodeStats.directCount}`,
+    `${treeText.directCollectionObjectCount()}: ${nodeStats.directCount}`,
     isLeaf
       ? undefined
-      : `${treeText('indirectCollectionObjectCount')}: ${nodeStats.childCount}`,
+      : `${treeText.indirectCollectionObjectCount()}: ${nodeStats.childCount}`,
   ]).join('\n'),
   text: `(${filterArray([
     nodeStats.directCount,

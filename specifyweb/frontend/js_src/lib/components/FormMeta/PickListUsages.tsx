@@ -23,9 +23,7 @@ export function PickListUsages({
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
     <>
-      <Button.Small onClick={handleOpen}>
-        {formsText('findUsages')}
-      </Button.Small>
+      <Button.Small onClick={handleOpen}>{formsText.findUsages()}</Button.Small>
       {isOpen && (
         <PickListUsagesDialog pickList={pickList} onClose={handleClose} />
       )}
@@ -43,7 +41,7 @@ function PickListUsagesDialog({
   const query = usePickListQuery(pickList);
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
         container: dialogClassNames.wideContainer,
       }}
@@ -68,7 +66,7 @@ function usePickListQuery(
   return React.useMemo(
     () =>
       createQuery(
-        formsText('usagesOfPickList', resource.get('name')),
+        formsText.usagesOfPickList(resource.get('name')),
         schema.models.SpLocaleContainerItem
       ).set('fields', [
         QueryFieldSpec.fromPath('SpLocaleContainerItem', [

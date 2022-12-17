@@ -88,16 +88,16 @@ const supportedActions = [
  * Remap Specify 6 UI localization strings to Specify 7 UI localization strings
  */
 const stringLocalization = {
-  RET_LOAN: formsText('returnLoan'),
-  PRINT_INVOICE: formsText('printInvoice'),
-  LOAN_NO_PRP: formsText('loanWithoutPreparation'),
-  'InteractionsTask.LN_NO_PREP': formsText('loanWithoutPreparationDescription'),
-  'InteractionsTask.NEW_LN': formsText('createLoan'),
-  'InteractionsTask.EDT_LN': formsText('editLoan'),
-  'InteractionsTask.NEW_GFT': formsText('createdGift'),
-  'InteractionsTask.EDT_GFT': formsText('editGift'),
-  'InteractionsTask.CRE_IR': formsText('createInformationRequest'),
-  'InteractionsTask.PRT_INV': formsText('printInvoice'),
+  RET_LOAN: formsText.returnLoan(),
+  PRINT_INVOICE: formsText.printInvoice(),
+  LOAN_NO_PRP: formsText.loanWithoutPreparation(),
+  'InteractionsTask.LN_NO_PREP': formsText.loanWithoutPreparationDescription(),
+  'InteractionsTask.NEW_LN': formsText.createLoan(),
+  'InteractionsTask.EDT_LN': formsText.editLoan(),
+  'InteractionsTask.NEW_GFT': formsText.createdGift(),
+  'InteractionsTask.EDT_GFT': formsText.editGift(),
+  'InteractionsTask.CRE_IR': formsText.createInformationRequest(),
+  'InteractionsTask.PRT_INV': formsText.printInvoice(),
 };
 
 export type InteractionEntry = {
@@ -220,11 +220,11 @@ function Interactions({
 
   return state.type === 'MainState' ? (
     <Dialog
-      buttons={commonText('cancel')}
+      buttons={commonText.cancel()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={commonText('interactions')}
+      header={commonText.interactions()}
       icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >

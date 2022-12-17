@@ -37,16 +37,15 @@ function WrongTable({
   return (
     <>
       <Button.Small onClick={handleShow}>
-        {formsText('unavailablePluginButton')}
+        {formsText.unavailablePluginButton()}
       </Button.Small>
       <Dialog
-        buttons={commonText('close')}
-        header={formsText('pluginNotAvailable')}
+        buttons={commonText.close()}
+        header={formsText.pluginNotAvailable()}
         isOpen={isVisible}
         onClose={handleHide}
       >
-        {formsText(
-          'wrongTablePluginDialogText',
+        {formsText.wrongTablePluginDialogText(
           resource.specifyModel.name,
           allowedTable
         )}
@@ -259,24 +258,24 @@ const pluginRenderers: {
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
-  Unsupported({ pluginDefinition: { name = commonText('nullInline') }, id }) {
+  Unsupported({ pluginDefinition: { name = commonText.nullInline() }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
         <Button.Small className="w-fit" id={id} onClick={handleShow}>
-          {formsText('unavailablePluginButton')}
+          {formsText.unavailablePluginButton()}
         </Button.Small>
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('pluginNotAvailable')}
+          buttons={commonText.close()}
+          header={formsText.pluginNotAvailable()}
           isOpen={isVisible}
           onClose={handleHide}
         >
-          {formsText('pluginNotAvailableDescription')}
+          {formsText.pluginNotAvailableDescription()}
           <br />
-          {formsText('pluginNotAvailableSecondDescription')}
+          {formsText.pluginNotAvailableSecondDescription()}
           <br />
-          {`${formsText('pluginName')} ${name}`}
+          {`${formsText.pluginName()} ${name}`}
         </Dialog>
       </>
     );

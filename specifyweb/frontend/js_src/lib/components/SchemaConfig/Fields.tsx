@@ -31,7 +31,7 @@ export function SchemaConfigFields({
     (item) => model.getField(item.name)!.isRelationship
   );
   return (
-    <SchemaConfigColumn header={schemaText('fields')} id={id('fields-label')}>
+    <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
       <Select
         aria-labelledby={id('fields-label')}
         className="h-full min-h-[30vh] overflow-y-auto sm:min-h-0"
@@ -42,7 +42,7 @@ export function SchemaConfigFields({
           handleChange(items!.findIndex(({ id }) => id.toString() === newId))
         }
       >
-        <optgroup label={schemaText('fields')}>
+        <optgroup label={schemaText.fields()}>
           {fields.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
@@ -50,7 +50,7 @@ export function SchemaConfigFields({
           ))}
         </optgroup>
         {relationships.length > 0 && (
-          <optgroup label={schemaText('relationships')}>
+          <optgroup label={schemaText.relationships()}>
             {relationships.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}

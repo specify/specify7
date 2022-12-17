@@ -22,32 +22,32 @@ let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 export const unsafeGetPickLists = (): typeof pickLists => pickLists;
 
 const agentTypes = [
-  formsText('organization'),
-  formsText('person'),
-  formsText('other'),
-  formsText('group'),
+  formsText.organization(),
+  formsText.person(),
+  formsText.other(),
+  formsText.group(),
 ] as const;
 
 const pickListTypes = [
-  formsText('userDefinedItems'),
-  formsText('entireTable'),
-  formsText('fieldFromTable'),
+  formsText.userDefinedItems(),
+  formsText.entireTable(),
+  formsText.fieldFromTable(),
 ] as const;
 
 const auditLogActions = [
-  commonText('create'),
-  commonText('update'),
-  commonText('delete'),
-  formsText('treeMerge'),
-  formsText('treeMove'),
-  formsText('treeSynonymize'),
-  formsText('treeDesynonymize'),
+  commonText.create(),
+  commonText.update(),
+  commonText.delete(),
+  formsText.treeMerge(),
+  formsText.treeMove(),
+  formsText.treeSynonymize(),
+  formsText.treeDesynonymize(),
 ] as const;
 
 const pickListSortTypes = [
-  commonText('none'),
-  commonText('title'),
-  commonText('ordinal'),
+  commonText.none(),
+  commonText.title(),
+  commonText.ordinal(),
 ];
 
 export const userTypes = [
@@ -131,8 +131,8 @@ export const getFrontEndPickLists = f.store<{
   };
 }>(() => {
   const fullNameDirection = definePicklist('_fullNameDirection', [
-    createPickListItem('-1', formsText('reverse')),
-    createPickListItem('1', formsText('forward')),
+    createPickListItem('-1', formsText.reverse()),
+    createPickListItem('1', formsText.forward()),
   ]);
 
   // Like pickListTablesPickList, but indexed by tableId

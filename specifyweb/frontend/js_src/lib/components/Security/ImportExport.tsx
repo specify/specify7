@@ -26,9 +26,9 @@ import { userText } from '../../localization/user';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
-  changed: userText('updateExistingRoles'),
-  unchanged: userText('unchangedRoles'),
-  created: userText('createNewRoles'),
+  changed: userText.updateExistingRoles(),
+  unchanged: userText.unchangedRoles(),
+  created: userText.createNewRoles(),
 } as const;
 
 // REFACTOR: reduce size of this component
@@ -69,7 +69,7 @@ export function ImportExport({
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
           <Button.Blue disabled={roles === undefined} onClick={handleOpen}>
-            {commonText('import')}
+            {commonText.import()}
           </Button.Blue>
         )}
       <ExportButton baseName={baseName} roles={roles} />
@@ -77,13 +77,13 @@ export function ImportExport({
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Submit.Green disabled={newRoles === undefined} form={id('form')}>
-                {commonText('import')}
+                {commonText.import()}
               </Submit.Green>
             </>
           }
-          header={commonText('import')}
+          header={commonText.import()}
           onClose={(): void => {
             setNewRoles(undefined);
             handleClose();
@@ -113,7 +113,7 @@ export function ImportExport({
                 <section key={category}>
                   <H3>{categoryLabels[category]}</H3>
                   {roles === undefined || roles.length === 0 ? (
-                    commonText('none')
+                    commonText.none()
                   ) : (
                     <Ul>
                       {Array.from(roles)
@@ -233,15 +233,13 @@ function ExportButton({
       onClick={(): void =>
         loading(
           downloadFile(
-            `${userText(
-              'userRoles'
-            )} - ${baseName} - ${new Date().toDateString()}.json`,
+            `${userText.userRoles()} - ${baseName} - ${new Date().toDateString()}.json`,
             JSON.stringify(Object.values(roles!), null, '\t')
           )
         )
       }
     >
-      {commonText('export')}
+      {commonText.export()}
     </Button.Blue>
   );
 }

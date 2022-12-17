@@ -4,14 +4,11 @@
  * @module
  */
 
-import { createDictionary, whitespaceSensitive } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const wbText = createDictionary({
-  // Buttons
   rollback: {
     'en-us': 'Roll Back',
     'ru-ru': 'Откат',
@@ -226,20 +223,17 @@ export const wbText = createDictionary({
   // Validation
   /* This value must match the one on the back-end exactly */
   picklistValidationFailed: {
-    'en-us': (value: string) =>
-      whitespaceSensitive(`
-        ${value} is not a legal value in this picklist
-        field.<br>
-        <br>
-        Click on the arrow to choose among available options.
-      `),
-    'ru-ru': (value: string) =>
-      whitespaceSensitive(`
-        ${value} не является допустимым значением в этом
-        списке.<br>
-        <br>
-        Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
-      `),
+    'en-us': `
+      {value:string} is not a legal value in this picklist field.
+
+      Click on the arrow to choose among available options.
+    `,
+    'ru-ru': `
+      {value:string} не является допустимым значением в этом
+      списке.
+      
+      Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
+    `,
   },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
@@ -433,7 +427,6 @@ export const wbText = createDictionary({
     'en-us': 'Include DMS Symbols',
     'ru-ru': 'Включить символы DMS',
   },
-  // WbUploaded
   uploadResults: {
     'en-us': 'Upload Results',
     'ru-ru': 'Результаты загрузки',
@@ -526,10 +519,8 @@ export const wbText = createDictionary({
     'ru-ru': 'При импорте файла произошли следующие ошибки:',
   },
   corruptFile: {
-    'en-us': (fileName: string) =>
-      `The file ${fileName} is corrupt or contains no data!`,
-    'ru-ru': (fileName: string) =>
-      `Файл ${fileName} поврежден или не содержит данных!`,
+    'en-us': 'The file {fileName:string} is corrupt or contains no data!',
+    'ru-ru': 'Файл {fileName:string} поврежден или не содержит данных!',
   },
   characterEncoding: {
     'en-us': 'Character encoding:',
@@ -576,8 +567,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Импортировать файл',
   },
   columnName: {
-    'en-us': (columnIndex: number) => `Column ${columnIndex}`,
-    'ru-ru': (columnIndex: number) => `Столбец ${columnIndex}`,
+    'en-us': 'Column {columnIndex:number}',
+    'ru-ru': 'Столбец {columnIndex:number}',
   },
   // WbPlanView
   matchBehavior: {
@@ -714,8 +705,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
   },
   relationship: {
-    'en-us': (tableName: string) => `Relationship with the ${tableName} table`,
-    'ru-ru': (tableName: string) => `Связь с таблицей ${tableName}`,
+    'en-us': 'Relationship with the {tableName:string} table',
+    'ru-ru': 'Связь с таблицей {tableName:string}',
   },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
@@ -734,18 +725,18 @@ export const wbText = createDictionary({
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
   },
   dataSetUploadedDescription: {
-    'en-us': whitespaceSensitive(`
-      You are viewing the mappings for an uploaded dataset.<br>
-      <br>
+    'en-us': `
+      You are viewing the mappings for an uploaded dataset.
+      
       To edit the mappings, rollback the uploaded data or create a new
       dataset
-    `),
-    'ru-ru': whitespaceSensitive(`
-      Вы просматриваете сопоставления для загруженного набора данных.<br>
-      <br>
+    `,
+    'ru-ru': `
+      Вы просматриваете сопоставления для загруженного набора данных.
+      
       Чтобы изменить сопоставления, откатите загруженные данные или создайте
       новый набор данных
-    `),
+    `,
   },
   baseTable: {
     'en-us': 'Base Table',
@@ -847,21 +838,20 @@ export const wbText = createDictionary({
     'ru-ru': 'Это сопоставление не было сохранено.',
   },
   newDataSetName: {
-    'en-us': (date: string) => `New Data Set ${date}`,
-    'ru-ru': (date: string) => `Новый набор данных ${date}`,
+    'en-us': 'New Data Set {date}',
+    'ru-ru': 'Новый набор данных {date}',
   },
   newHeaderName: {
-    'en-us': (index: number) => `New Column ${index}`,
-    'ru-ru': (index: number) => `Новый столбец ${index}`,
+    'en-us': 'New Column {index:number}',
+    'ru-ru': 'Новый столбец {index:number}',
   },
   noHeader: {
     'en-us': '(no header)',
     'ru-ru': '(нет заголовка)',
   },
-  // WbsDialog
   wbsDialogDefaultDialogTitle: {
-    'en-us': (dataSetCount: number) => `WorkBench Data Sets (${dataSetCount})`,
-    'ru-ru': (dataSetCount: number) => `Наборы данных (${dataSetCount})`,
+    'en-us': 'WorkBench Data Sets ({dataSetCount:number})',
+    'ru-ru': 'Наборы данных ({dataSetCount:number})',
   },
   wbsDialogEmptyDefaultDialogText: {
     'en-us': 'Currently no Data Sets exist.',
@@ -965,43 +955,38 @@ export const wbText = createDictionary({
     'ru-ru': 'Прерывание...',
   },
   wbStatusAbortFailed: {
-    'en-us': (operationName: string) =>
-      `Failed aborting ${operationName}. Please try again later`,
-    'ru-ru': (operationName: string) =>
-      `Не удалось прервать операцию ${operationName}. Пожалуйста, попробуйте
-      позже`,
+    'en-us': 'Failed aborting {operationName:string}. Please try again later',
+    'ru-ru': `
+      Не удалось прервать операцию {operationName:string}. Пожалуйста, попробуйте
+      позже
+    `,
   },
   wbStatusOperationNoProgress: {
-    'en-us': (operationName: string) => `${operationName}...`,
-    'ru-ru': (operationName: string) => `${operationName}...`,
+    'en-us': '{operationName:string}...',
+    'ru-ru': '{operationName:string}...',
   },
   wbStatusOperationProgress: {
-    'en-us': (operationName: string, current: number, total: number) =>
-      `${operationName} row ${current}/${total}`,
-    'ru-ru': (operationName: string, current: number, total: number) =>
-      `${operationName} строка ${current}/${total}`,
+    'en-us': '{operationName:string} row {current:string}/{total:string}',
+    'ru-ru': '{operationName:string} строка {current:string}/{total:string}',
   },
   wbStatusPendingDescription: {
-    'en-us': (operationName: string) =>
-      `${operationName} of this Data Set should begin shortly.`,
-    'ru-ru': (operationName: string) =>
-      `${operationName} этого набора данных должно начаться в ближайшее время.`,
+    'en-us': '{operationName:string} of this Data Set should begin shortly.',
+    'ru-ru':
+      '{operationName:string} этого набора данных должно начаться в ближайшее время.',
   },
   wbStatusPendingSecondDescription: {
-    'en-us': (operationName: string) => `
-       If this message persists for longer than 30 seconds, the ${operationName}
+    'en-us': `
+       If this message persists for longer than 30 seconds, the {operationName:string}
        process is busy with another Data Set. Please try again later. 
     `,
-    'ru-ru': (operationName: string) => `
-      Если это сообщение отображается дольше 30 секунд процесс ${operationName}
+    'ru-ru': `
+      Если это сообщение отображается дольше 30 секунд процесс {operationName:string}
       занят другим набором данных. Пожалуйста, попробуй снова позже.
     `,
   },
   wbStatusErrorDialogText: {
-    'en-us': (operationName: string) =>
-      `Error occurred during ${operationName}`,
-    'ru-ru': (operationName: string) =>
-      `Произошла ошибка во время ${operationName}`,
+    'en-us': 'Error occurred during {operationName:string}',
+    'ru-ru': 'Произошла ошибка во время {operationName:string}',
   },
   updatingTrees: {
     'en-us': 'Updating trees...',
@@ -1014,5 +999,3 @@ export const wbText = createDictionary({
       набор данных.`,
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

@@ -4,14 +4,10 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
@@ -30,38 +26,33 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Плитки таксонов',
   },
   taxonTilesDescription: {
-    'en-us': (count: number) =>
-      `Showing Taxa with ${count} or more Collection Objects`,
-    'ru-ru': (count: number) =>
-      `Показаны таксоны с ${count} или более коллекционными объектами`,
+    'en-us': 'Showing Taxa with {count:number} or more Collection Objects',
+    'ru-ru':
+      'Показаны таксоны с {count:number} или более коллекционными объектами',
   },
   fullAddress: {
-    'en-us': (
-      <>
-        Specify Collections Consortium
-        <br />
-        Biodiversity Institute
-        <br />
-        University of Kansas
-        <br />
-        1345 Jayhawk Blvd.
-        <br />
-        Lawrence, KS 66045 USA
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Specify Collections Consortium
-        <br />
-        Biodiversity Institute
-        <br />
-        University of Kansas
-        <br />
-        1345 Jayhawk Blvd.
-        <br />
-        Lawrence, KS 66045 USA
-      </>
-    ),
+    'en-us': `
+      Specify Collections Consortium
+      <br />
+      Biodiversity Institute
+      <br />
+      University of Kansas
+      <br />
+      1345 Jayhawk Blvd.
+      <br />
+      Lawrence, KS 66045 USA
+    `,
+    'ru-ru': `
+      Specify Collections Consortium
+      <br />
+      Biodiversity Institute
+      <br />
+      University of Kansas
+      <br />
+      1345 Jayhawk Blvd.
+      <br />
+      Lawrence, KS 66045 USA
+    `,
   },
   disclosure: {
     'en-us': `
@@ -140,5 +131,3 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Дата создания базы данных:',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

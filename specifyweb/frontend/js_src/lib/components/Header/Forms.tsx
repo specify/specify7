@@ -57,9 +57,9 @@ export function FormsDialog({
     <EditFormTables onClose={handleClose} />
   ) : Array.isArray(forms) ? (
     <Dialog
-      buttons={commonText('cancel')}
+      buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
-      header={headerText('dataEntry')}
+      header={headerText.dataEntry()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       onClose={handleClose}

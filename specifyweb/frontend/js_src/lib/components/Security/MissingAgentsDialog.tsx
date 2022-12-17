@@ -91,18 +91,18 @@ export function MissingAgentsDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {mode === 'edit' && (
             <Submit.Blue disabled={userAgents === undefined} form={id('form')}>
-              {commonText('save')}
+              {commonText.save()}
             </Submit.Blue>
           )}
         </>
       }
-      header={formsText('userAgentsPluginDialogTitle')}
+      header={formsText.userAgentsPluginDialogTitle()}
       onClose={handleClose}
     >
-      <p>{userText('setAgentsDialogText')}</p>
+      <p>{userText.setAgentsDialogText()}</p>
       {/* Not formatting this error nicely, as it shouldn't ever happen */}
       {Array.isArray(response.MultipleAgentsException) && (
         <pre>{JSON.stringify(response, null, 2)}</pre>
@@ -160,7 +160,7 @@ export function MissingAgentsDialog({
                 idFromUrl(address.get('agent') ?? '')
               ) && (
                 <ErrorMessage className="mt-2">
-                  {userText('agentInUse')}
+                  {userText.agentInUse()}
                 </ErrorMessage>
               )}
             </Label.Block>

@@ -8,8 +8,6 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const resourcesText = createDictionary({
   loadFile: {
     'en-us': 'Load File',
@@ -124,5 +122,3 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Выберите тип ресурса',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

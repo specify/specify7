@@ -4,18 +4,14 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const notificationsText = createDictionary({
   notifications: {
-    'en-us': (count: number | string) => `Notifications: ${count}`,
-    'ru-ru': (count: number | string) => `Уведомлений: ${count}`,
+    'en-us': 'Notifications: {count:string}',
+    'ru-ru': 'Уведомлений: {count:string}',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
@@ -58,19 +54,13 @@ export const notificationsText = createDictionary({
     'ru-ru': 'Экспорт запроса в KML завершен.',
   },
   dataSetOwnershipTransferred: {
-    'en-us': (userName: JSX.Element, dataSetName: JSX.Element) => (
-      <>
-        {userName} transferred the ownership of the {dataSetName} dataset to
-        you.
-      </>
-    ),
-    'ru-ru': (userName: JSX.Element, dataSetName: JSX.Element) => (
-      <>
-        {userName} передал вам право собственности на набор данных {dataSetName}
-        .
-      </>
-    ),
+    'en-us': `
+      <userName /> transferred the ownership of the <dataSetName /> dataset to
+      you.
+    `,
+    'ru-ru': `
+      <userName /> передал вам право собственности на набор данных
+      <dataSetName />.
+    `,
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

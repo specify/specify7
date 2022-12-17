@@ -3,6 +3,7 @@ import React from 'react';
 import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { notificationsText } from '../../localization/notifications';
+import { StringToJsx } from '../../localization/utils';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -19,7 +20,7 @@ export const notificationRenderers: IR<
     const filename = notification.payload.file;
     return (
       <>
-        {notificationsText('feedItemUpdated')}
+        {notificationsText.feedItemUpdated()}
         <Link.Green
           className="w-fit"
           download
@@ -33,13 +34,13 @@ export const notificationRenderers: IR<
   'update-feed-failed'(notification) {
     return (
       <>
-        {notificationsText('updateFeedFailed')}
+        {notificationsText.updateFeedFailed()}
         <Link.Green
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
-          {notificationsText('exception')}
+          {notificationsText.exception()}
         </Link.Green>
       </>
     );
@@ -47,13 +48,13 @@ export const notificationRenderers: IR<
   'dwca-export-complete'(notification) {
     return (
       <>
-        {notificationsText('dwcaExportCompleted')}
+        {notificationsText.dwcaExportCompleted()}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {notificationsText('download')}
+          {notificationsText.download()}
         </Link.Green>
       </>
     );
@@ -61,13 +62,13 @@ export const notificationRenderers: IR<
   'dwca-export-failed'(notification) {
     return (
       <>
-        {notificationsText('dwcaExportFailed')}
+        {notificationsText.dwcaExportFailed()}
         <Link.Green
           className="w-fit"
           download
           href={`data:application/json:${JSON.stringify(notification.payload)}`}
         >
-          {notificationsText('exception')}
+          {notificationsText.exception()}
         </Link.Green>
       </>
     );
@@ -75,13 +76,13 @@ export const notificationRenderers: IR<
   'query-export-to-csv-complete'(notification) {
     return (
       <>
-        {notificationsText('queryExportToCsvCompleted')}
+        {notificationsText.queryExportToCsvCompleted()}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {notificationsText('download')}
+          {notificationsText.download()}
         </Link.Green>
       </>
     );
@@ -89,26 +90,32 @@ export const notificationRenderers: IR<
   'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {notificationsText('queryExportToKmlCompleted')}
+        {notificationsText.queryExportToKmlCompleted()}
         <Link.Green
           className="w-fit"
           download
           href={`/static/depository/${notification.payload.file}`}
         >
-          {notificationsText('download')}
+          {notificationsText.download()}
         </Link.Green>
       </>
     );
   },
   'dataset-ownership-transferred'(notification) {
-    return notificationsText(
-      'dataSetOwnershipTransferred',
-      <i>{notification.payload['previous-owner-name']}</i>,
-      <Link.Default
-        href={`/specify/workbench/${notification.payload['dataset-id']}/`}
-      >
-        <i>{notification.payload['dataset-name']}</i>
-      </Link.Default>
+    return (
+      <StringToJsx
+        string={notificationsText.dataSetOwnershipTransferred()}
+        components={{
+          userName: <i>{notification.payload['previous-owner-name']}</i>,
+          dataSetName: (
+            <Link.Default
+              href={`/specify/workbench/${notification.payload['dataset-id']}/`}
+            >
+              <i>{notification.payload['dataset-name']}</i>
+            </Link.Default>
+          ),
+        }}
+      />
     );
   },
   default(notification) {

@@ -83,7 +83,9 @@ async function parseTypeSearch(
     );
 
   return {
-    title: queryText('queryBoxDescription', formatList(fieldTitles)),
+    title: queryText.queryBoxDescription({
+      fieldNames: formatList(fieldTitles),
+    }),
     searchFields,
     relatedModel,
     dataObjectFormatter:

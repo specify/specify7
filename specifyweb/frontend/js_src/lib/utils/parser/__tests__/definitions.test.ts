@@ -68,7 +68,7 @@ const formatterFields = [
   }),
 ];
 const uiFormatter = new UiFormatter(false, formatterFields);
-const title = formsText('requiredFormat', uiFormatter.pattern()!);
+const title = formsText.requiredFormat(uiFormatter.pattern()!);
 
 describe('resolveParser', () => {
   test('simple string with parser merger', () => {
@@ -166,9 +166,9 @@ describe('mergeParsers', () => {
       min: 2,
       max: 20,
       step: 2.5,
-      placeholder: formsText('illegalBool'),
+      placeholder: formsText.illegalBool(),
       pattern: /a/u,
-      title: formsText('illegalBool'),
+      title: formsText.illegalBool(),
       formatters: [formatter.toLowerCase],
       validators: [validators.number],
       parser: f.never,
@@ -185,9 +185,9 @@ describe('mergeParsers', () => {
       min: 3,
       max: 21,
       step: 3.5,
-      placeholder: formsText('invalidValue'),
+      placeholder: formsText.invalidValue(),
       pattern: /b/u,
-      title: formsText('invalidValue'),
+      title: formsText.invalidValue(),
       formatters: [formatter.toUpperCase],
       validators: [validators.number],
       parser: f.toString,
@@ -203,9 +203,9 @@ describe('mergeParsers', () => {
       min: 3,
       max: 20,
       step: 2.5,
-      placeholder: formsText('invalidValue'),
+      placeholder: formsText.invalidValue(),
       pattern: /b/u,
-      title: formsText('invalidValue'),
+      title: formsText.invalidValue(),
       formatters: [formatter.toLowerCase, formatter.toUpperCase],
       validators: [validators.number, validators.number],
       parser: f.toString,

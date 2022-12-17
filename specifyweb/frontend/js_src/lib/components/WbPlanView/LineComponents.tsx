@@ -148,10 +148,10 @@ export function MappingLineComponent({
     >
       <div className="border-t border-t-gray-500 py-2 print:hidden">
         <Button.Small
-          aria-label={wbText('clearMapping')}
+          aria-label={wbText.clearMapping()}
           className="h-full w-full p-2"
           disabled={isReadOnly}
-          title={wbText('clearMapping')}
+          title={wbText.clearMapping()}
           onClick={handleClearMapping}
         >
           {icons.backspace}
@@ -168,7 +168,7 @@ export function MappingLineComponent({
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        aria-label={wbText('columnMapping')}
+        aria-label={wbText.columnMapping()}
         className={`
           flex flex-wrap items-center gap-2 border-t border-t-gray-500
           py-2 print:gap-1
@@ -177,7 +177,7 @@ export function MappingLineComponent({
         ref={lineRef}
         role="list"
         tabIndex={0}
-        title={wbText('columnMapping')}
+        title={wbText.columnMapping()}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
       >
@@ -208,10 +208,10 @@ export function MappingPathComponent({
 }
 
 const fieldGroupLabels = {
-  suggestedMappings: wbText('suggestedMappings'),
-  requiredFields: wbText('requiredFields'),
-  optionalFields: wbText('optionalFields'),
-  hiddenFields: wbText('hiddenFields'),
+  suggestedMappings: wbText.suggestedMappings(),
+  requiredFields: wbText.requiredFields(),
+  optionalFields: wbText.optionalFields(),
+  hiddenFields: wbText.hiddenFields(),
 } as const;
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;

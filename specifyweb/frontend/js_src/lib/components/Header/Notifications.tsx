@@ -130,8 +130,7 @@ export function Notifications(): JSX.Element {
         forwardRef={buttonRef}
         onClick={handleOpen}
       >
-        {notificationsText(
-          'notifications',
+        {notificationsText.notifications(
           typeof notifications?.length === 'number'
             ? formatNumber(notifications.length)
             : '...'
@@ -139,12 +138,12 @@ export function Notifications(): JSX.Element {
       </Button.Small>
       {Array.isArray(notifications) && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
-          header={notificationsText('notificationsDialogTitle')}
+          header={notificationsText.notificationsDialogTitle()}
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();
@@ -175,7 +174,7 @@ export function Notifications(): JSX.Element {
            * https://github.com/specify/specify7/issues/641
            * After it is fixed, this message can be removed
            */}
-          <p>{notificationsText('mostRecentNotificationsTop')}</p>
+          <p>{notificationsText.mostRecentNotificationsTop()}</p>
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissable key={index}>
               <NotificationComponent
@@ -214,7 +213,7 @@ function NotificationComponent({
         <span className="-ml-2 flex-1" />
         <Button.Icon
           icon="x"
-          title={commonText('delete')}
+          title={commonText.delete()}
           onClick={(): void =>
             handleDelete(
               ping(

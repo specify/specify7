@@ -181,11 +181,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
   if (isDeleted)
     return (
       <Dialog
-        buttons={<Link.Blue href="/specify/">{commonText('close')}</Link.Blue>}
-        header={formsText('resourceDeletedDialogHeader')}
+        buttons={<Link.Blue href="/specify/">{commonText.close()}</Link.Blue>}
+        header={formsText.resourceDeletedDialogHeader()}
         onClose={(): void => navigate('/specify/', { replace: true })}
       >
-        {formsText('resourceDeletedDialogText')}
+        {formsText.resourceDeletedDialogText()}
       </Dialog>
     );
 
@@ -305,11 +305,11 @@ export function ResourceView<SCHEMA extends AnySchema>({
             {extraButtons ?? <span className="-ml-2 flex-1" />}
             {isModified && !isDependent ? (
               <Button.Red onClick={handleClose}>
-                {commonText('cancel')}
+                {commonText.cancel()}
               </Button.Red>
             ) : (
               <Button.Blue onClick={handleClose}>
-                {commonText('close')}
+                {commonText.close()}
               </Button.Blue>
             )}
             {saveButtonElement}
@@ -348,7 +348,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
           onCancel={(): void => setShowUnloadProtect(false)}
           onConfirm={handleClose}
         >
-          {formsText('unsavedFormUnloadProtect')}
+          {formsText.unsavedFormUnloadProtect()}
         </UnloadProtectDialog>
       )}
     </Dialog>

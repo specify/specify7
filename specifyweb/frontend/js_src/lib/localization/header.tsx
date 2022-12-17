@@ -4,14 +4,10 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const headerText = createDictionary({
   skipToContent: {
     'en-us': 'Skip to Content',
@@ -122,19 +118,15 @@ export const headerText = createDictionary({
     'ru-ru': 'Помогти локализовать Specify 7',
   },
   helpLocalizeSpecifyDialogText: {
-    'en-us': (emailLink: JSX.Element) => (
-      <>
-        We would be very grateful for your support localizing Specify 7 User
-        Interface. If you are interested, please send an email to {emailLink}
-      </>
-    ),
-    'ru-ru': (emailLink: JSX.Element) => (
-      <>
-        Мы будем очень благодарны за вашу поддержку в локализации
-        пользовательский интерфейс Specify 7. Если вы заинтересованы,
-        пожалуйста, отправьте письмо по адресу {emailLink}
-      </>
-    ),
+    'en-us': `
+      We would be very grateful for your support localizing Specify 7 User
+      Interface. If you are interested, please send an email to <emailLink />
+    `,
+    'ru-ru': `
+      Мы будем очень благодарны за вашу поддержку в локализации
+      пользовательский интерфейс Specify 7. Если вы заинтересованы,
+      пожалуйста, отправьте письмо по адресу <emailLink />
+    `,
   },
   tableApi: {
     'en-us': 'Tables API',
@@ -169,5 +161,3 @@ export const headerText = createDictionary({
     'ru-ru': 'Тех. Документы',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

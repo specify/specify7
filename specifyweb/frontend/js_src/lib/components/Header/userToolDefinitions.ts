@@ -18,29 +18,29 @@ import { userText } from '../../localization/user';
 import { preferencesText } from '../../localization/preferences';
 
 const rawUserTools: IR<RA<UserTool>> = {
-  [userText('userAccount')]: [
+  [userText.userAccount()]: [
     {
-      title: userText('logOut'),
+      title: userText.logOut(),
       url: '/accounts/logout/',
     },
     {
-      title: userText('changePassword'),
+      title: userText.changePassword(),
       url: '/accounts/password_change/',
     },
   ],
-  [preferencesText('customization')]: [
+  [preferencesText.customization()]: [
     {
-      title: preferencesText('preferences'),
+      title: preferencesText.preferences(),
       url: '/specify/user-preferences/',
     },
     {
-      title: schemaText('schemaConfig'),
+      title: schemaText.schemaConfig(),
       url: '/specify/schema-config/',
     },
   ],
-  [commonText('administration')]: [
+  [commonText.administration()]: [
     {
-      title: commonText('appResources'),
+      title: commonText.appResources(),
       url: '/specify/resources/',
       enabled: () =>
         hasToolPermission('resources', 'read') &&
@@ -49,11 +49,11 @@ const rawUserTools: IR<RA<UserTool>> = {
         hasTablePermission('SpecifyUser', 'read'),
     },
     {
-      title: userText('securityPanel'),
+      title: userText.securityPanel(),
       url: '/specify/security/',
     },
     {
-      title: headerText('repairTree'),
+      title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
       enabled: () =>
         getDisciplineTrees().some((treeName) =>
@@ -61,51 +61,51 @@ const rawUserTools: IR<RA<UserTool>> = {
         ),
     },
     {
-      title: userText('generateMasterKey'),
+      title: userText.generateMasterKey(),
       url: '/specify/overlay/master-key/',
     },
   ],
-  [commonText('export')]: [
+  [commonText.export()]: [
     {
-      title: headerText('makeDwca'),
+      title: headerText.makeDwca(),
       enabled: () => hasPermission('/export/dwca', 'execute'),
       url: '/specify/overlay/make-dwca/',
     },
     {
-      title: headerText('updateExportFeed'),
+      title: headerText.updateExportFeed(),
       enabled: () => hasPermission('/export/feed', 'force_update'),
       url: '/specify/overlay/force-update-feed/',
     },
   ],
-  [headerText('documentation')]: [
+  [headerText.documentation()]: [
     {
-      title: welcomeText('aboutSpecify'),
+      title: welcomeText.aboutSpecify(),
       url: '/specify/overlay/about/',
     },
     {
-      title: headerText('forum'),
+      title: headerText.forum(),
       url: 'https://discourse.specifysoftware.org/',
     },
     {
-      title: headerText('technicalDocumentation'),
+      title: headerText.technicalDocumentation(),
       url: 'https://github.com/specify/specify7/wiki',
     },
   ],
-  [headerText('developers')]: [
+  [headerText.developers()]: [
     {
-      title: schemaText('databaseSchema'),
+      title: schemaText.databaseSchema(),
       url: '/specify/datamodel/',
     },
     {
-      title: headerText('clearCache'),
+      title: headerText.clearCache(),
       url: '/specify/command/clear-cache/',
     },
     {
-      title: headerText('tableApi'),
+      title: headerText.tableApi(),
       url: '/documentation/api/tables/',
     },
     {
-      title: headerText('operationsApi'),
+      title: headerText.operationsApi(),
       url: '/documentation/api/operations/',
     },
   ],

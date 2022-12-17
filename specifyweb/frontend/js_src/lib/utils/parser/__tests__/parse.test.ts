@@ -57,7 +57,7 @@ test('isRequired', () => {
     isRequired: true,
   });
   const result = parseValue(parser, undefined, '  ');
-  expectInvalid(result, formsText('requiredField'));
+  expectInvalid(result, formsText.requiredField());
 });
 
 test('not isRequired', () => {
@@ -75,7 +75,7 @@ test('required String empty', () => {
     isRequired: true,
   });
   const result = parseValue(parser, undefined, ' \n\t ');
-  expectInvalid(result, formsText('requiredField'));
+  expectInvalid(result, formsText.requiredField());
 });
 
 describe('Boolean', () => {
@@ -117,7 +117,7 @@ describe('Double', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -136,7 +136,7 @@ describe('Integer', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -159,7 +159,7 @@ describe('Short', () => {
   });
 
   ensureInvalid(parser, {
-    foo: formsText('inputTypeNumber'),
+    foo: formsText.inputTypeNumber(),
   });
 });
 
@@ -185,9 +185,9 @@ describe('String', () => {
   });
 
   ensureInvalid(parser, {
-    '': formsText('requiredField'),
+    '': formsText.requiredField(),
     // Values are trimmed before being validated
-    '  ': formsText('requiredField'),
+    '  ': formsText.requiredField(),
   });
 });
 
@@ -206,7 +206,7 @@ describe('date validation', () => {
   });
 
   ensureInvalid(parser, {
-    a: () => formsText('requiredFormat', fullDateFormat()),
+    a: () => formsText.requiredFormat(fullDateFormat()),
   });
 });
 

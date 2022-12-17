@@ -35,6 +35,7 @@ type ExtractLanguage<DICT extends Dictionary> = {
 };
 
 export const rawDictionary: unique symbol = Symbol('Raw Dictionary');
+
 // FIXME: allow missing localizations for non-base language?
 /**
  * Wrap localization strings in a resolver.
@@ -57,16 +58,22 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
  * Make whitespace insensitive string suitable to go into a
  * whitespace sensitive place (e.g [title] attribute)
  *
- * New lines are ignored. To provide an explicit new line, use <br>
+ * New lines are ignored, unless the line is completely blank
  */
 export const whitespaceSensitive = (string: string): string =>
   string
     .trim()
     .split('\n')
     .map(f.trim)
+    .map((part, index, items) =>
+      part.length === 0
+        ? index + 1 === items.length || index === 0
+          ? ''
+          : '\n'
+        : `${index === 0 || items[index - 1] === '' ? '' : ' '}${part}`
+    )
     .filter(Boolean)
-    .join(' ')
-    .replace(/<br>\s?/u, '\n');
+    .join('');
 
 const reJsx = /<(?<name>\w+)(?:>(?<label>[^<]*)<\/\k<name>>|\s?\/>)/gu;
 
@@ -83,7 +90,7 @@ export function StringToJsx({
   components,
 }: {
   readonly string: LocalizedString;
-  readonly components: IR<(label: string) => JSX.Element>;
+  readonly components: IR<JSX.Element | ((label: string) => JSX.Element)>;
 }): JSX.Element {
   let index = 0;
   const usedComponents = new Set<string>();
@@ -103,9 +110,10 @@ export function StringToJsx({
       });
     usedComponents.add(name);
 
+    const label = group.groups?.label ?? '';
     const jsx = (
       <React.Fragment key={groupIndex}>
-        {component(group.groups?.label ?? '')}
+        {typeof component === 'function' ? component(label) : component}
       </React.Fragment>
     );
 

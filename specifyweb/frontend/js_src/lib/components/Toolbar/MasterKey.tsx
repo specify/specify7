@@ -36,11 +36,11 @@ export function MasterKeyOverlay(): JSX.Element | null {
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.generate()}</Submit.Blue>
         </>
       }
-      header={userText('generateMasterKey')}
+      header={userText.generateMasterKey()}
       onClose={handleClose}
     >
       <Form
@@ -64,7 +64,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
             )
               .then(({ data, status }) =>
                 status === Http.FORBIDDEN
-                  ? setValidation(userText('incorrectPassword'))
+                  ? setValidation(userText.incorrectPassword())
                   : setMasterKey(data)
               )
               // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -73,7 +73,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
         }
       >
         <Label.Block>
-          {userText('userPassword')}
+          {userText.userPassword()}
           <Input.Generic
             forwardRef={validationRef}
             required
@@ -99,14 +99,14 @@ function ShowKey({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={userText('masterKeyDialogHeader')}
+      buttons={commonText.close()}
+      header={userText.masterKeyDialogHeader()}
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-2">
         <Label.Block className="contents">
           <span className="col-span-full">
-            {userText('masterKeyFieldLabel')}
+            {userText.masterKeyFieldLabel()}
           </span>
           <Input.Text
             className="!cursor-pointer"

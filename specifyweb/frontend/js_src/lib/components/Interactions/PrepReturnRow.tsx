@@ -37,7 +37,7 @@ export function PrepReturnRow({
                 catalogNumber: '',
                 taxon:
                   preparation.get('descriptionOfMaterial')?.slice(0, 50) ??
-                  formsText('unCataloged'),
+                  formsText.unCataloged(),
                 prepType: '',
               }
             : {
@@ -78,9 +78,9 @@ export function PrepReturnRow({
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={formsText.selectAll()}
             checked={resolve > 0}
-            title={formsText('selectAll')}
+            title={formsText.selectAll()}
             onValueChange={(checked): void =>
               handleChange({
                 resolve: checked ? unresolved : 0,
@@ -91,19 +91,19 @@ export function PrepReturnRow({
             }
           />
         </td>
-        <td>{data?.catalogNumber ?? commonText('loading')}</td>
-        <td>{data?.taxon ?? commonText('loading')}</td>
+        <td>{data?.catalogNumber ?? commonText.loading()}</td>
+        <td>{data?.taxon ?? commonText.loading()}</td>
         <td className="text-center">
-          {data?.prepType ?? commonText('loading')}
+          {data?.prepType ?? commonText.loading()}
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
           <Input.Number
-            aria-label={formsText('returnedAmount')}
+            aria-label={formsText.returnedAmount()}
             className="w-12"
             max={unresolved}
             min={0}
-            title={formsText('returnedAmount')}
+            title={formsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
               handleChange({
@@ -119,11 +119,11 @@ export function PrepReturnRow({
         </td>
         <td>
           <Input.Number
-            aria-label={formsText('resolvedAmount')}
+            aria-label={formsText.resolvedAmount()}
             className="w-12"
             max={unresolved}
             min={returns}
-            title={formsText('resolvedAmount')}
+            title={formsText.resolvedAmount()}
             value={resolve}
             onValueChange={(resolve): void =>
               handleChange({
@@ -143,7 +143,7 @@ export function PrepReturnRow({
               aria-pressed={showRemarks}
               className="return-remark w-full"
               icon="annotation"
-              title={formsText('remarks')}
+              title={formsText.remarks()}
               onClick={handleToggle}
             />
           )}
@@ -154,11 +154,11 @@ export function PrepReturnRow({
           <td />
           <td className="col-span-7">
             <AutoGrowTextArea
-              aria-label={formsText('remarks')}
+              aria-label={formsText.remarks()}
               containerClassName="w-full"
               forwardRef={(target): void => target?.focus()}
-              placeholder={formsText('remarks')}
-              title={formsText('remarks')}
+              placeholder={formsText.remarks()}
+              title={formsText.remarks()}
               value={remarks}
               // Focus the input when toggled
               onValueChange={(remarks): void =>

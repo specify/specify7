@@ -77,20 +77,20 @@ export function DeleteBlocked({
       />
     ) : (
       <Dialog
-        buttons={commonText('close')}
+        buttons={commonText.close()}
         className={{
           container: dialogClassNames.wideContainer,
         }}
-        header={formsText('deleteBlockedDialogHeader')}
+        header={formsText.deleteBlockedDialogHeader()}
         onClose={handleClose}
       >
-        {formsText('deleteBlockedDialogText')}
+        {formsText.deleteBlockedDialogText()}
         {/* BUG: apply these styles everywhere where necessary */}
         <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
           <thead>
             <tr>
-              <th scope="col">{formsText('record')}</th>
-              <th scope="col">{formsText('relationship')}</th>
+              <th scope="col">{formsText.record()}</th>
+              <th scope="col">{formsText.relationship()}</th>
             </tr>
           </thead>
           <tbody>

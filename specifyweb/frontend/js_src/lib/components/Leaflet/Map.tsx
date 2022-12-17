@@ -18,9 +18,9 @@ export function LeafletMap({
   localityPoints,
   onMarkerClick: handleMarkerClick,
   forwardRef,
-  header = commonText('geoMap'),
+  header = commonText.geoMap(),
   headerButtons,
-  buttons = commonText('close'),
+  buttons = commonText.close(),
   onClose: handleClose,
   modal = true,
 }: {

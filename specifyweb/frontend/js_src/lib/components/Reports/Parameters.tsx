@@ -78,11 +78,11 @@ export function QueryParametersDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{formsText('runReport')}</Submit.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{formsText.runReport()}</Submit.Blue>
         </>
       }
-      header={query.name ?? commonText('reports')}
+      header={query.name ?? commonText.reports()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >

@@ -23,20 +23,20 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {schemaText('type')}
+        {schemaText.type()}
         <Select
           value={formType}
           onValueChange={(formType): void =>
             handleChangeFormType(formType as FormType)
           }
         >
-          <option value="form">{formsText('form')}</option>
-          <option value="formTable">{formsText('formTable')}</option>
+          <option value="form">{formsText.form()}</option>
+          <option value="formTable">{formsText.formTable()}</option>
         </Select>
       </Label.Block>
       {/* BUG: this change does not apply until you add/remove subview record */}
       <Label.Block>
-        {formsText('orderBy')}
+        {formsText.orderBy()}
         <OrderPicker
           model={model}
           order={sortField}

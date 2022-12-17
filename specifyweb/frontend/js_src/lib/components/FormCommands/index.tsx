@@ -34,7 +34,7 @@ export function GenerateLabel({
       <Button.Small
         disabled={isDisabled}
         id={id}
-        title={isDisabled ? formsText('saveRecordFirst') : undefined}
+        title={isDisabled ? formsText.saveRecordFirst() : undefined}
         onClick={handleRunReport}
       >
         {label}
@@ -96,11 +96,11 @@ const commandRenderers: {
             {showDialog ? (
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
-                  buttons={commonText('close')}
+                  buttons={commonText.close()}
                   header={label}
                   onClose={handleHide}
                 >
-                  {formsText('preparationsCanNotBeReturned')}
+                  {formsText.preparationsCanNotBeReturned()}
                 </Dialog>
               ) : (
                 <LoanReturn resource={loan} onClose={handleHide} />
@@ -110,24 +110,24 @@ const commandRenderers: {
         )) ?? error('LoanReturnCommand can only be used with Loan resources')
       : null;
   },
-  Unsupported({ commandDefinition: { name = commonText('nullInline') }, id }) {
+  Unsupported({ commandDefinition: { name = commonText.nullInline() }, id }) {
     const [isClicked, handleShow, handleHide] = useBooleanState();
     return (
       <>
         <Button.Small id={id} onClick={handleShow}>
-          {formsText('unavailableCommandButton')}
+          {formsText.unavailableCommandButton()}
         </Button.Small>
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('commandUnavailable')}
+          buttons={commonText.close()}
+          header={formsText.commandUnavailable()}
           isOpen={isClicked}
           onClose={handleHide}
         >
-          {formsText('commandUnavailableDescription')}
+          {formsText.commandUnavailableDescription()}
           <br />
-          {formsText('commandUnavailableSecondDescription')}
+          {formsText.commandUnavailableSecondDescription()}
           <br />
-          {`${formsText('commandName')} ${name}`}
+          {`${formsText.commandName()} ${name}`}
         </Dialog>
       </>
     );

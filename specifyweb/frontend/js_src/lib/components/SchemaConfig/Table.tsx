@@ -39,9 +39,9 @@ export function SchemaConfigTable({
   ) => void;
 }): JSX.Element {
   return (
-    <SchemaConfigColumn header={`${schemaText('table')}: ${container.name}`}>
+    <SchemaConfigColumn header={`${schemaText.table()}: ${container.name}`}>
       <Label.Block>
-        {schemaText('caption')}
+        {schemaText.caption()}
         <Input.Text
           isReadOnly={isReadOnly || name === undefined}
           maxLength={maxSchemaValueLength}
@@ -51,7 +51,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText('description')}
+        {schemaText.description()}
         <AutoGrowTextArea
           className="resize-y"
           isReadOnly={isReadOnly || desc === undefined}
@@ -61,7 +61,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText('tableFormat')}
+        {schemaText.tableFormat()}
         <PickList
           disabled={isReadOnly}
           groups={{
@@ -75,7 +75,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText('tableAggregation')}
+        {schemaText.tableAggregation()}
         <PickList
           disabled={isReadOnly}
           groups={{
@@ -98,7 +98,7 @@ export function SchemaConfigTable({
             handleChange({ ...container, isHidden })
           }
         />
-        {schemaText('hideTable')}
+        {schemaText.hideTable()}
       </Label.Inline>
     </SchemaConfigColumn>
   );

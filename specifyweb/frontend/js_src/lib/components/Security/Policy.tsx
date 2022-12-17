@@ -90,9 +90,9 @@ export function SecurityPolicy({
     <li className="flex flex-wrap gap-2">
       {!isReadOnly && (
         <Button.Small
-          aria-label={commonText('remove')}
+          aria-label={commonText.remove()}
           className="print:hidden"
-          title={commonText('remove')}
+          title={commonText.remove()}
           variant={className.redButton}
           onClick={(): void => handleChange(undefined)}
         >

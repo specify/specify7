@@ -24,7 +24,7 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 
-export const saveFormUnloadProtect = formsText('unsavedFormUnloadProtect');
+export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
 /*
  * REFACTOR: move this logic into ResourceView, so that <form> and button is
@@ -224,20 +224,20 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         <>
           {showClone &&
             copyButton(
-              formsText('clone'),
-              formsText('cloneDescription'),
+              formsText.clone(),
+              formsText.cloneDescription(),
               async () => resource.clone(true)
             )}
           {showCarry &&
             copyButton(
-              formsText('carryForward'),
-              formsText('carryForwardDescription'),
+              formsText.carryForward(),
+              formsText.carryForwardDescription(),
               async () => resource.clone(false)
             )}
           {showAdd &&
             copyButton(
-              commonText('add'),
-              formsText('addButtonDescription'),
+              commonText.add(),
+              formsText.addButtonDescription(),
               async () => new resource.specifyModel.Resource()
             )}
         </>
@@ -251,28 +251,28 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
             form.classList.remove(className.notSubmittedForm)
           }
         >
-          {commonText('save')}
+          {commonText.save()}
         </SubmitComponent>
       )}
       {isSaveConflict ? (
         <Dialog
           buttons={
             <Button.Red onClick={(): void => globalThis.location.reload()}>
-              {commonText('close')}
+              {commonText.close()}
             </Button.Red>
           }
-          header={formsText('saveConflictDialogHeader')}
+          header={formsText.saveConflictDialogHeader()}
           onClose={undefined}
         >
-          {formsText('saveConflictDialogText')}
+          {formsText.saveConflictDialogText()}
         </Dialog>
       ) : showSaveBlockedDialog ? (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('saveBlockedDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.saveBlockedDialogHeader()}
           onClose={(): void => setShowBlockedDialog(false)}
         >
-          <p>{formsText('saveBlockedDialogText')}</p>
+          <p>{formsText.saveBlockedDialogText()}</p>
           <Ul>
             {Array.from(
               resource.saveBlockers?.blockingResources ?? [],

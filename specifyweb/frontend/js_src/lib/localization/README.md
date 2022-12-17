@@ -1,6 +1,47 @@
 # Front-end Localization
 
+## About the solution
+
+The localization solution was built on top of
+[typesafe-i18n](https://github.com/ivanhofer/typesafe-i18n/)
+
+Prior to this, a homegrown tiny library was used, but with the need to integrate
+with third party localization UIs, we have outgrown the homegrown solution.
+
+Among many available libraries, typesafe-i18n was selected for the following
+reasons:
+
+- It is type safe. Much more so than any other library available when this
+  migration was made.
+
+  Type safety provides awesome side effects:
+
+  - Developers get autocomplete in the IDE
+  - Developers can go to definition of the string with just one click
+  - Developers get inline errors if they forget to pass parameter or use
+    incorrect type
+  - Besides better DX, bugs are caught though static analysis.
+
+  There is an optional
+  [generator](https://github.com/ivanhofer/typesafe-i18n/tree/main/packages/generator#generator)
+  package that provides even greater type safety, but it comes at a great
+  inconvenience to developers of having to have a separate script running in the
+  background at all times. Even if one developer has that configured and uses
+  it, it's hard to make sure all developers have it configured (especially for
+  external developers) and don't forget to use it.
+
+  Fortunately, this optional type safety does not give much more benefit for our
+  not too-complicated use case, and thus it was not used.
+
+- It is simple, small and customizable enough to fit our needs. For example,
+  many react localization libraries require use of React contexts/hooks. This
+  does not work for us as many localization strings are outside React
+  components.
+
 ## Guidelines for Programmers
+
+Follow these rules to maintain consistency across localization files and reduce
+cognitive overhead of working with localization files (thus killing bugs)
 
 - All keys must use strict camel case, unless absolutely necessary to do
   otherwise (e.x, in case of `S2N` or other proper nouns that contain numbers or
@@ -29,7 +70,7 @@
   Correct example:
 
   ```javascript
-  hasError ? wbText('errorOccurred') : wbText('successMessage');
+  hasError ? wbText.errorOccurred() : wbText.successMessage();
   ```
 
   Similarly, don't construct key names dynamically. This is needed to simplify
@@ -57,66 +98,32 @@
 - When writing multi-line strings, keep in mind that some values are going to be
   used in whitespace sensitive contexts. Most common example is the "title"
   attribute of a button. Another example is the cell comment text in the
-  Workbench. In such cases, wrap the string in a whitespaceSensitive function
-  call and use the `<br>` HTML tags for new lines.
+  Workbench. In such cases, when using the string, wrap it in the
+  whitespaceSensitive function. That function will trim all whitespace and join
+  all lines into one. To explicitly specify a lin break, leave a completely
+  empty line.
 
-  Incorrect example:
+  Example definition:
 
   ```javascript
   someWhitespaceSensitiveValue: `
     Lorem Ipsum is simply dummy text of the printing and typesetting
     industry.
-    Lorem Ipsum has been the industry's standard dummy text<br>
+
+    Lorem Ipsum has been the industry's standard dummy text
     ever since the 1500s
   `,
   ```
 
-  Correct example:
+  Example call:
 
   ```javascript
-  someWhitespaceSensitiveValue: whitespaceSensitive(`
-    Lorem Ipsum is simply dummy text of the printing and typesetting
-    industry.<br>
-    Lorem Ipsum has been the industry's standard dummy text
-    ever since the 1500s
-  `),
+  whitespaceSensitive(wbText.someWhitespaceSensitiveValue());
   ```
 
-## Localization Utils
+  Will result in:
 
-### Copy strings from existing language into new language
-
-1. Create and open an HTML page with a <textarea> element
-2. Paste whole dictionary file content into textarea
-3. Assign the `textarea` variable to the HTML Textbox element
-4. Modify the following RegEx to suite the task
-
-   In it's current form, it would copy 'en-us' strings and insert them at the
-   end under a name of 'es-es'.
-
-   ```javascript
-   textarea.value = textarea.value.replaceAll(
-     /(?<key>\w+):\s{\s+'en-us':([\s\S]+?(?=['`\)],\n)['`\)],\n)([\s\S]+?(?=\},\n))\},/g,
-     "$1: {\n    'en-us':$2$3  'es-es':$2  },"
-   );
-   ```
-
-   (Replace `en-us` with source and `ru-ru` with target)
-
-### Extract serialized strings from dictionary
-
-1. Create and open an HTML page with a <textarea> element
-2. Paste whole dictionary file content into textarea
-3. Assign the `textarea` variable to the HTML Textbox element
-4. Run this code in the DevTools console:
-
-   ```javascript
-   dictionary = Object.fromEntries(
-     Array.from(
-       textarea.value.matchAll(
-         /(?<key>\w+):\s{\s+'en-us':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<enUS>[\s\S]*?)['"`)]\s*\)?,\s+'ru-ru':\s+(?:\(\s*\w[^)]+[^>]+>\s+)?\w*\(?['"`]?\n?(?<ruRU>[\s\S]*?)['"`)]\s*\)?,/g
-       ),
-       ({ groups: { key, ...strings } }) => [key, strings]
-     )
-   );
-   ```
+  ```
+  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+  ```

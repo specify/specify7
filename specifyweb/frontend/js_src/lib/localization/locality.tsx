@@ -8,8 +8,6 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const localityText = createDictionary({
   // Leaflet
   polygonBoundaries: {
@@ -101,5 +99,3 @@ export const localityText = createDictionary({
     'ru-ru': 'Включить полноэкранный режим',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

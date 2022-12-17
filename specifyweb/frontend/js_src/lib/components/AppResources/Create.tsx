@@ -59,8 +59,8 @@ export function CreateAppResource(): JSX.Element {
     <NotFoundView container={false} />
   ) : type === undefined ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={resourcesText('selectResourceType')}
+      buttons={commonText.cancel()}
+      header={resourcesText.selectResourceType()}
       onClose={(): void => navigate('/specify/resources/')}
     >
       <Ul className="flex flex-col">
@@ -81,15 +81,15 @@ export function CreateAppResource(): JSX.Element {
     </Dialog>
   ) : mimeType === undefined ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={resourcesText('selectResourceType')}
+      buttons={commonText.cancel()}
+      header={resourcesText.selectResourceType()}
       onClose={(): void => navigate('/specify/resources/')}
     >
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
           <tr>
-            <th scope="col">{schemaText('type')}</th>
-            <th scope="col">{headerText('documentation')}</th>
+            <th scope="col">{schemaText.type()}</th>
+            <th scope="col">{headerText.documentation()}</th>
           </tr>
         </thead>
         <tbody>
@@ -110,7 +110,7 @@ export function CreateAppResource(): JSX.Element {
                 <td>
                   {typeof documentationUrl === 'string' && (
                     <Link.NewTab href={documentationUrl}>
-                      {headerText('documentation')}
+                      {headerText.documentation()}
                     </Link.NewTab>
                   )}
                 </td>

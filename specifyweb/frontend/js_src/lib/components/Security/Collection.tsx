@@ -147,10 +147,10 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText('collectionUsers')}</h4>
+              <h4 className="text-xl">{userText.collectionUsers()}</h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
-                  commonText('none')
+                  commonText.none()
                 ) : (
                   <>
                     <Ul>
@@ -210,7 +210,7 @@ export function CollectionView({
                           });
                         }}
                       >
-                        {commonText('create')}
+                        {commonText.create()}
                       </Link.Green>
                     </div>
                   </>
@@ -220,7 +220,7 @@ export function CollectionView({
                   'read',
                   collection.id
                 ) ? (
-                commonText('loading')
+                commonText.loading()
               ) : (
                 <CurrentUserLink collectionId={collection.id} />
               )}

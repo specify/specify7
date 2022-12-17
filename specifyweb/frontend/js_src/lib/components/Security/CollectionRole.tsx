@@ -195,7 +195,7 @@ function RoleUsers({
   return typeof role.id === 'number' &&
     hasPermission('/permissions/user/roles', 'read', collectionId) ? (
     <fieldset className="flex flex-col gap-2">
-      <legend>{userText('users')}</legend>
+      <legend>{userText.users()}</legend>
       {typeof userRoles === 'object' ? (
         <>
           <Ul className="flex max-h-[theme(spacing.96)] flex-col gap-2 overflow-auto">
@@ -221,7 +221,7 @@ function RoleUsers({
                   setAddingUser(new schema.models.SpecifyUser.Resource())
                 }
               >
-                {commonText('add')}
+                {commonText.add()}
               </Button.Green>
             </div>
           )}
@@ -243,7 +243,7 @@ function RoleUsers({
           ) : undefined}
         </>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </fieldset>
   ) : null;

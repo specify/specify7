@@ -35,7 +35,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
-      header={headerText('chooseDwcaDialogTitle')}
+      header={headerText.chooseDwcaDialogTitle()}
       resources={resources}
       onClose={handleClose}
       onSelected={(definition): void => setDefinition(definition?.name)}
@@ -45,7 +45,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
   ) : (
     <>
       <PickAppResource
-        header={headerText('chooseMetadataResource')}
+        header={headerText.chooseMetadataResource()}
         resources={resources}
         skippable
         onClose={(): void => setDefinition(undefined)}
@@ -84,13 +84,13 @@ function PickAppResource({
       buttons={
         skippable ? (
           <>
-            <Button.DialogClose>{commonText('back')}</Button.DialogClose>
+            <Button.DialogClose>{commonText.back()}</Button.DialogClose>
             <Button.Blue onClick={(): void => handleSelected(undefined)}>
-              {commonText('skip')}
+              {commonText.skip()}
             </Button.Blue>
           </>
         ) : (
-          commonText('back')
+          commonText.back()
         )
       }
       header={header}
@@ -116,11 +116,11 @@ function ExportStarted({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={headerText('dwcaExportStartedDialogHeader')}
+      buttons={commonText.close()}
+      header={headerText.dwcaExportStartedDialogHeader()}
       onClose={handleClose}
     >
-      {headerText('dwcaExportStartedDialogText')}
+      {headerText.dwcaExportStartedDialogText()}
     </Dialog>
   );
 }

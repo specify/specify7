@@ -41,17 +41,17 @@ export function SchemaConfigTables(): JSX.Element {
               lang: language,
             })}
           >
-            {commonText('export')}
+            {commonText.export()}
           </Link.Green>
           <span className="-ml-2 flex-1" />
           <Button.Gray
             onClick={(): void => navigate('/specify/schema-config/')}
           >
-            {commonText('back')}
+            {commonText.back()}
           </Button.Gray>
         </>
       }
-      header={schemaText('tables')}
+      header={schemaText.tables()}
       onClose={(): void => navigate('/specify')}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
@@ -71,7 +71,7 @@ export function SchemaConfigTables(): JSX.Element {
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
-        {wbText('showAdvancedTables')}
+        {wbText.showAdvancedTables()}
       </Label.Inline>
     </Dialog>
   );

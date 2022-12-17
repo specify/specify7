@@ -68,13 +68,13 @@ function UserCollectionsUi({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {hasPermission('/admin/user/sp6/collection_access', 'update') && (
-            <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+            <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
           )}
         </>
       }
-      header={userText('configureCollectionAccess')}
+      header={userText.configureCollectionAccess()}
       onClose={handleClose}
     >
       <Form
@@ -126,16 +126,16 @@ export function UserCollections({
         }
         title={
           isAdmin
-            ? userText('notAvailableOnAdmins')
+            ? userText.notAvailableOnAdmins()
             : user === undefined
-            ? commonText('loading')
+            ? commonText.loading()
             : user.isNew()
-            ? userText('saveUserFirst')
+            ? userText.saveUserFirst()
             : undefined
         }
         onClick={handleOpen}
       >
-        {userText('setCollections')}
+        {userText.setCollections()}
       </Button.Small>
       {isOpen && <UserCollectionsUi userId={user.id} onClose={handleClose} />}
     </>
@@ -263,7 +263,7 @@ export function CollectionAccess({
             }
             onValueChange={handleToggle}
           />
-          {userText('collectionAccess')}
+          {userText.collectionAccess()}
         </Label.Inline>
       ) : undefined}
       <Label.Block className={className.limitedWidth}>
@@ -281,7 +281,7 @@ export function CollectionAccess({
             typeSearch={undefined}
           />
         ) : (
-          <Input.Text disabled value={commonText('loading')} />
+          <Input.Text disabled value={commonText.loading()} />
         )}
       </Label.Block>
     </div>

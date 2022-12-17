@@ -15,6 +15,7 @@ import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
 import { userText } from '../../localization/user';
+import { StringToJsx } from '../../localization/utils';
 
 export function formatPermissionsError(
   response: string,
@@ -23,7 +24,7 @@ export function formatPermissionsError(
   | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
   if (response.length === 0)
-    return [undefined, userText('sessionTimeOutDialogHeader')];
+    return [undefined, userText.sessionTimeOutDialogHeader()];
 
   let parsed: PermissionErrorSchema | undefined = undefined;
   try {
@@ -52,13 +53,13 @@ export function FormatPermissionError({
 }): JSX.Element {
   return (
     <div className="flex h-full flex-col gap-2">
-      <p>{userText('permissionDeniedDialogText')}</p>
+      <p>{userText.permissionDeniedDialogText()}</p>
       <table className="grid-table grid-cols-4 rounded border border-gray-500">
         <thead>
           <tr>
             {[
-              userText('action'),
-              userText('resource'),
+              userText.action(),
+              userText.resource(),
               schema.models.Collection.label,
               schema.models.SpecifyUser.label,
             ].map((label, index, { length }) => (
@@ -106,10 +107,15 @@ export function FormatPermissionError({
       </table>
       {typeof url === 'string' && (
         <p>
-          {userText('permissionDeniedDialogText')}
+          {userText.permissionDeniedDialogText()}
           <br />
           <br />
-          {userText('permissionDeniedDialogSecondText', <code>{url}</code>)}
+          <StringToJsx
+            string={userText.permissionDeniedDialogSecondText()}
+            components={{
+              url: <code>{url}</code>,
+            }}
+          />
         </p>
       )}
     </div>

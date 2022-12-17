@@ -211,32 +211,32 @@ export function PermissionError({
           <Button.Red
             onClick={(): void => globalThis.location.assign('/specify/')}
           >
-            {commonText('goToHomepage')}
+            {commonText.goToHomepage()}
           </Button.Red>
           {typeof handleClose === 'function' && (
             <Button.Red onClick={handleClose}>
-              {commonText('dismiss')}
+              {commonText.dismiss()}
             </Button.Red>
           )}
         </>
       }
-      header={userText('permissionDeniedError')}
+      header={userText.permissionDeniedError()}
       onClose={handleClose}
     >
       {error}
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText('logIn')}
+      buttons={commonText.logIn()}
       forceToTop
-      header={userText('sessionTimeOutDialogHeader')}
+      header={userText.sessionTimeOutDialogHeader()}
       onClose={(): void =>
         globalThis.location.assign(
           formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
     >
-      {userText('sessionTimeOutDialogText')}
+      {userText.sessionTimeOutDialogText()}
     </Dialog>
   );
 }

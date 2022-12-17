@@ -4,19 +4,10 @@
  * @module
  */
 
-import React from 'react';
-
-import { Key } from '../components/Atoms';
 import { createDictionary } from './utils';
-
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
-  ? 'Option'
-  : 'Alt';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const preferencesText = createDictionary({
   preferences: {
     'en-us': 'Preferences',
@@ -75,10 +66,14 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Уменьшить прозрачность',
   },
   reduceTransparencyDescription: {
-    'en-us': `Whether to disable translucent backgrounds for user interface
-      components whenever possible (for example, table headers in tree view)`,
-    'ru-ru': `Отключить ли полупрозрачный фон для пользовательского интерфейса,
-      когда это возможно (например, заголовки таблиц в просмотрщике деревьев)`,
+    'en-us': `
+      Whether to disable translucent backgrounds for user interface
+      components whenever possible (for example, table headers in tree view)
+    `,
+    'ru-ru': `
+      Отключить ли полупрозрачный фон для пользовательского интерфейса,
+      когда это возможно (например, заголовки таблиц в просмотрщике деревьев)
+    `,
   },
   contrast: {
     'en-us': 'Contrast',
@@ -105,13 +100,17 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Шрифт',
   },
   fontFamilyDescription: {
-    'en-us': `You can specify any font that is on your computer, even if it is
+    'en-us': `
+      You can specify any font that is on your computer, even if it is
       not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not available and so on`,
-    'ru-ru': `Вы можете указать любой шрифт, который есть на вашем компьютере,
+      second font would be used if first one is not available and so on
+    `,
+    'ru-ru': `
+      Вы можете указать любой шрифт, который есть на вашем компьютере,
       даже если он нет в списке. Поддерживается список шрифтов, разделенных
       запятыми, где второй шрифт будет использоваться, если первый не доступен
-      и т.д.`,
+      и т.д.
+    `,
   },
   defaultFont: {
     'en-us': '(default font)',
@@ -386,12 +385,14 @@ export const preferencesText = createDictionary({
   },
   noRestrictionsModeWarning: {
     'en-us': `
-      WARNING: enabling this may lead to data loss or database
-      corruption. Please make sure you know what you are doing`,
+      WARNING: enabling this may lead to data loss or database corruption.
+      Please make sure you know what you are doing
+    `,
     'ru-ru': `
       ВНИМАНИЕ: включение этого параметра может привести к потере данных или
       повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что
-      делаете`,
+      делаете
+    `,
   },
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
@@ -458,30 +459,22 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
   },
   tabMoveDirection: {
-    'en-us': (
-      <>
-        Direction of movement when <Key>Tab</Key> key is pressed
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Направление движения при нажатии клавиши <Key>Tab</Key>
-      </>
-    ),
+    'en-us': `
+      Direction of movement when <key>Tab</key> key is pressed
+    `,
+    'ru-ru': `
+      Направление движения при нажатии клавиши <key>Tab</key>
+    `,
   },
   tabMoveDirectionDescription: {
-    'en-us': (
-      <>
-        You can move in the opposite direction by pressing <Key>Shift</Key>+
-        <Key>Tab</Key>
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Вы можете двигаться в противоположном направлении, нажав{' '}
-        <Key>Shift</Key>+<Key>Tab</Key>
-      </>
-    ),
+    'en-us': `
+      You can move in the opposite direction by pressing <key>Shift</key>+
+      <key>Tab</key>
+    `,
+    'ru-ru': `
+      Вы можете двигаться в противоположном направлении, нажав
+      <key>Shift</key>+<key>Tab</key>
+    `,
   },
   column: {
     'en-us': 'Column',
@@ -492,30 +485,20 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Ряд',
   },
   enterMoveDirection: {
-    'en-us': (
-      <>
-        Direction of movement when <Key>Enter</Key> key is pressed
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Направление движения при нажатии клавиши <Key>Enter</Key>
-      </>
-    ),
+    'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
+    'ru-ru': `
+      Направление движения при нажатии клавиши <key>Enter</key>
+    `,
   },
   enterMoveDirectionDescription: {
-    'en-us': (
-      <>
-        You can move in the opposite direction by pressing <Key>Shift</Key>+
-        <Key>Enter</Key>
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Вы можете двигаться в противоположном направлении, нажав{' '}
-        <Key>Shift</Key>+<Key>Enter</Key>
-      </>
-    ),
+    'en-us': `
+      You can move in the opposite direction by pressing <key>Shift</key>+
+      <key>Enter</key>
+    `,
+    'ru-ru': `
+      Вы можете двигаться в противоположном направлении, нажав
+      <key>Shift</key>+<key>Enter</key>
+    `,
   },
   filterPickLists: {
     'en-us': 'Filter pick list items',
@@ -591,16 +574,8 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбцов в сетке подвидa',
   },
   closeOnEsc: {
-    'en-us': (
-      <>
-        Close on <Key>ESC</Key> key press
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Закрыть при нажатии клавиши <Key>ESC</Key>
-      </>
-    ),
+    'en-us': 'Close on <key>ESC</key> key press',
+    'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
   },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
@@ -647,30 +622,22 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запись для открытия по умолчанию',
   },
   altClickToSupressNewTab: {
-    'en-us': (
-      <>
-        <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
-      </>
-    ),
-    'ru-ru': (
-      <>
-        <Key>{altKeyName}</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
-      </>
-    ),
+    'en-us': `
+      <key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab
+    `,
+    'ru-ru': `
+      <key>{altKeyName:string}</key>+<key>Клик</key>, чтобы скрыть новую вкладку
+    `,
   },
   altClickToSupressNewTabDescription: {
-    'en-us': (
-      <>
-        <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
-        in a new tab to open it in the current tab
-      </>
-    ),
-    'ru-ru': (
-      <>
-        <Key>{altKeyName}</Key>+<Key>Клик</Key> на ссылку, которая обычно
-        открывается в новой вкладке, чтобы открыть ее в текущей вкладке
-      </>
-    ),
+    'en-us': `
+      <key>{altKeyName:string}</key>+<key>Click</key> on a link that normally opens
+      in a new tab to open it in the current tab
+    `,
+    'ru-ru': `
+      <key>{altKeyName:string}</key>+<key>Клик</key> на ссылку, которая обычно
+      открывается в новой вкладке, чтобы открыть ее в текущей вкладке
+    `,
   },
   makeFormDialogsModal: {
     'en-us': 'Make form dialogs gray out the background',
@@ -690,16 +657,8 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Размер отступа',
   },
   indentWithTab: {
-    'en-us': (
-      <>
-        Indent with <Key>Tab</Key>
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Используйте <Key>Tab</Key> для отступа
-      </>
-    ),
+    'en-us': 'Indent with <key>Tab</key>',
+    'ru-ru': 'Используйте <key>Tab</key> для отступа',
   },
   formHeaderFormat: {
     'en-us': 'Form header format',
@@ -776,5 +735,3 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Не использовать',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

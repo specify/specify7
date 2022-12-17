@@ -289,12 +289,12 @@ export function UnloadProtectDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Red onClick={handleConfirm}>{mainText('leave')}</Button.Red>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Red onClick={handleConfirm}>{mainText.leave()}</Button.Red>
         </>
       }
       forceToTop
-      header={mainText('leavePageDialogHeader')}
+      header={mainText.leavePageDialogHeader()}
       onClose={handleCancel}
     >
       {children}

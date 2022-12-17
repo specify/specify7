@@ -48,17 +48,17 @@ export function UserInviteLink({
             : setLink('')
         }
       >
-        {userText('createInviteLink')}
+        {userText.createInviteLink()}
       </Button.Small>
       {typeof link === 'string' && (
         <Dialog
-          buttons={commonText('close')}
-          header={userText('userInviteLink')}
+          buttons={commonText.close()}
+          header={userText.userInviteLink()}
           onClose={(): void => setLink(undefined)}
         >
           {hasProvidersConfigured ? (
             <>
-              {userText('userInviteLinkDescription', user.name)}
+              {userText.userInviteLinkDescription({ userName: user.name })}
               <div className="flex gap-2">
                 <Input.Text
                   className="flex-1 !cursor-pointer"
@@ -69,7 +69,7 @@ export function UserInviteLink({
               </div>
             </>
           ) : (
-            userText('noProvidersForUserInviteLink')
+            userText.noProvidersForUserInviteLink()
           )}
         </Dialog>
       )}

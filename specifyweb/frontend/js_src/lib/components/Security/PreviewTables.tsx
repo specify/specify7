@@ -61,11 +61,11 @@ export function PreviewTables({
     >
       <div role="row">
         {[
-          userText('read'),
-          commonText('create'),
-          commonText('update'),
-          commonText('delete'),
-          schemaText('table'),
+          userText.read(),
+          commonText.create(),
+          commonText.update(),
+          commonText.delete(),
+          schemaText.table(),
         ].map((header, index, { length }) => (
           <div
             className={`

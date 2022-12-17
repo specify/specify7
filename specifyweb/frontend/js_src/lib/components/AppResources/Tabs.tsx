@@ -86,7 +86,7 @@ export function AppResourcesTabs({
     <Dialog
       buttons={
         <Button.Blue onClick={handleExitFullScreen}>
-          {commonText('close')}
+          {commonText.close()}
         </Button.Blue>
       }
       className={{
@@ -122,12 +122,12 @@ function useEditorTabs(
     return filterArray([
       typeof visualEditor === 'function'
         ? {
-            label: resourcesText('visualEditor'),
+            label: resourcesText.visualEditor(),
             component: visualEditor,
           }
         : undefined,
       {
-        label: resourcesText('textEditor'),
+        label: resourcesText.textEditor(),
         component: AppResourceTextEditor,
       },
     ]);

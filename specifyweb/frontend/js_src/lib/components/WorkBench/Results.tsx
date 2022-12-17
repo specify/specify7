@@ -45,13 +45,13 @@ export function WbUploaded({
       <div>
         <H2>
           {isUploaded
-            ? wbText('uploadResults')
-            : wbText('potentialUploadResults')}
+            ? wbText.uploadResults()
+            : wbText.potentialUploadResults()}
         </H2>
         <p>
           {isUploaded
-            ? wbText('wbUploadedDescription')
-            : wbText('wbUploadedPotentialDescription')}
+            ? wbText.wbUploadedDescription()
+            : wbText.wbUploadedPotentialDescription()}
         </p>
       </div>
       <Ul className="flex flex-1 flex-col gap-2">
@@ -65,7 +65,7 @@ export function WbUploaded({
             />
           ))}
       </Ul>
-      <Button.Small onClick={handleClose}>{commonText('close')}</Button.Small>
+      <Button.Small onClick={handleClose}>{commonText.close()}</Button.Small>
     </div>
   );
 }

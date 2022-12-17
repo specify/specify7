@@ -20,17 +20,17 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
 
   return isActivated ? (
     <Dialog
-      buttons={commonText('close')}
-      header={headerText('feedExportStartedDialogHeader')}
+      buttons={commonText.close()}
+      header={headerText.feedExportStartedDialogHeader()}
       onClose={handleClose}
     >
-      {headerText('feedExportStartedDialogText')}
+      {headerText.feedExportStartedDialogText()}
     </Dialog>
   ) : (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue
             onClick={(): void =>
               loading(
@@ -42,14 +42,14 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
               )
             }
           >
-            {commonText('update')}
+            {commonText.update()}
           </Button.Blue>
         </>
       }
-      header={headerText('updateExportFeedDialogTitle')}
+      header={headerText.updateExportFeedDialogTitle()}
       onClose={handleClose}
     >
-      {headerText('updateExportFeedDialogText')}
+      {headerText.updateExportFeedDialogText()}
     </Dialog>
   );
 }

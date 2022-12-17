@@ -41,6 +41,8 @@ import type { MappingPath } from '../WbPlanView/Mapper';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
+import { f } from '../../utils/functools';
+import { whitespaceSensitive } from '../../localization/utils';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -237,9 +239,9 @@ export function QueryLine({
     >
       {typeof handleRemove === 'function' && (
         <Button.Small
-          aria-label={commonText('remove')}
+          aria-label={commonText.remove()}
           className="print:hidden"
-          title={commonText('remove')}
+          title={commonText.remove()}
           variant={className.redButton}
           onClick={handleRemove}
         >
@@ -308,14 +310,14 @@ export function QueryLine({
                     {mappingElementDivider}
                     {!hasAny && (
                       <Button.Small
-                        aria-label={queryText('or')}
+                        aria-label={queryText.or()}
                         aria-pressed={field.filters.length > 1}
                         className={`
                           aria-handled print:hidden
                           ${isFieldComplete ? '' : 'invisible'}
                         `}
                         disabled={handleChange === undefined}
-                        title={queryText('or')}
+                        title={queryText.or()}
                         variant={
                           field.filters.length > 1
                             ? className.blueButton
@@ -342,14 +344,14 @@ export function QueryLine({
                           ${iconClassName}
                         `}
                       >
-                        {queryText('or')}
+                        {queryText.or()}
                       </span>
                     </span>
                     <Button.Small
-                      aria-label={commonText('remove')}
+                      aria-label={commonText.remove()}
                       className="print:hidden"
                       disabled={handleChange === undefined}
-                      title={commonText('remove')}
+                      title={commonText.remove()}
                       variant={className.redButton}
                       onClick={(): void => handleFilterChange(index, undefined)}
                     >
@@ -359,11 +361,11 @@ export function QueryLine({
                 )}
                 {field.filters[index].type !== 'any' && (
                   <Button.Small
-                    aria-label={queryText('negate')}
+                    aria-label={queryText.negate()}
                     aria-pressed={field.filters[index].isNot}
                     className="aria-handled"
                     disabled={handleChange === undefined}
-                    title={queryText('negate')}
+                    title={queryText.negate()}
                     variant={
                       field.filters[index].isNot
                         ? className.redButton
@@ -383,13 +385,16 @@ export function QueryLine({
                   <Select
                     aria-label={
                       queryFieldFilters[field.filters[index].type]
-                        .description ?? commonText('filter')
+                        .description ?? commonText.filter()
                     }
                     className={customSelectElementBackground}
                     disabled={handleChange === undefined}
                     title={
-                      queryFieldFilters[field.filters[index].type]
-                        .description ?? commonText('filter')
+                      f.maybe(
+                        queryFieldFilters[field.filters[index].type]
+                          .description,
+                        whitespaceSensitive
+                      ) ?? commonText.filter()
                     }
                     value={filter.type}
                     onChange={({ target }): void => {
@@ -457,8 +462,8 @@ export function QueryLine({
       <div className="contents print:hidden">
         {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
           <Button.Small
-            aria-label={queryText('openMap')}
-            title={queryText('openMap')}
+            aria-label={queryText.openMap()}
+            title={queryText.openMap()}
             variant={className.blueButton}
             onClick={handleOpenMap}
           >
@@ -466,10 +471,10 @@ export function QueryLine({
           </Button.Small>
         ) : undefined}
         <Button.Small
-          aria-label={queryText('showButtonDescription')}
+          aria-label={queryText.showButtonDescription()}
           aria-pressed={field.isDisplay}
           className={`aria-handled ${isFieldComplete ? '' : 'invisible'}`}
-          title={queryText('showButtonDescription')}
+          title={queryText.showButtonDescription()}
           variant={
             field.isDisplay ? className.greenButton : className.grayButton
           }
@@ -483,18 +488,18 @@ export function QueryLine({
         <Button.Small
           aria-label={
             field.sortType === 'ascending'
-              ? queryText('ascendingSort')
+              ? queryText.ascendingSort()
               : field.sortType === 'descending'
-              ? queryText('descendingSort')
-              : queryText('sort')
+              ? queryText.descendingSort()
+              : queryText.sort()
           }
           className={isFieldComplete ? undefined : 'invisible'}
           title={
             field.sortType === 'ascending'
-              ? queryText('ascendingSort')
+              ? queryText.ascendingSort()
               : field.sortType === 'descending'
-              ? queryText('descendingSort')
-              : queryText('sort')
+              ? queryText.descendingSort()
+              : queryText.sort()
           }
           onClick={handleChange?.bind(undefined, {
             ...field,
@@ -511,15 +516,15 @@ export function QueryLine({
             : icons.circle}
         </Button.Small>
         <Button.Small
-          aria-label={commonText('moveUp')}
-          title={commonText('moveUp')}
+          aria-label={commonText.moveUp()}
+          title={commonText.moveUp()}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
         </Button.Small>
         <Button.Small
-          aria-label={commonText('moveDown')}
-          title={commonText('moveDown')}
+          aria-label={commonText.moveDown()}
+          title={commonText.moveDown()}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}

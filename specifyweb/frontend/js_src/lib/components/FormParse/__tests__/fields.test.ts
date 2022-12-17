@@ -132,7 +132,7 @@ theories(parseFormField, [
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
-      label: formsText('generateLabelOnSave'),
+      label: formsText.generateLabelOnSave(),
     },
   },
   {

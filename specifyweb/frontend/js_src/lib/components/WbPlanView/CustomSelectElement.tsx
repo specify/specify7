@@ -279,8 +279,8 @@ function Option({
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
-    isRelationship ? `(${formsText('relationship')})` : '',
-    isDefault ? `(${commonText('selected')})` : '',
+    isRelationship ? `(${formsText.relationship()})` : '',
+    isDefault ? `(${commonText.selected()})` : '',
   ]).join(' ');
 
   return (
@@ -312,17 +312,17 @@ function Option({
         />
       )}
       <span className="flex-1">
-        {optionLabel === '0' ? wbText('unmap') : optionLabel}
+        {optionLabel === '0' ? wbText.unmap() : optionLabel}
       </span>
       {hasArrow &&
         (isRelationship ? (
           <span
-            aria-label={wbText('relationship', tableLabel ?? '')}
+            aria-label={wbText.relationship({ tableName: tableLabel ?? '' })}
             className="print:hidden"
             role="img"
             title={
               typeof tableLabel === 'string'
-                ? wbText('relationship', tableLabel)
+                ? wbText.relationship({ tableName: tableLabel })
                 : undefined
             }
           >
@@ -601,7 +601,7 @@ export function CustomSelectElement({
           `}
         >
           {defaultOption.optionLabel === '0'
-            ? wbText('notMapped')
+            ? wbText.notMapped()
             : defaultOption.optionLabel}
         </span>
         {has('arrow') && (
@@ -834,7 +834,7 @@ export function SuggestionBox({
     <CustomSelectElement
       customSelectOptionGroups={{
         suggestedMappings: {
-          selectGroupLabel: wbText('suggestedMappings'),
+          selectGroupLabel: wbText.suggestedMappings(),
           selectOptionsData,
           hasIcon: false,
           hasArrow: false,

@@ -47,7 +47,7 @@ export function SchemaConfigFormat({
   )?.[KEY];
   return (
     <fieldset className="flex flex-col gap-1">
-      <legend>{schemaText('fieldFormat')}</legend>
+      <legend>{schemaText.fieldFormat()}</legend>
       {Object.entries<
         RR<
           ItemType,
@@ -62,12 +62,12 @@ export function SchemaConfigFormat({
         >
       >({
         none: {
-          label: commonText('none'),
+          label: commonText.none(),
           value: null,
           values: undefined,
         },
         formatted: {
-          label: schemaText('formatted'),
+          label: schemaText.formatted(),
           value: item.format,
           values: {
             '': schemaData.uiFormatters
@@ -76,7 +76,7 @@ export function SchemaConfigFormat({
                   [
                     name,
                     `${name} ${value}${
-                      isSystem ? ` (${schemaText('system')})` : ''
+                      isSystem ? ` (${schemaText.system()})` : ''
                     }`,
                   ] as const
               )
@@ -84,37 +84,37 @@ export function SchemaConfigFormat({
           },
         },
         webLink: {
-          label: schemaText('webLink'),
+          label: schemaText.webLink(),
           value: item.webLinkName,
           values: { '': schemaData.webLinks },
         },
         // REFACTOR: replace with a Query Combo Box?
         pickList: {
-          label: schemaText('pickList'),
+          label: schemaText.pickList(),
           value: item.pickListName,
           values: {
-            [schemaText('userDefined')]: userPickLists,
-            [schemaText('system')]: systemPickLists,
+            [schemaText.userDefined()]: userPickLists,
+            [schemaText.system()]: systemPickLists,
           },
           extraComponents: (
             <>
               {typeof currentPickListId === 'string' &&
               hasToolPermission('pickLists', 'read') ? (
                 <Link.Icon
-                  aria-label={commonText('edit')}
+                  aria-label={commonText.edit()}
                   className={className.dataEntryEdit}
                   href={`/specify/view/picklist/${currentPickListId}/`}
                   icon="pencil"
-                  title={commonText('edit')}
+                  title={commonText.edit()}
                 />
               ) : undefined}
               {hasToolPermission('pickLists', 'create') && (
                 <Link.Icon
-                  aria-label={commonText('add')}
+                  aria-label={commonText.add()}
                   className={className.dataEntryAdd}
                   href="/specify/view/picklist/new/"
                   icon="plus"
-                  title={commonText('add')}
+                  title={commonText.add()}
                 />
               )}
             </>

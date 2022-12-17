@@ -4,26 +4,24 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const userText = createDictionary({
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
   },
   collectionAccessDeniedDescription: {
-    'en-us': (collectionName: string) =>
-      `The currently logged in account does not have access to the
-       ${collectionName} collection.`,
-    'ru-ru': (collectionName: string) =>
-      `Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
-       коллекции ${collectionName}.`,
+    'en-us': `
+      The currently logged in account does not have access to the
+      {collectionName:string} collection.
+    `,
+    'ru-ru': `
+      Учетная запись, вошедшая в систему в данный момент, не имеет доступа к
+      коллекции {collectionName:string}.
+    `,
   },
   changePassword: {
     'en-us': 'Change Password',
@@ -55,8 +53,8 @@ export const userText = createDictionary({
       'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
   },
   helloMessage: {
-    'en-us': (userName: string) => `Hello, ${userName}!`,
-    'ru-ru': (userName: string) => `Привет, ${userName}!`,
+    'en-us': 'Hello, {userName:string}!',
+    'ru-ru': 'Привет, {userName:string}!',
   },
   oicWelcomeMessage: {
     'en-us': `
@@ -75,16 +73,18 @@ export const userText = createDictionary({
     'ru-ru': 'Войти с помощью Профиля Specify',
   },
   unknownOicUser: {
-    'en-us': (providerName: string) => `There is currently no Specify user
-      associated with your ${providerName} account. If you have a Specify user
-      name and password, you can enter them below to associate that user with
-      your ${providerName} account for future logins.
+    'en-us': `
+      There is currently no Specify user associated with your
+      {providerName:string} account. If you have a Specify user name and
+      password, you can enter them below to associate that user with
+      your {providerName:string} account for future logins.
     `,
-    'ru-ru': (providerName: string) => `В настоящее время нет пользователя
-      Specify, связанного с вашей учетной записью ${providerName}. Если у вас
+    'ru-ru': `
+      В настоящее время нет пользователя Specify, связанного с вашей учетной
+      записью {providerName:string}. Если у вас
       есть Specify имя пользователя и пароль, вы можете ввести их ниже, чтобы
-      связать этого пользователя с вашей учетной записью ${providerName} для
-      будущих входов в систему.
+      связать этого пользователя с вашей учетной записью {providerName:string}
+      для будущих входов в систему.
     `,
   },
   generateMasterKey: {
@@ -142,11 +142,11 @@ export const userText = createDictionary({
       У вас недостаточно прав для этого действия, или текещий сеанс был
       отключен.`,
   },
-  /*
-   * Used in field formatter if user doesn't have read access to the related
-   * table
-   */
   noPermission: {
+    comment: `
+      Used in field formatter if user doesn't have read access to the related
+      table
+    `,
     'en-us': 'NO PERMISSION',
     'ru-ru': 'ОТСУТСТВУЕТ РАЗРЕШЕНИЕ',
   },
@@ -161,10 +161,8 @@ export const userText = createDictionary({
       выполнение следующих действий:`,
   },
   permissionDeniedDialogSecondText: {
-    'en-us': (url: JSX.Element) => <>Permission denied when accessing {url}</>,
-    'ru-ru': (url: JSX.Element) => (
-      <>Разрешение не было дано при доступе к {url}</>
-    ),
+    'en-us': 'Permission denied when accessing <url />',
+    'ru-ru': 'Разрешение не было дано при доступе к <url />',
   },
   noAccessToCollections: {
     'en-us': `
@@ -365,12 +363,12 @@ export const userText = createDictionary({
     'ru-ru': 'Ссылка для приглашения пользователя',
   },
   userInviteLinkDescription: {
-    'en-us': (username: string) => `
-      Send the following link to ${username} to allow
+    'en-us': `
+      Send the following link to {userName:string} to allow
       them to log in for the first time.
     `,
-    'ru-ru': (username: string) => `
-      Отправьте эту ссылку ${username}, чтобы разрешить
+    'ru-ru': `
+      Отправьте эту ссылку {userName:string}, чтобы разрешить
       им войти в систему в первый раз.
     `,
   },
@@ -471,5 +469,3 @@ export const userText = createDictionary({
     'ru-ru': 'Параметры учетной записи',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

@@ -244,7 +244,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
       tableDefinition.idFieldName.toLowerCase()
     ] ??= {
-      name: useLabels ? commonText('id') : tableDefinition.idFieldName,
+      name: useLabels ? commonText.id() : tableDefinition.idFieldName,
       desc: null,
       format: null,
       picklistname: null,

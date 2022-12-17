@@ -35,8 +35,7 @@ export function EditRecordSet({
   ) : (
     <ResourceView
       // BUG: the message is stale if record set is renamed
-      deletionMessage={formsText(
-        'recordSetDeletionWarning',
+      deletionMessage={formsText.recordSetDeletionWarning(
         recordSet.get('name') ?? ''
       )}
       dialog="modal"
@@ -45,7 +44,7 @@ export function EditRecordSet({
           <>
             <span className="-ml-2 flex-1" />
             <Button.Blue onClick={handleOpenQuery}>
-              {commonText('query')}
+              {commonText.query()}
             </Button.Blue>
           </>
         ) : undefined

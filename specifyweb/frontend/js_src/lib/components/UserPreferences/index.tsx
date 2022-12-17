@@ -4,13 +4,15 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
-import { Container, H2 } from '../Atoms';
+import { StringToJsx } from '../../localization/utils';
+import { Container, H2, Key } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form } from '../Atoms/Form';
@@ -56,7 +58,7 @@ function Preferences(): JSX.Element {
 
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{preferencesText('preferences')}</H2>
+      <H2 className="text-2xl">{preferencesText.preferences()}</H2>
       <Form
         className="contents"
         onSubmit={(): void =>
@@ -83,9 +85,9 @@ function Preferences(): JSX.Element {
         </div>
         <div className="flex justify-end">
           {changesMade ? (
-            <Submit.Green>{commonText('save')}</Submit.Green>
+            <Submit.Green>{commonText.save()}</Submit.Green>
           ) : (
-            <Link.Gray href="/specify/">{commonText('close')}</Link.Gray>
+            <Link.Gray href="/specify/">{commonText.close()}</Link.Gray>
           )}
         </div>
       </Form>
@@ -179,7 +181,7 @@ export function PreferencesContent({
                             )
                           }
                         >
-                          {commonText('reset')}
+                          {commonText.reset()}
                         </Button.Small>
                       </div>
                     </div>
@@ -199,7 +201,7 @@ export function PreferencesContent({
                           title={
                             canEdit
                               ? undefined
-                              : preferencesText('adminsOnlyPreference')
+                              : preferencesText.adminsOnlyPreference()
                           }
                         >
                           <div className="flex flex-1 flex-col gap-2">
@@ -209,19 +211,11 @@ export function PreferencesContent({
                                 justify-end text-right
                               `}
                             >
-                              {typeof item.title === 'string' ? (
-                                item.title
-                              ) : (
-                                <span>{item.title}</span>
-                              )}
+                              <FormatString text={item.title} />
                             </p>
                             {item.description !== undefined && (
                               <p className="flex flex-1 justify-end text-right text-gray-500">
-                                {typeof item.description === 'string' ? (
-                                  item.description
-                                ) : (
-                                  <span>{item.description}</span>
-                                )}
+                                <FormatString text={item.description} />
                               </p>
                             )}
                           </div>
@@ -250,6 +244,27 @@ export function PreferencesContent({
         )
       )}
     </div>
+  );
+}
+
+function FormatString({
+  text,
+}: {
+  readonly text: JSX.Element | LocalizedString;
+}): JSX.Element {
+  return typeof text === 'object' ? (
+    text
+  ) : text.includes('<key>') ? (
+    <span>
+      <StringToJsx
+        components={{
+          key: (key) => <Key>{key}</Key>,
+        }}
+        string={text}
+      />
+    </span>
+  ) : (
+    <>{text}</>
   );
 }
 

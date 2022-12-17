@@ -16,7 +16,7 @@ export function uniquifyHeaders(
   headersToUniquify: RA<number> | false = false
 ): RA<string> {
   const headers = rawHeaders.map((header) =>
-    header.trim().length === 0 ? wbText('noHeader') : header
+    header.trim().length === 0 ? wbText.noHeader() : header
   );
   headers.forEach((header, index) => {
     if (

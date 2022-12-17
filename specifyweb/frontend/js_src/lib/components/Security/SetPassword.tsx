@@ -26,18 +26,18 @@ export function PasswordResetDialog({
   const { validationRef, setValidation } = useValidation(
     password === repeatPassword
       ? undefined
-      : userText('passwordsDoNotMatchError')
+      : userText.passwordsDoNotMatchError()
   );
 
   return (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('apply')}</Submit.Blue>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.apply()}</Submit.Blue>
         </>
       }
-      header={userText('setPassword')}
+      header={userText.setPassword()}
       onClose={handleClose}
     >
       <Form
@@ -47,11 +47,11 @@ export function PasswordResetDialog({
           if (password === repeatPassword) {
             handleSet(password);
             handleClose();
-          } else setValidation(userText('passwordsDoNotMatchError'));
+          } else setValidation(userText.passwordsDoNotMatchError());
         }}
       >
         <Label.Block>
-          {commonText('password')}
+          {commonText.password()}
           <Input.Generic
             autoComplete="new-password"
             minLength={MIN_PASSWORD_LENGTH}
@@ -62,7 +62,7 @@ export function PasswordResetDialog({
           />
         </Label.Block>
         <Label.Block>
-          {userText('confirmPassword')}
+          {userText.confirmPassword()}
           <Input.Generic
             autoComplete="new-password"
             forwardRef={validationRef}
@@ -89,7 +89,7 @@ export function SetPassword({
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {isNew ? userText('setPassword') : userText('changePassword')}
+        {isNew ? userText.setPassword() : userText.changePassword()}
       </Button.Small>
       {isOpen && (
         <PasswordResetDialog onClose={handleClose} onSet={handleSet} />

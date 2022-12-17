@@ -29,7 +29,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'user-tools',
-        title: headerText('userToolsDialogTitle'),
+        title: headerText.userToolsDialogTitle(),
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
@@ -37,7 +37,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'data-entry',
-        title: headerText('dataEntry'),
+        title: headerText.dataEntry(),
         element: () =>
           import('../Header/Forms').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
@@ -45,7 +45,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'trees',
-        title: commonText('trees'),
+        title: commonText.trees(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeSelectOverlay }) => TreeSelectOverlay
@@ -53,7 +53,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'interactions',
-        title: commonText('interactions'),
+        title: commonText.interactions(),
         children: [
           {
             index: true,
@@ -73,7 +73,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'queries',
-        title: commonText('queries'),
+        title: commonText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay
@@ -88,7 +88,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           },
           {
             path: 'new',
-            title: queryText('newQueryName'),
+            title: queryText.newQueryName(),
             element: () =>
               import('../Toolbar/Query').then(({ NewQuery }) => NewQuery),
           },
@@ -96,7 +96,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'record-sets',
-        title: commonText('recordSets'),
+        title: commonText.recordSets(),
         element: () =>
           import('../Toolbar/RecordSets').then(
             ({ RecordSetsOverlay }) => RecordSetsOverlay
@@ -104,13 +104,13 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'reports',
-        title: commonText('reports'),
+        title: commonText.reports(),
         element: () =>
           import('../Reports').then(({ ReportsOverlay }) => ReportsOverlay),
       },
       {
         path: 'data-sets',
-        title: commonText('workBench'),
+        title: commonText.workBench(),
         element: () =>
           import('../Toolbar/WbsDialog').then(
             ({ DataSetsOverlay }) => DataSetsOverlay
@@ -125,7 +125,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'tree-repair',
-        title: headerText('repairTree'),
+        title: headerText.repairTree(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeRepairOverlay }) => TreeRepairOverlay
@@ -133,7 +133,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'master-key',
-        title: userText('generateMasterKey'),
+        title: userText.generateMasterKey(),
         element: () =>
           import('../Toolbar/MasterKey').then(
             ({ MasterKeyOverlay }) => MasterKeyOverlay
@@ -141,7 +141,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'make-dwca',
-        title: headerText('makeDwca'),
+        title: headerText.makeDwca(),
         element: () =>
           import('../Toolbar/Dwca').then(
             ({ MakeDwcaOverlay }) => MakeDwcaOverlay
@@ -149,7 +149,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'force-update-feed',
-        title: headerText('updateExportFeed'),
+        title: headerText.updateExportFeed(),
         element: () =>
           import('../Toolbar/ForceUpdate').then(
             ({ ForceUpdateFeedOverlay }) => ForceUpdateFeedOverlay
@@ -157,7 +157,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'about',
-        title: welcomeText('aboutSpecify'),
+        title: welcomeText.aboutSpecify(),
         element: () =>
           import('../HomePage/AboutSpecify').then(
             ({ AboutOverlay }) => AboutOverlay

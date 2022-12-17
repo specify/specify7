@@ -43,11 +43,13 @@ export function MappingsControlPanel({
       {typeof handleAddNewHeader === 'function' && (
         <Button.Small
           onClick={(): void => {
-            handleAddNewHeader(wbText('newHeaderName', newHeaderIdRef.current));
+            handleAddNewHeader(
+              wbText.newHeaderName({ number: newHeaderIdRef.current })
+            );
             newHeaderIdRef.current += 1;
           }}
         >
-          {wbText('addNewColumn')}
+          {wbText.addNewColumn()}
         </Button.Small>
       )}
       <Label.Inline>
@@ -55,7 +57,7 @@ export function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        {wbText('revealHiddenFormFields')}
+        {wbText.revealHiddenFormFields()}
       </Label.Inline>
     </div>
   );
@@ -77,18 +79,18 @@ export function ValidationResults(props: {
       buttons={
         <>
           <Button.Blue onClick={props.onDismissValidation}>
-            {wbText('continueEditing')}
+            {wbText.continueEditing()}
           </Button.Blue>
           <Button.Orange onClick={props.onSave}>
-            {wbText('saveUnfinished')}
+            {wbText.saveUnfinished()}
           </Button.Orange>
         </>
       }
-      header={wbText('validationFailedDialogHeader')}
+      header={wbText.validationFailedDialogHeader()}
       modal={false}
       onClose={props.onDismissValidation}
     >
-      <p>{wbText('validationFailedDialogText')}</p>
+      <p>{wbText.validationFailedDialogText()}</p>
       <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
@@ -152,7 +154,7 @@ export function MappingView({
 
   return (
     <section
-      aria-label={wbText('mappingEditor')}
+      aria-label={wbText.mappingEditor()}
       className={`
         h-[var(--mapping-view-height)] max-h-[50vh]
         min-h-[theme(spacing.40)] resize-y overflow-x-auto
@@ -190,15 +192,15 @@ export function EmptyDataSetDialog({
 
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={wbText('emptyDataSetDialogHeader')}
+      buttons={commonText.close()}
+      header={wbText.emptyDataSetDialogHeader()}
       isOpen={showDialog}
       onClose={handleClose}
     >
-      {wbText('emptyDataSetDescription')}
+      {wbText.emptyDataSetDescription()}
       <br />
       <br />
-      {wbText('emptyDataSetSecondDescription')}
+      {wbText.emptyDataSetSecondDescription()}
     </Dialog>
   );
 }
@@ -222,20 +224,20 @@ export function mappingOptionsMenu({
     matchBehavior: {
       optionLabel: (
         <>
-          {wbText('matchBehavior')}
+          {wbText.matchBehavior()}
           <Ul>
             {Object.entries({
               ignoreWhenBlank: {
-                title: wbText('ignoreWhenBlank'),
-                description: wbText('ignoreWhenBlankDescription'),
+                title: wbText.ignoreWhenBlank(),
+                description: wbText.ignoreWhenBlankDescription(),
               },
               ignoreAlways: {
-                title: wbText('ignoreAlways'),
-                description: wbText('ignoreAlwaysDescription'),
+                title: wbText.ignoreAlways(),
+                description: wbText.ignoreAlwaysDescription(),
               },
               ignoreNever: {
-                title: wbText('ignoreNever'),
-                description: wbText('ignoreNeverDescription'),
+                title: wbText.ignoreNever(),
+                description: wbText.ignoreNeverDescription(),
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
@@ -263,7 +265,7 @@ export function mappingOptionsMenu({
             disabled={isReadOnly}
             onValueChange={handleToggleAllowNulls}
           />{' '}
-          {wbText('allowNullValues')}
+          {wbText.allowNullValues()}
         </Label.Inline>
       ),
     },
@@ -280,7 +282,7 @@ export function mappingOptionsMenu({
                 )
               }
             />{' '}
-            <span id={id('default-value')}>{wbText('useDefaultValue')}</span>
+            <span id={id('default-value')}>{wbText.useDefaultValue()}</span>
             {columnOptions.default !== null && ':'}
           </Label.Inline>
           {typeof columnOptions.default === 'string' && (
@@ -289,7 +291,7 @@ export function mappingOptionsMenu({
               <AutoGrowTextArea
                 aria-labelledby={id('default-value')}
                 disabled={isReadOnly}
-                title={wbText('defaultValue')}
+                title={wbText.defaultValue()}
                 value={columnOptions.default || ''}
                 onValueChange={handleChangeDefaultValue}
               />
@@ -297,7 +299,7 @@ export function mappingOptionsMenu({
           )}
         </>
       ),
-      title: wbText('useDefaultValueDescription'),
+      title: wbText.useDefaultValueDescription(),
     },
   };
 }
@@ -311,17 +313,17 @@ export function ChangeBaseTable({
     <ButtonWithConfirmation
       dialogButtons={(confirm) => (
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Orange onClick={confirm}>
-            {schemaText('changeBaseTable')}
+            {schemaText.changeBaseTable()}
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText('goToBaseTableDialogHeader')}
-      dialogMessage={wbText('goToBaseTableDialogText')}
+      dialogHeader={wbText.goToBaseTableDialogHeader()}
+      dialogMessage={wbText.goToBaseTableDialogText()}
       onConfirm={handleClick}
     >
-      {wbText('baseTable')}
+      {wbText.baseTable()}
     </ButtonWithConfirmation>
   );
 }
@@ -337,18 +339,18 @@ export function ReRunAutoMapper({
     <ButtonWithConfirmation
       dialogButtons={(confirm) => (
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Orange onClick={confirm}>
-            {wbText('reRunAutoMapper')}
+            {wbText.reRunAutoMapper()}
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText('reRunAutoMapperDialogHeader')}
-      dialogMessage={wbText('reRunAutoMapperDialogText')}
+      dialogHeader={wbText.reRunAutoMapperDialogHeader()}
+      dialogMessage={wbText.reRunAutoMapperDialogText()}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
-      {wbText('autoMapper')}
+      {wbText.autoMapper()}
     </ButtonWithConfirmation>
   );
 }
@@ -362,7 +364,7 @@ export function ToggleMappingPath({
 }): JSX.Element {
   return (
     <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
-      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+      {showMappingView ? wbText.hideFieldMapper() : wbText.showFieldMapper()}
     </Button.Small>
   );
 }
@@ -398,28 +400,28 @@ export function MustMatch({
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
-        {wbText('mustMatch')}
+        {wbText.mustMatch()}
       </Button.Small>
       {typeof localPreferences === 'object' && (
         <Dialog
           buttons={
             <Button.Blue onClick={handleDialogClose}>
               {Object.keys(localPreferences).length === 0
-                ? commonText('close')
-                : commonText('apply')}
+                ? commonText.close()
+                : commonText.apply()}
             </Button.Blue>
           }
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={wbText('matchingLogicDialogTitle')}
+          header={wbText.matchingLogicDialogTitle()}
           onClose={handleDialogClose}
         >
           {Object.keys(localPreferences).length === 0 ? (
-            wbText('matchingLogicUnavailableDialogText')
+            wbText.matchingLogicUnavailableDialogText()
           ) : (
             <>
-              <p id={id('description')}>{wbText('matchingLogicDialogText')}</p>
+              <p id={id('description')}>{wbText.matchingLogicDialogText()}</p>
               <table
                 aria-describedby={id('description')}
                 className="grid-table grid-cols-[auto_auto] gap-2"
@@ -427,10 +429,10 @@ export function MustMatch({
                 <thead>
                   <tr>
                     <th className="justify-center" scope="col">
-                      {schemaText('tableName')}
+                      {schemaText.tableName()}
                     </th>
                     <th className="justify-center" scope="col">
-                      {wbText('mustMatch')}
+                      {wbText.mustMatch()}
                     </th>
                   </tr>
                 </thead>

@@ -58,7 +58,7 @@ export function QueryToMap({
   return localityMappings.length === 0 ? null : (
     <>
       <Button.Small disabled={results.length === 0} onClick={handleOpen}>
-        {commonText('geoMap')}
+        {commonText.geoMap()}
       </Button.Small>
       {isOpen && ids.length > 0 ? (
         <Dialog
@@ -230,16 +230,17 @@ function Dialog({
        * That is needed so that the map can zoom in to correct place
        */
       forwardRef={setMap}
-      header={`${commonText('geoMap')}${
+      header={`${commonText.geoMap()}${
         typeof totalCount === 'number'
           ? ` - ${
               results.length === totalCount
-                ? queryText('queryMapAll', formatNumber(results.length))
-                : queryText(
-                    'queryMapSubset',
-                    formatNumber(results.length),
-                    formatNumber(totalCount)
-                  )
+                ? queryText.queryMapAll({
+                    plotted: formatNumber(results.length),
+                  })
+                : queryText.queryMapSubset({
+                    plotted: formatNumber(results.length),
+                    total: formatNumber(totalCount),
+                  })
             }`
           : ''
       }`}

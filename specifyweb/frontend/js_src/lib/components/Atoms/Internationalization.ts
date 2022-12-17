@@ -108,7 +108,7 @@ const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
   type: 'dateTimeField',
 });
 export const dateParts = {
-  fullDate: commonText('fullDate'),
+  fullDate: commonText.fullDate(),
   day: capitalize(datePartLocalizer.of('day')),
   month: capitalize(datePartLocalizer.of('month')),
   year: capitalize(datePartLocalizer.of('year')),

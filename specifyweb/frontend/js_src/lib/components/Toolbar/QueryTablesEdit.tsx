@@ -31,7 +31,7 @@ export function QueryTablesEdit({
       defaultTables={defaultQueryTablesConfig}
       isNoRestrictionMode={isNoRestrictionMode}
       models={models}
-      header={queryText('configureQueryTables')}
+      header={queryText.configureQueryTables()}
       onChange={setModels}
       onClose={handleClose}
     />
@@ -132,10 +132,10 @@ export function TablesListEdit({
       buttons={
         <>
           <Button.Blue onClick={(): void => handleRawChange([])}>
-            {commonText('reset')}
+            {commonText.reset()}
           </Button.Blue>
           <span className="-ml-2 flex-1" />
-          <Button.Blue onClick={handleClose}>{commonText('close')}</Button.Blue>
+          <Button.Blue onClick={handleClose}>{commonText.close()}</Button.Blue>
         </>
       }
       header={header}
@@ -146,18 +146,18 @@ export function TablesListEdit({
           <Button.Icon
             disabled={selectedSubset.length === 0}
             icon="chevronUp"
-            title={commonText('moveUp')}
+            title={commonText.moveUp()}
             onClick={handleMoveUp}
           />
           <Button.Icon
             disabled={selectedSubset.length === 0}
             icon="chevronDown"
-            title={commonText('moveDown')}
+            title={commonText.moveDown()}
             onClick={handleMoveDown}
           />
         </div>
         <Label.Block>
-          {schemaText('selectedTables')}
+          {schemaText.selectedTables()}
           <Select
             className="flex-1"
             multiple
@@ -179,19 +179,19 @@ export function TablesListEdit({
             <Button.Icon
               disabled={possibleSubset.length === 0}
               icon="chevronLeft"
-              title={commonText('add')}
+              title={commonText.add()}
               onClick={handleAdd}
             />
             <Button.Icon
               disabled={selectedSubset.length === 0}
               icon="chevronRight"
-              title={commonText('remove')}
+              title={commonText.remove()}
               onClick={handleRemove}
             />
           </div>
         </div>
         <Label.Block>
-          {schemaText('possibleTables')}
+          {schemaText.possibleTables()}
           <Select
             className="flex-1"
             multiple

@@ -8,9 +8,9 @@ import { softFail } from '../Errors/Crash';
 const copyMessageTimeout = 3000;
 
 export function CopyButton({
-                             text,
-                             label = commonText('copyToClipboard'),
-                           }: {
+  text,
+  label = commonText.copyToClipboard(),
+}: {
   readonly text: string;
   readonly label?: string;
 }): JSX.Element {
@@ -25,7 +25,7 @@ export function CopyButton({
         })
       }
     >
-      {wasCopied ? commonText('copied') : label}
+      {wasCopied ? commonText.copied() : label}
     </Button.Green>
   );
 }
@@ -59,4 +59,3 @@ async function fallbackCopyTextToClipboard(text: string) {
   textArea.remove();
   return promise;
 }
-

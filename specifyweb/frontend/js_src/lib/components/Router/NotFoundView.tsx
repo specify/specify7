@@ -12,21 +12,21 @@ export function NotFoundView({
 }: {
   readonly container?: boolean;
 }): JSX.Element {
-  useTitle(mainText('pageNotFound'));
+  useTitle(mainText.pageNotFound());
   const content = (
     <Container.Center className="flex flex-1">
       <div className="flex flex-1 flex-col items-center justify-center gap-2">
         <h2
-          aria-label={mainText('pageNotFound')}
+          aria-label={mainText.pageNotFound()}
           className="py-2 text-9xl text-indigo-300"
         >
           {Http.NOT_FOUND}
         </h2>
-        <p>{mainText('nothingWasFound')}</p>
-        <p>{mainText('pageNotFoundDescription')}</p>
+        <p>{mainText.nothingWasFound()}</p>
+        <p>{mainText.pageNotFoundDescription()}</p>
         <Link.Default href="/specify/">
           {icons.arrowLeft}
-          {mainText('returnToHomepage')}
+          {mainText.returnToHomepage()}
         </Link.Default>
       </div>
     </Container.Center>

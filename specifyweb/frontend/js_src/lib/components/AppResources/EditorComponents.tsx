@@ -32,7 +32,7 @@ export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
 ): JSX.Element =>
   type === 'viewSet' ? (
-    <span title={commonText('formDefinitions')} aria-hidden>
+    <span title={commonText.formDefinitions()} aria-hidden>
       {appResourceTypes.viewSets.icon}
     </span>
   ) : (
@@ -55,7 +55,7 @@ export function AppResourceEditButton({
       <DataEntry.Edit onClick={handleEditingMeta} />
       {isEditingMeta && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           header={title}
           onClose={handleEditedMeta}
         >
@@ -76,12 +76,12 @@ export function AppResourceLoad({
   return (
     <>
       <Button.Green className="whitespace-nowrap" onClick={handleOpen}>
-        {resourcesText('loadFile')}
+        {resourcesText.loadFile()}
       </Button.Green>
       {isOpen && (
         <Dialog
-          buttons={commonText('cancel')}
-          header={resourcesText('loadFile')}
+          buttons={commonText.cancel()}
+          header={resourcesText.loadFile()}
           onClose={handleClose}
         >
           <FilePicker
@@ -121,7 +121,7 @@ export function AppResourceDownload({
         )
       }
     >
-      {notificationsText('download')}
+      {notificationsText.download()}
     </Button.Green>
   );
 }

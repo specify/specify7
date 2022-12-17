@@ -35,9 +35,9 @@ export function SchemaConfigField({
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
-    <SchemaConfigColumn header={`${schemaText('field')}: ${item.name}`}>
+    <SchemaConfigColumn header={`${schemaText.field()}: ${item.name}`}>
       <Label.Block>
-        {schemaText('caption')}
+        {schemaText.caption()}
         <Input.Text
           isReadOnly={isReadOnly}
           maxLength={maxSchemaValueLength}
@@ -47,7 +47,7 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText('description')}
+        {schemaText.description()}
         <AutoGrowTextArea
           className="resize-y"
           isReadOnly={isReadOnly}
@@ -57,11 +57,11 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {schemaText('length')}
+        {schemaText.length()}
         <Input.Number isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
-        {schemaText('type')}
+        {schemaText.type()}
         <Input.Text
           isReadOnly
           value={javaTypeToHuman(
@@ -76,7 +76,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isHidden', value)}
         />
-        {schemaText('hideField')}
+        {schemaText.hideField()}
       </Label.Inline>
       <Label.Inline>
         <Input.Checkbox
@@ -87,7 +87,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {schemaText('required')}
+        {schemaText.required()}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}

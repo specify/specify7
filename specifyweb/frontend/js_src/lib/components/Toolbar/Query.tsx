@@ -84,14 +84,14 @@ export function QueryListDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {(hasToolPermission('queryBuilder', 'create') ||
             hasPermission('/querybuilder/query', 'execute')) && (
-            <Link.Blue href={newQueryUrl}>{commonText('new')}</Link.Blue>
+            <Link.Blue href={newQueryUrl}>{commonText.new()}</Link.Blue>
           )}
         </>
       }
-      header={queryText('queriesDialogTitle', queries.length)}
+      header={queryText.queriesDialogTitle({ count: queries.length })}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
@@ -133,7 +133,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {commonText('name')}
+              {commonText.name()}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -141,7 +141,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {commonText('created')}
+              {commonText.created()}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -152,7 +152,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {commonText('modified')}
+              {commonText.modified()}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}

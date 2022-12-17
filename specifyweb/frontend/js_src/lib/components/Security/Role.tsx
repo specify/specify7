@@ -82,7 +82,7 @@ export function RoleView({
   const navigate = useNavigate();
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
-    mainText('leavePageDialogText')
+    mainText.leavePageDialogText()
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>
@@ -106,7 +106,7 @@ export function RoleView({
         handleSave(role);
       }}
     >
-      <h3 className="text-xl">{`${userText('role')} ${role.name}`}</h3>
+      <h3 className="text-xl">{`${userText.role()} ${role.name}`}</h3>
       <AppTitle title={role.name} type="form" />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}
@@ -115,7 +115,7 @@ export function RoleView({
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Block className={className.limitedWidth}>
-            {commonText('name')}
+            {commonText.name()}
             <Input.Text
               maxLength={roleNameMaxLength}
               required
@@ -127,7 +127,7 @@ export function RoleView({
           </Label.Block>
         )}
         <Label.Block className={className.limitedWidth}>
-          {schemaText('description')}
+          {schemaText.description()}
           <AutoGrowTextArea
             isReadOnly={isReadOnly}
             value={role.description}
@@ -139,7 +139,7 @@ export function RoleView({
         {roleUsers}
         <SecurityPoliciesWrapper
           collapsable={false}
-          header={userText('rolePolicies')}
+          header={userText.rolePolicies()}
           policies={role.policies}
         >
           <SecurityPolicies
@@ -169,7 +169,7 @@ export function RoleView({
                     })
             }
           >
-            {commonText('remove')}
+            {commonText.remove()}
           </Button.Red>
         ) : undefined}
         {changesMade ? (
@@ -181,10 +181,10 @@ export function RoleView({
               navigate(closeUrl);
             }}
           >
-            {commonText('cancel')}
+            {commonText.cancel()}
           </Link.Red>
         ) : (
-          <Link.Blue href={closeUrl}>{commonText('close')}</Link.Blue>
+          <Link.Blue href={closeUrl}>{commonText.close()}</Link.Blue>
         )}
         <span className="-ml-2 flex-1" />
         {typeof role.id === 'number' && (
@@ -200,7 +200,7 @@ export function RoleView({
         )}
         {!isReadOnly && (
           <Submit.Green disabled={!changesMade}>
-            {commonText('save')}
+            {commonText.save()}
           </Submit.Green>
         )}
       </div>
@@ -208,16 +208,16 @@ export function RoleView({
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Red onClick={handleDelete}>
-                {commonText('delete')}
+                {commonText.delete()}
               </Button.Red>
             </>
           }
-          header={userText('deleteRoleWithUsers')}
+          header={userText.deleteRoleWithUsers()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {userText('deleteRoleWithUsersDescription')}
+          {userText.deleteRoleWithUsersDescription()}
         </Dialog>
       )}
     </Form>

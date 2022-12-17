@@ -36,7 +36,7 @@ export function QueryToolbar({
           checked={showHiddenFields}
           onValueChange={handleToggleHidden}
         />
-        {wbText('revealHiddenFormFields')}
+        {wbText.revealHiddenFormFields()}
       </Label.Inline>
       <span className="-ml-2 flex-1" />
       {hasPermission('/querybuilder/query', 'execute') && (
@@ -52,14 +52,14 @@ export function QueryToolbar({
                 disabled={isEmpty}
                 onChange={handleToggleDistinct}
               />
-              {queryText('distinct')}
+              {queryText.distinct()}
             </Label.Inline>
           )}
           <Button.Small disabled={isEmpty} onClick={handleRunCountOnly}>
-            {queryText('countOnly')}
+            {queryText.countOnly()}
           </Button.Small>
           <Submit.Small disabled={isEmpty} onClick={handleSubmitClick}>
-            {commonText('query')}
+            {commonText.query()}
           </Submit.Small>
         </>
       )}

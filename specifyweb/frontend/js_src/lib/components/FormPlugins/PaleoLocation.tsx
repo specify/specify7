@@ -47,34 +47,34 @@ export function PaleoLocationMapPlugin({
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
       >
-        {formsText('paleoMap')}
+        {formsText.paleoMap()}
       </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('unsupportedFormDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.unsupportedFormDialogHeader()}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
         >
-          {formsText('unsupportedFormDialogText')}
+          {formsText.unsupportedFormDialogText()}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoRequiresGeographyDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.paleoRequiresGeographyDialogHeader()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText('paleoRequiresGeographyDialogText')}
+          {formsText.paleoRequiresGeographyDialogText()}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoMap')}
+          buttons={commonText.close()}
+          header={formsText.paleoMap()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           <iframe
@@ -83,7 +83,7 @@ export function PaleoLocationMapPlugin({
               width: '800px',
               height: '600px',
             }}
-            title={formsText('paleoMap')}
+            title={formsText.paleoMap()}
           />
         </Dialog>
       )}

@@ -102,10 +102,10 @@ function AppResourcesExpand({
           handleChange(buildAppResourceConformation(resourcesTree))
         }
       >
-        {commonText('expandAll')}
+        {commonText.expandAll()}
       </Button.Blue>
       <Button.Blue className="grow" onClick={(): void => handleChange([])}>
-        {commonText('collapseAll')}
+        {commonText.collapseAll()}
       </Button.Blue>
     </>
   );
@@ -169,7 +169,7 @@ function TreeItem({
           />
           {subCategories.length > 0 && (
             <Ul
-              aria-label={resourcesText('subCategories')}
+              aria-label={resourcesText.subCategories()}
               className="flex flex-col gap-2 pl-4"
               role="group"
             >
@@ -226,7 +226,7 @@ function TreeItemResources({
 
   return typeof directory === 'object' &&
     (resources.length > 0 || canCreate) ? (
-    <Ul aria-label={resourcesText('resources')} className="pl-4" role="group">
+    <Ul aria-label={resourcesText.resources()} className="pl-4" role="group">
       {resources.map((resource, index) => (
         <li key={index}>
           <ResourceItem resource={resource} onOpen={handleOpen} />
@@ -236,7 +236,7 @@ function TreeItemResources({
         <li>
           <Link.Default href={`/specify/resources/create/${key}/`}>
             <span className={className.dataEntryAdd}>{icons.plus}</span>
-            {resourcesText('addResource')}
+            {resourcesText.addResource()}
           </Link.Default>
         </li>
       )}
@@ -287,7 +287,7 @@ function ResourceItem({
       }
     >
       {appResourceIcon(resource.type)}
-      {resource.name || commonText('nullInline')}
+      {resource.name || commonText.nullInline()}
     </ActiveLink>
   );
 }

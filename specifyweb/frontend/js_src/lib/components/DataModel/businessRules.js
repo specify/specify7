@@ -178,13 +178,12 @@ var enabled = true;
     var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
         const fieldName = parentFldInfo ?
           parentFldInfo.label :
-          formsText('database');
+          formsText.database();
         return fldInfo.length > 1 ?
-            formsText('valuesOfMustBeUniqueToField',
-              fieldName,
+            formsText.valuesOfMustBeUniqueToField(fieldName,
               formatList(fldInfo.map(fld=>fld.label)),
             ) :
-            formsText('valueMustBeUniqueToField',fieldName);
+            formsText.valueMustBeUniqueToField(fieldName);
     };
 
     var uniqueIn = function(toOneField, resource, valueFieldArg) {

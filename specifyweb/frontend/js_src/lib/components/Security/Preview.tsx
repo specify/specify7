@@ -58,11 +58,11 @@ export function PreviewPermissions({
   return query === false ? null : (
     <details open={isCollapsed}>
       <Summary className="text-xl" onToggle={setCollapsed}>
-        {userText('userPermissionPreview')}
+        {userText.userPermissionPreview()}
       </Summary>
       {typeof query === 'object' ? (
         <>
-          {changesMade && <p>{userText('outOfDateWarning')}</p>}
+          {changesMade && <p>{userText.outOfDateWarning()}</p>}
           <div className="flex flex-1 flex-wrap gap-4">
             <div>
               <PreviewTables
@@ -75,7 +75,7 @@ export function PreviewPermissions({
                   className={className.headerGray}
                   onToggle={setSystemCollapsed}
                 >
-                  {userText('advancedTables')}
+                  {userText.advancedTables()}
                 </Summary>
                 <PreviewTables
                   getOpenRoleUrl={getOpenRoleUrl}
@@ -101,7 +101,7 @@ export function PreviewPermissions({
           </div>
         </>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </details>
   );

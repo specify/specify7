@@ -144,21 +144,21 @@ export function QueryLoanReturn({
           })
         }
       >
-        {formsText('returnLoan')}
+        {formsText.returnLoan()}
       </QueryButton>
       {state.type === 'Dialog' && Array.isArray(toReturn) ? (
         <Dialog
           buttons={
             toReturn.length === 0 ? (
-              commonText('close')
+              commonText.close()
             ) : (
               <>
-                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 <Submit.Green
                   form={id('form')}
-                  title={formsText('returnSelectedPreparations')}
+                  title={formsText.returnSelectedPreparations()}
                 >
-                  {formsText('return')}
+                  {formsText.return()}
                 </Submit.Green>
               </>
             )
@@ -167,7 +167,7 @@ export function QueryLoanReturn({
           onClose={(): void => setState({ type: 'Main' })}
         >
           {toReturn.length === 0 ? (
-            queryText('noPreparationsToReturn')
+            queryText.noPreparationsToReturn()
           ) : (
             <Form
               id={id('form')}
@@ -195,7 +195,7 @@ export function QueryLoanReturn({
                           .label
                       }
                     </th>
-                    <th scope="col">{commonText('quantity')}</th>
+                    <th scope="col">{commonText.quantity()}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -217,11 +217,11 @@ export function QueryLoanReturn({
       ) : undefined}
       {state.type === 'Returned' && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           header={schema.models.LoanPreparation.label}
           onClose={(): void => setState({ type: 'Main' })}
         >
-          {queryText('itemsReturned')}
+          {queryText.itemsReturned()}
         </Dialog>
       )}
     </>

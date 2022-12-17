@@ -8,8 +8,6 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
@@ -192,5 +190,3 @@ export const schemaText = createDictionary({
     'ru-ru': 'Возможные таблицы',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

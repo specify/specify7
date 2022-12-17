@@ -40,7 +40,7 @@ export function WbImportView(): JSX.Element {
 
   return (
     <Container.Full>
-      <H2>{wbText('wbImportHeader')}</H2>
+      <H2>{wbText.wbImportHeader()}</H2>
       <div className="w-96">
         <FilePicker
           acceptedFormats={['.csv', '.tsv', '.psv', '.txt', '.xls', '.xlsx']}
@@ -133,7 +133,7 @@ function ChooseEncoding({
 }): JSX.Element {
   return (
     <label className="contents">
-      {wbText('characterEncoding')}
+      {wbText.characterEncoding()}
       <Select
         disabled={isDisabled}
         value={encoding}
@@ -148,11 +148,11 @@ function ChooseEncoding({
 }
 
 const delimiters: RA<AutoCompleteItem<string>> = [
-  { label: wbText('comma'), searchValue: ',', data: ',' },
-  { label: wbText('tab'), searchValue: '\t', data: '\t' },
-  { label: wbText('semicolon'), searchValue: ';', data: ';' },
-  { label: wbText('space'), searchValue: ' ', data: ' ' },
-  { label: wbText('pipe'), searchValue: '|', data: '|' },
+  { label: wbText.comma(), searchValue: ',', data: ',' },
+  { label: wbText.tab(), searchValue: '\t', data: '\t' },
+  { label: wbText.semicolon(), searchValue: ';', data: ';' },
+  { label: wbText.space(), searchValue: ' ', data: ' ' },
+  { label: wbText.pipe(), searchValue: '|', data: '|' },
 ];
 
 function ChooseDelimiter({
@@ -174,7 +174,7 @@ function ChooseDelimiter({
 
   return (
     <label className="contents">
-      {wbText('delimiter')}
+      {wbText.delimiter()}
       <AutoComplete<string>
         aria-label={undefined}
         delay={0}
@@ -189,7 +189,7 @@ function ChooseDelimiter({
         minLength={0}
         source={delimiters}
         value={
-          state ?? (state === delimiter ? wbText('determineAutomatically') : '')
+          state ?? (state === delimiter ? wbText.determineAutomatically() : '')
         }
         onChange={({ data }): void => handleChange(data)}
         onCleared={(): void => {
@@ -234,7 +234,7 @@ function Layout({
           disabled={preview === undefined}
           onClick={(): void => handleImport(dataSetName, hasHeader)}
         >
-          {wbText('importFile')}
+          {wbText.importFile()}
         </Button.Gray>
       </div>
       {typeof preview === 'string' ? (
@@ -257,7 +257,7 @@ function ChooseName({
 }): JSX.Element {
   return (
     <label className="contents">
-      {wbText('chooseDataSetName')}
+      {wbText.chooseDataSetName()}
       <Input.Text
         maxLength={getMaxDataSetLength()}
         required
@@ -280,7 +280,7 @@ function ToggleHeader({
 }): JSX.Element {
   return (
     <label className="contents">
-      {wbText('firstRowIsHeader')}
+      {wbText.firstRowIsHeader()}
       <span>
         <Input.Checkbox
           checked={hasHeader}
@@ -295,7 +295,7 @@ function ToggleHeader({
 function BadImport({ error }: { readonly error: string }): JSX.Element {
   return (
     <p role="alert">
-      {wbText('errorImporting')}
+      {wbText.errorImporting()}
       <br />
       {error}
     </p>
@@ -313,7 +313,7 @@ function Preview({
 
   return (
     <div>
-      <H3>{wbText('previewDataSet')}</H3>
+      <H3>{wbText.previewDataSet()}</H3>
       <div className="overflow-auto">
         <table>
           <thead>

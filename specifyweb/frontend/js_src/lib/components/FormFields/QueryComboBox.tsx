@@ -200,7 +200,7 @@ function ProtectedQueryComboBox({
                       resource,
                     }))
               )
-          : { label: userText('noPermission'), resource: undefined },
+          : { label: userText.noPermission(), resource: undefined },
       [version, value, resource, field, typeSearch]
     ),
     false
@@ -390,7 +390,7 @@ function ProtectedQueryComboBox({
         value={
           formatted?.label ??
           formattedRef.current?.formatted ??
-          commonText('loading')
+          commonText.loading()
         }
         onChange={({ data, label }): void => {
           formattedRef.current = { value: data, formatted: label.toString() };
@@ -532,11 +532,13 @@ function ProtectedQueryComboBox({
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={userText('collectionAccessDenied')}
+          buttons={commonText.close()}
+          header={userText.collectionAccessDenied()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {userText('collectionAccessDeniedDescription', state.collectionName)}
+          {userText.collectionAccessDeniedDescription({
+            collectionName: state.collectionName,
+          })}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

@@ -33,8 +33,8 @@ L.Icon.Default.mergeOptions({
 L.Control.FullScreen = L.Control.extend({
   onAdd() {
     const button = L.DomUtil.create('button') as HTMLImageElement;
-    button.title = localityText('toggleFullScreen');
-    button.ariaLabel = localityText('toggleFullScreen');
+    button.title = localityText.toggleFullScreen();
+    button.ariaLabel = localityText.toggleFullScreen();
     button.classList.add(
       className.button,
       'bg-white',

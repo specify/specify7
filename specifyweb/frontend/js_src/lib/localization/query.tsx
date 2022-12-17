@@ -4,20 +4,18 @@
  * @module
  */
 
-import { createDictionary, whitespaceSensitive } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const queryText = createDictionary({
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
   },
   queryBoxDescription: {
-    'en-us': (fieldNames: string) => `Searches: ${fieldNames}`,
-    'ru-ru': (fieldNames: string) => `Поисковые запросы: ${fieldNames}`,
+    'en-us': 'Searches: {fieldNames:string}',
+    'ru-ru': 'Поисковые запросы: {fieldNames:string}',
   },
   any: {
     'en-us': 'Any',
@@ -103,25 +101,22 @@ export const queryText = createDictionary({
       файл будет готов к загрузке.`,
   },
   invalidPicklistValue: {
-    'en-us': (value: string) => `${value} (current, invalid value)`,
-    'ru-ru': (value: string) => `${value} (текущее, недопустимое значение)`,
+    'en-us': '{value:string} (current, invalid value)',
+    'ru-ru': '{value:string} (текущее, недопустимое значение)',
   },
-  // QueryTask
   queryTaskTitle: {
-    'en-us': (queryName: string) => `Query: ${queryName}`,
-    'ru-ru': (queryName: string) => `Запрос: ${queryName}`,
+    'en-us': 'Query: {queryName:string}',
+    'ru-ru': 'Запрос: {queryName:string}',
   },
   queryRecordSetTitle: {
-    'en-us': (queryName: string, recordSetName: string) =>
-      `Query: "${queryName}" on Record Set: "${recordSetName}"`,
-    'ru-ru': (queryName: string, recordSetName: string) =>
-      `Запрос: "${queryName}" на наборе записей: "${recordSetName}"`,
+    'en-us':
+      'Query: "{queryName:string}" on Record Set: "{recordSetName:string}"',
+    'ru-ru':
+      'Запрос: "{queryName:string}" на наборе записей: "{recordSetName:string}"',
   },
   treeQueryName: {
-    'en-us': (tableName: string, nodeFullName: string) =>
-      `${tableName} using "${nodeFullName}"`,
-    'ru-ru': (tableName: string, nodeFullName: string) =>
-      `${tableName} с использованием "${nodeFullName}"`,
+    'en-us': '{tableName:string} using "{nodeFullName:string}',
+    'ru-ru': '{tableName:string} с использованием "{nodeFullName:string}"',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
@@ -190,14 +185,16 @@ export const queryText = createDictionary({
     'ru-ru': 'Подобно',
   },
   likeDescription: {
-    'en-us': whitespaceSensitive(`
-      Use "%" to match any number of characters.<br>
+    'en-us': `
+      Use "%" to match any number of characters.
+      
       Use "_" to match a single character
-    `),
-    'ru-ru': whitespaceSensitive(`
-      Используйте «%» для соответствия любому количеству символов.<br>
+    `,
+    'ru-ru': `
+      Используйте «%» для соответствия любому количеству символов.
+      
       Используйте «_» для соответствия одному символу
-    `),
+    `,
   },
   equal: {
     'en-us': 'Equal',
@@ -284,8 +281,8 @@ export const queryText = createDictionary({
     'ru-ru': 'Items have been returned',
   },
   queryResults: {
-    'en-us': (tableName: string) => `Query Results: ${tableName}`,
-    'ru-ru': (tableName: string) => `Результаты запроса: ${tableName}`,
+    'en-us': 'Query Results: {tableName:string}',
+    'ru-ru': 'Результаты запроса: {tableName:string}',
   },
   editQuery: {
     'en-us': 'Edit Query',
@@ -300,19 +297,16 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
   queryMapSubset: {
-    'en-us': (plotted: string, total: string) =>
-      `Plotted ${plotted} of ${total} records`,
-    'ru-ru': (plotted: number, total: number) =>
-      `Отображено ${plotted} из ${total} записей`,
+    'en-us': 'Plotted {plotted:number} of {total:number} records',
+    'ru-ru': 'Отображено {plotted:number} из {total:number} записей',
   },
   queryMapAll: {
-    'en-us': (plotted: string) => `Plotted ${plotted} records`,
-    'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
+    'en-us': 'Plotted {plotted:number} records',
+    'ru-ru': 'Отображено {plotted:number} записей',
   },
-
   queriesDialogTitle: {
-    'en-us': (count: number) => `Queries (${count})`,
-    'ru-ru': (count: number) => `Запросы (${count})`,
+    'en-us': 'Queries ({count:number})',
+    'ru-ru': 'Запросы ({count:number})',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
@@ -331,5 +325,3 @@ export const queryText = createDictionary({
     'ru-ru': 'Определите метку на основе запроса',
   },
 } as const);
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */

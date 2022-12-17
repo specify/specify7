@@ -73,7 +73,7 @@ export function CollectionOneToManyPlugin({
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
-            <th scope="col">{formsText('collectionObject')}</th>
+            <th scope="col">{formsText.collectionObject()}</th>
             <th scope="col">{schema.models.Collection.label}</th>
             <td />
           </tr>
@@ -122,7 +122,7 @@ export function CollectionOneToManyPlugin({
                     {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
                         icon="trash"
-                        title={commonText('remove')}
+                        title={commonText.remove()}
                         onClick={(): void => {
                           if (data === undefined) return;
                           resource
@@ -144,7 +144,7 @@ export function CollectionOneToManyPlugin({
             )
           ) : (
             <tr>
-              <td colSpan={2}>{commonText('loading')}</td>
+              <td colSpan={2}>{commonText.loading()}</td>
             </tr>
           )}
         </tbody>
@@ -174,11 +174,13 @@ export function CollectionOneToManyPlugin({
       ) : undefined}
       {state.type === 'DeniedAccessState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={userText('collectionAccessDenied')}
+          buttons={commonText.close()}
+          header={userText.collectionAccessDenied()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {userText('collectionAccessDeniedDescription', state.collectionName)}
+          {userText.collectionAccessDeniedDescription({
+            collectionName: state.collectionName,
+          })}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

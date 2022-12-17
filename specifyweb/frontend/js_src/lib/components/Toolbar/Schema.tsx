@@ -162,15 +162,15 @@ export function DataModelTable(): JSX.Element {
 }
 
 const fieldColumns = {
-  name: commonText('name'),
-  label: schemaText('label'),
-  description: schemaText('description'),
-  isHidden: schemaText('hidden'),
-  isReadOnly: schemaText('readOnly'),
-  isRequired: schemaText('required'),
-  type: schemaText('type'),
-  length: schemaText('length'),
-  databaseColumn: schemaText('databaseColumn'),
+  name: commonText.name(),
+  label: schemaText.label(),
+  description: schemaText.description(),
+  isHidden: schemaText.hidden(),
+  isReadOnly: schemaText.readOnly(),
+  isRequired: schemaText.required(),
+  type: schemaText.type(),
+  length: schemaText.length(),
+  databaseColumn: schemaText.databaseColumn(),
 } as const;
 
 type Value =
@@ -209,7 +209,7 @@ function DataModelFields({
         <TableIcon label={false} name={model.name} />
         <H2 className="text-2xl">{model.name}</H2>
       </div>
-      <H3>{schemaText('fields')}</H3>
+      <H3>{schemaText.fields()}</H3>
       <Table
         data={data}
         getLink={undefined}
@@ -221,17 +221,17 @@ function DataModelFields({
 }
 
 const relationshipColumns = {
-  name: commonText('name'),
-  label: schemaText('label'),
-  description: schemaText('description'),
-  isHidden: schemaText('hidden'),
-  isReadOnly: schemaText('readOnly'),
-  isRequired: schemaText('required'),
-  type: schemaText('type'),
-  databaseColumn: schemaText('databaseColumn'),
-  relatedModel: schemaText('relatedModel'),
-  otherSideName: schemaText('otherSideName'),
-  isDependent: schemaText('dependent'),
+  name: commonText.name(),
+  label: schemaText.label(),
+  description: schemaText.description(),
+  isHidden: schemaText.hidden(),
+  isReadOnly: schemaText.readOnly(),
+  isRequired: schemaText.required(),
+  type: schemaText.type(),
+  databaseColumn: schemaText.databaseColumn(),
+  relatedModel: schemaText.relatedModel(),
+  otherSideName: schemaText.otherSideName(),
+  isDependent: schemaText.dependent(),
 } as const;
 
 const getRelationships = (
@@ -265,7 +265,7 @@ function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
   return (
     <>
-      <H3>{schemaText('relationships')}</H3>
+      <H3>{schemaText.relationships()}</H3>
       <Table
         data={data}
         getLink={({ relatedModel }): string =>
@@ -281,13 +281,13 @@ function DataModelRelationships({
 }
 
 const tableColumns = {
-  name: commonText('name'),
-  label: schemaText('label'),
-  isSystem: schemaText('system'),
-  isHidden: schemaText('hidden'),
-  tableId: schemaText('tableId'),
-  fieldCount: schemaText('fieldCount'),
-  relationshipCount: schemaText('relationshipCount'),
+  name: commonText.name(),
+  label: schemaText.label(),
+  isSystem: schemaText.system(),
+  isHidden: schemaText.hidden(),
+  tableId: schemaText.tableId(),
+  fieldCount: schemaText.fieldCount(),
+  relationshipCount: schemaText.relationshipCount(),
 } as const;
 const getTables = (): RA<Row<keyof typeof tableColumns>> =>
   Object.values(schema.models).map((model) => ({
@@ -327,7 +327,7 @@ export function DataModelTables(): JSX.Element {
     <Container.Full>
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">
-          {`${welcomeText('schemaVersion')} ${getSystemInfo().schema_version}`}
+          {`${welcomeText.schemaVersion()} ${getSystemInfo().schema_version}`}
         </H2>
         <span className="-ml-2 flex-1" />
         <Link.Green
@@ -335,7 +335,7 @@ export function DataModelTables(): JSX.Element {
           download
           href="/context/datamodel.json"
         >
-          {schemaText('downloadAsJson')}
+          {schemaText.downloadAsJson()}
         </Link.Green>
         <Button.Green
           className="print:hidden"
@@ -346,7 +346,7 @@ export function DataModelTables(): JSX.Element {
             ).catch(softFail)
           }
         >
-          {schemaText('downloadAsTsv')}
+          {schemaText.downloadAsTsv()}
         </Button.Green>
       </div>
       <Table
@@ -364,24 +364,24 @@ export function DataModelTables(): JSX.Element {
 const dataModelToTsv = (): string =>
   [
     [
-      schemaText('table'),
-      schemaText('label'),
-      schemaText('system'),
-      schemaText('hidden'),
-      schemaText('tableId'),
-      commonText('name'),
-      schemaText('label'),
-      schemaText('description'),
-      schemaText('hidden'),
-      schemaText('readOnly'),
-      schemaText('required'),
-      formsText('relationship'),
-      schemaText('type'),
-      schemaText('length'),
-      schemaText('databaseColumn'),
-      schemaText('relatedModel'),
-      schemaText('otherSideName'),
-      schemaText('dependent'),
+      schemaText.table(),
+      schemaText.label(),
+      schemaText.system(),
+      schemaText.hidden(),
+      schemaText.tableId(),
+      commonText.name(),
+      schemaText.label(),
+      schemaText.description(),
+      schemaText.hidden(),
+      schemaText.readOnly(),
+      schemaText.required(),
+      formsText.relationship(),
+      schemaText.type(),
+      schemaText.length(),
+      schemaText.databaseColumn(),
+      schemaText.relatedModel(),
+      schemaText.otherSideName(),
+      schemaText.dependent(),
     ],
     ...Object.values(schema.models).flatMap((model) => {
       const commonColumns = [

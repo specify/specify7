@@ -8,13 +8,11 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export const treeText = createDictionary({
   badStructure: {
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
   },
-  // TreeContextMenu
   merge: {
     'en-us': 'Merge',
     'ru-ru': 'Объединить',
@@ -41,17 +39,19 @@ export const treeText = createDictionary({
     'ru-ru': 'Переместить',
   },
   moveNodeHere: {
-    'en-us': (nodeName: string) => `Move "${nodeName}" here`,
-    'ru-ru': (nodeName: string) => `Переместите «${nodeName}» сюда`,
+    'en-us': 'Move "{nodeName:string}" here',
+    'ru-ru': 'Переместите «{nodeName:string}» сюда',
   },
   nodeMoveMessage: {
-    'en-us': (treeName: string, nodeName: string, parentName: string) => `
-      The ${treeName} node "${nodeName}" will be placed, along with
-      all of its descendants, under the new parent "${parentName}".`,
-    'ru-ru': (treeName: string, nodeName: string, parentName: string) => `
-      «${nodeName}» (${treeName}) будет размещен вместе со всеми его
+    'en-us': `
+      The {treeName:string} node "{nodeName:string}" will be placed, along with
+      all of its descendants, under the new parent "{parentName:string}".
+    `,
+    'ru-ru': `
+      «{nodeName:string}» ({treeName:string}) будет размещен вместе со всеми его
       дочерними элементами, под новым родительским элементом
-      ${parentName}.`,
+      {parentName:string}.
+    `,
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -69,84 +69,79 @@ export const treeText = createDictionary({
     'en-us': "Can't merge into synonyms",
     'ru-ru': 'Невозможно объединить в синонимы',
   },
-
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
     'ru-ru': 'Невозможно сделать синонимом синонима',
   },
   nodeMoveHintMessage: {
-    'en-us': (nodeName: string) => `Select a new parent for "${nodeName}"`,
-    'ru-ru': (nodeName: string) => `Выберите нового родителя для «${nodeName}»`,
+    'en-us': 'Select a new parent for "{nodeName:string}"',
+    'ru-ru': 'Выберите нового родителя для «{nodeName:string}»',
   },
   mergeNode: {
     'en-us': 'Merge node',
     'ru-ru': 'Объединить',
   },
   mergeNodeHere: {
-    'en-us': (nodeName: string) => `Merge "${nodeName}" here`,
-    'ru-ru': (nodeName: string) => `Объедините «${nodeName}» здесь`,
+    'en-us': 'Merge "{nodeName:string}" here',
+    'ru-ru': 'Объедините «{nodeName:string}» здесь',
   },
   mergeNodeHintMessage: {
-    'en-us': (nodeName: string) =>
-      `Select a new target for "${nodeName}" to be merged into`,
-    'ru-ru': (nodeName: string) =>
-      `Выберите новый пункт назначения для слияния «${nodeName}А» `,
+    'en-us': 'Select a new target for "{nodeName:string}" to be merged into',
+    'ru-ru': 'Выберите новый пункт назначения для слияния «{nodeName:string}»',
   },
   mergeNodeMessage: {
-    'en-us': (treeName: string, nodeName: string, parentName: string) => `
-      All references to ${treeName} node "${nodeName}" will be replaced
-      with "${parentName}", and all descendants of "${nodeName}"
-      will be moved to "${parentName}" with any descendants matching
-      in name and rank being themselves merged recursively.`,
-    'ru-ru': (treeName: string, nodeName: string, parentName: string) => `
-      Все ссылки на "${nodeName}" (${treeName}) будут заменены
-      с "${parentName}", и все потомки "${nodeName}"
-      будет перемещен в "${parentName}" с соответствующими потомками
-      по названию и рангу подвергнется рекурсивному слиянию.`,
+    'en-us': `
+      All references to {treeName:string} node "{nodeName:string}" will be replaced
+      with "{parentName:string}", and all descendants of "{nodeName:string}"
+      will be moved to "{parentName:string}" with any descendants matching
+      in name and rank being themselves merged recursively.
+    `,
+    'ru-ru': `
+      Все ссылки на "{nodeName:string}" ({treeName:string}) будут заменены
+      с "{parentName:string}", и все потомки "{nodeName:string}"
+      будет перемещен в "{parentName:string}" с соответствующими потомками
+      по названию и рангу подвергнется рекурсивному слиянию.
+    `,
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
     'ru-ru': 'Синонимизировать',
   },
   makeSynonym: {
-    'en-us': (nodeName: string, synonymName: string) =>
-      `Make ${nodeName} a synonym of ${synonymName}`,
-    'ru-ru': (nodeName: string, synonymName: string) =>
-      `Сделайте ${nodeName} синонимом ${synonymName}`,
+    'en-us': 'Make {nodeName:string} a synonym of {synonymName:string}',
+    'ru-ru': 'Сделайте {nodeName:string} синонимом {synonymName:string}',
   },
   synonymizeNodeHintMessage: {
-    'en-us': (nodeName: string) =>
-      `Select a target for "${nodeName}" to be synonymized to `,
-    'ru-ru': (nodeName: string) =>
-      `Выберите цель, синонимом которой будет «${nodeName}»`,
+    'en-us': 'Select a target for "{nodeName:string}" to be synonymized to',
+    'ru-ru': 'Выберите цель, синонимом которой будет «{nodeName:string}»',
   },
   synonymizeMessage: {
-    'en-us': (treeName: string, nodeName: string, synonymName: string) =>
-      `The ${treeName} node "${nodeName}" will be made a synonym
-      of "${synonymName}".`,
-    'ru-ru': (treeName: string, nodeName: string, synonymName: string) =>
-      `Узел «${nodeName}» (${treeName}) станет синонимом
-      «${synonymName}».`,
+    'en-us': `
+      The {treeName:string} node "{nodeName:string}" will be made a synonym
+      of "{synonymName:string}".
+    `,
+    'ru-ru': `
+      Узел «{nodeName:string}» ({treeName:string}) станет синонимом
+      «{synonymName:string}».
+    `,
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
     'ru-ru': 'Отменить синонимизацию',
   },
   desynonymizeNodeMessage: {
-    'en-us': (nodeName: string, synonymName: string) =>
-      `"${nodeName}" will no longer be a synonym of "${synonymName}".`,
-    'ru-ru': (nodeName: string, synonymName: string) =>
-      `«${nodeName}» больше не будет синонимом «${synonymName}».`,
+    'en-us':
+      '"{nodeName:string}" will no longer be a synonym of "{synonymName:string}".',
+    'ru-ru':
+      '«{nodeName:string}» больше не будет синонимом «{synonymName:string}».',
   },
-  // TreeNodeView
   acceptedName: {
     'en-us': 'Preferred:',
     'ru-ru': 'Предпочтительний:',
   },
-  // TreeView
   treeViewTitle: {
-    'en-us': (treeName: string) => `${treeName} Tree`,
-    'ru-ru': (treeName: string) => `${treeName} Дерево`,
+    'en-us': '{treeName:string} Tree',
+    'ru-ru': '{treeName:string} Дерево',
   },
   searchTreePlaceholder: {
     'en-us': 'Search Tree',
@@ -177,4 +172,3 @@ export const treeText = createDictionary({
     'ru-ru': 'Изменить ранги',
   },
 } as const);
-/* eslint-enable @typescript-eslint/naming-convention */

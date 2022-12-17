@@ -37,8 +37,8 @@ export function SecurityPoliciesWrapper({
   );
   const buttonTitle =
     orientation === 'vertical'
-      ? userText('switchToHorizontalLayout')
-      : userText('switchToVerticalLayout');
+      ? userText.switchToHorizontalLayout()
+      : userText.switchToVerticalLayout();
   const switchButton =
     (!collapsable || isExpanded) && Array.isArray(policies) ? (
       <Button.Small
@@ -160,7 +160,7 @@ export function SecurityPolicies({
         ))}
       </Ul>
       {scope !== 'institution' && (
-        <p>{userText('excludedInstitutionalPoliciesDescription')}</p>
+        <p>{userText.excludedInstitutionalPoliciesDescription()}</p>
       )}
       {!isReadOnly && (
         <div>
@@ -175,13 +175,13 @@ export function SecurityPolicies({
               ])
             }
           >
-            {commonText('add')}
+            {commonText.add()}
           </Button.Green>
         </div>
       )}
     </>
   ) : (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   );
 }
 

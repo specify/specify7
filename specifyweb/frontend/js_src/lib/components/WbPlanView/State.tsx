@@ -33,11 +33,11 @@ function TemplateSelection({
     <>
       {isInvalid && (
         <Dialog
-          buttons={commonText('close')}
-          header={wbText('noUploadPlanDialogHeader')}
+          buttons={commonText.close()}
+          header={wbText.noUploadPlanDialogHeader()}
           onClose={handleValid}
         >
-          {wbText('invalidTemplateDialogText')}
+          {wbText.invalidTemplateDialogText()}
         </Dialog>
       )}
       <DataSetsDialog
@@ -97,16 +97,16 @@ export function BaseTableSelection({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue onClick={handleUseTemplate}>
-            {wbText('chooseExistingPlan')}
+            {wbText.chooseExistingPlan()}
           </Button.Blue>
         </>
       }
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbText('selectBaseTableDialogTitle')}
+      header={wbText.selectBaseTableDialogTitle()}
       onClose={handleClose}
     >
       <ListOfBaseTables
@@ -118,7 +118,7 @@ export function BaseTableSelection({
           checked={showHiddenTables}
           onChange={(): void => setShowHiddenTables(!showHiddenTables)}
         />
-        {wbText('showAdvancedTables')}
+        {wbText.showAdvancedTables()}
       </Label.Inline>
     </Dialog>
   );

@@ -34,15 +34,15 @@ export function CacheBuster(): JSX.Element | null {
 
   return isLoaded === true ? (
     <Dialog
-      buttons={commonText('goToHomepage')}
+      buttons={commonText.goToHomepage()}
       /*
        * Can not simply reload the page here, as that would open the
        * cache buster dialog again causing a perpetual loop.
        */
-      header={headerText('clearCache')}
+      header={headerText.clearCache()}
       onClose={(): void => globalThis.location.replace('/specify/')}
     >
-      {headerText('clearedCacheDialogText')}
+      {headerText.clearedCacheDialogText()}
     </Dialog>
   ) : null;
 }

@@ -37,7 +37,7 @@ export type MenuItemName =
 const rawMenuItems: RR<MenuItemName, MenuItem> = {
   dataEntry: {
     url: '/specify/overlay/data-entry/',
-    title: headerText('dataEntry'),
+    title: headerText.dataEntry(),
     icon: icons.pencilAt,
     visibilityKey: 'showDataEntry',
     enabled: () =>
@@ -49,7 +49,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   trees: {
     url: '/specify/overlay/trees/',
-    title: commonText('trees'),
+    title: commonText.trees(),
     icon: icons.tree,
     visibilityKey: 'showTrees',
     enabled: () =>
@@ -57,7 +57,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   interactions: {
     url: '/specify/overlay/interactions/',
-    title: commonText('interactions'),
+    title: commonText.interactions(),
     icon: icons.chat,
     visibilityKey: 'showInteractions',
     enabled: () =>
@@ -70,7 +70,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   queries: {
     url: '/specify/overlay/queries/',
-    title: commonText('queries'),
+    title: commonText.queries(),
     icon: icons.documentSearch,
     visibilityKey: 'showQueries',
     enabled: () =>
@@ -79,14 +79,14 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   recordSets: {
     url: '/specify/overlay/record-sets/',
-    title: commonText('recordSets'),
+    title: commonText.recordSets(),
     icon: icons.collection,
     visibilityKey: 'showRecordSets',
     enabled: () => hasToolPermission('recordSets', 'read'),
   },
   reports: {
     url: '/specify/overlay/reports/',
-    title: commonText('reports'),
+    title: commonText.reports(),
     icon: icons.documentReport,
     visibilityKey: 'showReports',
     enabled: async () =>
@@ -94,13 +94,13 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   workBench: {
     url: '/specify/overlay/data-sets/',
-    title: commonText('workBench'),
+    title: commonText.workBench(),
     icon: icons.table,
     visibilityKey: 'showWorkBench',
   },
   attachments: {
     url: '/specify/attachments/',
-    title: commonText('attachments'),
+    title: commonText.attachments(),
     icon: icons.photos,
     visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {

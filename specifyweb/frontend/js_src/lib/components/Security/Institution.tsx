@@ -77,7 +77,7 @@ function InstitutionView({
           <div className="flex flex-1 flex-col gap-8 overflow-y-scroll">
             {hasPermission('/permissions/library/roles', 'read') && (
               <section className="flex flex-col gap-2">
-                <h4 className="text-xl">{userText('userRoleLibrary')}</h4>
+                <h4 className="text-xl">{userText.userRoleLibrary()}</h4>
                 {typeof libraryRoles === 'object' ? (
                   <ul>
                     {Object.values(libraryRoles)
@@ -93,12 +93,12 @@ function InstitutionView({
                       ))}
                   </ul>
                 ) : (
-                  commonText('loading')
+                  commonText.loading()
                 )}
                 <div className="flex gap-2">
                   {hasPermission('/permissions/library/roles', 'create') && (
                     <Link.Green href="/specify/security/institution/role/create/">
-                      {commonText('create')}
+                      {commonText.create()}
                     </Link.Green>
                   )}
                   <SafeOutlet<SecurityOutlet> {...outletState} />
@@ -132,7 +132,7 @@ function InstitutionView({
               </section>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{userText('institutionUsers')}</h4>
+              <h4 className="text-xl">{userText.institutionUsers()}</h4>
               {typeof users === 'object' ? (
                 <>
                   <Ul>
@@ -147,11 +147,11 @@ function InstitutionView({
                             {`${user.name}`}
                             <span className="text-gray-500">{`${
                               admins?.admins.has(user.id) === true
-                                ? ` ${userText('specifyAdmin')}`
+                                ? ` ${userText.specifyAdmin()}`
                                 : ''
                             }${
                               admins?.legacyAdmins.has(user.id) === true
-                                ? ` ${userText('legacyAdmin')}`
+                                ? ` ${userText.legacyAdmin()}`
                                 : ''
                             }`}</span>
                           </>
@@ -174,16 +174,16 @@ function InstitutionView({
                   {hasTablePermission('SpecifyUser', 'create') && (
                     <div>
                       <Link.Green href="/specify/security/user/new/">
-                        {commonText('create')}
+                        {commonText.create()}
                       </Link.Green>
                     </div>
                   )}
                 </>
               ) : (
-                commonText('loading')
+                commonText.loading()
               )}
               {typeof users === 'object' && admins === undefined && (
-                <p>{userText('loadingAdmins')}</p>
+                <p>{userText.loadingAdmins()}</p>
               )}
             </section>
           </div>

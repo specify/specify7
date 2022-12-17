@@ -9,7 +9,6 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export const formsText = createDictionary({
   orderBy: {
     'en-us': 'Order By',
@@ -103,9 +102,8 @@ export const formsText = createDictionary({
     'en-us': 'There are problems with the entry:',
     'ru-ru': 'Обнаружены ошибки:',
   },
-  // FIXME: convert to keyed plural?
   recordSetCaption: {
-    'en-us': 'By choosing a recordset ({{ none | one | ?? }} available)',
+    'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {count:number})',
   },
   entryCaption: {
@@ -558,8 +556,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Возвращенные препараты',
   },
   returnedAndSaved: {
-    'en-us': '{number:number} preparations have been returned and saved.',
-    'ru-ru': '{number:number} препарата возвращены и сохранены.',
+    'en-us': '{number:string} preparations have been returned and saved.',
+    'ru-ru': '{number:string} препарата возвращены и сохранены.',
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -798,4 +796,3 @@ export const formsText = createDictionary({
     'ru-ru': 'Успешно удален.',
   },
 } as const);
-/* eslint-enable @typescript-eslint/naming-convention */

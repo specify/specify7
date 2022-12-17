@@ -11,7 +11,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 
 export function FormattedResource({
   resourceUrl,
-  fallback = commonText('loading'),
+  fallback = commonText.loading(),
 }: {
   readonly resourceUrl: string;
   readonly fallback?: string;

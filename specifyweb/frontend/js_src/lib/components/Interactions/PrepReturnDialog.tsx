@@ -65,11 +65,11 @@ export function LoanReturn({
   return Array.isArray(preparations) ? (
     preparations.length === 0 ? (
       <Dialog
-        buttons={commonText('close')}
+        buttons={commonText.close()}
         header={schema.models.LoanPreparation.label}
         onClose={handleClose}
       >
-        {formsText('noUnresolvedPreparations')}
+        {formsText.noUnresolvedPreparations()}
       </Dialog>
     ) : (
       <PreparationReturn preparations={preparations} onClose={handleClose} />
@@ -110,10 +110,10 @@ function PreparationReturn({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue
             disabled={!canSelectAll}
-            title={formsText('returnAllPreparations')}
+            title={formsText.returnAllPreparations()}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -125,11 +125,11 @@ function PreparationReturn({
               )
             }
           >
-            {formsText('selectAll')}
+            {formsText.selectAll()}
           </Button.Blue>
           <Button.Blue
             disabled={!canDeselect}
-            title={commonText('clearAll')}
+            title={commonText.clearAll()}
             onClick={(): void =>
               setState(
                 state.map(({ remarks }) => ({
@@ -141,13 +141,13 @@ function PreparationReturn({
               )
             }
           >
-            {formsText('deselectAll')}
+            {formsText.deselectAll()}
           </Button.Blue>
           <Submit.Green
             form={id('form')}
-            title={formsText('returnSelectedPreparations')}
+            title={formsText.returnSelectedPreparations()}
           >
-            {commonText('apply')}
+            {commonText.apply()}
           </Submit.Green>
         </>
       }
@@ -231,13 +231,13 @@ function PreparationReturn({
                 }
               </th>
               <th className="text-center" scope="col">
-                {formsText('unresolved')}
+                {formsText.unresolved()}
               </th>
               <th className="text-center" scope="col">
-                {formsText('return')}
+                {formsText.return()}
               </th>
               <th className="col-span-2 text-center" scope="col">
-                {formsText('resolve')}
+                {formsText.resolve()}
               </th>
             </tr>
           </thead>

@@ -13,6 +13,7 @@ import { clearCache } from '../RouterCommands/CacheBuster';
 import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
+import { StringToJsx } from '../../localization/utils';
 
 const supportEmail = 'support@specifysoftware.org';
 export const supportLink = (
@@ -22,8 +23,34 @@ export const supportLink = (
 );
 const errors = new Set<string>();
 
+const errorBody = (
+  <p>
+    <StringToJsx
+      string={mainText.errorBoundaryDialogMessage()}
+      components={{ email: supportLink }}
+    />
+    <br />
+    <br />
+    <StringToJsx
+      string={mainText.errorBoundaryDialogSecondMessage()}
+      components={{
+        memberLink: (label) => (
+          <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
+            {label}
+          </Link.NewTab>
+        ),
+        label: (label) => (
+          <Link.NewTab href="https://discourse.specifysoftware.org/">
+            {label}
+          </Link.NewTab>
+        ),
+      }}
+    />
+  </p>
+);
+
 export function ErrorDialog({
-  header = mainText('errorBoundaryDialogHeader'),
+  header = mainText.errorBoundaryDialogHeader(),
   children,
   copiableMessage,
   // Error dialog is only closable in Development
@@ -89,7 +116,7 @@ export function ErrorDialog({
               )
             }
           >
-            {commonText('downloadErrorMessage')}
+            {commonText.downloadErrorMessage()}
           </Button.Blue>
           <span className="-ml-2 flex-1" />
           <Label.Inline>
@@ -97,7 +124,7 @@ export function ErrorDialog({
               checked={clearCacheOnException}
               onValueChange={setClearCache}
             />
-            {headerText('clearCache')}
+            {headerText.clearCache()}
           </Label.Inline>
           <Button.Red
             onClick={(): void =>
@@ -109,7 +136,7 @@ export function ErrorDialog({
               )
             }
           >
-            {commonText('goToHomepage')}
+            {commonText.goToHomepage()}
           </Button.Red>
           {canClose && (
             <Button.Blue
@@ -122,7 +149,7 @@ export function ErrorDialog({
                 handleClose();
               }}
             >
-              {commonText('dismiss')}
+              {commonText.dismiss()}
             </Button.Blue>
           )}
         </>
@@ -132,33 +159,16 @@ export function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {mainText('errorBoundaryDialogText')}{' '}
-        {!canClose && mainText('errorBoundaryCriticalDialogText')}
+        {mainText.errorBoundaryDialogText()}{' '}
+        {!canClose && mainText.errorBoundaryCriticalDialogText()}
       </p>
       <br />
-      <p>
-        {mainText('errorBoundaryDialogMessage', supportLink)}
-        <br />
-        <br />
-        {mainText(
-          'errorBoundaryDialogSecondMessage',
-          (label) => (
-            <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
-              {label}
-            </Link.NewTab>
-          ),
-          (label) => (
-            <Link.NewTab href="https://discourse.specifysoftware.org/">
-              {label}
-            </Link.NewTab>
-          )
-        )}
-      </p>
+      {errorBody}
       <details
         className="flex-1 whitespace-pre-wrap"
         open={process.env.NODE_ENV === 'development'}
       >
-        <summary>{mainText('errorMessage')}</summary>
+        <summary>{mainText.errorMessage()}</summary>
         {children}
       </details>
     </Dialog>

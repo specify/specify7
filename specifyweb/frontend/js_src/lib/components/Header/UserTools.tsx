@@ -27,7 +27,7 @@ export function UserTools(): JSX.Element {
         whitespace-nowrap normal-case
       `}
       href="/specify/overlay/user-tools/"
-      title={headerText('currentUser')}
+      title={headerText.currentUser()}
     >
       {userInformation.name}
     </Link.Small>
@@ -47,8 +47,8 @@ export function UserToolsOverlay(): JSX.Element | null {
 
   return Array.isArray(userTools) ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-      header={headerText('userToolsDialogTitle')}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={headerText.userToolsDialogTitle()}
       icon={<span className="text-blue-500">{icons.cog}</span>}
       onClose={handleClose}
     >
@@ -59,7 +59,7 @@ export function UserToolsOverlay(): JSX.Element | null {
             globalThis.location.reload();
           }}
         >
-          {formsText('disableReadOnly')}
+          {formsText.disableReadOnly()}
         </Button.Blue>
       )}
       <nav className="flex gap-2">

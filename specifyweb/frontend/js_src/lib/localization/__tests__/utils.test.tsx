@@ -80,7 +80,7 @@ test('Key with JSX', () =>
       components: {
         link: (label) => <span>{label}</span>,
         button: (label) => <p>{label}</p>,
-        br: () => <br />,
+        br: <br />,
       },
     })
   ).toMatchInlineSnapshot(`

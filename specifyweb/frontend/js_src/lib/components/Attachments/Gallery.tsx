@@ -74,7 +74,7 @@ export function AttachmentGallery({
           />
         ))}
         {isComplete
-          ? attachments.length === 0 && <p>{formsText('noAttachments')}</p>
+          ? attachments.length === 0 && <p>{formsText.noAttachments()}</p>
           : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (
