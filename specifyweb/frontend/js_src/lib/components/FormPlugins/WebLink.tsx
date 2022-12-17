@@ -140,6 +140,7 @@ export function WebLink({
       {typeof definition === 'object' ? (
         typeof url === 'string' && url.length > 0 ? (
           <Link.Gray
+            className="ring-1 ring-gray-400 dark:ring-0 disabled:ring-gray-500 disabled:dark:ring-neutral-500"
             href={url}
             rel={isExternal ? 'noopener' : undefined}
             target={isExternal ? '_blank' : undefined}
