@@ -33,6 +33,7 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
@@ -292,7 +293,11 @@ function ToggleHeader({
   );
 }
 
-function BadImport({ error }: { readonly error: string }): JSX.Element {
+function BadImport({
+  error,
+}: {
+  readonly error: LocalizedString;
+}): JSX.Element {
   return (
     <p role="alert">
       {wbText.errorImporting()}

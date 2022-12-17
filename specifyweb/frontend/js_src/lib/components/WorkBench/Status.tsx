@@ -130,7 +130,7 @@ export function WbStatus({
   else
     message = (
       <>
-        {wbText.wbStatusErrorDialogText(mappedOperation)}
+        {wbText.wbStatusErrorDialogText({ operationName: mappedOperation })}
         <pre>{JSON.stringify(status, null, 2)}</pre>
       </>
     );

@@ -30,6 +30,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 function Table<
   SORT_CONFIG extends
@@ -44,7 +45,7 @@ function Table<
   getLink,
 }: {
   readonly sortName: SORT_CONFIG;
-  readonly headers: RR<FIELD_NAME, string>;
+  readonly headers: RR<FIELD_NAME, LocalizedString>;
   readonly data: RA<Row<FIELD_NAME>>;
   readonly getLink: ((row: Row<FIELD_NAME>) => string) | undefined;
 }): JSX.Element {

@@ -6,6 +6,7 @@ import { capitalize } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
+import { LocalizedString } from 'typesafe-i18n';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -115,8 +116,8 @@ export const dateParts = {
 } as const;
 
 const numberFormatter = new Intl.NumberFormat(LANGUAGE);
-export const formatNumber = (number: number): string =>
-  numberFormatter.format(number);
+export const formatNumber = (number: number): LocalizedString =>
+  numberFormatter.format(number) as LocalizedString;
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 export const MILLISECONDS = 1000;

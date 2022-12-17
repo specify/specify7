@@ -18,6 +18,7 @@ import { Input, Label } from '../Atoms/Form';
 import { useId } from '../../hooks/useId';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -52,7 +53,7 @@ export function SchemaConfigFormat({
         RR<
           ItemType,
           {
-            readonly label: string;
+            readonly label: LocalizedString;
             readonly value: string | null;
             readonly values:
               | IR<RA<readonly [key: string, value: string]>>

@@ -8,13 +8,14 @@ import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function FormattedResource({
   resourceUrl,
   fallback = commonText.loading(),
 }: {
   readonly resourceUrl: string;
-  readonly fallback?: string;
+  readonly fallback?: LocalizedString;
 }): JSX.Element | null {
   const resource = React.useMemo(() => {
     const [tableName, id] = strictParseResourceUrl(resourceUrl);
@@ -22,7 +23,10 @@ export function FormattedResource({
     return new model.Resource({ id });
   }, [resourceUrl]);
   const [formatted = fallback] = useAsyncState(
-    React.useCallback(async () => format(resource).catch(softFail), [resource]),
+    React.useCallback(
+      async () => format(resource, undefined, true).catch(softFail),
+      [resource]
+    ),
     false
   );
   return typeof resource === 'object' &&

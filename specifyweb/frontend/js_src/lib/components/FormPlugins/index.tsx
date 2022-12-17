@@ -45,10 +45,10 @@ function WrongTable({
         isOpen={isVisible}
         onClose={handleHide}
       >
-        {formsText.wrongTablePluginDialogText(
-          resource.specifyModel.name,
-          allowedTable
-        )}
+        {formsText.wrongTablePluginDialogText({
+          currentTable: resource.specifyModel.name,
+          correctTable: allowedTable,
+        })}
       </Dialog>
     </>
   );

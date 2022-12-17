@@ -26,6 +26,7 @@ import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -73,7 +74,7 @@ function QueryInputField({
   readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly listInput?: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
@@ -109,9 +110,9 @@ function QueryInputField({
       inputRef.current?.checkValidity() === true
     )
       setValidation(
-        formsText.tooLongErrorMessage(
-          Number.parseInt(validationAttributes.maxLength)
-        )
+        formsText.tooLongErrorMessage({
+          maxLength: Number.parseInt(validationAttributes.maxLength),
+        })
       );
   }, [value, validationAttributes.maxLength, inputRef, setValidation]);
 
@@ -232,7 +233,7 @@ function SingleField({
   readonly filter: QueryField['filters'][number];
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly fieldName: string;
   readonly onChange: ((newValue: string) => void) | undefined;
   /*
@@ -355,8 +356,8 @@ export const queryFieldFilters: RR<
   QueryFieldFilter,
   {
     readonly id: number;
-    readonly label: string;
-    readonly description: string | undefined;
+    readonly label: LocalizedString;
+    readonly description: LocalizedString | undefined;
     // If true, show pick list item titles. Else, show free input
     readonly renderPickList: boolean;
     readonly types?: RA<QueryFieldType>;

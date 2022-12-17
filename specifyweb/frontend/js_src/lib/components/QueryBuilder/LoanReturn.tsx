@@ -39,6 +39,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 const returnLoanPreps = async (
   query: SerializedModel<SpQuery>,
@@ -47,7 +48,7 @@ const returnLoanPreps = async (
 ): Promise<
   RA<{
     readonly loanId: number;
-    readonly loanNumber: string;
+    readonly loanNumber: LocalizedString;
     readonly totalPreps: number;
   }>
 > =>

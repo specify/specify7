@@ -114,7 +114,7 @@ export function RecordSetsDialog({
               <tr>
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {commonText.recordSet()}
+                    {formsText.recordSet()}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
@@ -178,7 +178,9 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
-            header={formsText.recordSetsDialogTitle(data.totalCount)}
+            header={formsText.recordSetsDialogTitle({
+              count: formatNumber(data.totalCount),
+            })}
             icon={<span className="text-blue-500">{icons.collection}</span>}
             onClose={handleClose}
           >

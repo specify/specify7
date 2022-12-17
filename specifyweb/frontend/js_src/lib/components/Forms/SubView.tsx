@@ -187,15 +187,17 @@ export function SubView({
           title={relationship.label}
           onClick={handleToggle}
         >
-          {/*
-           * Attachment table icons have lots of vertical white space, making
-           * them look overly small on the forms.
-           * See https://github.com/specify/specify7/issues/1259
-           * Thus, have to introduce some inconsistency here
-           */}
-          {parentFormType === 'form' && (
-            <TableIcon className="h-8 w-8" label={false} name={icon} />
-          )}
+          {
+            /*
+             * Attachment table icons have lots of vertical white space, making
+             * them look overly small on the forms.
+             * See https://github.com/specify/specify7/issues/1259
+             * Thus, have to introduce some inconsistency here
+             */
+            parentFormType === 'form' && (
+              <TableIcon className="h-8 w-8" label={false} name={icon} />
+            )
+          }
           <span className="rounded border-gray-500 bg-white p-1 font-bold dark:bg-neutral-800">
             {collection?.models.length ?? commonText.loading()}
           </span>

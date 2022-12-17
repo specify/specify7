@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { Button } from '../Atoms/Button';
 import { softFail } from '../Errors/Crash';
+import { LocalizedString } from 'typesafe-i18n';
 
 const copyMessageTimeout = 3000;
 
@@ -12,7 +13,7 @@ export function CopyButton({
   label = commonText.copyToClipboard(),
 }: {
   readonly text: string;
-  readonly label?: string;
+  readonly label?: LocalizedString;
 }): JSX.Element {
   const [wasCopied, handleCopied, handleNotCopied] = useBooleanState();
   return (

@@ -18,13 +18,14 @@ import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR } from '../../utils/types';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type FieldTypes = {
   readonly Checkbox: State<
     'Checkbox',
     {
       readonly defaultValue: boolean | undefined;
-      readonly label: string | undefined;
+      readonly label: LocalizedString | undefined;
       readonly printOnSave: boolean;
     }
   >;
@@ -165,7 +166,7 @@ export function parseFormField(
   let uiType = getParsedAttribute(cell, 'uiType');
   if (uiType === undefined) {
     console.error('field is missing uiType', cell);
-    uiType = 'text';
+    uiType = 'text' as LocalizedString;
   }
 
   const isReadOnly =

@@ -173,9 +173,9 @@ export function AppResourceEditor({
                         name:
                           resource.name.length > 0
                             ? getUniqueName(resource.name, [resource.name])
-                            : formsText.newResourceTitle(
-                                appResource.specifyModel.label
-                              ),
+                            : formsText.newResourceTitle({
+                                tableName: appResource.specifyModel.label,
+                              }),
                       },
                       isClone ? resourceData.id : undefined
                     );

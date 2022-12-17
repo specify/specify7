@@ -39,7 +39,9 @@ export function SchemaConfigTable({
   ) => void;
 }): JSX.Element {
   return (
-    <SchemaConfigColumn header={`${schemaText.table()}: ${container.name}`}>
+    <SchemaConfigColumn
+      header={schemaText.tableFormatted({ name: container.name })}
+    >
       <Label.Block>
         {schemaText.caption()}
         <Input.Text

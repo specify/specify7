@@ -4,13 +4,14 @@ import type { IR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { notificationsText } from '../../localization/notifications';
 import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type GenericNotification = {
   readonly messageId: string;
   readonly read: boolean;
   readonly timestamp: string;
   readonly type: string;
-  readonly payload: IR<string>;
+  readonly payload: IR<LocalizedString>;
 };
 
 export const notificationRenderers: IR<

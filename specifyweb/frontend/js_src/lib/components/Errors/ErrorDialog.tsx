@@ -14,8 +14,9 @@ import { usePref } from '../UserPreferences/usePref';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
-const supportEmail = 'support@specifysoftware.org';
+const supportEmail = 'support@specifysoftware.org' as LocalizedString;
 export const supportLink = (
   <Link.NewTab href={`mailto:${supportEmail}`} rel="noreferrer">
     {supportEmail}
@@ -59,7 +60,7 @@ export function ErrorDialog({
 }: {
   readonly children: React.ReactNode;
   readonly copiableMessage: string;
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly onClose?: () => void;
   readonly dismissable?: boolean;
 }): JSX.Element {

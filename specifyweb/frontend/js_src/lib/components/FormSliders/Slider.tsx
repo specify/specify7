@@ -52,7 +52,9 @@ export function Slider({
           `}
           data-value={value}
         >
-          <span className="sr-only">{formsText.currentRecord(count)}</span>
+          <span className="sr-only">
+            {formsText.currentRecord({ total: count })}
+          </span>
           <Input.Number
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white

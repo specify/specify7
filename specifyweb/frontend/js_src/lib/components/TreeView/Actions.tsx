@@ -21,6 +21,7 @@ import { Link } from '../Atoms/Link';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, AnyTree } from '../DataModel/helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -194,7 +195,7 @@ function EditRecordDialog<SCHEMA extends AnyTree>({
   readonly disabled: boolean;
   readonly addNew: boolean;
   readonly tableName: SCHEMA['tableName'];
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly isRoot: boolean;
   readonly onRefresh: () => void;
 }): JSX.Element | null {

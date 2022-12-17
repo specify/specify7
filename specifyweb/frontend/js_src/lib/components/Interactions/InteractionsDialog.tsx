@@ -37,6 +37,7 @@ import { Link } from '../Atoms/Link';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const interactionTables: ReadonlySet<keyof Tables> = new Set<
   keyof Tables
@@ -103,8 +104,8 @@ const stringLocalization = {
 export type InteractionEntry = {
   readonly action: typeof supportedActions[number] | undefined;
   readonly table: keyof Tables;
-  readonly label: string | undefined;
-  readonly tooltip: string | undefined;
+  readonly label: LocalizedString | undefined;
+  readonly tooltip: LocalizedString | undefined;
   readonly icon: string | undefined;
 };
 
@@ -268,7 +269,7 @@ function Interactions({
                       ] ?? label
                     : typeof table === 'string'
                     ? getModel(table)?.label
-                    : action}
+                    : (action as LocalizedString)}
                 </Link.Default>
               </li>
             ) : undefined

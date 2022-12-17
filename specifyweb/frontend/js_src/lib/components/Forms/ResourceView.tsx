@@ -26,6 +26,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { UnloadProtectDialog } from '../Router/Router';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -130,7 +131,7 @@ export function ResourceView<SCHEMA extends AnySchema>({
   readonly children?: JSX.Element;
   readonly isSubForm: boolean;
   readonly isDependent: boolean;
-  readonly title?: string;
+  readonly title?: LocalizedString;
 }): JSX.Element {
   const mode = augmentMode(
     initialMode,

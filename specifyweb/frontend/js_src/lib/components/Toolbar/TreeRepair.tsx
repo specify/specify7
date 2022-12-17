@@ -33,6 +33,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -57,8 +58,8 @@ export function TreeSelectDialog({
 }: {
   readonly onClose: () => void;
   readonly onClick: ((tree: string) => Promise<void> | void) | undefined;
-  readonly title: string;
-  readonly confirmationMessage?: string;
+  readonly title: LocalizedString;
+  readonly confirmationMessage?: LocalizedString;
   readonly getLink: (tree: string) => string;
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {

@@ -21,6 +21,7 @@ import { getRegistriesFromPath } from './registry';
 import type { Role } from './Role';
 import { Http } from '../../utils/ajax/definitions';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type BackEndRole = Omit<Role, 'policies'> & {
   readonly policies: IR<RA<string>>;
@@ -57,7 +58,7 @@ export const fetchUserRoles = async (
   collectionId: number,
   userId: number
 ): Promise<RA<RoleBase> | undefined> =>
-  ajax<RA<{ readonly id: number; readonly name: string }>>(
+  ajax<RA<{ readonly id: number; readonly name: LocalizedString }>>(
     `/permissions/user_roles/${collectionId}/${userId}`,
     {
       headers: { Accept: 'application/json' },
@@ -82,7 +83,7 @@ export const fetchUserRoles = async (
           .sort(sortFunction(({ roleId }) => roleId))
   );
 
-export function resourceNameToLabel(resource: string): string {
+export function resourceNameToLabel(resource: string): LocalizedString {
   if (
     /*
      * "getRegistriesFromPath" does not work for system tables that are part

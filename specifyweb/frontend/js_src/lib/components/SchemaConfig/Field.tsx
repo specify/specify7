@@ -35,7 +35,7 @@ export function SchemaConfigField({
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
-    <SchemaConfigColumn header={`${schemaText.field()}: ${item.name}`}>
+    <SchemaConfigColumn header={schemaText.field({ name: item.name })}>
       <Label.Block>
         {schemaText.caption()}
         <Input.Text

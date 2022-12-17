@@ -23,6 +23,7 @@ import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import type { NewRole, Role } from './Role';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
@@ -42,7 +43,7 @@ export function ImportExport({
   onCreateRole: handleCreateRole,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
   readonly collectionId: number;
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly isReadOnly?: boolean;
@@ -224,7 +225,7 @@ function ExportButton({
   baseName,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (

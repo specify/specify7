@@ -68,7 +68,7 @@ const formatterFields = [
   }),
 ];
 const uiFormatter = new UiFormatter(false, formatterFields);
-const title = formsText.requiredFormat(uiFormatter.pattern()!);
+const title = formsText.requiredFormat({ format: uiFormatter.pattern()! });
 
 describe('resolveParser', () => {
   test('simple string with parser merger', () => {

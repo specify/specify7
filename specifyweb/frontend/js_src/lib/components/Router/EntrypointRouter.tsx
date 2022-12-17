@@ -43,7 +43,6 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
   },
   {
     path: 'specify/*',
-    title: '',
     element: () =>
       import('../Core/ContextLoader').then(
         ({ ContextLoader }) => ContextLoader

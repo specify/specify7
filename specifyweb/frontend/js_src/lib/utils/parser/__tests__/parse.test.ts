@@ -206,7 +206,7 @@ describe('date validation', () => {
   });
 
   ensureInvalid(parser, {
-    a: () => formsText.requiredFormat(fullDateFormat()),
+    a: () => formsText.requiredFormat({ format: fullDateFormat() }),
   });
 });
 

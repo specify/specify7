@@ -21,6 +21,7 @@ import type { SpAppResource } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
 import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();
@@ -72,7 +73,7 @@ function PickAppResource({
   onSelected: handleSelected,
 }: {
   readonly resources: AppResources;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly skippable?: boolean;
   readonly onSelected: (
     appResource: SerializedResource<SpAppResource> | undefined

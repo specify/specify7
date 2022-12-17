@@ -13,6 +13,10 @@ export const schemaText = createDictionary({
     'en-us': 'Table',
     'ru-ru': 'Таблица',
   },
+  tableFormatted: {
+    'en-us': 'Table: {name:string}',
+    'ru-ru': 'Таблица: {name:string}',
+  },
   tableName: {
     'en-us': 'Table Name',
     'ru-ru': 'Имя таблицы',
@@ -34,8 +38,8 @@ export const schemaText = createDictionary({
     'ru-ru': 'Поля',
   },
   field: {
-    'en-us': 'Field',
-    'ru-ru': 'Поле',
+    'en-us': 'Field: {name:string}',
+    'ru-ru': 'Поле: {name:string}',
   },
   relationships: {
     'en-us': 'Relationships',

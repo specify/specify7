@@ -36,6 +36,7 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -57,7 +58,7 @@ export function QueryResults({
   tableClassName = '',
 }: {
   readonly model: SpecifyModel;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**

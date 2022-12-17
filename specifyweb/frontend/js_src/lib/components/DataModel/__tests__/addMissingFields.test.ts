@@ -3,6 +3,7 @@ import { theories } from '../../../tests/utils';
 import { addMissingFields } from '../addMissingFields';
 import type { AnySchema, SerializedResource } from '../helperTypes';
 import type { Agent } from '../types';
+import { LocalizedString } from 'typesafe-i18n';
 
 mockTime();
 requireContext();
@@ -102,7 +103,7 @@ theories(addMissingFields, [
       remarks: null,
       specifyUser: null,
       suffix: null,
-      text1: 'abc',
+      text1: 'abc' as LocalizedString,
       text2: null,
       text3: null,
       text4: null,

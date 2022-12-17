@@ -297,9 +297,9 @@ export const preferencesText = createDictionary({
   },
   containsDescription: {
     'en-us':
-      'Search for values that contain a given query string (case-insensitive)',
+      'Search for values that contain a given query string (case-insensitive).',
     'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (без учета регистра)',
+      'Поиск значений, содержащих заданную строку запроса (без учета регистра).',
   },
   containsCaseSensitiveDescription: {
     'en-us':

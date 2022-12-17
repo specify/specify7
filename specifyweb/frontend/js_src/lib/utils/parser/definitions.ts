@@ -176,9 +176,9 @@ export const parsers = f.store(
         (value): string | undefined =>
           typeof value === 'object' && (value as dayjs.Dayjs).isValid()
             ? undefined
-            : formsText.requiredFormat(fullDateFormat()),
+            : formsText.requiredFormat({ format: fullDateFormat() }),
       ],
-      title: formsText.requiredFormat(fullDateFormat()),
+      title: formsText.requiredFormat({ format: fullDateFormat() }),
       parser: (value) => (value as dayjs.Dayjs)?.format(databaseDateFormat),
       value: dayjs().format(databaseDateFormat),
     },
@@ -299,9 +299,9 @@ export function formatterToParser(
   formatter: UiFormatter
 ): Parser {
   const regExpString = formatter.parseRegExp();
-  const title = formsText.requiredFormat(
-    formatter.pattern() ?? formatter.valueOrWild()
-  );
+  const title = formsText.requiredFormat({
+    format: formatter.pattern() ?? formatter.valueOrWild(),
+  });
 
   const autoNumberingConfig = getUserPref(
     'form',

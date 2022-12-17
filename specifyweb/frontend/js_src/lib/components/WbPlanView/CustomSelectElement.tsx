@@ -25,6 +25,7 @@ import {
   tableIconUndefined,
 } from '../Molecules/TableIcon';
 import { formsText } from '../../localization/forms';
+import { LocalizedString } from 'typesafe-i18n';
 
 type Properties =
   /*
@@ -144,7 +145,7 @@ type CustomSelectElementIconProps = {
   readonly optionLabel?: JSX.Element | string;
   // The value of the title HTML attribute
 
-  readonly title?: string;
+  readonly title?: LocalizedString;
   /*
    * True if option can be selected. False if option cannot be selected because
    * it was already selected
@@ -171,7 +172,7 @@ type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
-  readonly selectGroupLabel?: string;
+  readonly selectGroupLabel?: LocalizedString;
   readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly onClick?: (payload: {
     readonly newValue: string;
@@ -185,7 +186,7 @@ type CustomSelectElementOptionGroupProps = {
 
 type CustomSelectElementPropsBase = {
   // The label to use for the element
-  readonly selectLabel?: string;
+  readonly selectLabel?: LocalizedString;
   readonly customSelectType: CustomSelectType;
   readonly customSelectSubtype?: CustomSelectSubtype;
   readonly isOpen: boolean;
@@ -439,7 +440,7 @@ export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
   customSelectOptionGroups: initialSelectOptionGroups,
-  selectLabel = '',
+  selectLabel = '' as LocalizedString,
   isOpen,
   tableName,
   onChange: handleChange,

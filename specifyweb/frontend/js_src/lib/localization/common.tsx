@@ -206,6 +206,10 @@ export const commonText = createDictionary({
     'en-us': 'GeoMap',
     'ru-ru': 'Карта',
   },
+  geoMapProgress: {
+    'en-us': 'GeoMap - {progress:string}',
+    'ru-ru': 'Карта - {progress:string}',
+  },
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
@@ -292,10 +296,6 @@ export const commonText = createDictionary({
   trees: {
     'en-us': 'Trees',
     'ru-ru': 'Деревья',
-  },
-  recordSet: {
-    'en-us': 'Record Set',
-    'ru-ru': 'Набор объектов',
   },
   recordCount: {
     'en-us': 'Record Count',

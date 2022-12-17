@@ -11,11 +11,12 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { format } from '../Forms/dataObjFormatters';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
   readonly collectionObjects: RA<{
-    readonly formatted: string;
+    readonly formatted: LocalizedString;
     readonly resource: SpecifyResource<CollectionObject>;
     readonly relationship: SpecifyResource<CollectionRelationship>;
   }>;
@@ -23,7 +24,7 @@ export type CollectionRelData = {
     readonly id: number;
     readonly href: string;
     readonly name: string;
-    readonly formatted: string;
+    readonly formatted: LocalizedString;
   };
   readonly side: 'left' | 'right';
   readonly otherSide: 'left' | 'right';
@@ -44,7 +45,8 @@ export const processColRelationships = async (
     Promise.all(
       resources.map(async ([relationship, collectionObject]) => ({
         formatted: await format(collectionObject, formatting).then(
-          (formatted = collectionObject.id.toString()) => formatted
+          (formatted) =>
+            formatted ?? (collectionObject.id.toString() as LocalizedString)
         ),
         resource: collectionObject,
         relationship,
@@ -120,7 +122,8 @@ export async function fetchOtherCollectionData(
       href: otherCollection.viewUrl(),
       name: otherCollection.get('collectionName') ?? '',
       formatted: await formattedCollection.then(
-        (formatted = otherCollection.id.toString()) => formatted
+        (formatted) =>
+          formatted ?? (otherCollection.id.toString() as LocalizedString)
       ),
     },
     side,

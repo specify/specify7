@@ -14,6 +14,7 @@ import { Label, Select } from '../Atoms/Form';
 import { usePref } from '../UserPreferences/usePref';
 import { f } from '../../utils/functools';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function QueryTablesEdit({
   onClose: handleClose,
@@ -48,7 +49,7 @@ export function TablesListEdit({
 }: {
   readonly isNoRestrictionMode: boolean;
   readonly defaultTables: RA<keyof Tables>;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly models: RA<SpecifyModel>;
   readonly onChange: (models: RA<SpecifyModel>) => void;
   readonly onClose: () => void;

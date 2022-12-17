@@ -30,6 +30,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
 import { useViewDefinition } from './useViewDefinition';
+import { LocalizedString } from 'typesafe-i18n';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -91,7 +92,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   const [results, setResults] = React.useState<
     | RA<{
         readonly id: number;
-        readonly formatted: string;
+        readonly formatted: LocalizedString;
         readonly resource: SpecifyResource<SCHEMA>;
       }>
     | undefined
@@ -124,9 +125,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 filterResults(resources, extraFilters).map(
                   async (resource) => ({
                     id: resource.id,
-                    formatted: await format(resource, undefined, true).then(
-                      (formatted) => formatted!
-                    ),
+                    formatted: await format(resource, undefined, true),
                     resource,
                   })
                 )

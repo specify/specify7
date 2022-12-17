@@ -30,6 +30,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();
@@ -126,7 +127,7 @@ function InstitutionView({
                       )
                     }
                   >
-                    [DEV] Download policy list
+                    <>[DEV] Download policy list</>
                   </Button.Blue>
                 </div>
               </section>
@@ -208,11 +209,11 @@ export function useAdmins():
           ? ajax<{
               readonly sp7_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
               readonly sp6_admins: RA<{
                 readonly userid: number;
-                readonly username: string;
+                readonly username: LocalizedString;
               }>;
             }>('/permissions/list_admins/', {
               headers: { Accept: 'application/json' },

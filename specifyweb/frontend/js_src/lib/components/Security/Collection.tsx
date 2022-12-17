@@ -35,15 +35,16 @@ import {
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type RoleBase = {
   readonly roleId: number;
-  readonly roleName: string;
+  readonly roleName: LocalizedString;
 };
 
 export type UserRoles = RA<{
   readonly userId: number;
-  readonly userName: string;
+  readonly userName: LocalizedString;
   readonly roles: RA<RoleBase>;
 }>;
 

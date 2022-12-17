@@ -57,8 +57,11 @@ export function QueryHeader({
       <TableIcon label name={state.baseTableName} />
       <H2 className="overflow-x-auto">
         {typeof recordSet === 'object'
-          ? queryText.queryRecordSetTitle(query.name, recordSet.get('name'))
-          : queryText.queryTaskTitle(query.name)}
+          ? queryText.queryRecordSetTitle({
+              queryName: query.name,
+              recordSetName: recordSet.get('name'),
+            })
+          : queryText.queryTaskTitle({ queryName: query.name })}
       </H2>
       {!queryResource.isNew() && <QueryEditButton query={query} />}
       <span className="ml-2 flex-1" />

@@ -9,6 +9,7 @@ import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigHeader({
   languages,
@@ -45,7 +46,7 @@ export function PickList({
   onChange: handleChange,
   className,
 }: {
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly value: string | null;
   readonly groups: IR<IR<string> | RA<readonly [string, string]>>;
   readonly disabled?: boolean;

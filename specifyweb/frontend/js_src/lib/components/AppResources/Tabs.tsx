@@ -24,6 +24,7 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AppResourcesTabs({
   label,
@@ -37,7 +38,7 @@ export function AppResourcesTabs({
   onExitFullScreen: handleExitFullScreen,
   onChange: handleChange,
 }: {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
@@ -107,7 +108,7 @@ export function AppResourcesTabs({
 function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly component: AppResourceTab;
 }> {
   const subType = f.maybe(

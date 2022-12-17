@@ -7,6 +7,7 @@ import {
   whitespaceSensitive,
 } from '../utils';
 import { theories } from '../../tests/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 const raw = {
   simpleKey: {
@@ -56,19 +57,19 @@ describe('Key with plural parameter', () => {
 
 theories(whitespaceSensitive, [
   {
-    in: ['a'],
+    in: ['a' as LocalizedString],
     out: 'a',
   },
   {
-    in: ['\n b \n'],
+    in: ['\n b \n' as LocalizedString],
     out: 'b',
   },
   {
-    in: ['\n b \n c \n'],
+    in: ['\n b \n c \n' as LocalizedString],
     out: 'b c',
   },
   {
-    in: ['\n b<br>\n d \n'],
+    in: ['\n b<br>\n d \n' as LocalizedString],
     out: 'b\nd',
   },
 ]);

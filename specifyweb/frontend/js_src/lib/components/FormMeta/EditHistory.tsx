@@ -79,7 +79,7 @@ function useEditHistoryQuery(
     () =>
       typeof formatted === 'string'
         ? createQuery(
-            formsText.historyOfEditsQueryName(formatted),
+            formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
             schema.models.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])

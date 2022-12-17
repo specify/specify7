@@ -14,6 +14,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -61,7 +62,7 @@ export function SchemaConfigTables(): JSX.Element {
               href={`/specify/schema-config/${language}/${model.name}/`}
             >
               <TableIcon label={false} name={model.name} />
-              {model.name}
+              {model.name as LocalizedString}
             </Link.Default>
           </li>
         ))}

@@ -1,9 +1,13 @@
-import { IR, RR } from '../../utils/types';
-import { TagProps, wrap } from './wrapper';
-import { className } from './className';
-import { commonText } from '../../localization/common';
-import { IconProps, icons } from './Icons';
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { commonText } from '../../localization/common';
+import type { IR, RA, RR } from '../../utils/types';
+import { className } from './className';
+import type { IconProps } from './Icons';
+import { icons } from './Icons';
+import type { TagProps } from './wrapper';
+import { wrap } from './wrapper';
 
 /**
  * A wrapper for wrap() to generate links that have [href] attribute required
@@ -15,12 +19,18 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
     | TagProps<'a'>
     | ((props: Readonly<EXTRA_PROPS> & TagProps<'a'>) => TagProps<'a'>)
 ) =>
-  wrap<'a', EXTRA_PROPS & { readonly href: string }>(
-    name,
+  wrap<
     'a',
-    className,
-    initialProps
-  );
+    EXTRA_PROPS & {
+      readonly href: string;
+      readonly children?:
+        | JSX.Element
+        | LocalizedString
+        | RA<JSX.Element | LocalizedString | false | undefined>;
+      readonly title?: LocalizedString | undefined;
+      readonly 'aria-label'?: LocalizedString | undefined;
+    }
+  >(name, 'a', className, initialProps);
 
 export const Link = {
   Default: linkComponent('Link.Default', className.link),

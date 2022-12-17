@@ -4,6 +4,7 @@ import { ensure } from '../../../utils/types';
 import { schema } from '../../DataModel/schema';
 import type { CellTypes, FormCellDefinition } from '../cells';
 import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
+import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 
@@ -29,8 +30,8 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   labelForCellId: 'a',
   ariaLabel: undefined,
   type: 'Label',
-  text: 'Text',
-  title: 'a',
+  text: 'Text' as LocalizedString,
+  title: 'a' as LocalizedString,
   fieldName: 'catalogNumber',
 });
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
@@ -41,7 +42,7 @@ const divisionLabel = {
   title: undefined,
   id: 'divLabel',
 } as const;
-const blankLabel = { ...labelCell, text: '' } as const;
+const blankLabel = { ...labelCell, text: '' as LocalizedString } as const;
 const blankCell = {
   type: 'Blank',
   id: blankLabel.id,
@@ -73,7 +74,7 @@ const checkboxWithLabel = ensure<FormCellDefinition>()({
   ...missingLabelCheckbox,
   fieldDefinition: {
     ...missingLabelCheckbox.fieldDefinition,
-    label: 'Catalog Number',
+    label: 'Catalog Number' as LocalizedString,
   },
 } as const);
 
@@ -270,13 +271,18 @@ theories(postProcessLabel, {
       true,
       {
         a: {
-          labelOverride: 'b',
+          labelOverride: 'b' as LocalizedString,
           fieldName: 'field',
           altLabel: undefined,
         },
       },
     ],
-    out: { ...labelCell, fieldName: 'field', text: 'b', align: 'left' },
+    out: {
+      ...labelCell,
+      fieldName: 'field',
+      text: 'b' as LocalizedString,
+      align: 'left',
+    },
   },
   'field alt text is used as a fallback': {
     in: [
@@ -286,11 +292,11 @@ theories(postProcessLabel, {
         a: {
           labelOverride: undefined,
           fieldName: undefined,
-          altLabel: 'b',
+          altLabel: 'b' as LocalizedString,
         },
       },
     ],
-    out: { ...labelCell, text: 'b', align: 'left' },
+    out: { ...labelCell, text: 'b' as LocalizedString, align: 'left' },
   },
 });
 
@@ -384,7 +390,7 @@ describe('addMissingLabel', () => {
       ...missingLabelCheckbox,
       fieldDefinition: {
         ...missingLabelCheckbox.fieldDefinition,
-        label: 'test',
+        label: 'test' as LocalizedString,
       },
     };
 
@@ -409,7 +415,7 @@ describe('addMissingLabel', () => {
   test('cell with ariaLabel is unchanged', () => {
     const withLabel = {
       ...missingLabelTextField,
-      ariaLabel: 'test',
+      ariaLabel: 'test' as LocalizedString,
     };
     expect(addMissingLabel(withLabel, schema.models.CollectionObject)).toEqual(
       withLabel

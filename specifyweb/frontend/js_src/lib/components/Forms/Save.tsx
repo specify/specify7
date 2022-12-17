@@ -23,6 +23,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -201,8 +202,8 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
   const isChanged = saveRequired || externalSaveRequired;
 
   const copyButton = (
-    label: string,
-    description: string,
+    label: LocalizedString,
+    description: LocalizedString,
     handleClick: () => Promise<SpecifyResource<SCHEMA>>
   ): JSX.Element => (
     <ButtonComponent

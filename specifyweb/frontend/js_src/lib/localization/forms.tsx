@@ -176,6 +176,10 @@ export const formsText = createDictionary({
     'en-us': 'Resolved Amount',
     'ru-ru': 'Решенный',
   },
+  prepReturnFormatter: {
+    'en-us': '{tableName:string}: {resource: string}',
+    'ru-ru': '{tableName:string}: {resource: string}',
+  },
   paleoMap: {
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
@@ -272,6 +276,14 @@ export const formsText = createDictionary({
     'en-us': 'Record Sets ({count:string})',
     'ru-ru': 'Наборы объектов ({count:string})',
   },
+  recordSet: {
+    'en-us': 'Record Set',
+    'ru-ru': 'Набор объектов',
+  },
+  recordSetFormatted: {
+    'en-us': 'Record Set: {name:string}',
+    'ru-ru': 'Набор объектов: {name:string}',
+  },
   recordSetDeletionWarning: {
     'en-us': `
       The record set "{recordSetName:string}" will be deleted. The referenced
@@ -332,8 +344,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Следующий объект',
   },
   currentRecord: {
-    'en-us': 'Current object (out of {total:string})',
-    'ru-ru': 'Текущий объект (из {total:string})',
+    'en-us': 'Current object (out of {total:number})',
+    'ru-ru': 'Текущий объект (из {total:number})',
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
@@ -663,6 +675,10 @@ export const formsText = createDictionary({
     'en-us': 'Configure fields to carry forward',
     'ru-ru': 'Настройте поля для клонирования',
   },
+  carryForwardTableSettingsDescription: {
+    'en-us': 'Configure fields to carry forward ({tableName: string})',
+    'ru-ru': 'Настройте поля для клонирования ({tableName: string})',
+  },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
     'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
@@ -751,6 +767,10 @@ export const formsText = createDictionary({
     'en-us': 'Grid',
     'ru-ru': 'Таблица',
   },
+  formTableHeading: {
+    'en-us': '{relationshipName:string} ({count:string})',
+    'ru-ru': '{relationshipName:string} ({count:string})',
+  },
   subviewConfiguration: {
     'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
@@ -784,8 +804,12 @@ export const formsText = createDictionary({
     'ru-ru': 'Мета-данные формы',
   },
   newResourceTitle: {
-    'en-us': 'New {resourceName:string}',
-    'ru-ru': 'Новый {resourceName:string}',
+    'en-us': 'New {tableName:string}',
+    'ru-ru': 'Новый {tableName:string}',
+  },
+  resourceFormatter: {
+    'en-us': '{tableName:string} #{id:number}',
+    'ru-ru': '{tableName:string} #{id:number}',
   },
   resourceDeletedDialogHeader: {
     'en-us': 'Item deleted',

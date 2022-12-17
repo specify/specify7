@@ -16,6 +16,7 @@ import type { IR, RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -65,7 +66,7 @@ export const formatAggregators = (
     aggregators.map(({ name = '', title = '', className = '' }) => [
       name,
       {
-        title,
+        title: title as LocalizedString,
         className,
       },
     ])

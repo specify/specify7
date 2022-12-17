@@ -14,6 +14,7 @@ import { unescape } from './schemaBase';
 import { getFieldOverwrite, getGlobalFieldOverwrite } from './schemaOverrides';
 import type { SpecifyModel } from './specifyModel';
 import type { PickList, Tables } from './types';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type JavaType =
   // Strings
@@ -111,7 +112,7 @@ abstract class FieldBase {
   public readonly localization: SchemaLocalization['items'][string];
 
   // User friendly name of the field from the schema config.
-  public readonly label: string;
+  public readonly label: LocalizedString;
 
   public constructor(
     model: SpecifyModel,
@@ -144,8 +145,8 @@ abstract class FieldBase {
     this.label =
       typeof this.localization.name === 'string' &&
       this.localization.name.length > 0
-        ? unescape(this.localization.name)
-        : camelToHuman(this.name);
+        ? (unescape(this.localization.name) as LocalizedString)
+        : (camelToHuman(this.name) as LocalizedString);
 
     this.isHidden =
       globalFieldOverride === 'hidden' || (this.localization.ishidden ?? false);
@@ -174,11 +175,11 @@ abstract class FieldBase {
   }
 
   // Returns the description of the field from the schema config.
-  public getLocalizedDesc(): string | undefined {
+  public getLocalizedDesc(): LocalizedString | undefined {
     const description = this.localization.desc;
     return description === null || description === undefined
       ? undefined
-      : unescape(description);
+      : (unescape(description) as LocalizedString);
   }
 
   // Returns the name of the UIFormatter for the field from the schema config.

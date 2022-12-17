@@ -1,9 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -22,7 +24,6 @@ import {
 } from './filtersHelpers';
 import type { AppResources } from './hooks';
 import { appResourceSubTypes, appResourceTypes } from './types';
-import { headerText } from '../../localization/header';
 
 export function AppResourcesFilters({
   initialResources,
@@ -165,7 +166,7 @@ function RadioButton({
   onClick: handleClick,
 }: {
   readonly isPressed: boolean;
-  readonly children: string;
+  readonly children: LocalizedString;
   readonly onClick: () => void;
 }): JSX.Element {
   return (

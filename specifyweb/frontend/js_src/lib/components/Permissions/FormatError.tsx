@@ -16,6 +16,7 @@ import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
 import { userText } from '../../localization/user';
 import { StringToJsx } from '../../localization/utils';
+import { commonText } from '../../localization/common';
 
 export function formatPermissionsError(
   response: string,
@@ -146,7 +147,7 @@ function CollectionName({
     ),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }
 
 function UserName({ userId }: { readonly userId: number }): JSX.Element {
@@ -173,5 +174,5 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
     ),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }

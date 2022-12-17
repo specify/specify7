@@ -10,10 +10,11 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Button } from './Button';
 import { Link } from './Link';
 import { AnySchema } from '../DataModel/helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 const dataEntryButton = (
   className: string,
-  title: string,
+  title: LocalizedString,
   icon: keyof typeof icons
 ) =>
   function (
@@ -149,17 +150,16 @@ export const DataEntry = {
     'minus'
   ),
   Visit({
+    className: localClassName = '',
     resource,
-    props,
   }: {
-    readonly props?: Exclude<TagProps<'a'>, 'aria-label' | 'href' | 'title'>;
+    readonly className?: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        {...props}
         aria-label={formsText.visit()}
-        className={`${className.dataEntryVisit} ${props?.className ?? ''}`}
+        className={`${className.dataEntryVisit} ${localClassName}`}
         href={resource.viewUrl()}
         title={formsText.visit()}
       />

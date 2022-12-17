@@ -9,6 +9,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigFields({
   model,
@@ -69,7 +70,7 @@ export function SchemaConfigColumn({
   id,
 }: {
   readonly children: React.ReactNode;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly id?: string;
 }): JSX.Element {
   return (

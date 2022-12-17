@@ -60,7 +60,7 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
  *
  * New lines are ignored, unless the line is completely blank
  */
-export const whitespaceSensitive = (string: string): string =>
+export const whitespaceSensitive = (string: LocalizedString): string =>
   string
     .trim()
     .split('\n')
@@ -90,7 +90,9 @@ export function StringToJsx({
   components,
 }: {
   readonly string: LocalizedString;
-  readonly components: IR<JSX.Element | ((label: string) => JSX.Element)>;
+  readonly components: IR<
+    JSX.Element | ((label: LocalizedString) => JSX.Element)
+  >;
 }): JSX.Element {
   let index = 0;
   const usedComponents = new Set<string>();
@@ -113,7 +115,9 @@ export function StringToJsx({
     const label = group.groups?.label ?? '';
     const jsx = (
       <React.Fragment key={groupIndex}>
-        {typeof component === 'function' ? component(label) : component}
+        {typeof component === 'function'
+          ? component(label as LocalizedString)
+          : component}
       </React.Fragment>
     );
 

@@ -116,7 +116,7 @@ export function PrepDialog({
               title={
                 typeof itemCollection === 'object'
                   ? formsText.addItems()
-                  : formsText.createRecord(action.model.label)
+                  : formsText.createRecord({ modelName: action.model.label })
               }
             >
               {commonText.apply()}

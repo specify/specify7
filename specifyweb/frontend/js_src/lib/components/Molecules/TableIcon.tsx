@@ -5,6 +5,7 @@ import { spanNumber } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
 import { getModel } from '../DataModel/schema';
 import { getIcon } from '../InitialContext/icons';
+import { LocalizedString } from 'typesafe-i18n';
 
 const MAX_HUE = 360;
 
@@ -51,7 +52,7 @@ export function TableIcon({
    * In all other cases, set this to true, or explicitly set the label as a
    * string
    */
-  readonly label: boolean | string;
+  readonly label: boolean | LocalizedString;
   readonly className?: string;
 }): JSX.Element {
   const tableIconSource = getIcon(name);

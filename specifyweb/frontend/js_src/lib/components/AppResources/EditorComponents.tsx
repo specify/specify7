@@ -27,6 +27,7 @@ import { appResourceSubTypes, appResourceTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { notificationsText } from '../../localization/notifications';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
@@ -45,7 +46,7 @@ export function AppResourceEditButton({
   title,
   children,
 }: {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly children: JSX.Element;
 }): JSX.Element {
   const [isEditingMeta, handleEditingMeta, handleEditedMeta] =

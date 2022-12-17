@@ -64,7 +64,7 @@ export function extractHeader(
   const header = hasHeader
     ? uniquifyHeaders(data[0].map(f.trim))
     : Array.from(data[0], (_, index) =>
-        wbText.columnName({ number: index + 1 })
+        wbText.columnName({ columnIndex: index + 1 })
       );
   const rows = hasHeader ? data.slice(1) : data;
   return { rows, header: Array.from(header) };

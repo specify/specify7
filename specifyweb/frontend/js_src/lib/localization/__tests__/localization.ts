@@ -246,7 +246,7 @@ type Dictionary = IR<Key>;
       );
       // FIXME: handle the commonText.text usage too
 
-      Array.from(fileContent.matchAll(usages)).forEach(({ groups, index }) => {
+      Array.from(usages, ({ groups, index }) => {
         if (groups === undefined || index === undefined) return;
 
         const followingCharacter = groups.follower ?? '';

@@ -24,6 +24,7 @@ import {
 } from './utils';
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -38,15 +39,15 @@ export const getRegistriesFromPath = (
   );
 
 export type Registry = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: IR<Registry>;
   readonly actions: RA<string>;
-  readonly groupName: string;
+  readonly groupName: LocalizedString;
   readonly isInstitutional: boolean;
 };
 
 type WritableRegistry = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: R<WritableRegistry>;
   readonly actions: RA<string>;
   readonly groupName: string;
@@ -64,25 +65,28 @@ const buildRegistry = f.store(
           resource: tableNameToResourceName(name),
           localized: [schemaText.table(), label],
           actions: tableActions,
-          groupName: isSystem || isHidden ? userText.advancedTables() : '',
+          groupName:
+            isSystem || isHidden
+              ? userText.advancedTables()
+              : ('' as LocalizedString),
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
         localized: [commonText.tool(), label],
         actions: tableActions,
-        groupName: '',
+        groupName: '' as LocalizedString,
       })),
       ...Object.entries(operationPolicies).map(([resource, actions]) => ({
         resource,
         localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,
-        groupName: '',
+        groupName: '' as LocalizedString,
       })),
       ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
         resource,
         localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,
-        groupName: '',
+        groupName: '' as LocalizedString,
       })),
     ].reduce<R<WritableRegistry>>(
       (registry, { resource, localized, groupName }) => {
@@ -103,11 +107,12 @@ const buildRegistry = f.store(
                         actions: getAllActions(
                           partsToResourceName(resourceParts.slice(0, index + 1))
                         ),
-                        groupName: '',
+                        groupName: '' as LocalizedString,
                         isInstitutional: false,
                       },
                     },
-              groupName: index + 1 === length ? groupName : '',
+              groupName:
+                index + 1 === length ? groupName : ('' as LocalizedString),
               actions:
                 index + 1 === length
                   ? getAllActions(
@@ -129,7 +134,7 @@ const buildRegistry = f.store(
           label: commonText.all(),
           children: {},
           actions: getAllActions(partsToResourceName([])),
-          groupName: '',
+          groupName: '' as LocalizedString,
           isInstitutional: false,
         },
       }

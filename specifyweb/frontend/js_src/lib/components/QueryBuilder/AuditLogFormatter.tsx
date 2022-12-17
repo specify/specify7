@@ -33,7 +33,7 @@ async function resourceToLink(
           hasTablePermission(resource.specifyModel.name, 'read') ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
-            string!
+            string
           )
         ),
     (status) => {

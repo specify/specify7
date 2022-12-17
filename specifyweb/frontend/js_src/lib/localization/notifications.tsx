@@ -13,6 +13,10 @@ export const notificationsText = createDictionary({
     'en-us': 'Notifications: {count:string}',
     'ru-ru': 'Уведомлений: {count:string}',
   },
+  notificationsLoading: {
+    'en-us': 'Notifications: ...',
+    'ru-ru': 'Уведомлений: ...',
+  },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',

@@ -13,6 +13,7 @@ import type { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const getAppResourceTree = (
   resources: AppResources
@@ -206,7 +207,7 @@ const getUserTypeResources = (
         userType: userType.toLowerCase(),
       });
     return {
-      label: userType,
+      label: userType as LocalizedString,
       key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),

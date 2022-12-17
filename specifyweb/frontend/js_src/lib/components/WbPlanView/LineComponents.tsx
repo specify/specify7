@@ -25,10 +25,11 @@ import {
 import { icons } from '../Atoms/Icons';
 import type { AutoMapperSuggestion } from './Mapper';
 import { useId } from '../../hooks/useId';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;
-  readonly title?: string;
+  readonly title?: LocalizedString;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
   readonly isHidden?: boolean;

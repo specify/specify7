@@ -128,9 +128,9 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             className={{
               container: dialogClassNames.narrowContainer,
             }}
-            header={formsText.deleteConfirmationDialogHeader(
-              resource.specifyModel.label
-            )}
+            header={formsText.deleteConfirmationDialogHeader({
+              tableName: resource.specifyModel.label,
+            })}
             onClose={handleClose}
           >
             {deletionMessage}

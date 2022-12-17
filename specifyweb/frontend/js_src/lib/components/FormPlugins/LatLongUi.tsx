@@ -10,6 +10,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -145,7 +146,7 @@ function CoordinatePoint({
   step,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly index: 1 | 2;
   readonly isReadOnly: boolean;
   readonly step: number | undefined;

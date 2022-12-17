@@ -29,13 +29,15 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
+import { LocalizedString } from 'typesafe-i18n';
+import { formatNumber } from '../Atoms/Internationalization';
 
 const cellToLabel = (
   model: SpecifyModel,
   cell: FormCellDefinition
 ): {
-  readonly text: string | undefined;
-  readonly title: string | undefined;
+  readonly text: LocalizedString | undefined;
+  readonly title: LocalizedString | undefined;
 } => ({
   text: cell.ariaLabel,
   title:
@@ -125,7 +127,11 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  const header = `${relationship.label} (${totalCount ?? resources.length})`;
+  // FIXME: convert formatNumber into a formatter
+  const header = formsText.formTableHeading({
+    relationshipName: relationship.label,
+    count: formatNumber(totalCount ?? resources.length),
+  });
   const viewDefinition = useViewDefinition({
     model: relationship.relatedModel,
     viewName,
@@ -324,9 +330,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   <div className="flex h-full flex-col gap-2" role="cell">
                     {displayViewButton && isExpanded[resource.cid] ? (
                       <DataEntry.Visit
-                        props={{
-                          className: `flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`,
-                        }}
+                        className={`flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`}
                         resource={resource}
                       />
                     ) : undefined}

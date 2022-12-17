@@ -14,6 +14,7 @@ import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
 import { getAllActions } from './utils';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityPoliciesWrapper({
   policies,
@@ -22,7 +23,7 @@ export function SecurityPoliciesWrapper({
   children,
 }: {
   readonly policies: RA<Policy> | undefined;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly collapsable: boolean;
   readonly children: JSX.Element;
 }): JSX.Element {

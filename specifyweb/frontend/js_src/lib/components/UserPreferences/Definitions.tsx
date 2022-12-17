@@ -85,8 +85,8 @@ export type PreferenceItem<VALUE> = {
       readonly values:
         | RA<{
             readonly value: VALUE;
-            readonly title?: string;
-            readonly description?: string;
+            readonly title?: LocalizedString;
+            readonly description?: LocalizedString;
           }>
         | RA<VALUE>;
     }
@@ -104,11 +104,11 @@ const defineItem = <VALUE,>(
 ): PreferenceItem<VALUE> => definition;
 
 export type GenericPreferencesCategories = IR<{
-  readonly title: string;
-  readonly description?: string;
+  readonly title: LocalizedString;
+  readonly description?: LocalizedString;
   readonly subCategories: IR<{
-    readonly title: string;
-    readonly description?: string;
+    readonly title: LocalizedString;
+    readonly description?: LocalizedString;
     readonly items: IR<PreferenceItem<any>>;
   }>;
 }>;
@@ -900,7 +900,8 @@ export const preferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description: `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`,
+                description:
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}` as LocalizedString,
               },
             ],
           }),
@@ -918,14 +919,15 @@ export const preferenceDefinitions = {
               {
                 value: 'contains',
                 title: preferencesText.containsInsensitive(),
-                description: `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}`,
+                description:
+                  `${preferencesText.containsDescription()} ${preferencesText.containsSecondDescription()}` as LocalizedString,
               },
             ],
           }),
         },
       },
       recordSet: {
-        title: '_recordSet',
+        title: '_recordSet' as LocalizedString,
         items: {
           recordToOpen: defineItem<'first' | 'last'>({
             title: preferencesText.recordSetRecordToOpen(),
@@ -966,7 +968,7 @@ export const preferenceDefinitions = {
        * on forms
        */
       preferences: {
-        title: '(not visible to user) Preferences',
+        title: '(not visible to user) Preferences' as LocalizedString,
         items: {
           /*
            * This has to be an object rather than an array to allow forms to
@@ -1131,7 +1133,7 @@ export const preferenceDefinitions = {
          * This would be replaced with labels from schema once
          * schema is loaded
          */
-        title: '_Geography',
+        title: '_Geography' as LocalizedString,
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1150,7 +1152,7 @@ export const preferenceDefinitions = {
         },
       },
       taxon: {
-        title: '_Taxon',
+        title: '_Taxon' as LocalizedString,
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1169,7 +1171,7 @@ export const preferenceDefinitions = {
         },
       },
       storage: {
-        title: '_Storage',
+        title: '_Storage' as LocalizedString,
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1188,7 +1190,7 @@ export const preferenceDefinitions = {
         },
       },
       geologicTimePeriod: {
-        title: '_GeologicTimePeriod',
+        title: '_GeologicTimePeriod' as LocalizedString,
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),
@@ -1207,7 +1209,7 @@ export const preferenceDefinitions = {
         },
       },
       lithoStrat: {
-        title: '_LithoStrat',
+        title: '_LithoStrat' as LocalizedString,
         items: {
           treeAccentColor: defineItem({
             title: preferencesText.treeAccentColor(),

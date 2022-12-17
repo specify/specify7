@@ -18,10 +18,11 @@ import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
 import { className } from '../Atoms/className';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type OicProvider = {
   readonly provider: string;
-  readonly title: string;
+  readonly title: LocalizedString;
 };
 
 export function OicLogin({

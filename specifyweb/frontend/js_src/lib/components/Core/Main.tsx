@@ -25,9 +25,10 @@ import type { Preferences } from '../UserPreferences/Definitions';
 import { mainText } from '../../localization/main';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type UserTool = {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly url: string;
   readonly enabled?: () => Promise<boolean> | boolean;
 };
@@ -140,10 +141,10 @@ export function Main(): JSX.Element | null {
           onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
-            {mainText.versionMismatchDialogText(
-              getSystemInfo().specify6_version,
-              getSystemInfo().database_version
-            )}
+            {mainText.versionMismatchDialogText({
+              specifySixVersion: getSystemInfo().specify6_version,
+              databaseVersion: getSystemInfo().database_version,
+            })}
           </p>
           <p>{mainText.versionMismatchSecondDialogText()}</p>
           <p>

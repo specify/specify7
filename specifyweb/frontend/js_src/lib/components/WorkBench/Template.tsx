@@ -28,13 +28,14 @@ import { Input } from '../Atoms/Form';
 import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { legacyDialogs } from '../Molecules/LegacyDialog';
+import { LocalizedString } from 'typesafe-i18n';
 
 function Navigation({
   name,
   label,
 }: {
   readonly name: string;
-  readonly label: string;
+  readonly label: LocalizedString;
 }): JSX.Element {
   return (
     <span

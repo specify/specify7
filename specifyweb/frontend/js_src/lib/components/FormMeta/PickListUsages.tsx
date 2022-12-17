@@ -66,7 +66,7 @@ function usePickListQuery(
   return React.useMemo(
     () =>
       createQuery(
-        formsText.usagesOfPickList(resource.get('name')),
+        formsText.usagesOfPickList({ pickList: resource.get('name') }),
         schema.models.SpLocaleContainerItem
       ).set('fields', [
         QueryFieldSpec.fromPath('SpLocaleContainerItem', [

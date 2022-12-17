@@ -29,11 +29,12 @@ import type { Policy } from './Policy';
 import { mainText } from '../../localization/main';
 import { userText } from '../../localization/user';
 import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type NewRole = {
   readonly id: number | undefined;
-  readonly name: string;
-  readonly description: string;
+  readonly name: LocalizedString;
+  readonly description: LocalizedString;
   readonly policies: RA<Policy>;
 };
 
@@ -57,7 +58,7 @@ export function RoleView({
   onAddUsers: handleAddUsers,
 }: {
   readonly role: NewRole | Role;
-  readonly parentName: string | undefined;
+  readonly parentName: LocalizedString | undefined;
   readonly userRoles: UserRoles | undefined;
   /*
    * All these are delegated to the parent resource so that the parent
@@ -121,7 +122,7 @@ export function RoleView({
               required
               value={role.name}
               onValueChange={(name): void =>
-                setRole(replaceKey(role, 'name', name))
+                setRole(replaceKey(role, 'name', name as LocalizedString))
               }
             />
           </Label.Block>
@@ -132,7 +133,9 @@ export function RoleView({
             isReadOnly={isReadOnly}
             value={role.description}
             onValueChange={(description): void =>
-              setRole(replaceKey(role, 'description', description))
+              setRole(
+                replaceKey(role, 'description', description as LocalizedString)
+              )
             }
           />
         </Label.Block>

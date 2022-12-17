@@ -19,6 +19,7 @@ import { Submit } from '../Atoms/Submit';
 import { useValidation } from '../../hooks/useValidation';
 import { SplashScreen } from '../Core/SplashScreen';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {
@@ -72,7 +73,7 @@ function LegacyLogin({
       | ''
       | {
           readonly name: string;
-          readonly provider_title: string;
+          readonly provider_title: LocalizedString;
         };
     readonly passwordErrors: RA<string>;
     readonly languages: RA<readonly [code: Language, name: string]>;

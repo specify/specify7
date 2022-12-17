@@ -252,7 +252,9 @@ function CarryForwardConfigDialog({
           </Submit.Blue>
         </>
       }
-      header={`${formsText.carryForwardSettingsDescription()} (${model.label})`}
+      header={formsText.carryForwardTableSettingsDescription({
+        tableName: model.label,
+      })}
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>

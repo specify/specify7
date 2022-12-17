@@ -297,12 +297,12 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
   queryMapSubset: {
-    'en-us': 'Plotted {plotted:number} of {total:number} records',
-    'ru-ru': 'Отображено {plotted:number} из {total:number} записей',
+    'en-us': 'Plotted {plotted:string} of {total:string} records',
+    'ru-ru': 'Отображено {plotted:string} из {total:string} записей',
   },
   queryMapAll: {
-    'en-us': 'Plotted {plotted:number} records',
-    'ru-ru': 'Отображено {plotted:number} записей',
+    'en-us': 'Plotted {plotted:string} records',
+    'ru-ru': 'Отображено {plotted:string} записей',
   },
   queriesDialogTitle: {
     'en-us': 'Queries ({count:number})',

@@ -44,7 +44,7 @@ export function MappingsControlPanel({
         <Button.Small
           onClick={(): void => {
             handleAddNewHeader(
-              wbText.newHeaderName({ number: newHeaderIdRef.current })
+              wbText.newHeaderName({ index: newHeaderIdRef.current })
             );
             newHeaderIdRef.current += 1;
           }}

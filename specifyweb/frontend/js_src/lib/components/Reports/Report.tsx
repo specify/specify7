@@ -33,6 +33,7 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ReportForRecord } from './ForRecord';
 import { ReportRecordSets } from './RecordSets';
 import { unknownIcon } from '../InitialContext/icons';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function Report({
   appResource,
@@ -228,7 +229,7 @@ function FixImagesDialog({
             title={formsText.fix()}
             onClick={(): void => setIndex(index)}
           >
-            {fileName}
+            {fileName as LocalizedString}
           </Button.LikeLink>
         ))}
       </Ul>

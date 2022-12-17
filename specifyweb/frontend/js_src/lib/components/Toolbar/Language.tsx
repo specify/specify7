@@ -30,6 +30,7 @@ import type {
   PreferenceItemComponent,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {
@@ -166,8 +167,8 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
 
 export function useSchemaLanguages(
   loadingScreen: boolean
-): IR<string> | undefined {
-  const [languages] = useAsyncState<IR<string>>(
+): IR<LocalizedString> | undefined {
+  const [languages] = useAsyncState<IR<LocalizedString>>(
     React.useCallback(
       async () =>
         ajax<
@@ -199,9 +200,9 @@ export function useSchemaLanguages(
                   (language) =>
                     [
                       language,
-                      new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                      (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
                         language
-                      ) ?? language,
+                      ) ?? language) as LocalizedString,
                     ] as const
                 )
                 .sort(sortFunction(([_code, localized]) => localized))

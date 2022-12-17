@@ -4,6 +4,7 @@ import { theories } from '../../../tests/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 requireContext();
 
@@ -87,7 +88,7 @@ theories(parseFormField, [
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'Find Next',
+      label: 'Find Next' as LocalizedString,
     },
   },
   {
@@ -102,7 +103,7 @@ theories(parseFormField, [
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: false,
-      label: 'some label',
+      label: 'some label' as LocalizedString,
     },
   },
   {
@@ -117,7 +118,7 @@ theories(parseFormField, [
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
-      label: 'Select All',
+      label: 'Select All' as LocalizedString,
     },
   },
   {

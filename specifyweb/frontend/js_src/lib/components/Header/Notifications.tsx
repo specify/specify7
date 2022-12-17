@@ -16,6 +16,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
 import { notificationsText } from '../../localization/notifications';
+import { LocalizedString } from 'typesafe-i18n';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -88,7 +89,7 @@ export function Notifications(): JSX.Element {
                   read,
                   timestamp,
                   type,
-                  payload: rest as IR<string>,
+                  payload: rest as IR<LocalizedString>,
                 })
               )
               // Make most recent notification first
@@ -130,11 +131,11 @@ export function Notifications(): JSX.Element {
         forwardRef={buttonRef}
         onClick={handleOpen}
       >
-        {notificationsText.notifications(
-          typeof notifications?.length === 'number'
-            ? formatNumber(notifications.length)
-            : '...'
-        )}
+        {typeof notifications?.length === 'number'
+          ? notificationsText.notifications({
+              count: formatNumber(notifications.length),
+            })
+          : notificationsText.notificationsLoading()}
       </Button.Small>
       {Array.isArray(notifications) && (
         <Dialog

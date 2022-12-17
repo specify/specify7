@@ -18,6 +18,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { UnloadProtectsContext } from '../Core/Contexts';
 import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -52,7 +53,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
   readonly defaultIndex?: number;
-  readonly title: string | undefined;
+  readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;

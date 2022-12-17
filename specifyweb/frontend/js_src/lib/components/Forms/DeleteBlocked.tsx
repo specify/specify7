@@ -108,7 +108,7 @@ export function DeleteBlocked({
                     }
                   >
                     <TableIcon label name={resource.specifyModel.name} />
-                    {formatted ?? resource.viewUrl()}
+                    {formatted}
                   </Button.LikeLink>
                 </td>
                 <td>{typeof field === 'object' ? field.label : field}</td>

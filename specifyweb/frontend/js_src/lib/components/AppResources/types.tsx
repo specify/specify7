@@ -5,11 +5,12 @@ import { resourcesText } from '../../localization/resources';
 import { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
   readonly icon: JSX.Element;
-  readonly label: string;
+  readonly label: LocalizedString;
 };
 
 export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
@@ -30,7 +31,7 @@ export type AppResourceSubType = {
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
-  readonly label: string;
+  readonly label: LocalizedString;
 };
 
 /**

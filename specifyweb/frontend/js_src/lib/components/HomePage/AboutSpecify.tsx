@@ -20,11 +20,14 @@ import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return <AboutDialog isOpen onClose={handleClose} />;
 }
+
+const websiteUrl = 'www.specifysoftware.org' as LocalizedString;
 
 function AboutDialog({
   isOpen,
@@ -80,7 +83,7 @@ function AboutDialog({
       <address>
         <p>
           <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
-            www.specifysoftware.org
+            {websiteUrl}
           </Link.NewTab>
         </p>
         <p>{supportLink}</p>
@@ -104,7 +107,7 @@ function AboutDialog({
               [
                 welcomeText.schemaVersion(),
                 <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version}
+                  {getSystemInfo().schema_version as LocalizedString}
                 </Link.Default>,
               ],
               [welcomeText.databaseName(), getSystemInfo().database],
@@ -177,7 +180,7 @@ function GitSha(): JSX.Element {
             expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
           }
         ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : data
+          status === Http.NOT_FOUND ? false : (data as LocalizedString)
         ),
       []
     ),

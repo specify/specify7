@@ -16,6 +16,7 @@ import { ShowLoansCommand } from './ShowTransactions';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function GenerateLabel({
   resource,
@@ -24,7 +25,7 @@ export function GenerateLabel({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
 }): JSX.Element | null {
   const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
@@ -55,7 +56,7 @@ const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly id: string | undefined;
-    readonly label: string | undefined;
+    readonly label: LocalizedString | undefined;
     readonly commandDefinition: UiCommands[KEY];
   }) => JSX.Element | null;
 } = {
@@ -142,7 +143,7 @@ export function UiCommand({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
 }): JSX.Element | null {
   const Command = commandRenderers[

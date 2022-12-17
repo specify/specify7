@@ -230,20 +230,22 @@ function Dialog({
        * That is needed so that the map can zoom in to correct place
        */
       forwardRef={setMap}
-      header={`${commonText.geoMap()}${
+      header={
         typeof totalCount === 'number'
-          ? ` - ${
-              results.length === totalCount
-                ? queryText.queryMapAll({
-                    plotted: formatNumber(results.length),
-                  })
-                : queryText.queryMapSubset({
-                    plotted: formatNumber(results.length),
-                    total: formatNumber(totalCount),
-                  })
-            }`
-          : ''
-      }`}
+          ? commonText.geoMapProgress({
+              progress: ` - ${
+                results.length === totalCount
+                  ? queryText.queryMapAll({
+                      plotted: formatNumber(results.length),
+                    })
+                  : queryText.queryMapSubset({
+                      plotted: formatNumber(results.length),
+                      total: formatNumber(totalCount),
+                    })
+              }`,
+            })
+          : commonText.geoMap()
+      }
       headerButtons={
         typeof totalCount === 'number' && totalCount !== results.length ? (
           <Progress

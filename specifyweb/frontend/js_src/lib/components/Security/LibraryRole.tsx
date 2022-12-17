@@ -18,6 +18,7 @@ import type { SecurityOutlet } from '../Toolbar/Security';
 import { decompressPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
 import { locationToState, useStableLocation } from '../Router/RouterState';
+import { LocalizedString } from 'typesafe-i18n';
 
 const closeUrl = '/specify/security/institution/';
 
@@ -92,8 +93,9 @@ function useRole(
     } else
       return {
         id: undefined,
-        name: '',
-        description: '',
+        // FIXME: make empty string count as localized string
+        name: '' as LocalizedString,
+        description: '' as LocalizedString,
         policies: [],
       };
   }, [libraryRoles, roleId, role]);

@@ -32,6 +32,7 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
+import { LocalizedString } from 'typesafe-i18n';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -43,7 +44,7 @@ export function DataSetMeta({
   readonly dataset: Dataset;
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
-  readonly onChange: (dataSetName: string) => void;
+  readonly onChange: (dataSetName: LocalizedString) => void;
 }): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
@@ -84,7 +85,7 @@ export function DataSetMeta({
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
                       overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName;
+                      return uniqueName as LocalizedString;
                     })
                 )
             ).then(handleChange)
@@ -98,7 +99,7 @@ export function DataSetMeta({
             required
             spellCheck="true"
             value={name}
-            onValueChange={setName}
+            onValueChange={(name): void => setName(name as LocalizedString)}
           />
         </Label.Block>
         <Label.Block>

@@ -298,9 +298,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     } else {
       const validationMessage =
         precision === 'full'
-          ? formsText.requiredFormat(fullDateFormat())
+          ? formsText.requiredFormat({ format: fullDateFormat() })
           : precision === 'month-year'
-          ? formsText.requiredFormat(monthFormat())
+          ? formsText.requiredFormat({ format: monthFormat() })
           : formsText.invalidDate();
       resource.saveBlockers?.add(
         `invaliddate:${dateField}`,

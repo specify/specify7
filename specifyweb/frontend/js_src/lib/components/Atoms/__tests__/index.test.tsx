@@ -22,7 +22,7 @@ test('Can use <summary> as a controlled component', async () => {
   );
   const handleToggle = jest.fn((open: boolean) => rerender(build(open)));
   const { asFragment, rerender, getByText, user } = mount(build(false));
-  const summary = getByText.a();
+  const summary = getByText('a');
 
   await user.click(summary);
   expect(handleToggle).toHaveBeenLastCalledWith(true);

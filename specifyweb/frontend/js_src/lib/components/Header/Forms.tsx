@@ -32,6 +32,7 @@ import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
 import { TableIcon } from '../Molecules/TableIcon';
 import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -96,7 +97,7 @@ export function FormsDialog({
 
 export type FormEntry = {
   readonly iconName: string | undefined;
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly table: keyof Tables;
 };
 
@@ -126,7 +127,8 @@ const fetchLegacyForms = f.store(
 
               return {
                 iconName: getParsedAttribute(view, 'iconName') ?? model.name,
-                title: getParsedAttribute(view, 'title') ?? '',
+                title:
+                  getParsedAttribute(view, 'title') ?? ('' as LocalizedString),
                 table: model.name,
               };
             })

@@ -13,6 +13,8 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { LocalizedString } from 'typesafe-i18n';
+import { formatNumber } from '../Atoms/Internationalization';
 
 export function PrepDialogRow({
   preparation,
@@ -36,7 +38,7 @@ export function PrepDialogRow({
             'ExchangeOut' | 'Gift' | 'Loan',
             RA<{
               readonly id: number;
-              readonly label: string;
+              readonly label: LocalizedString;
             }>
           >;
         }
@@ -103,7 +105,7 @@ export function PrepDialogRow({
                                 .map((object) => object.split('>|<'))
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
-                                  label,
+                                  label: label as LocalizedString,
                                 })) ?? []
                           );
                           const count =
@@ -137,7 +139,7 @@ export function PrepDialogRow({
                     : setState({ type: 'Main' })
                 }
               >
-                {unavailableCount}
+                {formatNumber(unavailableCount)}
               </Button.LikeLink>
             )
           }
@@ -155,7 +157,12 @@ export function PrepDialogRow({
                       resource: new schema.models[tableName].Resource({ id }),
                     })
                   }
-                >{`${schema.models[tableName].label}: ${label}`}</Button.LikeLink>
+                >
+                  {formsText.prepReturnFormatter({
+                    tableName: schema.models[tableName].label,
+                    resource: label,
+                  })}
+                </Button.LikeLink>
               ))
             )}
           </td>
