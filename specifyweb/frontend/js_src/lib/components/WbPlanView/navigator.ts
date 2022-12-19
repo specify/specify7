@@ -537,7 +537,10 @@ export function getMappingLineData({
                       : undefined,
                   };
                   return scope === 'queryBuilder' && field.isTemporal()
-                    ? Object.entries(dateParts)
+                    ? Object.entries({
+                        fullDate: commonText.fullDate(),
+                        ...dateParts,
+                      })
                         .map(
                           ([datePart, label]) =>
                             [

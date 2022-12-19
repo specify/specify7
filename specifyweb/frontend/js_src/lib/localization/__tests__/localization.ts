@@ -10,10 +10,13 @@
  * checks for errors that are not reported by TypeScript.
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { f } from '../../utils/functools';
+import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { split } from '../../utils/utils';
 import type {
   Dictionary as LanguageDictionary,
   Language,
@@ -25,30 +28,16 @@ import {
   localizationMetaKeys,
   rawDictionary,
 } from '../utils';
-import type { IR, R, RA, RR } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { split } from '../../utils/utils';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
 
 // CONFIGURATION
-/**
- * When tests are build, this scrip would get executed from
- * `js_src/testBuild/lib/localization/__tests__/localization.js`.
- * We need to go up four levels to get to the `js_src` directory.
- *
- */
-const jsSourceDirectory = path.dirname(
-  path.dirname(path.dirname(path.dirname(process.argv[1])))
-);
-const libraryDirectory = path.join(path.dirname(jsSourceDirectory), 'lib');
+const localizationDirectory = path.dirname(path.dirname(process.argv[1]));
+const libraryDirectory = path.dirname(localizationDirectory);
 
-// Directory that contains the localization script
-const localizationDirectory = path.join(libraryDirectory, 'localization');
-const compiledLocalizationDirectory = '../';
-
-const extensionsToScan = ['js', 'jsx', 'ts', 'tsx'];
+const extensionsToScan = new Set(['js', 'jsx', 'ts', 'tsx']);
+const dictionaryExtension = '.ts';
 
 /**
  * Forbid certain characters in localization strings
@@ -68,8 +57,10 @@ let todosCount = 0;
 
 function todo(value: string): void {
   todosCount += 1;
-  // TODO: use chalk lib for this instead
-  // Green
+  /*
+   * TODO: use chalk lib for this instead
+   * Green
+   */
   console.warn(`\u001B[36m${value}\u001B[0m\n`);
 }
 
@@ -96,6 +87,7 @@ const lookAroundLength = 40;
 
 type Key = {
   readonly strings: Partial<Value>;
+  // eslint-disable-next-line functional/prefer-readonly-type
   useCount: number;
 };
 
@@ -108,101 +100,99 @@ type Dictionary = IR<Key>;
     Array.from(
       filterArray(
         await Promise.all(
-          localizationFiles.map<Promise<undefined | [string, Dictionary]>>(
-            async (fileName) => {
-              if (!path.extname(fileName).endsWith('tsx')) return undefined;
+          localizationFiles.map<
+            Promise<readonly [string, Dictionary] | undefined>
+          >(async (fileName) => {
+            if (!path.extname(fileName).endsWith(dictionaryExtension))
+              return undefined;
 
-              const compiledFilePath = path.join(
-                compiledLocalizationDirectory,
-                fileName
+            const compiledFilePath = path.join(localizationDirectory, fileName);
+            const filePathWithoutExtension = compiledFilePath
+              .split('.')
+              .slice(0, -1)
+              .join('.');
+
+            const dictionaryFile = await import(filePathWithoutExtension);
+            const dictionaries = Object.keys(dictionaryFile ?? {}).filter(
+              (dictionaryName) => dictionaryName.endsWith('Text')
+            );
+            if (dictionaries.length > 1) {
+              error(
+                `Found multiple dictionaries in ${fileName}: ${dictionaries.join(
+                  ', '
+                )}`
               );
-              const filePathWithoutExtension = compiledFilePath
-                .split('.')
-                .slice(0, -1)
-                .join('.');
-
-              const dictionaryFile = await import(filePathWithoutExtension);
-              const dictionaries = Object.keys(dictionaryFile ?? {}).filter(
-                (dictionaryName) => dictionaryName.endsWith('Text')
-              );
-              if (dictionaries.length > 1) {
-                error(
-                  `Found multiple dictionaries in ${fileName}: ${dictionaries.join(
-                    ', '
-                  )}`
-                );
-                return undefined;
-              }
-              const dictionaryName = dictionaries[0];
-              const dictionary = Object.getOwnPropertyDescriptor(
-                dictionaryFile?.[dictionaryName ?? ''],
-                rawDictionary
-              )?.value as LanguageDictionary | undefined;
-              if (
-                typeof dictionaryName !== 'string' ||
-                typeof dictionary !== 'object'
-              ) {
-                error(`Unable to find a dictionary in ${fileName}`);
-                return undefined;
-              }
-              debug(`Found a ${dictionaryName} dictionary in ${fileName}`);
-
-              if (Object.keys(dictionary).length === 0) {
-                error(
-                  `Unable to find any keys in the ${dictionaryName} dictionary`
-                );
-                return undefined;
-              }
-
-              const entries = Object.fromEntries(
-                Object.entries(dictionary).map(([key, strings]) => {
-                  Object.keys(strings)
-                    .filter(
-                      (language) =>
-                        !f.includes(languages, language) &&
-                        !f.includes(localizationMetaKeys, language)
-                    )
-                    .forEach((language) =>
-                      error(
-                        [
-                          `A string for an undefined language ${language} was`,
-                          `found for key ${key} in ${dictionaryName}`,
-                        ].join('')
-                      )
-                    );
-
-                  // Search for blacklisted characters
-                  Object.entries(strings).forEach(([language, string]) => {
-                    if (f.includes(localizationMetaKeys, language)) return;
-
-                    characterBlacklist[language as Language]
-                      ?.split('')
-                      .forEach((character) =>
-                        string!.toString().toLowerCase().includes(character)
-                          ? error(
-                              [
-                                `String ${dictionaryName}.${key} for language `,
-                                `${language} contains a blacklisted character `,
-                                `"${character}"`,
-                              ].join('')
-                            )
-                          : undefined
-                      );
-                  });
-
-                  return [
-                    key,
-                    {
-                      strings,
-                      useCount: 0,
-                    },
-                  ];
-                })
-              );
-
-              return [dictionaryName, entries];
+              return undefined;
             }
-          )
+            const dictionaryName = dictionaries[0];
+            const dictionary = Object.getOwnPropertyDescriptor(
+              dictionaryFile?.[dictionaryName ?? ''],
+              rawDictionary
+            )?.value as LanguageDictionary | undefined;
+            if (
+              typeof dictionaryName !== 'string' ||
+              typeof dictionary !== 'object'
+            ) {
+              error(`Unable to find a dictionary in ${fileName}`);
+              return undefined;
+            }
+            debug(`Found a ${dictionaryName} dictionary in ${fileName}`);
+
+            if (Object.keys(dictionary).length === 0) {
+              error(
+                `Unable to find any keys in the ${dictionaryName} dictionary`
+              );
+              return undefined;
+            }
+
+            const entries = Object.fromEntries(
+              Object.entries(dictionary).map(([key, strings]) => {
+                Object.keys(strings)
+                  .filter(
+                    (language) =>
+                      !f.includes(languages, language) &&
+                      !f.includes(localizationMetaKeys, language)
+                  )
+                  .forEach((language) =>
+                    error(
+                      [
+                        `A string for an undefined language ${language} was`,
+                        `found for key ${key} in ${dictionaryName}`,
+                      ].join('')
+                    )
+                  );
+
+                // Search for blacklisted characters
+                Object.entries(strings).forEach(([language, string]) => {
+                  if (f.includes(localizationMetaKeys, language)) return;
+
+                  characterBlacklist[language]
+                    ?.split('')
+                    .forEach((character) =>
+                      string!.toString().toLowerCase().includes(character)
+                        ? error(
+                            [
+                              `String ${dictionaryName}.${key} for language `,
+                              `${language} contains a blacklisted character `,
+                              `"${character}"`,
+                            ].join('')
+                          )
+                        : undefined
+                    );
+                });
+
+                return [
+                  key,
+                  {
+                    strings,
+                    useCount: 0,
+                  },
+                ];
+              })
+            );
+
+            return [dictionaryName, entries];
+          })
         )
       )
     )
@@ -225,7 +215,7 @@ type Dictionary = IR<Key>;
   }
 
   const sourceFiles = gatherFiles(libraryDirectory).filter((fileName) =>
-    extensionsToScan.includes(fileName.split('.').at(-1)!)
+    extensionsToScan.has(fileName.split('.').at(-1)!)
   );
 
   debug('Looking for usages of strings');
@@ -265,13 +255,14 @@ type Dictionary = IR<Key>;
               `${position}`,
             ].join('')
           );
-        // FIXME: test all of these checks
 
         // Matched an import statement (i.e, import { commonText } from ...)
         if (followingCharacter === '}') return;
+        // Matched the declaration of a dictionary (i.e, const commonText = ...)
+        if (followingCharacter === '=') return;
         if (followingCharacter !== '.') {
           report(
-            `Unexpected dynamic usage of a ${dictionaryName} dictionary`,
+            `Unexpected dynamic usage of a ${dictionaryName} dictionary\n`,
             'Only static usages are supported to allow for static analysis.',
             followingCharacter === '['
               ? '\nDid you mean to use object index notation instead of array index notation?'
@@ -298,7 +289,7 @@ type Dictionary = IR<Key>;
 
         if (groups.openBracket !== '(') {
           report(
-            `Unexpected usage of a ${dictionaryName}.${keyName} key`,
+            `Unexpected usage of a ${dictionaryName}.${keyName} key\n`,
             `Expected a function call (i.e ${dictionaryName}.${keyName}()`
           );
           return;
@@ -306,7 +297,7 @@ type Dictionary = IR<Key>;
 
         const hasArguments = groups.followCharacter !== ')';
         const expectsArguments =
-          typeof entries[keyName].strings[DEFAULT_LANGUAGE] === 'function';
+          entries[keyName].strings[DEFAULT_LANGUAGE]?.includes('}') ?? false;
 
         if (expectsArguments !== hasArguments) {
           if (hasArguments)
@@ -335,11 +326,11 @@ type Dictionary = IR<Key>;
       Record<
         Language,
         R<
-          {
+          WritableArray<{
             readonly fileName: string;
             readonly key: string;
             readonly originalValue: string;
-          }[]
+          }>
         >
       >
     >
@@ -347,18 +338,20 @@ type Dictionary = IR<Key>;
     Object.entries(entries).forEach(([key, { strings }]) =>
       Object.entries(strings).forEach(([language, value]) => {
         if (f.includes(localizationMetaKeys, language)) return;
-        const valueString =
-          typeof value === 'string'
-            ? value
-            : typeof value === 'object'
-            ? JSON.stringify(value)
-            : (value ?? '').toString();
+        if (value === undefined) {
+          warn(
+            `Missing localization string for key ${fileName}.${key} for ` +
+              `language ${language}`
+          );
+          return;
+        }
+
         compoundDictionaries[language] ??= {};
-        compoundDictionaries[language]![valueString.toLowerCase()] ??= [];
-        compoundDictionaries[language]![valueString.toLowerCase()].push({
+        compoundDictionaries[language]![value.toLowerCase()] ??= [];
+        compoundDictionaries[language]![value.toLowerCase()].push({
           fileName,
           key,
-          originalValue: valueString,
+          originalValue: value,
         });
       })
     );

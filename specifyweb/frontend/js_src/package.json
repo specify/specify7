@@ -13,9 +13,9 @@
   "main": "lib/main.ts",
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node testBuild/lib/localization/__tests__/localization.js",
-    "test": "npm run testBuild && npm run unitTests && npm run localizationTests",
-    "testBuild": "tsc --build tsconfig.tests.json",
+    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/localization.js",
+    "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
+    "typecheck": "tsc --build tsconfig.tests.json",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
     "unitTests:watch": "jest --watch"

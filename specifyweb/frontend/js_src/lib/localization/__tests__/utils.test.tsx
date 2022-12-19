@@ -69,7 +69,7 @@ theories(whitespaceSensitive, [
     out: 'b c',
   },
   {
-    in: ['\n b<br>\n d \n' as LocalizedString],
+    in: ['\n b\n\n d \n' as LocalizedString],
     out: 'b\nd',
   },
 ]);

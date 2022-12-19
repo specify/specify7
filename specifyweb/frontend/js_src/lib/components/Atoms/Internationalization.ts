@@ -3,7 +3,6 @@
  */
 
 import { capitalize } from '../../utils/utils';
-import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
 import { LocalizedString } from 'typesafe-i18n';
@@ -109,7 +108,6 @@ const datePartLocalizer = new Intl.DisplayNames(LANGUAGE, {
   type: 'dateTimeField',
 });
 export const dateParts = {
-  fullDate: commonText.fullDate(),
   day: capitalize(datePartLocalizer.of('day')),
   month: capitalize(datePartLocalizer.of('month')),
   year: capitalize(datePartLocalizer.of('year')),

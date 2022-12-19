@@ -1,7 +1,8 @@
 {
   /* File Inclusion */
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "testBuild"],
+  "exclude": ["node_modules"],
+  "files": ["./lib/declarations.d.ts"],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
