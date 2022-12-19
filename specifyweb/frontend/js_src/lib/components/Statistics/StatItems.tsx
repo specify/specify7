@@ -3,28 +3,28 @@ import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
 import React from 'react';
-import { useFrontEndStat, useFrontEndStatsQuery } from './hooks';
-import type { StatsSpec } from './types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpQuery } from '../DataModel/types';
+import {
+  useFrontEndStat,
+  useFrontEndStatsQuery,
+  useFrontEndStatsQueryTemp,
+  useValueLoad,
+} from './hooks';
+import type { CustomStat, DefaultStat, StatsSpec } from './types';
 
 export function DefaultStatItem({
   statsSpec,
-  pageName,
-  categoryName,
-  itemName,
-  itemValue,
+  item,
+  categoryIndex,
+  itemIndex,
   onRemove: handleRemove,
   onClick: handleClick,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
-  onStatNetwork: handleStatNetwork,
 }: {
   readonly statsSpec: StatsSpec;
-  readonly pageName: string;
-  readonly categoryName: keyof typeof statsSpec;
-  readonly itemName: string;
-  readonly itemValue: number | string | undefined;
+  readonly item: CustomStat | DefaultStat;
+  readonly categoryIndex: number;
+  readonly itemIndex: number;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
@@ -37,56 +37,63 @@ export function DefaultStatItem({
       ) => void)
     | undefined;
   readonly onValueLoad:
-    | ((statValue: number | string, itemName: string) => void)
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        value: number | string,
+        itemLabel: string
+      ) => void)
     | undefined;
-  readonly onStatNetwork: (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => Promise<string | undefined>;
-}): JSX.Element {
-  const statSpecItemPage = statsSpec[pageName];
-  const statSpecItem = statSpecItemPage[categoryName]?.items?.[itemName];
-  return statSpecItem?.spec.type === 'QueryBuilderStat' ? (
-    <QueryStat
-      fields={statSpecItem?.spec?.fields}
-      statLabel={statSpecItem?.label}
-      tableName={statSpecItem?.spec?.tableName}
-      statValue={itemValue}
-      onValueLoad={
-        typeof handleValueLoad === 'function'
-          ? (statValue) => {
-              handleValueLoad(statValue, itemName);
-            }
-          : undefined
-      }
+}): JSX.Element | null {
+  const statsSpecCalculated = useFrontEndStatsQueryTemp(
+    item.type === 'DefaultStat'
+      ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
+      : {
+          label: item.itemLabel,
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: item.tableName,
+            fields: item.fields,
+          },
+        },
+    item.itemLabel
+  );
+  useValueLoad(
+    statsSpecCalculated,
+    categoryIndex,
+    itemIndex,
+    handleValueLoad,
+    item.itemValue
+  );
+  if (statsSpecCalculated === undefined) return null;
+  return statsSpecCalculated.type === 'QueryStat' ? (
+    <StatsResult
+      query={statsSpecCalculated.query}
+      statLabel={statsSpecCalculated?.label}
+      statValue={item.itemValue}
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={
         handleSpecChanged !== undefined
           ? (tableName, fields) => {
-              handleSpecChanged(tableName, fields, statSpecItem.label);
+              handleSpecChanged(tableName, fields, statsSpecCalculated?.label);
             }
           : undefined
       }
-      onStatNetwork={handleStatNetwork}
     />
-  ) : (
+  ) : item.type === 'DefaultStat' ? (
     <StatsResult
       query={undefined}
-      statLabel={statSpecItem?.label}
-      statValue={statSpecItem?.spec.value}
-      cachedValue={itemValue}
+      statLabel={
+        statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
+          .label
+      }
+      statValue={item.itemValue}
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={undefined}
-      onValueLoad={
-        typeof handleValueLoad === 'function'
-          ? (statValue) => {
-              handleValueLoad(statValue, itemName);
-            }
-          : undefined
-      }
     />
-  );
+  ) : null;
 }
 
 export function QueryStat({
@@ -94,11 +101,12 @@ export function QueryStat({
   fields,
   statLabel,
   statValue,
+  itemIndex,
+  categoryIndex,
   onRemove: handleRemove,
   onClick: handleClick,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
-  onStatNetwork: handleStatNetwork,
 }: {
   readonly tableName: keyof Tables | undefined;
   readonly fields:
@@ -106,6 +114,8 @@ export function QueryStat({
     | undefined;
   readonly statLabel: string | undefined;
   readonly statValue: number | string | undefined;
+  readonly itemIndex: number;
+  readonly categoryIndex: number;
   readonly onRemove: (() => void) | undefined;
   readonly onClick: (() => void) | undefined;
   readonly onSpecChanged:
@@ -116,27 +126,24 @@ export function QueryStat({
         >
       ) => void)
     | undefined;
-  readonly onValueLoad: ((statValue: number | string) => void) | undefined;
-  readonly onStatNetwork?: (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => Promise<string | undefined>;
+  readonly onValueLoad:
+    | ((
+        categoryIndex: number,
+        itemIndex: number,
+        value: number | string,
+        itemLabel: string
+      ) => void)
+    | undefined;
 }): JSX.Element {
   const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
-  const frontEndStatValue = useFrontEndStat(
-    statValue === undefined ? frontEndQuery : undefined,
-    handleStatNetwork,
-    statValue
-  );
   return (
     <StatsResult
       query={frontEndQuery}
       statLabel={statLabel}
-      statValue={frontEndStatValue}
-      cachedValue={statValue}
+      statValue={statValue}
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={handleSpecChanged}
-      onValueLoad={handleValueLoad}
     />
   );
 }
