@@ -26,9 +26,10 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Плитки таксонов',
   },
   taxonTilesDescription: {
-    'en-us': 'Showing Taxa with {count:number} or more Collection Objects',
+    'en-us':
+      'Showing Taxa with {count:number|formatted} or more Collection Objects',
     'ru-ru':
-      'Показаны таксоны с {count:number} или более коллекционными объектами',
+      'Показаны таксоны с {count:number|formatted} или более коллекционными объектами',
   },
   fullAddress: {
     'en-us': `

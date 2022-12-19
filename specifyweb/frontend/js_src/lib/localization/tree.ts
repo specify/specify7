@@ -159,6 +159,14 @@ export const treeText = createDictionary({
     'en-us': 'Leaf Node',
     'ru-ru': 'Угловой узел',
   },
+  nodeStats: {
+    'en-us': '({directCount:number|formatted}, {childCount:number|formatted})',
+    'ru-ru': '({directCount:number|formatted}, {childCount:number|formatted})',
+  },
+  leafNodeStats: {
+    'en-us': '({directCount:number|formatted})',
+    'ru-ru': '({directCount:number|formatted})',
+  },
   directCollectionObjectCount: {
     'en-us': 'Direct Collection Object Count',
     'ru-ru': 'Количество прямых объектов коллекции',

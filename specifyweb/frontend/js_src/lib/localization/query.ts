@@ -297,16 +297,18 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
   queryMapSubset: {
-    'en-us': 'Plotted {plotted:string} of {total:string} records',
-    'ru-ru': 'Отображено {plotted:string} из {total:string} записей',
+    'en-us':
+      'Plotted {plotted:number|formatted} of {total:number|formatted} records',
+    'ru-ru':
+      'Отображено {plotted:number|formatted} из {total:number|formatted} записей',
   },
   queryMapAll: {
-    'en-us': 'Plotted {plotted:string} records',
-    'ru-ru': 'Отображено {plotted:string} записей',
+    'en-us': 'Plotted {plotted:number|formatted} records',
+    'ru-ru': 'Отображено {plotted:number|formatted} записей',
   },
   queriesDialogTitle: {
-    'en-us': 'Queries ({count:number})',
-    'ru-ru': 'Запросы ({count:number})',
+    'en-us': 'Queries ({count:number|formatted})',
+    'ru-ru': 'Запросы ({count:number|formatted})',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',

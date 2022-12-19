@@ -10,8 +10,8 @@ import { createDictionary } from './utils';
 
 export const notificationsText = createDictionary({
   notifications: {
-    'en-us': 'Notifications: {count:string}',
-    'ru-ru': 'Уведомлений: {count:string}',
+    'en-us': 'Notifications: {count:number|formatted}',
+    'ru-ru': 'Уведомлений: {count:number|formatted}',
   },
   notificationsLoading: {
     'en-us': 'Notifications: ...',

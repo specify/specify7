@@ -10,7 +10,6 @@ import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { formatNumber } from '../Atoms/Internationalization';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -236,11 +235,11 @@ function Dialog({
               progress: ` - ${
                 results.length === totalCount
                   ? queryText.queryMapAll({
-                      plotted: formatNumber(results.length),
+                      plotted: results.length,
                     })
                   : queryText.queryMapSubset({
-                      plotted: formatNumber(results.length),
-                      total: formatNumber(totalCount),
+                      plotted: results.length,
+                      total: totalCount,
                     })
               }`,
             })

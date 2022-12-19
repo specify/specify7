@@ -179,7 +179,7 @@ export function RecordSetsDialog({
               </>
             }
             header={formsText.recordSetsDialogTitle({
-              count: formatNumber(data.totalCount),
+              count: data.totalCount,
             })}
             icon={<span className="text-blue-500">{icons.collection}</span>}
             onClose={handleClose}

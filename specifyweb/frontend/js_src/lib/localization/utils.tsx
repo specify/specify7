@@ -11,6 +11,7 @@ import { typesafeI18nObject } from 'typesafe-i18n';
 import { error } from '../components/Errors/assert';
 import { f } from '../utils/functools';
 import type { IR, RR } from '../utils/types';
+import { formatNumber } from '../components/Atoms/Internationalization';
 
 export const languages = ['en-us', 'ru-ru'] as const;
 /** This allows to hide unfinished localizations in production */
@@ -34,6 +35,10 @@ type ExtractLanguage<DICT extends Dictionary> = {
   readonly [KEY in keyof DICT]: DICT[KEY][typeof DEFAULT_LANGUAGE];
 };
 
+const formatters = {
+  formatted: formatNumber,
+} as const;
+
 export const rawDictionary: unique symbol = Symbol('Raw Dictionary');
 
 // FIXME: allow missing localizations for non-base language?
@@ -47,7 +52,7 @@ export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
     Object.fromEntries(
       Object.entries(dictionary).map(([key, value]) => [key, value[LANGUAGE]])
     ) as ExtractLanguage<typeof dictionary>,
-    {}
+    formatters
   );
   // @ts-expect-error This is used by ./__tests__/localization.ts
   resolver[rawDictionary] = dictionary;

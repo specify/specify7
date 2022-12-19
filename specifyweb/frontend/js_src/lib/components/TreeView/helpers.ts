@@ -2,7 +2,6 @@ import type React from 'react';
 import _ from 'underscore';
 
 import { ajax } from '../../utils/ajax';
-import { formatNumber } from '../Atoms/Internationalization';
 import { getTransitionDuration } from '../UserPreferences/Hooks';
 import { treeText } from '../../localization/tree';
 import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
@@ -195,10 +194,12 @@ export const formatTreeStats = (
       ? undefined
       : `${treeText.indirectCollectionObjectCount()}: ${nodeStats.childCount}`,
   ]).join('\n'),
-  text: `(${filterArray([
-    nodeStats.directCount,
-    isLeaf ? undefined : formatNumber(nodeStats.childCount),
-  ]).join(', ')})`,
+  text: isLeaf
+    ? treeText.leafNodeStats({ directCount: nodeStats.directCount })
+    : treeText.nodeStats({
+        directCount: nodeStats.directCount,
+        childCount: nodeStats.childCount,
+      }),
 });
 
 /**

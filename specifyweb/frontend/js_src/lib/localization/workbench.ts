@@ -850,8 +850,8 @@ export const wbText = createDictionary({
     'ru-ru': '(нет заголовка)',
   },
   wbsDialogDefaultDialogTitle: {
-    'en-us': 'WorkBench Data Sets ({dataSetCount:number})',
-    'ru-ru': 'Наборы данных ({dataSetCount:number})',
+    'en-us': 'WorkBench Data Sets ({dataSetCount:number|formatted})',
+    'ru-ru': 'Наборы данных ({dataSetCount:number|formatted})',
   },
   wbsDialogEmptyDefaultDialogText: {
     'en-us': 'Currently no Data Sets exist.',
@@ -966,8 +966,10 @@ export const wbText = createDictionary({
     'ru-ru': '{operationName:string}...',
   },
   wbStatusOperationProgress: {
-    'en-us': '{operationName:string} row {current:string}/{total:string}',
-    'ru-ru': '{operationName:string} строка {current:string}/{total:string}',
+    'en-us':
+      '{operationName:string} row {current:number|formatted}/{total:number|formatted}',
+    'ru-ru':
+      '{operationName:string} строка {current:number|formatted}/{total:number|formatted}',
   },
   wbStatusPendingDescription: {
     'en-us': '{operationName:string} of this Data Set should begin shortly.',

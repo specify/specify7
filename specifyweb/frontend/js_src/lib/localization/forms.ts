@@ -104,7 +104,7 @@ export const formsText = createDictionary({
   },
   recordSetCaption: {
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {count:number})',
+    'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
   },
   entryCaption: {
     'en-us': 'By entering {fieldName:string}s',
@@ -273,8 +273,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Нет данных.',
   },
   recordSetsDialogTitle: {
-    'en-us': 'Record Sets ({count:string})',
-    'ru-ru': 'Наборы объектов ({count:string})',
+    'en-us': 'Record Sets ({count:number|formatted})',
+    'ru-ru': 'Наборы объектов ({count:number|formatted})',
   },
   recordSet: {
     'en-us': 'Record Set',
@@ -344,8 +344,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Следующий объект',
   },
   currentRecord: {
-    'en-us': 'Current object (out of {total:number})',
-    'ru-ru': 'Текущий объект (из {total:number})',
+    'en-us': 'Current object (out of {total:number|formatted})',
+    'ru-ru': 'Текущий объект (из {total:number|formatted})',
   },
   unsavedFormUnloadProtect: {
     'en-us': 'This form has not been saved.',
@@ -559,17 +559,18 @@ export const formsText = createDictionary({
   },
   tooLongErrorMessage: {
     'en-us':
-      'Field value is too long. Max allowed length is {maxLength:number}',
+      'Field value is too long. Max allowed length is {maxLength:number|formatted}',
     'ru-ru':
-      'Значение поля слишком длинное. Максимально допустимая длина {maxLength:number}',
+      'Значение поля слишком длинное. Максимально допустимая длина {maxLength:number|formatted}',
   },
   returnedPreparations: {
     'en-us': 'Returned Preparations',
     'ru-ru': 'Возвращенные препараты',
   },
   returnedAndSaved: {
-    'en-us': '{number:string} preparations have been returned and saved.',
-    'ru-ru': '{number:string} препарата возвращены и сохранены.',
+    'en-us':
+      '{count:number|formatted} preparations have been returned and saved.',
+    'ru-ru': '{count:number|formatted} препарата возвращены и сохранены.',
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -768,8 +769,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Таблица',
   },
   formTableHeading: {
-    'en-us': '{relationshipName:string} ({count:string})',
-    'ru-ru': '{relationshipName:string} ({count:string})',
+    'en-us': '{relationshipName:string} ({count:number|formatted})',
+    'ru-ru': '{relationshipName:string} ({count:number|formatted})',
   },
   subviewConfiguration: {
     'en-us': 'Subview',

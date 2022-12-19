@@ -17,7 +17,6 @@ import { Label } from '../Atoms/Form';
 import { softFail } from '../Errors/Crash';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
-import { formatNumber } from '../Atoms/Internationalization';
 
 // How often to query back-end
 const REFRESH_RATE = 2000;
@@ -122,8 +121,8 @@ export function WbStatus({
     else
       message = wbText.wbStatusOperationProgress({
         operationName: standartalizedOperation,
-        current: formatNumber(current),
-        total: formatNumber(total),
+        current,
+        total,
       });
   }
   // FAILED

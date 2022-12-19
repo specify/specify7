@@ -81,7 +81,7 @@ export function InteractionDialog({
           readonly problems: IR<RA<string>>;
         }
       >
-    | State<'LoanReturnDoneState', { readonly result: string }>
+    | State<'LoanReturnDoneState', { readonly result: number }>
     | State<'MainState'>
   >({ type: 'MainState' });
 
@@ -98,14 +98,17 @@ export function InteractionDialog({
     const items = catalogNumbers.split('\n');
     if (model.name === 'Loan')
       loading(
-        ajax('/interactions/loan_return_all/', {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: {
-            recordSetId: recordSet?.id ?? undefined,
-            loanNumbers: recordSet === undefined ? items : undefined,
-          },
-        }).then(({ data }) =>
+        ajax<readonly [preprsReturned: number, loansClosed: number]>(
+          '/interactions/loan_return_all/',
+          {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: {
+              recordSetId: recordSet?.id ?? undefined,
+              loanNumbers: recordSet === undefined ? items : undefined,
+            },
+          }
+        ).then(({ data }) =>
           setState({
             type: 'LoanReturnDoneState',
             result: data[0],
@@ -197,7 +200,7 @@ export function InteractionDialog({
       header={formsText.returnedPreparations()}
       onClose={handleClose}
     >
-      {formsText.returnedAndSaved({ number: state.result })}
+      {formsText.returnedAndSaved({ count: state.result })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (

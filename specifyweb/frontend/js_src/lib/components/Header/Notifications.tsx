@@ -9,7 +9,6 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -133,7 +132,7 @@ export function Notifications(): JSX.Element {
       >
         {typeof notifications?.length === 'number'
           ? notificationsText.notifications({
-              count: formatNumber(notifications.length),
+              count: notifications.length,
             })
           : notificationsText.notificationsLoading()}
       </Button.Small>

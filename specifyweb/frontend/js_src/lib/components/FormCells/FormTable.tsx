@@ -30,7 +30,6 @@ import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
 import { LocalizedString } from 'typesafe-i18n';
-import { formatNumber } from '../Atoms/Internationalization';
 
 const cellToLabel = (
   model: SpecifyModel,
@@ -127,10 +126,9 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  // FIXME: convert formatNumber into a formatter
   const header = formsText.formTableHeading({
     relationshipName: relationship.label,
-    count: formatNumber(totalCount ?? resources.length),
+    count: totalCount ?? resources.length,
   });
   const viewDefinition = useViewDefinition({
     model: relationship.relatedModel,
