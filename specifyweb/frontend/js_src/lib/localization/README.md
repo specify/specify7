@@ -1,5 +1,39 @@
 # Front-end Localization
 
+## Syntax for string parameters and plurals:
+
+[Official documentation](https://github.com/ivanhofer/typesafe-i18n/tree/main/packages/runtime#syntax)
+
+Note, official documentation does not describe the usage with JSX. For that, a
+<StringToJsx> component has been added.
+
+Example usage:
+
+For a string like:
+
+```js
+const commonText = {
+  ...
+  jsx: {
+    'en-en': '<link>A</link> {parameter:string} <link>B</link> <br /> <button>B</button> _'
+  },
+  ...
+};
+```
+
+Call it like this:
+
+```js
+<StringToJsx
+  string={commonText.jsx({ parameter: 'a' })}
+  components: {
+    link: (label) => <span>{label}</span>,
+    button: (label) => <p>{label}</p>,
+    br: <br />,
+  },
+/>
+```
+
 ## About the solution
 
 The localization solution was built on top of
