@@ -35,9 +35,9 @@ export function EditRecordSet({
   ) : (
     <ResourceView
       // BUG: the message is stale if record set is renamed
-      deletionMessage={formsText.recordSetDeletionWarning(
-        recordSet.get('name') ?? ''
-      )}
+      deletionMessage={formsText.recordSetDeletionWarning({
+        recordSetName: recordSet.get('name') ?? '',
+      })}
       dialog="modal"
       extraButtons={
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (

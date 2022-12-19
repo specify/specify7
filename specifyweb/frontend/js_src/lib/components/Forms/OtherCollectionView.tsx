@@ -13,6 +13,7 @@ import { Button } from '../Atoms/Button';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -66,7 +67,7 @@ export function OtherCollection({
                           switchCollection(navigate, collections[0].id)
                         }
                       >
-                        {collectionName}
+                        {collectionName as LocalizedString}
                       </Button.Blue>
                     </li>
                   ))}
@@ -81,7 +82,7 @@ export function OtherCollection({
                       switchCollection(navigate, collections[0].id)
                     }
                   >
-                    {collections[0].collectionName}
+                    {collections[0].collectionName as LocalizedString}
                   </Button.Blue>
                 </div>
               </>

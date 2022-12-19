@@ -100,7 +100,6 @@ type Key = {
 };
 
 type Dictionary = IR<Key>;
-// FIXME: modify localization tests to catch usages like formsText.recordReturn
 
 // This allows to call await at the top level
 (async (): Promise<void> => {
@@ -244,7 +243,6 @@ type Dictionary = IR<Key>;
           'gu'
         )
       );
-      // FIXME: handle the commonText.text usage too
 
       Array.from(usages, ({ groups, index }) => {
         if (groups === undefined || index === undefined) return;

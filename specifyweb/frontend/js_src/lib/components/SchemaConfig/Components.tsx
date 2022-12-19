@@ -82,9 +82,9 @@ export function PickList({
                 : Object.values(group)
             )
             .includes(value) ? undefined : (
-            <option value={value}>{`${queryText.invalidPicklistValue(
-              value
-            )}`}</option>
+            <option value={value}>{`${queryText.invalidPicklistValue({
+              value,
+            })}`}</option>
           )}
           {Object.keys(groups).length === 1 ? (
             <Values values={Object.values(groups)[0]} />

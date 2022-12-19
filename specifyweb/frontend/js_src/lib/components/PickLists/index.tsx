@@ -202,7 +202,7 @@ export function PickListComboBox(
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
-              {queryText.invalidPicklistValue(value)}
+              {queryText.invalidPicklistValue({ value })}
             </option>
           )}
           {items?.map(({ title, value }) => (
@@ -300,10 +300,10 @@ function AddingToPicklist({
       header={formsText.addToPickListConfirmationDialogHeader()}
       onClose={handleClose}
     >
-      {formsText.addToPickListConfirmationDialogText(
+      {formsText.addToPickListConfirmationDialogText({
         value,
-        pickList.get('name')
-      )}
+        pickListName: pickList.get('name'),
+      })}
     </Dialog>
   );
 }

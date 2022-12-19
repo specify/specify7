@@ -25,6 +25,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { ActiveLink } from '../Router/ActiveLink';
 import { processPolicies } from '../Security/policyConverter';
 import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;
@@ -119,7 +120,7 @@ function Aside({
         <section>
           <H3>{schema.models.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
-            {institution.name}
+            {institution.name as LocalizedString}
           </ActiveLink>
         </section>
       )}
@@ -131,7 +132,7 @@ function Aside({
               <ActiveLink
                 href={`/specify/security/collection/${collection.id}/`}
               >
-                {collection.collectionName}
+                {collection.collectionName as LocalizedString}
               </ActiveLink>
             </li>
           ))}
