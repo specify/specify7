@@ -243,7 +243,7 @@ export function QueryResults({
         results.length > 0 &&
         typeof fetchResults === 'function' ? (
           <>
-            {hasPermission('/replace/record', 'update') && (
+            {hasPermission('/record/replace', 'update') && (
               <RecordMerging model={model} selectedRows={selectedRows} />
             )}
             {hasToolPermission('recordSets', 'create') ? (

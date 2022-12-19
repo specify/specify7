@@ -128,7 +128,7 @@ function MergingDialog({
                  */
                 for (const clone of clones) {
                   const response = await ajax(
-                    `/api/specify/replace/${model.name.toLowerCase()}/${
+                    `/api/specify/${model.name.toLowerCase()}/replace/${
                       clone.id
                     }/${target.id}/`,
                     {
