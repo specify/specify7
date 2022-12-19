@@ -1,12 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
-import {
-  insertItem,
-  keysToLowerCase,
-  removeItem,
-  replaceItem,
-} from '../../utils/utils';
+import { removeItem, replaceItem } from '../../utils/utils';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -24,22 +19,30 @@ import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
 import { useMenuItem } from '../Header';
 import { CustomStat, DefaultStat, StatLayout } from './types';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { ajax } from '../../utils/ajax';
-import { serializeResource } from '../DataModel/helpers';
-import { formatNumber } from '../Atoms/Internationalization';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { SpQuery } from '../DataModel/types';
-import { RA, WritableArray } from '../../utils/types';
 
-export function StatsPage(): JSX.Element {
+export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
   const [layout, setPrevLayout] = usePref('statistics', 'appearance', 'layout');
-  const setLayout = (item) => {
+  const setLayout = (item: StatLayout): void => {
     setPrevLayout(item);
-  };
-
+  }; /* React.useEffect(()=>
+  {layout !== undefined ? setLayout(
+    replaceItem(layout, 0, {
+      ...layout[0],
+      categories: layout[0].categories[0],
+    }) : ()=>undefined
+  ), [layout]) */
+  /* React.useEffect(() => {
+    defaultLayout !== undefined
+      ? setLayout(
+          replaceItem(defaultLayout, 0, {
+            ...defaultLayout[0],
+            categories: [defaultLayout[0].categories[0]],
+          })
+        )
+      : () => undefined;
+  }, [defaultLayout]); */
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
     'appearance',
@@ -83,93 +86,63 @@ export function StatsPage(): JSX.Element {
     []
   );
 
-  const statsSpec = useStatsSpec(false, specifyUserName.specifyUser);
+  const statsSpec = useStatsSpec(
+    state.type === 'CacheState',
+    specifyUserName.specifyUser
+  );
   const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
-   */ React.useEffect(() => {
+   */ /*React.useEffect(() => {
     console.log('set: ', defaultLayoutSpec);
     setDefaultLayout(defaultLayoutSpec);
     setLayout(defaultLayoutSpec);
-  }, [defaultLayoutSpec]);
-
+  }, [defaultLayoutSpec]); */
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
 
-  const activeNetworkRequest = React.useRef<
-    WritableArray<Promise<string | number | undefined>>
-  >([]);
-  const VINNY_STAT_CONSTANT = 10;
-  const useStatNetwork = async (query: SpecifyResource<SpQuery>) => {
-    while (activeNetworkRequest.current.length > VINNY_STAT_CONSTANT) {
-      await Promise.any(activeNetworkRequest.current);
-    }
-    const statPromise = ajax<{
-      readonly count: number;
-    }>('/stored_query/ephemeral/', {
-      method: 'POST',
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
-      body: keysToLowerCase({
-        ...serializeResource(query),
-        countOnly: true,
-      }),
-    })
-      .then(({ data }) => formatNumber(data.count))
-      .finally(() => {
-        activeNetworkRequest.current = removeItem(
-          activeNetworkRequest.current,
-          activeNetworkRequest.current.indexOf(statPromise)
-        );
-      });
-    activeNetworkRequest.current.push(statPromise);
-    return statPromise;
-  };
-
-  const handleChange = (
-    newCategories: (
-      prevCategory: StatLayout[number]['categories']
-    ) => StatLayout[number]['categories'],
-    setLayoutFunc,
-    pageIndexMod: number
-  ): void => {
-    setLayoutFunc((oldValue) =>
-      replaceItem(oldValue, pageIndexMod, {
-        ...oldValue[pageIndexMod],
-        categories: newCategories(oldValue[pageIndexMod].categories),
-      })
-    );
-  };
+  const handleChange = React.useCallback(
+    (
+      newCategories: (
+        previousCategory: StatLayout[number]['categories']
+      ) => StatLayout[number]['categories']
+    ): void => {
+      setPrevLayout((oldLayout: StatLayout | undefined) =>
+        oldLayout === undefined
+          ? undefined
+          : replaceItem(oldLayout, activePageIndex, {
+              ...oldLayout[activePageIndex],
+              categories: newCategories(oldLayout[activePageIndex].categories),
+            })
+      );
+    },
+    [activePageIndex]
+  );
 
   const handleAdd = (
     item: CustomStat | DefaultStat,
     categoryIndex?: number,
     itemIndex?: number
   ): void => {
-    handleChange(
-      (prevCategory) =>
-        replaceItem(prevCategory, categoryIndex ?? -1, {
-          ...prevCategory[categoryIndex ?? -1],
-          items:
-            itemIndex === undefined || itemIndex === -1
-              ? [...prevCategory[categoryIndex ?? -1].items, item]
-              : replaceItem(
-                  prevCategory[categoryIndex ?? -1].items,
-                  itemIndex,
-                  item
-                ),
-        }),
-      setLayout,
-      activePageIndex
+    handleChange((prevCategory) =>
+      replaceItem(prevCategory, categoryIndex ?? -1, {
+        ...prevCategory[categoryIndex ?? -1],
+        items:
+          itemIndex === undefined || itemIndex === -1
+            ? [...prevCategory[categoryIndex ?? -1].items, item]
+            : replaceItem(
+                prevCategory[categoryIndex ?? -1].items,
+                itemIndex,
+                item
+              ),
+      })
     );
   };
   const defaultStatsAddLeft = useDefaultStatsToAdd(
     layout?.[activePageIndex],
     defaultLayout
   );
-  return (
+  return layout === undefined ? null : (
     <Form
       className={className.containerFullGray}
       onSubmit={(): void => {
@@ -228,7 +201,7 @@ export function StatsPage(): JSX.Element {
                         label: category.label,
                         items: category.items.map((item) => ({
                           ...item,
-                          cachedValue: undefined,
+                          itemValue: undefined,
                         })),
                       })),
                     }))
@@ -352,38 +325,35 @@ export function StatsPage(): JSX.Element {
                             pageIndex: activePageIndex,
                             categoryIndex: categoryindex,
                           })
-                        : handleChange(
-                            (prevCategory) => [
-                              ...prevCategory,
-                              {
-                                label: '',
-                                items: [],
-                              },
-                            ],
-                            setLayout,
-                            activePageIndex
-                          )
+                        : handleChange((prevCategory) => [
+                            ...prevCategory,
+                            {
+                              label: '',
+                              items: [],
+                            },
+                          ])
                   : undefined
               }
-              pageLayout={layout[activePageIndex]}
+              pageLayout={
+                layout[activePageIndex].categories === undefined
+                  ? undefined
+                  : layout[activePageIndex]
+              }
               statsSpec={statsSpec}
               onClick={handleAdd}
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void => {
-                      handleChange(
-                        (prevCategory) =>
-                          typeof itemIndex === 'number'
-                            ? replaceItem(prevCategory, categoryIndex, {
-                                ...prevCategory[categoryIndex],
-                                items: removeItem(
-                                  prevCategory[categoryIndex].items,
-                                  itemIndex
-                                ),
-                              })
-                            : removeItem(prevCategory, categoryIndex),
-                        setLayout,
-                        activePageIndex
+                      handleChange((prevCategory) =>
+                        typeof itemIndex === 'number'
+                          ? replaceItem(prevCategory, categoryIndex, {
+                              ...prevCategory[categoryIndex],
+                              items: removeItem(
+                                prevCategory[categoryIndex].items,
+                                itemIndex
+                              ),
+                            })
+                          : removeItem(prevCategory, categoryIndex)
                       );
                     }
                   : undefined
@@ -391,14 +361,11 @@ export function StatsPage(): JSX.Element {
               onRename={
                 isEditing
                   ? (newName, categoryIndex): void =>
-                      handleChange(
-                        (prevCategory) =>
-                          replaceItem(prevCategory, categoryIndex, {
-                            ...prevCategory[categoryIndex],
-                            label: newName,
-                          }),
-                        setLayout,
-                        activePageIndex
+                      handleChange((prevCategory) =>
+                        replaceItem(prevCategory, categoryIndex, {
+                          ...prevCategory[categoryIndex],
+                          label: newName,
+                        })
                       )
                   : undefined
               }
@@ -419,7 +386,7 @@ export function StatsPage(): JSX.Element {
                             ...layout[activePageIndex].categories[categoryIndex]
                               .items[itemIndex],
                             fields,
-                            cachedValue: undefined,
+                            itemValue: undefined,
                           }
                         ),
                       }
@@ -428,33 +395,26 @@ export function StatsPage(): JSX.Element {
                 )
               }
               onValueLoad={(
-                categoryIndex,
-                itemIndex,
-                value,
-                itemName,
-                itemType
+                categoryIndex: number,
+                itemIndex: number,
+                value: string | number,
+                itemLabel: string
               ) => {
-                handleChange(
-                  (prevCategory) =>
-                    replaceItem(prevCategory, categoryIndex, {
-                      ...prevCategory[categoryIndex],
-                      items: replaceItem(
-                        prevCategory[categoryIndex].items,
-                        itemIndex,
-                        {
-                          ...prevCategory[categoryIndex].items[itemIndex],
-                          cachedValue: value,
-                          ...(itemType === 'DefaultStat'
-                            ? { itemName: itemName }
-                            : { itemLabel: itemName }),
-                        }
-                      ),
-                    }),
-                  setLayout,
-                  activePageIndex
+                handleChange((previousCategory) =>
+                  replaceItem(previousCategory, categoryIndex, {
+                    ...previousCategory[categoryIndex],
+                    items: replaceItem(
+                      previousCategory[categoryIndex].items,
+                      itemIndex,
+                      {
+                        ...previousCategory[categoryIndex].items[itemIndex],
+                        itemValue: value,
+                        itemLabel,
+                      }
+                    ),
+                  })
                 );
               }}
-              onStatNetwork={useStatNetwork}
             />
           </div>
         </div>
@@ -484,35 +444,30 @@ export function StatsPage(): JSX.Element {
                   }))
             );
           }}
-          onStatNetwork={useStatNetwork}
           onValueLoad={
             state.type === 'AddingState'
-              ? (
-                  categoryIndex,
-                  itemIndex,
-                  value,
-                  itemName,
-                  itemType,
-                  pageIndexMod
-                ) => {
-                  handleChange(
-                    (prevCategory) =>
-                      replaceItem(prevCategory, categoryIndex, {
-                        ...prevCategory[categoryIndex],
-                        items: replaceItem(
-                          prevCategory[categoryIndex].items,
-                          itemIndex,
-                          {
-                            ...prevCategory[categoryIndex].items[itemIndex],
-                            cachedValue: value,
-                            ...(itemType === 'DefaultStat'
-                              ? { itemName: itemName }
-                              : { itemLabel: itemName }),
-                          }
-                        ),
-                      }),
-                    setDefaultLayout,
-                    pageIndexMod
+              ? (categoryIndex, itemIndex, value, itemName, pageIndex) => {
+                  setLayout(
+                    replaceItem(layout, pageIndex, {
+                      ...layout[pageIndex],
+                      categories: replaceItem(
+                        layout[pageIndex].categories,
+                        categoryIndex,
+                        {
+                          ...layout[pageIndex].categories[categoryIndex],
+                          items: replaceItem(
+                            layout[pageIndex].categories[categoryIndex].items,
+                            itemIndex,
+                            {
+                              ...layout[pageIndex].categories[categoryIndex]
+                                .items[itemIndex],
+                              itemValue: value,
+                              itemLabel: itemName,
+                            }
+                          ),
+                        }
+                      ),
+                    })
                   );
                 }
               : undefined
