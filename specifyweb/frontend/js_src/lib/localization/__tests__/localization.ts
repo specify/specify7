@@ -28,6 +28,7 @@ import {
   localizationMetaKeys,
   rawDictionary,
 } from '../utils';
+import { formatList } from '../../components/Atoms/Internationalization';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -92,6 +93,7 @@ type Key = {
 };
 
 type Dictionary = IR<Key>;
+const expectedKeys = new Set([...languages, ...localizationMetaKeys]);
 
 // This allows to call await at the top level
 (async (): Promise<void> => {
@@ -148,16 +150,18 @@ type Dictionary = IR<Key>;
             const entries = Object.fromEntries(
               Object.entries(dictionary).map(([key, strings]) => {
                 Object.keys(strings)
-                  .filter(
-                    (language) =>
-                      !f.includes(languages, language) &&
-                      !f.includes(localizationMetaKeys, language)
-                  )
+                  .filter((key) => !f.has(expectedKeys, key))
                   .forEach((language) =>
                     error(
                       [
-                        `A string for an undefined language ${language} was`,
-                        `found for key ${key} in ${dictionaryName}`,
+                        `A string for an undefined language ${language} was `,
+                        `found for key ${dictionaryName}.${key}\n`,
+                        `Defined languages: ${formatList(languages)}\n`,
+                        `Allowed meta keys: ${formatList(
+                          localizationMetaKeys
+                        )}\n`,
+                        `If you want to add a new language, add it to the `,
+                        `languages array in ./localization/utils.tsx`,
                       ].join('')
                     )
                   );
@@ -335,7 +339,7 @@ type Dictionary = IR<Key>;
       >
     >
   >((compoundDictionaries, [fileName, entries]) => {
-    Object.entries(entries).forEach(([key, { strings }]) =>
+    Object.entries(entries).forEach(([key, { strings }]) => {
       languages.forEach((language) => {
         const value = strings[language];
 
@@ -354,8 +358,8 @@ type Dictionary = IR<Key>;
           key,
           originalValue: value,
         });
-      })
-    );
+      });
+    });
     return compoundDictionaries;
   }, {});
   Object.entries(compoundDictionaries).forEach(([language, valueDictionary]) =>
