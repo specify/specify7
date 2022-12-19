@@ -170,7 +170,7 @@ const fieldColumns = {
   isReadOnly: schemaText.readOnly(),
   isRequired: schemaText.required(),
   type: schemaText.type(),
-  length: schemaText.length(),
+  length: schemaText.fieldLength(),
   databaseColumn: schemaText.databaseColumn(),
 } as const;
 
@@ -378,7 +378,7 @@ const dataModelToTsv = (): string =>
       schemaText.required(),
       formsText.relationship(),
       schemaText.type(),
-      schemaText.length(),
+      schemaText.fieldLength(),
       schemaText.databaseColumn(),
       schemaText.relatedModel(),
       schemaText.otherSideName(),

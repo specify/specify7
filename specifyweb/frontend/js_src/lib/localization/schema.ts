@@ -89,7 +89,7 @@ export const schemaText = createDictionary({
     'en-us': 'many-to-many',
     'ru-ru': 'Многие-ко-многим',
   },
-  length: {
+  fieldLength: {
     'en-us': 'Length',
     'ru-ru': 'Длина',
   },
