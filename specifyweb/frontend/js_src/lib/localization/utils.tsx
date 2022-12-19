@@ -8,10 +8,10 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import { typesafeI18nObject } from 'typesafe-i18n';
 
+import { formatNumber } from '../components/Atoms/Internationalization';
 import { error } from '../components/Errors/assert';
 import { f } from '../utils/functools';
 import type { IR, RR } from '../utils/types';
-import { formatNumber } from '../components/Atoms/Internationalization';
 
 export const languages = ['en-us', 'ru-ru'] as const;
 /** This allows to hide unfinished localizations in production */
@@ -28,10 +28,11 @@ export const LANGUAGE: Language =
 
 export const localizationMetaKeys = ['comment'] as const;
 type MetaKeys = typeof localizationMetaKeys[number];
-export type Value = Partial<RR<MetaKeys, string>> & RR<Language, string>;
-export type Dictionary = IR<Value>;
+export type LocalizationEntry = Partial<RR<MetaKeys | Language, string>> &
+  RR<typeof DEFAULT_LANGUAGE, string>;
+export type LocalizationDictionary = IR<LocalizationEntry>;
 
-type ExtractLanguage<DICT extends Dictionary> = {
+type ExtractLanguage<DICT extends LocalizationDictionary> = {
   readonly [KEY in keyof DICT]: DICT[KEY][typeof DEFAULT_LANGUAGE];
 };
 
@@ -41,16 +42,20 @@ const formatters = {
 
 export const rawDictionary: unique symbol = Symbol('Raw Dictionary');
 
-// FIXME: allow missing localizations for non-base language?
 /**
  * Wrap localization strings in a resolver.
  * Localization string may accept some arguments.
  */
-export function createDictionary<DICT extends Dictionary>(dictionary: DICT) {
+export function createDictionary<DICT extends LocalizationDictionary>(
+  dictionary: DICT
+) {
   const resolver = typesafeI18nObject(
     LANGUAGE,
     Object.fromEntries(
-      Object.entries(dictionary).map(([key, value]) => [key, value[LANGUAGE]])
+      Object.entries(dictionary).map(([key, value]) => [
+        key,
+        value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
+      ])
     ) as ExtractLanguage<typeof dictionary>,
     formatters
   );

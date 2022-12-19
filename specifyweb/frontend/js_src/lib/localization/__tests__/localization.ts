@@ -18,9 +18,9 @@ import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { split } from '../../utils/utils';
 import type {
-  Dictionary as LanguageDictionary,
   Language,
-  Value,
+  LocalizationDictionary as LanguageDictionary,
+  LocalizationEntry,
 } from '../utils';
 import {
   DEFAULT_LANGUAGE,
@@ -86,7 +86,7 @@ log(`Looking for localization dictionaries in ${localizationDirectory}`);
 const lookAroundLength = 40;
 
 type Key = {
-  readonly strings: Partial<Value>;
+  readonly strings: Partial<LocalizationEntry>;
   // eslint-disable-next-line functional/prefer-readonly-type
   useCount: number;
 };
@@ -336,10 +336,11 @@ type Dictionary = IR<Key>;
     >
   >((compoundDictionaries, [fileName, entries]) => {
     Object.entries(entries).forEach(([key, { strings }]) =>
-      Object.entries(strings).forEach(([language, value]) => {
-        if (f.includes(localizationMetaKeys, language)) return;
+      languages.forEach((language) => {
+        const value = strings[language];
+
         if (value === undefined) {
-          warn(
+          todo(
             `Missing localization string for key ${fileName}.${key} for ` +
               `language ${language}`
           );
