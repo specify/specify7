@@ -21,7 +21,6 @@ export function Categories({
   onRename: handleRename,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
-  onStatNetwork: handleStatNetwork,
 }: {
   readonly pageLayout: StatLayout[number];
   readonly statsSpec: StatsSpec;
@@ -54,16 +53,14 @@ export function Categories({
         categoryIndex: number,
         itemIndex: number,
         value: number | string,
-        itemName: string,
-        itemType: string
+        itemLabel: string
       ) => void)
     | undefined;
-  readonly onStatNetwork: (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => Promise<string | undefined>;
 }): JSX.Element {
   const checkEmptyItems = handleSpecChanged === undefined;
-  return (
+  return pageLayout === undefined ? (
+    <></>
+  ) : (
     <>
       {pageLayout.categories.map(
         ({ label, items }, categoryIndex) =>
@@ -98,101 +95,63 @@ export function Categories({
               )}
               <div className="flex-1 overflow-auto">
                 {items?.map((item, itemIndex) =>
-                  item.type === 'DefaultStat' ? (
-                    item.absent === false || item.absent === undefined ? (
-                      <DefaultStatItem
-                        categoryName={item.categoryName}
-                        itemName={item.itemName}
-                        pageName={item.pageName}
-                        itemValue={item.cachedValue}
-                        key={itemIndex}
-                        statsSpec={statsSpec}
-                        onValueLoad={(statValue, itemName) =>
-                          typeof handleValueLoad === 'function'
-                            ? handleValueLoad(
-                                categoryIndex,
-                                itemIndex,
-                                statValue,
-                                itemName,
-                                item.type
-                              )
-                            : undefined
-                        }
-                        onSpecChanged={
-                          handleSpecChanged !== undefined &&
-                          handleClick !== undefined
-                            ? (tableName, newFields, itemName): void => {
-                                handleClick(
-                                  {
-                                    type: 'CustomStat',
-                                    itemLabel: itemName,
-                                    tableName,
-                                    fields: newFields,
-                                  },
-                                  categoryIndex,
-                                  itemIndex
-                                );
-                              }
-                            : undefined
-                        }
-                        onClick={
-                          typeof handleClick === 'function'
-                            ? handleSpecChanged === undefined
-                              ? (): void =>
-                                  handleClick({
-                                    type: 'DefaultStat',
-                                    pageName: item.pageName,
-                                    categoryName: item.categoryName,
-                                    itemName: item.itemName,
-                                  })
-                              : undefined
-                            : undefined
-                        }
-                        onRemove={
-                          handleRemove === undefined
-                            ? undefined
-                            : (): void => handleRemove(categoryIndex, itemIndex)
-                        }
-                        onStatNetwork={handleStatNetwork}
-                      />
-                    ) : undefined
-                  ) : (
-                    <QueryStat
+                  item.absent === false || item.absent === undefined ? (
+                    <DefaultStatItem
+                      item={item}
+                      categoryIndex={categoryIndex}
+                      itemIndex={itemIndex}
                       key={itemIndex}
-                      tableName={item.tableName}
-                      fields={item.fields}
-                      statLabel={item.itemLabel}
-                      onClick={undefined}
+                      statsSpec={statsSpec}
+                      onValueLoad={handleValueLoad}
+                      onSpecChanged={
+                        handleSpecChanged !== undefined
+                          ? item.type === 'DefaultStat'
+                            ? handleClick !== undefined
+                              ? (tableName, newFields, itemName): void => {
+                                  handleClick(
+                                    {
+                                      type: 'CustomStat',
+                                      itemLabel: itemName,
+                                      tableName,
+                                      fields: newFields,
+                                    },
+                                    categoryIndex,
+                                    itemIndex
+                                  );
+                                }
+                              : undefined
+                            : (_, fields) =>
+                                handleSpecChanged(
+                                  categoryIndex,
+                                  itemIndex,
+                                  fields
+                                )
+                          : undefined
+                      }
+                      onClick={
+                        item.type === 'CustomStat'
+                          ? undefined
+                          : typeof handleClick === 'function'
+                          ? handleSpecChanged === undefined
+                            ? (): void =>
+                                handleClick({
+                                  type: 'DefaultStat',
+                                  pageName: item.pageName,
+                                  categoryName: item.categoryName,
+                                  itemName: item.itemName,
+                                  itemLabel: item.itemLabel,
+                                  itemValue: item.itemValue,
+                                })
+                            : undefined
+                          : undefined
+                      }
                       onRemove={
                         handleRemove === undefined
                           ? undefined
                           : (): void => handleRemove(categoryIndex, itemIndex)
                       }
-                      onSpecChanged={
-                        handleSpecChanged !== undefined
-                          ? (_, fields) =>
-                              handleSpecChanged(
-                                categoryIndex,
-                                itemIndex,
-                                fields
-                              )
-                          : undefined
-                      }
-                      onValueLoad={(statValue) =>
-                        typeof handleValueLoad === 'function'
-                          ? handleValueLoad(
-                              categoryIndex,
-                              itemIndex,
-                              statValue,
-                              item.itemLabel,
-                              item.type
-                            )
-                          : undefined
-                      }
-                      statValue={item.cachedValue}
-                      onStatNetwork={handleStatNetwork}
                     />
-                  )
+                  ) : undefined
                 )}
               </div>
               {handleAdd !== undefined && handleRemove !== undefined ? (
