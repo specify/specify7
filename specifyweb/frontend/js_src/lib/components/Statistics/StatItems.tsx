@@ -11,7 +11,7 @@ import {
 } from './hooks';
 import type { CustomStat, DefaultStat, StatsSpec } from './types';
 
-export function DefaultStatItem({
+export function StatItem({
   statsSpec,
   item,
   categoryIndex,

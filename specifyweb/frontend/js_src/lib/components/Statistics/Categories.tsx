@@ -1,7 +1,7 @@
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { H3 } from '../Atoms';
 import { Input } from '../Atoms/Form';
-import { DefaultStatItem, QueryStat } from './StatItems';
+import { StatItem, QueryStat } from './StatItems';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
@@ -96,7 +96,7 @@ export function Categories({
               <div className="flex-1 overflow-auto">
                 {items?.map((item, itemIndex) =>
                   item.absent === false || item.absent === undefined ? (
-                    <DefaultStatItem
+                    <StatItem
                       item={item}
                       categoryIndex={categoryIndex}
                       itemIndex={itemIndex}
