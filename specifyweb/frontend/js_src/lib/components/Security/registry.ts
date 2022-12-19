@@ -65,28 +65,25 @@ const buildRegistry = f.store(
           resource: tableNameToResourceName(name),
           localized: [schemaText.table(), label],
           actions: tableActions,
-          groupName:
-            isSystem || isHidden
-              ? userText.advancedTables()
-              : ('' as LocalizedString),
+          groupName: isSystem || isHidden ? userText.advancedTables() : '',
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
         localized: [commonText.tool(), label],
         actions: tableActions,
-        groupName: '' as LocalizedString,
+        groupName: '',
       })),
       ...Object.entries(operationPolicies).map(([resource, actions]) => ({
         resource,
         localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,
-        groupName: '' as LocalizedString,
+        groupName: '',
       })),
       ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
         resource,
         localized: resourceNameToParts(resource).map(lowerToHuman),
         actions,
-        groupName: '' as LocalizedString,
+        groupName: '',
       })),
     ].reduce<R<WritableRegistry>>(
       (registry, { resource, localized, groupName }) => {
@@ -107,12 +104,11 @@ const buildRegistry = f.store(
                         actions: getAllActions(
                           partsToResourceName(resourceParts.slice(0, index + 1))
                         ),
-                        groupName: '' as LocalizedString,
+                        groupName: '',
                         isInstitutional: false,
                       },
                     },
-              groupName:
-                index + 1 === length ? groupName : ('' as LocalizedString),
+              groupName: index + 1 === length ? groupName : '',
               actions:
                 index + 1 === length
                   ? getAllActions(
@@ -134,7 +130,7 @@ const buildRegistry = f.store(
           label: commonText.all(),
           children: {},
           actions: getAllActions(partsToResourceName([])),
-          groupName: '' as LocalizedString,
+          groupName: '',
           isInstitutional: false,
         },
       }

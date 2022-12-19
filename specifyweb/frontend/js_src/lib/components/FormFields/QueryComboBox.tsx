@@ -178,7 +178,7 @@ function ProtectedQueryComboBox({
               .then((resource) =>
                 resource === undefined || resource === null
                   ? {
-                      label: '' as LocalizedString,
+                      label: '',
                       resource: undefined,
                     }
                   : (value === formattedRef.current?.value &&

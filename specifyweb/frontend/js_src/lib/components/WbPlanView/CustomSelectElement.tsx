@@ -440,7 +440,7 @@ export function CustomSelectElement({
   customSelectType,
   customSelectSubtype = 'simple',
   customSelectOptionGroups: initialSelectOptionGroups,
-  selectLabel = '' as LocalizedString,
+  selectLabel = '',
   isOpen,
   tableName,
   onChange: handleChange,

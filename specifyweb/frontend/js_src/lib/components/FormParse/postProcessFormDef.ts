@@ -246,7 +246,7 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
       (cell.fieldName?.toLowerCase() === 'this'
         ? undefined
         : (cell.fieldName as LocalizedString)) ??
-      ('' as LocalizedString),
+      '',
     title: cell?.title ?? field?.getLocalizedDesc(),
   };
 }

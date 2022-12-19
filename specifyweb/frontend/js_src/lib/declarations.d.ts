@@ -6,6 +6,7 @@ import type { Key, Path, To } from 'history';
 
 import type { LocationState } from './components/Router/RouterState';
 import type { IR, RA, RR } from './utils/types';
+import type { localized } from 'typesafe-i18n/types/runtime/src/core';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -91,6 +92,14 @@ declare module 'history' {
     readonly state: LocationState;
     readonly key: Key;
   };
+}
+
+declare module 'typesafe-i18n' {
+  export type LocalizedString =
+    | ''
+    | (string & {
+        readonly [localized]: unknown;
+      });
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

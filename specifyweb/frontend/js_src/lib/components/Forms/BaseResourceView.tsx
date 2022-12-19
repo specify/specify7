@@ -48,7 +48,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   isSubForm,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
-  const [formatted, setFormatted] = React.useState('' as LocalizedString);
+  const [formatted, setFormatted] = React.useState<LocalizedString>('');
   React.useEffect(() => {
     setFormatted(resource?.specifyModel.label ?? commonText.loading());
     return typeof resource === 'object'
@@ -59,7 +59,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
             if (resource === undefined) return undefined;
             format(resource)
               .then((title) => {
-                setFormatted(title ?? ('' as LocalizedString));
+                setFormatted(title ?? '');
                 return undefined;
               })
               .catch(fail);
@@ -101,7 +101,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
   const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
   const title = `${
     resource === undefined
-      ? ('' as LocalizedString)
+      ? ''
       : resource.isNew()
       ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
       : resource.specifyModel.label

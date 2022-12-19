@@ -193,9 +193,10 @@ function useDefinition(
 }
 
 export function parseWebLink(definition: Element): ParsedWebLink | undefined {
-  const title = (definition
-    ?.querySelector(':scope > desc')
-    ?.textContent?.trim() ?? '') as LocalizedString;
+  const title =
+    (definition
+      ?.querySelector(':scope > desc')
+      ?.textContent?.trim() as LocalizedString) ?? '';
 
   const template =
     definition

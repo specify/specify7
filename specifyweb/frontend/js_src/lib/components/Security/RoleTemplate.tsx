@@ -20,7 +20,6 @@ import { H3, Ul } from '../Atoms';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Http } from '../../utils/ajax/definitions';
 import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
 
 export function CreateRole({
   scope,
@@ -82,7 +81,7 @@ export function CreateRole({
                 handleCreated({
                   id: undefined,
                   name: userText.newRole(),
-                  description: '' as LocalizedString,
+                  description: '',
                   policies: [],
                 })
               }

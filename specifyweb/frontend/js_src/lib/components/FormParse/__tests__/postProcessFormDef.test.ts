@@ -42,7 +42,7 @@ const divisionLabel = {
   title: undefined,
   id: 'divLabel',
 } as const;
-const blankLabel = { ...labelCell, text: '' as LocalizedString } as const;
+const blankLabel = { ...labelCell, text: '' } as const;
 const blankCell = {
   type: 'Blank',
   id: blankLabel.id,

@@ -127,8 +127,7 @@ const fetchLegacyForms = f.store(
 
               return {
                 iconName: getParsedAttribute(view, 'iconName') ?? model.name,
-                title:
-                  getParsedAttribute(view, 'title') ?? ('' as LocalizedString),
+                title: getParsedAttribute(view, 'title') ?? '',
                 table: model.name,
               };
             })
