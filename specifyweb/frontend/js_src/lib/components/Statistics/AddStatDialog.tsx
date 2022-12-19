@@ -21,7 +21,6 @@ export function AddStatDialog({
   onClose: handleClose,
   onAdd: handleAdd,
   onValueLoad: handleValueLoad,
-  onStatNetwork: handleStatNetwork,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: StatLayout;
@@ -29,17 +28,13 @@ export function AddStatDialog({
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
-  readonly onStatNetwork: (
-    query: SpecifyResource<SpQuery> | undefined
-  ) => Promise<string | undefined>;
   readonly onValueLoad:
     | ((
         categoryIndex: number,
         itemIndex: number,
         value: number | string,
-        itemName: string,
-        itemType: string,
-        pageIndexMod: number
+        itemLabel: string,
+        pageIndex: number
       ) => void)
     | undefined;
 }): JSX.Element | null {
@@ -109,19 +104,16 @@ export function AddStatDialog({
                         categoryIndex: number,
                         itemIndex: number,
                         value: number | string,
-                        itemName: string,
-                        itemType: string
+                        itemLabel: string
                       ) => {
                         handleValueLoad(
                           categoryIndex,
                           itemIndex,
                           value,
-                          itemName,
-                          itemType,
+                          itemLabel,
                           index
                         );
                       }}
-                      onStatNetwork={handleStatNetwork}
                     />
                   </div>
                 </div>
