@@ -176,6 +176,26 @@ export function StatsPage(): JSX.Element | null {
     },
     []
   );
+  const handleLoad = React.useCallback(
+    (
+      categoryIndex: number,
+      itemIndex: number,
+      value: string | number,
+      itemLabel: string
+    ) => {
+      handleChange((previousCategory) =>
+        replaceItem(previousCategory, categoryIndex, {
+          ...previousCategory[categoryIndex],
+          items: replaceItem(previousCategory[categoryIndex].items, itemIndex, {
+            ...previousCategory[categoryIndex].items[itemIndex],
+            itemValue: value,
+            itemLabel,
+          }),
+        })
+      );
+    },
+    [handleChange]
+  );
   return layout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -240,9 +260,11 @@ export function StatsPage(): JSX.Element | null {
                       })),
                     }))
                   );
-                  setState({
-                    type: 'DefaultState',
-                  });
+                  /* setTimeout(() => {
+                    setState({
+                      type: 'DefaultState',
+                    });
+                  }, 1500); */
                 }}
               >
                 {commonText('update')}
@@ -428,27 +450,7 @@ export function StatsPage(): JSX.Element | null {
                   })
                 )
               }
-              onValueLoad={(
-                categoryIndex: number,
-                itemIndex: number,
-                value: string | number,
-                itemLabel: string
-              ) => {
-                handleChange((previousCategory) =>
-                  replaceItem(previousCategory, categoryIndex, {
-                    ...previousCategory[categoryIndex],
-                    items: replaceItem(
-                      previousCategory[categoryIndex].items,
-                      itemIndex,
-                      {
-                        ...previousCategory[categoryIndex].items[itemIndex],
-                        itemValue: value,
-                        itemLabel,
-                      }
-                    ),
-                  })
-                );
-              }}
+              onValueLoad={handleLoad}
             />
           </div>
         </div>

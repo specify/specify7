@@ -4,9 +4,10 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
 import React from 'react';
 import {
+  useCustomStatsSpec,
   useFrontEndStat,
   useFrontEndStatsQuery,
-  useFrontEndStatsQueryTemp,
+  useResolvedSpec,
   useValueLoad,
 } from './hooks';
 import type { CustomStat, DefaultStat, StatsSpec } from './types';
@@ -45,17 +46,11 @@ export function StatItem({
       ) => void)
     | undefined;
 }): JSX.Element | null {
-  const statsSpecCalculated = useFrontEndStatsQueryTemp(
+  const customStatsSpec = useCustomStatsSpec(item);
+  const statsSpecCalculated = useResolvedSpec(
     item.type === 'DefaultStat'
       ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
-      : {
-          label: item.itemLabel,
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: item.tableName,
-            fields: item.fields,
-          },
-        },
+      : customStatsSpec,
     item.itemLabel
   );
   useValueLoad(
@@ -84,10 +79,7 @@ export function StatItem({
   ) : item.type === 'DefaultStat' ? (
     <StatsResult
       query={undefined}
-      statLabel={
-        statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
-          .label
-      }
+      statLabel={item.itemLabel}
       statValue={item.itemValue}
       onClick={handleClick}
       onRemove={handleRemove}

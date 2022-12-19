@@ -11,6 +11,7 @@ import type {
   BackendStatsResult,
   CustomStat,
   DefaultStat,
+  QueryBuilderStat,
   StatCategoryReturn,
   StatItemSpec,
   StatLayout,
@@ -27,6 +28,7 @@ import { statsText } from '../../localization/stats';
 import { WritableArray } from '../../utils/types';
 import { keysToLowerCase, removeItem } from '../../utils/utils';
 
+const statSpecCalculated = [];
 export function useCustomStatQuery(queryId: number):
   | {
       readonly tableName: keyof Tables;
@@ -253,7 +255,7 @@ export function useFrontEndStat(
   );
 }
 
-export function useFrontEndStatsQueryTemp(
+export function useResolvedSpec(
   statSpecItem:
     | { readonly label: string; readonly spec: StatItemSpec }
     | undefined,
@@ -271,9 +273,13 @@ export function useFrontEndStatsQueryTemp(
     }
   | undefined {
   return React.useMemo(() => {
-    if (statSpecItem?.spec.type === undefined) {
+    if (
+      statSpecItem?.spec.type === undefined ||
+      (statSpecItem?.spec.type === 'BackEndStat' && itemLabel === undefined)
+    ) {
       return undefined;
     }
+    const y = 2;
     return statSpecItem?.spec.type === 'BackEndStat'
       ? {
           type: 'BackendStat',
@@ -306,6 +312,25 @@ export function useFrontEndStatsQueryTemp(
   }, [statSpecItem, itemLabel]);
 }
 
+export function useCustomStatsSpec(
+  item: CustomStat | DefaultStat
+): { readonly label: string; readonly spec: QueryBuilderStat } | undefined {
+  return React.useMemo(
+    () =>
+      item.type === 'CustomStat'
+        ? {
+            label: item.itemLabel,
+            spec: {
+              type: 'QueryBuilderStat',
+              tableName: item.tableName,
+              fields: item.fields,
+            },
+          }
+        : undefined,
+    []
+  );
+}
+
 export function useValueLoad(
   statSpecCalculated:
     | {
@@ -334,9 +359,8 @@ export function useValueLoad(
   const [count] = useAsyncState(
     React.useCallback(async () => {
       if (itemValue !== undefined || statSpecCalculated === undefined) {
-        return undefined;
+        return itemValue;
       }
-
       if (
         statSpecCalculated.type === 'QueryStat' &&
         statSpecCalculated.query !== undefined
@@ -349,6 +373,7 @@ export function useValueLoad(
     false
   );
   React.useEffect(() => {
+    console.log('effect');
     if (
       count !== undefined &&
       statSpecCalculated !== undefined &&
@@ -363,7 +388,14 @@ export function useValueLoad(
         statSpecCalculated.label
       );
     }
-  }, [handleValueLoad, statSpecCalculated, count]);
+  }, [handleValueLoad, statSpecCalculated, count, itemValue]);
+
+  React.useEffect(() => {
+    console.log('mounted');
+    return () => {
+      console.log('dismounted');
+    };
+  }, []);
 }
 
 /** Build Queries for the QueryBuilderAPI */

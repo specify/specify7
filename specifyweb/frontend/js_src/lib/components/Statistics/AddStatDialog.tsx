@@ -11,8 +11,6 @@ import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { useDefaultStatsToAdd } from './hooks';
 
 export function AddStatDialog({
   defaultStatsAddLeft,
