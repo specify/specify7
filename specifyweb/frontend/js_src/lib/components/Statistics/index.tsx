@@ -142,6 +142,40 @@ export function StatsPage(): JSX.Element | null {
     layout?.[activePageIndex],
     defaultLayout
   );
+  const handleDefaultLoad = React.useCallback(
+    (
+      categoryIndex: number,
+      itemIndex: number,
+      value: string | number,
+      itemName: string,
+      pageIndex: number
+    ) => {
+      setDefaultLayout((oldValue) =>
+        replaceItem(oldValue, pageIndex, {
+          ...oldValue[pageIndex],
+          categories: replaceItem(
+            oldValue[pageIndex].categories,
+            categoryIndex,
+            {
+              ...oldValue[pageIndex].categories[categoryIndex],
+              items: replaceItem(
+                oldValue[pageIndex].categories[categoryIndex].items,
+                itemIndex,
+                {
+                  ...oldValue[pageIndex].categories[categoryIndex].items[
+                    itemIndex
+                  ],
+                  itemValue: value,
+                  itemLabel: itemName,
+                }
+              ),
+            }
+          ),
+        })
+      );
+    },
+    []
+  );
   return layout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -444,34 +478,7 @@ export function StatsPage(): JSX.Element | null {
                   }))
             );
           }}
-          onValueLoad={
-            state.type === 'AddingState'
-              ? (categoryIndex, itemIndex, value, itemName, pageIndex) => {
-                  setLayout(
-                    replaceItem(layout, pageIndex, {
-                      ...layout[pageIndex],
-                      categories: replaceItem(
-                        layout[pageIndex].categories,
-                        categoryIndex,
-                        {
-                          ...layout[pageIndex].categories[categoryIndex],
-                          items: replaceItem(
-                            layout[pageIndex].categories[categoryIndex].items,
-                            itemIndex,
-                            {
-                              ...layout[pageIndex].categories[categoryIndex]
-                                .items[itemIndex],
-                              itemValue: value,
-                              itemLabel: itemName,
-                            }
-                          ),
-                        }
-                      ),
-                    })
-                  );
-                }
-              : undefined
-          }
+          onValueLoad={handleDefaultLoad}
         />
       )}
     </Form>
