@@ -11,22 +11,18 @@ export type CustomStat = State<
     readonly fields: RA<
       Partial<SerializedResource<SpQueryField>> & { readonly path: string }
     >;
-    readonly cachedValue?: string | number | undefined;
+    readonly itemValue?: string | number | undefined;
   }
 >;
+
 export type DefaultStat = State<
   'DefaultStat',
   {
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
-    readonly fields?:
-      | RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      | undefined;
-    readonly cachedLabel?: string | undefined;
-    readonly cachedValue?: string | number | undefined;
+    readonly itemLabel: string;
+    readonly itemValue: string | number | undefined;
     readonly absent?: boolean;
   }
 >;
@@ -35,7 +31,7 @@ export type StatLayout = RA<{
   readonly label: string;
   readonly categories: RA<{
     readonly label: string;
-    readonly items: RA<CustomStat | DefaultStat>;
+    readonly items: RA<DefaultStat | CustomStat>;
   }>;
 }>;
 
