@@ -34,6 +34,14 @@ Call it like this:
 />
 ```
 
+The result is:
+
+```jsx
+<>
+  <span>A</span> a <span>B</span> <br /> <p>B</p> _
+</>
+```
+
 ## About the solution
 
 The localization solution was built on top of
