@@ -8,10 +8,10 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 import { typesafeI18nObject } from 'typesafe-i18n';
 
-import { formatNumber } from '../components/Atoms/Internationalization';
-import { error } from '../components/Errors/assert';
-import { f } from '../utils/functools';
-import type { IR, RR } from '../utils/types';
+import { formatNumber } from '../../components/Atoms/Internationalization';
+import { error } from '../../components/Errors/assert';
+import { f } from '../../utils/functools';
+import type { IR, RR } from '../../utils/types';
 
 export const languages = ['en-us', 'ru-ru'] as const;
 /** This allows to hide unfinished localizations in production */
