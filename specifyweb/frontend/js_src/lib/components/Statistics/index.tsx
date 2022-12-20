@@ -12,38 +12,35 @@ import { awaitPrefsSynced } from '../UserPreferences/helpers';
 import { softFail } from '../Errors/Crash';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { useDefaultLayout, useDefaultStatsToAdd, useStatsSpec } from './hooks';
+import {
+  useCacheValid,
+  useDefaultLayout,
+  useDefaultStatsToAdd,
+  useStatsSpec,
+} from './hooks';
 import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
 import { useMenuItem } from '../Header';
 import { CustomStat, DefaultStat, StatLayout } from './types';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { DateElement } from '../Molecules/DateElement';
+import { statsText } from '../../localization/stats';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
   const [layout, setPrevLayout] = usePref('statistics', 'appearance', 'layout');
+  const [lastUpdated, setLastUpdated] = usePref(
+    'statistics',
+    'appearance',
+    'lastUpdated'
+  );
 
   const setLayout = (item: StatLayout): void => {
     setPrevLayout(item);
-  }; /* React.useEffect(()=>
-  {layout !== undefined ? setLayout(
-    replaceItem(layout, 0, {
-      ...layout[0],
-      categories: layout[0].categories[0],
-    }) : ()=>undefined
-  ), [layout]) */
-  /* React.useEffect(() => {
-    defaultLayout !== undefined
-      ? setLayout(
-          replaceItem(defaultLayout, 0, {
-            ...defaultLayout[0],
-            categories: [defaultLayout[0].categories[0]],
-          })
-        )
-      : () => undefined;
-  }, [defaultLayout]); */
+  };
 
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
@@ -66,8 +63,8 @@ export function StatsPage(): JSX.Element | null {
           readonly pageIndex: number | undefined;
         }
       >
-    | State<'CacheState'>
-  >(layout === undefined ? { type: 'DefaultState' } : { type: 'CacheState' });
+  >({ type: 'DefaultState' });
+
   const isAddingItem = state.type === 'AddingState';
   const isEditing =
     state.type === 'EditingState' ||
@@ -88,11 +85,10 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
-  const statsSpec = useStatsSpec(
-    state.type === 'CacheState',
-    specifyUserName.specifyUser
-  );
+  const isCacheValid = useCacheValid(layout);
+  const statsSpec = useStatsSpec(isCacheValid, specifyUserName.specifyUser);
   const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
+
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
    */ /*React.useEffect(() => {
@@ -199,6 +195,7 @@ export function StatsPage(): JSX.Element | null {
     },
     [handleChange]
   );
+
   return layout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -209,13 +206,42 @@ export function StatsPage(): JSX.Element | null {
     >
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">{commonText('statistics')}</H2>
+
         <span className="-ml-2 flex-1" />
+        <>
+          <p>
+            {`${statsText('lastUpdated')} `}
+            <DateElement date={lastUpdated} />
+          </p>
+
+          <Button.Blue
+            onClick={(): void => {
+              const lastUpdatedDate = new Date();
+              setLayout(
+                layout.map((pageLayout) => ({
+                  label: pageLayout.label,
+                  categories: pageLayout.categories.map((category) => ({
+                    label: category.label,
+                    items: category.items.map((item) => ({
+                      ...item,
+                      itemValue: undefined,
+                    })),
+                  })),
+                }))
+              );
+
+              setLastUpdated(lastUpdatedDate.toString());
+            }}
+          >
+            {commonText('update')}
+          </Button.Blue>
+        </>
         {isEditing ? (
           <>
             {
               <Button.Red
                 onClick={(): void => {
-                  setLayout(defaultLayout); //chang
+                  setLayout(defaultLayout);
                 }}
               >
                 {commonText('reset')}
@@ -237,42 +263,16 @@ export function StatsPage(): JSX.Element | null {
             <Submit.Blue>{commonText('save')}</Submit.Blue>
           </>
         ) : (
-          <>
-            <Button.Blue
-              onClick={(): void => {
-                setState({
-                  type: 'EditingState',
-                });
-                previousLayout.current = layout;
-              }}
-            >
-              {commonText('edit')}
-            </Button.Blue>
-            {state.type === 'CacheState' && (
-              <Button.Blue
-                onClick={(): void => {
-                  setLayout(
-                    layout.map((pageLayout) => ({
-                      label: pageLayout.label,
-                      categories: pageLayout.categories.map((category) => ({
-                        label: category.label,
-                        items: category.items.map((item) => ({
-                          ...item,
-                          itemValue: undefined,
-                        })),
-                      })),
-                    }))
-                  );
-
-                  setState({
-                    type: 'DefaultState',
-                  });
-                }}
-              >
-                {commonText('update')}
-              </Button.Blue>
-            )}
-          </>
+          <Button.Blue
+            onClick={(): void => {
+              setState({
+                type: 'EditingState',
+              });
+              previousLayout.current = layout;
+            }}
+          >
+            {commonText('edit')}
+          </Button.Blue>
         )}
       </div>
       <div className="flex flex-col overflow-hidden">

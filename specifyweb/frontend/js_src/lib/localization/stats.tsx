@@ -158,5 +158,9 @@ export const statsText = createDictionary({
     'en-us': 'Collection Objects Determined',
     'ru-ru': 'Объекты коллекции определены',
   },
+  lastUpdated: {
+    'en-us': 'Last Updated',
+    'ru-ru': 'Последнее обновление',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */

@@ -5,7 +5,6 @@ import { StatsResult } from './StatsResult';
 import React from 'react';
 import {
   useCustomStatsSpec,
-  useFrontEndStat,
   useFrontEndStatsQuery,
   useResolvedSpec,
   useValueLoad,

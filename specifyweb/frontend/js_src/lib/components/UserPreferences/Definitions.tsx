@@ -1537,6 +1537,13 @@ export const preferenceDefinitions = {
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
           }),
+          lastUpdated: defineItem<string | undefined>({
+            title: 'Defines last cached date and time',
+            requiresReload: false,
+            visible: false,
+            defaultValue: undefined,
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
         },
       },
     },

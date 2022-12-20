@@ -18,6 +18,7 @@ export type CustomStat = State<
 export type DefaultStat = State<
   'DefaultStat',
   {
+    readonly itemType: 'QueryStat' | 'BackendStat';
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;

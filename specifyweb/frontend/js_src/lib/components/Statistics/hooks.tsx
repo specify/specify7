@@ -3,8 +3,7 @@ import type { IR, RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
-import { fetchResource } from '../DataModel/resource';
-import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
+import { f } from '../../utils/functools';
 import { ajax } from '../../utils/ajax';
 import { statsSpec } from './StatsSpec';
 import type {
@@ -25,60 +24,26 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { statsText } from '../../localization/stats';
-import { WritableArray } from '../../utils/types';
 import { keysToLowerCase, removeItem } from '../../utils/utils';
-
-const statSpecCalculated = [];
-export function useCustomStatQuery(queryId: number):
-  | {
-      readonly tableName: keyof Tables;
-      readonly fields: RA<
-        Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-      >;
-      readonly label: string;
-    }
-  | undefined {
-  const [data] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchResource('SpQuery', queryId).then((queryData) => ({
-          tableName: queryData.contextName as keyof Tables,
-          fields: queryData.fields.map((field) => ({
-            ...field,
-            path: QueryFieldSpec.fromStringId(
-              field.stringId,
-              field.isRelFld ?? false
-            )
-              .toMappingPath()
-              .join('.'),
-          })),
-          label: queryData.name,
-        })),
-      [queryId]
-    ),
-    false
-  );
-  return data;
-}
 
 /**
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  cachedState: boolean
+  isCacheValid: boolean
 ): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
     React.useCallback(
-      !cachedState
-        ? async () =>
+      isCacheValid
+        ? (): undefined => undefined
+        : async () =>
             ajax<BackendStatsResult>('/statistics/collection/global/', {
               method: 'GET',
               headers: {
                 Accept: 'application/json',
               },
-            }).then(({ data }) => data)
-        : () => undefined,
-      [cachedState]
+            }).then(({ data }) => data),
+      [isCacheValid]
     ),
     false
   );
@@ -86,7 +51,7 @@ export function useBackendApi(
 }
 
 export function useStatsSpec(
-  cachedState: boolean,
+  isCacheValid: boolean,
   specifyUserName: string
 ): IR<
   IR<{
@@ -94,7 +59,7 @@ export function useStatsSpec(
     readonly items: StatCategoryReturn;
   }>
 > {
-  const backEndResult = useBackendApi(cachedState);
+  const backEndResult = useBackendApi(isCacheValid);
   return React.useMemo(
     () =>
       Object.fromEntries(
@@ -191,6 +156,8 @@ export function useDefaultLayout(
                     itemLabel: label,
                     itemValue:
                       spec.type === 'BackEndStat' ? spec.value : undefined,
+                    itemType:
+                      spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
                   })
                 ),
               })
@@ -232,29 +199,6 @@ async function fetchQueryCount(query: SpecifyResource<SpQuery>) {
   return statPromise;
 }
 
-export function useFrontEndStat(
-  query: SpecifyResource<SpQuery> | undefined,
-  handleValueLoad:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        value: number | string,
-        itemLabel: string
-      ) => void)
-    | undefined,
-  itemIndex: number,
-  categoryIndex: number,
-  statLabel: string
-): void {
-  const [count] = useAsyncState(
-    React.useCallback(async () => {
-      if (query === undefined) return undefined;
-      return fetchQueryCount(query);
-    }, [query, handleValueLoad]),
-    false
-  );
-}
-
 export function useResolvedSpec(
   statSpecItem:
     | { readonly label: string; readonly spec: StatItemSpec }
@@ -279,7 +223,6 @@ export function useResolvedSpec(
     ) {
       return undefined;
     }
-    const y = 2;
     return statSpecItem?.spec.type === 'BackEndStat'
       ? {
           type: 'BackendStat',
@@ -346,7 +289,7 @@ export function useValueLoad(
     | undefined,
   categoryIndex: number,
   itemIndex: number,
-  handleValueLoad:
+  handleValueLoadIndex:
     | ((
         categoryIndex: number,
         itemIndex: number,
@@ -356,6 +299,15 @@ export function useValueLoad(
     | undefined,
   itemValue: string | number | undefined
 ) {
+  const handleValueLoad = React.useCallback(
+    (count: number | string | undefined, itemLabel: string) =>
+      f.maybe(handleValueLoadIndex, (handleValueLoadIndex) => {
+        f.maybe(count, (count) => {
+          handleValueLoadIndex(categoryIndex, itemIndex, count, itemLabel);
+        });
+      }),
+    [categoryIndex, itemIndex, handleValueLoadIndex]
+  );
   const [count] = useAsyncState(
     React.useCallback(async () => {
       if (itemValue !== undefined || statSpecCalculated === undefined) {
@@ -373,28 +325,26 @@ export function useValueLoad(
     false
   );
   React.useEffect(() => {
-    if (
-      count !== undefined &&
-      statSpecCalculated !== undefined &&
-      statSpecCalculated.label !== undefined &&
-      handleValueLoad !== undefined &&
-      itemValue === undefined
-    ) {
-      handleValueLoad(
-        categoryIndex,
-        itemIndex,
-        count,
-        statSpecCalculated.label
-      );
+    if (statSpecCalculated?.label !== undefined && itemValue === undefined) {
+      handleValueLoad(count, statSpecCalculated.label);
     }
-  }, [
-    categoryIndex,
-    itemIndex,
-    handleValueLoad,
-    statSpecCalculated,
-    count,
-    itemValue,
-  ]);
+  }, [handleValueLoad, statSpecCalculated, count, itemValue]);
+}
+
+export function useCacheValid(layout: StatLayout | undefined): boolean {
+  return React.useMemo(() => {
+    if (layout === undefined || statsSpec === undefined) return false;
+    return layout.every((pageLayout) =>
+      pageLayout.categories
+        .map(({ items }) => items)
+        .flat()
+        .filter(
+          (item) =>
+            item.type === 'DefaultStat' && item.itemType === 'BackendStat'
+        )
+        .every((item) => item.itemValue !== undefined)
+    );
+  }, [layout]);
 }
 
 /** Build Queries for the QueryBuilderAPI */
@@ -427,12 +377,4 @@ export function useFrontEndStatsQuery(
       : () => undefined,
     [tableName, fields]
   );
-}
-
-export function replaceLayout(
-  layout: StatLayout,
-  setLayout: (value: StatLayout | undefined) => void,
-  newLayoutFunction: (layout: StatLayout) => StatLayout
-): void {
-  setLayout(newLayoutFunction(layout));
 }
