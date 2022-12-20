@@ -273,8 +273,7 @@ export async function scanUsages(): Promise<DictionaryUsages | undefined> {
           index - lookAroundLength,
           index + lookAroundLength + dictionaryName.length + 20
         );
-        const lineNumber = (fileContent.slice(0, index).match(/\n/g) ?? [])
-          .length;
+        const lineNumber = fileContent.slice(0, index).split('\n').length;
 
         const report = (...message: RA<string>): void =>
           error(
@@ -343,7 +342,7 @@ export async function scanUsages(): Promise<DictionaryUsages | undefined> {
         }
 
         strings[keyName].usages.push({
-          filePath: filePath.slice(filePath.indexOf('specifyweb')),
+          filePath,
           lineNumber,
         });
         foundUsages = true;

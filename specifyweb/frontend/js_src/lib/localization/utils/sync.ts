@@ -1,9 +1,33 @@
 import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
-import { languages } from './index';
+import { languages, whitespaceSensitive } from './index';
 import { scanUsages } from './scanUsages';
+import { camelToHuman } from '../../utils/utils';
+import { filterArray } from '../../utils/types';
+import { f } from '../../utils/functools';
 
 syncStrings().catch(console.error);
+
+function formatFilePath(filePath: string): string {
+  const parts = filePath.split('/');
+  const fileName = parts.at(-1)?.split('.')[0];
+  const componentName = parts.at(-2)?.split('.')[0];
+  const directoryName = parts.at(-3)?.split('.')[0];
+  return filterArray([
+    f.maybe(directoryName, camelToHuman),
+    f.maybe(componentName, camelToHuman),
+    f.maybe(fileName, camelToHuman),
+  ]).join(' > ');
+}
+
+function formatComment(rawComment: string | undefined): string | undefined {
+  if (rawComment === undefined) return undefined;
+  const comment = whitespaceSensitive(rawComment);
+  return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
+}
+
+const trimPath = (filePath: string): string =>
+  filePath.slice(filePath.indexOf('/lib/') + '/lib/'.length);
 
 async function syncStrings(): Promise<void> {
   const localStrings = await scanUsages();
@@ -13,7 +37,7 @@ async function syncStrings(): Promise<void> {
     Object.entries(localStrings).flatMap(([key, { strings }]) =>
       languages.map(async (language) => {
         const po = gettextParser.po.compile({
-          charset: 'utf8',
+          charset: 'utf-8',
           headers: {},
           translations: {
             '': Object.fromEntries(
@@ -21,13 +45,22 @@ async function syncStrings(): Promise<void> {
                 key,
                 {
                   msgid: key,
-                  msgstr: [strings[language] ?? ''],
+                  msgstr: [
+                    f.maybe(strings[language], whitespaceSensitive) ?? '',
+                  ],
                   comments: {
-                    extracted: strings.comment ?? '',
+                    extracted: filterArray([
+                      formatComment(strings.comment),
+                      `Used in: ${f
+                        .unique(
+                          usages.map(({ filePath }) => formatFilePath(filePath))
+                        )
+                        .join(' ⬤ ')}`,
+                    ]).join(' '),
                     reference: usages
                       .map(
                         ({ filePath, lineNumber }) =>
-                          `${filePath}:${lineNumber}`
+                          `${trimPath(filePath)}:${lineNumber}`
                       )
                       .join('\n'),
                     translator: '',
@@ -80,5 +113,6 @@ async function syncStrings(): Promise<void> {
     console.log(
       `Found a project ${name} in the remote, but it's not present on the current branch`
     )
-  );*/
+  );
+*/
 }
