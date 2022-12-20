@@ -1,7 +1,7 @@
 import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
 import path from 'node:path';
-import { languages, whitespaceSensitive } from './index';
+import { languageCodeMapper, languages, whitespaceSensitive } from './index';
 import { camelToHuman } from '../../utils/utils';
 import { filterArray } from '../../utils/types';
 import { f } from '../../utils/functools';
@@ -32,16 +32,17 @@ export async function syncStrings(
   localStrings: DictionaryUsages,
   emitPath: string
 ): Promise<void> {
-  if (fs.existsSync(emitPath)) {
-    if (fs.readdirSync(emitPath).length > 0)
-      throw new Error(`Can not run syncStrings on a non-empty directory`);
-  } else fs.mkdirSync(emitPath, { recursive: true });
+  if (fs.existsSync(emitPath) && fs.readdirSync(emitPath).length > 0)
+    throw new Error(`Can not run syncStrings on a non-empty directory`);
 
   await Promise.all(
-    Object.entries(localStrings).flatMap(([key, { strings }]) =>
+    Object.values(localStrings).flatMap(({ categoryName, strings }) => {
+      const directoryPath = path.join(emitPath, categoryName);
+      fs.mkdirSync(directoryPath, { recursive: true });
+
       languages.map(async (language) => {
         const po = gettextParser.po.compile({
-          charset: 'utf-8',
+          charset: 'utf8',
           headers: {},
           translations: {
             '': Object.fromEntries(
@@ -78,11 +79,11 @@ export async function syncStrings(
         });
 
         return fs.promises.writeFile(
-          path.join(emitPath, `${key}_${language}.po`),
+          path.join(directoryPath, `${languageCodeMapper[language]}.po`),
           po
         );
-      })
-    )
+      });
+    })
   );
 
   /*
@@ -117,7 +118,7 @@ export async function syncStrings(
     (name) => !(name in localStrings) && !ignoredProjects.has(name)
   );
   unusedProjects.forEach((name) =>
-    console.log(
+    console.error(
       `Found a project ${name} in the remote, but it's not present on the current branch`
     )
   );

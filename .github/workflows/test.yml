@@ -125,7 +125,9 @@ jobs:
         run: |
           npm run typecheck && \
           npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
-          npm run localizationTests --emit localization-strings
+          npm run localizationTests -- --emit ./localization-strings && \
+          ls -ahl ./ && \
+          ls -ahl localization-strings
 
       - name: Upload built localization strings
         uses: actions/upload-artifact@v3
