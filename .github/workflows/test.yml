@@ -154,8 +154,8 @@ jobs:
       - name: Clone branch that stores localization strings
         uses: actions/checkout@v3
         with:
-          directory: localization-strings
-          branch: weblate-localization
+          path: localization-strings
+          ref: weblate-localization
           fetch-depth: 0
 
       - name: Delete old localization strings
@@ -174,3 +174,4 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add strings
           git commit -a -m "Sync localization strings with Weblate"
+          git push

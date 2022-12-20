@@ -90,6 +90,7 @@ export async function syncStrings(
 
   const localProjects = Object.values(localStrings).map(({categoryName})=>categoryName);
 
+
   const weblateProjects = await fetch(
     'https://hosted.weblate.org/api/projects/specify-7/components/',
     {
