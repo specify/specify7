@@ -7,6 +7,7 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { RA } from '../../utils/types';
+import { Input } from '../Atoms/Form';
 
 export function StatsResult({
   statValue,
@@ -15,6 +16,7 @@ export function StatsResult({
   onClick: handleClick,
   onRemove: handleRemove,
   onSpecChanged: handleSpecChanged,
+  onItemRename: handleItemRename,
 }: {
   readonly statValue: string | number | undefined;
   readonly query: SpecifyResource<SpQuery> | undefined;
@@ -29,6 +31,7 @@ export function StatsResult({
         >
       ) => void)
     | undefined;
+  readonly onItemRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
@@ -47,10 +50,25 @@ export function StatsResult({
           <Button.LikeLink
             className="flex-1"
             onClick={
-              handleClick ?? (query === undefined ? undefined : handleOpen)
+              handleClick ??
+              (query === undefined || typeof handleItemRename === 'function'
+                ? undefined
+                : handleOpen)
             }
           >
-            <span>{statLabel}</span>
+            <span>
+              {typeof handleItemRename === 'function' ? (
+                <Input.Text
+                  required
+                  value={statLabel}
+                  onValueChange={(newname): void => {
+                    handleItemRename(newname);
+                  }}
+                />
+              ) : (
+                statLabel
+              )}
+            </span>
             <span className="-ml-2 flex-1" />
             <span>{statValue ?? commonText('loading')}</span>
           </Button.LikeLink>

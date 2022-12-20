@@ -18,7 +18,8 @@ export function Categories({
   onAdd: handleAdd,
   onClick: handleClick,
   onRemove: handleRemove,
-  onRename: handleRename,
+  onCategoryRename: handleCategoryRename,
+  onItemRename: handleItemRename,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
 }: {
@@ -36,7 +37,7 @@ export function Categories({
   readonly onRemove:
     | ((categoryIndex: number, itemIndex: number | undefined) => void)
     | undefined;
-  readonly onRename:
+  readonly onCategoryRename:
     | ((newName: string, categoryIndex: number) => void)
     | undefined;
   readonly onSpecChanged:
@@ -55,6 +56,9 @@ export function Categories({
         value: number | string,
         itemLabel: string
       ) => void)
+    | undefined;
+  readonly onItemRename:
+    | ((categoryIndex: number, itemIndex: number, newLabel: string) => void)
     | undefined;
 }): JSX.Element {
   const checkEmptyItems = handleSpecChanged === undefined;
@@ -78,7 +82,7 @@ export function Categories({
               }
               key={categoryIndex}
             >
-              {handleRename === undefined ? (
+              {handleCategoryRename === undefined ? (
                 checkEmptyItems ? (
                   <H3 className="font-bold">{label}</H3>
                 ) : (
@@ -89,7 +93,7 @@ export function Categories({
                   required
                   value={label}
                   onValueChange={(newname): void => {
-                    handleRename(newname, categoryIndex);
+                    handleCategoryRename(newname, categoryIndex);
                   }}
                 />
               )}
@@ -149,6 +153,17 @@ export function Categories({
                         handleRemove === undefined
                           ? undefined
                           : (): void => handleRemove(categoryIndex, itemIndex)
+                      }
+                      onItemRename={
+                        typeof handleItemRename === 'function'
+                          ? (newLabel): void => {
+                              handleItemRename(
+                                categoryIndex,
+                                itemIndex,
+                                newLabel
+                              );
+                            }
+                          : undefined
                       }
                     />
                   ) : undefined

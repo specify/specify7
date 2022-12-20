@@ -20,6 +20,7 @@ export function StatItem({
   onClick: handleClick,
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
+  onItemRename: handleItemRename,
 }: {
   readonly statsSpec: StatsSpec;
   readonly item: CustomStat | DefaultStat;
@@ -44,6 +45,7 @@ export function StatItem({
         itemLabel: string
       ) => void)
     | undefined;
+  readonly onItemRename: ((newLabel: string) => void) | undefined;
 }): JSX.Element | null {
   const customStatsSpec = useCustomStatsSpec(item);
   const statsSpecCalculated = useResolvedSpec(
@@ -73,6 +75,7 @@ export function StatItem({
             }
           : undefined
       }
+      onItemRename={handleItemRename}
     />
   ) : item.type === 'DefaultStat' ? (
     <StatsResult
@@ -82,86 +85,7 @@ export function StatItem({
       onClick={handleClick}
       onRemove={handleRemove}
       onSpecChanged={undefined}
+      onItemRename={handleItemRename}
     />
   ) : null;
 }
-
-export function QueryStat({
-  tableName,
-  fields,
-  statLabel,
-  statValue,
-  itemIndex,
-  categoryIndex,
-  onRemove: handleRemove,
-  onClick: handleClick,
-  onSpecChanged: handleSpecChanged,
-  onValueLoad: handleValueLoad,
-}: {
-  readonly tableName: keyof Tables | undefined;
-  readonly fields:
-    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
-    | undefined;
-  readonly statLabel: string | undefined;
-  readonly statValue: number | string | undefined;
-  readonly itemIndex: number;
-  readonly categoryIndex: number;
-  readonly onRemove: (() => void) | undefined;
-  readonly onClick: (() => void) | undefined;
-  readonly onSpecChanged:
-    | ((
-        tableName: keyof Tables,
-        fields: RA<
-          Partial<SerializedResource<SpQueryField>> & { readonly path: string }
-        >
-      ) => void)
-    | undefined;
-  readonly onValueLoad:
-    | ((
-        categoryIndex: number,
-        itemIndex: number,
-        value: number | string,
-        itemLabel: string
-      ) => void)
-    | undefined;
-}): JSX.Element {
-  const frontEndQuery = useFrontEndStatsQuery(tableName, fields);
-  return (
-    <StatsResult
-      query={frontEndQuery}
-      statLabel={statLabel}
-      statValue={statValue}
-      onClick={handleClick}
-      onRemove={handleRemove}
-      onSpecChanged={handleSpecChanged}
-    />
-  );
-}
-/*
-export function CustomStatItem({
-  queryId,
-  onRemove: handleRemove,
-  onClick: handleClick,
-}: {
-  readonly queryId: number;
-  readonly onRemove: (() => void) | undefined;
-  readonly onClick: (() => void) | undefined;
-}): JSX.Element {
-  const { tableName, fields, label } = useCustomStatQuery(queryId) ?? {};
-  return tableName === undefined ||
-    fields === undefined ||
-    label === undefined ? (
-    <p>{commonText('loading')}</p>
-  ) : (
-    <QueryStat
-      fields={fields}
-      statLabel={label}
-      tableName={tableName}
-      statCachedValue={2}
-      onClick={handleClick}
-      onRemove={handleRemove}
-      onSpecChanged={undefined}
-      onValueLoad={}
-    />
-  );
-} */

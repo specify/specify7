@@ -416,13 +416,31 @@ export function StatsPage(): JSX.Element | null {
                     }
                   : undefined
               }
-              onRename={
+              onCategoryRename={
                 isEditing
                   ? (newName, categoryIndex): void =>
                       handleChange((prevCategory) =>
                         replaceItem(prevCategory, categoryIndex, {
                           ...prevCategory[categoryIndex],
                           label: newName,
+                        })
+                      )
+                  : undefined
+              }
+              onItemRename={
+                isEditing
+                  ? (categoryIndex, itemIndex, newLabel): void =>
+                      handleChange((prevCategory) =>
+                        replaceItem(prevCategory, categoryIndex, {
+                          ...prevCategory[categoryIndex],
+                          items: replaceItem(
+                            prevCategory[categoryIndex].items,
+                            itemIndex,
+                            {
+                              ...prevCategory[categoryIndex].items[itemIndex],
+                              itemLabel: newLabel,
+                            }
+                          ),
                         })
                       )
                   : undefined
