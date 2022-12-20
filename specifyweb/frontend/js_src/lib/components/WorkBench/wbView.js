@@ -2516,7 +2516,7 @@ export const WBView = Backbone.View.extend({
                 {wbText.validationNoErrorsDescription()}
                 <br />
                 <br />
-                {wbText.validationNoErrorsSecondDescription()}
+                {wbText.validationReEditWarning()}
               </>,
             }
           : {
@@ -2525,7 +2525,7 @@ export const WBView = Backbone.View.extend({
                 {wbText.validationErrorsDescription()}
                 <br />
                 <br />
-                {wbText.validationErrorsSecondDescription()}
+                {wbText.validationReEditWarning()}
               </>,
             },
       upload:

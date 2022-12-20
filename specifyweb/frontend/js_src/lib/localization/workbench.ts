@@ -264,7 +264,7 @@ export const wbText = createDictionary({
       базу данных.
     `,
   },
-  validationNoErrorsSecondDescription: {
+  validationReEditWarning: {
     'en-us': `
       Note: If this Data Set is edited and re-saved, Validate should be re-run
       prior to Uploading to verify that no errors have been introduced.
@@ -281,16 +281,6 @@ export const wbText = createDictionary({
   validationErrorsDescription: {
     'en-us': 'Validation found errors in the Data Set.',
     'ru-ru': 'Проверка обнаружила ошибки в наборе данных.',
-  },
-  validationErrorsSecondDescription: {
-    'en-us': `
-      Note: If this Data Set is edited and re-saved, Validate should be re-run
-      prior to Uploading to verify that no errors have been introduced.
-    `,
-    'ru-ru': `
-      Примечание: Если этот набор данных отредактирован и повторно сохранен,
-      начать проверку снова, чтобы убедиться, что ошибок не было введено.
-    `,
   },
   uploadNoErrorsDialogHeader: {
     'en-us': 'Upload Completed with No Errors',

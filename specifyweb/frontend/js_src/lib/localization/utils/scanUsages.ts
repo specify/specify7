@@ -3,7 +3,7 @@
  * Walks through front-end files in search of invalid usages of localization
  * keys.
  *
- * Accepts optional `--verbose` argument to enable verbose output
+ * Accepts optional --verbose` argument to enable verbose output
  *
  * @remarks
  * Most localization errors are caught by TypeScript typing. This test only
@@ -28,6 +28,7 @@ import {
 } from './index';
 import { f } from '../../utils/functools';
 import { formatList } from '../../components/Atoms/Internationalization';
+import chalk from 'chalk';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -46,21 +47,13 @@ const characterBlacklist: Partial<RR<Language, string>> = {
   'en-us': 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
 };
 
-// Check whether verbose mode should be turned on
-const verbose = process.argv[2] === '--verbose';
-
 const log = console.log;
-const debug = verbose ? console.log : () => undefined;
 
 let todosCount = 0;
 
 function todo(value: string): void {
   todosCount += 1;
-  /*
-   * TODO: use chalk lib for this instead
-   * Green
-   */
-  console.warn(`\u001B[36m${value}\u001B[0m\n`);
+  console.warn(chalk.green(value));
 }
 
 let warningsCount = 0;
@@ -68,7 +61,7 @@ let warningsCount = 0;
 function warn(value: string): void {
   warningsCount += 1;
   // Orange
-  console.warn(`\u001B[33m${value}\u001B[0m\n`);
+  console.warn(chalk.yellow(value));
 }
 
 let errorsCount = 0;
@@ -76,11 +69,8 @@ let errorsCount = 0;
 function error(value: string): void {
   errorsCount += 1;
   process.exitCode = 1;
-  // Red
-  console.error(`\u001B[31m${value}\u001B[0m\n\n`);
+  console.error(chalk.red(value));
 }
-
-log(`Looking for localization dictionaries in ${localizationDirectory}`);
 
 /**
  * Collect localization strings from all files into a single object
@@ -91,6 +81,7 @@ async function extractStrings(): Promise<
     readonly strings: IR<LocalizationEntry>;
   }>
 > {
+  log(`Looking for localization dictionaries in ${localizationDirectory}`);
   const localizationFiles = fs.readdirSync(localizationDirectory);
 
   const extracted = await Promise.all(
@@ -125,7 +116,6 @@ async function extractStrings(): Promise<
         error(`Unable to find a dictionary in ${fileName}`);
         return undefined;
       }
-      debug(`Found a ${dictionaryName} dictionary in ${fileName}`);
 
       if (typeof strings !== 'object') {
         error(
@@ -151,7 +141,7 @@ const lookAroundLength = 40;
 
 const expectedKeys = new Set([...languages, ...localizationMetaKeys]);
 
-type DictionaryUsages = IR<{
+export type DictionaryUsages = IR<{
   readonly categoryName: string;
   readonly strings: IR<{
     readonly strings: LocalizationEntry;
@@ -162,7 +152,11 @@ type DictionaryUsages = IR<{
   }>;
 }>;
 
-export async function scanUsages(): Promise<DictionaryUsages | undefined> {
+export async function scanUsages(
+  verbose: boolean
+): Promise<DictionaryUsages | undefined> {
+  const debug = verbose ? console.log : () => undefined;
+
   const entries = await extractStrings();
 
   const dictionaries: DictionaryUsages = Object.fromEntries(

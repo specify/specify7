@@ -1,12 +1,11 @@
 import gettextParser from 'gettext-parser';
 import fs from 'node:fs';
+import path from 'node:path';
 import { languages, whitespaceSensitive } from './index';
-import { scanUsages } from './scanUsages';
 import { camelToHuman } from '../../utils/utils';
 import { filterArray } from '../../utils/types';
 import { f } from '../../utils/functools';
-
-syncStrings().catch(console.error);
+import { DictionaryUsages } from './scanUsages';
 
 function formatFilePath(filePath: string): string {
   const parts = filePath.split('/');
@@ -29,9 +28,14 @@ function formatComment(rawComment: string | undefined): string | undefined {
 const trimPath = (filePath: string): string =>
   filePath.slice(filePath.indexOf('/lib/') + '/lib/'.length);
 
-async function syncStrings(): Promise<void> {
-  const localStrings = await scanUsages();
-  if (localStrings === undefined) return undefined;
+export async function syncStrings(
+  localStrings: DictionaryUsages,
+  emitPath: string
+): Promise<void> {
+  if (fs.existsSync(emitPath)) {
+    if (fs.readdirSync(emitPath).length > 0)
+      throw new Error(`Can not run syncStrings on a non-empty directory`);
+  } else fs.mkdirSync(emitPath, { recursive: true });
 
   await Promise.all(
     Object.entries(localStrings).flatMap(([key, { strings }]) =>
@@ -73,7 +77,10 @@ async function syncStrings(): Promise<void> {
           },
         });
 
-        return fs.promises.writeFile(`./tmp/${key}_${language}.po`, po);
+        return fs.promises.writeFile(
+          path.join(emitPath, `${key}_${language}.po`),
+          po
+        );
       })
     )
   );
