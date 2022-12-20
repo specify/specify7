@@ -5,8 +5,29 @@ on: [push]
 # TODO: only run back-end tests on back-end changes
 # TODO: only run front-end tests on front-end changes
 jobs:
+  changes:
+    name: Check if back-end or front-end files changed
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'specifyweb/frontend/**'
+            backend:
+              - 'specifyweb/**'
+
   test-back-end:
     name: Run back-end tests
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
 
     services:
@@ -78,7 +99,9 @@ jobs:
         run: VIRTUAL_ENV=./ve make typecheck
 
   test-front-end:
-    name: Run back-end tests
+    name: Run front-end tests
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
