@@ -1,0 +1,1034 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Attachments/index.tsx:194
+#: components/FormMeta/SubViewMeta.tsx:39
+#: components/UserPreferences/Definitions.tsx:1066
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+msgid "orderBy"
+msgstr "Order By"
+
+#: components/Attachments/Plugin.tsx:117
+#. Used in: Components > Attachments > Plugin
+msgid "attachmentServerUnavailable"
+msgstr "Attachment server unavailable."
+
+#: components/Attachments/Plugin.tsx:141
+#. Used in: Components > Attachments > Plugin
+msgid "attachmentUploadDialogTitle"
+msgstr "Uploading..."
+
+#: components/Attachments/Gallery.tsx:77
+#. Used in: Components > Attachments > Gallery
+msgid "noAttachments"
+msgstr "There are no attachments"
+
+#: components/Atoms/DataEntry.tsx:139
+#: components/Forms/Save.tsx:228
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
+msgid "clone"
+msgstr "Clone"
+
+#: components/Forms/Save.tsx:229
+#. Used in: Components > Forms > Save
+msgid "cloneDescription"
+msgstr "Create a full copy of current record"
+
+#: components/DataModel/businessRules.js:186
+#. Used in: Components > Data Model > Business Rules
+msgid "valueMustBeUniqueToField"
+msgstr "Value must be unique to {fieldName:string}"
+
+#: components/DataModel/businessRules.js:183
+#. Used in: Components > Data Model > Business Rules
+msgid "valuesOfMustBeUniqueToField"
+msgstr "Values of {values:string} must be unique to {fieldName:string}"
+
+#: components/DataModel/businessRules.js:181
+#. Used in: Components > Data Model > Business Rules
+msgid "database"
+msgstr "database"
+
+#: components/FormPlugins/CollectionRelOneToMany.tsx:76
+#. Used in: Components > Form Plugins > Collection Rel One To Many
+msgid "collectionObject"
+msgstr "Collection Object"
+
+#: components/Forms/DeleteButton.tsx:106
+#. Used in: Components > Forms > Delete Button
+msgid "checkingIfResourceCanBeDeleted"
+msgstr "Checking if resource can be deleted..."
+
+#: components/Forms/DeleteBlocked.tsx:84
+#: components/Forms/DeleteButton.tsx:89
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
+msgid "deleteBlockedDialogHeader"
+msgstr "Delete blocked"
+
+#: components/Forms/DeleteBlocked.tsx:87
+#. Used in: Components > Forms > Delete Blocked
+msgid "deleteBlockedDialogText"
+msgstr ""
+"The resource cannot be deleted because it is referenced by the following "
+"resources:"
+
+#: components/Forms/DeleteBlocked.tsx:92
+#. Used in: Components > Forms > Delete Blocked
+msgid "record"
+msgstr "Record"
+
+#: components/Forms/DeleteBlocked.tsx:93
+#: components/Toolbar/Schema.tsx:379
+#: components/WbPlanView/CustomSelectElement.tsx:283
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Schema ⬤ Components > Wb Plan View > Custom Select Element
+msgid "relationship"
+msgstr "Relationship"
+
+#: components/FormCells/FormTable.tsx:256
+#: components/FormCells/FormTable.tsx:257
+#. Used in: Components > Form Cells > Form Table
+msgid "contract"
+msgstr "Contract"
+
+#: components/Interactions/InteractionDialog.tsx:244
+#: components/Interactions/PrepDialog.tsx:118
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "addItems"
+msgstr "Add Items"
+
+#: components/Interactions/InteractionDialog.tsx:246
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "recordReturn"
+msgstr "{modelName:string} Return"
+
+#: components/Interactions/InteractionDialog.tsx:247
+#: components/Interactions/PrepDialog.tsx:119
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "createRecord"
+msgstr "Create {modelName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:191
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "missing"
+msgstr "Missing:"
+
+#: components/Interactions/InteractionDialog.tsx:193
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "preparationsNotFound"
+msgstr "No preparations were found."
+
+#: components/Interactions/InteractionDialog.tsx:309
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "problemsFound"
+msgstr "There are problems with the entry:"
+
+#: components/Interactions/InteractionDialog.tsx:253
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "recordSetCaption"
+msgstr "By choosing a recordset ({{count:none | one | ??}} available)"
+
+#: components/Interactions/InteractionDialog.tsx:259
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "entryCaption"
+msgstr "By entering {fieldName:string}s"
+
+#: components/Interactions/InteractionDialog.tsx:237
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "noPreparationsCaption"
+msgstr "Without preparations"
+
+#: components/Interactions/InteractionDialog.tsx:233
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "noCollectionObjectCaption"
+msgstr "Add unassociated item"
+
+#: components/Interactions/PrepDialog.tsx:127
+#. Used in: Components > Interactions > Prep Dialog
+msgid "preparationsDialogTitle"
+msgstr "Preparations"
+
+#: components/FormCommands/index.tsx:104
+#. Used in: Components > Form Commands > Index
+msgid "preparationsCanNotBeReturned"
+msgstr "Preparations cannot be returned in this context."
+
+#: components/Interactions/PrepReturnDialog.tsx:72
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "noUnresolvedPreparations"
+msgstr "There are no unresolved preparations for this loan."
+
+#: components/Interactions/PrepReturnRow.tsx:146
+#: components/Interactions/PrepReturnRow.tsx:157
+#: components/Interactions/PrepReturnRow.tsx:160
+#: components/Interactions/PrepReturnRow.tsx:161
+#. Used in: Components > Interactions > Prep Return Row
+msgid "remarks"
+msgstr "Remarks"
+
+#: components/Interactions/PrepReturnDialog.tsx:234
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "unresolved"
+msgstr "Unresolved"
+
+#: components/Interactions/PrepReturnDialog.tsx:237
+#: components/QueryBuilder/LoanReturn.tsx:162
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "return"
+msgstr "Return"
+
+#: components/Interactions/PrepReturnDialog.tsx:240
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "resolve"
+msgstr "Resolve"
+
+#: components/Interactions/PrepReturnDialog.tsx:116
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "returnAllPreparations"
+msgstr "Return all preparations"
+
+#: components/Interactions/PrepReturnDialog.tsx:148
+#: components/QueryBuilder/LoanReturn.tsx:160
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnSelectedPreparations"
+msgstr "Return selected preparations"
+
+#: components/Interactions/PrepDialog.tsx:100
+#. Used in: Components > Interactions > Prep Dialog
+msgid "selectAllAvailablePreparations"
+msgstr "Select all available preparations"
+
+#: components/FormMeta/CarryForward.tsx:227
+#: components/Interactions/PrepDialog.tsx:105
+#: components/Interactions/PrepDialog.tsx:186
+#: components/Interactions/PrepDialogRow.tsx:60
+#: components/Interactions/PrepDialogRow.tsx:62
+#: components/Interactions/PrepReturnDialog.tsx:128
+#: components/Interactions/PrepReturnRow.tsx:81
+#: components/Interactions/PrepReturnRow.tsx:83
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
+msgid "selectAll"
+msgstr "Select All"
+
+#: components/Interactions/PrepDialogRow.tsx:79
+#: components/Interactions/PrepDialogRow.tsx:82
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "selectedAmount"
+msgstr "Selected Amount"
+
+#: components/Interactions/PrepReturnRow.tsx:102
+#: components/Interactions/PrepReturnRow.tsx:106
+#. Used in: Components > Interactions > Prep Return Row
+msgid "returnedAmount"
+msgstr "Returned Amount"
+
+#: components/Interactions/PrepReturnRow.tsx:122
+#: components/Interactions/PrepReturnRow.tsx:126
+#. Used in: Components > Interactions > Prep Return Row
+msgid "resolvedAmount"
+msgstr "Resolved Amount"
+
+#: components/Interactions/PrepDialogRow.tsx:161
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "prepReturnFormatter"
+msgstr "{tableName:string}: {resource: string}"
+
+#: components/FormPlugins/PaleoLocation.tsx:50
+#: components/FormPlugins/PaleoLocation.tsx:77
+#: components/FormPlugins/PaleoLocation.tsx:86
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoMap"
+msgstr "Paleo Map"
+
+#: components/FormPlugins/PaleoLocation.tsx:68
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeographyDialogHeader"
+msgstr "Geography Required"
+
+#: components/FormPlugins/PaleoLocation.tsx:71
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeographyDialogText"
+msgstr ""
+"The Paleo Map plugin requires that the locality have geographic coordinates "
+"and that the paleo context have a geographic age with at least a start time "
+"or and end time populated."
+
+#: components/FormPlugins/PaleoLocation.tsx:55
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedFormDialogHeader"
+msgstr "Incorrect Form"
+
+#: components/FormPlugins/PaleoLocation.tsx:62
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedFormDialogText"
+msgstr ""
+"This plugin cannot be used on this form. Try moving it to the locality, "
+"collecting event or collection object forms."
+
+#: components/FormPlugins/PartialDateUi.tsx:304
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "invalidDate"
+msgstr "Invalid Date"
+
+#: components/Forms/DeleteButton.tsx:131
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmationDialogHeader"
+msgstr ""
+"Are you sure you want to permanently delete this {tableName:string} from "
+"the database?"
+
+#: components/Forms/DeleteButton.tsx:55
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmationDialogText"
+msgstr "This action cannot be undone."
+
+#: components/FormPlugins/PartialDateUi.tsx:334
+#: components/FormPlugins/PartialDateUi.tsx:337
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "datePrecision"
+msgstr "Date Precision"
+
+#: components/FormPlugins/PartialDateUi.tsx:366
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "monthYear"
+msgstr "Mon / Year"
+
+#: components/FormPlugins/PartialDateUi.tsx:382
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "yearPlaceholder"
+msgstr "YYYY"
+
+#: components/FormPlugins/PartialDateUi.tsx:414
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "today"
+msgstr "Today"
+
+#: components/FormPlugins/PartialDateUi.tsx:416
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "todayButtonDescription"
+msgstr "Set to current date"
+
+#: components/PickLists/index.tsx:300
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmationDialogHeader"
+msgstr "Add to pick list?"
+
+#: components/PickLists/index.tsx:303
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmationDialogText"
+msgstr "Add value \"{value:string}\" to the pick list named {pickListName:string}?"
+
+#: components/PickLists/index.tsx:269
+#. Used in: Components > Pick Lists > Index
+msgid "invalidType"
+msgstr "Invalid Type"
+
+#: components/PickLists/index.tsx:272
+#. Used in: Components > Pick Lists > Index
+msgid "invalidNumericPicklistValue"
+msgstr "Only numeric values are supported in this pick list"
+
+#: components/Attachments/Plugin.tsx:122
+#: components/FormCells/FormTable.tsx:181
+#: components/Forms/BaseResourceView.tsx:97
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
+msgid "noData"
+msgstr "No Data."
+
+#: components/Toolbar/RecordSets.tsx:181
+#. Used in: Components > Toolbar > Record Sets
+msgid "recordSetsDialogTitle"
+msgstr "Record Sets ({count:number|formatted})"
+
+#: components/Toolbar/RecordSets.tsx:117
+#. Used in: Components > Toolbar > Record Sets
+msgid "recordSet"
+msgstr "Record Set"
+
+#: components/FormSliders/RecordSet.tsx:298
+#. Used in: Components > Form Sliders > Record Set
+msgid "recordSetFormatted"
+msgstr "Record Set: {name:string}"
+
+#: components/Toolbar/RecordSetEdit.tsx:38
+#. Used in: Components > Toolbar > Record Set Edit
+msgid "recordSetDeletionWarning"
+msgstr ""
+"The record set \"{recordSetName:string}\" will be deleted. The referenced "
+"records will NOT be deleted from the database."
+
+#: components/FormCommands/index.tsx:38
+#: components/FormMeta/EditHistory.tsx:31
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
+msgid "saveRecordFirst"
+msgstr "Save record first"
+
+#: components/Reports/Report.tsx:218
+#. Used in: Components > Reports > Report
+msgid "reportProblemsDialogTitle"
+msgstr "Problems with report"
+
+#: components/Reports/Report.tsx:222
+#. Used in: Components > Reports > Report
+msgid "reportsProblemsDialogText"
+msgstr "The selected report has the following problems:"
+
+#: components/Reports/Report.tsx:223
+#. Used in: Components > Reports > Report
+msgid "missingAttachments"
+msgstr "Missing attachments"
+
+#: components/Reports/Report.tsx:227
+#: components/Reports/Report.tsx:229
+#. Used in: Components > Reports > Report
+msgid "fix"
+msgstr "Fix"
+
+#: components/Reports/Report.tsx:240
+#. Used in: Components > Reports > Report
+msgid "missingAttachmentsFixDialogTitle"
+msgstr "Choose file"
+
+#: components/Reports/Report.tsx:330
+#. Used in: Components > Reports > Report
+msgid "reportParameters"
+msgstr "Report Parameters"
+
+#: components/Reports/Parameters.tsx:82
+#. Used in: Components > Reports > Parameters
+msgid "runReport"
+msgstr "Run Report"
+
+#: components/FormSliders/Slider.tsx:31
+#: components/FormSliders/Slider.tsx:33
+#: components/UserPreferences/Definitions.tsx:941
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "firstRecord"
+msgstr "First Record"
+
+#: components/FormSliders/Slider.tsx:97
+#: components/FormSliders/Slider.tsx:99
+#: components/UserPreferences/Definitions.tsx:945
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "lastRecord"
+msgstr "Last Record"
+
+#: components/FormSliders/Slider.tsx:39
+#: components/FormSliders/Slider.tsx:42
+#. Used in: Components > Form Sliders > Slider
+msgid "previousRecord"
+msgstr "Previous Record"
+
+#: components/FormSliders/Slider.tsx:88
+#: components/FormSliders/Slider.tsx:91
+#. Used in: Components > Form Sliders > Slider
+msgid "nextRecord"
+msgstr "Next Record"
+
+#: components/FormSliders/Slider.tsx:56
+#. Used in: Components > Form Sliders > Slider
+msgid "currentRecord"
+msgstr "Current object (out of {total:number|formatted})"
+
+#: components/Forms/ResourceView.tsx:352
+#: components/Forms/Save.tsx:28
+#. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
+msgid "unsavedFormUnloadProtect"
+msgstr "This form has not been saved."
+
+#: components/Forms/Save.tsx:265
+#. Used in: Components > Forms > Save
+msgid "saveConflictDialogHeader"
+msgstr "Save conflict"
+
+#: components/Forms/Save.tsx:268
+#. Used in: Components > Forms > Save
+msgid "saveConflictDialogText"
+msgstr ""
+"The data shown on this page has been changed by another user or in another "
+"browser tab and is out of date. The page must be reloaded to prevent "
+"inconsistent data from being saved."
+
+#: components/Forms/Save.tsx:273
+#. Used in: Components > Forms > Save
+msgid "saveBlockedDialogHeader"
+msgstr "Save blocked"
+
+#: components/Forms/Save.tsx:276
+#. Used in: Components > Forms > Save
+msgid "saveBlockedDialogText"
+msgstr "Form cannot be saved while the following errors exist:"
+
+#: components/FormCommands/ShowTransactions.tsx:113
+#. Used in: Components > Form Commands > Show Transactions
+msgid "resolvedLoans"
+msgstr "Resolved Loans"
+
+#: components/FormCommands/ShowTransactions.tsx:107
+#. Used in: Components > Form Commands > Show Transactions
+msgid "openLoans"
+msgstr "Open Loans"
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#. Used in: Components > Form Commands > Show Transactions
+msgid "gifts"
+msgstr "Gifts"
+
+#: components/FormCommands/ShowTransactions.tsx:127
+#. Used in: Components > Form Commands > Show Transactions
+msgid "exchanges"
+msgstr "Exchanges"
+
+#: components/FormCommands/index.tsx:119
+#. Used in: Components > Form Commands > Index
+msgid "unavailableCommandButton"
+msgstr "Command N/A"
+
+#: components/FormCommands/index.tsx:123
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailable"
+msgstr "Command Not Available"
+
+#: components/FormCommands/index.tsx:127
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableDescription"
+msgstr "This command is currently unavailable for Specify 7."
+
+#: components/FormCommands/index.tsx:129
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableSecondDescription"
+msgstr ""
+"It was probably included on this form from Specify 6 and may be supported "
+"in the future."
+
+#: components/FormCommands/index.tsx:131
+#. Used in: Components > Form Commands > Index
+msgid "commandName"
+msgstr "Command name:"
+
+#: components/FormPlugins/index.tsx:40
+#: components/FormPlugins/index.tsx:266
+#. Used in: Components > Form Plugins > Index
+msgid "unavailablePluginButton"
+msgstr "Plugin N/A"
+
+#: components/FormPlugins/index.tsx:44
+#: components/FormPlugins/index.tsx:270
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailable"
+msgstr "Plugin Not Available"
+
+#: components/FormPlugins/index.tsx:274
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableDescription"
+msgstr "This plugin is currently unavailable for Specify 7"
+
+#: components/FormPlugins/index.tsx:276
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableSecondDescription"
+msgstr ""
+"It was probably included on this form from Specify 6 and may be supported "
+"in the future."
+
+#: components/FormPlugins/index.tsx:48
+#. Used in: Components > Form Plugins > Index
+msgid "wrongTablePluginDialogText"
+msgstr ""
+"The plugin cannot be used on the {currentTable:string} form. It can only be "
+"used on the {correctTable:string} form."
+
+#: components/FormPlugins/index.tsx:278
+#. Used in: Components > Form Plugins > Index
+msgid "pluginName"
+msgstr "Plugin name:"
+
+#: components/Atoms/DataEntry.tsx:161
+#: components/Atoms/DataEntry.tsx:164
+#. Used in: Components > Atoms > Data Entry
+msgid "visit"
+msgstr "Visit"
+
+#: utils/parser/definitions.ts:91
+#: utils/parser/__tests__/definitions.test.ts:169
+#: utils/parser/__tests__/definitions.test.ts:171
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+msgid "illegalBool"
+msgstr "Illegal value for a Yes/No field"
+
+#: utils/parser/parse.ts:30
+#: utils/parser/__tests__/parse.test.ts:60
+#: utils/parser/__tests__/parse.test.ts:78
+#: utils/parser/__tests__/parse.test.ts:188
+#: utils/parser/__tests__/parse.test.ts:190
+#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
+msgid "requiredField"
+msgstr "Field is required."
+
+#: components/FormPlugins/LatLongUi.tsx:85
+#: utils/parser/__tests__/definitions.test.ts:188
+#: utils/parser/__tests__/definitions.test.ts:190
+#: utils/parser/__tests__/definitions.test.ts:206
+#: utils/parser/__tests__/definitions.test.ts:208
+#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Parser > __tests__ > Definitions
+msgid "invalidValue"
+msgstr "Invalid value"
+
+#: components/FormPlugins/PartialDateUi.tsx:301
+#: components/FormPlugins/PartialDateUi.tsx:303
+#: utils/parser/definitions.ts:179
+#: utils/parser/definitions.ts:181
+#: utils/parser/definitions.ts:302
+#: utils/parser/__tests__/definitions.test.ts:71
+#: utils/parser/__tests__/parse.test.ts:209
+#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+msgid "requiredFormat"
+msgstr "Required Format: {format:string}."
+
+#: utils/parser/definitions.ts:47
+#: utils/parser/__tests__/parse.test.ts:120
+#: utils/parser/__tests__/parse.test.ts:139
+#: utils/parser/__tests__/parse.test.ts:162
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
+msgid "inputTypeNumber"
+msgstr "Value must be a number"
+
+#: components/Security/MissingAgentsDialog.tsx:102
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "userAgentsPluginDialogTitle"
+msgstr "Set User Agents"
+
+#: components/PickLists/definitions.ts:25
+#. Used in: Components > Pick Lists > Definitions
+msgid "organization"
+msgstr "Organization"
+
+#: components/PickLists/definitions.ts:26
+#. Used in: Components > Pick Lists > Definitions
+msgid "person"
+msgstr "Person"
+
+#: components/PickLists/definitions.ts:27
+#. Used in: Components > Pick Lists > Definitions
+msgid "other"
+msgstr "Other"
+
+#: components/PickLists/definitions.ts:28
+#. Used in: Components > Pick Lists > Definitions
+msgid "group"
+msgstr "Group"
+
+#: components/PickLists/definitions.ts:32
+#. Used in: Components > Pick Lists > Definitions
+msgid "userDefinedItems"
+msgstr "User Defined Items"
+
+#: components/PickLists/definitions.ts:33
+#. Used in: Components > Pick Lists > Definitions
+msgid "entireTable"
+msgstr "Entire Table"
+
+#: components/PickLists/definitions.ts:34
+#. Used in: Components > Pick Lists > Definitions
+msgid "fieldFromTable"
+msgstr "Field From Table"
+
+#: components/PickLists/definitions.ts:41
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeMerge"
+msgstr "Tree Merge"
+
+#: components/PickLists/definitions.ts:42
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeMove"
+msgstr "Tree Move"
+
+#: components/PickLists/definitions.ts:43
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeSynonymize"
+msgstr "Tree Synonymize"
+
+#: components/PickLists/definitions.ts:44
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeDesynonymize"
+msgstr "Tree Desynonymize"
+
+#: components/FormCells/index.tsx:232
+#. Used in: Components > Form Cells > Index
+msgid "unsupportedCellType"
+msgstr "Unsupported cell type:"
+
+#: components/Interactions/PrepReturnRow.tsx:40
+#. Used in: Components > Interactions > Prep Return Row
+msgid "unCataloged"
+msgstr "uncataloged"
+
+#: components/Forms/SearchDialog.tsx:179
+#. Used in: Components > Forms > Search Dialog
+msgid "additionalResultsOmitted"
+msgstr "Additional results omitted"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtectDialogHeader"
+msgstr "Proceed without saving?"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtectDialogText"
+msgstr "You might want to save this record before navigating away."
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "creatingNewRecord"
+msgstr "Creating new record"
+
+#: components/PickLists/definitions.ts:135
+#. Used in: Components > Pick Lists > Definitions
+msgid "forward"
+msgstr "Forward"
+
+#: components/PickLists/definitions.ts:134
+#. Used in: Components > Pick Lists > Definitions
+msgid "reverse"
+msgstr "Reverse"
+
+#: components/QueryBuilder/FieldFilter.tsx:113
+#. Used in: Components > Query Builder > Field Filter
+msgid "tooLongErrorMessage"
+msgstr "Field value is too long. Max allowed length is {maxLength:number|formatted}"
+
+#: components/Interactions/InteractionDialog.tsx:200
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedPreparations"
+msgstr "Returned Preparations"
+
+#: components/Interactions/InteractionDialog.tsx:203
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedAndSaved"
+msgstr "{count:number|formatted} preparations have been returned and saved."
+
+#: components/FormMeta/CarryForward.tsx:248
+#: components/Interactions/PrepDialog.tsx:112
+#: components/Interactions/PrepReturnDialog.tsx:144
+#: components/QueryBuilder/Results.tsx:235
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
+msgid "deselectAll"
+msgstr "Deselect all"
+
+#: components/Interactions/PrepDialog.tsx:208
+#. Used in: Components > Interactions > Prep Dialog
+msgid "available"
+msgstr "Available"
+
+#: components/Interactions/PrepDialog.tsx:209
+#. Used in: Components > Interactions > Prep Dialog
+msgid "unavailable"
+msgstr "Unavailable"
+
+#: components/Interactions/InteractionsDialog.tsx:92
+#: components/QueryBuilder/LoanReturn.tsx:148
+#. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnLoan"
+msgstr "Return Loan"
+
+#: components/Interactions/InteractionsDialog.tsx:93
+#: components/Interactions/InteractionsDialog.tsx:101
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "printInvoice"
+msgstr "Print Invoice"
+
+#: components/Interactions/InteractionsDialog.tsx:94
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparation"
+msgstr "Loan w/o Preps"
+
+#: components/Interactions/InteractionsDialog.tsx:95
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparationDescription"
+msgstr "Create a loan with no preparations"
+
+#: components/Interactions/InteractionsDialog.tsx:96
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createLoan"
+msgstr "Create a Loan"
+
+#: components/Interactions/InteractionsDialog.tsx:97
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editLoan"
+msgstr "Edit Loan"
+
+#: components/Interactions/InteractionsDialog.tsx:98
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createdGift"
+msgstr "Create a Gift"
+
+#: components/Interactions/InteractionsDialog.tsx:99
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editGift"
+msgstr "Edit Gift"
+
+#: components/Interactions/InteractionsDialog.tsx:100
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createInformationRequest"
+msgstr "Create Information Request"
+
+#: components/Reports/Report.tsx:114
+#. Used in: Components > Reports > Report
+msgid "missingReportQueryDialogHeader"
+msgstr "Missing Report Query"
+
+#: components/Reports/Report.tsx:118
+#. Used in: Components > Reports > Report
+msgid "missingReportQueryDialogText"
+msgstr "This report does not have an associated query"
+
+#: components/Reports/Report.tsx:123
+#. Used in: Components > Reports > Report
+msgid "missingReportDialogHeader"
+msgstr "Missing report"
+
+#: components/Reports/Report.tsx:127
+#. Used in: Components > Reports > Report
+msgid "missingReportDialogText"
+msgstr "Unable to find an SpReport record for this App Resource"
+
+#: components/QueryBuilder/AuditLogFormatter.tsx:44
+#. Used in: Components > Query Builder > Audit Log Formatter
+msgid "deletedInline"
+msgstr "(deleted)"
+
+#: components/FormSliders/RecordSet.tsx:383
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItemDialogHeader"
+msgstr "Duplicate Record Set Item"
+
+#: components/FormSliders/RecordSet.tsx:386
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItemDialogText"
+msgstr "This record is already present in the current record set"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:184
+#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "addToRecordSet"
+msgstr "Add to Record Set"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:197
+#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "removeFromRecordSet"
+msgstr "Remove from Record Set"
+
+#: components/Molecules/AutoComplete.tsx:522
+#. Used in: Components > Molecules > Auto Complete
+msgid "nothingFound"
+msgstr "Nothing found"
+
+#: components/Forms/Save.tsx:234
+#. Used in: Components > Forms > Save
+msgid "carryForward"
+msgstr "Carry Forward"
+
+#: components/FormMeta/CarryForward.tsx:110
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardEnabled"
+msgstr "Show Carry Forward button"
+
+#: components/Forms/Save.tsx:235
+#. Used in: Components > Forms > Save
+msgid "carryForwardDescription"
+msgstr "Create a new record with certain fields carried over"
+
+#: components/FormMeta/CarryForward.tsx:113
+#: components/FormMeta/CarryForward.tsx:122
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardSettingsDescription"
+msgstr "Configure fields to carry forward"
+
+#: components/FormMeta/CarryForward.tsx:255
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardTableSettingsDescription"
+msgstr "Configure fields to carry forward ({tableName: string})"
+
+#: components/FormMeta/CarryForward.tsx:317
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardUniqueField"
+msgstr "This field must be unique. It can not be carried over"
+
+#: components/FormMeta/Clone.tsx:31
+#. Used in: Components > Form Meta > Clone
+msgid "cloneButtonEnabled"
+msgstr "Show Clone button"
+
+#: components/FormMeta/Clone.tsx:57
+#. Used in: Components > Form Meta > Clone
+msgid "addButtonEnabled"
+msgstr "Show Add button"
+
+#: components/Forms/Save.tsx:241
+#. Used in: Components > Forms > Save
+msgid "addButtonDescription"
+msgstr "Create a new blank record"
+
+#: components/FormMeta/AutoNumbering.tsx:27
+#: components/FormMeta/AutoNumbering.tsx:92
+#. Used in: Components > Form Meta > Auto Numbering
+msgid "autoNumbering"
+msgstr "Auto Numbering"
+
+#: components/FormMeta/Definition.tsx:128
+#. Used in: Components > Form Meta > Definition
+msgid "editFormDefinition"
+msgstr "Edit Form Definition"
+
+#: components/FormMeta/Definition.tsx:83
+#. Used in: Components > Form Meta > Definition
+msgid "useAutoGeneratedForm"
+msgstr "Use Auto Generated Form"
+
+#: components/FormMeta/Definition.tsx:115
+#. Used in: Components > Form Meta > Definition
+msgid "useFieldLabels"
+msgstr "Use localized field labels"
+
+#: components/FormMeta/EditHistory.tsx:35
+#: components/FormMeta/EditHistory.tsx:58
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEdits"
+msgstr "History of edits"
+
+#: components/FormMeta/EditHistory.tsx:82
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEditsQueryName"
+msgstr "History of edits for \"{formattedRecord:string}\""
+
+#: components/FormMeta/index.tsx:101
+#. Used in: Components > Form Meta > Index
+msgid "formConfiguration"
+msgstr "Form Configuration"
+
+#: components/FormMeta/index.tsx:133
+#. Used in: Components > Form Meta > Index
+msgid "formState"
+msgstr "Form State"
+
+#: components/FormMeta/index.tsx:174
+#. Used in: Components > Form Meta > Index
+msgid "recordInformation"
+msgstr "Record Information"
+
+#: components/FormMeta/ShareRecord.tsx:49
+#. Used in: Components > Form Meta > Share Record
+msgid "shareRecord"
+msgstr "Share Record:"
+
+#: components/FormMeta/PickListUsages.tsx:26
+#: components/FormMeta/QueryTreeUsages.tsx:22
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
+msgid "findUsages"
+msgstr "Find usages"
+
+#: components/FormMeta/PickListUsages.tsx:69
+#. Used in: Components > Form Meta > Pick List Usages
+msgid "usagesOfPickList"
+msgstr "Usages of \"{pickList:string}\" pick list"
+
+#: components/FormMeta/index.tsx:127
+#. Used in: Components > Form Meta > Index
+msgid "generateLabel"
+msgstr "Generate label"
+
+#: components/FormMeta/index.tsx:144
+#: components/FormParse/fields.ts:97
+#: components/FormParse/__tests__/fields.test.ts:136
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+msgid "generateLabelOnSave"
+msgstr "Generate label on save"
+
+#: components/FormMeta/index.tsx:126
+#. Used in: Components > Form Meta > Index
+msgid "generateReport"
+msgstr "Generate report"
+
+#: components/FormMeta/index.tsx:143
+#. Used in: Components > Form Meta > Index
+msgid "generateReportOnSave"
+msgstr "Generate report on save"
+
+#: components/FormMeta/SubViewMeta.tsx:33
+#. Used in: Components > Form Meta > Sub View Meta
+msgid "form"
+msgstr "Subform"
+
+#: components/FormMeta/SubViewMeta.tsx:34
+#. Used in: Components > Form Meta > Sub View Meta
+msgid "formTable"
+msgstr "Grid"
+
+#: components/FormCells/FormTable.tsx:129
+#. Used in: Components > Form Cells > Form Table
+msgid "formTableHeading"
+msgstr "{relationshipName:string} ({count:number|formatted})"
+
+#: components/FormMeta/index.tsx:150
+#. Used in: Components > Form Meta > Index
+msgid "subviewConfiguration"
+msgstr "Subview"
+
+#: components/Toolbar/FormTablesEdit.tsx:56
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "selectSourceOfTables"
+msgstr "Select source of tables"
+
+#: components/Toolbar/FormTablesEdit.tsx:77
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "inheritLegacySettings"
+msgstr "Copy Specify 6 settings"
+
+#: components/Toolbar/FormTablesEdit.tsx:85
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "useCustomSettings"
+msgstr "Use custom settings"
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/Header/UserTools.tsx:62
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
+msgid "disableReadOnly"
+msgstr "Disable read-only mode"
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#. Used in: Components > Form Meta > Read Only Mode
+msgid "enableReadOnly"
+msgstr "Enable read-only mode"
+
+#: components/Toolbar/FormTablesEdit.tsx:125
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "configureDataEntryTables"
+msgstr "Configure data entry tables"
+
+#: components/FormMeta/index.tsx:56
+#: components/FormMeta/index.tsx:58
+#. Used in: Components > Form Meta > Index
+msgid "formMeta"
+msgstr "Form Meta"
+
+#: components/AppResources/Editor.tsx:176
+#: components/Forms/BaseResourceView.tsx:106
+#: components/Forms/dataObjFormatters.ts:151
+#. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
+msgid "newResourceTitle"
+msgstr "New {tableName:string}"
+
+#: components/Forms/dataObjFormatters.ts:152
+#. Used in: Components > Forms > Data Obj Formatters
+msgid "resourceFormatter"
+msgstr "{tableName:string} #{id:number}"
+
+#: components/Forms/ResourceView.tsx:186
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeletedDialogHeader"
+msgstr "Item deleted"
+
+#: components/Forms/ResourceView.tsx:189
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeletedDialogText"
+msgstr "Item was deleted successfully."

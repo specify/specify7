@@ -1,0 +1,290 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Security/PreviewTables.tsx:68
+#: components/Security/registry.ts:66
+#: components/Toolbar/Schema.tsx:368
+#. Used in: Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
+msgid "table"
+msgstr "Table"
+
+#: components/SchemaConfig/Table.tsx:43
+#. Used in: Components > Schema Config > Table
+msgid "tableFormatted"
+msgstr "Table: {name:string}"
+
+#: components/UserPreferences/Definitions.tsx:631
+#: components/WbPlanView/MapperComponents.tsx:432
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
+msgid "tableName"
+msgstr "Table Name"
+
+#: components/Header/userToolDefinitions.ts:37
+#: components/Router/Routes.tsx:334
+#: components/SchemaConfig/Components.tsx:27
+#: components/SchemaConfig/Languages.tsx:33
+#: components/Security/registry.ts:191
+#: components/UserPreferences/Definitions.tsx:582
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+msgid "schemaConfig"
+msgstr "Schema Config"
+
+#: components/SchemaConfig/index.tsx:72
+#. Used in: Components > Schema Config > Index
+msgid "unsavedSchemaUnloadProtect"
+msgstr "Schema changes have not been saved"
+
+#: components/SchemaConfig/Components.tsx:33
+#: components/WbPlanView/MapperComponents.tsx:318
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "changeBaseTable"
+msgstr "Change Base Table"
+
+#: components/FormMeta/CarryForward.tsx:263
+#: components/Forms/generateFormDefinition.ts:126
+#: components/SchemaConfig/Fields.tsx:35
+#: components/SchemaConfig/Fields.tsx:46
+#: components/Toolbar/Schema.tsx:213
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+msgid "fields"
+msgstr "Fields"
+
+#: components/SchemaConfig/Field.tsx:38
+#. Used in: Components > Schema Config > Field
+msgid "field"
+msgstr "Field: {name:string}"
+
+#: components/FormMeta/CarryForward.tsx:271
+#: components/Forms/generateFormDefinition.ts:164
+#: components/SchemaConfig/Fields.tsx:54
+#: components/Toolbar/Schema.tsx:269
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+msgid "relationships"
+msgstr "Relationships"
+
+#: components/SchemaConfig/Field.tsx:40
+#: components/SchemaConfig/Table.tsx:46
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+msgid "caption"
+msgstr "Caption"
+
+#: components/SchemaConfig/Field.tsx:50
+#: components/SchemaConfig/Table.tsx:56
+#: components/Security/Role.tsx:131
+#: components/Toolbar/Schema.tsx:168
+#: components/Toolbar/Schema.tsx:227
+#: components/Toolbar/Schema.tsx:375
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
+msgid "description"
+msgstr "Description"
+
+#: components/SchemaConfig/Table.tsx:103
+#. Used in: Components > Schema Config > Table
+msgid "hideTable"
+msgstr "Hide Table"
+
+#: components/SchemaConfig/Field.tsx:79
+#. Used in: Components > Schema Config > Field
+msgid "hideField"
+msgstr "Hide Field"
+
+#: components/SchemaConfig/Table.tsx:66
+#. Used in: Components > Schema Config > Table
+msgid "tableFormat"
+msgstr "Table Format"
+
+#: components/SchemaConfig/Table.tsx:80
+#. Used in: Components > Schema Config > Table
+msgid "tableAggregation"
+msgstr "Table Aggregation"
+
+#: components/AppResources/Create.tsx:91
+#: components/FormMeta/SubViewMeta.tsx:26
+#: components/SchemaConfig/Field.tsx:64
+#: components/Toolbar/Schema.tsx:172
+#: components/Toolbar/Schema.tsx:231
+#: components/Toolbar/Schema.tsx:380
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+msgid "type"
+msgstr "Type"
+
+#: components/SchemaConfig/helpers.ts:121
+#. Used in: Components > Schema Config > Helpers
+msgid "oneToOne"
+msgstr "One-to-one"
+
+#: components/SchemaConfig/helpers.ts:122
+#. Used in: Components > Schema Config > Helpers
+msgid "oneToMany"
+msgstr "One-to-many"
+
+#: components/SchemaConfig/helpers.ts:123
+#. Used in: Components > Schema Config > Helpers
+msgid "manyToOne"
+msgstr "Many-to-one"
+
+#: components/SchemaConfig/helpers.ts:124
+#. Used in: Components > Schema Config > Helpers
+msgid "manyToMany"
+msgstr "many-to-many"
+
+#: components/SchemaConfig/Field.tsx:60
+#: components/Toolbar/Schema.tsx:173
+#: components/Toolbar/Schema.tsx:381
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+msgid "fieldLength"
+msgstr "Length"
+
+#: components/FormMeta/index.tsx:63
+#: components/Toolbar/Schema.tsx:170
+#: components/Toolbar/Schema.tsx:229
+#: components/Toolbar/Schema.tsx:377
+#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
+msgid "readOnly"
+msgstr "Read-only"
+
+#: components/SchemaConfig/Field.tsx:90
+#: components/Toolbar/Schema.tsx:171
+#: components/Toolbar/Schema.tsx:230
+#: components/Toolbar/Schema.tsx:378
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+msgid "required"
+msgstr "Required"
+
+#: components/SchemaConfig/Format.tsx:51
+#. Used in: Components > Schema Config > Format
+msgid "fieldFormat"
+msgstr "Field Format"
+
+#: components/SchemaConfig/Format.tsx:71
+#. Used in: Components > Schema Config > Format
+msgid "formatted"
+msgstr "Formatted"
+
+#: components/SchemaConfig/Format.tsx:88
+#. Used in: Components > Schema Config > Format
+msgid "webLink"
+msgstr "Web Link"
+
+#: components/SchemaConfig/Format.tsx:94
+#: components/Security/registry.ts:212
+#. Used in: Components > Schema Config > Format ⬤ Components > Security > Registry
+msgid "pickList"
+msgstr "Pick List"
+
+#: components/SchemaConfig/Format.tsx:80
+#: components/SchemaConfig/Format.tsx:98
+#: components/Toolbar/Schema.tsx:287
+#: components/Toolbar/Schema.tsx:370
+#. Used in: Components > Schema Config > Format ⬤ Components > Toolbar > Schema
+msgid "system"
+msgstr "System"
+
+#: components/SchemaConfig/Format.tsx:97
+#. Used in: Components > Schema Config > Format
+msgid "userDefined"
+msgstr "User Defined"
+
+#: components/SchemaConfig/Languages.tsx:26
+#. Used in: Components > Schema Config > Languages
+msgid "addLanguage"
+msgstr "Add Language"
+
+#: components/Router/Routes.tsx:349
+#: components/SchemaConfig/Languages.tsx:72
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+msgid "addLanguageDialogHeader"
+msgstr "Add new language"
+
+#: components/Attachments/index.tsx:179
+#: components/Router/Routes.tsx:360
+#: components/SchemaConfig/Tables.tsx:55
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
+msgid "tables"
+msgstr "Tables"
+
+#: components/Toolbar/Schema.tsx:167
+#: components/Toolbar/Schema.tsx:226
+#: components/Toolbar/Schema.tsx:286
+#: components/Toolbar/Schema.tsx:369
+#: components/Toolbar/Schema.tsx:374
+#. Used in: Components > Toolbar > Schema
+msgid "label"
+msgstr "Label"
+
+#: components/Toolbar/Schema.tsx:169
+#: components/Toolbar/Schema.tsx:228
+#: components/Toolbar/Schema.tsx:288
+#: components/Toolbar/Schema.tsx:371
+#: components/Toolbar/Schema.tsx:376
+#. Used in: Components > Toolbar > Schema
+msgid "hidden"
+msgstr "Hidden"
+
+#: components/Toolbar/Schema.tsx:174
+#: components/Toolbar/Schema.tsx:232
+#: components/Toolbar/Schema.tsx:382
+#. Used in: Components > Toolbar > Schema
+msgid "databaseColumn"
+msgstr "Database Column"
+
+#: components/Toolbar/Schema.tsx:233
+#: components/Toolbar/Schema.tsx:383
+#. Used in: Components > Toolbar > Schema
+msgid "relatedModel"
+msgstr "Related Model"
+
+#: components/Toolbar/Schema.tsx:234
+#: components/Toolbar/Schema.tsx:384
+#. Used in: Components > Toolbar > Schema
+msgid "otherSideName"
+msgstr "Other side name"
+
+#: components/Toolbar/Schema.tsx:235
+#: components/Toolbar/Schema.tsx:385
+#. Used in: Components > Toolbar > Schema
+msgid "dependent"
+msgstr "Dependent"
+
+#: components/Toolbar/Schema.tsx:339
+#. Used in: Components > Toolbar > Schema
+msgid "downloadAsJson"
+msgstr "Download as JSON"
+
+#: components/Toolbar/Schema.tsx:350
+#. Used in: Components > Toolbar > Schema
+msgid "downloadAsTsv"
+msgstr "Download as TSV"
+
+#: components/Toolbar/Schema.tsx:289
+#: components/Toolbar/Schema.tsx:372
+#. Used in: Components > Toolbar > Schema
+msgid "tableId"
+msgstr "Table ID"
+
+#: components/Toolbar/Schema.tsx:290
+#. Used in: Components > Toolbar > Schema
+msgid "fieldCount"
+msgstr "Field count"
+
+#: components/Toolbar/Schema.tsx:291
+#. Used in: Components > Toolbar > Schema
+msgid "relationshipCount"
+msgstr "Relationship count"
+
+#: components/Header/userToolDefinitions.ts:96
+#: components/Router/Routes.tsx:34
+#: components/Router/Routes.tsx:38
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+msgid "databaseSchema"
+msgstr "Database Schema"
+
+#: components/Toolbar/QueryTablesEdit.tsx:161
+#. Used in: Components > Toolbar > Query Tables Edit
+msgid "selectedTables"
+msgstr "Selected Tables"
+
+#: components/Toolbar/QueryTablesEdit.tsx:195
+#. Used in: Components > Toolbar > Query Tables Edit
+msgid "possibleTables"
+msgstr "Possible Tables"

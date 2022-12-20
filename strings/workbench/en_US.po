@@ -1,0 +1,1117 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/WorkBench/Status.tsx:75
+#: components/WorkBench/Template.tsx:144
+#: components/WorkBench/wbView.js:1913
+#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "rollback"
+msgstr "Roll Back"
+
+#: components/WbPlanView/Mapper.tsx:378
+#: components/WorkBench/Template.tsx:126
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
+msgid "validate"
+msgstr "Validate"
+
+#: components/WorkBench/Status.tsx:73
+#. Used in: Components > Work Bench > Status
+msgid "validation"
+msgstr "Validation"
+
+#: components/WorkBench/Status.tsx:74
+#: components/WorkBench/Template.tsx:155
+#: components/WorkBench/wbView.js:1939
+#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "upload"
+msgstr "Upload"
+
+#: components/WorkBench/Status.tsx:81
+#. Used in: Components > Work Bench > Status
+msgid "rollingBack"
+msgstr "Rolling Back"
+
+#: components/WorkBench/Status.tsx:80
+#. Used in: Components > Work Bench > Status
+msgid "uploading"
+msgstr "Uploading"
+
+#: components/WorkBench/Status.tsx:79
+#. Used in: Components > Work Bench > Status
+msgid "validating"
+msgstr "Validating"
+
+#: components/WorkBench/wbView.js:538
+#. Used in: Components > Work Bench > Wb View
+msgid "disambiguate"
+msgstr "Disambiguate"
+
+#: components/WorkBench/wbView.js:549
+#. Used in: Components > Work Bench > Wb View
+msgid "fillDown"
+msgstr "Fill Down"
+
+#: components/WorkBench/wbView.js:557
+#. Used in: Components > Work Bench > Wb View
+msgid "fillUp"
+msgstr "Fill Up"
+
+#: components/WorkBench/Template.tsx:165
+#: components/WorkBench/wbView.js:2065
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "revert"
+msgstr "Revert"
+
+#: components/UserPreferences/Definitions.tsx:1443
+#: components/WorkBench/Template.tsx:117
+#: components/WorkBench/wbView.js:1857
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "dataMapper"
+msgstr "Data Mapper"
+
+#: components/WorkBench/wbView.js:2191
+#. Used in: Components > Work Bench > Wb View
+msgid "dataCheck"
+msgstr "Data Check"
+
+#: components/WorkBench/wbView.js:2184
+#. Used in: Components > Work Bench > Wb View
+msgid "dataCheckOn"
+msgstr "Data Check: On"
+
+#: components/WorkBench/DataSetMeta.tsx:248
+#: components/WorkBench/Template.tsx:192
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
+msgid "changeOwner"
+msgstr "Change Owner"
+
+#: components/WorkBench/Template.tsx:216
+#. Used in: Components > Work Bench > Template
+msgid "convertCoordinates"
+msgstr "Convert Coordinates"
+
+#: components/WorkBench/Template.tsx:242
+#. Used in: Components > Work Bench > Template
+msgid "navigation"
+msgstr "Navigation"
+
+#: components/WorkBench/Template.tsx:264
+#. Used in: Components > Work Bench > Template
+msgid "replace"
+msgstr "Replace"
+
+#: components/WorkBench/Template.tsx:261
+#: components/WorkBench/Template.tsx:265
+#. Used in: Components > Work Bench > Template
+msgid "replacementValue"
+msgstr "Replacement value"
+
+#: components/WorkBench/Template.tsx:271
+#. Used in: Components > Work Bench > Template
+msgid "searchResults"
+msgstr "Search Results"
+
+#: components/WorkBench/Template.tsx:59
+#. Used in: Components > Work Bench > Template
+msgid "clickToToggle"
+msgstr "Click to toggle visibility"
+
+#: components/WorkBench/AdvancedSearch.tsx:111
+#: components/WorkBench/AdvancedSearch.tsx:214
+#: components/WorkBench/AdvancedSearch.tsx:216
+#. Used in: Components > Work Bench > Advanced Search
+msgid "configureSearchReplace"
+msgstr "Configure Search & Replace"
+
+#: components/WorkBench/Template.tsx:273
+#. Used in: Components > Work Bench > Template
+msgid "modifiedCells"
+msgstr "Modified Cells"
+
+#: components/WorkBench/Template.tsx:275
+#. Used in: Components > Work Bench > Template
+msgid "newCells"
+msgstr "New Cells"
+
+#: components/WorkBench/Template.tsx:277
+#. Used in: Components > Work Bench > Template
+msgid "errorCells"
+msgstr "Error Cells"
+
+#: components/WbPlanView/Mapper.tsx:385
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataEditor"
+msgstr "Data Editor"
+
+#: components/WbPlanView/State.tsx:37
+#: components/WorkBench/wbView.js:256
+#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
+msgid "noUploadPlanDialogHeader"
+msgstr "No Upload Plan is Defined"
+
+#: components/WorkBench/wbView.js:270
+#: components/WorkBench/wbView.js:1947
+#. Used in: Components > Work Bench > Wb View
+msgid "noUploadPlanDialogText"
+msgstr "No Upload Plan has been defined for this Data Set. Create one now?"
+
+#: components/WorkBench/wbView.js:1577
+#. Used in: Components > Work Bench > Wb View
+msgid "noDisambiguationResultsDialogHeader"
+msgstr "Unable to disambiguate"
+
+#: components/WorkBench/wbView.js:1578
+#. Used in: Components > Work Bench > Wb View
+msgid "noDisambiguationResultsDialogText"
+msgstr ""
+"None of the matched records currently exist in the database. This can "
+"happen if all of the matching records were deleted since the validation "
+"process occurred, or if all of the matches were ambiguous with respect "
+"other records in this data set. In the latter case, you will need to add "
+"fields and values to the data set to resolve the ambiguity."
+
+#: components/WorkBench/wbView.js:1632
+#. Used in: Components > Work Bench > Wb View
+msgid "disambiguationDialogTitle"
+msgstr "Disambiguate Multiple Record Matches"
+
+#: components/WorkBench/wbView.js:1680
+#. Used in: Components > Work Bench > Wb View
+msgid "applyAllUnavailable"
+msgstr "\"Apply All\" is not available while Data Check is in progress."
+
+#: components/WorkBench/wbView.js:1896
+#. Used in: Components > Work Bench > Wb View
+msgid "rollbackDialogHeader"
+msgstr "Begin Data Set Roll Back?"
+
+#: components/WorkBench/wbView.js:1897
+#. Used in: Components > Work Bench > Wb View
+msgid "rollbackDialogText"
+msgstr ""
+"Rolling back will remove the new data records this Data Set added to the "
+"Specify database. The entire rollback will be cancelled if any of the "
+"uploaded data have been referenced (re-used) by other data records since "
+"they were uploaded."
+
+#: components/WorkBench/wbView.js:1927
+#. Used in: Components > Work Bench > Wb View
+msgid "startUploadDialogHeader"
+msgstr "Begin Data Set Upload?"
+
+#: components/WorkBench/wbView.js:1928
+#. Used in: Components > Work Bench > Wb View
+msgid "startUploadDialogText"
+msgstr "Uploading the Data Set will add the data to the Specify database."
+
+#: components/WorkBench/wbView.js:2009
+#. Used in: Components > Work Bench > Wb View
+msgid "deleteDataSetDialogHeader"
+msgstr "Delete this Data Set?"
+
+#: components/WorkBench/wbView.js:2010
+#. Used in: Components > Work Bench > Wb View
+msgid "deleteDataSetDialogText"
+msgstr ""
+"Deleting a Data Set permanently removes it and its Upload Plan. Data "
+"mappings will no longer be available for re-use with other Data Sets. Also "
+"after deleting, Rollback will no longer be an option for an uploaded Data "
+"Set."
+
+#: components/WorkBench/wbView.js:2029
+#. Used in: Components > Work Bench > Wb View
+msgid "dataSetDeletedDialogHeader"
+msgstr "Data Set successfully deleted"
+
+#: components/WorkBench/wbView.js:2030
+#. Used in: Components > Work Bench > Wb View
+msgid "dataSetDeletedDialogText"
+msgstr "Data Set successfully deleted."
+
+#: components/WorkBench/wbView.js:2058
+#. Used in: Components > Work Bench > Wb View
+msgid "revertChangesDialogHeader"
+msgstr "Revert Unsaved Changes?"
+
+#: components/WorkBench/wbView.js:2059
+#. Used in: Components > Work Bench > Wb View
+msgid "revertChangesDialogText"
+msgstr ""
+"This action will discard all changes made to the Data Set since the last "
+"Save."
+
+#: components/WorkBench/wbView.js:2082
+#. Used in: Components > Work Bench > Wb View
+msgid "savingDialogTitle"
+msgstr "Saving"
+
+#: components/WorkBench/Template.tsx:346
+#. Used in: Components > Work Bench > Template
+msgid "onExitDialogText"
+msgstr "Changes to this Data Set have not been Saved."
+
+#: components/WorkBench/wbView.js:840
+#: components/WorkBench/wbView.js:842
+#: components/WorkBench/wbView.js:1335
+#. Used in: Components > Work Bench > Wb View
+msgid "picklistValidationFailed"
+msgstr ""
+"{value:string} is not a legal value in this picklist field.\n"
+"Click on the arrow to choose among available options."
+
+#: components/WorkBench/wbView.js:2285
+#. Used in: Components > Work Bench > Wb View
+msgid "noMatchErrorMessage"
+msgstr "No matching record for must-match table."
+
+#: components/WorkBench/wbView.js:2309
+#. Used in: Components > Work Bench > Wb View
+msgid "matchedMultipleErrorMessage"
+msgstr ""
+"This value matches two or more existing database records and the match must "
+"be disambiguated before uploading."
+
+#: components/WorkBench/wbView.js:2514
+#. Used in: Components > Work Bench > Wb View
+msgid "validationNoErrorsDialogHeader"
+msgstr "Validate Completed with No Errors"
+
+#: components/WorkBench/wbView.js:2516
+#. Used in: Components > Work Bench > Wb View
+msgid "validationNoErrorsDescription"
+msgstr "Validation found no errors, it is ready to be uploaded into the database."
+
+#: components/WorkBench/wbView.js:2519
+#: components/WorkBench/wbView.js:2528
+#. Used in: Components > Work Bench > Wb View
+msgid "validationReEditWarning"
+msgstr ""
+"Note: If this Data Set is edited and re-saved, Validate should be re-run "
+"prior to Uploading to verify that no errors have been introduced."
+
+#: components/WorkBench/wbView.js:2523
+#. Used in: Components > Work Bench > Wb View
+msgid "validationErrorsDialogHeader"
+msgstr "Validate Completed with Errors"
+
+#: components/WorkBench/wbView.js:2525
+#. Used in: Components > Work Bench > Wb View
+msgid "validationErrorsDescription"
+msgstr "Validation found errors in the Data Set."
+
+#: components/WorkBench/wbView.js:2534
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadNoErrorsDialogHeader"
+msgstr "Upload Completed with No Errors"
+
+#: components/WorkBench/wbView.js:2535
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadNoErrorsDialogText"
+msgstr ""
+"Click on the \"Results\" button to see the number of new records added to "
+"each database table."
+
+#: components/WorkBench/wbView.js:2538
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadErrorsDialogHeader"
+msgstr "Upload Failed due to Error Cells"
+
+#: components/WorkBench/wbView.js:2540
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadErrorsDescription"
+msgstr "The upload failed due to one or more cell value errors."
+
+#: components/WorkBench/wbView.js:2543
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadErrorsSecondDescription"
+msgstr ""
+"Validate the Data Set and review the mouseover hints for each error cell, "
+"then make the appropriate corrections. Save and retry the Upload."
+
+#: components/WorkBench/wbView.js:2547
+#. Used in: Components > Work Bench > Wb View
+msgid "dataSetRollbackDialogHeader"
+msgstr "Data Set was rolled back successfully"
+
+#: components/WorkBench/wbView.js:2548
+#. Used in: Components > Work Bench > Wb View
+msgid "dataSetRollbackDialogText"
+msgstr "This Rolledback Data Set is saved, and can be edited or re-uploaded."
+
+#: components/WorkBench/wbView.js:2568
+#. Used in: Components > Work Bench > Wb View
+msgid "validationCanceledDialogHeader"
+msgstr "Validation Canceled"
+
+#: components/WorkBench/wbView.js:2574
+#. Used in: Components > Work Bench > Wb View
+msgid "validationCanceledDialogText"
+msgstr "Data Set Validation cancelled."
+
+#: components/WorkBench/wbView.js:2570
+#. Used in: Components > Work Bench > Wb View
+msgid "rollbackCanceledDialogHeader"
+msgstr "Rollback Canceled"
+
+#: components/WorkBench/wbView.js:2576
+#. Used in: Components > Work Bench > Wb View
+msgid "rollbackCanceledDialogText"
+msgstr "Data Set Rollback cancelled."
+
+#: components/WorkBench/wbView.js:2571
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadCanceledDialogHeader"
+msgstr "Upload Canceled"
+
+#: components/WorkBench/wbView.js:2577
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadCanceledDialogText"
+msgstr "Data Set Upload cancelled."
+
+#: components/WorkBench/wbUtils.js:1032
+#. Used in: Components > Work Bench > Wb Utils
+msgid "coordinateConverterDialogTitle"
+msgstr "Geocoordinate Format"
+
+#: components/WorkBench/wbUtils.js:1042
+#. Used in: Components > Work Bench > Wb Utils
+msgid "coordinateConverterDialogHeader"
+msgstr "Choose a preferred Geocoordinate format"
+
+#: components/WorkBench/wbView.js:377
+#: components/WorkBench/wbView.js:378
+#. Used in: Components > Work Bench > Wb View
+msgid "unmappedColumn"
+msgstr "Unmapped Column"
+
+#: components/WbPlanView/CustomSelectElement.tsx:605
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "notMapped"
+msgstr "NOT MAPPED"
+
+#: components/WorkBench/wbView.js:663
+#. Used in: Components > Work Bench > Wb View
+msgid "emptyStringInline"
+msgstr "(empty string)"
+
+#: components/WorkBench/Template.tsx:132
+#: components/WorkBench/wbView.js:2409
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "wbUploadedUnavailable"
+msgstr "The data set must be validated or uploaded"
+
+#: components/WorkBench/wbView.js:274
+#. Used in: Components > Work Bench > Wb View
+msgid "wbValidateUnavailable"
+msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
+
+#: components/WorkBench/wbView.js:2404
+#. Used in: Components > Work Bench > Wb View
+msgid "unavailableWhileEditing"
+msgstr "This action requires all changes to be saved"
+
+#: components/WorkBench/wbView.js:2492
+#. Used in: Components > Work Bench > Wb View
+msgid "uploadUnavailableWhileHasErrors"
+msgstr "Upload is unavailable while some cells have validation errors"
+
+#: components/WorkBench/wbView.js:1734
+#. Used in: Components > Work Bench > Wb View
+msgid "unavailableWhileViewingResults"
+msgstr "This action is unavailable while viewing the upload results"
+
+#: components/WorkBench/wbView.js:1701
+#. Used in: Components > Work Bench > Wb View
+msgid "unavailableWhileValidating"
+msgstr "This action is unavailable while Data Check is in progress"
+
+#: components/WorkBench/Template.tsx:214
+#: components/WorkBench/Template.tsx:222
+#: components/WorkBench/Template.tsx:232
+#. Used in: Components > Work Bench > Template
+msgid "unavailableWithoutLocality"
+msgstr "This tool requires locality columns to be mapped"
+
+#: components/WorkBench/wbUtils.js:572
+#. Used in: Components > Work Bench > Wb Utils
+msgid "unavailableWhenUploaded"
+msgstr "This tool does not work with uploaded Data Sets"
+
+#: components/WorkBench/wbView.js:2415
+#. Used in: Components > Work Bench > Wb View
+msgid "dataSetDeletedOrNotFound"
+msgstr "Data Set was deleted by another session."
+
+#: components/WorkBench/wbUtils.js:1070
+#. Used in: Components > Work Bench > Wb Utils
+msgid "includeDmsSymbols"
+msgstr "Include DMS Symbols"
+
+#: components/WorkBench/Results.tsx:48
+#. Used in: Components > Work Bench > Results
+msgid "uploadResults"
+msgstr "Upload Results"
+
+#: components/WorkBench/Results.tsx:49
+#. Used in: Components > Work Bench > Results
+msgid "potentialUploadResults"
+msgstr "Potential Upload Results"
+
+#: components/WorkBench/wbView.js:464
+#. Used in: Components > Work Bench > Wb View
+msgid "noUploadResultsAvailable"
+msgstr "No upload results are available for this cell"
+
+#: components/WorkBench/Results.tsx:53
+#. Used in: Components > Work Bench > Results
+msgid "wbUploadedDescription"
+msgstr "Number of new records created in each table:"
+
+#: components/WorkBench/Results.tsx:54
+#. Used in: Components > Work Bench > Results
+msgid "wbUploadedPotentialDescription"
+msgstr "Number of new records that would be created in each table:"
+
+#: components/WorkBench/AdvancedSearch.tsx:116
+#. Used in: Components > Work Bench > Advanced Search
+msgid "navigationOptions"
+msgstr "Navigation Options"
+
+#: components/WorkBench/AdvancedSearch.tsx:118
+#. Used in: Components > Work Bench > Advanced Search
+msgid "cursorPriority"
+msgstr "Cursor Priority"
+
+#: components/WorkBench/AdvancedSearch.tsx:131
+#. Used in: Components > Work Bench > Advanced Search
+msgid "columnFirst"
+msgstr "Column first"
+
+#: components/WorkBench/AdvancedSearch.tsx:132
+#. Used in: Components > Work Bench > Advanced Search
+msgid "rowFirst"
+msgstr "Row first"
+
+#: components/WorkBench/AdvancedSearch.tsx:138
+#. Used in: Components > Work Bench > Advanced Search
+msgid "searchOptions"
+msgstr "Search Options"
+
+#: components/WorkBench/AdvancedSearch.tsx:144
+#. Used in: Components > Work Bench > Advanced Search
+msgid "findEntireCellsOnly"
+msgstr "Find entire cells only"
+
+#: components/WorkBench/AdvancedSearch.tsx:151
+#. Used in: Components > Work Bench > Advanced Search
+msgid "matchCase"
+msgstr "Match case"
+
+#: components/WorkBench/AdvancedSearch.tsx:158
+#. Used in: Components > Work Bench > Advanced Search
+msgid "useRegularExpression"
+msgstr "Use regular expression"
+
+#: components/WorkBench/AdvancedSearch.tsx:165
+#. Used in: Components > Work Bench > Advanced Search
+msgid "liveUpdate"
+msgstr "Live search"
+
+#: components/WorkBench/AdvancedSearch.tsx:170
+#. Used in: Components > Work Bench > Advanced Search
+msgid "replaceOptions"
+msgstr "Replace Options"
+
+#: components/WorkBench/AdvancedSearch.tsx:172
+#. Used in: Components > Work Bench > Advanced Search
+msgid "replaceMode"
+msgstr "Replace Mode"
+
+#: components/WorkBench/AdvancedSearch.tsx:185
+#. Used in: Components > Work Bench > Advanced Search
+msgid "replaceAll"
+msgstr "Replace all matches"
+
+#: components/WorkBench/AdvancedSearch.tsx:186
+#. Used in: Components > Work Bench > Advanced Search
+msgid "replaceNext"
+msgstr "Replace next occurrence"
+
+#: components/Router/Routes.tsx:178
+#. Used in: Components > Router > Routes
+msgid "importDataSet"
+msgstr "Import Data Set"
+
+#: components/WbImport/index.tsx:44
+#. Used in: Components > Wb Import > Index
+msgid "wbImportHeader"
+msgstr "Import a File to Create a New Data Set"
+
+#: components/WbImport/index.tsx:321
+#. Used in: Components > Wb Import > Index
+msgid "previewDataSet"
+msgstr "Preview Dataset"
+
+#: components/WbImport/index.tsx:303
+#. Used in: Components > Wb Import > Index
+msgid "errorImporting"
+msgstr "The following error(s) occurred while importing the file:"
+
+#: components/WbImport/helpers.ts:108
+#: components/WbImport/helpers.ts:131
+#. Used in: Components > Wb Import > Helpers
+msgid "corruptFile"
+msgstr "The file {fileName:string} is corrupt or contains no data!"
+
+#: components/WbImport/index.tsx:137
+#. Used in: Components > Wb Import > Index
+msgid "characterEncoding"
+msgstr "Character encoding:"
+
+#: components/WbImport/index.tsx:178
+#. Used in: Components > Wb Import > Index
+msgid "delimiter"
+msgstr "Delimiter:"
+
+#: components/UserPreferences/Definitions.tsx:1420
+#: components/WbImport/index.tsx:152
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "comma"
+msgstr "Comma"
+
+#: components/UserPreferences/Definitions.tsx:1428
+#: components/WbImport/index.tsx:154
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "semicolon"
+msgstr "Semicolon"
+
+#: components/UserPreferences/Definitions.tsx:1424
+#: components/WbImport/index.tsx:153
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "tab"
+msgstr "Tab"
+
+#: components/UserPreferences/Definitions.tsx:1432
+#: components/WbImport/index.tsx:155
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "space"
+msgstr "Space"
+
+#: components/UserPreferences/Definitions.tsx:1436
+#: components/WbImport/index.tsx:156
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "pipe"
+msgstr "Pipe"
+
+#: components/UserPreferences/Definitions.tsx:499
+#: components/UserPreferences/Definitions.tsx:520
+#: components/UserPreferences/Definitions.tsx:541
+#: components/WbImport/index.tsx:193
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
+msgid "determineAutomatically"
+msgstr "Determine automatically"
+
+#: components/WbImport/index.tsx:261
+#. Used in: Components > Wb Import > Index
+msgid "chooseDataSetName"
+msgstr "Name for New Data Set:"
+
+#: components/WbImport/index.tsx:284
+#. Used in: Components > Wb Import > Index
+msgid "firstRowIsHeader"
+msgstr "First Row is Header:"
+
+#: components/Toolbar/WbsDialog.tsx:170
+#: components/WbImport/index.tsx:238
+#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
+msgid "importFile"
+msgstr "Import file"
+
+#: components/WbImport/helpers.ts:67
+#. Used in: Components > Wb Import > Helpers
+msgid "columnName"
+msgstr "Column {columnIndex:number}"
+
+#: components/WbPlanView/MapperComponents.tsx:227
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchBehavior"
+msgstr "Match Behavior:"
+
+#: components/WbPlanView/LineComponents.tsx:172
+#: components/WbPlanView/LineComponents.tsx:181
+#. Used in: Components > Wb Plan View > Line Components
+msgid "columnMapping"
+msgstr "Column Mapping"
+
+#: components/WbPlanView/CustomSelectElement.tsx:838
+#: components/WbPlanView/LineComponents.tsx:212
+#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
+msgid "suggestedMappings"
+msgstr "Suggested Mappings:"
+
+#: components/WbPlanView/LineComponents.tsx:213
+#. Used in: Components > Wb Plan View > Line Components
+msgid "requiredFields"
+msgstr "Required Fields"
+
+#: components/WbPlanView/LineComponents.tsx:214
+#. Used in: Components > Wb Plan View > Line Components
+msgid "optionalFields"
+msgstr "Optional Fields"
+
+#: components/WbPlanView/LineComponents.tsx:215
+#. Used in: Components > Wb Plan View > Line Components
+msgid "hiddenFields"
+msgstr "Hidden Fields"
+
+#: components/FormMeta/CarryForward.tsx:284
+#: components/QueryBuilder/Toolbar.tsx:39
+#: components/WbPlanView/MapperComponents.tsx:60
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
+msgid "revealHiddenFormFields"
+msgstr "Reveal Hidden Form Fields"
+
+#: components/WbPlanView/Mapper.tsx:570
+#: components/WbPlanView/Mapper.tsx:572
+#: components/WbPlanView/Mapper.tsx:580
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mappingOptions"
+msgstr "Mapping Options"
+
+#: components/WbPlanView/MapperComponents.tsx:231
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreWhenBlank"
+msgstr "Ignore when Blank"
+
+#: components/WbPlanView/MapperComponents.tsx:232
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreWhenBlankDescription"
+msgstr ""
+"When set to \"Ignore when Blank\" blank values in this column will not be "
+"considered for matching purposes. Blank values are ignored when matching "
+"even if a default value is provided"
+
+#: components/WbPlanView/MapperComponents.tsx:235
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreAlways"
+msgstr "Always Ignore"
+
+#: components/WbPlanView/MapperComponents.tsx:236
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreAlwaysDescription"
+msgstr ""
+"When set to \"Ignore Always\" the value in this column will never be "
+"considered for matching purposes, only for uploading."
+
+#: components/WbPlanView/MapperComponents.tsx:239
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreNever"
+msgstr "Never Ignore"
+
+#: components/WbPlanView/MapperComponents.tsx:240
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreNeverDescription"
+msgstr ""
+"This column would always be considered for matching purposes, regardless of "
+"it's value"
+
+#: components/WbPlanView/MapperComponents.tsx:268
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "allowNullValues"
+msgstr "Allow Null Values"
+
+#: components/WbPlanView/MapperComponents.tsx:285
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "useDefaultValue"
+msgstr "Use Default Value"
+
+#: components/WbPlanView/MapperComponents.tsx:294
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "defaultValue"
+msgstr "Default Value"
+
+#: components/WbPlanView/MapperComponents.tsx:302
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "useDefaultValueDescription"
+msgstr "This value would be used in place of empty cells"
+
+#: components/WbPlanView/MapperComponents.tsx:52
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "addNewColumn"
+msgstr "Add New Column"
+
+#: components/WbPlanView/MapperComponents.tsx:89
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "validationFailedDialogHeader"
+msgstr "Validation found missing mappings:"
+
+#: components/WbPlanView/MapperComponents.tsx:93
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "validationFailedDialogText"
+msgstr ""
+"This data mapping is missing one or more data fields required for uploading "
+"by your Specify configuration. Add the missing mappings shown or save this "
+"Upload Plan as unfinished."
+
+#: components/WbPlanView/MapperComponents.tsx:82
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "continueEditing"
+msgstr "Continue Editing"
+
+#: components/WbPlanView/MapperComponents.tsx:85
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "saveUnfinished"
+msgstr "Save Unfinished"
+
+#: components/WbPlanView/Mapper.tsx:461
+#: components/WbPlanView/Mapper.tsx:467
+#. Used in: Components > Wb Plan View > Mapper
+msgid "map"
+msgstr "Map"
+
+#: components/WbPlanView/CustomSelectElement.tsx:316
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "unmap"
+msgstr "Unmap"
+
+#: components/WbPlanView/Mapper.tsx:464
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mapButtonDescription"
+msgstr "Map selected field to selected header"
+
+#: components/WbPlanView/CustomSelectElement.tsx:321
+#: components/WbPlanView/CustomSelectElement.tsx:326
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "relationship"
+msgstr "Relationship with the {tableName:string} table"
+
+#: components/WbPlanView/State.tsx:109
+#. Used in: Components > Wb Plan View > State
+msgid "selectBaseTableDialogTitle"
+msgstr "Select a Base Table"
+
+#: components/WbPlanView/State.tsx:102
+#. Used in: Components > Wb Plan View > State
+msgid "chooseExistingPlan"
+msgstr "Choose Existing Plan"
+
+#: components/SchemaConfig/Tables.tsx:75
+#: components/WbPlanView/State.tsx:121
+#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
+msgid "showAdvancedTables"
+msgstr "Show Advanced Tables"
+
+#: components/WbPlanView/Mapper.tsx:409
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploaded"
+msgstr "Data Set uploaded. This Upload Plan cannot be changed"
+
+#: components/WbPlanView/Mapper.tsx:407
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploadedDescription"
+msgstr ""
+"You are viewing the mappings for an uploaded dataset.\n"
+"To edit the mappings, rollback the uploaded data or create a new dataset"
+
+#: components/WbPlanView/Mapper.tsx:401
+#: components/WbPlanView/MapperComponents.tsx:326
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
+msgid "baseTable"
+msgstr "Base Table"
+
+#: components/WbPlanView/MapperComponents.tsx:322
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTableDialogHeader"
+msgstr "Change the Base Table for Mapping Data Set Columns?"
+
+#: components/WbPlanView/MapperComponents.tsx:323
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTableDialogText"
+msgstr ""
+"Choosing a different Base Table for a Data Set Upload will make that table "
+"the new starting point for column-to-data field mappings and will erase "
+"existing mappings. The AutoMapper will attempt to map columns to the new "
+"Base Table fields."
+
+#: components/WbPlanView/LineComponents.tsx:152
+#: components/WbPlanView/LineComponents.tsx:155
+#. Used in: Components > Wb Plan View > Line Components
+msgid "clearMapping"
+msgstr "Clear Mapping"
+
+#: components/WbPlanView/MapperComponents.tsx:344
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapper"
+msgstr "Rerun AutoMapper"
+
+#: components/WbPlanView/MapperComponents.tsx:353
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "autoMapper"
+msgstr "AutoMapper"
+
+#: components/WbPlanView/MapperComponents.tsx:157
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "mappingEditor"
+msgstr "Map Explorer"
+
+#: components/QueryBuilder/Components.tsx:128
+#: components/WbPlanView/MapperComponents.tsx:367
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "hideFieldMapper"
+msgstr "Hide Field Mapper"
+
+#: components/QueryBuilder/Components.tsx:128
+#: components/WbPlanView/MapperComponents.tsx:367
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "showFieldMapper"
+msgstr "Show Field Mapper"
+
+#: components/WbPlanView/Mapper.tsx:482
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mappings"
+msgstr "Mappings"
+
+#: components/WbPlanView/Mapper.tsx:298
+#. Used in: Components > Wb Plan View > Mapper
+msgid "clearMappings"
+msgstr "Clear Mappings"
+
+#: components/WbPlanView/MapperComponents.tsx:196
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetDialogHeader"
+msgstr "Empty Data Set"
+
+#: components/WbPlanView/MapperComponents.tsx:200
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetDescription"
+msgstr "This Data Set doesn't have any columns."
+
+#: components/WbPlanView/MapperComponents.tsx:203
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetSecondDescription"
+msgstr ""
+"Press the \"Add New Column\" button below the mapping lines to add new "
+"columns."
+
+#: components/WbPlanView/MapperComponents.tsx:348
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapperDialogHeader"
+msgstr "Automap to start a new Upload Plan?"
+
+#: components/WbPlanView/MapperComponents.tsx:349
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapperDialogText"
+msgstr "This will erase existing data field mappings."
+
+#: components/WbPlanView/MapperComponents.tsx:417
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicDialogTitle"
+msgstr "Change Matching Logic"
+
+#: components/WbPlanView/MapperComponents.tsx:424
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicDialogText"
+msgstr "Require Data to Match Existing Records"
+
+#: components/WbPlanView/MapperComponents.tsx:421
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicUnavailableDialogText"
+msgstr "Matching logic is unavailable for current mappings"
+
+#: components/WbPlanView/MapperComponents.tsx:403
+#: components/WbPlanView/MapperComponents.tsx:435
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "mustMatch"
+msgstr "Must Match"
+
+#: components/WbPlanView/Mapper.tsx:154
+#. Used in: Components > Wb Plan View > Mapper
+msgid "unloadProtectMessage"
+msgstr "This mapping has not been saved."
+
+#: components/Toolbar/WbsDialog.tsx:37
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "newDataSetName"
+msgstr "New Data Set {date}"
+
+#: components/WbPlanView/MapperComponents.tsx:47
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "newHeaderName"
+msgstr "New Column {index:number}"
+
+#: components/WbPlanView/headerHelper.ts:19
+#. Used in: Components > Wb Plan View > Header Helper
+msgid "noHeader"
+msgstr "(no header)"
+
+#: components/Toolbar/WbsDialog.tsx:193
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "wbsDialogDefaultDialogTitle"
+msgstr "WorkBench Data Sets ({dataSetCount:number|formatted})"
+
+#: components/Toolbar/WbsDialog.tsx:204
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "wbsDialogEmptyDefaultDialogText"
+msgstr "Currently no Data Sets exist."
+
+#: components/Toolbar/WbsDialog.tsx:192
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "wbsDialogTemplatesDialogTitle"
+msgstr "Copy plan from existing Data Set"
+
+#: components/Toolbar/WbsDialog.tsx:203
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "wbsDialogEmptyTemplateDialogText"
+msgstr "There are no plans available, please continue to create an upload plan."
+
+#: components/Toolbar/WbsDialog.tsx:205
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "createDataSetInstructions"
+msgstr "Use \"Import a file\" or \"Create New\" to make a new one."
+
+#: components/Toolbar/WbsDialog.tsx:181
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "createNew"
+msgstr "Create New"
+
+#: components/WorkBench/DataSetMeta.tsx:63
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSetMetaDialogTitle"
+msgstr "Data Set Properties"
+
+#: components/WbPlanView/Mapper.tsx:400
+#: components/WorkBench/DataSetMeta.tsx:96
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+msgid "dataSetName"
+msgstr "Data Set Name:"
+
+#: components/WorkBench/DataSetMeta.tsx:106
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "remarks"
+msgstr "Remarks:"
+
+#: components/WorkBench/DataSetMeta.tsx:112
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "numberOfRows"
+msgstr "Number of rows:"
+
+#: components/WorkBench/DataSetMeta.tsx:115
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "numberOfColumns"
+msgstr "Number of columns:"
+
+#: components/WorkBench/DataSetMeta.tsx:119
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "created"
+msgstr "Created:"
+
+#: components/WorkBench/DataSetMeta.tsx:125
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "modified"
+msgstr "Modified:"
+
+#: components/WorkBench/DataSetMeta.tsx:131
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "uploaded"
+msgstr "Uploaded:"
+
+#: components/WorkBench/DataSetMeta.tsx:161
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "importedFileName"
+msgstr "Import file name:"
+
+#: components/WorkBench/DataSetMeta.tsx:162
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "noFileName"
+msgstr "(no file name)"
+
+#: components/WorkBench/DataSetMeta.tsx:252
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "changeDataSetOwnerDialogHeader"
+msgstr "Change Data Set Owner"
+
+#: components/WorkBench/DataSetMeta.tsx:273
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "changeDataSetOwnerDialogText"
+msgstr "Select New Owner:"
+
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:240
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSetOwnerChanged"
+msgstr "Data Set owner changed"
+
+#: components/WorkBench/DataSetMeta.tsx:189
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSet"
+msgstr "Data Set:"
+
+#: components/WorkBench/DataSetMeta.tsx:191
+#. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSetUploadedLabel"
+msgstr "(Uploaded, Read-Only)"
+
+#: components/WorkBench/Status.tsx:66
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusUnuploadDialogTitle"
+msgstr "Data Set Rollback Status"
+
+#: components/WorkBench/Status.tsx:65
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusUploadDialogTitle"
+msgstr "Data Set Upload Status"
+
+#: components/WorkBench/Status.tsx:64
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusValidationDialogTitle"
+msgstr "Data Set Validation Status"
+
+#: components/WorkBench/Status.tsx:101
+#. Used in: Components > Work Bench > Status
+msgid "aborting"
+msgstr "Aborting..."
+
+#: components/WorkBench/Status.tsx:91
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusAbortFailed"
+msgstr "Failed aborting {operationName:string}. Please try again later"
+
+#: components/WorkBench/Status.tsx:118
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusOperationNoProgress"
+msgstr "{operationName:string}..."
+
+#: components/WorkBench/Status.tsx:122
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusOperationProgress"
+msgstr ""
+"{operationName:string} row "
+"{current:number|formatted}/{total:number|formatted}"
+
+#: components/WorkBench/Status.tsx:105
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusPendingDescription"
+msgstr "{operationName:string} of this Data Set should begin shortly."
+
+#: components/WorkBench/Status.tsx:108
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusPendingSecondDescription"
+msgstr ""
+"If this message persists for longer than 30 seconds, the "
+"{operationName:string} process is busy with another Data Set. Please try "
+"again later."
+
+#: components/WorkBench/Status.tsx:132
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusErrorDialogText"
+msgstr "Error occurred during {operationName:string}"
+
+#: components/WorkBench/Status.tsx:117
+#. Used in: Components > Work Bench > Status
+msgid "updatingTrees"
+msgstr "Updating trees..."
+
+#: components/WbPlanView/State.tsx:40
+#. Used in: Components > Wb Plan View > State
+msgid "invalidTemplateDialogText"
+msgstr "Selected Data Set has no upload plan. Please select a different one."

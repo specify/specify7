@@ -1,0 +1,1034 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Attachments/index.tsx:194
+#: components/FormMeta/SubViewMeta.tsx:39
+#: components/UserPreferences/Definitions.tsx:1066
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+msgid "orderBy"
+msgstr "Сортировать по"
+
+#: components/Attachments/Plugin.tsx:117
+#. Used in: Components > Attachments > Plugin
+msgid "attachmentServerUnavailable"
+msgstr "Сервер прикрепленных файлов недоступен."
+
+#: components/Attachments/Plugin.tsx:141
+#. Used in: Components > Attachments > Plugin
+msgid "attachmentUploadDialogTitle"
+msgstr "Закачивание..."
+
+#: components/Attachments/Gallery.tsx:77
+#. Used in: Components > Attachments > Gallery
+msgid "noAttachments"
+msgstr "В вашей коллекции нет вложений"
+
+#: components/Atoms/DataEntry.tsx:139
+#: components/Forms/Save.tsx:228
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
+msgid "clone"
+msgstr "Клонировать"
+
+#: components/Forms/Save.tsx:229
+#. Used in: Components > Forms > Save
+msgid "cloneDescription"
+msgstr "Создать полную копию текущей записи"
+
+#: components/DataModel/businessRules.js:186
+#. Used in: Components > Data Model > Business Rules
+msgid "valueMustBeUniqueToField"
+msgstr "Значение {fieldName:string} должно быть уникальным"
+
+#: components/DataModel/businessRules.js:183
+#. Used in: Components > Data Model > Business Rules
+msgid "valuesOfMustBeUniqueToField"
+msgstr "Значения {values:string} в {fieldName:string} должны быть уникальным"
+
+#: components/DataModel/businessRules.js:181
+#. Used in: Components > Data Model > Business Rules
+msgid "database"
+msgstr "база данных"
+
+#: components/FormPlugins/CollectionRelOneToMany.tsx:76
+#. Used in: Components > Form Plugins > Collection Rel One To Many
+msgid "collectionObject"
+msgstr "Объект коллекции"
+
+#: components/Forms/DeleteButton.tsx:106
+#. Used in: Components > Forms > Delete Button
+msgid "checkingIfResourceCanBeDeleted"
+msgstr "Проверка возможности удаления ресурса..."
+
+#: components/Forms/DeleteBlocked.tsx:84
+#: components/Forms/DeleteButton.tsx:89
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
+msgid "deleteBlockedDialogHeader"
+msgstr "Удаление заблокировано"
+
+#: components/Forms/DeleteBlocked.tsx:87
+#. Used in: Components > Forms > Delete Blocked
+msgid "deleteBlockedDialogText"
+msgstr "Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:"
+
+#: components/Forms/DeleteBlocked.tsx:92
+#. Used in: Components > Forms > Delete Blocked
+msgid "record"
+msgstr "Запись"
+
+#: components/Forms/DeleteBlocked.tsx:93
+#: components/Toolbar/Schema.tsx:379
+#: components/WbPlanView/CustomSelectElement.tsx:283
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Schema ⬤ Components > Wb Plan View > Custom Select Element
+msgid "relationship"
+msgstr "Связь"
+
+#: components/FormCells/FormTable.tsx:256
+#: components/FormCells/FormTable.tsx:257
+#. Used in: Components > Form Cells > Form Table
+msgid "contract"
+msgstr "Договор"
+
+#: components/Interactions/InteractionDialog.tsx:244
+#: components/Interactions/PrepDialog.tsx:118
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "addItems"
+msgstr "Добавить элементы"
+
+#: components/Interactions/InteractionDialog.tsx:246
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "recordReturn"
+msgstr "Возврат {modelName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:247
+#: components/Interactions/PrepDialog.tsx:119
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "createRecord"
+msgstr "Создать {modelName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:191
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "missing"
+msgstr "Отсутствует:"
+
+#: components/Interactions/InteractionDialog.tsx:193
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "preparationsNotFound"
+msgstr "Никаких препаратов не обнаружено."
+
+#: components/Interactions/InteractionDialog.tsx:309
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "problemsFound"
+msgstr "Обнаружены ошибки:"
+
+#: components/Interactions/InteractionDialog.tsx:253
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "recordSetCaption"
+msgstr "Выбрав набор записей (доступно {count:number|formatted})"
+
+#: components/Interactions/InteractionDialog.tsx:259
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "entryCaption"
+msgstr "Ввести {fieldName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:237
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "noPreparationsCaption"
+msgstr "Без подготовки"
+
+#: components/Interactions/InteractionDialog.tsx:233
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "noCollectionObjectCaption"
+msgstr "Добавить несвязанный элемент"
+
+#: components/Interactions/PrepDialog.tsx:127
+#. Used in: Components > Interactions > Prep Dialog
+msgid "preparationsDialogTitle"
+msgstr "Препараты"
+
+#: components/FormCommands/index.tsx:104
+#. Used in: Components > Form Commands > Index
+msgid "preparationsCanNotBeReturned"
+msgstr "Препараты не могут быть возвращены в этом контексте."
+
+#: components/Interactions/PrepReturnDialog.tsx:72
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "noUnresolvedPreparations"
+msgstr "Незавершенных приготовлений по этому кредиту нет."
+
+#: components/Interactions/PrepReturnRow.tsx:146
+#: components/Interactions/PrepReturnRow.tsx:157
+#: components/Interactions/PrepReturnRow.tsx:160
+#: components/Interactions/PrepReturnRow.tsx:161
+#. Used in: Components > Interactions > Prep Return Row
+msgid "remarks"
+msgstr "Замечания"
+
+#: components/Interactions/PrepReturnDialog.tsx:234
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "unresolved"
+msgstr "Нерешенные"
+
+#: components/Interactions/PrepReturnDialog.tsx:237
+#: components/QueryBuilder/LoanReturn.tsx:162
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "return"
+msgstr "Возвращение"
+
+#: components/Interactions/PrepReturnDialog.tsx:240
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "resolve"
+msgstr "Разрешить"
+
+#: components/Interactions/PrepReturnDialog.tsx:116
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "returnAllPreparations"
+msgstr "Вернуть все препараты"
+
+#: components/Interactions/PrepReturnDialog.tsx:148
+#: components/QueryBuilder/LoanReturn.tsx:160
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnSelectedPreparations"
+msgstr "Вернуть выбранные препараты"
+
+#: components/Interactions/PrepDialog.tsx:100
+#. Used in: Components > Interactions > Prep Dialog
+msgid "selectAllAvailablePreparations"
+msgstr "Выбрать все доступные препараты"
+
+#: components/FormMeta/CarryForward.tsx:227
+#: components/Interactions/PrepDialog.tsx:105
+#: components/Interactions/PrepDialog.tsx:186
+#: components/Interactions/PrepDialogRow.tsx:60
+#: components/Interactions/PrepDialogRow.tsx:62
+#: components/Interactions/PrepReturnDialog.tsx:128
+#: components/Interactions/PrepReturnRow.tsx:81
+#: components/Interactions/PrepReturnRow.tsx:83
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
+msgid "selectAll"
+msgstr "Выбрать все"
+
+#: components/Interactions/PrepDialogRow.tsx:79
+#: components/Interactions/PrepDialogRow.tsx:82
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "selectedAmount"
+msgstr "Выбранная сумма"
+
+#: components/Interactions/PrepReturnRow.tsx:102
+#: components/Interactions/PrepReturnRow.tsx:106
+#. Used in: Components > Interactions > Prep Return Row
+msgid "returnedAmount"
+msgstr "Возвращенно"
+
+#: components/Interactions/PrepReturnRow.tsx:122
+#: components/Interactions/PrepReturnRow.tsx:126
+#. Used in: Components > Interactions > Prep Return Row
+msgid "resolvedAmount"
+msgstr "Решенный"
+
+#: components/Interactions/PrepDialogRow.tsx:161
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "prepReturnFormatter"
+msgstr "{tableName:string}: {resource: string}"
+
+#: components/FormPlugins/PaleoLocation.tsx:50
+#: components/FormPlugins/PaleoLocation.tsx:77
+#: components/FormPlugins/PaleoLocation.tsx:86
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoMap"
+msgstr "Карта Палео"
+
+#: components/FormPlugins/PaleoLocation.tsx:68
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeographyDialogHeader"
+msgstr "Требуется география"
+
+#: components/FormPlugins/PaleoLocation.tsx:71
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeographyDialogText"
+msgstr ""
+"Плагин Карта Палео требует, чтобы у населенного пункта были координаты и "
+"что палеоконтекст имеет географический возраст с заполнено как минимум "
+"время начала или время окончания."
+
+#: components/FormPlugins/PaleoLocation.tsx:55
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedFormDialogHeader"
+msgstr "Неправильная форма"
+
+#: components/FormPlugins/PaleoLocation.tsx:62
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedFormDialogText"
+msgstr ""
+"Этот плагин нельзя использовать в этой форме. Попробуй переместить его на "
+"форму местности, события сбора или объекта коллекции."
+
+#: components/FormPlugins/PartialDateUi.tsx:304
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "invalidDate"
+msgstr "Недействительная дата"
+
+#: components/Forms/DeleteButton.tsx:131
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmationDialogHeader"
+msgstr ""
+"Вы уверены, что хотите навсегда удалить этот {tableName:string} из базы "
+"данных?"
+
+#: components/Forms/DeleteButton.tsx:55
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmationDialogText"
+msgstr "Это действие не может быть отменено."
+
+#: components/FormPlugins/PartialDateUi.tsx:334
+#: components/FormPlugins/PartialDateUi.tsx:337
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "datePrecision"
+msgstr "Точность даты"
+
+#: components/FormPlugins/PartialDateUi.tsx:366
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "monthYear"
+msgstr "Месяц / Год"
+
+#: components/FormPlugins/PartialDateUi.tsx:382
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "yearPlaceholder"
+msgstr "ГГГГ"
+
+#: components/FormPlugins/PartialDateUi.tsx:414
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "today"
+msgstr "Сегодня"
+
+#: components/FormPlugins/PartialDateUi.tsx:416
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "todayButtonDescription"
+msgstr "Установить на текущую дату"
+
+#: components/PickLists/index.tsx:300
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmationDialogHeader"
+msgstr "Добавить в список выбора?"
+
+#: components/PickLists/index.tsx:303
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmationDialogText"
+msgstr "Добавить значение \"{value:string}\" в список выбора {pickListName:string}?"
+
+#: components/PickLists/index.tsx:269
+#. Used in: Components > Pick Lists > Index
+msgid "invalidType"
+msgstr "Недействительный тип"
+
+#: components/PickLists/index.tsx:272
+#. Used in: Components > Pick Lists > Index
+msgid "invalidNumericPicklistValue"
+msgstr "В этом списке выбора допускаются только числовые значения"
+
+#: components/Attachments/Plugin.tsx:122
+#: components/FormCells/FormTable.tsx:181
+#: components/Forms/BaseResourceView.tsx:97
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
+msgid "noData"
+msgstr "Нет данных."
+
+#: components/Toolbar/RecordSets.tsx:181
+#. Used in: Components > Toolbar > Record Sets
+msgid "recordSetsDialogTitle"
+msgstr "Наборы объектов ({count:number|formatted})"
+
+#: components/Toolbar/RecordSets.tsx:117
+#. Used in: Components > Toolbar > Record Sets
+msgid "recordSet"
+msgstr "Набор объектов"
+
+#: components/FormSliders/RecordSet.tsx:298
+#. Used in: Components > Form Sliders > Record Set
+msgid "recordSetFormatted"
+msgstr "Набор объектов: {name:string}"
+
+#: components/Toolbar/RecordSetEdit.tsx:38
+#. Used in: Components > Toolbar > Record Set Edit
+msgid "recordSetDeletionWarning"
+msgstr ""
+"Набор объектов \"{recordSetName:string}\" будет удален. Связанные записи не "
+"будут удалены из базы данных."
+
+#: components/FormCommands/index.tsx:38
+#: components/FormMeta/EditHistory.tsx:31
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
+msgid "saveRecordFirst"
+msgstr "Сначала нужко сохранить запись"
+
+#: components/Reports/Report.tsx:218
+#. Used in: Components > Reports > Report
+msgid "reportProblemsDialogTitle"
+msgstr "Проблемы с отчетом"
+
+#: components/Reports/Report.tsx:222
+#. Used in: Components > Reports > Report
+msgid "reportsProblemsDialogText"
+msgstr "В выбранном отчете есть следующие проблемы:"
+
+#: components/Reports/Report.tsx:223
+#. Used in: Components > Reports > Report
+msgid "missingAttachments"
+msgstr "Отсутствующие вложения"
+
+#: components/Reports/Report.tsx:227
+#: components/Reports/Report.tsx:229
+#. Used in: Components > Reports > Report
+msgid "fix"
+msgstr "Исправить"
+
+#: components/Reports/Report.tsx:240
+#. Used in: Components > Reports > Report
+msgid "missingAttachmentsFixDialogTitle"
+msgstr "Выберите файл"
+
+#: components/Reports/Report.tsx:330
+#. Used in: Components > Reports > Report
+msgid "reportParameters"
+msgstr "Параметры отчета"
+
+#: components/Reports/Parameters.tsx:82
+#. Used in: Components > Reports > Parameters
+msgid "runReport"
+msgstr "Запустить репорт"
+
+#: components/FormSliders/Slider.tsx:31
+#: components/FormSliders/Slider.tsx:33
+#: components/UserPreferences/Definitions.tsx:941
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "firstRecord"
+msgstr "Первый объект"
+
+#: components/FormSliders/Slider.tsx:97
+#: components/FormSliders/Slider.tsx:99
+#: components/UserPreferences/Definitions.tsx:945
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "lastRecord"
+msgstr "Последний объект"
+
+#: components/FormSliders/Slider.tsx:39
+#: components/FormSliders/Slider.tsx:42
+#. Used in: Components > Form Sliders > Slider
+msgid "previousRecord"
+msgstr "Последняя запись"
+
+#: components/FormSliders/Slider.tsx:88
+#: components/FormSliders/Slider.tsx:91
+#. Used in: Components > Form Sliders > Slider
+msgid "nextRecord"
+msgstr "Следующий объект"
+
+#: components/FormSliders/Slider.tsx:56
+#. Used in: Components > Form Sliders > Slider
+msgid "currentRecord"
+msgstr "Текущий объект (из {total:number|formatted})"
+
+#: components/Forms/ResourceView.tsx:352
+#: components/Forms/Save.tsx:28
+#. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
+msgid "unsavedFormUnloadProtect"
+msgstr "Эта форма не была сохранена."
+
+#: components/Forms/Save.tsx:265
+#. Used in: Components > Forms > Save
+msgid "saveConflictDialogHeader"
+msgstr "Сохранить конфликт"
+
+#: components/Forms/Save.tsx:268
+#. Used in: Components > Forms > Save
+msgid "saveConflictDialogText"
+msgstr ""
+"Данные, отображаемые на этой странице, были изменены другим пользователем, "
+"или другоц вкладке браузера. Страницу необходимо перезагрузить чтобы "
+"предотвратить сохранение несогласованных данных."
+
+#: components/Forms/Save.tsx:273
+#. Used in: Components > Forms > Save
+msgid "saveBlockedDialogHeader"
+msgstr "Сохранение заблокировано"
+
+#: components/Forms/Save.tsx:276
+#. Used in: Components > Forms > Save
+msgid "saveBlockedDialogText"
+msgstr "Форма не может быть сохранена, пока существуют следующие ошибки:"
+
+#: components/FormCommands/ShowTransactions.tsx:113
+#. Used in: Components > Form Commands > Show Transactions
+msgid "resolvedLoans"
+msgstr "Решение Заемы"
+
+#: components/FormCommands/ShowTransactions.tsx:107
+#. Used in: Components > Form Commands > Show Transactions
+msgid "openLoans"
+msgstr "Открытые займы"
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#. Used in: Components > Form Commands > Show Transactions
+msgid "gifts"
+msgstr "Подарки"
+
+#: components/FormCommands/ShowTransactions.tsx:127
+#. Used in: Components > Form Commands > Show Transactions
+msgid "exchanges"
+msgstr "Обмены"
+
+#: components/FormCommands/index.tsx:119
+#. Used in: Components > Form Commands > Index
+msgid "unavailableCommandButton"
+msgstr "Команда недоступна"
+
+#: components/FormCommands/index.tsx:123
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailable"
+msgstr "Команда недоступна"
+
+#: components/FormCommands/index.tsx:127
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableDescription"
+msgstr "Эта команда в настоящее время недоступна для Specify 7."
+
+#: components/FormCommands/index.tsx:129
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableSecondDescription"
+msgstr ""
+"Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить "
+"поддерживаним в будущем."
+
+#: components/FormCommands/index.tsx:131
+#. Used in: Components > Form Commands > Index
+msgid "commandName"
+msgstr "Имя команды:"
+
+#: components/FormPlugins/index.tsx:40
+#: components/FormPlugins/index.tsx:266
+#. Used in: Components > Form Plugins > Index
+msgid "unavailablePluginButton"
+msgstr "Плагин недоступен"
+
+#: components/FormPlugins/index.tsx:44
+#: components/FormPlugins/index.tsx:270
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailable"
+msgstr "Плагин недоступен"
+
+#: components/FormPlugins/index.tsx:274
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableDescription"
+msgstr "Этот плагин в настоящее время недоступна для Specify 7"
+
+#: components/FormPlugins/index.tsx:276
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableSecondDescription"
+msgstr ""
+"Вероятно, он был включен на етой форме в Specify 6 м может бить "
+"поддерживаним в будущем."
+
+#: components/FormPlugins/index.tsx:48
+#. Used in: Components > Form Plugins > Index
+msgid "wrongTablePluginDialogText"
+msgstr ""
+"Этот плагин нельзя использовать в форме {currentTable:string}. Его можно "
+"использовать только в форме {correctTable:string}."
+
+#: components/FormPlugins/index.tsx:278
+#. Used in: Components > Form Plugins > Index
+msgid "pluginName"
+msgstr "Название плагина:"
+
+#: components/Atoms/DataEntry.tsx:161
+#: components/Atoms/DataEntry.tsx:164
+#. Used in: Components > Atoms > Data Entry
+msgid "visit"
+msgstr "Открыть"
+
+#: utils/parser/definitions.ts:91
+#: utils/parser/__tests__/definitions.test.ts:169
+#: utils/parser/__tests__/definitions.test.ts:171
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+msgid "illegalBool"
+msgstr "Недопустимое значение для поля Да / Нет"
+
+#: utils/parser/parse.ts:30
+#: utils/parser/__tests__/parse.test.ts:60
+#: utils/parser/__tests__/parse.test.ts:78
+#: utils/parser/__tests__/parse.test.ts:188
+#: utils/parser/__tests__/parse.test.ts:190
+#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
+msgid "requiredField"
+msgstr "Поле обязательно для заполнения."
+
+#: components/FormPlugins/LatLongUi.tsx:85
+#: utils/parser/__tests__/definitions.test.ts:188
+#: utils/parser/__tests__/definitions.test.ts:190
+#: utils/parser/__tests__/definitions.test.ts:206
+#: utils/parser/__tests__/definitions.test.ts:208
+#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Parser > __tests__ > Definitions
+msgid "invalidValue"
+msgstr "Недопустимое значение"
+
+#: components/FormPlugins/PartialDateUi.tsx:301
+#: components/FormPlugins/PartialDateUi.tsx:303
+#: utils/parser/definitions.ts:179
+#: utils/parser/definitions.ts:181
+#: utils/parser/definitions.ts:302
+#: utils/parser/__tests__/definitions.test.ts:71
+#: utils/parser/__tests__/parse.test.ts:209
+#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+msgid "requiredFormat"
+msgstr "Обязательный формат: {format:string}."
+
+#: utils/parser/definitions.ts:47
+#: utils/parser/__tests__/parse.test.ts:120
+#: utils/parser/__tests__/parse.test.ts:139
+#: utils/parser/__tests__/parse.test.ts:162
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
+msgid "inputTypeNumber"
+msgstr "Значение должно быть числом"
+
+#: components/Security/MissingAgentsDialog.tsx:102
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "userAgentsPluginDialogTitle"
+msgstr "Настроить пользовательских агентов"
+
+#: components/PickLists/definitions.ts:25
+#. Used in: Components > Pick Lists > Definitions
+msgid "organization"
+msgstr "Организация"
+
+#: components/PickLists/definitions.ts:26
+#. Used in: Components > Pick Lists > Definitions
+msgid "person"
+msgstr "Особа"
+
+#: components/PickLists/definitions.ts:27
+#. Used in: Components > Pick Lists > Definitions
+msgid "other"
+msgstr "Иной"
+
+#: components/PickLists/definitions.ts:28
+#. Used in: Components > Pick Lists > Definitions
+msgid "group"
+msgstr "Группа"
+
+#: components/PickLists/definitions.ts:32
+#. Used in: Components > Pick Lists > Definitions
+msgid "userDefinedItems"
+msgstr "Пользовательские элементы"
+
+#: components/PickLists/definitions.ts:33
+#. Used in: Components > Pick Lists > Definitions
+msgid "entireTable"
+msgstr "Вся таблица"
+
+#: components/PickLists/definitions.ts:34
+#. Used in: Components > Pick Lists > Definitions
+msgid "fieldFromTable"
+msgstr "Поле из таблицы"
+
+#: components/PickLists/definitions.ts:41
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeMerge"
+msgstr "Слияние узлов дерева"
+
+#: components/PickLists/definitions.ts:42
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeMove"
+msgstr "Перемещение узла дерева"
+
+#: components/PickLists/definitions.ts:43
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeSynonymize"
+msgstr "Синонимизированный узел дерева"
+
+#: components/PickLists/definitions.ts:44
+#. Used in: Components > Pick Lists > Definitions
+msgid "treeDesynonymize"
+msgstr "Отменено синонимизацию узла дерева"
+
+#: components/FormCells/index.tsx:232
+#. Used in: Components > Form Cells > Index
+msgid "unsupportedCellType"
+msgstr "Неподдерживаемый тип ячейки:"
+
+#: components/Interactions/PrepReturnRow.tsx:40
+#. Used in: Components > Interactions > Prep Return Row
+msgid "unCataloged"
+msgstr "некаталогизированный"
+
+#: components/Forms/SearchDialog.tsx:179
+#. Used in: Components > Forms > Search Dialog
+msgid "additionalResultsOmitted"
+msgstr "Дополнительные результаты опущены"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtectDialogHeader"
+msgstr "Продолжить без сохранения?"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtectDialogText"
+msgstr "Не забудьте сохранить эту запись, прежде чем закрыть ее."
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "creatingNewRecord"
+msgstr "Создание новой записи"
+
+#: components/PickLists/definitions.ts:135
+#. Used in: Components > Pick Lists > Definitions
+msgid "forward"
+msgstr "Вперед"
+
+#: components/PickLists/definitions.ts:134
+#. Used in: Components > Pick Lists > Definitions
+msgid "reverse"
+msgstr "Обратный"
+
+#: components/QueryBuilder/FieldFilter.tsx:113
+#. Used in: Components > Query Builder > Field Filter
+msgid "tooLongErrorMessage"
+msgstr ""
+"Значение поля слишком длинное. Максимально допустимая длина "
+"{maxLength:number|formatted}"
+
+#: components/Interactions/InteractionDialog.tsx:200
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedPreparations"
+msgstr "Возвращенные препараты"
+
+#: components/Interactions/InteractionDialog.tsx:203
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedAndSaved"
+msgstr "{count:number|formatted} препарата возвращены и сохранены."
+
+#: components/FormMeta/CarryForward.tsx:248
+#: components/Interactions/PrepDialog.tsx:112
+#: components/Interactions/PrepReturnDialog.tsx:144
+#: components/QueryBuilder/Results.tsx:235
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
+msgid "deselectAll"
+msgstr "Отменить выбор"
+
+#: components/Interactions/PrepDialog.tsx:208
+#. Used in: Components > Interactions > Prep Dialog
+msgid "available"
+msgstr "В наличии"
+
+#: components/Interactions/PrepDialog.tsx:209
+#. Used in: Components > Interactions > Prep Dialog
+msgid "unavailable"
+msgstr "Недоступен"
+
+#: components/Interactions/InteractionsDialog.tsx:92
+#: components/QueryBuilder/LoanReturn.tsx:148
+#. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnLoan"
+msgstr "Возврат Заема"
+
+#: components/Interactions/InteractionsDialog.tsx:93
+#: components/Interactions/InteractionsDialog.tsx:101
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "printInvoice"
+msgstr "Распечатать Накладную"
+
+#: components/Interactions/InteractionsDialog.tsx:94
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparation"
+msgstr "Заем без Препаратов"
+
+#: components/Interactions/InteractionsDialog.tsx:95
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparationDescription"
+msgstr "Создать Заем без препаратов"
+
+#: components/Interactions/InteractionsDialog.tsx:96
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createLoan"
+msgstr "Создать Заем"
+
+#: components/Interactions/InteractionsDialog.tsx:97
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editLoan"
+msgstr "Редактировать Заем"
+
+#: components/Interactions/InteractionsDialog.tsx:98
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createdGift"
+msgstr "Создать Дар"
+
+#: components/Interactions/InteractionsDialog.tsx:99
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editGift"
+msgstr "Редактировать Дар"
+
+#: components/Interactions/InteractionsDialog.tsx:100
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createInformationRequest"
+msgstr "Создать Экспресс Запрос"
+
+#: components/Reports/Report.tsx:114
+#. Used in: Components > Reports > Report
+msgid "missingReportQueryDialogHeader"
+msgstr "Отсутствует запрос отчета"
+
+#: components/Reports/Report.tsx:118
+#. Used in: Components > Reports > Report
+msgid "missingReportQueryDialogText"
+msgstr "Этот отчет не имеет связанного запроса"
+
+#: components/Reports/Report.tsx:123
+#. Used in: Components > Reports > Report
+msgid "missingReportDialogHeader"
+msgstr "Отсутствует отчет"
+
+#: components/Reports/Report.tsx:127
+#. Used in: Components > Reports > Report
+msgid "missingReportDialogText"
+msgstr "Не удалось найти запись SpReport для этого ресурса приложения"
+
+#: components/QueryBuilder/AuditLogFormatter.tsx:44
+#. Used in: Components > Query Builder > Audit Log Formatter
+msgid "deletedInline"
+msgstr "(удален)"
+
+#: components/FormSliders/RecordSet.tsx:383
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItemDialogHeader"
+msgstr "Дублирующий элемент набора записей"
+
+#: components/FormSliders/RecordSet.tsx:386
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItemDialogText"
+msgstr "Этот объект уже присутствует в текущем наборе записей"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:184
+#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "addToRecordSet"
+msgstr "Добавить в набор записей"
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:197
+#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "removeFromRecordSet"
+msgstr "Удалить из набора записей"
+
+#: components/Molecules/AutoComplete.tsx:522
+#. Used in: Components > Molecules > Auto Complete
+msgid "nothingFound"
+msgstr "Ничего не найдено"
+
+#: components/Forms/Save.tsx:234
+#. Used in: Components > Forms > Save
+msgid "carryForward"
+msgstr "Перенести"
+
+#: components/FormMeta/CarryForward.tsx:110
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardEnabled"
+msgstr "Показать кнопку Перенести"
+
+#: components/Forms/Save.tsx:235
+#. Used in: Components > Forms > Save
+msgid "carryForwardDescription"
+msgstr "Создать новую запись с определенными полями, перенесенными"
+
+#: components/FormMeta/CarryForward.tsx:113
+#: components/FormMeta/CarryForward.tsx:122
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardSettingsDescription"
+msgstr "Настройте поля для клонирования"
+
+#: components/FormMeta/CarryForward.tsx:255
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardTableSettingsDescription"
+msgstr "Настройте поля для клонирования ({tableName: string})"
+
+#: components/FormMeta/CarryForward.tsx:317
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardUniqueField"
+msgstr "Это поле должно быть уникальным. Оно не может быть перенесено"
+
+#: components/FormMeta/Clone.tsx:31
+#. Used in: Components > Form Meta > Clone
+msgid "cloneButtonEnabled"
+msgstr "Показать кнопку клонирования"
+
+#: components/FormMeta/Clone.tsx:57
+#. Used in: Components > Form Meta > Clone
+msgid "addButtonEnabled"
+msgstr "Показать кнопку добавления"
+
+#: components/Forms/Save.tsx:241
+#. Used in: Components > Forms > Save
+msgid "addButtonDescription"
+msgstr "Создать новую пустую запись"
+
+#: components/FormMeta/AutoNumbering.tsx:27
+#: components/FormMeta/AutoNumbering.tsx:92
+#. Used in: Components > Form Meta > Auto Numbering
+msgid "autoNumbering"
+msgstr "Автонумерация"
+
+#: components/FormMeta/Definition.tsx:128
+#. Used in: Components > Form Meta > Definition
+msgid "editFormDefinition"
+msgstr "Редактировать схему формы"
+
+#: components/FormMeta/Definition.tsx:83
+#. Used in: Components > Form Meta > Definition
+msgid "useAutoGeneratedForm"
+msgstr "Использовать автоматическую схему формы"
+
+#: components/FormMeta/Definition.tsx:115
+#. Used in: Components > Form Meta > Definition
+msgid "useFieldLabels"
+msgstr "Использовать локализованные названия полей"
+
+#: components/FormMeta/EditHistory.tsx:35
+#: components/FormMeta/EditHistory.tsx:58
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEdits"
+msgstr "История изменений"
+
+#: components/FormMeta/EditHistory.tsx:82
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEditsQueryName"
+msgstr "История изменений для \"{formattedRecord:string}\""
+
+#: components/FormMeta/index.tsx:101
+#. Used in: Components > Form Meta > Index
+msgid "formConfiguration"
+msgstr "Конфигурация формы"
+
+#: components/FormMeta/index.tsx:133
+#. Used in: Components > Form Meta > Index
+msgid "formState"
+msgstr "Состояние формы"
+
+#: components/FormMeta/index.tsx:174
+#. Used in: Components > Form Meta > Index
+msgid "recordInformation"
+msgstr "Информация об объекте"
+
+#: components/FormMeta/ShareRecord.tsx:49
+#. Used in: Components > Form Meta > Share Record
+msgid "shareRecord"
+msgstr "Поделиться объектом:"
+
+#: components/FormMeta/PickListUsages.tsx:26
+#: components/FormMeta/QueryTreeUsages.tsx:22
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
+msgid "findUsages"
+msgstr "Найти использование"
+
+#: components/FormMeta/PickListUsages.tsx:69
+#. Used in: Components > Form Meta > Pick List Usages
+msgid "usagesOfPickList"
+msgstr "Использование \"{pickList:string}\" списка выбора"
+
+#: components/FormMeta/index.tsx:127
+#. Used in: Components > Form Meta > Index
+msgid "generateLabel"
+msgstr "Сгенерировать метку"
+
+#: components/FormMeta/index.tsx:144
+#: components/FormParse/fields.ts:97
+#: components/FormParse/__tests__/fields.test.ts:136
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+msgid "generateLabelOnSave"
+msgstr "Генерировать метку при сохранении"
+
+#: components/FormMeta/index.tsx:126
+#. Used in: Components > Form Meta > Index
+msgid "generateReport"
+msgstr "Сгенерировать отчет"
+
+#: components/FormMeta/index.tsx:143
+#. Used in: Components > Form Meta > Index
+msgid "generateReportOnSave"
+msgstr "Генерировать отчет при сохранении"
+
+#: components/FormMeta/SubViewMeta.tsx:33
+#. Used in: Components > Form Meta > Sub View Meta
+msgid "form"
+msgstr "Форма"
+
+#: components/FormMeta/SubViewMeta.tsx:34
+#. Used in: Components > Form Meta > Sub View Meta
+msgid "formTable"
+msgstr "Таблица"
+
+#: components/FormCells/FormTable.tsx:129
+#. Used in: Components > Form Cells > Form Table
+msgid "formTableHeading"
+msgstr "{relationshipName:string} ({count:number|formatted})"
+
+#: components/FormMeta/index.tsx:150
+#. Used in: Components > Form Meta > Index
+msgid "subviewConfiguration"
+msgstr "Конфигурация подчиненной формы"
+
+#: components/Toolbar/FormTablesEdit.tsx:56
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "selectSourceOfTables"
+msgstr "Выберите источник таблиц"
+
+#: components/Toolbar/FormTablesEdit.tsx:77
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "inheritLegacySettings"
+msgstr "Копировать настройки из Specify 6"
+
+#: components/Toolbar/FormTablesEdit.tsx:85
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "useCustomSettings"
+msgstr "Использовать другие настройки"
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/Header/UserTools.tsx:62
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
+msgid "disableReadOnly"
+msgstr "Отключить режим только для чтения"
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#. Used in: Components > Form Meta > Read Only Mode
+msgid "enableReadOnly"
+msgstr "Включить режим только для чтения"
+
+#: components/Toolbar/FormTablesEdit.tsx:125
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "configureDataEntryTables"
+msgstr "Настроить таблицы ввода данных"
+
+#: components/FormMeta/index.tsx:56
+#: components/FormMeta/index.tsx:58
+#. Used in: Components > Form Meta > Index
+msgid "formMeta"
+msgstr "Мета-данные формы"
+
+#: components/AppResources/Editor.tsx:176
+#: components/Forms/BaseResourceView.tsx:106
+#: components/Forms/dataObjFormatters.ts:151
+#. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
+msgid "newResourceTitle"
+msgstr "Новый {tableName:string}"
+
+#: components/Forms/dataObjFormatters.ts:152
+#. Used in: Components > Forms > Data Obj Formatters
+msgid "resourceFormatter"
+msgstr "{tableName:string} #{id:number}"
+
+#: components/Forms/ResourceView.tsx:186
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeletedDialogHeader"
+msgstr "Удалено"
+
+#: components/Forms/ResourceView.tsx:189
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeletedDialogText"
+msgstr "Успешно удален."

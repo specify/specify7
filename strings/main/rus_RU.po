@@ -1,0 +1,114 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Molecules/AppTitle.tsx:47
+#. Used in: Components > Molecules > App Title
+msgid "appTitle"
+msgstr "{baseTitle:string} | Specify 7"
+
+#: components/Molecules/AppTitle.tsx:46
+#. Used in: Components > Molecules > App Title
+msgid "baseAppTitle"
+msgstr "Specify 7"
+
+#: components/Router/NotFoundView.tsx:15
+#: components/Router/NotFoundView.tsx:20
+#. Used in: Components > Router > Not Found View
+msgid "pageNotFound"
+msgstr "Страница не найдена"
+
+#: components/Router/NotFoundView.tsx:25
+#. Used in: Components > Router > Not Found View
+msgid "nothingWasFound"
+msgstr "Ой! Ничего не найдено"
+
+#: components/Router/NotFoundView.tsx:26
+#. Used in: Components > Router > Not Found View
+msgid "pageNotFoundDescription"
+msgstr ""
+"Возможно, страница, которую вы ищете, была удалена, ее название изменилось "
+"или она временно недоступна."
+
+#: components/Router/NotFoundView.tsx:29
+#. Used in: Components > Router > Not Found View
+msgid "returnToHomepage"
+msgstr "Вернуться на главную страницу"
+
+#: components/Errors/ErrorDialog.tsx:54
+#: components/Errors/FormatError.tsx:186
+#: components/Errors/FormatError.tsx:219
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+msgid "errorBoundaryDialogHeader"
+msgstr "Произошла неожиданная ошибка"
+
+#: components/Errors/ErrorDialog.tsx:163
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogText"
+msgstr ""
+"Произошла неисправимая ошибка, которая не позволит нам безопасно вернуться "
+"к вашему текущему окну."
+
+#: components/Errors/ErrorDialog.tsx:164
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryCriticalDialogText"
+msgstr ""
+"Чтобы избежать повреждения записей данных, нам нужно начать заново с "
+"безопасного места — домашней страницы."
+
+#: components/Errors/ErrorDialog.tsx:30
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogMessage"
+msgstr ""
+"Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или "
+"свяжитесь с нами: <email />"
+
+#: components/Errors/ErrorDialog.tsx:36
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogSecondMessage"
+msgstr ""
+"Пользователи из <memberLink>учреждений Консорциума</memberLink> могут "
+"искать ответы на вопросы и обращаться за помощью на нашем "
+"<discourseLink>форуме</discourseLink>."
+
+#: components/Core/__tests__/Contexts.test.tsx:37
+#: components/Errors/ErrorDialog.tsx:172
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
+msgid "errorMessage"
+msgstr "Описание ошибки"
+
+#: components/Router/Router.tsx:297
+#. Used in: Components > Router > Router
+msgid "leavePageDialogHeader"
+msgstr "Вы уверены, что хотите покинуть эту страницу?"
+
+#: components/Security/Role.tsx:86
+#. Used in: Components > Security > Role
+msgid "leavePageDialogText"
+msgstr "Несохраненные изменения будут потеряны, если вы покинете эту страницу."
+
+#: components/Router/Router.tsx:293
+#. Used in: Components > Router > Router
+msgid "leave"
+msgstr "Покинуть"
+
+#: components/Core/Main.tsx:140
+#. Used in: Components > Core > Main
+msgid "versionMismatchDialogHeader"
+msgstr "Specify версия не соответствует версии базы данных"
+
+#: components/Core/Main.tsx:144
+#. Used in: Components > Core > Main
+msgid "versionMismatchDialogText"
+msgstr ""
+"Specify версия {specifySixVersion:string} не соответствует версии базы "
+"данных {databaseVersion:string}."
+
+#: components/Core/Main.tsx:149
+#. Used in: Components > Core > Main
+msgid "versionMismatchSecondDialogText"
+msgstr "Поэтому некоторые функции Specify 7 могут неработать."
+
+#: components/Core/Main.tsx:152
+#. Used in: Components > Core > Main
+msgid "versionMismatchThirdDialogText"
+msgstr "Инструкции по устранению несоответствия схемы Specify"

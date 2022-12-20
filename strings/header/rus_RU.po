@@ -1,0 +1,191 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Core/Main.tsx:82
+#. Used in: Components > Core > Main
+msgid "skipToContent"
+msgstr "Перейти к содержанию"
+
+#: components/Header/UserTools.tsx:30
+#. Used in: Components > Header > User Tools
+msgid "currentUser"
+msgstr "Текущий пользователь"
+
+#: components/Header/index.tsx:159
+#: components/Header/index.tsx:161
+#. Used in: Components > Header > Index
+msgid "currentCollection"
+msgstr "Текущая коллекция"
+
+#: components/Header/Forms.tsx:63
+#: components/Header/menuItemDefinitions.ts:40
+#: components/Router/OverlayRoutes.tsx:40
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
+msgid "dataEntry"
+msgstr "Ввод данных"
+
+#: components/Header/userToolDefinitions.ts:70
+#: components/Router/OverlayRoutes.tsx:144
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+msgid "makeDwca"
+msgstr "Создать DwC архив"
+
+#: components/Header/userToolDefinitions.ts:75
+#: components/Router/OverlayRoutes.tsx:152
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+msgid "updateExportFeed"
+msgstr "Обновить RSS фид"
+
+#: components/Toolbar/ForceUpdate.tsx:49
+#. Used in: Components > Toolbar > Force Update
+msgid "updateExportFeedDialogTitle"
+msgstr "Обновить все элементы фида экспорта сейчас?"
+
+#: components/Toolbar/ForceUpdate.tsx:52
+#. Used in: Components > Toolbar > Force Update
+msgid "updateExportFeedDialogText"
+msgstr "Обновить все элементы RSS фида экспорта сейчас?"
+
+#: components/Toolbar/ForceUpdate.tsx:24
+#. Used in: Components > Toolbar > Force Update
+msgid "feedExportStartedDialogHeader"
+msgstr "Начато обновление экспортного фида"
+
+#: components/Toolbar/ForceUpdate.tsx:27
+#. Used in: Components > Toolbar > Force Update
+msgid "feedExportStartedDialogText"
+msgstr "Обновление началось. Вы получите уведомление о каждом элементе фида"
+
+#: components/Toolbar/Dwca.tsx:121
+#. Used in: Components > Toolbar > Dwca
+msgid "dwcaExportStartedDialogHeader"
+msgstr "DwCA экспорт начат"
+
+#: components/Toolbar/Dwca.tsx:124
+#. Used in: Components > Toolbar > Dwca
+msgid "dwcaExportStartedDialogText"
+msgstr "Экспорт начат. Вы получите уведомление когда экспорт будет завершен."
+
+#: components/QueryBuilder/Edit.tsx:220
+#. Used in: Components > Query Builder > Edit
+msgid "labelName"
+msgstr "Название ярлыка"
+
+#: components/QueryBuilder/Edit.tsx:220
+#. Used in: Components > Query Builder > Edit
+msgid "reportName"
+msgstr "Название отчета"
+
+#: components/QueryBuilder/Edit.tsx:182
+#. Used in: Components > Query Builder > Edit
+msgid "createLabelDialogHeader"
+msgstr "Создать новую этикетку"
+
+#: components/QueryBuilder/Edit.tsx:183
+#. Used in: Components > Query Builder > Edit
+msgid "createReportDialogHeader"
+msgstr "Создать новый отчет"
+
+#: components/Header/userToolDefinitions.ts:56
+#: components/Router/OverlayRoutes.tsx:128
+#: components/Toolbar/TreeRepair.tsx:164
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+msgid "repairTree"
+msgstr "Ремонтировать дерево"
+
+#: components/Toolbar/TreeRepair.tsx:159
+#. Used in: Components > Toolbar > Tree Repair
+msgid "treeRepairComplete"
+msgstr "Ремонт дерева завершен."
+
+#: components/Toolbar/Dwca.tsx:39
+#. Used in: Components > Toolbar > Dwca
+msgid "chooseDwcaDialogTitle"
+msgstr "Выберите DwCA"
+
+#: components/Toolbar/Dwca.tsx:49
+#. Used in: Components > Toolbar > Dwca
+msgid "chooseMetadataResource"
+msgstr "Выберите Ресурс метаданных"
+
+#: components/Router/Routes.tsx:25
+#. Used in: Components > Router > Routes
+msgid "expressSearch"
+msgstr "Экспресс поиск"
+
+#: components/Header/ExpressSearchTask.tsx:41
+#. Used in: Components > Header > Express Search Task
+msgid "primarySearch"
+msgstr "Первичный поиск"
+
+#: components/Header/ExpressSearchTask.tsx:46
+#. Used in: Components > Header > Express Search Task
+msgid "secondarySearch"
+msgstr "Вторичный поиск"
+
+#: components/Header/UserTools.tsx:51
+#: components/Router/OverlayRoutes.tsx:32
+#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
+msgid "userToolsDialogTitle"
+msgstr "Инструменты"
+
+#: components/Toolbar/Language.tsx:65
+#: components/Toolbar/Language.tsx:95
+#. Used in: Components > Toolbar > Language
+msgid "helpLocalizeSpecify"
+msgstr "Помогти локализовать Specify 7"
+
+#: components/Toolbar/Language.tsx:73
+#. Used in: Components > Toolbar > Language
+msgid "helpLocalizeSpecifyDialogText"
+msgstr ""
+"Мы будем очень благодарны за вашу поддержку в локализации пользовательский "
+"интерфейс Specify 7. Если вы заинтересованы, пожалуйста, отправьте письмо "
+"по адресу <emailLink />"
+
+#: components/Header/userToolDefinitions.ts:104
+#. Used in: Components > Header > User Tool Definitions
+msgid "tableApi"
+msgstr "API таблиц"
+
+#: components/Header/userToolDefinitions.ts:108
+#. Used in: Components > Header > User Tool Definitions
+msgid "operationsApi"
+msgstr "API операций"
+
+#: components/AppResources/Create.tsx:92
+#: components/AppResources/Create.tsx:113
+#: components/AppResources/Filters.tsx:147
+#: components/Header/userToolDefinitions.ts:80
+#: components/UserPreferences/Definitions.tsx:398
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
+msgid "documentation"
+msgstr "Документация"
+
+#: components/Header/userToolDefinitions.ts:94
+#. Used in: Components > Header > User Tool Definitions
+msgid "developers"
+msgstr "Инструменты разработчика"
+
+#: components/Header/userToolDefinitions.ts:86
+#. Used in: Components > Header > User Tool Definitions
+msgid "forum"
+msgstr "Specify Форум"
+
+#: components/Errors/ErrorDialog.tsx:128
+#: components/Header/userToolDefinitions.ts:100
+#: components/Router/Routes.tsx:396
+#: components/RouterCommands/CacheBuster.tsx:42
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
+msgid "clearCache"
+msgstr "Очистить кеш"
+
+#: components/RouterCommands/CacheBuster.tsx:45
+#. Used in: Components > Router Commands > Cache Buster
+msgid "clearedCacheDialogText"
+msgstr "Кэш очищен. Пожалуйста, перезагрузите страницу."
+
+#: components/Header/userToolDefinitions.ts:90
+#. Used in: Components > Header > User Tool Definitions
+msgid "technicalDocumentation"
+msgstr "Тех. Документы"

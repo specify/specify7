@@ -1,0 +1,118 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Leaflet/addOns.ts:95
+#. Used in: Components > Leaflet > Add Ons
+msgid "polygonBoundaries"
+msgstr "Границы многоугольника"
+
+#: components/Leaflet/addOns.ts:96
+#. Used in: Components > Leaflet > Add Ons
+msgid "errorRadius"
+msgstr "Радиус ошибки"
+
+#: components/FormPlugins/Leaflet.tsx:81
+#. Used in: Components > Form Plugins > Leaflet
+msgid "showMap"
+msgstr "Показать карту"
+
+#: components/FormPlugins/Leaflet.tsx:40
+#. Used in: Components > Form Plugins > Leaflet
+msgid "noCoordinates"
+msgstr "Нет координат"
+
+#: components/FormPlugins/Leaflet.tsx:43
+#. Used in: Components > Form Plugins > Leaflet
+msgid "notEnoughInformationToMap"
+msgstr "Чтобы нанести на карту, необходимо указать координаты."
+
+#: components/Leaflet/addOns.ts:93
+#. Used in: Components > Leaflet > Add Ons
+msgid "occurrencePoints"
+msgstr "Точки"
+
+#: components/Leaflet/addOns.ts:94
+#. Used in: Components > Leaflet > Add Ons
+msgid "occurrencePolygons"
+msgstr "Полигоны"
+
+#: components/FormPlugins/GeoLocate.tsx:122
+#: components/FormPlugins/GeoLocate.tsx:138
+#: components/FormPlugins/GeoLocate.tsx:221
+#: components/WorkBench/Template.tsx:224
+#: components/WorkBench/wbUtils.js:723
+#: components/WorkBench/wbUtils.js:731
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils
+msgid "geoLocate"
+msgstr "GEOLocate"
+
+#: components/FormPlugins/GeoLocate.tsx:107
+#. Used in: Components > Form Plugins > Geo Locate
+msgid "geographyRequiredDialogHeader"
+msgstr "География должна быть связана"
+
+#: components/FormPlugins/GeoLocate.tsx:110
+#. Used in: Components > Form Plugins > Geo Locate
+msgid "geographyRequiredDialogText"
+msgstr "Плагин GeoLocate требует, чтобы поле географии было заполнено."
+
+#: components/FormPlugins/LatLongUi.tsx:268
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "coordinates"
+msgstr "Координаты"
+
+#: components/FormPlugins/LatLongUi.tsx:271
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "northWestCorner"
+msgstr "СЗ Угол"
+
+#: components/FormPlugins/LatLongUi.tsx:283
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "southEastCorner"
+msgstr "ЮВ Угол"
+
+#: components/FormPlugins/LatLongUi.tsx:239
+#: components/FormPlugins/LatLongUi.tsx:244
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "coordinateType"
+msgstr "Тип координат"
+
+#: components/FormPlugins/LatLongUi.tsx:251
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "point"
+msgstr "Точка"
+
+#: components/FormPlugins/LatLongUi.tsx:252
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "line"
+msgstr "Линия"
+
+#: components/FormPlugins/LatLongUi.tsx:253
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "rectangle"
+msgstr "Прямоугольник"
+
+#: components/FormPlugins/LatLongUi.tsx:259
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "parsed"
+msgstr "Проверено"
+
+#: components/FormPlugins/LatLongUi.tsx:165
+#: components/FormPlugins/LatLongUi.tsx:257
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "latitude"
+msgstr "Широта"
+
+#: components/FormPlugins/LatLongUi.tsx:179
+#: components/FormPlugins/LatLongUi.tsx:258
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "longitude"
+msgstr "Долгота"
+
+#: components/AppResources/Editor.tsx:95
+#: components/AppResources/Editor.tsx:97
+#: components/Leaflet/extend.ts:36
+#: components/Leaflet/extend.ts:37
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
+msgid "toggleFullScreen"
+msgstr "Включить полноэкранный режим"

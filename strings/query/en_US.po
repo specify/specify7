@@ -1,0 +1,393 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/QueryBuilder/index.tsx:132
+#: components/Router/OverlayRoutes.tsx:91
+#: components/Toolbar/QueryTables.tsx:125
+#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
+msgid "newQueryName"
+msgstr "New Query"
+
+#: components/FormFields/useTypeSearch.tsx:86
+#. Used in: Components > Form Fields > Use Type Search
+msgid "queryBoxDescription"
+msgstr "Searches: {fieldNames:string}"
+
+#: components/QueryBuilder/FieldFilter.tsx:371
+#. Used in: Components > Query Builder > Field Filter
+msgid "any"
+msgstr "Any"
+
+#: components/QueryBuilder/FieldFilter.tsx:300
+#: components/QueryBuilder/FieldFilter.tsx:346
+#. Used in: Components > Query Builder > Field Filter
+msgid "startValue"
+msgstr "Start Value"
+
+#: components/QueryBuilder/FieldFilter.tsx:309
+#. Used in: Components > Query Builder > Field Filter
+msgid "endValue"
+msgstr "End Value"
+
+#: components/QueryBuilder/Components.tsx:95
+#: components/QueryBuilder/Save.tsx:74
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
+msgid "saveQuery"
+msgstr "Save Query"
+
+#: components/QueryBuilder/Save.tsx:81
+#. Used in: Components > Query Builder > Save
+msgid "saveQueryDialogText"
+msgstr "Enter a name for the new query."
+
+#: components/QueryBuilder/Save.tsx:73
+#. Used in: Components > Query Builder > Save
+msgid "saveClonedQueryDialogHeader"
+msgstr "Save query as..."
+
+#: components/QueryBuilder/Save.tsx:80
+#. Used in: Components > Query Builder > Save
+msgid "saveClonedQueryDialogText"
+msgstr "The query will be saved with a new name leaving the current query unchanged."
+
+#: components/QueryBuilder/Save.tsx:91
+#. Used in: Components > Query Builder > Save
+msgid "queryName"
+msgstr "Query Name:"
+
+#: components/QueryBuilder/Components.tsx:152
+#. Used in: Components > Query Builder > Components
+msgid "queryDeleteIncompleteDialogHeader"
+msgstr "Query definition contains incomplete fields"
+
+#: components/QueryBuilder/Components.tsx:153
+#. Used in: Components > Query Builder > Components
+msgid "queryDeleteIncompleteDialogText"
+msgstr ""
+"There are uncompleted fields in the query definition. Do you want to remove "
+"them?"
+
+#: components/QueryBuilder/Wrapped.tsx:127
+#. Used in: Components > Query Builder > Wrapped
+msgid "queryUnloadProtectDialogText"
+msgstr "The new or modified query definition has not been saved"
+
+#: components/QueryBuilder/Components.tsx:248
+#. Used in: Components > Query Builder > Components
+msgid "recordSetToQueryDialogHeader"
+msgstr "Creating a Record Set from Query"
+
+#: components/QueryBuilder/Components.tsx:251
+#. Used in: Components > Query Builder > Components
+msgid "recordSetToQueryDialogText"
+msgstr "Generating Record Set..."
+
+#: components/QueryBuilder/Components.tsx:266
+#. Used in: Components > Query Builder > Components
+msgid "recordSetCreatedDialogHeader"
+msgstr "Record Set Created"
+
+#: components/QueryBuilder/Export.tsx:70
+#. Used in: Components > Query Builder > Export
+msgid "unableToExportAsKmlDialogHeader"
+msgstr "Unable to export to KML"
+
+#: components/QueryBuilder/Export.tsx:73
+#. Used in: Components > Query Builder > Export
+msgid "unableToExportAsKmlDialogText"
+msgstr "Please add latitude and longitude fields to the query."
+
+#: components/QueryBuilder/Export.tsx:62
+#. Used in: Components > Query Builder > Export
+msgid "queryExportStartedDialogHeader"
+msgstr "Export File Being Created"
+
+#: components/QueryBuilder/Export.tsx:65
+#. Used in: Components > Query Builder > Export
+msgid "queryExportStartedDialogText"
+msgstr ""
+"A notification will appear when the export file is complete and ready for "
+"download."
+
+#: components/PickLists/index.tsx:205
+#: components/SchemaConfig/Components.tsx:85
+#. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
+msgid "invalidPicklistValue"
+msgstr "{value:string} (current, invalid value)"
+
+#: components/QueryBuilder/Header.tsx:64
+#. Used in: Components > Query Builder > Header
+msgid "queryTaskTitle"
+msgstr "Query: {queryName:string}"
+
+#: components/QueryBuilder/Header.tsx:60
+#. Used in: Components > Query Builder > Header
+msgid "queryRecordSetTitle"
+msgstr "Query: \"{queryName:string}\" on Record Set: \"{recordSetName:string}\""
+
+#: components/QueryBuilder/fromTree.ts:181
+#. Used in: Components > Query Builder > From Tree
+msgid "treeQueryName"
+msgstr "{tableName:string} using \"{nodeFullName:string}"
+
+#: components/QueryBuilder/Wrapped.tsx:386
+#. Used in: Components > Query Builder > Wrapped
+msgid "newButtonDescription"
+msgstr "Add New Field"
+
+#: components/QueryBuilder/Toolbar.tsx:59
+#. Used in: Components > Query Builder > Toolbar
+msgid "countOnly"
+msgstr "Count"
+
+#: components/QueryBuilder/Toolbar.tsx:55
+#. Used in: Components > Query Builder > Toolbar
+msgid "distinct"
+msgstr "Distinct"
+
+#: components/QueryBuilder/Export.tsx:82
+#. Used in: Components > Query Builder > Export
+msgid "createCsv"
+msgstr "Create CSV"
+
+#: components/QueryBuilder/Export.tsx:102
+#. Used in: Components > Query Builder > Export
+msgid "createKml"
+msgstr "Create KML"
+
+#: components/QueryBuilder/Components.tsx:213
+#: components/QueryBuilder/Results.tsx:499
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results
+msgid "createRecordSet"
+msgstr "Create Record Set"
+
+#: components/QueryBuilder/Components.tsx:106
+#. Used in: Components > Query Builder > Components
+msgid "saveAs"
+msgstr "Save As"
+
+#: components/WbPlanView/navigator.ts:348
+#. Used in: Components > Wb Plan View > Navigator
+msgid "anyRank"
+msgstr "(any rank)"
+
+#: components/QueryBuilder/Field.tsx:494
+#: components/QueryBuilder/Field.tsx:502
+#. Used in: Components > Query Builder > Field
+msgid "sort"
+msgstr "Sort"
+
+#: components/QueryBuilder/Field.tsx:491
+#: components/QueryBuilder/Field.tsx:499
+#. Used in: Components > Query Builder > Field
+msgid "ascendingSort"
+msgstr "Ascending Sort"
+
+#: components/QueryBuilder/Field.tsx:493
+#: components/QueryBuilder/Field.tsx:501
+#. Used in: Components > Query Builder > Field
+msgid "descendingSort"
+msgstr "Descending Sort"
+
+#: components/QueryBuilder/Field.tsx:364
+#: components/QueryBuilder/Field.tsx:368
+#. Used in: Components > Query Builder > Field
+msgid "negate"
+msgstr "Negate"
+
+#: components/QueryBuilder/Field.tsx:474
+#: components/QueryBuilder/Field.tsx:477
+#. Used in: Components > Query Builder > Field
+msgid "showButtonDescription"
+msgstr "Show in results"
+
+#: components/WbPlanView/navigator.ts:397
+#. Used in: Components > Wb Plan View > Navigator
+msgid "aggregated"
+msgstr "(aggregated)"
+
+#: components/WbPlanView/navigator.ts:398
+#. Used in: Components > Wb Plan View > Navigator
+msgid "formatted"
+msgstr "(formatted)"
+
+#: components/QueryBuilder/FieldFilter.tsx:378
+#. Used in: Components > Query Builder > Field Filter
+msgid "like"
+msgstr "Like"
+
+#: components/QueryBuilder/FieldFilter.tsx:379
+#. Used in: Components > Query Builder > Field Filter
+msgid "likeDescription"
+msgstr ""
+"Use \"%\" to match any number of characters.\n"
+"Use \"_\" to match a single character"
+
+#: components/QueryBuilder/FieldFilter.tsx:387
+#. Used in: Components > Query Builder > Field Filter
+msgid "equal"
+msgstr "Equal"
+
+#: components/QueryBuilder/FieldFilter.tsx:396
+#. Used in: Components > Query Builder > Field Filter
+msgid "greaterThan"
+msgstr "Greater than"
+
+#: components/QueryBuilder/FieldFilter.tsx:405
+#. Used in: Components > Query Builder > Field Filter
+msgid "lessThan"
+msgstr "Less than"
+
+#: components/QueryBuilder/FieldFilter.tsx:414
+#. Used in: Components > Query Builder > Field Filter
+msgid "greaterOrEqualTo"
+msgstr "Greater or Equal to"
+
+#: components/QueryBuilder/FieldFilter.tsx:423
+#. Used in: Components > Query Builder > Field Filter
+msgid "lessOrEqualTo"
+msgstr "Less or Equal to"
+
+#: components/QueryBuilder/FieldFilter.tsx:432
+#. Used in: Components > Query Builder > Field Filter
+msgid "true"
+msgstr "True"
+
+#: components/QueryBuilder/FieldFilter.tsx:440
+#. Used in: Components > Query Builder > Field Filter
+msgid "false"
+msgstr "False"
+
+#: components/QueryBuilder/FieldFilter.tsx:495
+#. Used in: Components > Query Builder > Field Filter
+msgid "trueOrNull"
+msgstr "True or Empty"
+
+#: components/QueryBuilder/FieldFilter.tsx:503
+#. Used in: Components > Query Builder > Field Filter
+msgid "falseOrNull"
+msgstr "False or Empty"
+
+#: components/QueryBuilder/FieldFilter.tsx:448
+#. Used in: Components > Query Builder > Field Filter
+msgid "between"
+msgstr "Between"
+
+#: components/QueryBuilder/FieldFilter.tsx:457
+#. Used in: Components > Query Builder > Field Filter
+msgid "in"
+msgstr "In"
+
+#: components/QueryBuilder/FieldFilter.tsx:458
+#. Used in: Components > Query Builder > Field Filter
+msgid "inDescription"
+msgstr "A comma-separated list of values"
+
+#: components/QueryBuilder/FieldFilter.tsx:470
+#: components/UserPreferences/Definitions.tsx:1125
+#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+msgid "contains"
+msgstr "Contains"
+
+#: components/QueryBuilder/FieldFilter.tsx:488
+#. Used in: Components > Query Builder > Field Filter
+msgid "empty"
+msgstr "Empty"
+
+#: components/QueryBuilder/FieldFilter.tsx:305
+#. Used in: Components > Query Builder > Field Filter
+msgid "and"
+msgstr "and"
+
+#: components/QueryBuilder/FieldFilter.tsx:479
+#: components/UserPreferences/Definitions.tsx:1121
+#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+msgid "startsWith"
+msgstr "Starts With"
+
+#: components/QueryBuilder/Field.tsx:313
+#: components/QueryBuilder/Field.tsx:320
+#: components/QueryBuilder/Field.tsx:347
+#. Used in: Components > Query Builder > Field
+msgid "or"
+msgstr "or"
+
+#: utils/__tests__/fieldFormat.test.ts:88
+#: utils/parser/definitions.ts:98
+#. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
+msgid "yes"
+msgstr "Yes"
+
+#: components/Forms/SearchDialog.tsx:108
+#: components/Forms/SearchDialog.tsx:270
+#: components/Security/registry.ts:195
+#: components/UserPreferences/Definitions.tsx:1233
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+msgid "queryBuilder"
+msgstr "Query Builder"
+
+#: components/QueryBuilder/LoanReturn.tsx:171
+#. Used in: Components > Query Builder > Loan Return
+msgid "noPreparationsToReturn"
+msgstr "There are no unresolved items to return"
+
+#: components/QueryBuilder/LoanReturn.tsx:225
+#. Used in: Components > Query Builder > Loan Return
+msgid "itemsReturned"
+msgstr "Items have been returned"
+
+#: components/QueryBuilder/ToForms.tsx:57
+#. Used in: Components > Query Builder > To Forms
+msgid "queryResults"
+msgstr "Query Results: {tableName:string}"
+
+#: components/QueryBuilder/Header.tsx:74
+#. Used in: Components > Query Builder > Header
+msgid "editQuery"
+msgstr "Edit Query"
+
+#: components/Toolbar/QueryTablesEdit.tsx:35
+#. Used in: Components > Toolbar > Query Tables Edit
+msgid "configureQueryTables"
+msgstr "Configure visible query tables"
+
+#: components/QueryBuilder/Field.tsx:465
+#: components/QueryBuilder/Field.tsx:466
+#. Used in: Components > Query Builder > Field
+msgid "openMap"
+msgstr "Open Map"
+
+#: components/QueryBuilder/ToMap.tsx:240
+#. Used in: Components > Query Builder > To Map
+msgid "queryMapSubset"
+msgstr "Plotted {plotted:number|formatted} of {total:number|formatted} records"
+
+#: components/QueryBuilder/ToMap.tsx:237
+#. Used in: Components > Query Builder > To Map
+msgid "queryMapAll"
+msgstr "Plotted {plotted:number|formatted} records"
+
+#: components/Toolbar/Query.tsx:94
+#. Used in: Components > Toolbar > Query
+msgid "queriesDialogTitle"
+msgstr "Queries ({count:number|formatted})"
+
+#: components/QueryBuilder/Edit.tsx:97
+#. Used in: Components > Query Builder > Edit
+msgid "exportQueryForDwca"
+msgstr "Export query for DwCA definition"
+
+#: components/QueryBuilder/Edit.tsx:150
+#. Used in: Components > Query Builder > Edit
+msgid "exportQueryForDwcaDialogHeader"
+msgstr "Query XML for DwCA definition"
+
+#: components/QueryBuilder/Edit.tsx:102
+#. Used in: Components > Query Builder > Edit
+msgid "exportQueryAsReport"
+msgstr "Define report based on query"
+
+#: components/QueryBuilder/Edit.tsx:105
+#. Used in: Components > Query Builder > Edit
+msgid "exportQueryAsLabel"
+msgstr "Define label based on query"
