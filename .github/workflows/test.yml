@@ -2,34 +2,39 @@ name: Tests
 
 on: [push]
 
-# TODO: only run back-end tests on back-end changes
-# TODO: only run front-end tests on front-end changes
 jobs:
   changes:
     name: Check if back-end or front-end files changed
     runs-on: ubuntu-latest
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
+      backend_changed: ${{ steps.back-end-check.outputs.changed }}
       frontend: ${{ steps.filter.outputs.frontend }}
 
     steps:
       - uses: actions/checkout@v3
 
-      - uses: dorny/paths-filter@v2
+      - name: Find all changed files
+        uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: ${{ github.ref }}
           list-files: escape
           filters: |
             frontend:
               - 'specifyweb/frontend/**'
             backend:
-              - 'specifyweb/**'
+              - '**'
+
+      - name: Check if any non-front-end files changed
+        id: back-end-check
+        run: |
+          changed_files=`echo ${{steps.filter.outputs.backend_files}} | tr " " "\n" | grep -v 'frontend' || echo ""`
+          echo "changed=${changed_files}" >> $GITHUB_OUTPUT
 
   test-back-end:
     name: Run back-end tests
     needs: changes
-    # Check if anything other than front-end changed
-    if: ${{ echo needs.changes.outputs.backend_files | grep -v 'frontend' }}
+    if: needs.changes.outputs.backend_changed
     runs-on: ubuntu-latest
 
     services:
@@ -45,6 +50,8 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Get Specify 6 from cache
         id: cache-specify6
         uses: actions/cache@v3
@@ -127,9 +134,7 @@ jobs:
         run: |
           npm run typecheck && \
           npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
-          npm run localizationTests -- --emit ./localization-strings && \
-          ls -ahl ./ && \
-          ls -ahl localization-strings
+          npm run localizationTests -- --emit ./localization-strings
 
       - name: Upload built localization strings
         uses: actions/upload-artifact@v3
@@ -167,4 +172,5 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git add strings
           git commit -a -m "Sync localization strings with Weblate"
