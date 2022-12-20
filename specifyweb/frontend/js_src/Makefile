@@ -3,6 +3,7 @@
 build:
 	npm ci
 	npx webpack -o ../static/js --mode=production
+
 clean:
 	rm -rf node_modules
 	rm -rf ../static/js

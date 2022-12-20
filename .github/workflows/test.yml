@@ -2,9 +2,11 @@ name: Tests
 
 on: [push]
 
+# TODO: only run back-end tests on back-end changes
+# TODO: only run front-end tests on front-end changes
 jobs:
-  test:
-    name: Run front-end and back-end tests
+  test-back-end:
+    name: Run back-end tests
     runs-on: ubuntu-latest
 
     services:
@@ -20,13 +22,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-          cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
-
       - name: Get Specify 6 from cache
         id: cache-specify6
         uses: actions/cache@v3
@@ -82,8 +77,17 @@ jobs:
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
-      - name: Run test suite
-        run: ./ve/bin/python manage.py test -k
+  test-front-end:
+    name: Run back-end tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
       - name: Build frontend
         run: make frontend
@@ -111,7 +115,7 @@ jobs:
     # FIXME: uncomment this:
     # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
     if: github.ref == 'refs/heads/l10n-improvements'
-    needs: test
+    needs: test-front-end
     runs-on: ubuntu-latest
 
     steps:
