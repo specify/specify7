@@ -181,6 +181,7 @@ export function CollectionView({
                                     `/specify/security/user/${userId}/`,
                                     {
                                       state: {
+                                        type: 'SecurityUser',
                                         initialCollectionId: collection.id,
                                       },
                                     }
@@ -203,6 +204,7 @@ export function CollectionView({
                           event.preventDefault();
                           navigate('/specify/security/user/new/', {
                             state: {
+                              type: 'SecurityUser',
                               initialCollectionId: collection.id,
                             },
                           });

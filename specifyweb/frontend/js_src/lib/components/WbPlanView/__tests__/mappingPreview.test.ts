@@ -1,7 +1,7 @@
 import { generateMappingPathPreview } from '../mappingPreview';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
-import { formattedEntry } from '../mappingHelpers';
+import { anyTreeRank, formattedEntry, formatTreeRank } from '../mappingHelpers';
 
 requireContext();
 
@@ -19,6 +19,10 @@ theories(generateMappingPathPreview, [
   ],
   [['SpAuditLog', ['modifiedByAgent', formattedEntry]], 'Modified By Agent'],
   [['SpAuditLog', ['fields', formattedEntry]], 'Fields'],
+  [['Taxon', [formatTreeRank('Kingdom'), formattedEntry]], 'Kingdom'],
+  [['Taxon', [formatTreeRank(anyTreeRank), formattedEntry]], 'Taxon'],
+  [['Taxon', [formatTreeRank(anyTreeRank), 'author']], 'Taxon Author'],
+  [['Taxon', [formatTreeRank('Kingdom'), 'author']], 'Kingdom Author'],
   [['CollectionObject', []], 'Collection Object'],
   [['CollectionObject', [formattedEntry]], 'Collection Object'],
   [

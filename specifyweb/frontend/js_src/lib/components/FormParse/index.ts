@@ -20,6 +20,7 @@ import type { FormCellDefinition } from './cells';
 import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
+import { webOnlyViews } from './webOnlyViews';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -58,21 +59,30 @@ export const fetchView = async (
 ): Promise<ViewDefinition | undefined> =>
   name in views
     ? Promise.resolve(views[name])
-    : ajax<ViewDefinition>(
+    : ajax<string>(
         /*
          * NOTE: If getView hasn't yet been invoked, the view URLs won't be
          * marked as cachable
          */
-        cachableUrl(formatUrl('/context/view.json', { name })),
+        cachableUrl(
+          formatUrl('/context/view.json', {
+            name,
+            // Don't spam the console with errors needlessly
+            ...(name in webOnlyViews() ? { quiet: '' } : {}),
+          })
+        ),
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: { Accept: 'application/json' },
+          headers: { Accept: 'text/plain' },
         },
         {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
       ).then(({ data, status }) => {
-        views[name] = status === Http.NOT_FOUND ? undefined : data;
+        views[name] =
+          status === Http.NOT_FOUND || status === Http.NO_CONTENT
+            ? undefined
+            : (JSON.parse(data) as ViewDefinition);
         return views[name];
       });
 
@@ -139,9 +149,11 @@ export function resolveViewDefinition(
   return {
     viewDefinition: actualViewDefinition,
     formType:
-      formTypes.find(
-        (type) => type.toLowerCase() === newFormType?.toLowerCase()
-      ) ?? 'form',
+      formType === 'formTable'
+        ? 'formTable'
+        : formTypes.find(
+            (type) => type.toLowerCase() === newFormType?.toLowerCase()
+          ) ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: strictGetModel(
       modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName

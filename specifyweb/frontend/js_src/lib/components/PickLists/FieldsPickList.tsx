@@ -26,11 +26,16 @@ export function FieldsPickList(props: DefaultComboBoxProps): JSX.Element {
   const [items, setItems] = React.useState<RA<PickListItemSimple>>(getItems);
   React.useEffect(
     () =>
-      resourceOn(props.resource, 'change:tableName change:type', () => {
-        if (props.resource.get('type') !== PickListTypes.FIELDS)
-          props.resource.set('fieldName', null as never);
-        setItems(getItems);
-      }),
+      resourceOn(
+        props.resource,
+        'change:tableName change:type',
+        () => {
+          if (props.resource.get('type') !== PickListTypes.FIELDS)
+            props.resource.set('fieldName', null as never);
+          setItems(getItems);
+        },
+        true
+      ),
     [props.resource, getItems]
   );
 

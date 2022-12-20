@@ -18,6 +18,7 @@ import { useResourcesTree } from './hooks';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { NotFoundView } from '../Router/NotFoundView';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function AppResourceView(): JSX.Element {
   return <Wrapper mode="appResources" />;
@@ -35,15 +36,9 @@ export function Wrapper({
   const {
     getSet: [resources, setResources],
   } = useOutletContext<AppResourcesOutlet>();
-  const location = useLocation();
+  const location = useStableLocation(useLocation());
   const navigate = useNavigate();
-  const state = location.state as
-    | {
-        readonly resource?: SerializedResource<SpAppResource | SpViewSetObj>;
-        readonly directoryKey?: string;
-        readonly initialDataFrom?: number;
-      }
-    | undefined;
+  const state = locationToState(location, 'AppResource');
   const resource = useAppResource(state?.resource, resources, mode);
   const initialData = useInitialData(state?.initialDataFrom);
   const directory = useDirectory(state?.directoryKey, resource, resources);
@@ -62,6 +57,7 @@ export function Wrapper({
       onClone={(resource, initialDataFrom): void =>
         navigate(`${baseHref}/new/`, {
           state: {
+            type: 'AppResource',
             resource,
             directoryKey: state?.directoryKey,
             initialDataFrom,
@@ -77,7 +73,7 @@ export function Wrapper({
           ...resources,
           [mode]: resources[mode].filter((record) => record !== resource),
         });
-        navigate('/specify/resources/');
+        navigate('/specify/resources/', { replace: true });
       }}
       onSaved={(appResource, directory): void => {
         setResources({

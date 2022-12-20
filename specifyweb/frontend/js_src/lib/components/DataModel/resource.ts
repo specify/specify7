@@ -1,10 +1,13 @@
 import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import { defined, filterArray } from '../../utils/types';
 import { keysToLowerCase, removeKey } from '../../utils/utils';
 import { formatUrl } from '../Router/queryString';
+import { getUserPref } from '../UserPreferences/helpers';
+import { addMissingFields } from './addMissingFields';
 import { businessRuleDefs } from './businessRuleDefs';
 import { serializeResource } from './helpers';
 import type {
@@ -17,9 +20,7 @@ import type { SpecifyResource } from './legacyTypes';
 import { getModel, schema } from './schema';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
-import { addMissingFields } from './addMissingFields';
-import { Http } from '../../utils/ajax/definitions';
-import { getUserPref } from '../UserPreferences/helpers';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
 /*
  * REFACTOR: experiment with an object singleton:
@@ -135,9 +136,11 @@ export function getResourceViewUrl(
  */
 export function getResourceApiUrl(
   tableName: keyof Tables,
-  resourceId: number | string,
+  resourceId: number | string | undefined,
   recordSetId?: number
 ): string {
+  if (resourceId === undefined)
+    return `/api/specify/${tableName.toLowerCase()}/`;
   const url = `/api/specify/${tableName.toLowerCase()}/${resourceId}/`;
   return typeof recordSetId === 'number'
     ? formatUrl(url, { recordSetId: recordSetId.toString() })
@@ -169,6 +172,16 @@ export const idFromUrl = (url: string): number | undefined =>
 
 export const strictIdFromUrl = (url: string): number =>
   defined(idFromUrl(url), `Unable to extract resource id from url: ${url}`);
+
+export function resourceFromUrl(
+  resourceUrl: string,
+  options?: ConstructorParameters<SpecifyModel['Resource']>[1]
+): SpecifyResource<AnySchema> | undefined {
+  const parsed = parseResourceUrl(resourceUrl);
+  if (parsed === undefined) return undefined;
+  const [tableName, id] = parsed;
+  return new schema.models[tableName].Resource({ id }, options);
+}
 
 /**
  * This needs to exist outside of Resorce definition due to type conflicts
@@ -203,7 +216,7 @@ export function resourceOn(
   },
   event: string,
   callback: (...args: RA<never>) => void,
-  immediate = false
+  immediate: boolean
 ): () => void {
   if (immediate) callback();
   resource.on(event.toLowerCase(), callback as () => void);
@@ -214,8 +227,11 @@ export function resourceOn(
 export const parseJavaClassName = (className: string): string =>
   className.split('.').at(-1) ?? '';
 
-export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
-  const fieldsToClone = getFieldsToClone(model);
+export function getFieldsToNotClone(
+  model: SpecifyModel,
+  cloneAll: boolean
+): RA<string> {
+  const fieldsToClone = getCarryOverPreference(model, cloneAll);
   const uniqueFields = getUniqueFields(model);
   return model.fields
     .map(({ name }) => name)
@@ -225,9 +241,25 @@ export function getFieldsToNotClone(model: SpecifyModel): RA<string> {
     );
 }
 
-const getFieldsToClone = (model: SpecifyModel): RA<string> =>
-  getUserPref('form', 'preferences', 'carryForward')?.[model.name] ??
-  model.fields.filter(({ isVirtual }) => !isVirtual).map(({ name }) => name);
+const getCarryOverPreference = (
+  model: SpecifyModel,
+  cloneAll: boolean
+): RA<string> =>
+  (cloneAll
+    ? undefined
+    : getUserPref('form', 'preferences', 'carryForward')?.[model.name]) ??
+  getFieldsToClone(model);
+
+export const getFieldsToClone = (model: SpecifyModel): RA<string> =>
+  model.fields
+    .filter(
+      (field) =>
+        !field.isVirtual &&
+        (!field.isRelationship ||
+          field.isDependent() ||
+          !relationshipIsToMany(field))
+    )
+    .map(({ name }) => name);
 
 // REFACTOR: move this into businessRuleDefs.ts
 const businessRules = businessRuleDefs as {
@@ -240,15 +272,37 @@ const businessRules = businessRuleDefs as {
   };
 };
 
+const uniqueFields = [
+  'guid',
+  'timestampCreated',
+  'version',
+  'isCurrent',
+  'timestampModified',
+];
+
 export const getUniqueFields = (model: SpecifyModel): RA<string> =>
-  Object.entries(businessRules[model.name]?.uniqueIn ?? {})
-    .filter(
-      ([_fieldName, uniquenessRules]) =>
-        typeof uniquenessRules === 'string' &&
-        uniquenessRules in schema.domainLevelIds
-    )
-    .map(([fieldName]) => model.strictGetField(fieldName).name) ?? [];
+  f.unique([
+    ...Object.entries(businessRules[model.name]?.uniqueIn ?? {})
+      .filter(
+        ([_fieldName, uniquenessRules]) =>
+          typeof uniquenessRules === 'string' &&
+          uniquenessRules in schema.domainLevelIds
+      )
+      .map(([fieldName]) => model.strictGetField(fieldName).name),
+    /*
+     * Each attachment is assumed to refer to a unique attachment file
+     * See https://github.com/specify/specify7/issues/1754#issuecomment-1157796585
+     * Also, https://github.com/specify/specify7/issues/2562
+     */
+    ...model.relationships
+      .filter(({ relatedModel }) => relatedModel.name.endsWith('Attachment'))
+      .map(({ name }) => name),
+    ...filterArray(
+      uniqueFields.map((fieldName) => model.getField(fieldName)?.name)
+    ),
+  ]);
 
 export const exportsForTests = {
+  getCarryOverPreference,
   getFieldsToClone,
 };

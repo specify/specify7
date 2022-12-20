@@ -3,6 +3,9 @@ import {
   unlockInitialContext,
 } from '../components/InitialContext';
 import { treeRanksPromise } from '../components/InitialContext/treeRanks';
+import { defaultTileLayers } from '../components/Leaflet/layers';
+import { operationPolicies } from '../components/Permissions/definitions';
+import { overrideAjax } from './ajax';
 
 /**
  * Call this in test files that requite initial context to be fetched
@@ -18,12 +21,18 @@ import { treeRanksPromise } from '../components/InitialContext/treeRanks';
  * for all tests because Jest runs tests in isolated environments and sometimes
  * even in separate threads.
  */
-export const requireContext = (): void =>
+export const requireContext = (): void => {
+  overrideAjax('/permissions/registry/', operationPolicies);
+  overrideAjax(
+    '/context/app.resource?name=leaflet-layers&quiet=',
+    defaultTileLayers
+  );
   beforeAll(async () => {
     unlockInitialContext('main');
     await initialContext;
     await treeRanksPromise;
   });
+};
 
 export const testTime = new Date('2022-08-31T03:37:10.4');
 

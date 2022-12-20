@@ -1,4 +1,5 @@
-import type { History, Location, Transition } from 'history';
+import type { History, Transition } from 'history';
+import { SafeLocation } from 'history';
 import React from 'react';
 import type { Navigator as BaseNavigator } from 'react-router-dom';
 import { UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom';
@@ -23,7 +24,7 @@ type NavigationContextWithBlock = React.ContextType<
  * https://github.com/remix-run/react-router/commit/256cad70d3fd4500b1abcfea66f3ee622fb90874
  */
 export function useRouterBlocker(
-  callback: (location: Location) => Promise<'ignore' | 'unblock'>
+  callback: (location: SafeLocation) => Promise<'ignore' | 'unblock'>
 ): { readonly block: () => void; readonly unblock: () => void } {
   const { navigator } = React.useContext(
     NavigationContext
@@ -31,7 +32,7 @@ export function useRouterBlocker(
 
   const blockerCallback = React.useCallback(
     async (transition: Transition) =>
-      callback(transition.location).then((resolution) => {
+      callback(transition.location as SafeLocation).then((resolution) => {
         transition.retry();
         return resolution;
       }),

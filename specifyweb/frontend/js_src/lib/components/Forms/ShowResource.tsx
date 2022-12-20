@@ -1,54 +1,50 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useSearchParameter } from '../../hooks/navigation';
+import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { useTriggerState } from '../../hooks/useTriggerState';
 import { f } from '../../utils/functools';
-import { fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, schema } from '../DataModel/schema';
-import { crash } from '../Errors/Crash';
+import type { RecordSet } from '../DataModel/types';
+import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header';
 import { interactionTables } from '../Interactions/InteractionsDialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { TablePermissionDenied } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
-import { RecordSet as RecordSetView } from '../FormSliders/RecordSet';
 import { ResourceView } from './ResourceView';
-import { overwriteReadOnly } from '../../utils/types';
-import { getResourceViewUrl } from '../DataModel/resource';
-import { serializeResource } from '../DataModel/helpers';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export function ShowResource({
-  resource: initialResource,
+  resource,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element | null {
   // Look to see if we are in the context of a Record Set
   const [recordsetid] = useSearchParameter('recordsetid');
   const recordSetId = f.parseInt(recordsetid);
-  const recordSet = React.useMemo(
-    () =>
-      typeof recordSetId === 'number'
-        ? new schema.models.RecordSet.Resource({
-            id: recordSetId,
-          })
-        : undefined,
-    [recordSetId]
+  const [recordSet] = useAsyncState<SpecifyResource<RecordSet> | false>(
+    React.useCallback(
+      () =>
+        typeof recordSetId === 'number'
+          ? new schema.models.RecordSet.Resource({
+              id: recordSetId,
+            }).fetch()
+          : false,
+      [recordSetId]
+    ),
+    true
   );
+
   useErrorContext('recordSet', recordSet);
-
-  const [resource, setResource] = useTriggerState(initialResource);
   useErrorContext('resource', resource);
-
-  React.useEffect(() => {
-    if (typeof recordSet === 'object')
-      overwriteReadOnly(resource, 'recordsetid', recordSet.id);
-  }, [recordSet, resource.recordsetid]);
 
   useMenuItem(
     typeof recordSet === 'object'
@@ -58,82 +54,39 @@ export function ShowResource({
       : 'dataEntry'
   );
 
-  const [recordSetItemIndex] = useAsyncState(
-    React.useCallback(async () => {
-      await recordSet?.fetch();
-      if (resource.isNew()) return 0;
-      return typeof recordSet === 'object'
-        ? fetchCollection('RecordSetItem', {
-            recordSet: recordSet.id,
-            limit: 1,
-            recordId: resource.id,
-          })
-            .then(({ records }) =>
-              f.maybe(records[0]?.id, async (recordSetItemId) =>
-                fetchCollection(
-                  'RecordSetItem',
-                  {
-                    recordSet: recordSet.id,
-                    limit: 1,
-                  },
-                  { id__lt: recordSetItemId }
-                ).then(({ totalCount }) => totalCount)
-              )
-            )
-            .catch(crash)
-        : undefined;
-    }, [recordSet, resource]),
-    true
-  );
-
   const navigate = useNavigate();
-  return typeof recordSet === 'object' ? (
-    recordSetItemIndex === undefined ? null : (
-      <RecordSetView
-        canAddAnother
-        defaultResourceIndex={recordSetItemIndex}
-        dialog={false}
-        mode="edit"
-        model={resource.specifyModel}
-        recordSet={recordSet}
-        onAdd={f.void}
-        onClose={(): void => navigate('/specify/')}
-        onSlide={f.void}
-      />
-    )
+  return recordSet === undefined ? null : typeof recordSet === 'object' ? (
+    <RecordSetWrapper
+      recordSet={recordSet}
+      resource={resource}
+      onClose={(): void => navigate('/specify/')}
+    />
   ) : (
     <ResourceView
-      canAddAnother
       dialog={false}
       isDependent={false}
       isSubForm={false}
       mode="edit"
       resource={resource}
       viewName={resource.specifyModel.view}
+      onAdd={(newResource): void =>
+        navigate(
+          getResourceViewUrl(
+            newResource.specifyModel.name,
+            undefined,
+            recordSetId
+          ),
+          {
+            state: {
+              type: 'RecordSet',
+              resource: serializeResource(newResource),
+            },
+          }
+        )
+      }
       onClose={f.never}
       onDeleted={f.void}
-      onSaved={({ wasNew, newResource }): void => {
-        if (typeof newResource === 'object')
-          navigate(
-            getResourceViewUrl(
-              newResource.specifyModel.name,
-              undefined,
-              recordSetId
-            ),
-            {
-              state: { resource: serializeResource(newResource) },
-            }
-          );
-        else if (wasNew) navigate(resource.viewUrl());
-        else {
-          const reloadResource = new resource.specifyModel.Resource({
-            id: resource.id,
-          });
-          // @ts-expect-error Assigning to read-only
-          reloadResource.recordsetid = resource.recordsetid;
-          reloadResource.fetch().then(async () => setResource(reloadResource));
-        }
-      }}
+      onSaved={(): void => navigate(resource.viewUrl())}
     />
   );
 }
@@ -146,7 +99,7 @@ const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;
  *
  * id may be a record id, or GUID (for Collection Objects)
  */
-export function DisplayResource({
+export function ViewResourceById({
   tableName,
   id,
 }: {
@@ -154,20 +107,42 @@ export function DisplayResource({
   readonly id: string | undefined;
 }): JSX.Element {
   const model = getModel(tableName);
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'RecordSet');
+  const record = React.useMemo(
+    () => f.maybe(state?.resource, deserializeResource),
+    [state?.resource]
+  );
+  const isInRecordSet = typeof state === 'object';
+
+  const numericId = f.parseInt(id);
   const resource = React.useMemo(
-    () => (typeof model === 'object' ? new model.Resource({ id }) : undefined),
-    [model, id]
+    () =>
+      typeof model === 'object'
+        ? record ?? new model.Resource({ id: numericId })
+        : undefined,
+    [model, record, numericId]
   );
 
-  if (model === undefined || resource === undefined) {
+  if (
+    (numericId === undefined && id?.toLowerCase() !== 'new') ||
+    model === undefined ||
+    resource === undefined
+  ) {
     return <NotFoundView />;
-  } else if (typeof id === 'string' && !hasTablePermission(model.name, 'read'))
+  } else if (
+    typeof numericId === 'number' &&
+    !hasTablePermission(model.name, 'read')
+  )
     return <TablePermissionDenied action="read" tableName={model.name} />;
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;
   else
     return (
-      <CheckLoggedInCollection resource={resource}>
+      <CheckLoggedInCollection
+        resource={resource}
+        isInRecordSet={isInRecordSet}
+      >
         <ShowResource resource={resource} />
       </CheckLoggedInCollection>
     );

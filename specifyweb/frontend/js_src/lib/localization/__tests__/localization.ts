@@ -309,7 +309,18 @@ type Dictionary = IR<Key>;
 
   // Find duplicate values
   const compoundDictionaries = Object.entries(dictionaries).reduce<
-    Partial<Record<Language, R<(readonly [fileName: string, key: string])[]>>>
+    Partial<
+      Record<
+        Language,
+        R<
+          {
+            readonly fileName: string;
+            readonly key: string;
+            readonly originalValue: string;
+          }[]
+        >
+      >
+    >
   >((compoundDictionaries, [fileName, entries]) => {
     Object.entries(entries).forEach(([key, { strings }]) =>
       Object.entries(strings).forEach(([language, value]) => {
@@ -320,8 +331,12 @@ type Dictionary = IR<Key>;
             ? JSON.stringify(value)
             : (value ?? '').toString();
         compoundDictionaries[language] ??= {};
-        compoundDictionaries[language]![valueString] ??= [];
-        compoundDictionaries[language]![valueString].push([fileName, key]);
+        compoundDictionaries[language]![valueString.toLowerCase()] ??= [];
+        compoundDictionaries[language]![valueString.toLowerCase()].push({
+          fileName,
+          key,
+          originalValue: valueString,
+        });
       })
     );
     return compoundDictionaries;
@@ -335,10 +350,10 @@ type Dictionary = IR<Key>;
             'Multiple instances of the same value were found for language ',
             `${language} in:\n`,
             ...instances.map(
-              ([fileName, key]) => `\t"${fileName}" under key "${key}"\n`
+              ({ fileName, key }) => `\t"${fileName}" under key "${key}"\n`
             ),
             'Value:\n',
-            valueString,
+            instances.at(-1)?.originalValue ?? valueString,
           ].join('')
         );
       })

@@ -10,6 +10,7 @@ import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { DialogContext } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { withHandleBlur } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { compareStrings } from '../Atoms/Internationalization';
 import type { TagProps } from '../Atoms/wrapper';
@@ -39,10 +40,10 @@ const getScrollParent = (node: Element | undefined): Element =>
     ? node
     : getScrollParent(node.parentElement ?? undefined);
 
-const optionClassName = `
+const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-500
-  disabled:cursor-default rounded ui-selected:text-brand-300
-  ui-active:bg-gray-100 ui-active:dark:bg-neutral-800
+  disabled:cursor-default rounded ${isSelected ? 'text-brand-300' : ''}
+  ${isActive ? 'bg-gray-100 dark:bg-neutral-800' : ''}
 `;
 
 // REFACTOR: split this into smaller components
@@ -385,11 +386,18 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
+        onBlur={(event: React.FocusEvent<HTMLInputElement>): void =>
+          withHandleBlur(inputProps?.onBlur).onBlur(event)
+        }
         /*
          * Padding for the button. Using "em" so as to match @tailwind/forms
          * styles for <select>
          */
-        className={`${inputProps.className ?? ''} w-full pr-[1.5em]`}
+        className={`
+          ${className.notTouchedInput}
+          ${inputProps.className ?? ''}
+          w-full pr-[1.5em]
+        `}
         displayValue={(item: AutoCompleteItem<T> | null): string =>
           typeof item === 'string'
             ? item
@@ -415,7 +423,7 @@ export function AutoComplete<T>({
         >
           {isLoading && (
             <Combobox.Option
-              className={`${optionClassName} cursor-auto`}
+              className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
             >
@@ -482,27 +490,31 @@ export function AutoComplete<T>({
               );
             return (
               <Combobox.Option as={React.Fragment} key={index} value={item}>
-                <li className={optionClassName}>
-                  {typeof item.icon === 'string' ? (
-                    <div className="flex items-center">
-                      {item.icon}
-                      {fullLabel}
-                    </div>
-                  ) : (
-                    fullLabel
-                  )}
-                </li>
+                {({ active, selected }): JSX.Element => (
+                  <li className={optionClassName(active, selected)}>
+                    {typeof item.icon === 'string' ? (
+                      <div className="flex items-center">
+                        {item.icon}
+                        {fullLabel}
+                      </div>
+                    ) : (
+                      fullLabel
+                    )}
+                  </li>
+                )}
               </Combobox.Option>
             );
           })}
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
-              <li className={optionClassName}>
-                <div className="flex items-center">
-                  <span className={className.dataEntryAdd}>{icons.plus}</span>
-                  {commonText('add')}
-                </div>
-              </li>
+              {({ active, selected }): JSX.Element => (
+                <li className={optionClassName(active, selected)}>
+                  <div className="flex items-center">
+                    <span className={className.dataEntryAdd}>{icons.plus}</span>
+                    {commonText('add')}
+                  </div>
+                </li>
+              )}
             </Combobox.Option>
           )}
           {!listHasItems && (

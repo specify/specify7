@@ -108,7 +108,7 @@ function PreferencesDialog({
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={wbText('wbAdvancedSearchDialogTitle')}
+      header={wbText('configureSearchReplace')}
       modal={false}
       onClose={handleClose}
     >

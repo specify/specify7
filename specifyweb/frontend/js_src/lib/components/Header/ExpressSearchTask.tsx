@@ -105,9 +105,9 @@ function TableResult({
     <details>
       <summary
         className={`
-                link list-item rounded bg-brand-200 p-1.5
-                hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
-              `}
+          link list-item rounded bg-brand-200 p-1.5
+          hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
+        `}
       >
         {`${caption} (${tableResults.totalCount})`}
       </summary>
@@ -125,6 +125,7 @@ function TableResult({
           initialData={tableResults.results}
           label={model.label}
           model={model}
+          queryResource={undefined}
           tableClassName="max-h-[70vh]"
           totalCount={tableResults.totalCount}
         />

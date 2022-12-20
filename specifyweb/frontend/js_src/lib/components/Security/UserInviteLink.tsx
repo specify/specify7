@@ -53,12 +53,12 @@ export function UserInviteLink({
       {typeof link === 'string' && (
         <Dialog
           buttons={commonText('close')}
-          header={adminText('userInviteLinkDialogHeader')}
+          header={adminText('userInviteLink')}
           onClose={(): void => setLink(undefined)}
         >
           {hasProvidersConfigured ? (
             <>
-              {adminText('userInviteLinkDialogText', user.name)}
+              {adminText('userInviteLinkDescription', user.name)}
               <div className="flex gap-2">
                 <Input.Text
                   className="flex-1 !cursor-pointer"
@@ -69,7 +69,7 @@ export function UserInviteLink({
               </div>
             </>
           ) : (
-            adminText('userInviteLinkInvalidDialogText')
+            adminText('noProvidersForUserInviteLink')
           )}
         </Dialog>
       )}

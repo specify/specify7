@@ -2,6 +2,7 @@ import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import type { RA } from '../../utils/types';
 import type { EnhancedRoute } from './RouterUtils';
+import { queryText } from '../../localization/query';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -42,7 +43,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'trees',
-        title: commonText('treesDialogTitle'),
+        title: commonText('trees'),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeSelectOverlay }) => TreeSelectOverlay
@@ -85,7 +86,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           },
           {
             path: 'new',
-            title: commonText('newQueryDialogTitle'),
+            title: queryText('newQueryName'),
             element: () =>
               import('../Toolbar/Query').then(({ NewQuery }) => NewQuery),
           },

@@ -68,8 +68,13 @@ export function CollectionOneToManyPlugin({
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   return data === false ? null : (
-    <div className="w-fit rounded bg-[color:var(--form-background)] p-2">
-      <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
+    <div
+      className={`
+        w-fit rounded bg-[color:var(--form-background)] p-2
+        ring-1 ring-gray-500 dark:ring-0
+      `}
+    >
+      <table className={`grid-table grid-cols-[repeat(3,auto)] gap-2`}>
         <thead>
           <tr>
             <th scope="col">{formsText('collectionObject')}</th>
@@ -174,10 +179,13 @@ export function CollectionOneToManyPlugin({
       {state.type === 'DeniedAccessState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDeniedDialogHeader')}
+          header={commonText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
+          {commonText(
+            'collectionAccessDeniedDescription',
+            state.collectionName
+          )}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

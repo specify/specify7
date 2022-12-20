@@ -42,6 +42,7 @@ export function CurrentUserLink({
         event.preventDefault();
         navigate(`/specify/security/user/${userInformation.id}/`, {
           state: {
+            type: 'SecurityUser',
             initialCollectionId: collectionId,
           },
         });
@@ -85,12 +86,12 @@ export function ViewCollectionButton({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={resource}
+          onAdd={undefined}
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={undefined}

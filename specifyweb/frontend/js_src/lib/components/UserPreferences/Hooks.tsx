@@ -7,7 +7,14 @@ import { getUserPref } from './helpers';
 import { usePref } from './usePref';
 
 export const prefEvents = eventListener<{
-  readonly update: PreferenceItem<unknown> | undefined;
+  readonly update:
+    | {
+        readonly category: string;
+        readonly subcategory: string;
+        readonly item: string;
+        readonly definition: PreferenceItem<unknown>;
+      }
+    | undefined;
   readonly synchronized: undefined;
 }>();
 

@@ -1,4 +1,4 @@
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import type { RA } from '../../../utils/types';
@@ -19,6 +19,7 @@ import {
 import { formatUrl } from '../../Router/queryString';
 import { removeKey } from '../../../utils/utils';
 import { Http } from '../../../utils/ajax/definitions';
+import { spAppResourceView } from '../webOnlyViews';
 
 const {
   views,
@@ -150,9 +151,9 @@ describe('fetchView', () => {
   const viewDefinition = {} as unknown as ViewDefinition;
 
   const viewName = 'abc';
-  overwriteAjax(
+  overrideAjax(
     formatUrl('/context/view.json', { name: viewName }),
-    viewDefinition
+    JSON.stringify(viewDefinition)
   );
   test('caches fetched view', async () => {
     await expect(fetchView(viewName)).resolves.toEqual(viewDefinition);
@@ -168,15 +169,28 @@ describe('fetchView', () => {
   });
 
   const notFoundViewName = 'abc3';
-  overwriteAjax(
+  overrideAjax(
     formatUrl('/context/view.json', { name: notFoundViewName }),
     viewDefinition,
     {
       responseCode: Http.NOT_FOUND,
     }
   );
+
   test('handles 404 errors gracefully', async () =>
     expect(fetchView(notFoundViewName)).resolves.toBeUndefined());
+
+  const frontEndOnlyView = spAppResourceView;
+  overrideAjax(
+    formatUrl('/context/view.json', { name: frontEndOnlyView, quiet: '' }),
+    viewDefinition,
+    {
+      responseCode: Http.NO_CONTENT,
+    }
+  );
+
+  test('handles 204 response gracefully', async () =>
+    expect(fetchView(frontEndOnlyView)).resolves.toBeUndefined());
 });
 
 test('parseViewDefinition', () => {

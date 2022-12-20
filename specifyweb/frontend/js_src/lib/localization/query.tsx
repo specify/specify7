@@ -31,7 +31,7 @@ export const queryText = createDictionary({
     'en-us': 'End Value',
     'ru-ru': 'Конечное значение',
   },
-  saveQueryDialogHeader: {
+  saveQuery: {
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
   },
@@ -172,14 +172,6 @@ export const queryText = createDictionary({
     'en-us': 'Negate',
     'ru-ru': 'Отрицать',
   },
-  moveUp: {
-    'en-us': 'Move up',
-    'ru-ru': 'переместить вверх',
-  },
-  moveDown: {
-    'en-us': 'Move down',
-    'ru-ru': 'Переместить вниз',
-  },
   showButtonDescription: {
     'en-us': 'Show in results',
     'ru-ru': 'Показывать в результатах',
@@ -286,10 +278,6 @@ export const queryText = createDictionary({
   itemsReturned: {
     'en-us': 'Items have been returned',
     'ru-ru': 'Items have been returned',
-  },
-  saveQuery: {
-    'en-us': 'Save Query',
-    'ru-ru': 'Сохранить запрос',
   },
   queryResults: {
     'en-us': (tableName: string) => `Query Results: ${tableName}`,

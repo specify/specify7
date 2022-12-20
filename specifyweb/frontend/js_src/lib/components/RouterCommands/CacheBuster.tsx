@@ -18,7 +18,7 @@ export const clearCache = async (): Promise<true> =>
         endpoint,
         { method: 'HEAD', cache: 'no-cache' },
         {
-          expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
+          expectedResponseCodes: [Http.OK, Http.NOT_FOUND, Http.NO_CONTENT],
         }
         // eslint-disable-next-line no-console
       ).then(() => console.log(`Cleaned cache from ${endpoint}`))
@@ -39,7 +39,7 @@ export function CacheBuster(): JSX.Element | null {
        * cache buster dialog again causing a perpetual loop.
        */
       header={commonText('clearCache')}
-      onClose={(): void => globalThis.location.assign('/specify/')}
+      onClose={(): void => globalThis.location.replace('/specify/')}
     >
       {commonText('clearedCacheDialogText')}
     </Dialog>

@@ -78,7 +78,7 @@ export function SaveQueryButtons({
             handleSaved();
             setShowDialog(false);
             unsetUnloadProtect();
-            navigate(`/specify/query/${queryId}/`);
+            navigate(`/specify/query/${queryId}/`, { replace: true });
           }}
         />
       )}
@@ -201,9 +201,8 @@ export function MakeRecordSetButton({
 
           const recordSet = new schema.models.RecordSet.Resource();
 
-          if (!queryResource.isNew()) {
+          if (!queryResource.isNew())
             recordSet.set('name', queryResource.get('name'));
-          }
 
           recordSet.set('dbTableId', strictGetModel(baseTableName).tableId);
           // @ts-expect-error Adding a non-datamodel field
@@ -219,13 +218,13 @@ export function MakeRecordSetButton({
         <>
           {typeof recordSet === 'object' && (
             <ResourceView
-              canAddAnother={false}
               dialog="modal"
               isDependent={false}
               isSubForm={false}
               mode="edit"
               resource={recordSet}
               viewName={recordSetView}
+              onAdd={undefined}
               onClose={(): void => setState(undefined)}
               onDeleted={f.never}
               onSaved={(): void => setState('saved')}

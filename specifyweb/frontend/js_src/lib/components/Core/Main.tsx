@@ -107,7 +107,10 @@ export function Main(): JSX.Element | null {
               {userInformation.isauthenticated ? (
                 <UserTools />
               ) : (
-                <Link.Default href="/accounts/login/">
+                <Link.Default
+                  href="/accounts/login/"
+                  className={className.navigationHandled}
+                >
                   {commonText('logIn')}
                 </Link.Default>
               )}
@@ -165,10 +168,10 @@ export function Main(): JSX.Element | null {
             container: `${dialogClassNames.narrowContainer}`,
           }}
           forceToTop
-          header={commonText('noAgentDialogHeader')}
+          header={commonText('noAgent')}
           onClose={(): void => globalThis.location.assign('/accounts/logout/')}
         >
-          {commonText('noAgentDialogText')}
+          {commonText('noAgentDescription')}
         </Dialog>
       )}
     </>

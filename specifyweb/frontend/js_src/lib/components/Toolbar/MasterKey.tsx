@@ -39,7 +39,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
           <Submit.Blue form={id('form')}>{commonText('generate')}</Submit.Blue>
         </>
       }
-      header={commonText('generateMasterKeyDialogHeader')}
+      header={commonText('generateMasterKey')}
       onClose={handleClose}
     >
       <Form

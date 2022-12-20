@@ -116,7 +116,7 @@ export const DataEntry = {
       },
     })
   ),
-  Footer: wrap('FormFooter', 'div', className.formFooter, {
+  Footer: wrap('DataEntry.Footer', 'div', className.formFooter, {
     role: 'toolbar',
   }),
   SubForm: wrap('DataEntry.SubForm', 'fieldset', 'contents'),

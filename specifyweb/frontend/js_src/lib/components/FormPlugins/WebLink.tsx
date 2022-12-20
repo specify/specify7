@@ -127,33 +127,32 @@ export function WebLink({
         formType === 'formTable' ? undefined : 'flex gap-2 print:hidden'
       }
     >
+      {formType === 'form' &&
+      typeof fieldName === 'string' &&
+      fieldName !== 'this' ? (
+        <UiField
+          fieldName={fieldName}
+          id={id}
+          mode={mode}
+          resource={resource}
+        />
+      ) : undefined}
       {typeof definition === 'object' ? (
-        <>
-          {formType === 'form' &&
-          typeof fieldName === 'string' &&
-          fieldName !== 'this' ? (
-            <UiField
-              fieldName={fieldName}
-              id={id}
-              mode={mode}
-              resource={resource}
-            />
-          ) : undefined}
-          {typeof url === 'string' && url.length > 0 ? (
-            <Link.Gray
-              href={url}
-              rel={isExternal ? 'noopener' : undefined}
-              target={isExternal ? '_blank' : undefined}
-              title={definition.title}
-            >
-              {image}
-            </Link.Gray>
-          ) : (
-            <Button.Gray title={definition.title} onClick={undefined}>
-              {image}
-            </Button.Gray>
-          )}
-        </>
+        typeof url === 'string' && url.length > 0 ? (
+          <Link.Gray
+            className="ring-1 ring-gray-400 dark:ring-0 disabled:ring-gray-500 disabled:dark:ring-neutral-500"
+            href={url}
+            rel={isExternal ? 'noopener' : undefined}
+            target={isExternal ? '_blank' : undefined}
+            title={definition.title}
+          >
+            {image}
+          </Link.Gray>
+        ) : (
+          <Button.Gray title={definition.title} onClick={undefined}>
+            {image}
+          </Button.Gray>
+        )
       ) : undefined}
     </div>
   );
@@ -201,7 +200,7 @@ export function parseWebLink(definition: Element): ParsedWebLink | undefined {
     definition
       ?.querySelector('baseURLStr')
       ?.textContent?.trim()
-      .replace(/<\s*this\s*>/g, '<_this>')
+      .replace(/<\s*this\s*>/gu, '<_this>')
       .replaceAll('AMP', '&')
       .replaceAll('<', '<%= ')
       .replaceAll('>', ' %>') ?? '';

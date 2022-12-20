@@ -29,7 +29,7 @@ export const leafletLayersEndpoint =
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode
  */
-const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
+export const defaultTileLayers: RR<'baseMaps' | 'overlays', IR<L.TileLayer>> = {
   baseMaps: {
     'Street Map (OpenStreetMap)': L.tileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -136,21 +136,24 @@ export const preferredOverlay = 'Labels and boundaries';
 export const leafletLayersPromise: Promise<typeof defaultTileLayers> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax<IR<unknown>>(
+      ? ajax<string>(
           cachableUrl(
-            formatUrl('/context/app.resource', { name: 'leaflet-layers' })
+            formatUrl('/context/app.resource', {
+              name: 'leaflet-layers',
+              quiet: '',
+            })
           ),
-          { headers: { Accept: 'application/json' } },
-          { strict: false, expectedResponseCodes: [Http.OK, Http.NOT_FOUND] }
+          { headers: { Accept: 'text/plain' } },
+          { strict: false, expectedResponseCodes: [Http.OK, Http.NO_CONTENT] }
         )
           .then(({ data, status }) =>
-            status === Http.NOT_FOUND
+            status === Http.NO_CONTENT
               ? ajax<IR<unknown>>(
                   cachableUrl(leafletLayersEndpoint),
                   { headers: { Accept: 'application/json' } },
                   { strict: false }
                 ).then(({ data }) => data)
-              : data
+              : (JSON.parse(data) as IR<unknown>)
           )
           .then(parseLayersFromJson)
           .catch((error) => {

@@ -59,7 +59,7 @@ export const adminText = createDictionary({
     'en-us': 'User Accounts Assigned to this Collection',
     'ru-ru': 'Пользователи',
   },
-  selectResourceTypeDialogHeader: {
+  selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
   },
@@ -84,7 +84,7 @@ export const adminText = createDictionary({
     'en-us': 'This option is unavailable for admin users',
     'ru-ru': 'Эта опция недоступна для администраторов.',
   },
-  userCollectionsPluginDialogTitle: {
+  configureCollectionAccess: {
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к коллекциям',
   },
@@ -172,15 +172,11 @@ export const adminText = createDictionary({
     'en-us': 'All Actions',
     'ru-ru': 'Все действия',
   },
-  none: {
-    'en-us': 'none',
-    'ru-ru': 'ничто',
-  },
   collectionAccess: {
     'en-us': 'Enable Collection Access',
     'ru-ru': 'Доступ к коллекции',
   },
-  createRoleDialogHeader: {
+  createRole: {
     'en-us': 'Create Role',
     'ru-ru': 'Создать роль',
   },
@@ -218,11 +214,11 @@ export const adminText = createDictionary({
     'en-us': 'Create Invite Link',
     'ru-ru': 'Создать пригласительную ссылку',
   },
-  userInviteLinkDialogHeader: {
+  userInviteLink: {
     'en-us': 'User Invite Link',
     'ru-ru': 'Ссылка для приглашения пользователя',
   },
-  userInviteLinkDialogText: {
+  userInviteLinkDescription: {
     'en-us': (username: string) => `
       Send the following link to ${username} to allow
       them to log in for the first time.
@@ -232,7 +228,7 @@ export const adminText = createDictionary({
       им войти в систему в первый раз.
     `,
   },
-  userInviteLinkInvalidDialogText: {
+  noProvidersForUserInviteLink: {
     'en-us': `No external identity provider is configured.
       You can configure some in Specify 7 server settings`,
     'ru-ru': `Внешний поставщик удостоверений не настроен.
@@ -242,7 +238,7 @@ export const adminText = createDictionary({
     'en-us': 'Specify 6 Permissions',
     'ru-ru': 'Specify 6 Разрешения',
   },
-  setPasswordDialogText: {
+  setPasswordBeforeSavePrompt: {
     'en-us': `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
     'ru-ru': `Не забудьте установить пароль для этого пользователя. Пользователи
@@ -280,11 +276,11 @@ export const adminText = createDictionary({
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Specify 6 Администратор)',
   },
-  deleteRoleDialogHeader: {
+  deleteRoleWithUsers: {
     'en-us': 'Delete role that has users?',
     'ru-ru': 'Удалить роль, в которой есть пользователи?',
   },
-  deleteRoleDialogText: {
+  deleteRoleWithUsersDescription: {
     'en-us': 'Users will not be deleted, but they would lose this role.',
     'ru-ru': 'Пользователи не будут удалены, но потеряют эту роль.',
   },
@@ -294,11 +290,11 @@ export const adminText = createDictionary({
     'ru-ru': `
       Пользовательские политики на уровне учреждения (применяются ко всем назначенным коллекциям)`,
   },
-  noAdminsErrorDialogHeader: {
+  cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
     'ru-ru': 'Не могу удалить статус суперадминистратора',
   },
-  noAdminsErrorDialogText: {
+  cantRemoveLastAdminDescription: {
     'en-us': 'There must be at least one Institution Admin in institution',
     'ru-ru': 'Должен быть хотя бы один суперадмин',
   },
@@ -343,14 +339,6 @@ export const adminText = createDictionary({
   appResource: {
     'en-us': 'App Resource',
     'ru-ru': 'Ресурс приложения',
-  },
-  formDefinitions: {
-    'en-us': 'Form Definitions',
-    'ru-ru': 'Макеты форм',
-  },
-  selectResourceType: {
-    'en-us': 'Select Resource Type',
-    'ru-ru': 'Выберите тип ресурса',
   },
   label: {
     'en-us': 'Label',

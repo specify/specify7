@@ -60,49 +60,48 @@ export type RecordSelectorProps<SCHEMA extends AnySchema> = {
     | ((index: number, source: 'deleteButton' | 'minusButton') => void)
     | undefined;
   readonly defaultIndex?: number;
-  // Render function. Allows to customize placement of elements and features
-  readonly children: (props: {
-    // Delete confirmation or search dialogs
-    readonly dialogs: JSX.Element | null;
-    // Record Selector slider component
-    readonly slider: JSX.Element;
-    // Index of current resource in the RecordSet
-    readonly index: number;
-    // Readonly resourceView: JSX.Element | undefined;
-    readonly totalCount: number;
-    // Use this to render <ResourceView>
-    readonly resource: SpecifyResource<SCHEMA> | undefined;
-    // Set this as an "Add" button event listener
-    readonly onAdd: (() => void) | undefined;
-    // Set this as an "Remove" button event listener
-    readonly onRemove:
-      | ((source: 'deleteButton' | 'minusButton') => void)
-      | undefined;
-    // True while fetching new record
-    readonly isLoading: boolean;
-  }) => JSX.Element;
   // Current index in the collection
   readonly index: number;
   // Event handler for index change
   readonly onSlide:
-    | ((newIndex: number, callback?: () => void) => void)
+    | ((newIndex: number, replace: boolean, callback?: () => void) => void)
     | undefined;
   // Total number of elements in the collection
   readonly totalCount: number;
 };
 
-export function BaseRecordSelector<SCHEMA extends AnySchema>({
+export type RecordSelectorState<SCHEMA extends AnySchema> = {
+  // Delete confirmation or search dialogs
+  readonly dialogs: JSX.Element | null;
+  // Record Selector slider component
+  readonly slider: JSX.Element;
+  // Index of current resource in the RecordSet
+  readonly index: number;
+  // Readonly resourceView: JSX.Element | undefined;
+  readonly totalCount: number;
+  // Use this to render <ResourceView>
+  readonly resource: SpecifyResource<SCHEMA> | undefined;
+  // Set this as an "Add" button event listener
+  readonly onAdd: (() => void) | undefined;
+  // Set this as an "Remove" button event listener
+  readonly onRemove:
+    | ((source: 'deleteButton' | 'minusButton') => void)
+    | undefined;
+  // True while fetching new record
+  readonly isLoading: boolean;
+};
+
+export function useRecordSelector<SCHEMA extends AnySchema>({
   model,
   field,
   records,
   onAdd: handleAdded,
   onDelete: handleDelete,
   relatedResource,
-  children,
   index,
   onSlide: handleSlide,
   totalCount,
-}: RecordSelectorProps<SCHEMA>): JSX.Element {
+}: RecordSelectorProps<SCHEMA>): RecordSelectorState<SCHEMA> {
   const lastIndexRef = React.useRef<number>(index);
   React.useEffect(
     () => (): void => {
@@ -115,19 +114,21 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
     State<'AddBySearch'> | State<'Main'>
   >({ type: 'Main' });
 
-  return children({
+  return {
     slider: (
       <Slider
         count={totalCount}
-        value={
-          typeof records[index] === 'object' ? index : lastIndexRef.current
+        value={index}
+        onChange={
+          handleSlide === undefined
+            ? undefined
+            : (index) => handleSlide?.(index, false)
         }
-        onChange={handleSlide}
       />
     ),
     index,
     totalCount,
-    isLoading: records[index] === undefined,
+    isLoading: records[index] === undefined && totalCount !== 0,
     // While new resource is loading, display previous resource
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:
@@ -168,13 +169,17 @@ export function BaseRecordSelector<SCHEMA extends AnySchema>({
               ? handleSlide(
                   clamp(
                     0,
-                    // New index depends on the direction you came from
+                    /*
+                     * Previous index decides which direction to go in
+                     * once item is deleted
+                     */
                     index < lastIndexRef.current ? index - 1 : index,
                     totalCount - 2
                   ),
+                  true,
                   () => handleDelete(index, source)
                 )
               : undefined
         : undefined,
-  });
+  };
 }

@@ -17,6 +17,7 @@ import { RoleView } from './Role';
 import type { SecurityOutlet } from '../Toolbar/Security';
 import { decompressPolicies } from './policyConverter';
 import { Http } from '../../utils/ajax/definitions';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 
 const closeUrl = '/specify/security/institution/';
 
@@ -54,7 +55,7 @@ export function SecurityLibraryRole(): JSX.Element {
                     removeKey(libraryRoles, role.id!.toString())
                   )
                 )
-                .then((): void => navigate(closeUrl))
+                .then((): void => navigate(closeUrl, { replace: true }))
             )
           : undefined
       }
@@ -77,10 +78,8 @@ export function SecurityLibraryRole(): JSX.Element {
 function useRole(
   libraryRoles: IR<Role> | undefined
 ): NewRole | Role | false | undefined {
-  const location = useLocation();
-  const state = location.state as
-    | { readonly role?: NewRole | Role }
-    | undefined;
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'SecurityRole');
   const role = state?.role;
   const { roleId } = useParams();
   return React.useMemo(() => {

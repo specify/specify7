@@ -19,7 +19,7 @@ async function doSave(
   name: string,
   isSaveAs: boolean
 ): Promise<number> {
-  const clonedQuery = isSaveAs ? await query.clone() : query;
+  const clonedQuery = isSaveAs ? await query.clone(true) : query;
   clonedQuery.set('name', name.trim());
 
   if (isSaveAs) clonedQuery.set('specifyUser', userInformation.resource_uri);
@@ -71,7 +71,7 @@ export function QuerySaveDialog({
       header={
         isSaveAs
           ? queryText('saveClonedQueryDialogHeader')
-          : queryText('saveQueryDialogHeader')
+          : queryText('saveQuery')
       }
       onClose={handleClose}
     >

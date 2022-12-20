@@ -2,18 +2,20 @@
  * Wrappers for some back-end API endpoints
  */
 
-import { ajax } from './index';
-import { formData } from './helpers';
-import { eventListener } from '../events';
-import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
-import { formatUrl } from '../../components/Router/queryString';
-import type { RA } from '../types';
-import { filterArray } from '../types';
-import {
+import type { CollectionFetchFilters } from '../../components/DataModel/collection';
+import type {
   AnySchema,
   AnyTree,
   SerializedModel,
 } from '../../components/DataModel/helperTypes';
+import type { SpecifyResource } from '../../components/DataModel/legacyTypes';
+import type { Tables } from '../../components/DataModel/types';
+import { formatUrl } from '../../components/Router/queryString';
+import { eventListener } from '../events';
+import type { IR, RA, RR } from '../types';
+import { filterArray } from '../types';
+import { formData } from './helpers';
+import { ajax } from './index';
 
 export const globalEvents = eventListener<{
   readonly initResource: SpecifyResource<AnySchema>;
@@ -139,26 +141,79 @@ export const getPrepAvailability = async (
     { headers: { Accept: 'application/json' } }
   ).then(({ data }) => data);
 
-export const fetchRows = async <SCHEMA extends AnySchema>(
-  table: SCHEMA['tableName'],
+/**
+ * Fetch a collection of resources from the back-end. Can also provide filters
+ */
+export const fetchRows = async <
+  TABLE_NAME extends keyof Tables,
+  SCHEMA extends Tables[TABLE_NAME],
+  FIELDS extends RR<
+    string | keyof SCHEMA['fields'],
+    RA<'boolean' | 'null' | 'number' | 'string'>
+  >
+>(
+  tableName: TABLE_NAME,
+  // Basic filters. Type-safe
   {
     fields,
-    limit,
-    distinct,
-  }: {
-    readonly fields: RA<keyof SCHEMA['fields']>;
-    readonly limit: number;
-    readonly distinct: boolean;
-  }
-): Promise<RA<RA<string>>> =>
-  ajax<RA<RA<string>>>(
-    formatUrl(`/api/specify_rows/${table.toLowerCase()}/`, {
-      fields: fields.join(',').toLowerCase(),
-      limit: limit.toString(),
-      distinct: distinct ? 'true' : 'false',
-    }),
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Accept: 'application/json' },
-    }
-  ).then(({ data }) => data);
+    distinct = false,
+    ...filters
+  }: CollectionFetchFilters<SCHEMA> & {
+    readonly fields: FIELDS;
+    readonly distinct?: boolean;
+  },
+  /**
+   * Advanced filters, not type-safe.
+   *
+   * Can query relationships by separating fields with "__"
+   * Can query partial dates (e.g. catalogedDate__year=2030)
+   * More info: https://docs.djangoproject.com/en/4.0/topics/db/queries/
+   */
+  advancedFilters: IR<number | string> = {}
+): Promise<RA<FieldsToTypes<FIELDS>>> => {
+  const { data } = await ajax<RA<RA<string | null | number | boolean>>>(
+    formatUrl(
+      `/api/specify_rows/${tableName.toLowerCase()}/`,
+      Object.fromEntries(
+        filterArray(
+          Array.from(
+            Object.entries({
+              ...filters,
+              ...advancedFilters,
+              ...(distinct ? { distinct: 'true' } : {}),
+              fields: Object.keys(fields).join(',').toLowerCase(),
+            }).map(([key, value]) =>
+              value === undefined
+                ? undefined
+                : [
+                    key.toLowerCase(),
+                    key === 'orderBy'
+                      ? value.toString().toLowerCase()
+                      : value.toString(),
+                  ]
+            )
+          )
+        )
+      )
+    ),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    { headers: { Accept: 'application/json' } }
+  );
+  const keys = Object.keys(fields);
+  return data.map(
+    (row) =>
+      Object.fromEntries(
+        keys.map((key, index) => [key, row[index]])
+      ) as FieldsToTypes<FIELDS>
+  );
+};
+
+type FieldsToTypes<
+  FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
+> = {
+  [FIELD in keyof FIELDS]:
+    | (FIELDS[FIELD][number] extends 'boolean' ? boolean : never)
+    | (FIELDS[FIELD][number] extends 'string' ? string : never)
+    | (FIELDS[FIELD][number] extends 'number' ? number : never)
+    | (FIELDS[FIELD][number] extends 'null' ? null : never);
+};

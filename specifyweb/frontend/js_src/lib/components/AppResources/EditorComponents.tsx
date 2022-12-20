@@ -31,7 +31,7 @@ export const appResourceIcon = (
   type: ReturnType<typeof getResourceType>
 ): JSX.Element =>
   type === 'viewSet' ? (
-    <span title={adminText('formDefinitions')} aria-hidden>
+    <span title={commonText('formDefinitions')} aria-hidden>
       {appResourceTypes.viewSets.icon}
     </span>
   ) : (
@@ -155,7 +155,9 @@ export function useCodeMirrorExtensions(
         ? [json(), jsonLinter(handleLinted)]
         : mode === 'properties'
         ? [StreamLanguage.define(properties)]
-        : [xml(), xmlLinter(handleLinted)];
+        : mode === 'jrxml' || mode === 'xml'
+        ? [xml(), xmlLinter(handleLinted)]
+        : [];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

@@ -63,7 +63,12 @@ export function CreateRole({
   const navigate = useNavigate();
 
   const handleCreated = (role: NewRole | Role): void =>
-    navigate(getCreatedUrl(role.id), { state: { role } });
+    navigate(getCreatedUrl(role.id), {
+      state: {
+        type: 'SecurityRole',
+        role,
+      },
+    });
 
   return (
     <Dialog
@@ -88,7 +93,7 @@ export function CreateRole({
           <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
         </>
       }
-      header={adminText('createRoleDialogHeader')}
+      header={adminText('createRole')}
       onClose={(): void => navigate(closeUrl)}
     >
       {scope === 'institution' ||

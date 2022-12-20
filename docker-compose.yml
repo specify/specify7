@@ -119,7 +119,7 @@ services:
       - DEBUG_MODE=false
 
   specify6:
-    image: specifyconsortium/specify6-service:6.8.01
+    image: specifyconsortium/specify6-service:6.8.02
     volumes:
       - "specify6:/volumes/Specify"
 

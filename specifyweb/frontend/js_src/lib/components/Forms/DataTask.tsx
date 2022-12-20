@@ -3,9 +3,7 @@
  */
 
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-
-import { deserializeResource } from '../../hooks/resource';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import { fetchCollection } from '../DataModel/collection';
@@ -13,7 +11,7 @@ import {
   fetchCollectionsForResource,
   getCollectionForResource,
 } from '../DataModel/domain';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { getModel, getModelById, schema } from '../DataModel/schema';
@@ -26,8 +24,11 @@ import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import { OtherCollection } from './OtherCollectionView';
-import { DisplayResource, ShowResource } from './ShowResource';
+import { ViewResourceById } from './ShowResource';
 import { useSearchParameter } from '../../hooks/navigation';
+import { RA } from '../../utils/types';
+import { State } from 'typesafe-reducer';
+import { LoadingContext } from '../Core/Contexts';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -98,7 +99,10 @@ function DisplayRecordSet({
                 records[0]?.recordId ?? 'new'
               ),
               { recordSetId: recordSet.id.toString() }
-            )
+            ),
+            {
+              replace: true,
+            }
           )
         ),
       [recordSet, resourceIndex, recordToOpen]
@@ -109,36 +113,20 @@ function DisplayRecordSet({
 }
 
 /** Begins the process of creating a new resource */
-export function NewResourceView(): JSX.Element {
-  const { tableName = '' } = useParams();
-  const { state } = useLocation();
-  const resource = (
-    state as { readonly resource: SerializedResource<AnySchema> | undefined }
-  )?.resource;
-  const record = React.useMemo(
-    () => f.maybe(resource, deserializeResource),
-    [resource]
-  );
+export function ViewResource(): JSX.Element {
+  const { tableName = '', id } = useParams();
   const parsedTableName = getModel(tableName)?.name;
 
   return typeof parsedTableName === 'string' ? (
     <ProtectedTable action="create" tableName={parsedTableName}>
-      {typeof record === 'object' ? (
-        <ShowResource resource={record} />
-      ) : (
-        <DisplayResource id={undefined} tableName={parsedTableName} />
-      )}
+      <ViewResourceById id={id} tableName={parsedTableName} />
     </ProtectedTable>
   ) : (
     <NotFoundView />
   );
 }
 
-export function ViewResource(): JSX.Element {
-  const { tableName = '', id } = useParams();
-  return <DisplayResource id={id} tableName={tableName} />;
-}
-
+// FEATURE: consider displaying the resource without changing the URL
 export function ViewResourceByGuid({
   model,
   guid,
@@ -169,7 +157,7 @@ export function ViewResourceByGuid({
   return id === false ? <NotFoundView /> : null;
 }
 
-export function ViewByCatalog(): JSX.Element {
+export function ViewResourceByCatalog(): JSX.Element {
   return (
     <ProtectedTable action="read" tableName="CollectionObject">
       <ViewByCatalogProtected />
@@ -256,29 +244,57 @@ function ViewByCatalogProtected(): JSX.Element | null {
 export function CheckLoggedInCollection({
   resource,
   children,
+  /*
+   * As a performance optimization, don't check if in record set. Safe to assume
+   * that if any record set item is from this collection, than all record set
+   * items are from this collection (this will initially be called with
+   * isInRecordSet=false when you open the record set)
+   */
+  isInRecordSet = false,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly children: JSX.Element;
+  readonly isInRecordSet?: boolean;
 }): JSX.Element | null {
-  const [otherCollections] = useAsyncState(
-    React.useCallback(async () => {
-      if (resource.isNew()) return false;
-      await resource.fetch();
-      const collectionId = getCollectionForResource(resource);
-      if (schema.domainLevelIds.collection === collectionId) return false;
-      else if (typeof collectionId === 'number') return [collectionId];
-      const collectionIds = await fetchCollectionsForResource(resource);
-      return !Array.isArray(collectionIds) ||
-        collectionIds.includes(schema.domainLevelIds.collection)
-        ? false
-        : collectionIds;
-    }, [resource]),
-    true
-  );
+  const [otherCollections, setOtherCollections] = React.useState<
+    | State<'Accessible'>
+    | State<'Loading'>
+    | State<'Inaccessible', { readonly collectionIds: RA<number> }>
+  >({ type: 'Loading' });
+  const loading = React.useContext(LoadingContext);
+  React.useEffect(() => {
+    if (isInRecordSet || resource.isNew()) {
+      setOtherCollections({ type: 'Accessible' });
+      return;
+    }
+    setOtherCollections({ type: 'Loading' });
+    loading(
+      resource
+        .fetch()
+        .then<typeof otherCollections>(async () => {
+          const collectionId = getCollectionForResource(resource);
+          if (schema.domainLevelIds.collection === collectionId)
+            return { type: 'Accessible' };
+          else if (typeof collectionId === 'number')
+            return {
+              type: 'Inaccessible',
+              collectionIds: [collectionId],
+            } as const;
+          else {
+            const collectionIds = await fetchCollectionsForResource(resource);
+            return !Array.isArray(collectionIds) ||
+              collectionIds.includes(schema.domainLevelIds.collection)
+              ? { type: 'Accessible' }
+              : { type: 'Inaccessible', collectionIds };
+          }
+        })
+        .then(setOtherCollections)
+    );
+  }, [resource, isInRecordSet]);
 
-  return otherCollections === false ? (
+  return otherCollections.type === 'Accessible' ? (
     children
-  ) : Array.isArray(otherCollections) ? (
-    <OtherCollection collectionIds={otherCollections} />
+  ) : otherCollections.type === 'Inaccessible' ? (
+    <OtherCollection collectionIds={otherCollections.collectionIds} />
   ) : null;
 }

@@ -1,4 +1,4 @@
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { fetchCollection, fetchRelated } from '../collection';
 import { getResourceApiUrl } from '../resource';
@@ -10,7 +10,7 @@ describe('fetchCollection', () => {
   const baseCoRecord = {
     resource_uri: getResourceApiUrl('CollectionObject', 1),
   };
-  overwriteAjax('/api/specify/collectionobject/?limit=1', {
+  overrideAjax('/api/specify/collectionobject/?limit=1', {
     meta: {
       total_count: 2,
     },
@@ -26,7 +26,7 @@ describe('fetchCollection', () => {
   const baseLocalityRecord = {
     resource_uri: getResourceApiUrl('Locality', 1),
   };
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/locality/?limit=1&localityname=Test&orderby=-latlongaccuracy',
     {
       meta: {
@@ -48,7 +48,7 @@ describe('fetchCollection', () => {
       totalCount: 2,
     }));
 
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/locality/?limit=1&localityname__istarswith=Test&id__in=1%2C2',
     {
       meta: {
@@ -78,7 +78,7 @@ describe('fetchRelated', () => {
   const baseCitationRecord = {
     resource_uri: getResourceApiUrl('AccessionCitation', 1),
   };
-  overwriteAjax('/api/specify/accessioncitation/?limit=1&accession=1', {
+  overrideAjax('/api/specify/accessioncitation/?limit=1&accession=1', {
     meta: {
       total_count: 2,
     },

@@ -226,7 +226,7 @@ describe('formatterToParser', () => {
       ...parser
     } = formatterToParser({}, uiFormatter);
     expect(parser).toEqual({
-      pattern: new RegExp(uiFormatter.parseRegexp(), 'u'),
+      pattern: new RegExp(uiFormatter.parseRegExp(), 'u'),
       title,
       placeholder: uiFormatter.pattern()!,
       value: uiFormatter.valueOrWild(),

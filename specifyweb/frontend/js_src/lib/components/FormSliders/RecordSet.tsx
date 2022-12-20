@@ -1,16 +1,19 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { fetchRows } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { defined, overwriteReadOnly } from '../../utils/types';
-import { clamp, removeItem } from '../../utils/utils';
+import { defined } from '../../utils/types';
+import { clamp, split } from '../../utils/utils';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext } from '../Core/Contexts';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { serializeResource } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -18,237 +21,282 @@ import {
   deleteResource,
   getResourceViewUrl,
 } from '../DataModel/resource';
-import { getModelById } from '../DataModel/schema';
 import type { RecordSet as RecordSetSchema } from '../DataModel/types';
-import { crash } from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
-import { Dialog, LoadingScreen } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
+import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 import type { RecordSelectorProps } from './RecordSelector';
 import { RecordSelectorFromIds } from './RecordSelectorFromIds';
-import { EditRecordSet } from '../Toolbar/RecordSetEdit';
+import { locationToState, useStableLocation } from '../Router/RouterState';
+
+export function RecordSetWrapper<SCHEMA extends AnySchema>({
+  recordSet,
+  resource,
+  onClose: handleClose,
+}: {
+  readonly recordSet: SpecifyResource<RecordSetSchema>;
+  readonly resource: SpecifyResource<SCHEMA>;
+  readonly onClose: () => void;
+}): JSX.Element | null {
+  const navigate = useNavigate();
+
+  const location = useStableLocation(useLocation());
+  const state = locationToState(location, 'RecordSet');
+  const savedRecordSetItemIndex = state?.recordSetItemIndex;
+  const [index, setIndex] = React.useState<number | undefined>(undefined);
+  const loading = React.useContext(LoadingContext);
+  React.useEffect(() => {
+    if (typeof savedRecordSetItemIndex === 'number') {
+      setIndex(savedRecordSetItemIndex);
+      return;
+    }
+    if (resource.isNew()) {
+      setIndex(0);
+      return;
+    }
+    loading(
+      fetchCollection('RecordSetItem', {
+        recordSet: recordSet.id,
+        limit: 1,
+        recordId: resource.id,
+      }).then(async ({ records }) => {
+        const recordSetItemId = records[0]?.id;
+        if (recordSetItemId === undefined) {
+          // Record is not part of a record set
+          navigate(
+            getResourceViewUrl(resource.specifyModel.name, resource.id),
+            { replace: true }
+          );
+          return;
+        }
+        const { totalCount } = await fetchCollection(
+          'RecordSetItem',
+          {
+            recordSet: recordSet.id,
+            limit: 1,
+          },
+          { id__lt: recordSetItemId }
+        );
+        setIndex(totalCount);
+      })
+    );
+  }, [savedRecordSetItemIndex, loading, recordSet.id, resource.id]);
+
+  const [totalCount] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('RecordSetItem', {
+          limit: 1,
+          recordSet: recordSet.id,
+        }).then(({ totalCount }) => totalCount),
+      [recordSet.id]
+    ),
+    true
+  );
+
+  return totalCount === undefined || index === undefined ? null : (
+    <RecordSet
+      dialog={false}
+      index={resource.isNew() ? totalCount : index}
+      mode="edit"
+      record={resource}
+      recordSet={recordSet}
+      totalCount={totalCount}
+      onAdd={undefined}
+      onClose={handleClose}
+      onSlide={undefined}
+    />
+  );
+}
+
+const fetchSize = DEFAULT_FETCH_LIMIT * 2;
 
 /** Fetch IDs of records in a record set at a given position */
 const fetchItems = async (
   recordSetId: number,
   offset: number
-): Promise<
-  (ids: RA<number | undefined>) => {
-    readonly ids: RA<number | undefined>;
-    readonly totalCount: number;
-  }
-> =>
-  fetchCollection('RecordSetItem', {
-    limit: DEFAULT_FETCH_LIMIT,
+): Promise<RA<readonly [index: number, id: number]>> =>
+  fetchRows('RecordSetItem', {
+    limit: fetchSize,
     recordSet: recordSetId,
     orderBy: 'id',
     offset,
-  }).then(({ records, totalCount }) => (ids: RA<number | undefined>) => ({
-    totalCount,
-    ids: records
-      .map(({ recordId }, index) => [offset + index, recordId] as const)
-      .reduce(
-        (items, [order, recordId]) => {
-          items[order] = recordId;
-          return items;
-        },
+    fields: { recordId: ['number'] } as const,
+  }).then((records) =>
+    records.map(({ recordId }, index) => [offset + index, recordId] as const)
+  );
 
-        ids.length === 0
-          ? /*
-             * Creating a sparse array of correct length here. Can't use
-             * Array.from({ length: totalCount }) because it creates a dense array
-             */
-            /* eslint-disable-next-line unicorn/no-new-array */
-            new Array(totalCount)
-          : /*
-             * A trivial slice to create a shallow copy. Can't use Array.from
-             * because that decompresses a sparse array
-             */
-            ids.slice()
-      ),
-  }));
+const updateIds = (
+  oldIds: RA<number | undefined>,
+  updates: RA<readonly [index: number, id: number]>
+): RA<number | undefined> =>
+  updates.reduce(
+    (items, [order, recordId]) => {
+      items[order] = recordId;
+      return items;
+    },
+    /*
+     * A trivial slice to create a shallow copy. Can't use Array.from
+     * because that decompresses the sparse array
+     */
+    oldIds.slice()
+  );
 
-export function RecordSet<SCHEMA extends AnySchema>({
+function RecordSet<SCHEMA extends AnySchema>({
   recordSet,
-  defaultResourceIndex = 0,
+  index: currentIndex,
+  record: currentRecord,
+  totalCount: initialTotalCount,
   dialog,
   mode,
   onClose: handleClose,
-  canAddAnother,
   ...rest
 }: Omit<
   RecordSelectorProps<SCHEMA>,
-  | 'children'
   | 'defaultIndex'
   | 'field'
   | 'index'
+  | 'model'
   | 'onDelete'
   | 'onSaved'
   | 'records'
   | 'totalCount'
 > & {
   readonly recordSet: SpecifyResource<RecordSetSchema>;
-  readonly defaultResourceIndex: number | undefined;
+  readonly index: number;
+  readonly record: SpecifyResource<SCHEMA>;
+  readonly totalCount: number;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly mode: FormMode;
   readonly onClose: () => void;
-  readonly canAddAnother: boolean;
 }): JSX.Element {
-  const [items, setItems] = React.useState<
-    | {
-        readonly totalCount: number;
-        /*
-         * Caution, this array can be sparse
-         * IDs is a sparse array because some record sets may have tens of
-         * thousands of items), Also, an array with 40k elements in a React
-         * State causes React DevTools to crash
-         */
-        readonly ids: RA<number | undefined>;
-        readonly newResource: SpecifyResource<SCHEMA> | undefined;
-        readonly index: number;
-      }
-    | undefined
-  >(undefined);
-  const defaultRecordSetState = {
-    totalCount: 0,
-    ids: [],
-    newResource: undefined,
-    index: defaultResourceIndex,
-  };
-  const { totalCount, ids, newResource, index } =
-    items ?? defaultRecordSetState;
+  const loading = React.useContext(LoadingContext);
+  const navigate = useNavigate();
 
-  // Fetch ID of record at current index
-  const currentRecordId = ids[index];
-  const previousIndex = React.useRef<number>(index);
-  React.useEffect(() => {
-    if (currentRecordId === undefined)
+  const [totalCount, setTotalCount] = React.useState<number>(initialTotalCount);
+  const [ids = [], setIds] = React.useState<
+    /*
+     * Caution, this array can be sparse
+     * IDs is a sparse array because some record sets may have tens of
+     * thousands of items), Also, an array with 40k elements in a React
+     * State causes React DevTools to crash
+     */
+    RA<number | undefined>
+  >(() => {
+    const array = [];
+    array[totalCount - 1] = undefined;
+    return array;
+  });
+
+  const go = (
+    index: number,
+    recordId: number | 'new' | undefined,
+    newResource?: SpecifyResource<SCHEMA>,
+    replace: boolean = false
+  ): void =>
+    recordId === undefined
+      ? handleFetch(index)
+      : navigate(
+          getResourceViewUrl(
+            currentRecord.specifyModel.name,
+            recordId,
+            recordSet.id
+          ),
+          {
+            state: {
+              type: 'RecordSet',
+              recordSetItemIndex: index,
+              resource: f.maybe(
+                newResource as SpecifyResource<AnySchema>,
+                serializeResource
+              ),
+            },
+            replace,
+          }
+        );
+
+  const previousIndex = React.useRef<number>(currentIndex);
+  const [isLoading, handleLoading, handleLoaded] = useBooleanState();
+  const handleFetch = React.useCallback(
+    (index: number): void => {
+      if (index >= totalCount) return;
+      handleLoading();
       fetchItems(
         recordSet.id,
-        // If new index is smaller (i.e, going back), fetch previous 20 IDs
+        // If new index is smaller (i.e, going back), fetch previous 40 IDs
         clamp(
           0,
-          previousIndex.current > index
-            ? index - DEFAULT_FETCH_LIMIT + 1
-            : index,
+          previousIndex.current > index ? index - fetchSize + 1 : index,
           totalCount
         )
       )
-        .then((updateIds) =>
-          setItems(
-            ({ ids: oldIds, newResource, index } = defaultRecordSetState) => {
-              const { totalCount, ids } = updateIds(oldIds);
-              const model =
-                totalCount === 0
-                  ? getModelById(recordSet.get('dbTableId'))
-                  : undefined;
-              return {
-                ids,
-                totalCount,
-                newResource:
-                  newResource ??
-                  (typeof model === 'object'
-                    ? new model.Resource()
-                    : undefined),
-                index,
-              };
-            }
-          )
+        .then((updates) =>
+          setIds((oldIds = []) => {
+            handleLoaded();
+            const newIds = updateIds(oldIds, updates);
+            go(index, newIds[index]);
+            return newIds;
+          })
         )
-        .catch(crash);
-    return (): void => {
-      previousIndex.current = index;
-    };
-  }, [totalCount, currentRecordId, index, recordSet.id]);
-
-  const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const state = location.state as
-    | {
-        readonly originalLocation?: Location;
-        readonly itemIndex?: number;
-      }
-    | undefined;
-  const originalLocation = state?.originalLocation;
-  const itemIndex = state?.itemIndex;
-  React.useEffect(
-    () =>
-      setItems((state) =>
-        state?.index === itemIndex || itemIndex === undefined
-          ? state
-          : {
-              ...defaultRecordSetState,
-              ...state,
-              index: itemIndex,
-            }
-      ),
-    [itemIndex]
+        .catch(softFail);
+    },
+    [totalCount, recordSet.id, loading, handleLoading, handleLoaded]
   );
-  /** Change the URL without changing the rendered component */
-  const softNavigate = (url: string, itemIndex: number | undefined): void =>
-    navigate(url, {
-      state: {
-        type: 'NoopRoute',
-        originalLocation: originalLocation ?? location,
-        itemIndex,
-      },
-    });
+
+  // Fetch ID of record at current index
+  const currentRecordId = ids[currentIndex];
+  React.useEffect(() => {
+    if (currentRecordId === undefined) handleFetch(currentIndex);
+    return (): void => {
+      previousIndex.current = currentIndex;
+    };
+  }, [totalCount, currentRecordId, handleFetch, currentIndex]);
 
   const [hasDuplicate, handleHasDuplicate, handleDismissDuplicate] =
     useBooleanState();
-  const handleAdd = (resources: RA<SpecifyResource<SCHEMA>>): void =>
-    setItems(({ totalCount, ids } = defaultRecordSetState) => {
-      loading(
-        Promise.all(
-          resources.map((resource) => {
-            // If resource is not yet in a context of a record set, make it
-            if (resource.recordsetid !== recordSet.id) {
-              overwriteReadOnly(resource, 'recordsetid', recordSet.id);
-              /*
-               * For new resources, RecordSetItem would be created by the
-               * back-end on save. For existing resources have to do that
-               * manually
-               */
-              return resource.isNew()
-                ? undefined
-                : createResource('RecordSetItem', {
-                    recordId: resource.id,
-                    recordSet: recordSet.get('resource_uri'),
-                  });
-            } else return undefined;
+  const handleAdd = (
+    resources: RA<SpecifyResource<SCHEMA>>,
+    wasNew: boolean
+  ): void =>
+    loading(
+      Promise.all(
+        resources.map(async (resource) =>
+          createResource('RecordSetItem', {
+            recordId: resource.id,
+            recordSet: recordSet.get('resource_uri'),
           })
         )
-      );
-      const hasNew = resources.some((resource) => resource.isNew());
-      if (hasNew && resources.length > 1)
-        throw new Error("Can't add multiple new resources at once");
-      softNavigate(resources[0].viewUrl(), hasNew ? undefined : ids.length);
-      return {
-        totalCount: totalCount + 1,
-        ids: hasNew ? ids : [...ids, ...resources.map(({ id }) => id)],
-        newResource: hasNew ? resources[0] : undefined,
-        index: totalCount,
-      };
-    });
+      ).then(() => {
+        const oldTotalCount = totalCount;
+        setTotalCount(oldTotalCount + resources.length);
+        go(oldTotalCount, resources[0].id, undefined, wasNew);
+        setIds((oldIds = []) =>
+          updateIds(
+            oldIds,
+            resources.map(({ id }, index) => [oldTotalCount + index, id])
+          )
+        );
+      })
+    );
 
-  return totalCount === 0 && newResource === undefined ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <>
       <RecordSelectorFromIds<SCHEMA>
         {...rest}
-        canAddAnother={canAddAnother}
-        defaultIndex={index}
+        defaultIndex={currentIndex}
         dialog={dialog}
         headerButtons={<EditRecordSetButton recordSet={recordSet} />}
         ids={ids}
         isDependent={false}
+        isInRecordSet
+        isLoading={isLoading}
         mode={mode}
-        newResource={newResource}
+        model={currentRecord.specifyModel}
+        newResource={currentRecord.isNew() ? currentRecord : undefined}
         title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
         totalCount={totalCount}
-        urlContext={recordSet.id}
         onAdd={
           hasToolPermission('recordSets', 'create')
             ? async (resources) =>
@@ -267,87 +315,67 @@ export function RecordSet<SCHEMA extends AnySchema>({
                     })
                   )
                 ).then((results) => {
-                  const hasDuplicate = results.some(
+                  const [nonDuplicates, duplicates] = split(
+                    results,
                     ({ isDuplicate }) => isDuplicate
                   );
-                  if (hasDuplicate && results.length === 1)
+                  if (duplicates.length > 0 && nonDuplicates.length === 0)
                     handleHasDuplicate();
-                  else {
-                    const resources = results
-                      .filter(({ isDuplicate }) => !isDuplicate)
-                      .map(({ resource }) => resource);
-                    handleAdd(resources);
-                  }
+                  else
+                    handleAdd(
+                      nonDuplicates.map(({ resource }) => resource),
+                      false
+                    );
                 })
             : undefined
         }
+        onClone={(newResource): void => go(totalCount, 'new', newResource)}
         onClose={handleClose}
         onDelete={
           (recordSet.isNew() || hasToolPermission('recordSets', 'delete')) &&
-          (newResource === undefined || totalCount !== 0)
+          (!currentRecord.isNew() || totalCount !== 0)
             ? (_index, source): void => {
-                if (typeof newResource === 'object')
-                  setItems({ totalCount, ids, newResource: undefined, index });
-                else
-                  loading(
-                    (source === 'minusButton'
-                      ? fetchCollection('RecordSetItem', {
-                          limit: 1,
-                          recordId: ids[index],
-                          recordSet: recordSet.id,
-                        }).then(async ({ records }) =>
-                          deleteResource(
-                            'RecordSetItem',
-                            defined(
-                              records[0],
-                              `Failed to remove resource from the ` +
+                if (currentRecord.isNew()) return;
+                loading(
+                  (source === 'minusButton'
+                    ? fetchCollection('RecordSetItem', {
+                        limit: 1,
+                        recordId: ids[currentIndex],
+                        recordSet: recordSet.id,
+                      }).then(async ({ records }) =>
+                        deleteResource(
+                          'RecordSetItem',
+                          defined(
+                            records[0],
+                            `Failed to remove resource from the ` +
                               `record set. RecordSetItem not found. RecordId: ` +
-                              `${ids[index]}. Record set: ${recordSet.id}`
-                            ).id
-                          )
+                              `${ids[currentIndex]}. Record set: ${recordSet.id}`
+                          ).id
                         )
-                      : Promise.resolve()
-                    ).then(() => {
-                      setItems({
-                        totalCount: totalCount - 1,
-                        ids: removeItem(ids, index),
-                        newResource: undefined,
-                        index: clamp(
-                          0,
-                          /*
-                           * Previous index decides which direction to go in
-                           * once item is deleted
-                           */
-                          previousIndex.current > index
-                            ? Math.max(0, index - 1)
-                            : index,
-                          totalCount - 2
-                        ),
-                      });
-                      if (totalCount === 1) handleClose();
-                    })
-                  );
+                      )
+                    : Promise.resolve()
+                  ).then(() => {
+                    const newTotalCount = totalCount - 1;
+                    setTotalCount(newTotalCount);
+                    setIds((oldIds = []) => {
+                      const newIds = oldIds.slice();
+                      newIds.splice(currentIndex, 1);
+                      return newIds;
+                    });
+                    if (newTotalCount === 0) handleClose();
+                  })
+                );
               }
             : undefined
         }
-        onSaved={({ newResource, wasNew, resource }): void => {
-          if (wasNew) {
-            handleAdd([resource]);
-          }
-          if (typeof newResource === 'object') handleAdd([newResource]);
-        }}
-        onSlide={(index): void => {
-          softNavigate(
-            getResourceViewUrl(rest.model.name, ids[index], recordSet.id),
-            index
-          );
-          setItems({
-            totalCount,
-            ids,
-            newResource: undefined,
-            index: Math.min(index, totalCount - 1),
-          });
-        }}
+        onSaved={(resource): void =>
+          ids[currentIndex] === resource.id
+            ? undefined
+            : handleAdd([resource], true)
+        }
+        onSlide={(index, replace): void =>
+          go(index, ids[index], undefined, replace)
+        }
       />
       {hasDuplicate && (
         <Dialog
@@ -368,6 +396,7 @@ function EditRecordSetButton({
   readonly recordSet: SpecifyResource<RecordSetSchema>;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
+  const navigate = useNavigate();
   return (
     <>
       <DataEntry.Edit onClick={handleOpen} />
@@ -376,6 +405,7 @@ function EditRecordSetButton({
           isReadOnly={false}
           recordSet={recordSet}
           onClose={handleClose}
+          onDeleted={(): void => navigate('/specify/')}
         />
       )}
     </>

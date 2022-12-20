@@ -69,22 +69,18 @@ export function useContainerString(
       async () =>
         fetchCollection('SpLocaleItemStr', {
           limit: 0,
-          containerName: container.id,
-        })
-          .then(({ records }) =>
-            findString(
-              records,
-              language,
-              country,
-              itemType,
-              container.resource_uri
-            )
-          )
-          .then((string) => {
-            initialValue.current = string;
-            return string;
-          }),
-      [itemType, container.id, container.resource_uri, language, country]
+          [itemType]: container.id,
+        }).then(({ records }) => {
+          initialValue.current = findString(
+            records,
+            language,
+            country,
+            itemType,
+            container.resource_uri
+          );
+          return initialValue.current;
+        }),
+      [itemType, container.resource_uri, language, country]
     ),
     false
   );

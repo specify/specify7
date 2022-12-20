@@ -64,14 +64,14 @@ export function AttachmentsPlugin({
                 ) ??
                 resource?.rgetPromise('attachment') ??
                 Promise.resolve(null)
-              ).then((attachment) =>
-                attachment === null
-                  ? { type: 'AddAttachment' }
-                  : {
-                      type: 'DisplayAttachment',
-                      attachment: serializeResource(attachment),
-                    }
-              )
+              ).then((attachment) => {
+                if (attachment === null) return { type: 'AddAttachment' };
+                const serialized = serializeResource(attachment);
+                return {
+                  type: 'DisplayAttachment',
+                  attachment: serialized,
+                };
+              })
             : { type: 'Unavailable' }
         ),
       [resource]

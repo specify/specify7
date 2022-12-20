@@ -80,7 +80,6 @@ export function AttachmentGallery({
       {typeof viewRecord === 'object' && (
         <ErrorBoundary dismissable>
           <ResourceView
-            canAddAnother={false}
             dialog="modal"
             isDependent={false}
             isSubForm={false}
@@ -88,6 +87,7 @@ export function AttachmentGallery({
             resource={viewRecord}
             onClose={(): void => setViewRecord(undefined)}
             onDeleted={undefined}
+            onAdd={undefined}
             onSaved={undefined}
           />
         </ErrorBoundary>

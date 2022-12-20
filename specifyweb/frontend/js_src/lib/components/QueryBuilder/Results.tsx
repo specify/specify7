@@ -18,8 +18,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { RecordSet, Tables } from '../DataModel/types';
+import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
 import { fail } from '../Errors/Crash';
+import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { loadingGif } from '../Molecules';
@@ -35,7 +36,6 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { recordSetView } from '../FormParse/webOnlyViews';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -43,6 +43,7 @@ export function QueryResults({
   model,
   label = commonText('results'),
   hasIdField,
+  queryResource,
   fetchSize,
   fetchResults,
   totalCount: initialTotalCount,
@@ -58,13 +59,16 @@ export function QueryResults({
   readonly model: SpecifyModel;
   readonly label?: string;
   readonly hasIdField: boolean;
+  readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
    * A hint for how many records a fetch can return at maximum. This is used to
    * optimize fetch performance when using "Browse in forms" and going
    * backwards in the list from the end.
    */
   readonly fetchSize: number;
-  readonly fetchResults: (offset: number) => Promise<RA<QueryResultRow>>;
+  readonly fetchResults:
+    | ((offset: number) => Promise<RA<QueryResultRow>>)
+    | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   // This is undefined when running query in countOnly mode
@@ -131,13 +135,20 @@ export function QueryResults({
     async (index?: number): Promise<RA<QueryResultRow> | void> => {
       const currentResults = resultsRef.current;
       const canFetch = Array.isArray(currentResults);
-      if (!canFetch) return undefined;
+      if (!canFetch || fetchResults === undefined) return undefined;
       const alreadyFetched =
         currentResults.length === totalCount &&
         !currentResults.includes(undefined);
       if (alreadyFetched) return undefined;
 
+      /*
+       * REFACTOR: make this smarter
+       *   when going to the last record, fetch 40 before the last
+       *   when somewhere in the middle, adjust the fetch region to get the
+       *   most unhatched records fetched
+       */
       const naiveFetchIndex = index ?? currentResults.length;
+      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
       const fetchIndex =
         /* If navigating backwards, fetch the previous 40 records */
         typeof index === 'number' &&
@@ -146,7 +157,6 @@ export function QueryResults({
         index > fetchSize
           ? naiveFetchIndex - fetchSize + 1
           : naiveFetchIndex;
-      if (currentResults[fetchIndex] !== undefined) return undefined;
 
       // Prevent concurrent fetching in different places
       fetchersRef.current[fetchIndex] ??= fetchResults(fetchIndex)
@@ -229,7 +239,8 @@ export function QueryResults({
         {hasIdField &&
         Array.isArray(results) &&
         Array.isArray(loadedResults) &&
-        results.length > 0 ? (
+        results.length > 0 &&
+        typeof fetchResults === 'function' ? (
           <>
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
@@ -247,6 +258,7 @@ export function QueryResults({
                       )
                       .map((result) => result[queryIdField] as number)
                   }
+                  queryResource={queryResource}
                 />
               ) : (
                 createRecordSet
@@ -255,9 +267,9 @@ export function QueryResults({
             <QueryToMap
               fieldSpecs={fieldSpecs}
               model={model}
-              totalCount={totalCount}
               results={loadedResults}
               selectedRows={selectedRows}
+              totalCount={totalCount}
               onFetchMore={
                 canFetchMore && !isFetching ? handleFetchMore : undefined
               }
@@ -344,7 +356,9 @@ export function QueryResults({
           </div>
         )}
         <div role="rowgroup">
-          {showResults && Array.isArray(loadedResults) ? (
+          {showResults &&
+          Array.isArray(loadedResults) &&
+          Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               hasIdField={hasIdField}
@@ -454,9 +468,11 @@ function TableHeaderCell({
 function CreateRecordSet({
   getIds,
   baseTableName,
+  queryResource,
 }: {
   readonly getIds: () => RA<number>;
   readonly baseTableName: keyof Tables;
+  readonly queryResource: SpecifyResource<SpQuery> | undefined;
 }): JSX.Element {
   const [state, setState] = React.useState<
     | State<'Editing', { readonly recordSet: SpecifyResource<RecordSet> }>
@@ -469,24 +485,27 @@ function CreateRecordSet({
     <>
       <Button.Small
         aria-haspopup="dialog"
-        onClick={(): void =>
+        onClick={(): void => {
+          const recordSet = new schema.models.RecordSet.Resource();
+          if (queryResource !== undefined && !queryResource.isNew())
+            recordSet.set('name', queryResource.get('name'));
           setState({
             type: 'Editing',
-            recordSet: new schema.models.RecordSet.Resource(),
-          })
-        }
+            recordSet,
+          });
+        }}
       >
         {queryText('createRecordSet')}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={state.recordSet}
           viewName={recordSetView}
+          onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={f.never}
           onSaved={f.never}

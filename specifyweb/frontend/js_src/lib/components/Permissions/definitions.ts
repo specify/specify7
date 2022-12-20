@@ -5,6 +5,7 @@ export const operationPolicies = {
   '/admin/user/password': ['update'],
   '/admin/user/agents': ['update'],
   '/admin/user/sp6/is_admin': ['update'],
+  '/record/replace': ['update', 'delete'],
   '/admin/user/invite_link': ['create'],
   '/admin/user/oic_providers': ['read'],
   '/admin/user/sp6/collection_access': ['read', 'update'],
@@ -67,6 +68,7 @@ export const operationPolicies = {
     'transfer',
   ],
 } as const;
+
 /**
  * These permissions have no effect on the collection level and should instead
  * be set on the institution level.
@@ -81,13 +83,16 @@ export const institutionPermissions = new Set([
   '/export/feed',
   '/permissions/library/roles',
   '/permissions/list_admins',
+  '/report/record',
 ]);
+
 /**
  * Policies that are respected on the front-end, but ignored by the back-end.
  */
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
 } as const;
+
 /**
  * Front-end only policies that are not exposed in the security panel and
  * are derived based on the value of another policy.

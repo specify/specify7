@@ -20,6 +20,7 @@ import {
  */
 export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly id: number;
+  // FEATURE: store original values to know when changes were reverted
   readonly needsSaved: boolean;
   readonly cid: string;
   readonly noValidation?: boolean;
@@ -27,7 +28,6 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   readonly specifyModel: SpecifyModel<SCHEMA>;
   readonly saveBlockers?: Readonly<SaveBlockers<SCHEMA>>;
   readonly parent?: SpecifyResource<SCHEMA>;
-  readonly recordsetid?: number;
   readonly noBusinessRules: boolean;
   readonly collection: {
     readonly related: SpecifyResource<SCHEMA>;
@@ -171,7 +171,7 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   fetch(): Promise<SpecifyResource<SCHEMA>>;
   viewUrl(): string;
   isNew(): boolean;
-  clone(): Promise<SpecifyResource<SCHEMA>>;
+  clone(cloneAll: boolean): Promise<SpecifyResource<SCHEMA>>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): SerializedModel<AnySchema>;
   getRelatedObjectCount(
@@ -181,7 +181,9 @@ export type SpecifyResource<SCHEMA extends AnySchema> = {
   ): Promise<number | undefined>;
   format(): Promise<string>;
   url(): string;
-  placeInSameHierarchy(resource: SpecifyResource<AnySchema>): void;
+  placeInSameHierarchy(
+    resource: SpecifyResource<AnySchema>
+  ): SpecifyResource<AnySchema> | undefined;
   on(eventName: string, callback: (...args: RA<never>) => void): void;
   once(eventName: string, callback: (...args: RA<never>) => void): void;
   off(eventName?: string, callback?: (...args: RA<never>) => void): void;

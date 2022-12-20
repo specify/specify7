@@ -35,9 +35,9 @@ export const formsText = createDictionary({
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
   },
-  addAnother: {
-    'en-us': 'Add',
-    'ru-ru': 'Добавить',
+  cloneDescription: {
+    'en-us': 'Create a full copy of current record',
+    'ru-ru': 'Создать полную копию текущей записи',
   },
   // BusinessRules
   valueMustBeUniqueToField: {
@@ -677,15 +677,35 @@ export const formsText = createDictionary({
   },
   carryForward: {
     'en-us': 'Carry Forward',
-    'ru-ru': 'Настройки клонирования',
+    'ru-ru': 'Перенести',
+  },
+  carryForwardEnabled: {
+    'en-us': 'Show Carry Forward button',
+    'ru-ru': 'Показать кнопку Перенести',
   },
   carryForwardDescription: {
-    'en-us': 'Fields to carry forward',
-    'ru-ru': 'Поля для переноса',
+    'en-us': 'Create a new record with certain fields carried over',
+    'ru-ru': 'Создать новую запись с определенными полями, перенесенными',
+  },
+  carryForwardSettingsDescription: {
+    'en-us': 'Configure fields to carry forward',
+    'ru-ru': 'Настройте поля для клонирования',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
     'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
+  },
+  cloneButtonEnabled: {
+    'en-us': 'Show Clone button',
+    'ru-ru': 'Показать кнопку клонирования',
+  },
+  addButtonEnabled: {
+    'en-us': 'Show Add button',
+    'ru-ru': 'Показать кнопку добавления',
+  },
+  addButtonDescription: {
+    'en-us': 'Create a new blank record',
+    'ru-ru': 'Создать новую пустую запись',
   },
   autoNumbering: {
     'en-us': 'Auto Numbering',
@@ -716,6 +736,10 @@ export const formsText = createDictionary({
   formConfiguration: {
     'en-us': 'Form Configuration',
     'ru-ru': 'Конфигурация формы',
+  },
+  formState: {
+    'en-us': 'Form State',
+    'ru-ru': 'Состояние формы',
   },
   recordInformation: {
     'en-us': 'Record Information',
@@ -757,8 +781,8 @@ export const formsText = createDictionary({
     'en-us': 'Grid',
     'ru-ru': 'Таблица',
   },
-  recordSelectorConfiguration: {
-    'en-us': 'Subview configuration',
+  subviewConfiguration: {
+    'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
   },
   selectSourceOfTables: {

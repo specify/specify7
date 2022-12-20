@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { format } from './dataObjFormatters';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { Relationship } from '../DataModel/specifyField';
-import type { SpecifyModel } from '../DataModel/specifyModel';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Relationship } from '../DataModel/specifyField';
+import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { ResourceView } from './ResourceView';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { format } from './dataObjFormatters';
+import { ResourceView } from './ResourceView';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;
@@ -79,13 +79,14 @@ export function DeleteBlocked({
       <Dialog
         buttons={commonText('close')}
         className={{
-          container: dialogClassNames.narrowContainer,
+          container: dialogClassNames.wideContainer,
         }}
         header={formsText('deleteBlockedDialogHeader')}
         onClose={handleClose}
       >
         {formsText('deleteBlockedDialogText')}
-        <table className="grid-table grid-cols-[auto_auto] gap-2">
+        {/* BUG: apply these styles everywhere where necessary */}
+        <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
           <thead>
             <tr>
               <th scope="col">{formsText('record')}</th>
@@ -97,7 +98,8 @@ export function DeleteBlocked({
               <tr key={index}>
                 <td>
                   <Button.LikeLink
-                    className="text-left"
+                    // BUG: consider applying these styles everywhere
+                    className="max-w-full overflow-auto text-left"
                     onClick={(): void =>
                       setPreview({
                         resource,
@@ -134,18 +136,18 @@ function BlockerPreview({
 }): JSX.Element {
   return (
     <ResourceView
-      canAddAnother={false}
       dialog="modal"
       isDependent={false}
       isSubForm={false}
       mode="edit"
       resource={resource}
+      onAdd={undefined}
       onClose={handleClose}
       onDeleted={(): void => {
         handleDeleted();
         handleClose();
       }}
-      onSaved={() => {
+      onSaved={(): void => {
         if (
           typeof field === 'object' &&
           resource.get(field.name) !== parentResource.get('resource_uri')

@@ -3,6 +3,8 @@
  */
 
 import type { IR, RA, RR } from './utils/types';
+import { LocationState } from './components/Router/RouterState';
+import { Key, Path, To } from 'history';
 
 /**
  * Typescript does not recognize the definition overwrite when using
@@ -57,6 +59,37 @@ declare global {
     // Prevent Object.keys() from widening the key type to string[]
     keys<KEY extends string>(object: RR<KEY, unknown>): RA<KEY>;
   }
+}
+
+// Make router state more type safe
+declare module 'react-router' {
+  export type SafeNavigateFunction = (
+    to: To,
+    options?: {
+      readonly replace?: boolean;
+      readonly state?: LocationState;
+    }
+  ) => void;
+
+  export declare function useNavigate(): (
+    to: To,
+    options?: {
+      readonly replace?: boolean;
+      readonly state?: LocationState;
+    }
+  ) => void;
+
+  export declare function useLocation(): Path & {
+    readonly state: LocationState;
+    readonly key: Key;
+  };
+}
+
+declare module 'history' {
+  export type SafeLocation = Path & {
+    readonly state: LocationState;
+    readonly key: Key;
+  };
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

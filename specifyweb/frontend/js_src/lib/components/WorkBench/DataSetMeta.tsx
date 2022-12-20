@@ -18,7 +18,6 @@ import { formatNumber } from '../Atoms/Internationalization';
 import { Dialog } from '../Molecules/Dialog';
 import { createBackboneView } from '../Core/reactBackboneExtend';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { useNavigate } from 'react-router-dom';
 import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label, Select } from '../Atoms/Form';
@@ -32,6 +31,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
+import { unsafeNavigate } from '../Router/Router';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -229,15 +229,14 @@ function ChangeOwner({
   const [newOwner, setNewOwner] = React.useState<number | undefined>(undefined);
   const [isChanged, setIsChanged] = React.useState(false);
   const loading = React.useContext(LoadingContext);
-  const navigate = useNavigate();
 
   return users === undefined ? null : isChanged ? (
     <Dialog
       buttons={commonText('close')}
-      header={wbText('dataSetOwnerChangedDialogHeader')}
-      onClose={(): void => navigate('/specify/')}
+      header={wbText('dataSetOwnerChanged')}
+      onClose={(): void => unsafeNavigate('/specify/', { replace: true })}
     >
-      <p>{wbText('dataSetOwnerChangedDialogText')}</p>
+      <p>{wbText('dataSetOwnerChanged')}</p>
     </Dialog>
   ) : (
     <Dialog

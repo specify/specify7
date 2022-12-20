@@ -36,6 +36,9 @@ import { TableFields } from '../DataModel/helperTypes';
 import { StatLayout } from '../Statistics/types';
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
+  readonly category: string;
+  readonly subcategory: string;
+  readonly item: string;
   readonly definition: PreferenceItem<VALUE>;
   readonly value: VALUE;
   readonly onChange: (value: VALUE) => void;
@@ -492,7 +495,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -513,7 +516,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -534,7 +537,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'auto',
-                title: preferencesText('detectAutomatically'),
+                title: wbText('determineAutomatically'),
                 description: preferencesText('detectAutomaticallyDescription'),
               },
               {
@@ -624,7 +627,7 @@ export const preferenceDefinitions = {
               },
               {
                 value: 'name',
-                title: preferencesText('tableName'),
+                title: commonText('tableName'),
               },
               {
                 value: 'icon',
@@ -939,11 +942,11 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'first',
-                title: preferencesText('firstRecord'),
+                title: formsText('firstRecord'),
               },
               {
                 value: 'last',
-                title: preferencesText('lastRecord'),
+                title: formsText('lastRecord'),
               },
             ],
           }),
@@ -971,6 +974,10 @@ export const preferenceDefinitions = {
       preferences: {
         title: '(not visible to user) Preferences',
         items: {
+          /*
+           * This has to be an object rather than an array to allow forms to
+           * override this value when this value is undefined for a given table
+           */
           printOnSave: defineItem<Partial<RR<keyof Tables, boolean>>>({
             title: 'Generate label on form save',
             requiresReload: false,
@@ -989,9 +996,27 @@ export const preferenceDefinitions = {
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          // Can temporary disable carry forward for a given table
-          disableCarryForward: defineItem<RA<keyof Tables>>({
-            title: 'disableCarryForward',
+          enableCarryForward: defineItem<RA<keyof Tables>>({
+            title: 'enableCarryForward',
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          /*
+           * Can temporary disable clone for a given table
+           * Since most tables are likely to have carry enabled, this pref is
+           * negated (so as not waste too much space)
+           */
+          disableClone: defineItem<RA<keyof Tables>>({
+            title: 'disableClone',
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: () => <>{error('This should not get called')}</>,
+          }),
+          disableAdd: defineItem<RA<keyof Tables>>({
+            title: 'disableAdd',
             requiresReload: false,
             visible: false,
             defaultValue: [],
@@ -1008,11 +1033,11 @@ export const preferenceDefinitions = {
             defaultValue: {},
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          useCustomForm: defineItem<Partial<RR<keyof Tables, boolean>>>({
+          useCustomForm: defineItem<RA<keyof Tables>>({
             title: 'useCustomForm',
             requiresReload: false,
             visible: false,
-            defaultValue: {},
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
           }),
           carryForwardShowHidden: defineItem<boolean>({
@@ -1097,11 +1122,11 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'startsWith',
-                title: preferencesText('startsWith'),
+                title: queryText('startsWith'),
               },
               {
                 value: 'contains',
-                title: preferencesText('contains'),
+                title: queryText('contains'),
               },
             ],
           }),

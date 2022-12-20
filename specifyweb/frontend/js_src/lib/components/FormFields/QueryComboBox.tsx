@@ -62,6 +62,7 @@ export function QueryComboBox({
 }
 
 // REFACTOR: split this component
+// TEST: add tests for this
 function ProtectedQueryComboBox({
   id,
   resource,
@@ -135,7 +136,12 @@ function ProtectedQueryComboBox({
   const [version, setVersion] = React.useState(0);
   React.useEffect(
     () =>
-      resourceOn(resource, 'saved', () => setVersion((version) => version + 1)),
+      resourceOn(
+        resource,
+        'saved',
+        () => setVersion((version) => version + 1),
+        false
+      ),
     [resource]
   );
 
@@ -447,7 +453,7 @@ function ProtectedQueryComboBox({
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
                     : loading(
-                        formatted!.resource!.clone().then((resource) =>
+                        formatted!.resource!.clone(true).then((resource) =>
                           setState({
                             type: 'AddResourceState',
                             resource,
@@ -526,16 +532,18 @@ function ProtectedQueryComboBox({
       {state.type === 'AccessDeniedState' && (
         <Dialog
           buttons={commonText('close')}
-          header={commonText('collectionAccessDeniedDialogHeader')}
+          header={commonText('collectionAccessDenied')}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText('collectionAccessDeniedDialogText', state.collectionName)}
+          {commonText(
+            'collectionAccessDeniedDescription',
+            state.collectionName
+          )}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&
       state.type === 'ViewResourceState' ? (
         <ResourceView
-          canAddAnother={false}
           dialog="nonModal"
           isDependent={field.isDependent()}
           isSubForm={false}
@@ -546,6 +554,7 @@ function ProtectedQueryComboBox({
             resource.set(field.name, null as never);
             setState({ type: 'MainState' });
           }}
+          onAdd={undefined}
           onSaved={undefined}
           onSaving={
             field.isDependent()
@@ -555,7 +564,6 @@ function ProtectedQueryComboBox({
         />
       ) : state.type === 'AddResourceState' ? (
         <ResourceView
-          canAddAnother={false}
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
@@ -567,6 +575,7 @@ function ProtectedQueryComboBox({
             resource.set(field.name, state.resource as never);
             setState({ type: 'MainState' });
           }}
+          onAdd={undefined}
           onSaving={
             field.isDependent()
               ? (): false => {

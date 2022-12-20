@@ -74,7 +74,7 @@ function UserCollectionsUi({
           )}
         </>
       }
-      header={adminText('userCollectionsPluginDialogTitle')}
+      header={adminText('configureCollectionAccess')}
       onClose={handleClose}
     >
       <Form
@@ -200,7 +200,12 @@ export function CollectionAccess({
   React.useEffect(
     () =>
       typeof collectionAddress === 'object'
-        ? resourceOn(collectionAddress, 'change:agent', handleChangeAgent)
+        ? resourceOn(
+            collectionAddress,
+            'change:agent',
+            handleChangeAgent,
+            false
+          )
         : undefined,
     [collectionAddress, handleChangeAgent]
   );

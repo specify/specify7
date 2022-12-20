@@ -2033,6 +2033,7 @@ export const WBView = Backbone.View.extend({
                     buttons: (
                       <Link.Blue
                         href="/specify/"
+                        // BUG: this should do navigation with replace:true
                         onClick={() => {
                           dialog.remove();
                         }}

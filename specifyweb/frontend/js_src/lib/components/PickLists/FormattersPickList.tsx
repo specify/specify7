@@ -33,16 +33,21 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
   );
   React.useEffect(
     () =>
-      resourceOn(props.resource, 'change:tableName change:type', (): void => {
-        if (props.resource.get('type') !== PickListTypes.TABLE)
-          props.resource.set('formatter', null as never);
-        fetchItems()
-          .then(setItems)
-          .catch((error) => {
-            setItems(undefined);
-            fail(error);
-          });
-      }),
+      resourceOn(
+        props.resource,
+        'change:tableName change:type',
+        (): void => {
+          if (props.resource.get('type') !== PickListTypes.TABLE)
+            props.resource.set('formatter', null as never);
+          fetchItems()
+            .then(setItems)
+            .catch((error) => {
+              setItems(undefined);
+              fail(error);
+            });
+        },
+        true
+      ),
     [props.resource, fetchItems, setItems]
   );
 

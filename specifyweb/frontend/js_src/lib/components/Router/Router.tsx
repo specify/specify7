@@ -1,8 +1,7 @@
+import type { SafeLocation } from 'history';
 import React from 'react';
-import type { NavigateFunction } from 'react-router/lib/hooks';
-import type { Location } from 'react-router-dom';
+import type { SafeNavigateFunction } from 'react-router';
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
-import type { State } from 'typesafe-reducer';
 
 import { commonText } from '../../localization/common';
 import { toRelativeUrl } from '../../utils/ajax/helpers';
@@ -19,42 +18,22 @@ import { overlayRoutes } from './OverlayRoutes';
 import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
+import { f } from '../../utils/functools';
 
-let unsafeNavigate: NavigateFunction | undefined;
-let unsafeLocation: Location | undefined;
+let unsafeNavigateFunction: SafeNavigateFunction | undefined;
+export const unsafeNavigate = (
+  ...parameters: Parameters<SafeNavigateFunction>
+): void => unsafeNavigateFunction?.(...parameters);
+let unsafeLocation: SafeLocation | undefined;
 
 // Using this is not recommended. Render <NotFoundView /> instead.
 export function unsafeTriggerNotFound(): boolean {
-  unsafeNavigate?.(unsafeLocation ?? '/specify/', {
+  unsafeNavigateFunction?.(unsafeLocation ?? '/specify/', {
     replace: true,
-    state: createState({ type: 'NotFoundPage' }),
+    state: { type: 'NotFoundPage' },
   });
-  return typeof unsafeNavigate === 'function';
+  return typeof unsafeNavigateFunction === 'function';
 }
-
-export type BackgroundLocation = State<
-  'BackgroundLocation',
-  {
-    readonly location: Location;
-  }
->;
-
-/*
- * Symbol() would be better suites for this, but it can't be used because
- * state must be serializable
- */
-export type LocationStates =
-  | BackgroundLocation
-  | State<
-      'NoopRoute',
-      {
-        readonly originalLocation: Location;
-      }
-    >
-  | State<'NotFoundPage'>
-  | undefined;
-// Wrap state object in this for type safety
-const createState = (state: LocationStates): LocationStates => state;
 
 const transformedRoutes = toReactRoutes(routes);
 const transformedOverlays = toReactRoutes(overlayRoutes);
@@ -68,46 +47,39 @@ const transformedOverlays = toReactRoutes(overlayRoutes);
 export function Router(): JSX.Element {
   const location = useLocation();
   unsafeLocation = location;
-  const state = location.state as LocationStates;
+  const state = location.state;
   const background =
     state?.type === 'BackgroundLocation' ? state.location : undefined;
-  const backgroundUrl =
-    typeof background === 'object'
-      ? `${background.pathname}${background.search}${background.hash}`
-      : undefined;
-  const originalLocation =
-    state?.type === 'NoopRoute' ? state.originalLocation : undefined;
-  const isNotFoundPage = state?.type === 'NotFoundPage';
+  const isNotFoundPage =
+    state?.type === 'NotFoundPage' ||
+    background?.state?.type === 'NotFoundPage';
 
   /*
    * REFACTOR: replace usages of navigate with <a> where possible
    * REFACTOR: replace <Button> with <Link> where possible
    */
   const navigate = useNavigate();
-  unsafeNavigate = navigate;
+  unsafeNavigateFunction = navigate;
   React.useEffect(() => setDevelopmentGlobal('_goTo', navigate), [navigate]);
 
   useLinkIntercept(background);
 
   const main =
-    useRoutes(transformedRoutes, originalLocation ?? background ?? location) ??
-    undefined;
+    useRoutes(transformedRoutes, background ?? location) ?? undefined;
 
-  const overlay =
-    useRoutes(transformedOverlays, originalLocation ?? location) ?? undefined;
+  const overlay = useRoutes(transformedOverlays, location) ?? undefined;
 
-  const isNotFound = main === undefined && overlay === undefined;
-  // If supposed to show an overlay, but it wasn't found, show <NotFoundView />
-  const isNotFoundOverlay =
-    typeof background === 'object' && overlay === undefined;
+  const isNotFound =
+    (main === undefined && overlay === undefined) || isNotFoundPage;
 
-  return isNotFoundPage || isNotFound || isNotFoundOverlay ? (
-    <NotFoundView />
-  ) : (
+  return (
     <>
+      <UnloadProtect background={background} />
+      {isNotFound ? <NotFoundView /> : undefined}
+      {typeof overlay === 'object' && (
+        <Overlay background={background} overlay={overlay} />
+      )}
       {main}
-      <Overlay backgroundUrl={backgroundUrl} overlay={overlay} />
-      <UnloadProtect backgroundPath={backgroundUrl} />
     </>
   );
 }
@@ -120,11 +92,11 @@ const isCurrentUrl = (relativeUrl: string): boolean =>
   new URL(relativeUrl, globalThis.location.origin).pathname ===
   globalThis.location.pathname;
 
-function useLinkIntercept(background: Location | undefined): void {
+function useLinkIntercept(background: SafeLocation | undefined): void {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const resolvedLocation = React.useRef<Location>(background ?? location);
+  const resolvedLocation = React.useRef<SafeLocation>(background ?? location);
   React.useEffect(() => {
     // REFACTOR: consider adding a set() util like in @vueuse/core
     resolvedLocation.current = background ?? location;
@@ -140,10 +112,10 @@ function useLinkIntercept(background: Location | undefined): void {
           url,
           isOverlay
             ? {
-                state: createState({
+                state: {
                   type: 'BackgroundLocation',
                   location: resolvedLocation.current,
-                }),
+                },
               }
             : undefined
         );
@@ -187,18 +159,31 @@ function parseClickEvent(
   return undefined;
 }
 
+const locationToUrl = (location: SafeLocation): string =>
+  `${location.pathname}${location.search}${location.hash}`;
+
 function Overlay({
   overlay,
-  backgroundUrl = '/specify/',
+  background,
 }: {
   readonly overlay: JSX.Element | undefined;
-  readonly backgroundUrl: string | undefined;
+  // This happens when user opened the overlay directly by going to the URL
+  readonly background: SafeLocation | undefined;
 }): JSX.Element {
   const navigate = useNavigate();
 
+  function handleClose(): void {
+    const backgroundUrl =
+      typeof background === 'object' ? locationToUrl(background) : '/specify/';
+    navigate(backgroundUrl, { state: background?.state });
+  }
+
+  const handleCloseRef = React.useRef(handleClose);
+  handleCloseRef.current = handleClose;
+
   const handleCloseOverlay = React.useCallback(
-    () => navigate(backgroundUrl),
-    [backgroundUrl]
+    () => handleCloseRef.current(),
+    []
   );
 
   return (
@@ -211,6 +196,7 @@ function Overlay({
 function defaultOverlayContext() {
   throw new Error('Tried to close Overlay outside of an overlay');
 }
+
 export const isOverlay = (overlayContext: () => void): boolean =>
   overlayContext !== defaultOverlayContext;
 export const OverlayContext = React.createContext<() => void>(
@@ -219,24 +205,34 @@ export const OverlayContext = React.createContext<() => void>(
 OverlayContext.displayName = 'OverlayContext';
 
 function UnloadProtect({
-  backgroundPath,
+  background,
 }: {
-  readonly backgroundPath: string | undefined;
+  readonly background: SafeLocation | undefined;
 }): JSX.Element | null {
   const [unloadProtects] = React.useContext(UnloadProtectsContext)!;
   const [unloadProtect, setUnloadProtect] = React.useState<
     { readonly resolve: () => void; readonly reject: () => void } | undefined
   >(undefined);
 
-  const backgroundPathRef = React.useRef<string | undefined>(backgroundPath);
-  React.useEffect(() => {
-    backgroundPathRef.current = backgroundPath;
-  }, [backgroundPath]);
+  const isEmpty = unloadProtects.length === 0;
+  const isSet = unloadProtect !== undefined;
+  const shouldUnset = isEmpty && isSet;
+  React.useEffect(
+    () =>
+      shouldUnset
+        ? setUnloadProtect((blocker) => void blocker?.resolve())
+        : undefined,
+    [isEmpty, isSet]
+  );
+
+  const backgroundRef = React.useRef<SafeLocation | undefined>(background);
+  backgroundRef.current = background;
+
   const { block, unblock } = useRouterBlocker(
     React.useCallback(
       async (location) =>
         new Promise((resolve, reject) =>
-          hasUnloadProtect(backgroundPathRef.current, location)
+          hasUnloadProtect(location, backgroundRef.current)
             ? setUnloadProtect({ resolve: () => resolve('unblock'), reject })
             : resolve('ignore')
         ),
@@ -256,7 +252,6 @@ function UnloadProtect({
 
   return typeof unloadProtect === 'object' && unloadProtects.length > 0 ? (
     <UnloadProtectDialog
-      message={unloadProtects.at(-1)!}
       onCancel={(): void => {
         unloadProtect.reject();
         setUnloadProtect(undefined);
@@ -265,27 +260,27 @@ function UnloadProtect({
         unloadProtect.resolve();
         setUnloadProtect(undefined);
       }}
-    />
+    >
+      {unloadProtects.at(-1)!}
+    </UnloadProtectDialog>
   ) : null;
 }
 
-function hasUnloadProtect(
-  backgroundPath: string | undefined,
-  { pathname }: Location
-): boolean {
-  return (
-    !pathIsOverlay(pathname) &&
-    !isCurrentUrl(pathname) &&
-    pathname !== backgroundPath
-  );
-}
+/** Decide whether a given URL change should trigger unload protect */
+const hasUnloadProtect = (
+  newLocation: SafeLocation,
+  background: SafeLocation | undefined
+): boolean =>
+  !pathIsOverlay(newLocation.pathname) &&
+  !isCurrentUrl(newLocation.pathname) &&
+  f.maybe(background, locationToUrl) !== locationToUrl(newLocation);
 
-function UnloadProtectDialog({
-  message,
+export function UnloadProtectDialog({
+  children,
   onCancel: handleCancel,
   onConfirm: handleConfirm,
 }: {
-  readonly message: string;
+  readonly children: string;
   readonly onCancel: () => void;
   readonly onConfirm: () => void;
 }): JSX.Element {
@@ -301,7 +296,7 @@ function UnloadProtectDialog({
       header={commonText('leavePageDialogHeader')}
       onClose={handleCancel}
     >
-      {message}
+      {children}
     </Dialog>
   );
 }

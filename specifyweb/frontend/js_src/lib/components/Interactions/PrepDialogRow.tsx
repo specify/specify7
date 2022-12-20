@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 import { formsText } from '../../localization/forms';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
+import { syncFieldFormat } from '../../utils/fieldFormat';
 import type { RA, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -12,7 +13,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
-import { syncFieldFormat } from '../../utils/fieldFormat';
 
 export function PrepDialogRow({
   preparation,
@@ -163,12 +163,12 @@ export function PrepDialogRow({
       )}
       {state.type === 'ResourceDialog' && (
         <ResourceView
-          canAddAnother
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={state.resource}
+          onAdd={undefined}
           onClose={(): void => setState({ type: 'Main' })}
           onDeleted={undefined}
           onSaved={undefined}

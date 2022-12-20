@@ -1,16 +1,17 @@
 import React from 'react';
 
-import {useId} from '../../hooks/useId';
-import {adminText} from '../../localization/admin';
-import type {IR} from '../../utils/types';
-import {Input} from '../Atoms/Form';
-import {Link} from '../Atoms/Link';
-import {schema} from '../DataModel/schema';
-import type {Tables} from '../DataModel/types';
-import {TableIcon} from '../Molecules/TableIcon';
-import {tableActions} from '../Permissions/definitions';
-import type {PreviewCell} from './Preview';
-import {actionToLabel, resourceNameToLabel} from './utils';
+import { useId } from '../../hooks/useId';
+import { adminText } from '../../localization/admin';
+import type { IR } from '../../utils/types';
+import { Input } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
+import { schema } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
+import { tableActions } from '../Permissions/definitions';
+import type { PreviewCell } from './Preview';
+import { actionToLabel, resourceNameToLabel } from './utils';
+import { commonText } from '../../localization/common';
 
 export function PreviewRow({
   row,
@@ -127,7 +128,7 @@ export function PermissionExplanation({
           {matching_role_policies.length === 0 && (
             <div role="row">
               <div className="col-span-full p-2" role="cell">
-                {adminText('none')}
+                {commonText('none')}
               </div>
             </div>
           )}
@@ -184,7 +185,7 @@ export function PermissionExplanation({
           {matching_user_policies.length === 0 && (
             <div role="row">
               <div className="col-span-full p-2" role="cell">
-                {adminText('none')}
+                {commonText('none')}
               </div>
             </div>
           )}

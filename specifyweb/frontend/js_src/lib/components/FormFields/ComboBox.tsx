@@ -165,30 +165,21 @@ export function Combobox({
     );
   }
 
-  const resolvedField =
-    isResourceOfType(resource, 'PickList') && fieldName === 'typesCBX'
-      ? schema.models.PickList.strictGetLiteralField('type')
-      : field;
-
-  if (typeof resolvedField !== 'object') {
+  if (typeof field !== 'object') {
     console.error(
       `can't setup picklist for unknown field ${model.specifyModel.name}.${fieldName}`
     );
     return null;
   }
 
-  const pickListName = props.pickListName ?? resolvedField.getPickList();
+  const pickListName = props.pickListName ?? field.getPickList();
 
   if (typeof pickListName === 'string')
     return hasToolPermission('pickLists', 'read') ? (
-      <DefaultComboBox
-        {...props}
-        field={resolvedField}
-        pickListName={pickListName}
-      />
+      <DefaultComboBox {...props} field={field} pickListName={pickListName} />
     ) : (
       <UiField
-        fieldName={resolvedField.name}
+        fieldName={field.name}
         id={props.id}
         mode="view"
         resource={props.resource}
@@ -200,7 +191,7 @@ export function Combobox({
     );
     return (
       <UiField
-        fieldName={resolvedField.name}
+        fieldName={field.name}
         id={props.id}
         mode={props.mode}
         resource={props.resource}
@@ -217,15 +208,11 @@ export function resolvePickListField(
   resource: SpecifyResource<AnySchema>,
   fieldName: string | undefined
 ): string | undefined {
-  if (isResourceOfType(resource, 'PickList') && fieldName === 'fieldsCBX')
-    return 'fieldName';
-  else if (
-    isResourceOfType(resource, 'PickList') &&
-    fieldName === 'formatterCBX'
-  )
-    return 'formatter';
-  else if (isResourceOfType(resource, 'PickList') && fieldName === 'tablesCBX')
-    return 'tableName';
-  else if (fieldName === 'divisionCBX') return 'division';
-  else return fieldName;
+  if (isResourceOfType(resource, 'PickList')) {
+    if (fieldName === 'fieldsCBX') return 'fieldName';
+    else if (fieldName === 'formatterCBX') return 'formatter';
+    else if (fieldName === 'tablesCBX') return 'tableName';
+    else if (fieldName === 'typesCBX') return 'type';
+  } else if (fieldName === 'divisionCBX') return 'division';
+  return fieldName;
 }

@@ -720,7 +720,7 @@ export const WBUtils = Backbone.View.extend({
 
     const content = $('<div>');
     this.geoLocateDialog = showDialog({
-      header: wbText('geoLocateDialogTitle'),
+      header: localityText('geoLocate'),
       content,
       buttons: commonText('close'),
       onClose: handleDelete,

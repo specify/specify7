@@ -19,10 +19,10 @@ export function PasswordChange(): JSX.Element {
     () => (
       <ChangePassword
         data={{
-          formErrors: parseDjangoDump('form-errors'),
-          oldPasswordErrors: parseDjangoDump('old-password-errors'),
-          newPasswordErrors: parseDjangoDump('new-password-errors'),
-          repeatPasswordErrors: parseDjangoDump('repeat-password-errors'),
+          formErrors: parseDjangoDump('form-errors') ?? [],
+          oldPasswordErrors: parseDjangoDump('old-password-errors') ?? [],
+          newPasswordErrors: parseDjangoDump('new-password-errors') ?? [],
+          repeatPasswordErrors: parseDjangoDump('repeat-password-errors') ?? [],
         }}
       />
     ),

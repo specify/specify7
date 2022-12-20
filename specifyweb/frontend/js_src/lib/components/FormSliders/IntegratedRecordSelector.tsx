@@ -20,10 +20,14 @@ import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import type { RecordSelectorProps } from './RecordSelector';
-import { BaseRecordSelector } from './RecordSelector';
+import type {
+  RecordSelectorProps,
+  RecordSelectorState,
+} from './RecordSelector';
+import { useRecordSelector } from './RecordSelector';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 
+// REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
   collection,
@@ -49,6 +53,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
     readonly collection: Collection<SCHEMA>;
     readonly relationship: Relationship;
     readonly defaultIndex?: number;
+    readonly children: (state: RecordSelectorState<SCHEMA>) => JSX.Element;
   }): JSX.Element | null {
   const getRecords = React.useCallback(
     (): RA<SpecifyResource<SCHEMA> | undefined> =>
@@ -95,44 +100,42 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
         .catch(crash);
   }, [collection, isLazy, getRecords, index, records.length]);
 
-  return (
-    <BaseRecordSelector<SCHEMA>
-      {...rest}
-      index={index}
-      model={collection.model.specifyModel}
-      records={records}
-      relatedResource={isDependent ? collection.related : undefined}
-      totalCount={collection._totalCount ?? records.length}
-      onAdd={(rawResources): void => {
-        const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
-        if (isDependent && isToOne)
-          collection.related?.placeInSameHierarchy(resources[0]);
-        collection.add(resources);
-        handleAdd?.(resources);
-        setIndex(collection.models.length - 1);
-        handleSlide?.(collection.models.length - 1);
-        // Updates the state to trigger a reRender
-        setRecords(getRecords);
-      }}
-      onDelete={(_index, source): void => {
-        collection.remove(
-          defined(
-            records[index],
-            `Trying to remove a record with index ${index} which doesn't exists`
-          )
-        );
-        handleDelete?.(index, source);
-        setRecords(getRecords);
-      }}
-      onSlide={(index, callback): void => {
-        setIndex(index);
-        handleSlide?.(index);
-        callback?.();
-      }}
-    >
-      {children}
-    </BaseRecordSelector>
-  );
+  const state = useRecordSelector({
+    ...rest,
+    index,
+    model: collection.model.specifyModel,
+    records,
+    relatedResource: isDependent ? collection.related : undefined,
+    totalCount: collection._totalCount ?? records.length,
+    onAdd: (rawResources): void => {
+      const resources = isToOne ? rawResources.slice(0, 1) : rawResources;
+      if (isDependent && isToOne)
+        collection.related?.placeInSameHierarchy(resources[0]);
+      collection.add(resources);
+      handleAdd?.(resources);
+      setIndex(collection.models.length - 1);
+      handleSlide?.(collection.models.length - 1, false);
+      // Updates the state to trigger a reRender
+      setRecords(getRecords);
+    },
+    onDelete: (_index, source): void => {
+      collection.remove(
+        defined(
+          records[index],
+          `Trying to remove a record with index ${index} which doesn't exists`
+        )
+      );
+      handleDelete?.(index, source);
+      setRecords(getRecords);
+    },
+    onSlide: (index, replace, callback): void => {
+      setIndex(index);
+      handleSlide?.(index, replace);
+      callback?.();
+    },
+  });
+
+  return children(state);
 }
 
 export function IntegratedRecordSelector({
@@ -198,7 +201,6 @@ export function IntegratedRecordSelector({
       }): JSX.Element => (
         <>
           <ResourceView
-            canAddAnother={false}
             dialog={dialog}
             headerButtons={(specifyNetworkBadge): JSX.Element => (
               <>
@@ -256,6 +258,7 @@ export function IntegratedRecordSelector({
              */
             onClose={handleClose}
             onDeleted={collection.models.length <= 1 ? handleClose : undefined}
+            onAdd={undefined}
             onSaved={handleClose}
           />
           {dialogs}

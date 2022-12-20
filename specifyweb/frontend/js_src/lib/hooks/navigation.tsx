@@ -6,11 +6,11 @@ import React from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { UnloadProtectsContext } from '../components/Core/Contexts';
-import type { BackgroundLocation } from '../components/Router/Router';
 import { isOverlay, OverlayContext } from '../components/Router/Router';
-import type { GetSet } from '../utils/types';
+import type { GetOrSet, GetSet, RA } from '../utils/types';
 import { defined } from '../utils/types';
 import { removeItem } from '../utils/utils';
+import { locationToState } from '../components/Router/RouterState';
 
 export function useSearchParameter(
   name: string | undefined
@@ -19,9 +19,8 @@ export function useSearchParameter(
 
   const isOverlayComponent = isOverlay(React.useContext(OverlayContext));
   const location = useLocation();
-  const isOverlayOpen =
-    (location.state as BackgroundLocation | undefined)?.type ===
-    'BackgroundLocation';
+  const state = locationToState(location, 'BackgroundLocation');
+  const isOverlayOpen = typeof state === 'object';
   /*
    * If non-overlay listens for a query string, and you open an overlay, the
    * previous query string value should be used
@@ -58,10 +57,7 @@ export function useSearchParameter(
   const value =
     typeof name === 'string' ? queryString.get(name) ?? undefined : undefined;
   const valueRef = React.useRef(value);
-  React.useEffect(() => {
-    if (freezeValue) return;
-    valueRef.current = value;
-  }, [value, freezeValue]);
+  if (!freezeValue) valueRef.current = value;
 
   return [valueRef.current, handleChange];
 }
@@ -75,14 +71,7 @@ export function useUnloadProtect(
   )!;
 
   const handleRemove = React.useCallback(
-    (): void =>
-      setUnloadProtects((unloadProtects) =>
-        /*
-         * If there are multiple unload protects with the same message, this makes
-         * sure to remove only one
-         */
-        removeItem(unloadProtects, unloadProtects.indexOf(message))
-      ),
+    (): void => unsetUnloadProtect(setUnloadProtects, message),
     [setUnloadProtects, message]
   );
 
@@ -97,3 +86,18 @@ export function useUnloadProtect(
     [setUnloadProtects, isEnabled]
   );
 }
+
+export const unsetUnloadProtect = (
+  setUnloadProtects: GetOrSet<RA<string>>[1],
+  message: string
+) =>
+  setUnloadProtects((unloadProtects) => {
+    const index = unloadProtects.indexOf(message);
+    if (index === -1) return unloadProtects;
+
+    /*
+     * If there are multiple unload protects with the same message, this makes
+     * sure to remove only one
+     */
+    return removeItem(unloadProtects, index);
+  });

@@ -61,7 +61,6 @@ function EditQueryDialog({
   const navigate = useNavigate();
   return state === 'default' ? (
     <ResourceView
-      canAddAnother={false}
       dialog="modal"
       extraButtons={
         <>
@@ -84,6 +83,7 @@ function EditQueryDialog({
       isSubForm={false}
       mode="edit"
       resource={queryResource}
+      onAdd={undefined}
       onClose={handleClose}
       onDeleted={handleClose}
       onSaved={(): void => navigate(`/specify/query/${queryResource.id}/`)}

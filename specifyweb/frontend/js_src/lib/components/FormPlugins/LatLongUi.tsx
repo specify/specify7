@@ -14,12 +14,6 @@ import type { FormMode } from '../FormParse';
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
 
-type Parsed = {
-  readonly format: (step: number | undefined) => string;
-  readonly asFloat: () => number;
-  readonly soCalledUnit: () => number;
-};
-
 function Coordinate({
   resource,
   coordinateField,
@@ -51,7 +45,7 @@ function Coordinate({
             (resource.get(coordinateTextField) ?? '') === '' &&
             (resource.get(coordinateField) ?? '') !== ''
           )
-            resource.set(coordinateTextField, resource.get(coordinateField));
+            updateValue(resource.get(coordinateField));
         },
         true
       ),
@@ -60,12 +54,18 @@ function Coordinate({
 
   React.useEffect(
     () =>
-      resourceOn(resource, `change:${coordinateField}`, () => {
-        if (isChanging.current) return;
-        const coordinate = resource.get(coordinateField)?.toString() ?? '';
-        const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
-        updateValue(parsed?.asFloat() ?? null);
-      }),
+      resourceOn(
+        resource,
+        `change:${coordinateField}`,
+        () => {
+          if (isChanging.current) return;
+          const coordinate = resource.get(coordinateField)?.toString() ?? '';
+          const parsed = (fieldType === 'Lat' ? Lat : Long).parse(coordinate);
+          updateValue(parsed?.asFloat() ?? null);
+        },
+        // Only run this when coordinate field is changed externally
+        false
+      ),
     [resource, coordinateField, updateValue, step, fieldType]
   );
 
@@ -77,8 +77,7 @@ function Coordinate({
     const trimmedValue = trimLatLong(value?.toString() ?? '');
     const hasValue = trimmedValue.length > 0;
     const parsed = hasValue
-      ? (((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ??
-          undefined) as Parsed | undefined)
+      ? (fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
@@ -92,14 +91,33 @@ function Coordinate({
     );
 
     isChanging.current = true;
-    resource.set(coordinateTextField, trimmedValue || null);
     resource.set(coordinateField, parsed?.asFloat() ?? null);
-    resource.set('srcLatLongUnit', parsed?.soCalledUnit() ?? 3);
-    resource.set('originalLatLongUnit', parsed?.soCalledUnit() ?? null);
+    resource.set(coordinateTextField, trimmedValue || null);
+    // Since these fields are no used by sp7, they shouldn't trigger unload protect
+    resource.set(
+      'srcLatLongUnit',
+      parsed?.soCalledUnit() ??
+        // Don't trigger unload protect needlessly
+        (resource.needsSaved ? undefined : resource.get('srcLatLongUnit')) ??
+        1,
+      { silent: true }
+    );
+    resource.set(
+      'originalLatLongUnit',
+      parsed?.soCalledUnit() ??
+        (resource.needsSaved
+          ? undefined
+          : resource.get('originalLatLongUnit')) ??
+        null,
+      { silent: true }
+    );
     isChanging.current = false;
   }, [
     value,
-    resource,
+    /*
+     * Don't update this when resource changes, as that case is handled by the
+     * useEffect hooks above
+     */
     coordinateField,
     coordinateTextField,
     fieldType,
@@ -115,7 +133,6 @@ function Coordinate({
       isReadOnly={isReadOnly}
       value={value?.toString() ?? ''}
       onValueChange={updateValue}
-      // OnBlur={(): void => setCoordinate(trimLatLong(coordinate))}
     />
   );
 }
@@ -202,11 +219,15 @@ export function LatLongUi({
 
   React.useEffect(
     () =>
-      resourceOn(resource, 'change:latLongType', (): void =>
-        setCoordinateType(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          (resource.get('latLongType') as CoordinateType) ?? 'Point'
-        )
+      resourceOn(
+        resource,
+        'change:latLongType',
+        (): void =>
+          setCoordinateType(
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            (resource.get('latLongType') as CoordinateType) ?? 'Point'
+          ),
+        false
       ),
     [resource]
   );

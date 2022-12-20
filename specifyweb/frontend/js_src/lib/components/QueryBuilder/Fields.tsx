@@ -64,20 +64,24 @@ export function QueryFields({
 }): JSX.Element {
   const fieldsContainerRef = React.useRef<HTMLUListElement | null>(null);
 
+  // Scroll to bottom if added a child
+  const oldFieldCount = React.useRef(fields.length);
+  // REFACTOR: extract this into hook and use everywhere where applicable
   useReadyEffect(
-    React.useCallback(
-      () =>
+    React.useCallback(() => {
+      if (
         fieldsContainerRef.current !== null &&
         fieldsContainerRef.current.lastChild !== null &&
         fieldsContainerRef.current.clientHeight !==
-          fieldsContainerRef.current.scrollHeight
-          ? scrollIntoView(
-              fieldsContainerRef.current.lastChild as HTMLElement,
-              'nearest'
-            )
-          : undefined,
-      [fields.length]
-    )
+          fieldsContainerRef.current.scrollHeight &&
+        fields.length > oldFieldCount.current
+      )
+        scrollIntoView(
+          fieldsContainerRef.current.lastChild as HTMLElement,
+          'nearest'
+        );
+      oldFieldCount.current = fields.length;
+    }, [fields.length])
   );
 
   return (

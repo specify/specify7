@@ -52,6 +52,7 @@ function extractDatePart(fieldName: string): {
       };
 }
 
+// TEST: add comprehensive unit tests for this
 export class QueryFieldSpec {
   public readonly baseTable: SpecifyModel;
 
@@ -119,7 +120,7 @@ export class QueryFieldSpec {
 
     return {
       tableList,
-      stringId: [tableList, this.table.name, fieldName].join('.'),
+      stringId: [tableList, this.table.name.toLowerCase(), fieldName].join('.'),
       fieldName,
       isRelFld: this.getField()?.isRelationship === true,
     };

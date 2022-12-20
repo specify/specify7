@@ -128,7 +128,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
-                title: adminText('createRoleDialogHeader'),
+                title: adminText('createRole'),
                 element: () =>
                   import('../Security/CreateRole').then(
                     ({ CreateCollectionRole }) => CreateCollectionRole
@@ -273,13 +273,11 @@ export const routes: RA<EnhancedRoute> = [
     path: 'view/:tableName',
     children: [
       {
-        path: 'new',
-        element: () =>
-          import('../Forms/DataTask').then(
-            ({ NewResourceView }) => NewResourceView
-          ),
-      },
-      {
+        /*
+         * Id is set to "new" when adding new resource.
+         * Separate route was not used to prevent reloading everything when
+         * adding new items to record set
+         */
         path: ':id',
         element: () =>
           import('../Forms/DataTask').then(({ ViewResource }) => ViewResource),
@@ -289,7 +287,9 @@ export const routes: RA<EnhancedRoute> = [
   {
     path: 'bycatalog/:collectionCode/:catalogNumber/',
     element: () =>
-      import('../Forms/DataTask').then(({ ViewByCatalog }) => ViewByCatalog),
+      import('../Forms/DataTask').then(
+        ({ ViewResourceByCatalog }) => ViewResourceByCatalog
+      ),
   },
   {
     path: 'query',

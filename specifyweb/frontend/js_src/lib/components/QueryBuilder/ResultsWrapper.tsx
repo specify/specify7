@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
-import { keysToLowerCase } from '../../utils/utils';
+import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { SpQuery, Tables } from '../DataModel/types';
@@ -15,7 +15,8 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
-import { QueryResultRow, QueryResults } from './Results';
+import type { QueryResultRow } from './Results';
+import { QueryResults } from './Results';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -40,12 +41,15 @@ export function QueryResultsWrapper({
   readonly fields: RA<QueryField>;
   readonly recordSetId: number | undefined;
   readonly createRecordSet: JSX.Element | undefined;
-  readonly extraButtons: JSX.Element;
+  readonly extraButtons: JSX.Element | undefined;
   readonly forceCollection: number | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onSortChange?: (
-    fieldIndex: number,
-    direction: 'ascending' | 'descending' | undefined
+    /*
+     * Since this component may add fields to the query, it needs to send back
+     * all of the fields
+     */
+    newFields: RA<QueryField>
   ) => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
@@ -111,12 +115,13 @@ export function QueryResultsWrapper({
       .catch(fail);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
-    const initialData =
+    const isCountOnly =
       countOnly ||
-      // Run as count only if there are no visible fields
-      displayedFields.length === 0
-        ? Promise.resolve(undefined)
-        : fetchResults(0);
+      // Run as "count only" if there are no visible fields
+      displayedFields.length === 0;
+    const initialData = isCountOnly
+      ? Promise.resolve(undefined)
+      : fetchResults(0);
     const fieldSpecs = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
@@ -127,8 +132,9 @@ export function QueryResultsWrapper({
         setProps({
           model,
           hasIdField: queryResource.get('selectDistinct') !== true,
+          queryResource,
           fetchSize,
-          fetchResults,
+          fetchResults: isCountOnly ? undefined : fetchResults,
           fieldSpecs,
           initialData,
           sortConfig: fields
@@ -136,15 +142,19 @@ export function QueryResultsWrapper({
             .map((field) => field.sortType),
           onSortChange:
             typeof handleSortChange === 'function'
-              ? (fieldSpec, direction) => {
+              ? (fieldSpec, sortType) => {
                   /*
                    * If some fields are not displayed, visual index and actual field
                    * index differ
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
                   const field = displayedFields[index];
-                  const originalIndex = allFields.indexOf(field);
-                  handleSortChange(originalIndex, direction);
+                  handleSortChange(
+                    replaceItem(allFields, index, {
+                      ...field,
+                      sortType,
+                    })
+                  );
                 }
               : undefined,
           createRecordSet,

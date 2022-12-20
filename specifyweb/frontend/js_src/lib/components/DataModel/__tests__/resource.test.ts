@@ -1,4 +1,4 @@
-import { overwriteAjax } from '../../../tests/ajax';
+import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { Http } from '../../../utils/ajax/definitions';
@@ -20,6 +20,7 @@ import {
   idFromUrl,
   parseJavaClassName,
   parseResourceUrl,
+  resourceFromUrl,
   resourceToJson,
   saveResource,
   strictIdFromUrl,
@@ -28,7 +29,7 @@ import {
 import { schema } from '../schema';
 import type { CollectionObject } from '../types';
 
-const { getFieldsToClone } = exportsForTests;
+const { getCarryOverPreference, getFieldsToClone } = exportsForTests;
 
 mockTime();
 requireContext();
@@ -37,9 +38,9 @@ describe('fetchResource', () => {
   const baseAgentRecord = {
     resource_uri: getResourceApiUrl('Agent', 1),
   };
-  overwriteAjax('/api/specify/agent/1/', baseAgentRecord);
+  overrideAjax('/api/specify/agent/1/', baseAgentRecord);
 
-  overwriteAjax('/api/specify/agent/2/', '', {
+  overrideAjax('/api/specify/agent/2/', '', {
     responseCode: Http.NOT_FOUND,
   });
 
@@ -51,7 +52,7 @@ describe('fetchResource', () => {
     expect(fetchResource('Agent', 2)).resolves.toBeUndefined());
 });
 
-overwriteAjax('/api/specify/locality/1/', '', {
+overrideAjax('/api/specify/locality/1/', '', {
   method: 'DELETE',
   responseCode: Http.NO_CONTENT,
 });
@@ -59,7 +60,7 @@ overwriteAjax('/api/specify/locality/1/', '', {
 test('deleteResource', async () =>
   expect(deleteResource('Locality', 1)).resolves.toBeUndefined());
 
-overwriteAjax(
+overrideAjax(
   '/api/specify/locality/',
   {
     resource_uri: getResourceApiUrl('Locality', 2),
@@ -95,7 +96,7 @@ test('createResource', async () =>
   ));
 
 describe('saveResource', () => {
-  overwriteAjax(
+  overrideAjax(
     '/api/specify/locality/3/',
     {
       resource_uri: getResourceApiUrl('Locality', 2),
@@ -200,6 +201,19 @@ describe('strictIdFromUrl', () => {
     ));
 });
 
+describe('resourceFromUrl', () => {
+  test('valid url', () => {
+    const resource = resourceFromUrl('/api/specify/collectionobject/123/', {
+      noBusinessRules: true,
+    })!;
+    expect(resource.specifyModel).toBe(schema.models.CollectionObject);
+    expect(resource.id).toBe(123);
+    expect(resource.noBusinessRules).toBe(true);
+  });
+  test('invalid url', () =>
+    expect(resourceFromUrl('/api//1/')).toBeUndefined());
+});
+
 test('resourceToJson', () => {
   const toJSON = jest.fn(() => 'a');
   const a = { toJSON } as unknown as SpecifyResource<AnySchema>;
@@ -210,19 +224,22 @@ theories(parseJavaClassName, [
   { in: ['edu.ku.brc.specify.datamodel.Accession'], out: 'Accession' },
   { in: ['TEST'], out: 'TEST' },
 ]);
-describe('getFieldsToClone', () => {
+describe('getCarryOverPreference', () => {
   test('default carry over fields', () =>
-    expect(getFieldsToClone(schema.models.SpQuery)).toEqual(
-      schema.models.SpQuery.fields.map(({ name }) => name)
+    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
+      getFieldsToClone(schema.models.SpQuery)
     ));
   test('customize carry over fields', () => {
     setPref('form', 'preferences', 'carryForward', {
       Locality: ['localityName', 'text1'],
     });
-    expect(getFieldsToClone(schema.models.Locality)).toEqual([
+    expect(getCarryOverPreference(schema.models.Locality, false)).toEqual([
       'localityName',
       'text1',
     ]);
+    expect(getCarryOverPreference(schema.models.SpQuery, true)).toEqual(
+      getFieldsToClone(schema.models.SpQuery)
+    );
   });
 });
 
@@ -231,20 +248,63 @@ describe('getUniqueFields', () => {
     expect(getUniqueFields(schema.models.CollectionObject)).toEqual([
       'catalogNumber',
       'guid',
+      'collectionObjectAttachments',
+      'timestampCreated',
+      'version',
+      'timestampModified',
     ]));
   test('Locality', () =>
-    expect(getUniqueFields(schema.models.Locality)).toEqual([]));
+    expect(getUniqueFields(schema.models.Locality)).toEqual([
+      'localityAttachments',
+      'guid',
+      'timestampCreated',
+      'version',
+      'timestampModified',
+    ]));
+  test('AccessionAttachment', () =>
+    expect(getUniqueFields(schema.models.AccessionAttachment)).toEqual([
+      'attachment',
+      'timestampCreated',
+      'version',
+      'timestampModified',
+    ]));
+  test('AccessionAgent', () =>
+    expect(getUniqueFields(schema.models.AccessionAgent)).toEqual([
+      'timestampCreated',
+      'version',
+      'timestampModified',
+    ]));
 });
 
 test('getFieldsToNotClone', () => {
   setPref('form', 'preferences', 'carryForward', {
-    CollectionObject: schema.models.CollectionObject.fields
-      .filter(({ name }) => name !== 'text1')
-      .map(({ name }) => name) as RA<TableFields<CollectionObject>>,
+    CollectionObject: getFieldsToClone(schema.models.CollectionObject).filter(
+      (name) => name !== 'text1'
+    ) as RA<TableFields<CollectionObject>>,
   });
-  expect(getFieldsToNotClone(schema.models.CollectionObject)).toEqual([
+  expect(getFieldsToNotClone(schema.models.CollectionObject, true)).toEqual([
+    'actualTotalCountAmt',
     'catalogNumber',
+    'timestampModified',
+    'guid',
+    'timestampCreated',
+    'totalCountAmt',
+    'version',
+    'collectionObjectAttachments',
+    'currentDetermination',
+    'projects',
+  ]);
+  expect(getFieldsToNotClone(schema.models.CollectionObject, false)).toEqual([
+    'actualTotalCountAmt',
+    'catalogNumber',
+    'timestampModified',
     'guid',
     'text1',
+    'timestampCreated',
+    'totalCountAmt',
+    'version',
+    'collectionObjectAttachments',
+    'currentDetermination',
+    'projects',
   ]);
 });

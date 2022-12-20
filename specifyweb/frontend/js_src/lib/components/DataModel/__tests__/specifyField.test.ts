@@ -120,6 +120,11 @@ describe('isHidden', () => {
     expect(schema.models.CollectionObject.getField('accession')?.isHidden).toBe(
       false
     ));
+
+  test('front-end can make field hidden', () =>
+    expect(schema.models.SpecifyUser.getField('password')?.isHidden).toBe(
+      true
+    ));
 });
 
 describe('override', () => {

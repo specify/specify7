@@ -18,6 +18,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { usePref } from '../UserPreferences/usePref';
+import { queryText } from '../../localization/query';
 
 export const defaultQueryTablesConfig: RA<keyof Tables> = [
   'Accession',
@@ -121,7 +122,7 @@ export function QueryTables({
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={commonText('newQueryDialogTitle')}
+      header={queryText('newQueryName')}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}

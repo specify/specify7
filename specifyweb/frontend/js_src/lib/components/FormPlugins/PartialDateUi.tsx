@@ -114,6 +114,7 @@ function unsafeParseFullDate(
   return dayjs(new Date(year, month - 1, day));
 }
 
+// TESTS: this has been very buggy. add tests
 // REFACTOR: split this component into smaller
 export function PartialDateUi<SCHEMA extends AnySchema>({
   resource,
@@ -203,7 +204,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   // Unparsed raw input
   const [inputValue, setInputValue] = React.useState('');
 
-  const isSettingInitialMoment = React.useRef<boolean>(true);
   const isInitialized = React.useRef<boolean>(false);
 
   React.useEffect(() => {
@@ -212,7 +212,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         silent: true,
       });
 
-    isSettingInitialMoment.current = true;
     isInitialized.current = false;
 
     const destructor = resourceOn(
@@ -249,7 +248,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   ]);
 
   React.useEffect(() => {
-    if (isReadOnly) return;
     /*
      * If resource changes, a new moment is set, but its value won't get
      * propagated on the first call to this useEffect.
@@ -257,8 +255,6 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
      */
     if (!isInitialized.current) {
       isInitialized.current = true;
-      isSettingInitialMoment.current =
-        typeof resource.get(dateField) === 'string';
       return;
     }
     if (moment === undefined) {
@@ -279,16 +275,20 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       )
         resource.set(precisionField, precisions[precision] as never);
 
-      if (isSettingInitialMoment.current)
+      if (!isReadOnly) {
+        const oldRawDate = resource.get(dateField);
+        const oldDate =
+          typeof oldRawDate === 'string' ? new Date(oldRawDate) : undefined;
+        const newDate = moment.toDate();
         /*
-         * Don't set the value on the first run
-         * If this isn't done, unload protect would be needlessly triggered if
-         * current value in the date field does not exactly match the formatted
-         * value (i.e, happens for timestampModified fields since those include
-         * time, whereas formatted date doesn't)
+         * Back-end may return a date in a date-time format, which when converted
+         * to date format causes front-end to trigger a needless unload protect
+         * See https://github.com/specify/specify7/issues/2578. This fixes that
          */
-        isSettingInitialMoment.current = false;
-      else resource.set(dateField, value as never);
+        const isChanged =
+          f.maybe(oldDate, getDateInputValue) !== getDateInputValue(newDate);
+        resource.set(dateField, value as never, { silent: !isChanged });
+      }
       resource.saveBlockers?.remove(`invaliddate:${dateField}`);
 
       if (precision === 'full') setInputValue(moment.format(inputFullFormat));

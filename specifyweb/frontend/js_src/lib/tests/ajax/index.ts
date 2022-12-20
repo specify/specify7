@@ -2,33 +2,36 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { ajax, AjaxResponseObject } from '../../utils/ajax';
+import { MimeType } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
 import { handleAjaxResponse } from '../../utils/ajax/response';
 import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
-import { Http } from '../../utils/ajax/definitions';
+import type { IR, RA } from '../../utils/types';
 
 type ResponseType = Document | IR<unknown> | RA<unknown> | string;
 
-const overwrites: R<
-  | {
+// eslint-disable-next-line functional/prefer-readonly-type
+const overrides: {
+  // eslint-disable-next-line functional/prefer-readonly-type
+  [URL in string]?: {
+    [METHOD in string]?: {
       readonly data: () => ResponseType;
       readonly responseCode: number | undefined;
-      readonly method: string | undefined;
       readonly body: unknown;
-    }
-  | undefined
-> = {};
+    };
+  };
+} = {};
 
 /**
  * Overwrite the response to an ajax response for all fetch requests originating
  * from the current test block
  */
-export function overwriteAjax(
+export function overrideAjax(
   url: string,
   response: ResponseType | (() => ResponseType),
   {
     responseCode,
-    method,
+    method = 'GET',
     body,
   }: {
     readonly responseCode?: number;
@@ -36,16 +39,20 @@ export function overwriteAjax(
     readonly body?: unknown;
   } = {}
 ): void {
+  if (!url.startsWith('/'))
+    throw new Error(
+      '"overrideAjax" must be called with a URL that starts with /'
+    );
   beforeAll(() => {
-    overwrites[url] = {
+    overrides[url] ??= {};
+    overrides[url]![method] = {
       data: typeof response === 'function' ? response : () => response,
       responseCode,
-      method,
       body,
     };
   });
   afterAll(() => {
-    overwrites[url] = undefined;
+    overrides[url]![method] = undefined;
   });
 }
 
@@ -62,7 +69,11 @@ export function overwriteAjax(
  */
 export async function ajaxMock<RESPONSE_TYPE>(
   url: string,
-  { method: requestMethod, body: requestBody }: Parameters<typeof ajax>[1],
+  {
+    method: requestMethod = 'GET',
+    body: requestBody,
+    headers: { Accept: accept },
+  }: Parameters<typeof ajax>[1],
   {
     expectedResponseCodes = [Http.OK],
   }: {
@@ -70,21 +81,24 @@ export async function ajaxMock<RESPONSE_TYPE>(
   } = {}
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   if (url.startsWith('https://stats.specifycloud.org/capture'))
-    return formatResponse('', 'text/plain', expectedResponseCodes);
+    return formatResponse('', accept, expectedResponseCodes);
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
-  const overwrittenData = overwrites[url] ?? overwrites[urlWithoutQuery];
+  const overwrittenData =
+    overrides[url]?.[requestMethod] ??
+    overrides[urlWithoutQuery]?.[requestMethod];
   if (typeof overwrittenData !== 'undefined') {
-    const { data, responseCode, method, body } = overwrittenData;
-    const response = createResponse(expectedResponseCodes);
+    const { data, responseCode, body } = overwrittenData;
     if (body !== undefined) expect(requestBody).toEqual(body);
-    if (method === undefined || method === requestMethod)
-      return {
-        data: data() as RESPONSE_TYPE,
-        response,
-        status: responseCode ?? response.status,
-      };
+    const value = data();
+    const resolvedValue =
+      typeof value === 'object' ? JSON.stringify(value) : value;
+    return formatResponse(
+      resolvedValue,
+      accept,
+      typeof responseCode === 'number' ? [responseCode] : expectedResponseCodes
+    );
   }
 
   const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
@@ -109,19 +123,15 @@ export async function ajaxMock<RESPONSE_TYPE>(
 
   if (typeof targetFile === 'undefined')
     throw new Error(
-      `No static source found for URL ${url}.\n` +
+      `No static source found for URL ${url} [${requestMethod}].\n` +
         `You can mock it by creating a file in ./lib/tests/ajax/static\n` +
-        `Alternatively, you can add overwriteAjax() to your test`
+        `Alternatively, you can add overrideAjax() to your test`
     );
 
   const file = await fs.promises.readFile(
     path.join(parsedPath.dir, targetFile)
   );
-  return formatResponse(
-    file.toString(),
-    splitFileName(targetFile).extension,
-    expectedResponseCodes
-  );
+  return formatResponse(file.toString(), accept, expectedResponseCodes);
 }
 
 function splitFileName(fileName: string): {
@@ -137,17 +147,12 @@ function splitFileName(fileName: string): {
 
 const formatResponse = <RESPONSE_TYPE>(
   response: string,
-  extension: string,
+  accept: MimeType | undefined,
   expectedResponseCodes: RA<number>
 ): AjaxResponseObject<RESPONSE_TYPE> =>
   handleAjaxResponse({
     expectedResponseCodes,
-    accept:
-      extension === 'json'
-        ? 'application/json'
-        : extension === 'xml'
-        ? 'text/xml'
-        : 'text/plain',
+    accept,
     response: createResponse(expectedResponseCodes),
     strict: true,
     text: response,

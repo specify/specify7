@@ -29,7 +29,7 @@ export function TablesPickList(
         (): void => {
           if (props.resource.get('type') === PickListTypes.ITEMS)
             props.resource.set('tableName', null as never);
-          setItems(getItems);
+          setItems(getItems());
         },
         true
       ),

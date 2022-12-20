@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { GetOrSet, GetSet } from '../../utils/types';
 import type { preferenceDefinitions, Preferences } from './Definitions';
-import { getPrefDefinition, getUserPref, setPref } from './helpers';
+import { getUserPref, setPref } from './helpers';
 import { PreferencesContext, prefEvents } from './Hooks';
 
 /**

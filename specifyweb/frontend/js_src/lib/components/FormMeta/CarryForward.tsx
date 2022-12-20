@@ -5,35 +5,96 @@ import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
 import { sortFunction, toggleItem } from '../../utils/utils';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
-import { getUniqueFields } from '../DataModel/resource';
+import { getFieldsToClone, getUniqueFields } from '../DataModel/resource';
+import { schema } from '../DataModel/schema';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 
-export function CarryForwardButton({
+/**
+ * Fields to always carry forward (unless "Deselect All" is pressed), but not
+ * show in the UI.
+ */
+const invisibleCarry = new Set([
+  'collection',
+  'collections',
+  'definition',
+  'definitionItem',
+  'discipline',
+  'disciplines',
+  'division',
+  'divisions',
+  // There is literally a database field with a typo in its name (in Address table)
+  'insitutions',
+  'institution',
+  'institutions',
+  'scope',
+]);
+
+/** Search for all dependent fields using a suffix */
+const dependentFieldSeeker = (suffix: string): IR<string> =>
+  Object.fromEntries(
+    Object.values(schema.models)
+      .flatMap(({ literalFields }) =>
+        literalFields.filter((v) => v.name.toLowerCase().endsWith(suffix))
+      )
+      .map(
+        (v) =>
+          [
+            v.name,
+            v.model.getField(v.name.slice(0, -suffix.length))?.name,
+          ] as const
+      )
+      .filter(([_dependent, source]) => typeof source === 'string')
+  ) as IR<string>;
+
+/**
+ * Dependent -> Source
+ * When value in one field is based on another, don't show the dependent field in
+ * the UI, but copy its carry over settings from the source field
+ */
+export const dependentFields = f.store<IR<string>>(() => ({
+  lat1text: 'latitude1',
+  lat2text: 'latitude2',
+  long1text: 'longitude1',
+  long2text: 'longitude2',
+  // Fields like endDatePrecision
+  ...dependentFieldSeeker('precision'),
+  // Fields like endDateVerbatim
+  ...dependentFieldSeeker('verbatim'),
+  // Fields like endDepthUnit
+  ...dependentFieldSeeker('unit'),
+}));
+
+export function CarryForwardConfig({
   model,
+  parentModel,
   type,
 }: {
   readonly model: SpecifyModel;
+  readonly parentModel: SpecifyModel | undefined;
   readonly type: 'button' | 'cog';
 }): JSX.Element | null {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
-  const [globalDisabled, setGlobalDisabled] = usePref(
+  const [globalEnabled, setGlobalEnabled] = usePref(
     'form',
     'preferences',
-    'disableCarryForward'
+    'enableCarryForward'
   );
-  const isEnabled = !globalDisabled.includes(model.name);
+  const isEnabled = globalEnabled.includes(model.name);
   const canChange = !NO_CLONE.has(model.name);
+
   return canChange ? (
     <>
       {type === 'button' ? (
@@ -41,13 +102,13 @@ export function CarryForwardButton({
           <Input.Checkbox
             checked={isEnabled}
             onChange={(): void =>
-              setGlobalDisabled(toggleItem(globalDisabled, model.name))
+              setGlobalEnabled(toggleItem(globalEnabled, model.name))
             }
           />
-          {formsText('carryForward')}
+          {formsText('carryForwardEnabled')}
           <Button.Small
             className="ml-2"
-            title={formsText('carryForwardDescription')}
+            title={formsText('carryForwardSettingsDescription')}
             onClick={handleOpen}
           >
             {icons.cog}
@@ -56,11 +117,17 @@ export function CarryForwardButton({
       ) : (
         <Button.Icon
           icon="cog"
-          title={formsText('carryForwardDescription')}
+          title={formsText('carryForwardSettingsDescription')}
           onClick={handleOpen}
         />
       )}
-      {isOpen && <CarryForwardConfig model={model} onClose={handleClose} />}
+      {isOpen && (
+        <CarryForwardConfigDialog
+          model={model}
+          parentModel={parentModel}
+          onClose={handleClose}
+        />
+      )}
     </>
   ) : null;
 }
@@ -68,11 +135,13 @@ export function CarryForwardButton({
 const normalize = (fields: RA<string>): RA<string> =>
   Array.from(fields).sort(sortFunction(f.id));
 
-function CarryForwardConfig({
+function CarryForwardConfigDialog({
   model,
+  parentModel,
   onClose: handleClose,
 }: {
   readonly model: SpecifyModel;
+  readonly parentModel: SpecifyModel | undefined;
   readonly onClose: () => void;
 }): JSX.Element {
   const [showHiddenFields, setShowHiddenFields] = usePref(
@@ -88,10 +157,9 @@ function CarryForwardConfig({
   );
 
   const uniqueFields = getUniqueFields(model);
-  const defaultConfig = model.fields
-    .filter(({ isVirtual }) => !isVirtual)
-    .map(({ name }) => name)
-    .filter((fieldName) => !uniqueFields.includes(fieldName));
+  const defaultConfig = getFieldsToClone(model).filter(
+    (fieldName) => !uniqueFields.includes(fieldName)
+  );
   const isDefaultConfig = (fields: RA<string>): boolean =>
     JSON.stringify(normalize(fields)) ===
     JSON.stringify(normalize(defaultConfig));
@@ -101,21 +169,35 @@ function CarryForwardConfig({
       (fieldName) => !uniqueFields.includes(fieldName)
     ) ?? defaultConfig;
 
-  function handleChange(rawFields: RA<string>): void {
-    const fields = normalize(rawFields);
+  const handleChange = (fields: RA<string>): void =>
     setGlobalConfig({
       ...globalConfig,
       [model.name]: isDefaultConfig(fields) ? undefined : fields,
     });
-  }
+
+  const reverseRelationships = React.useMemo(
+    () =>
+      filterArray(
+        parentModel?.relationships
+          .filter(({ relatedModel }) => relatedModel === model)
+          .flatMap(({ otherSideName }) => otherSideName) ?? []
+      ),
+    [parentModel, model]
+  );
 
   const literalFields = model.literalFields.filter(
-    ({ overrides, isVirtual }) =>
-      !isVirtual && (!overrides.isHidden || showHiddenFields)
+    ({ name, overrides, isVirtual }) =>
+      !isVirtual &&
+      (!overrides.isHidden || showHiddenFields) &&
+      !invisibleCarry.has(name)
   );
   const relationships = model.relationships.filter(
-    ({ overrides, isVirtual }) =>
-      !isVirtual && (!overrides.isHidden || showHiddenFields)
+    (field) =>
+      !reverseRelationships.includes(field.name) &&
+      !field.isVirtual &&
+      (!field.overrides.isHidden || showHiddenFields) &&
+      (field.isDependent() || !relationshipIsToMany(field)) &&
+      !invisibleCarry.has(field.name)
   );
 
   const id = useId('form-carry-forward');
@@ -133,6 +215,7 @@ function CarryForwardConfig({
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
+                          !reverseRelationships.includes(name) &&
                           (!overrides.isHidden || config.includes(name))
                       )
                       .map(({ name }) => name)
@@ -152,6 +235,7 @@ function CarryForwardConfig({
                       .filter(
                         ({ name, isVirtual, overrides }) =>
                           !isVirtual &&
+                          !reverseRelationships.includes(name) &&
                           overrides.isHidden &&
                           config.includes(name)
                       )
@@ -164,20 +248,24 @@ function CarryForwardConfig({
           <Submit.Blue form={id('form')}>{commonText('close')}</Submit.Blue>
         </>
       }
-      header={`${formsText('carryForwardDescription')} (${model.label})`}
+      header={`${formsText('carryForwardSettingsDescription')} (${
+        model.label
+      })`}
       onClose={handleClose}
     >
       <Form className="overflow-hidden" id={id('form')} onSubmit={handleClose}>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
-          <H3>{commonText('fields')}</H3>
           <CarryForwardCategory
+            header={commonText('fields')}
+            model={model}
             carryForward={config}
             fields={literalFields}
             uniqueFields={uniqueFields}
             onChange={handleChange}
           />
-          <h3>{commonText('relationships')}</h3>
           <CarryForwardCategory
+            header={commonText('relationships')}
+            model={model}
             carryForward={config}
             fields={relationships}
             uniqueFields={uniqueFields}
@@ -197,41 +285,67 @@ function CarryForwardConfig({
 }
 
 function CarryForwardCategory({
+  header,
+  model,
   fields,
   uniqueFields,
   carryForward,
   onChange: handleChange,
 }: {
+  readonly header: string;
+  readonly model: SpecifyModel;
   readonly fields: RA<LiteralField | Relationship>;
   readonly uniqueFields: RA<string>;
   readonly carryForward: RA<string>;
   readonly onChange: (carryForward: RA<string>) => void;
-}): JSX.Element {
-  return (
-    <Ul>
-      {fields.map((field) => (
-        <li className="flex gap-1" key={field.name}>
-          <Label.Inline
-            title={
-              uniqueFields.includes(field.name)
-                ? formsText('carryForwardUniqueField')
-                : field.getLocalizedDesc()
-            }
-          >
-            <Input.Checkbox
-              checked={f.includes(carryForward, field.name)}
-              disabled={uniqueFields.includes(field.name)}
-              onValueChange={(): void =>
-                handleChange(toggleItem(carryForward, field.name))
-              }
-            />
-            {field.label}
-          </Label.Inline>
-          {field.isRelationship && field.isDependent() ? (
-            <CarryForwardButton model={field.relatedModel} type="cog" />
-          ) : undefined}
-        </li>
-      ))}
-    </Ul>
-  );
+}): JSX.Element | null {
+  return fields.length > 0 ? (
+    <>
+      <H3>{header}</H3>
+      <Ul>
+        {fields.map((field) => {
+          const isUnique = uniqueFields.includes(field.name);
+          return (
+            <li className="flex gap-1" key={field.name}>
+              <Label.Inline
+                title={
+                  isUnique
+                    ? formsText('carryForwardUniqueField')
+                    : field.getLocalizedDesc()
+                }
+              >
+                <Input.Checkbox
+                  checked={f.includes(carryForward, field.name)}
+                  disabled={isUnique}
+                  onValueChange={(isChecked): void => {
+                    const dependents = filterArray(
+                      Object.entries(dependentFields())
+                        .filter(([_dependent, source]) => source === field.name)
+                        .map(([dependent]) => model.getField(dependent)?.name)
+                    );
+                    handleChange(
+                      isChecked
+                        ? f.unique([...carryForward, field.name, ...dependents])
+                        : carryForward.filter(
+                            (name) =>
+                              name !== field.name && !dependents.includes(name)
+                          )
+                    );
+                  }}
+                />
+                {field.label}
+              </Label.Inline>
+              {field.isRelationship && field.isDependent() && !isUnique ? (
+                <CarryForwardConfig
+                  model={field.relatedModel}
+                  parentModel={field.model}
+                  type="cog"
+                />
+              ) : undefined}
+            </li>
+          );
+        })}
+      </Ul>
+    </>
+  ) : null;
 }

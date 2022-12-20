@@ -1,3 +1,4 @@
+
 # [Specify 7](https://www.specifysoftware.org/products/specify-7/)
 
 The [Specify Collections Consortium](https://www.specifysoftware.org) is pleased to offer Specify 7, a web implementation of our biological collections data management platform.
@@ -65,9 +66,9 @@ Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 ## Docker installation
 
 Beginning with version 7.6.0 the recommend deployment of Specify 7 is
-via Docker. Please contact Specify support for detailed Docker
-deployment instructions. For existing non-Docker installations the
-relevant instructions have been updated below.
+via Docker. Members can contact support@specifysoftware.org with your GitHub username and institution to recieve  access to our Docker deployment instructions and repository. 
+
+For existing non-Docker installations the relevant instructions have been updated below.
 
 ## Installation
 
@@ -140,9 +141,9 @@ Specify 7. It is possible to copy the Specify 6 install from another
 Linux system to avoid the need to install Java on the server.
 
 ```shell
-wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
-sh Specify_unix_64.sh -q -dir ./Specify6.8.01
-sudo ln -s $(pwd)/Specify6.8.01 /opt/Specify
+wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
+sh Specify_unix_64.sh -q -dir ./Specify6.8.02
+sudo ln -s $(pwd)/Specify6.8.02 /opt/Specify
 ```
 
 ### Cloning Specify 7 source repository
@@ -397,8 +398,6 @@ database with a new version of Specify 6 and follow the Specify 6
 update procedures.
 
 Once the database version is updated, a corresponding copy of Specify
-6 must be provided to the Specify 7 server by repeating the
-[Installing Specify 6](#installing-specify-6) section of this guide
-for the new version of Specify 6.
+6 must be provided to the Specify 7 server by repeating the [Installing Specify 6](#installing-specify-6) section of this guide for the new version of Specify 6.
 
 [![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()

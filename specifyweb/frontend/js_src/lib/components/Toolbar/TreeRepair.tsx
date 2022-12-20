@@ -39,7 +39,7 @@ export function TreeSelectOverlay(): JSX.Element {
     <TreeSelectDialog
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
-      title={commonText('treesDialogTitle')}
+      title={commonText('trees')}
       onClick={undefined}
       onClose={handleClose}
     />
@@ -177,12 +177,12 @@ export function EditTreeDefinition({
       <DataEntry.Edit onClick={handleOpen} />
       {isOpen && (
         <ResourceView
-          canAddAnother={false}
           dialog="modal"
           isDependent={false}
           isSubForm={false}
           mode="edit"
           resource={treeDefinition}
+          onAdd={undefined}
           onClose={handleClose}
           onDeleted={undefined}
           onSaved={(): void => globalThis.location.reload()}

@@ -8,7 +8,7 @@ import { filterArray } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { usePrefDefinitions } from './index';
 import { useLocation } from 'react-router';
-import { LocationStates } from '../Router/Router';
+import { locationToState } from '../Router/RouterState';
 
 /** Update the active category on the sidebar as user scrolls */
 export function useActiveCategory(): {
@@ -84,8 +84,8 @@ export function PreferencesAside({
   const definitions = usePrefDefinitions();
   const navigate = useNavigate();
   const location = useLocation();
-  const state = location.state as LocationStates;
-  const isInOverlay = state?.type === 'BackgroundLocation';
+  const state = locationToState(location, 'BackgroundLocation');
+  const isInOverlay = typeof state === 'object';
   React.useEffect(
     () =>
       isInOverlay
@@ -106,7 +106,7 @@ export function PreferencesAside({
     <aside
       className={`
         top-0 flex min-w-fit flex-1 flex-col divide-y-4 divide-[color:var(--form-background)]
-        md:sticky
+        overflow-y-auto md:sticky
       `}
     >
       {definitions.map(([category, { title }], index) => (

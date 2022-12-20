@@ -10,7 +10,6 @@ import { f } from '../../utils/functools';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
-import { wbText } from '../../localization/workbench';
 import { getModel, schema } from '../DataModel/schema';
 import {
   javaTypeToHuman,
@@ -30,6 +29,7 @@ import { softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { syncFieldFormat } from '../../utils/fieldFormat';
+import { formsText } from '../../localization/forms';
 
 function Table<
   SORT_CONFIG extends
@@ -375,7 +375,7 @@ const dataModelToTsv = (): string =>
       commonText('hidden'),
       commonText('readOnly'),
       commonText('required'),
-      wbText('relationshipInline'),
+      formsText('relationship'),
       commonText('type'),
       commonText('length'),
       commonText('databaseColumn'),

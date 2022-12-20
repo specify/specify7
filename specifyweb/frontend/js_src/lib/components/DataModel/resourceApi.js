@@ -5,13 +5,12 @@ import {assert} from '../Errors/assert';
 import {globalEvents} from '../../utils/ajax/specifyApi';
 import {
     getFieldsToNotClone,
+    getResourceApiUrl,
     getResourceViewUrl,
-    parseResourceUrl
+    resourceFromUrl
 } from './resource';
 import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
-import {schema} from './schema';
-import {formatUrl} from '../Router/queryString';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
 
@@ -108,10 +107,10 @@ function eventHandlerForToOne(related, field) {
         handleChanged(){
             this.needsSaved = true;
         },
-        async clone() {
+        async clone(cloneAll = false) {
             var self = this;
 
-            const exemptFields = getFieldsToNotClone(this.specifyModel).map(fieldName=>fieldName.toLowerCase());
+            const exemptFields = getFieldsToNotClone(this.specifyModel, cloneAll).map(fieldName=>fieldName.toLowerCase());
 
             var newResource = new this.constructor(
               removeKey(
@@ -123,7 +122,6 @@ function eventHandlerForToOne(related, field) {
             );
 
             newResource.needsSaved = self.needsSaved;
-            newResource.recordsetid = self.recordsetid;
 
             await Promise.all(Object.entries(self.dependentResources).map(async ([fieldName,related])=>{
                 if(exemptFields.includes(fieldName)) return;
@@ -133,15 +131,15 @@ function eventHandlerForToOne(related, field) {
                     // many-to-one wouldn't ordinarily be dependent, but
                     // this is the case for paleocontext. really more like
                     // a one-to-one.
-                    newResource.set(fieldName, await related?.clone());
+                    newResource.set(fieldName, await related?.clone(cloneAll));
                     break;
                 case 'one-to-many':
                     await newResource.rget(fieldName).then((newCollection)=>
-                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone())))
+                        Promise.all(related.models.map(async (resource)=>newCollection.add(await resource?.clone(cloneAll))))
                     );
                     break;
                 case 'zero-to-one':
-                    newResource.set(fieldName, await related?.clone());
+                    newResource.set(fieldName, await related?.clone(cloneAll));
                     break;
                 default:
                     throw new Error('unhandled relationship type');
@@ -150,18 +148,12 @@ function eventHandlerForToOne(related, field) {
             return newResource;
         },
         url() {
-            // returns the api uri for this resource. if the resource is newly created
-            // (no id), return the uri for the collection it belongs to
-            // If url form changes, see idFromUrl method
-            var url = '/api/specify/' + this.specifyModel.name.toLowerCase() + '/' +
-                (!this.isNew() ? (this.id + '/') : '');
-            return this.recordsetid == null ? url :
-                formatUrl(url, {recordSetId: this.recordsetid});
+            return getResourceApiUrl(this.specifyModel.name, this.id);
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
             if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
-            return getResourceViewUrl(this.specifyModel.name, this.id, this.recordsetid);
+            return getResourceViewUrl(this.specifyModel.name, this.id);
         },
         get(attribute) {
             if(attribute.toLowerCase() === this.specifyModel.idField.name.toLowerCase())
@@ -230,13 +222,11 @@ function eventHandlerForToOne(related, field) {
                 else if(
                   /*
                    * Don't trigger unload protect if value changed from
-                   * string to numberr (back-end sends certain numeric fields
+                   * string to number (back-end sends certain numeric fields
                    * as strings. Front-end converts those to numbers)
                    * REFACTOR: this logic should be moved to this.parse()
                    */
-                  typeof oldValue === 'string' &&
-                  typeof newValue === 'number' &&
-                  Number.parseInt(oldValue) === newValue
+                  Number.parseInt(oldValue) === Number.parseInt(newValue)
                 )
                     options ??= {silent: true};
                 else if(
@@ -288,9 +278,15 @@ function eventHandlerForToOne(related, field) {
             fieldName = field.name.toLowerCase(); // in case field name is an alias.
 
             if (field.isRelationship) {
-                value = _.isString(value) ?
-                    this._handleUri(value, fieldName) :
-                    this._handleInlineDataOrResource(value, fieldName);
+                value = _.isString(value)
+                  ? this._handleUri(value, fieldName)
+                  : typeof value === 'number'
+                  ? this._handleUri(
+                      // Back-end sends SpPrincipal.scope as a number, rather than as a URL
+                      getResourceApiUrl(field.model.name, value),
+                      fieldName
+                    )
+                  : this._handleInlineDataOrResource(value, fieldName);
             }
             return [fieldName, value];
         },
@@ -442,7 +438,7 @@ function eventHandlerForToOne(related, field) {
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
                     _(value).isString() || console.error("expected URI, got", value);
-                    toOne = related.Resource.fromUri(value, {noBusinessRules: options.noBusinessRules});
+                    toOne = resourceFromUrl(value, {noBusinessRules: options.noBusinessRules});
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
                         this.storeDependent(field, toOne);
@@ -517,6 +513,7 @@ function eventHandlerForToOne(related, field) {
             }
             var didNeedSaved = resource.needsSaved;
             resource.needsSaved = false;
+            // BUG: should do this for dependent resources too
 
             let errorHandled = false;
             const save = ()=>Backbone.Model.prototype.save.apply(resource, [])
@@ -568,7 +565,7 @@ function eventHandlerForToOne(related, field) {
               // or if can't be populated by fetching
               this.isNew()
             )
-                return Promise.resolve(this);
+                return this;
             else if (this._fetch) return this._fetch;
             else
                 return this._fetch = Backbone.Model.prototype.fetch.call(this, options).then(()=>{
@@ -584,51 +581,30 @@ function eventHandlerForToOne(related, field) {
         },
         async sync(method, resource, options) {
             options = options || {};
-            switch (method) {
-            case 'delete':
-                // when deleting we don't send any data so put the version in a header
+            if(method === 'delete')
+                // When deleting we don't send any data so put the version in a header
                 options.headers = {'If-Match': resource.get('version')};
-                break;
-            case 'create':
-                // use the special recordSetId field to add the resource to a record set
-                if (!_.isUndefined(resource.recordSetId)) {
-                    options.url = formatUrl(
-                        options.url || resource.url(),
-                        {recordSetId: resource.recordsetid});
-                }
-                break;
-            }
             return Backbone.sync(method, resource, options);
         },
         async getResourceAndField(fieldName) {
             return getResourceAndField(this, fieldName);
         },
-        placeInSameHierarchy(other) {
+        async placeInSameHierarchy(other) {
             var self = this;
             var myPath = self.specifyModel.getScopingPath();
             var otherPath = other.specifyModel.getScopingPath();
-            if (!myPath || !otherPath) return null;
-            if (myPath.length > otherPath.length) return null;
+            if (!myPath || !otherPath) return undefined;
+            if (myPath.length > otherPath.length) return undefined;
             var diff = _(otherPath).rest(myPath.length - 1).reverse();
             return other.rget(diff.join('.')).then(function(common) {
+                if(common === undefined) return undefined;
                 self.set(_(diff).last(), common.url());
+                return common;
             });
         },
         getDependentResource(fieldName){
             return this.dependentResources[fieldName.toLowerCase()];
         }
-    }, {
-        fromUri(uri, options) {
-            const parsed = parseResourceUrl(uri);
-            if (parsed === undefined) return undefined;
-            const [tableName, id] = parsed;
-            const model = new schema.models[tableName].Resource(
-               { id },
-              options
-            );
-            assert(model.specifyModel === this.specifyModel);
-            return model;
-        },
     });
 
 export function promiseToXhr(promise) {

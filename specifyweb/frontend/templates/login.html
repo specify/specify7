@@ -20,11 +20,11 @@
 
   {% get_available_languages as LANGUAGES %}
   {{ LANGUAGES|json_script:'languages' }}
+  {{ next|json_script:'next-url' }}
   {{ request.session.external_user|json_script:'external-user' }}
   {{ form.non_field_errors|json_script:'form-errors' }}
   {{ form.username.errors|json_script:'username-errors' }}
   {{ form.password.errors|json_script:'password-errors' }}
-  {{ next|json_script:'next-url' }}
   <script id="csrf-token">"{{ csrf_token }}"</script>
 </body>
 </html>

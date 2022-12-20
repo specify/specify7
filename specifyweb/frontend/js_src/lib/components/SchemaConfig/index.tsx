@@ -11,7 +11,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource, saveResource } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
-import type { SpLocaleItemStr as SpLocaleItemString_ } from '../DataModel/types';
+import type { SpLocaleItemStr } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { SchemaConfigHeader } from './Components';
@@ -25,7 +25,7 @@ import {
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
 
-export type SpLocaleItemString = SerializedResource<SpLocaleItemString_>;
+export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 
 export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
@@ -77,17 +77,16 @@ export function SchemaConfigMain(): JSX.Element {
     typeof items === 'object' &&
     typeof name === 'object' &&
     typeof desc === 'object';
+
   function handleSave(): void {
     if (!canSave) return;
     unsetUnloadProtect();
 
     const requests = [
+      ...(nameChanged ? [saveString(name)] : []),
+      ...(descChanged ? [saveString(desc)] : []),
       ...(isChanged
-        ? [
-            saveResource('SpLocaleContainer', container.id, container),
-            saveString(name),
-            saveString(desc),
-          ]
+        ? [saveResource('SpLocaleContainer', container.id, container)]
         : []),
       ...items
         .filter((_item, index) => changedItems.includes(index))

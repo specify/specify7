@@ -511,15 +511,15 @@ export function QueryLine({
             : icons.circle}
         </Button.Small>
         <Button.Small
-          aria-label={queryText('moveUp')}
-          title={queryText('moveUp')}
+          aria-label={commonText('moveUp')}
+          title={commonText('moveUp')}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
         </Button.Small>
         <Button.Small
-          aria-label={queryText('moveDown')}
-          title={queryText('moveDown')}
+          aria-label={commonText('moveDown')}
+          title={commonText('moveDown')}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}
