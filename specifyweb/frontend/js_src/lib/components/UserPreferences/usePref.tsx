@@ -32,22 +32,6 @@ export function usePref<
   >(() => getPref(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
-  React.useEffect(
-    () =>
-      prefEvents.on('update', (definition) => {
-        if (
-          definition !== undefined &&
-          // Ignore changes to other prefs
-          definition !== getPrefDefinition(category, subcategory, item)
-        )
-          return;
-        const newValue = getPref(category, subcategory, item);
-        if (newValue === currentPref.current) return;
-        setLocalPref(newValue);
-        currentPref.current = newValue;
-      }),
-    [category, subcategory, item]
-  );
 
   const updatePref = React.useCallback(
     (
@@ -65,7 +49,11 @@ export function usePref<
               ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
             )(currentPref.current)
           : newPref;
-      setUserPref(category, subcategory, item, x);
+
+      const newValue = setUserPref(category, subcategory, item, x);
+      if (newValue === currentPref.current) return;
+      setLocalPref(newValue);
+      currentPref.current = newValue;
     },
     [category, subcategory, item]
   );

@@ -81,9 +81,8 @@ export const setPrefsGenerator = (
     subcategory: SUBCATEGORY,
     item: ITEM,
     value: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  ): void {
+  ): Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] {
     const definition = getPrefDefinition(category, subcategory, item);
-
     let parsed;
     if ('type' in definition) {
       const baseParser = parserFromType(definition.type);
@@ -128,7 +127,7 @@ export const setPrefsGenerator = (
       parsed ===
       (prefs[category]?.[subcategory]?.[item] ?? definition.defaultValue)
     )
-      return;
+      return parsed;
 
     prefs[category] ??= {};
     prefs[category][subcategory] ??= {};
@@ -155,6 +154,7 @@ export const setPrefsGenerator = (
       requestPreferencesSync();
     }
     prefEvents.trigger('update', definition);
+    return parsed;
   };
 export const setPref = setPrefsGenerator(getRawUserPreferences, true);
 
