@@ -60,8 +60,7 @@ export function StatItem({
     handleValueLoad,
     item.itemValue
   );
-  if (statsSpecCalculated === undefined) return null;
-  return statsSpecCalculated.type === 'QueryStat' ? (
+  return statsSpecCalculated?.type === 'QueryStat' ? (
     <StatsResult
       query={statsSpecCalculated.query}
       statLabel={statsSpecCalculated?.label}

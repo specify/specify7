@@ -24,6 +24,7 @@ export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
   const [layout, setPrevLayout] = usePref('statistics', 'appearance', 'layout');
+
   const setLayout = (item: StatLayout): void => {
     setPrevLayout(item);
   }; /* React.useEffect(()=>
@@ -43,6 +44,7 @@ export function StatsPage(): JSX.Element | null {
         )
       : () => undefined;
   }, [defaultLayout]); */
+
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
     'appearance',
@@ -98,6 +100,7 @@ export function StatsPage(): JSX.Element | null {
     setDefaultLayout(defaultLayoutSpec);
     setLayout(defaultLayoutSpec);
   }, [defaultLayoutSpec]); */
+
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
 
@@ -260,11 +263,10 @@ export function StatsPage(): JSX.Element | null {
                       })),
                     }))
                   );
-                  /* setTimeout(() => {
-                    setState({
-                      type: 'DefaultState',
-                    });
-                  }, 1500); */
+
+                  setState({
+                    type: 'DefaultState',
+                  });
                 }}
               >
                 {commonText('update')}

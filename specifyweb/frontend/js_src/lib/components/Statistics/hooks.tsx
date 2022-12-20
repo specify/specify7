@@ -327,7 +327,7 @@ export function useCustomStatsSpec(
             },
           }
         : undefined,
-    []
+    [item]
   );
 }
 
@@ -359,7 +359,7 @@ export function useValueLoad(
   const [count] = useAsyncState(
     React.useCallback(async () => {
       if (itemValue !== undefined || statSpecCalculated === undefined) {
-        return itemValue;
+        return undefined;
       }
       if (
         statSpecCalculated.type === 'QueryStat' &&
@@ -373,7 +373,6 @@ export function useValueLoad(
     false
   );
   React.useEffect(() => {
-    console.log('effect');
     if (
       count !== undefined &&
       statSpecCalculated !== undefined &&
@@ -388,14 +387,14 @@ export function useValueLoad(
         statSpecCalculated.label
       );
     }
-  }, [handleValueLoad, statSpecCalculated, count, itemValue]);
-
-  React.useEffect(() => {
-    console.log('mounted');
-    return () => {
-      console.log('dismounted');
-    };
-  }, []);
+  }, [
+    categoryIndex,
+    itemIndex,
+    handleValueLoad,
+    statSpecCalculated,
+    count,
+    itemValue,
+  ]);
 }
 
 /** Build Queries for the QueryBuilderAPI */
