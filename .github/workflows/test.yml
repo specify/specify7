@@ -7,17 +7,18 @@ on: [push]
 jobs:
   changes:
     name: Check if back-end or front-end files changed
-    permissions:
-      pull-requests: read
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
 
     steps:
+      - uses: actions/checkout@v3
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          list-files: escape
           filters: |
             frontend:
               - 'specifyweb/frontend/**'
@@ -27,7 +28,8 @@ jobs:
   test-back-end:
     name: Run back-end tests
     needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
+    # Check if anything other than front-end changed
+    if: ${{ echo needs.changes.outputs.backend_files | grep -v 'frontend' }}
     runs-on: ubuntu-latest
 
     services:
