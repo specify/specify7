@@ -174,20 +174,16 @@ jobs:
           path: localization-strings/strings
 
       - name: Commit changed strings
-        working-directory: localization-strings
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add strings
-          git add -A
-          # Check if any file changed
-          git_changes=`git diff --cached --exit-code`
-          if [ -z $(git_changes) ];
-          then
-            echo "Sync localization strings with Weblate" >> message.txt
-            echo "" >> message.txt
-            echo "Triggered by $GITHUB_SHA" >> message.txt
-            echo "Pushed to ${GITHUB_REF#refs/heads/}" >> message.txt
-            git commit -m "Sync localization strings with Weblate"
-            git push
-          fi
+        uses: EndBug/add-and-commit@v9
+        with:
+          cwd: ./localization-strings
+          add: strings
+          fetch: false
+          push: true
+          committer_name: Max Patiiuk
+          committer_email: max@patii.uk
+          message: >
+            Sync localization strings with Weblate
+
+            Triggered by $GITHUB_SHA
+            Pushed to ${GITHUB_REF#refs/heads/}
