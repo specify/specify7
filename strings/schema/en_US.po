@@ -13,7 +13,7 @@ msgstr "Table"
 msgid "tableFormatted"
 msgstr "Table: {name:string}"
 
-#: components/UserPreferences/Definitions.tsx:631
+#: components/UserPreferences/Definitions.tsx:630
 #: components/WbPlanView/MapperComponents.tsx:432
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -24,7 +24,7 @@ msgstr "Table Name"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:33
 #: components/Security/registry.ts:191
-#: components/UserPreferences/Definitions.tsx:582
+#: components/UserPreferences/Definitions.tsx:581
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Schema Config"

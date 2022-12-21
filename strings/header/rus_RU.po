@@ -157,7 +157,7 @@ msgstr "API операций"
 #: components/AppResources/Create.tsx:113
 #: components/AppResources/Filters.tsx:147
 #: components/Header/userToolDefinitions.ts:80
-#: components/UserPreferences/Definitions.tsx:398
+#: components/UserPreferences/Definitions.tsx:397
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Документация"

@@ -54,13 +54,13 @@ msgstr "Current user does not have an agent assigned"
 msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
 
-#: components/Login/OicLogin.tsx:55
-#: components/Login/index.tsx:109
+#: components/Login/OicLogin.tsx:58
+#: components/Login/index.tsx:112
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Hello, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:57
+#: components/Login/OicLogin.tsx:60
 #. Used in: Components > Login > Oic Login
 msgid "oicWelcomeMessage"
 msgstr ""
@@ -68,12 +68,12 @@ msgstr ""
 "account. This will enable you to log in to Specify with your chosen "
 "provider going forward."
 
-#: components/Login/OicLogin.tsx:90
+#: components/Login/OicLogin.tsx:93
 #. Used in: Components > Login > Oic Login
 msgid "legacyLogin"
 msgstr "Sign in with Specify Account"
 
-#: components/Login/index.tsx:111
+#: components/Login/index.tsx:114
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""

@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:144
-#: components/WorkBench/wbView.js:1913
+#: components/WorkBench/wbView.js:1914
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "rollback"
 msgstr "Откат"
@@ -21,7 +21,7 @@ msgstr "Проверка"
 
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:155
-#: components/WorkBench/wbView.js:1939
+#: components/WorkBench/wbView.js:1940
 #. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
 msgstr "Загрузка"
@@ -41,40 +41,40 @@ msgstr "Загрузка"
 msgid "validating"
 msgstr "Проверка"
 
-#: components/WorkBench/wbView.js:538
+#: components/WorkBench/wbView.js:539
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
 msgstr "Устранить Неоднозначность"
 
-#: components/WorkBench/wbView.js:549
+#: components/WorkBench/wbView.js:550
 #. Used in: Components > Work Bench > Wb View
 msgid "fillDown"
 msgstr "Заполнить Вниз"
 
-#: components/WorkBench/wbView.js:557
+#: components/WorkBench/wbView.js:558
 #. Used in: Components > Work Bench > Wb View
 msgid "fillUp"
 msgstr "Заполнить Вверх"
 
 #: components/WorkBench/Template.tsx:165
-#: components/WorkBench/wbView.js:2065
+#: components/WorkBench/wbView.js:2066
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
 msgstr "Вернуть"
 
-#: components/UserPreferences/Definitions.tsx:1443
+#: components/UserPreferences/Definitions.tsx:1442
 #: components/WorkBench/Template.tsx:117
-#: components/WorkBench/wbView.js:1857
+#: components/WorkBench/wbView.js:1858
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Сопоставления"
 
-#: components/WorkBench/wbView.js:2191
+#: components/WorkBench/wbView.js:2192
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheck"
 msgstr "Проверка данных"
 
-#: components/WorkBench/wbView.js:2184
+#: components/WorkBench/wbView.js:2185
 #. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
 msgstr "Проверка данных: вкл."
@@ -144,23 +144,23 @@ msgid "dataEditor"
 msgstr "Редактор данных"
 
 #: components/WbPlanView/State.tsx:37
-#: components/WorkBench/wbView.js:256
+#: components/WorkBench/wbView.js:257
 #. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlanDialogHeader"
 msgstr "План загрузки не определен"
 
-#: components/WorkBench/wbView.js:270
-#: components/WorkBench/wbView.js:1947
+#: components/WorkBench/wbView.js:271
+#: components/WorkBench/wbView.js:1948
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDialogText"
 msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
 
-#: components/WorkBench/wbView.js:1577
+#: components/WorkBench/wbView.js:1578
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDialogHeader"
 msgstr "Невозможно устранить неуверенность"
 
-#: components/WorkBench/wbView.js:1578
+#: components/WorkBench/wbView.js:1579
 #. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDialogText"
 msgstr ""
@@ -171,22 +171,22 @@ msgstr ""
 "добавить новые поля и значения в набор данных, чтобы разрешить "
 "двусмысленность."
 
-#: components/WorkBench/wbView.js:1632
+#: components/WorkBench/wbView.js:1633
 #. Used in: Components > Work Bench > Wb View
 msgid "disambiguationDialogTitle"
 msgstr "Устранение неоднозначности"
 
-#: components/WorkBench/wbView.js:1680
+#: components/WorkBench/wbView.js:1681
 #. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr "«Применить все» недоступно, пока выполняется проверка данных."
 
-#: components/WorkBench/wbView.js:1896
+#: components/WorkBench/wbView.js:1897
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackDialogHeader"
 msgstr "Начать откат набора данных?"
 
-#: components/WorkBench/wbView.js:1897
+#: components/WorkBench/wbView.js:1898
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackDialogText"
 msgstr ""
@@ -194,22 +194,22 @@ msgstr ""
 "данных Specify. Весь откат будет отменен, если на загруженные данные "
 "ссылаются другие записи данных с момента они были загружены."
 
-#: components/WorkBench/wbView.js:1927
+#: components/WorkBench/wbView.js:1928
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDialogHeader"
 msgstr "Начать загрузку набора данных?"
 
-#: components/WorkBench/wbView.js:1928
+#: components/WorkBench/wbView.js:1929
 #. Used in: Components > Work Bench > Wb View
 msgid "startUploadDialogText"
 msgstr "Загрузка набора данных добавит данные в базу данных Specify."
 
-#: components/WorkBench/wbView.js:2009
+#: components/WorkBench/wbView.js:2010
 #. Used in: Components > Work Bench > Wb View
 msgid "deleteDataSetDialogHeader"
 msgstr "Удалить этот набор данных?"
 
-#: components/WorkBench/wbView.js:2010
+#: components/WorkBench/wbView.js:2011
 #. Used in: Components > Work Bench > Wb View
 msgid "deleteDataSetDialogText"
 msgstr ""
@@ -217,29 +217,29 @@ msgstr ""
 "загрузки. План загрузки не будут доступным для повторного использования; "
 "Отката не будет возможным для загруженного набора данных."
 
-#: components/WorkBench/wbView.js:2029
+#: components/WorkBench/wbView.js:2030
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedDialogHeader"
 msgstr "Набор данных успешно удален"
 
-#: components/WorkBench/wbView.js:2030
+#: components/WorkBench/wbView.js:2031
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedDialogText"
 msgstr "Набор данных успешно удален."
 
-#: components/WorkBench/wbView.js:2058
+#: components/WorkBench/wbView.js:2059
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDialogHeader"
 msgstr "Отменить несохраненные изменения?"
 
-#: components/WorkBench/wbView.js:2059
+#: components/WorkBench/wbView.js:2060
 #. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDialogText"
 msgstr ""
 "Это действие приведет к отмене всех изменений, внесенных в набор данных с "
 "момента последнего сохранение."
 
-#: components/WorkBench/wbView.js:2082
+#: components/WorkBench/wbView.js:2083
 #. Used in: Components > Work Bench > Wb View
 msgid "savingDialogTitle"
 msgstr "Сохранение"
@@ -249,124 +249,124 @@ msgstr "Сохранение"
 msgid "onExitDialogText"
 msgstr "Изменения в этом наборе данных не были сохранены."
 
-#: components/WorkBench/wbView.js:840
-#: components/WorkBench/wbView.js:842
-#: components/WorkBench/wbView.js:1335
+#: components/WorkBench/wbView.js:841
+#: components/WorkBench/wbView.js:843
+#: components/WorkBench/wbView.js:1336
 #. Used in: Components > Work Bench > Wb View
 msgid "picklistValidationFailed"
 msgstr ""
 "{value:string} не является допустимым значением в этом списке.\n"
 "Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
-#: components/WorkBench/wbView.js:2285
+#: components/WorkBench/wbView.js:2286
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr "Нет соответствующей записи для таблицы обязательного соответствия."
 
-#: components/WorkBench/wbView.js:2309
+#: components/WorkBench/wbView.js:2310
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Это значение соответствует двум или более существующим записям базы данных "
 "и совпадению"
 
-#: components/WorkBench/wbView.js:2514
+#: components/WorkBench/wbView.js:2515
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDialogHeader"
 msgstr "Проверка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2516
+#: components/WorkBench/wbView.js:2517
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу "
 "данных."
 
-#: components/WorkBench/wbView.js:2519
-#: components/WorkBench/wbView.js:2528
+#: components/WorkBench/wbView.js:2520
+#: components/WorkBench/wbView.js:2529
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
 "Примечание: Если этот набор данных отредактирован и повторно сохранен, "
 "начать проверку снова, чтобы убедиться, что ошибок не было введено."
 
-#: components/WorkBench/wbView.js:2523
+#: components/WorkBench/wbView.js:2524
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDialogHeader"
 msgstr "Проверка завершена с ошибками"
 
-#: components/WorkBench/wbView.js:2525
+#: components/WorkBench/wbView.js:2526
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "Проверка обнаружила ошибки в наборе данных."
 
-#: components/WorkBench/wbView.js:2534
+#: components/WorkBench/wbView.js:2535
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadNoErrorsDialogHeader"
 msgstr "Загрузка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2535
+#: components/WorkBench/wbView.js:2536
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadNoErrorsDialogText"
 msgstr ""
 "Нажмите кнопку «Результаты», чтобы увидеть количество новых записей "
 "добавлен в каждую таблицу базы данных"
 
-#: components/WorkBench/wbView.js:2538
+#: components/WorkBench/wbView.js:2539
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDialogHeader"
 msgstr "Ошибка загрузки из-за ошибок"
 
-#: components/WorkBench/wbView.js:2540
+#: components/WorkBench/wbView.js:2541
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
 
-#: components/WorkBench/wbView.js:2543
+#: components/WorkBench/wbView.js:2544
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Проверте набор данных и наведите указатель мыши на каждую ячейку с ошибкой, "
 "затем сделайте соответствующие исправления, сохраните и повторите попытку."
 
-#: components/WorkBench/wbView.js:2547
+#: components/WorkBench/wbView.js:2548
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDialogHeader"
 msgstr "Набор данных был успешно откат"
 
-#: components/WorkBench/wbView.js:2548
+#: components/WorkBench/wbView.js:2549
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDialogText"
 msgstr ""
 "Этот набор данных отката сохранянен, и его можно редактировать или повторно "
 "загружать."
 
-#: components/WorkBench/wbView.js:2568
+#: components/WorkBench/wbView.js:2569
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDialogHeader"
 msgstr "Проверка отменена"
 
-#: components/WorkBench/wbView.js:2574
+#: components/WorkBench/wbView.js:2575
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDialogText"
 msgstr "Проверка набора данных отменена."
 
-#: components/WorkBench/wbView.js:2570
+#: components/WorkBench/wbView.js:2571
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDialogHeader"
 msgstr "Откат отменен"
 
-#: components/WorkBench/wbView.js:2576
+#: components/WorkBench/wbView.js:2577
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDialogText"
 msgstr "Откат набора данных отменен."
 
-#: components/WorkBench/wbView.js:2571
+#: components/WorkBench/wbView.js:2572
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDialogHeader"
 msgstr "Загрузка отменена"
 
-#: components/WorkBench/wbView.js:2577
+#: components/WorkBench/wbView.js:2578
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDialogText"
 msgstr "Загрузка набора данных отменена."
@@ -381,8 +381,8 @@ msgstr "Геокоординатный формат"
 msgid "coordinateConverterDialogHeader"
 msgstr "Выберите предпочтительный формат геокоординат"
 
-#: components/WorkBench/wbView.js:377
 #: components/WorkBench/wbView.js:378
+#: components/WorkBench/wbView.js:379
 #. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
@@ -392,40 +392,40 @@ msgstr "Несопоставленный столбец"
 msgid "notMapped"
 msgstr "НЕСОПОСТАВЛЕННЫЙ"
 
-#: components/WorkBench/wbView.js:663
+#: components/WorkBench/wbView.js:664
 #. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
 msgstr "(пуста строка)"
 
 #: components/WorkBench/Template.tsx:132
-#: components/WorkBench/wbView.js:2409
+#: components/WorkBench/wbView.js:2410
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
 
-#: components/WorkBench/wbView.js:274
+#: components/WorkBench/wbView.js:275
 #. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr ""
 "План загрузки должен быть определен до того, как этот набор данных может "
 "быть проверен"
 
-#: components/WorkBench/wbView.js:2404
+#: components/WorkBench/wbView.js:2405
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
 
-#: components/WorkBench/wbView.js:2492
+#: components/WorkBench/wbView.js:2493
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Загрузка недоступна, в то время как в некоторых ячейках есть ошибки проверки"
 
-#: components/WorkBench/wbView.js:1734
+#: components/WorkBench/wbView.js:1735
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr "Это действие недоступно при просмотре результатов загрузки"
 
-#: components/WorkBench/wbView.js:1701
+#: components/WorkBench/wbView.js:1702
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr "Это действие недоступно, пока выполняется проверка данных"
@@ -442,7 +442,7 @@ msgstr "Этот инструмент требует, чтобы столбцы 
 msgid "unavailableWhenUploaded"
 msgstr "Этот инструмент не работает с загруженными наборами данных"
 
-#: components/WorkBench/wbView.js:2415
+#: components/WorkBench/wbView.js:2416
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набор данных был удален другим сеансом."
@@ -462,7 +462,7 @@ msgstr "Результаты загрузки"
 msgid "potentialUploadResults"
 msgstr "Возможные результаты загрузки"
 
-#: components/WorkBench/wbView.js:464
+#: components/WorkBench/wbView.js:465
 #. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
 msgstr "Для этой ячейки нет результатов загрузки"
@@ -578,39 +578,39 @@ msgstr "Кодировка символов:"
 msgid "delimiter"
 msgstr "Разделитель:"
 
-#: components/UserPreferences/Definitions.tsx:1420
+#: components/UserPreferences/Definitions.tsx:1419
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Запятая"
 
-#: components/UserPreferences/Definitions.tsx:1428
+#: components/UserPreferences/Definitions.tsx:1427
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Точка с запятой"
 
-#: components/UserPreferences/Definitions.tsx:1424
+#: components/UserPreferences/Definitions.tsx:1423
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Табуляция"
 
-#: components/UserPreferences/Definitions.tsx:1432
+#: components/UserPreferences/Definitions.tsx:1431
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Пробел"
 
-#: components/UserPreferences/Definitions.tsx:1436
+#: components/UserPreferences/Definitions.tsx:1435
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Вертикальная черта"
 
-#: components/UserPreferences/Definitions.tsx:499
-#: components/UserPreferences/Definitions.tsx:520
-#: components/UserPreferences/Definitions.tsx:541
+#: components/UserPreferences/Definitions.tsx:498
+#: components/UserPreferences/Definitions.tsx:519
+#: components/UserPreferences/Definitions.tsx:540
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"

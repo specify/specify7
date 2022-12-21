@@ -6,7 +6,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/UserPreferences/Definitions.tsx:1400
+#: components/UserPreferences/Definitions.tsx:1399
 #: components/WorkBench/DataSetMeta.tsx:144
 #: utils/parser/definitions.ts:99
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -58,10 +58,10 @@ msgstr "Нет"
 #: components/WbPlanView/State.tsx:100
 #: components/WorkBench/DataSetMeta.tsx:251
 #: components/WorkBench/wbUtils.js:1036
-#: components/WorkBench/wbView.js:1904
-#: components/WorkBench/wbView.js:1932
-#: components/WorkBench/wbView.js:2014
-#: components/WorkBench/wbView.js:2063
+#: components/WorkBench/wbView.js:1905
+#: components/WorkBench/wbView.js:1933
+#: components/WorkBench/wbView.js:2015
+#: components/WorkBench/wbView.js:2064
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Отмена"
@@ -87,8 +87,8 @@ msgstr "Пропустить"
 #: components/Security/Institution.tsx:102
 #: components/Security/Institution.tsx:178
 #: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:266
-#: components/WorkBench/wbView.js:1953
+#: components/WorkBench/wbView.js:267
+#: components/WorkBench/wbView.js:1954
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
 msgid "create"
 msgstr "Создать"
@@ -169,15 +169,15 @@ msgstr "Создать"
 #: components/WorkBench/Status.tsx:87
 #: components/WorkBench/wbUtils.js:725
 #: components/WorkBench/wbUtils.js:744
-#: components/WorkBench/wbView.js:261
-#: components/WorkBench/wbView.js:1579
-#: components/WorkBench/wbView.js:1640
-#: components/WorkBench/wbView.js:1703
-#: components/WorkBench/wbView.js:1862
-#: components/WorkBench/wbView.js:1951
-#: components/WorkBench/wbView.js:2039
-#: components/WorkBench/wbView.js:2556
-#: components/WorkBench/wbView.js:2579
+#: components/WorkBench/wbView.js:262
+#: components/WorkBench/wbView.js:1580
+#: components/WorkBench/wbView.js:1641
+#: components/WorkBench/wbView.js:1704
+#: components/WorkBench/wbView.js:1863
+#: components/WorkBench/wbView.js:1952
+#: components/WorkBench/wbView.js:2040
+#: components/WorkBench/wbView.js:2557
+#: components/WorkBench/wbView.js:2580
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Core > Main ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Закрыть"
@@ -188,13 +188,13 @@ msgstr "Закрыть"
 #: components/Toolbar/FormTablesEdit.tsx:53
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WorkBench/wbUtils.js:1037
-#: components/WorkBench/wbView.js:1651
+#: components/WorkBench/wbView.js:1652
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Security > Set Password ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "apply"
 msgstr "Применить"
 
 #: components/WorkBench/wbUtils.js:1083
-#: components/WorkBench/wbView.js:1664
+#: components/WorkBench/wbView.js:1665
 #. Used in: Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "applyAll"
 msgstr "Применить все"
@@ -217,7 +217,7 @@ msgstr "Очистить все"
 #: components/WbPlanView/Mapper.tsx:392
 #: components/WorkBench/DataSetMeta.tsx:61
 #: components/WorkBench/Template.tsx:172
-#: components/WorkBench/wbView.js:1882
+#: components/WorkBench/wbView.js:1883
 #. Used in: Components > Forms > Save ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "save"
 msgstr "Сохранить"
@@ -255,7 +255,7 @@ msgstr "Открыть"
 #: components/Security/Role.tsx:216
 #: components/TreeView/Actions.tsx:436
 #: components/WorkBench/Template.tsx:204
-#: components/WorkBench/wbView.js:2047
+#: components/WorkBench/wbView.js:2048
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "delete"
 msgstr "Удалить"
@@ -344,7 +344,7 @@ msgstr "Загрузка..."
 #: components/Toolbar/Schema.tsx:285
 #: components/Toolbar/Schema.tsx:373
 #: components/Toolbar/WbsDialog.tsx:95
-#: components/UserPreferences/Definitions.tsx:1105
+#: components/UserPreferences/Definitions.tsx:1104
 #. Used in: Components > Reports > Index ⬤ Components > Security > Role ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Schema ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > User Preferences > Definitions
 msgid "name"
 msgstr "Имя"
@@ -437,7 +437,7 @@ msgstr "Новый"
 #: components/Reports/index.tsx:129
 #: components/Reports/index.tsx:135
 #: components/Router/OverlayRoutes.tsx:107
-#: components/UserPreferences/Definitions.tsx:1302
+#: components/UserPreferences/Definitions.tsx:1301
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "reports"
 msgstr "Отчеты"
@@ -547,7 +547,7 @@ msgstr "Расширить"
 #: components/Leaflet/Map.tsx:22
 #: components/QueryBuilder/ToMap.tsx:60
 #: components/QueryBuilder/ToMap.tsx:246
-#: components/UserPreferences/Definitions.tsx:1517
+#: components/UserPreferences/Definitions.tsx:1516
 #: components/WorkBench/Template.tsx:234
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
@@ -564,15 +564,15 @@ msgstr "Карта - {progress:string}"
 msgid "fullDate"
 msgstr "Полная дата"
 
-#: components/UserPreferences/Definitions.tsx:1109
+#: components/UserPreferences/Definitions.tsx:1108
 #. Used in: Components > User Preferences > Definitions
 msgid "fullName"
 msgstr "Полное имя"
 
 #: components/Atoms/DataEntry.tsx:135
 #: components/TreeView/Actions.tsx:94
-#: components/WorkBench/wbView.js:1602
 #: components/WorkBench/wbView.js:1603
+#: components/WorkBench/wbView.js:1604
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Wb View
 msgid "view"
 msgstr "Смотреть"
@@ -592,10 +592,10 @@ msgstr "Переместить"
 #: components/Leaflet/index.ts:154
 #: components/Leaflet/index.ts:158
 #: components/Leaflet/index.ts:159
-#: components/WorkBench/wbView.js:492
 #: components/WorkBench/wbView.js:493
-#: components/WorkBench/wbView.js:1606
+#: components/WorkBench/wbView.js:494
 #: components/WorkBench/wbView.js:1607
+#: components/WorkBench/wbView.js:1608
 #. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
 msgid "opensInNewTab"
 msgstr "(открывается в новой вкладке)"
@@ -614,20 +614,20 @@ msgstr "Вернуться на Домашнюю Страницу"
 msgid "actions"
 msgstr "Действия"
 
-#: components/Login/index.tsx:124
+#: components/Login/index.tsx:127
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Имя пользователя"
 
-#: components/Login/index.tsx:133
+#: components/Login/index.tsx:136
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
 msgstr "Пароль"
 
 #: components/ChooseCollection/index.tsx:168
-#: components/Login/OicLogin.tsx:94
-#: components/Login/index.tsx:144
+#: components/Login/OicLogin.tsx:97
+#: components/Login/index.tsx:147
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
 #. Used in: Components > Choose Collection > Index ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Router > Entrypoint Router
@@ -636,7 +636,7 @@ msgstr "Вход"
 
 #: components/ChooseCollection/index.tsx:124
 #: components/Router/EntrypointRouter.tsx:28
-#: components/UserPreferences/Definitions.tsx:1051
+#: components/UserPreferences/Definitions.tsx:1050
 #. Used in: Components > Choose Collection > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > User Preferences > Definitions
 msgid "chooseCollection"
 msgstr "Выбрать коллекцию"
@@ -651,7 +651,7 @@ msgstr "Вложения"
 #: components/Header/menuItemDefinitions.ts:60
 #: components/Interactions/InteractionsDialog.tsx:228
 #: components/Router/OverlayRoutes.tsx:56
-#: components/UserPreferences/Definitions.tsx:486
+#: components/UserPreferences/Definitions.tsx:485
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Взаимодействия"
@@ -686,7 +686,7 @@ msgstr "Наборы объектов"
 #: components/Header/userToolDefinitions.ts:43
 #: components/Router/Routes.tsx:201
 #: components/Security/registry.ts:203
-#: components/UserPreferences/Definitions.tsx:1481
+#: components/UserPreferences/Definitions.tsx:1480
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "appResources"
 msgstr "Ресурсы приложения"
@@ -718,8 +718,8 @@ msgstr "Размер"
 
 #: components/Header/menuItemDefinitions.ts:97
 #: components/Router/OverlayRoutes.tsx:113
-#: components/UserPreferences/Definitions.tsx:1319
-#: components/WorkBench/wbView.js:226
+#: components/UserPreferences/Definitions.tsx:1318
+#: components/WorkBench/wbView.js:227
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "WorkBench"
@@ -752,8 +752,8 @@ msgstr "Неизвестно"
 #: components/SchemaConfig/Languages.tsx:36
 #: components/SchemaConfig/Languages.tsx:87
 #: components/Toolbar/Language.tsx:80
-#: components/UserPreferences/Definitions.tsx:123
-#: components/UserPreferences/Definitions.tsx:585
+#: components/UserPreferences/Definitions.tsx:122
+#: components/UserPreferences/Definitions.tsx:584
 #. Used in: Components > Schema Config > Languages ⬤ Components > Toolbar > Language ⬤ Components > User Preferences > Definitions
 msgid "language"
 msgstr "Язык"
@@ -878,7 +878,7 @@ msgstr "Фильтрировать"
 
 #: components/QueryBuilder/Results.tsx:45
 #: components/WorkBench/Template.tsx:135
-#: components/WorkBench/wbView.js:1700
+#: components/WorkBench/wbView.js:1701
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "results"
 msgstr "Результаты"
@@ -893,7 +893,7 @@ msgstr "Скачать ошибку"
 msgid "copied"
 msgstr "Скопировано!"
 
-#: components/UserPreferences/Definitions.tsx:567
+#: components/UserPreferences/Definitions.tsx:566
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Формы"
@@ -927,7 +927,7 @@ msgstr "Основной"
 
 #: components/FormMeta/Definition.tsx:28
 #: components/FormMeta/Definition.tsx:54
-#: components/UserPreferences/Definitions.tsx:649
+#: components/UserPreferences/Definitions.tsx:648
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 msgid "formDefinition"
 msgstr "Схема формы"

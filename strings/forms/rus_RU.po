@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Attachments/index.tsx:194
 #: components/FormMeta/SubViewMeta.tsx:39
-#: components/UserPreferences/Definitions.tsx:1066
+#: components/UserPreferences/Definitions.tsx:1065
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Сортировать по"
@@ -399,14 +399,14 @@ msgstr "Запустить репорт"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:941
+#: components/UserPreferences/Definitions.tsx:940
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "Первый объект"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:945
+#: components/UserPreferences/Definitions.tsx:944
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Последний объект"
@@ -961,7 +961,7 @@ msgid "form"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:34
-#: components/UserPreferences/Definitions.tsx:952
+#: components/UserPreferences/Definitions.tsx:951
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Таблица"
