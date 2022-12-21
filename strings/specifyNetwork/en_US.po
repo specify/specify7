@@ -1,18 +1,19 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
-#. Used in: Components > Specify Network > Index
 msgid "specifyNetwork"
 msgstr "Specify Network (opens in new tab)"
 
-#: components/SpecifyNetwork/index.tsx:228
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:228
 msgid "failedToOpenPopUpDialogHeader"
 msgstr "Failed to open Specify Network Page"
 
-#: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:231
 msgid "failedToOpenPopUpDialogText"
-msgstr "Please make sure your browser is not blocking pop-up windows and try again."
+msgstr ""
+"Please make sure your browser is not blocking pop-up windows and try again."
