@@ -180,9 +180,12 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add strings
           git add -a
-          echo "Sync localization strings with Weblate" >> message.txt
-          echo "" >> message.txt
-          echo "Triggered by $GITHUB_SHA" >> message.txt
-          echo "Pushed to ${GITHUB_REF#refs/heads/}" >> message.txt
-          git commit -m "Sync localization strings with Weblate"
-          git push
+          if [ -z $(git status --porcelain) ];
+          then
+            echo "Sync localization strings with Weblate" >> message.txt
+            echo "" >> message.txt
+            echo "Triggered by $GITHUB_SHA" >> message.txt
+            echo "Pushed to ${GITHUB_REF#refs/heads/}" >> message.txt
+            git commit -m "Sync localization strings with Weblate"
+            git push
+          fi
