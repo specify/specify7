@@ -50,10 +50,7 @@ export function useBackendApi(
   return backendStatObject;
 }
 
-export function useStatsSpec(
-  isCacheValid: boolean,
-  specifyUserName: string
-): IR<
+export function useStatsSpec(isCacheValid: boolean): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
@@ -78,18 +75,14 @@ export function useStatsSpec(
                         | string
                         | undefined
                     ) => StatCategoryReturn
-                  )(
-                    pageName === statsText('personal')
-                      ? specifyUserName
-                      : backEndResult?.[categoryName]
-                  ),
+                  )(backEndResult?.[categoryName]),
                 },
               ]
             )
           ),
         ])
       ),
-    [backEndResult, specifyUserName]
+    [backEndResult]
   );
 }
 

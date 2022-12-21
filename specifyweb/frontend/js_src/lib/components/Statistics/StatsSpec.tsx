@@ -45,7 +45,7 @@ type StatsSpec =
   | {
       readonly [CATEGORY_NAME in string]: {
         readonly label: string;
-        readonly categories: (userId?: string) => StatCategoryReturn;
+        readonly categories: () => StatCategoryReturn;
       };
     };
 
@@ -432,7 +432,7 @@ export const statsSpec: IR<StatsSpec> = {
   [statsText('personal')]: {
     holdings: {
       label: statsText('collection'),
-      categories: (specifyUserName: string) => ({
+      categories: () => ({
         collectionObjectsModified: {
           label: statsText('collectionObjectsModified'),
           spec: {
@@ -441,7 +441,7 @@ export const statsSpec: IR<StatsSpec> = {
             fields: [
               {
                 path: 'modifiedByAgent.SpecifyUser.name',
-                startvalue: specifyUserName,
+                startvalue: userInformation.name,
                 operstart: queryFieldFilters.equal.id,
               },
             ],
@@ -455,7 +455,7 @@ export const statsSpec: IR<StatsSpec> = {
             fields: [
               {
                 path: 'cataloger.SpecifyUser.name',
-                startvalue: specifyUserName,
+                startvalue: userInformation.name,
                 operstart: queryFieldFilters.equal.id,
               },
             ],
@@ -469,7 +469,7 @@ export const statsSpec: IR<StatsSpec> = {
             fields: [
               {
                 path: 'determinations.determiner.SpecifyUser.name',
-                startvalue: specifyUserName,
+                startvalue: userInformation.name,
                 operstart: queryFieldFilters.equal.id,
               },
             ],

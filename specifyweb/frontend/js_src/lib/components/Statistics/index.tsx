@@ -78,15 +78,11 @@ export function StatsPage(): JSX.Element | null {
     }),
     []
   );
-  const specifyUserName = React.useMemo(
-    () => ({
-      specifyUser: userInformation.name,
-    }),
-    []
-  );
 
   const isCacheValid = useCacheValid(layout);
-  const statsSpec = useStatsSpec(isCacheValid, specifyUserName.specifyUser);
+  const statsSpec = useStatsSpec(isCacheValid);
+
+  const defaultStatsSpec = useStatsSpec(false);
   const defaultLayoutSpec = useDefaultLayout(statsSpec);
   const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
 
