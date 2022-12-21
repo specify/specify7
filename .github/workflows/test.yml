@@ -179,5 +179,10 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add strings
-          git commit -a -m "Sync localization strings with Weblate"
+          git add -a
+          echo "Sync localization strings with Weblate" >> message.txt
+          echo "" >> message.txt
+          echo "Triggered by $GITHUB_SHA" >> message.txt
+          echo "Pushed to ${GITHUB_REF#refs/heads/}" >> message.txt
+          git commit -m "Sync localization strings with Weblate"
           git push

@@ -416,6 +416,8 @@ export async function scanUsages(
           .reduce((total, useCount) => total + useCount, 0)}`
       )
     );
+
+  console.log('\n');
   todo(`TODOs: ${getToDoCount()}`);
   warn(`Warnings: ${getWarningCount()}`);
   // Not using error() here as that would change the exit code to 1
