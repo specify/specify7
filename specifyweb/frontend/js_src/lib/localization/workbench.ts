@@ -62,8 +62,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Проверка данных',
   },
   dataCheckOn: {
-    'en-us': `Data Check: On`,
-    'ru-ru': `Проверка данных: вкл.`,
+    'en-us': 'Data Check: On',
+    'ru-ru': 'Проверка данных: вкл.',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -120,8 +120,9 @@ export const wbText = createDictionary({
   noUploadPlanDialogText: {
     'en-us':
       'No Upload Plan has been defined for this Data Set. Create one now?',
-    'ru-ru':
-      'Для этого набора данных не определен план загрузки. Создать эго сейчас?',
+    'ru-ru': `
+      Для этого набора данных не определен план загрузки. Создать эго сейчас?
+    `,
   },
   noDisambiguationResultsDialogHeader: {
     'en-us': 'Unable to disambiguate',
@@ -129,19 +130,20 @@ export const wbText = createDictionary({
   },
   noDisambiguationResultsDialogText: {
     'en-us': `
-      None of the matched records currently exist in the database.
-      This can happen if all of the matching records were deleted since the
-      validation process occurred, or if all of the matches were ambiguous
-      with respect other records in this data set. In the latter case, you
-      will need to add fields and values to the data set to resolve the
-      ambiguity.`,
+      None of the matched records currently exist in the database. This can
+      happen if all of the matching records were deleted since the validation
+      process occurred, or if all of the matches were ambiguous with respect
+      other records in this data set. In the latter case, you will need to add
+      fields and values to the data set to resolve the ambiguity.
+    `,
     'ru-ru': `
       Ни одна из совпадающих записей в настоящее время не существует в базе
       данных. Это может произойти, если все совпадающие записи были удалены с
       моментапроверки, или если все совпадения были неоднозначными по отношению
-      к другим записям в этом наборе данных. В последнем случае вы
-      потребуется добавить новые поля и значения в набор данных, чтобы разрешить
-      двусмысленность.`,
+      к другим записям в этом наборе данных. В последнем случае вы потребуется
+      добавить новые поля и значения в набор данных, чтобы разрешить
+      двусмысленность.
+    `,
   },
   disambiguationDialogTitle: {
     'en-us': 'Disambiguate Multiple Record Matches',
@@ -160,21 +162,22 @@ export const wbText = createDictionary({
       Rolling back will remove the new data records this Data Set added to the
       Specify database. The entire rollback will be cancelled if any of the
       uploaded data have been referenced (re-used) by other data records since
-      they were uploaded.`,
+      they were uploaded.
+    `,
     'ru-ru': `
-      Откат удалит новые записи данных, которые этот набор данных добавил в
-      базу данных Specify. Весь откат будет отменен, если на загруженные данные
-      ссылаются другие записи данных с момента они были загружены.`,
+      Откат удалит новые записи данных, которые этот набор данных добавил в базу
+      данных Specify. Весь откат будет отменен, если на загруженные данные
+      ссылаются другие записи данных с момента они были загружены.
+    `,
   },
   startUploadDialogHeader: {
     'en-us': 'Begin Data Set Upload?',
     'ru-ru': 'Начать загрузку набора данных?',
   },
   startUploadDialogText: {
-    'en-us': `
-      Uploading the Data Set will add the data to the Specify database.`,
-    'ru-ru': `
-      Загрузка набора данных добавит данные в базу данных Specify.`,
+    'en-us':
+      'Uploading the Data Set will add the data to the Specify database.',
+    'ru-ru': 'Загрузка набора данных добавит данные в базу данных Specify.',
   },
   deleteDataSetDialogHeader: {
     'en-us': 'Delete this Data Set?',
@@ -182,14 +185,16 @@ export const wbText = createDictionary({
   },
   deleteDataSetDialogText: {
     'en-us': `
-      Deleting a Data Set permanently removes it and its Upload Plan.
-      Data mappings will no longer be available for re-use with other
-      Data Sets. Also after deleting, Rollback will no longer be an option for
-      an uploaded Data Set.`,
+      Deleting a Data Set permanently removes it and its Upload Plan. Data
+      mappings will no longer be available for re-use with other Data Sets. Also
+      after deleting, Rollback will no longer be an option for an uploaded Data
+      Set.
+    `,
     'ru-ru': `
       Удаление набора данных приводит к безвозвратному удалению его и его плана
       загрузки. План загрузки не будут доступным для повторного использования;
-      Отката не будет возможным для загруженного набора данных.`,
+      Отката не будет возможным для загруженного набора данных.
+    `,
   },
   dataSetDeletedDialogHeader: {
     'en-us': 'Data Set successfully deleted',
@@ -205,11 +210,13 @@ export const wbText = createDictionary({
   },
   revertChangesDialogText: {
     'en-us': `
-      This action will discard all changes made to the Data Set since
-      the last Save.`,
+      This action will discard all changes made to the Data Set since the last
+      Save.
+    `,
     'ru-ru': `
       Это действие приведет к отмене всех изменений, внесенных в набор данных с
-      момента последнего сохранение.`,
+      момента последнего сохранение.
+    `,
   },
   savingDialogTitle: {
     'en-us': 'Saving',
@@ -223,12 +230,11 @@ export const wbText = createDictionary({
     comment: 'This value must match the one on the back-end exactly',
     'en-us': `
       {value:string} is not a legal value in this picklist field.
-
+      
       Click on the arrow to choose among available options.
     `,
     'ru-ru': `
-      {value:string} не является допустимым значением в этом
-      списке.
+      {value:string} не является допустимым значением в этом списке.
       
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
     `,
@@ -244,8 +250,8 @@ export const wbText = createDictionary({
       must be disambiguated before uploading.
     `,
     'ru-ru': `
-      Это значение соответствует двум или более существующим записям базы
-      данных и совпадению
+      Это значение соответствует двум или более существующим записям базы данных
+      и совпадению
     `,
   },
   validationNoErrorsDialogHeader: {
@@ -254,12 +260,11 @@ export const wbText = createDictionary({
   },
   validationNoErrorsDescription: {
     'en-us': `
-      Validation found no errors, it is ready to be uploaded into the
-      database.
+      Validation found no errors, it is ready to be uploaded into the database.
     `,
     'ru-ru': `
-      Проверка завершена без ошибок. Этот набора данных готов к загрузке в
-      базу данных.
+      Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу
+      данных.
     `,
   },
   validationReEditWarning: {
@@ -286,11 +291,13 @@ export const wbText = createDictionary({
   },
   uploadNoErrorsDialogText: {
     'en-us': `
-      Click on the "Results" button to see the number of new records
-      added to each database table.`,
+      Click on the "Results" button to see the number of new records added to
+      each database table.
+    `,
     'ru-ru': `
       Нажмите кнопку «Результаты», чтобы увидеть количество новых записей
-      добавлен в каждую таблицу базы данных`,
+      добавлен в каждую таблицу базы данных
+    `,
   },
   uploadErrorsDialogHeader: {
     'en-us': 'Upload Failed due to Error Cells',
@@ -303,13 +310,13 @@ export const wbText = createDictionary({
   },
   uploadErrorsSecondDescription: {
     'en-us': `
-      Validate the Data Set and review the mouseover hints for each error
-      cell, then make the appropriate corrections. Save and retry the Upload.
+      Validate the Data Set and review the mouseover hints for each error cell,
+      then make the appropriate corrections. Save and retry the Upload.
     `,
     'ru-ru': `
       Проверте набор данных и наведите указатель мыши на каждую ячейку с
-      ошибкой, затем сделайте соответствующие исправления, сохраните и
-      повторите попытку.
+      ошибкой, затем сделайте соответствующие исправления, сохраните и повторите
+      попытку.
     `,
   },
   dataSetRollbackDialogHeader: {
@@ -319,8 +326,10 @@ export const wbText = createDictionary({
   dataSetRollbackDialogText: {
     'en-us':
       'This Rolledback Data Set is saved, and can be edited or re-uploaded.',
-    'ru-ru': `Этот набор данных отката сохранянен, и его можно редактировать или
-      повторно загружать.`,
+    'ru-ru': `
+      Этот набор данных отката сохранянен, и его можно редактировать или
+      повторно загружать.
+    `,
   },
   validationCanceledDialogHeader: {
     'en-us': 'Validation Canceled',
@@ -374,8 +383,8 @@ export const wbText = createDictionary({
     'en-us':
       'An Upload Plan needs to defined before this Data Set can be Validated',
     'ru-ru': `
-      План загрузки должен быть определен до того, как этот набор данных
-      может быть проверен
+      План загрузки должен быть определен до того, как этот набор данных может
+      быть проверен
     `,
   },
   unavailableWhileEditing: {
@@ -598,10 +607,9 @@ export const wbText = createDictionary({
       even if a default value is provided
     `,
     'ru-ru': `
-      Если задано значение «Игнорировать, когда пусто», пустые значения в
-      этом столбце не будет рассматривается для целей сопоставления.
-      Пустые значения игнорируются при сопоставлении даже если указано
-      значение по умолчанию
+      Если задано значение «Игнорировать, когда пусто», пустые значения в этом
+      столбце не будет рассматривается для целей сопоставления. Пустые значения
+      игнорируются при сопоставлении даже если указано значение по умолчанию
     `,
   },
   ignoreAlways: {
@@ -629,8 +637,8 @@ export const wbText = createDictionary({
       of it's value
     `,
     'ru-ru': `
-      Этот столбец всегда будет учитываться для целей сопоставления,
-      независимо от содержимое столбца
+      Этот столбец всегда будет учитываться для целей сопоставления, независимо
+      от содержимое столбца
     `,
   },
   allowNullValues: {
@@ -660,13 +668,15 @@ export const wbText = createDictionary({
   validationFailedDialogText: {
     'en-us': `
       This data mapping is missing one or more data fields required for
-      uploading by your Specify configuration. Add the missing mappings
-      shown or save this Upload Plan as unfinished.`,
+      uploading by your Specify configuration. Add the missing mappings shown or
+      save this Upload Plan as unfinished.
+    `,
     'ru-ru': `
       В этом сопоставлении данные отсутствует в одном или нескольких полей
       данных, необходимых для загрузки по вашей Specify конфигурацию. Добавьте
       недостающие сопоставления или сохраните этот план загрузки как
-      незавершенный.`,
+      незавершенный.
+    `,
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -712,8 +722,7 @@ export const wbText = createDictionary({
     'en-us': `
       You are viewing the mappings for an uploaded dataset.
       
-      To edit the mappings, rollback the uploaded data or create a new
-      dataset
+      To edit the mappings, rollback the uploaded data or create a new dataset
     `,
     'ru-ru': `
       Вы просматриваете сопоставления для загруженного набора данных.
@@ -733,15 +742,17 @@ export const wbText = createDictionary({
   },
   goToBaseTableDialogText: {
     'en-us': `
-      Choosing a different Base Table for a Data Set Upload will make that
-      table the new starting point for column-to-data field mappings and
-      will erase existing mappings. The AutoMapper will attempt to map
-      columns to the new Base Table fields.`,
+      Choosing a different Base Table for a Data Set Upload will make that table
+      the new starting point for column-to-data field mappings and will erase
+      existing mappings. The AutoMapper will attempt to map columns to the new
+      Base Table fields.
+    `,
     'ru-ru': `
-      Выбор другой базовой таблице для загрузки набора данных сделает ту
-      таблицу новой отправной точкой для сопоставлений полей столбцов и данных и
-      сотрет существующие сопоставления. AutoMapper попытается сопоставить
-      столбцы в новые поля базовой таблицы.`,
+      Выбор другой базовой таблице для загрузки набора данных сделает ту таблицу
+      новой отправной точкой для сопоставлений полей столбцов и данных и сотрет
+      существующие сопоставления. AutoMapper попытается сопоставить столбцы в
+      новые поля базовой таблицы.
+    `,
   },
   clearMapping: {
     'en-us': 'Clear Mapping',
@@ -789,8 +800,8 @@ export const wbText = createDictionary({
       columns.
     `,
     'ru-ru': `
-      Нажмите кнопку "Добавить новый столбец" под строками сопоставления,
-      чтобы добавить новые столбцы.
+      Нажмите кнопку "Добавить новый столбец" под строками сопоставления, чтобы
+      добавить новые столбцы.
     `,
   },
   reRunAutoMapperDialogHeader: {
@@ -846,15 +857,16 @@ export const wbText = createDictionary({
     'ru-ru': 'Копировать план из существующего набора данных',
   },
   wbsDialogEmptyTemplateDialogText: {
-    'en-us':
-      'There are no plans available, please continue to create an upload plan.',
+    'en-us': `
+      There are no plans available, please continue to create an upload plan.
+    `,
     'ru-ru': 'Нет доступных планов, продолжайте создавать план загрузки.',
   },
   createDataSetInstructions: {
-    'en-us': `
-      Use "Import a file" or "Create New" to make a new one.`,
+    'en-us': 'Use "Import a file" or "Create New" to make a new one.',
     'ru-ru': `
-      Используйте «Импортировать файл» или «Создать новый», чтобы создать новый.`,
+      Используйте «Импортировать файл» или «Создать новый», чтобы создать новый.
+    `,
   },
   createNew: {
     'en-us': 'Create New',
@@ -923,8 +935,8 @@ export const wbText = createDictionary({
   wbStatusAbortFailed: {
     'en-us': 'Failed aborting {operationName:string}. Please try again later',
     'ru-ru': `
-      Не удалось прервать операцию {operationName:string}. Пожалуйста, попробуйте
-      позже
+      Не удалось прервать операцию {operationName:string}. Пожалуйста,
+      попробуйте позже
     `,
   },
   wbStatusOperationNoProgress: {
@@ -932,24 +944,32 @@ export const wbText = createDictionary({
     'ru-ru': '{operationName:string}...',
   },
   wbStatusOperationProgress: {
-    'en-us':
-      '{operationName:string} row {current:number|formatted}/{total:number|formatted}',
-    'ru-ru':
-      '{operationName:string} строка {current:number|formatted}/{total:number|formatted}',
+    'en-us': `
+      {operationName:string} row
+      {current:number|formatted}/{total:number|formatted}
+    `,
+    'ru-ru': `
+      {operationName:string} строка
+      {current:number|formatted}/{total:number|formatted}
+    `,
   },
   wbStatusPendingDescription: {
     'en-us': '{operationName:string} of this Data Set should begin shortly.',
-    'ru-ru':
-      '{operationName:string} этого набора данных должно начаться в ближайшее время.',
+    'ru-ru': `
+      {operationName:string} этого набора данных должно начаться в ближайшее
+      время.
+    `,
   },
   wbStatusPendingSecondDescription: {
     'en-us': `
-       If this message persists for longer than 30 seconds, the {operationName:string}
-       process is busy with another Data Set. Please try again later. 
+      If this message persists for longer than 30 seconds, the
+      {operationName:string} process is busy with another Data Set. Please try
+      again later.
     `,
     'ru-ru': `
-      Если это сообщение отображается дольше 30 секунд процесс {operationName:string}
-      занят другим набором данных. Пожалуйста, попробуй снова позже.
+      Если это сообщение отображается дольше 30 секунд процесс
+      {operationName:string} занят другим набором данных. Пожалуйста, попробуй
+      снова позже.
     `,
   },
   wbStatusErrorDialogText: {
@@ -963,7 +983,9 @@ export const wbText = createDictionary({
   invalidTemplateDialogText: {
     'en-us':
       'Selected Data Set has no upload plan. Please select a different one.',
-    'ru-ru': `Выбранный набор данных не имеет плана загрузки. Выберите другой
-      набор данных.`,
+    'ru-ru': `
+      Выбранный набор данных не имеет плана загрузки. Выберите другой набор
+      данных.
+    `,
   },
 } as const);

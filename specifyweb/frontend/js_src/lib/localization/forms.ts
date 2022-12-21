@@ -62,9 +62,10 @@ export const formsText = createDictionary({
   deleteBlockedDialogText: {
     'en-us': `
       The resource cannot be deleted because it is referenced by the following
-      resources:`,
-    'ru-ru': `
-      Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:`,
+      resources:
+    `,
+    'ru-ru':
+      'Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:',
   },
   record: {
     'en-us': 'Record',
@@ -123,10 +124,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Препараты',
   },
   preparationsCanNotBeReturned: {
-    'en-us': `
-      Preparations cannot be returned in this context.`,
-    'ru-ru': `
-      Препараты не могут быть возвращены в этом контексте.`,
+    'en-us': 'Preparations cannot be returned in this context.',
+    'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',
@@ -191,12 +190,14 @@ export const formsText = createDictionary({
   paleoRequiresGeographyDialogText: {
     'en-us': `
       The Paleo Map plugin requires that the locality have geographic
-      coordinates and that the paleo context have a geographic age with at
-      least a start time or and end time populated.`,
+      coordinates and that the paleo context have a geographic age with at least
+      a start time or and end time populated.
+    `,
     'ru-ru': `
-      Плагин Карта Палео требует, чтобы у населенного пункта были
-      координаты и что палеоконтекст имеет географический возраст с
-      заполнено как минимум время начала или время окончания.`,
+      Плагин Карта Палео требует, чтобы у населенного пункта были координаты и
+      что палеоконтекст имеет географический возраст с заполнено как минимум
+      время начала или время окончания.
+    `,
   },
   unsupportedFormDialogHeader: {
     'en-us': 'Incorrect Form',
@@ -218,8 +219,8 @@ export const formsText = createDictionary({
   },
   deleteConfirmationDialogHeader: {
     'en-us': `
-      Are you sure you want to permanently delete this {tableName:string} from the
-      database?
+      Are you sure you want to permanently delete this {tableName:string} from
+      the database?
     `,
     'ru-ru': `
       Вы уверены, что хотите навсегда удалить этот {tableName:string} из базы
@@ -255,10 +256,12 @@ export const formsText = createDictionary({
     'ru-ru': 'Добавить в список выбора?',
   },
   addToPickListConfirmationDialogText: {
-    'en-us':
-      'Add value "{value:string}" to the pick list named {pickListName:string}?',
-    'ru-ru':
-      'Добавить значение "{value:string}" в список выбора {pickListName:string}?',
+    'en-us': `
+      Add value "{value:string}" to the pick list named {pickListName:string}?
+    `,
+    'ru-ru': `
+      Добавить значение "{value:string}" в список выбора {pickListName:string}?
+    `,
   },
   invalidType: {
     'en-us': 'Invalid Type',
@@ -356,14 +359,14 @@ export const formsText = createDictionary({
   },
   saveConflictDialogText: {
     'en-us': `
-      The data shown on this page has been changed by another user or in
-      another browser tab and is out of date. The page must be reloaded to
-      prevent inconsistent data from being saved.
+      The data shown on this page has been changed by another user or in another
+      browser tab and is out of date. The page must be reloaded to prevent
+      inconsistent data from being saved.
     `,
     'ru-ru': `
-      Данные, отображаемые на этой странице, были изменены другим пользователем,
-      или другоц вкладке браузера. Страницу необходимо перезагрузить
-      чтобы предотвратить сохранение несогласованных данных.
+      Данные, отображаемые на этой странице, были изменены другим
+      пользователем, или другоц вкладке браузера. Страницу необходимо
+      перезагрузить чтобы предотвратить сохранение несогласованных данных.
     `,
   },
   saveBlockedDialogHeader: {
@@ -404,8 +407,8 @@ export const formsText = createDictionary({
   },
   commandUnavailableSecondDescription: {
     'en-us': `
-      It was probably included on this form from Specify 6 and may be
-      supported in the future.
+      It was probably included on this form from Specify 6 and may be supported
+      in the future.
     `,
     'ru-ru': `
       Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
@@ -426,12 +429,12 @@ export const formsText = createDictionary({
   },
   pluginNotAvailableDescription: {
     'en-us': 'This plugin is currently unavailable for Specify 7',
-    'ru-ru': `Этот плагин в настоящее время недоступна для Specify 7`,
+    'ru-ru': 'Этот плагин в настоящее время недоступна для Specify 7',
   },
   pluginNotAvailableSecondDescription: {
     'en-us': `
-      It was probably included on this form from Specify 6 and may be
-      supported in the future.
+      It was probably included on this form from Specify 6 and may be supported
+      in the future.
     `,
     'ru-ru': `
       Вероятно, он был включен на етой форме в Specify 6 м может бить
@@ -440,8 +443,8 @@ export const formsText = createDictionary({
   },
   wrongTablePluginDialogText: {
     'en-us': `
-      The plugin cannot be used on the {currentTable:string} form.
-      It can only be used on the {correctTable:string} form.
+      The plugin cannot be used on the {currentTable:string} form. It can only
+      be used on the {correctTable:string} form.
     `,
     'ru-ru': `
       Этот плагин нельзя использовать в форме {currentTable:string}. Его можно
@@ -473,8 +476,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Обязательный формат: {format:string}.',
   },
   inputTypeNumber: {
-    'en-us': `Value must be a number`,
-    'ru-ru': `Значение должно быть числом`,
+    'en-us': 'Value must be a number',
+    'ru-ru': 'Значение должно быть числом',
   },
   userAgentsPluginDialogTitle: {
     'en-us': 'Set User Agents',
@@ -557,10 +560,14 @@ export const formsText = createDictionary({
     'ru-ru': 'Обратный',
   },
   tooLongErrorMessage: {
-    'en-us':
-      'Field value is too long. Max allowed length is {maxLength:number|formatted}',
-    'ru-ru':
-      'Значение поля слишком длинное. Максимально допустимая длина {maxLength:number|formatted}',
+    'en-us': `
+      Field value is too long. Max allowed length is
+      {maxLength:number|formatted}
+    `,
+    'ru-ru': `
+      Значение поля слишком длинное. Максимально допустимая длина
+      {maxLength:number|formatted}
+    `,
   },
   returnedPreparations: {
     'en-us': 'Returned Preparations',

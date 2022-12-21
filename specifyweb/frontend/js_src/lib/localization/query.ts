@@ -44,10 +44,12 @@ export const queryText = createDictionary({
   saveClonedQueryDialogText: {
     'en-us': `
       The query will be saved with a new name leaving the current query
-      unchanged.`,
+      unchanged.
+    `,
     'ru-ru': `
       Запрос будет сохранен под новым именем, оставив текущий запрос без
-      изменений.`,
+      изменений.
+    `,
   },
   queryName: {
     'en-us': 'Query Name:',
@@ -60,9 +62,9 @@ export const queryText = createDictionary({
   queryDeleteIncompleteDialogText: {
     'en-us': `
       There are uncompleted fields in the query definition. Do you want to
-      remove them?`,
-    'ru-ru': `
-      В запросе есть незавершенные поля. Хотите удалить их?`,
+      remove them?
+    `,
+    'ru-ru': 'В запросе есть незавершенные поля. Хотите удалить их?',
   },
   queryUnloadProtectDialogText: {
     'en-us': 'The new or modified query definition has not been saved',
@@ -95,10 +97,12 @@ export const queryText = createDictionary({
   queryExportStartedDialogText: {
     'en-us': `
       A notification will appear when the export file is complete and ready for
-      download.`,
+      download.
+    `,
     'ru-ru': `
-      Запрос начал выполняться. Вы получите уведомление, когда
-      файл будет готов к загрузке.`,
+      Запрос начал выполняться. Вы получите уведомление, когда файл будет готов
+      к загрузке.
+    `,
   },
   invalidPicklistValue: {
     'en-us': '{value:string} (current, invalid value)',
@@ -111,8 +115,9 @@ export const queryText = createDictionary({
   queryRecordSetTitle: {
     'en-us':
       'Query: "{queryName:string}" on Record Set: "{recordSetName:string}"',
-    'ru-ru':
-      'Запрос: "{queryName:string}" на наборе записей: "{recordSetName:string}"',
+    'ru-ru': `
+      Запрос: "{queryName:string}" на наборе записей: "{recordSetName:string}"
+    `,
   },
   treeQueryName: {
     'en-us': '{tableName:string} using "{nodeFullName:string}',
@@ -297,8 +302,9 @@ export const queryText = createDictionary({
   queryMapSubset: {
     'en-us':
       'Plotted {plotted:number|formatted} of {total:number|formatted} records',
-    'ru-ru':
-      'Отображено {plotted:number|formatted} из {total:number|formatted} записей',
+    'ru-ru': `
+      Отображено {plotted:number|formatted} из {total:number|formatted} записей
+    `,
   },
   queryMapAll: {
     'en-us': 'Plotted {plotted:number|formatted} records',

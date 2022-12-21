@@ -49,8 +49,10 @@ export const userText = createDictionary({
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
-    'ru-ru':
-      'Пожалуйста, войдите как администратор и назначьте агента этому пользователю',
+    'ru-ru': `
+      Пожалуйста, войдите как администратор и назначьте агента этому
+      пользователю
+    `,
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
@@ -58,9 +60,9 @@ export const userText = createDictionary({
   },
   oicWelcomeMessage: {
     'en-us': `
-      You've been invited to associate an external login to
-      your Specify user account. This will enable you to log in to Specify with
-      your chosen provider going forward.
+      You've been invited to associate an external login to your Specify user
+      account. This will enable you to log in to Specify with your chosen
+      provider going forward.
     `,
     'ru-ru': `
       Вам было предложено связать внешний логин с вашей учетной записью
@@ -76,15 +78,14 @@ export const userText = createDictionary({
     'en-us': `
       There is currently no Specify user associated with your
       {providerName:string} account. If you have a Specify user name and
-      password, you can enter them below to associate that user with
-      your {providerName:string} account for future logins.
+      password, you can enter them below to associate that user with your
+      {providerName:string} account for future logins.
     `,
     'ru-ru': `
       В настоящее время нет пользователя Specify, связанного с вашей учетной
-      записью {providerName:string}. Если у вас
-      есть Specify имя пользователя и пароль, вы можете ввести их ниже, чтобы
-      связать этого пользователя с вашей учетной записью {providerName:string}
-      для будущих входов в систему.
+      записью {providerName:string}. Если у вас есть Specify имя пользователя и
+      пароль, вы можете ввести их ниже, чтобы связать этого пользователя с вашей
+      учетной записью {providerName:string} для будущих входов в систему.
     `,
   },
   generateMasterKey: {
@@ -109,18 +110,20 @@ export const userText = createDictionary({
   },
   noAccessToResource: {
     'en-us': `
-      You do not have access to any collection containing this resource
-      through the currently logged in account`,
+      You do not have access to any collection containing this resource through
+      the currently logged in account
+    `,
     'ru-ru': `
-      У вас нет доступа ни к одной коллекции, содержащей этот ресурс
-      через текущую учетную запись`,
+      У вас нет доступа ни к одной коллекции, содержащей этот ресурс через
+      текущую учетную запись
+    `,
   },
   resourceInaccessible: {
     'en-us': `
-      The requested resource cannot be accessed while logged into the
-      current collection.`,
-    'ru-ru': `
-      Запрошенный ресурс недоступен в текущей коллекция.`,
+      The requested resource cannot be accessed while logged into the current
+      collection.
+    `,
+    'ru-ru': 'Запрошенный ресурс недоступен в текущей коллекция.',
   },
   selectCollection: {
     'en-us': 'Select one of the following collections:',
@@ -136,11 +139,13 @@ export const userText = createDictionary({
   },
   sessionTimeOutDialogText: {
     'en-us': `
-      You lack sufficient privileges for that action, or your current
-      session has been logged out.`,
+      You lack sufficient privileges for that action, or your current session
+      has been logged out.
+    `,
     'ru-ru': `
       У вас недостаточно прав для этого действия, или текещий сеанс был
-      отключен.`,
+      отключен.
+    `,
   },
   noPermission: {
     comment: `
@@ -155,10 +160,14 @@ export const userText = createDictionary({
     'ru-ru': 'В доступе отказано',
   },
   permissionDeniedDialogText: {
-    'en-us': `You don't have any policy or role that gives you permission to do
-      the following action:`,
-    'ru-ru': `У вас нет политики или роли, которая дает вам разрешение на
-      выполнение следующих действий:`,
+    'en-us': `
+      You don't have any policy or role that gives you permission to do the
+      following action:
+    `,
+    'ru-ru': `
+      У вас нет политики или роли, которая дает вам разрешение на выполнение
+      следующих действий:
+    `,
   },
   permissionDeniedDialogSecondText: {
     'en-us': 'Permission denied when accessing <url />',
@@ -170,9 +179,8 @@ export const userText = createDictionary({
       database. You must login as another user.
     `,
     'ru-ru': `
-      Пользователь, вошедший в систему, не получил доступа ни к каким
-      коллекциям в этой базе данных. Вы должны войти в систему как другой
-      пользователь.
+      Пользователь, вошедший в систему, не получил доступа ни к каким коллекциям
+      в этой базе данных. Вы должны войти в систему как другой пользователь.
     `,
   },
   userAccount: {
@@ -267,7 +275,9 @@ export const userText = createDictionary({
     'en-us':
       'Custom Collection-level Policies (applies to this collection only)',
     'ru-ru': `
-      Пользовательские политики на уровне коллекции (применяется только к этой коллекции)`,
+      Пользовательские политики на уровне коллекции (применяется только к этой
+      коллекции)
+    `,
   },
   role: {
     'en-us': 'Role:',
@@ -284,8 +294,10 @@ export const userText = createDictionary({
   outOfDateWarning: {
     'en-us':
       'Note: preview may be out of date. Save changes to update the preview',
-    'ru-ru': `Примечание. Предварительный просмотр может быть устаревшим.
-      Сохраните изменения, чтобы обновить предварительный просмотр`,
+    'ru-ru': `
+      Примечание. Предварительный просмотр может быть устаревшим. Сохраните
+      изменения, чтобы обновить предварительный просмотр
+    `,
   },
   allUsers: {
     'en-us': 'All Users',
@@ -361,29 +373,37 @@ export const userText = createDictionary({
   },
   userInviteLinkDescription: {
     'en-us': `
-      Send the following link to {userName:string} to allow
-      them to log in for the first time.
+      Send the following link to {userName:string} to allow them to log in for
+      the first time.
     `,
     'ru-ru': `
-      Отправьте эту ссылку {userName:string}, чтобы разрешить
-      им войти в систему в первый раз.
+      Отправьте эту ссылку {userName:string}, чтобы разрешить им войти в систему
+      в первый раз.
     `,
   },
   noProvidersForUserInviteLink: {
-    'en-us': `No external identity provider is configured.
-      You can configure some in Specify 7 server settings`,
-    'ru-ru': `Внешний поставщик удостоверений не настроен.
-     Вы можете настроить некоторые в настройках сервера Specify 7.`,
+    'en-us': `
+      No external identity provider is configured. You can configure some in
+      Specify 7 server settings
+    `,
+    'ru-ru': `
+      Внешний поставщик удостоверений не настроен. Вы можете настроить некоторые
+      в настройках сервера Specify 7.
+    `,
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',
     'ru-ru': 'Specify 6 Разрешения',
   },
   setPasswordBeforeSavePrompt: {
-    'en-us': `Consider setting a password for this user. Users without a password
-      won't be able to sign in`,
-    'ru-ru': `Не забудьте установить пароль для этого пользователя. Пользователи
-      без пароля не смогут войти`,
+    'en-us': `
+      Consider setting a password for this user. Users without a password won't
+      be able to sign in
+    `,
+    'ru-ru': `
+      Не забудьте установить пароль для этого пользователя. Пользователи без
+      пароля не смогут войти
+    `,
   },
   setCollections: {
     'en-us': 'Set Collections',
@@ -426,10 +446,13 @@ export const userText = createDictionary({
     'ru-ru': 'Пользователи не будут удалены, но потеряют эту роль.',
   },
   institutionPolicies: {
-    'en-us':
-      'Custom Institution-level Policies (applies to all assigned collections)',
+    'en-us': `
+      Custom Institution-level Policies (applies to all assigned collections)
+    `,
     'ru-ru': `
-      Пользовательские политики на уровне учреждения (применяются ко всем назначенным коллекциям)`,
+      Пользовательские политики на уровне учреждения (применяются ко всем
+      назначенным коллекциям)
+    `,
   },
   cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
@@ -456,10 +479,14 @@ export const userText = createDictionary({
     'ru-ru': 'Исключенные институциональные политики:',
   },
   excludedInstitutionalPoliciesDescription: {
-    'en-us': `(Some policies that apply only at the institution-level are not
-      present here at the collection-level.)`,
-    'ru-ru': `Некоторые политики применяются только на институциональном уровне,
-      поэтому они удалены из этих списков.`,
+    'en-us': `
+      (Some policies that apply only at the institution-level are not present
+      here at the collection-level.)
+    `,
+    'ru-ru': `
+      Некоторые политики применяются только на институциональном уровне, поэтому
+      они удалены из этих списков.
+    `,
   },
   accountSetupOptions: {
     'en-us': 'Account Setup Options',

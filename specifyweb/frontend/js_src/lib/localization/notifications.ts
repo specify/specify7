@@ -63,8 +63,8 @@ export const notificationsText = createDictionary({
       you.
     `,
     'ru-ru': `
-      <userName /> передал вам право собственности на набор данных
-      <dataSetName />.
+      <userName /> передал вам право собственности на набор данных <dataSetName
+      />.
     `,
   },
 } as const);

@@ -29,10 +29,12 @@ export const mainText = createDictionary({
   pageNotFoundDescription: {
     'en-us': `
       The page you are looking for might have been removed, had its name changed
-      or is temporarily unavailable.`,
+      or is temporarily unavailable.
+    `,
     'ru-ru': `
       Возможно, страница, которую вы ищете, была удалена, ее название изменилось
-      или она временно недоступна.`,
+      или она временно недоступна.
+    `,
   },
   returnToHomepage: {
     'en-us': 'Return to homepage',
@@ -43,16 +45,24 @@ export const mainText = createDictionary({
     'ru-ru': 'Произошла неожиданная ошибка',
   },
   errorBoundaryDialogText: {
-    'en-us': `We're sorry, it seems you have encountered an error in Specify 7
-      that we may not be aware of.`,
-    'ru-ru': `Произошла неисправимая ошибка, которая не позволит нам безопасно
-      вернуться к вашему текущему окну.`,
+    'en-us': `
+      We're sorry, it seems you have encountered an error in Specify 7 that we
+      may not be aware of.
+    `,
+    'ru-ru': `
+      Произошла неисправимая ошибка, которая не позволит нам безопасно вернуться
+      к вашему текущему окну.
+    `,
   },
   errorBoundaryCriticalDialogText: {
-    'en-us': `To avoid corrupting data records, we need to start again from a
-      safe spot--the Home page.`,
-    'ru-ru': `Чтобы избежать повреждения записей данных, нам нужно начать
-      заново с безопасного места — домашней страницы.`,
+    'en-us': `
+      To avoid corrupting data records, we need to start again from a safe
+      spot--the Home page.
+    `,
+    'ru-ru': `
+      Чтобы избежать повреждения записей данных, нам нужно начать заново с
+      безопасного места — домашней страницы.
+    `,
   },
   errorBoundaryDialogMessage: {
     'en-us': `

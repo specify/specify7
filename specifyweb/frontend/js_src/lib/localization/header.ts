@@ -50,9 +50,8 @@ export const headerText = createDictionary({
       Update started. You will receive a notification for each feed item
       updated.
     `,
-    'ru-ru': `
-      Обновление началось. Вы получите уведомление о каждом элементе фида
-    `,
+    'ru-ru':
+      'Обновление началось. Вы получите уведомление о каждом элементе фида',
   },
   dwcaExportStartedDialogHeader: {
     'en-us': 'DwCA export started',
@@ -60,10 +59,11 @@ export const headerText = createDictionary({
   },
   dwcaExportStartedDialogText: {
     'en-us': `
-      Export started. You will receive a notification
-      when the export is complete.`,
-    'ru-ru': `
-      Экспорт начат. Вы получите уведомление когда экспорт будет завершен.`,
+      Export started. You will receive a notification when the export is
+      complete.
+    `,
+    'ru-ru':
+      'Экспорт начат. Вы получите уведомление когда экспорт будет завершен.',
   },
   labelName: {
     'en-us': 'Label Name',
@@ -123,9 +123,9 @@ export const headerText = createDictionary({
       Interface. If you are interested, please send an email to <emailLink />
     `,
     'ru-ru': `
-      Мы будем очень благодарны за вашу поддержку в локализации
-      пользовательский интерфейс Specify 7. Если вы заинтересованы,
-      пожалуйста, отправьте письмо по адресу <emailLink />
+      Мы будем очень благодарны за вашу поддержку в локализации пользовательский
+      интерфейс Specify 7. Если вы заинтересованы, пожалуйста, отправьте письмо
+      по адресу <emailLink />
     `,
   },
   tableApi: {
@@ -134,7 +134,7 @@ export const headerText = createDictionary({
   },
   operationsApi: {
     'en-us': 'Operations API',
-    'ru-ru': ' API операций',
+    'ru-ru': 'API операций',
   },
   documentation: {
     'en-us': 'Documentation',

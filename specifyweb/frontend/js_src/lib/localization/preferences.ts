@@ -67,12 +67,12 @@ export const preferencesText = createDictionary({
   },
   reduceTransparencyDescription: {
     'en-us': `
-      Whether to disable translucent backgrounds for user interface
-      components whenever possible (for example, table headers in tree view)
+      Whether to disable translucent backgrounds for user interface components
+      whenever possible (for example, table headers in tree view)
     `,
     'ru-ru': `
-      Отключить ли полупрозрачный фон для пользовательского интерфейса,
-      когда это возможно (например, заголовки таблиц в просмотрщике деревьев)
+      Отключить ли полупрозрачный фон для пользовательского интерфейса, когда
+      это возможно (например, заголовки таблиц в просмотрщике деревьев)
     `,
   },
   contrast: {
@@ -101,15 +101,14 @@ export const preferencesText = createDictionary({
   },
   fontFamilyDescription: {
     'en-us': `
-      You can specify any font that is on your computer, even if it is
-      not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not available and so on
+      You can specify any font that is on your computer, even if it is not in
+      the list. A comma separated list of fonts is also supported, where second
+      font would be used if first one is not available and so on
     `,
     'ru-ru': `
-      Вы можете указать любой шрифт, который есть на вашем компьютере,
-      даже если он нет в списке. Поддерживается список шрифтов, разделенных
-      запятыми, где второй шрифт будет использоваться, если первый не доступен
-      и т.д.
+      Вы можете указать любой шрифт, который есть на вашем компьютере, даже если
+      он нет в списке. Поддерживается список шрифтов, разделенных запятыми, где
+      второй шрифт будет использоваться, если первый не доступен и т.д.
     `,
   },
   defaultFont: {
@@ -251,8 +250,10 @@ export const preferencesText = createDictionary({
   },
   updatePageTitleDialogDescription: {
     'en-us': "Whether to update the title of the page to match dialog's header",
-    'ru-ru':
-      'Обновлять ли заголовок страницы в соответствии с заголовком диалогового окна',
+    'ru-ru': `
+      Обновлять ли заголовок страницы в соответствии с заголовком диалогового
+      окна
+    `,
   },
   updatePageTitleFormDescription: {
     'en-us': 'Whether to update the title of the page to match current record',
@@ -296,22 +297,29 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (с учетом регистра)',
   },
   containsDescription: {
-    'en-us':
-      'Search for values that contain a given query string (case-insensitive).',
-    'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (без учета регистра).',
+    'en-us': `
+      Search for values that contain a given query string (case-insensitive).
+    `,
+    'ru-ru': `
+      Поиск значений, содержащих заданную строку запроса (без учета регистра).
+    `,
   },
   containsCaseSensitiveDescription: {
     'en-us':
       'Search for values that contain a given query string (case-sensitive).',
-    'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (с учетом регистра).',
+    'ru-ru': `
+      Поиск значений, содержащих заданную строку запроса (с учетом регистра).
+    `,
   },
   containsSecondDescription: {
-    'en-us':
-      'Can use _ to match any single character or % to match any number of characters',
-    'ru-ru':
-      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+    'en-us': `
+      Can use _ to match any single character or % to match any number of
+      characters
+    `,
+    'ru-ru': `
+      Можно использовать _ для соответствия любому символу или % для
+      соответствия любому количеству символов
+    `,
   },
   highlightMatch: {
     'en-us': 'Highlight matched substring',
@@ -319,8 +327,9 @@ export const preferencesText = createDictionary({
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
-    'ru-ru':
-      'Определяет заголовки полей, примечания по использованию и заголовки таблиц',
+    'ru-ru': `
+      Определяет заголовки полей, примечания по использованию и заголовки таблиц
+    `,
   },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
@@ -386,8 +395,7 @@ export const preferencesText = createDictionary({
     `,
     'ru-ru': `
       ВНИМАНИЕ: включение этого параметра может привести к потере данных или
-      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что
-      делаете
+      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что делаете
     `,
   },
   adminsOnlyPreference: {
@@ -455,17 +463,13 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
   },
   tabMoveDirection: {
-    'en-us': `
-      Direction of movement when <key>Tab</key> key is pressed
-    `,
-    'ru-ru': `
-      Направление движения при нажатии клавиши <key>Tab</key>
-    `,
+    'en-us': 'Direction of movement when <key>Tab</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Tab</key>',
   },
   tabMoveDirectionDescription: {
     'en-us': `
-      You can move in the opposite direction by pressing <key>Shift</key>+
-      <key>Tab</key>
+      You can move in the opposite direction by pressing
+      <key>Shift</key>+<key>Tab</key>
     `,
     'ru-ru': `
       Вы можете двигаться в противоположном направлении, нажав
@@ -482,14 +486,12 @@ export const preferencesText = createDictionary({
   },
   enterMoveDirection: {
     'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
-    'ru-ru': `
-      Направление движения при нажатии клавиши <key>Enter</key>
-    `,
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
   },
   enterMoveDirectionDescription: {
     'en-us': `
-      You can move in the opposite direction by pressing <key>Shift</key>+
-      <key>Enter</key>
+      You can move in the opposite direction by pressing
+      <key>Shift</key>+<key>Enter</key>
     `,
     'ru-ru': `
       Вы можете двигаться в противоположном направлении, нажав
@@ -530,8 +532,9 @@ export const preferencesText = createDictionary({
   },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
-    'ru-ru':
-      'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
+    'ru-ru': `
+      Разрешить автозаполнение расширяться настолько, насколько это необходимо
+    `,
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -618,17 +621,16 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запись для открытия по умолчанию',
   },
   altClickToSupressNewTab: {
-    'en-us': `
-      <key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab
-    `,
+    'en-us':
+      '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
     'ru-ru': `
       <key>{altKeyName:string}</key>+<key>Клик</key>, чтобы скрыть новую вкладку
     `,
   },
   altClickToSupressNewTabDescription: {
     'en-us': `
-      <key>{altKeyName:string}</key>+<key>Click</key> on a link that normally opens
-      in a new tab to open it in the current tab
+      <key>{altKeyName:string}</key>+<key>Click</key> on a link that normally
+      opens in a new tab to open it in the current tab
     `,
     'ru-ru': `
       <key>{altKeyName:string}</key>+<key>Клик</key> на ссылку, которая обычно

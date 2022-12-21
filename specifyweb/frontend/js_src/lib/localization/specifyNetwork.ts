@@ -17,12 +17,12 @@ export const specifyNetworkText = createDictionary({
   },
   failedToOpenPopUpDialogText: {
     'en-us': `
-      Please make sure your browser is not blocking pop-up windows and
-      try again.
+      Please make sure your browser is not blocking pop-up windows and try
+      again.
     `,
     'ru-ru': `
-      Убедитесь, что ваш браузер не блокирует всплывающие окна, и
-      повторите попытку.
+      Убедитесь, что ваш браузер не блокирует всплывающие окна, и повторите
+      попытку.
     `,
   },
 } as const);

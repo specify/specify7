@@ -91,16 +91,16 @@ export const treeText = createDictionary({
   },
   mergeNodeMessage: {
     'en-us': `
-      All references to {treeName:string} node "{nodeName:string}" will be replaced
-      with "{parentName:string}", and all descendants of "{nodeName:string}"
-      will be moved to "{parentName:string}" with any descendants matching
-      in name and rank being themselves merged recursively.
+      All references to {treeName:string} node "{nodeName:string}" will be
+      replaced with "{parentName:string}", and all descendants of
+      "{nodeName:string}" will be moved to "{parentName:string}" with any
+      descendants matching in name and rank being themselves merged recursively.
     `,
     'ru-ru': `
-      Все ссылки на "{nodeName:string}" ({treeName:string}) будут заменены
-      с "{parentName:string}", и все потомки "{nodeName:string}"
-      будет перемещен в "{parentName:string}" с соответствующими потомками
-      по названию и рангу подвергнется рекурсивному слиянию.
+      Все ссылки на "{nodeName:string}" ({treeName:string}) будут заменены с
+      "{parentName:string}", и все потомки "{nodeName:string}" будет перемещен
+      в "{parentName:string}" с соответствующими потомками по названию и рангу
+      подвергнется рекурсивному слиянию.
     `,
   },
   synonymizeNode: {
@@ -117,8 +117,8 @@ export const treeText = createDictionary({
   },
   synonymizeMessage: {
     'en-us': `
-      The {treeName:string} node "{nodeName:string}" will be made a synonym
-      of "{synonymName:string}".
+      The {treeName:string} node "{nodeName:string}" will be made a synonym of
+      "{synonymName:string}".
     `,
     'ru-ru': `
       Узел «{nodeName:string}» ({treeName:string}) станет синонимом
@@ -130,8 +130,9 @@ export const treeText = createDictionary({
     'ru-ru': 'Отменить синонимизацию',
   },
   desynonymizeNodeMessage: {
-    'en-us':
-      '"{nodeName:string}" will no longer be a synonym of "{synonymName:string}".',
+    'en-us': `
+      "{nodeName:string}" will no longer be a synonym of "{synonymName:string}".
+    `,
     'ru-ru':
       '«{nodeName:string}» больше не будет синонимом «{synonymName:string}».',
   },
