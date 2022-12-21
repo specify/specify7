@@ -38,37 +38,33 @@ export function StatsResult({
     <>
       {statLabel === undefined ? (
         <div>{commonText('loading')}</div>
+      ) : typeof handleRemove === 'function' ? (
+        <>
+          <Button.Icon
+            icon="trash"
+            title={commonText('remove')}
+            onClick={handleRemove}
+          />
+          <Input.Text
+            required
+            value={statLabel}
+            onValueChange={(newname): void => {
+              handleItemRename(newname);
+            }}
+          />
+          <span className="self-center">
+            {statValue ?? commonText('loading')}
+          </span>
+        </>
       ) : (
         <p className="flex gap-2">
-          {typeof handleRemove === 'function' && (
-            <Button.Icon
-              icon="trash"
-              title={commonText('remove')}
-              onClick={handleRemove}
-            />
-          )}
           <Button.LikeLink
             className="flex-1"
             onClick={
-              handleClick ??
-              (query === undefined || typeof handleItemRename === 'function'
-                ? undefined
-                : handleOpen)
+              handleClick ?? (query === undefined ? undefined : handleOpen)
             }
           >
-            <span>
-              {typeof handleItemRename === 'function' ? (
-                <Input.Text
-                  required
-                  value={statLabel}
-                  onValueChange={(newname): void => {
-                    handleItemRename(newname);
-                  }}
-                />
-              ) : (
-                statLabel
-              )}
-            </span>
+            <span>{statLabel}</span>
             <span className="-ml-2 flex-1" />
             <span>{statValue ?? commonText('loading')}</span>
           </Button.LikeLink>

@@ -97,7 +97,13 @@ export function Categories({
                   }}
                 />
               )}
-              <div className="flex-1 overflow-auto">
+              <div
+                className={
+                  handleItemRename === undefined
+                    ? 'flex-1 overflow-auto'
+                    : 'grid grid-cols-[auto_1fr_max-content] gap-2 overflow-auto '
+                }
+              >
                 {items?.map((item, itemIndex) =>
                   item.absent === false || item.absent === undefined ? (
                     <StatItem
@@ -169,6 +175,9 @@ export function Categories({
                   ) : undefined
                 )}
               </div>
+              {typeof handleCategoryRename === 'function' ? (
+                <span className="-mt-2 flex-1" />
+              ) : null}
               {handleAdd !== undefined && handleRemove !== undefined ? (
                 <div className="flex gap-2">
                   <Button.Small
