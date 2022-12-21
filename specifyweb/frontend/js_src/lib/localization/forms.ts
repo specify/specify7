@@ -326,7 +326,6 @@ export const formsText = createDictionary({
     'en-us': 'Run Report',
     'ru-ru': 'Запустить репорт',
   },
-  // ResourceView
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первый объект',

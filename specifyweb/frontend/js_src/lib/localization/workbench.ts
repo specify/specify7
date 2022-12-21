@@ -113,7 +113,6 @@ export const wbText = createDictionary({
     'en-us': 'Data Editor',
     'ru-ru': 'Редактор данных',
   },
-  // Dialogs
   noUploadPlanDialogHeader: {
     'en-us': 'No Upload Plan is Defined',
     'ru-ru': 'План загрузки не определен',
@@ -220,9 +219,8 @@ export const wbText = createDictionary({
     'en-us': 'Changes to this Data Set have not been Saved.',
     'ru-ru': 'Изменения в этом наборе данных не были сохранены.',
   },
-  // Validation
-  /* This value must match the one on the back-end exactly */
   picklistValidationFailed: {
+    comment: 'This value must match the one on the back-end exactly',
     'en-us': `
       {value:string} is not a legal value in this picklist field.
 
@@ -356,7 +354,6 @@ export const wbText = createDictionary({
     'en-us': 'Choose a preferred Geocoordinate format',
     'ru-ru': 'Выберите предпочтительный формат геокоординат',
   },
-  // Misc
   unmappedColumn: {
     'en-us': 'Unmapped Column',
     'ru-ru': 'Несопоставленный столбец',
@@ -438,7 +435,6 @@ export const wbText = createDictionary({
     'ru-ru':
       'Количество новых записей, которые будут созданы в каждой таблице:',
   },
-  // WbAdvancedSearch
   navigationOptions: {
     'en-us': 'Navigation Options',
     'ru-ru': 'Опции навигации',
@@ -491,7 +487,6 @@ export const wbText = createDictionary({
     'en-us': 'Replace next occurrence',
     'ru-ru': 'Заменить следующее происшествие',
   },
-  // WbImport
   importDataSet: {
     'en-us': 'Import Data Set',
     'ru-ru': 'Импортировать набор данных',
@@ -560,7 +555,6 @@ export const wbText = createDictionary({
     'en-us': 'Column {columnIndex:number}',
     'ru-ru': 'Столбец {columnIndex:number}',
   },
-  // WbPlanView
   matchBehavior: {
     'en-us': 'Match Behavior:',
     'ru-ru': 'Поведение при совпадении:',
@@ -910,7 +904,6 @@ export const wbText = createDictionary({
     'en-us': '(Uploaded, Read-Only)',
     'ru-ru': '(Загружено, только для чтения)',
   },
-  // WbStatus
   wbStatusUnuploadDialogTitle: {
     'en-us': 'Data Set Rollback Status',
     'ru-ru': 'Состояние отката набора данных',

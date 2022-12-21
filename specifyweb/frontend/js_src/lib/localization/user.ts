@@ -219,7 +219,6 @@ export const userText = createDictionary({
     'en-us': 'Passwords do not match.',
     'ru-ru': 'Пароли не соответствуют.',
   },
-  // PasswordChange
   confirmPassword: {
     'en-us': 'Confirm',
     'ru-ru': 'Подтвердить',
@@ -352,8 +351,6 @@ export const userText = createDictionary({
     'en-us': 'Institution Admin',
     'ru-ru': 'Супер администратор',
   },
-
-  // UserInviteLinkPlugin
   createInviteLink: {
     'en-us': 'Create Invite Link',
     'ru-ru': 'Создать пригласительную ссылку',

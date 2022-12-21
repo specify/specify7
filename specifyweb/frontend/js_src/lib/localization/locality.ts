@@ -9,7 +9,6 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const localityText = createDictionary({
-  // Leaflet
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
@@ -38,7 +37,6 @@ export const localityText = createDictionary({
     'en-us': 'Polygons',
     'ru-ru': 'Полигоны',
   },
-  // GeoLocate
   geoLocate: {
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
@@ -52,7 +50,6 @@ export const localityText = createDictionary({
       'The GeoLocate plugin requires the geography field to be populated.',
     'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',
   },
-  // LatLongUI
   coordinates: {
     'en-us': 'Coordinates',
     'ru-ru': 'Координаты',
@@ -65,7 +62,6 @@ export const localityText = createDictionary({
     'en-us': 'SE Corner',
     'ru-ru': 'ЮВ Угол',
   },
-  // LatLongUI
   coordinateType: {
     'en-us': 'Coordinate Type',
     'ru-ru': 'Тип координат',

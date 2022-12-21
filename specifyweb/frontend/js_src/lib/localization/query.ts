@@ -146,7 +146,6 @@ export const queryText = createDictionary({
     'en-us': 'Save As',
     'ru-ru': 'Сохранить как',
   },
-  // QueryField
   anyRank: {
     'en-us': '(any rank)',
     'ru-ru': '(любой ранг)',

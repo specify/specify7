@@ -234,8 +234,6 @@ export const commonText = createDictionary({
     'en-us': '(opens in a new tab)',
     'ru-ru': '(открывается в новой вкладке)',
   },
-
-  // Toolbar
   goToHomepage: {
     'en-us': 'Go to Home Page',
     'ru-ru': 'Вернуться на Домашнюю Страницу',
@@ -244,7 +242,6 @@ export const commonText = createDictionary({
     'en-us': 'Actions',
     'ru-ru': 'Действия',
   },
-
   username: {
     'en-us': 'Username',
     'ru-ru': 'Имя пользователя',
