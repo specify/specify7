@@ -5,10 +5,11 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import { languageCodeMapper, languages, whitespaceSensitive } from './index';
+import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
 import { testLogging } from './testLogging';
 import { Http } from '../../utils/ajax/definitions';
+import { languageCodeMapper, languages } from './config';
 
 /**
  * Which branch the strings are coming from.

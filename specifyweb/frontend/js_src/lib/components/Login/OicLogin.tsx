@@ -5,8 +5,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { useSearchParameter } from '../../hooks/navigation';
@@ -19,6 +17,11 @@ import { SplashScreen } from '../Core/SplashScreen';
 import { className } from '../Atoms/className';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  enabledLanguages,
+  Language,
+  LANGUAGE,
+} from '../../localization/utils/config';
 
 export type OicProvider = {
   readonly provider: string;

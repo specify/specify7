@@ -16,10 +16,7 @@ import path from 'node:path';
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group, split } from '../../utils/utils';
-import type { Language } from './index';
 import {
-  DEFAULT_LANGUAGE,
-  languages,
   LocalizationDictionary as LanguageDictionary,
   LocalizationEntry,
   localizationMetaKeys,
@@ -29,6 +26,7 @@ import {
 import { f } from '../../utils/functools';
 import { formatList } from '../../components/Atoms/Internationalization';
 import { testLogging } from './testLogging';
+import { DEFAULT_LANGUAGE, Language, languages } from './config';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');

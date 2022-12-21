@@ -41,7 +41,7 @@ import {showDialog} from '../Molecules/LegacyDialog';
 import {dialogClassNames} from '../Molecules/Dialog';
 import {format} from '../Forms/dataObjFormatters';
 import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {LANGUAGE, whitespaceSensitive} from '../../localization/utils';
+import {whitespaceSensitive} from '../../localization/utils';
 import {filterArray} from '../../utils/types';
 import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
 import {serializeResource} from '../DataModel/helpers';
@@ -65,6 +65,7 @@ import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
+import {LANGUAGE} from '../../localization/utils/config';
 
 const metaKeys = [
   'isNew',

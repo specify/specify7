@@ -7,12 +7,7 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import type { Language } from '../../localization/utils';
-import {
-  enabledLanguages,
-  LANGUAGE,
-  StringToJsx,
-} from '../../localization/utils';
+import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
 import { formData } from '../../utils/ajax/helpers';
@@ -31,6 +26,11 @@ import type {
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  enabledLanguages,
+  Language,
+  LANGUAGE,
+} from '../../localization/utils/config';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping('/context/language/', {

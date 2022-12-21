@@ -8,8 +8,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
-import type { Language } from '../../localization/utils';
-import { LANGUAGE } from '../../localization/utils';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
@@ -35,6 +33,7 @@ import { TableFields } from '../DataModel/helperTypes';
 import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { LocalizedString } from 'typesafe-i18n';
+import { Language, LANGUAGE } from '../../localization/utils/config';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {

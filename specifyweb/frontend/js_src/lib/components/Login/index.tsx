@@ -6,8 +6,6 @@ import React from 'react';
 
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { commonText } from '../../localization/common';
-import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
@@ -20,6 +18,11 @@ import { useValidation } from '../../hooks/useValidation';
 import { SplashScreen } from '../Core/SplashScreen';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  enabledLanguages,
+  Language,
+  LANGUAGE,
+} from '../../localization/utils/config';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {

@@ -3,9 +3,9 @@
  */
 
 import { capitalize } from '../../utils/utils';
-import { LANGUAGE } from '../../localization/utils';
 import type { RA } from '../../utils/types';
 import { LocalizedString } from 'typesafe-i18n';
+import { LANGUAGE } from '../../localization/utils/config';
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace

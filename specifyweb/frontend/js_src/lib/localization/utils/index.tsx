@@ -12,33 +12,12 @@ import { formatNumber } from '../../components/Atoms/Internationalization';
 import { error } from '../../components/Errors/assert';
 import { f } from '../../utils/functools';
 import type { IR, RR } from '../../utils/types';
-
-/**
- * To add new language, define it in this list
- * A mapping between Django language code and Weblate language code
- * (weblate uses unconventional codes)
- */
-export const languageCodeMapper = {
-  'en-us': 'en_US',
-  'ru-ru': 'rus_RU',
-} as const;
-
-export const languages = Object.keys(languageCodeMapper);
-/** This allows to hide unfinished localizations in production */
-export const enabledLanguages =
-  process.env.NODE_ENV === 'development' ? languages : ['en-us', 'ru-ru'];
-
-export type Language = typeof languages[number];
-export const DEFAULT_LANGUAGE = 'en-us';
-export const LANGUAGE: Language =
-  (typeof document === 'object' &&
-  f.includes(languages, document.documentElement.lang)
-    ? document.documentElement.lang
-    : undefined) ?? DEFAULT_LANGUAGE;
+import type { Language } from './config';
+import { DEFAULT_LANGUAGE, LANGUAGE } from './config';
 
 export const localizationMetaKeys = ['comment'] as const;
 type MetaKeys = typeof localizationMetaKeys[number];
-export type LocalizationEntry = Partial<RR<MetaKeys | Language, string>> &
+export type LocalizationEntry = Partial<RR<Language | MetaKeys, string>> &
   RR<typeof DEFAULT_LANGUAGE, string>;
 export type LocalizationDictionary = IR<LocalizationEntry>;
 

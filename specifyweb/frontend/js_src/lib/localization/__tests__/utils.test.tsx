@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   createDictionary,
-  DEFAULT_LANGUAGE,
   rawDictionary,
   StringToJsx,
   whitespaceSensitive,
 } from '../utils';
 import { theories } from '../../tests/utils';
 import { LocalizedString } from 'typesafe-i18n';
+import { DEFAULT_LANGUAGE } from '../utils/config';
 
 const raw = {
   simpleKey: {
