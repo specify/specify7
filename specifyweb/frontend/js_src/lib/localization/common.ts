@@ -326,8 +326,8 @@ export const commonText = createDictionary({
     'ru-ru': 'Неизвестно',
   },
   language: {
-    'en-us': 'Language:',
-    'ru-ru': 'Язык:',
+    'en-us': 'Language',
+    'ru-ru': 'Язык',
   },
   country: {
     'en-us': 'Country',

@@ -33,6 +33,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
+import { formsText } from '../../localization/forms';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -93,7 +94,7 @@ export function DataSetMeta({
         }
       >
         <Label.Block>
-          <b>{wbText.dataSetName()}</b>
+          <b>{wbText.dataSetName()}:</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
@@ -103,32 +104,36 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{wbText.remarks()}</b>
+          <b>{formsText.remarks()}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>{commonText.metadataInline()}</b>
           <span>
-            {wbText.numberOfRows()} <i>{formatNumber(getRowCount())}</i>
+            {wbText.numberOfRows()}: <i>{formatNumber(getRowCount())}</i>
           </span>
           <span>
-            {wbText.numberOfColumns()}{' '}
+            {wbText.numberOfColumns()}
+            {': '}
             <i>{formatNumber(dataset.columns.length)}</i>
           </span>
           <span>
-            {wbText.created()}{' '}
+            {commonText.created()}
+            {': '}
             <i>
               <DateElement date={dataset.timestampcreated} flipDates />
             </i>
           </span>
           <span>
-            {wbText.modified()}{' '}
+            {commonText.modified()}
+            {': '}
             <i>
               <DateElement date={dataset.timestampmodified} flipDates />
             </i>
           </span>
           <span>
-            {wbText.uploaded()}{' '}
+            {commonText.uploaded()}
+            {': '}
             <i>
               <DateElement
                 date={

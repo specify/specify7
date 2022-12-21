@@ -694,7 +694,7 @@ export const wbText = createDictionary({
     'en-us': 'Map selected field to selected header',
     'ru-ru': 'Сопоставить выбранное поле с выбранным столбцом',
   },
-  relationship: {
+  relationshipWithTable: {
     'en-us': 'Relationship with the {tableName:string} table',
     'ru-ru': 'Связь с таблицей {tableName:string}',
   },
@@ -866,38 +866,21 @@ export const wbText = createDictionary({
     'en-us': 'Create New',
     'ru-ru': 'Создайте новый',
   },
-  // Datasetmeta
   dataSetMetaDialogTitle: {
     'en-us': 'Data Set Properties',
     'ru-ru': 'Свойства набора данных',
   },
   dataSetName: {
-    'en-us': 'Data Set Name:',
-    'ru-ru': 'Название набора данных:',
-  },
-  remarks: {
-    'en-us': 'Remarks:',
-    'ru-ru': 'Примечания:',
+    'en-us': 'Data Set Name',
+    'ru-ru': 'Название набора данных',
   },
   numberOfRows: {
-    'en-us': 'Number of rows:',
-    'ru-ru': 'Количество рядов:',
+    'en-us': 'Number of rows',
+    'ru-ru': 'Количество рядов',
   },
   numberOfColumns: {
-    'en-us': 'Number of columns:',
-    'ru-ru': 'Количество столбцов:',
-  },
-  created: {
-    'en-us': 'Created:',
-    'ru-ru': 'Созданный:',
-  },
-  modified: {
-    'en-us': 'Modified:',
-    'ru-ru': 'Измененый:',
-  },
-  uploaded: {
-    'en-us': 'Uploaded:',
-    'ru-ru': 'Загруженый:',
+    'en-us': 'Number of columns',
+    'ru-ru': 'Количество столбцов',
   },
   importedFileName: {
     'en-us': 'Import file name:',

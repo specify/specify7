@@ -22,15 +22,15 @@ let errorsCount = 0;
 function error(value: string): void {
   errorsCount += 1;
   process.exitCode = 1;
-  console.error(chalk.red(value));
+  console.error(chalk.red(`${value}\n`));
 }
 
 export const testLogging = {
   log,
-  todosCount,
-  warningsCount,
+  getToDoCount: () => todosCount,
+  getWarningCount: () => warningsCount,
   todo,
   warn,
   error,
-  errorsCount,
+  getErrorCount: () => errorsCount,
 };

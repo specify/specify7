@@ -15,7 +15,7 @@ import path from 'node:path';
 
 import type { IR, R, RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { split } from '../../utils/utils';
+import { group, split } from '../../utils/utils';
 import type { Language } from './index';
 import {
   DEFAULT_LANGUAGE,
@@ -47,7 +47,7 @@ const characterBlacklist: Partial<RR<Language, string>> = {
   'en-us': 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
 };
 
-const { log, todosCount, warningsCount, todo, warn, error, errorsCount } =
+const { log, todo, getToDoCount, warn, getWarningCount, error, getErrorCount } =
   testLogging;
 
 /**
@@ -136,6 +136,21 @@ export async function scanUsages(
   const debug = verbose ? console.log : () => undefined;
 
   const entries = await extractStrings();
+
+  // Check for usages of same key across multiple dictionaries
+  group(
+    Object.values(entries).flatMap(({ dictionaryName, strings }) =>
+      Object.keys(strings).map((key) => [key, dictionaryName])
+    )
+  ).forEach(([stringKey, usages]) =>
+    usages.length > 1
+      ? error(
+          `Key "${stringKey}" is used in multiple dictionaries: ` +
+            `${formatList(usages)}\n` +
+            `Unfortunately, that is not allowed because Weblate get's confused by it`
+        )
+      : undefined
+  );
 
   const dictionaries: DictionaryUsages = Object.fromEntries(
     Object.entries(entries).map(
@@ -403,11 +418,11 @@ export async function scanUsages(
           .reduce((total, useCount) => total + useCount, 0)}`
       )
     );
-  todo(`TODOs: ${todosCount}`);
-  warn(`Warnings: ${warningsCount}`);
+  todo(`TODOs: ${getToDoCount()}`);
+  warn(`Warnings: ${getWarningCount()}`);
   // Not using error() here as that would change the exit code to 1
-  warn(`Errors: ${errorsCount}`);
+  warn(`Errors: ${getErrorCount()}`);
 
-  if (errorsCount > 0) return undefined;
+  if (getErrorCount() > 0) return undefined;
   else return dictionaries;
 }

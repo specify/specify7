@@ -37,7 +37,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Theme',
     'ru-ru': 'Тема',
   },
-  system: {
+  useSystemSetting: {
     'en-us': 'Use system setting',
     'ru-ru': 'Использовать системные настройки',
   },
@@ -316,10 +316,6 @@ export const preferencesText = createDictionary({
   highlightMatch: {
     'en-us': 'Highlight matched substring',
     'ru-ru': 'Выделить совпадающую подстроку',
-  },
-  language: {
-    'en-us': 'Language',
-    'ru-ru': 'Язык',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
@@ -671,10 +667,6 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
-  },
-  formTable: {
-    'en-us': 'Form table',
-    'ru-ru': 'Форма таблицы',
   },
   maxHeight: {
     'en-us': 'Max height',

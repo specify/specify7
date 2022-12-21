@@ -120,7 +120,7 @@ export const preferenceDefinitions = {
         title: preferencesText.ui(),
         items: {
           language: defineItem<Language>({
-            title: preferencesText.language(),
+            title: commonText.language(),
             requiresReload: true,
             visible: true,
             defaultValue: LANGUAGE,
@@ -134,7 +134,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'system',
-                title: preferencesText.system(),
+                title: preferencesText.useSystemSetting(),
                 description: preferencesText.inheritOsSettings(),
               },
               {
@@ -156,7 +156,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'system',
-                title: preferencesText.system(),
+                title: preferencesText.useSystemSetting(),
                 description: preferencesText.inheritOsSettings(),
               },
               {
@@ -178,7 +178,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'system',
-                title: preferencesText.system(),
+                title: preferencesText.useSystemSetting(),
                 description: preferencesText.inheritOsSettings(),
               },
               {
@@ -199,7 +199,7 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'system',
-                title: preferencesText.system(),
+                title: preferencesText.useSystemSetting(),
                 description: preferencesText.inheritOsSettings(),
               },
               {
@@ -582,7 +582,7 @@ export const preferenceDefinitions = {
         title: schemaText.schemaConfig(),
         items: {
           language: defineItem<string>({
-            title: preferencesText.language(),
+            title: commonText.language(),
             description: preferencesText.languageDescription(),
             requiresReload: true,
             visible: true,
@@ -949,7 +949,7 @@ export const preferenceDefinitions = {
         },
       },
       formTable: {
-        title: preferencesText.formTable(),
+        title: formsText.formTable(),
         items: {
           maxHeight: defineItem<number>({
             title: preferencesText.maxHeight(),

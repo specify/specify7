@@ -164,7 +164,7 @@ export function DataModelTable(): JSX.Element {
 
 const fieldColumns = {
   name: commonText.name(),
-  label: schemaText.label(),
+  label: schemaText.fieldLabel(),
   description: schemaText.description(),
   isHidden: schemaText.hidden(),
   isReadOnly: schemaText.readOnly(),
@@ -223,7 +223,7 @@ function DataModelFields({
 
 const relationshipColumns = {
   name: commonText.name(),
-  label: schemaText.label(),
+  label: schemaText.fieldLabel(),
   description: schemaText.description(),
   isHidden: schemaText.hidden(),
   isReadOnly: schemaText.readOnly(),
@@ -283,7 +283,7 @@ function DataModelRelationships({
 
 const tableColumns = {
   name: commonText.name(),
-  label: schemaText.label(),
+  label: schemaText.fieldLabel(),
   isSystem: schemaText.system(),
   isHidden: schemaText.hidden(),
   tableId: schemaText.tableId(),
@@ -366,12 +366,12 @@ const dataModelToTsv = (): string =>
   [
     [
       schemaText.table(),
-      schemaText.label(),
+      schemaText.fieldLabel(),
       schemaText.system(),
       schemaText.hidden(),
       schemaText.tableId(),
       commonText.name(),
-      schemaText.label(),
+      schemaText.fieldLabel(),
       schemaText.description(),
       schemaText.hidden(),
       schemaText.readOnly(),

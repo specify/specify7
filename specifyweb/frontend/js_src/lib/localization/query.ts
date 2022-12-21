@@ -171,12 +171,11 @@ export const queryText = createDictionary({
     'en-us': 'Show in results',
     'ru-ru': 'Показывать в результатах',
   },
-  // QueryResultsTable
-  aggregated: {
+  aggregatedInline: {
     'en-us': '(aggregated)',
     'ru-ru': '(совокупный)',
   },
-  formatted: {
+  formattedInline: {
     'en-us': '(formatted)',
     'ru-ru': '(отформатирован)',
   },

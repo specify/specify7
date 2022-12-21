@@ -394,8 +394,8 @@ export function getMappingLineData({
                     formattedEntry,
                     {
                       optionLabel: relationshipIsToMany(parentRelationship)
-                        ? queryText.aggregated()
-                        : queryText.formatted(),
+                        ? queryText.aggregatedInline()
+                        : queryText.formattedInline(),
                       tableName: model.name,
                       isRelationship: false,
                       isDefault: internalState.defaultValue === formattedEntry,

@@ -137,7 +137,7 @@ export const schemaText = createDictionary({
     'en-us': 'Tables',
     'ru-ru': 'Таблицы',
   },
-  label: {
+  fieldLabel: {
     'en-us': 'Label',
     'ru-ru': 'Локализованный',
   },

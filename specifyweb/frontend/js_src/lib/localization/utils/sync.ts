@@ -33,6 +33,7 @@ function formatFilePath(filePath: string): string {
 function formatComment(rawComment: string | undefined): string | undefined {
   if (rawComment === undefined) return undefined;
   const comment = whitespaceSensitive(rawComment);
+  // Red emoji makes comment more prominent in Weblate's sidebar
   return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
 }
 

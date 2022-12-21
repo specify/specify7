@@ -318,12 +318,14 @@ function Option({
       {hasArrow &&
         (isRelationship ? (
           <span
-            aria-label={wbText.relationship({ tableName: tableLabel ?? '' })}
+            aria-label={wbText.relationshipWithTable({
+              tableName: tableLabel ?? '',
+            })}
             className="print:hidden"
             role="img"
             title={
               typeof tableLabel === 'string'
-                ? wbText.relationship({ tableName: tableLabel })
+                ? wbText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
           >
