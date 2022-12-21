@@ -1,5 +1,5 @@
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
-import { H3 } from '../Atoms';
+import { H3, Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
 import { StatItem, QueryStat } from './StatItems';
 import { Button } from '../Atoms/Button';
@@ -75,18 +75,19 @@ export function Categories({
                 item.absent === false ||
                 item.absent === undefined
             )) && (
-            <div
-              className={
-                'flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] bg-[color:var(--form-foreground)] p-4 shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400' +
-                (checkEmptyItems ? ' contents' : '')
-              }
+            <li
+              className={`${
+                checkEmptyItems
+                  ? ''
+                  : 'flex h-auto max-h-80 flex-col content-center gap-2 rounded border-[1px] bg-[color:var(--form-foreground)] p-4 shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400'
+              }`}
               key={categoryIndex}
             >
               {handleCategoryRename === undefined ? (
-                checkEmptyItems ? (
+                !checkEmptyItems ? (
                   <H3 className="font-bold">{label}</H3>
                 ) : (
-                  <h5 className="font-bold">{label}</h5>
+                  <h5 className="font-semibold">{label}</h5>
                 )
               ) : (
                 <Input.Text
@@ -97,7 +98,7 @@ export function Categories({
                   }}
                 />
               )}
-              <div
+              <Ul
                 className={
                   handleItemRename === undefined
                     ? 'flex-1 overflow-auto'
@@ -151,6 +152,7 @@ export function Categories({
                                   itemName: item.itemName,
                                   itemLabel: item.itemLabel,
                                   itemValue: item.itemValue,
+                                  itemType: item.itemType,
                                 })
                             : undefined
                           : undefined
@@ -174,7 +176,7 @@ export function Categories({
                     />
                   ) : undefined
                 )}
-              </div>
+              </Ul>
               {typeof handleCategoryRename === 'function' ? (
                 <span className="-mt-2 flex-1" />
               ) : null}
@@ -195,7 +197,7 @@ export function Categories({
                   </Button.Small>
                 </div>
               ) : null}
-            </div>
+            </li>
           )
       )}
       {handleAdd !== undefined && (

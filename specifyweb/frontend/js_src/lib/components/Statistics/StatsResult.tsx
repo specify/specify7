@@ -37,7 +37,7 @@ export function StatsResult({
   return (
     <>
       {statLabel === undefined ? (
-        <div>{commonText('loading')}</div>
+        <li>{commonText('loading')}</li>
       ) : typeof handleRemove === 'function' ? (
         <>
           <Button.Icon
@@ -57,7 +57,7 @@ export function StatsResult({
           </span>
         </>
       ) : (
-        <p className="flex gap-2">
+        <li className="flex gap-2">
           <Button.LikeLink
             className="flex-1"
             onClick={
@@ -68,7 +68,7 @@ export function StatsResult({
             <span className="-ml-2 flex-1" />
             <span>{statValue ?? commonText('loading')}</span>
           </Button.LikeLink>
-        </p>
+        </li>
       )}
 
       {isOpen && query !== undefined && statLabel !== undefined ? (

@@ -6,7 +6,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { H2, H3 } from '../Atoms';
+import { H2, H3, Ul } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
@@ -40,7 +40,8 @@ export function AddStatDialog({
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       className={{
-        container: dialogClassNames.wideContainer,
+        container: `${dialogClassNames.wideContainer}`,
+        content: 'flex flex-col gap-8',
       }}
       header={statsText('chooseStatistics')}
       onClose={handleClose}
@@ -77,46 +78,52 @@ export function AddStatDialog({
       <div>
         {defaultStatsAddLeft.length > 0 && (
           <div>
-            <H3 className="text-lg">{statsText('selectFromDefault')}</H3>
-            {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
-              defaultLayoutPage.categories.every(({ items }) =>
-                items.every(
-                  (item) => item.type === 'DefaultStat' && item.absent === true
+            <H3 className="text-xl">{statsText('selectFromDefault')}</H3>
+            <Ul>
+              {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
+                defaultLayoutPage.categories.every(({ items }) =>
+                  items.every(
+                    (item) =>
+                      item.type === 'DefaultStat' && item.absent === true
+                  )
+                ) ? undefined : (
+                  <li key={index}>
+                    <h4 className="text-lg font-semibold">
+                      {defaultLayoutPage.label}
+                    </h4>
+                    <Ul className="flex flex-col gap-2">
+                      <Categories
+                        pageLayout={defaultLayoutPage}
+                        statsSpec={statsSpec}
+                        onClick={(item: DefaultStat | CustomStat): void => {
+                          handleAdd(item, -1);
+                          handleClose();
+                        }}
+                        onRemove={undefined}
+                        onCategoryRename={undefined}
+                        onItemRename={undefined}
+                        onAdd={undefined}
+                        onSpecChanged={undefined}
+                        onValueLoad={(
+                          categoryIndex: number,
+                          itemIndex: number,
+                          value: number | string,
+                          itemLabel: string
+                        ) => {
+                          handleValueLoad(
+                            categoryIndex,
+                            itemIndex,
+                            value,
+                            itemLabel,
+                            index
+                          );
+                        }}
+                      />
+                    </Ul>
+                  </li>
                 )
-              ) ? undefined : (
-                <div key={index}>
-                  <h1>{defaultLayoutPage.label}</h1>
-                  <div>
-                    <Categories
-                      pageLayout={defaultLayoutPage}
-                      statsSpec={statsSpec}
-                      onClick={(item: DefaultStat | CustomStat): void => {
-                        handleAdd(item, -1);
-                        handleClose();
-                      }}
-                      onRemove={undefined}
-                      onRename={undefined}
-                      onAdd={undefined}
-                      onSpecChanged={undefined}
-                      onValueLoad={(
-                        categoryIndex: number,
-                        itemIndex: number,
-                        value: number | string,
-                        itemLabel: string
-                      ) => {
-                        handleValueLoad(
-                          categoryIndex,
-                          itemIndex,
-                          value,
-                          itemLabel,
-                          index
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            )}
+              )}
+            </Ul>
           </div>
         )}
       </div>
