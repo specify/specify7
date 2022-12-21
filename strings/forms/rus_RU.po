@@ -16,7 +16,7 @@ msgstr "Сервер прикрепленных файлов недоступе�
 #: components/Attachments/Plugin.tsx:141
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentUploadDialogTitle"
-msgstr "Закачивание..."
+msgstr "Закачивание…"
 
 #: components/Attachments/Gallery.tsx:77
 #. Used in: Components > Attachments > Gallery

@@ -16,7 +16,7 @@ msgstr "Attachment server unavailable."
 #: components/Attachments/Plugin.tsx:141
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentUploadDialogTitle"
-msgstr "Uploading..."
+msgstr "Uploading…"
 
 #: components/Attachments/Gallery.tsx:77
 #. Used in: Components > Attachments > Gallery
