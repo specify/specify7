@@ -182,9 +182,9 @@ jobs:
           echo "Pushed to ${GITHUB_REF#refs/heads/}" >> temp.txt
           MESSAGE=$(cat temp.txt)
           # This is needed to make multi-line strings work
-          MESSAGE="${CHANGELOG//'%'/'%25'}"
-          MESSAGE="${CHANGELOG//$'\n'/'%0A'}"
-          MESSAGE="${CHANGELOG//$'\r'/'%0D'}"
+          MESSAGE="${MESSAGE//'%'/'%25'}"
+          MESSAGE="${MESSAGE//$'\n'/'%0A'}"
+          MESSAGE="${MESSAGE//$'\r'/'%0D'}"
           echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
 
       - name: Commit changed strings

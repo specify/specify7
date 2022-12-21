@@ -55,7 +55,8 @@ export function AttachmentsPlugin({
       async () =>
         attachmentSettingsPromise.then(() =>
           attachmentsAvailable()
-            ? (
+            ? // REFACTOR: this is hard to read. Also other usages of f.maybe
+              (
                 f.maybe(
                   f.maybe(resource, (resource) =>
                     toTable(resource, 'Attachment')

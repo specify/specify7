@@ -104,13 +104,17 @@ const emitPoFiles = async (
         });
 
         return fs.promises.writeFile(
-          path.join(directoryPath, `${languageCodeMapper[language]}.po`),
+          path.join(
+            directoryPath,
+            `${languageCodeMapper[language]}${gettextExtension}`
+          ),
           po
         );
       });
     })
   ).then(f.void);
 
+export const gettextExtension = '.po';
 const projectName = 'specify-7';
 const componentsApiUrl = `https://hosted.weblate.org/api/projects/${projectName}/components/`;
 
@@ -184,7 +188,7 @@ const getComponentSettings = (name: string): IR<unknown> => ({
   commit_pending_age: 3,
   edit_template: true,
   file_format: 'po-mono',
-  filemask: `strings/${name}/*.po`,
+  filemask: `strings/${name}/*${gettextExtension}`,
   language_code_style: '',
   language_regex: '^[^.]+$',
   license: 'GPL-2.0-only',
@@ -194,12 +198,12 @@ const getComponentSettings = (name: string): IR<unknown> => ({
   push_branch: 'weblate-localization',
   push_on_commit: true,
   repo: 'https://github.com/specify/specify7/',
-  push: 'https://github.com/specify/specify7.git',
+  push: 'git@github.com:specify/specify7.git',
   repoweb: `https://github.com/specify/specify7/tree/${syncBranch}/specifyweb/frontend/js_src/lib/{{filename}}#L{{line}}`,
   report_source_bugs: 'support@specifysoftware.org',
   source_language: 'en_US',
   slug: name,
-  template: `strings/${name}/en_US.po`,
+  template: `strings/${name}/en_US${gettextExtension}`,
   vcs: 'git',
 });
 
@@ -233,7 +237,7 @@ function compareConfig(
     JSON.stringify(value) === JSON.stringify(remote[key])
       ? undefined
       : error(
-          `Weblate config for ${name} component for ${key} setting ` +
+          `Weblate config for "${name}" component for "${key}" setting ` +
             `does not match what is expected.\n` +
             `Expected: ${JSON.stringify(value)}\n` +
             `Received: ${JSON.stringify(remote[key])}`

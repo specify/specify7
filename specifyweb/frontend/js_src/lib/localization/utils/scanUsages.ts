@@ -35,7 +35,7 @@ if (process.argv[1] === undefined)
 const localizationDirectory = path.dirname(path.dirname(process.argv[1]));
 const extensionsToScan = new Set(['js', 'jsx', 'ts', 'tsx']);
 const libraryDirectory = path.dirname(localizationDirectory);
-const dictionaryExtension = '.ts';
+export const dictionaryExtension = '.ts';
 
 /**
  * Forbid certain characters in localization strings
@@ -48,15 +48,15 @@ const characterBlacklist: Partial<RR<Language, string>> = {
 const { log, todo, getToDoCount, warn, getWarningCount, error, getErrorCount } =
   testLogging;
 
+export type ExtractedStrings = IR<{
+  readonly dictionaryName: string;
+  readonly strings: IR<LocalizationEntry>;
+}>;
+
 /**
  * Collect localization strings from all files into a single object
  */
-async function extractStrings(): Promise<
-  IR<{
-    readonly dictionaryName: string;
-    readonly strings: IR<LocalizationEntry>;
-  }>
-> {
+export async function extractStrings(): Promise<ExtractedStrings> {
   log(`Looking for localization dictionaries in ${localizationDirectory}`);
   const localizationFiles = fs.readdirSync(localizationDirectory);
 
