@@ -135,36 +135,30 @@ export function useDefaultStatsToAdd(
   }, [layout, defaultLayout]);
 }
 
-export function useDefaultLayout(
-  statsSpec: StatsSpec,
-  defaultLayout: StatLayout | undefined
-): StatLayout {
+export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
   return React.useMemo(
     () =>
-      defaultLayout === undefined
-        ? Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
-            label: pageName,
-            categories: Object.entries(pageStatsSpec).map(
-              ([categoryName, { label, items }]) => ({
-                label,
-                items: Object.entries(items ?? {}).map(
-                  ([itemName, { label, spec }]) => ({
-                    type: 'DefaultStat',
-                    pageName,
-                    itemName,
-                    categoryName,
-                    itemLabel: label,
-                    itemValue:
-                      spec.type === 'BackEndStat' ? spec.value : undefined,
-                    itemType:
-                      spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
-                  })
-                ),
+      Object.entries(statsSpec).map(([pageName, pageStatsSpec]) => ({
+        label: pageName,
+        categories: Object.entries(pageStatsSpec).map(
+          ([categoryName, { label, items }]) => ({
+            label,
+            items: Object.entries(items ?? {}).map(
+              ([itemName, { label, spec }]) => ({
+                type: 'DefaultStat',
+                pageName,
+                itemName,
+                categoryName,
+                itemLabel: label,
+                itemValue: spec.type === 'BackEndStat' ? spec.value : undefined,
+                itemType:
+                  spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
               })
             ),
-          }))
-        : defaultLayout,
-    [defaultLayout, statsSpec]
+          })
+        ),
+      })),
+    [statsSpec]
   );
 }
 

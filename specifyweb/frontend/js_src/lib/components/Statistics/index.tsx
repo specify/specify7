@@ -87,15 +87,17 @@ export function StatsPage(): JSX.Element | null {
 
   const isCacheValid = useCacheValid(layout);
   const statsSpec = useStatsSpec(isCacheValid, specifyUserName.specifyUser);
-  const defaultLayoutSpec = useDefaultLayout(statsSpec, undefined);
+  const defaultLayoutSpec = useDefaultLayout(statsSpec);
+  const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
 
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
-   */ /*React.useEffect(() => {
-    console.log('set: ', defaultLayoutSpec);
-    setDefaultLayout(defaultLayoutSpec);
-    setLayout(defaultLayoutSpec);
-  }, [defaultLayoutSpec]); */
+   React.useEffect(() => {
+    if (isDefaultCacheValid) {
+      setDefaultLayout(defaultLayoutSpec);
+      setLayout(defaultLayoutSpec);
+    }
+  }, [isDefaultCacheValid]);*/
 
   const queries = useQueries(filters, false);
   const previousLayout = React.useRef(layout);
@@ -238,15 +240,14 @@ export function StatsPage(): JSX.Element | null {
         </>
         {isEditing ? (
           <>
-            {
-              <Button.Red
-                onClick={(): void => {
-                  setLayout(defaultLayout);
-                }}
-              >
-                {commonText('reset')}
-              </Button.Red>
-            }
+            <Button.Red
+              onClick={(): void => {
+                setLayout(defaultLayoutSpec);
+              }}
+            >
+              {commonText('reset')}
+            </Button.Red>
+
             <Button.Red
               onClick={(): void => {
                 setLayout(previousLayout.current);
