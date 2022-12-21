@@ -23,7 +23,7 @@ export function Categories({
   onSpecChanged: handleSpecChanged,
   onValueLoad: handleValueLoad,
 }: {
-  readonly pageLayout: StatLayout[number];
+  readonly pageLayout: StatLayout[number] | undefined;
   readonly statsSpec: StatsSpec;
   readonly onAdd: ((categoryIndex: number | undefined) => void) | undefined;
   readonly onClick:

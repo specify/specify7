@@ -21,7 +21,7 @@ export function AddStatDialog({
   onValueLoad: handleValueLoad,
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
-  readonly defaultStatsAddLeft: StatLayout;
+  readonly defaultStatsAddLeft: StatLayout | undefined;
   readonly layout: StatLayout;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
@@ -36,7 +36,7 @@ export function AddStatDialog({
       ) => void)
     | undefined;
 }): JSX.Element | null {
-  return Array.isArray(queries) ? (
+  return Array.isArray(queries) || defaultStatsAddLeft !== undefined ? (
     <Dialog
       buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
       className={{

@@ -26,20 +26,21 @@ import { useMenuItem } from '../Header';
 import { CustomStat, DefaultStat, StatLayout } from './types';
 import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
-
+import { f } from '../../utils/functools';
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
-  const [layout, setPrevLayout] = usePref('statistics', 'appearance', 'layout');
+  const [layout, setLayout] = usePref('statistics', 'appearance', 'layout');
+  const [defaultLayout, setDefaultLayout] = usePref(
+    'statistics',
+    'appearance',
+    'defaultLayout'
+  );
   const [lastUpdated, setLastUpdated] = usePref(
     'statistics',
     'appearance',
     'lastUpdated'
   );
-
-  const setLayout = (item: StatLayout): void => {
-    setPrevLayout(item);
-  };
 
   const isCacheValid = useCacheValid(layout);
   const statsSpec = useStatsSpec(isCacheValid || layout === undefined);
@@ -52,16 +53,11 @@ export function StatsPage(): JSX.Element | null {
     if (isDefaultCacheValid) {
       setDefaultLayout(defaultLayoutSpec);
       if (layout === undefined) {
-        setPrevLayout(defaultLayoutSpec);
+        setLayout(defaultLayoutSpec);
       }
     }
-  }, [isDefaultCacheValid, layout]);
+  }, [isDefaultCacheValid, layout, setLayout, setDefaultLayout]);
 
-  const [defaultLayout, setDefaultLayout] = usePref(
-    'statistics',
-    'appearance',
-    'defaultLayout'
-  );
   const [state, setState] = React.useState<
     | State<'EditingState'>
     | State<
@@ -111,10 +107,10 @@ export function StatsPage(): JSX.Element | null {
   const handleChange = React.useCallback(
     (
       newCategories: (
-        previousCategory: StatLayout[number]['categories']
+        oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
     ): void => {
-      setPrevLayout((oldLayout: StatLayout | undefined) =>
+      setLayout((oldLayout: StatLayout | undefined) =>
         oldLayout === undefined
           ? undefined
           : replaceItem(oldLayout, activePageIndex, {
@@ -123,7 +119,7 @@ export function StatsPage(): JSX.Element | null {
             })
       );
     },
-    [activePageIndex]
+    [activePageIndex, setLayout]
   );
 
   const handleAdd = (
@@ -131,14 +127,14 @@ export function StatsPage(): JSX.Element | null {
     categoryIndex?: number,
     itemIndex?: number
   ): void => {
-    handleChange((prevCategory) =>
-      replaceItem(prevCategory, categoryIndex ?? -1, {
-        ...prevCategory[categoryIndex ?? -1],
+    handleChange((oldCategory) =>
+      replaceItem(oldCategory, categoryIndex ?? -1, {
+        ...oldCategory[categoryIndex ?? -1],
         items:
           itemIndex === undefined || itemIndex === -1
-            ? [...prevCategory[categoryIndex ?? -1].items, item]
+            ? [...oldCategory[categoryIndex ?? -1].items, item]
             : replaceItem(
-                prevCategory[categoryIndex ?? -1].items,
+                oldCategory[categoryIndex ?? -1].items,
                 itemIndex,
                 item
               ),
@@ -158,30 +154,32 @@ export function StatsPage(): JSX.Element | null {
       pageIndex: number
     ) => {
       setDefaultLayout((oldValue) =>
-        replaceItem(oldValue, pageIndex, {
-          ...oldValue[pageIndex],
-          categories: replaceItem(
-            oldValue[pageIndex].categories,
-            categoryIndex,
-            {
-              ...oldValue[pageIndex].categories[categoryIndex],
-              items: replaceItem(
-                oldValue[pageIndex].categories[categoryIndex].items,
-                itemIndex,
-                {
-                  ...oldValue[pageIndex].categories[categoryIndex].items[
-                    itemIndex
-                  ],
-                  itemValue: value,
-                  itemLabel: itemName,
-                }
-              ),
-            }
-          ),
-        })
+        f.maybe(oldValue, (oldValue) =>
+          replaceItem(oldValue, pageIndex, {
+            ...oldValue[pageIndex],
+            categories: replaceItem(
+              oldValue[pageIndex].categories,
+              categoryIndex,
+              {
+                ...oldValue[pageIndex].categories[categoryIndex],
+                items: replaceItem(
+                  oldValue[pageIndex].categories[categoryIndex].items,
+                  itemIndex,
+                  {
+                    ...oldValue[pageIndex].categories[categoryIndex].items[
+                      itemIndex
+                    ],
+                    itemValue: value,
+                    itemLabel: itemName,
+                  }
+                ),
+              }
+            ),
+          })
+        )
       );
     },
-    []
+    [setDefaultLayout]
   );
   const handleLoad = React.useCallback(
     (
@@ -190,11 +188,11 @@ export function StatsPage(): JSX.Element | null {
       value: string | number,
       itemLabel: string
     ) => {
-      handleChange((previousCategory) =>
-        replaceItem(previousCategory, categoryIndex, {
-          ...previousCategory[categoryIndex],
-          items: replaceItem(previousCategory[categoryIndex].items, itemIndex, {
-            ...previousCategory[categoryIndex].items[itemIndex],
+      handleChange((oldCategory) =>
+        replaceItem(oldCategory, categoryIndex, {
+          ...oldCategory[categoryIndex],
+          items: replaceItem(oldCategory[categoryIndex].items, itemIndex, {
+            ...oldCategory[categoryIndex].items[itemIndex],
             itemValue: value,
             itemLabel,
           }),
@@ -216,34 +214,34 @@ export function StatsPage(): JSX.Element | null {
         <H2 className="text-2xl">{commonText('statistics')}</H2>
 
         <span className="-ml-2 flex-1" />
-        <>
-          <p>
-            {`${statsText('lastUpdated')} `}
-            <DateElement date={lastUpdated} />
-          </p>
 
-          <Button.Blue
-            onClick={(): void => {
-              const lastUpdatedDate = new Date();
-              setLayout(
-                layout.map((pageLayout) => ({
-                  label: pageLayout.label,
-                  categories: pageLayout.categories.map((category) => ({
-                    label: category.label,
-                    items: category.items.map((item) => ({
-                      ...item,
-                      itemValue: undefined,
-                    })),
+        <p>
+          {`${statsText('lastUpdated')} `}
+          <DateElement date={lastUpdated} />
+        </p>
+
+        <Button.Blue
+          onClick={(): void => {
+            const lastUpdatedDate = new Date();
+            setLayout(
+              layout.map((pageLayout) => ({
+                label: pageLayout.label,
+                categories: pageLayout.categories.map((category) => ({
+                  label: category.label,
+                  items: category.items.map((item) => ({
+                    ...item,
+                    itemValue: undefined,
                   })),
-                }))
-              );
+                })),
+              }))
+            );
 
-              setLastUpdated(lastUpdatedDate.toString());
-            }}
-          >
-            {commonText('update')}
-          </Button.Blue>
-        </>
+            setLastUpdated(lastUpdatedDate.toString());
+          }}
+        >
+          {commonText('update')}
+        </Button.Blue>
+
         {isEditing ? (
           <>
             <Button.Red
@@ -390,8 +388,8 @@ export function StatsPage(): JSX.Element | null {
                             pageIndex: activePageIndex,
                             categoryIndex: categoryindex,
                           })
-                        : handleChange((prevCategory) => [
-                            ...prevCategory,
+                        : handleChange((oldCategory) => [
+                            ...oldCategory,
                             {
                               label: '',
                               items: [],
@@ -409,16 +407,16 @@ export function StatsPage(): JSX.Element | null {
               onRemove={
                 isEditing
                   ? (categoryIndex, itemIndex): void => {
-                      handleChange((prevCategory) =>
+                      handleChange((oldCategory) =>
                         typeof itemIndex === 'number'
-                          ? replaceItem(prevCategory, categoryIndex, {
-                              ...prevCategory[categoryIndex],
+                          ? replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
                               items: removeItem(
-                                prevCategory[categoryIndex].items,
+                                oldCategory[categoryIndex].items,
                                 itemIndex
                               ),
                             })
-                          : removeItem(prevCategory, categoryIndex)
+                          : removeItem(oldCategory, categoryIndex)
                       );
                     }
                   : undefined
@@ -426,9 +424,9 @@ export function StatsPage(): JSX.Element | null {
               onCategoryRename={
                 isEditing
                   ? (newName, categoryIndex): void =>
-                      handleChange((prevCategory) =>
-                        replaceItem(prevCategory, categoryIndex, {
-                          ...prevCategory[categoryIndex],
+                      handleChange((oldCategory) =>
+                        replaceItem(oldCategory, categoryIndex, {
+                          ...oldCategory[categoryIndex],
                           label: newName,
                         })
                       )
@@ -437,14 +435,14 @@ export function StatsPage(): JSX.Element | null {
               onItemRename={
                 isEditing
                   ? (categoryIndex, itemIndex, newLabel): void =>
-                      handleChange((prevCategory) =>
-                        replaceItem(prevCategory, categoryIndex, {
-                          ...prevCategory[categoryIndex],
+                      handleChange((oldCategory) =>
+                        replaceItem(oldCategory, categoryIndex, {
+                          ...oldCategory[categoryIndex],
                           items: replaceItem(
-                            prevCategory[categoryIndex].items,
+                            oldCategory[categoryIndex].items,
                             itemIndex,
                             {
-                              ...prevCategory[categoryIndex].items[itemIndex],
+                              ...oldCategory[categoryIndex].items[itemIndex],
                               itemLabel: newLabel,
                             }
                           ),
@@ -468,8 +466,11 @@ export function StatsPage(): JSX.Element | null {
                           {
                             ...layout[activePageIndex].categories[categoryIndex]
                               .items[itemIndex],
-                            fields,
-                            itemValue: undefined,
+                            ...(layout[activePageIndex].categories[
+                              categoryIndex
+                            ].items[itemIndex].type === 'DefaultStat'
+                              ? {}
+                              : { fields, itemValue: undefined }),
                           }
                         ),
                       }
