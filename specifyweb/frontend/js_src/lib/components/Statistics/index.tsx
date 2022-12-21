@@ -83,11 +83,19 @@ export function StatsPage(): JSX.Element | null {
   const statsSpec = useStatsSpec(isCacheValid);
 
   const defaultStatsSpec = useStatsSpec(false);
-  const defaultLayoutSpec = useDefaultLayout(statsSpec);
+  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
   const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
+
+  React.useEffect(() => {
+    if (isDefaultCacheValid) {
+      setDefaultLayout(defaultLayoutSpec);
+    }
+  }, [isDefaultCacheValid]);
 
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
+
+
    React.useEffect(() => {
     if (isDefaultCacheValid) {
       setDefaultLayout(defaultLayoutSpec);

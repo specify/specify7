@@ -475,6 +475,20 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
+        collectionObjectInventorized: {
+          label: statsText('collectionObjects'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'CollectionObject',
+            fields: [
+              {
+                path: 'inventorizedBy.SpecifyUser.name',
+                startvalue: userInformation.name,
+                operstart: queryFieldFilters.equal.id,
+              },
+            ],
+          },
+        },
       }),
     },
   },
