@@ -18,7 +18,7 @@ export const specifyNetworkText = createDictionary({
   failedToOpenPopUpDialogText: {
     'en-us': `
       Please make sure your browser is not blocking pop-up windows and
-      try again.
+      try again
     `,
     'ru-ru': `
       Убедитесь, что ваш браузер не блокирует всплывающие окна, и
