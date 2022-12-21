@@ -79,7 +79,7 @@ msgstr "Data Check"
 msgid "dataCheckOn"
 msgstr "Data Check: On"
 
-#: components/WorkBench/DataSetMeta.tsx:248
+#: components/WorkBench/DataSetMeta.tsx:253
 #: components/WorkBench/Template.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
@@ -384,7 +384,7 @@ msgstr "Choose a preferred Geocoordinate format"
 msgid "unmappedColumn"
 msgstr "Unmapped Column"
 
-#: components/WbPlanView/CustomSelectElement.tsx:605
+#: components/WbPlanView/CustomSelectElement.tsx:607
 #. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notMapped"
 msgstr "NOT MAPPED"
@@ -643,7 +643,7 @@ msgstr "Match Behavior:"
 msgid "columnMapping"
 msgstr "Column Mapping"
 
-#: components/WbPlanView/CustomSelectElement.tsx:838
+#: components/WbPlanView/CustomSelectElement.tsx:840
 #: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
@@ -780,9 +780,9 @@ msgid "mapButtonDescription"
 msgstr "Map selected field to selected header"
 
 #: components/WbPlanView/CustomSelectElement.tsx:321
-#: components/WbPlanView/CustomSelectElement.tsx:326
+#: components/WbPlanView/CustomSelectElement.tsx:328
 #. Used in: Components > Wb Plan View > Custom Select Element
-msgid "relationship"
+msgid "relationshipWithTable"
 msgstr "Relationship with the {tableName:string} table"
 
 #: components/WbPlanView/State.tsx:109
@@ -974,79 +974,59 @@ msgstr "Use \"Import a file\" or \"Create New\" to make a new one."
 msgid "createNew"
 msgstr "Create New"
 
-#: components/WorkBench/DataSetMeta.tsx:63
+#: components/WorkBench/DataSetMeta.tsx:64
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMetaDialogTitle"
 msgstr "Data Set Properties"
 
 #: components/WbPlanView/Mapper.tsx:400
-#: components/WorkBench/DataSetMeta.tsx:96
+#: components/WorkBench/DataSetMeta.tsx:97
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
-msgstr "Data Set Name:"
+msgstr "Data Set Name"
 
-#: components/WorkBench/DataSetMeta.tsx:106
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "remarks"
-msgstr "Remarks:"
-
-#: components/WorkBench/DataSetMeta.tsx:112
+#: components/WorkBench/DataSetMeta.tsx:113
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
-msgstr "Number of rows:"
+msgstr "Number of rows"
 
-#: components/WorkBench/DataSetMeta.tsx:115
+#: components/WorkBench/DataSetMeta.tsx:116
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
-msgstr "Number of columns:"
+msgstr "Number of columns"
 
-#: components/WorkBench/DataSetMeta.tsx:119
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "created"
-msgstr "Created:"
-
-#: components/WorkBench/DataSetMeta.tsx:125
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "modified"
-msgstr "Modified:"
-
-#: components/WorkBench/DataSetMeta.tsx:131
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "uploaded"
-msgstr "Uploaded:"
-
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Import file name:"
 
-#: components/WorkBench/DataSetMeta.tsx:162
+#: components/WorkBench/DataSetMeta.tsx:167
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(no file name)"
 
-#: components/WorkBench/DataSetMeta.tsx:252
+#: components/WorkBench/DataSetMeta.tsx:257
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDialogHeader"
 msgstr "Change Data Set Owner"
 
-#: components/WorkBench/DataSetMeta.tsx:273
+#: components/WorkBench/DataSetMeta.tsx:278
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDialogText"
 msgstr "Select New Owner:"
 
-#: components/WorkBench/DataSetMeta.tsx:237
-#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:245
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Data Set owner changed"
 
-#: components/WorkBench/DataSetMeta.tsx:189
+#: components/WorkBench/DataSetMeta.tsx:194
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Data Set:"
 
-#: components/WorkBench/DataSetMeta.tsx:191
+#: components/WorkBench/DataSetMeta.tsx:196
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Uploaded, Read-Only)"

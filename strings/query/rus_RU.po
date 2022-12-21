@@ -203,12 +203,12 @@ msgstr "Показывать в результатах"
 
 #: components/WbPlanView/navigator.ts:397
 #. Used in: Components > Wb Plan View > Navigator
-msgid "aggregated"
+msgid "aggregatedInline"
 msgstr "(совокупный)"
 
 #: components/WbPlanView/navigator.ts:398
 #. Used in: Components > Wb Plan View > Navigator
-msgid "formatted"
+msgid "formattedInline"
 msgstr "(отформатирован)"
 
 #: components/QueryBuilder/FieldFilter.tsx:378

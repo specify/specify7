@@ -209,7 +209,7 @@ msgstr "Tables"
 #: components/Toolbar/Schema.tsx:369
 #: components/Toolbar/Schema.tsx:374
 #. Used in: Components > Toolbar > Schema
-msgid "label"
+msgid "fieldLabel"
 msgstr "Label"
 
 #: components/Toolbar/Schema.tsx:169

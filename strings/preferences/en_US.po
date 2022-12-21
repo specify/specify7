@@ -48,7 +48,7 @@ msgstr "Theme"
 #: components/UserPreferences/Definitions.tsx:181
 #: components/UserPreferences/Definitions.tsx:202
 #. Used in: Components > User Preferences > Definitions
-msgid "system"
+msgid "useSystemSetting"
 msgstr "Use system setting"
 
 #: components/UserPreferences/Definitions.tsx:138
@@ -406,12 +406,6 @@ msgstr ""
 #. Used in: Components > User Preferences > Definitions
 msgid "highlightMatch"
 msgstr "Highlight matched substring"
-
-#: components/UserPreferences/Definitions.tsx:123
-#: components/UserPreferences/Definitions.tsx:585
-#. Used in: Components > User Preferences > Definitions
-msgid "language"
-msgstr "Language"
 
 #: components/UserPreferences/Definitions.tsx:586
 #. Used in: Components > User Preferences > Definitions
@@ -823,11 +817,6 @@ msgstr "Icon and table name"
 #. Used in: Components > User Preferences > Definitions
 msgid "tableIcon"
 msgstr "Table icon"
-
-#: components/UserPreferences/Definitions.tsx:952
-#. Used in: Components > User Preferences > Definitions
-msgid "formTable"
-msgstr "Form table"
 
 #: components/UserPreferences/Definitions.tsx:955
 #. Used in: Components > User Preferences > Definitions

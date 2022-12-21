@@ -79,7 +79,7 @@ msgstr "Проверка данных"
 msgid "dataCheckOn"
 msgstr "Проверка данных: вкл."
 
-#: components/WorkBench/DataSetMeta.tsx:248
+#: components/WorkBench/DataSetMeta.tsx:253
 #: components/WorkBench/Template.tsx:192
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
@@ -387,7 +387,7 @@ msgstr "Выберите предпочтительный формат геок�
 msgid "unmappedColumn"
 msgstr "Несопоставленный столбец"
 
-#: components/WbPlanView/CustomSelectElement.tsx:605
+#: components/WbPlanView/CustomSelectElement.tsx:607
 #. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notMapped"
 msgstr "НЕСОПОСТАВЛЕННЫЙ"
@@ -648,7 +648,7 @@ msgstr "Поведение при совпадении:"
 msgid "columnMapping"
 msgstr "Сопоставление столбцов"
 
-#: components/WbPlanView/CustomSelectElement.tsx:838
+#: components/WbPlanView/CustomSelectElement.tsx:840
 #: components/WbPlanView/LineComponents.tsx:212
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
@@ -786,9 +786,9 @@ msgid "mapButtonDescription"
 msgstr "Сопоставить выбранное поле с выбранным столбцом"
 
 #: components/WbPlanView/CustomSelectElement.tsx:321
-#: components/WbPlanView/CustomSelectElement.tsx:326
+#: components/WbPlanView/CustomSelectElement.tsx:328
 #. Used in: Components > Wb Plan View > Custom Select Element
-msgid "relationship"
+msgid "relationshipWithTable"
 msgstr "Связь с таблицей {tableName:string}"
 
 #: components/WbPlanView/State.tsx:109
@@ -981,79 +981,59 @@ msgstr "Используйте «Импортировать файл» или «
 msgid "createNew"
 msgstr "Создайте новый"
 
-#: components/WorkBench/DataSetMeta.tsx:63
+#: components/WorkBench/DataSetMeta.tsx:64
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMetaDialogTitle"
 msgstr "Свойства набора данных"
 
 #: components/WbPlanView/Mapper.tsx:400
-#: components/WorkBench/DataSetMeta.tsx:96
+#: components/WorkBench/DataSetMeta.tsx:97
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
-msgstr "Название набора данных:"
+msgstr "Название набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:106
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "remarks"
-msgstr "Примечания:"
-
-#: components/WorkBench/DataSetMeta.tsx:112
+#: components/WorkBench/DataSetMeta.tsx:113
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
-msgstr "Количество рядов:"
+msgstr "Количество рядов"
 
-#: components/WorkBench/DataSetMeta.tsx:115
+#: components/WorkBench/DataSetMeta.tsx:116
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
-msgstr "Количество столбцов:"
+msgstr "Количество столбцов"
 
-#: components/WorkBench/DataSetMeta.tsx:119
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "created"
-msgstr "Созданный:"
-
-#: components/WorkBench/DataSetMeta.tsx:125
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "modified"
-msgstr "Измененый:"
-
-#: components/WorkBench/DataSetMeta.tsx:131
-#. Used in: Components > Work Bench > Data Set Meta
-msgid "uploaded"
-msgstr "Загруженый:"
-
-#: components/WorkBench/DataSetMeta.tsx:161
+#: components/WorkBench/DataSetMeta.tsx:166
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Имя файла импорта:"
 
-#: components/WorkBench/DataSetMeta.tsx:162
+#: components/WorkBench/DataSetMeta.tsx:167
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(файл без имени)"
 
-#: components/WorkBench/DataSetMeta.tsx:252
+#: components/WorkBench/DataSetMeta.tsx:257
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDialogHeader"
 msgstr "Изменить владельца набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:273
+#: components/WorkBench/DataSetMeta.tsx:278
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDialogText"
 msgstr "Выберите нового владельца:"
 
-#: components/WorkBench/DataSetMeta.tsx:237
-#: components/WorkBench/DataSetMeta.tsx:240
+#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:245
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Владелец набора данных изменен"
 
-#: components/WorkBench/DataSetMeta.tsx:189
+#: components/WorkBench/DataSetMeta.tsx:194
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набор данных:"
 
-#: components/WorkBench/DataSetMeta.tsx:191
+#: components/WorkBench/DataSetMeta.tsx:196
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Загружено, только для чтения)"

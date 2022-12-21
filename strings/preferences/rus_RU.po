@@ -48,7 +48,7 @@ msgstr "Тема"
 #: components/UserPreferences/Definitions.tsx:181
 #: components/UserPreferences/Definitions.tsx:202
 #. Used in: Components > User Preferences > Definitions
-msgid "system"
+msgid "useSystemSetting"
 msgstr "Использовать системные настройки"
 
 #: components/UserPreferences/Definitions.tsx:138
@@ -406,12 +406,6 @@ msgstr ""
 #. Used in: Components > User Preferences > Definitions
 msgid "highlightMatch"
 msgstr "Выделить совпадающую подстроку"
-
-#: components/UserPreferences/Definitions.tsx:123
-#: components/UserPreferences/Definitions.tsx:585
-#. Used in: Components > User Preferences > Definitions
-msgid "language"
-msgstr "Язык"
 
 #: components/UserPreferences/Definitions.tsx:586
 #. Used in: Components > User Preferences > Definitions
@@ -823,11 +817,6 @@ msgstr "Иконка и название таблицы"
 #. Used in: Components > User Preferences > Definitions
 msgid "tableIcon"
 msgstr "Иконка таблицы"
-
-#: components/UserPreferences/Definitions.tsx:952
-#. Used in: Components > User Preferences > Definitions
-msgid "formTable"
-msgstr "Форма таблицы"
 
 #: components/UserPreferences/Definitions.tsx:955
 #. Used in: Components > User Preferences > Definitions

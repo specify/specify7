@@ -159,7 +159,8 @@ msgstr "Незавершенных приготовлений по этому к
 #: components/Interactions/PrepReturnRow.tsx:157
 #: components/Interactions/PrepReturnRow.tsx:160
 #: components/Interactions/PrepReturnRow.tsx:161
-#. Used in: Components > Interactions > Prep Return Row
+#: components/WorkBench/DataSetMeta.tsx:107
+#. Used in: Components > Interactions > Prep Return Row ⬤ Components > Work Bench > Data Set Meta
 msgid "remarks"
 msgstr "Замечания"
 
@@ -960,7 +961,8 @@ msgid "form"
 msgstr "Форма"
 
 #: components/FormMeta/SubViewMeta.tsx:34
-#. Used in: Components > Form Meta > Sub View Meta
+#: components/UserPreferences/Definitions.tsx:952
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Таблица"
 
