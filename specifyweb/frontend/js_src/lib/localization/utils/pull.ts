@@ -287,8 +287,6 @@ const fixLine = (
         .map((part) => splitContent(part, indent, printWidth))
         .join(`\n${indent}`)}\n${smallIndent}\`,`;
 
-// FIXME: handle new lines
-// FIXME: remove the comment from wbText.picklistValidationFailed
 // FIXME: look for places were can add comments
 // FIXME: get rid of back-end localization
 

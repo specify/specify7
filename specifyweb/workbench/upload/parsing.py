@@ -4,17 +4,14 @@ import math
 import re
 from datetime import datetime
 from decimal import Decimal
-
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import FormatMismatch
 from specifyweb.stored_queries.format import MYSQL_TO_YEAR, MYSQL_TO_MONTH
-
 from .column_options import ExtendedColumnOptions
 
 Row = Dict[str, str]
@@ -29,6 +26,7 @@ class PicklistAddition(NamedTuple):
 
 class ParseFailure(NamedTuple):
     message: str
+    payload: Dict[str, Any]
     column: str
 
     def to_json(self) -> List:
@@ -158,7 +156,8 @@ def parse_boolean(fieldname: str, value: str, column: str) -> Union[ParseResult,
         result = False
     else:
         return ParseFailure(
-            _("value %(value)s not resolvable to True or False") % {'value': value},
+            'failedParsingBoolean',
+            {'value': value},
             column
         )
 
@@ -169,7 +168,8 @@ def parse_decimal(fieldname: str, value: str, column) -> Union[ParseResult, Pars
         result = Decimal(value)
     except Exception as e:
         return ParseFailure(
-            _("value $(value)s is not a valid decimal value") % {'value': value},
+            'failedParsingDecimal',
+            {'value': value},
             column
         )
 
@@ -199,9 +199,8 @@ def parse_with_picklist(collection, picklist, fieldname: str, value: str, column
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return ParseFailure(
-                    _("\"%(value)s\" is not a legal value in this picklist field.\n"
-                    "Click on the arrow to choose among available "
-                    "options.") % {'value': value},
+                    'failedParsingPickList',
+                    {'value': value},
                     column
                 )
             else:
@@ -230,7 +229,7 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
     try:
         agenttype = agenttypes.index(value)
     except ValueError:
-        return ParseFailure(_("bad agent type: %(bad_type)s. Expected one of %(valid_types)s") % {'bad_type': value, 'valid_types': agenttypes}, column)
+        return ParseFailure('failedParsingAgentType', {'bad_type': value, 'valid_types': agenttypes}, column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
 def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:

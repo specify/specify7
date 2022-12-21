@@ -1,24 +1,26 @@
-import re
-import io
 import csv
+import io
+import re
 import unittest
-from jsonschema import validate # type: ignore
-from datetime import datetime, date
+from datetime import date
+
 from hypothesis import given, strategies as st
+from jsonschema import validate  # type: ignore
 
 from specifyweb.specify import auditcodes
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, MYSQL_TO_YEAR
-
+from specifyweb.stored_queries.format import LDLM_TO_MYSQL, MYSQL_TO_MONTH, \
+    MYSQL_TO_YEAR
 from .base import UploadTestsBase, get_table
-from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, ParseFailure, FailedBusinessRule
-from ..upload import do_upload, do_upload_csv
-from ..parsing import parse_coord, parse_date, ParseResult as PR, ParseFailure as PF
-from ..upload_table import UploadTable
-from ..treerecord import TreeRecord
 from ..column_options import ColumnOptions
+from ..parsing import parse_coord, parse_date, ParseResult as PR
+from ..treerecord import TreeRecord
+from ..upload import do_upload, do_upload_csv
 from ..upload_plan_schema import parse_column_options
+from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, \
+    ParseFailure
 from ..upload_results_schema import schema as upload_results_schema
+from ..upload_table import UploadTable
 
 co = datamodel.get_table_strict('Collectionobject')
 
@@ -273,9 +275,8 @@ class ParsingTests(UploadTestsBase):
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
         self.assertEqual([ParseFailure(
-            message="\"Hon.\" is not a legal value in this picklist field.\n"
-                    "Click on the arrow to choose among available "
-                    "options.",
+            message='failedParsingPickList',
+            payload={'value': 'Hon.'},
             column='title'
         )], result2.failures)
 
@@ -380,7 +381,7 @@ class ParsingTests(UploadTestsBase):
 
         result2 = results[2].record_result
         assert isinstance(result2, ParseFailures)
-        self.assertEqual([ParseFailure(message="bad agent type: Extra terrestrial. Expected one of ['Organization', 'Person', 'Other', 'Group']", column='agenttype')], result2.failures)
+        self.assertEqual([ParseFailure(message='failedParsingAgentType',payload={'badType':'Extra Terrestrial','validTypes':['Organization', 'Person', 'Other', 'Group']}, column='agenttype')], result2.failures)
 
         result3 = results[3].record_result
         assert isinstance(result3, Uploaded)

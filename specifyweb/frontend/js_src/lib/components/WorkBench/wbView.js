@@ -66,6 +66,8 @@ import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
 import {LANGUAGE} from '../../localization/utils/config';
+import {resolveValidationMessage} from './resultsParser';
+import {backEndText} from '../../localization/backEnd';
 
 const metaKeys = [
   'isNew',
@@ -832,15 +834,15 @@ export const WBView = Backbone.View.extend({
     const physicalCol = this.hot.toPhysicalColumn(visualCol);
     const issues = this.getCellMeta(physicalRow, physicalCol, 'issues');
     /*
-     * Don't duplicate picklistValidationFailed message if both front-end and
+     * Don't duplicate failedParsingPickList message if both front-end and
      * back-end identified the same issue.
      *
      * This is the only type of validation that is done on the front-end
      */
     const newIssues = f.unique([
-      ...(isValid ? [] : [whitespaceSensitive(wbText.picklistValidationFailed({value:`"${value}"`}))]),
+      ...(isValid ? [] : [whitespaceSensitive(backEndText.failedParsingPickList({value:`"${value}"`}))]),
       ...issues.filter(
-        (issue) => !issue.endsWith(whitespaceSensitive(wbText.picklistValidationFailed({value:''})))
+        (issue) => !issue.endsWith(whitespaceSensitive(backEndText.failedParsingPickList({value:''})))
       ),
     ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
@@ -1333,7 +1335,7 @@ export const WBView = Backbone.View.extend({
       physicalRow,
       physicalCol,
       'issues'
-    ).some((issue) => issue.endsWith(wbText.picklistValidationFailed('')));
+    ).some((issue) => issue.endsWith(backEndText.failedParsingPickList({value:''})));
     if (hasFrontEndValidationErrors)
       /*
        * Since isModified state has higher priority then issues, we need to
@@ -2275,10 +2277,16 @@ export const WBView = Backbone.View.extend({
       mappingPath
     );
 
+    // Ignore these statuses
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
-      statusData.failures.forEach(([issue, column]) =>
-        setMetaCallback('issues', issue, [column], resolveColumns)
+      statusData.failures.forEach(([issueMessage, payload, column]) =>
+        setMetaCallback(
+          'issues',
+          resolveValidationMessage(issueMessage,payload ?? {}),
+          [column],
+          resolveColumns
+        )
       );
     else if (uploadStatus === 'NoMatch')
       setMetaCallback(
@@ -2290,7 +2298,7 @@ export const WBView = Backbone.View.extend({
     else if (uploadStatus === 'FailedBusinessRule')
       setMetaCallback(
         'issues',
-        statusData.message,
+        resolveValidationMessage(statusData.message,statusData.payload ?? {}),
         statusData.info.columns,
         resolveColumns
       );

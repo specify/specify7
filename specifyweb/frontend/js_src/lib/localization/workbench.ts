@@ -226,19 +226,6 @@ export const wbText = createDictionary({
     'en-us': 'Changes to this Data Set have not been Saved.',
     'ru-ru': 'Изменения в этом наборе данных не были сохранены.',
   },
-  picklistValidationFailed: {
-    comment: 'This value must match the one on the back-end exactly',
-    'en-us': `
-      {value:string} is not a legal value in this picklist field.
-      
-      Click on the arrow to choose among available options.
-    `,
-    'ru-ru': `
-      {value:string} не является допустимым значением в этом списке.
-      
-      Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
-    `,
-  },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
     'ru-ru':
