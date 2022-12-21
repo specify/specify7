@@ -489,6 +489,23 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
+        openLoansCount: {
+          label: statsText('openLoans'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Loan',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'isClosed',
+                operStart: queryFieldFilters.falseOrNull.id,
+                isDisplay: false,
+              },
+            ],
+          },
+        },
       }),
     },
   },

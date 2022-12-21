@@ -24,7 +24,6 @@ import { StatsPageEditing } from './StatsPageEditing';
 import { StatsPageButton } from './Buttons';
 import { useMenuItem } from '../Header';
 import { CustomStat, DefaultStat, StatLayout } from './types';
-import { useBooleanState } from '../../hooks/useBooleanState';
 import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
 
@@ -41,6 +40,22 @@ export function StatsPage(): JSX.Element | null {
   const setLayout = (item: StatLayout): void => {
     setPrevLayout(item);
   };
+
+  const isCacheValid = useCacheValid(layout);
+  const statsSpec = useStatsSpec(isCacheValid || layout === undefined);
+
+  const defaultStatsSpec = useStatsSpec(false);
+  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
+  const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
+
+  React.useEffect(() => {
+    if (isDefaultCacheValid) {
+      setDefaultLayout(defaultLayoutSpec);
+      if (layout === undefined) {
+        setPrevLayout(defaultLayoutSpec);
+      }
+    }
+  }, [isDefaultCacheValid, layout]);
 
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
@@ -78,19 +93,6 @@ export function StatsPage(): JSX.Element | null {
     }),
     []
   );
-
-  const isCacheValid = useCacheValid(layout);
-  const statsSpec = useStatsSpec(isCacheValid);
-
-  const defaultStatsSpec = useStatsSpec(false);
-  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-  const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
-
-  React.useEffect(() => {
-    if (isDefaultCacheValid) {
-      setDefaultLayout(defaultLayoutSpec);
-    }
-  }, [isDefaultCacheValid]);
 
   //setLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
