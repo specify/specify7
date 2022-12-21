@@ -1,4 +1,5 @@
 import { program } from 'commander';
+
 import { scanUsages } from '../utils/scanUsages';
 import { syncStrings } from '../utils/sync';
 

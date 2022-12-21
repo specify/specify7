@@ -28,7 +28,7 @@ import {
 } from './index';
 import { f } from '../../utils/functools';
 import { formatList } from '../../components/Atoms/Internationalization';
-import chalk from 'chalk';
+import { testLogging } from './testLogging';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -47,30 +47,8 @@ const characterBlacklist: Partial<RR<Language, string>> = {
   'en-us': 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
 };
 
-const log = console.log;
-
-let todosCount = 0;
-
-function todo(value: string): void {
-  todosCount += 1;
-  console.warn(chalk.green(value));
-}
-
-let warningsCount = 0;
-
-function warn(value: string): void {
-  warningsCount += 1;
-  // Orange
-  console.warn(chalk.yellow(value));
-}
-
-let errorsCount = 0;
-
-function error(value: string): void {
-  errorsCount += 1;
-  process.exitCode = 1;
-  console.error(chalk.red(value));
-}
+const { log, todosCount, warningsCount, todo, warn, error, errorsCount } =
+  testLogging;
 
 /**
  * Collect localization strings from all files into a single object

@@ -133,7 +133,12 @@ jobs:
         working-directory: specifyweb/frontend/js_src
         run: |
           npm run typecheck && \
-          npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
+          npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+
+      - name: Localization Tests
+        env:
+          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
+        run: |
           npm run localizationTests -- --emit ./localization-strings
 
       - name: Upload built localization strings
