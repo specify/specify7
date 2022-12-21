@@ -44,7 +44,7 @@ export function StatsPage(): JSX.Element | null {
   const isCacheValid = useCacheValid(layout);
   const statsSpec = useStatsSpec(isCacheValid || layout === undefined);
 
-  const defaultStatsSpec = useStatsSpec(false);
+  const defaultStatsSpec = useStatsSpec(false, layout === undefined);
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
   const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
 

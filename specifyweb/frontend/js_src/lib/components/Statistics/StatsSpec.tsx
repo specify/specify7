@@ -506,6 +506,24 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
+        georeferencedLocalityCount: {
+          label: statsText('georeferencedLocalities'),
+          spec: {
+            type: 'QueryBuilderStat',
+            tableName: 'Locality',
+            fields: [
+              {
+                path: formattedEntry,
+              },
+              {
+                path: 'latitude1',
+                operStart: queryFieldFilters.empty.id,
+                isNot: true,
+                isDisplay: false,
+              },
+            ],
+          },
+        },
       }),
     },
   },

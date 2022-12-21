@@ -30,7 +30,8 @@ import { keysToLowerCase, removeItem } from '../../utils/utils';
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  isCacheValid: boolean
+  isCacheValid: boolean,
+  showDialog = false
 ): BackendStatsResult | undefined {
   const [backendStatObject] = useAsyncState(
     React.useCallback(
@@ -45,18 +46,21 @@ export function useBackendApi(
             }).then(({ data }) => data),
       [isCacheValid]
     ),
-    false
+    showDialog
   );
   return backendStatObject;
 }
 
-export function useStatsSpec(isCacheValid: boolean): IR<
+export function useStatsSpec(
+  isCacheValid: boolean,
+  showDialog = false
+): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
   }>
 > {
-  const backEndResult = useBackendApi(isCacheValid);
+  const backEndResult = useBackendApi(isCacheValid, showDialog);
   return React.useMemo(
     () =>
       Object.fromEntries(
