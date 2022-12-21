@@ -19,8 +19,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Сервер прикрепленных файлов недоступен.',
   },
   attachmentUploadDialogTitle: {
-    'en-us': 'Uploading...',
-    'ru-ru': 'Закачивание...',
+    'en-us': 'Uploading…',
+    'ru-ru': 'Закачивание…',
   },
   noAttachments: {
     'en-us': 'There are no attachments',

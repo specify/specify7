@@ -173,6 +173,20 @@ jobs:
           name: Localization strings
           path: localization-strings/strings
 
+      - name: Construct commit message
+        id: commit_message
+        run: |
+          echo "Sync localization strings with Weblate" >> temp.txt
+          echo "" >> temp.txt
+          echo "Triggered by ${GITHUB_SHA}" >> temp.txt
+          echo "Pushed to ${GITHUB_REF#refs/heads/}" >> temp.txt
+          MESSAGE=$(cat temp.txt)
+          # This is needed to make multi-line strings work
+          MESSAGE="${CHANGELOG//'%'/'%25'}"
+          MESSAGE="${CHANGELOG//$'\n'/'%0A'}"
+          MESSAGE="${CHANGELOG//$'\r'/'%0D'}"
+          echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
+
       - name: Commit changed strings
         uses: EndBug/add-and-commit@v9
         with:
@@ -180,10 +194,7 @@ jobs:
           add: strings
           fetch: false
           push: true
+          default_author: github_actions
           committer_name: Max Patiiuk
           committer_email: max@patii.uk
-          message: >
-            Sync localization strings with Weblate
-
-            Triggered by $GITHUB_SHA
-            Pushed to ${GITHUB_REF#refs/heads/}
+          message: ${{ steps.commit_message.outputs.MESSAGE }}

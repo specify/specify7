@@ -87,8 +87,8 @@ export const commonText = createDictionary({
     'ru-ru': 'Инструмент',
   },
   loading: {
-    'en-us': 'Loading...',
-    'ru-ru': 'Загрузка...',
+    'en-us': 'Loading…',
+    'ru-ru': 'Загрузка…',
   },
   name: {
     'en-us': 'Name',
@@ -310,8 +310,8 @@ export const commonText = createDictionary({
     'ru-ru': 'WorkBench',
   },
   running: {
-    'en-us': 'Running...',
-    'ru-ru': 'Выполнение...',
+    'en-us': 'Running…',
+    'ru-ru': 'Выполнение…',
   },
   noMatches: {
     'en-us': 'No Matches',
