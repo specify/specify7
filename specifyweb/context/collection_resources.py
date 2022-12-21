@@ -7,11 +7,11 @@ Spappresource = getattr(models, 'Spappresource')
 Spappresourcedir = getattr(models, 'Spappresourcedir')
 
 
-user_resources = openapi(schema={
+collection_resources = openapi(schema={
     "get": {
         "responses": {
             "200": {
-                "description": "Returns list of app resources owned by the logged in user in the logged in collection.",
+                "description": "Returns list of public app resources in the logged in collection.",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -76,22 +76,18 @@ user_resources = openapi(schema={
         }
     }
 })(Resources.as_view(_spappresourcedirfilter= lambda request: {
-                'specifyuser': request.specify_user,
-                'ispersonal': True,
-                'usertype': get_usertype(request.specify_user),
+                'ispersonal': False,
 }, _spappresourcefilter= lambda request: {
-                'spappresourcedir__specifyuser': request.specify_user,
-                'spappresourcedir__ispersonal':True
+                'spappresourcedir__ispersonal':False
 }, _spappresourcefilterpost=lambda request: {
-                'specifyuser': request.specify_user
 }))
 
 
-user_resource = openapi(schema={
+collection_resource = openapi(schema={
     "get": {
         "responses": {
             "200": {
-                "description": "The app resource of the given id owned by the logged in user in the logged in collection.",
+                "description": "The public app resource of the given id in the logged in collection ",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -114,7 +110,7 @@ user_resource = openapi(schema={
     "put": {
         "requestBody": {
             "required": True,
-            "description": "Updates the appresource with the given id in the logged in collection owned by the logged in user.",
+            "description": "Updates the appresource with the given id in the logged in collection",
             "content": {
                 "application/json": {
                     "schema": {
@@ -141,8 +137,7 @@ user_resource = openapi(schema={
         }
     }
 })(Resource.as_view(_spappresourcefilter= lambda request: {
-            'spappresourcedir__specifyuser': request.specify_user,
-            'spappresourcedir__ispersonal': True,
+            'spappresourcedir__ispersonal': False,
 }))
 
 
