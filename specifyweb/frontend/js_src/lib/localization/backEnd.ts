@@ -21,26 +21,33 @@ export const backEndText = createDictionary({
   failedParsingPickList: {
     'en-us': `
       {value:string} is not a legal value in this picklist field.
-
+      
       Click on the arrow to choose among available options.
     `,
     'ru-ru': `
       {value:string} не является допустимым значением в этом списке.
-
+      
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
     `,
   },
   failedParsingAgentType: {
-    'en-us':
-      'bad agent type: "{badType:string}". Expected one of {validTypes:string}',
-    'ru-ru':
-      'неверный тип агента: "{badType:string}". Ожидается один из {validTypes:string}',
+    'en-us': `
+      bad agent type: "{badType:string}". Expected one of {validTypes:string}
+    `,
+    'ru-ru': `
+      неверный тип агента: "{badType:string}". Ожидается один из
+      {validTypes:string}
+    `,
   },
   pickListValueTooLong: {
-    'en-us':
-      'value from picklist {pickList:string} longer than the max of {maxLength:number|formatted} for field',
-    'ru-ru':
-      'значение из списка {pickList:string} длиннее максимального значения {maxLength:number|formatted} для поля',
+    'en-us': `
+      value from picklist {pickList:string} longer than the max of
+      {maxLength:number|formatted} for field
+    `,
+    'ru-ru': `
+      значение из списка {pickList:string} длиннее максимального значения
+      {maxLength:number|formatted} для поля
+    `,
   },
   valueTooLong: {
     'en-us':
@@ -82,9 +89,12 @@ export const backEndText = createDictionary({
     'ru-ru': 'В дереве есть несколько веток с именем "Uploaded"!',
   },
   missingRequiredTreeParent: {
-    'en-us':
-      'Missing or unmapped required tree parent rank value for "{names:string}".',
-    'ru-ru':
-      'Отсутствует или не сопоставлено необходимое значение родительского ранга для дерева "{names:string}".',
+    'en-us': `
+      Missing or unmapped required tree parent rank value for "{names:string}".
+    `,
+    'ru-ru': `
+      Отсутствует или не сопоставлено необходимое значение родительского ранга
+      для дерева "{names:string}".
+    `,
   },
 } as const);

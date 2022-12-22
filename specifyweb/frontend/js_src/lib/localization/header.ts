@@ -52,7 +52,7 @@ export const headerText = createDictionary({
       updated.
     `,
     'ru-ru':
-      'Обновление началось. Вы получите уведомление о каждом элементе фида',
+      'Обновление началось. Вы получите уведомление о каждом элементе фида.',
   },
   dwcaExportStartedDialogHeader: {
     'en-us': 'DwCA export started',

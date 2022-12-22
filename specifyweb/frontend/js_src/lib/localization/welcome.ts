@@ -39,7 +39,6 @@ export const welcomeText = createDictionary({
       
       Biodiversity Institute <br />
       
-      
       University of Kansas <br />
       
       1345 Jayhawk Blvd. <br />

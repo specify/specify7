@@ -15,9 +15,10 @@ export const notificationsText = createDictionary({
     'ru-ru': 'Уведомлений: {count:number|formatted}',
   },
   notificationsLoading: {
-    comment:
-      'Used for button label in the top menu when notification count is loading',
-    'en-us': 'Notifications: ...',
+    comment: `
+      Used for button label in the top menu when notification count is loading
+    `,
+    'en-us': 'Notifications: …',
     'ru-ru': 'Уведомлений: ...',
   },
   mostRecentNotificationsTop: {

@@ -14,8 +14,10 @@ export const queryText = createDictionary({
     'ru-ru': 'Новый запрос',
   },
   queryBoxDescription: {
-    comment:
-      "Used in a Query Combo Box's hover-over message to show which fields are being searched on",
+    comment: `
+      Used in a Query Combo Box's hover-over message to show which fields are
+      being searched on
+    `,
     'en-us': 'Searches: {fieldNames:string}',
     'ru-ru': 'Поисковые запросы: {fieldNames:string}',
   },

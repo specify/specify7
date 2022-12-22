@@ -52,8 +52,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Объект коллекции',
   },
   checkingIfResourceCanBeDeleted: {
-    'en-us': 'Checking if resource can be deleted...',
-    'ru-ru': 'Проверка возможности удаления ресурса...',
+    'en-us': 'Checking if resource can be deleted…',
+    'ru-ru': 'Проверка возможности удаления ресурса…',
   },
   deleteBlockedDialogHeader: {
     'en-us': 'Delete blocked',
@@ -239,8 +239,10 @@ export const formsText = createDictionary({
     'ru-ru': 'Точность даты',
   },
   monthYear: {
-    comment:
-      'A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don\'t support the "month" input type.',
+    comment: `
+      A placeholder for partial date field when "month /year" type is selected.
+      Visible only in browsers that don\'t support the "month" input type.
+    `,
     'en-us': 'Mon / Year',
     'ru-ru': 'Месяц / Год',
   },
@@ -267,7 +269,8 @@ export const formsText = createDictionary({
       Add value "{value:string}" to the pick list named "{pickListName:string}"?
     `,
     'ru-ru': `
-      Добавить значение "{value:string}" в список выбора "{pickListName:string}"?
+      Добавить значение "{value:string}" в список выбора
+      "{pickListName:string}"?
     `,
   },
   invalidType: {
@@ -548,8 +551,9 @@ export const formsText = createDictionary({
     'ru-ru': 'некаталогизированный',
   },
   additionalResultsOmitted: {
-    comment:
-      'Represents truncated search dialog output (when lots of results returned)',
+    comment: `
+      Represents truncated search dialog output (when lots of results returned)
+    `,
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
   },
@@ -558,8 +562,10 @@ export const formsText = createDictionary({
     'ru-ru': 'Продолжить без сохранения?',
   },
   recordSelectorUnloadProtectDialogText: {
-    comment:
-      'When in record set and current record is unsaved and try to navigate to another record',
+    comment: `
+      When in record set and current record is unsaved and try to navigate to
+      another record
+    `,
     'en-us': 'You might want to save this record before navigating away.',
     'ru-ru': 'Не забудьте сохранить эту запись, прежде чем закрыть ее.',
   },
@@ -833,8 +839,9 @@ export const formsText = createDictionary({
     'ru-ru': 'Новый {tableName:string}',
   },
   resourceFormatter: {
-    comment:
-      'When resource does not have a formatter defined, this formatter is used',
+    comment: `
+      When resource does not have a formatter defined, this formatter is used
+    `,
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
   },
