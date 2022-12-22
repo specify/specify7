@@ -1,7 +1,9 @@
+import traceback
 from typing import Optional, Dict
 from django import http
 from django.conf import settings
-import traceback
+
+from ..permissions.permissions import PermissionsException
 
 class SpecifyExceptionWrapper(Exception):
     http_status = 500
@@ -35,6 +37,6 @@ class GeneralMiddleware:
 
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
         if not settings.DEBUG:
-            if not isinstance(exception, SpecifyExceptionWrapper):
+            if not isinstance(exception, SpecifyExceptionWrapper) and not isinstance(exception, PermissionsException):
                 exception = SpecifyExceptionWrapper(exception)
             return http.HttpResponse(exception.to_json(), status=exception.http_status)
