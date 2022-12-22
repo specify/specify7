@@ -1,72 +1,83 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2022-12-22 23:14+0000\n"
+"Last-Translator: Max Patiiuk <maxxxxxdlp@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
+"notifications/rus_RU/>\n"
+"Language: rus_RU\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
-#: components/Header/Notifications.tsx:134
 #. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:134
 msgid "notifications"
 msgstr "Уведомлений: {count:number|formatted}"
 
-#: components/Header/Notifications.tsx:137
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:137
 msgid "notificationsLoading"
-msgstr "Уведомлений: ..."
+msgstr "Уведомлений: …"
 
-#: components/Header/Notifications.tsx:177
 #. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:177
 msgid "mostRecentNotificationsTop"
 msgstr "(В порядке от самого последнего к самому старому.)"
 
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:44
 #: components/Header/NotificationRenderers.tsx:72
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 msgid "exception"
 msgstr "Ошибка"
 
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 #: components/AppResources/EditorComponents.tsx:125
 #: components/Header/NotificationRenderers.tsx:58
 #: components/Header/NotificationRenderers.tsx:86
 #: components/Header/NotificationRenderers.tsx:100
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 msgid "download"
 msgstr "Скачать"
 
-#: components/Header/Notifications.tsx:146
 #. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:146
 msgid "notificationsDialogTitle"
 msgstr "Уведомления"
 
-#: components/Header/NotificationRenderers.tsx:24
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:24
 msgid "feedItemUpdated"
 msgstr "Элемент фида экспорта обновлен."
 
-#: components/Header/NotificationRenderers.tsx:38
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:38
 msgid "updateFeedFailed"
 msgstr "Не удалось обновить экспортный канал."
 
-#: components/Header/NotificationRenderers.tsx:52
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:52
 msgid "dwcaExportCompleted"
 msgstr "Экспорт в DwCA завершен."
 
-#: components/Header/NotificationRenderers.tsx:66
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:66
 msgid "dwcaExportFailed"
 msgstr "Не удалось экспортировать DwCA."
 
-#: components/Header/NotificationRenderers.tsx:80
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:80
 msgid "queryExportToCsvCompleted"
 msgstr "Экспорт запроса в CSV завершен."
 
-#: components/Header/NotificationRenderers.tsx:94
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:94
 msgid "queryExportToKmlCompleted"
 msgstr "Экспорт запроса в KML завершен."
 
-#: components/Header/NotificationRenderers.tsx:108
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:108
 msgid "dataSetOwnershipTransferred"
 msgstr ""
 "<userName /> передал вам право собственности на набор данных <dataSetName "
