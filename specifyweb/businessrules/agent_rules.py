@@ -22,6 +22,8 @@ def agent_types_other_and_group_do_not_have_addresses(agent):
     from specifyweb.specify.agent_types import agent_types
     if agent.agenttype is None:
         raise BusinessRuleException("agenttype cannot be null", {"agentid" : agent.id})
-    if agent_types[agent.agenttype] in ('Other', 'Group'):
-        raise BusinessRuleException("agent of type Other or Group cannot have address", {"agentid" : agent.id})
-        agent.addresses.all().delete()
+    
+    # Removing this for now. Need some way to check if the agent has any addresses.
+    # if agent_types[agent.agenttype] in ('Other', 'Group'):
+        # raise BusinessRuleException("agent of type Other or Group cannot have address", {"agentid" : agent.id})
+        # agent.addresses.all().delete()
