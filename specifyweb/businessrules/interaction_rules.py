@@ -34,7 +34,7 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
         quantity = ipreparation.quantity or 0
         quantityresolved = ipreparation.quantityresolved or 0
         if available < (quantity - quantityresolved):
-            raise BusinessRuleException(f"loan preparation quantity exceeds availability ({ipreparation.id}: {quantity - quantityresolved} {available})")
+            raise BusinessRuleException(f"loan preparation quantity exceeds availability ({ipreparation.id}: {quantity - quantityresolved} {available})", {"preparationid" : ipreparation.id, "quantity" : quantity, "quantityresolved" : quantityresolved, "available" : available})
 
 @orm_signal_handler('pre_save', 'Giftpreparation')
 def giftprep_quantity_must_be_lte_availability(ipreparation):
@@ -42,7 +42,7 @@ def giftprep_quantity_must_be_lte_availability(ipreparation):
         available = get_availability(ipreparation.preparation, ipreparation.id, "giftpreparationid") or 0
         quantity = ipreparation.quantity or 0
         if available < quantity:
-            raise BusinessRuleException(f"gift preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})")
+            raise BusinessRuleException(f"gift preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", {"preparationid" : ipreparation.id, "quantity" : quantity, "available" : available})
 
 @orm_signal_handler('pre_save', 'Exchangeoutprep')
 def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
@@ -50,4 +50,4 @@ def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
         available = get_availability(ipreparation.preparation, ipreparation.id, "exchangeoutprepid") or 0
         quantity = ipreparation.quantity or 0
         if available < quantity:
-            raise BusinessRuleException("exchangeout preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})")
+            raise BusinessRuleException("exchangeout preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", {"preparationid" : ipreparation.id, "quantity" : quantity, "available" : available})
