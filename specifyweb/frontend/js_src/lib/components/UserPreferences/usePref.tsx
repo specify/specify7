@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { GetOrSet, GetSet } from '../../utils/types';
 import type { preferenceDefinitions, Preferences } from './Definitions';
-import { getUserPref, setPref } from './helpers';
+import { getPref, getUserPref, setPref } from './helpers';
 import { PreferencesContext, prefEvents } from './Hooks';
 
 /**
@@ -22,14 +22,15 @@ export function usePref<
 ): GetOrSet<
   Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
-  const [getPref, setUserPref] = React.useContext(PreferencesContext) ?? [
-    getUserPref,
-    setPref,
+  const preferenceType = 'userPreferences';
+  const [getPrefMain, setUserPref] = React.useContext(PreferencesContext) ?? [
+    getPref[preferenceType],
+    setPref[preferenceType],
   ];
 
   const [pref, setLocalPref] = React.useState<
     Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-  >(() => getPref(category, subcategory, item));
+  >(() => getPrefMain(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
 

@@ -93,7 +93,7 @@ export type PreferenceItem<VALUE> = {
 /**
  * This is used to enforce the same generic value be used inside a PreferenceItem
  */
-const defineItem = <VALUE,>(
+export const defineItem = <VALUE,>(
   definition: PreferenceItem<VALUE>
 ): PreferenceItem<VALUE> => definition;
 
@@ -1636,4 +1636,5 @@ import('../DataModel/schema')
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
 
+export type GenericPreferences = GenericPreferencesCategories;
 ensure<GenericPreferencesCategories>()(preferenceDefinitions);
