@@ -19,7 +19,7 @@ export const notificationsText = createDictionary({
       Used for button label in the top menu when notification count is loading
     `,
     'en-us': 'Notifications: …',
-    'ru-ru': 'Уведомлений: ...',
+    'ru-ru': 'Уведомлений: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
