@@ -146,17 +146,17 @@ jobs:
         if: github.ref == 'refs/heads/l10n-improvements'
         uses: actions/checkout@v3
         with:
-          path: localization-strings
+          path: weblate-localization
           ref: weblate-localization
           fetch-depth: 0
 
       - name: Sync localization strings with Weblate (only on production branch)
         # Only run this step if previous step was not skipped
         if: success()
-        working-directory: localization-strings
+        working-directory: weblate-localization
         run: |
           # Replace old localization strings
-          rm -rf localization-strings/strings
+          rm -rf strings
           mv -f ../specifyweb/frontend/js_src/localization-strings strings
           git add strings
 
