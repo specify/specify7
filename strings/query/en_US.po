@@ -9,7 +9,7 @@ msgid "newQueryName"
 msgstr "New Query"
 
 #: components/FormFields/useTypeSearch.tsx:86
-#. Used in: Components > Form Fields > Use Type Search
+#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 msgid "queryBoxDescription"
 msgstr "Searches: {fieldNames:string}"
 
@@ -111,22 +111,22 @@ msgstr ""
 
 #: components/PickLists/index.tsx:205
 #: components/SchemaConfig/Components.tsx:85
-#. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
+#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (current, invalid value)"
 
 #: components/QueryBuilder/Header.tsx:64
-#. Used in: Components > Query Builder > Header
+#. 🟥Used in query builder header. Used in: Components > Query Builder > Header
 msgid "queryTaskTitle"
 msgstr "Query: {queryName:string}"
 
 #: components/QueryBuilder/Header.tsx:60
-#. Used in: Components > Query Builder > Header
+#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr "Query: \"{queryName:string}\" on Record Set: \"{recordSetName:string}\""
 
 #: components/QueryBuilder/fromTree.ts:181
-#. Used in: Components > Query Builder > From Tree
+#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}"
 
@@ -217,7 +217,7 @@ msgid "like"
 msgstr "Like"
 
 #: components/QueryBuilder/FieldFilter.tsx:379
-#. Used in: Components > Query Builder > Field Filter
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
 "Use \"%\" to match any number of characters.\n"
@@ -358,7 +358,7 @@ msgid "openMap"
 msgstr "Open Map"
 
 #: components/QueryBuilder/ToMap.tsx:240
-#. Used in: Components > Query Builder > To Map
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 msgid "queryMapSubset"
 msgstr "Plotted {plotted:number|formatted} of {total:number|formatted} records"
 

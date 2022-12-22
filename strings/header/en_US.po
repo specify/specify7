@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Core/Main.tsx:82
-#. Used in: Components > Core > Main
+#. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
 msgstr "Skip to Content"
 

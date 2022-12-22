@@ -60,12 +60,12 @@ msgid "inheritOsSettings"
 msgstr "Копирует значение из настроек вашей операционной системы"
 
 #: components/UserPreferences/Definitions.tsx:141
-#. Used in: Components > User Preferences > Definitions
+#. 🟥Light mode. Used in: Components > User Preferences > Definitions
 msgid "light"
 msgstr "Белая"
 
 #: components/UserPreferences/Definitions.tsx:145
-#. Used in: Components > User Preferences > Definitions
+#. 🟥Dark mode. Used in: Components > User Preferences > Definitions
 msgid "dark"
 msgstr "Темная"
 

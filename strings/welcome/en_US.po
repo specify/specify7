@@ -34,8 +34,12 @@ msgstr "Showing Taxa with {count:number|formatted} or more Collection Objects"
 #. Used in: Components > Home Page > About Specify
 msgid "fullAddress"
 msgstr ""
-"Specify Collections Consortium <br /> Biodiversity Institute <br /> "
-"University of Kansas <br /> 1345 Jayhawk Blvd. <br /> Lawrence, KS 66045 USA"
+"Specify Collections Consortium <br />\n"
+"Biodiversity Institute <br />\n"
+"\n"
+"University of Kansas <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 USA"
 
 #: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
@@ -100,7 +104,7 @@ msgid "databaseName"
 msgstr "Database Name:"
 
 #: components/HomePage/AboutSpecify.tsx:135
-#. Used in: Components > Home Page > About Specify
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
 msgid "isaNumber"
 msgstr "ISA Number:"
 

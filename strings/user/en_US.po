@@ -477,12 +477,12 @@ msgid "loadingAdmins"
 msgstr "Loading admins..."
 
 #: components/Security/Institution.tsx:151
-#. Used in: Components > Security > Institution
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Admin)"
 
 #: components/Security/Institution.tsx:155
-#. Used in: Components > Security > Institution
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
 

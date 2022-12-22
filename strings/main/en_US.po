@@ -2,28 +2,28 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Molecules/AppTitle.tsx:47
-#. Used in: Components > Molecules > App Title
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Specify 7"
 
 #: components/Molecules/AppTitle.tsx:46
-#. Used in: Components > Molecules > App Title
+#. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Specify 7"
 
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#. Used in: Components > Router > Not Found View
+#. 🟥Used in title. Used in: Components > Router > Not Found View
 msgid "pageNotFound"
 msgstr "Page Not Found"
 
 #: components/Router/NotFoundView.tsx:25
-#. Used in: Components > Router > Not Found View
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 msgid "nothingWasFound"
 msgstr "Oops! Nothing was found"
 
 #: components/Router/NotFoundView.tsx:26
-#. Used in: Components > Router > Not Found View
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 msgid "pageNotFoundDescription"
 msgstr ""
 "The page you are looking for might have been removed, had its name changed "
@@ -63,7 +63,7 @@ msgstr ""
 "Specify Cloud database, contact <email />"
 
 #: components/Errors/ErrorDialog.tsx:36
-#. Used in: Components > Errors > Error Dialog
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorBoundaryDialogSecondMessage"
 msgstr ""
 "Users from <memberLink>member institutions</memberLink> can search for "

@@ -174,12 +174,12 @@ msgid "leafNode"
 msgstr "Угловой узел"
 
 #: components/TreeView/helpers.ts:199
-#. Used in: Components > Tree View > Helpers
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
 #: components/TreeView/helpers.ts:198
-#. Used in: Components > Tree View > Helpers
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 

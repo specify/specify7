@@ -8,12 +8,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "orderBy"
 msgstr "Order By"
 
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:118
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentServerUnavailable"
 msgstr "Attachment server unavailable."
 
-#: components/Attachments/Plugin.tsx:141
+#: components/Attachments/Plugin.tsx:142
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentUploadDialogTitle"
 msgstr "Uploading…"
@@ -123,12 +123,12 @@ msgid "problemsFound"
 msgstr "There are problems with the entry:"
 
 #: components/Interactions/InteractionDialog.tsx:253
-#. Used in: Components > Interactions > Interaction Dialog
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "recordSetCaption"
 msgstr "By choosing a recordset ({{count:none | one | ??}} available)"
 
 #: components/Interactions/InteractionDialog.tsx:259
-#. Used in: Components > Interactions > Interaction Dialog
+#. 🟥Field name is localized. Coming from Schema Configuration. Used in: Components > Interactions > Interaction Dialog
 msgid "entryCaption"
 msgstr "By entering {fieldName:string}s"
 
@@ -229,7 +229,7 @@ msgid "resolvedAmount"
 msgstr "Resolved Amount"
 
 #: components/Interactions/PrepDialogRow.tsx:161
-#. Used in: Components > Interactions > Prep Dialog Row
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource: string}"
 
@@ -289,12 +289,12 @@ msgid "datePrecision"
 msgstr "Date Precision"
 
 #: components/FormPlugins/PartialDateUi.tsx:366
-#. Used in: Components > Form Plugins > Partial Date Ui
+#. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Mon / Year"
 
 #: components/FormPlugins/PartialDateUi.tsx:382
-#. Used in: Components > Form Plugins > Partial Date Ui
+#. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "YYYY"
 
@@ -316,7 +316,9 @@ msgstr "Add to pick list?"
 #: components/PickLists/index.tsx:303
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDialogText"
-msgstr "Add value \"{value:string}\" to the pick list named {pickListName:string}?"
+msgstr ""
+"Add value \"{value:string}\" to the pick list named "
+"\"{pickListName:string}\"?"
 
 #: components/PickLists/index.tsx:269
 #. Used in: Components > Pick Lists > Index
@@ -328,7 +330,7 @@ msgstr "Invalid Type"
 msgid "invalidNumericPicklistValue"
 msgstr "Only numeric values are supported in this pick list"
 
-#: components/Attachments/Plugin.tsx:122
+#: components/Attachments/Plugin.tsx:123
 #: components/FormCells/FormTable.tsx:181
 #: components/Forms/BaseResourceView.tsx:97
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
@@ -580,7 +582,7 @@ msgstr "Invalid value"
 #: utils/parser/definitions.ts:302
 #: utils/parser/__tests__/definitions.test.ts:71
 #: utils/parser/__tests__/parse.test.ts:209
-#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Required Format: {format:string}."
 
@@ -633,22 +635,22 @@ msgid "fieldFromTable"
 msgstr "Field From Table"
 
 #: components/PickLists/definitions.ts:41
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Tree Merge"
 
 #: components/PickLists/definitions.ts:42
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Tree Move"
 
 #: components/PickLists/definitions.ts:43
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Tree Synonymize"
 
 #: components/PickLists/definitions.ts:44
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Tree Desynonymize"
 
@@ -663,7 +665,7 @@ msgid "unCataloged"
 msgstr "uncataloged"
 
 #: components/Forms/SearchDialog.tsx:179
-#. Used in: Components > Forms > Search Dialog
+#. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Additional results omitted"
 
@@ -673,7 +675,7 @@ msgid "recordSelectorUnloadProtectDialogHeader"
 msgstr "Proceed without saving?"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDialogText"
 msgstr "You might want to save this record before navigating away."
 
@@ -967,7 +969,7 @@ msgid "formTable"
 msgstr "Grid"
 
 #: components/FormCells/FormTable.tsx:129
-#. Used in: Components > Form Cells > Form Table
+#. 🟥Formatter for heading of the Form Table (a.k.a Grid) form element. Used in: Components > Form Cells > Form Table
 msgid "formTableHeading"
 msgstr "{relationshipName:string} ({count:number|formatted})"
 
@@ -1021,7 +1023,7 @@ msgid "newResourceTitle"
 msgstr "New {tableName:string}"
 
 #: components/Forms/dataObjFormatters.ts:152
-#. Used in: Components > Forms > Data Obj Formatters
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 

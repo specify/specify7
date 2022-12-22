@@ -8,12 +8,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "orderBy"
 msgstr "Сортировать по"
 
-#: components/Attachments/Plugin.tsx:117
+#: components/Attachments/Plugin.tsx:118
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentServerUnavailable"
 msgstr "Сервер прикрепленных файлов недоступен."
 
-#: components/Attachments/Plugin.tsx:141
+#: components/Attachments/Plugin.tsx:142
 #. Used in: Components > Attachments > Plugin
 msgid "attachmentUploadDialogTitle"
 msgstr "Закачивание…"
@@ -121,12 +121,12 @@ msgid "problemsFound"
 msgstr "Обнаружены ошибки:"
 
 #: components/Interactions/InteractionDialog.tsx:253
-#. Used in: Components > Interactions > Interaction Dialog
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 msgid "recordSetCaption"
 msgstr "Выбрав набор записей (доступно {count:number|formatted})"
 
 #: components/Interactions/InteractionDialog.tsx:259
-#. Used in: Components > Interactions > Interaction Dialog
+#. 🟥Field name is localized. Coming from Schema Configuration. Used in: Components > Interactions > Interaction Dialog
 msgid "entryCaption"
 msgstr "Ввести {fieldName:string}"
 
@@ -227,7 +227,7 @@ msgid "resolvedAmount"
 msgstr "Решенный"
 
 #: components/Interactions/PrepDialogRow.tsx:161
-#. Used in: Components > Interactions > Prep Dialog Row
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource: string}"
 
@@ -287,12 +287,12 @@ msgid "datePrecision"
 msgstr "Точность даты"
 
 #: components/FormPlugins/PartialDateUi.tsx:366
-#. Used in: Components > Form Plugins > Partial Date Ui
+#. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
 msgid "monthYear"
 msgstr "Месяц / Год"
 
 #: components/FormPlugins/PartialDateUi.tsx:382
-#. Used in: Components > Form Plugins > Partial Date Ui
+#. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
 msgid "yearPlaceholder"
 msgstr "ГГГГ"
 
@@ -314,7 +314,9 @@ msgstr "Добавить в список выбора?"
 #: components/PickLists/index.tsx:303
 #. Used in: Components > Pick Lists > Index
 msgid "addToPickListConfirmationDialogText"
-msgstr "Добавить значение \"{value:string}\" в список выбора {pickListName:string}?"
+msgstr ""
+"Добавить значение \"{value:string}\" в список выбора "
+"\"{pickListName:string}\"?"
 
 #: components/PickLists/index.tsx:269
 #. Used in: Components > Pick Lists > Index
@@ -326,7 +328,7 @@ msgstr "Недействительный тип"
 msgid "invalidNumericPicklistValue"
 msgstr "В этом списке выбора допускаются только числовые значения"
 
-#: components/Attachments/Plugin.tsx:122
+#: components/Attachments/Plugin.tsx:123
 #: components/FormCells/FormTable.tsx:181
 #: components/Forms/BaseResourceView.tsx:97
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
@@ -578,7 +580,7 @@ msgstr "Недопустимое значение"
 #: utils/parser/definitions.ts:302
 #: utils/parser/__tests__/definitions.test.ts:71
 #: utils/parser/__tests__/parse.test.ts:209
-#. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
 msgid "requiredFormat"
 msgstr "Обязательный формат: {format:string}."
 
@@ -631,22 +633,22 @@ msgid "fieldFromTable"
 msgstr "Поле из таблицы"
 
 #: components/PickLists/definitions.ts:41
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
 msgstr "Слияние узлов дерева"
 
 #: components/PickLists/definitions.ts:42
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
 msgstr "Перемещение узла дерева"
 
 #: components/PickLists/definitions.ts:43
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeSynonymize"
 msgstr "Синонимизированный узел дерева"
 
 #: components/PickLists/definitions.ts:44
-#. Used in: Components > Pick Lists > Definitions
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeDesynonymize"
 msgstr "Отменено синонимизацию узла дерева"
 
@@ -661,7 +663,7 @@ msgid "unCataloged"
 msgstr "некаталогизированный"
 
 #: components/Forms/SearchDialog.tsx:179
-#. Used in: Components > Forms > Search Dialog
+#. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
 msgid "additionalResultsOmitted"
 msgstr "Дополнительные результаты опущены"
 
@@ -671,7 +673,7 @@ msgid "recordSelectorUnloadProtectDialogHeader"
 msgstr "Продолжить без сохранения?"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:257
-#. Used in: Components > Form Sliders > Record Selector From Ids
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 msgid "recordSelectorUnloadProtectDialogText"
 msgstr "Не забудьте сохранить эту запись, прежде чем закрыть ее."
 
@@ -967,7 +969,7 @@ msgid "formTable"
 msgstr "Таблица"
 
 #: components/FormCells/FormTable.tsx:129
-#. Used in: Components > Form Cells > Form Table
+#. 🟥Formatter for heading of the Form Table (a.k.a Grid) form element. Used in: Components > Form Cells > Form Table
 msgid "formTableHeading"
 msgstr "{relationshipName:string} ({count:number|formatted})"
 
@@ -1021,7 +1023,7 @@ msgid "newResourceTitle"
 msgstr "Новый {tableName:string}"
 
 #: components/Forms/dataObjFormatters.ts:152
-#. Used in: Components > Forms > Data Obj Formatters
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 

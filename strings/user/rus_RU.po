@@ -477,12 +477,12 @@ msgid "loadingAdmins"
 msgstr "Загрузка администраторов..."
 
 #: components/Security/Institution.tsx:151
-#. Used in: Components > Security > Institution
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Администратор)"
 
 #: components/Security/Institution.tsx:155
-#. Used in: Components > Security > Institution
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Администратор)"
 
@@ -538,8 +538,8 @@ msgstr "Исключенные институциональные политик
 #. Used in: Components > Security > Policies
 msgid "excludedInstitutionalPoliciesDescription"
 msgstr ""
-"Некоторые политики применяются только на институциональном уровне, поэтому "
-"они удалены из этих списков."
+"(Некоторые политики применяются только на институциональном уровне, поэтому "
+"они удалены из этих списков.)"
 
 #: components/Security/User.tsx:237
 #. Used in: Components > Security > User

@@ -58,10 +58,10 @@ msgstr "No"
 #: components/WbPlanView/State.tsx:100
 #: components/WorkBench/DataSetMeta.tsx:251
 #: components/WorkBench/wbUtils.js:1036
-#: components/WorkBench/wbView.js:1905
-#: components/WorkBench/wbView.js:1933
-#: components/WorkBench/wbView.js:2015
-#: components/WorkBench/wbView.js:2064
+#: components/WorkBench/wbView.js:1907
+#: components/WorkBench/wbView.js:1935
+#: components/WorkBench/wbView.js:2017
+#: components/WorkBench/wbView.js:2066
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Forms ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Router ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "cancel"
 msgstr "Cancel"
@@ -87,8 +87,8 @@ msgstr "Skip"
 #: components/Security/Institution.tsx:102
 #: components/Security/Institution.tsx:178
 #: components/Security/PreviewTables.tsx:65
-#: components/WorkBench/wbView.js:267
-#: components/WorkBench/wbView.js:1954
+#: components/WorkBench/wbView.js:269
+#: components/WorkBench/wbView.js:1956
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Work Bench > Wb View
 msgid "create"
 msgstr "Create"
@@ -169,15 +169,15 @@ msgstr "Create"
 #: components/WorkBench/Status.tsx:87
 #: components/WorkBench/wbUtils.js:725
 #: components/WorkBench/wbUtils.js:744
-#: components/WorkBench/wbView.js:262
-#: components/WorkBench/wbView.js:1580
-#: components/WorkBench/wbView.js:1641
-#: components/WorkBench/wbView.js:1704
-#: components/WorkBench/wbView.js:1863
-#: components/WorkBench/wbView.js:1952
-#: components/WorkBench/wbView.js:2040
-#: components/WorkBench/wbView.js:2557
-#: components/WorkBench/wbView.js:2580
+#: components/WorkBench/wbView.js:264
+#: components/WorkBench/wbView.js:1582
+#: components/WorkBench/wbView.js:1643
+#: components/WorkBench/wbView.js:1706
+#: components/WorkBench/wbView.js:1865
+#: components/WorkBench/wbView.js:1954
+#: components/WorkBench/wbView.js:2042
+#: components/WorkBench/wbView.js:2565
+#: components/WorkBench/wbView.js:2588
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Tabs ⬤ Components > Core > Main ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Forms > Delete Blocked ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Forms > Search Dialog ⬤ Components > Header > Notifications ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Leaflet > Map ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Languages ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Index ⬤ Components > Toolbar > Dwca ⬤ Components > Toolbar > Force Update ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "close"
 msgstr "Close"
@@ -188,13 +188,13 @@ msgstr "Close"
 #: components/Toolbar/FormTablesEdit.tsx:53
 #: components/WbPlanView/MapperComponents.tsx:411
 #: components/WorkBench/wbUtils.js:1037
-#: components/WorkBench/wbView.js:1652
+#: components/WorkBench/wbView.js:1654
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Security > Set Password ⬤ Components > Toolbar > Form Tables Edit ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "apply"
 msgstr "Apply"
 
 #: components/WorkBench/wbUtils.js:1083
-#: components/WorkBench/wbView.js:1665
+#: components/WorkBench/wbView.js:1667
 #. Used in: Components > Work Bench > Wb Utils ⬤ Components > Work Bench > Wb View
 msgid "applyAll"
 msgstr "Apply All"
@@ -217,7 +217,7 @@ msgstr "Clear all"
 #: components/WbPlanView/Mapper.tsx:392
 #: components/WorkBench/DataSetMeta.tsx:61
 #: components/WorkBench/Template.tsx:172
-#: components/WorkBench/wbView.js:1883
+#: components/WorkBench/wbView.js:1885
 #. Used in: Components > Forms > Save ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > User Preferences > Index ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "save"
 msgstr "Save"
@@ -255,7 +255,7 @@ msgstr "Open"
 #: components/Security/Role.tsx:216
 #: components/TreeView/Actions.tsx:436
 #: components/WorkBench/Template.tsx:204
-#: components/WorkBench/wbView.js:2048
+#: components/WorkBench/wbView.js:2050
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Header > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "delete"
 msgstr "Delete"
@@ -283,7 +283,7 @@ msgid "tool"
 msgstr "Tool"
 
 #: components/Attachments/Cell.tsx:114
-#: components/Attachments/Plugin.tsx:115
+#: components/Attachments/Plugin.tsx:116
 #: components/Core/ContextLoader.tsx:45
 #: components/Core/Contexts.tsx:132
 #: components/Core/__tests__/Contexts.test.tsx:65
@@ -334,7 +334,7 @@ msgstr "Tool"
 #: components/TreeView/Row.tsx:191
 #. Used in: Components > Attachments > Cell ⬤ Components > Attachments > Plugin ⬤ Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Search Dialog ⬤ Components > Forms > Sub View ⬤ Components > Header > Index ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Query Builder > Field Filter ⬤ Components > Query Builder > Results ⬤ Components > Schema Config > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row
 msgid "loading"
-msgstr "Loading…"
+msgstr "Loading..."
 
 #: components/Reports/index.tsx:189
 #: components/Security/Role.tsx:119
@@ -554,7 +554,7 @@ msgid "geoMap"
 msgstr "GeoMap"
 
 #: components/QueryBuilder/ToMap.tsx:234
-#. Used in: Components > Query Builder > To Map
+#. 🟥Used in GeoMap title to indicate load progress. Used in: Components > Query Builder > To Map
 msgid "geoMapProgress"
 msgstr "GeoMap - {progress:string}"
 
@@ -571,8 +571,8 @@ msgstr "Full Name"
 
 #: components/Atoms/DataEntry.tsx:135
 #: components/TreeView/Actions.tsx:94
-#: components/WorkBench/wbView.js:1603
-#: components/WorkBench/wbView.js:1604
+#: components/WorkBench/wbView.js:1605
+#: components/WorkBench/wbView.js:1606
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Wb View
 msgid "view"
 msgstr "View"
@@ -592,11 +592,13 @@ msgstr "Move"
 #: components/Leaflet/index.ts:154
 #: components/Leaflet/index.ts:158
 #: components/Leaflet/index.ts:159
-#: components/WorkBench/wbView.js:493
-#: components/WorkBench/wbView.js:494
-#: components/WorkBench/wbView.js:1607
-#: components/WorkBench/wbView.js:1608
-#. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Work Bench > Wb View
+#: components/SpecifyNetwork/index.tsx:235
+#: components/SpecifyNetwork/index.tsx:239
+#: components/WorkBench/wbView.js:495
+#: components/WorkBench/wbView.js:496
+#: components/WorkBench/wbView.js:1609
+#: components/WorkBench/wbView.js:1610
+#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Atoms > Link ⬤ Components > Leaflet > Index ⬤ Components > Specify Network > Index ⬤ Components > Work Bench > Wb View
 msgid "opensInNewTab"
 msgstr "(opens in a new tab)"
 
@@ -719,7 +721,7 @@ msgstr "Size"
 #: components/Header/menuItemDefinitions.ts:97
 #: components/Router/OverlayRoutes.tsx:113
 #: components/UserPreferences/Definitions.tsx:1318
-#: components/WorkBench/wbView.js:227
+#: components/WorkBench/wbView.js:229
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
 msgstr "WorkBench"
@@ -787,7 +789,7 @@ msgid "nullInline"
 msgstr "(null)"
 
 #: components/Molecules/FilePicker.tsx:106
-#. Used in: Components > Molecules > File Picker
+#. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 msgid "filePickerMessage"
 msgstr "Choose a file or drag it here"
 
@@ -878,7 +880,7 @@ msgstr "Filter"
 
 #: components/QueryBuilder/Results.tsx:45
 #: components/WorkBench/Template.tsx:135
-#: components/WorkBench/wbView.js:1701
+#: components/WorkBench/wbView.js:1703
 #. Used in: Components > Query Builder > Results ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "results"
 msgstr "Results"

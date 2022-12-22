@@ -60,12 +60,12 @@ msgid "inheritOsSettings"
 msgstr "Copies value from your Operating System settings"
 
 #: components/UserPreferences/Definitions.tsx:141
-#. Used in: Components > User Preferences > Definitions
+#. 🟥Light mode. Used in: Components > User Preferences > Definitions
 msgid "light"
 msgstr "Light"
 
 #: components/UserPreferences/Definitions.tsx:145
-#. Used in: Components > User Preferences > Definitions
+#. 🟥Dark mode. Used in: Components > User Preferences > Definitions
 msgid "dark"
 msgstr "Dark"
 
@@ -589,8 +589,8 @@ msgstr "Direction of movement when <key>Tab</key> key is pressed"
 #. Used in: Components > User Preferences > Definitions
 msgid "tabMoveDirectionDescription"
 msgstr ""
-"You can move in the opposite direction by pressing <key>Shift</key>+ "
-"<key>Tab</key>"
+"You can move in the opposite direction by pressing "
+"<key>Shift</key>+<key>Tab</key>"
 
 #: components/UserPreferences/Definitions.tsx:1357
 #: components/UserPreferences/Definitions.tsx:1374
@@ -613,8 +613,8 @@ msgstr "Direction of movement when <key>Enter</key> key is pressed"
 #. Used in: Components > User Preferences > Definitions
 msgid "enterMoveDirectionDescription"
 msgstr ""
-"You can move in the opposite direction by pressing <key>Shift</key>+ "
-"<key>Enter</key>"
+"You can move in the opposite direction by pressing "
+"<key>Shift</key>+<key>Enter</key>"
 
 #: components/UserPreferences/Definitions.tsx:1392
 #. Used in: Components > User Preferences > Definitions

@@ -62,12 +62,12 @@ msgid "coordinates"
 msgstr "Координаты"
 
 #: components/FormPlugins/LatLongUi.tsx:271
-#. Used in: Components > Form Plugins > Lat Long Ui
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "northWestCorner"
 msgstr "СЗ Угол"
 
 #: components/FormPlugins/LatLongUi.tsx:283
-#. Used in: Components > Form Plugins > Lat Long Ui
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "southEastCorner"
 msgstr "ЮВ Угол"
 
