@@ -69,7 +69,7 @@ async function createComponent(name: string): Promise<void> {
     body: JSON.stringify(getComponentSettings(name)),
   })
     .then(async (response) =>
-      response.status === Http.NO_CONTENT
+      response.status === Http.CREATED
         ? f.void()
         : Promise.reject(await response.text())
     )

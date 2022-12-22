@@ -15,6 +15,7 @@
     "//": "All of these should be executed from the js_src directory",
     "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
     "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js",
+    "//pullFromWeblate": "This is run by github action on the weblate-localization branch",
     "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc --build tsconfig.tests.json",

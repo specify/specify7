@@ -414,7 +414,7 @@ export async function scanUsages(
 
   // Output stats
   debug(dictionaries);
-  if (mode === 'verbose')
+  if (mode === 'verbose') {
     Object.entries(dictionaries).forEach(([dictionaryName, { strings }]) =>
       log(
         `${dictionaryName} has ${
@@ -424,6 +424,25 @@ export async function scanUsages(
           .reduce((total, useCount) => total + useCount, 0)}`
       )
     );
+
+    log('');
+    group(
+      Object.values(dictionaries).flatMap(({ strings }) =>
+        Object.values(strings).flatMap(({ strings }) =>
+          Object.entries(strings)
+            .filter(([language]) => f.includes(languages, language))
+            .map(([language, value]) => [language, value?.length ?? 0])
+        )
+      )
+    ).map(([language, characterLengths]) =>
+      log(
+        `Total number of characters for ${language} is ${characterLengths.reduce(
+          (total, length) => total + length,
+          0
+        )}`
+      )
+    );
+  }
 
   if (mode !== 'silent') {
     log('\n');
