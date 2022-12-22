@@ -8,7 +8,7 @@ from django.db import models, connection
 from django.db.models import F, Q, ProtectedError
 from django.conf import settings
 
-from specifyweb.businessrules.exceptions import BusinessRuleException
+from specifyweb.businessrules.exceptions import BusinessRuleException, TreeBusinessRuleException
 
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
 
@@ -69,17 +69,19 @@ class Tree(models.Model):
         try:
             model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
         except model.DoesNotExist:
-            raise BusinessRuleException(
+            raise TreeBusinessRuleException(
                 "Tree node's parent has rank greater than itself",
                 {"tree" : self.__class__.__name__,
+                 "type" : "TREE_RANK_INVARIANT_PARENT",
                  "nodeid" : self.id,
                  "node_rank" : self.rankid,
                  "parent_rank" : self.parent.rankid})
 
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
-            raise BusinessRuleException(
+            raise TreeBusinessRuleException(
                 "Tree node's rank is greater than some of its children",
                 {"tree" : self.__class__.__name__,
+                 "type" : "TREE_RANK_INVARIANT_CHILDREN",
                  "nodeid" : self.id})
 
         if prev_self is None:
@@ -151,9 +153,11 @@ def adding_node(node):
         pattern = r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)'
         override = re.search(pattern, remote_prefs, re.MULTILINE)
         if override is None or override.group(1).lower() != "true":
-            raise BusinessRuleException(
+            raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
-                {"nodeid" : node.id,
+                {"tree" : "Taxon",
+                 "type" : "SYNONYMIZED_PARENT",
+                 "nodeid" : node.id,
                  "parentid" : parent.id})
 
     insertion_point = open_interval(model, parent.nodenumber, 1)
@@ -166,9 +170,11 @@ def moving_node(to_save):
     size = current.highestchildnodenumber - current.nodenumber + 1
     new_parent = model.objects.select_for_update().get(id=to_save.parent.id)
     if new_parent.accepted_id is not None:
-        raise BusinessRuleException(
+        raise TreeBusinessRuleException(
             'Moving node "{node.fullname}" to synonymized parent "parent.fullname"'.format(node=to_save, parent=new_parent),
-            {"nodeid" : to_save.id,
+            {"tree" : "Taxon",
+             "type" : "SYNONYMIZED_PARENT",
+             "nodeid" : to_save.id,
              "parentid" : new_parent.id})
 
     insertion_point = open_interval(model, new_parent.nodenumber, size)
@@ -195,9 +201,11 @@ def merge(node, into, agent):
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "merging across trees"
     if into.accepted_id is not None:
-        raise BusinessRuleException(
+        raise TreeBusinessRuleException(
             'Merging node "{node.fullname}" with synonymized node "{into.fullname}"'.format(node=node, into=into),
-            {"nodeid" : node.id,
+            {"tree" : "Taxon",
+             "type" : "SYNONYMIZED_PARENT", 
+             "nodeid" : node.id,
              "parentid" : into.id})
     target_children = target.children.select_for_update()
     for child in node.children.select_for_update():
@@ -232,17 +240,21 @@ def synonymize(node, into, agent):
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "synonymizing across trees"
     if target.accepted_id is not None:
-        raise BusinessRuleException(
+        raise TreeBusinessRuleException(
             'Synonymizing "{node.fullname}" to synonymized node "{into.fullname}"'.format(node=node, into=into),
-            {"nodeid" : node.id,
+            {"tree" : "Taxon",
+             "type" : "DOUBLE_SYNONYM",
+             "nodeid" : node.id,
              "acceptedid" : into.id})
     node.accepted_id = target.id
     node.isaccepted = False
     node.save()
     if node.children.count() > 0:
-        raise BusinessRuleException(
+        raise TreeBusinessRuleException(
             'Synonymizing node "{node.fullname}" which has children'.format(node=node),
-            {"parentid" : node.id})
+            {"tree" : "Taxon",
+             "type" : "SYNONYMIZED_PARENT",
+             "parentid" : node.id})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     mutation_log(TREE_SYNONYMIZE, node, agent, node.parent,

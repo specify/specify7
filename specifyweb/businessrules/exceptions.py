@@ -3,7 +3,6 @@ from typing import Dict
 import traceback
 
 class BusinessRuleException(SpecifyExceptionWrapper):
-    
     def to_json(self) -> Dict:
         exception = self
 
@@ -19,5 +18,8 @@ class BusinessRuleException(SpecifyExceptionWrapper):
         from ..specify import api
         return api.toJson(result)
 
+class TreeBusinessRuleException(BusinessRuleException):
+    pass
+    
 class AbortSave(Exception):
     pass

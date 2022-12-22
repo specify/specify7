@@ -1,7 +1,7 @@
 import logging
 
 from .orm_signal_handler import orm_signal_handler
-from .exceptions import BusinessRuleException
+from .exceptions import TreeBusinessRuleException
 
 logger = logging.getLogger(__name__)
 
@@ -9,5 +9,9 @@ logger = logging.getLogger(__name__)
 def cannot_delete_root_treedefitem(sender, obj):
     if hasattr(obj, 'treedef'): # is it a treedefitem?
         if sender.objects.get(id=obj.id).parent is None:
-            raise BusinessRuleException("cannot delete root level tree definition item", {"table" : obj.__class__.__name__, "treeitemid" : obj.id})
+            raise TreeBusinessRuleException(
+                "cannot delete root level tree definition item", 
+                {"tree" : obj.__class__.__name__,
+                 "type" : "DELETE_TREE_ROOT", 
+                 "nodeid" : obj.id})
 
