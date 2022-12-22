@@ -11,22 +11,27 @@ import { createDictionary } from './utils';
 
 export const mainText = createDictionary({
   appTitle: {
+    comment: 'Formatting for the title in the web page title bar',
     'en-us': '{baseTitle:string} | Specify 7',
     'ru-ru': '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
+    comment: 'Default page title',
     'en-us': 'Specify 7',
     'ru-ru': 'Specify 7',
   },
   pageNotFound: {
+    comment: 'Used in title',
     'en-us': 'Page Not Found',
     'ru-ru': 'Страница не найдена',
   },
   nothingWasFound: {
+    comment: 'Used in the heading on 404 page',
     'en-us': 'Oops! Nothing was found',
     'ru-ru': 'Ой! Ничего не найдено',
   },
   pageNotFoundDescription: {
+    comment: 'Used in the paragraph on 404 page',
     'en-us': `
       The page you are looking for might have been removed, had its name changed
       or is temporarily unavailable.
@@ -75,6 +80,7 @@ export const mainText = createDictionary({
     `,
   },
   errorBoundaryDialogSecondMessage: {
+    comment: 'Careful with the <xml> tags when localizing',
     'en-us': `
       Users from <memberLink>member institutions</memberLink> can search for
       answered questions and ask for help on our <discourseLink>Community

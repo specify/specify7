@@ -8,8 +8,8 @@ import { createDictionary } from './utils';
 
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
-    'en-us': 'Specify Network (opens in new tab)',
-    'ru-ru': 'Specify Network (открывается в новой вкладке)',
+    'en-us': 'Specify Network',
+    'ru-ru': 'Specify Network',
   },
   failedToOpenPopUpDialogHeader: {
     'en-us': 'Failed to open Specify Network Page',

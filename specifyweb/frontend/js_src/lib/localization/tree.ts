@@ -161,10 +161,12 @@ export const treeText = createDictionary({
     'ru-ru': 'Угловой узел',
   },
   nodeStats: {
+    comment: "Used to show tree node's direct and indirect usages",
     'en-us': '({directCount:number|formatted}, {childCount:number|formatted})',
     'ru-ru': '({directCount:number|formatted}, {childCount:number|formatted})',
   },
   leafNodeStats: {
+    comment: "Used to show leaf tree node's direct usages",
     'en-us': '({directCount:number|formatted})',
     'ru-ru': '({directCount:number|formatted})',
   },

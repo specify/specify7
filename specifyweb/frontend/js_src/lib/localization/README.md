@@ -106,7 +106,7 @@ cognitive overhead of working with localization files (thus killing bugs)
   Incorrect example:
 
   ```javascript
-  wbText(hasError ? 'errorOccurred' : 'successMessage');
+  wbText[hasError ? 'errorOccurred' : 'successMessage']();
   ```
 
   Correct example:
@@ -119,30 +119,12 @@ cognitive overhead of working with localization files (thus killing bugs)
   finding references of a particular key in code. Also, it allows to easily find
   unused values and remove them from the dictionary.
 
-- Each entry may be a string, a JSX Element, or a function that takes arbitrary
-  arguments and returns a string or a JSX Element. It is important to note that
-  in the case of functions, it must be pure (e.x produce the same output given
-  the same input). It should also not relay on any external variables as those
-  should be specified as an argument instead.
-
-  Incorrect example:
-
-  ```javascript
-  DataSetName: () => `New Data Set ${new Date().toDateString()}`;
-  ```
-
-  Correct example:
-
-  ```javascript
-  newDataSetName: (date: string) => `New Data Set ${date}`;
-  ```
-
 - When writing multi-line strings, keep in mind that some values are going to be
   used in whitespace sensitive contexts. Most common example is the "title"
   attribute of a button. Another example is the cell comment text in the
   Workbench. In such cases, when using the string, wrap it in the
   whitespaceSensitive function. That function will trim all whitespace and join
-  all lines into one. To explicitly specify a lin break, leave a completely
+  all lines into one. To explicitly specify a line break, leave a completely
   empty line.
 
   Example definition:

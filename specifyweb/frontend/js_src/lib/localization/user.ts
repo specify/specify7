@@ -430,10 +430,12 @@ export const userText = createDictionary({
     'ru-ru': 'Загрузка администраторов...',
   },
   specifyAdmin: {
+    comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 7 Admin)',
     'ru-ru': '(Specify 7 Администратор)',
   },
   legacyAdmin: {
+    comment: 'Shown next to user name for admin users',
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Specify 6 Администратор)',
   },
@@ -484,8 +486,8 @@ export const userText = createDictionary({
       here at the collection-level.)
     `,
     'ru-ru': `
-      Некоторые политики применяются только на институциональном уровне, поэтому
-      они удалены из этих списков.
+      (Некоторые политики применяются только на институциональном уровне, поэтому
+      они удалены из этих списков.)
     `,
   },
   accountSetupOptions: {

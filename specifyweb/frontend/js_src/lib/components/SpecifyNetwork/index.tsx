@@ -232,11 +232,11 @@ function SpecifyNetwork({
         </Dialog>
       )}
       <Link.Default
-        aria-label={specifyNetworkText.specifyNetwork()}
+        aria-label={`${specifyNetworkText.specifyNetwork()} ${commonText.opensInNewTab()}`}
         href={getLink()}
         rel="opener noreferrer"
         target="_blank"
-        title={specifyNetworkText.specifyNetwork()}
+        title={`${specifyNetworkText.specifyNetwork()} ${commonText.opensInNewTab()}`}
         onClick={(event): void => {
           event.preventDefault();
           if (occurrenceName === undefined) handlePending();

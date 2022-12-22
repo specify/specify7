@@ -927,10 +927,12 @@ export const wbText = createDictionary({
     `,
   },
   wbStatusOperationNoProgress: {
+    comment: 'E.x, Validating...',
     'en-us': '{operationName:string}...',
     'ru-ru': '{operationName:string}...',
   },
   wbStatusOperationProgress: {
+    comment: 'E.x, Validating row 999/1,000',
     'en-us': `
       {operationName:string} row
       {current:number|formatted}/{total:number|formatted}

@@ -87,8 +87,8 @@ export const commonText = createDictionary({
     'ru-ru': 'Инструмент',
   },
   loading: {
-    'en-us': 'Loading…',
-    'ru-ru': 'Загрузка…',
+    'en-us': 'Loading...',
+    'ru-ru': 'Загрузка...',
   },
   name: {
     'en-us': 'Name',
@@ -207,6 +207,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Карта',
   },
   geoMapProgress: {
+    comment: 'Used in GeoMap title to indicate load progress',
     'en-us': 'GeoMap - {progress:string}',
     'ru-ru': 'Карта - {progress:string}',
   },
@@ -231,6 +232,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Переместить',
   },
   opensInNewTab: {
+    comment: 'Used in a hover-over message for links that open in new tab',
     'en-us': '(opens in a new tab)',
     'ru-ru': '(открывается в новой вкладке)',
   },
@@ -347,6 +349,7 @@ export const commonText = createDictionary({
     'ru-ru': '(нулевой)',
   },
   filePickerMessage: {
+    comment: 'Generic. Could refer to any file',
     'en-us': 'Choose a file or drag it here',
     'ru-ru': 'Выберите файл или перетащите его сюда',
   },

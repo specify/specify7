@@ -287,8 +287,7 @@ const fixLine = (
         .map((part) => splitContent(part, indent, printWidth))
         .join(`\n${indent}`)}\n${smallIndent}\`,`;
 
-// FIXME: look for places were can add comments
-// FIXME: get rid of back-end localization
+// REFACTOR: get rid of back-end localization (so that all strings are in one place)
 
 /*
  * This is like "/\b/gu" but also supports non-English letters

@@ -14,6 +14,8 @@ export const queryText = createDictionary({
     'ru-ru': 'Новый запрос',
   },
   queryBoxDescription: {
+    comment:
+      "Used in a Query Combo Box's hover-over message to show which fields are being searched on",
     'en-us': 'Searches: {fieldNames:string}',
     'ru-ru': 'Поисковые запросы: {fieldNames:string}',
   },
@@ -105,14 +107,17 @@ export const queryText = createDictionary({
     `,
   },
   invalidPicklistValue: {
+    comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
     'ru-ru': '{value:string} (текущее, недопустимое значение)',
   },
   queryTaskTitle: {
+    comment: 'Used in query builder header',
     'en-us': 'Query: {queryName:string}',
     'ru-ru': 'Запрос: {queryName:string}',
   },
   queryRecordSetTitle: {
+    comment: 'Used in query builder header when querying on record set',
     'en-us':
       'Query: "{queryName:string}" on Record Set: "{recordSetName:string}"',
     'ru-ru': `
@@ -120,6 +125,7 @@ export const queryText = createDictionary({
     `,
   },
   treeQueryName: {
+    comment: 'Used in query builder header when querying on tree node usages',
     'en-us': '{tableName:string} using "{nodeFullName:string}',
     'ru-ru': '{tableName:string} с использованием "{nodeFullName:string}"',
   },
@@ -188,6 +194,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Подобно',
   },
   likeDescription: {
+    comment: 'Explains the use of special symbols for the "like" query filter',
     'en-us': `
       Use "%" to match any number of characters.
       
@@ -300,6 +307,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Открыть карту',
   },
   queryMapSubset: {
+    comment: 'Used in GeoMap header while records are still being fetched',
     'en-us':
       'Plotted {plotted:number|formatted} of {total:number|formatted} records',
     'ru-ru': `

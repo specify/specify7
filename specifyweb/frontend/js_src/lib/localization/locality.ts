@@ -55,10 +55,12 @@ export const localityText = createDictionary({
     'ru-ru': 'Координаты',
   },
   northWestCorner: {
+    comment: 'Represents coordinates. Careful with translation',
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
   },
   southEastCorner: {
+    comment: 'Represents coordinates. Careful with translation',
     'en-us': 'SE Corner',
     'ru-ru': 'ЮВ Угол',
   },

@@ -10,10 +10,13 @@ import { createDictionary } from './utils';
 
 export const notificationsText = createDictionary({
   notifications: {
+    comment: 'Used for button label in the top menu',
     'en-us': 'Notifications: {count:number|formatted}',
     'ru-ru': 'Уведомлений: {count:number|formatted}',
   },
   notificationsLoading: {
+    comment:
+      'Used for button label in the top menu when notification count is loading',
     'en-us': 'Notifications: ...',
     'ru-ru': 'Уведомлений: ...',
   },
@@ -22,8 +25,9 @@ export const notificationsText = createDictionary({
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
   },
   exception: {
-    'en-us': 'Exception',
-    'ru-ru': 'Трассировка стека',
+    comment: 'Used as a label for a button that downloads the error message',
+    'en-us': 'Error',
+    'ru-ru': 'Ошибка',
   },
   download: {
     'en-us': 'Download',

@@ -104,10 +104,12 @@ export const formsText = createDictionary({
     'ru-ru': 'Обнаружены ошибки:',
   },
   recordSetCaption: {
+    comment: 'See documentation for syntax for plural rules',
     'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
     'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
   },
   entryCaption: {
+    comment: 'Field name is localized. Coming from Schema Configuration',
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
   },
@@ -176,6 +178,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Решенный',
   },
   prepReturnFormatter: {
+    comment: 'Used to format preparations in the prep return dialog',
     'en-us': '{tableName:string}: {resource: string}',
     'ru-ru': '{tableName:string}: {resource: string}',
   },
@@ -236,10 +239,14 @@ export const formsText = createDictionary({
     'ru-ru': 'Точность даты',
   },
   monthYear: {
+    comment:
+      'A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don\'t support the "month" input type.',
     'en-us': 'Mon / Year',
     'ru-ru': 'Месяц / Год',
   },
   yearPlaceholder: {
+    comment:
+      'A placeholder for partial date field when "year" type is selected',
     'en-us': 'YYYY',
     'ru-ru': 'ГГГГ',
   },
@@ -257,10 +264,10 @@ export const formsText = createDictionary({
   },
   addToPickListConfirmationDialogText: {
     'en-us': `
-      Add value "{value:string}" to the pick list named {pickListName:string}?
+      Add value "{value:string}" to the pick list named "{pickListName:string}"?
     `,
     'ru-ru': `
-      Добавить значение "{value:string}" в список выбора {pickListName:string}?
+      Добавить значение "{value:string}" в список выбора "{pickListName:string}"?
     `,
   },
   invalidType: {
@@ -472,6 +479,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Недопустимое значение',
   },
   requiredFormat: {
+    comment: 'Used in field validation messages on the form',
     'en-us': 'Required Format: {format:string}.',
     'ru-ru': 'Обязательный формат: {format:string}.',
   },
@@ -512,18 +520,22 @@ export const formsText = createDictionary({
     'ru-ru': 'Поле из таблицы',
   },
   treeMerge: {
+    comment: 'Audit Log Action Type',
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',
   },
   treeMove: {
+    comment: 'Audit Log Action Type',
     'en-us': 'Tree Move',
     'ru-ru': 'Перемещение узла дерева',
   },
   treeSynonymize: {
+    comment: 'Audit Log Action Type',
     'en-us': 'Tree Synonymize',
     'ru-ru': 'Синонимизированный узел дерева',
   },
   treeDesynonymize: {
+    comment: 'Audit Log Action Type',
     'en-us': 'Tree Desynonymize',
     'ru-ru': 'Отменено синонимизацию узла дерева',
   },
@@ -536,6 +548,8 @@ export const formsText = createDictionary({
     'ru-ru': 'некаталогизированный',
   },
   additionalResultsOmitted: {
+    comment:
+      'Represents truncated search dialog output (when lots of results returned)',
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
   },
@@ -544,6 +558,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Продолжить без сохранения?',
   },
   recordSelectorUnloadProtectDialogText: {
+    comment:
+      'When in record set and current record is unsaved and try to navigate to another record',
     'en-us': 'You might want to save this record before navigating away.',
     'ru-ru': 'Не забудьте сохранить эту запись, прежде чем закрыть ее.',
   },
@@ -775,6 +791,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Таблица',
   },
   formTableHeading: {
+    comment:
+      'Formatter for heading of the Form Table (a.k.a Grid) form element',
     'en-us': '{relationshipName:string} ({count:number|formatted})',
     'ru-ru': '{relationshipName:string} ({count:number|formatted})',
   },
@@ -815,6 +833,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Новый {tableName:string}',
   },
   resourceFormatter: {
+    comment:
+      'When resource does not have a formatter defined, this formatter is used',
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
   },

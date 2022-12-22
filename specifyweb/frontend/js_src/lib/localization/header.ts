@@ -10,6 +10,7 @@ import { createDictionary } from './utils';
 
 export const headerText = createDictionary({
   skipToContent: {
+    comment: 'For accessibility purposes. Allows jumping to page content',
     'en-us': 'Skip to Content',
     'ru-ru': 'Перейти к содержанию',
   },

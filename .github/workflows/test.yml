@@ -28,7 +28,7 @@ jobs:
       - name: Check if any non-front-end files changed
         id: back-end-check
         run: |
-          changed_files=`echo ${{steps.filter.outputs.backend_files}} | tr " " "\n" | grep -v 'frontend' || echo ""`
+          changed_files=`echo "${{steps.filter.outputs.backend_files}}" | tr " " "\n" | grep -v 'frontend' || echo ""`
           echo "changed=${changed_files}" >> $GITHUB_OUTPUT
 
   test-back-end:
