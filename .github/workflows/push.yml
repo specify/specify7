@@ -6,7 +6,6 @@ jobs:
 
   pull-localization:
     name: Pull localization from Weblate
-    needs: changes
     # Only run this for pushes from Weblate
     # Note, this is not a secure check as git author can be changed easily
     if: github.event.head_commit.author.email == 'hosted@weblate.org'
