@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
+import { className } from '../Atoms/className';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
 import { join } from '../Molecules';
@@ -108,11 +109,34 @@ export function formatError(
   ] as const;
 }
 
+function formatJSONBackendResponse(error: string): JSX.Element {
+  const json = JSON.parse(error);
+  const exception = json.exception;
+  const message = json.message;
+  const data = json.data;
+  const traceback = json.traceback;
+
+  const formattedData = jsonStringify(data, 2);
+  return (
+    <>
+      <h2 className={className.headerPrimary}>{exception}</h2>
+      <em className={className.label}>{message}</em>
+      <details>
+        <summary>Data</summary>
+        <pre>{formattedData}</pre>
+      </details>
+      <details>
+        <summary>Traceback</summary>
+        {traceback}
+      </details>
+    </>
+  );
+}
+
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    const json = JSON.parse(error);
-    return <pre>{jsonStringify(json, 2)}</pre>;
+    return formatJSONBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }
