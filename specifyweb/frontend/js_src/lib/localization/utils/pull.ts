@@ -282,10 +282,14 @@ const fixLine = (
 ): string =>
   line.length < printWidth
     ? original
-    : `${pre} \`\n${indent}${content
+    : `${pre} \`\n${content
         .split('\\n')
-        .map((part) => splitContent(part, indent, printWidth))
-        .join(`\n${indent}`)}\n${smallIndent}\`,`;
+        .map((part) =>
+          part === ''
+            ? ''
+            : `${indent}${splitContent(part, indent, printWidth)}`
+        )
+        .join(`\n`)}\n${smallIndent}\`,`;
 
 // REFACTOR: get rid of back-end localization (so that all strings are in one place)
 
