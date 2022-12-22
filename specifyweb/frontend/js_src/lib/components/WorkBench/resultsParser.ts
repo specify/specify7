@@ -179,6 +179,42 @@ export function resolveValidationMessage(
       badType: payload.badType as string,
       validTypes: formatList((payload.validTypes as RA<string>) ?? []),
     });
+  else if (key === 'pickListValueTooLong')
+    return backEndText.pickListValueTooLong({
+      pickList: payload.pickList as string,
+      maxLength: payload.maxLength as number,
+    });
+  else if (key === 'valueTooLong')
+    return backEndText.valueTooLong({
+      maxLength: payload.maxLength as number,
+    });
+  else if (key === 'invalidYear')
+    return backEndText.invalidYear({
+      value: payload.value as string,
+    });
+  else if (key === 'badDateFormat')
+    return backEndText.badDateFormat({
+      value: payload.value as string,
+      format: payload.format as string,
+    });
+  else if (key === 'coordinateBadFormat')
+    return backEndText.coordinateBadFormat({
+      value: payload.value as string,
+    });
+  else if (key === 'latitudeOutOfRange')
+    return backEndText.latitudeOutOfRange({
+      value: payload.value as string,
+    });
+  else if (key === 'longitudeOutOfRange')
+    return backEndText.longitudeOutOfRange({
+      value: payload.value as string,
+    });
+  else if (key === 'invalidPartialRecord')
+    return backEndText.invalidPartialRecord({
+      column: payload.column as string,
+    });
+  else if (key === 'fieldRequiredByUploadPlan')
+    return backEndText.fieldRequiredByUploadPlan();
   else if (key === 'invalidTreeStructure')
     return backEndText.invalidTreeStructure();
   else if (key === 'missingRequiredTreeParent')

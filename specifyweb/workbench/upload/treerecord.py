@@ -68,7 +68,7 @@ class ScopedTreeRecord(NamedTuple):
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters.get('name', None) is None:
                 parseFails += [
-                    ParseFailure(f'this field must be empty if "{nameColumn.column}" is empty', result.column)
+                    ParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
                     for result in presults
                     if any(v is not None for v in result.filter_on.values())
                 ]
@@ -303,7 +303,7 @@ class BoundTreeRecord(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(r.missing_required, r.column)
+            ParseFailure(r.missing_required, {}, r.column)
             for tdiwpr in to_upload
             for r in tdiwpr.results
             if r.missing_required is not None

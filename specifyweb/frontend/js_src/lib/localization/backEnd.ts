@@ -36,6 +36,47 @@ export const backEndText = createDictionary({
     'ru-ru':
       'неверный тип агента: "{badType:string}". Ожидается один из {validTypes:string}',
   },
+  pickListValueTooLong: {
+    'en-us':
+      'value from picklist {pickList:string} longer than the max of {maxLength:number|formatted} for field',
+    'ru-ru':
+      'значение из списка {pickList:string} длиннее максимального значения {maxLength:number|formatted} для поля',
+  },
+  valueTooLong: {
+    'en-us':
+      'value must not have length greater than {maxLength:number|formatted}',
+    'ru-ru': 'значение не должно быть длиннее {maxLength:number|formatted}',
+  },
+  invalidYear: {
+    'en-us': 'date value must contain four digit year: {value:string}',
+    'ru-ru':
+      'значение даты должно содержать четырехзначный год: {value:string}',
+  },
+  badDateFormat: {
+    'en-us': 'bad date value: {value:string}. expected: {format:string}',
+    'ru-ru':
+      'неверное значение даты: {value:string}. ожидается: {format:string}',
+  },
+  coordinateBadFormat: {
+    'en-us': 'bad latitude or longitude value: {value:string}',
+    'ru-ru': 'неверное значение широты или долготы: {value:string}',
+  },
+  latitudeOutOfRange: {
+    'en-us': 'latitude must be between -90 and 90. actual: {value:string}',
+    'ru-ru': 'широта должна быть между -90 и 90. фактически: {value:string}',
+  },
+  longitudeOutOfRange: {
+    'en-us': 'longitude must be between -180 and 180. actual: {value:string}',
+    'ru-ru': 'долгота должна быть между -180 и 180. фактически: {value:string}',
+  },
+  invalidPartialRecord: {
+    'en-us': 'this field must be empty if {column:string} is empty',
+    'ru-ru': 'это поле должно быть пустым, если {column:string} пусто',
+  },
+  fieldRequiredByUploadPlan: {
+    'en-us': 'field is required by upload plan mapping',
+    'ru-ru': 'поле обязательно для загрузки плана',
+  },
   invalidTreeStructure: {
     'en-us': 'There are multiple "Uploaded" placeholder values in the tree!',
     'ru-ru': 'В дереве есть несколько веток с именем "Uploaded"!',
