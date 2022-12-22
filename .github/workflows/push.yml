@@ -1,0 +1,57 @@
+name: Tests
+
+on: [push]
+
+jobs:
+
+  pull-localization:
+    name: Pull localization from Weblate
+    needs: changes
+    # Only run this for pushes from Weblate
+    # Note, this is not a secure check as git author can be changed easily
+    if: github.event.head_commit.author.email == 'hosted@weblate.org'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v3
+        path: specify7
+        # Assumes the strings originally came from production branch
+        # FIXME: replace this with "production"
+        ref: l10n-improvements
+        fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+          cache-dependency-path: specify7/specifyweb/frontend/js_src/package-lock.json
+
+      - name: Localization Tests
+        working-directory: specify7/specifyweb/frontend/js_src
+        env:
+          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
+        run: |
+          npm run pullFromWeblate -- --directory ../../../../strings
+
+      - name: Upload updated localization strings
+        working-directory: specify7
+        run: |
+          git add .
+
+          if git diff-index --quiet HEAD --; then
+            echo "Localization strings are unchanged"
+          else
+            # Set the committer and author to the name and email of the person
+            # who triggered the action (Weblate will commit on behalf of the
+            # person who did the localization)
+            git config --local user.name "${{ github.event.head_commit.committer.name }}"
+            git config --local user.email "${{ github.event.head_commit.committer.email }}"
+
+            git commit \
+              --author 'Hosted Weblate <hosted@weblate.org>' \
+              -m 'Sync localization strings with Weblate' \
+              -m "Triggered by ${{ github.sha }} on branch ${{ github.ref }}"
+            git push
+          fi
