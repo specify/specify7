@@ -13,14 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the weblate-localization branch
+        uses: actions/checkout@v3
 
-      - uses: actions/checkout@v3
-        path: specify7
-        # Assumes the strings originally came from production branch
-        # FIXME: replace this with "production"
-        ref: l10n-improvements
-        fetch-depth: 0
+      - name: Checkout the source branch
+        uses: actions/checkout@v3
+        with:
+          path: specify7
+          # Assumes the strings originally came from production branch
+          # FIXME: replace this with "production"
+          ref: l10n-improvements
+          fetch-depth: 0
 
       - uses: actions/setup-node@v3
         with:
@@ -28,14 +31,14 @@ jobs:
           cache: "npm"
           cache-dependency-path: specify7/specifyweb/frontend/js_src/package-lock.json
 
-      - name: Localization Tests
+      - name: Integrate modified strings back into code
         working-directory: specify7/specifyweb/frontend/js_src
         env:
           WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
         run: |
           npm run pullFromWeblate -- --directory ../../../../strings
 
-      - name: Upload updated localization strings
+      - name: Commit updated localization strings
         working-directory: specify7
         run: |
           git add .
