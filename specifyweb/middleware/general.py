@@ -37,7 +37,7 @@ class GeneralMiddleware:
         from ..permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
-                return exception.to_json()
+                return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
             if not isinstance(exception, SpecifyExceptionWrapper):
                 exception = SpecifyExceptionWrapper(exception)
             return http.HttpResponse(exception.to_json(), status=exception.http_status)
