@@ -36,6 +36,8 @@ class GeneralMiddleware:
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
         from ..permissions.permissions import PermissionsException
         if not settings.DEBUG:
-            if not isinstance(exception, SpecifyExceptionWrapper) and not isinstance(exception, PermissionsException):
+            if isinstance(exception, PermissionsException):
+                return exception.to_json()
+            if not isinstance(exception, SpecifyExceptionWrapper):
                 exception = SpecifyExceptionWrapper(exception)
             return http.HttpResponse(exception.to_json(), status=exception.http_status)
