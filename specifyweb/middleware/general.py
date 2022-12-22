@@ -37,6 +37,11 @@ class GeneralMiddleware:
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
                 return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)
+        
+            # If Http404, defer this exception to Django
+            if isinstance(exception, http.Http404):
+                return None
+                
             if not isinstance(exception, SpecifyExceptionWrapper):
                 exception = SpecifyExceptionWrapper(exception)
             return http.HttpResponse(exception.to_json(), status=exception.status_code)
