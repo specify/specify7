@@ -3,8 +3,6 @@ from typing import Optional, Dict
 from django import http
 from django.conf import settings
 
-from ..permissions.permissions import PermissionsException
-
 class SpecifyExceptionWrapper(Exception):
     http_status = 500
     
@@ -36,6 +34,7 @@ class GeneralMiddleware:
         pass
 
     def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
+        from ..permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if not isinstance(exception, SpecifyExceptionWrapper) and not isinstance(exception, PermissionsException):
                 exception = SpecifyExceptionWrapper(exception)
