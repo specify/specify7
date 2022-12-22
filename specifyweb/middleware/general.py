@@ -4,18 +4,17 @@ from django import http
 from django.conf import settings
 
 class SpecifyExceptionWrapper(Exception):
-    http_status = 500
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+        self.exception = self.args[0]
+        self.data = self.args[1] if len(self.args) > 1 else None
+        self.status_code = getattr(self.exception, "status_code") if hasattr(self.exception, "status_code") else 500
     
     def to_json(self) -> Dict:
-        exception = self.args[0]
-
-        has_data = len(self.args) > 1
-        data = self.args[1] if has_data else None
-
         result = {
-            'exception' : exception.__class__.__name__,
-            'message' : str(exception),
-            'data' : data,
+            'exception' : self.exception.__class__.__name__,
+            'message' : str(self.exception),
+            'data' : self.data,
             'traceback' : traceback.format_exc()
             }
         from ..specify import api
@@ -37,7 +36,7 @@ class GeneralMiddleware:
         from ..permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
-                return http.JsonResponse(exception.to_json(), status=exception.http_status, safe=False)
+                return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)
             if not isinstance(exception, SpecifyExceptionWrapper):
                 exception = SpecifyExceptionWrapper(exception)
-            return http.HttpResponse(exception.to_json(), status=exception.http_status)
+            return http.HttpResponse(exception.to_json(), status=exception.status_code)
