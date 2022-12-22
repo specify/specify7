@@ -25,6 +25,7 @@ import {
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
 import { SortConfig } from '../../components/Molecules/Sorting';
+import { GenericPreferences } from '../../components/UserPreferences/Definitions';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -112,12 +113,15 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: UserPreferences;
+    readonly cached: GenericPreferences;
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: UserPreferences;
+    readonly defaultCached: GenericPreferences;
+  };
+  readonly collectionPreferences: {
+    readonly cached: GenericPreferences;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
