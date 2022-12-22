@@ -1,0 +1,73 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Header/Notifications.tsx:134
+#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
+msgid "notifications"
+msgstr "Уведомлений: {count:number|formatted}"
+
+#: components/Header/Notifications.tsx:137
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
+msgid "notificationsLoading"
+msgstr "Уведомлений: ..."
+
+#: components/Header/Notifications.tsx:177
+#. Used in: Components > Header > Notifications
+msgid "mostRecentNotificationsTop"
+msgstr "(В порядке от самого последнего к самому старому.)"
+
+#: components/Header/NotificationRenderers.tsx:44
+#: components/Header/NotificationRenderers.tsx:72
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
+msgid "exception"
+msgstr "Ошибка"
+
+#: components/AppResources/EditorComponents.tsx:125
+#: components/Header/NotificationRenderers.tsx:58
+#: components/Header/NotificationRenderers.tsx:86
+#: components/Header/NotificationRenderers.tsx:100
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
+msgid "download"
+msgstr "Скачать"
+
+#: components/Header/Notifications.tsx:146
+#. Used in: Components > Header > Notifications
+msgid "notificationsDialogTitle"
+msgstr "Уведомления"
+
+#: components/Header/NotificationRenderers.tsx:24
+#. Used in: Components > Header > Notification Renderers
+msgid "feedItemUpdated"
+msgstr "Элемент фида экспорта обновлен."
+
+#: components/Header/NotificationRenderers.tsx:38
+#. Used in: Components > Header > Notification Renderers
+msgid "updateFeedFailed"
+msgstr "Не удалось обновить экспортный канал."
+
+#: components/Header/NotificationRenderers.tsx:52
+#. Used in: Components > Header > Notification Renderers
+msgid "dwcaExportCompleted"
+msgstr "Экспорт в DwCA завершен."
+
+#: components/Header/NotificationRenderers.tsx:66
+#. Used in: Components > Header > Notification Renderers
+msgid "dwcaExportFailed"
+msgstr "Не удалось экспортировать DwCA."
+
+#: components/Header/NotificationRenderers.tsx:80
+#. Used in: Components > Header > Notification Renderers
+msgid "queryExportToCsvCompleted"
+msgstr "Экспорт запроса в CSV завершен."
+
+#: components/Header/NotificationRenderers.tsx:94
+#. Used in: Components > Header > Notification Renderers
+msgid "queryExportToKmlCompleted"
+msgstr "Экспорт запроса в KML завершен."
+
+#: components/Header/NotificationRenderers.tsx:108
+#. Used in: Components > Header > Notification Renderers
+msgid "dataSetOwnershipTransferred"
+msgstr ""
+"<userName /> передал вам право собственности на набор данных <dataSetName "
+"/>."

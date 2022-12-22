@@ -1,0 +1,114 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Molecules/AppTitle.tsx:47
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+msgid "appTitle"
+msgstr "{baseTitle:string} | Specify 7"
+
+#: components/Molecules/AppTitle.tsx:46
+#. 🟥Default page title. Used in: Components > Molecules > App Title
+msgid "baseAppTitle"
+msgstr "Specify 7"
+
+#: components/Router/NotFoundView.tsx:15
+#: components/Router/NotFoundView.tsx:20
+#. 🟥Used in title. Used in: Components > Router > Not Found View
+msgid "pageNotFound"
+msgstr "Page Not Found"
+
+#: components/Router/NotFoundView.tsx:25
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+msgid "nothingWasFound"
+msgstr "Oops! Nothing was found"
+
+#: components/Router/NotFoundView.tsx:26
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+msgid "pageNotFoundDescription"
+msgstr ""
+"The page you are looking for might have been removed, had its name changed "
+"or is temporarily unavailable."
+
+#: components/Router/NotFoundView.tsx:29
+#. Used in: Components > Router > Not Found View
+msgid "returnToHomepage"
+msgstr "Return to homepage"
+
+#: components/Errors/ErrorDialog.tsx:54
+#: components/Errors/FormatError.tsx:186
+#: components/Errors/FormatError.tsx:219
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+msgid "errorBoundaryDialogHeader"
+msgstr "Sorry, something's gone a bit wrong"
+
+#: components/Errors/ErrorDialog.tsx:163
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogText"
+msgstr ""
+"We're sorry, it seems you have encountered an error in Specify 7 that we "
+"may not be aware of."
+
+#: components/Errors/ErrorDialog.tsx:164
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryCriticalDialogText"
+msgstr ""
+"To avoid corrupting data records, we need to start again from a safe "
+"spot--the Home page."
+
+#: components/Errors/ErrorDialog.tsx:30
+#. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogMessage"
+msgstr ""
+"If this issue persists, please contact your IT support or if this is a "
+"Specify Cloud database, contact <email />"
+
+#: components/Errors/ErrorDialog.tsx:36
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+msgid "errorBoundaryDialogSecondMessage"
+msgstr ""
+"Users from <memberLink>member institutions</memberLink> can search for "
+"answered questions and ask for help on our <discourseLink>Community "
+"Forum</discourseLink>."
+
+#: components/Core/__tests__/Contexts.test.tsx:37
+#: components/Errors/ErrorDialog.tsx:172
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
+msgid "errorMessage"
+msgstr "Error Message"
+
+#: components/Router/Router.tsx:297
+#. Used in: Components > Router > Router
+msgid "leavePageDialogHeader"
+msgstr "Are you sure you want to leave this page?"
+
+#: components/Security/Role.tsx:86
+#. Used in: Components > Security > Role
+msgid "leavePageDialogText"
+msgstr "Unsaved changes would be lost if your leave this page."
+
+#: components/Router/Router.tsx:293
+#. Used in: Components > Router > Router
+msgid "leave"
+msgstr "Leave"
+
+#: components/Core/Main.tsx:140
+#. Used in: Components > Core > Main
+msgid "versionMismatchDialogHeader"
+msgstr "Specify version does not match database version"
+
+#: components/Core/Main.tsx:144
+#. Used in: Components > Core > Main
+msgid "versionMismatchDialogText"
+msgstr ""
+"The Specify version {specifySixVersion:string} does not match the database "
+"version {databaseVersion:string}."
+
+#: components/Core/Main.tsx:149
+#. Used in: Components > Core > Main
+msgid "versionMismatchSecondDialogText"
+msgstr "Some features of Specify 7 may therefore fail to operate correctly."
+
+#: components/Core/Main.tsx:152
+#. Used in: Components > Core > Main
+msgid "versionMismatchThirdDialogText"
+msgstr "Instructions for resolving Specify schema mismatch"
