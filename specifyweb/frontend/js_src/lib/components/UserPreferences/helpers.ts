@@ -23,6 +23,10 @@ import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
 import { parseValue } from '../../utils/parser/parse';
 import { Http } from '../../utils/ajax/definitions';
+import {
+  preferencesFetchSpec,
+  preferencesPromiseGenerator,
+} from './preferencesFetch';
 
 export function getPrefDefinition<
   CATEGORY extends keyof Preferences,
@@ -252,43 +256,12 @@ export const preferencesPromise = contextUnlockedPromise.then(
     entrypoint === 'main'
       ? f
           .all({
-            items: ajax<RA<UserResource>>(
-              cachableUrl('/context/user_resource/'),
-              {
-                headers: { Accept: 'application/json' },
-              }
-            )
-              .then(
-                ({ data }) =>
-                  data.find(
-                    ({ name, mimetype }) =>
-                      name === resourceName && mimetype === 'application/json'
-                  )?.id
-              )
-              .then(async (appResourceId) =>
-                (typeof appResourceId === 'number'
-                  ? ajax<ResourceWithData>(
-                      cachableUrl(`/context/user_resource/${appResourceId}/`),
-                      {
-                        headers: { Accept: 'application/json' },
-                      }
-                    )
-                  : ajax<ResourceWithData>(
-                      '/context/user_resource/',
-                      {
-                        headers: { Accept: 'application/json' },
-                        method: 'POST',
-                        body: keysToLowerCase({
-                          name: resourceName,
-                          mimeType,
-                          metaData: '',
-                          data: '{}',
-                        }),
-                      },
-                      { expectedResponseCodes: [Http.CREATED] }
-                    )
-                ).then(({ data }) => data)
-              ),
+            items: await Promise.all(
+              preferencesPromiseGenerator(preferencesFetchSpec)
+            ).then((data) => {
+              const result = Object.fromEntries(data);
+              return result;
+            }),
             defaultItems: ajax(
               formatUrl('/context/app.resource', {
                 name: defaultResourceName,
@@ -310,9 +283,10 @@ export const preferencesPromise = contextUnlockedPromise.then(
                 return {};
               }),
           })
-          .then(({ items, defaultItems }) => {
+          .then(async ({ items, defaultItems }) => {
+            console.log(items);
             defaultPreferences = defaultItems;
-            initializePreferences(items);
+            initializePreferences(items.userPreferences);
             return items;
           })
       : foreverFetch<ResourceWithData>()
