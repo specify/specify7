@@ -4,7 +4,6 @@ import { commonText } from '../../localization/common';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA, WritableArray } from '../../utils/types';
 import { jsonStringify } from '../../utils/utils';
-import { className } from '../Atoms/className';
 import { displayError } from '../Core/Contexts';
 import { userInformation } from '../InitialContext/userInformation';
 import { join } from '../Molecules';
@@ -13,6 +12,7 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
+import { formatJSONBackendResponse } from './JSONError';
 
 export function formatError(
   error: unknown,
@@ -107,30 +107,6 @@ export function formatError(
     errorMessage.join('\n'),
     produceStackTrace(copiableMessage),
   ] as const;
-}
-
-function formatJSONBackendResponse(error: string): JSX.Element {
-  const json = JSON.parse(error);
-  const exception = json.exception;
-  const message = json.message;
-  const data = json.data;
-  const traceback = json.traceback;
-
-  const formattedData = jsonStringify(data, 2);
-  return (
-    <>
-      <h2 className={className.headerPrimary}>{exception}</h2>
-      <em className={className.label}>{message}</em>
-      <details>
-        <summary>Data</summary>
-        <pre>{formattedData}</pre>
-      </details>
-      <details>
-        <summary>Traceback</summary>
-        {traceback}
-      </details>
-    </>
-  );
 }
 
 /** Format error message as JSON, HTML or plain text */
