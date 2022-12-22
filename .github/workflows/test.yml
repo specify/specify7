@@ -137,8 +137,6 @@ jobs:
 
       - name: Localization Tests
         working-directory: specifyweb/frontend/js_src
-        env:
-          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
         run: |
           npm run localizationTests -- --emit ./localization-strings
 
@@ -198,3 +196,10 @@ jobs:
           committer_name: Max Patiiuk
           committer_email: max@patii.uk
           message: ${{ steps.commit_message.outputs.MESSAGE }}
+
+      - name: Make sure Weblate settings are up to date
+        working-directory: specifyweb/frontend/js_src
+        env:
+          WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
+        run: |
+          npm run validateWeblate

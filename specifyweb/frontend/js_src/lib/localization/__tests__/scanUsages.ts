@@ -18,7 +18,7 @@ const { verbose, emit } = program.opts<{
   readonly emit?: string;
 }>();
 
-scanUsages(verbose)
+scanUsages(verbose ? 'verbose' : 'normal')
   .then((usages) =>
     typeof usages === 'object' && typeof emit === 'string'
       ? syncStrings(usages, emit)

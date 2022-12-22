@@ -45,8 +45,15 @@ const characterBlacklist: Partial<RR<Language, string>> = {
   'en-us': 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
 };
 
-const { log, todo, getToDoCount, warn, getWarningCount, error, getErrorCount } =
-  testLogging;
+const {
+  log,
+  todo,
+  getToDoCount,
+  warn: globalWarn,
+  getWarningCount,
+  error,
+  getErrorCount,
+} = testLogging;
 
 export type ExtractedStrings = IR<{
   readonly dictionaryName: string;
@@ -129,9 +136,10 @@ export type DictionaryUsages = IR<{
 }>;
 
 export async function scanUsages(
-  verbose: boolean
+  mode: 'verbose' | 'normal' | 'silent'
 ): Promise<DictionaryUsages | undefined> {
-  const debug = verbose ? console.log : () => undefined;
+  const debug = mode === 'verbose' ? console.log : () => undefined;
+  const warn = mode === 'silent' ? () => undefined : globalWarn;
 
   const entries = await extractStrings();
 
@@ -406,7 +414,7 @@ export async function scanUsages(
 
   // Output stats
   debug(dictionaries);
-  if (verbose)
+  if (mode === 'verbose')
     Object.entries(dictionaries).forEach(([dictionaryName, { strings }]) =>
       log(
         `${dictionaryName} has ${
@@ -417,11 +425,13 @@ export async function scanUsages(
       )
     );
 
-  console.log('\n');
-  todo(`TODOs: ${getToDoCount()}`);
-  warn(`Warnings: ${getWarningCount()}`);
-  // Not using error() here as that would change the exit code to 1
-  warn(`Errors: ${getErrorCount()}`);
+  if (mode !== 'silent') {
+    log('\n');
+    todo(`TODOs: ${getToDoCount()}`);
+    warn(`Warnings: ${getWarningCount()}`);
+    // Not using error() here as that would change the exit code to 1
+    warn(`Errors: ${getErrorCount()}`);
+  }
 
   if (getErrorCount() > 0) return undefined;
   else return dictionaries;

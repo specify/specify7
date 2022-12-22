@@ -14,6 +14,7 @@
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
     "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
+    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc --build tsconfig.tests.json",
     "unitTests": "jest",
