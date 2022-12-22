@@ -30,6 +30,10 @@ jobs:
           cache: "npm"
           cache-dependency-path: specify7/specifyweb/frontend/js_src/package-lock.json
 
+      - name: Install Dependencies
+        working-directory: specify7/specifyweb/frontend/js_src
+        run: npm ci
+
       - name: Integrate modified strings back into code
         working-directory: specify7/specifyweb/frontend/js_src
         env:
