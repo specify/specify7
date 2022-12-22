@@ -83,8 +83,9 @@ class AgentTests(ApiTests):
         agent.agenttype = agent_types.index('Other')
         agent.save()
 
-        with self.assertRaises(models.Address.DoesNotExist):
-            models.Address.objects.get(agent=agent)
+        # Temporarily removed while https://github.com/specify/specify7/issues/2518 is being resolved
+        # with self.assertRaises(models.Address.DoesNotExist):
+        #     models.Address.objects.get(agent=agent)
 
         agent.addresses.create(address="somewhere")
 
