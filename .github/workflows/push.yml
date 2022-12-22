@@ -8,7 +8,7 @@ jobs:
     name: Pull localization from Weblate
     # Only run this for pushes from Weblate
     # Note, this is not a secure check as git author can be changed easily
-    if: github.event.head_commit.author.email == 'hosted@weblate.org'
+    if: github.event.head_commit.committer.email == 'hosted@weblate.org'
     runs-on: ubuntu-latest
 
     steps:
@@ -48,8 +48,8 @@ jobs:
             # Set the committer and author to the name and email of the person
             # who triggered the action (Weblate will commit on behalf of the
             # person who did the localization)
-            git config --local user.name "${{ github.event.head_commit.committer.name }}"
-            git config --local user.email "${{ github.event.head_commit.committer.email }}"
+            git config --local user.name "${{ github.event.head_commit.author.name }}"
+            git config --local user.email "${{ github.event.head_commit.author.email }}"
 
             git commit \
               --author 'Hosted Weblate <hosted@weblate.org>' \
