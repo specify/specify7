@@ -29,7 +29,7 @@ jobs:
         id: back-end-check
         run: |
           changed_files=`echo "${{steps.filter.outputs.backend_files}}" | tr " " "\n" | grep -v 'frontend' || echo ""`
-          echo "changed=${changed_files}" >> $GITHUB_OUTPUT
+          echo "changed=$([[ -z "$changed_files" ]] && echo "1" || echo "")" >> $GITHUB_OUTPUT
 
   test-back-end:
     name: Run back-end tests

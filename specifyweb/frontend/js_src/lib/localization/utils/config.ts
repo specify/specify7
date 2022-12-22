@@ -26,3 +26,12 @@ export const LANGUAGE: Language =
   f.includes(languages, document.documentElement.lang)
     ? document.documentElement.lang
     : undefined) ?? DEFAULT_LANGUAGE;
+
+/**
+ * Which branch the strings are coming from.
+ * If modifying this, also update the trigger in the GitHub Action on
+ * this branch and on the weblate-localization branch
+ */
+export const syncBranch = 'production';
+
+export const weblateBranch = 'weblate-localization';

@@ -1,14 +1,9 @@
+import { Http } from '../../utils/ajax/definitions';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
-import { Http } from '../../utils/ajax/definitions';
+import { syncBranch, weblateBranch } from './config';
+import type { DictionaryUsages } from './scanUsages';
 import { testLogging } from './testLogging';
-import { DictionaryUsages } from './scanUsages';
-
-/**
- * Which branch the strings are coming from.
- * If modifying this, also update the trigger in the GitHub Action
- */
-const syncBranch = 'production';
 
 const { error, warn } = testLogging;
 
@@ -84,7 +79,7 @@ async function createComponent(name: string): Promise<void> {
 const getComponentSettings = (name: string): IR<unknown> => ({
   allow_translation_propagation: true,
   auto_lock_error: true,
-  branch: 'weblate-localization',
+  branch: weblateBranch,
   commit_pending_age: 3,
   edit_template: true,
   file_format: 'po-mono',
@@ -95,7 +90,7 @@ const getComponentSettings = (name: string): IR<unknown> => ({
   license_url: 'https://spdx.org/licenses/GPL-2.0-only.html',
   merge_style: 'rebase',
   name,
-  push_branch: 'weblate-localization',
+  push_branch: weblateBranch,
   push_on_commit: true,
   repo: 'https://github.com/specify/specify7/',
   push: 'git@github.com:specify/specify7.git',
@@ -129,9 +124,8 @@ function compareConfig(
 ): void {
   const remote: IR<unknown> = {
     ...rawRemote,
-    source_language: (rawRemote.source_language as { readonly code: string })[
-      'code'
-    ],
+    source_language: (rawRemote.source_language as { readonly code: string })
+      .code,
   };
   Object.entries(local).forEach(([key, value]) =>
     JSON.stringify(value) === JSON.stringify(remote[key])
