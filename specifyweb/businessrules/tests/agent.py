@@ -67,32 +67,32 @@ class AgentTests(ApiTests):
                 lastname="Agent",
                 division=self.division)
 
+    # Temporarily removed while https://github.com/specify/specify7/issues/2518 is being resolved
+    
+    # def test_other_and_group_do_not_have_addresses(self):
+    #     from specifyweb.specify.agent_types import agent_types
+    #     agent = models.Agent.objects.create(
+    #         agenttype=agent_types.index('Person'),
+    #         firstname="Test",
+    #         lastname="Agent",
+    #         division=self.division)
 
-    def test_other_and_group_do_not_have_addresses(self):
-        from specifyweb.specify.agent_types import agent_types
-        agent = models.Agent.objects.create(
-            agenttype=agent_types.index('Person'),
-            firstname="Test",
-            lastname="Agent",
-            division=self.division)
+    #     agent.addresses.create(address="somewhere")
 
-        agent.addresses.create(address="somewhere")
+    #     models.Address.objects.get(agent=agent)
 
-        models.Address.objects.get(agent=agent)
+    #     agent.agenttype = agent_types.index('Other')
+    #     agent.save()
 
-        agent.agenttype = agent_types.index('Other')
-        agent.save()
+    #     with self.assertRaises(models.Address.DoesNotExist):
+    #         models.Address.objects.get(agent=agent)
 
-        # Temporarily removed while https://github.com/specify/specify7/issues/2518 is being resolved
-        # with self.assertRaises(models.Address.DoesNotExist):
-        #     models.Address.objects.get(agent=agent)
+    #     agent.addresses.create(address="somewhere")
 
-        agent.addresses.create(address="somewhere")
+    #     models.Address.objects.get(agent=agent)
 
-        models.Address.objects.get(agent=agent)
+    #     agent.agenttype = agent_types.index('Group')
+    #     agent.save()
 
-        agent.agenttype = agent_types.index('Group')
-        agent.save()
-
-        with self.assertRaises(models.Address.DoesNotExist):
-            models.Address.objects.get(agent=agent)
+    #     with self.assertRaises(models.Address.DoesNotExist):
+    #         models.Address.objects.get(agent=agent)
