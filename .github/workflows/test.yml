@@ -140,66 +140,42 @@ jobs:
         run: |
           npm run localizationTests -- --emit ./localization-strings
 
-      - name: Upload built localization strings
-        uses: actions/upload-artifact@v3
-        with:
-          name: Localization strings
-          path: ./specifyweb/frontend/js_src/localization-strings
-
-  sync-localization:
-    name: Sync localization strings with Weblate (only on production branch)
-    # FIXME: uncomment this:
-    # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
-    if: github.ref == 'refs/heads/l10n-improvements'
-    needs: test-front-end
-    runs-on: ubuntu-latest
-
-    steps:
+      # FIXME: uncomment this:
+      # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
       - name: Clone branch that stores localization strings
+        if: github.ref == 'refs/heads/l10n-improvements'
         uses: actions/checkout@v3
         with:
           path: localization-strings
           ref: weblate-localization
           fetch-depth: 0
 
-      - name: Delete old localization strings
-        run: rm -rf localization-strings/strings
-
-      - name: Download new strings
-        uses: actions/download-artifact@v3
-        with:
-          name: Localization strings
-          path: localization-strings/strings
-
-      - name: Construct commit message
-        id: commit_message
+      - name: Sync localization strings with Weblate (only on production branch)
+        # Only run this step if previous step was not skipped
+        if: success()
+        working-directory: localization-strings
         run: |
-          echo "Sync localization strings with Weblate" >> temp.txt
-          echo "" >> temp.txt
-          echo "Triggered by ${GITHUB_SHA}" >> temp.txt
-          echo "Pushed to ${GITHUB_REF#refs/heads/}" >> temp.txt
-          MESSAGE=$(cat temp.txt)
-          # This is needed to make multi-line strings work
-          MESSAGE="${MESSAGE//'%'/'%25'}"
-          MESSAGE="${MESSAGE//$'\n'/'%0A'}"
-          MESSAGE="${MESSAGE//$'\r'/'%0D'}"
-          echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
+          # Replace old localization strings
+          rm -rf localization-strings/strings
+          mv -f ../specifyweb/frontend/js_src/localization-strings strings
+          git add strings
 
-      - name: Commit changed strings
-        uses: EndBug/add-and-commit@v9
-        with:
-          cwd: ./localization-strings
-          add: strings
-          fetch: false
-          push: true
-          default_author: github_actions
-          committer_name: Max Patiiuk
-          committer_email: max@patii.uk
-          message: ${{ steps.commit_message.outputs.MESSAGE }}
+          if git diff-index --quiet HEAD --; then
+            echo "Localization strings are unchanged"
+          else
+            # Make a commit
+            git config --local user.email "max@patii.uk"
+            git config --local user.name "Max Patiiuk"
+            git commit \
+              --author 'github-actions <41898282+github-actions[bot]@users.noreply.github.com>' \
+              -m 'Sync localization strings with Weblate' \
+              -m "Triggered by ${{ github.sha }} on branch ${{ github.ref }}"
+            git push
+          fi
 
       - name: Make sure Weblate settings are up to date
+        if: success()
         working-directory: specifyweb/frontend/js_src
         env:
           WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}
-        run: |
-          npm run validateWeblate
+        run: npm run validateWeblate

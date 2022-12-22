@@ -22,11 +22,11 @@ export const backEndText = createDictionary({
     'en-us': `
       {value:string} is not a legal value in this picklist field.
 
-      "Click on the arrow to choose among available options.
+      Click on the arrow to choose among available options.
     `,
     'ru-ru': `
       {value:string} не является допустимым значением в этом списке.
-      
+
       Нажмите на стрелку, чтобы выбрать один из доступных вариантов.
     `,
   },
