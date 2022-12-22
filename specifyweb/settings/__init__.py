@@ -184,6 +184,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'specifyweb.context.middleware.ContextMiddleware',
     'specifyweb.permissions.middleware.PermissionsMiddleware',
+    'specifyweb.middleware.general.GeneralMiddleware',
 ]
 
 ROOT_URLCONF = 'specifyweb.urls'
