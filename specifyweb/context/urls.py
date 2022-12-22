@@ -35,7 +35,7 @@ urlpatterns = [
     path('user_resource/<int:resourceid>/', user_resources.user_resource),
 
     path('collection_resource/', collection_resources.collection_resources),
-    path('collection_resource/<int:resourceid>/', collection_resources.collection_resources),
+    path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
 
 
 ]
