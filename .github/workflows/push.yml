@@ -52,11 +52,11 @@ jobs:
             # Set the committer and author to the name and email of the person
             # who triggered the action (Weblate will commit on behalf of the
             # person who did the localization)
-            git config --local user.name "${{ github.event.head_commit.author.name }}"
-            git config --local user.email "${{ github.event.head_commit.author.email }}"
+            git config --local user.name "Hosted Weblate"
+            git config --local user.email "hosted@weblate.org"
 
             git commit \
-              --author 'Hosted Weblate <hosted@weblate.org>' \
+              --author '${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>' \
               -m 'Sync localization strings with Weblate' \
               -m "Triggered by ${{ github.sha }} on branch ${{ github.ref }}"
             git push
