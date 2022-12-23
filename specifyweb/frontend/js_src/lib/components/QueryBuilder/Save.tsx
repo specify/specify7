@@ -80,7 +80,7 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {queryText.queryName()}
+          {schema.models.SpQuery.strictGetLiteralField('name').label}
           <Input.Text
             autoComplete="on"
             maxLength={

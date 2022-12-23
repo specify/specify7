@@ -107,7 +107,12 @@ export function RoleView({
         handleSave(role);
       }}
     >
-      <h3 className="text-xl">{`${userText.role()} ${role.name}`}</h3>
+      <h3 className="text-xl">
+        {commonText.colonLine({
+          label: userText.role(),
+          value: role.name,
+        })}
+      </h3>
       <AppTitle title={role.name} type="form" />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}

@@ -129,7 +129,10 @@ const commandRenderers: {
           <br />
           {formsText.commandUnavailableSecondDescription()}
           <br />
-          {`${formsText.commandName()} ${name}`}
+          {commonText.colonLine({
+            label: formsText.commandName(),
+            value: name,
+          })}
         </Dialog>
       </>
     );

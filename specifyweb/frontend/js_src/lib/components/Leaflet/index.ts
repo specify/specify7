@@ -141,7 +141,10 @@ export const formatLocalityData = (
       .map(([fieldName, field]) =>
         splitJoinedMappingPath(fieldName).includes('taxon')
           ? `<b>${field.value}</b>`
-          : `<b>${field.headerName}</b>: ${field.value}`
+          : commonText.colonLine({
+              label: `<b>${field.headerName}</b>`,
+              value: field.value.toString(),
+            })
       ),
     ...(typeof viewUrl === 'string'
       ? [

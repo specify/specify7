@@ -11,6 +11,7 @@ import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
 import { schemaText } from '../../localization/schema';
+import { commonText } from '../../localization/common';
 
 export const maxSchemaValueLength =
   schema.models.SpLocaleItemStr.strictGetLiteralField('text').length;
@@ -40,7 +41,10 @@ export function SchemaConfigTable({
 }): JSX.Element {
   return (
     <SchemaConfigColumn
-      header={schemaText.tableFormatted({ name: container.name })}
+      header={commonText.colonLine({
+        label: schemaText.table(),
+        value: container.name,
+      })}
     >
       <Label.Block>
         {schemaText.caption()}

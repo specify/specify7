@@ -275,7 +275,10 @@ const pluginRenderers: {
           <br />
           {formsText.pluginNotAvailableSecondDescription()}
           <br />
-          {`${formsText.pluginName()} ${name}`}
+          {commonText.colonLine({
+            label: formsText.pluginName(),
+            value: name,
+          })}
         </Dialog>
       </>
     );

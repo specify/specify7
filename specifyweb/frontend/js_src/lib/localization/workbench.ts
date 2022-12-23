@@ -569,8 +569,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Количество столбцов',
   },
   importedFileName: {
-    'en-us': 'Import file name:',
-    'ru-ru': 'Имя файла импорта:',
+    'en-us': 'Import file name',
+    'ru-ru': 'Имя файла импорта',
   },
   noFileName: {
     'en-us': '(no file name)',
@@ -589,8 +589,8 @@ export const wbText = createDictionary({
     'ru-ru': 'Владелец набора данных изменен',
   },
   dataSet: {
-    'en-us': 'Data Set:',
-    'ru-ru': 'Набор данных:',
+    'en-us': 'Data Set',
+    'ru-ru': 'Набор данных',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',

@@ -108,7 +108,12 @@ export function FilePicker({
             <>
               <br />
               <br />
-              <b>{`${commonText.selectedFileName()}: ${fileName}`}</b>
+              <b>
+                {commonText.colonLine({
+                  label: commonText.selectedFileName(),
+                  value: fileName,
+                })}
+              </b>
             </>
           )}
         </span>

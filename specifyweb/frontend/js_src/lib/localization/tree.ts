@@ -145,8 +145,8 @@ export const treeText = createDictionary({
       '«{nodeName:string}» больше не будет синонимом «{synonymName:string}».',
   },
   acceptedName: {
-    'en-us': 'Preferred:',
-    'ru-ru': 'Предпочтительний:',
+    'en-us': 'Preferred: {name:string}',
+    'ru-ru': 'Предпочтительний: {name:string}',
   },
   treeViewTitle: {
     'en-us': '{treeName:string} Tree',

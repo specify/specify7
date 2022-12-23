@@ -20,6 +20,7 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { commonText } from '../../localization/common';
 
 export function QueryHeader({
   recordSet,
@@ -61,7 +62,10 @@ export function QueryHeader({
               queryName: query.name,
               recordSetName: recordSet.get('name'),
             })
-          : queryText.queryTaskTitle({ queryName: query.name })}
+          : commonText.colonLine({
+              label: queryText.query(),
+              value: query.name,
+            })}
       </H2>
       {!queryResource.isNew() && <QueryEditButton query={query} />}
       <span className="ml-2 flex-1" />

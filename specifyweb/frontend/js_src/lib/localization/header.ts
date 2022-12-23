@@ -141,6 +141,10 @@ export const headerText = createDictionary({
     'en-us': 'Documentation',
     'ru-ru': 'Документация',
   },
+  administration: {
+    'en-us': 'Administrative Tools',
+    'ru-ru': 'Управления',
+  },
   developers: {
     'en-us': 'Developer Resources',
     'ru-ru': 'Инструменты разработчика',

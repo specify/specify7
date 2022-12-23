@@ -71,7 +71,10 @@ function InstitutionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Institution.label}: ${institution.name ?? ''}`}
+              {commonText.colonLine({
+                label: schema.models.Institution.label,
+                value: institution.name ?? '',
+              })}
             </h3>
             <ViewInstitutionButton institution={institution} />
           </div>

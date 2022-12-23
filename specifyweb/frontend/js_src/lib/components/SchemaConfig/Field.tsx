@@ -13,6 +13,7 @@ import { Input, Label } from '../Atoms/Form';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { schemaText } from '../../localization/schema';
+import { commonText } from '../../localization/common';
 
 export function SchemaConfigField({
   schemaData,
@@ -35,7 +36,12 @@ export function SchemaConfigField({
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
-    <SchemaConfigColumn header={schemaText.field({ name: item.name })}>
+    <SchemaConfigColumn
+      header={commonText.colonLine({
+        label: schemaText.field(),
+        value: item.name,
+      })}
+    >
       <Label.Block>
         {schemaText.caption()}
         <Input.Text

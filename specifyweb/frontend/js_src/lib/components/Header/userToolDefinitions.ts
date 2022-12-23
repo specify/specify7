@@ -1,22 +1,22 @@
-import type { UserTool } from '../Core/Main';
-import { sortFunction, split, toLowerCase } from '../../utils/utils';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
+import type { IR, RA } from '../../utils/types';
+import { filterArray } from '../../utils/types';
+import { sortFunction, split, toLowerCase } from '../../utils/utils';
+import type { UserTool } from '../Core/Main';
+import { getDisciplineTrees } from '../InitialContext/treeRanks';
+import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
 import { fetchContext as userPermission } from '../Permissions';
 import {
   hasPermission,
   hasTablePermission,
   hasToolPermission,
 } from '../Permissions/helpers';
-import { getDisciplineTrees } from '../InitialContext/treeRanks';
-import type { IR, RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
-import { fetchContext as fetchUserInfo } from '../InitialContext/userInformation';
-import { schemaText } from '../../localization/schema';
-import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
-import { preferencesText } from '../../localization/preferences';
-import { resourcesText } from '../../localization/resources';
 
 const rawUserTools: IR<RA<UserTool>> = {
   [userText.userAccount()]: [
@@ -39,7 +39,7 @@ const rawUserTools: IR<RA<UserTool>> = {
       url: '/specify/schema-config/',
     },
   ],
-  [commonText.administration()]: [
+  [headerText.administration()]: [
     {
       title: resourcesText.appResources(),
       url: '/specify/resources/',

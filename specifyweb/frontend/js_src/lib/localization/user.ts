@@ -109,8 +109,8 @@ export const userText = createDictionary({
     'ru-ru': 'Сгенерировать мастер-ключ',
   },
   userPassword: {
-    'en-us': 'User Password:',
-    'ru-ru': 'Пользовательский пароль:',
+    'en-us': 'User Password',
+    'ru-ru': 'Пользовательский пароль',
   },
   generate: {
     'en-us': 'Generate',
@@ -121,8 +121,8 @@ export const userText = createDictionary({
     'ru-ru': 'Мастер-ключ создан',
   },
   masterKeyFieldLabel: {
-    'en-us': 'Master Key:',
-    'ru-ru': 'Мастер ключ:',
+    'en-us': 'Master Key',
+    'ru-ru': 'Мастер ключ',
   },
   incorrectPassword: {
     'en-us': 'Password was incorrect.',
@@ -300,8 +300,8 @@ export const userText = createDictionary({
     `,
   },
   role: {
-    'en-us': 'Role:',
-    'ru-ru': 'Роль:',
+    'en-us': 'Role',
+    'ru-ru': 'Роль',
   },
   read: {
     'en-us': 'Read',

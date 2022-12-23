@@ -295,7 +295,10 @@ function RecordSet<SCHEMA extends AnySchema>({
         mode={mode}
         model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
-        title={formsText.recordSetFormatted({ name: recordSet.get('name') })}
+        title={commonText.colonLine({
+          label: formsText.recordSet(),
+          value: recordSet.get('name'),
+        })}
         totalCount={totalCount}
         onAdd={
           hasToolPermission('recordSets', 'create')

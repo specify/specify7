@@ -8,6 +8,7 @@ import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
+import { commonText } from '../../localization/common';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<
@@ -189,10 +190,16 @@ export const formatTreeStats = (
   readonly text: string;
 } => ({
   title: filterArray([
-    `${treeText.directCollectionObjectCount()}: ${nodeStats.directCount}`,
+    commonText.colonLine({
+      label: treeText.directCollectionObjectCount(),
+      value: nodeStats.directCount.toString(),
+    }),
     isLeaf
       ? undefined
-      : `${treeText.indirectCollectionObjectCount()}: ${nodeStats.childCount}`,
+      : commonText.colonLine({
+          label: treeText.indirectCollectionObjectCount(),
+          value: nodeStats.childCount.toString(),
+        }),
   ]).join('\n'),
   text: isLeaf
     ? treeText.leafNodeStats({ directCount: nodeStats.directCount })

@@ -128,7 +128,7 @@ function AboutDialog({
                 getSystemInfo().discipline,
               ],
               [
-                `${schema.models.Collection.label}: `,
+                `${schema.models.Collection.label}:`,
                 getSystemInfo().collection,
               ],
               [

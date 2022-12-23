@@ -166,10 +166,6 @@ export const formsText = createDictionary({
     'en-us': 'Record Set',
     'ru-ru': 'Набор объектов',
   },
-  recordSetFormatted: {
-    'en-us': 'Record Set: {name:string}',
-    'ru-ru': 'Набор объектов: {name:string}',
-  },
   recordSetDeletionWarning: {
     'en-us': `
       The record set "{recordSetName:string}" will be deleted. The referenced
@@ -255,8 +251,8 @@ export const formsText = createDictionary({
     `,
   },
   commandName: {
-    'en-us': 'Command name:',
-    'ru-ru': 'Имя команды:',
+    'en-us': 'Command name',
+    'ru-ru': 'Имя команды',
   },
   unavailablePluginButton: {
     'en-us': 'Plugin N/A',
@@ -291,8 +287,8 @@ export const formsText = createDictionary({
     `,
   },
   pluginName: {
-    'en-us': 'Plugin name:',
-    'ru-ru': 'Название плагина:',
+    'en-us': 'Plugin name',
+    'ru-ru': 'Название плагина',
   },
   visit: {
     'en-us': 'Visit',
@@ -348,8 +344,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Поле из таблицы',
   },
   unsupportedCellType: {
-    'en-us': 'Unsupported cell type:',
-    'ru-ru': 'Неподдерживаемый тип ячейки:',
+    'en-us': 'Unsupported cell type',
+    'ru-ru': 'Неподдерживаемый тип ячейки',
   },
   additionalResultsOmitted: {
     comment: `
@@ -362,7 +358,7 @@ export const formsText = createDictionary({
     'en-us': 'Proceed without saving?',
     'ru-ru': 'Продолжить без сохранения?',
   },
-  recordSelectorUnloadProtectDialogText: {
+  recordSelectorUnloadProtectDescription: {
     comment: `
       When in record set and current record is unsaved and try to navigate to
       another record
@@ -479,8 +475,8 @@ export const formsText = createDictionary({
     'ru-ru': 'Информация об объекте',
   },
   shareRecord: {
-    'en-us': 'Share Record:',
-    'ru-ru': 'Поделиться объектом:',
+    'en-us': 'Share Record',
+    'ru-ru': 'Поделиться объектом',
   },
   findUsages: {
     'en-us': 'Find usages',

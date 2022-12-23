@@ -13,9 +13,9 @@ export const schemaText = createDictionary({
     'en-us': 'Table',
     'ru-ru': 'Таблица',
   },
-  tableFormatted: {
-    'en-us': 'Table: {name:string}',
-    'ru-ru': 'Таблица: {name:string}',
+  tables: {
+    'en-us': 'Tables',
+    'ru-ru': 'Таблицы',
   },
   tableName: {
     'en-us': 'Table Name',
@@ -33,13 +33,13 @@ export const schemaText = createDictionary({
     'en-us': 'Change Base Table',
     'ru-ru': 'Изменить базовую таблицу',
   },
+  field: {
+    'en-us': 'Field',
+    'ru-ru': 'Поле',
+  },
   fields: {
     'en-us': 'Fields',
     'ru-ru': 'Поля',
-  },
-  field: {
-    'en-us': 'Field: {name:string}',
-    'ru-ru': 'Поле: {name:string}',
   },
   relationships: {
     'en-us': 'Relationships',
@@ -128,10 +128,6 @@ export const schemaText = createDictionary({
   addLanguage: {
     'en-us': 'Add Language',
     'ru-ru': 'Добавить язык',
-  },
-  tables: {
-    'en-us': 'Tables',
-    'ru-ru': 'Таблицы',
   },
   fieldLabel: {
     'en-us': 'Label',

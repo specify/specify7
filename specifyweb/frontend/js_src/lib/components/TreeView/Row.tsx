@@ -212,9 +212,9 @@ export function TreeRow({
                 <span
                   title={
                     typeof row.acceptedId === 'number'
-                      ? `${treeText.acceptedName()} ${
-                          row.acceptedName ?? row.acceptedId
-                        }`
+                      ? treeText.acceptedName({
+                          name: row.acceptedName ?? row.acceptedId.toString(),
+                        })
                       : undefined
                   }
                 >
@@ -222,9 +222,9 @@ export function TreeRow({
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
-                      {`${treeText.acceptedName()} ${
-                        row.acceptedName ?? row.acceptedId
-                      }`}
+                      {treeText.acceptedName({
+                        name: row.acceptedName ?? row.acceptedId.toString(),
+                      })}
                     </span>
                   )}
                 </span>

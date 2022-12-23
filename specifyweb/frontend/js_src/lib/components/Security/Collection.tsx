@@ -130,9 +130,10 @@ export function CollectionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Collection.label}: ${
-                collection.collectionName ?? ''
-              }`}
+              {commonText.colonLine({
+                label: schema.models.Collection.label,
+                value: collection.collectionName ?? '',
+              })}
             </h3>
             {hasTablePermission('Collection', 'read') && (
               <ViewCollectionButton collection={collection} />

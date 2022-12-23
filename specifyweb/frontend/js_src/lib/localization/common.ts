@@ -102,12 +102,12 @@ export const commonText = createDictionary({
     'ru-ru': 'Загружено',
   },
   createdBy: {
-    'en-us': 'Created by:',
-    'ru-ru': 'Создан:',
+    'en-us': 'Created by',
+    'ru-ru': 'Создан',
   },
   modifiedBy: {
-    'en-us': 'Modified by:',
-    'ru-ru': 'Модифицирован:',
+    'en-us': 'Modified by',
+    'ru-ru': 'Модифицирован',
   },
   remove: {
     'en-us': 'Remove',
@@ -158,8 +158,8 @@ export const commonText = createDictionary({
     'ru-ru': '(список усечен)',
   },
   metadataInline: {
-    'en-us': 'Metadata:',
-    'ru-ru': 'Метаданные:',
+    'en-us': 'Metadata',
+    'ru-ru': 'Метаданные',
   },
   metadata: {
     'en-us': 'Metadata',
@@ -295,11 +295,6 @@ export const commonText = createDictionary({
     'en-us': 'Ordinal',
     'ru-ru': 'Порядковый номер',
   },
-  // FIXME: move this into headerText
-  administration: {
-    'en-us': 'Administrative Tools',
-    'ru-ru': 'Управления',
-  },
   export: {
     'en-us': 'Export',
     'ru-ru': 'Экспорт',
@@ -397,5 +392,17 @@ export const commonText = createDictionary({
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} <wrap>({count:number|formatted})</wrap>',
     'ru-ru': '{resource:string} <wrap>({count:number|formatted})</wrap>',
+  },
+  colonLine: {
+    comment:
+      'Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"',
+    'en-us': '{label:string}: {value:string}',
+    'ru-ru': '{label:string}: {value:string}',
+  },
+  jsxColonLine: {
+    comment:
+      'Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"',
+    'en-us': '{label:string}: <wrap />',
+    'ru-ru': '{label:string}: <wrap />',
   },
 } as const);

@@ -229,7 +229,14 @@ const cellRenderers: {
     return null;
   },
   Unsupported({ cellData: { cellType = commonText.nullInline() } }) {
-    return <>{`${formsText.unsupportedCellType()} ${cellType}`}</>;
+    return (
+      <>
+        {commonText.colonLine({
+          label: formsText.unsupportedCellType(),
+          value: cellType,
+        })}
+      </>
+    );
   },
 };
 

@@ -15,6 +15,7 @@ import type { RR } from '../../utils/types';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { TableIcon } from '../Molecules/TableIcon';
+import { formatNumber } from '../Atoms/Internationalization';
 
 function TableResults({
   tableName,
@@ -26,7 +27,12 @@ function TableResults({
   return (
     <li className="flex items-center gap-1">
       <TableIcon label={false} name={tableName} />
-      <span>{`${strictGetModel(tableName).label}: ${recordCount}`}</span>
+      <span>
+        {commonText.colonLine({
+          label: strictGetModel(tableName).label,
+          value: formatNumber(recordCount),
+        })}
+      </span>
     </li>
   );
 }

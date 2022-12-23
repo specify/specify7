@@ -21,13 +21,13 @@ export const queryText = createDictionary({
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
   },
-  queryBoxDescription: {
+  searchFields: {
     comment: `
       Used in a Query Combo Box's hover-over message to show which fields are
       being searched on
     `,
-    'en-us': 'Searches: {fieldNames:string}',
-    'ru-ru': 'Поисковые запросы: {fieldNames:string}',
+    'en-us': 'Searched fields',
+    'ru-ru': 'Поля поиска',
   },
   any: {
     'en-us': 'Any',
@@ -58,10 +58,6 @@ export const queryText = createDictionary({
       Запрос будет сохранен под новым именем, оставив текущий запрос без
       изменений.
     `,
-  },
-  queryName: {
-    'en-us': 'Query Name:',
-    'ru-ru': 'Имя запроса:',
   },
   queryDeleteIncomplete: {
     'en-us': 'Query definition contains incomplete fields',
@@ -116,11 +112,6 @@ export const queryText = createDictionary({
     comment: 'Used when selected pick list value is not one of allowed values',
     'en-us': '{value:string} (current, invalid value)',
     'ru-ru': '{value:string} (текущее, недопустимое значение)',
-  },
-  queryTaskTitle: {
-    comment: 'Used in query builder header',
-    'en-us': 'Query: {queryName:string}',
-    'ru-ru': 'Запрос: {queryName:string}',
   },
   queryRecordSetTitle: {
     comment: 'Used in query builder header when querying on record set',
@@ -305,8 +296,8 @@ export const queryText = createDictionary({
     'ru-ru': 'Items have been returned',
   },
   queryResults: {
-    'en-us': 'Query Results: {tableName:string}',
-    'ru-ru': 'Результаты запроса: {tableName:string}',
+    'en-us': 'Query Results',
+    'ru-ru': 'Результаты запроса',
   },
   editQuery: {
     'en-us': 'Edit Query',

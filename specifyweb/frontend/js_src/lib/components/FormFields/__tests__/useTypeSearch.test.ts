@@ -13,6 +13,6 @@ test('parseTypeSearch', async () => {
     dataObjectFormatter: undefined,
     relatedModel: '[table Accession]',
     searchFields: [['[literalField accessionNumber]']],
-    title: 'Searches: Accession #',
+    title: 'Searched fields: Accession #',
   });
 });

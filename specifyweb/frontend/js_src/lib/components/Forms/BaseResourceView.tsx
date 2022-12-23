@@ -99,13 +99,19 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
   const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
-  const title = `${
+  const formattedTableName =
     resource === undefined
       ? ''
       : resource.isNew()
       ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
-      : resource.specifyModel.label
-  }${formatted.length > 0 ? `: ${formatted}` : ''}` as LocalizedString;
+      : resource.specifyModel.label;
+  const title =
+    formatted.length > 0
+      ? commonText.colonLine({
+          label: formattedTableName,
+          value: formatted,
+        })
+      : formattedTableName;
 
   return {
     formatted: tableNameInTitle ? title : formatted,

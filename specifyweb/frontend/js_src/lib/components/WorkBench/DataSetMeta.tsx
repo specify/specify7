@@ -34,6 +34,7 @@ import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
+import { StringToJsx } from '../../localization/utils';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -94,7 +95,7 @@ export function DataSetMeta({
         }
       >
         <Label.Block>
-          <b>{wbText.dataSetName()}:</b>
+          <b>{wbText.dataSetName()}</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
@@ -112,61 +113,102 @@ export function DataSetMeta({
         <div className="flex flex-col">
           <b>{commonText.metadataInline()}</b>
           <span>
-            {wbText.numberOfRows()}: <i>{formatNumber(getRowCount())}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfRows(),
+              value: formatNumber(getRowCount()),
+            })}
           </span>
           <span>
-            {wbText.numberOfColumns()}
-            {': '}
-            <i>{formatNumber(dataset.columns.length)}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfColumns(),
+              value: formatNumber(dataset.columns.length),
+            })}
           </span>
           <span>
-            {commonText.created()}
-            {': '}
-            <i>
-              <DateElement date={dataset.timestampcreated} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.created()}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampcreated} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText.modified()}
-            {': '}
-            <i>
-              <DateElement date={dataset.timestampmodified} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.modified()}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampmodified} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText.uploaded()}
-            {': '}
-            <i>
-              <DateElement
-                date={
-                  dataset.uploadresult?.success === true
-                    ? dataset.uploadresult?.timestamp
-                    : undefined
-                }
-                fallback={commonText.no()}
-                flipDates
-              />
-            </i>
+            <StringToJsx
+              string={commonText.uploaded()}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement
+                      date={
+                        dataset.uploadresult?.success === true
+                          ? dataset.uploadresult?.timestamp
+                          : undefined
+                      }
+                      fallback={commonText.no()}
+                      flipDates
+                    />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText.createdBy()}{' '}
-            <i>
-              <FormattedResource resourceUrl={dataset.createdbyagent} />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: commonText.createdBy(),
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <FormattedResource resourceUrl={dataset.createdbyagent} />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText.modifiedBy()}{' '}
-            <i>
-              {typeof dataset.modifiedbyagent === 'string' ? (
-                <FormattedResource resourceUrl={dataset.modifiedbyagent} />
-              ) : (
-                commonText.notApplicable()
-              )}
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: commonText.modifiedBy(),
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    {typeof dataset.modifiedbyagent === 'string' ? (
+                      <FormattedResource
+                        resourceUrl={dataset.modifiedbyagent}
+                      />
+                    ) : (
+                      commonText.notApplicable()
+                    )}
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText.importedFileName()}{' '}
-            <i>{dataset.importedfilename || wbText.noFileName()}</i>
+            <StringToJsx
+              string={wbText.importedFileName()}
+              components={{
+                wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
+              }}
+            />
           </span>
         </div>
       </Form>
@@ -193,7 +235,10 @@ function DataSetName({
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />
         )}
-        {`${wbText.dataSet()} ${name}`}
+        {commonText.colonLine({
+          label: wbText.dataSet(),
+          value: name,
+        })}
         {dataset.uploadresult?.success === true && (
           <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
         )}
