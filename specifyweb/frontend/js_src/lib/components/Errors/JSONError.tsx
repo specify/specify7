@@ -34,17 +34,21 @@ export function formatJSONBackendResponse(error: string): JSX.Element {
 
 function JSONBackendResponseFooter({
   response,
+  hasData = true,
   isDataOpen = true,
 }: {
   readonly response: JSONResponse;
+  readonly hasData?: boolean;
   isDataOpen?: boolean;
 }): JSX.Element {
   return (
     <>
-      <details open={isDataOpen === true ? true : false}>
-        <summary>Data</summary>
-        <pre>{response.formattedData}</pre>
-      </details>
+      {hasData && (
+        <details open={isDataOpen === true ? true : false}>
+          <summary>Data</summary>
+          <pre>{response.formattedData}</pre>
+        </details>
+      )}
       <details>
         <summary>Traceback</summary>
         <pre>{response.traceback}</pre>
@@ -84,6 +88,7 @@ function formatBasicResponse(error: string): JSX.Element {
       <h2 className={className.headerPrimary}>{response.exception}</h2>
       <em className={className.label}>{response.message}</em>
       <JSONBackendResponseFooter
+        hasData={false}
         response={response}
       ></JSONBackendResponseFooter>
     </>
@@ -117,7 +122,7 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
       ></BusinessRuleExceptionHeader>
       <JSONBackendResponseFooter
         response={response}
-        isDataOpen={false}
+        isDataOpen={true}
       ></JSONBackendResponseFooter>
     </>
   );
