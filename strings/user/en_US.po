@@ -1,21 +1,43 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/ChooseCollection/index.tsx:168
+#: components/Core/Main.tsx:118
+#: components/Login/OicLogin.tsx:86
+#: components/Login/index.tsx:156
+#: components/Permissions/PermissionDenied.tsx:230
+#: components/Router/EntrypointRouter.tsx:18
+#: components/Router/EntrypointRouter.tsx:23
+#. Used in: Components > Choose Collection > Index ⬤ Components > Core > Main ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+msgid "logIn"
+msgstr "Log In"
+
+#: components/Login/index.tsx:136
+#. Used in: Components > Login > Index
+msgid "username"
+msgstr "Username"
+
+#: components/Login/index.tsx:145
+#: components/Security/SetPassword.tsx:54
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
+msgid "password"
+msgstr "Password"
+
 #: components/FormFields/QueryComboBox.tsx:543
-#: components/FormPlugins/CollectionRelOneToMany.tsx:178
+#: components/FormPlugins/CollectionRelOneToMany.tsx:177
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
 #: components/FormFields/QueryComboBox.tsx:546
-#: components/FormPlugins/CollectionRelOneToMany.tsx:181
+#: components/FormPlugins/CollectionRelOneToMany.tsx:180
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "The currently logged in account does not have access to the "
 "{collectionName:string} collection."
 
-#: components/Header/userToolDefinitions.ts:27
+#: components/Header/userToolDefinitions.ts:28
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:36
 #: components/Security/SetPassword.tsx:92
@@ -39,10 +61,15 @@ msgid "repeatPassword"
 msgstr "Repeat new password"
 
 #: components/Core/Main.tsx:167
-#: components/Header/userToolDefinitions.ts:23
+#: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Log Out"
+
+#: components/Security/MissingAgentsDialog.tsx:101
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "setUserAgents"
+msgstr "Set User Agents"
 
 #: components/Core/Main.tsx:174
 #. Used in: Components > Core > Main
@@ -54,13 +81,13 @@ msgstr "Current user does not have an agent assigned"
 msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
 
-#: components/Login/OicLogin.tsx:58
-#: components/Login/index.tsx:112
+#: components/Login/OicLogin.tsx:47
+#: components/Login/index.tsx:121
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Hello, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:60
+#: components/Login/OicLogin.tsx:49
 #. Used in: Components > Login > Oic Login
 msgid "oicWelcomeMessage"
 msgstr ""
@@ -68,12 +95,12 @@ msgstr ""
 "account. This will enable you to log in to Specify with your chosen "
 "provider going forward."
 
-#: components/Login/OicLogin.tsx:93
+#: components/Login/OicLogin.tsx:82
 #. Used in: Components > Login > Oic Login
 msgid "legacyLogin"
 msgstr "Sign in with Specify Account"
 
-#: components/Login/index.tsx:114
+#: components/Login/index.tsx:123
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -82,8 +109,8 @@ msgstr ""
 "password, you can enter them below to associate that user with your "
 "{providerName:string} account for future logins."
 
-#: components/Header/userToolDefinitions.ts:64
-#: components/Router/OverlayRoutes.tsx:136
+#: components/Header/userToolDefinitions.ts:65
+#: components/Router/OverlayRoutes.tsx:138
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -92,17 +119,22 @@ msgstr "Generate Master Key"
 #: components/Toolbar/MasterKey.tsx:76
 #. Used in: Components > Toolbar > Master Key
 msgid "userPassword"
-msgstr "User Password:"
+msgstr "User Password"
+
+#: components/Toolbar/MasterKey.tsx:40
+#. Used in: Components > Toolbar > Master Key
+msgid "generate"
+msgstr "Generate"
 
 #: components/Toolbar/MasterKey.tsx:103
 #. Used in: Components > Toolbar > Master Key
-msgid "masterKeyDialogHeader"
+msgid "masterKeyGenerated"
 msgstr "Master key generated"
 
 #: components/Toolbar/MasterKey.tsx:109
 #. Used in: Components > Toolbar > Master Key
 msgid "masterKeyFieldLabel"
-msgstr "Master Key:"
+msgstr "Master Key"
 
 #: components/Toolbar/MasterKey.tsx:67
 #. Used in: Components > Toolbar > Master Key
@@ -133,15 +165,15 @@ msgstr "Select one of the following collections:"
 msgid "loginToProceed"
 msgstr "You can login to the collection, to proceed:"
 
-#: components/Permissions/FormatError.tsx:28
+#: components/Permissions/FormatError.tsx:31
 #: components/Permissions/PermissionDenied.tsx:232
 #. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
-msgid "sessionTimeOutDialogHeader"
+msgid "sessionTimeOut"
 msgstr "Insufficient Privileges"
 
 #: components/Permissions/PermissionDenied.tsx:239
 #. Used in: Components > Permissions > Permission Denied
-msgid "sessionTimeOutDialogText"
+msgid "sessionTimeOutDescription"
 msgstr ""
 "You lack sufficient privileges for that action, or your current session has "
 "been logged out."
@@ -159,17 +191,16 @@ msgstr "NO PERMISSION"
 msgid "permissionDeniedError"
 msgstr "Permission denied error"
 
-#: components/Permissions/FormatError.tsx:57
-#: components/Permissions/FormatError.tsx:111
+#: components/Permissions/FormatError.tsx:60
 #. Used in: Components > Permissions > Format Error
-msgid "permissionDeniedDialogText"
+msgid "permissionDeniedDescription"
 msgstr ""
 "You don't have any policy or role that gives you permission to do the "
 "following action:"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
-msgid "permissionDeniedDialogSecondText"
+msgid "permissionDeniedForUrl"
 msgstr "Permission denied when accessing <url />"
 
 #: components/ChooseCollection/index.tsx:155
@@ -179,7 +210,7 @@ msgstr ""
 "The logged in user has not been given access to any collections in this "
 "database. You must login as another user."
 
-#: components/Header/userToolDefinitions.ts:21
+#: components/Header/userToolDefinitions.ts:22
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "User Account"
@@ -216,12 +247,12 @@ msgstr "User must be saved as Manager first"
 msgid "users"
 msgstr "User Accounts"
 
-#: components/Security/Institution.tsx:136
+#: components/Security/Institution.tsx:139
 #. Used in: Components > Security > Institution
 msgid "institutionUsers"
 msgstr "User Accounts Defined in this Institution"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:152
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
 msgstr "User Accounts Assigned to this Collection"
@@ -260,14 +291,14 @@ msgstr "This option is unavailable for admin users"
 msgid "configureCollectionAccess"
 msgstr "Select user collection access"
 
-#: components/Header/userToolDefinitions.ts:52
+#: components/Header/userToolDefinitions.ts:53
 #: components/Router/Routes.tsx:64
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
 msgstr "Security and Accounts"
 
-#: components/Security/Institution.tsx:81
+#: components/Security/Institution.tsx:84
 #. Used in: Components > Security > Institution
 msgid "userRoleLibrary"
 msgstr "Institution Library of Role Templates"
@@ -288,7 +319,7 @@ msgstr "Collection User Roles"
 msgid "assignedUserRoles"
 msgstr "Assigned User Roles"
 
-#: components/Security/Role.tsx:145
+#: components/Security/Role.tsx:150
 #. Used in: Components > Security > Role
 msgid "rolePolicies"
 msgstr "Role Permission Policies"
@@ -303,10 +334,10 @@ msgstr "User Permission Policies"
 msgid "customUserPolices"
 msgstr "Custom Collection-level Policies (applies to this collection only)"
 
-#: components/Security/Role.tsx:110
+#: components/Security/Role.tsx:112
 #. Used in: Components > Security > Role
 msgid "role"
-msgstr "Role:"
+msgstr "Role"
 
 #: components/Security/PreviewTables.tsx:64
 #. Used in: Components > Security > Preview Tables
@@ -333,14 +364,14 @@ msgstr "All Users"
 msgid "thisUser"
 msgstr "This user"
 
-#: components/Permissions/FormatError.tsx:62
+#: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:89
 #: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Action"
 
-#: components/Permissions/FormatError.tsx:63
+#: components/Permissions/FormatError.tsx:66
 #: components/Security/PreviewComponents.tsx:90
 #: components/Security/PreviewComponents.tsx:146
 #: components/Security/utils.ts:100
@@ -451,14 +482,14 @@ msgstr ""
 msgid "setCollections"
 msgstr "Set Collections"
 
-#: components/Security/MissingAgentsDialog.tsx:163
+#: components/Security/MissingAgentsDialog.tsx:162
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "agentInUse"
 msgstr "This agent is already associated with a different user."
 
-#: components/Security/MissingAgentsDialog.tsx:105
+#: components/Security/MissingAgentsDialog.tsx:104
 #. Used in: Components > Security > Missing Agents Dialog
-msgid "setAgentsDialogText"
+msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
 #: components/Security/UserComponents.tsx:204
@@ -466,32 +497,32 @@ msgstr "Please set the following agents before proceeding:"
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
 
-#: components/Security/registry.ts:101
+#: components/Security/registry.ts:102
 #. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "All tables"
 
-#: components/Security/Institution.tsx:187
+#: components/Security/Institution.tsx:190
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Loading admins..."
 
-#: components/Security/Institution.tsx:151
+#: components/Security/Institution.tsx:154
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Admin)"
 
-#: components/Security/Institution.tsx:155
+#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
 
-#: components/Security/Role.tsx:220
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Delete role that has users?"
 
-#: components/Security/Role.tsx:223
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Users will not be deleted, but they would lose this role."
@@ -522,7 +553,7 @@ msgid "switchToVerticalLayout"
 msgstr "Switch to vertical layout"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:68
+#: components/Security/registry.ts:69
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Advanced tables"

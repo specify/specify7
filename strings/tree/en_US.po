@@ -6,96 +6,106 @@ msgstr "Content-Type: text/plain\n"
 msgid "badStructure"
 msgstr "Bad tree structure."
 
-#: components/TreeView/Actions.tsx:145
+#: components/TreeView/Actions.tsx:134
+#. Used in: Components > Tree View > Actions
+msgid "move"
+msgstr "Move"
+
+#: components/TreeView/Actions.tsx:144
 #. Used in: Components > Tree View > Actions
 msgid "merge"
 msgstr "Merge"
 
-#: components/TreeView/Actions.tsx:164
+#: components/TreeView/Actions.tsx:163
 #. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Undo Synonymy"
 
-#: components/TreeView/Actions.tsx:164
+#: components/TreeView/Actions.tsx:163
 #. Used in: Components > Tree View > Actions
 msgid "synonymize"
 msgstr "Synonymize"
 
-#: components/TreeView/Actions.tsx:347
+#: components/TreeView/Actions.tsx:346
 #. Used in: Components > Tree View > Actions
-msgid "actionFailedDialogHeader"
+msgid "actionFailed"
 msgstr "Operation failed"
 
-#: components/TreeView/Actions.tsx:350
+#: components/TreeView/Actions.tsx:349
 #. Used in: Components > Tree View > Actions
-msgid "actionFailedDialogText"
+msgid "actionFailedDescription"
 msgstr "The operation could not be completed due to the following errors:"
 
-#: components/TreeView/Actions.tsx:369
-#: components/TreeView/Actions.tsx:380
+#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:379
 #. Used in: Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Move node"
 
-#: components/TreeView/Actions.tsx:331
+#: components/TreeView/Actions.tsx:121
+#. Used in: Components > Tree View > Actions
+msgid "addChild"
+msgstr "Add Child"
+
+#: components/TreeView/Actions.tsx:330
 #. Used in: Components > Tree View > Actions
 msgid "moveNodeHere"
 msgstr "Move \"{nodeName:string}\" here"
 
-#: components/TreeView/Actions.tsx:390
+#: components/TreeView/Actions.tsx:389
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "The {treeName:string} node \"{nodeName:string}\" will be placed, along with "
 "all of its descendants, under the new parent \"{parentName:string}\"."
 
-#: components/TreeView/Actions.tsx:306
+#: components/TreeView/Actions.tsx:305
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveHere"
 msgstr "Can't move this tree node here"
 
-#: components/TreeView/Actions.tsx:311
+#: components/TreeView/Actions.tsx:310
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeHere"
 msgstr "Can't merge this tree node here"
 
-#: components/TreeView/Actions.tsx:307
+#: components/TreeView/Actions.tsx:306
 #. Used in: Components > Tree View > Actions
 msgid "cantMoveToSynonym"
 msgstr "Can't move to a synonym"
 
-#: components/TreeView/Actions.tsx:312
+#: components/TreeView/Actions.tsx:311
 #. Used in: Components > Tree View > Actions
 msgid "cantMergeIntoSynonym"
 msgstr "Can't merge into synonyms"
 
-#: components/TreeView/Actions.tsx:315
+#: components/TreeView/Actions.tsx:314
 #. Used in: Components > Tree View > Actions
 msgid "cantSynonymizeSynonym"
 msgstr "Can't synonymize with a synonym"
 
-#: components/TreeView/Actions.tsx:290
+#: components/TreeView/Actions.tsx:289
 #. Used in: Components > Tree View > Actions
 msgid "nodeMoveHintMessage"
 msgstr "Select a new parent for \"{nodeName:string}\""
 
-#: components/TreeView/Actions.tsx:371
-#: components/TreeView/Actions.tsx:382
+#: components/TreeView/Actions.tsx:370
+#: components/TreeView/Actions.tsx:381
 #. Used in: Components > Tree View > Actions
 msgid "mergeNode"
 msgstr "Merge node"
 
-#: components/TreeView/Actions.tsx:333
+#: components/TreeView/Actions.tsx:332
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHere"
 msgstr "Merge \"{nodeName:string}\" here"
 
-#: components/TreeView/Actions.tsx:292
+#: components/TreeView/Actions.tsx:291
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeHintMessage"
 msgstr "Select a new target for \"{nodeName:string}\" to be merged into"
 
-#: components/TreeView/Actions.tsx:396
+#: components/TreeView/Actions.tsx:395
 #. Used in: Components > Tree View > Actions
 msgid "mergeNodeMessage"
 msgstr ""
@@ -104,38 +114,38 @@ msgstr ""
 "\"{nodeName:string}\" will be moved to \"{parentName:string}\" with any "
 "descendants matching in name and rank being themselves merged recursively."
 
-#: components/TreeView/Actions.tsx:373
-#: components/TreeView/Actions.tsx:384
+#: components/TreeView/Actions.tsx:372
+#: components/TreeView/Actions.tsx:383
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNode"
 msgstr "Synonymize node"
 
-#: components/TreeView/Actions.tsx:335
+#: components/TreeView/Actions.tsx:334
 #. Used in: Components > Tree View > Actions
 msgid "makeSynonym"
 msgstr "Make {nodeName:string} a synonym of {synonymName:string}"
 
-#: components/TreeView/Actions.tsx:294
+#: components/TreeView/Actions.tsx:293
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeNodeHintMessage"
 msgstr "Select a target for \"{nodeName:string}\" to be synonymized to"
 
-#: components/TreeView/Actions.tsx:402
+#: components/TreeView/Actions.tsx:401
 #. Used in: Components > Tree View > Actions
 msgid "synonymizeMessage"
 msgstr ""
 "The {treeName:string} node \"{nodeName:string}\" will be made a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Actions.tsx:339
-#: components/TreeView/Actions.tsx:374
-#: components/TreeView/Actions.tsx:385
+#: components/TreeView/Actions.tsx:338
+#: components/TreeView/Actions.tsx:373
+#: components/TreeView/Actions.tsx:384
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNode"
 msgstr "Desynonymize node"
 
-#: components/TreeView/Actions.tsx:295
-#: components/TreeView/Actions.tsx:407
+#: components/TreeView/Actions.tsx:294
+#: components/TreeView/Actions.tsx:406
 #. Used in: Components > Tree View > Actions
 msgid "desynonymizeNodeMessage"
 msgstr ""
@@ -146,7 +156,7 @@ msgstr ""
 #: components/TreeView/Row.tsx:225
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
-msgstr "Preferred:"
+msgstr "Preferred: {name:string}"
 
 #: components/TreeView/index.tsx:99
 #. Used in: Components > Tree View > Index
@@ -175,22 +185,22 @@ msgstr "Closed"
 msgid "leafNode"
 msgstr "Leaf Node"
 
-#: components/TreeView/helpers.ts:199
+#: components/TreeView/helpers.ts:206
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:198
+#: components/TreeView/helpers.ts:205
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:192
+#: components/TreeView/helpers.ts:194
 #. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
 msgstr "Direct Collection Object Count"
 
-#: components/TreeView/helpers.ts:195
+#: components/TreeView/helpers.ts:200
 #. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect Collection Object Count"

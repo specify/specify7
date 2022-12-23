@@ -1,6 +1,24 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/AppResources/Filters.tsx:72
+#: components/AppResources/Filters.tsx:119
+#: components/Header/userToolDefinitions.ts:44
+#: components/Router/Routes.tsx:201
+#: components/Security/registry.ts:204
+#: components/UserPreferences/Definitions.tsx:1486
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+msgid "appResources"
+msgstr "App Resources"
+
+#: components/AppResources/EditorComponents.tsx:36
+#: components/AppResources/Filters.tsx:60
+#: components/AppResources/Filters.tsx:103
+#: components/AppResources/types.tsx:25
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
+msgid "formDefinitions"
+msgstr "Form Definitions"
+
 #: components/AppResources/EditorComponents.tsx:80
 #: components/AppResources/EditorComponents.tsx:85
 #. Used in: Components > App Resources > Editor Components
@@ -22,18 +40,18 @@ msgstr "Discipline Resources"
 msgid "userTypes"
 msgstr "User Types"
 
-#: components/AppResources/Aside.tsx:229
+#: components/AppResources/Aside.tsx:237
 #: components/AppResources/index.tsx:49
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 msgid "resources"
 msgstr "Resources"
 
-#: components/AppResources/Aside.tsx:172
+#: components/AppResources/Aside.tsx:180
 #. Used in: Components > App Resources > Aside
 msgid "subCategories"
 msgstr "Sub-categories"
 
-#: components/AppResources/Aside.tsx:239
+#: components/AppResources/Aside.tsx:247
 #: components/Router/Routes.tsx:209
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
@@ -43,16 +61,6 @@ msgstr "Add Resource"
 #. Used in: Components > App Resources > Types
 msgid "appResource"
 msgstr "App Resource"
-
-#: components/AppResources/types.tsx:50
-#. Used in: Components > App Resources > Types
-msgid "label"
-msgstr "Label"
-
-#: components/AppResources/types.tsx:58
-#. Used in: Components > App Resources > Types
-msgid "report"
-msgstr "Report"
 
 #: components/AppResources/types.tsx:90
 #. Used in: Components > App Resources > Types

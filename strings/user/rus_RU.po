@@ -1,21 +1,43 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/ChooseCollection/index.tsx:168
+#: components/Core/Main.tsx:118
+#: components/Login/OicLogin.tsx:86
+#: components/Login/index.tsx:156
+#: components/Permissions/PermissionDenied.tsx:230
+#: components/Router/EntrypointRouter.tsx:18
+#: components/Router/EntrypointRouter.tsx:23
+#. Used in: Components > Choose Collection > Index ⬤ Components > Core > Main ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+msgid "logIn"
+msgstr "Авторизоваться"
+
+#: components/Login/index.tsx:136
+#. Used in: Components > Login > Index
+msgid "username"
+msgstr "Имя пользователя"
+
+#: components/Login/index.tsx:145
+#: components/Security/SetPassword.tsx:54
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
+msgid "password"
+msgstr "Пароль"
+
 #: components/FormFields/QueryComboBox.tsx:543
-#: components/FormPlugins/CollectionRelOneToMany.tsx:178
+#: components/FormPlugins/CollectionRelOneToMany.tsx:177
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "У вас нет доступа к этой коллекции"
 
 #: components/FormFields/QueryComboBox.tsx:546
-#: components/FormPlugins/CollectionRelOneToMany.tsx:181
+#: components/FormPlugins/CollectionRelOneToMany.tsx:180
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "Учетная запись, вошедшая в систему в данный момент, не имеет доступа к "
 "коллекции {collectionName:string}."
 
-#: components/Header/userToolDefinitions.ts:27
+#: components/Header/userToolDefinitions.ts:28
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:36
 #: components/Security/SetPassword.tsx:92
@@ -39,10 +61,15 @@ msgid "repeatPassword"
 msgstr "Повторите новый пароль"
 
 #: components/Core/Main.tsx:167
-#: components/Header/userToolDefinitions.ts:23
+#: components/Header/userToolDefinitions.ts:24
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Выйти"
+
+#: components/Security/MissingAgentsDialog.tsx:101
+#. Used in: Components > Security > Missing Agents Dialog
+msgid "setUserAgents"
+msgstr "Настроить пользовательских агентов"
 
 #: components/Core/Main.tsx:174
 #. Used in: Components > Core > Main
@@ -54,13 +81,13 @@ msgstr "Текущему пользователю не назначен аген
 msgid "noAgentDescription"
 msgstr "Пожалуйста, войдите как администратор и назначьте агента этому пользователю"
 
-#: components/Login/OicLogin.tsx:58
-#: components/Login/index.tsx:112
+#: components/Login/OicLogin.tsx:47
+#: components/Login/index.tsx:121
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Привет, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:60
+#: components/Login/OicLogin.tsx:49
 #. Used in: Components > Login > Oic Login
 msgid "oicWelcomeMessage"
 msgstr ""
@@ -68,12 +95,12 @@ msgstr ""
 "пользователя Specify. Это позволит вам войти в Specify с выбранным вами "
 "провайдером в будущем."
 
-#: components/Login/OicLogin.tsx:93
+#: components/Login/OicLogin.tsx:82
 #. Used in: Components > Login > Oic Login
 msgid "legacyLogin"
 msgstr "Войти с помощью Профиля Specify"
 
-#: components/Login/index.tsx:114
+#: components/Login/index.tsx:123
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -82,8 +109,8 @@ msgstr ""
 "пароль, вы можете ввести их ниже, чтобы связать этого пользователя с вашей "
 "учетной записью {providerName:string} для будущих входов в систему."
 
-#: components/Header/userToolDefinitions.ts:64
-#: components/Router/OverlayRoutes.tsx:136
+#: components/Header/userToolDefinitions.ts:65
+#: components/Router/OverlayRoutes.tsx:138
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -92,17 +119,22 @@ msgstr "Сгенерировать мастер-ключ"
 #: components/Toolbar/MasterKey.tsx:76
 #. Used in: Components > Toolbar > Master Key
 msgid "userPassword"
-msgstr "Пользовательский пароль:"
+msgstr "Пользовательский пароль"
+
+#: components/Toolbar/MasterKey.tsx:40
+#. Used in: Components > Toolbar > Master Key
+msgid "generate"
+msgstr "Генерировать"
 
 #: components/Toolbar/MasterKey.tsx:103
 #. Used in: Components > Toolbar > Master Key
-msgid "masterKeyDialogHeader"
+msgid "masterKeyGenerated"
 msgstr "Мастер-ключ создан"
 
 #: components/Toolbar/MasterKey.tsx:109
 #. Used in: Components > Toolbar > Master Key
 msgid "masterKeyFieldLabel"
-msgstr "Мастер ключ:"
+msgstr "Мастер ключ"
 
 #: components/Toolbar/MasterKey.tsx:67
 #. Used in: Components > Toolbar > Master Key
@@ -131,15 +163,15 @@ msgstr "Выберите одну из следующих коллекций:"
 msgid "loginToProceed"
 msgstr "Вы можете войти в коллекцию, чтобы продолжить:"
 
-#: components/Permissions/FormatError.tsx:28
+#: components/Permissions/FormatError.tsx:31
 #: components/Permissions/PermissionDenied.tsx:232
 #. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
-msgid "sessionTimeOutDialogHeader"
+msgid "sessionTimeOut"
 msgstr "Insufficient Privileges"
 
 #: components/Permissions/PermissionDenied.tsx:239
 #. Used in: Components > Permissions > Permission Denied
-msgid "sessionTimeOutDialogText"
+msgid "sessionTimeOutDescription"
 msgstr "У вас недостаточно прав для этого действия, или текещий сеанс был отключен."
 
 #: components/FormFields/Field.tsx:150
@@ -155,17 +187,16 @@ msgstr "ОТСУТСТВУЕТ РАЗРЕШЕНИЕ"
 msgid "permissionDeniedError"
 msgstr "В доступе отказано"
 
-#: components/Permissions/FormatError.tsx:57
-#: components/Permissions/FormatError.tsx:111
+#: components/Permissions/FormatError.tsx:60
 #. Used in: Components > Permissions > Format Error
-msgid "permissionDeniedDialogText"
+msgid "permissionDeniedDescription"
 msgstr ""
 "У вас нет политики или роли, которая дает вам разрешение на выполнение "
 "следующих действий:"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
-msgid "permissionDeniedDialogSecondText"
+msgid "permissionDeniedForUrl"
 msgstr "Разрешение не было дано при доступе к <url />"
 
 #: components/ChooseCollection/index.tsx:155
@@ -175,7 +206,7 @@ msgstr ""
 "Пользователь, вошедший в систему, не получил доступа ни к каким коллекциям "
 "в этой базе данных. Вы должны войти в систему как другой пользователь."
 
-#: components/Header/userToolDefinitions.ts:21
+#: components/Header/userToolDefinitions.ts:22
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "Учетная запись"
@@ -212,12 +243,12 @@ msgstr "Сначала пользователь должен быть сохра
 msgid "users"
 msgstr "Пользователи"
 
-#: components/Security/Institution.tsx:136
+#: components/Security/Institution.tsx:139
 #. Used in: Components > Security > Institution
 msgid "institutionUsers"
 msgstr "Пользователи"
 
-#: components/Security/Collection.tsx:151
+#: components/Security/Collection.tsx:152
 #. Used in: Components > Security > Collection
 msgid "collectionUsers"
 msgstr "Пользователи"
@@ -256,14 +287,14 @@ msgstr "Эта опция недоступна для администратор
 msgid "configureCollectionAccess"
 msgstr "Выберите доступ к коллекциям"
 
-#: components/Header/userToolDefinitions.ts:52
+#: components/Header/userToolDefinitions.ts:53
 #: components/Router/Routes.tsx:64
 #: components/Toolbar/Security.tsx:100
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
 msgstr "Безопасность и аккаунты"
 
-#: components/Security/Institution.tsx:81
+#: components/Security/Institution.tsx:84
 #. Used in: Components > Security > Institution
 msgid "userRoleLibrary"
 msgstr "Библиотека ролей пользователей"
@@ -284,7 +315,7 @@ msgstr "Роли пользователей"
 msgid "assignedUserRoles"
 msgstr "Назначенные роли пользователя"
 
-#: components/Security/Role.tsx:145
+#: components/Security/Role.tsx:150
 #. Used in: Components > Security > Role
 msgid "rolePolicies"
 msgstr "Политики"
@@ -301,10 +332,10 @@ msgstr ""
 "Пользовательские политики на уровне коллекции (применяется только к этой "
 "коллекции)"
 
-#: components/Security/Role.tsx:110
+#: components/Security/Role.tsx:112
 #. Used in: Components > Security > Role
 msgid "role"
-msgstr "Роль:"
+msgstr "Роль"
 
 #: components/Security/PreviewTables.tsx:64
 #. Used in: Components > Security > Preview Tables
@@ -333,14 +364,14 @@ msgstr "Все пользователи"
 msgid "thisUser"
 msgstr "Этот пользователь"
 
-#: components/Permissions/FormatError.tsx:62
+#: components/Permissions/FormatError.tsx:65
 #: components/Security/PreviewComponents.tsx:89
 #: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Действие"
 
-#: components/Permissions/FormatError.tsx:63
+#: components/Permissions/FormatError.tsx:66
 #: components/Security/PreviewComponents.tsx:90
 #: components/Security/PreviewComponents.tsx:146
 #: components/Security/utils.ts:100
@@ -451,14 +482,14 @@ msgstr ""
 msgid "setCollections"
 msgstr "Коллекции"
 
-#: components/Security/MissingAgentsDialog.tsx:163
+#: components/Security/MissingAgentsDialog.tsx:162
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "agentInUse"
 msgstr "Этот агент уже связан с другим пользователем."
 
-#: components/Security/MissingAgentsDialog.tsx:105
+#: components/Security/MissingAgentsDialog.tsx:104
 #. Used in: Components > Security > Missing Agents Dialog
-msgid "setAgentsDialogText"
+msgid "setAgentsBeforeProceeding"
 msgstr "Прежде чем продолжить, установите следующие агенты:"
 
 #: components/Security/UserComponents.tsx:204
@@ -466,32 +497,32 @@ msgstr "Прежде чем продолжить, установите след�
 msgid "externalIdentityProviders"
 msgstr "Внешние аутентификаторы:"
 
-#: components/Security/registry.ts:101
+#: components/Security/registry.ts:102
 #. Used in: Components > Security > Registry
 msgid "allTables"
 msgstr "Все таблицы"
 
-#: components/Security/Institution.tsx:187
+#: components/Security/Institution.tsx:190
 #. Used in: Components > Security > Institution
 msgid "loadingAdmins"
 msgstr "Загрузка администраторов..."
 
-#: components/Security/Institution.tsx:151
+#: components/Security/Institution.tsx:154
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "specifyAdmin"
 msgstr "(Specify 7 Администратор)"
 
-#: components/Security/Institution.tsx:155
+#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
 msgid "legacyAdmin"
 msgstr "(Specify 6 Администратор)"
 
-#: components/Security/Role.tsx:220
+#: components/Security/Role.tsx:225
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Удалить роль, в которой есть пользователи?"
 
-#: components/Security/Role.tsx:223
+#: components/Security/Role.tsx:228
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Пользователи не будут удалены, но потеряют эту роль."
@@ -524,7 +555,7 @@ msgid "switchToVerticalLayout"
 msgstr "Переключиться на вертикальную компоновку"
 
 #: components/Security/Preview.tsx:78
-#: components/Security/registry.ts:68
+#: components/Security/registry.ts:69
 #. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Дополнительные таблицы"

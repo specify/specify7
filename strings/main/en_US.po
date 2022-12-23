@@ -38,33 +38,33 @@ msgstr "Return to homepage"
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:219
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
-msgid "errorBoundaryDialogHeader"
+msgid "errorOccurred"
 msgstr "Sorry, something's gone a bit wrong"
 
 #: components/Errors/ErrorDialog.tsx:163
 #. Used in: Components > Errors > Error Dialog
-msgid "errorBoundaryDialogText"
+msgid "errorOccurredDescription"
 msgstr ""
 "We're sorry, it seems you have encountered an error in Specify 7 that we "
 "may not be aware of."
 
 #: components/Errors/ErrorDialog.tsx:164
 #. Used in: Components > Errors > Error Dialog
-msgid "errorBoundaryCriticalDialogText"
+msgid "criticalErrorOccurredDescription"
 msgstr ""
 "To avoid corrupting data records, we need to start again from a safe "
 "spot--the Home page."
 
 #: components/Errors/ErrorDialog.tsx:30
 #. Used in: Components > Errors > Error Dialog
-msgid "errorBoundaryDialogMessage"
+msgid "errorResolutionDescription"
 msgstr ""
 "If this issue persists, please contact your IT support or if this is a "
 "Specify Cloud database, contact <email />"
 
 #: components/Errors/ErrorDialog.tsx:36
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
-msgid "errorBoundaryDialogSecondMessage"
+msgid "errorResolutionSecondDescription"
 msgstr ""
 "Users from <memberLink>member institutions</memberLink> can search for "
 "answered questions and ask for help on our <discourseLink>Community "
@@ -78,12 +78,12 @@ msgstr "Error Message"
 
 #: components/Router/Router.tsx:297
 #. Used in: Components > Router > Router
-msgid "leavePageDialogHeader"
+msgid "leavePageConfirmation"
 msgstr "Are you sure you want to leave this page?"
 
 #: components/Security/Role.tsx:86
 #. Used in: Components > Security > Role
-msgid "leavePageDialogText"
+msgid "leavePageConfirmationDescription"
 msgstr "Unsaved changes would be lost if your leave this page."
 
 #: components/Router/Router.tsx:293
@@ -93,22 +93,22 @@ msgstr "Leave"
 
 #: components/Core/Main.tsx:140
 #. Used in: Components > Core > Main
-msgid "versionMismatchDialogHeader"
+msgid "versionMismatch"
 msgstr "Specify version does not match database version"
 
 #: components/Core/Main.tsx:144
 #. Used in: Components > Core > Main
-msgid "versionMismatchDialogText"
+msgid "versionMismatchDescription"
 msgstr ""
 "The Specify version {specifySixVersion:string} does not match the database "
 "version {databaseVersion:string}."
 
 #: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
-msgid "versionMismatchSecondDialogText"
+msgid "versionMismatchSecondDescription"
 msgstr "Some features of Specify 7 may therefore fail to operate correctly."
 
 #: components/Core/Main.tsx:152
 #. Used in: Components > Core > Main
-msgid "versionMismatchThirdDialogText"
+msgid "versionMismatchInstructions"
 msgstr "Instructions for resolving Specify schema mismatch"

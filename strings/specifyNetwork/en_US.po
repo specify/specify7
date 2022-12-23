@@ -9,10 +9,10 @@ msgstr "Specify Network"
 
 #: components/SpecifyNetwork/index.tsx:228
 #. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUpDialogHeader"
+msgid "failedToOpenPopUp"
 msgstr "Failed to open Specify Network Page"
 
 #: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUpDialogText"
+msgid "failedToOpenPopUpDescription"
 msgstr "Please make sure your browser is not blocking pop-up windows and try again."

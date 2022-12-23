@@ -1,6 +1,33 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/QueryBuilder/Field.tsx:466
+#: components/QueryBuilder/Field.tsx:467
+#. Used in: Components > Query Builder > Field
+msgid "openMap"
+msgstr "Открыть карту"
+
+#: components/Leaflet/Map.tsx:23
+#: components/QueryBuilder/ToMap.tsx:59
+#: components/QueryBuilder/ToMap.tsx:241
+#: components/UserPreferences/Definitions.tsx:1522
+#: components/WorkBench/Template.tsx:235
+#. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
+msgid "geoMap"
+msgstr "Карта"
+
+#: components/QueryBuilder/ToMap.tsx:237
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
+msgid "queryMapSubset"
+msgstr ""
+"Карта - Отображено {plotted:number|formatted} из {total:number|formatted} "
+"записей"
+
+#: components/QueryBuilder/ToMap.tsx:234
+#. Used in: Components > Query Builder > To Map
+msgid "queryMapAll"
+msgstr "Карта - Отображено {plotted:number|formatted} записей"
+
 #: components/Leaflet/addOns.ts:95
 #. Used in: Components > Leaflet > Add Ons
 msgid "polygonBoundaries"
@@ -39,7 +66,7 @@ msgstr "Полигоны"
 #: components/FormPlugins/GeoLocate.tsx:122
 #: components/FormPlugins/GeoLocate.tsx:138
 #: components/FormPlugins/GeoLocate.tsx:221
-#: components/WorkBench/Template.tsx:224
+#: components/WorkBench/Template.tsx:225
 #: components/WorkBench/wbUtils.js:723
 #: components/WorkBench/wbUtils.js:731
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils
@@ -48,12 +75,12 @@ msgstr "GEOLocate"
 
 #: components/FormPlugins/GeoLocate.tsx:107
 #. Used in: Components > Form Plugins > Geo Locate
-msgid "geographyRequiredDialogHeader"
+msgid "geographyRequired"
 msgstr "География должна быть связана"
 
 #: components/FormPlugins/GeoLocate.tsx:110
 #. Used in: Components > Form Plugins > Geo Locate
-msgid "geographyRequiredDialogText"
+msgid "geographyRequiredDescription"
 msgstr "Плагин GeoLocate требует, чтобы поле географии было заполнено."
 
 #: components/FormPlugins/LatLongUi.tsx:268

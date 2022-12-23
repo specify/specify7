@@ -9,12 +9,12 @@ msgstr "Specify Network"
 
 #: components/SpecifyNetwork/index.tsx:228
 #. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUpDialogHeader"
+msgid "failedToOpenPopUp"
 msgstr "Не удалось открыть страницу Specify Network"
 
 #: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
-msgid "failedToOpenPopUpDialogText"
+msgid "failedToOpenPopUpDescription"
 msgstr ""
 "Убедитесь, что ваш браузер не блокирует всплывающие окна, и повторите "
 "попытку."
