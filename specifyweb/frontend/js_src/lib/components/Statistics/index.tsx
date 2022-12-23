@@ -30,7 +30,13 @@ import { f } from '../../utils/functools';
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
-  const [layout, setLayout] = usePref('statistics', 'appearance', 'layout');
+  const [layout, setLayout] = usePref(
+    'statistics',
+    'appearance',
+    'layout',
+    'collectionPreferences'
+  );
+
   const [defaultLayout, setDefaultLayout] = usePref(
     'statistics',
     'appearance',
