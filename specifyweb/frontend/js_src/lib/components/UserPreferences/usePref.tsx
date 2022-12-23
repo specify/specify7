@@ -18,11 +18,11 @@ export function usePref<
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
-  item: ITEM
+  item: ITEM,
+  preferenceType = 'userPreferences'
 ): GetOrSet<
   Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
-  const preferenceType = 'userPreferences';
   const [getPrefMain, setUserPref] = React.useContext(PreferencesContext) ?? [
     getPref[preferenceType],
     setPref[preferenceType],
@@ -56,7 +56,7 @@ export function usePref<
       setLocalPref(newValue);
       currentPref.current = newValue;
     },
-    [category, subcategory, item]
+    [category, subcategory, item, setUserPref]
   );
 
   return [pref, updatePref] as const;

@@ -74,11 +74,11 @@ export const getPrefGenerator =
     subcategory: SUBCATEGORY,
     item: ITEM
   ): PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] => {
-    return (
+    const x =
       preference[preferenceType].preferences[category]?.[subcategory]?.[item] ??
       defaultPreferences[category]?.[subcategory]?.[item] ??
-      getPreferenceDefinition(category, subcategory, item).defaultValue
-    );
+      getPreferenceDefinition(category, subcategory, item).defaultValue;
+    return x;
   };
 
 export const getPrefDefinition = getPrefDefinitionGenerator(
@@ -411,16 +411,23 @@ const commitToCache = (): void =>
 /** Listen for changes to preferences in another tab */
 const registerChangeListener = (): void =>
   void cacheEvents.on('change', ({ category, key }) => {
-    if (category !== 'userPreferences') return;
-    if (key === 'cached') {
-      preference.user.preferences =
-        getCache('userPreferences', 'cached') ?? preference.user.preferences;
-      preference.collection.preferences =
-        getCache('collectionPreferences', 'cached') ??
-        preference.user.preferences;
-    } else if (key === 'defaultCached')
-      defaultPreferences =
-        getCache('userPreferences', 'defaultCached') ?? defaultPreferences;
-    setDevelopmentGlobal('_preferences', preference.user.preferences);
+    if (category !== 'userPreferences' && category !== 'collectionPreferences')
+      return;
+
+    if (category === 'userPreferences') {
+      if (key === 'cached') {
+        preference.user.preferences =
+          getCache('userPreferences', 'cached') ?? preference.user.preferences;
+      } else if (key === 'defaultCached') {
+        defaultPreferences =
+          getCache('userPreferences', 'defaultCached') ?? defaultPreferences;
+      }
+    }
+
+    preference.collection.preferences =
+      getCache('collectionPreferences', 'cached') ??
+      preference.collection.preferences;
+
+    setDevelopmentGlobal('_preferences', preference);
     prefEvents.trigger('update', undefined);
   });

@@ -101,7 +101,6 @@ export const preferencesPromiseGenerator = (
         await ajax<RA<UserResource>>(cachableUrl(url), {
           headers: { Accept: 'application/json' },
         }).then(async (data) => {
-          console.log('got this data from backend: ', data);
           return await actions.reduce(
             async (currentDataPromise, currentPromise) => {
               const currentData = await currentDataPromise;
