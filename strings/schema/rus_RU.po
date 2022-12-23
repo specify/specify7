@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/SchemaConfig/Table.tsx:45
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
-#: components/Toolbar/Schema.tsx:370
+#: components/Toolbar/Schema.tsx:386
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
 msgid "table"
 msgstr "Таблица"
@@ -43,7 +43,7 @@ msgstr "Изменения схемы не сохранены"
 msgid "changeBaseTable"
 msgstr "Изменить базовую таблицу"
 
-#: components/SchemaConfig/Field.tsx:41
+#: components/SchemaConfig/Field.tsx:42
 #. Used in: Components > Schema Config > Field
 msgid "field"
 msgstr "Поле"
@@ -52,7 +52,7 @@ msgstr "Поле"
 #: components/Forms/generateFormDefinition.ts:126
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
-#: components/Toolbar/Schema.tsx:215
+#: components/Toolbar/Schema.tsx:221
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 msgid "fields"
 msgstr "Поля"
@@ -60,23 +60,23 @@ msgstr "Поля"
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/Schema.tsx:271
+#: components/Toolbar/Schema.tsx:282
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 msgid "relationships"
 msgstr "Отношения"
 
-#: components/SchemaConfig/Field.tsx:46
+#: components/SchemaConfig/Field.tsx:47
 #: components/SchemaConfig/Table.tsx:50
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 msgid "caption"
 msgstr "Подпись"
 
-#: components/SchemaConfig/Field.tsx:56
+#: components/SchemaConfig/Field.tsx:57
 #: components/SchemaConfig/Table.tsx:60
-#: components/Security/Role.tsx:136
-#: components/Toolbar/Schema.tsx:170
-#: components/Toolbar/Schema.tsx:229
-#: components/Toolbar/Schema.tsx:377
+#: components/Security/Role.tsx:137
+#: components/Toolbar/Schema.tsx:171
+#: components/Toolbar/Schema.tsx:237
+#: components/Toolbar/Schema.tsx:393
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
 msgid "description"
 msgstr "Описание"
@@ -86,7 +86,7 @@ msgstr "Описание"
 msgid "hideTable"
 msgstr "Скрыть таблицу"
 
-#: components/SchemaConfig/Field.tsx:85
+#: components/SchemaConfig/Field.tsx:86
 #. Used in: Components > Schema Config > Field
 msgid "hideField"
 msgstr "Скрыть поле"
@@ -100,16 +100,6 @@ msgstr "Формат таблицы"
 #. Used in: Components > Schema Config > Table
 msgid "tableAggregation"
 msgstr "Агрегация таблиц"
-
-#: components/AppResources/Create.tsx:91
-#: components/FormMeta/SubViewMeta.tsx:27
-#: components/SchemaConfig/Field.tsx:70
-#: components/Toolbar/Schema.tsx:174
-#: components/Toolbar/Schema.tsx:233
-#: components/Toolbar/Schema.tsx:382
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Schema Config > Field ⬤ Components > Toolbar > Schema
-msgid "type"
-msgstr "Тип"
 
 #: components/SchemaConfig/helpers.ts:121
 #. Used in: Components > Schema Config > Helpers
@@ -131,59 +121,37 @@ msgstr "Многие к одному"
 msgid "manyToMany"
 msgstr "Многие-ко-многим"
 
-#: components/SchemaConfig/Field.tsx:66
-#: components/Toolbar/Schema.tsx:175
-#: components/Toolbar/Schema.tsx:383
+#: components/SchemaConfig/Field.tsx:67
+#: components/Toolbar/Schema.tsx:178
+#: components/Toolbar/Schema.tsx:399
 #. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
 msgid "fieldLength"
 msgstr "Длина"
 
 #: components/FormMeta/index.tsx:64
-#: components/Toolbar/Schema.tsx:172
-#: components/Toolbar/Schema.tsx:231
-#: components/Toolbar/Schema.tsx:379
+#: components/Toolbar/Schema.tsx:174
+#: components/Toolbar/Schema.tsx:240
+#: components/Toolbar/Schema.tsx:395
 #. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
 msgid "readOnly"
 msgstr "Только чтение"
 
-#: components/SchemaConfig/Field.tsx:96
-#: components/Toolbar/Schema.tsx:173
-#: components/Toolbar/Schema.tsx:232
-#: components/Toolbar/Schema.tsx:380
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
-msgid "required"
-msgstr "Необходимый"
-
-#: components/SchemaConfig/Format.tsx:51
+#: components/SchemaConfig/Format.tsx:52
 #. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Формат поля"
 
-#: components/SchemaConfig/Format.tsx:71
+#: components/SchemaConfig/Format.tsx:72
 #. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Форматирован"
 
-#: components/SchemaConfig/Format.tsx:88
+#: components/SchemaConfig/Format.tsx:95
 #. Used in: Components > Schema Config > Format
 msgid "webLink"
 msgstr "Интернет-ссылка"
 
-#: components/SchemaConfig/Format.tsx:94
-#: components/Security/registry.ts:213
-#. Used in: Components > Schema Config > Format ⬤ Components > Security > Registry
-msgid "pickList"
-msgstr "Список выбора"
-
-#: components/SchemaConfig/Format.tsx:80
-#: components/SchemaConfig/Format.tsx:98
-#: components/Toolbar/Schema.tsx:289
-#: components/Toolbar/Schema.tsx:372
-#. Used in: Components > Schema Config > Format ⬤ Components > Toolbar > Schema
-msgid "system"
-msgstr "Системное"
-
-#: components/SchemaConfig/Format.tsx:97
+#: components/SchemaConfig/Format.tsx:104
 #. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "Создано пользователем"
@@ -195,71 +163,62 @@ msgstr "Создано пользователем"
 msgid "addLanguage"
 msgstr "Добавить язык"
 
-#: components/Toolbar/Schema.tsx:169
-#: components/Toolbar/Schema.tsx:228
-#: components/Toolbar/Schema.tsx:288
-#: components/Toolbar/Schema.tsx:371
-#: components/Toolbar/Schema.tsx:376
+#: components/Toolbar/Schema.tsx:170
+#: components/Toolbar/Schema.tsx:236
+#: components/Toolbar/Schema.tsx:301
+#: components/Toolbar/Schema.tsx:387
+#: components/Toolbar/Schema.tsx:392
 #. Used in: Components > Toolbar > Schema
 msgid "fieldLabel"
 msgstr "Локализованный"
 
-#: components/Toolbar/Schema.tsx:171
-#: components/Toolbar/Schema.tsx:230
-#: components/Toolbar/Schema.tsx:290
-#: components/Toolbar/Schema.tsx:373
-#: components/Toolbar/Schema.tsx:378
-#. Used in: Components > Toolbar > Schema
-msgid "hidden"
-msgstr "Скрытый"
-
-#: components/Toolbar/Schema.tsx:176
-#: components/Toolbar/Schema.tsx:234
-#: components/Toolbar/Schema.tsx:384
+#: components/Toolbar/Schema.tsx:179
+#: components/Toolbar/Schema.tsx:244
+#: components/Toolbar/Schema.tsx:400
 #. Used in: Components > Toolbar > Schema
 msgid "databaseColumn"
 msgstr "Столбец базы данных"
 
-#: components/Toolbar/Schema.tsx:235
-#: components/Toolbar/Schema.tsx:385
+#: components/Toolbar/Schema.tsx:245
+#: components/Toolbar/Schema.tsx:401
 #. Used in: Components > Toolbar > Schema
 msgid "relatedModel"
 msgstr "Родственная Таблица"
 
-#: components/Toolbar/Schema.tsx:236
-#: components/Toolbar/Schema.tsx:386
+#: components/Toolbar/Schema.tsx:246
+#: components/Toolbar/Schema.tsx:402
 #. Used in: Components > Toolbar > Schema
 msgid "otherSideName"
 msgstr "Имя другой стороны"
 
-#: components/Toolbar/Schema.tsx:237
-#: components/Toolbar/Schema.tsx:387
+#: components/Toolbar/Schema.tsx:247
+#: components/Toolbar/Schema.tsx:403
 #. Used in: Components > Toolbar > Schema
 msgid "dependent"
 msgstr "Зависимый"
 
-#: components/Toolbar/Schema.tsx:341
+#: components/Toolbar/Schema.tsx:357
 #. Used in: Components > Toolbar > Schema
 msgid "downloadAsJson"
 msgstr "Скачать как JSON"
 
-#: components/Toolbar/Schema.tsx:352
+#: components/Toolbar/Schema.tsx:368
 #. Used in: Components > Toolbar > Schema
 msgid "downloadAsTsv"
 msgstr "Скачать как TSV"
 
-#: components/Toolbar/Schema.tsx:291
-#: components/Toolbar/Schema.tsx:374
+#: components/Toolbar/Schema.tsx:306
+#: components/Toolbar/Schema.tsx:390
 #. Used in: Components > Toolbar > Schema
 msgid "tableId"
 msgstr "Идентификатор"
 
-#: components/Toolbar/Schema.tsx:292
+#: components/Toolbar/Schema.tsx:307
 #. Used in: Components > Toolbar > Schema
 msgid "fieldCount"
 msgstr "Количество полей"
 
-#: components/Toolbar/Schema.tsx:293
+#: components/Toolbar/Schema.tsx:308
 #. Used in: Components > Toolbar > Schema
 msgid "relationshipCount"
 msgstr "Количество отношений"

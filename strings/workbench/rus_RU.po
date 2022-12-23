@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/Header/menuItemDefinitions.ts:103
+#: components/Router/OverlayRoutes.tsx:117
+#: components/UserPreferences/Definitions.tsx:1326
+#: components/WorkBench/wbView.js:230
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
+msgid "workBench"
+msgstr "WorkBench"
+
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:145
 #: components/WorkBench/wbView.js:1917
@@ -73,7 +81,7 @@ msgstr "Проверка данных"
 msgid "dataCheckOn"
 msgstr "Проверка данных: вкл."
 
-#: components/WorkBench/DataSetMeta.tsx:300
+#: components/WorkBench/DataSetMeta.tsx:320
 #: components/WorkBench/Template.tsx:193
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
@@ -540,31 +548,31 @@ msgstr "Кодировка символов:"
 msgid "delimiter"
 msgstr "Разделитель:"
 
-#: components/UserPreferences/Definitions.tsx:1425
+#: components/UserPreferences/Definitions.tsx:1427
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Запятая"
 
-#: components/UserPreferences/Definitions.tsx:1433
+#: components/UserPreferences/Definitions.tsx:1435
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Точка с запятой"
 
-#: components/UserPreferences/Definitions.tsx:1429
+#: components/UserPreferences/Definitions.tsx:1431
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Табуляция"
 
-#: components/UserPreferences/Definitions.tsx:1437
+#: components/UserPreferences/Definitions.tsx:1439
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Пробел"
 
-#: components/UserPreferences/Definitions.tsx:1441
+#: components/UserPreferences/Definitions.tsx:1443
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
@@ -588,7 +596,7 @@ msgstr "Имя для нового набора данных:"
 msgid "firstRowIsHeader"
 msgstr "Первая строка является заголовок:"
 
-#: components/Toolbar/WbsDialog.tsx:171
+#: components/Toolbar/WbsDialog.tsx:172
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
@@ -599,27 +607,27 @@ msgstr "Импортировать файл"
 msgid "columnName"
 msgstr "Столбец {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:38
+#: components/Toolbar/WbsDialog.tsx:39
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "Новый набор данных {date}"
 
-#: components/Toolbar/WbsDialog.tsx:195
+#: components/Toolbar/WbsDialog.tsx:196
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSets"
 msgstr "Наборы данных"
 
-#: components/Toolbar/WbsDialog.tsx:206
+#: components/Toolbar/WbsDialog.tsx:207
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "wbsDialogEmpty"
 msgstr "В настоящее время наборов данных не существует."
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:208
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr "Используйте «Импортировать файл» или «Создать новый», чтобы создать новый."
 
-#: components/Toolbar/WbsDialog.tsx:182
+#: components/Toolbar/WbsDialog.tsx:183
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Создайте новый"
@@ -635,48 +643,48 @@ msgstr "Свойства набора данных"
 msgid "dataSetName"
 msgstr "Название набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:117
+#: components/WorkBench/DataSetMeta.tsx:123
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Количество рядов"
 
-#: components/WorkBench/DataSetMeta.tsx:123
+#: components/WorkBench/DataSetMeta.tsx:129
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Количество столбцов"
 
-#: components/WorkBench/DataSetMeta.tsx:207
+#: components/WorkBench/DataSetMeta.tsx:225
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Имя файла импорта"
 
-#: components/WorkBench/DataSetMeta.tsx:209
+#: components/WorkBench/DataSetMeta.tsx:227
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(файл без имени)"
 
-#: components/WorkBench/DataSetMeta.tsx:304
+#: components/WorkBench/DataSetMeta.tsx:324
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwner"
 msgstr "Изменить владельца набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:325
+#: components/WorkBench/DataSetMeta.tsx:345
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDescription"
 msgstr "Выберите нового владельца:"
 
-#: components/WorkBench/DataSetMeta.tsx:289
-#: components/WorkBench/DataSetMeta.tsx:292
+#: components/WorkBench/DataSetMeta.tsx:309
+#: components/WorkBench/DataSetMeta.tsx:312
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Владелец набора данных изменен"
 
-#: components/WorkBench/DataSetMeta.tsx:239
+#: components/WorkBench/DataSetMeta.tsx:257
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набор данных"
 
-#: components/WorkBench/DataSetMeta.tsx:243
+#: components/WorkBench/DataSetMeta.tsx:261
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Загружено, только для чтения)"

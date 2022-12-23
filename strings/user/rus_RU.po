@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/ChooseCollection/index.tsx:168
 #: components/Core/Main.tsx:118
 #: components/Login/OicLogin.tsx:86
-#: components/Login/index.tsx:156
+#: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
@@ -12,12 +12,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "logIn"
 msgstr "Авторизоваться"
 
-#: components/Login/index.tsx:136
+#: components/Login/index.tsx:140
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Имя пользователя"
 
-#: components/Login/index.tsx:145
+#: components/Login/index.tsx:149
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -82,7 +82,7 @@ msgid "noAgentDescription"
 msgstr "Пожалуйста, войдите как администратор и назначьте агента этому пользователю"
 
 #: components/Login/OicLogin.tsx:47
-#: components/Login/index.tsx:121
+#: components/Login/index.tsx:125
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Привет, {userName:string}!"
@@ -100,7 +100,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Войти с помощью Профиля Specify"
 
-#: components/Login/index.tsx:123
+#: components/Login/index.tsx:127
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -110,7 +110,7 @@ msgstr ""
 "учетной записью {providerName:string} для будущих входов в систему."
 
 #: components/Header/userToolDefinitions.ts:65
-#: components/Router/OverlayRoutes.tsx:138
+#: components/Router/OverlayRoutes.tsx:140
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -315,7 +315,7 @@ msgstr "Роли пользователей"
 msgid "assignedUserRoles"
 msgstr "Назначенные роли пользователя"
 
-#: components/Security/Role.tsx:150
+#: components/Security/Role.tsx:151
 #. Used in: Components > Security > Role
 msgid "rolePolicies"
 msgstr "Политики"
@@ -332,7 +332,7 @@ msgstr ""
 "Пользовательские политики на уровне коллекции (применяется только к этой "
 "коллекции)"
 
-#: components/Security/Role.tsx:112
+#: components/Security/Role.tsx:113
 #. Used in: Components > Security > Role
 msgid "role"
 msgstr "Роль"
@@ -517,12 +517,12 @@ msgstr "(Specify 7 Администратор)"
 msgid "legacyAdmin"
 msgstr "(Specify 6 Администратор)"
 
-#: components/Security/Role.tsx:225
+#: components/Security/Role.tsx:226
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Удалить роль, в которой есть пользователи?"
 
-#: components/Security/Role.tsx:228
+#: components/Security/Role.tsx:229
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Пользователи не будут удалены, но потеряют эту роль."

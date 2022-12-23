@@ -1,6 +1,13 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
+#: components/Header/menuItemDefinitions.ts:58
+#: components/Router/OverlayRoutes.tsx:52
+#: components/Toolbar/TreeRepair.tsx:45
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+msgid "trees"
+msgstr "Trees"
+
 #: components/DataModel/treeBusinessRules.ts:93
 #. Used in: Components > Data Model > Tree Business Rules
 msgid "badStructure"

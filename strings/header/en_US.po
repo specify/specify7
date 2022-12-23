@@ -18,20 +18,20 @@ msgid "currentCollection"
 msgstr "Current Collection"
 
 #: components/Header/Forms.tsx:63
-#: components/Header/menuItemDefinitions.ts:44
-#: components/Router/OverlayRoutes.tsx:42
+#: components/Header/menuItemDefinitions.ts:46
+#: components/Router/OverlayRoutes.tsx:44
 #. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
 msgstr "Data Entry"
 
 #: components/Header/userToolDefinitions.ts:71
-#: components/Router/OverlayRoutes.tsx:146
+#: components/Router/OverlayRoutes.tsx:148
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "Create DwC Archive"
 
 #: components/Header/userToolDefinitions.ts:76
-#: components/Router/OverlayRoutes.tsx:154
+#: components/Router/OverlayRoutes.tsx:156
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
 msgstr "Update RSS Feed"
@@ -87,13 +87,13 @@ msgid "createReport"
 msgstr "Create new report"
 
 #: components/Header/userToolDefinitions.ts:57
-#: components/Router/OverlayRoutes.tsx:130
-#: components/Toolbar/TreeRepair.tsx:164
+#: components/Router/OverlayRoutes.tsx:132
+#: components/Toolbar/TreeRepair.tsx:165
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
 msgstr "Repair Tree"
 
-#: components/Toolbar/TreeRepair.tsx:159
+#: components/Toolbar/TreeRepair.tsx:160
 #. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
 msgstr "Tree repair is complete."
@@ -124,18 +124,18 @@ msgid "secondarySearch"
 msgstr "Secondary Search"
 
 #: components/Header/UserTools.tsx:51
-#: components/Router/OverlayRoutes.tsx:34
+#: components/Router/OverlayRoutes.tsx:36
 #. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
 msgid "userTools"
 msgstr "User Tools"
 
-#: components/Toolbar/Language.tsx:65
-#: components/Toolbar/Language.tsx:95
+#: components/Toolbar/Language.tsx:77
+#: components/Toolbar/Language.tsx:107
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Help Localize Specify 7"
 
-#: components/Toolbar/Language.tsx:73
+#: components/Toolbar/Language.tsx:85
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
@@ -152,8 +152,8 @@ msgstr "Tables API"
 msgid "operationsApi"
 msgstr "Operations API"
 
-#: components/AppResources/Create.tsx:92
-#: components/AppResources/Create.tsx:113
+#: components/AppResources/Create.tsx:94
+#: components/AppResources/Create.tsx:115
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
 #: components/UserPreferences/Definitions.tsx:403

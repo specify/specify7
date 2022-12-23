@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/ChooseCollection/index.tsx:168
 #: components/Core/Main.tsx:118
 #: components/Login/OicLogin.tsx:86
-#: components/Login/index.tsx:156
+#: components/Login/index.tsx:160
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
@@ -12,12 +12,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "logIn"
 msgstr "Log In"
 
-#: components/Login/index.tsx:136
+#: components/Login/index.tsx:140
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Username"
 
-#: components/Login/index.tsx:145
+#: components/Login/index.tsx:149
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -82,7 +82,7 @@ msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
 
 #: components/Login/OicLogin.tsx:47
-#: components/Login/index.tsx:121
+#: components/Login/index.tsx:125
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Hello, {userName:string}!"
@@ -100,7 +100,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Sign in with Specify Account"
 
-#: components/Login/index.tsx:123
+#: components/Login/index.tsx:127
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -110,7 +110,7 @@ msgstr ""
 "{providerName:string} account for future logins."
 
 #: components/Header/userToolDefinitions.ts:65
-#: components/Router/OverlayRoutes.tsx:138
+#: components/Router/OverlayRoutes.tsx:140
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -319,7 +319,7 @@ msgstr "Collection User Roles"
 msgid "assignedUserRoles"
 msgstr "Assigned User Roles"
 
-#: components/Security/Role.tsx:150
+#: components/Security/Role.tsx:151
 #. Used in: Components > Security > Role
 msgid "rolePolicies"
 msgstr "Role Permission Policies"
@@ -334,7 +334,7 @@ msgstr "User Permission Policies"
 msgid "customUserPolices"
 msgstr "Custom Collection-level Policies (applies to this collection only)"
 
-#: components/Security/Role.tsx:112
+#: components/Security/Role.tsx:113
 #. Used in: Components > Security > Role
 msgid "role"
 msgstr "Role"
@@ -517,12 +517,12 @@ msgstr "(Specify 7 Admin)"
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
 
-#: components/Security/Role.tsx:225
+#: components/Security/Role.tsx:226
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Delete role that has users?"
 
-#: components/Security/Role.tsx:228
+#: components/Security/Role.tsx:229
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Users will not be deleted, but they would lose this role."

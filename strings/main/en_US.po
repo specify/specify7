@@ -81,7 +81,7 @@ msgstr "Error Message"
 msgid "leavePageConfirmation"
 msgstr "Are you sure you want to leave this page?"
 
-#: components/Security/Role.tsx:86
+#: components/Security/Role.tsx:87
 #. Used in: Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Unsaved changes would be lost if your leave this page."

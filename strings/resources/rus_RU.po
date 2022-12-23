@@ -6,10 +6,17 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/userToolDefinitions.ts:44
 #: components/Router/Routes.tsx:201
 #: components/Security/registry.ts:204
-#: components/UserPreferences/Definitions.tsx:1486
+#: components/UserPreferences/Definitions.tsx:1488
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "appResources"
 msgstr "Ресурсы приложения"
+
+#: components/FormMeta/Definition.tsx:29
+#: components/FormMeta/Definition.tsx:55
+#: components/UserPreferences/Definitions.tsx:654
+#. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
+msgid "formDefinition"
+msgstr "Схема формы"
 
 #: components/AppResources/EditorComponents.tsx:36
 #: components/AppResources/Filters.tsx:60
