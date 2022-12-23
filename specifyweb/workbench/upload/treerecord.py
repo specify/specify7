@@ -332,7 +332,7 @@ class BoundTreeRecord(NamedTuple):
                         **attrs,
                     )
                 except (BusinessRuleException, IntegrityError) as e:
-                    return UploadResult(FailedBusinessRule(str(e), info), parent_result, {})
+                    return UploadResult(FailedBusinessRule(str(e), {}, info), parent_result, {})
 
             self.auditor.insert(obj, self.uploadingAgentId, None)
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})

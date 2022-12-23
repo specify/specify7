@@ -338,7 +338,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='Start Date Collected'), ParseFailure(message='date value must contain four digit year: bad date', column='ID Date')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='invalidYear', payload={'value':'foobar'}, column='Start Date Collected'), ParseFailure(message='invalidYear', payload={'value': 'bad date'}, column='ID Date')], failed_result.failures)
 
     def test_out_of_range_lat_long(self) -> None:
         reader = csv.DictReader(io.StringIO(
@@ -349,7 +349,7 @@ class ParsingTests(UploadTestsBase):
         failed_result = upload_results[0].record_result
         self.assertIsInstance(failed_result, ParseFailures)
         assert isinstance(failed_result, ParseFailures) # make typechecker happy
-        self.assertEqual([ParseFailure(message='latitudeOutOfRange', payload={'value':'128° 06.07\' N"'}, column='Latitude1'), ParseFailure(message="longitude absolute value must be less than 180 degrees: 191° 02.42' W", column='Longitude1')], failed_result.failures)
+        self.assertEqual([ParseFailure(message='latitudeOutOfRange', payload={'value':'128° 06.07\' N"'}, column='Latitude1'), ParseFailure(message='longitudeOutOfRange', payload={'value': '191° 02.42\' W"'}, column='Longitude1')], failed_result.failures)
 
     def test_agent_type(self) -> None:
         plan = UploadTable(

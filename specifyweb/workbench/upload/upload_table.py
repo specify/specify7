@@ -362,7 +362,7 @@ class BoundUploadTable(NamedTuple):
                 })
                 picklist_additions = self._do_picklist_additions()
             except (BusinessRuleException, IntegrityError) as e:
-                return UploadResult(FailedBusinessRule(str(e), info), toOneResults, {})
+                return UploadResult(FailedBusinessRule(str(e), {}, info), toOneResults, {})
 
         self.auditor.insert(uploaded, self.uploadingAgentId, None)
 
