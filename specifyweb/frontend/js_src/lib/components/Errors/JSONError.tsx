@@ -3,7 +3,7 @@ import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { TableIcon } from '../Molecules/TableIcon';
 
-export type JSONResponse = {
+type JSONResponse = {
   exception: string;
   message: string;
   data: any;
@@ -27,30 +27,39 @@ export function formatJSONBackendResponse(error: string): JSX.Element {
   const response = createJsonResponse(error);
   if (response.exception == 'BusinessRuleException')
     return formatBusinessRuleException(error);
+  else if (response.exception == 'TreeBusinessRuleException')
+    return formatTreeBusinessRuleException(error);
   else return formatBasicResponse(error);
 }
 
-function formatBasicResponse(error: string): JSX.Element {
-  const response = createJsonResponse(error);
+function JSONBackendResponseFooter({
+  response,
+  isDataOpen = true,
+}: {
+  readonly response: JSONResponse;
+  isDataOpen?: boolean;
+}): JSX.Element {
   return (
     <>
-      <h2 className={className.headerPrimary}>{response.exception}</h2>
-      <em className={className.label}>{response.message}</em>
-      <details>
+      <details open={isDataOpen === true ? true : false}>
         <summary>Data</summary>
         <pre>{response.formattedData}</pre>
       </details>
       <details>
         <summary>Traceback</summary>
-        {response.traceback}
+        <pre>{response.traceback}</pre>
       </details>
     </>
   );
 }
 
-function formatBusinessRuleException(error: string): JSX.Element {
-  const response = createJsonResponse(error);
-  const table: string = response.data.table;
+function BusinessRuleExceptionHeader({
+  table,
+  response,
+}: {
+  readonly table: string;
+  readonly response: JSONResponse;
+}): JSX.Element {
   const type: string = response.data.type;
   return (
     <>
@@ -64,14 +73,52 @@ function formatBusinessRuleException(error: string): JSX.Element {
         <span>{'   '}</span>
         <em className={className.label}>{response.message}</em>
       </div>
-      <details>
-        <summary>Data</summary>
-        <pre>{response.formattedData}</pre>
-      </details>
-      <details>
-        <summary>Traceback</summary>
-        {response.traceback}
-      </details>
+    </>
+  );
+}
+
+function formatBasicResponse(error: string): JSX.Element {
+  const response = createJsonResponse(error);
+  return (
+    <>
+      <h2 className={className.headerPrimary}>{response.exception}</h2>
+      <em className={className.label}>{response.message}</em>
+      <JSONBackendResponseFooter
+        response={response}
+      ></JSONBackendResponseFooter>
+    </>
+  );
+}
+
+function formatBusinessRuleException(error: string): JSX.Element {
+  const response = createJsonResponse(error);
+  const table: string = response.data.table;
+  return (
+    <>
+      <BusinessRuleExceptionHeader
+        table={table}
+        response={response}
+      ></BusinessRuleExceptionHeader>
+      <JSONBackendResponseFooter
+        response={response}
+      ></JSONBackendResponseFooter>
+    </>
+  );
+}
+
+function formatTreeBusinessRuleException(error: string): JSX.Element {
+  const response = createJsonResponse(error);
+  const table: string = response.data.tree;
+  return (
+    <>
+      <BusinessRuleExceptionHeader
+        table={table}
+        response={response}
+      ></BusinessRuleExceptionHeader>
+      <JSONBackendResponseFooter
+        response={response}
+        isDataOpen={false}
+      ></JSONBackendResponseFooter>
     </>
   );
 }
