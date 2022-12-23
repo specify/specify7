@@ -346,7 +346,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'add-language',
-        title: schemaText.addLanguageDialogHeader(),
+        title: schemaText.addLanguage(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ AddLanguage }) => AddLanguage

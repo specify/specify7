@@ -70,7 +70,7 @@ export function LanguageSelection<LANGUAGES extends string>({
               components={{
                 emailLink: supportLink,
               }}
-              string={headerText.helpLocalizeSpecifyDialogText()}
+              string={headerText.helpLocalizeSpecifyDescription()}
             />
           </p>
         </Dialog>

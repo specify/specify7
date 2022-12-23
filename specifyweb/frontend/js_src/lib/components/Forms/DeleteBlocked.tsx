@@ -81,10 +81,10 @@ export function DeleteBlocked({
         className={{
           container: dialogClassNames.wideContainer,
         }}
-        header={formsText.deleteBlockedDialogHeader()}
+        header={formsText.deleteBlocked()}
         onClose={handleClose}
       >
-        {formsText.deleteBlockedDialogText()}
+        {formsText.deleteBlockedDescription()}
         {/* BUG: apply these styles everywhere where necessary */}
         <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
           <thead>

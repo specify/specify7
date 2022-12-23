@@ -61,7 +61,7 @@ export function DataSetMeta({
           <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
-      header={wbText.dataSetMetaDialogTitle()}
+      header={wbText.dataSetMeta()}
       icon={<span className="text-blue-500">{icons.table}</span>}
       onClose={handleClose}
     >
@@ -256,7 +256,7 @@ function ChangeOwner({
           </Submit.Blue>
         </>
       }
-      header={wbText.changeDataSetOwnerDialogHeader()}
+      header={wbText.changeDataSetOwner()}
       onClose={handleClose}
     >
       <Form
@@ -277,7 +277,7 @@ function ChangeOwner({
         }
       >
         <Label.Block>
-          <p>{wbText.changeDataSetOwnerDialogText()}</p>
+          <p>{wbText.changeDataSetOwnerDescription()}</p>
           <Select
             size={10}
             value={newOwner}

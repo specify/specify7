@@ -1029,7 +1029,7 @@ export const WBUtils = Backbone.View.extend({
 
     this.wbview.coordinateConverterView = showDialog({
       modal: false,
-      header: wbText.coordinateConverterDialogTitle(),
+      header: wbText.coordinateConverter(),
       onClose: revertChanges,
       buttons: (
         <>
@@ -1039,7 +1039,7 @@ export const WBUtils = Backbone.View.extend({
       ),
       content: (
         <>
-          {wbText.coordinateConverterDialogHeader()}
+          {wbText.coordinateConverterDescription()}
           <Ul>
             {Object.values(options).map((entry, optionIndex) => (
               <li key={optionIndex}>

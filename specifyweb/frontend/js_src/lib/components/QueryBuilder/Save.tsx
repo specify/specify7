@@ -68,18 +68,10 @@ export function QuerySaveDialog({
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={
-        isSaveAs
-          ? queryText.saveClonedQueryDialogHeader()
-          : queryText.saveQuery()
-      }
+      header={isSaveAs ? queryText.saveClonedQuery() : queryText.saveQuery()}
       onClose={handleClose}
     >
-      <p>
-        {isSaveAs
-          ? queryText.saveClonedQueryDialogText()
-          : queryText.saveQueryDialogText()}
-      </p>
+      {isSaveAs && <p>{queryText.saveClonedQueryDescription()}</p>}
       <Form
         className="contents"
         id={id('form')}

@@ -61,9 +61,9 @@ export function WbStatus({
   }, [aborted, dataset.id]);
 
   const title = {
-    validating: wbText.wbStatusValidationDialogTitle(),
-    uploading: wbText.wbStatusUploadDialogTitle(),
-    unuploading: wbText.wbStatusUnuploadDialogTitle(),
+    validating: wbText.wbStatusValidation(),
+    uploading: wbText.wbStatusUpload(),
+    unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
   // FEATURE: display upload progress in the title if tab is not focused
@@ -129,7 +129,7 @@ export function WbStatus({
   else
     message = (
       <>
-        {wbText.wbStatusErrorDialogText({ operationName: mappedOperation })}
+        {wbText.wbStatusError({ operationName: mappedOperation })}
         <pre>{JSON.stringify(status, null, 2)}</pre>
       </>
     );

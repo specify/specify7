@@ -131,7 +131,7 @@ export function Notifications(): JSX.Element {
         onClick={handleOpen}
       >
         {typeof notifications?.length === 'number'
-          ? notificationsText.notifications({
+          ? notificationsText.notificationsCount({
               count: notifications.length,
             })
           : notificationsText.notificationsLoading()}
@@ -143,7 +143,7 @@ export function Notifications(): JSX.Element {
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
-          header={notificationsText.notificationsDialogTitle()}
+          header={notificationsText.notifications()}
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();

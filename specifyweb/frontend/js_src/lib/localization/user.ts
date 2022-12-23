@@ -43,6 +43,10 @@ export const userText = createDictionary({
     'en-us': 'Log Out',
     'ru-ru': 'Выйти',
   },
+  setUserAgents: {
+    'en-us': 'Set User Agents',
+    'ru-ru': 'Настроить пользовательских агентов',
+  },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
     'ru-ru': 'Текущему пользователю не назначен агент',
@@ -96,7 +100,7 @@ export const userText = createDictionary({
     'en-us': 'User Password:',
     'ru-ru': 'Пользовательский пароль:',
   },
-  masterKeyDialogHeader: {
+  masterKeyGenerated: {
     'en-us': 'Master key generated',
     'ru-ru': 'Мастер-ключ создан',
   },
@@ -133,11 +137,11 @@ export const userText = createDictionary({
     'en-us': 'You can login to the collection, to proceed:',
     'ru-ru': 'Вы можете войти в коллекцию, чтобы продолжить:',
   },
-  sessionTimeOutDialogHeader: {
+  sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
     'ru-ru': 'Insufficient Privileges',
   },
-  sessionTimeOutDialogText: {
+  sessionTimeOutDescription: {
     'en-us': `
       You lack sufficient privileges for that action, or your current session
       has been logged out.
@@ -159,7 +163,7 @@ export const userText = createDictionary({
     'en-us': 'Permission denied error',
     'ru-ru': 'В доступе отказано',
   },
-  permissionDeniedDialogText: {
+  permissionDeniedDescription: {
     'en-us': `
       You don't have any policy or role that gives you permission to do the
       following action:
@@ -169,7 +173,7 @@ export const userText = createDictionary({
       следующих действий:
     `,
   },
-  permissionDeniedDialogSecondText: {
+  permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
     'ru-ru': 'Разрешение не было дано при доступе к <url />',
   },
@@ -413,7 +417,7 @@ export const userText = createDictionary({
     'en-us': 'This agent is already associated with a different user.',
     'ru-ru': 'Этот агент уже связан с другим пользователем.',
   },
-  setAgentsDialogText: {
+  setAgentsBeforeProceeding: {
     'en-us': 'Please set the following agents before proceeding:',
     'ru-ru': 'Прежде чем продолжить, установите следующие агенты:',
   },

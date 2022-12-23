@@ -59,18 +59,18 @@ export function QueryExportButtons({
       {state === 'creating' ? (
         <Dialog
           buttons={commonText.close()}
-          header={queryText.queryExportStartedDialogHeader()}
+          header={queryText.queryExportStarted()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText.queryExportStartedDialogText()}
+          {queryText.queryExportStartedDescription()}
         </Dialog>
       ) : state === 'warning' ? (
         <Dialog
           buttons={commonText.close()}
-          header={queryText.unableToExportAsKmlDialogHeader()}
+          header={queryText.missingCoordinatesForKml()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText.unableToExportAsKmlDialogText()}
+          {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
       {hasPermission('/querybuilder/query', 'export_csv') && (

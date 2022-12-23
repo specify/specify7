@@ -69,7 +69,7 @@ export function AddLanguage(): JSX.Element {
           <Submit.Blue form={id('form')}>{commonText.add()}</Submit.Blue>
         </>
       }
-      header={schemaText.addLanguageDialogHeader()}
+      header={schemaText.addLanguage()}
       onClose={(): void => navigate('/specify/')}
     >
       <Form

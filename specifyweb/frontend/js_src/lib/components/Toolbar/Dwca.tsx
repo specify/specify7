@@ -36,7 +36,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
-      header={headerText.chooseDwcaDialogTitle()}
+      header={headerText.chooseDwca()}
       resources={resources}
       onClose={handleClose}
       onSelected={(definition): void => setDefinition(definition?.name)}
@@ -118,10 +118,10 @@ function ExportStarted({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={headerText.dwcaExportStartedDialogHeader()}
+      header={headerText.dwcaExportStarted()}
       onClose={handleClose}
     >
-      {headerText.dwcaExportStartedDialogText()}
+      {headerText.dwcaExportStartedDescription()}
     </Dialog>
   );
 }

@@ -178,7 +178,8 @@ export function RecordSetsDialog({
                 {buttons}
               </>
             }
-            header={formsText.recordSetsDialogTitle({
+            header={commonText.countLine({
+              resource: commonText.recordSets(),
               count: data.totalCount,
             })}
             icon={<span className="text-blue-500">{icons.collection}</span>}

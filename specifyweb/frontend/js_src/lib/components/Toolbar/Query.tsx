@@ -91,7 +91,10 @@ export function QueryListDialog({
           )}
         </>
       }
-      header={queryText.queriesDialogTitle({ count: queries.length })}
+      header={commonText.countLine({
+        resource: queryText.queries(),
+        count: queries.length,
+      })}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >

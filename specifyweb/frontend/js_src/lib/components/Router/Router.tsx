@@ -294,7 +294,7 @@ export function UnloadProtectDialog({
         </>
       }
       forceToTop
-      header={mainText.leavePageDialogHeader()}
+      header={mainText.leavePageConfirmation()}
       onClose={handleCancel}
     >
       {children}

@@ -24,6 +24,7 @@ import { filterUserTools } from './userToolDefinitions';
 import { getCache } from '../../utils/cache';
 import { headerText } from '../../localization/header';
 import { reportsText } from '../../localization/report';
+import { queryText } from '../../localization/query';
 
 export type MenuItemName =
   | 'attachments'
@@ -71,7 +72,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   queries: {
     url: '/specify/overlay/queries/',
-    title: commonText.queries(),
+    title: queryText.queries(),
     icon: icons.documentSearch,
     visibilityKey: 'showQueries',
     enabled: () =>

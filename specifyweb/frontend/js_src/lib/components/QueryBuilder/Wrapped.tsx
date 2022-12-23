@@ -124,7 +124,7 @@ export function QueryBuilder({
 
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
-    queryText.queryUnloadProtectDialogText()
+    queryText.queryUnloadProtect()
   );
 
   const handleAddField = (mappingPath = state.mappingView): void =>

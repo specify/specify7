@@ -86,11 +86,11 @@ export function ValidationResults(props: {
           </Button.Orange>
         </>
       }
-      header={wbText.validationFailedDialogHeader()}
+      header={wbText.validationFailed()}
       modal={false}
       onClose={props.onDismissValidation}
     >
-      <p>{wbText.validationFailedDialogText()}</p>
+      <p>{wbText.validationFailedDescription()}</p>
       <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
@@ -193,7 +193,7 @@ export function EmptyDataSetDialog({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={wbText.emptyDataSetDialogHeader()}
+      header={wbText.emptyDataSet()}
       isOpen={showDialog}
       onClose={handleClose}
     >
@@ -319,8 +319,8 @@ export function ChangeBaseTable({
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText.goToBaseTableDialogHeader()}
-      dialogMessage={wbText.goToBaseTableDialogText()}
+      dialogHeader={wbText.goToBaseTable()}
+      dialogMessage={wbText.goToBaseTableDescription()}
       onConfirm={handleClick}
     >
       {wbText.baseTable()}
@@ -345,8 +345,8 @@ export function ReRunAutoMapper({
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText.reRunAutoMapperDialogHeader()}
-      dialogMessage={wbText.reRunAutoMapperDialogText()}
+      dialogHeader={wbText.reRunAutoMapperConfirmation()}
+      dialogMessage={wbText.reRunAutoMapperConfirmationDescription()}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
@@ -414,14 +414,14 @@ export function MustMatch({
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={wbText.matchingLogicDialogTitle()}
+          header={wbText.changeMatchingLogic()}
           onClose={handleDialogClose}
         >
           {Object.keys(localPreferences).length === 0 ? (
-            wbText.matchingLogicUnavailableDialogText()
+            wbText.matchingLogicUnavailable()
           ) : (
             <>
-              <p id={id('description')}>{wbText.matchingLogicDialogText()}</p>
+              <p id={id('description')}>{wbText.matchingLogicDescription()}</p>
               <table
                 aria-describedby={id('description')}
                 className="grid-table grid-cols-[auto_auto] gap-2"

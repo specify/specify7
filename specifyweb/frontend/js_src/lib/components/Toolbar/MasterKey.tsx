@@ -100,7 +100,7 @@ function ShowKey({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={userText.masterKeyDialogHeader()}
+      header={userText.masterKeyGenerated()}
       onClose={handleClose}
     >
       <div className="grid grid-cols-[auto_min-content] grid-rows-[min-content_auto] gap-2">

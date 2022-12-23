@@ -147,7 +147,7 @@ function DwcaQueryExport({
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={queryText.exportQueryForDwcaDialogHeader()}
+      header={queryText.exportQueryForDwca()}
       onClose={handleClose}
     >
       <AutoGrowTextArea isReadOnly value={exported} />
@@ -177,11 +177,7 @@ function QueryExport({
           <Submit.Blue form={id('form')}>{commonText.create()}</Submit.Blue>
         </>
       }
-      header={
-        asLabel
-          ? headerText.createLabelDialogHeader()
-          : headerText.createReportDialogHeader()
-      }
+      header={asLabel ? headerText.createLabel() : headerText.createReport()}
       onClose={handleClose}
     >
       <Form

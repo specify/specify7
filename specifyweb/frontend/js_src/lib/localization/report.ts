@@ -25,11 +25,11 @@ export const reportsText = createDictionary({
     'en-us': 'Reports',
     'ru-ru': 'Отчеты',
   },
-  reportProblemsDialogTitle: {
+  reportProblems: {
     'en-us': 'Problems with report',
     'ru-ru': 'Проблемы с отчетом',
   },
-  reportsProblemsDialogText: {
+  reportProblemsDescription: {
     'en-us': 'The selected report has the following problems:',
     'ru-ru': 'В выбранном отчете есть следующие проблемы:',
   },
@@ -41,7 +41,7 @@ export const reportsText = createDictionary({
     'en-us': 'Fix',
     'ru-ru': 'Исправить',
   },
-  missingAttachmentsFixDialogTitle: {
+  chooseFile: {
     'en-us': 'Choose file',
     'ru-ru': 'Выберите файл',
   },
@@ -53,19 +53,19 @@ export const reportsText = createDictionary({
     'en-us': 'Run Report',
     'ru-ru': 'Запустить репорт',
   },
-  missingReportQueryDialogHeader: {
+  missingReportQuery: {
     'en-us': 'Missing Report Query',
     'ru-ru': 'Отсутствует запрос отчета',
   },
-  missingReportQueryDialogText: {
+  missingReportQueryDescription: {
     'en-us': 'This report does not have an associated query',
     'ru-ru': 'Этот отчет не имеет связанного запроса',
   },
-  missingReportDialogHeader: {
+  missingReport: {
     'en-us': 'Missing report',
     'ru-ru': 'Отсутствует отчет',
   },
-  missingReportDialogText: {
+  missingReportDescription: {
     'en-us': 'Unable to find an SpReport record for this App Resource',
     'ru-ru': 'Не удалось найти запись SpReport для этого ресурса приложения',
   },

@@ -45,11 +45,11 @@ export const mainText = createDictionary({
     'en-us': 'Return to homepage',
     'ru-ru': 'Вернуться на главную страницу',
   },
-  errorBoundaryDialogHeader: {
+  errorOccurred: {
     'en-us': "Sorry, something's gone a bit wrong",
     'ru-ru': 'Произошла неожиданная ошибка',
   },
-  errorBoundaryDialogText: {
+  errorOccurredDescription: {
     'en-us': `
       We're sorry, it seems you have encountered an error in Specify 7 that we
       may not be aware of.
@@ -59,7 +59,7 @@ export const mainText = createDictionary({
       к вашему текущему окну.
     `,
   },
-  errorBoundaryCriticalDialogText: {
+  criticalErrorOccurredDescription: {
     'en-us': `
       To avoid corrupting data records, we need to start again from a safe
       spot--the Home page.
@@ -69,7 +69,7 @@ export const mainText = createDictionary({
       безопасного места — домашней страницы.
     `,
   },
-  errorBoundaryDialogMessage: {
+  errorResolutionDescription: {
     'en-us': `
       If this issue persists, please contact your IT support or if this is a
       Specify Cloud database, contact <email />
@@ -79,7 +79,7 @@ export const mainText = createDictionary({
       свяжитесь с нами: <email />
     `,
   },
-  errorBoundaryDialogSecondMessage: {
+  errorResolutionSecondDescription: {
     comment: 'Careful with the <xml> tags when localizing',
     'en-us': `
       Users from <memberLink>member institutions</memberLink> can search for
@@ -96,11 +96,11 @@ export const mainText = createDictionary({
     'en-us': 'Error Message',
     'ru-ru': 'Описание ошибки',
   },
-  leavePageDialogHeader: {
+  leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
     'ru-ru': 'Вы уверены, что хотите покинуть эту страницу?',
   },
-  leavePageDialogText: {
+  leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes would be lost if your leave this page.',
     'ru-ru':
       'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
@@ -109,11 +109,11 @@ export const mainText = createDictionary({
     'en-us': 'Leave',
     'ru-ru': 'Покинуть',
   },
-  versionMismatchDialogHeader: {
+  versionMismatch: {
     'en-us': 'Specify version does not match database version',
     'ru-ru': 'Specify версия не соответствует версии базы данных',
   },
-  versionMismatchDialogText: {
+  versionMismatchDescription: {
     'en-us': `
       The Specify version {specifySixVersion:string} does not match the database
       version {databaseVersion:string}.
@@ -123,12 +123,12 @@ export const mainText = createDictionary({
       данных {databaseVersion:string}.
     `,
   },
-  versionMismatchSecondDialogText: {
+  versionMismatchSecondDescription: {
     'en-us':
       'Some features of Specify 7 may therefore fail to operate correctly.',
     'ru-ru': 'Поэтому некоторые функции Specify 7 могут неработать.',
   },
-  versionMismatchThirdDialogText: {
+  versionMismatchInstructions: {
     'en-us': 'Instructions for resolving Specify schema mismatch',
     'ru-ru': 'Инструкции по устранению несоответствия схемы Specify',
   },

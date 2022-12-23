@@ -225,10 +225,10 @@ function SpecifyNetwork({
       {hasFailure && (
         <Dialog
           buttons={commonText.close()}
-          header={specifyNetworkText.failedToOpenPopUpDialogHeader()}
+          header={specifyNetworkText.failedToOpenPopUp()}
           onClose={handleNoFailure}
         >
-          {specifyNetworkText.failedToOpenPopUpDialogText()}
+          {specifyNetworkText.failedToOpenPopUpDescription()}
         </Dialog>
       )}
       <Link.Default

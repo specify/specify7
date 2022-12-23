@@ -27,13 +27,13 @@ const errors = new Set<string>();
 const errorBody = (
   <p>
     <StringToJsx
-      string={mainText.errorBoundaryDialogMessage()}
+      string={mainText.errorResolutionDescription()}
       components={{ email: supportLink }}
     />
     <br />
     <br />
     <StringToJsx
-      string={mainText.errorBoundaryDialogSecondMessage()}
+      string={mainText.errorResolutionSecondDescription()}
       components={{
         memberLink: (label) => (
           <Link.NewTab href="https://www.specifysoftware.org/members/#:~:text=Members%20can%20contact%20support%40specifysoftware.org%20for%20assistance%20updating.">
@@ -51,7 +51,7 @@ const errorBody = (
 );
 
 export function ErrorDialog({
-  header = mainText.errorBoundaryDialogHeader(),
+  header = mainText.errorOccurred(),
   children,
   copiableMessage,
   // Error dialog is only closable in Development
@@ -160,8 +160,8 @@ export function ErrorDialog({
       onClose={undefined}
     >
       <p>
-        {mainText.errorBoundaryDialogText()}{' '}
-        {!canClose && mainText.errorBoundaryCriticalDialogText()}
+        {mainText.errorOccurredDescription()}{' '}
+        {!canClose && mainText.criticalErrorOccurredDescription()}
       </p>
       <br />
       {errorBody}

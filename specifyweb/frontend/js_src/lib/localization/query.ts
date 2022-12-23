@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  queries: {
+    'en-us': 'Queries',
+    'ru-ru': 'Запросы',
+  },
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
@@ -37,15 +41,11 @@ export const queryText = createDictionary({
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
   },
-  saveQueryDialogText: {
-    'en-us': 'Enter a name for the new query.',
-    'ru-ru': 'Введите имя для нового запроса.',
-  },
-  saveClonedQueryDialogHeader: {
+  saveClonedQuery: {
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
   },
-  saveClonedQueryDialogText: {
+  saveClonedQueryDescription: {
     'en-us': `
       The query will be saved with a new name leaving the current query
       unchanged.
@@ -59,46 +59,46 @@ export const queryText = createDictionary({
     'en-us': 'Query Name:',
     'ru-ru': 'Имя запроса:',
   },
-  queryDeleteIncompleteDialogHeader: {
+  queryDeleteIncomplete: {
     'en-us': 'Query definition contains incomplete fields',
     'ru-ru': 'Определение запроса содержит неполные поля',
   },
-  queryDeleteIncompleteDialogText: {
+  queryDeleteIncompleteDescription: {
     'en-us': `
       There are uncompleted fields in the query definition. Do you want to
       remove them?
     `,
     'ru-ru': 'В запросе есть незавершенные поля. Хотите удалить их?',
   },
-  queryUnloadProtectDialogText: {
+  queryUnloadProtect: {
     'en-us': 'The new or modified query definition has not been saved',
     'ru-ru': 'Новый или измененный запрос не был сохранен',
   },
-  recordSetToQueryDialogHeader: {
+  recordSetToQuery: {
     'en-us': 'Creating a Record Set from Query',
     'ru-ru': 'Создание набор объектов из запроса',
   },
-  recordSetToQueryDialogText: {
+  recordSetToQueryDescription: {
     'en-us': 'Generating Record Set...',
     'ru-ru': 'Создание набора объектов...',
   },
-  recordSetCreatedDialogHeader: {
+  recordSetCreated: {
     'en-us': 'Record Set Created',
     'ru-ru': 'Набор Объектов Созданный',
   },
-  unableToExportAsKmlDialogHeader: {
+  missingCoordinatesForKml: {
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
   },
-  unableToExportAsKmlDialogText: {
+  missingCoordinatesForKmlDescription: {
     'en-us': 'Please add latitude and longitude fields to the query.',
     'ru-ru': 'Пожалуйста, добавьте в запрос поля широты и долготы.',
   },
-  queryExportStartedDialogHeader: {
+  queryExportStarted: {
     'en-us': 'Export File Being Created',
     'ru-ru': 'Экспорт запроса запущен',
   },
-  queryExportStartedDialogText: {
+  queryExportStartedDescription: {
     'en-us': `
       A notification will appear when the export file is complete and ready for
       download.
@@ -320,17 +320,9 @@ export const queryText = createDictionary({
     'en-us': 'Plotted {plotted:number|formatted} records',
     'ru-ru': 'Отображено {plotted:number|formatted} записей',
   },
-  queriesDialogTitle: {
-    'en-us': 'Queries ({count:number|formatted})',
-    'ru-ru': 'Запросы ({count:number|formatted})',
-  },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
     'ru-ru': 'Экспорт запрос для DwCA',
-  },
-  exportQueryForDwcaDialogHeader: {
-    'en-us': 'Query XML for DwCA definition',
-    'ru-ru': 'XML Запроса для определения DwCA',
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query',

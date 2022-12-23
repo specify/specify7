@@ -126,7 +126,7 @@ export function PrepDialog({
           </>
         )
       }
-      header={interactionsText.preparationsDialogTitle()}
+      header={interactionsText.preparations()}
       onClose={handleClose}
     >
       <Form

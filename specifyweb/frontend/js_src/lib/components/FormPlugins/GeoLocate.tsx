@@ -104,10 +104,10 @@ function GeoLocate({
   return data === undefined ? null : data === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={localityText.geographyRequiredDialogHeader()}
+      header={localityText.geographyRequired()}
       onClose={handleClose}
     >
-      {localityText.geographyRequiredDialogText()}
+      {localityText.geographyRequiredDescription()}
     </Dialog>
   ) : (
     <Dialog

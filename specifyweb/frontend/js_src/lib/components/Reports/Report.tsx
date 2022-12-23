@@ -111,20 +111,20 @@ export function Report({
   return query === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={reportsText.missingReportQueryDialogHeader()}
+      header={reportsText.missingReportQuery()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {reportsText.missingReportQueryDialogText()}
+      {reportsText.missingReportQueryDescription()}
     </Dialog>
   ) : report === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={reportsText.missingReportDialogHeader()}
+      header={reportsText.missingReport()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {reportsText.missingReportDialogText()}
+      {reportsText.missingReportDescription()}
     </Dialog>
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
@@ -215,11 +215,11 @@ function FixImagesDialog({
           </Button.Orange>
         </>
       }
-      header={reportsText.reportProblemsDialogTitle()}
+      header={reportsText.reportProblems()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {reportsText.reportsProblemsDialogText()}
+      {reportsText.reportProblemsDescription()}
       <H3>{reportsText.missingAttachments()}</H3>
       <Ul>
         {missingAttachments.map((fileName, index) => (
@@ -237,7 +237,7 @@ function FixImagesDialog({
   ) : (
     <Dialog
       buttons={commonText.cancel()}
-      header={reportsText.missingAttachmentsFixDialogTitle()}
+      header={reportsText.chooseFile()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >

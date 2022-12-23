@@ -229,14 +229,14 @@ export function PermissionError({
     <Dialog
       buttons={commonText.logIn()}
       forceToTop
-      header={userText.sessionTimeOutDialogHeader()}
+      header={userText.sessionTimeOut()}
       onClose={(): void =>
         globalThis.location.assign(
           formatUrl('/accounts/login/', { next: globalThis.location.href })
         )
       }
     >
-      {userText.sessionTimeOutDialogText()}
+      {userText.sessionTimeOutDescription()}
     </Dialog>
   );
 }

@@ -251,10 +251,10 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               </Button.Orange>
             </>
           }
-          header={formsText.recordSelectorUnloadProtectDialogHeader()}
+          header={formsText.recordSelectorUnloadProtect()}
           onClose={(): void => setUnloadProtect(undefined)}
         >
-          {formsText.recordSelectorUnloadProtectDialogText()}
+          {formsText.recordSelectorUnloadProtectDescription()}
         </Dialog>
       )}
     </>

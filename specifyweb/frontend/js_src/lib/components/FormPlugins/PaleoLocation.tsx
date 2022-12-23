@@ -52,23 +52,23 @@ export function PaleoLocationMapPlugin({
       {state.type === 'InvalidTableState' && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.unsupportedFormDialogHeader()}
+          header={formsText.unsupportedForm()}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
         >
-          {formsText.unsupportedFormDialogText()}
+          {formsText.unsupportedFormDescription()}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.paleoRequiresGeographyDialogHeader()}
+          header={formsText.paleoRequiresGeography()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText.paleoRequiresGeographyDialogText()}
+          {formsText.paleoRequiresGeographyDescription()}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (

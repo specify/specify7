@@ -250,7 +250,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Update page title',
     'ru-ru': 'Обновить заголовок страницы',
   },
-  updatePageTitleDialogDescription: {
+  updatePageTitleDescription: {
     'en-us': "Whether to update the title of the page to match dialog's header",
     'ru-ru': `
       Обновлять ли заголовок страницы в соответствии с заголовком диалогового

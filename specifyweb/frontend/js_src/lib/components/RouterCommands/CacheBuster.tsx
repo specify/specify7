@@ -42,7 +42,7 @@ export function CacheBuster(): JSX.Element | null {
       header={headerText.clearCache()}
       onClose={(): void => globalThis.location.replace('/specify/')}
     >
-      {headerText.clearedCacheDialogText()}
+      {headerText.cacheCleared()}
     </Dialog>
   ) : null;
 }

@@ -34,19 +34,19 @@ export const headerText = createDictionary({
     'en-us': 'Update RSS Feed',
     'ru-ru': 'Обновить RSS фид',
   },
-  updateExportFeedDialogTitle: {
+  updateExportFeedConfirmation: {
     'en-us': 'Update export feed?',
     'ru-ru': 'Обновить все элементы фида экспорта сейчас?',
   },
-  updateExportFeedDialogText: {
+  updateExportFeedConfirmationDescription: {
     'en-us': 'Update all RSS export feed items now?',
     'ru-ru': 'Обновить все элементы RSS фида экспорта сейчас?',
   },
-  feedExportStartedDialogHeader: {
+  feedExportStarted: {
     'en-us': 'Export feed update started',
     'ru-ru': 'Начато обновление экспортного фида',
   },
-  feedExportStartedDialogText: {
+  feedExportStartedDescription: {
     'en-us': `
       Update started. You will receive a notification for each feed item
       updated.
@@ -54,11 +54,11 @@ export const headerText = createDictionary({
     'ru-ru':
       'Обновление началось. Вы получите уведомление о каждом элементе фида.',
   },
-  dwcaExportStartedDialogHeader: {
+  dwcaExportStarted: {
     'en-us': 'DwCA export started',
     'ru-ru': 'DwCA экспорт начат',
   },
-  dwcaExportStartedDialogText: {
+  dwcaExportStartedDescription: {
     'en-us': `
       Export started. You will receive a notification when the export is
       complete.
@@ -74,11 +74,11 @@ export const headerText = createDictionary({
     'en-us': 'Report Name',
     'ru-ru': 'Название отчета',
   },
-  createLabelDialogHeader: {
+  createLabel: {
     'en-us': 'Create new label',
     'ru-ru': 'Создать новую этикетку',
   },
-  createReportDialogHeader: {
+  createReport: {
     'en-us': 'Create new report',
     'ru-ru': 'Создать новый отчет',
   },
@@ -90,7 +90,7 @@ export const headerText = createDictionary({
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
   },
-  chooseDwcaDialogTitle: {
+  chooseDwca: {
     'en-us': 'Choose DwCA',
     'ru-ru': 'Выберите DwCA',
   },
@@ -110,7 +110,7 @@ export const headerText = createDictionary({
     'en-us': 'Secondary Search',
     'ru-ru': 'Вторичный поиск',
   },
-  userToolsDialogTitle: {
+  userTools: {
     'en-us': 'User Tools',
     'ru-ru': 'Инструменты',
   },
@@ -118,7 +118,7 @@ export const headerText = createDictionary({
     'en-us': 'Help Localize Specify 7',
     'ru-ru': 'Помогти локализовать Specify 7',
   },
-  helpLocalizeSpecifyDialogText: {
+  helpLocalizeSpecifyDescription: {
     'en-us': `
       We would be very grateful for your support localizing Specify 7 User
       Interface. If you are interested, please send an email to <emailLink />
@@ -153,7 +153,7 @@ export const headerText = createDictionary({
     'en-us': 'Clear Browser Cache',
     'ru-ru': 'Очистить кеш',
   },
-  clearedCacheDialogText: {
+  cacheCleared: {
     'en-us': 'Cache has been cleared. Please reload the page.',
     'ru-ru': 'Кэш очищен. Пожалуйста, перезагрузите страницу.',
   },

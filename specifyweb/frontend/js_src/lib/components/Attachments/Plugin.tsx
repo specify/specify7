@@ -139,7 +139,7 @@ export function AttachmentsPlugin({
       ) : state.type === 'FileUpload' ? (
         <Dialog
           buttons={undefined}
-          header={formsText.attachmentUploadDialogTitle()}
+          header={formsText.uploadingInline()}
           onClose={undefined}
         >
           <div aria-live="polite">

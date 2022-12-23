@@ -10,6 +10,10 @@ import { createDictionary } from './utils';
 
 export const notificationsText = createDictionary({
   notifications: {
+    'en-us': 'Notifications',
+    'ru-ru': 'Уведомления',
+  },
+  notificationsCount: {
     comment: 'Used for button label in the top menu',
     'en-us': 'Notifications: {count:number|formatted}',
     'ru-ru': 'Уведомлений: {count:number|formatted}',
@@ -33,10 +37,6 @@ export const notificationsText = createDictionary({
   download: {
     'en-us': 'Download',
     'ru-ru': 'Скачать',
-  },
-  notificationsDialogTitle: {
-    'en-us': 'Notifications',
-    'ru-ru': 'Уведомления',
   },
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',

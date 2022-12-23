@@ -21,10 +21,10 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
   return isActivated ? (
     <Dialog
       buttons={commonText.close()}
-      header={headerText.feedExportStartedDialogHeader()}
+      header={headerText.feedExportStarted()}
       onClose={handleClose}
     >
-      {headerText.feedExportStartedDialogText()}
+      {headerText.feedExportStartedDescription()}
     </Dialog>
   ) : (
     <Dialog
@@ -46,10 +46,10 @@ export function ForceUpdateFeedOverlay(): JSX.Element {
           </Button.Blue>
         </>
       }
-      header={headerText.updateExportFeedDialogTitle()}
+      header={headerText.updateExportFeedConfirmation()}
       onClose={handleClose}
     >
-      {headerText.updateExportFeedDialogText()}
+      {headerText.updateExportFeedConfirmationDescription()}
     </Dialog>
   );
 }

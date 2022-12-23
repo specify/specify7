@@ -183,7 +183,7 @@ export function handleAjaxError(
     displayError(({ onClose: handleClose }) => (
       <ErrorDialog
         copiableMessage={copiableMessage}
-        header={mainText.errorBoundaryDialogHeader()}
+        header={mainText.errorOccurred()}
         onClose={handleClose}
       >
         {errorObject}
@@ -216,7 +216,7 @@ function ErrorIframe({
     <iframe
       className="h-full"
       ref={iframeRef}
-      title={mainText.errorBoundaryDialogHeader()}
+      title={mainText.errorOccurred()}
     />
   );
 }

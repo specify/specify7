@@ -30,7 +30,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'user-tools',
-        title: headerText.userToolsDialogTitle(),
+        title: headerText.userTools(),
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
@@ -74,7 +74,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'queries',
-        title: commonText.queries(),
+        title: queryText.queries(),
         element: () =>
           import('../Toolbar/Query').then(
             ({ QueriesOverlay }) => QueriesOverlay

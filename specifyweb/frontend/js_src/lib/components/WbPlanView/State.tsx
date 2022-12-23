@@ -34,10 +34,10 @@ function TemplateSelection({
       {isInvalid && (
         <Dialog
           buttons={commonText.close()}
-          header={wbText.noUploadPlanDialogHeader()}
+          header={wbText.noUploadPlan()}
           onClose={handleValid}
         >
-          {wbText.invalidTemplateDialogText()}
+          {wbText.invalidTemplatePlan()}
         </Dialog>
       )}
       <DataSetsDialog
@@ -106,7 +106,7 @@ export function BaseTableSelection({
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbText.selectBaseTableDialogTitle()}
+      header={wbText.selectBaseTable()}
       onClose={handleClose}
     >
       <ListOfBaseTables

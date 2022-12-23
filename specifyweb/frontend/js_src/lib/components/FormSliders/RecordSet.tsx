@@ -380,10 +380,10 @@ function RecordSet<SCHEMA extends AnySchema>({
       {hasDuplicate && (
         <Dialog
           buttons={commonText.close()}
-          header={formsText.duplicateRecordSetItemDialogHeader()}
+          header={formsText.duplicateRecordSetItem()}
           onClose={handleDismissDuplicate}
         >
-          {formsText.duplicateRecordSetItemDialogText()}
+          {formsText.duplicateRecordSetItemDescription()}
         </Dialog>
       )}
     </>

@@ -129,10 +129,6 @@ export const schemaText = createDictionary({
     'en-us': 'Add Language',
     'ru-ru': 'Добавить язык',
   },
-  addLanguageDialogHeader: {
-    'en-us': 'Add new language',
-    'ru-ru': 'Добавить новый язык',
-  },
   tables: {
     'en-us': 'Tables',
     'ru-ru': 'Таблицы',

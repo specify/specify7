@@ -8,7 +8,6 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-// REFACTOR: get rid of "exampleDialogText" in favor of just "example" ?
 export const commonText = createDictionary({
   specifySeven: {
     comment: `
@@ -272,10 +271,6 @@ export const commonText = createDictionary({
     'en-us': 'Descending',
     'ru-ru': 'По убыванию',
   },
-  queries: {
-    'en-us': 'Queries',
-    'ru-ru': 'Запросы',
-  },
   recordSets: {
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы объектов',
@@ -468,5 +463,10 @@ export const commonText = createDictionary({
   noneAvailable: {
     'en-us': 'None available',
     'ru-ru': 'Нет доступных вариантов',
+  },
+  countLine: {
+    comment: 'Example usage: Record Sets (1,234)',
+    'en-us': '{resource:string} ({count:number|formatted})',
+    'ru-ru': '{resource:string} ({count:number|formatted})',
   },
 } as const);

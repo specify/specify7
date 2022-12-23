@@ -343,7 +343,7 @@ function useWbView(
   const wasAborted = React.useRef<boolean>(false);
 
   const [hasUnloadProtect, setUnloadProtect] = React.useState<boolean>(false);
-  useUnloadProtect(hasUnloadProtect, wbText.onExitDialogText());
+  useUnloadProtect(hasUnloadProtect, wbText.wbUnloadProtect());
 
   React.useEffect(() => {
     if (!treeRanksLoaded || container === null || dataSet === undefined)

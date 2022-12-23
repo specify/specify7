@@ -11,11 +11,11 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Specify Network',
     'ru-ru': 'Specify Network',
   },
-  failedToOpenPopUpDialogHeader: {
+  failedToOpenPopUp: {
     'en-us': 'Failed to open Specify Network Page',
     'ru-ru': 'Не удалось открыть страницу Specify Network',
   },
-  failedToOpenPopUpDialogText: {
+  failedToOpenPopUpDescription: {
     'en-us': `
       Please make sure your browser is not blocking pop-up windows and try
       again.

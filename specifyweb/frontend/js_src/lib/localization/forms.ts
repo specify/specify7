@@ -18,7 +18,7 @@ export const formsText = createDictionary({
     'en-us': 'Attachment server unavailable.',
     'ru-ru': 'Сервер прикрепленных файлов недоступен.',
   },
-  attachmentUploadDialogTitle: {
+  uploadingInline: {
     'en-us': 'Uploading…',
     'ru-ru': 'Закачивание…',
   },
@@ -55,11 +55,11 @@ export const formsText = createDictionary({
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
   },
-  deleteBlockedDialogHeader: {
+  deleteBlocked: {
     'en-us': 'Delete blocked',
     'ru-ru': 'Удаление заблокировано',
   },
-  deleteBlockedDialogText: {
+  deleteBlockedDescription: {
     'en-us': `
       The resource cannot be deleted because it is referenced by the following
       resources:
@@ -79,11 +79,11 @@ export const formsText = createDictionary({
     'en-us': 'Paleo Map',
     'ru-ru': 'Карта Палео',
   },
-  paleoRequiresGeographyDialogHeader: {
+  paleoRequiresGeography: {
     'en-us': 'Geography Required',
     'ru-ru': 'Требуется география',
   },
-  paleoRequiresGeographyDialogText: {
+  paleoRequiresGeographyDescription: {
     'en-us': `
       The Paleo Map plugin requires that the locality have geographic
       coordinates and that the paleo context have a geographic age with at least
@@ -95,11 +95,11 @@ export const formsText = createDictionary({
       время начала или время окончания.
     `,
   },
-  unsupportedFormDialogHeader: {
+  unsupportedForm: {
     'en-us': 'Incorrect Form',
     'ru-ru': 'Неправильная форма',
   },
-  unsupportedFormDialogText: {
+  unsupportedFormDescription: {
     'en-us': `
       This plugin cannot be used on this form. Try moving it to the locality,
       collecting event or collection object forms.
@@ -113,7 +113,7 @@ export const formsText = createDictionary({
     'en-us': 'Invalid Date',
     'ru-ru': 'Недействительная дата',
   },
-  deleteConfirmationDialogHeader: {
+  deleteConfirmation: {
     'en-us': `
       Are you sure you want to permanently delete this {tableName:string} from
       the database?
@@ -123,7 +123,7 @@ export const formsText = createDictionary({
       данных?
     `,
   },
-  deleteConfirmationDialogText: {
+  deleteConfirmationDescription: {
     'en-us': 'This action cannot be undone.',
     'ru-ru': 'Это действие не может быть отменено.',
   },
@@ -153,11 +153,11 @@ export const formsText = createDictionary({
     'en-us': 'Set to current date',
     'ru-ru': 'Установить на текущую дату',
   },
-  addToPickListConfirmationDialogHeader: {
+  addToPickListConfirmation: {
     'en-us': 'Add to pick list?',
     'ru-ru': 'Добавить в список выбора?',
   },
-  addToPickListConfirmationDialogText: {
+  addToPickListConfirmationDescription: {
     'en-us': `
       Add value "{value:string}" to the pick list named "{pickListName:string}"?
     `,
@@ -177,10 +177,6 @@ export const formsText = createDictionary({
   noData: {
     'en-us': 'No Data.',
     'ru-ru': 'Нет данных.',
-  },
-  recordSetsDialogTitle: {
-    'en-us': 'Record Sets ({count:number|formatted})',
-    'ru-ru': 'Наборы объектов ({count:number|formatted})',
   },
   recordSet: {
     'en-us': 'Record Set',
@@ -228,11 +224,11 @@ export const formsText = createDictionary({
     'en-us': 'This form has not been saved.',
     'ru-ru': 'Эта форма не была сохранена.',
   },
-  saveConflictDialogHeader: {
+  saveConflict: {
     'en-us': 'Save conflict',
     'ru-ru': 'Сохранить конфликт',
   },
-  saveConflictDialogText: {
+  saveConflictDescription: {
     'en-us': `
       The data shown on this page has been changed by another user or in another
       browser tab and is out of date. The page must be reloaded to prevent
@@ -244,11 +240,11 @@ export const formsText = createDictionary({
       перезагрузить чтобы предотвратить сохранение несогласованных данных.
     `,
   },
-  saveBlockedDialogHeader: {
+  saveBlocked: {
     'en-us': 'Save blocked',
     'ru-ru': 'Сохранение заблокировано',
   },
-  saveBlockedDialogText: {
+  saveBlockedDescription: {
     'en-us': 'Form cannot be saved while the following errors exist:',
     'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
   },
@@ -300,7 +296,7 @@ export const formsText = createDictionary({
       поддерживаним в будущем.
     `,
   },
-  wrongTablePluginDialogText: {
+  wrongTableForPlugin: {
     'en-us': `
       The plugin cannot be used on the {currentTable:string} form. It can only
       be used on the {correctTable:string} form.
@@ -338,10 +334,6 @@ export const formsText = createDictionary({
   inputTypeNumber: {
     'en-us': 'Value must be a number',
     'ru-ru': 'Значение должно быть числом',
-  },
-  userAgentsPluginDialogTitle: {
-    'en-us': 'Set User Agents',
-    'ru-ru': 'Настроить пользовательских агентов',
   },
   organization: {
     'en-us': 'Organization',
@@ -382,7 +374,7 @@ export const formsText = createDictionary({
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
   },
-  recordSelectorUnloadProtectDialogHeader: {
+  recordSelectorUnloadProtect: {
     'en-us': 'Proceed without saving?',
     'ru-ru': 'Продолжить без сохранения?',
   },
@@ -410,11 +402,11 @@ export const formsText = createDictionary({
     'en-us': '(deleted)',
     'ru-ru': '(удален)',
   },
-  duplicateRecordSetItemDialogHeader: {
+  duplicateRecordSetItem: {
     'en-us': 'Duplicate Record Set Item',
     'ru-ru': 'Дублирующий элемент набора записей',
   },
-  duplicateRecordSetItemDialogText: {
+  duplicateRecordSetItemDescription: {
     'en-us': 'This record is already present in the current record set',
     'ru-ru': 'Этот объект уже присутствует в текущем наборе записей',
   },
@@ -522,12 +514,6 @@ export const formsText = createDictionary({
     'en-us': 'Grid',
     'ru-ru': 'Таблица',
   },
-  formTableHeading: {
-    comment:
-      'Formatter for heading of the Form Table (a.k.a Grid) form element',
-    'en-us': '{relationshipName:string} ({count:number|formatted})',
-    'ru-ru': '{relationshipName:string} ({count:number|formatted})',
-  },
   subviewConfiguration: {
     'en-us': 'Subview',
     'ru-ru': 'Конфигурация подчиненной формы',
@@ -571,11 +557,11 @@ export const formsText = createDictionary({
     'en-us': '{tableName:string} #{id:number}',
     'ru-ru': '{tableName:string} #{id:number}',
   },
-  resourceDeletedDialogHeader: {
+  resourceDeleted: {
     'en-us': 'Item deleted',
     'ru-ru': 'Удалено',
   },
-  resourceDeletedDialogText: {
+  resourceDeletedDescription: {
     'en-us': 'Item was deleted successfully.',
     'ru-ru': 'Успешно удален.',
   },

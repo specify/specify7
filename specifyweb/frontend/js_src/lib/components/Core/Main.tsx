@@ -137,19 +137,19 @@ export function Main(): JSX.Element | null {
             </Button.Orange>
           }
           forceToTop
-          header={mainText.versionMismatchDialogHeader()}
+          header={mainText.versionMismatch()}
           onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
-            {mainText.versionMismatchDialogText({
+            {mainText.versionMismatchDescription({
               specifySixVersion: getSystemInfo().specify6_version,
               databaseVersion: getSystemInfo().database_version,
             })}
           </p>
-          <p>{mainText.versionMismatchSecondDialogText()}</p>
+          <p>{mainText.versionMismatchSecondDescription()}</p>
           <p>
             <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-              {mainText.versionMismatchThirdDialogText()}
+              {mainText.versionMismatchInstructions()}
             </Link.NewTab>
           </p>
         </Dialog>

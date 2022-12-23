@@ -41,11 +41,11 @@ export const localityText = createDictionary({
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
   },
-  geographyRequiredDialogHeader: {
+  geographyRequired: {
     'en-us': 'Geography must be mapped',
     'ru-ru': 'География должна быть связана',
   },
-  geographyRequiredDialogText: {
+  geographyRequiredDescription: {
     'en-us':
       'The GeoLocate plugin requires the geography field to be populated.',
     'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',

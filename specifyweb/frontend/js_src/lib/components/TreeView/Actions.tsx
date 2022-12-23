@@ -344,10 +344,10 @@ function ActiveAction<SCHEMA extends AnyTree>({
       {typeof error === 'object' ? (
         <Dialog
           buttons={commonText.close()}
-          header={treeText.actionFailedDialogHeader()}
+          header={treeText.actionFailed()}
           onClose={handleCancelAction}
         >
-          {treeText.actionFailedDialogText()}
+          {treeText.actionFailedDescription()}
           <br />
           {error}
         </Dialog>

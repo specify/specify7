@@ -24,8 +24,11 @@ export function formatPermissionsError(
 ):
   | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
-  if (response.length === 0)
-    return [undefined, userText.sessionTimeOutDialogHeader()];
+  /*
+   * If this is a permission error, back-end would provide a JSON object
+   * In cases of session time out, back-end returns empty response
+   */
+  if (response.length === 0) return [undefined, userText.sessionTimeOut()];
 
   let parsed: PermissionErrorSchema | undefined = undefined;
   try {
@@ -54,7 +57,7 @@ export function FormatPermissionError({
 }): JSX.Element {
   return (
     <div className="flex h-full flex-col gap-2">
-      <p>{userText.permissionDeniedDialogText()}</p>
+      <p>{userText.permissionDeniedDescription()}</p>
       <table className="grid-table grid-cols-4 rounded border border-gray-500">
         <thead>
           <tr>
@@ -108,11 +111,8 @@ export function FormatPermissionError({
       </table>
       {typeof url === 'string' && (
         <p>
-          {userText.permissionDeniedDialogText()}
-          <br />
-          <br />
           <StringToJsx
-            string={userText.permissionDeniedDialogSecondText()}
+            string={userText.permissionDeniedForUrl()}
             components={{
               url: <code>{url}</code>,
             }}

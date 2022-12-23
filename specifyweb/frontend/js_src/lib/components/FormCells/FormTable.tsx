@@ -126,8 +126,8 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  const header = formsText.formTableHeading({
-    relationshipName: relationship.label,
+  const header = commonText.countLine({
+    resource: relationship.label,
     count: totalCount ?? resources.length,
   });
   const viewDefinition = useViewDefinition({

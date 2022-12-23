@@ -101,6 +101,30 @@ cognitive overhead of working with localization files (thus killing bugs)
 - Each dictionary must be named in camel case and end with "Text" for
   consistency and easy grepping
 
+- Try to use consistent names for localization keys:
+
+  ```json
+  {
+    ...
+    pluginNotAvailable: {
+      'en-us': 'Plugin Not Available',
+      ...
+    },
+    pluginNotAvailableDescription: {
+      'en-us': 'This plugin is currently unavailable for Specify 7',
+      ...
+    },
+    pluginNotAvailableSecondDescription: {
+      'en-us': `
+        It was probably included on this form from Specify 6 and may be supported
+        in the future.
+      `,
+      ...
+    },
+    ...
+  }
+  ```
+
 - Do not use dynamic references.
 
   Incorrect example:

@@ -297,10 +297,10 @@ function AddingToPicklist({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       }
-      header={formsText.addToPickListConfirmationDialogHeader()}
+      header={formsText.addToPickListConfirmation()}
       onClose={handleClose}
     >
-      {formsText.addToPickListConfirmationDialogText({
+      {formsText.addToPickListConfirmationDescription({
         value,
         pickListName: pickList.get('name'),
       })}

@@ -149,8 +149,8 @@ export function QueryButton({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
-      dialogHeader={queryText.queryDeleteIncompleteDialogHeader()}
-      dialogMessage={queryText.queryDeleteIncompleteDialogText()}
+      dialogHeader={queryText.queryDeleteIncomplete()}
+      dialogMessage={queryText.queryDeleteIncompleteDescription()}
       disabled={disabled}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -245,10 +245,10 @@ export function MakeRecordSetButton({
 export const recordSetFromQueryLoading = (
   <Dialog
     buttons={undefined}
-    header={queryText.recordSetToQueryDialogHeader()}
+    header={queryText.recordSetToQuery()}
     onClose={undefined}
   >
-    {queryText.recordSetToQueryDialogText()}
+    {queryText.recordSetToQueryDescription()}
     {loadingBar}
   </Dialog>
 );
@@ -263,7 +263,7 @@ export function RecordSetCreated({
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={queryText.recordSetCreatedDialogHeader()}
+      header={queryText.recordSetCreated()}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>

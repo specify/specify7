@@ -256,7 +256,7 @@ export const WBView = Backbone.View.extend({
               hasPermission('/workbench/dataset', 'update')
             ) {
               const dialog = showDialog({
-                header: wbText.noUploadPlanDialogHeader(),
+                header: wbText.noUploadPlan(),
                 onClose: () => dialog.remove(),
                 buttons: (
                   <>
@@ -270,7 +270,7 @@ export const WBView = Backbone.View.extend({
                     </Link.Blue>
                   </>
                 ),
-                content: wbText.noUploadPlanDialogText(),
+                content: wbText.noUploadPlanDescription(),
               });
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
@@ -1577,8 +1577,8 @@ export const WBView = Backbone.View.extend({
     ).then(() => {
       if (resources.length === 0) {
         const dialog = showDialog({
-          header: wbText.noDisambiguationResultsDialogHeader(),
-          content: wbText.noDisambiguationResultsDialogText(),
+          header: wbText.noDisambiguationResults(),
+          content: wbText.noDisambiguationResultsDescription(),
           buttons: commonText.close(),
           onClose: () => dialog.remove(),
         });
@@ -1632,7 +1632,7 @@ export const WBView = Backbone.View.extend({
       });
 
       const dialog = showDialog({
-        header: wbText.disambiguationDialogTitle(),
+        header: wbText.disambiguateMatches(),
         onClose: () => {
           dialog.remove();
           globalThis.clearInterval(interval);
@@ -1896,8 +1896,8 @@ export const WBView = Backbone.View.extend({
   // aka Rollback
   unupload() {
     const dialog = showDialog({
-      header: wbText.rollbackDialogHeader(),
-      content: wbText.rollbackDialogText(),
+      header: wbText.beginRollback(),
+      content: wbText.beginRollbackDescription(),
       className: {
         container: dialogClassNames.narrowContainer,
       },
@@ -1927,8 +1927,8 @@ export const WBView = Backbone.View.extend({
     if (this.mappings?.lines.length > 0) {
       if (mode === 'upload') {
         const dialog = showDialog({
-          header: wbText.startUploadDialogHeader(),
-          content: wbText.startUploadDialogText(),
+          header: wbText.startUpload(),
+          content: wbText.startUploadDescription(),
           onClose: () => dialog.remove(),
           buttons: (
             <>
@@ -1947,7 +1947,8 @@ export const WBView = Backbone.View.extend({
       } else this.startUpload(mode);
     } else {
       const dialog = showDialog({
-        content: wbText.noUploadPlanDialogText(),
+        header: wbText.noUploadPlan(),
+        content: wbText.noUploadPlanDescription(),
         onClose: () => dialog.remove(),
         buttons: (
           <>
@@ -2009,8 +2010,8 @@ export const WBView = Backbone.View.extend({
   },
   delete() {
     const dialog = showDialog({
-      header: wbText.deleteDataSetDialogHeader(),
-      content: wbText.deleteDataSetDialogText(),
+      header: wbText.deleteDataSet(),
+      content: wbText.deleteDataSetDescription(),
       onClose: () => dialog.remove(),
       buttons: (
         <>
@@ -2029,8 +2030,8 @@ export const WBView = Backbone.View.extend({
 
                 if (!this.checkDeletedFail(status)) {
                   const dialog = showDialog({
-                    header: wbText.dataSetDeletedDialogHeader(),
-                    content: wbText.dataSetDeletedDialogText(),
+                    header: wbText.dataSetDeleted(),
+                    content: wbText.dataSetDeletedDescription(),
                     buttons: (
                       <Link.Blue
                         href="/specify/"
@@ -2058,8 +2059,8 @@ export const WBView = Backbone.View.extend({
   },
   revertChanges() {
     const dialog = showDialog({
-      header: wbText.revertChangesDialogHeader(),
-      content: wbText.revertChangesDialogText(),
+      header: wbText.revertChanges(),
+      content: wbText.revertChangesDescription(),
       onClose: () => dialog.remove(),
       buttons: (
         <>
@@ -2082,7 +2083,7 @@ export const WBView = Backbone.View.extend({
 
     // Show saving progress bar
     const dialog = showDialog({
-      header: wbText.savingDialogTitle(),
+      header: wbText.saving(),
       onClose: () => dialog.remove(),
       content: loadingBar,
       buttons: undefined,
@@ -2520,7 +2521,7 @@ export const WBView = Backbone.View.extend({
       validate:
         cellCounts.invalidCells === 0
           ? {
-              header: wbText.validationNoErrorsDialogHeader(),
+              header: wbText.validationNoErrors(),
               message: <>
                 {wbText.validationNoErrorsDescription()}
                 <br />
@@ -2529,7 +2530,7 @@ export const WBView = Backbone.View.extend({
               </>,
             }
           : {
-              header: wbText.validationErrorsDialogHeader(),
+              header: wbText.validationErrors(),
               message: <>
                 {wbText.validationErrorsDescription()}
                 <br />
@@ -2540,11 +2541,11 @@ export const WBView = Backbone.View.extend({
       upload:
         cellCounts.invalidCells === 0
           ? {
-              header: wbText.uploadNoErrorsDialogHeader(),
-              message: wbText.uploadNoErrorsDialogText(),
+              header: wbText.uploadSuccessful(),
+              message: wbText.uploadSuccessfulDescription(),
             }
           : {
-              header: wbText.uploadErrorsDialogHeader(),
+              header: wbText.uploadErrors(),
               message: <>
                 {wbText.uploadErrorsDescription()}
                 <br />
@@ -2553,8 +2554,8 @@ export const WBView = Backbone.View.extend({
               </>,
             },
       unupload: {
-        header: wbText.dataSetRollbackDialogHeader(),
-        message: wbText.dataSetRollbackDialogText(),
+        header: wbText.dataSetRollback(),
+        message: wbText.dataSetRollbackDescription(),
       },
     };
 
@@ -2574,16 +2575,16 @@ export const WBView = Backbone.View.extend({
     const dialog = showDialog({
       header:
         this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceledDialogHeader()
+          ? wbText.validationCanceled()
           : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceledDialogHeader()
-          : wbText.uploadCanceledDialogHeader(),
+          ? wbText.rollbackCanceled()
+          : wbText.uploadCanceled(),
       content:
         this.refreshInitiatedBy === 'validate'
-          ? wbText.validationCanceledDialogText()
+          ? wbText.validationCanceledDescription()
           : this.refreshInitiatedBy === 'unupload'
-          ? wbText.rollbackCanceledDialogText()
-          : wbText.uploadCanceledDialogText(),
+          ? wbText.rollbackCanceledDescription()
+          : wbText.uploadCanceledDescription(),
       onClose: () => dialog.remove(),
       buttons: commonText.close(),
     });

@@ -25,11 +25,11 @@ export const treeText = createDictionary({
     'en-us': 'Synonymize',
     'ru-ru': 'Сделать синонимом',
   },
-  actionFailedDialogHeader: {
+  actionFailed: {
     'en-us': 'Operation failed',
     'ru-ru': 'Операция провалена',
   },
-  actionFailedDialogText: {
+  actionFailedDescription: {
     'en-us':
       'The operation could not be completed due to the following errors:',
     'ru-ru': 'Операция не может быть завершена из-за следующих ошибок:',

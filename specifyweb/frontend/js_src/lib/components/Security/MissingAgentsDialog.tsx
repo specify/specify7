@@ -4,7 +4,6 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import type { FormMode } from '../FormParse';
 import { hasPermission } from '../Permissions/helpers';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
@@ -99,10 +98,10 @@ export function MissingAgentsDialog({
           )}
         </>
       }
-      header={formsText.userAgentsPluginDialogTitle()}
+      header={userText.setUserAgents()}
       onClose={handleClose}
     >
-      <p>{userText.setAgentsDialogText()}</p>
+      <p>{userText.setAgentsBeforeProceeding()}</p>
       {/* Not formatting this error nicely, as it shouldn't ever happen */}
       {Array.isArray(response.MultipleAgentsException) && (
         <pre>{JSON.stringify(response, null, 2)}</pre>

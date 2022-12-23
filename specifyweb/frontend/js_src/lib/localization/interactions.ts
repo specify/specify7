@@ -53,8 +53,7 @@ export const interactionsText = createDictionary({
     'en-us': 'Add unassociated item',
     'ru-ru': 'Добавить несвязанный элемент',
   },
-  // FIXME: get rid of DialogTitle type of stuff
-  preparationsDialogTitle: {
+  preparations: {
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
   },

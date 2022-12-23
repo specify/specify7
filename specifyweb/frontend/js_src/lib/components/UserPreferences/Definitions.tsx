@@ -324,7 +324,7 @@ export const preferenceDefinitions = {
         items: {
           updatePageTitle: defineItem<boolean>({
             title: preferencesText.updatePageTitle(),
-            description: preferencesText.updatePageTitleDialogDescription(),
+            description: preferencesText.updatePageTitleDescription(),
             requiresReload: false,
             visible: true,
             defaultValue: true,

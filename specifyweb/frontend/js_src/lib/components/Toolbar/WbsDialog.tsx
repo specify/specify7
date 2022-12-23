@@ -189,9 +189,10 @@ export function DataSetsDialog({
       }}
       header={
         showTemplates
-          ? wbText.wbsDialogTemplatesDialogTitle()
-          : wbText.wbsDialogDefaultDialogTitle({
-              dataSetCount: datasets.length,
+          ? wbText.copyPlan()
+          : commonText.countLine({
+              resource: wbText.dataSets(),
+              count: datasets.length,
             })
       }
       icon={<span className="text-blue-500">{icons.table}</span>}
@@ -200,8 +201,8 @@ export function DataSetsDialog({
       {datasets.length === 0 ? (
         <p>
           {showTemplates
-            ? wbText.wbsDialogEmptyTemplateDialogText()
-            : `${wbText.wbsDialogEmptyDefaultDialogText()} ${
+            ? wbText.noPlansToCopyFrom()
+            : `${wbText.wbsDialogEmpty()} ${
                 canImport ? wbText.createDataSetInstructions() : ''
               }`}
         </p>

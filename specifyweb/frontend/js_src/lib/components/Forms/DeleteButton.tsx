@@ -52,7 +52,7 @@ const fetchBlockers = async (
  */
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
-  deletionMessage = formsText.deleteConfirmationDialogText(),
+  deletionMessage = formsText.deleteConfirmationDescription(),
   deferred: initialDeferred = false,
   component: ButtonComponent = Button.Gray,
   onDeleted: handleDeleted,
@@ -86,7 +86,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   return (
     <>
       <ButtonComponent
-        title={isBlocked ? formsText.deleteBlockedDialogHeader() : undefined}
+        title={isBlocked ? formsText.deleteBlocked() : undefined}
         onClick={(): void => {
           handleOpen();
           setDeferred(false);
@@ -128,7 +128,7 @@ export function DeleteButton<SCHEMA extends AnySchema>({
             className={{
               container: dialogClassNames.narrowContainer,
             }}
-            header={formsText.deleteConfirmationDialogHeader({
+            header={formsText.deleteConfirmation({
               tableName: resource.specifyModel.label,
             })}
             onClose={handleClose}
