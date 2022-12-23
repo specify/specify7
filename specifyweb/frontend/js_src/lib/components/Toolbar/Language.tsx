@@ -27,7 +27,7 @@ import type {
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 import { LocalizedString } from 'typesafe-i18n';
 import {
-  enabledLanguages,
+  disabledLanguages,
   Language,
   LANGUAGE,
 } from '../../localization/utils/config';
@@ -124,7 +124,10 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           }).then(({ data }) =>
             Object.fromEntries(
               Object.entries(data)
-                .filter(([code]) => f.includes(enabledLanguages, code))
+                .filter(
+                  ([code]) =>
+                    f.has(disabledLanguages, code) || code === language
+                )
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 .map(([code, { name_local }]) => [code, name_local])
             )

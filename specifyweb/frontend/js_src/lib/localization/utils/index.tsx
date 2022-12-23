@@ -124,7 +124,7 @@ export function StringToJsx({
   }).flat();
 
   // Check for unused components. Allows to catch localization mistakes
-  if (process.env.NODE_END === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     const unusedGroups = Object.keys(components).filter(
       (name) => !usedComponents.has(name)
     );

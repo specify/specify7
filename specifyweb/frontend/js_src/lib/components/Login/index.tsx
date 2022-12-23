@@ -3,26 +3,24 @@
  */
 
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
-import { parseDjangoDump } from '../../utils/ajax/csrfToken';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
+import type { Language } from '../../localization/utils/config';
+import { disabledLanguages, LANGUAGE } from '../../localization/utils/config';
+import { parseDjangoDump } from '../../utils/ajax/csrfToken';
+import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
 import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { SplashScreen } from '../Core/SplashScreen';
+import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
-import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
-import { Submit } from '../Atoms/Submit';
-import { useValidation } from '../../hooks/useValidation';
-import { SplashScreen } from '../Core/SplashScreen';
-import { userText } from '../../localization/user';
-import { LocalizedString } from 'typesafe-i18n';
-import {
-  enabledLanguages,
-  Language,
-  LANGUAGE,
-} from '../../localization/utils/config';
 
 export function Login(): JSX.Element {
   return React.useMemo(() => {
@@ -65,6 +63,31 @@ export function Login(): JSX.Element {
 
 const nextDestination = '/accounts/choose_collection/?next=';
 
+export function LoginLanguageChooser({
+  languages,
+}: {
+  readonly languages: RA<readonly [code: Language, name: string]>;
+}): JSX.Element {
+  const loading = React.useContext(LoadingContext);
+  return (
+    <LanguageSelection<Language>
+      languages={Object.fromEntries(
+        languages.filter(
+          ([code]) => !f.has(disabledLanguages, code) || code === LANGUAGE
+        )
+      )}
+      value={LANGUAGE}
+      onChange={(language): void =>
+        loading(
+          handleLanguageChange(language).then((): void =>
+            globalThis.location.reload()
+          )
+        )
+      }
+    />
+  );
+}
+
 function LegacyLogin({
   data,
   nextUrl,
@@ -91,22 +114,9 @@ function LegacyLogin({
 
   React.useEffect(() => inputRef.current?.focus());
 
-  const loading = React.useContext(LoadingContext);
   return (
     <SplashScreen>
-      <LanguageSelection<Language>
-        languages={Object.fromEntries(
-          data.languages.filter(([code]) => enabledLanguages.includes(code))
-        )}
-        value={LANGUAGE}
-        onChange={(language): void =>
-          loading(
-            handleLanguageChange(language).then((): void =>
-              globalThis.location.reload()
-            )
-          )
-        }
-      />
+      <LoginLanguageChooser languages={data.languages} />
       {typeof data.externalUser === 'object' && (
         <p>
           {userText.helloMessage({ userName: data.externalUser.name })}

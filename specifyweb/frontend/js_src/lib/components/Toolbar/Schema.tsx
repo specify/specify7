@@ -31,6 +31,7 @@ import { syncFieldFormat } from '../../utils/fieldFormat';
 import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
+import { useTitle } from '../Molecules/AppTitle';
 
 function Table<
   SORT_CONFIG extends
@@ -152,6 +153,7 @@ const booleanFormatter = (value: boolean): string =>
 export function DataModelTable(): JSX.Element {
   const { tableName = '' } = useParams();
   const model = getModel(tableName);
+  useTitle(model?.name);
   return model === undefined ? (
     <NotFoundView />
   ) : (

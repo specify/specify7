@@ -8,7 +8,6 @@ import { commonText } from '../../localization/common';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { useSearchParameter } from '../../hooks/navigation';
-import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
@@ -17,11 +16,8 @@ import { SplashScreen } from '../Core/SplashScreen';
 import { className } from '../Atoms/className';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
-import {
-  enabledLanguages,
-  Language,
-  LANGUAGE,
-} from '../../localization/utils/config';
+import { Language } from '../../localization/utils/config';
+import { LoginLanguageChooser } from './index';
 
 export type OicProvider = {
   readonly provider: string;
@@ -45,13 +41,7 @@ export function OicLogin({
   const [next = ''] = useSearchParameter('next');
   return (
     <SplashScreen>
-      <LanguageSelection<Language>
-        languages={Object.fromEntries(
-          data.languages.filter(([code]) => enabledLanguages.includes(code))
-        )}
-        value={LANGUAGE}
-        onChange={handleLanguageChange}
-      />
+      <LoginLanguageChooser languages={data.languages} />
       <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (
           <p>
