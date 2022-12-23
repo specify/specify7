@@ -10,7 +10,6 @@ import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
 import { ajax } from '../../utils/ajax';
 import { csrfToken } from '../../utils/ajax/csrfToken';
-import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
@@ -27,30 +26,43 @@ import type {
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
 import { LocalizedString } from 'typesafe-i18n';
 import {
+  devLanguage,
+  devLanguages,
   disabledLanguages,
   Language,
   LANGUAGE,
+  languages,
 } from '../../localization/utils/config';
+import { formatUrl } from '../Router/queryString';
+import { Http } from '../../utils/ajax/definitions';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping('/context/language/', {
-    method: 'POST',
-    body: formData({
-      language,
-      csrfmiddlewaretoken: csrfToken,
-    }),
-  }).then(f.void);
+  ping(
+    '/context/language/',
+    {
+      method: 'POST',
+      body: {
+        language,
+        csrfmiddlewaretoken: csrfToken,
+      },
+    },
+    {
+      expectedResponseCodes: [Http.NO_CONTENT],
+    }
+  ).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
   isReadOnly = false,
+  showDevLanguages = process.env.NODE_ENV === 'development',
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
   readonly isReadOnly?: boolean;
+  readonly showDevLanguages?: boolean;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
 
@@ -94,13 +106,26 @@ export function LanguageSelection<LANGUAGES extends string>({
           <option value="supportLocalization">
             {headerText.helpLocalizeSpecify()}
           </option>
+          {showDevLanguages && (
+            <optgroup label="Development languages">
+              {Object.entries(devLanguages).map(([code, name]) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </Select>
       ) : undefined}
     </>
   );
 }
 
-const url = cachableUrl('/context/language/');
+const url = cachableUrl(
+  formatUrl('/context/language/', {
+    languages: languages.join(','),
+  })
+);
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
   function LanguagePreferencesItem({
     isReadOnly,
@@ -126,7 +151,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
               Object.entries(data)
                 .filter(
                   ([code]) =>
-                    f.has(disabledLanguages, code) || code === language
+                    !f.has(disabledLanguages, code) || code === language
                 )
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 .map(([code, { name_local }]) => [code, name_local])
@@ -136,7 +161,9 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       ),
       false
     );
-    const [language, setLanguage] = React.useState(LANGUAGE);
+    const [language, setLanguage] = React.useState(
+      (devLanguage as Language) ?? LANGUAGE
+    );
 
     /**
      * When editing someone else's user preferences, disable the language
@@ -231,6 +258,7 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
         languages={languages ?? { loading: commonText.loading() }}
         value={value}
         onChange={handleChange}
+        showDevLanguages={false}
       />
     );
   };

@@ -1,4 +1,6 @@
 import { f } from '../../utils/functools';
+import { readCookie } from '../../utils/ajax/cookies';
+import { setDevelopmentGlobal } from '../../utils/types';
 
 /**
  * A mapping between Django language code and Weblate language code
@@ -24,15 +26,45 @@ export const disabledLanguages = new Set(
       ]
 );
 
+/**
+ * These languages are available in development only. Used for testing
+ */
+export const devLanguages = {
+  /**
+   * Like 'en-us', but every value is prepended with an underscore. Useful for
+   * detecting localized strings
+   */
+  underscore: 'Underscore',
+  /**
+   * Print the string key rather than localized string
+   */
+  raw: 'Raw',
+  /**
+   * Like 'en-us', but every value is printed twice. Useful for testing
+   * UI overflow and ensuring against languages with long words
+   */
+  double: 'Double',
+};
+
 export type Language = typeof languages[number];
 
 export const DEFAULT_LANGUAGE = 'en-us';
+
+// Django does not allow invalid language codes, so can't read them from
+// <html lang="..."> tag. Instead, we read them from cookies directly
+const cookieLanguage = readCookie('language');
+export const devLanguage = f.includes(Object.keys(devLanguages), cookieLanguage)
+  ? cookieLanguage
+  : undefined;
 
 export const LANGUAGE: Language =
   (typeof document === 'object' &&
   f.includes(languages, document.documentElement.lang)
     ? document.documentElement.lang
     : undefined) ?? DEFAULT_LANGUAGE;
+
+setDevelopmentGlobal('_devLanguage', devLanguage);
+setDevelopmentGlobal('_language', LANGUAGE);
 
 /**
  * Which branch the strings are coming from.

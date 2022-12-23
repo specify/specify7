@@ -8,7 +8,11 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useValidation } from '../../hooks/useValidation';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
-import { disabledLanguages, LANGUAGE } from '../../localization/utils/config';
+import {
+  devLanguage,
+  disabledLanguages,
+  LANGUAGE,
+} from '../../localization/utils/config';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -75,7 +79,7 @@ export function LoginLanguageChooser({
           ([code]) => !f.has(disabledLanguages, code) || code === LANGUAGE
         )
       )}
-      value={LANGUAGE}
+      value={(devLanguage as Language) ?? LANGUAGE}
       onChange={(language): void =>
         loading(
           handleLanguageChange(language).then((): void =>

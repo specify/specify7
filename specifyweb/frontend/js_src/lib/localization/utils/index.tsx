@@ -11,9 +11,9 @@ import { typesafeI18nObject } from 'typesafe-i18n';
 import { formatNumber } from '../../components/Atoms/Internationalization';
 import { error } from '../../components/Errors/assert';
 import { f } from '../../utils/functools';
-import type { IR, RR } from '../../utils/types';
+import type { IR, RR, WritableArray } from '../../utils/types';
 import type { Language } from './config';
-import { DEFAULT_LANGUAGE, LANGUAGE } from './config';
+import { DEFAULT_LANGUAGE, devLanguage, LANGUAGE } from './config';
 
 export const localizationMetaKeys = ['comment'] as const;
 type MetaKeys = typeof localizationMetaKeys[number];
@@ -40,17 +40,63 @@ export function createDictionary<DICT extends LocalizationDictionary>(
 ) {
   const resolver = typesafeI18nObject(
     LANGUAGE,
-    Object.fromEntries(
-      Object.entries(dictionary).map(([key, value]) => [
-        key,
-        value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
-      ])
-    ) as ExtractLanguage<typeof dictionary>,
+    (devLanguage === undefined
+      ? Object.fromEntries(
+          Object.entries(dictionary).map(([key, value]) => [
+            key,
+            value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
+          ])
+        )
+      : handleDevLanguage(dictionary)) as ExtractLanguage<typeof dictionary>,
     formatters
   );
   // @ts-expect-error This is used by ./__tests__/localization.ts
   resolver[rawDictionary] = dictionary;
   return resolver;
+}
+
+/**
+ * Generate special testing-only languages on the fly
+ */
+function handleDevLanguage(dictionary: LocalizationDictionary): IR<string> {
+  if (devLanguage === 'underscore')
+    return Object.fromEntries(
+      Object.entries(dictionary).map(([key, value]) => [
+        key,
+        `_${value[DEFAULT_LANGUAGE]}`,
+      ])
+    );
+  else if (devLanguage === 'double')
+    return Object.fromEntries(
+      Object.entries(dictionary).map(([key, value]) => [
+        key,
+        `${value[DEFAULT_LANGUAGE]} ${value[DEFAULT_LANGUAGE]}`,
+      ])
+    );
+  return Object.fromEntries(
+    Object.entries(dictionary).map(([key, value]) => [
+      key,
+      `${key}${toRawString(value[DEFAULT_LANGUAGE])}`,
+    ])
+  );
+}
+
+const reArgument = /\{[^}]+\}+/gu;
+
+/**
+ * Extract arguments from the string
+ */
+function toRawString(string: string): string {
+  // Extract all xml tags
+  const tags: WritableArray<string> = [];
+  string.replaceAll(reJsx, (match) => {
+    tags.push(match);
+    return '';
+  });
+  // Extract arguments
+  tags.push(...Array.from(string.matchAll(reArgument), ([match]) => match));
+
+  return tags.length === 0 ? '' : ` ${tags.join(' ')}`;
 }
 
 /**

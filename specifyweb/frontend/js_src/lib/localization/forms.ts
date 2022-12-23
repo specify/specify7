@@ -250,7 +250,7 @@ export const formsText = createDictionary({
       in the future.
     `,
     'ru-ru': `
-      Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
+      Вероятно, он был включен на етой форме в Specify 6> м может бить
       поддерживаним в будущем.
     `,
   },
