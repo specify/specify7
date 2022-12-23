@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { resourcesText } from '../../localization/resources';
-import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
@@ -12,6 +11,7 @@ import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { preferencesText } from '../../localization/preferences';
+import { attachmentsText } from '../../localization/attachments';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -161,7 +161,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: commonText.attachments(),
+    title: attachmentsText.attachments(),
     element: () =>
       import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
   },
@@ -198,7 +198,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'resources',
-    title: commonText.appResources(),
+    title: resourcesText.appResources(),
     element: () =>
       import('../AppResources').then(
         ({ AppResourcesWrapper }) => AppResourcesWrapper

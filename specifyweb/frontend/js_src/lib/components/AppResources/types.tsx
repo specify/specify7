@@ -3,7 +3,6 @@ import { AppResourceMode } from './helpers';
 import { icons } from '../Atoms/Icons';
 import { resourcesText } from '../../localization/resources';
 import { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { LocalizedString } from 'typesafe-i18n';
 import { reportsText } from '../../localization/report';
@@ -23,7 +22,7 @@ export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
-    label: commonText.formDefinitions(),
+    label: resourcesText.formDefinitions(),
   },
 };
 

@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbPlanText } from '../../localization/wbPlan';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import type { Tables } from '../DataModel/types';
 import { isTreeModel } from '../InitialContext/treeRanks';
 import { hasPermission } from '../Permissions/helpers';
-import { wbPlanText } from '../../localization/wbPlan';
 
 export function QueryToolbar({
   showHiddenFields,
@@ -59,7 +58,7 @@ export function QueryToolbar({
             {queryText.countOnly()}
           </Button.Small>
           <Submit.Small disabled={isEmpty} onClick={handleSubmitClick}>
-            {commonText.query()}
+            {queryText.query()}
           </Submit.Small>
         </>
       )}

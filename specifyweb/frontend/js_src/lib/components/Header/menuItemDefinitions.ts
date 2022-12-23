@@ -25,6 +25,8 @@ import { getCache } from '../../utils/cache';
 import { headerText } from '../../localization/header';
 import { reportsText } from '../../localization/report';
 import { queryText } from '../../localization/query';
+import { interactionsText } from '../../localization/interactions';
+import { attachmentsText } from '../../localization/attachments';
 
 export type MenuItemName =
   | 'attachments'
@@ -59,7 +61,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   interactions: {
     url: '/specify/overlay/interactions/',
-    title: commonText.interactions(),
+    title: interactionsText.interactions(),
     icon: icons.chat,
     visibilityKey: 'showInteractions',
     enabled: () =>
@@ -102,7 +104,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   attachments: {
     url: '/specify/attachments/',
-    title: commonText.attachments(),
+    title: attachmentsText.attachments(),
     icon: icons.photos,
     visibilityKey: 'showAttachments',
     async enabled(): Promise<boolean> {

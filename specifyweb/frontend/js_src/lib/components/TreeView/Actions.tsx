@@ -22,6 +22,7 @@ import { useLiveState } from '../../hooks/useLiveState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import { LocalizedString } from 'typesafe-i18n';
+import { queryText } from '../../localization/query';
 
 type Action = 'add' | 'desynonymize' | 'edit' | 'merge' | 'move' | 'synonymize';
 
@@ -74,12 +75,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               }/`}
               target="_blank"
             >
-              {commonText.query()}
+              {queryText.query()}
             </Link.Small>
           ) : (
-            <Button.Small onClick={undefined}>
-              {commonText.query()}
-            </Button.Small>
+            <Button.Small onClick={undefined}>{queryText.query()}</Button.Small>
           )}
         </li>
       )}
@@ -119,7 +118,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               ranks.at(-1) === focusedRow.rankId
             }
             isRoot={false}
-            label={commonText.addChild()}
+            label={treeText.addChild()}
             nodeId={focusedRow?.nodeId}
             tableName={tableName}
             onRefresh={handleRefresh}
@@ -132,7 +131,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             disabled={disableButtons || isRoot}
             onClick={(): void => setAction('move')}
           >
-            {commonText.move()}
+            {treeText.move()}
           </Button.Small>
         </li>
       )}

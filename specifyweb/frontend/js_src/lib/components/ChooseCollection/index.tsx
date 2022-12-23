@@ -165,7 +165,7 @@ function Wrapped({
                 )
               }
             >
-              {commonText.login()}
+              {userText.logIn()}
             </Button.Fancy>
           </>
         )}

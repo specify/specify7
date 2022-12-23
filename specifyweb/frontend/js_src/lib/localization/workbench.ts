@@ -1,5 +1,5 @@
 /**
- * Localization strings used by the WorkBench (and WbPlanView)
+ * Localization strings used by the WorkBench (not workbench mapper)
  *
  * @module
  */
@@ -653,6 +653,10 @@ export const wbText = createDictionary({
       {operationName:string} занят другим набором данных. Пожалуйста, попробуй
       снова позже.
     `,
+  },
+  stop: {
+    'en-us': 'Stop',
+    'ru-ru': 'Стоп',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',

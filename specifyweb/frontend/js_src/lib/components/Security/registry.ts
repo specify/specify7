@@ -25,6 +25,7 @@ import {
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { resourcesText } from '../../localization/resources';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -200,7 +201,7 @@ export const toolDefinitions = f.store(() =>
       tables: ['RecordSet', 'RecordSetItem'],
     },
     resources: {
-      label: commonText.appResources(),
+      label: resourcesText.appResources(),
       tables: [
         'SpAppResource',
         'SpAppResourceData',

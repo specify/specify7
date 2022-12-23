@@ -4,7 +4,6 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { useSearchParameter } from '../../hooks/navigation';
@@ -84,7 +83,7 @@ export function OicLogin({
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />
-        <Submit.Fancy className="sr-only">{commonText.login()}</Submit.Fancy>
+        <Submit.Fancy className="sr-only">{userText.logIn()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

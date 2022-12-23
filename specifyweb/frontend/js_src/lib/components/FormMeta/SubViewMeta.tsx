@@ -7,6 +7,7 @@ import { Label, Select } from '../Atoms/Form';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import type { SubViewContext } from '../Forms/SubView';
 import { schemaText } from '../../localization/schema';
+import { attachmentsText } from '../../localization/attachments';
 
 export function SubViewMeta({
   subView,
@@ -36,7 +37,7 @@ export function SubViewMeta({
       </Label.Block>
       {/* BUG: this change does not apply until you add/remove subview record */}
       <Label.Block>
-        {formsText.orderBy()}
+        {attachmentsText.orderBy()}
         <OrderPicker
           model={model}
           order={sortField}

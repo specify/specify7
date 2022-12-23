@@ -57,7 +57,7 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText.formDefinitions()}
+          {resourcesText.formDefinitions()}
         </RadioButton>
         <RadioButton
           isPressed={showAllResources}
@@ -69,7 +69,7 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText.appResources()}
+          {resourcesText.appResources()}
         </RadioButton>
         <Button.Blue
           aria-label={resourcesText.custom()}
@@ -99,10 +99,13 @@ export function AppResourcesFilters({
                   }
                 />
                 {appResourceTypes.viewSets.icon}
-                {`${commonText.formDefinitions()} (${countAppResources(
-                  initialResources,
-                  { appResources: [], viewSets: true }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.formDefinitions(),
+                  count: countAppResources(initialResources, {
+                    appResources: [],
+                    viewSets: true,
+                  }),
+                })}
               </Label.Inline>
             </li>
             <li>
@@ -112,10 +115,13 @@ export function AppResourcesFilters({
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
-                {`${commonText.appResources()} (${countAppResources(
-                  initialResources,
-                  { appResources: allAppResources, viewSets: false }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.appResources(),
+                  count: countAppResources(initialResources, {
+                    appResources: allAppResources,
+                    viewSets: false,
+                  }),
+                })}
               </Label.Inline>
               <Ul className="pl-6">
                 {Object.entries(appResourceSubTypes).map(
@@ -135,10 +141,13 @@ export function AppResourcesFilters({
                           }
                         />
                         {icon}
-                        {`${label} (${countAppResources(initialResources, {
-                          appResources: [key],
-                          viewSets: false,
-                        })})`}
+                        {commonText.countLine({
+                          resource: label,
+                          count: countAppResources(initialResources, {
+                            appResources: [key],
+                            viewSets: false,
+                          }),
+                        })}
                         {typeof documentationUrl === 'string' && (
                           <Link.Icon
                             href={documentationUrl}

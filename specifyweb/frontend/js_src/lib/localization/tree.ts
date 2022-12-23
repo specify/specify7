@@ -13,6 +13,10 @@ export const treeText = createDictionary({
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',
   },
+  move: {
+    'en-us': 'Move',
+    'ru-ru': 'Переместить',
+  },
   merge: {
     'en-us': 'Merge',
     'ru-ru': 'Объединить',
@@ -37,6 +41,10 @@ export const treeText = createDictionary({
   moveNode: {
     'en-us': 'Move node',
     'ru-ru': 'Переместить',
+  },
+  addChild: {
+    'en-us': 'Add Child',
+    'ru-ru': 'Добавить Ребенка',
   },
   moveNodeHere: {
     'en-us': 'Move "{nodeName:string}" here',

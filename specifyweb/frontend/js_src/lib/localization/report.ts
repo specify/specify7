@@ -1,5 +1,5 @@
 /**
- * Localization strings used in Leaflet, GeoLocate and LatLongUI
+ * Localization strings used for reports and labels
  *
  * @module
  */

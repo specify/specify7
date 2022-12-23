@@ -36,6 +36,10 @@ import { LocalizedString } from 'typesafe-i18n';
 import { Language, LANGUAGE } from '../../localization/utils/config';
 import { reportsText } from '../../localization/report';
 import { wbPlanText } from '../../localization/wbPlan';
+import { localityText } from '../../localization/locality';
+import { interactionsText } from '../../localization/interactions';
+import { resourcesText } from '../../localization/resources';
+import { attachmentsText } from '../../localization/attachments';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -484,7 +488,7 @@ export const preferenceDefinitions = {
     },
   },
   interactions: {
-    title: commonText.interactions(),
+    title: interactionsText.interactions(),
     subCategories: {
       createInteractions: {
         title: preferencesText.createInteractions(),
@@ -1064,7 +1068,7 @@ export const preferenceDefinitions = {
           sortOrder: defineItem<
             keyof Collection['fields'] | `-${keyof Collection['fields']}`
           >({
-            title: formsText.orderBy(),
+            title: attachmentsText.orderBy(),
             description: preferencesText.collectionSortOrderDescription(),
             requiresReload: false,
             visible: true,
@@ -1479,7 +1483,7 @@ export const preferenceDefinitions = {
     },
   },
   appResources: {
-    title: commonText.appResources(),
+    title: resourcesText.appResources(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),
@@ -1515,7 +1519,7 @@ export const preferenceDefinitions = {
     },
   },
   leaflet: {
-    title: commonText.geoMap(),
+    title: localityText.geoMap(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),

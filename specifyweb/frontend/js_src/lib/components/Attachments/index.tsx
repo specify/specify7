@@ -8,7 +8,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useCollection } from '../../hooks/useCollection';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
@@ -23,6 +22,7 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
 import { schemaText } from '../../localization/schema';
+import { attachmentsText } from '../../localization/attachments';
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(
@@ -146,7 +146,7 @@ function Attachments(): JSX.Element {
       <header
         className={`flex flex-wrap items-center gap-2 ${className.hasAltBackground}`}
       >
-        <H2>{commonText.attachments()}</H2>
+        <H2>{attachmentsText.attachments()}</H2>
         <Label.Inline>
           <span className="sr-only">{commonText.filter()}</span>
           <Select
@@ -163,17 +163,21 @@ function Attachments(): JSX.Element {
             }
           >
             <option value="all">
-              {commonText.all()}
               {typeof collectionSizes === 'object'
-                ? ` (${collectionSizes.all})`
-                : ''}
+                ? commonText.countLine({
+                    resource: commonText.all(),
+                    count: collectionSizes.all,
+                  })
+                : commonText.all()}
             </option>
             {collectionSizes?.unused !== 0 && (
               <option value="unused">
-                {commonText.unused()}
                 {typeof collectionSizes === 'object'
-                  ? ` (${collectionSizes.unused})`
-                  : ''}
+                  ? commonText.countLine({
+                      resource: commonText.unused(),
+                      count: collectionSizes.unused,
+                    })
+                  : commonText.unused()}
               </option>
             )}
             <optgroup label={schemaText.tables()}>
@@ -191,7 +195,7 @@ function Attachments(): JSX.Element {
           </Select>
         </Label.Inline>
         <Label.Inline>
-          {formsText.orderBy()}
+          {attachmentsText.orderBy()}
           <div>
             <OrderPicker
               model={schema.models.Attachment}

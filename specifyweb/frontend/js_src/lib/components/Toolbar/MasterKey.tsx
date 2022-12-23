@@ -5,20 +5,20 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
+import { useId } from '../../hooks/useId';
+import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog } from '../Molecules/Dialog';
-import { OverlayContext } from '../Router/Router';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { formData } from '../../utils/ajax/helpers';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { useId } from '../../hooks/useId';
-import { useValidation } from '../../hooks/useValidation';
+import { LoadingContext } from '../Core/Contexts';
 import { CopyButton } from '../Molecules/Copy';
-import { Http } from '../../utils/ajax/definitions';
-import { userText } from '../../localization/user';
+import { Dialog } from '../Molecules/Dialog';
+import { OverlayContext } from '../Router/Router';
 
 export function MasterKeyOverlay(): JSX.Element | null {
   const [password, setPassword] = React.useState<string>('');
@@ -37,7 +37,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText.generate()}</Submit.Blue>
+          <Submit.Blue form={id('form')}>{userText.generate()}</Submit.Blue>
         </>
       }
       header={userText.generateMasterKey()}

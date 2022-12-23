@@ -27,6 +27,7 @@ import type { AppResources, AppResourcesTree } from './hooks';
 import { useAppResourceCount, useResourcesTree } from './hooks';
 import { appResourceSubTypes } from './types';
 import { resourcesText } from '../../localization/resources';
+import { StringToJsx } from '../../localization/utils';
 
 export function AppResourcesAside({
   resources: initialResources,
@@ -157,8 +158,15 @@ function TreeItem({
           )
         }
       >
-        {label}
-        <span className="text-neutral-500">{` (${count})`}</span>
+        <StringToJsx
+          string={commonText.jsxCountLine({
+            resource: label,
+            count,
+          })}
+          components={{
+            wrap: (count) => <span className="text-neutral-500">{count}</span>,
+          }}
+        />
       </Button.LikeLink>
       {isExpanded && (
         <>

@@ -9,6 +9,18 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const userText = createDictionary({
+  logIn: {
+    'en-us': 'Log In',
+    'ru-ru': 'Авторизоваться',
+  },
+  username: {
+    'en-us': 'Username',
+    'ru-ru': 'Имя пользователя',
+  },
+  password: {
+    'en-us': 'Password',
+    'ru-ru': 'Пароль',
+  },
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
     'ru-ru': 'У вас нет доступа к этой коллекции',
@@ -99,6 +111,10 @@ export const userText = createDictionary({
   userPassword: {
     'en-us': 'User Password:',
     'ru-ru': 'Пользовательский пароль:',
+  },
+  generate: {
+    'en-us': 'Generate',
+    'ru-ru': 'Генерировать',
   },
   masterKeyGenerated: {
     'en-us': 'Master key generated',

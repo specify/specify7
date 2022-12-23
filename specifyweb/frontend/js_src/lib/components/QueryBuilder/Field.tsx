@@ -43,6 +43,7 @@ import { className } from '../Atoms/className';
 import { Select } from '../Atoms/Form';
 import { f } from '../../utils/functools';
 import { whitespaceSensitive } from '../../localization/utils';
+import { localityText } from '../../localization/locality';
 
 // REFACTOR: split this component into smaller components
 export function QueryLine({
@@ -462,8 +463,8 @@ export function QueryLine({
       <div className="contents print:hidden">
         {fieldMeta.canOpenMap && typeof handleOpenMap === 'function' ? (
           <Button.Small
-            aria-label={queryText.openMap()}
-            title={queryText.openMap()}
+            aria-label={localityText.openMap()}
+            title={localityText.openMap()}
             variant={className.blueButton}
             onClick={handleOpenMap}
           >
@@ -516,15 +517,15 @@ export function QueryLine({
             : icons.circle}
         </Button.Small>
         <Button.Small
-          aria-label={commonText.moveUp()}
-          title={commonText.moveUp()}
+          aria-label={queryText.moveUp()}
+          title={queryText.moveUp()}
           onClick={handleMoveUp}
         >
           {icons.chevronUp}
         </Button.Small>
         <Button.Small
-          aria-label={commonText.moveDown()}
-          title={commonText.moveDown()}
+          aria-label={queryText.moveDown()}
+          title={queryText.moveDown()}
           onClick={handleMoveDown}
         >
           {icons.chevronDown}

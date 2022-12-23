@@ -28,6 +28,7 @@ import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
 import { AttachmentCell } from './Cell';
+import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentsPlugin({
   resource,
@@ -115,7 +116,7 @@ export function AttachmentsPlugin({
   return state === undefined ? (
     <>{commonText.loading()}</>
   ) : state.type === 'Unavailable' ? (
-    <div>{formsText.attachmentServerUnavailable()}</div>
+    <div>{attachmentsText.attachmentServerUnavailable()}</div>
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
@@ -139,7 +140,7 @@ export function AttachmentsPlugin({
       ) : state.type === 'FileUpload' ? (
         <Dialog
           buttons={undefined}
-          header={formsText.uploadingInline()}
+          header={attachmentsText.uploadingInline()}
           onClose={undefined}
         >
           <div aria-live="polite">

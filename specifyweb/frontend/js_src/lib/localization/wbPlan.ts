@@ -1,5 +1,5 @@
 /**
- * Localization strings used by the WorkBench (and WbPlanView)
+ * Localization strings used by the WbPlanView (workbench upload plan mapper)
  *
  * @module
  */
@@ -32,6 +32,14 @@ export const wbPlanText = createDictionary({
     comment: 'Show in pick list in Data Mapper when column is not mapped',
     'en-us': 'NOT MAPPED',
     'ru-ru': 'НЕСОПОСТАВЛЕННЫЙ',
+  },
+  unmapped: {
+    'en-us': 'Unmapped',
+    'ru-ru': 'Не сопоставлений',
+  },
+  mapped: {
+    'en-us': 'Mapped',
+    'ru-ru': 'Сопоставлений',
   },
   matchBehavior: {
     'en-us': 'Match Behavior:',

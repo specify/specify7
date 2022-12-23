@@ -9,6 +9,14 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const resourcesText = createDictionary({
+  appResources: {
+    'en-us': 'App Resources',
+    'ru-ru': 'Ресурсы приложения',
+  },
+  formDefinitions: {
+    'en-us': 'Form Definitions',
+    'ru-ru': 'Определения форм',
+  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',

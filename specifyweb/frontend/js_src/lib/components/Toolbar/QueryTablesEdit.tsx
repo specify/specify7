@@ -147,13 +147,13 @@ export function TablesListEdit({
           <Button.Icon
             disabled={selectedSubset.length === 0}
             icon="chevronUp"
-            title={commonText.moveUp()}
+            title={queryText.moveUp()}
             onClick={handleMoveUp}
           />
           <Button.Icon
             disabled={selectedSubset.length === 0}
             icon="chevronDown"
-            title={commonText.moveDown()}
+            title={queryText.moveDown()}
             onClick={handleMoveDown}
           />
         </div>

@@ -110,7 +110,10 @@ function TableResult({
           hover:!text-white dark:bg-brand-500 hover:dark:!bg-brand-400
         `}
       >
-        {`${caption} (${tableResults.totalCount})`}
+        {commonText.countLine({
+          resource: caption,
+          count: tableResults.totalCount,
+        })}
       </summary>
       <ErrorBoundary dismissable>
         <QueryResults

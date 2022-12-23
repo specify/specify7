@@ -115,7 +115,7 @@ export function Main(): JSX.Element | null {
                   href="/accounts/login/"
                   className={className.navigationHandled}
                 >
-                  {commonText.logIn()}
+                  {userText.logIn()}
                 </Link.Default>
               )}
               <CollectionSelector />

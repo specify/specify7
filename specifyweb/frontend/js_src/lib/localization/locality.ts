@@ -9,6 +9,26 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const localityText = createDictionary({
+  openMap: {
+    'en-us': 'Open Map',
+    'ru-ru': 'Открыть карту',
+  },
+  geoMap: {
+    'en-us': 'GeoMap',
+    'ru-ru': 'Карта',
+  },
+  queryMapSubset: {
+    comment: 'Used in GeoMap header while records are still being fetched',
+    'en-us':
+      'GeoMap - Plotted {plotted:number|formatted} of {total:number|formatted} records',
+    'ru-ru': `
+      Карта - Отображено {plotted:number|formatted} из {total:number|formatted} записей
+    `,
+  },
+  queryMapAll: {
+    'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
+    'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
+  },
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',

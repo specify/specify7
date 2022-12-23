@@ -6,6 +6,7 @@ import { queryText } from '../../localization/query';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { reportsText } from '../../localization/report';
+import { interactionsText } from '../../localization/interactions';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -54,7 +55,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'interactions',
-        title: commonText.interactions(),
+        title: interactionsText.interactions(),
         children: [
           {
             index: true,

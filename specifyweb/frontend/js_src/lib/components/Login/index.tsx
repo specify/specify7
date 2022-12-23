@@ -6,7 +6,6 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useValidation } from '../../hooks/useValidation';
-import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { disabledLanguages, LANGUAGE } from '../../localization/utils/config';
@@ -134,7 +133,7 @@ function LegacyLogin({
         />
         {formErrors.length > 0 && <ErrorMessage>{formErrors}</ErrorMessage>}
         <Label.Block>
-          {commonText.username()}
+          {userText.username()}
           <Input.Text
             defaultValue=""
             forwardRef={validationRef}
@@ -143,7 +142,7 @@ function LegacyLogin({
           />
         </Label.Block>
         <Label.Block>
-          {commonText.password()}
+          {userText.password()}
           <Input.Generic
             defaultValue=""
             forwardRef={passwordRef}
@@ -154,7 +153,7 @@ function LegacyLogin({
         </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
-        <Submit.Fancy className="mt-1">{commonText.login()}</Submit.Fancy>
+        <Submit.Fancy className="mt-1">{userText.logIn()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

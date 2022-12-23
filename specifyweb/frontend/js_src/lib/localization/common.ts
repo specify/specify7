@@ -77,13 +77,13 @@ export const commonText = createDictionary({
     'en-us': 'Previous',
     'ru-ru': 'Предыдущий',
   },
-  tools: {
-    'en-us': 'Tools',
-    'ru-ru': 'Инструменты',
-  },
   tool: {
     'en-us': 'Tool',
     'ru-ru': 'Инструмент',
+  },
+  tools: {
+    'en-us': 'Tools',
+    'ru-ru': 'Инструменты',
   },
   loading: {
     'en-us': 'Loading...',
@@ -108,10 +108,6 @@ export const commonText = createDictionary({
   modifiedBy: {
     'en-us': 'Modified by:',
     'ru-ru': 'Модифицирован:',
-  },
-  stop: {
-    'en-us': 'Stop',
-    'ru-ru': 'Стоп',
   },
   remove: {
     'en-us': 'Remove',
@@ -145,10 +141,6 @@ export const commonText = createDictionary({
     'en-us': 'Proceed',
     'ru-ru': 'Продолжить',
   },
-  logIn: {
-    'en-us': 'Log In',
-    'ru-ru': 'Авторизоваться',
-  },
   start: {
     'en-us': 'Start',
     'ru-ru': 'Начало',
@@ -160,10 +152,6 @@ export const commonText = createDictionary({
   update: {
     'en-us': 'Update',
     'ru-ru': 'Обновить',
-  },
-  generate: {
-    'en-us': 'Generate',
-    'ru-ru': 'Генерировать',
   },
   listTruncated: {
     'en-us': '(list truncated)',
@@ -177,18 +165,6 @@ export const commonText = createDictionary({
     'en-us': 'Metadata',
     'ru-ru': 'Метаданные',
   },
-  query: {
-    'en-us': 'Query',
-    'ru-ru': 'Запрос',
-  },
-  unmapped: {
-    'en-us': 'Unmapped',
-    'ru-ru': 'Не сопоставлений',
-  },
-  mapped: {
-    'en-us': 'Mapped',
-    'ru-ru': 'Сопоставлений',
-  },
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
@@ -196,15 +172,6 @@ export const commonText = createDictionary({
   contract: {
     'en-us': 'Contract',
     'ru-ru': 'Свернуть',
-  },
-  geoMap: {
-    'en-us': 'GeoMap',
-    'ru-ru': 'Карта',
-  },
-  geoMapProgress: {
-    comment: 'Used in GeoMap title to indicate load progress',
-    'en-us': 'GeoMap - {progress:string}',
-    'ru-ru': 'Карта - {progress:string}',
   },
   fullDate: {
     'en-us': 'Full Date',
@@ -217,14 +184,6 @@ export const commonText = createDictionary({
   view: {
     'en-us': 'View',
     'ru-ru': 'Смотреть',
-  },
-  addChild: {
-    'en-us': 'Add Child',
-    'ru-ru': 'Добавить Ребенка',
-  },
-  move: {
-    'en-us': 'Move',
-    'ru-ru': 'Переместить',
   },
   opensInNewTab: {
     comment: 'Used in a hover-over message for links that open in new tab',
@@ -239,29 +198,9 @@ export const commonText = createDictionary({
     'en-us': 'Actions',
     'ru-ru': 'Действия',
   },
-  username: {
-    'en-us': 'Username',
-    'ru-ru': 'Имя пользователя',
-  },
-  password: {
-    'en-us': 'Password',
-    'ru-ru': 'Пароль',
-  },
-  login: {
-    'en-us': 'Login',
-    'ru-ru': 'Вход',
-  },
   chooseCollection: {
     'en-us': 'Choose Collection',
     'ru-ru': 'Выбрать коллекцию',
-  },
-  attachments: {
-    'en-us': 'Attachments',
-    'ru-ru': 'Вложения',
-  },
-  interactions: {
-    'en-us': 'Interactions',
-    'ru-ru': 'Взаимодействия',
   },
   ascending: {
     'en-us': 'Ascending',
@@ -274,14 +213,6 @@ export const commonText = createDictionary({
   recordSets: {
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы объектов',
-  },
-  appResources: {
-    'en-us': 'App Resources',
-    'ru-ru': 'Ресурсы приложения',
-  },
-  formDefinitions: {
-    'en-us': 'Form Definitions',
-    'ru-ru': 'Определения форм',
   },
   trees: {
     'en-us': 'Trees',
@@ -364,6 +295,7 @@ export const commonText = createDictionary({
     'en-us': 'Ordinal',
     'ru-ru': 'Порядковый номер',
   },
+  // FIXME: move this into headerText
   administration: {
     'en-us': 'Administrative Tools',
     'ru-ru': 'Управления',
@@ -440,14 +372,6 @@ export const commonText = createDictionary({
     'en-us': 'Collapse All',
     'ru-ru': 'Свернуть все',
   },
-  moveUp: {
-    'en-us': 'Move Up',
-    'ru-ru': 'Переместить вверх',
-  },
-  moveDown: {
-    'en-us': 'Move Down',
-    'ru-ru': 'Переместить вниз',
-  },
   reset: {
     'en-us': 'Reset',
     'ru-ru': 'Сброс',
@@ -468,5 +392,10 @@ export const commonText = createDictionary({
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} ({count:number|formatted})',
     'ru-ru': '{resource:string} ({count:number|formatted})',
+  },
+  jsxCountLine: {
+    comment: 'Example usage: Record Sets (1,234)',
+    'en-us': '{resource:string} <wrap>({count:number|formatted})</wrap>',
+    'ru-ru': '{resource:string} <wrap>({count:number|formatted})</wrap>',
   },
 } as const);

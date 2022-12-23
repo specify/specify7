@@ -157,7 +157,7 @@ export function WbStatus({
                 .catch(() => setAborted('failed'));
             }}
           >
-            {commonText.stop()}
+            {wbText.stop()}
           </Button.Red>
         ) : undefined
       }

@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  query: {
+    'en-us': 'Query',
+    'ru-ru': 'Запрос',
+  },
   queries: {
     'en-us': 'Queries',
     'ru-ru': 'Запросы',
@@ -163,6 +167,14 @@ export const queryText = createDictionary({
     'en-us': '(any rank)',
     'ru-ru': '(любой ранг)',
   },
+  moveUp: {
+    'en-us': 'Move Up',
+    'ru-ru': 'Переместить вверх',
+  },
+  moveDown: {
+    'en-us': 'Move Down',
+    'ru-ru': 'Переместить вниз',
+  },
   sort: {
     'en-us': 'Sort',
     'ru-ru': 'Сортировать',
@@ -303,22 +315,6 @@ export const queryText = createDictionary({
   configureQueryTables: {
     'en-us': 'Configure visible query tables',
     'ru-ru': 'Настроить видимые таблицы запроса',
-  },
-  openMap: {
-    'en-us': 'Open Map',
-    'ru-ru': 'Открыть карту',
-  },
-  queryMapSubset: {
-    comment: 'Used in GeoMap header while records are still being fetched',
-    'en-us':
-      'Plotted {plotted:number|formatted} of {total:number|formatted} records',
-    'ru-ru': `
-      Отображено {plotted:number|formatted} из {total:number|formatted} записей
-    `,
-  },
-  queryMapAll: {
-    'en-us': 'Plotted {plotted:number|formatted} records',
-    'ru-ru': 'Отображено {plotted:number|formatted} записей',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',

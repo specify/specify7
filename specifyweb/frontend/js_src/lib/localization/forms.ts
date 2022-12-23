@@ -1,6 +1,6 @@
 /**
- * Localization strings used on Data Entry forms and Interactions
- * (don't confuse this with schema localization strings)
+ * Localization strings used on Forms (don't confuse this with schema
+ * localization strings)
  *
  * @module
  */
@@ -10,22 +10,6 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const formsText = createDictionary({
-  orderBy: {
-    'en-us': 'Order By',
-    'ru-ru': 'Сортировать по',
-  },
-  attachmentServerUnavailable: {
-    'en-us': 'Attachment server unavailable.',
-    'ru-ru': 'Сервер прикрепленных файлов недоступен.',
-  },
-  uploadingInline: {
-    'en-us': 'Uploading…',
-    'ru-ru': 'Закачивание…',
-  },
-  noAttachments: {
-    'en-us': 'There are no attachments',
-    'ru-ru': 'В вашей коллекции нет вложений',
-  },
   clone: {
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',

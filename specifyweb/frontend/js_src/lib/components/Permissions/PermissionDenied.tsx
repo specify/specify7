@@ -227,7 +227,7 @@ export function PermissionError({
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText.logIn()}
+      buttons={userText.logIn()}
       forceToTop
       header={userText.sessionTimeOut()}
       onClose={(): void =>

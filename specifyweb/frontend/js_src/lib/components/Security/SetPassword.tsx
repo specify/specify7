@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { Dialog } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { Submit } from '../Atoms/Submit';
-import { Form, Input, Label } from '../Atoms/Form';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useValidation } from '../../hooks/useValidation';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
+import { Button } from '../Atoms/Button';
+import { Form, Input, Label } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
+import { Dialog } from '../Molecules/Dialog';
 
 export const MIN_PASSWORD_LENGTH = 8;
 
@@ -51,7 +51,7 @@ export function PasswordResetDialog({
         }}
       >
         <Label.Block>
-          {commonText.password()}
+          {userText.password()}
           <Input.Generic
             autoComplete="new-password"
             minLength={MIN_PASSWORD_LENGTH}

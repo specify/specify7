@@ -6,12 +6,12 @@ import { ResourceView } from '../Forms/ResourceView';
 import { formsText } from '../../localization/forms';
 import { hasToolPermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
 import { getModelById } from '../DataModel/schema';
 import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
 import { QueryListDialog, useQueries } from './Query';
 import { formatUrl } from '../Router/queryString';
+import { queryText } from '../../localization/query';
 
 export function EditRecordSet({
   recordSet,
@@ -44,7 +44,7 @@ export function EditRecordSet({
           <>
             <span className="-ml-2 flex-1" />
             <Button.Blue onClick={handleOpenQuery}>
-              {commonText.query()}
+              {queryText.query()}
             </Button.Blue>
           </>
         ) : undefined

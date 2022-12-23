@@ -243,6 +243,9 @@ export async function scanUsages(
 
   debug('Looking for usages of strings');
   sourceFiles.forEach((filePath) => {
+    const shortPath = filePath.slice(
+      filePath.indexOf('/js_src/') + '/js_src/'.length
+    );
     const fileName = path.basename(filePath);
     debug(`Looking for language string usages in ${fileName}`);
 
@@ -273,7 +276,7 @@ export async function scanUsages(
             [
               ...message,
               `\n\n`,
-              `On line ${lineNumber}:\n`,
+              `In ${shortPath} on line ${lineNumber}:\n`,
               `${position}`,
             ].join('')
           );
@@ -282,6 +285,8 @@ export async function scanUsages(
         if (followingCharacter === '}') return;
         // Matched the declaration of a dictionary (i.e, const commonText = ...)
         if (followingCharacter === '=') return;
+        // Matched a comment (i.e, // dictionaryText \n someOtherLine)
+        if (followingCharacter.match(/\w/u)) return;
         if (followingCharacter !== '.') {
           report(
             `Unexpected dynamic usage of a ${dictionaryName} dictionary\n`,

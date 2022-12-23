@@ -2186,11 +2186,12 @@ export const WBView = Backbone.View.extend({
   updateValidationButton() {
     if (this.validationMode === 'live')
       this.$('.wb-data-check').text(
-        `${wbText.dataCheckOn()}${
-          this.liveValidationStack.length > 0
-            ? ` (${this.liveValidationStack.length})`
-            : ''
-        }`()
+        this.liveValidationStack.length > 0
+          ? commonText.countLine({
+              resource: wbText.dataCheckOn(),
+              count: this.liveValidationStack.length,
+            })
+          : wbText.dataCheckOn()
       );
     else {
       this.$('.wb-data-check').text(wbText.dataCheck());

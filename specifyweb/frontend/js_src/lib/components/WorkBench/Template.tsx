@@ -232,7 +232,7 @@ function WbView({
           onClick={undefined}
           title={wbText.unavailableWithoutLocality()}
         >
-          {commonText.geoMap()}
+          {localityText.geoMap()}
         </Button.Small>
       </div>
       <div className="flex flex-1 gap-4 overflow-hidden">

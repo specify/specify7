@@ -226,7 +226,7 @@ function Interactions({
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={commonText.interactions()}
+      header={interactionsText.interactions()}
       icon={<span className="text-blue-500">{icons.chat}</span>}
       onClose={handleClose}
     >

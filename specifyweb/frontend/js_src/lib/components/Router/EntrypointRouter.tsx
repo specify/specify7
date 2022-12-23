@@ -15,12 +15,12 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'login',
-        title: commonText.login(),
+        title: userText.logIn(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'legacy_login',
-        title: commonText.login(),
+        title: userText.logIn(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {

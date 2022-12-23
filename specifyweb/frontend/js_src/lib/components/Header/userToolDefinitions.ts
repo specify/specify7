@@ -16,6 +16,7 @@ import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { preferencesText } from '../../localization/preferences';
+import { resourcesText } from '../../localization/resources';
 
 const rawUserTools: IR<RA<UserTool>> = {
   [userText.userAccount()]: [
@@ -40,7 +41,7 @@ const rawUserTools: IR<RA<UserTool>> = {
   ],
   [commonText.administration()]: [
     {
-      title: commonText.appResources(),
+      title: resourcesText.appResources(),
       url: '/specify/resources/',
       enabled: () =>
         hasToolPermission('resources', 'read') &&

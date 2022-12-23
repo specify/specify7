@@ -1,6 +1,5 @@
 /**
- * Localization strings used on Data Entry forms and Interactions
- * (don't confuse this with schema localization strings)
+ * Localization strings used for Interactions
  *
  * @module
  */
@@ -10,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const interactionsText = createDictionary({
+  interactions: {
+    'en-us': 'Interactions',
+    'ru-ru': 'Взаимодействия',
+  },
   addItems: {
     'en-us': 'Add Items',
     'ru-ru': 'Добавить элементы',
