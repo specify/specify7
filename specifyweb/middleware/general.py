@@ -44,4 +44,10 @@ class GeneralMiddleware:
                 
             if not isinstance(exception, SpecifyExceptionWrapper):
                 exception = SpecifyExceptionWrapper(exception)
-            return http.HttpResponse(exception.to_json(), status=exception.status_code)
+            try:
+                return http.HttpResponse(exception.to_json(), status=exception.status_code)
+
+            # If something in the base exception is not JSON serializable, use and wrap the raised TypeError instead 
+            except TypeError as e:
+                exception = SpecifyExceptionWrapper(e)
+                return http.HttpResponse(exception.to_json(), status=exception.status_code)
