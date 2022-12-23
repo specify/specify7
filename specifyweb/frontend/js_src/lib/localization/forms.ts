@@ -38,14 +38,18 @@ export const formsText = createDictionary({
     'en-us': 'Value must be unique to {fieldName:string}',
     'ru-ru': 'Значение {fieldName:string} должно быть уникальным',
   },
+  valueMustBeUniqueToDatabase: {
+    'en-us': 'Value must be unique to database',
+    'ru-ru': 'Значение должно быть уникальным в базе данных',
+  },
   valuesOfMustBeUniqueToField: {
     'en-us': 'Values of {values:string} must be unique to {fieldName:string}',
     'ru-ru':
       'Значения {values:string} в {fieldName:string} должны быть уникальным',
   },
-  database: {
-    'en-us': 'database',
-    'ru-ru': 'база данных',
+  valuesOfMustBeUniqueToDatabase: {
+    'en-us': 'Values of {values:string} must be unique to database',
+    'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
   },
   collectionObject: {
     'en-us': 'Collection Object',

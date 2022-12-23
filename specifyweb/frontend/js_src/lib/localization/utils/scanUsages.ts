@@ -334,6 +334,12 @@ export async function scanUsages(
             );
         }
 
+        if (groups.followCharacter !== ')' && groups.followCharacter !== '{')
+          report(
+            `Unexpected argument for ${dictionaryName}.${keyName}. Argument must `,
+            `be an object. Don't use positional arguments`
+          );
+
         strings[keyName].usages.push({
           filePath,
           lineNumber,
