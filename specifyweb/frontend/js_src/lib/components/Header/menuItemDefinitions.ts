@@ -27,6 +27,8 @@ import { reportsText } from '../../localization/report';
 import { queryText } from '../../localization/query';
 import { interactionsText } from '../../localization/interactions';
 import { attachmentsText } from '../../localization/attachments';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
 
 export type MenuItemName =
   | 'attachments'
@@ -53,7 +55,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   trees: {
     url: '/specify/overlay/trees/',
-    title: commonText.trees(),
+    title: treeText.trees(),
     icon: icons.tree,
     visibilityKey: 'showTrees',
     enabled: () =>
@@ -98,7 +100,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   workBench: {
     url: '/specify/overlay/data-sets/',
-    title: commonText.workBench(),
+    title: wbText.workBench(),
     icon: icons.table,
     visibilityKey: 'showWorkBench',
   },

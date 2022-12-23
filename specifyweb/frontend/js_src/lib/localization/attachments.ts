@@ -13,6 +13,10 @@ export const attachmentsText = createDictionary({
     'en-us': 'Attachments',
     'ru-ru': 'Вложения',
   },
+  scale: {
+    'en-us': 'Scale',
+    'ru-ru': 'Масштаб',
+  },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable.',
     'ru-ru': 'Сервер прикрепленных файлов недоступен.',

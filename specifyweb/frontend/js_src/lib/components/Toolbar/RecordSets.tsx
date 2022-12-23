@@ -122,7 +122,10 @@ export function RecordSetsDialog({
                   <Button.LikeLink
                     onClick={(): void => handleSort('timestampCreated')}
                   >
-                    {commonText.created()}
+                    {
+                      schema.models.RecordSet.strictGetField('timestampCreated')
+                        .label
+                    }
                     <SortIndicator
                       fieldName="timestampCreated"
                       sortConfig={sortConfig}

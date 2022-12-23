@@ -34,6 +34,7 @@ import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { headerText } from '../../localization/header';
 import { LocalizedString } from 'typesafe-i18n';
+import { treeText } from '../../localization/tree';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -41,7 +42,7 @@ export function TreeSelectOverlay(): JSX.Element {
     <TreeSelectDialog
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
-      title={commonText.trees()}
+      title={treeText.trees()}
       onClick={undefined}
       onClose={handleClose}
     />

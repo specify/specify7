@@ -69,10 +69,6 @@ export const schemaText = createDictionary({
     'en-us': 'Table Aggregation',
     'ru-ru': 'Агрегация таблиц',
   },
-  type: {
-    'en-us': 'Type',
-    'ru-ru': 'Тип',
-  },
   oneToOne: {
     'en-us': 'One-to-one',
     'ru-ru': 'Один к одному',
@@ -97,10 +93,6 @@ export const schemaText = createDictionary({
     'en-us': 'Read-only',
     'ru-ru': 'Только чтение',
   },
-  required: {
-    'en-us': 'Required',
-    'ru-ru': 'Необходимый',
-  },
   fieldFormat: {
     'en-us': 'Field Format',
     'ru-ru': 'Формат поля',
@@ -113,14 +105,6 @@ export const schemaText = createDictionary({
     'en-us': 'Web Link',
     'ru-ru': 'Интернет-ссылка',
   },
-  pickList: {
-    'en-us': 'Pick List',
-    'ru-ru': 'Список выбора',
-  },
-  system: {
-    'en-us': 'System',
-    'ru-ru': 'Системное',
-  },
   userDefined: {
     'en-us': 'User Defined',
     'ru-ru': 'Создано пользователем',
@@ -132,10 +116,6 @@ export const schemaText = createDictionary({
   fieldLabel: {
     'en-us': 'Label',
     'ru-ru': 'Локализованный',
-  },
-  hidden: {
-    'en-us': 'Hidden',
-    'ru-ru': 'Скрытый',
   },
   databaseColumn: {
     'en-us': 'Database Column',

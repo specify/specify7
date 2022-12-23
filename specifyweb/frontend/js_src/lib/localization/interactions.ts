@@ -60,7 +60,6 @@ export const interactionsText = createDictionary({
     'en-us': 'Preparations',
     'ru-ru': 'Препараты',
   },
-  // FIXME: look over all keys and rename where makes sense
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
     'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',

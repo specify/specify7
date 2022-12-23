@@ -7,6 +7,8 @@ import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { reportsText } from '../../localization/report';
 import { interactionsText } from '../../localization/interactions';
+import { treeText } from '../../localization/tree';
+import { wbText } from '../../localization/workbench';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -47,7 +49,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'trees',
-        title: commonText.trees(),
+        title: treeText.trees(),
         element: () =>
           import('../Toolbar/TreeRepair').then(
             ({ TreeSelectOverlay }) => TreeSelectOverlay
@@ -112,7 +114,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'data-sets',
-        title: commonText.workBench(),
+        title: wbText.workBench(),
         element: () =>
           import('../Toolbar/WbsDialog').then(
             ({ DataSetsOverlay }) => DataSetsOverlay

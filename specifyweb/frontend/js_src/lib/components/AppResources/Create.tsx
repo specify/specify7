@@ -28,9 +28,9 @@ import {
   spAppResourceView,
   spViewSetNameView,
 } from '../FormParse/webOnlyViews';
-import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
+import { schema } from '../DataModel/schema';
 
 /**
  * Check if one type is a subtype of another
@@ -88,7 +88,9 @@ export function CreateAppResource(): JSX.Element {
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
           <tr>
-            <th scope="col">{schemaText.type()}</th>
+            <th scope="col">
+              {schema.models.SpAppResource.strictGetField('type').label}
+            </th>
             <th scope="col">{headerText.documentation()}</th>
           </tr>
         </thead>

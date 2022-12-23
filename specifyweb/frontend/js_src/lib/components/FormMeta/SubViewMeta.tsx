@@ -6,8 +6,8 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import type { SubViewContext } from '../Forms/SubView';
-import { schemaText } from '../../localization/schema';
 import { attachmentsText } from '../../localization/attachments';
+import { schema } from '../DataModel/schema';
 
 export function SubViewMeta({
   subView,
@@ -24,7 +24,7 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {schemaText.type()}
+        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
         <Select
           value={formType}
           onValueChange={(formType): void =>

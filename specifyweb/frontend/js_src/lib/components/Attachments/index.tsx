@@ -206,7 +206,7 @@ function Attachments(): JSX.Element {
         </Label.Inline>
         <span className="-ml-2 flex-1" />
         <Label.Inline>
-          {commonText.scale()}
+          {attachmentsText.scale()}
           <Input.Generic
             max={maxScale}
             min={minScale}

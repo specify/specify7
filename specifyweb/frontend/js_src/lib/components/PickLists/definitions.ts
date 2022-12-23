@@ -45,11 +45,11 @@ const auditLogActions = [
   queryText.treeDesynonymize(),
 ] as const;
 
-const pickListSortTypes = [
+const pickListSortTypes = f.store(() => [
   commonText.none(),
-  commonText.title(),
+  schema.models.PickListItem.strictGetField('title').label,
   commonText.ordinal(),
-];
+]);
 
 export const userTypes = [
   'Manager',
@@ -173,7 +173,7 @@ export const getFrontEndPickLists = f.store<{
       tableName: pickListTablesPickList(),
       sortType: definePicklist(
         '_PickListSortType',
-        pickListSortTypes.map((title, index) =>
+        pickListSortTypes().map((title, index) =>
           createPickListItem(index.toString(), title)
         )
       ),

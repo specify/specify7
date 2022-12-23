@@ -27,6 +27,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { Http } from '../../utils/ajax/definitions';
 import { wbPlanText } from '../../localization/wbPlan';
+import { schema } from '../DataModel/schema';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -93,19 +94,19 @@ function TableHeader({
           scope="col"
         >
           <Button.LikeLink onClick={(): void => handleSort('name')}>
-            {commonText.name()}
+            {schema.models.Workbench.strictGetField('name').label}
             <SortIndicator fieldName="name" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateCreated')}>
-            {commonText.created()}
+            {schema.models.Workbench.strictGetField('timestampCreated').label}
             <SortIndicator fieldName="dateCreated" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>
         <th scope="col">
           <Button.LikeLink onClick={(): void => handleSort('dateUploaded')}>
-            {commonText.uploaded()}
+            {schema.models.Workbench.strictGetField('timestampModified').label}
             <SortIndicator fieldName="dateUploaded" sortConfig={sortConfig} />
           </Button.LikeLink>
         </th>

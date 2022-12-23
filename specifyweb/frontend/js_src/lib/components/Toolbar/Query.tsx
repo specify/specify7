@@ -10,7 +10,7 @@ import { fetchCollection } from '../DataModel/collection';
 import type { SpQuery } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { icons } from '../Atoms/Icons';
@@ -136,7 +136,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {commonText.name()}
+              {schema.models.SpQuery.strictGetLiteralField('name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -144,7 +144,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {commonText.created()}
+              {schema.models.SpQuery.strictGetField('timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -155,7 +155,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {commonText.modified()}
+              {schema.models.SpQuery.strictGetField('timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}

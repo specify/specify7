@@ -10,7 +10,7 @@ test('DialogButton closes the dialog', async () => {
   const handleClose = jest.fn();
   const { asFragment, getByRole, user } = mount(
     <DialogContext.Provider value={handleClose}>
-      <Button.DialogClose>{commonText.title()}</Button.DialogClose>
+      <Button.DialogClose>{commonText.view()}</Button.DialogClose>
     </DialogContext.Provider>
   );
 

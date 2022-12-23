@@ -19,6 +19,7 @@ import { useId } from '../../hooks/useId';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -77,7 +78,13 @@ export function SchemaConfigFormat({
                   [
                     name,
                     `${name} ${value}${
-                      isSystem ? ` (${schemaText.system()})` : ''
+                      isSystem
+                        ? ` (${
+                            schema.models.SpLocaleContainerItem.strictGetField(
+                              'isSystem'
+                            ).label
+                          })`
+                        : ''
                     }`,
                   ] as const
               )
@@ -91,11 +98,12 @@ export function SchemaConfigFormat({
         },
         // REFACTOR: replace with a Query Combo Box?
         pickList: {
-          label: schemaText.pickList(),
+          label: schema.models.PickList.label,
           value: item.pickListName,
           values: {
             [schemaText.userDefined()]: userPickLists,
-            [schemaText.system()]: systemPickLists,
+            [schema.models.SpLocaleContainerItem.strictGetField('isSystem')
+              .label]: systemPickLists,
           },
           extraComponents: (
             <>

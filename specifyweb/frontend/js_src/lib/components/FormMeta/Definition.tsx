@@ -13,6 +13,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTool } from '../Permissions/PermissionDenied';
 import { usePref } from '../UserPreferences/usePref';
 import { toggleItem } from '../../utils/utils';
+import { resourcesText } from '../../localization/resources';
 
 export function Definition({
   model,
@@ -25,7 +26,7 @@ export function Definition({
   return (
     <>
       <Button.Small onClick={handleOpen}>
-        {commonText.formDefinition()}
+        {resourcesText.formDefinition()}
       </Button.Small>
       {isOpen && (
         <FormDefinitionDialog
@@ -51,7 +52,7 @@ function FormDefinitionDialog({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={commonText.formDefinition()}
+      header={resourcesText.formDefinition()}
       onClose={handleClose}
     >
       <UseAutoForm model={model} />

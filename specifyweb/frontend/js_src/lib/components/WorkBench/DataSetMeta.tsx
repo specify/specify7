@@ -111,7 +111,13 @@ export function DataSetMeta({
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
-          <b>{commonText.metadataInline()}</b>
+          <b>
+            {
+              schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
+                'metadata'
+              ).label
+            }
+          </b>
           <span>
             {commonText.colonLine({
               label: wbText.numberOfRows(),
@@ -126,7 +132,11 @@ export function DataSetMeta({
           </span>
           <span>
             <StringToJsx
-              string={commonText.created()}
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('timestampCreated')
+                    .label,
+              })}
               components={{
                 wrap: (
                   <i>
@@ -138,7 +148,11 @@ export function DataSetMeta({
           </span>
           <span>
             <StringToJsx
-              string={commonText.modified()}
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('timestampModified')
+                    .label,
+              })}
               components={{
                 wrap: (
                   <i>
@@ -171,7 +185,9 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label: commonText.createdBy(),
+                label:
+                  schema.models.Workbench.strictGetField('createdByAgent')
+                    .label,
               })}
               components={{
                 wrap: (
@@ -185,7 +201,9 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label: commonText.modifiedBy(),
+                label:
+                  schema.models.Workbench.strictGetField('modifiedByAgent')
+                    .label,
               })}
               components={{
                 wrap: (
@@ -243,7 +261,9 @@ function DataSetName({
           <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
         )}
       </h2>
-      <Button.Small onClick={handleOpen}>{commonText.metadata()}</Button.Small>
+      <Button.Small onClick={handleOpen}>
+        {schema.models.Workbench.strictGetLiteralField('remarks').label}
+      </Button.Small>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}

@@ -9,6 +9,10 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const treeText = createDictionary({
+  trees: {
+    'en-us': 'Trees',
+    'ru-ru': 'Деревья',
+  },
   badStructure: {
     'en-us': 'Bad tree structure.',
     'ru-ru': 'У дерева плохая структура.',

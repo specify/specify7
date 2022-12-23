@@ -11,12 +11,12 @@ import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
 import type { IR, RA } from '../../utils/types';
-import { ensure, overwriteReadOnly, RR } from '../../utils/types';
+import { defined, ensure, overwriteReadOnly, RR } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import type { JavaType } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/types';
 import { Tables } from '../DataModel/types';
-import { error } from '../Errors/assert';
+import { error, softError } from '../Errors/assert';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
@@ -569,7 +569,7 @@ export const preferenceDefinitions = {
     },
   },
   form: {
-    title: commonText.forms(),
+    title: formsText.forms(),
     subCategories: {
       general: {
         title: preferencesText.general(),
@@ -651,7 +651,7 @@ export const preferenceDefinitions = {
         },
       },
       definition: {
-        title: commonText.formDefinition(),
+        title: resourcesText.formDefinition(),
         items: {
           flexibleColumnWidth: defineItem<boolean>({
             title: preferencesText.flexibleColumnWidth(),
@@ -1107,11 +1107,13 @@ export const preferenceDefinitions = {
             values: [
               {
                 value: 'name',
-                title: commonText.name(),
+                // Replaced with localized version once schema is loaded
+                title: '_name',
               },
               {
                 value: 'fullName',
-                title: commonText.fullName(),
+                // Replaced with localized version once schema is loaded
+                title: '_fullName',
               },
             ],
           }),
@@ -1321,7 +1323,7 @@ export const preferenceDefinitions = {
     },
   },
   workBench: {
-    title: commonText.workBench(),
+    title: wbText.workBench(),
     subCategories: {
       editor: {
         title: preferencesText.spreadsheet(),
@@ -1599,6 +1601,38 @@ import('../DataModel/schema')
         'title',
         schema.models.RecordSet.label
       );
+
+      const treeSearchBehavior =
+        preferenceDefinitions.treeEditor.subCategories.behavior.items
+          .searchField;
+      if ('values' in treeSearchBehavior) {
+        const values = treeSearchBehavior.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+        const name = defined(
+          values.find(
+            (entry) => typeof entry === 'object' && entry.value === 'name'
+          ),
+          'Unable to find tree name value'
+        );
+        const fullName = defined(
+          values.find(
+            (entry) => typeof entry === 'object' && entry.value === 'fullName'
+          ),
+          'Unable to find tree full name value'
+        );
+        overwriteReadOnly(
+          name,
+          'title',
+          schema.models.Taxon.strictGetLiteralField('name').label
+        );
+        overwriteReadOnly(
+          fullName,
+          'title',
+          schema.models.Taxon.strictGetLiteralField('fullName').label
+        );
+      } else softError('Unable to replace the tree preferences item title');
     })
   )
   .catch(console.error);

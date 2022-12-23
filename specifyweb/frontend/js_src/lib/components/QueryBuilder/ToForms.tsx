@@ -41,7 +41,7 @@ export function QueryToForms({
         disabled={results.length === 0 || totalCount === undefined}
         onClick={handleOpen}
       >
-        {commonText.browseInForms()}
+        {queryText.browseInForms()}
       </Button.Small>
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds

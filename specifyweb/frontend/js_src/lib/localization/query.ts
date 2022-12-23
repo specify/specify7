@@ -17,6 +17,10 @@ export const queryText = createDictionary({
     'en-us': 'Queries',
     'ru-ru': 'Запросы',
   },
+  queryBuilder: {
+    'en-us': 'Query Builder',
+    'ru-ru': 'Конструктор запросов',
+  },
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
@@ -283,10 +287,6 @@ export const queryText = createDictionary({
     'en-us': 'Yes',
     'ru-ru': 'Да',
   },
-  queryBuilder: {
-    'en-us': 'Query Builder',
-    'ru-ru': 'Конструктор запросов',
-  },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных приготовлений к возвращению',
@@ -298,6 +298,10 @@ export const queryText = createDictionary({
   queryResults: {
     'en-us': 'Query Results',
     'ru-ru': 'Результаты запроса',
+  },
+  browseInForms: {
+    'en-us': 'Browse in Forms',
+    'ru-ru': 'Открыть записи',
   },
   editQuery: {
     'en-us': 'Edit Query',

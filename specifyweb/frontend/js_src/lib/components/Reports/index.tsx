@@ -28,6 +28,7 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
 import { reportsText } from '../../localization/report';
+import { schema } from '../DataModel/schema';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -187,7 +188,7 @@ function ReportRow({
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {commonText.name()}
+              {schema.models.SpReport.strictGetField('name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -195,14 +196,16 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {commonText.created()}
+              {schema.models.SpReport.strictGetField('timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>{commonText.createdBy()}</th>
+          <th>
+            {schema.models.SpReport.strictGetField('createdByAgent').label}
+          </th>
           <td />
         </tr>
       </thead>

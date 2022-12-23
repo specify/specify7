@@ -13,6 +13,10 @@ export const resourcesText = createDictionary({
     'en-us': 'App Resources',
     'ru-ru': 'Ресурсы приложения',
   },
+  formDefinition: {
+    'en-us': 'Form Definition',
+    'ru-ru': 'Схема формы',
+  },
   formDefinitions: {
     'en-us': 'Form Definitions',
     'ru-ru': 'Определения форм',

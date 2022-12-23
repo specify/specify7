@@ -4,15 +4,15 @@ import { commonText } from '../../../localization/common';
 import { Container, ErrorMessage, H2, H3, Key, Summary, Ul } from '../index';
 import { mount, snapshot } from '../../../tests/reactUtils';
 
-snapshot(ErrorMessage, { children: commonText.title() });
-snapshot(Container.FullGray, { children: commonText.title() });
-snapshot(Container.Base, { children: commonText.title() });
-snapshot(Container.Center, { children: commonText.title() });
-snapshot(Container.Full, { children: commonText.title() });
-snapshot(Ul, { children: commonText.title() });
-snapshot(H2, { children: commonText.title() });
-snapshot(H3, { children: commonText.title() });
-snapshot(Key, { children: commonText.title() });
+snapshot(ErrorMessage, { children: commonText.view() });
+snapshot(Container.FullGray, { children: commonText.view() });
+snapshot(Container.Base, { children: commonText.view() });
+snapshot(Container.Center, { children: commonText.view() });
+snapshot(Container.Full, { children: commonText.view() });
+snapshot(Ul, { children: commonText.view() });
+snapshot(H2, { children: commonText.view() });
+snapshot(H3, { children: commonText.view() });
+snapshot(Key, { children: commonText.view() });
 
 test('Can use <summary> as a controlled component', async () => {
   const build = (open: boolean) => (

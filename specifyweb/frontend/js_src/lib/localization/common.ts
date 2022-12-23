@@ -89,25 +89,9 @@ export const commonText = createDictionary({
     'en-us': 'Loading...',
     'ru-ru': 'Загрузка...',
   },
-  name: {
-    'en-us': 'Name',
-    'ru-ru': 'Имя',
-  },
-  created: {
-    'en-us': 'Created',
-    'ru-ru': 'Созданный',
-  },
   uploaded: {
     'en-us': 'Uploaded',
     'ru-ru': 'Загружено',
-  },
-  createdBy: {
-    'en-us': 'Created by',
-    'ru-ru': 'Создан',
-  },
-  modifiedBy: {
-    'en-us': 'Modified by',
-    'ru-ru': 'Модифицирован',
   },
   remove: {
     'en-us': 'Remove',
@@ -157,14 +141,6 @@ export const commonText = createDictionary({
     'en-us': '(list truncated)',
     'ru-ru': '(список усечен)',
   },
-  metadataInline: {
-    'en-us': 'Metadata',
-    'ru-ru': 'Метаданные',
-  },
-  metadata: {
-    'en-us': 'Metadata',
-    'ru-ru': 'Метаданные',
-  },
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
@@ -176,10 +152,6 @@ export const commonText = createDictionary({
   fullDate: {
     'en-us': 'Full Date',
     'ru-ru': 'Полная дата',
-  },
-  fullName: {
-    'en-us': 'Full Name',
-    'ru-ru': 'Полное имя',
   },
   view: {
     'en-us': 'View',
@@ -214,10 +186,6 @@ export const commonText = createDictionary({
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы объектов',
   },
-  trees: {
-    'en-us': 'Trees',
-    'ru-ru': 'Деревья',
-  },
   recordCount: {
     'en-us': 'Record Count',
     'ru-ru': 'Количество объектов',
@@ -225,10 +193,6 @@ export const commonText = createDictionary({
   size: {
     'en-us': 'Size',
     'ru-ru': 'Размер',
-  },
-  workBench: {
-    'en-us': 'WorkBench',
-    'ru-ru': 'WorkBench',
   },
   running: {
     'en-us': 'Running…',
@@ -262,10 +226,6 @@ export const commonText = createDictionary({
     'en-us': 'View Record',
     'ru-ru': 'Открыть запись',
   },
-  browseInForms: {
-    'en-us': 'Browse in Forms',
-    'ru-ru': 'Открыть записи',
-  },
   nullInline: {
     'en-us': '(null)',
     'ru-ru': '(нулевой)',
@@ -287,10 +247,6 @@ export const commonText = createDictionary({
     'en-us': 'Unused',
     'ru-ru': 'Неиспользованные',
   },
-  title: {
-    'en-us': 'Title',
-    'ru-ru': 'Надпись',
-  },
   ordinal: {
     'en-us': 'Ordinal',
     'ru-ru': 'Порядковый номер',
@@ -306,10 +262,6 @@ export const commonText = createDictionary({
   dismiss: {
     'en-us': 'Dismiss',
     'ru-ru': 'Отклонить',
-  },
-  scale: {
-    'en-us': 'Scale',
-    'ru-ru': 'Масштаб',
   },
   id: {
     'en-us': 'ID',
@@ -331,14 +283,6 @@ export const commonText = createDictionary({
     'en-us': 'Copied!',
     'ru-ru': 'Скопировано!',
   },
-  forms: {
-    'en-us': 'Forms',
-    'ru-ru': 'Формы',
-  },
-  modified: {
-    'en-us': 'Modified',
-    'ru-ru': 'Изменено',
-  },
   copyToClipboard: {
     'en-us': 'Copy to clipboard',
     'ru-ru': 'Скопировать в буфер обмена',
@@ -347,17 +291,9 @@ export const commonText = createDictionary({
     'en-us': 'Selected',
     'ru-ru': 'Выбрано',
   },
-  quantity: {
-    'en-us': 'Quantity',
-    'ru-ru': 'Количество',
-  },
   primary: {
     'en-us': 'Primary',
     'ru-ru': 'Основной',
-  },
-  formDefinition: {
-    'en-us': 'Form Definition',
-    'ru-ru': 'Схема формы',
   },
   expandAll: {
     'en-us': 'Expand All',

@@ -130,7 +130,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Default Value',
     'ru-ru': 'Значение по умолчанию',
   },
-  useDefaultValueDescription: {
+  defaultValueDescription: {
     'en-us': 'This value would be used in place of empty cells',
     'ru-ru': 'Это значение будет использоваться вместо пустых ячеек',
   },

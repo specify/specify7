@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
-import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { getModel, schema } from '../DataModel/schema';
 import {
@@ -164,17 +163,22 @@ export function DataModelTable(): JSX.Element {
   );
 }
 
-const fieldColumns = {
-  name: commonText.name(),
-  label: schemaText.fieldLabel(),
-  description: schemaText.description(),
-  isHidden: schemaText.hidden(),
-  isReadOnly: schemaText.readOnly(),
-  isRequired: schemaText.required(),
-  type: schemaText.type(),
-  length: schemaText.fieldLength(),
-  databaseColumn: schemaText.databaseColumn(),
-} as const;
+const fieldColumns = f.store(
+  () =>
+    ({
+      name: schema.models.SpLocaleContainerItem.strictGetField('name').label,
+      label: schemaText.fieldLabel(),
+      description: schemaText.description(),
+      isHidden:
+        schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
+      isReadOnly: schemaText.readOnly(),
+      isRequired:
+        schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
+      type: schema.models.SpLocaleContainerItem.strictGetField('type').label,
+      length: schemaText.fieldLength(),
+      databaseColumn: schemaText.databaseColumn(),
+    } as const)
+);
 
 type Value =
   | number
@@ -182,7 +186,9 @@ type Value =
   | readonly [number | string | undefined, JSX.Element]
   | undefined;
 type Row<COLUMNS extends string> = RR<COLUMNS, Value>;
-const getFields = (model: SpecifyModel): RA<Row<keyof typeof fieldColumns>> =>
+const getFields = (
+  model: SpecifyModel
+): RA<Row<keyof ReturnType<typeof fieldColumns>>> =>
   model.literalFields.map((field) => ({
     name: field.name,
     label: field.label,
@@ -216,30 +222,35 @@ function DataModelFields({
       <Table
         data={data}
         getLink={undefined}
-        headers={fieldColumns}
+        headers={fieldColumns()}
         sortName="dataModelFields"
       />
     </>
   );
 }
 
-const relationshipColumns = {
-  name: commonText.name(),
-  label: schemaText.fieldLabel(),
-  description: schemaText.description(),
-  isHidden: schemaText.hidden(),
-  isReadOnly: schemaText.readOnly(),
-  isRequired: schemaText.required(),
-  type: schemaText.type(),
-  databaseColumn: schemaText.databaseColumn(),
-  relatedModel: schemaText.relatedModel(),
-  otherSideName: schemaText.otherSideName(),
-  isDependent: schemaText.dependent(),
-} as const;
+const relationshipColumns = f.store(
+  () =>
+    ({
+      name: schema.models.SpLocaleContainerItem.strictGetField('name').label,
+      label: schemaText.fieldLabel(),
+      description: schemaText.description(),
+      isHidden:
+        schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
+      isReadOnly: schemaText.readOnly(),
+      isRequired:
+        schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
+      type: schema.models.SpLocaleContainerItem.strictGetField('type').label,
+      databaseColumn: schemaText.databaseColumn(),
+      relatedModel: schemaText.relatedModel(),
+      otherSideName: schemaText.otherSideName(),
+      isDependent: schemaText.dependent(),
+    } as const)
+);
 
 const getRelationships = (
   model: SpecifyModel
-): RA<Row<keyof typeof relationshipColumns>> =>
+): RA<Row<keyof ReturnType<typeof relationshipColumns>>> =>
   model.relationships.map((field) => ({
     name: field.name,
     label: field.label,
@@ -276,23 +287,28 @@ function DataModelRelationships({
             (relatedModel as readonly [string, JSX.Element])[0]
           }/`
         }
-        headers={relationshipColumns}
+        headers={relationshipColumns()}
         sortName="dataModelRelationships"
       />
     </>
   );
 }
 
-const tableColumns = {
-  name: commonText.name(),
-  label: schemaText.fieldLabel(),
-  isSystem: schemaText.system(),
-  isHidden: schemaText.hidden(),
-  tableId: schemaText.tableId(),
-  fieldCount: schemaText.fieldCount(),
-  relationshipCount: schemaText.relationshipCount(),
-} as const;
-const getTables = (): RA<Row<keyof typeof tableColumns>> =>
+const tableColumns = f.store(
+  () =>
+    ({
+      name: schema.models.SpLocaleContainer.strictGetField('name').label,
+      label: schemaText.fieldLabel(),
+      isSystem:
+        schema.models.SpLocaleContainer.strictGetField('isSystem').label,
+      isHidden:
+        schema.models.SpLocaleContainer.strictGetField('isHidden').label,
+      tableId: schemaText.tableId(),
+      fieldCount: schemaText.fieldCount(),
+      relationshipCount: schemaText.relationshipCount(),
+    } as const)
+);
+const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
   Object.values(schema.models).map((model) => ({
     name: [
       model.name.toLowerCase(),
@@ -357,7 +373,7 @@ export function DataModelTables(): JSX.Element {
         getLink={({ name }): string =>
           `/specify/datamodel/${(name as readonly [string, JSX.Element])[0]}/`
         }
-        headers={tableColumns}
+        headers={tableColumns()}
         sortName="dataModelTables"
       />
     </Container.Full>
@@ -369,17 +385,17 @@ const dataModelToTsv = (): string =>
     [
       schemaText.table(),
       schemaText.fieldLabel(),
-      schemaText.system(),
-      schemaText.hidden(),
+      schema.models.SpLocaleContainer.strictGetField('isSystem').label,
+      schema.models.SpLocaleContainer.strictGetField('isHidden').label,
       schemaText.tableId(),
-      commonText.name(),
+      schema.models.SpLocaleContainerItem.strictGetField('name').label,
       schemaText.fieldLabel(),
       schemaText.description(),
-      schemaText.hidden(),
+      schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
       schemaText.readOnly(),
-      schemaText.required(),
+      schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
       formsText.relationship(),
-      schemaText.type(),
+      schema.models.SpLocaleContainerItem.strictGetField('type').label,
       schemaText.fieldLength(),
       schemaText.databaseColumn(),
       schemaText.relatedModel(),

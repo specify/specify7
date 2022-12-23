@@ -191,12 +191,14 @@ export function QueryLoanReturn({
                 <thead>
                   <tr>
                     <th scope="col">
+                      {schema.models.Loan.strictGetField('loanNumber').label}
+                    </th>
+                    <th scope="col">
                       {
-                        schema.models.Loan.strictGetLiteralField('loanNumber')
+                        schema.models.LoanPreparation.strictGetField('quantity')
                           .label
                       }
                     </th>
-                    <th scope="col">{commonText.quantity()}</th>
                   </tr>
                 </thead>
                 <tbody>

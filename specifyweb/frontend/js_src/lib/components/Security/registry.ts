@@ -210,7 +210,7 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: schemaText.pickList(),
+      label: schema.models.PickList.label,
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {

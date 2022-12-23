@@ -299,7 +299,7 @@ export function mappingOptionsMenu({
           )}
         </>
       ),
-      title: wbPlanText.useDefaultValueDescription(),
+      title: wbPlanText.defaultValueDescription(),
     },
   };
 }
