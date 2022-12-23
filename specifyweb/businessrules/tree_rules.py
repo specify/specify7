@@ -13,5 +13,7 @@ def cannot_delete_root_treedefitem(sender, obj):
                 "cannot delete root level tree definition item", 
                 {"tree" : obj.__class__.__name__,
                  "type" : "DELETE_TREE_ROOT", 
-                 "nodeid" : obj.id})
+                 "node" : {
+                    "id" : obj.id
+                 }})
 
