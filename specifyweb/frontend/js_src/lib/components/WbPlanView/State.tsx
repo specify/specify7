@@ -1,20 +1,20 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import type { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
-import type { RA } from '../../utils/types';
-import type { UploadPlan } from './uploadPlanParser';
-import { LoadingContext } from '../Core/Contexts';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { useCachedState } from '../../hooks/useCachedState';
-import { DataSetsDialog } from '../Toolbar/WbsDialog';
-import type { Dataset } from './Wrapped';
-import { Input, Label } from '../Atoms/Form';
-import { Button } from '../Atoms/Button';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { useCachedState } from '../../hooks/useCachedState';
+import { commonText } from '../../localization/common';
+import { wbPlanText } from '../../localization/wbPlan';
+import { ajax } from '../../utils/ajax';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { LoadingContext } from '../Core/Contexts';
+import type { Tables } from '../DataModel/types';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { DataSetsDialog } from '../Toolbar/WbsDialog';
 import { ListOfBaseTables } from './Components';
+import type { UploadPlan } from './uploadPlanParser';
+import type { Dataset } from './Wrapped';
 
 function TemplateSelection({
   headers,
@@ -34,10 +34,10 @@ function TemplateSelection({
       {isInvalid && (
         <Dialog
           buttons={commonText.close()}
-          header={wbText.noUploadPlan()}
+          header={wbPlanText.noUploadPlan()}
           onClose={handleValid}
         >
-          {wbText.invalidTemplatePlan()}
+          {wbPlanText.invalidTemplatePlan()}
         </Dialog>
       )}
       <DataSetsDialog
@@ -99,14 +99,14 @@ export function BaseTableSelection({
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue onClick={handleUseTemplate}>
-            {wbText.chooseExistingPlan()}
+            {wbPlanText.chooseExistingPlan()}
           </Button.Blue>
         </>
       }
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbText.selectBaseTable()}
+      header={wbPlanText.selectBaseTable()}
       onClose={handleClose}
     >
       <ListOfBaseTables
@@ -118,7 +118,7 @@ export function BaseTableSelection({
           checked={showHiddenTables}
           onChange={(): void => setShowHiddenTables(!showHiddenTables)}
         />
-        {wbText.showAdvancedTables()}
+        {wbPlanText.showAdvancedTables()}
       </Label.Inline>
     </Dialog>
   );

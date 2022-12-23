@@ -21,9 +21,9 @@ import { NO_CLONE } from '../Forms/ResourceView';
 import { Dialog } from '../Molecules/Dialog';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { wbText } from '../../localization/workbench';
 import { schemaText } from '../../localization/schema';
 import { interactionsText } from '../../localization/interactions';
+import { wbPlanText } from '../../localization/wbPlan';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -282,7 +282,7 @@ function CarryForwardConfigDialog({
             checked={showHiddenFields}
             onValueChange={setShowHiddenFields}
           />
-          {wbText.revealHiddenFormFields()}
+          {wbPlanText.revealHiddenFormFields()}
         </Label.Inline>
       </Form>
     </Dialog>

@@ -35,6 +35,7 @@ import { headerText } from '../../localization/header';
 import { LocalizedString } from 'typesafe-i18n';
 import { Language, LANGUAGE } from '../../localization/utils/config';
 import { reportsText } from '../../localization/report';
+import { wbPlanText } from '../../localization/wbPlan';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1440,7 +1441,7 @@ export const preferenceDefinitions = {
         },
       },
       wbPlanView: {
-        title: wbText.dataMapper(),
+        title: wbPlanText.dataMapper(),
         items: {
           showNewDataSetWarning: defineItem<boolean>({
             title: preferencesText.showNewDataSetWarning(),

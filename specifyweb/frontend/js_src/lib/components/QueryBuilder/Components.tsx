@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -27,6 +26,7 @@ import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { recordSetView } from '../FormParse/webOnlyViews';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -125,7 +125,9 @@ export function ToggleMappingViewButton({
       onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
     >
-      {showMappingView ? wbText.hideFieldMapper() : wbText.showFieldMapper()}
+      {showMappingView
+        ? wbPlanText.hideFieldMapper()
+        : wbPlanText.showFieldMapper()}
     </Button.Small>
   );
 }

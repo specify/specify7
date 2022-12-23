@@ -26,6 +26,7 @@ import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SortConfig, SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { Http } from '../../utils/ajax/definitions';
+import { wbPlanText } from '../../localization/wbPlan';
 
 const createEmptyDataSet = async (): Promise<Dataset> =>
   ajax<Dataset>(
@@ -189,7 +190,7 @@ export function DataSetsDialog({
       }}
       header={
         showTemplates
-          ? wbText.copyPlan()
+          ? wbPlanText.copyPlan()
           : commonText.countLine({
               resource: wbText.dataSets(),
               count: datasets.length,
@@ -201,7 +202,7 @@ export function DataSetsDialog({
       {datasets.length === 0 ? (
         <p>
           {showTemplates
-            ? wbText.noPlansToCopyFrom()
+            ? wbPlanText.noPlansToCopyFrom()
             : `${wbText.wbsDialogEmpty()} ${
                 canImport ? wbText.createDataSetInstructions() : ''
               }`}

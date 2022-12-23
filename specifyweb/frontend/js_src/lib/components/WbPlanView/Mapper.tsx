@@ -54,6 +54,7 @@ import { useId } from '../../hooks/useId';
 import { softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { whitespaceSensitive } from '../../localization/utils';
+import { wbPlanText } from '../../localization/wbPlan';
 
 /*
  * Scope is used to differentiate between mapper definitions that should
@@ -151,7 +152,7 @@ export function Mapper(props: {
 
   const unsetUnloadProtect = useUnloadProtect(
     state.changesMade,
-    wbText.unloadProtectMessage()
+    wbPlanText.unloadProtectMessage()
   );
 
   // Set/unset unload protect
@@ -295,7 +296,7 @@ export function Mapper(props: {
                 })
               }
             >
-              {wbText.clearMappings()}
+              {wbPlanText.clearMappings()}
             </Button.Small>
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
@@ -398,15 +399,17 @@ export function Mapper(props: {
         <>
           <TableIcon label name={props.baseTableName} />
           <span title={wbText.dataSetName()}>{props.dataset.name}</span>
-          <span title={wbText.baseTable()}>
+          <span title={wbPlanText.baseTable()}>
             {` (${strictGetModel(props.baseTableName).label})`}
           </span>
           {props.dataset.uploadresult?.success === true && (
             <span
               className="flex items-center text-red-600"
-              title={whitespaceSensitive(wbText.dataSetUploadedDescription())}
+              title={whitespaceSensitive(
+                wbPlanText.dataSetUploadedDescription()
+              )}
             >
-              {` ${wbText.dataSetUploaded()}`}
+              {` ${wbPlanText.dataSetUploaded()}`}
             </span>
           )}
         </>
@@ -458,13 +461,12 @@ export function Mapper(props: {
           })}
         >
           <Button.Small
-            aria-label={wbText.map()}
             className="flex-col justify-center p-2"
             disabled={!mapButtonEnabled}
-            title={wbText.mapButtonDescription()}
+            title={wbPlanText.mapButtonDescription()}
             onClick={(): void => dispatch({ type: 'MappingViewMapAction' })}
           >
-            {wbText.map()}
+            {wbPlanText.map()}
             <span
               aria-hidden="true"
               className={`
@@ -479,7 +481,7 @@ export function Mapper(props: {
       )}
 
       <Ul
-        aria-label={wbText.mappings()}
+        aria-label={wbPlanText.mappings()}
         className={`
           grid flex-1 auto-rows-max grid-cols-[theme(spacing.8)_max-content_auto]
           overflow-x-hidden
@@ -567,9 +569,9 @@ export function Mapper(props: {
                   previewOption: {
                     optionName: 'mappingOptions',
                     optionLabel: (
-                      <span title={wbText.mappingOptions()}>
+                      <span title={wbPlanText.mappingOptions()}>
                         <span className="sr-only">
-                          {wbText.mappingOptions()}
+                          {wbPlanText.mappingOptions()}
                         </span>
                         {icons.cog}
                       </span>
@@ -577,7 +579,7 @@ export function Mapper(props: {
                     tableName: undefined,
                     isRelationship: !columnOptionsAreDefault(columnOptions),
                   },
-                  selectLabel: wbText.mappingOptions(),
+                  selectLabel: wbPlanText.mappingOptions(),
                   ...(openSelectElement === lineData.length
                     ? {
                         isOpen: true,

@@ -68,6 +68,7 @@ import {downloadDataSet} from './helpers';
 import {LANGUAGE} from '../../localization/utils/config';
 import {resolveValidationMessage} from './resultsParser';
 import {backEndText} from '../../localization/backEnd';
+import {wbPlanText} from '../../localization/wbPlan';
 
 const metaKeys = [
   'isNew',
@@ -256,7 +257,7 @@ export const WBView = Backbone.View.extend({
               hasPermission('/workbench/dataset', 'update')
             ) {
               const dialog = showDialog({
-                header: wbText.noUploadPlan(),
+                header: wbPlanText.noUploadPlan(),
                 onClose: () => dialog.remove(),
                 buttons: (
                   <>
@@ -270,7 +271,7 @@ export const WBView = Backbone.View.extend({
                     </Link.Blue>
                   </>
                 ),
-                content: wbText.noUploadPlanDescription(),
+                content: wbPlanText.noUploadPlanDescription(),
               });
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
@@ -377,8 +378,8 @@ export const WBView = Backbone.View.extend({
               >`
                   : `<span
                 class="text-red-600"
-                aria-label="${wbText.unmappedColumn()}"
-                title="${wbText.unmappedColumn()}"
+                aria-label="${wbPlanText.unmappedColumn()}"
+                title="${wbPlanText.unmappedColumn()}"
               >${legacyNonJsxIcons.ban}</span>`
               }
               <span class="wb-header-name columnSorting">
@@ -1857,7 +1858,7 @@ export const WBView = Backbone.View.extend({
     const planJson = JSON.stringify(dataset.uploadplan, null, 4);
     const textarea = $('<textarea cols="120" rows="50">').text(planJson)[0];
     const dialog = showDialog({
-      header: wbText.dataMapper(),
+      header: wbPlanText.dataMapper(),
       content: textarea,
       onClose: () => dialog.remove(),
       buttons: (
@@ -1947,8 +1948,8 @@ export const WBView = Backbone.View.extend({
       } else this.startUpload(mode);
     } else {
       const dialog = showDialog({
-        header: wbText.noUploadPlan(),
-        content: wbText.noUploadPlanDescription(),
+        header: wbPlanText.noUploadPlan(),
+        content: wbPlanText.noUploadPlanDescription(),
         onClose: () => dialog.remove(),
         buttons: (
           <>

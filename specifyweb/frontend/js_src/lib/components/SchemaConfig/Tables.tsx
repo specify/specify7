@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -15,6 +14,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -72,7 +72,7 @@ export function SchemaConfigTables(): JSX.Element {
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
-        {wbText.showAdvancedTables()}
+        {wbPlanText.showAdvancedTables()}
       </Label.Inline>
     </Dialog>
   );

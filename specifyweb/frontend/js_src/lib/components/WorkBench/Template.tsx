@@ -29,6 +29,7 @@ import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { legacyDialogs } from '../Molecules/LegacyDialog';
 import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 function Navigation({
   name,
@@ -114,7 +115,7 @@ function WbView({
         </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
-            {wbText.dataMapper()}
+            {wbPlanText.dataMapper()}
           </Link.Small>
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (

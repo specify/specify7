@@ -2,7 +2,6 @@ import React from 'react';
 
 import type { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { strictGetModel } from '../DataModel/schema';
 import type { IR, RA, RR } from '../../utils/types';
 import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
@@ -26,6 +25,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { ButtonWithConfirmation } from './Components';
 import { whitespaceSensitive } from '../../localization/utils';
 import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -44,12 +44,12 @@ export function MappingsControlPanel({
         <Button.Small
           onClick={(): void => {
             handleAddNewHeader(
-              wbText.newHeaderName({ index: newHeaderIdRef.current })
+              wbPlanText.newHeaderName({ index: newHeaderIdRef.current })
             );
             newHeaderIdRef.current += 1;
           }}
         >
-          {wbText.addNewColumn()}
+          {wbPlanText.addNewColumn()}
         </Button.Small>
       )}
       <Label.Inline>
@@ -57,7 +57,7 @@ export function MappingsControlPanel({
           checked={showHiddenFields}
           onChange={handleToggleHiddenFields}
         />
-        {wbText.revealHiddenFormFields()}
+        {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
     </div>
   );
@@ -79,18 +79,18 @@ export function ValidationResults(props: {
       buttons={
         <>
           <Button.Blue onClick={props.onDismissValidation}>
-            {wbText.continueEditing()}
+            {wbPlanText.continueEditing()}
           </Button.Blue>
           <Button.Orange onClick={props.onSave}>
-            {wbText.saveUnfinished()}
+            {wbPlanText.saveUnfinished()}
           </Button.Orange>
         </>
       }
-      header={wbText.validationFailed()}
+      header={wbPlanText.validationFailed()}
       modal={false}
       onClose={props.onDismissValidation}
     >
-      <p>{wbText.validationFailedDescription()}</p>
+      <p>{wbPlanText.validationFailedDescription()}</p>
       <section className="flex flex-col gap-2">
         {props.validationResults.map((fieldPath, index) => (
           <Button.Small
@@ -154,7 +154,7 @@ export function MappingView({
 
   return (
     <section
-      aria-label={wbText.mappingEditor()}
+      aria-label={wbPlanText.mappingEditor()}
       className={`
         h-[var(--mapping-view-height)] max-h-[50vh]
         min-h-[theme(spacing.40)] resize-y overflow-x-auto
@@ -193,14 +193,14 @@ export function EmptyDataSetDialog({
   return (
     <Dialog
       buttons={commonText.close()}
-      header={wbText.emptyDataSet()}
+      header={wbPlanText.emptyDataSet()}
       isOpen={showDialog}
       onClose={handleClose}
     >
-      {wbText.emptyDataSetDescription()}
+      {wbPlanText.emptyDataSetDescription()}
       <br />
       <br />
-      {wbText.emptyDataSetSecondDescription()}
+      {wbPlanText.emptyDataSetSecondDescription()}
     </Dialog>
   );
 }
@@ -224,20 +224,20 @@ export function mappingOptionsMenu({
     matchBehavior: {
       optionLabel: (
         <>
-          {wbText.matchBehavior()}
+          {wbPlanText.matchBehavior()}
           <Ul>
             {Object.entries({
               ignoreWhenBlank: {
-                title: wbText.ignoreWhenBlank(),
-                description: wbText.ignoreWhenBlankDescription(),
+                title: wbPlanText.ignoreWhenBlank(),
+                description: wbPlanText.ignoreWhenBlankDescription(),
               },
               ignoreAlways: {
-                title: wbText.ignoreAlways(),
-                description: wbText.ignoreAlwaysDescription(),
+                title: wbPlanText.ignoreAlways(),
+                description: wbPlanText.ignoreAlwaysDescription(),
               },
               ignoreNever: {
-                title: wbText.ignoreNever(),
-                description: wbText.ignoreNeverDescription(),
+                title: wbPlanText.ignoreNever(),
+                description: wbPlanText.ignoreNeverDescription(),
               },
             }).map(([id, { title, description }]) => (
               <li key={id}>
@@ -265,7 +265,7 @@ export function mappingOptionsMenu({
             disabled={isReadOnly}
             onValueChange={handleToggleAllowNulls}
           />{' '}
-          {wbText.allowNullValues()}
+          {wbPlanText.allowNullValues()}
         </Label.Inline>
       ),
     },
@@ -282,7 +282,7 @@ export function mappingOptionsMenu({
                 )
               }
             />{' '}
-            <span id={id('default-value')}>{wbText.useDefaultValue()}</span>
+            <span id={id('default-value')}>{wbPlanText.useDefaultValue()}</span>
             {columnOptions.default !== null && ':'}
           </Label.Inline>
           {typeof columnOptions.default === 'string' && (
@@ -291,7 +291,7 @@ export function mappingOptionsMenu({
               <AutoGrowTextArea
                 aria-labelledby={id('default-value')}
                 disabled={isReadOnly}
-                title={wbText.defaultValue()}
+                title={wbPlanText.defaultValue()}
                 value={columnOptions.default || ''}
                 onValueChange={handleChangeDefaultValue}
               />
@@ -299,7 +299,7 @@ export function mappingOptionsMenu({
           )}
         </>
       ),
-      title: wbText.useDefaultValueDescription(),
+      title: wbPlanText.useDefaultValueDescription(),
     },
   };
 }
@@ -319,11 +319,11 @@ export function ChangeBaseTable({
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText.goToBaseTable()}
-      dialogMessage={wbText.goToBaseTableDescription()}
+      dialogHeader={wbPlanText.goToBaseTable()}
+      dialogMessage={wbPlanText.goToBaseTableDescription()}
       onConfirm={handleClick}
     >
-      {wbText.baseTable()}
+      {wbPlanText.baseTable()}
     </ButtonWithConfirmation>
   );
 }
@@ -341,16 +341,16 @@ export function ReRunAutoMapper({
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Orange onClick={confirm}>
-            {wbText.reRunAutoMapper()}
+            {wbPlanText.reRunAutoMapper()}
           </Button.Orange>
         </>
       )}
-      dialogHeader={wbText.reRunAutoMapperConfirmation()}
-      dialogMessage={wbText.reRunAutoMapperConfirmationDescription()}
+      dialogHeader={wbPlanText.reRunAutoMapperConfirmation()}
+      dialogMessage={wbPlanText.reRunAutoMapperConfirmationDescription()}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
     >
-      {wbText.autoMapper()}
+      {wbPlanText.autoMapper()}
     </ButtonWithConfirmation>
   );
 }
@@ -364,7 +364,9 @@ export function ToggleMappingPath({
 }): JSX.Element {
   return (
     <Button.Small aria-pressed={!showMappingView} onClick={handleClick}>
-      {showMappingView ? wbText.hideFieldMapper() : wbText.showFieldMapper()}
+      {showMappingView
+        ? wbPlanText.hideFieldMapper()
+        : wbPlanText.showFieldMapper()}
     </Button.Small>
   );
 }
@@ -400,7 +402,7 @@ export function MustMatch({
         aria-haspopup="dialog"
         onClick={(): void => setLocalPreferences(getMustMatchPreferences())}
       >
-        {wbText.mustMatch()}
+        {wbPlanText.mustMatch()}
       </Button.Small>
       {typeof localPreferences === 'object' && (
         <Dialog
@@ -414,14 +416,16 @@ export function MustMatch({
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={wbText.changeMatchingLogic()}
+          header={wbPlanText.changeMatchingLogic()}
           onClose={handleDialogClose}
         >
           {Object.keys(localPreferences).length === 0 ? (
-            wbText.matchingLogicUnavailable()
+            wbPlanText.matchingLogicUnavailable()
           ) : (
             <>
-              <p id={id('description')}>{wbText.matchingLogicDescription()}</p>
+              <p id={id('description')}>
+                {wbPlanText.matchingLogicDescription()}
+              </p>
               <table
                 aria-describedby={id('description')}
                 className="grid-table grid-cols-[auto_auto] gap-2"
@@ -432,7 +436,7 @@ export function MustMatch({
                       {schemaText.tableName()}
                     </th>
                     <th className="justify-center" scope="col">
-                      {wbText.mustMatch()}
+                      {wbPlanText.mustMatch()}
                     </th>
                   </tr>
                 </thead>
