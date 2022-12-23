@@ -3,7 +3,6 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { getDateInputValue } from '../../utils/dayJs';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -20,6 +19,7 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
+import { interactionsText } from '../../localization/interactions';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -69,7 +69,7 @@ export function LoanReturn({
         header={schema.models.LoanPreparation.label}
         onClose={handleClose}
       >
-        {formsText.noUnresolvedPreparations()}
+        {interactionsText.noUnresolvedPreparations()}
       </Dialog>
     ) : (
       <PreparationReturn preparations={preparations} onClose={handleClose} />
@@ -113,7 +113,7 @@ function PreparationReturn({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue
             disabled={!canSelectAll}
-            title={formsText.returnAllPreparations()}
+            title={interactionsText.returnAllPreparations()}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -125,7 +125,7 @@ function PreparationReturn({
               )
             }
           >
-            {formsText.selectAll()}
+            {interactionsText.selectAll()}
           </Button.Blue>
           <Button.Blue
             disabled={!canDeselect}
@@ -141,11 +141,11 @@ function PreparationReturn({
               )
             }
           >
-            {formsText.deselectAll()}
+            {interactionsText.deselectAll()}
           </Button.Blue>
           <Submit.Green
             form={id('form')}
-            title={formsText.returnSelectedPreparations()}
+            title={interactionsText.returnSelectedPreparations()}
           >
             {commonText.apply()}
           </Submit.Green>
@@ -231,13 +231,13 @@ function PreparationReturn({
                 }
               </th>
               <th className="text-center" scope="col">
-                {formsText.unresolved()}
+                {interactionsText.unresolved()}
               </th>
               <th className="text-center" scope="col">
-                {formsText.return()}
+                {interactionsText.return()}
               </th>
               <th className="col-span-2 text-center" scope="col">
-                {formsText.resolve()}
+                {interactionsText.resolve()}
               </th>
             </tr>
           </thead>

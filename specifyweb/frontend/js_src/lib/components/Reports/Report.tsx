@@ -6,7 +6,6 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -34,6 +33,7 @@ import { ReportForRecord } from './ForRecord';
 import { ReportRecordSets } from './RecordSets';
 import { unknownIcon } from '../InitialContext/icons';
 import { LocalizedString } from 'typesafe-i18n';
+import { reportsText } from '../../localization/report';
 
 export function Report({
   appResource,
@@ -111,20 +111,20 @@ export function Report({
   return query === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={formsText.missingReportQueryDialogHeader()}
+      header={reportsText.missingReportQueryDialogHeader()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText.missingReportQueryDialogText()}
+      {reportsText.missingReportQueryDialogText()}
     </Dialog>
   ) : report === false ? (
     <Dialog
       buttons={commonText.close()}
-      header={formsText.missingReportDialogHeader()}
+      header={reportsText.missingReportDialogHeader()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText.missingReportDialogText()}
+      {reportsText.missingReportDialogText()}
     </Dialog>
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
@@ -215,18 +215,18 @@ function FixImagesDialog({
           </Button.Orange>
         </>
       }
-      header={formsText.reportProblemsDialogTitle()}
+      header={reportsText.reportProblemsDialogTitle()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText.reportsProblemsDialogText()}
-      <H3>{formsText.missingAttachments()}</H3>
+      {reportsText.reportsProblemsDialogText()}
+      <H3>{reportsText.missingAttachments()}</H3>
       <Ul>
         {missingAttachments.map((fileName, index) => (
           <Button.LikeLink
-            aria-label={formsText.fix()}
+            aria-label={reportsText.fix()}
             key={fileName}
-            title={formsText.fix()}
+            title={reportsText.fix()}
             onClick={(): void => setIndex(index)}
           >
             {fileName as LocalizedString}
@@ -237,7 +237,7 @@ function FixImagesDialog({
   ) : (
     <Dialog
       buttons={commonText.cancel()}
-      header={formsText.missingAttachmentsFixDialogTitle()}
+      header={reportsText.missingAttachmentsFixDialogTitle()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
@@ -327,7 +327,7 @@ function ParametersDialog({
           <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
         </>
       }
-      header={formsText.reportParameters()}
+      header={reportsText.reportParameters()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >

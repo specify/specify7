@@ -15,7 +15,6 @@ import type {
 import { f } from '../../utils/functools';
 import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { PreparationRow, Preparations } from '../../utils/ajax/specifyApi';
 import {
@@ -49,6 +48,7 @@ import {
   pluralizeParser,
   resolveParser,
 } from '../../utils/parser/definitions';
+import { interactionsText } from '../../localization/interactions';
 
 export function InteractionDialog({
   recordSetsPromise,
@@ -188,19 +188,19 @@ export function InteractionDialog({
     prepsData: RA<PreparationRow>,
     missing: RA<string>
   ): IR<RA<string>> => ({
-    ...(missing.length > 0 ? { [formsText.missing()]: missing } : {}),
+    ...(missing.length > 0 ? { [interactionsText.missing()]: missing } : {}),
     ...(prepsData.length === 0
-      ? { [formsText.preparationsNotFound()]: [] }
+      ? { [interactionsText.preparationsNotFound()]: [] }
       : {}),
   });
 
   return state.type === 'LoanReturnDoneState' ? (
     <Dialog
       buttons={commonText.close()}
-      header={formsText.returnedPreparations()}
+      header={interactionsText.returnedPreparations()}
       onClose={handleClose}
     >
-      {formsText.returnedAndSaved({ count: state.result })}
+      {interactionsText.returnedAndSaved({ count: state.result })}
     </Dialog>
   ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
@@ -230,33 +230,35 @@ export function InteractionDialog({
                     availablePrepsReady(undefined, undefined, [])
                   }
                 >
-                  {formsText.noCollectionObjectCaption()}
+                  {interactionsText.addUnassociated()}
                 </Button.Blue>
               ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
-                  {formsText.noPreparationsCaption()}
+                  {interactionsText.withoutPreparations()}
                 </Link.Blue>
               ) : undefined}
             </>
           }
           header={
             typeof itemCollection === 'object'
-              ? formsText.addItems()
+              ? interactionsText.addItems()
               : model.name === 'Loan'
-              ? formsText.recordReturn({ modelName: model.label })
-              : formsText.createRecord({ modelName: action.model.name })
+              ? interactionsText.recordReturn({ modelName: model.label })
+              : interactionsText.createRecord({ modelName: action.model.name })
           }
           onClose={handleClose}
         >
           <details>
             <summary>
-              {formsText.recordSetCaption({ count: totalCount })}
+              {interactionsText.byChoosingRecordSet({ count: totalCount })}
             </summary>
             {children}
           </details>
           <details>
             <summary>
-              {formsText.entryCaption({ fieldName: searchField?.label ?? '' })}
+              {interactionsText.byEnteringNumbers({
+                fieldName: searchField?.label ?? '',
+              })}
             </summary>
             <div className="flex flex-col gap-2">
               <AutoGrowTextArea
@@ -306,7 +308,7 @@ export function InteractionDialog({
               {state.type === 'PreparationSelectState' &&
               Object.keys(state.problems).length > 0 ? (
                 <>
-                  {formsText.problemsFound()}
+                  {interactionsText.problemsFound()}
                   {Object.entries(state.problems).map(
                     ([header, problems], index) => (
                       <React.Fragment key={index}>

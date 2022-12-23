@@ -33,6 +33,7 @@ import { ReadOnlyMode } from './ReadOnlyMode';
 import { ShareRecord } from './ShareRecord';
 import { SubViewMeta } from './SubViewMeta';
 import { schemaText } from '../../localization/schema';
+import { reportsText } from '../../localization/report';
 
 /**
  * Form preferences host context aware user preferences and other meta-actions.
@@ -123,8 +124,8 @@ function MetaDialog({
               id={undefined}
               label={
                 interactionTables.has(resource.specifyModel.name)
-                  ? formsText.generateReport()
-                  : formsText.generateLabel()
+                  ? reportsText.generateReport()
+                  : reportsText.generateLabel()
               }
               resource={resource}
             />
@@ -140,8 +141,8 @@ function MetaDialog({
             model={resource.specifyModel}
             text={
               interactionTables.has(resource.specifyModel.name)
-                ? formsText.generateReportOnSave()
-                : formsText.generateLabelOnSave()
+                ? reportsText.generateReportOnSave()
+                : reportsText.generateLabelOnSave()
             }
           />
         )}

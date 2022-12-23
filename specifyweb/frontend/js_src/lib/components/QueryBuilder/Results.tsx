@@ -6,7 +6,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
@@ -37,6 +36,7 @@ import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -232,7 +232,7 @@ export function QueryResults({
         })`}</H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
-            {formsText.deselectAll()}
+            {interactionsText.deselectAll()}
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />

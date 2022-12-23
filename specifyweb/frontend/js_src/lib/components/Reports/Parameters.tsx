@@ -4,7 +4,6 @@ import type { State } from 'typesafe-reducer';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import type { IR, RA } from '../../utils/types';
 import { replaceItem, replaceKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -19,6 +18,7 @@ import { QueryFields } from '../QueryBuilder/Fields';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
 import { RunReport } from './Run';
+import { reportsText } from '../../localization/report';
 
 export function QueryParametersDialog({
   query,
@@ -79,10 +79,10 @@ export function QueryParametersDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{formsText.runReport()}</Submit.Blue>
+          <Submit.Blue form={id('form')}>{reportsText.runReport()}</Submit.Blue>
         </>
       }
-      header={query.name ?? commonText.reports()}
+      header={query.name ?? reportsText.reports()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >

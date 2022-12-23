@@ -51,10 +51,6 @@ export const formsText = createDictionary({
     'en-us': 'Values of {values:string} must be unique to database',
     'ru-ru': 'Значения {values:string} должны быть уникальным в базе данных',
   },
-  collectionObject: {
-    'en-us': 'Collection Object',
-    'ru-ru': 'Объект коллекции',
-  },
   checkingIfResourceCanBeDeleted: {
     'en-us': 'Checking if resource can be deleted…',
     'ru-ru': 'Проверка возможности удаления ресурса…',
@@ -78,113 +74,6 @@ export const formsText = createDictionary({
   relationship: {
     'en-us': 'Relationship',
     'ru-ru': 'Связь',
-  },
-  contract: {
-    'en-us': 'Contract',
-    'ru-ru': 'Договор',
-  },
-  addItems: {
-    'en-us': 'Add Items',
-    'ru-ru': 'Добавить элементы',
-  },
-  recordReturn: {
-    'en-us': '{modelName:string} Return',
-    'ru-ru': 'Возврат {modelName:string}',
-  },
-  createRecord: {
-    'en-us': 'Create {modelName:string}',
-    'ru-ru': 'Создать {modelName:string}',
-  },
-  missing: {
-    'en-us': 'Missing:',
-    'ru-ru': 'Отсутствует:',
-  },
-  preparationsNotFound: {
-    'en-us': 'No preparations were found.',
-    'ru-ru': 'Никаких препаратов не обнаружено.',
-  },
-  problemsFound: {
-    'en-us': 'There are problems with the entry:',
-    'ru-ru': 'Обнаружены ошибки:',
-  },
-  recordSetCaption: {
-    comment: 'See documentation for syntax for plural rules',
-    'en-us': 'By choosing a recordset ({{count:none | one | ??}} available)',
-    'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
-  },
-  entryCaption: {
-    comment: 'Field name is localized. Coming from Schema Configuration',
-    'en-us': 'By entering {fieldName:string}s',
-    'ru-ru': 'Ввести {fieldName:string}',
-  },
-  noPreparationsCaption: {
-    'en-us': 'Without preparations',
-    'ru-ru': 'Без подготовки',
-  },
-  noCollectionObjectCaption: {
-    'en-us': 'Add unassociated item',
-    'ru-ru': 'Добавить несвязанный элемент',
-  },
-  preparationsDialogTitle: {
-    'en-us': 'Preparations',
-    'ru-ru': 'Препараты',
-  },
-  preparationsCanNotBeReturned: {
-    'en-us': 'Preparations cannot be returned in this context.',
-    'ru-ru': 'Препараты не могут быть возвращены в этом контексте.',
-  },
-  noUnresolvedPreparations: {
-    'en-us': 'There are no unresolved preparations for this loan.',
-    'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
-  },
-  remarks: {
-    'en-us': 'Remarks',
-    'ru-ru': 'Замечания',
-  },
-  unresolved: {
-    'en-us': 'Unresolved',
-    'ru-ru': 'Нерешенные',
-  },
-  return: {
-    'en-us': 'Return',
-    'ru-ru': 'Возвращение',
-  },
-  resolve: {
-    'en-us': 'Resolve',
-    'ru-ru': 'Разрешить',
-  },
-  returnAllPreparations: {
-    'en-us': 'Return all preparations',
-    'ru-ru': 'Вернуть все препараты',
-  },
-  returnSelectedPreparations: {
-    'en-us': 'Return selected preparations',
-    'ru-ru': 'Вернуть выбранные препараты',
-  },
-  selectAllAvailablePreparations: {
-    'en-us': 'Select all available preparations',
-    'ru-ru': 'Выбрать все доступные препараты',
-  },
-  selectAll: {
-    'en-us': 'Select All',
-    'ru-ru': 'Выбрать все',
-  },
-  selectedAmount: {
-    'en-us': 'Selected Amount',
-    'ru-ru': 'Выбранная сумма',
-  },
-  returnedAmount: {
-    'en-us': 'Returned Amount',
-    'ru-ru': 'Возвращенно',
-  },
-  resolvedAmount: {
-    'en-us': 'Resolved Amount',
-    'ru-ru': 'Решенный',
-  },
-  prepReturnFormatter: {
-    comment: 'Used to format preparations in the prep return dialog',
-    'en-us': '{tableName:string}: {resource: string}',
-    'ru-ru': '{tableName:string}: {resource: string}',
   },
   paleoMap: {
     'en-us': 'Paleo Map',
@@ -315,34 +204,6 @@ export const formsText = createDictionary({
     'en-us': 'Save record first',
     'ru-ru': 'Сначала нужко сохранить запись',
   },
-  reportProblemsDialogTitle: {
-    'en-us': 'Problems with report',
-    'ru-ru': 'Проблемы с отчетом',
-  },
-  reportsProblemsDialogText: {
-    'en-us': 'The selected report has the following problems:',
-    'ru-ru': 'В выбранном отчете есть следующие проблемы:',
-  },
-  missingAttachments: {
-    'en-us': 'Missing attachments',
-    'ru-ru': 'Отсутствующие вложения',
-  },
-  fix: {
-    'en-us': 'Fix',
-    'ru-ru': 'Исправить',
-  },
-  missingAttachmentsFixDialogTitle: {
-    'en-us': 'Choose file',
-    'ru-ru': 'Выберите файл',
-  },
-  reportParameters: {
-    'en-us': 'Report Parameters',
-    'ru-ru': 'Параметры отчета',
-  },
-  runReport: {
-    'en-us': 'Run Report',
-    'ru-ru': 'Запустить репорт',
-  },
   firstRecord: {
     'en-us': 'First Record',
     'ru-ru': 'Первый объект',
@@ -390,22 +251,6 @@ export const formsText = createDictionary({
   saveBlockedDialogText: {
     'en-us': 'Form cannot be saved while the following errors exist:',
     'ru-ru': 'Форма не может быть сохранена, пока существуют следующие ошибки:',
-  },
-  resolvedLoans: {
-    'en-us': 'Resolved Loans',
-    'ru-ru': 'Решение Заемы',
-  },
-  openLoans: {
-    'en-us': 'Open Loans',
-    'ru-ru': 'Открытые займы',
-  },
-  gifts: {
-    'en-us': 'Gifts',
-    'ru-ru': 'Подарки',
-  },
-  exchanges: {
-    'en-us': 'Exchanges',
-    'ru-ru': 'Обмены',
   },
   unavailableCommandButton: {
     'en-us': 'Command N/A',
@@ -526,33 +371,9 @@ export const formsText = createDictionary({
     'en-us': 'Field From Table',
     'ru-ru': 'Поле из таблицы',
   },
-  treeMerge: {
-    comment: 'Audit Log Action Type',
-    'en-us': 'Tree Merge',
-    'ru-ru': 'Слияние узлов дерева',
-  },
-  treeMove: {
-    comment: 'Audit Log Action Type',
-    'en-us': 'Tree Move',
-    'ru-ru': 'Перемещение узла дерева',
-  },
-  treeSynonymize: {
-    comment: 'Audit Log Action Type',
-    'en-us': 'Tree Synonymize',
-    'ru-ru': 'Синонимизированный узел дерева',
-  },
-  treeDesynonymize: {
-    comment: 'Audit Log Action Type',
-    'en-us': 'Tree Desynonymize',
-    'ru-ru': 'Отменено синонимизацию узла дерева',
-  },
   unsupportedCellType: {
     'en-us': 'Unsupported cell type:',
     'ru-ru': 'Неподдерживаемый тип ячейки:',
-  },
-  unCataloged: {
-    'en-us': 'uncataloged',
-    'ru-ru': 'некаталогизированный',
   },
   additionalResultsOmitted: {
     comment: `
@@ -584,89 +405,6 @@ export const formsText = createDictionary({
   reverse: {
     'en-us': 'Reverse',
     'ru-ru': 'Обратный',
-  },
-  tooLongErrorMessage: {
-    'en-us': `
-      Field value is too long. Max allowed length is
-      {maxLength:number|formatted}
-    `,
-    'ru-ru': `
-      Значение поля слишком длинное. Максимально допустимая длина
-      {maxLength:number|formatted}
-    `,
-  },
-  returnedPreparations: {
-    'en-us': 'Returned Preparations',
-    'ru-ru': 'Возвращенные препараты',
-  },
-  returnedAndSaved: {
-    'en-us':
-      '{count:number|formatted} preparations have been returned and saved.',
-    'ru-ru': '{count:number|formatted} препарата возвращены и сохранены.',
-  },
-  deselectAll: {
-    'en-us': 'Deselect all',
-    'ru-ru': 'Отменить выбор',
-  },
-  available: {
-    'en-us': 'Available',
-    'ru-ru': 'В наличии',
-  },
-  unavailable: {
-    'en-us': 'Unavailable',
-    'ru-ru': 'Недоступен',
-  },
-  returnLoan: {
-    'en-us': 'Return Loan',
-    'ru-ru': 'Возврат Заема',
-  },
-  printInvoice: {
-    'en-us': 'Print Invoice',
-    'ru-ru': 'Распечатать Накладную',
-  },
-  loanWithoutPreparation: {
-    'en-us': 'Loan w/o Preps',
-    'ru-ru': 'Заем без Препаратов',
-  },
-  loanWithoutPreparationDescription: {
-    'en-us': 'Create a loan with no preparations',
-    'ru-ru': 'Создать Заем без препаратов',
-  },
-  createLoan: {
-    'en-us': 'Create a Loan',
-    'ru-ru': 'Создать Заем',
-  },
-  editLoan: {
-    'en-us': 'Edit Loan',
-    'ru-ru': 'Редактировать Заем',
-  },
-  createdGift: {
-    'en-us': 'Create a Gift',
-    'ru-ru': 'Создать Дар',
-  },
-  editGift: {
-    'en-us': 'Edit Gift',
-    'ru-ru': 'Редактировать Дар',
-  },
-  createInformationRequest: {
-    'en-us': 'Create Information Request',
-    'ru-ru': 'Создать Экспресс Запрос',
-  },
-  missingReportQueryDialogHeader: {
-    'en-us': 'Missing Report Query',
-    'ru-ru': 'Отсутствует запрос отчета',
-  },
-  missingReportQueryDialogText: {
-    'en-us': 'This report does not have an associated query',
-    'ru-ru': 'Этот отчет не имеет связанного запроса',
-  },
-  missingReportDialogHeader: {
-    'en-us': 'Missing report',
-    'ru-ru': 'Отсутствует отчет',
-  },
-  missingReportDialogText: {
-    'en-us': 'Unable to find an SpReport record for this App Resource',
-    'ru-ru': 'Не удалось найти запись SpReport для этого ресурса приложения',
   },
   deletedInline: {
     'en-us': '(deleted)',
@@ -775,22 +513,6 @@ export const formsText = createDictionary({
   usagesOfPickList: {
     'en-us': 'Usages of "{pickList:string}" pick list',
     'ru-ru': 'Использование "{pickList:string}" списка выбора',
-  },
-  generateLabel: {
-    'en-us': 'Generate label',
-    'ru-ru': 'Сгенерировать метку',
-  },
-  generateLabelOnSave: {
-    'en-us': 'Generate label on save',
-    'ru-ru': 'Генерировать метку при сохранении',
-  },
-  generateReport: {
-    'en-us': 'Generate report',
-    'ru-ru': 'Сгенерировать отчет',
-  },
-  generateReportOnSave: {
-    'en-us': 'Generate report on save',
-    'ru-ru': 'Генерировать отчет при сохранении',
   },
   form: {
     'en-us': 'Subform',

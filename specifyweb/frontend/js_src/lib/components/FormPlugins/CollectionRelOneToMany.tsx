@@ -5,7 +5,6 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -73,7 +72,7 @@ export function CollectionOneToManyPlugin({
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
-            <th scope="col">{formsText.collectionObject()}</th>
+            <th scope="col">{schema.models.CollectionObject.label}</th>
             <th scope="col">{schema.models.Collection.label}</th>
             <td />
           </tr>

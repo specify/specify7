@@ -34,6 +34,7 @@ import { schemaText } from '../../localization/schema';
 import { headerText } from '../../localization/header';
 import { LocalizedString } from 'typesafe-i18n';
 import { Language, LANGUAGE } from '../../localization/utils/config';
+import { reportsText } from '../../localization/report';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1298,7 +1299,7 @@ export const preferenceDefinitions = {
     },
   },
   reports: {
-    title: commonText.reports(),
+    title: reportsText.reports(),
     subCategories: {
       behavior: {
         title: preferencesText.behavior(),

@@ -6,6 +6,7 @@ import { Tables } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { preferencesText } from '../../localization/preferences';
 import { LocalizedString } from 'typesafe-i18n';
+import { reportsText } from '../../localization/report';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
@@ -47,7 +48,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.ticket,
-    label: resourcesText.label(),
+    label: reportsText.label(),
   },
   report: {
     mimeType: 'jrxml/report',
@@ -55,7 +56,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.documentReport,
-    label: resourcesText.report(),
+    label: reportsText.report(),
   },
   userPreferences: {
     mimeType: 'application/json',

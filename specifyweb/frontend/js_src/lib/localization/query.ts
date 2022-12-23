@@ -340,4 +340,34 @@ export const queryText = createDictionary({
     'en-us': 'Define label based on query',
     'ru-ru': 'Определите метку на основе запроса',
   },
+  treeMerge: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Merge',
+    'ru-ru': 'Слияние узлов дерева',
+  },
+  treeMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Move',
+    'ru-ru': 'Перемещение узла дерева',
+  },
+  treeSynonymize: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Synonymize',
+    'ru-ru': 'Синонимизированный узел дерева',
+  },
+  treeDesynonymize: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Desynonymize',
+    'ru-ru': 'Отменено синонимизацию узла дерева',
+  },
+  tooLongErrorMessage: {
+    'en-us': `
+      Field value is too long. Max allowed length is
+      {maxLength:number|formatted}
+    `,
+    'ru-ru': `
+      Значение поля слишком длинное. Максимально допустимая длина
+      {maxLength:number|formatted}
+    `,
+  },
 } as const);

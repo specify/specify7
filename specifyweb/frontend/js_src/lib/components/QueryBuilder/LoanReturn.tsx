@@ -4,7 +4,6 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import { getDateInputValue } from '../../utils/dayJs';
@@ -40,6 +39,7 @@ import { mappingPathIsComplete } from '../WbPlanView/helpers';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 const returnLoanPreps = async (
   query: SerializedModel<SpQuery>,
@@ -145,7 +145,7 @@ export function QueryLoanReturn({
           })
         }
       >
-        {formsText.returnLoan()}
+        {interactionsText.returnLoan()}
       </QueryButton>
       {state.type === 'Dialog' && Array.isArray(toReturn) ? (
         <Dialog
@@ -157,9 +157,9 @@ export function QueryLoanReturn({
                 <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 <Submit.Green
                   form={id('form')}
-                  title={formsText.returnSelectedPreparations()}
+                  title={interactionsText.returnSelectedPreparations()}
                 >
-                  {formsText.return()}
+                  {interactionsText.return()}
                 </Submit.Green>
               </>
             )

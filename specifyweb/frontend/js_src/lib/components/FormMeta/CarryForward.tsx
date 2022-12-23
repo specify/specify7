@@ -23,6 +23,7 @@ import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { wbText } from '../../localization/workbench';
 import { schemaText } from '../../localization/schema';
+import { interactionsText } from '../../localization/interactions';
 
 /**
  * Fields to always carry forward (unless "Deselect All" is pressed), but not
@@ -224,7 +225,7 @@ function CarryForwardConfigDialog({
               )
             }
           >
-            {formsText.selectAll()}
+            {interactionsText.selectAll()}
           </Button.Green>
           <Button.Green
             disabled={config.length === 0}
@@ -245,7 +246,7 @@ function CarryForwardConfigDialog({
               )
             }
           >
-            {formsText.deselectAll()}
+            {interactionsText.deselectAll()}
           </Button.Green>
           <Submit.Blue form={id('form')} onClick={handleClose}>
             {commonText.close()}

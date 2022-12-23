@@ -17,6 +17,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 export function GenerateLabel({
   resource,
@@ -101,7 +102,7 @@ const commandRenderers: {
                   header={label}
                   onClose={handleHide}
                 >
-                  {formsText.preparationsCanNotBeReturned()}
+                  {interactionsText.preparationsCanNotBeReturned()}
                 </Dialog>
               ) : (
                 <LoanReturn resource={loan} onClose={handleHide} />

@@ -13,12 +13,12 @@ import {
   getBooleanAttribute,
   getParsedAttribute,
 } from '../../utils/utils';
-import { formsText } from '../../localization/forms';
 import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR } from '../../utils/types';
 import { LocalizedString } from 'typesafe-i18n';
+import { reportsText } from '../../localization/report';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -94,7 +94,7 @@ const processFieldType: {
       defaultValue: getBooleanAttribute(cell, 'default') ?? false,
       label:
         f.maybe(getParsedAttribute(cell, 'label'), legacyLocalize) ??
-        (printOnSave ? formsText.generateLabelOnSave() : undefined),
+        (printOnSave ? reportsText.generateLabelOnSave() : undefined),
       printOnSave,
     };
   },

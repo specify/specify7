@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
+import { queryText } from '../../localization/query';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -38,10 +39,10 @@ const auditLogActions = [
   commonText.create(),
   commonText.update(),
   commonText.delete(),
-  formsText.treeMerge(),
-  formsText.treeMove(),
-  formsText.treeSynonymize(),
-  formsText.treeDesynonymize(),
+  queryText.treeMerge(),
+  queryText.treeMove(),
+  queryText.treeSynonymize(),
+  queryText.treeDesynonymize(),
 ] as const;
 
 const pickListSortTypes = [

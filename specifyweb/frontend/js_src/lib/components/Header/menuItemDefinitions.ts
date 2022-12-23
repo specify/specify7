@@ -23,6 +23,7 @@ import { reportsAvailable } from '../Reports';
 import { filterUserTools } from './userToolDefinitions';
 import { getCache } from '../../utils/cache';
 import { headerText } from '../../localization/header';
+import { reportsText } from '../../localization/report';
 
 export type MenuItemName =
   | 'attachments'
@@ -86,7 +87,7 @@ const rawMenuItems: RR<MenuItemName, MenuItem> = {
   },
   reports: {
     url: '/specify/overlay/reports/',
-    title: commonText.reports(),
+    title: reportsText.reports(),
     icon: icons.documentReport,
     visibilityKey: 'showReports',
     enabled: async () =>

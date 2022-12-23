@@ -1,10 +1,10 @@
-import { formsText } from '../../../localization/forms';
 import { requireContext } from '../../../tests/helpers';
 import { theories } from '../../../tests/utils';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { parseFormField } from '../fields';
 import { generateInit } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { reportsText } from '../../../localization/report';
 
 requireContext();
 
@@ -133,7 +133,7 @@ theories(parseFormField, [
       isReadOnly: false,
       type: 'Checkbox',
       printOnSave: true,
-      label: formsText.generateLabelOnSave(),
+      label: reportsText.generateLabelOnSave(),
     },
   },
   {

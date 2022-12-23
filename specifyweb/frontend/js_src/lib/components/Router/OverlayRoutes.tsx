@@ -5,6 +5,7 @@ import type { EnhancedRoute } from './RouterUtils';
 import { queryText } from '../../localization/query';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
+import { reportsText } from '../../localization/report';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 /**
@@ -104,7 +105,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'reports',
-        title: commonText.reports(),
+        title: reportsText.reports(),
         element: () =>
           import('../Reports').then(({ ReportsOverlay }) => ReportsOverlay),
       },

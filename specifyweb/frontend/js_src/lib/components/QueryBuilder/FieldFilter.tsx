@@ -4,7 +4,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { Parser } from '../../utils/parser/definitions';
@@ -110,7 +109,7 @@ function QueryInputField({
       inputRef.current?.checkValidity() === true
     )
       setValidation(
-        formsText.tooLongErrorMessage({
+        queryText.tooLongErrorMessage({
           maxLength: Number.parseInt(validationAttributes.maxLength),
         })
       );

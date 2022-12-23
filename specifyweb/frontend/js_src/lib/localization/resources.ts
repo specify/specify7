@@ -41,14 +41,6 @@ export const resourcesText = createDictionary({
     'en-us': 'App Resource',
     'ru-ru': 'Ресурс приложения',
   },
-  label: {
-    'en-us': 'Label',
-    'ru-ru': 'Этикетка',
-  },
-  report: {
-    'en-us': 'Report',
-    'ru-ru': 'Отчет',
-  },
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
     'ru-ru': 'RSS-канал экспорта',

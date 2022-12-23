@@ -33,7 +33,7 @@ import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
-import { formsText } from '../../localization/forms';
+import { schema } from '../DataModel/schema';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -104,7 +104,9 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>{formsText.remarks()}:</b>
+          <b>
+            {schema.models.Workbench.strictGetLiteralField('remarks').label}:
+          </b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">

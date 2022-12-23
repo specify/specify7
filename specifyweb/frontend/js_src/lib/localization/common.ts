@@ -134,14 +134,6 @@ export const commonText = createDictionary({
     'en-us': 'New',
     'ru-ru': 'Новый',
   },
-  reports: {
-    'en-us': 'Reports',
-    'ru-ru': 'Отчеты',
-  },
-  labels: {
-    'en-us': 'Labels',
-    'ru-ru': 'Этикетки',
-  },
   edit: {
     'en-us': 'Edit',
     'ru-ru': 'Редактировать',
@@ -201,6 +193,10 @@ export const commonText = createDictionary({
   expand: {
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
+  },
+  contract: {
+    'en-us': 'Contract',
+    'ru-ru': 'Свернуть',
   },
   geoMap: {
     'en-us': 'GeoMap',

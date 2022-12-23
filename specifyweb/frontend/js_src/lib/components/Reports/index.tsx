@@ -27,6 +27,7 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
+import { reportsText } from '../../localization/report';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -126,13 +127,13 @@ export function ReportsView({
     ) : (
       <Dialog
         buttons={commonText.cancel()}
-        header={commonText.reports()}
+        header={reportsText.reports()}
         icon={<span className="text-blue-500">{icons.documentReport}</span>}
         onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{commonText.reports()}</h2>
+            <h2>{reportsText.reports()}</h2>
             <ReportRow
               cacheKey="listOfReports"
               icon="/images/Reports32x32.png"
@@ -141,7 +142,7 @@ export function ReportsView({
             />
           </section>
           <section>
-            <h2>{commonText.labels()}</h2>
+            <h2>{reportsText.labels()}</h2>
             <ReportRow
               cacheKey="listOfLabels"
               icon="/images/Label32x32.png"
