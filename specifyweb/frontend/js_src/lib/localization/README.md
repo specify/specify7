@@ -103,7 +103,7 @@ cognitive overhead of working with localization files (thus killing bugs)
 
 - Try to use consistent names for localization keys:
 
-  ```json
+  ```yaml
   {
     ...
     pluginNotAvailable: {

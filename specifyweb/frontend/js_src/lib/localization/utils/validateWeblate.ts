@@ -4,6 +4,7 @@ import type { IR, RA } from '../../utils/types';
 import { syncBranch, weblateBranch } from './config';
 import type { DictionaryUsages } from './scanUsages';
 import { testLogging } from './testLogging';
+import { sortFunction } from '../../utils/utils';
 
 const { error, warn } = testLogging;
 
@@ -18,23 +19,36 @@ function getToken(): string {
   return `Token ${key}`;
 }
 
+const doFetch = async (url: string): Promise<IR<unknown>> =>
+  fetch(url, {
+    headers: { Authorization: getToken() },
+  }).then(async (response) => response.json());
+
+const ignoredComponents = new Set(['glossary']);
+const fetchComponents = async (
+  url = componentsApiUrl
+): Promise<RA<IR<unknown>>> =>
+  doFetch(url).then(async ({ results, next }) => [
+    ...(typeof next === 'string' ? await fetchComponents(next) : []),
+    ...(await Promise.all(
+      (results as RA<IR<unknown>>)
+        .filter(({ slug }) => !f.has(ignoredComponents, slug))
+        .map(async (component) => ({
+          ...component,
+          addons: await Promise.all(
+            (component.addons as RA<string>).map(doFetch)
+          ),
+        }))
+    )),
+  ]);
+
 export async function checkComponents(
   localStrings: DictionaryUsages
 ): Promise<void> {
   const localComponents = Object.values(localStrings).map(
     ({ categoryName }) => categoryName
   );
-
-  const ignoredComponents = new Set(['glossary']);
-  const weblateComponents = await fetch(componentsApiUrl, {
-    headers: { Authorization: getToken() },
-  })
-    .then(async (response) => response.json())
-    .then(({ results }) =>
-      (results as RA<IR<unknown>>).filter(
-        ({ slug }) => !f.has(ignoredComponents, slug)
-      )
-    );
+  const weblateComponents = await fetchComponents();
 
   checkSettings(weblateComponents);
 
@@ -60,13 +74,14 @@ const createMissingComponents = async (names: RA<string>): Promise<void> =>
 
 async function createComponent(name: string): Promise<void> {
   warn(`Creating a component for "${name}"`);
-  return fetch(componentsApiUrl, {
+  const { addons, ...settings } = getComponentSettings(name);
+  fetch(componentsApiUrl, {
     headers: {
       Authorization: getToken(),
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    body: JSON.stringify(getComponentSettings(name)),
+    body: JSON.stringify(settings),
   })
     .then(async (response) =>
       response.status === Http.CREATED
@@ -76,11 +91,25 @@ async function createComponent(name: string): Promise<void> {
     .then(console.log);
 }
 
+const addOns = {
+  'weblate.autotranslate.autotranslate': {
+    mode: 'fuzzy',
+    filter_type: 'todo',
+    auto_source: 'mt',
+    component: null,
+    engines: ['google-translate'],
+    threshold: 20,
+  },
+  'weblate.cleanup.generic': {},
+};
+
 const getComponentSettings = (name: string): IR<unknown> => ({
+  addons: addOns,
   allow_translation_propagation: true,
   auto_lock_error: true,
   branch: weblateBranch,
   commit_pending_age: 3,
+  check_flags: 'icu-message-format, icu-flags:xml, icu-flags:strict-xml',
   edit_template: true,
   file_format: 'po-mono',
   filemask: `strings/${name}/*${gettextExtension}`,
@@ -124,6 +153,21 @@ function compareConfig(
 ): void {
   const remote: IR<unknown> = {
     ...rawRemote,
+    addons: Object.fromEntries(
+      (
+        rawRemote.addons as RA<{
+          readonly name: string;
+          readonly configuration: IR<unknown>;
+        }>
+      )
+        .filter(({ name }) => name in addOns)
+        .sort(
+          sortFunction(({ name }) =>
+            Object.keys(addOns).indexOf(name as keyof typeof addOns)
+          )
+        )
+        .map(({ name, configuration }) => [name, configuration])
+    ),
     source_language: (rawRemote.source_language as { readonly code: string })
       .code,
   };
