@@ -146,6 +146,8 @@ export function Report({
   ) : null;
 }
 
+const reImage = /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/u;
+
 async function fixupImages(definition: Document): Promise<RA<string>> {
   const fileNames = Object.fromEntries(
     group(
@@ -153,9 +155,7 @@ async function fixupImages(definition: Document): Promise<RA<string>> {
         Array.from(definition.querySelectorAll('imageExpression'), (image) => {
           const match = image.classList.contains('java.net.URL')
             ? undefined
-            : image.textContent
-                ?.match(/\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/)
-                ?.slice(1)?.[0] ?? undefined;
+            : image.textContent?.match(reImage)?.slice(1)?.[0] ?? undefined;
           return typeof match === 'string' ? [match, image] : undefined;
         })
       )
