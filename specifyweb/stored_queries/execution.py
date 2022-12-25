@@ -6,7 +6,7 @@ import re
 import xml.dom.minidom
 
 from collections import namedtuple, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import reduce
 
 from django.conf import settings
@@ -99,6 +99,40 @@ def filter_by_collection(model, query, collection):
     logger.warn("query not filtered by scope")
     return query
 
+
+relative_date_re = "today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
+def make_new(query_field):
+    if query_field.fieldspec.date_part is None:
+        return query_field
+    date_parse = re.findall(relative_date_re, query_field.value)
+    if len(date_parse) == 0:
+        return query_field
+    direction = date_parse[0][0]
+    size = date_parse[0][1]
+    type = date_parse[0][2]
+    offset = (1 if direction == '+' else -1)*int(size)
+    delta = timedelta()
+    if type == 'second':
+        delta = timedelta(seconds=offset)
+    elif type == 'minute':
+        delta = timedelta(minutes=offset)
+    elif type == 'hour':
+        delta = timedelta(hours=offset)
+    elif type == 'day':
+        delta = timedelta(days=offset)
+    elif type == 'week':
+        delta = timedelta(weeks=offset)
+    elif type == 'month':
+        delta = timedelta(days=offset*30)
+    elif type == 'year':
+        delta = timedelta(days=offset*365)
+    timenow = datetime.now()
+    newtime = timenow + delta
+    return query_field._replace(value = newtime.date().isoformat())
+
+
+
+
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
 
 def field_specs_from_json(json_fields):
@@ -109,8 +143,12 @@ def field_specs_from_json(json_fields):
     def ephemeral_field_from_json(json):
         return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
-    return [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+    x =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
+
+
+    relative_date_mapped = [make_new(query_field) for query_field in x]
+    return relative_date_mapped
 
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
@@ -361,6 +399,7 @@ def createPlacemark(kmlDoc, row, coord_cols, table, captions, host):
     return placemarkElement
 
 
+
 def run_ephemeral_query(collection, user, spquery):
     """Execute a Specify query from deserialized json and return the results
     as an array for json serialization to the web app.
@@ -376,9 +415,9 @@ def run_ephemeral_query(collection, user, spquery):
         format_audits = spquery['formatauditrecids']
     except:
         format_audits = False
+
     with models.session_context() as session:
         field_specs = field_specs_from_json(spquery['fields'])
-
         return execute(session, collection, user, tableid, distinct, count_only,
                        field_specs, limit, offset, recordsetid, formatauditobjs=format_audits)
 
