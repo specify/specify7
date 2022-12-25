@@ -216,7 +216,12 @@ export const setPrefsGenerator = <PREFERENCE extends GenericPreferences>(
       requestPreferencesSync();
     }
 
-    prefEvents.trigger('update', definition);
+    prefEvents.trigger('update', {
+      category,
+      subcategory,
+      item,
+      definition,
+    });
     return parsed;
   };
 export const setPref = {

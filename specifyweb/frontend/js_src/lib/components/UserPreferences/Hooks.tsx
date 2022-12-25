@@ -23,7 +23,10 @@ export const prefEvents = eventListener<{
  * Used when editing user preferences for another user in AppResources
  */
 export const PreferencesContext = React.createContext<
-  | readonly [getPrefMain: typeof getUserPref, setPrefMain: typeof setPref]
+  | readonly [
+      getPrefMain: typeof getUserPref,
+      setPrefMain: typeof setPref.userPreferences
+    ]
   | undefined
 >(undefined);
 PreferencesContext.displayName = 'PreferencesContext';

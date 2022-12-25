@@ -165,7 +165,7 @@ export function PreferencesContent({
                         <Button.Small
                           onClick={(): void =>
                             items.forEach(([name]) =>
-                              setPref(
+                              setPref.userPreferences(
                                 category,
                                 subcategory,
                                 name,
