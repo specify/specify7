@@ -99,11 +99,13 @@ const UserPreferencesEditor: AppResourceTab = function ({
   >(
     React.useCallback(() => {
       const preferences = JSON.parse(data || '{}') as UserPreferences;
+      // @ts-ignore
       const setPrefs = setPrefsGenerator(
         () => preferences,
         getPrefDefinition,
         false
       );
+
       return [
         (
           category: string,
@@ -119,8 +121,14 @@ const UserPreferencesEditor: AppResourceTab = function ({
           item: PropertyKey,
           value: unknown
         ): void => {
-          setPrefs(category, subcategory as string, item as string, value);
+          const val = setPrefs(
+            category,
+            subcategory as string,
+            item as string,
+            value
+          );
           handleChange(JSON.stringify(preferences));
+          return val;
         },
       ];
     }, [handleChange])
