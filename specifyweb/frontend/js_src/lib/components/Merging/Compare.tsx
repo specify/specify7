@@ -68,9 +68,9 @@ export function CompareRecords({
           resources={resources}
           onDeleted={handleDeleted}
         />
-        {/* FEATURE: add an all-left and all-right button */}
-        {/* FEATURE: add merge util to user tools */}
-        {/* FEATURE: add merge util to form meta */}
+        {/* FIXME: add an all-left and all-right button */}
+        {/* FIXME: add merge util to user tools */}
+        {/* FIXME: add merge util to form meta */}
         <tbody>
           {conformation.map((field) => (
             <CompareField

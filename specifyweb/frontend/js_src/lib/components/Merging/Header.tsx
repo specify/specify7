@@ -164,7 +164,7 @@ function ResourceBlockers({
   );
 }
 
-// FEATURE: display number in dialog heading
+// FIXME: display number in dialog heading
 function PreviewLine({
   merged,
   resources,

@@ -222,6 +222,21 @@ export function QueryResults({
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
 
+  // TEST: try deleting while records are being fetched
+  function handleDelete(recordId: number): void {
+    if (!Array.isArray(results) || totalCount === undefined) return;
+    const newResults = results.filter(
+      (result) => result?.[queryIdField] !== recordId
+    );
+    const removeCount = newResults.length - results.length;
+    setTotalCount(totalCount - removeCount);
+    setResults(newResults);
+    resultsRef.current = newResults;
+    setSelectedRows(
+      new Set(Array.from(selectedRows).filter((id) => id !== recordId))
+    );
+  }
+
   return (
     <Container.Base className="w-full bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
@@ -244,7 +259,11 @@ export function QueryResults({
         typeof fetchResults === 'function' ? (
           <>
             {hasPermission('/record/replace', 'update') && (
-              <RecordMerging model={model} selectedRows={selectedRows} />
+              <RecordMerging
+                model={model}
+                selectedRows={selectedRows}
+                onDeleted={handleDelete}
+              />
             )}
             {hasToolPermission('recordSets', 'create') ? (
               selectedRows.size > 0 ? (
@@ -283,21 +302,7 @@ export function QueryResults({
               results={results}
               selectedRows={selectedRows}
               totalCount={totalCount}
-              onDelete={(deleteId): void => {
-                // Don't allow deleting while query results are being fetched
-                if (Object.keys(fetchersRef.current).length > 0) return;
-                setTotalCount(totalCount! - 1);
-                const newResults = results.filter(
-                  (result) => result?.[queryIdField] !== deleteId
-                );
-                setResults(newResults);
-                resultsRef.current = newResults;
-                setSelectedRows(
-                  new Set(
-                    Array.from(selectedRows).filter((id) => id !== deleteId)
-                  )
-                );
-              }}
+              onDelete={handleDelete}
               onFetchMore={isFetching ? undefined : handleFetchMore}
             />
           </>
