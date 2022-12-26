@@ -2,7 +2,7 @@ import React from 'react';
 
 import { eventListener } from '../../utils/events';
 import type { PreferenceItem } from './Definitions';
-import type { setPref } from './helpers';
+import type { setPref, getPref } from './helpers';
 import { getUserPref } from './helpers';
 import { usePref } from './usePref';
 
@@ -24,12 +24,21 @@ export const prefEvents = eventListener<{
  */
 export const PreferencesContext = React.createContext<
   | readonly [
-      getPrefMain: typeof getUserPref,
-      setPrefMain: typeof setPref.userPreferences
+      getPrefMain: typeof getPref.userPreferences,
+      setUserPref: typeof setPref.userPreferences
     ]
   | undefined
 >(undefined);
 PreferencesContext.displayName = 'PreferencesContext';
+
+export const CollectionPreferencesContext = React.createContext<
+  | readonly [
+      getPrefMain: typeof getPref.collectionPreferences,
+      setUserPref: typeof setPref.collectionPreferences
+    ]
+  | undefined
+>(undefined);
+CollectionPreferencesContext.displayName = 'CollectionPreferencesContext';
 
 function useMedia(query: string): boolean {
   const media = React.useMemo(() => globalThis.matchMedia(query), [query]);
