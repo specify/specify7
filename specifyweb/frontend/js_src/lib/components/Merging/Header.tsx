@@ -224,7 +224,7 @@ function RecordPreview({
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
-          mode="view"
+          mode={index === 0 ? 'edit' : 'view'}
           resource={resource}
           onAdd={undefined}
           onClose={handleClose}

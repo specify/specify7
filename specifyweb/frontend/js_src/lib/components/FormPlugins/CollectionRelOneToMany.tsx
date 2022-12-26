@@ -56,12 +56,7 @@ export function CollectionOneToManyPlugin({
           readonly collectionName: string;
         }
       >
-    | State<
-        'SearchState',
-        {
-          readonly templateResource: SpecifyResource<CollectionObject>;
-        }
-      >
+    | State<'SearchState'>
     | State<'MainState'>
   >({ type: 'MainState' });
 
@@ -163,14 +158,6 @@ export function CollectionOneToManyPlugin({
                 ? { type: 'MainState' }
                 : {
                     type: 'SearchState',
-                    templateResource:
-                      new schema.models.CollectionObject.Resource(
-                        {},
-                        {
-                          noBusinessRules: true,
-                          noValidation: true,
-                        }
-                      ),
                   }
             )
           }
@@ -193,7 +180,7 @@ export function CollectionOneToManyPlugin({
           extraFilters={undefined}
           forceCollection={data.otherCollection.id}
           multiple
-          templateResource={state.templateResource}
+          model={schema.models.CollectionObject}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={(addedResources): void => {
             const addedRelationships = addedResources.map((addedResource) => {

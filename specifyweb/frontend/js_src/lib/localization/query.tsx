@@ -309,10 +309,6 @@ export const queryText = createDictionary({
     'en-us': 'Merge Records',
     'ru-ru': 'Объединить записи',
   },
-  mergedRecord: {
-    'en-us': 'Merged Record',
-    'ru-ru': 'Объединенная запись',
-  },
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
     'ru-ru': 'Показать только конфликтующие поля',

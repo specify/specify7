@@ -11,38 +11,6 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { Slider } from './Slider';
 
-function Search<SCHEMA extends AnySchema>({
-  model,
-  onAdd: handleAdd,
-  onClose: handleClose,
-}: {
-  readonly model: SpecifyModel<SCHEMA>;
-  readonly onAdd: (resources: RA<SpecifyResource<SCHEMA>>) => void;
-  readonly onClose: () => void;
-}): JSX.Element {
-  const resource = React.useMemo(
-    () =>
-      new model.Resource(
-        {},
-        {
-          noBusinessRules: true,
-          noValidation: true,
-        }
-      ),
-    [model]
-  );
-  return (
-    <SearchDialog<SCHEMA>
-      extraFilters={undefined}
-      forceCollection={undefined}
-      multiple
-      templateResource={resource}
-      onClose={handleClose}
-      onSelected={handleAdd}
-    />
-  );
-}
-
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
   readonly model: SpecifyModel<SCHEMA>;
   // Related field
@@ -133,9 +101,12 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     resource: records[index] ?? records[lastIndexRef.current],
     dialogs:
       state.type === 'AddBySearch' && typeof handleAdded === 'function' ? (
-        <Search
+        <SearchDialog
+          extraFilters={undefined}
+          forceCollection={undefined}
+          multiple
           model={model}
-          onAdd={(resources): void => {
+          onSelected={(resources): void => {
             f.maybe(field?.otherSideName, (fieldName) =>
               f.maybe(relatedResource?.url(), (url) =>
                 resources.forEach((resource) =>

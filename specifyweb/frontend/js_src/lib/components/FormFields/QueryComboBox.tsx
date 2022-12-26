@@ -214,7 +214,6 @@ function ProtectedQueryComboBox({
         'SearchState',
         {
           readonly extraConditions: RA<QueryComboBoxFilter<AnySchema>>;
-          readonly templateResource: SpecifyResource<AnySchema>;
         }
       >
     | State<'AccessDeniedState', { readonly collectionName: string }>
@@ -470,13 +469,6 @@ function ProtectedQueryComboBox({
                   ? (): void =>
                       setState({
                         type: 'SearchState',
-                        templateResource: new typeSearch.relatedModel.Resource(
-                          {},
-                          {
-                            noBusinessRules: true,
-                            noValidation: true,
-                          }
-                        ),
                         extraConditions: filterArray(
                           getQueryComboBoxConditions({
                             resource,
@@ -587,12 +579,12 @@ function ProtectedQueryComboBox({
           }
         />
       ) : undefined}
-      {state.type === 'SearchState' ? (
+      {state.type === 'SearchState' && typeof typeSearch === 'object' ? (
         <SearchDialog
           extraFilters={state.extraConditions}
           forceCollection={forceCollection ?? relatedCollectionId}
           multiple={false}
-          templateResource={state.templateResource}
+          model={typeSearch.relatedModel}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={([selectedResource]): void =>
             // @ts-expect-error Need to refactor this to use generics

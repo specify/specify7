@@ -21,6 +21,9 @@ import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
+import { Tables } from '../DataModel/types';
+
+const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
 export function RecordMerging({
   model,
@@ -33,7 +36,7 @@ export function RecordMerging({
 }): JSX.Element | null {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState();
 
-  return model.name === 'Agent' ? (
+  return recordMergingTables.has(model.name) ? (
     <>
       <Button.Small disabled={selectedRows.size === 0} onClick={handleToggle}>
         {queryText('mergeRecords')}
@@ -41,7 +44,7 @@ export function RecordMerging({
       {isOpen && (
         <MergingDialog
           model={model}
-          selectedRows={selectedRows}
+          ids={selectedRows}
           onClose={handleClose}
           onDeleted={handleDeleted}
         />
@@ -50,18 +53,18 @@ export function RecordMerging({
   ) : null;
 }
 
-function MergingDialog({
+export function MergingDialog({
   model,
-  selectedRows,
+  ids,
   onClose: handleClose,
   onDeleted: handleDeleted,
 }: {
   readonly model: SpecifyModel;
-  readonly selectedRows: ReadonlySet<number>;
+  readonly ids: ReadonlySet<number>;
   readonly onClose: () => void;
   readonly onDeleted: (id: number) => void;
 }): JSX.Element | null {
-  const records = useResources(model, selectedRows);
+  const records = useResources(model, ids);
   const [showMatching = false, setShowMatching] = useCachedState(
     'merging',
     'showMatchingFields'
@@ -69,8 +72,8 @@ function MergingDialog({
 
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
-    () => (selectedRows.size < 2 ? handleClose() : undefined),
-    [selectedRows.size, handleClose]
+    () => (ids.size < 2 ? handleClose() : undefined),
+    [ids.size, handleClose]
   );
 
   const id = useId('merging-dialog');
@@ -126,6 +129,7 @@ function MergingDialog({
                  * (due to business rules). If we do them sequentially, we
                  * can leave the UI in a state consistent with the back-end
                  */
+                // eslint-disable-next-line functional/no-loop-statement
                 for (const clone of clones) {
                   const response = await ajax(
                     `/api/specify/${model.name.toLowerCase()}/replace/${
@@ -163,12 +167,25 @@ function useResources(
   model: SpecifyModel,
   selectedRows: ReadonlySet<number>
 ): RA<SerializedResource<AnySchema>> | undefined {
+  /**
+   * During merging, ids are removed from selectedRows one by one. Shouldn't
+   * try to fetch all resources every time that happens
+   */
+  const cached = React.useRef<RA<SerializedResource<AnySchema>>>([]);
   return useAsyncState(
     React.useCallback(
       async () =>
         Promise.all(
-          Array.from(selectedRows, async (id) => fetchResource(model.name, id))
-        ),
+          Array.from(selectedRows, (id) => {
+            const resource = cached.current.find(
+              (resource) => resource.id === id
+            );
+            return resource ?? fetchResource(model.name, id);
+          })
+        ).then((resources) => {
+          cached.current = resources;
+          return resources;
+        }),
       [model, selectedRows]
     ),
     true

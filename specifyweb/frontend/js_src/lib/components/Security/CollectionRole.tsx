@@ -2,8 +2,10 @@ import React from 'react';
 import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -19,13 +21,12 @@ import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { locationToState, useStableLocation } from '../Router/RouterState';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
 import { createCollectionRole } from './CreateRole';
+import { decompressPolicies } from './policyConverter';
 import type { NewRole, Role } from './Role';
 import { RoleView } from './Role';
-import { decompressPolicies } from './policyConverter';
-import { Http } from '../../utils/ajax/definitions';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -189,9 +190,8 @@ function RoleUsers({
   readonly userRoles: UserRoles | undefined;
   readonly onAddUsers: (users: RA<SpecifyResource<SpecifyUser>>) => void;
 }): JSX.Element | null {
-  const [addingUser, setAddingUser] = React.useState<
-    SpecifyResource<SpecifyUser> | undefined
-  >(undefined);
+  const [isAdding, handleAdding, handleNotAdding] = useBooleanState();
+
   return typeof role.id === 'number' &&
     hasPermission('/permissions/user/roles', 'read', collectionId) ? (
     <fieldset className="flex flex-col gap-2">
@@ -216,16 +216,12 @@ function RoleUsers({
           </Ul>
           {hasPermission('/permissions/user/roles', 'update', collectionId) && (
             <div>
-              <Button.Green
-                onClick={(): void =>
-                  setAddingUser(new schema.models.SpecifyUser.Resource())
-                }
-              >
+              <Button.Green onClick={handleAdding}>
                 {commonText('add')}
               </Button.Green>
             </div>
           )}
-          {typeof addingUser === 'object' ? (
+          {isAdding && (
             <SearchDialog
               extraFilters={[
                 {
@@ -235,12 +231,12 @@ function RoleUsers({
                 },
               ]}
               forceCollection={undefined}
+              model={schema.models.SpecifyUser}
               multiple
-              templateResource={addingUser}
-              onClose={(): void => setAddingUser(undefined)}
+              onClose={handleNotAdding}
               onSelected={handleAddUsers}
             />
-          ) : undefined}
+          )}
         </>
       ) : (
         commonText('loading')

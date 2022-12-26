@@ -144,8 +144,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const id = useId('form-table');
   const [isExpanded, setExpandedRecords] = React.useState<IR<boolean>>({});
   const [state, setState] = React.useState<
-    | State<'MainState'>
-    | State<'SearchState', { readonly resource: SpecifyResource<SCHEMA> }>
+    State<'MainState'> | State<'SearchState'>
   >({ type: 'MainState' });
   const [flexibleColumnWidth] = usePref(
     'form',
@@ -394,7 +393,6 @@ export function FormTable<SCHEMA extends AnySchema>({
             : (): void =>
                 setState({
                   type: 'SearchState',
-                  resource: new relationship.relatedModel.Resource(),
                 })
         }
       />
@@ -412,7 +410,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           extraFilters={undefined}
           forceCollection={undefined}
           multiple
-          templateResource={state.resource}
+          model={relationship.relatedModel}
           onClose={(): void => setState({ type: 'MainState' })}
           onSelected={handleAddResources}
         />

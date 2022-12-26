@@ -69,8 +69,6 @@ export function CompareRecords({
           resources={resources}
           onDeleted={handleDeleted}
         />
-        {/* FIXME: add merge util to user tools */}
-        {/* FIXME: add merge util to form meta */}
         <tbody>
           {conformation.map((field) => (
             <CompareField

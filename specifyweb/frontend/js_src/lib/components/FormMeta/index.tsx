@@ -20,6 +20,7 @@ import { interactionTables } from '../Interactions/InteractionsDialog';
 import { Dialog } from '../Molecules/Dialog';
 import {
   ProtectedAction,
+  ProtectedTable,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
 import { AutoNumbering } from './AutoNumbering';
@@ -27,6 +28,7 @@ import { CarryForwardConfig } from './CarryForward';
 import { AddButtonConfig, CloneConfig } from './Clone';
 import { Definition } from './Definition';
 import { EditHistory } from './EditHistory';
+import { MergeRecord } from './MergeRecord';
 import { PickListUsages } from './PickListUsages';
 import { QueryTreeUsages } from './QueryTreeUsages';
 import { ReadOnlyMode } from './ReadOnlyMode';
@@ -168,6 +170,16 @@ function MetaDialog({
                 ))}
               </ProtectedAction>
             </ProtectedTool>
+            <ProtectedAction action="update" resource="/record/replace">
+              <ProtectedAction action="delete" resource="/record/replace">
+                <ProtectedTable
+                  action="update"
+                  tableName={resource.specifyModel.name}
+                >
+                  <MergeRecord resource={resource} />
+                </ProtectedTable>
+              </ProtectedAction>
+            </ProtectedAction>
           </>
         }
         header={formsText('recordInformation')}
