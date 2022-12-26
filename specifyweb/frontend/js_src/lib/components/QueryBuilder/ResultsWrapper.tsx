@@ -5,18 +5,20 @@ import type { RA } from '../../utils/types';
 import { keysToLowerCase, replaceItem } from '../../utils/utils';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import type { SpQuery, Tables } from '../DataModel/types';
+import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
 import { fail } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { loadingGif } from '../Molecules';
 import type { QueryField } from './helpers';
 import {
+  addFormattedField,
   augmentQueryFields,
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
+import { SerializedResource } from '../DataModel/helperTypes';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -53,7 +55,7 @@ export function QueryResultsWrapper({
   ) => void;
 }): JSX.Element | null {
   const fetchResults = React.useCallback(
-    async (offset: number) =>
+    async (fields: RA<SerializedResource<SpQueryField>>, offset: number) =>
       ajax<{ readonly results: RA<QueryResultRow> }>(
         '/stored_query/ephemeral/',
         {
@@ -62,10 +64,7 @@ export function QueryResultsWrapper({
           headers: { Accept: 'application/json' },
           body: keysToLowerCase({
             ...queryResource.toJSON(),
-            fields: unParseQueryFields(
-              baseTableName,
-              augmentQueryFields(baseTableName, fields, false)
-            ),
+            fields,
             collectionId: forceCollection,
             recordSetId,
             limit: fetchSize,
@@ -96,7 +95,13 @@ export function QueryResultsWrapper({
     setProps(undefined);
 
     const countOnly = queryResource.get('countOnly') === true;
-    const allFields = augmentQueryFields(baseTableName, fields, countOnly);
+    const augmentedFields = augmentQueryFields(
+      baseTableName,
+      fields,
+      countOnly
+    );
+    const allFields = addFormattedField(augmentedFields);
+    const unParsedFields = unParseQueryFields(baseTableName, allFields);
 
     setTotalCount(undefined);
     ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
@@ -106,7 +111,7 @@ export function QueryResultsWrapper({
       body: keysToLowerCase({
         ...queryResource.toJSON(),
         collectionId: forceCollection,
-        fields: unParseQueryFields(baseTableName, allFields),
+        fields: unParsedFields,
         recordSetId,
         countOnly: true,
       }),
@@ -121,7 +126,7 @@ export function QueryResultsWrapper({
       displayedFields.length === 0;
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
-      : fetchResults(0);
+      : fetchResults(unParsedFields, 0);
     const fieldSpecs = queryFieldsToFieldSpecs(
       baseTableName,
       displayedFields
@@ -134,7 +139,9 @@ export function QueryResultsWrapper({
           hasIdField: queryResource.get('selectDistinct') !== true,
           queryResource,
           fetchSize,
-          fetchResults: isCountOnly ? undefined : fetchResults,
+          fetchResults: isCountOnly
+            ? undefined
+            : fetchResults.bind(undefined, unParsedFields),
           fieldSpecs,
           initialData,
           sortConfig: fields

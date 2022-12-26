@@ -12,7 +12,6 @@ import { hasPermission } from '../Permissions/helpers';
 export function QueryToolbar({
   showHiddenFields,
   modelName,
-  isEmpty,
   isDistinct,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
@@ -21,7 +20,6 @@ export function QueryToolbar({
 }: {
   readonly showHiddenFields: boolean;
   readonly modelName: keyof Tables;
-  readonly isEmpty: boolean;
   readonly isDistinct: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
@@ -48,16 +46,15 @@ export function QueryToolbar({
             <Label.Inline>
               <Input.Checkbox
                 checked={isDistinct}
-                disabled={isEmpty}
                 onChange={handleToggleDistinct}
               />
               {queryText('distinct')}
             </Label.Inline>
           )}
-          <Button.Small disabled={isEmpty} onClick={handleRunCountOnly}>
+          <Button.Small onClick={handleRunCountOnly}>
             {queryText('countOnly')}
           </Button.Small>
-          <Submit.Small disabled={isEmpty} onClick={handleSubmitClick}>
+          <Submit.Small onClick={handleSubmitClick}>
             {commonText('query')}
           </Submit.Small>
         </>

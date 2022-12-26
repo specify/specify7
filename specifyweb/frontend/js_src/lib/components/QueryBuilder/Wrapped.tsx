@@ -148,10 +148,6 @@ export function QueryBuilder({
       ],
     });
 
-  const isEmpty = state.fields.every(
-    ({ mappingPath }) => !mappingPathIsComplete(mappingPath)
-  );
-
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
@@ -171,7 +167,8 @@ export function QueryBuilder({
     mode: 'count' | 'regular',
     fields: typeof state.fields = state.fields
   ): void {
-    if (isEmpty || !hasPermission('/querybuilder/query', 'execute')) return;
+    if (!hasPermission('/querybuilder/query', 'execute')) return;
+
     setQuery({
       ...query,
       fields: getQueryFieldRecords?.(fields) ?? query.fields,
@@ -462,7 +459,6 @@ export function QueryBuilder({
           />
           <QueryToolbar
             isDistinct={query.selectDistinct ?? false}
-            isEmpty={isEmpty}
             modelName={model.name}
             showHiddenFields={showHiddenFields}
             onRunCountOnly={(): void => runQuery('count')}
