@@ -165,7 +165,6 @@ function ResourceBlockers({
   );
 }
 
-// FIXME: display number in dialog heading
 function PreviewLine({
   merged,
   resources,
@@ -203,6 +202,10 @@ function RecordPreview({
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(false);
 
+  const title =
+    index === 0
+      ? queryText('previewMerged')
+      : `${queryText('preview')} ${index}`;
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (
@@ -213,12 +216,11 @@ function RecordPreview({
         onClick={handleToggle}
         className="flex-1"
       >
-        {index === 0
-          ? queryText('previewMerged')
-          : `${queryText('preview')} ${index}`}
+        {title}
       </Button.Gray>
       {isOpen && (
         <ResourceView
+          title={(formatted) => `${title}: ${formatted}`}
           dialog="nonModal"
           isDependent={false}
           isSubForm={false}
