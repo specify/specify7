@@ -135,6 +135,7 @@ def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
     r = json['FailedBusinessRule']
     return FailedBusinessRule(
         message=r['message'],
+        payload=r['payload'],
         info=json_to_ReportInfo(r['info'])
     )
 
