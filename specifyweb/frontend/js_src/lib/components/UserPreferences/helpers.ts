@@ -17,7 +17,7 @@ import {
   foreverFetch,
 } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
 import { fail } from '../Errors/Crash';
@@ -29,12 +29,15 @@ import {
 } from './preferencesFetch';
 import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
 import { number } from 'prop-types';
+import { numberlike } from 'moment/moment';
 
 export const getPrefDefinitionGenerator =
   <PREFERENCE extends GenericPreferences>(preferenceDefinitions: PREFERENCE) =>
   <
     CATEGORY extends keyof PREFERENCE,
-    SUBCATEGORY extends keyof PREFERENCE[CATEGORY]['subCategories'],
+    SUBCATEGORY extends CATEGORY extends keyof PREFERENCE
+      ? keyof PREFERENCE[CATEGORY]['subCategories']
+      : never,
     ITEM extends keyof PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items']
   >(
     category: CATEGORY,
@@ -43,7 +46,12 @@ export const getPrefDefinitionGenerator =
   ): PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM] => {
     const definition =
       // @ts-expect-error
-      preferenceDefinitions[category].subCategories[subcategory].items[item];
+      // @ts-expect-error
+      (
+        preferenceDefinitions[category].subCategories[
+          subcategory
+        ] as PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]
+      ).items[item];
     const defaultValue = defaultPreferences[category]?.[subcategory]?.[item];
     return defaultValue === undefined
       ? definition
@@ -54,14 +62,16 @@ export const getPrefGenerator =
   <PREFERENCE extends GenericPreferences>(
     getPreferenceDefinition: <
       CATEGORY extends keyof PREFERENCE,
-      SUBCATEGORY extends keyof PREFERENCE[CATEGORY]['subCategories'],
+      SUBCATEGORY extends CATEGORY extends keyof PREFERENCE
+        ? keyof PREFERENCE[CATEGORY]['subCategories']
+        : never,
       ITEM extends keyof PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items']
     >(
       category: CATEGORY,
       subcategory: SUBCATEGORY,
       item: ITEM
     ) => PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM],
-    preferenceType: 'user' | 'collection'
+    preferenceType: 'collection' | 'user'
   ) =>
   <
     CATEGORY extends keyof PREFERENCE,
@@ -74,11 +84,11 @@ export const getPrefGenerator =
     subcategory: SUBCATEGORY,
     item: ITEM
   ): PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'] => {
-    const x =
+    return (
       preference[preferenceType].preferences[category]?.[subcategory]?.[item] ??
       defaultPreferences[category]?.[subcategory]?.[item] ??
-      getPreferenceDefinition(category, subcategory, item).defaultValue;
-    return x;
+      getPreferenceDefinition(category, subcategory, item).defaultValue
+    );
   };
 
 export const getPrefDefinition = getPrefDefinitionGenerator(
@@ -90,42 +100,63 @@ export const getCollectionPrefDefinition = getPrefDefinitionGenerator(
 
 /** Use usePref hook instead whenever possible as it comes with live updates */
 export const getPref = {
-  userPreferences: getPrefGenerator(getPrefDefinition, 'user'),
-  collectionPreferences: getPrefGenerator(
-    getCollectionPrefDefinition,
-    'collection'
+  userPreferences: getPrefGenerator<typeof preferenceDefinitions>(
+    getPrefDefinition,
+    'user'
   ),
+  collectionPreferences: getPrefGenerator<
+    typeof collectionPreferenceDefinitions
+  >(getCollectionPrefDefinition, 'collection'),
 };
 
 export const getUserPref = getPref.userPreferences;
 
+export const preferenceGenerator = <PREFERENCE extends GenericPreferences>(
+  preference: PREFERENCE | Record<string, never>,
+  url: string,
+  resourceId: number | undefined
+): {
+  readonly url: string;
+  readonly resourceId: undefined | number;
+  readonly preference: PREFERENCE | Record<string, never>;
+} => ({
+  url,
+  resourceId,
+  preference,
+});
+
 export const preference = {
-  user: {
-    url: '/context/user_resource/',
-    resourceId: undefined,
-    preferences: getCache('userPreferences', 'cached') ?? {},
-  },
-  collection: {
-    url: '/context/collection_resource/',
-    resourceId: undefined,
-    preferences: getCache('collectionPreferences', 'cached') ?? {},
-  },
+  user: preferenceGenerator<typeof preferenceDefinitions>(
+    getCache('userPreferences', 'cached') ?? {},
+    '/context/user_resource/',
+    undefined
+  ),
+  collection: preferenceGenerator<typeof collectionPreferenceDefinitions>(
+    getCache('collectionPreferences', 'cached') ?? {},
+    '/context/collection_resource/',
+    undefined
+  ),
 };
 
-export const getRawUserPreferences = () => preference.user.preferences;
+export const getRawUserPreferences = () => preference.user.preference;
 export const getRawCollectionPreferences = () =>
-  preference.collection.preferences;
+  preference.collection.preference;
 
 export const getRawPreferences = {
-  userPreferences: () => preference.user.preferences,
-  collectionPreferences: () => preference.collection.preferences,
+  userPreferences: (): typeof preferenceDefinitions | Record<string, never> =>
+    preference.user.preference,
+  collectionPreferences: ():
+    | typeof collectionPreferenceDefinitions
+    | Record<string, never> => preference.collection.preference,
 };
 
 export const setPrefsGenerator = <PREFERENCE extends GenericPreferences>(
-  getPreferences: () => PREFERENCE,
+  getPreferences: () => PREFERENCE | Record<string, never>,
   getPrefDefinition: <
     CATEGORY extends keyof PREFERENCE,
-    SUBCATEGORY extends keyof PREFERENCE[CATEGORY]['subCategories'],
+    SUBCATEGORY extends CATEGORY extends keyof PREFERENCE
+      ? keyof PREFERENCE[CATEGORY]['subCategories']
+      : never,
     ITEM extends keyof PREFERENCE[CATEGORY]['subCategories'][SUBCATEGORY]['items']
   >(
     category: CATEGORY,
@@ -225,16 +256,14 @@ export const setPrefsGenerator = <PREFERENCE extends GenericPreferences>(
     return parsed;
   };
 export const setPref = {
-  userPreferences: setPrefsGenerator(
+  userPreferences: setPrefsGenerator<typeof preferenceDefinitions>(
     getRawPreferences.userPreferences,
     getPrefDefinition,
     true
   ),
-  collectionPreferences: setPrefsGenerator(
-    getRawPreferences.collectionPreferences,
-    getCollectionPrefDefinition,
-    true
-  ),
+  collectionPreferences: setPrefsGenerator<
+    typeof collectionPreferenceDefinitions
+  >(getRawPreferences.collectionPreferences, getCollectionPrefDefinition, true),
 };
 
 // Sync with back-end at most every 5s
@@ -273,32 +302,35 @@ function requestPreferencesSync(): void {
   }
 }
 
-const syncPreferencesPromiseGenerator = () =>
+const syncPreferencesPromiseGenerator = (): RR<
+  'collection' | 'user',
+  Promise<number> | undefined
+> =>
   Object.fromEntries(
     Object.entries(preference).map(
-      ([resourceName, { url, resourceId, preferences }]) => {
-        return [
-          resourceName,
-          ping(
-            `${url}${resourceId}/`,
-            {
-              method: 'PUT',
-              body: keysToLowerCase({
-                name:
-                  resourceName === 'collection'
-                    ? 'CollectionPreferences'
-                    : 'UserPreferences',
-                mimeType: 'application/json',
-                metaData: '',
-                data: JSON.stringify(preferences),
-              }),
-            },
-            {
-              expectedResponseCodes: [Http.NO_CONTENT],
-            }
-          ),
-        ];
-      }
+      ([resourceName, { url, resourceId, preference }]) => [
+        resourceName,
+        resourceId !== undefined && Object.keys(preference).length > 0
+          ? ping(
+              `${url}${resourceId}/`,
+              {
+                method: 'PUT',
+                body: keysToLowerCase({
+                  name:
+                    resourceName === 'collection'
+                      ? 'CollectionPreferences'
+                      : 'UserPreferences',
+                  mimeType: 'application/json',
+                  metaData: '',
+                  data: JSON.stringify(preference),
+                }),
+              },
+              {
+                expectedResponseCodes: [Http.NO_CONTENT],
+              }
+            )
+          : undefined,
+      ]
     )
   );
 
@@ -345,10 +377,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
           .all({
             items: await Promise.all(
               preferencesPromiseGenerator(preferencesFetchSpec)
-            ).then((data) => {
-              const result = Object.fromEntries(data);
-              return result;
-            }),
+            ).then((data) => Object.fromEntries(data)),
             defaultItems: ajax(
               formatUrl('/context/app.resource', {
                 name: defaultResourceName,
@@ -381,17 +410,21 @@ export const preferencesPromise = contextUnlockedPromise.then(
 function initializePreferences(
   resource: IR<ResourceWithData>
 ): ResourceWithData {
-  //setting resource id
-  preference.user.resourceId = resource.userPreferences.id;
-  preference.collection.resourceId = resource.collectionPreferences.id;
+  preference.user = {
+    ...preference.user,
+    resourceId: resource.userPreferences.id,
+    preference: JSON.parse(
+      resource.userPreferences.data ?? '{}'
+    ) as typeof preferenceDefinitions,
+  };
 
-  //setting preference
-  preference.user.preferences = JSON.parse(
-    resource.userPreferences.data ?? '{}'
-  );
-  preference.collection.preferences = JSON.parse(
-    resource.collectionPreferences.data ?? '{}'
-  );
+  preference.collection = {
+    ...preference.collection,
+    resourceId: resource.collectionPreferences.id,
+    preference: JSON.parse(
+      resource.collectionPreferences.data ?? '{}'
+    ) as typeof collectionPreferenceDefinitions,
+  };
 
   setDevelopmentGlobal('_preferences', preference); //Remove Id!
   prefEvents.trigger('update', undefined);
@@ -406,10 +439,11 @@ const commitToCache = (): void =>
   // Need to create a shallow copy of the resource since it can get mutated
   {
     setCache('userPreferences', 'cached', {
-      ...preference.user.preferences,
+      ...preference.user.preference,
     });
+
     setCache('collectionPreferences', 'cached', {
-      ...preference.collection.preferences,
+      ...preference.collection.preference,
     });
   };
 
@@ -421,17 +455,23 @@ const registerChangeListener = (): void =>
 
     if (category === 'userPreferences') {
       if (key === 'cached') {
-        preference.user.preferences =
-          getCache('userPreferences', 'cached') ?? preference.user.preferences;
+        preference.user = {
+          ...preference.user,
+          preference:
+            getCache('userPreferences', 'cached') ?? preference.user.preference,
+        };
       } else if (key === 'defaultCached') {
         defaultPreferences =
           getCache('userPreferences', 'defaultCached') ?? defaultPreferences;
       }
     }
 
-    preference.collection.preferences =
-      getCache('collectionPreferences', 'cached') ??
-      preference.collection.preferences;
+    preference.collection = {
+      ...preference.collection,
+      preference:
+        getCache('collectionPreferences', 'cached') ??
+        preference.collection.preference,
+    };
 
     setDevelopmentGlobal('_preferences', preference);
     prefEvents.trigger('update', undefined);

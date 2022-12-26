@@ -68,8 +68,10 @@ def ephemeral(request):
     """Executes and returns the results of the query provided as JSON in the POST body."""
     try:
         spquery = json.load(request)
+        logger.warning(spquery)
     except ValueError as e:
         return HttpResponseBadRequest(e)
+
 
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
