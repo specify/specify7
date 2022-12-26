@@ -10,7 +10,7 @@ import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
-import { removeItem, removeKey } from '../../utils/utils';
+import { removeKey } from '../../utils/utils';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { serializeResource } from '../DataModel/helpers';
@@ -283,19 +283,18 @@ export function QueryResults({
               results={results}
               selectedRows={selectedRows}
               totalCount={totalCount}
-              // BUG: test this when query returns same record twice
-              onDelete={(index): void => {
+              onDelete={(deleteId): void => {
                 // Don't allow deleting while query results are being fetched
                 if (Object.keys(fetchersRef.current).length > 0) return;
                 setTotalCount(totalCount! - 1);
-                const newResults = removeItem(results, index);
+                const newResults = results.filter(
+                  (result) => result?.[queryIdField] !== deleteId
+                );
                 setResults(newResults);
                 resultsRef.current = newResults;
                 setSelectedRows(
                   new Set(
-                    Array.from(selectedRows).filter(
-                      (id) => id !== loadedResults[index][queryIdField]
-                    )
+                    Array.from(selectedRows).filter((id) => id !== deleteId)
                   )
                 );
               }}
