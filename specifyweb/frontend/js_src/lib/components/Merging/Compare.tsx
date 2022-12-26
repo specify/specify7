@@ -18,6 +18,7 @@ import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { autoMerge } from './autoMerge';
 import { MergeRow, MergingHeader } from './Header';
+import { removeKey } from '../../utils/utils';
 
 export function CompareRecords({
   showMatching,
@@ -68,7 +69,6 @@ export function CompareRecords({
           resources={resources}
           onDeleted={handleDeleted}
         />
-        {/* FIXME: add an all-left and all-right button */}
         {/* FIXME: add merge util to user tools */}
         {/* FIXME: add merge util to form meta */}
         <tbody>
@@ -147,27 +147,33 @@ function CompareField({
   );
 }
 
-function MergeButton({
+export function MergeButton({
   field,
   from,
-  to: merged,
+  to,
 }: {
-  readonly field: LiteralField | Relationship;
+  readonly field: LiteralField | Relationship | undefined;
   readonly from: SpecifyResource<AnySchema>;
   readonly to: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const fromValue = from.get(field.name);
+  const getValue = React.useCallback(
+    (record: SpecifyResource<AnySchema>) =>
+      field === undefined
+        ? removeKey(record.toJSON(), 'id', 'resource_uri')
+        : record.get(field.name),
+    [field]
+  );
 
-  const [toValue, setToValue] = React.useState(merged.get(field.name));
+  const [fromValue, setFromValue] = React.useState(() => getValue(from));
   React.useEffect(
-    () =>
-      resourceOn(
-        merged,
-        `change:${field.name}`,
-        () => setToValue(merged.get(field.name)),
-        true
-      ),
-    [toValue, field.name]
+    () => resourceOn(from, 'changed', () => setFromValue(getValue(from)), true),
+    [from, field]
+  );
+
+  const [toValue, setToValue] = React.useState(() => getValue(to));
+  React.useEffect(
+    () => resourceOn(to, 'changed', () => setToValue(getValue(to)), true),
+    [to, field]
   );
 
   const isSame = React.useMemo(
@@ -180,7 +186,11 @@ function MergeButton({
       disabled={isSame}
       title={treeText('merge')}
       variant={className.blueButton}
-      onClick={(): void => void merged.set(field.name, fromValue)}
+      onClick={(): void =>
+        field === undefined
+          ? void to.bulkSet(fromValue)
+          : void to.set(field.name, from.get(field.name))
+      }
     >
       {icons.chevronLeft}
     </Button.Small>

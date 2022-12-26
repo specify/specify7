@@ -17,6 +17,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
+import { MergeButton } from './Compare';
 
 export function MergingHeader({
   merged,
@@ -181,6 +182,7 @@ function PreviewLine({
           index={index}
           key={index}
           resource={resource}
+          merged={merged === resource ? undefined : merged}
           onDeleted={(): void => handleDeleted(resource.id)}
         />
       ))}
@@ -190,17 +192,22 @@ function PreviewLine({
 
 function RecordPreview({
   resource,
+  merged,
   index,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
+  readonly merged: SpecifyResource<AnySchema> | undefined;
   readonly index: number;
   readonly onDeleted: () => void;
 }): JSX.Element {
   const [isOpen, _, handleClose, handleToggle] = useBooleanState(false);
 
   return (
-    <td>
+    <td className="!items-stretch">
+      {typeof merged === 'object' && (
+        <MergeButton field={undefined} from={resource} to={merged} />
+      )}
       <Button.Gray
         aria-pressed={isOpen}
         onClick={handleToggle}

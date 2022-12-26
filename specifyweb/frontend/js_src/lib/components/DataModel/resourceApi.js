@@ -266,7 +266,13 @@ function eventHandlerForToOne(related, field) {
                 return _.isUndefined(newValue) ? acc : Object.assign(acc, {[newFieldName]: newValue});
             }, {});
 
-            return Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
+            const result = Backbone.Model.prototype.set.call(this, adjustedAttrs, options);
+            /*
+             * Unlike "change", if changing multiple fields at once, this
+             * triggers only once after all changes
+             */
+            this.trigger('changed');
+            return result;
         },
         _handleField(value, fieldName) {
             if(fieldName === '_tablename') return ['_tablename', undefined];
