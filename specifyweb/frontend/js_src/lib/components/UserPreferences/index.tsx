@@ -101,22 +101,21 @@ export function usePrefDefinitions() {
         .map(
           ([category, { subCategories, ...categoryData }]) =>
             [
-              category,
+              category as unknown as keyof typeof preferenceDefinitions,
               {
                 ...categoryData,
                 subCategories: Object.entries(subCategories)
-                  .map(
-                    ([subCategory, { items, ...subCategoryData }]) =>
-                      [
-                        subCategory,
-                        {
-                          ...subCategoryData,
-                          items: Object.entries(items).filter(
-                            ([_name, { visible }]) => visible !== false
-                          ),
-                        },
-                      ] as const
-                  )
+                  .map(([subCategory, { items, ...subCategoryData }]) => {
+                    return [
+                      subCategory,
+                      {
+                        ...subCategoryData,
+                        items: Object.entries(items).filter(
+                          ([_name, { visible }]) => visible !== false
+                        ),
+                      },
+                    ] as const;
+                  })
                   .filter(([_name, { items }]) => items.length > 0),
               },
             ] as const
@@ -164,19 +163,26 @@ export function PreferencesContent({
                       <div className="flex flex-1 justify-end">
                         <Button.Small
                           onClick={(): void =>
-                            items.forEach(([name]) =>
+                            items.forEach(([name]) => {
                               setPref.userPreferences(
                                 category,
+                                // @ts-expect-error
                                 subcategory,
                                 name,
                                 /*
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-                                getPrefDefinition(category, subcategory, name)
-                                  .defaultValue
-                              )
-                            )
+                                // @ts-expect-error
+                                (
+                                  getPrefDefinition(
+                                    category,
+                                    subcategory,
+                                    name
+                                  ) as unknown as PreferenceItem<any>
+                                ).defaultValue
+                              );
+                            })
                           }
                         >
                           {commonText('reset')}

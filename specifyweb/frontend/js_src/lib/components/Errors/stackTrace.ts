@@ -24,7 +24,7 @@ f.all({
     ({ remotePrefs }) => remotePrefs
   ),
   userPreferences: import('../UserPreferences/helpers').then(
-    ({ getRawUserPreferences }) => getRawUserPreferences()
+    ({ getRawPreferences }) => getRawPreferences.userPreferences()
   ),
   userInformation: import('../InitialContext/userInformation').then(
     ({ userInformation }) => userInformation

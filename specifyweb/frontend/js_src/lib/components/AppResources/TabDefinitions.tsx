@@ -9,9 +9,11 @@ import React from 'react';
 import type { SpAppResource, SpViewSetObj } from '../DataModel/types';
 import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import type { UserPreferences } from '../UserPreferences/helpers';
+import type { PartialUserPreference } from '../UserPreferences/helpers';
 import {
+  getPref,
   getPrefDefinition,
+  setPref,
   setPrefsGenerator,
 } from '../UserPreferences/helpers';
 import type { RR } from '../../utils/types';
@@ -23,6 +25,10 @@ import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { appResourceSubTypes } from './types';
 import { SerializedResource } from '../DataModel/helperTypes';
+import {
+  preferenceDefinitions,
+  PreferenceItem,
+} from '../UserPreferences/Definitions';
 
 export type AppResourceTab = (props: {
   readonly isReadOnly: boolean;
@@ -98,38 +104,46 @@ const UserPreferencesEditor: AppResourceTab = function ({
     React.ContextType<typeof PreferencesContext>
   >(
     React.useCallback(() => {
-      const preferences = JSON.parse(data || '{}') as UserPreferences;
-      // @ts-ignore
-      const setPrefs = setPrefsGenerator(
+      const preferences = JSON.parse(
+        data || '{}'
+      ) as unknown as PartialUserPreference;
+      const setPrefs = setPrefsGenerator<typeof preferenceDefinitions>(
         () => preferences,
         getPrefDefinition,
         false
       );
-
       return [
-        (
+        ((
           category: string,
           subcategory: PropertyKey,
           item: PropertyKey
         ): unknown =>
+          // @ts-expect-error
           preferences[category]?.[subcategory as string]?.[item as string] ??
-          getPrefDefinition(category, subcategory as string, item as string)
-            .defaultValue,
-        (
+          (
+            getPrefDefinition(
+              // @ts-expect-error
+              category,
+              subcategory as string,
+              item as string
+            ) as PreferenceItem<any>
+          ).defaultValue) as unknown as typeof getPref.userPreferences,
+        ((
           category: string,
           subcategory: PropertyKey,
           item: PropertyKey,
           value: unknown
         ): void => {
-          const val = setPrefs(
+          const newValue = setPrefs(
+            // @ts-expect-error
             category,
             subcategory as string,
             item as string,
             value
           );
           handleChange(JSON.stringify(preferences));
-          return val;
-        },
+          return newValue;
+        }) as unknown as typeof setPref.userPreferences,
       ];
     }, [handleChange])
   );
