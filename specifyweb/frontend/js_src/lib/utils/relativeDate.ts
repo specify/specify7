@@ -1,7 +1,7 @@
 import { parseDate } from '../components/FormPlugins/PartialDateUi';
 import { mappedFind } from './utils';
 
-const reParse =
+export const reParse =
   /today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)/u;
 
 /**

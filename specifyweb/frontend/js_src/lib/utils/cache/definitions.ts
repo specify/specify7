@@ -28,11 +28,6 @@ import {
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
 import { SortConfig } from '../../components/Molecules/Sorting';
-import {
-  GenericPreferences,
-  preferenceDefinitions,
-} from '../../components/UserPreferences/Definitions';
-import { collectionPreferenceDefinitions } from '../../components/UserPreferences/CollectionPreferenceDefinitions';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
