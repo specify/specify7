@@ -8,6 +8,8 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const adminText = createDictionary({
   removeAdmin: {
     'en-us': 'Remove Admin',
@@ -29,42 +31,17 @@ export const adminText = createDictionary({
     'en-us': 'User must be saved as Manager first',
     'ru-ru': 'Сначала пользователь должен быть сохранен как менеджер',
   },
-  mimetype: {
-    'en-us': 'Mimetype:',
-    'ru-ru': 'Mimetype:',
-  },
   loadFile: {
     'en-us': 'Load File',
     'ru-ru': 'Загрузить файл',
   },
-  corruptResourceOrConflict: {
-    'en-us': `
-      This app resource appears to be corrupt but may be in the process of
-      being saved by another session. It can be deleted if that is not the
-      case.`,
-    'ru-ru': `
-      Ресурс поврежден о может быть в процессес охраняется другим сеансом.
-      Его можно удалить, если это не кейс.`,
+  globalResources: {
+    'en-us': 'Global Resources',
+    'ru-ru': 'Глобальные ресурсы',
   },
-  resourceLoadDialogHeader: {
-    'en-us': 'Load resource file',
-    'ru-ru': 'Загрузить файл ресурсов',
-  },
-  resourceLoadDialogText: {
-    'en-us': 'Select the file to be loaded into the editor.',
-    'ru-ru': 'Выберите файл для загрузки в редактор.',
-  },
-  globalResourcesTitle: {
-    'en-us': (resourceCount: string) =>
-      `Global <small>(${resourceCount})</small>`,
-    'ru-ru': (resourceCount: string) =>
-      `Глобальный <small>(${resourceCount})</small>`,
-  },
-  disciplineResourcesTitle: {
-    'en-us': (resourceCount: string) =>
-      `Discipline <small>(${resourceCount})</small>`,
-    'ru-ru': (resourceCount: string) =>
-      `Дисциплина <small>(${resourceCount})</small>`,
+  disciplineResources: {
+    'en-us': 'Discipline Resources',
+    'ru-ru': 'Ресурсы дисциплины',
   },
   userTypes: {
     'en-us': 'User Types',
@@ -82,13 +59,9 @@ export const adminText = createDictionary({
     'en-us': 'User Accounts Assigned to this Collection',
     'ru-ru': 'Пользователи',
   },
-  createResourceDialogHeader: {
-    'en-us': 'Create New Resource File',
-    'ru-ru': 'Создать новый файл ресурсов',
-  },
-  newResourceName: {
-    'en-us': 'New Resource Name:',
-    'ru-ru': 'Имя нового ресурса:',
+  selectResourceType: {
+    'en-us': 'Select Resource Type',
+    'ru-ru': 'Выберите тип ресурса',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -111,7 +84,7 @@ export const adminText = createDictionary({
     'en-us': 'This option is unavailable for admin users',
     'ru-ru': 'Эта опция недоступна для администраторов.',
   },
-  userCollectionsPluginDialogTitle: {
+  configureCollectionAccess: {
     'en-us': 'Select user collection access',
     'ru-ru': 'Выберите доступ к коллекциям',
   },
@@ -199,15 +172,11 @@ export const adminText = createDictionary({
     'en-us': 'All Actions',
     'ru-ru': 'Все действия',
   },
-  none: {
-    'en-us': 'none',
-    'ru-ru': 'ничто',
-  },
   collectionAccess: {
     'en-us': 'Enable Collection Access',
     'ru-ru': 'Доступ к коллекции',
   },
-  createRoleDialogHeader: {
+  createRole: {
     'en-us': 'Create Role',
     'ru-ru': 'Создать роль',
   },
@@ -245,11 +214,11 @@ export const adminText = createDictionary({
     'en-us': 'Create Invite Link',
     'ru-ru': 'Создать пригласительную ссылку',
   },
-  userInviteLinkDialogHeader: {
+  userInviteLink: {
     'en-us': 'User Invite Link',
     'ru-ru': 'Ссылка для приглашения пользователя',
   },
-  userInviteLinkDialogText: {
+  userInviteLinkDescription: {
     'en-us': (username: string) => `
       Send the following link to ${username} to allow
       them to log in for the first time.
@@ -259,7 +228,7 @@ export const adminText = createDictionary({
       им войти в систему в первый раз.
     `,
   },
-  userInviteLinkInvalidDialogText: {
+  noProvidersForUserInviteLink: {
     'en-us': `No external identity provider is configured.
       You can configure some in Specify 7 server settings`,
     'ru-ru': `Внешний поставщик удостоверений не настроен.
@@ -269,7 +238,7 @@ export const adminText = createDictionary({
     'en-us': 'Specify 6 Permissions',
     'ru-ru': 'Specify 6 Разрешения',
   },
-  setPasswordDialogText: {
+  setPasswordBeforeSavePrompt: {
     'en-us': `Consider setting a password for this user. Users without a password
       won't be able to sign in`,
     'ru-ru': `Не забудьте установить пароль для этого пользователя. Пользователи
@@ -307,11 +276,11 @@ export const adminText = createDictionary({
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Specify 6 Администратор)',
   },
-  deleteRoleDialogHeader: {
+  deleteRoleWithUsers: {
     'en-us': 'Delete role that has users?',
     'ru-ru': 'Удалить роль, в которой есть пользователи?',
   },
-  deleteRoleDialogText: {
+  deleteRoleWithUsersDescription: {
     'en-us': 'Users will not be deleted, but they would lose this role.',
     'ru-ru': 'Пользователи не будут удалены, но потеряют эту роль.',
   },
@@ -321,18 +290,13 @@ export const adminText = createDictionary({
     'ru-ru': `
       Пользовательские политики на уровне учреждения (применяются ко всем назначенным коллекциям)`,
   },
-  noAdminsErrorDialogHeader: {
+  cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
     'ru-ru': 'Не могу удалить статус суперадминистратора',
   },
-  noAdminsErrorDialogText: {
+  cantRemoveLastAdminDescription: {
     'en-us': 'There must be at least one Institution Admin in institution',
     'ru-ru': 'Должен быть хотя бы один суперадмин',
-  },
-  resourceValidationFailed: {
-    'en-us':
-      'The following errors occurred during validation of this resource:',
-    'ru-ru': 'Во время проверки этого ресурса произошли следующие ошибки:',
   },
   switchToHorizontalLayout: {
     'en-us': 'Switch to horizontal layout',
@@ -360,4 +324,106 @@ export const adminText = createDictionary({
     'en-us': 'Account Setup Options',
     'ru-ru': 'Параметры учетной записи',
   },
+  resources: {
+    'en-us': 'Resources',
+    'ru-ru': 'Ресурсы',
+  },
+  subCategories: {
+    'en-us': 'Sub-categories',
+    'ru-ru': 'Подкатегории',
+  },
+  addResource: {
+    'en-us': 'Add Resource',
+    'ru-ru': 'Добавить ресурс',
+  },
+  appResource: {
+    'en-us': 'App Resource',
+    'ru-ru': 'Ресурс приложения',
+  },
+  label: {
+    'en-us': 'Label',
+    'ru-ru': 'Этикетка',
+  },
+  report: {
+    'en-us': 'Report',
+    'ru-ru': 'Отчет',
+  },
+  userPreferences: {
+    'en-us': 'User Preferences',
+    'ru-ru': 'Пользовательские настройки',
+  },
+  defaultUserPreferences: {
+    'en-us': 'Default User Preferences',
+    'ru-ru': 'Пользовательские настройки по умолчанию',
+  },
+  rssExportFeed: {
+    'en-us': 'RSS Export Feed',
+    'ru-ru': 'RSS-канал экспорта',
+  },
+  expressSearchConfig: {
+    'en-us': 'Express Search Config',
+    'ru-ru': 'Конфигурация быстрого поиска',
+  },
+  webLinks: {
+    'en-us': 'Web Links',
+    'ru-ru': 'Веб-ссылки',
+  },
+  uiFormatters: {
+    'en-us': 'Field formatters',
+    'ru-ru': 'Форматировщики полей',
+  },
+  dataObjectFormatters: {
+    'en-us': 'Record Formatters',
+    'ru-ru': 'Форматировщики записей',
+  },
+  searchDialogDefinitions: {
+    'en-us': 'Search Dialog Definitions',
+    'ru-ru': 'Макеты диалогового окна поиска',
+  },
+  dataEntryTables: {
+    'en-us': 'Data Entry Tables',
+    'ru-ru': 'Таблицы ввода данных',
+  },
+  interactionsTables: {
+    'en-us': 'Interactions Tables',
+    'ru-ru': 'Таблицы взаимодействий',
+  },
+  otherXmlResource: {
+    'en-us': 'Other XML Resource',
+    'ru-ru': 'Другой XML-ресурс',
+  },
+  otherJsonResource: {
+    'en-us': 'Other JSON Resource',
+    'ru-ru': 'Другой JSON-ресурс',
+  },
+  otherPropertiesResource: {
+    'en-us': 'Other Properties Resource',
+    'ru-ru': 'Другой Properties-ресурс',
+  },
+  otherAppResource: {
+    'en-us': 'Other Resource',
+    'ru-ru': 'Другой Ресурс',
+  },
+  filters: {
+    'en-us': 'Filters',
+    'ru-ru': 'Фильтры',
+  },
+  custom: {
+    'en-us': 'Custom',
+    'ru-ru': 'Настроить',
+  },
+  leafletLayers: {
+    'en-us': 'Leaflet Layers',
+    'ru-ru': 'Слои Leaflet',
+  },
+  textEditor: {
+    'en-us': 'Text Editor',
+    'ru-ru': 'Текстовый редактор',
+  },
+  visualEditor: {
+    'en-us': 'Visual Editor',
+    'ru-ru': 'Визуальный редактор',
+  },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

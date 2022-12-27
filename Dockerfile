@@ -23,7 +23,7 @@ RUN mkdir -p /opt/specify7 \
 #####################################################################
 
 
-FROM node:16.1.0-alpine3.11 AS build-frontend
+FROM node:18-alpine AS build-frontend
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 
@@ -31,7 +31,7 @@ USER node
 WORKDIR /home/node
 
 COPY --chown=node:node specifyweb/frontend/js_src/package*.json ./
-RUN npm install
+RUN npm ci
 RUN mkdir dist && chown node:node dist
 COPY --chown=node:node specifyweb/frontend/js_src .
 RUN npx webpack --mode production

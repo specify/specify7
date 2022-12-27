@@ -6,11 +6,12 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
+  <script id="entrypoint-name">"login"</script>
 {% if use_raven %}
   <script src="https://cdn.ravenjs.com/1.1.16/raven.min.js"></script>
   <script>Raven.config('{% sentry_public_dsn %}').install()</script>
 {% endif %}
-  <script src="{% script_src 'login.js' %}"></script>
+  <script src="{% script_src 'main.js' %}"></script>
 </head>
 
 <body>
@@ -18,10 +19,10 @@
   <div id="portal-root"></div>
 
   {% get_available_languages as LANGUAGES %}
-  {{ providers|json_script:'providers' }}
   {{ LANGUAGES|json_script:'languages' }}
-  {{ request.session.invite_token|json_script:'invite-token' }}
   {{ next|json_script:'next-url' }}
+  {{ providers|json_script:'providers' }}
+  {{ request.session.invite_token|json_script:'invite-token' }}
   <script id="csrf-token">"{{ csrf_token }}"</script>
 </body>
 </html>

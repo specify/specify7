@@ -5,8 +5,9 @@
 @tailwind base;
 
 /*
- * TODO: get rid of most global styles once everything is using React components
- * TODO: remove most usages of !important after global styles are removed
+ * REFACTOR: get rid of most global styles once everything is using React components
+ *   (can use arbitrary variants too)
+ * REFACTOR: remove most usages of !important after global styles are removed
  */
 @layer base {
 
@@ -14,7 +15,7 @@
     @apply !transition-none !duration-0;
   }
 
-  body.no-rounded-corners * {
+  body.no-rounded-corners *:not(.rounded-full) {
     @apply !rounded-none;
   }
 
@@ -22,7 +23,7 @@
     @apply transition duration-[var(--transition-duration)] ease-in-out
       dark:!shadow-none placeholder-gray-400 !ring-inset;
     /*
-     * Disable transitions for text color.
+     * Disables transitions for text color.
      * See https://github.com/specify/specify7/issues/1561
      */
     transition-property: background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
@@ -46,7 +47,9 @@
   select {
     @apply p-1 rounded accent-brand-200 dark:accent-brand-400 ring-gray-500
       ring-1 dark:ring-0 border-none bg-[color:var(--field-background)]
-      text-[length:inherit] leading-[unset];
+      text-[length:inherit] leading-[unset]
+      [.has-alt-background_&]:optional:bg-white
+      dark:[.has-alt-background_&]:optional:bg-neutral-900;
   }
 
   input,
@@ -68,41 +71,12 @@
     padding-right: 1.5em;
   }
 
-  /**
-   * Fix for Safari's inconsistencies:
-   * https://github.com/specify/specify7/issues/1274#issuecomment-1102807239
-   */
-  [type='date'],
-  [type='datetime-local'],
-  [type='month'],
-  [type='time'],
-  [type='week'] {
-    @apply leading-5;
-  }
-
-  .has-alt-background :is(
-    [type='text'],
-    [type='email'],
-    [type='url'],
-    [type='password'],
-    [type='number'],
-    [type='date'],
-    [type='datetime-local'],
-    [type='month'],
-    [type='search'],
-    [type='tel'],
-    [type='time'],
-    [type='week'],
-    [multiple],
-    textarea,
-    .textarea-shadow,
-    select
-  ):not(:required) {
-    @apply bg-white dark:bg-neutral-900;
-  }
-
   :disabled:not(.link), [readonly] {
-    @apply !cursor-not-allowed ring-1 ring-gray-500 dark:ring-1;
+    @apply ring-1 ring-gray-500 dark:ring-1;
+  }
+
+  select, input[role='combox'] {
+    @apply disabled:cursor-default;
   }
 
   :is(:disabled, [readonly]):not(.link, [type='checkbox'], [type='radio']) {
@@ -110,11 +84,7 @@
       dark:text-neutral-500;
   }
 
-  select {
-    @apply pr-5 bg-right cursor-pointer;
-  }
-
-  select.no-arrow {
+  select[size] {
     @apply bg-none pl-2 pr-1;
   }
 
@@ -125,7 +95,7 @@
   }
 
   :is([type='checkbox'], [type='radio']):is([readonly], :disabled) {
-    @apply bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
+    @apply cursor-default bg-gray-300 dark:bg-neutral-600 text-gray-500 dark:text-neutral-900
       hover:ring-gray-500 checked:bg-current;
   }
 
@@ -175,17 +145,8 @@
     @apply relative;
   }
 
-  .button {
-    @apply ring-1 dark:ring-0 rounded cursor-pointer active:brightness-80
-      bg-gray-300 text-black dark:text-gray-100 gap-2 inline-flex items-center
-      ring-zinc-400 disabled:bg-gray-200 dark:bg-neutral-600 px-2 py-1
-      disabled:ring-gray-500 disabled:dark:ring-neutral-500
-      disabled:dark:bg-neutral-800 disabled:text-gray-500
-      disabled:dark:text-neutral-400 hover:bg-brand-200 dark:hover:bg-brand-400;
-  }
-
-  button[aria-pressed='true']:not(.aria-handled), button[aria-selected='true']:not(.aria-handled) {
-    @apply bg-white dark:bg-neutral-400;
+  .button:is([aria-pressed='true'], [aria-selected='true'], [aria-current]):not(.aria-handled) {
+    @apply brightness-[1.2] dark:brightness-[1.5];
   }
 
   button[aria-pressed='true']:not(.aria-handled).link {
@@ -193,15 +154,16 @@
   }
 
   .link {
-    @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0;
+    @apply text-black dark:text-gray-200 cursor-pointer disabled:!ring-0
+      enabled:hover:text-brand-300 gap-2 inline-flex items-center active:underline;
   }
 
-  .link:not([disabled]) {
-    @apply hover:text-brand-300;
+  a.link {
+    @apply hover:text-brand-400 dark:hover:text-brand-300;
   }
 
-  .link {
-    @apply gap-2 inline-flex items-center active:underline;
+  .link[aria-current]:not(.aria-handled) {
+    @apply text-brand-300;
   }
 
   .icon {
@@ -215,7 +177,6 @@
     @apply bg-gray-200 dark:bg-neutral-700 rounded;
   }
 
-  /* TODO: Can combine the next two selectors using :is() */
   progress::-webkit-progress-value {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
@@ -223,7 +184,6 @@
   progress::-moz-progress-bar {
     @apply bg-brand-200 dark:bg-brand-400 rounded;
   }
-
 
   /* Display tooltips as an overlay on touch-screen devices */
   @media (pointer: coarse), (hover: none) {
@@ -254,7 +214,7 @@
   }
 
   .grid-table :is(th, td, [role~="columnheader"], [role~="rowheader"], [role~="cell"]) {
-    @apply flex items-center gap-x-1;
+    @apply flex items-center gap-1;
   }
 
   /*
@@ -263,6 +223,10 @@
    */
   .sr-only {
     @apply top-0;
+  }
+
+  optgroup {
+    @apply font-bold;
   }
 
 }
@@ -358,8 +322,13 @@
 /*
  * Workaround for https://github.com/Leaflet/Leaflet/issues/6986
  * This can be removed after updating Leaflet to 1.8.0
- * TODO: remove this after updating Leaflet
+ * REFACTOR: remove this after updating Leaflet
  */
 .leaflet-container :focus {
   outline: revert !important;
+}
+
+/* The CodeMirror editor styleds*/
+.cm-theme, .cm-editor {
+  @apply h-full;
 }
