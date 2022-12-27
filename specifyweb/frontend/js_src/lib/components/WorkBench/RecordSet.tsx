@@ -76,14 +76,14 @@ function CreateRecordSetDialog({
       onSaving={(): false => {
         loading(
           ajax<number>(
-            `/api/workbench/dataset/${dataSetId}/create_recordset`,
+            `/api/workbench/create_recordset/${dataSetId}/`,
             {
               method: 'POST',
               headers: { Accept: 'application/json' },
               body: formData({ name: recordSet.get('name') }),
             },
             { expectedResponseCodes: [Http.CREATED] }
-          ).then(({ data }) => unsafeNavigate(`/specify/recordset/${data}`))
+          ).then(({ data }) => unsafeNavigate(`/specify/record-set/${data}/`))
         );
         return false;
       }}
