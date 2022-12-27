@@ -1,117 +1,77 @@
-import { cachableUrl } from '../InitialContext';
-import { keysToLowerCase } from '../../utils/utils';
-import { IR, RA } from '../../utils/types';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
+import type { RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
+import { cachableUrl } from '../InitialContext';
 
-const userResourceName = 'UserPreferences';
-const collectionResourceName = 'CollectionPreferences';
-
-type UserResource = {
+type Resource = {
   readonly id: number;
   readonly metadata: string | null;
   readonly name: string;
   readonly mimetype: string | null;
 };
-type ResourceWithData = UserResource & {
+
+const mimeType = 'application/json';
+type ResourceWithData = Resource & {
   readonly data: string;
 };
 
-export const preferencesFetchSpec = {
-  userPreferences: {
+export const preferenceResource = {
+  user: {
     url: '/context/user_resource/',
-    actions: [
-      ({ data }) =>
-        data.find(
-          ({ name, mimetype }) =>
-            name === userResourceName && mimetype === 'application/json'
-        )?.id,
-      async (appResourceId) =>
-        (typeof appResourceId === 'number'
-          ? ajax<ResourceWithData>(
-              cachableUrl(`/context/user_resource/${appResourceId}/`),
-              {
-                headers: { Accept: 'application/json' },
-              }
-            )
-          : ajax<ResourceWithData>(
-              '/context/user_resource/',
-              {
-                headers: { Accept: 'application/json' },
-                method: 'POST',
-                body: keysToLowerCase({
-                  name: userResourceName,
-                  mimeType,
-                  metaData: '',
-                  data: '{}',
-                }),
-              },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
-        ).then(({ data }) => data),
-    ],
+    resourceName: 'UserPreferences',
   },
-  collectionPreferences: {
+  collection: {
     url: '/context/collection_resource/',
-    actions: [
-      ({ data }) =>
-        data.find(
-          ({ name, mimetype }) =>
-            name === collectionResourceName && mimetype === 'application/json'
-        )?.id,
-      async (appResourceId) =>
-        (typeof appResourceId === 'number'
-          ? ajax<ResourceWithData>(
-              cachableUrl(`/context/collection_resource/${appResourceId}/`),
-              {
-                headers: { Accept: 'application/json' },
-              }
-            )
-          : ajax<ResourceWithData>(
-              '/context/collection_resource/',
-              {
-                headers: { Accept: 'application/json' },
-                method: 'POST',
-                body: keysToLowerCase({
-                  name: collectionResourceName,
-                  mimeType: 'application/json',
-                  metaData: '',
-                  data: '{}',
-                }),
-              },
-              { expectedResponseCodes: [Http.CREATED] }
-            )
-        ).then(({ data }) => data),
-    ],
+    resourceName: 'CollectionPreferences',
   },
 };
 
-export const preferencesPromiseGenerator = (
-  preferencesFetchSpec: IR<{
-    readonly url: string;
-    readonly actions: RA<Promise<any> | ((data: any) => any)>;
-  }>
-): Promise<[string, any]>[] => {
-  const preferencesPromiseList = Object.entries(preferencesFetchSpec).map(
-    async ([preferencesFetchName, { url, actions }]): Promise<
-      [string, any]
-    > => {
-      return [
-        preferencesFetchName,
-        await ajax<RA<UserResource>>(cachableUrl(url), {
+const getActions = (resourceName: string, url: string) => ({
+  getResources: ajax<RA<Resource>>(cachableUrl(url), {
+    headers: { Accept: 'application/json' },
+  }),
+  getResourceId: ({ data }: { readonly data: RA<Resource> }) =>
+    data.find(
+      ({ name, mimetype }) =>
+        name === resourceName && mimetype === 'application/json'
+    )?.id,
+  fetchOrCreate: async (appResourceId: number | undefined) =>
+    (typeof appResourceId === 'number'
+      ? ajax<ResourceWithData>(cachableUrl(`${url}${appResourceId}/`), {
           headers: { Accept: 'application/json' },
-        }).then(async (data) => {
-          return await actions.reduce(
-            async (currentDataPromise, currentPromise) => {
-              const currentData = await currentDataPromise;
-              const nextData = await currentPromise(currentData);
-              return nextData;
-            },
-            data
-          );
-        }),
-      ];
-    }
-  );
-  return preferencesPromiseList;
-};
+        })
+      : ajax<ResourceWithData>(
+          url,
+          {
+            headers: { Accept: 'application/json' },
+            method: 'POST',
+            body: keysToLowerCase({
+              name: resourceName,
+              mimeType,
+              metaData: '',
+              data: '{}',
+            }),
+          },
+          { expectedResponseCodes: [Http.CREATED] }
+        )
+    ).then(({ data }) => data),
+});
+
+const actions = Object.fromEntries(
+  Object.entries(preferenceResource).map(
+    ([resourceType, { url, resourceName }]) => [
+      resourceType,
+      getActions(resourceName, url),
+    ]
+  )
+);
+
+export const preferencesPromiseGenerator = Object.fromEntries(
+  Object.entries(actions).map(
+    ([resourceType, { getResources, getResourceId, fetchOrCreate }]) => [
+      resourceType,
+      getResources.then(getResourceId).then(fetchOrCreate),
+    ]
+  )
+);
