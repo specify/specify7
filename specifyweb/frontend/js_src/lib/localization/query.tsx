@@ -305,6 +305,30 @@ export const queryText = createDictionary({
     'en-us': (plotted: string) => `Plotted ${plotted} records`,
     'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
   },
+  day: {
+    'en-us': 'Day',
+    'ru-ru': 'День',
+  },
+  week: {
+    'en-us': 'Week',
+    'ru-ru': 'Неделю',
+  },
+  month: {
+    'en-us': 'Month',
+    'ru-ru': 'Месяц',
+  },
+  year: {
+    'en-us': 'Year',
+    'ru-ru': 'Год',
+  },
+  future: {
+    'en-us': 'Future',
+    'ru-ru': 'Будущее',
+  },
+  past: {
+    'en-us': 'Past',
+    'ru-ru': 'Прошлое',
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */
