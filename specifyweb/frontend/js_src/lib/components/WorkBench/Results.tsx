@@ -16,7 +16,7 @@ import { Button } from '../Atoms/Button';
 import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
-import { CreateRecordSetButton, CreateRecordSetDialog } from './RecordSet';
+import { CreateRecordSetButton } from './RecordSet';
 
 export function WbUploaded({
   recordCounts,

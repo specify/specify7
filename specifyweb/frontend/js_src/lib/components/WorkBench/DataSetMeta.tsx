@@ -16,7 +16,6 @@ import { LoadingContext } from '../Core/Contexts';
 import { icons } from '../Atoms/Icons';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Dialog } from '../Molecules/Dialog';
-import { createBackboneView } from '../Core/reactBackboneExtend';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
@@ -289,30 +288,28 @@ function ChangeOwner({
   );
 }
 
-const WrappedDataSetName = createBackboneView(DataSetName);
-const ChangeOwnerView = createBackboneView(ChangeOwner);
-
 // A wrapper for DS Meta for embedding in the WB
 export const DataSetNameView = Backbone.View.extend({
   __name__: 'DataSetNameView',
   render() {
-    this.dataSetMeta = new WrappedDataSetName({
-      el: this.el.getElementsByClassName('wb-name-container')[0],
-      dataset: this.options.dataset,
-      getRowCount: this.options.getRowCount,
-    }).render();
+    this.dataSetMeta = this.options.display(
+      <DataSetName
+        dataset={this.options.dataset}
+        getRowCount={this.options.getRowCount}
+      />,
+      this.el.getElementsByClassName('wb-name-container')[0]
+    );
     return this;
   },
   changeOwner() {
     const handleClose = (): void => void this.changeOwnerView.remove();
-    this.changeOwnerView = new ChangeOwnerView({
-      dataset: this.options.dataset,
-      onClose: handleClose,
-    }).render();
+    this.changeOwnerView = this.options.display(
+      <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
+    );
   },
   remove() {
-    this.dataSetMeta.remove();
-    this.changeOwnerView?.remove();
+    this.dataSetMeta();
+    this.changeOwnerView?.();
     Backbone.View.prototype.remove.call(this);
   },
 });

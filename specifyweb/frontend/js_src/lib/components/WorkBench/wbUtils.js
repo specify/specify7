@@ -12,27 +12,20 @@ import React from 'react';
 import {
   findLocalityColumnsInDataSet,
   getLocalitiesDataFromSpreadsheet,
-  getLocalityColumnsFromSelectedCells,
-  getLocalityCoordinate,
 } from '../Leaflet/wbLocalityDataExtractor';
 import {Backbone} from '../DataModel/backbone';
 import {Ul} from '../Atoms';
 import {Button} from '../Atoms/Button';
 import {Input, Label} from '../Atoms/Form';
 import {Lat, Long} from '../../utils/latLong';
-import {camelToKebab, clamp, sortFunction} from '../../utils/utils';
-import {f} from '../../utils/functools';
+import {camelToKebab, clamp} from '../../utils/utils';
 import {getInitialSearchPreferences, WbAdvancedSearch,} from './AdvancedSearch';
 import {wbText} from '../../localization/workbench';
 import {commonText} from '../../localization/common';
-import {showDialog} from '../Molecules/LegacyDialog';
-import {createBackboneView} from '../Core/reactBackboneExtend';
 import {LeafletMap} from '../Leaflet/Map';
-import {localityText} from '../../localization/locality';
 import {filterArray} from '../../utils/types';
-
-const wbSearchView = createBackboneView(WbAdvancedSearch);
-const LeafletMapView = createBackboneView(LeafletMap);
+import {getSelectedRegions} from './hotHelpers';
+import {getSelectedLocalities, WbGeoLocate} from './GeoLocate';
 
 // REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
@@ -65,25 +58,27 @@ export const WBUtils = Backbone.View.extend({
   render() {
     let initialNavigationDirection =
       this.searchPreferences.navigation.direction;
-    this.advancedSearch = new wbSearchView({
-      el: this.el.getElementsByClassName('wb-advanced-search-wrapper')[0],
-      initialSearchPreferences: this.searchPreferences,
-      onChange: (newSearchPreferences) => {
-        this.searchPreferences = newSearchPreferences;
-        if (
-          this.searchPreferences.navigation.direction !==
-          initialNavigationDirection
-        ) {
-          this.wbview.flushIndexedCellData = true;
-          initialNavigationDirection =
-            this.searchPreferences.navigation.direction;
-        }
-        if (this.searchPreferences.search.liveUpdate)
-          this.searchCells({
-            key: 'SettingsChange',
-          });
-      },
-    }).render();
+    this.advancedSearch = this.wbview.options.display(
+      <WbAdvancedSearch
+        initialSearchPreferences={this.searchPreferences}
+        onChange={(newSearchPreferences) => {
+          this.searchPreferences = newSearchPreferences;
+          if (
+            this.searchPreferences.navigation.direction !==
+            initialNavigationDirection
+          ) {
+            this.wbview.flushIndexedCellData = true;
+            initialNavigationDirection =
+              this.searchPreferences.navigation.direction;
+          }
+          if (this.searchPreferences.search.liveUpdate)
+            this.searchCells({
+              key: 'SettingsChange',
+            });
+        }}
+      />,
+      this.el.getElementsByClassName('wb-advanced-search-wrapper')[0]
+    );
 
     return this;
   },
@@ -481,7 +476,7 @@ export const WBUtils = Backbone.View.extend({
       nextCellOfType();
     }
   },
-  searchFunction(initialCellValue='') {
+  searchFunction(initialCellValue = '') {
     let cellValue = initialCellValue;
 
     if (this.searchQuery === undefined) return false;
@@ -579,224 +574,29 @@ export const WBUtils = Backbone.View.extend({
       }
     }
   },
-  getVisualHeaders() {
-    return this.wbview.dataset.columns.map(
-      (_, index, columns) => columns[this.wbview.hot.toPhysicalColumn(index)]
-    );
-  },
-  getGeoLocateQueryURL({ localityColumns, visualRow }) {
-    let queryString = '';
-    const visualHeaders = this.getVisualHeaders();
-
-    const localityData =
-      getLocalityCoordinate(
-        this.wbview.hot.getDataAtRow(visualRow),
-        visualHeaders,
-        localityColumns
-      ) || {};
-
-    if (localityData['locality.geography.$country.name'])
-      queryString += `&country=${localityData['locality.geography.$country.name'].value}`;
-    if (localityData['locality.geography.$state.name'])
-      queryString += `&state=${localityData['locality.geography.$state.name'].value}`;
-    if (localityData['locality.geography.$county.name'])
-      queryString += `&county=${localityData['locality.geography.$county.name'].value}`;
-    if (localityData['locality.localityname'])
-      queryString += `&locality=${localityData['locality.localityname'].value}`;
-    if (
-      localityData['locality.latitude1'] &&
-      localityData['locality.longitude1']
-    )
-      queryString += `&points=${localityData['locality.latitude1'].value}|${localityData['locality.longitude1'].value}`;
-
-    return `https://www.geo-locate.org/web/WebGeoreflight.aspx?v=1&w=900&h=400&georef=run${queryString}`;
-  },
-  getSelectedRegions() {
-    const selectedRegions = this.wbview.hot.getSelected() || [[0, 0, 0, 0]];
-
-    return selectedRegions
-      .map((values) => values.map((value) => Math.max(0, value)))
-      .map(([startRow, startCol, endRow, endCol]) => ({
-        startRow: Math.min(startRow, endRow),
-        endRow: Math.max(startRow, endRow),
-        startCol: Math.min(startCol, endCol),
-        endCol: Math.max(startCol, endCol),
-      }));
-  },
-  // Generate Locality iterator. Able to handle multiple localities in a row
-  getSelectedLocalities(
-    // If false, treat single cell selection as entire spreadsheet selection
-    allowSingleCell
-  ) {
-    const selectedRegions = this.getSelectedRegions();
-
-    const selectedHeaders = f
-      .unique(
-        selectedRegions.flatMap(({ startCol, endCol }) =>
-          Array.from(
-            { length: endCol - startCol + 1 },
-            (_, index) => startCol + index
-          )
-        )
-      )
-      .sort(sortFunction(f.id))
-      .map(
-        (visualCol) =>
-          this.wbview.dataset.columns[
-            this.wbview.hot.toPhysicalColumn(visualCol)
-          ]
-      );
-
-    const selectedRows = f
-      .unique(
-        selectedRegions.flatMap(({ startRow, endRow }) =>
-          Array.from(
-            { length: endRow - startRow + 1 },
-            (_, index) => startRow + index
-          )
-        )
-      )
-      .sort(sortFunction(f.id));
-
-    const selectAll =
-      !allowSingleCell &&
-      selectedHeaders.length === 1 &&
-      selectedRows.length === 1;
-
-    const localityColumnGroups = selectAll
-      ? this.localityColumns
-      : getLocalityColumnsFromSelectedCells(
-          this.localityColumns,
-          selectedHeaders
-        );
-    if (localityColumnGroups.length === 0) return undefined;
-
-    const visualRows = selectAll
-      ? Array.from({ length: this.wbview.hot.countRows() }, (_, index) => index)
-      : selectedRows;
-    const length = visualRows.length * localityColumnGroups.length;
-
-    return {
-      localityIndex: 0,
-      length,
-      isFirst: (index) => index === 0,
-      isLast: (index) => index + 1 >= length,
-      visualRows,
-      selectedHeaders,
-      localityColumnGroups,
-      parseLocalityIndex: (localityIndex) => ({
-        localityColumns:
-          localityColumnGroups[localityIndex % localityColumnGroups.length],
-        visualRow:
-          visualRows[Math.floor(localityIndex / localityColumnGroups.length)],
-      }),
-    };
-  },
 
   showGeoLocate(event) {
     // don't allow opening more than one window)
     if (this.geoLocateDialog !== undefined) {
-      this.geoLocateDialog.remove();
-      this.geoLocateDialog = undefined;
-      event.target.setAttribute('aria-pressed', false);
+      this.geoLocateDialog();
       return;
     }
 
+    this.geoLocateDialog = this.wbview.display(
+      <WbGeoLocate
+        hot={this.wbview.hot}
+        columns={this.dataset.columns}
+        localityColumns={this.localityColumns}
+        onClose={()=>this.geoLocateDialog()}
+      />,
+      undefined,
+      ()=>{
+        event.target.setAttribute('aria-pressed', false);
+        this.geoLocateDialog = undefined;
+      }
+    );
+
     event.target.setAttribute('aria-pressed', true);
-
-    const selection = this.getSelectedLocalities(true);
-
-    if (selection === undefined) return;
-
-    const getGeoLocateQueryURL = (localityIndex) =>
-      this.getGeoLocateQueryURL(selection.parseLocalityIndex(localityIndex));
-
-    const handleDelete = () => {
-      globalThis.removeEventListener('message', handleGeolocateResult, false);
-      event.target.setAttribute('aria-pressed', false);
-      this.geoLocateDialog.remove();
-      this.geoLocateDialog = undefined;
-    };
-
-    const content = $('<div>');
-    this.geoLocateDialog = showDialog({
-      header: localityText('geoLocate'),
-      content,
-      buttons: commonText('close'),
-      onClose: handleDelete,
-    });
-
-    const updateGeolocate = (localityIndex) =>
-      content.html(`<iframe class="w-[914px] h-[627px]"
-        title="${localityText('geoLocate')}"
-        src="${getGeoLocateQueryURL(localityIndex)}"
-      ></iframe>`);
-
-    const updateSelectedRow = (localityIndex) =>
-      this.wbview.hot.selectRows(
-        selection.parseLocalityIndex(localityIndex).visualRow
-      );
-
-    const updateButtons = (localityIndex) =>
-      this.geoLocateDialog.updateProps({
-        buttons: (
-          <>
-            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-            <Button.Blue
-              onClick={() => updateGeoLocate(localityIndex - 1)}
-              disabled={selection.isFirst(localityIndex)}
-            >
-              {commonText('previous')}
-            </Button.Blue>
-            <Button.Blue
-              onClick={() => updateGeoLocate(localityIndex + 1)}
-              disabled={selection.isLast(localityIndex)}
-            >
-              {commonText('next')}
-            </Button.Blue>
-          </>
-        ),
-      });
-
-    function updateGeoLocate(newLocalityIndex) {
-      selection.localityIndex = newLocalityIndex;
-      updateGeolocate(newLocalityIndex);
-      updateSelectedRow(newLocalityIndex);
-      updateButtons(newLocalityIndex);
-    }
-
-    updateGeoLocate(selection.localityIndex);
-
-    const visualHeaders = this.getVisualHeaders();
-    const handleGeolocateResult = (event) => {
-      // This may happen if the message was sent by someone other than GeoLocate,
-      // (i.e, a React DevTools plugin)
-      if (typeof event.data !== 'string') return;
-      const dataColumns = event.data?.split('|') ?? [];
-      if (dataColumns.length !== 4 || event.data === '|||') return;
-
-      const { visualRow, localityColumns } = selection.parseLocalityIndex(
-        selection.localityIndex
-      );
-
-      this.wbview.hot.setDataAtCell(
-        [
-          'locality.latitude1',
-          'locality.longitude1',
-          'locality.latlongaccuracy',
-        ]
-          .map((fieldName, index) => [
-            visualRow,
-            visualHeaders.indexOf(localityColumns[fieldName]),
-            dataColumns[index],
-          ])
-          .filter(([, visualCol]) => visualCol !== -1)
-      );
-
-      if (selection.length === 1) handleDelete();
-    };
-
-    globalThis.window.addEventListener('message', handleGeolocateResult, false);
   },
   showLeafletMap(event) {
     if (this.geoMapDialog !== undefined) {
@@ -807,7 +607,12 @@ export const WBUtils = Backbone.View.extend({
     }
     event.target.setAttribute('aria-pressed', true);
 
-    const selection = this.getSelectedLocalities(false);
+    const selection = getSelectedLocalities(
+      this.wbview.hot,
+      this.dataset.columns,
+      this.localityColumns,
+      false
+    );
 
     if (selection === undefined) return;
 
@@ -820,24 +625,26 @@ export const WBUtils = Backbone.View.extend({
       selection.visualRows
     );
 
-    this.geoMapDialog = new LeafletMapView({
-      localityPoints,
-      onMarkerClick: (localityPoint) => {
-        const rowNumber = localityPoints[localityPoint].rowNumber.value;
-        if (typeof rowNumber !== 'number')
-          throw new Error('rowNumber must be a number');
-        const [_currentRow, currentCol] = this.getSelectedLast();
-        this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
-        // Select entire row
-        this.wbview.hot.selectRows(rowNumber);
-      },
-      onClose: () => {
-        this.geoMapDialog.remove();
-        this.geoMapDialog = undefined;
-        event.target.setAttribute('aria-pressed', false);
-      },
-      modal: false,
-    }).render();
+    this.geoMapDialog = this.wbview.options.display(
+      <LeafletMap
+        localityPoints={localityPoints}
+        onMarkerClick={(localityPoint) => {
+          const rowNumber = localityPoints[localityPoint].rowNumber.value;
+          if (typeof rowNumber !== 'number')
+            throw new Error('rowNumber must be a number');
+          const [_currentRow, currentCol] = this.getSelectedLast();
+          this.wbview.hot.scrollViewportTo(rowNumber, currentCol);
+          // Select entire row
+          this.wbview.hot.selectRows(rowNumber);
+        }}
+        onClose={() => {
+          this.geoMapDialog.remove();
+          this.geoMapDialog = undefined;
+          event.target.setAttribute('aria-pressed', false);
+        }}
+        modal={false}
+      />
+    );
   },
   showCoordinateConversion() {
     if (this.wbview.coordinateConverterView !== undefined) return;
@@ -856,12 +663,12 @@ export const WBUtils = Backbone.View.extend({
     let selectedCells;
     const getSelectedCells = () => {
       if (
-        JSON.stringify(this.getSelectedRegions()) ===
+        JSON.stringify(getSelectedRegions(this.wbview.hot)) ===
         JSON.stringify(selectedRegions)
       )
         return selectedCells;
 
-      selectedRegions = this.getSelectedRegions();
+      selectedRegions = getSelectedRegions(this.wbview.hot);
       selectedCells = selectedRegions
         .flatMap(({ startRow, endRow, startCol, endCol }) =>
           Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
@@ -1001,7 +808,10 @@ export const WBUtils = Backbone.View.extend({
       const changes = originalState
         .map(([visualRow, visualCol, originalValue]) => {
           let value = originalValue;
-          if (originalValue !== null && (applyToAll || selectedCells[visualRow]?.has(visualCol))) {
+          if (
+            originalValue !== null &&
+            (applyToAll || selectedCells[visualRow]?.has(visualCol))
+          ) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
             const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(

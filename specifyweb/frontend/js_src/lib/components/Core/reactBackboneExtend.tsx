@@ -40,6 +40,7 @@ function ForwardProps<PROPS extends IR<unknown>>({
   return <Component {...props} />;
 }
 
+// FIXME: get rid of this
 export const createBackboneView = <PROPS extends IR<unknown>>(
   Component: (props: PROPS) => JSX.Element | null,
   makeParentContents = true

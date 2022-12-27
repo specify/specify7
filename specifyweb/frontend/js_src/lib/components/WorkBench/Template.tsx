@@ -14,7 +14,7 @@ import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
-import type { GetSet } from '../../utils/types';
+import type { GetSet, RA } from '../../utils/types';
 import { WBView } from './wbView';
 import { LoadingContext } from '../Core/Contexts';
 import { useMenuItem } from '../Header';
@@ -27,7 +27,8 @@ import { Link } from '../Atoms/Link';
 import { Input } from '../Atoms/Form';
 import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { legacyDialogs } from '../Molecules/LegacyDialog';
+import { Portal } from '../Molecules/Portal';
+import { replaceItem } from '../../utils/utils';
 
 function Navigation({
   name,
@@ -302,14 +303,23 @@ export function WorkBench(): JSX.Element | null {
   const [dataSet, setDataSet] = useDataSet(dataSetId);
   useErrorContext('dataSet', dataSet);
   const loading = React.useContext(LoadingContext);
-  useWbView(dataSet, treeRanksLoaded, container, () =>
+  const portals = useWbView(dataSet, treeRanksLoaded, container, () =>
     loading(fetchDataSet(dataSet!.id).then(setDataSet))
   );
 
   return dataSetId === undefined ? (
     <NotFoundView />
   ) : (
-    <div className="contents" ref={setContainer} />
+    <>
+      <div className="contents" ref={setContainer} />
+      {portals.map((portal, index) =>
+        portal === undefined ? undefined : (
+          <Portal element={portal.element} key={index}>
+            {portal.jsx}
+          </Portal>
+        )
+      )}
+    </>
   );
 }
 
@@ -337,7 +347,17 @@ function useWbView(
   treeRanksLoaded: boolean,
   container: HTMLElement | null,
   handleRefresh: () => void
-): void {
+): RA<
+  | { readonly jsx: JSX.Element; readonly element: HTMLElement | undefined }
+  | undefined
+> {
+  const [portals, setPortals] = React.useState<
+    RA<
+      | { readonly jsx: JSX.Element; readonly element: HTMLElement | undefined }
+      | undefined
+    >
+  >([]);
+
   const mode = React.useRef<string | undefined>(undefined);
   const wasAborted = React.useRef<boolean>(false);
 
@@ -356,6 +376,21 @@ function useWbView(
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
       onSetUnloadProtect: setUnloadProtect,
+      display(
+        jsx: JSX.Element,
+        element?: HTMLElement,
+        destructor?: () => void
+      ) {
+        let index = 0;
+        setPortals((portals) => {
+          index = portals.length;
+          return [...portals, { jsx, element }];
+        });
+        return () => {
+          setPortals((portals) => replaceItem(portals, index, undefined));
+          destructor?.();
+        };
+      },
     })
       .on('refresh', (newMode: string | undefined, newWasAborted = false) => {
         setUnloadProtect(false);
@@ -364,9 +399,8 @@ function useWbView(
         handleRefresh();
       })
       .render();
-    return () => {
-      view.remove();
-      legacyDialogs.forEach((destructor) => destructor());
-    };
+    return () => view.remove();
   }, [treeRanksLoaded, container, dataSet]);
+
+  return portals;
 }

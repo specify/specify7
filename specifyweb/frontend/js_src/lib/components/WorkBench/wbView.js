@@ -22,7 +22,6 @@ import {Button} from '../Atoms/Button';
 import {Link} from '../Atoms/Link';
 import {getModel, schema, strictGetModel} from '../DataModel/schema';
 import {DataSetNameView} from './DataSetMeta';
-import {WbUploaded} from './Results';
 import {WBUtils} from './wbUtils';
 import {
   formatToManyIndex,
@@ -59,13 +58,13 @@ import {getCache, setCache} from '../../utils/cache';
 import {f} from '../../utils/functools';
 import {pathStartsWith} from '../WbPlanView/helpers';
 import {getUserPref} from '../UserPreferences/helpers';
-import {createBackboneView} from '../Core/reactBackboneExtend';
 import {WbStatus} from './Status';
 import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
 import {CreateRecordSetButton} from './RecordSet';
+import {WbUploaded} from './Results';
 
 const metaKeys = [
   'isNew',
@@ -83,8 +82,6 @@ const defaultMetaValues = Object.freeze([
 ]);
 
 // REFACTOR: when rewriting to React, add ErrorBoundaries for these two:
-const WbUploadedView = createBackboneView(WbUploaded);
-const WbStatusView = createBackboneView(WbStatus);
 
 // REFACTOR: rewrite to React
 export const WBView = Backbone.View.extend({
@@ -154,6 +151,7 @@ export const WBView = Backbone.View.extend({
     this.datasetmeta = new DataSetNameView({
       dataset: this.dataset,
       el: this.el,
+      display: this.options.display,
       getRowCount: () =>
         this.hot === undefined
           ? this.dataset.rows.length
@@ -615,7 +613,7 @@ export const WBView = Backbone.View.extend({
     this.hot = undefined;
     this.wbutils.remove();
     this.datasetmeta.remove();
-    this.uploadedView?.handleClose();
+    this.uploadedView?.();
     this.wbstatus?.();
     this.stopLiveValidation();
     globalThis.removeEventListener('resize', this.handleResize);
@@ -1694,7 +1692,7 @@ export const WBView = Backbone.View.extend({
     if (!this.dataset.rowresults) return;
 
     if (this.uploadedView !== undefined) {
-      this.uploadedView.handleClose();
+      this.uploadedView();
       return;
     }
 
@@ -1835,21 +1833,22 @@ export const WBView = Backbone.View.extend({
         (effectCleanup) => effectCleanup?.()
       );
 
-    const handleClose = () => {
-      this.uploadedView.remove();
-      this.uploadedView = undefined;
-      runCleanup();
-    };
-    this.uploadedView = new WbUploadedView({
-      recordCounts: this.uploadResults.recordCounts,
-      isUploaded: this.isUploaded,
-      dataSetId: this.dataset.id,
-      dataSetName: this.dataset.name,
-      onClose: handleClose,
-    }).render();
-
-    uploadedViewWrapper.append(this.uploadedView.el);
-    this.uploadedView.handleClose = handleClose;
+    const container = document.createElement('div');
+    this.uploadedView = this.options.display(
+      <WbUploaded
+        recordCounts={this.uploadResults.recordCounts}
+        isUploaded={this.isUploaded}
+        dataSetId={this.dataset.id}
+        dataSetName={this.dataset.name}
+        onClose={()=>this.uploadedView()}
+      />,
+      container,
+      ()=>{
+        this.uploadedView = undefined;
+        runCleanup();
+      }
+    );
+    uploadedViewWrapper.append(container);
 
     runEffects();
   },
@@ -1979,35 +1978,37 @@ export const WBView = Backbone.View.extend({
       .then(() => this.openStatus(mode));
   },
   openStatus(mode) {
-    this.wbstatus = new WbStatusView({
-      dataset: {
-        ...this.dataset,
-        // Create initial status if it doesn't exist yet
-        uploaderstatus: {
-          uploaderstatus:
-            this.dataset.uploaderstatus === null
-              ? {
-                  operation: {
-                    validate: 'validating',
-                    upload: 'uploading',
-                    unupload: 'unuploading',
-                  }[mode],
-                  taskid: '',
-                }
-              : this.dataset.uploaderstatus,
-          taskstatus: 'PENDING',
-          taskinfo: {
-            current: 1,
-            total: 1,
+    this.wbstatus = this.options.display(
+      <WbStatus
+        dataset={{
+          ...this.dataset,
+          // Create initial status if it doesn't exist yet
+          uploaderstatus: {
+            uploaderstatus:
+              this.dataset.uploaderstatus === null
+                ? {
+                    operation: {
+                      validate: 'validating',
+                      upload: 'uploading',
+                      unupload: 'unuploading',
+                    }[mode],
+                    taskid: '',
+                  }
+                : this.dataset.uploaderstatus,
+            taskstatus: 'PENDING',
+            taskinfo: {
+              current: 1,
+              total: 1,
+            },
           },
-        },
-      },
-      onFinished: (wasAborted) => {
-        this.wbstatus.remove();
-        this.wbstatus = undefined;
-        this.trigger('refresh', mode, wasAborted);
-      },
-    }).render();
+        }}
+        onFinished={(wasAborted) => {
+          this.wbstatus();
+          this.wbstatus = undefined;
+          this.trigger('refresh', mode, wasAborted);
+        }}
+      />
+    );
   },
   delete() {
     const dialog = showDialog({
