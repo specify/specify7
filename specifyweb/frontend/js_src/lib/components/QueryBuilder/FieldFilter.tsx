@@ -26,6 +26,7 @@ import { hasNativeErrors } from '../Forms/validationHelpers';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
+import { reParse } from '../../utils/relativeDate';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -60,9 +61,165 @@ export const filtersWithDefaultValue = new Set<QueryFieldFilter>([
   'in',
 ]);
 
+const relativeDateItems = {
+  direction: [
+    { value: '+', title: queryText('future') },
+    {
+      value: '-',
+      title: queryText('past'),
+    },
+  ],
+  type: [
+    {
+      value: 'day',
+      title: queryText('day'),
+    },
+    { value: 'week', title: queryText('week') },
+    {
+      value: 'month',
+      title: queryText('month'),
+    },
+    {
+      value: 'year',
+      title: queryText('year'),
+    },
+  ],
+};
+
+function PickListSimple({
+  pickListItems,
+  value,
+  onBlur: handleBlur,
+  onChange: handleChange,
+}: {
+  readonly pickListItems: RA<PickListItemSimple>;
+  readonly value: string;
+  readonly onBlur: ({ target }: React.ChangeEvent<HTMLSelectElement>) => void;
+  readonly onChange: ({ target }: React.ChangeEvent<HTMLSelectElement>) => void;
+}): JSX.Element {
+  return (
+    <Select value={value} onBlur={handleBlur} onChange={handleChange}>
+      {pickListItems.map(({ title, value }) => (
+        <option key={value} value={value}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+function extractValuesSimple<TYPE>(
+  target: HTMLInputElement | HTMLSelectElement
+): TYPE {
+  return target.value as unknown as TYPE;
+}
+
+function DateSplit({
+  onChange: handleChange,
+  parsed,
+}: {
+  readonly parsed: {
+    readonly direction: string;
+    readonly type: string;
+    readonly size: number;
+  };
+  readonly onChange: ((newValue: string) => void) | undefined;
+}): JSX.Element {
+  const [values, setValues] = useTriggerState<{
+    readonly direction: string;
+    readonly type: string;
+    readonly size: number;
+  }>(parsed);
+  const direction = values.direction;
+  const size = values.size;
+  const type = values.type;
+
+  return (
+    <div className="flex flex-row gap-1">
+      <PickListSimple
+        pickListItems={relativeDateItems.direction}
+        value={resolveItem(relativeDateItems.direction, direction)}
+        onBlur={({ target }) => {
+          const newValue = extractValuesSimple<string>(target);
+          setValues({ ...values, direction: newValue });
+          handleChange?.(`today ${newValue} ${size} ${type}`);
+        }}
+        onChange={({ target }) => {
+          const newValue = extractValuesSimple<string>(target);
+          setValues({ ...values, direction: newValue });
+        }}
+      />
+      <Input.Number
+        value={size}
+        onBlur={({ target }) => {
+          const newValue = extractValuesSimple<string>(target);
+          setValues({ ...values, size: Number.parseInt(newValue) });
+          handleChange?.(`today ${direction} ${newValue} ${type}`);
+        }}
+        onChange={({ target }) => {
+          const newValue = extractValuesSimple<number>(target);
+          setValues({ ...values, size: newValue });
+        }}
+      />
+      <PickListSimple
+        pickListItems={relativeDateItems.type}
+        value={resolveItem(relativeDateItems.type, type)}
+        onBlur={({ target }) => {
+          const newValue = extractValuesSimple<string>(target);
+          setValues({ ...values, type: newValue });
+          handleChange?.(`today ${direction} ${size} ${newValue}`);
+        }}
+        onChange={({ target }) => {
+          const newValue = extractValuesSimple<string>(target);
+          setValues({ ...values, type: newValue });
+        }}
+      />
+    </div>
+  );
+}
+
+function DateQueryInputField({
+  currentValue,
+  parser,
+  fieldName,
+  onChange: handleChange,
+}: {
+  readonly currentValue: string;
+  readonly fieldName: string;
+  readonly parser: Parser;
+  readonly label?: string;
+  readonly listInput?: boolean;
+  readonly onChange: ((newValue: string) => void) | undefined;
+}): JSX.Element {
+  const parsed = React.useMemo(() => {
+    if (reParse.test(currentValue)) {
+      const parsedValue = reParse.exec(currentValue.toLowerCase())?.slice(1);
+      return parsedValue !== undefined
+        ? {
+            direction: parsedValue[0],
+            size: Number.parseInt(parsedValue[1]),
+            type: parsedValue[2],
+          }
+        : undefined;
+    }
+    return undefined;
+  }, [currentValue]);
+  return parsed !== undefined ? (
+    <DateSplit onChange={handleChange} parsed={parsed} />
+  ) : (
+    <QueryInputField
+      currentValue={currentValue}
+      fieldName={fieldName}
+      parser={parser}
+      pickListItems={undefined}
+      onChange={handleChange}
+    />
+  );
+}
+
 function QueryInputField({
   currentValue,
-  // Used only to help browsers with autocomplete
+  // Used only to help browsers with autocomplet
   fieldName,
   parser,
   label = commonText('searchQuery'),
@@ -243,7 +400,15 @@ function SingleField({
 
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
-  return (
+  return parser.type === 'date' ? (
+    <DateQueryInputField
+      currentValue={filter.startValue}
+      fieldName={fieldName}
+      label={label}
+      parser={parser}
+      onChange={handleChange}
+    />
+  ) : (
     <QueryInputField
       currentValue={filter.startValue}
       fieldName={fieldName}
