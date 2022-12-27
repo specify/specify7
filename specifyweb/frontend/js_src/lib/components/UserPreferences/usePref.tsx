@@ -7,7 +7,11 @@ import type {
   Preferences,
 } from './Definitions';
 import { getPref, setPref } from './helpers';
-import { CollectionPreferencesContext, PreferencesContext } from './Hooks';
+import {
+  CollectionPreferencesContext,
+  PreferencesContext,
+  prefEvents,
+} from './Hooks';
 import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
 
 /**
@@ -42,6 +46,27 @@ function useUnsafePref<
   >(() => getPref(category, subcategory, item));
 
   const currentPref = React.useRef(pref);
+  const isUpdated = React.useRef(false);
+
+  React.useEffect(
+    () =>
+      prefEvents.on('update', (payload) => {
+        if (
+          // Don't ignore cases when preferences are reloaded from back-end
+          payload !== undefined &&
+          // But ignore local changes to other prefs
+          (payload.category !== category ||
+            payload.subcategory !== subcategory ||
+            payload.item !== item)
+        )
+          return;
+        if (isUpdated.current) return;
+        const newValue = getPref(category, subcategory, item);
+        setLocalPref(newValue);
+        isUpdated.current = true;
+      }),
+    [category, subcategory, item, getPref]
+  );
 
   const updatePref = React.useCallback(
     (
@@ -51,21 +76,21 @@ function useUnsafePref<
             oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
           ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue'])
     ): void => {
-      let x =
+      const oldValue = getPref(category, subcategory, item);
+      const newValueRaw =
         typeof newPref === 'function'
           ? (
               newPref as (
                 oldPref: Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
               ) => Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
-            )(currentPref.current)
+            )(oldValue)
           : newPref;
 
-      const newValue = setPref(category, subcategory, item, x);
-      if (newValue === currentPref.current) return;
+      const newValue = setPref(category, subcategory, item, newValueRaw);
       setLocalPref(newValue);
-      currentPref.current = newValue;
+      isUpdated.current = true;
     },
-    [category, subcategory, item, setPref]
+    [category, subcategory, item, setPref, getPref]
   );
 
   return [pref, updatePref] as const;
