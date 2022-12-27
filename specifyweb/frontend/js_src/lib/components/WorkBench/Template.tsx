@@ -5,7 +5,7 @@
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
@@ -29,6 +29,8 @@ import { className } from '../Atoms/className';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Portal } from '../Molecules/Portal';
 import { replaceItem } from '../../utils/utils';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { Dialog } from '../Molecules/Dialog';
 
 function Navigation({
   name,
@@ -303,12 +305,30 @@ export function WorkBench(): JSX.Element | null {
   const [dataSet, setDataSet] = useDataSet(dataSetId);
   useErrorContext('dataSet', dataSet);
   const loading = React.useContext(LoadingContext);
-  const portals = useWbView(dataSet, treeRanksLoaded, container, () =>
-    loading(fetchDataSet(dataSet!.id).then(setDataSet))
+  const [isDeleted, handleDeleted] = useBooleanState();
+  const [isDeletedConfirmation, handleDeletedConfirmation] = useBooleanState();
+  const portals = useWbView(
+    dataSet,
+    treeRanksLoaded,
+    container,
+    handleDeleted,
+    handleDeletedConfirmation,
+    () => loading(fetchDataSet(dataSet!.id).then(setDataSet))
   );
 
+  const navigate = useNavigate();
   return dataSetId === undefined ? (
     <NotFoundView />
+  ) : isDeleted ? (
+    <>{wbText('dataSetDeletedOrNotFound')}</>
+  ) : isDeletedConfirmation ? (
+    <Dialog
+      header={wbText('dataSetDeletedDialogHeader')}
+      onClose={(): void => navigate('/specify/', { replace: true })}
+      buttons={commonText('close')}
+    >
+      {wbText('dataSetDeletedDialogText')}
+    </Dialog>
   ) : (
     <>
       <div className="contents" ref={setContainer} />
@@ -346,6 +366,8 @@ function useWbView(
   dataSet: Dataset | undefined,
   treeRanksLoaded: boolean,
   container: HTMLElement | null,
+  handleDeleted: () => void,
+  handleDeletedConfirmation: () => void,
   handleRefresh: () => void
 ): RA<
   | { readonly jsx: JSX.Element; readonly element: HTMLElement | undefined }
@@ -376,6 +398,8 @@ function useWbView(
       refreshInitiatedBy: mode.current,
       refreshInitiatorAborted: wasAborted.current,
       onSetUnloadProtect: setUnloadProtect,
+      onDeleted: handleDeleted,
+      onDeletedConfirmation: handleDeletedConfirmation,
       display(
         jsx: JSX.Element,
         element?: HTMLElement,

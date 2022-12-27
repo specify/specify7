@@ -1039,6 +1039,10 @@ export const wbText = createDictionary({
     'en-us': (dataSet: string) => `WB upload of "${dataSet}"`,
     'ru-ru': (dataSet: string) => `WB загрузка "${dataSet}"`,
   },
+  ambiguousTaxaChild: {
+    'en-us': (node: string, parent: string)=>`${node} (in ${parent})`,
+    'ru-ru': (node: string, parent: string)=>`${node} (в ${parent})`,
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */

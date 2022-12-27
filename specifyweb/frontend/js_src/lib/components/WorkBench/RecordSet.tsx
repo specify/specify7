@@ -1,24 +1,25 @@
+import React from 'react';
+
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { queryText } from '../../localization/query';
+import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
+import { Http } from '../../utils/ajax/definitions';
+import { formData } from '../../utils/ajax/helpers';
+import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
+import { schema } from '../DataModel/schema';
 import {
   ProtectedAction,
   ProtectedTool,
 } from '../Permissions/PermissionDenied';
-import React from 'react';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { wbText } from '../../localization/workbench';
-import { Button } from '../Atoms/Button';
-import { EditRecordSet } from '../Toolbar/RecordSetEdit';
-import { schema } from '../DataModel/schema';
-import { LoadingContext } from '../Core/Contexts';
-import { ajax } from '../../utils/ajax';
-import { formData } from '../../utils/ajax/helpers';
-import { Http } from '../../utils/ajax/definitions';
-import { queryText } from '../../localization/query';
 import { unsafeNavigate } from '../Router/Router';
+import { EditRecordSet } from '../Toolbar/RecordSetEdit';
 
 export function CreateRecordSetButton({
   dataSetId,
   dataSetName,
-  onClose: handleClose,
+  onClose: handleClosed,
   small,
 }: {
   readonly dataSetId: number;
@@ -26,7 +27,7 @@ export function CreateRecordSetButton({
   readonly onClose: () => void;
   readonly small: boolean;
 }): JSX.Element {
-  const [isOpen, handleOpen] = useBooleanState();
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
   const ButtonComponent = small ? Button.Small : Button.Blue;
   return (
     <ProtectedAction action="create_recordset" resource="/workbench/dataset">
@@ -38,7 +39,10 @@ export function CreateRecordSetButton({
           <CreateRecordSetDialog
             dataSetId={dataSetId}
             dataSetName={dataSetName}
-            onClose={handleClose}
+            onClose={(): void => {
+              handleClose();
+              handleClosed();
+            }}
           />
         )}
       </ProtectedTool>

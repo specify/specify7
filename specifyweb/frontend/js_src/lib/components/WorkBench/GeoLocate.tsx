@@ -3,7 +3,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
-import type { IR, RA, WritableArray } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -13,7 +13,7 @@ import {
 } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
-import { getSelectedRegions, getVisualHeaders } from './hotHelpers';
+import { getSelectedRegions, getVisualHeaders, setHotData } from './hotHelpers';
 
 export function WbGeoLocate({
   hot,
@@ -37,7 +37,7 @@ export function WbGeoLocate({
   function handleMove(newLocalityIndex: number): void {
     if (selection === undefined) return;
     const { localityColumns, visualRow } =
-      selection.parseLocalityIndex(localityIndex);
+      selection.parseLocalityIndex(newLocalityIndex);
     setData(getGeoLocateData(hot, columns, { localityColumns, visualRow }));
     hot.selectRows(visualRow);
     setLocalityIndex(newLocalityIndex);
@@ -73,12 +73,11 @@ export function WbGeoLocate({
         )
         .filter(([, visualCol]) => visualCol !== -1);
 
-      // eslint-disable-next-line functional/prefer-readonly-type
-      hot.setDataAtCell(changes as WritableArray<[number, number, string]>);
+      setHotData(hot, changes);
 
       if (selection.length === 1) handleClose();
     },
-    [hot, visualHeaders, handleClose]
+    [hot, visualHeaders, handleClose, localityIndex]
   );
 
   return data === undefined ? null : (

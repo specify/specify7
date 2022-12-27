@@ -27,7 +27,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { FormattedResource } from '../Molecules/FormattedResource';
+import { FormattedResourceUrl } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
@@ -142,14 +142,14 @@ export function DataSetMeta({
           <span>
             {commonText('createdBy')}{' '}
             <i>
-              <FormattedResource resourceUrl={dataset.createdbyagent} />
+              <FormattedResourceUrl resourceUrl={dataset.createdbyagent} />
             </i>
           </span>
           <span>
             {commonText('modifiedBy')}{' '}
             <i>
               {typeof dataset.modifiedbyagent === 'string' ? (
-                <FormattedResource resourceUrl={dataset.modifiedbyagent} />
+                <FormattedResourceUrl resourceUrl={dataset.modifiedbyagent} />
               ) : (
                 commonText('notApplicable')
               )}
@@ -302,7 +302,7 @@ export const DataSetNameView = Backbone.View.extend({
     return this;
   },
   changeOwner() {
-    const handleClose = (): void => void this.changeOwnerView.remove();
+    const handleClose = (): void => void this.changeOwnerView();
     this.changeOwnerView = this.options.display(
       <ChangeOwner dataset={this.options.dataset} onClose={handleClose} />
     );

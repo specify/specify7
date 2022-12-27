@@ -1,6 +1,7 @@
 import type Handsontable from 'handsontable';
 
 import type { RA } from '../../utils/types';
+import { RR, WritableArray } from '../../utils/types';
 
 export function getSelectedRegions(hot: Handsontable): RA<{
   readonly startRow: number;
@@ -21,6 +22,38 @@ export function getSelectedRegions(hot: Handsontable): RA<{
 }
 
 /**
+ * Get all selected cells from a desired set of columns
+ */
+export const getSelectedCells = (
+  hot: Handsontable,
+  columnsToWorkWith: RA<number>
+): RR<number, ReadonlySet<number>> => {
+  const selectedRegions = getSelectedRegions(hot);
+  return (
+    selectedRegions
+      .flatMap(({ startRow, endRow, startCol, endCol }) =>
+        Array.from({ length: endRow - startRow + 1 }, (_, rowIndex) =>
+          Array.from({ length: endCol - startCol + 1 }, (_, colIndex) => [
+            startRow + rowIndex,
+            startCol + colIndex,
+          ])
+        )
+      )
+      .flat()
+      // eslint-disable-next-line functional/prefer-readonly-type
+      .reduce<Record<number, Set<number>>>(
+        (indexedCells, [visualRow, visualCol]) => {
+          if (!columnsToWorkWith.includes(visualCol)) return indexedCells;
+          indexedCells[visualRow] ??= new Set();
+          indexedCells[visualRow].add(visualCol);
+          return indexedCells;
+        },
+        {}
+      )
+  );
+};
+
+/**
  * Get data set headers in the visual order
  */
 export const getVisualHeaders = (
@@ -28,3 +61,23 @@ export const getVisualHeaders = (
   columns: RA<string>
 ): RA<string> =>
   columns.map((_, index, columns) => columns[hot.toPhysicalColumn(index)]);
+
+export function getSelectedLast(
+  hot: Handsontable
+): readonly [row: number, col: number] {
+  let [currentRow, currentCol] = hot.getSelectedLast() ?? [0, 0];
+  /*
+   * "hot.getSelectedLast()" returns -1 when column's header or row's
+   * number cell is selected
+   */
+  if (currentRow < 0) currentRow = 0;
+  if (currentCol < 0) currentCol = 0;
+  return [currentRow, currentCol];
+}
+
+export const setHotData = (
+  hot: Handsontable,
+  changes: RA<readonly [visualCol: number, visualRow: number, value: string]>
+): void =>
+  // eslint-disable-next-line functional/prefer-readonly-type
+  hot.setDataAtCell(changes as WritableArray<[number, number, string]>);

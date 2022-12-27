@@ -57,12 +57,14 @@ export function WbUploaded({
           ))}
       </Ul>
       <div className="flex flex-wrap gap-2">
-        <CreateRecordSetButton
-          dataSetId={dataSetId}
-          dataSetName={dataSetName}
-          small
-          onClose={f.void}
-        />
+        {isUploaded && (
+          <CreateRecordSetButton
+            dataSetId={dataSetId}
+            dataSetName={dataSetName}
+            small
+            onClose={f.void}
+          />
+        )}
         <Button.Small className="flex-1" onClick={handleClose}>
           {commonText('close')}
         </Button.Small>
