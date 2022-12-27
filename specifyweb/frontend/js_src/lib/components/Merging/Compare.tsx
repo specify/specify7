@@ -118,7 +118,7 @@ export function useMergeConformation(
           field.isDependent() ||
           !relationshipIsToMany(field))
     );
-    return showMatching ? fields : findDiffering(fields, records);
+    return findDiffering(showMatching, fields, records);
   }, [showMatching, model, records]);
 }
 
@@ -130,10 +130,11 @@ const hiddenFields = new Set([
 ]);
 
 function findDiffering(
+  showMatching: boolean,
   fields: RA<LiteralField | Relationship>,
   records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
-  if (records.length === 1) {
+  if (records.length === 1 || showMatching) {
     const nonEmptyFields = fields.filter((field) => {
       const value =
         field.isRelationship && field.isDependent()

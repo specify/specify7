@@ -160,12 +160,16 @@ export function MergeDialogContainer({
         <>
           <ToggleMergeView />
           <span className="-ml-2 flex-1" />
-          {typeof handleCancel === 'function' && (
-            <Button.BorderedGray onClick={handleCancel}>
-              {commonText('cancel')}
-            </Button.BorderedGray>
+          {typeof handleCancel === 'function' ? (
+            <>
+              <Button.BorderedGray onClick={handleCancel}>
+                {commonText('cancel')}
+              </Button.BorderedGray>
+              <Submit.Blue form={id}>{treeText('merge')}</Submit.Blue>
+            </>
+          ) : (
+            <Submit.Gray form={id}>{commonText('close')}</Submit.Gray>
           )}
-          <Submit.Blue form={id}>{treeText('merge')}</Submit.Blue>
         </>
       }
       header={header}
