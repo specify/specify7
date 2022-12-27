@@ -1,0 +1,235 @@
+import React from 'react';
+import { useOutletContext } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useErrorContext } from '../../hooks/useErrorContext';
+import { adminText } from '../../localization/admin';
+import { commonText } from '../../localization/common';
+import type { GetOrSet, IR, RA } from '../../utils/types';
+import { defined } from '../../utils/types';
+import { index } from '../../utils/utils';
+import { Container, Ul } from '../Atoms';
+import { formatList } from '../Atoms/Internationalization';
+import { Link } from '../Atoms/Link';
+import type { SerializedResource } from '../DataModel/helperTypes';
+import { schema } from '../DataModel/schema';
+import type { Collection } from '../DataModel/types';
+import { useAvailableCollections } from '../Forms/OtherCollectionView';
+import { userInformation } from '../InitialContext/userInformation';
+import { useTitle } from '../Molecules/AppTitle';
+import { SetPermissionContext } from '../Permissions/Context';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { NotFoundView } from '../Router/NotFoundView';
+import { SafeOutlet } from '../Router/RouterUtils';
+import type { SecurityOutlet } from '../Toolbar/Security';
+import {
+  CollectionRoles,
+  CurrentUserLink,
+  ViewCollectionButton,
+} from './CollectionComponents';
+import {
+  mergeCollectionUsers,
+  useCollectionUserRoles,
+  useCollectionUsersWithPolicies,
+} from './CollectionHooks';
+import type { Role } from './Role';
+import { fetchRoles } from './utils';
+
+export type RoleBase = {
+  readonly roleId: number;
+  readonly roleName: string;
+};
+
+export type UserRoles = RA<{
+  readonly userId: number;
+  readonly userName: string;
+  readonly roles: RA<RoleBase>;
+}>;
+
+export type SecurityCollectionOutlet = SecurityOutlet & {
+  readonly collection: SerializedResource<Collection>;
+  readonly getSetRoles: GetOrSet<IR<Role> | undefined>;
+  readonly getSetUserRoles: GetOrSet<UserRoles | undefined>;
+};
+
+export function SecurityCollection(): JSX.Element {
+  const { collectionId = '' } = useParams();
+  const availableCollections = useAvailableCollections();
+  const collection = availableCollections.find(
+    ({ id }) => id.toString() === collectionId
+  );
+  return typeof collection === 'object' ? (
+    <SetPermissionContext collectionId={collection.id}>
+      <CollectionView collection={collection} />
+    </SetPermissionContext>
+  ) : (
+    <NotFoundView container={false} />
+  );
+}
+
+export function CollectionView({
+  collection,
+}: {
+  readonly collection: SerializedResource<Collection>;
+}): JSX.Element {
+  useTitle(collection.collectionName ?? undefined);
+
+  const getSetRoles = useAsyncState<IR<Role>>(
+    React.useCallback(
+      async () =>
+        hasPermission('/permissions/roles', 'read', collection.id)
+          ? fetchRoles(collection.id).then((roles) =>
+              index(
+                defined(
+                  roles,
+                  `Unable to fetch list of roles for collection with id ${collection.id}`
+                )
+              )
+            )
+          : undefined,
+      [collection.id]
+    ),
+    false
+  );
+
+  const usersWithPolicies = useCollectionUsersWithPolicies(collection.id);
+  useErrorContext('usersWithPolicies', usersWithPolicies);
+
+  const getSetUserRoles = useCollectionUserRoles(collection.id);
+  const [userRoles] = getSetUserRoles;
+  useErrorContext('userRoles', userRoles);
+
+  const mergedUsers = mergeCollectionUsers(userRoles, usersWithPolicies);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isOverlay = location.pathname.startsWith(
+    `/specify/security/collection/${collection.id}/role/create/`
+  );
+  const isRoleState =
+    !isOverlay &&
+    location.pathname.startsWith(
+      `/specify/security/collection/${collection.id}/role`
+    );
+  const isMainState = !isRoleState;
+  const outletState = useOutletContext<SecurityOutlet>();
+  const outlet = (
+    <SafeOutlet<SecurityCollectionOutlet>
+      {...outletState}
+      collection={collection}
+      getSetRoles={getSetRoles}
+      getSetUserRoles={getSetUserRoles}
+    />
+  );
+
+  return (
+    <Container.Base className="flex-1 gap-6">
+      {isMainState || isOverlay ? (
+        <>
+          <div className="flex gap-2">
+            <h3 className="text-2xl">
+              {`${schema.models.Collection.label}: ${
+                collection.collectionName ?? ''
+              }`}
+            </h3>
+            {hasTablePermission('Collection', 'read') && (
+              <ViewCollectionButton collection={collection} />
+            )}
+          </div>
+          <div className="flex flex-1 flex-col gap-6 overflow-y-scroll">
+            {hasPermission('/permissions/roles', 'read', collection.id) && (
+              <CollectionRoles
+                collection={collection}
+                getSetRoles={getSetRoles}
+              >
+                {isOverlay && outlet}
+              </CollectionRoles>
+            )}
+            <section className="flex flex-col gap-2">
+              <h4 className="text-xl">{adminText('collectionUsers')}</h4>
+              {typeof mergedUsers === 'object' ? (
+                mergedUsers.length === 0 ? (
+                  commonText('none')
+                ) : (
+                  <>
+                    <Ul>
+                      {mergedUsers.map(({ userId, userName, roles }) => {
+                        const canRead =
+                          userId === userInformation.id ||
+                          hasTablePermission('SpecifyUser', 'read');
+                        const children = (
+                          <>
+                            {userName}
+                            {roles.length > 0 && (
+                              <span className="text-gray-500">
+                                {`(${formatList(
+                                  roles.map(({ roleName }) => roleName)
+                                )})`}
+                              </span>
+                            )}
+                          </>
+                        );
+                        return (
+                          <li key={userId}>
+                            {canRead ? (
+                              <Link.Default
+                                href={`/specify/security/user/${userId}/`}
+                                onClick={(event): void => {
+                                  event.preventDefault();
+                                  navigate(
+                                    `/specify/security/user/${userId}/`,
+                                    {
+                                      state: {
+                                        type: 'SecurityUser',
+                                        initialCollectionId: collection.id,
+                                      },
+                                    }
+                                  );
+                                }}
+                              >
+                                {children}
+                              </Link.Default>
+                            ) : (
+                              children
+                            )}
+                          </li>
+                        );
+                      })}
+                    </Ul>
+                    <div>
+                      <Link.Green
+                        href="/specify/security/user/new/"
+                        onClick={(event): void => {
+                          event.preventDefault();
+                          navigate('/specify/security/user/new/', {
+                            state: {
+                              type: 'SecurityUser',
+                              initialCollectionId: collection.id,
+                            },
+                          });
+                        }}
+                      >
+                        {commonText('create')}
+                      </Link.Green>
+                    </div>
+                  </>
+                )
+              ) : hasPermission(
+                  '/permissions/user/roles',
+                  'read',
+                  collection.id
+                ) ? (
+                commonText('loading')
+              ) : (
+                <CurrentUserLink collectionId={collection.id} />
+              )}
+            </section>
+          </div>
+        </>
+      ) : (
+        outlet
+      )}
+    </Container.Base>
+  );
+}

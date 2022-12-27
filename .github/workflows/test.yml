@@ -19,24 +19,24 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
       - name: Get Specify 6 from cache
         id: cache-specify6
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: Specify6
-          key: specify6.8.00-cache
+          key: specify6.8.01-cache
 
       - name: Install Specify 6
         if: steps.cache-specify6.outputs.cache-hit != 'true'
         run: |
-          wget https://update.specifysoftware.org/6800/Specify_unix_64.sh
+          wget https://update.specifysoftware.org/6801/Specify_unix_64.sh
           sh Specify_unix_64.sh -q -dir ./Specify6
 
       - name: Patch Specify datamodel (Sam, you made the Attachment.origFilename too long)
@@ -48,9 +48,9 @@ jobs:
           sudo apt install -y libmysqlclient-dev libsasl2-dev libldap2-dev libssl-dev
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.6
+          python-version: 3.8
 
       - name: Install python dependencies
         run: |
@@ -87,5 +87,14 @@ jobs:
       - name: Build frontend
         run: make frontend
 
+        # See https://jestjs.io/docs/troubleshooting#tests-are-extremely-slow-on-docker-andor-continuous-integration-ci-server
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
+
       - name: Run JS test suite
-        run: cd specifyweb/frontend/js_src && npm test
+        working-directory: specifyweb/frontend/js_src
+        run: |
+          npm run testBuild && \
+          npm run unitTests -- --maxWorkers ${{ steps.cpu-cores.outputs.count }} && \
+          npm run localizationTests

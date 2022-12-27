@@ -42,7 +42,7 @@ class ObjectFormatter(object):
         def getFormatterFromSchema():
             try:
                 formatter_name = Splocalecontainer.objects.get(
-                    name=specify_model.name.lower,
+                    name=specify_model.name.lower(),
                     schematype=0,
                     discipline=self.collection.discipline
                 ).format
@@ -132,6 +132,10 @@ class ObjectFormatter(object):
         for caseNode in switchNode.findall('fields'):
             query, value, expr = make_case(query, caseNode)
             cases.append((value, expr))
+
+        if not cases:
+            logger.warn("dataobjformatter for %s contains switch clause no fields", specify_model)
+            return query, literal(_("<Formatter not defined.>"))
 
         if single:
             value, expr = cases[0]

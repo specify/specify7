@@ -10,6 +10,8 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
@@ -19,6 +21,10 @@ export const welcomeText = createDictionary({
     'en-us': 'About Specify 7',
     'ru-ru': 'О Specify 7',
   },
+  downloadInformation: {
+    'en-us': 'Download Information',
+    'ru-ru': 'Скачать информацию',
+  },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
     'ru-ru': 'Плитки таксонов',
@@ -27,7 +33,7 @@ export const welcomeText = createDictionary({
     'en-us': (count: number) =>
       `Showing Taxa with ${count} or more Collection Objects`,
     'ru-ru': (count: number) =>
-      `Показаны таксоны с ${count} или более экземплярами`,
+      `Показаны таксоны с ${count} или более коллекционными объектами`,
   },
   fullAddress: {
     'en-us': (
@@ -75,7 +81,7 @@ export const welcomeText = createDictionary({
       University of Florida, Denmark Consortium of Museums и University of
       Kansas. Консорциум действует под некоммерческой организацией, 501(c)3,
       налоговым статусом США университета University of Kansas. Specify
-      поддерживался с 1996 по 2018 год грантами фонда U.S. National Science 
+      поддерживался с 1996 по 2018 год грантами фонда U.S. National Science
       Foundation.`,
   },
   licence: {
@@ -96,6 +102,14 @@ export const welcomeText = createDictionary({
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
+  },
+  gitSha: {
+    'en-us': 'Git SHA:',
+    'ru-ru': 'Git SHA:',
+  },
+  buildDate: {
+    'en-us': 'Build Date:',
+    'ru-ru': 'Дата сборки:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -121,9 +135,10 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
   },
-  // TODO:
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
-    'ru-ru': 'DB Creation Date:',
+    'ru-ru': 'Дата создания базы данных:',
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

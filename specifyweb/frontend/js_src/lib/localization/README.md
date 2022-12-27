@@ -15,11 +15,6 @@
   not be a great choice as it is not used as widely, and can be confused for
   other terms (Disk Space, Demo Software, Describe Specify, Do Something, etc)
 
-- Similarly, try to be as consistent as possible in key naming. For example, in
-  case of the dialog that appears when upload plan is not defined, use
-  `noUploadPlanDialogHeader`, `noUploadPlanDialogText` for specifying the header
-  and the message of the dialog respectively.
-
 - Each dictionary must be named in camel case and end with "Text" for
   consistency and easy grepping
 

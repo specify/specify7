@@ -6,13 +6,16 @@
  */
 
 import React from 'react';
+
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const formsText = createDictionary({
   // Attachments
-  order: {
+  orderBy: {
     'en-us': 'Order By',
     'ru-ru': 'Сортировать по',
   },
@@ -32,9 +35,9 @@ export const formsText = createDictionary({
     'en-us': 'Clone',
     'ru-ru': 'Клонировать',
   },
-  addAnother: {
-    'en-us': 'Add another',
-    'ru-ru': 'Добавить еще',
+  cloneDescription: {
+    'en-us': 'Create a full copy of current record',
+    'ru-ru': 'Создать полную копию текущей записи',
   },
   // BusinessRules
   valueMustBeUniqueToField: {
@@ -68,11 +71,18 @@ export const formsText = createDictionary({
   },
   deleteBlockedDialogText: {
     'en-us': `
-      The resource cannot be deleted because it is referenced through the
-      following fields:`,
+      The resource cannot be deleted because it is referenced by the following
+      resources:`,
     'ru-ru': `
-      Ресурс не может быть удален, потому что на него есть ссылка через
-      следующие поля:`,
+      Ресурс нельзя удалить, так как на него ссылаются следующие ресурсы:`,
+  },
+  record: {
+    'en-us': 'Record',
+    'ru-ru': 'Запись',
+  },
+  relationship: {
+    'en-us': 'Relationship',
+    'ru-ru': 'Связь',
   },
   contract: {
     'en-us': 'Contract',
@@ -132,7 +142,7 @@ export const formsText = createDictionary({
       Препараты не могут быть возвращены в этом контексте.`,
   },
   noUnresolvedPreparations: {
-    'en-us': 'There no unresolved preparations for this loan.',
+    'en-us': 'There are no unresolved preparations for this loan.',
     'ru-ru': 'Незавершенных приготовлений по этому кредиту нет.',
   },
   remarks: {
@@ -259,6 +269,14 @@ export const formsText = createDictionary({
       `Add value "${value}" to the pick list named ${pickListName}?`,
     'ru-ru': (value: string, pickListName: string) =>
       `Добавить значение "${value}" в список выбора ${pickListName}?`,
+  },
+  invalidType: {
+    'en-us': 'Invalid Type',
+    'ru-ru': 'Недействительный тип',
+  },
+  invalidNumericPicklistValue: {
+    'en-us': 'Only numeric values are supported in this pick list',
+    'ru-ru': 'В этом списке выбора допускаются только числовые значения',
   },
   // ReadOnlyPickListComboBox
   noData: {
@@ -390,14 +408,14 @@ export const formsText = createDictionary({
   unavailableCommandDialogText: {
     'en-us': (
       <>
-        This command is currently unavailable for <i>Specify 7</i>
+        This command is currently unavailable for <i>Specify 7</i>.<br />
         It was probably included on this form from <i>Specify 6</i> and may be
         supported in the future.
       </>
     ),
     'ru-ru': (
       <>
-        Эта команда в настоящее время недоступна для <i>Specify 7</i>
+        Эта команда в настоящее время недоступна для <i>Specify 7</i>.<br />
         Вероятно, он был включен на етой форме в <i>Specify 6</i> м может бить
         поддерживаним в будущем.
       </>
@@ -458,6 +476,10 @@ export const formsText = createDictionary({
     'en-us': 'Field is required.',
     'ru-ru': 'Поле обязательно для заполнения.',
   },
+  invalidValue: {
+    'en-us': 'Invalid value',
+    'ru-ru': 'Недопустимое значение',
+  },
   requiredFormat: {
     'en-us': (format: string) => `Required Format: ${format}.`,
     'ru-ru': (format: string) => `Обязательный формат: ${format}.`,
@@ -502,10 +524,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Поле из таблицы',
   },
   // Audit log actions
-  insert: {
-    'en-us': 'Insert',
-    'ru-ru': 'Создано',
-  },
   treeMerge: {
     'en-us': 'Tree Merge',
     'ru-ru': 'Слияние узлов дерева',
@@ -518,8 +536,8 @@ export const formsText = createDictionary({
     'en-us': 'Tree Synonymize',
     'ru-ru': 'Синонимизированный узел дерева',
   },
-  treeUnsynonymize: {
-    'en-us': 'Tree Unsynonymize',
+  treeDesynonymize: {
+    'en-us': 'Tree Desynonymize',
     'ru-ru': 'Отменено синонимизацию узла дерева',
   },
   unsupportedCellType: {
@@ -533,10 +551,6 @@ export const formsText = createDictionary({
   additionalResultsOmitted: {
     'en-us': 'Additional results omitted',
     'ru-ru': 'Дополнительные результаты опущены',
-  },
-  reportOnSave: {
-    'en-us': 'Generate Label on Save',
-    'ru-ru': 'Генерировать отчет при сохранении',
   },
   recordSelectorUnloadProtectDialogHeader: {
     'en-us': 'Proceed without saving?',
@@ -657,4 +671,148 @@ export const formsText = createDictionary({
     'en-us': 'Remove from Record Set',
     'ru-ru': 'Удалить из набора записей',
   },
+  nothingFound: {
+    'en-us': 'Nothing found',
+    'ru-ru': 'Ничего не найдено',
+  },
+  carryForward: {
+    'en-us': 'Carry Forward',
+    'ru-ru': 'Перенести',
+  },
+  carryForwardEnabled: {
+    'en-us': 'Show Carry Forward button',
+    'ru-ru': 'Показать кнопку Перенести',
+  },
+  carryForwardDescription: {
+    'en-us': 'Create a new record with certain fields carried over',
+    'ru-ru': 'Создать новую запись с определенными полями, перенесенными',
+  },
+  carryForwardSettingsDescription: {
+    'en-us': 'Configure fields to carry forward',
+    'ru-ru': 'Настройте поля для клонирования',
+  },
+  carryForwardUniqueField: {
+    'en-us': 'This field must be unique. It can not be carried over',
+    'ru-ru': 'Это поле должно быть уникальным. Оно не может быть перенесено',
+  },
+  cloneButtonEnabled: {
+    'en-us': 'Show Clone button',
+    'ru-ru': 'Показать кнопку клонирования',
+  },
+  addButtonEnabled: {
+    'en-us': 'Show Add button',
+    'ru-ru': 'Показать кнопку добавления',
+  },
+  addButtonDescription: {
+    'en-us': 'Create a new blank record',
+    'ru-ru': 'Создать новую пустую запись',
+  },
+  autoNumbering: {
+    'en-us': 'Auto Numbering',
+    'ru-ru': 'Автонумерация',
+  },
+  editFormDefinition: {
+    'en-us': 'Edit Form Definition',
+    'ru-ru': 'Редактировать схему формы',
+  },
+  useAutoGeneratedForm: {
+    'en-us': 'Use Auto Generated Form',
+    'ru-ru': 'Использовать автоматическую схему формы',
+  },
+  useFieldLabels: {
+    'en-us': 'Use localized field labels',
+    'ru-ru': 'Использовать локализованные названия полей',
+  },
+  historyOfEdits: {
+    'en-us': 'History of edits',
+    'ru-ru': 'История изменений',
+  },
+  historyOfEditsQueryName: {
+    'en-us': (formattedRecord: string) =>
+      `History of edits for "${formattedRecord}"`,
+    'ru-ru': (formattedRecord: string) =>
+      `История изменений для "${formattedRecord}"`,
+  },
+  formConfiguration: {
+    'en-us': 'Form Configuration',
+    'ru-ru': 'Конфигурация формы',
+  },
+  formState: {
+    'en-us': 'Form State',
+    'ru-ru': 'Состояние формы',
+  },
+  recordInformation: {
+    'en-us': 'Record Information',
+    'ru-ru': 'Информация об объекте',
+  },
+  shareRecord: {
+    'en-us': 'Share Record:',
+    'ru-ru': 'Поделиться объектом:',
+  },
+  findUsages: {
+    'en-us': 'Find usages',
+    'ru-ru': 'Найти использование',
+  },
+  usagesOfPickList: {
+    'en-us': (pickList: string) => `Usages of "${pickList}" pick list`,
+    'ru-ru': (pickList: string) => `Использование "${pickList}" списка выбора`,
+  },
+  generateLabel: {
+    'en-us': 'Generate label',
+    'ru-ru': 'Сгенерировать метку',
+  },
+  generateLabelOnSave: {
+    'en-us': 'Generate label on save',
+    'ru-ru': 'Генерировать метку при сохранении',
+  },
+  generateReport: {
+    'en-us': 'Generate report',
+    'ru-ru': 'Сгенерировать отчет',
+  },
+  generateReportOnSave: {
+    'en-us': 'Generate report on save',
+    'ru-ru': 'Генерировать отчет при сохранении',
+  },
+  form: {
+    'en-us': 'Subform',
+    'ru-ru': 'Форма',
+  },
+  formTable: {
+    'en-us': 'Grid',
+    'ru-ru': 'Таблица',
+  },
+  subviewConfiguration: {
+    'en-us': 'Subview',
+    'ru-ru': 'Конфигурация подчиненной формы',
+  },
+  selectSourceOfTables: {
+    'en-us': 'Select source of tables',
+    'ru-ru': 'Выберите источник таблиц',
+  },
+  inheritLegacySettings: {
+    'en-us': 'Copy Specify 6 settings',
+    'ru-ru': 'Копировать настройки из Specify 6',
+  },
+  useCustomSettings: {
+    'en-us': 'Use custom settings',
+    'ru-ru': 'Использовать другие настройки',
+  },
+  disableReadOnly: {
+    'en-us': 'Disable read-only mode',
+    'ru-ru': 'Отключить режим только для чтения',
+  },
+  enableReadOnly: {
+    'en-us': 'Enable read-only mode',
+    'ru-ru': 'Включить режим только для чтения',
+  },
+  configureDataEntryTables: {
+    'en-us': 'Configure data entry tables',
+    'ru-ru': 'Настроить таблицы ввода данных',
+  },
+  formMeta: {
+    'en-us': 'Form Meta',
+    'ru-ru': 'Мета-данные формы',
+  },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

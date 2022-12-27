@@ -10,6 +10,8 @@ import { createDictionary, whitespaceSensitive } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
+/* eslint-disable react/jsx-no-literals */
+/* eslint-disable @typescript-eslint/naming-convention */
 export const wbText = createDictionary({
   // Buttons
   rollback: {
@@ -375,10 +377,6 @@ export const wbText = createDictionary({
     'en-us': 'Data Set Upload cancelled.',
     'ru-ru': 'Загрузка набора данных отменена.',
   },
-  geoLocateDialogTitle: {
-    'en-us': 'GeoLocate',
-    'ru-ru': 'GeoLocate',
-  },
   coordinateConverterDialogTitle: {
     'en-us': 'Geocoordinate Format',
     'ru-ru': 'Геокоординатный формат',
@@ -471,10 +469,6 @@ export const wbText = createDictionary({
       'Количество новых записей, которые будут созданы в каждой таблице:',
   },
   // WbAdvancedSearch
-  wbAdvancedSearchDialogTitle: {
-    'en-us': 'Configure Search & Replace',
-    'ru-ru': 'Настроить поиск и замену',
-  },
   navigationOptions: {
     'en-us': 'Navigation Options',
     'ru-ru': 'Опции навигации',
@@ -540,6 +534,10 @@ export const wbText = createDictionary({
     'en-us': 'Preview Dataset',
     'ru-ru': 'Предварительный просмотр набора данных',
   },
+  errorImporting: {
+    'en-us': 'The following error(s) occurred while importing the file:',
+    'ru-ru': 'При импорте файла произошли следующие ошибки:',
+  },
   corruptFile: {
     'en-us': (fileName: string) =>
       `The file ${fileName} is corrupt or contains no data!`,
@@ -549,6 +547,34 @@ export const wbText = createDictionary({
   characterEncoding: {
     'en-us': 'Character encoding:',
     'ru-ru': 'Кодировка символов:',
+  },
+  delimiter: {
+    'en-us': 'Delimiter:',
+    'ru-ru': 'Разделитель:',
+  },
+  comma: {
+    'en-us': 'Comma',
+    'ru-ru': 'Запятая',
+  },
+  semicolon: {
+    'en-us': 'Semicolon',
+    'ru-ru': 'Точка с запятой',
+  },
+  tab: {
+    'en-us': 'Tab',
+    'ru-ru': 'Табуляция',
+  },
+  space: {
+    'en-us': 'Space',
+    'ru-ru': 'Пробел',
+  },
+  pipe: {
+    'en-us': 'Pipe',
+    'ru-ru': 'Вертикальная черта',
+  },
+  determineAutomatically: {
+    'en-us': 'Determine automatically',
+    'ru-ru': 'Определить автоматически',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
@@ -661,10 +687,6 @@ export const wbText = createDictionary({
     'en-us': 'Add New Column',
     'ru-ru': 'Добавить новую колонку',
   },
-  revealHiddenFormFields: {
-    'en-us': 'Reveal Hidden Form Fields',
-    'ru-ru': 'Показать скрытые поля формы',
-  },
   validationFailedDialogHeader: {
     'en-us': 'Validation found missing mappings:',
     'ru-ru': 'Проверка обнаружила недостающие сопоставления:',
@@ -704,10 +726,6 @@ export const wbText = createDictionary({
     'en-us': (tableName: string): string =>
       `Relationship with the ${tableName} table`,
     'ru-ru': (tableName: string): string => `Связь с таблицей ${tableName}`,
-  },
-  relationshipInline: {
-    'en-us': 'Relationship',
-    'ru-ru': 'Связь',
   },
   selectBaseTableDialogTitle: {
     'en-us': 'Select a Base Table',
@@ -776,12 +794,12 @@ export const wbText = createDictionary({
     'en-us': 'Map Explorer',
     'ru-ru': 'Обзор сопоставлений',
   },
-  hideMappingEditor: {
-    'en-us': 'Hide Map Explorer',
+  hideFieldMapper: {
+    'en-us': 'Hide Field Mapper',
     'ru-ru': 'Спрятать обзор сопоставлений',
   },
-  showMappingEditor: {
-    'en-us': 'Show Map Explorer',
+  showFieldMapper: {
+    'en-us': 'Show Field Mapper',
     'ru-ru': 'Показать обзор сопоставлений',
   },
   mappings: {
@@ -801,16 +819,16 @@ export const wbText = createDictionary({
       <>
         This Data Set doesn&apos;t have any columns.
         <br />
-        Press the &quot;Add New Column&quot; button at the bottom of the screen
-        to add new columns.
+        Press the &quot;Add New Column&quot; button below the mapping lines to
+        add new columns.
       </>
     ),
     'ru-ru': (
       <>
         В этом наборе данных нет столбцов.
         <br />
-        Нажмите кнопку &quot;Добавить новый столбец&quot; кнопка внизу экрана
-        чтобы добавить новые столбцы.
+        Нажмите кнопку &quot;Добавить новый столбец&quot; под строками
+        сопоставления, чтобы добавить новые столбцы.
       </>
     ),
   },
@@ -931,12 +949,8 @@ export const wbText = createDictionary({
     'en-us': 'Select New Owner:',
     'ru-ru': 'Выберите нового владельца:',
   },
-  dataSetOwnerChangedDialogHeader: {
+  dataSetOwnerChanged: {
     'en-us': 'Data Set owner changed',
-    'ru-ru': 'Владелец набора данных изменен',
-  },
-  dataSetOwnerChangedDialogText: {
-    'en-us': 'Data Set owner changed.',
     'ru-ru': 'Владелец набора данных изменен',
   },
   dataSet: {
@@ -1022,3 +1036,5 @@ export const wbText = createDictionary({
       набор данных.`,
   },
 });
+/* eslint-enable react/jsx-no-literals */
+/* eslint-enable @typescript-eslint/naming-convention */

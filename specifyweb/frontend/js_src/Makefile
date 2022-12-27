@@ -1,7 +1,7 @@
 .PHONY: build clean watch
 
 build:
-	npm install
+	npm ci
 	npx webpack -o ../static/js --mode=production
 clean:
 	rm -rf node_modules
