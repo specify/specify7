@@ -14,6 +14,7 @@ import {
   replaceItem,
 } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -31,7 +32,7 @@ import {
 } from './Compare';
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer } from './index';
-import { className } from '../Atoms/className';
+import { f } from '../../utils/functools';
 
 export function MergeSubviewButton({
   relationship,
@@ -41,7 +42,7 @@ export function MergeSubviewButton({
 }: {
   readonly relationship: Relationship;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -96,12 +97,12 @@ function MergeDialog({
 }: {
   readonly relationship: Relationship;
   readonly merged: SpecifyResource<AnySchema>;
-  readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly onClose: () => void;
 }): JSX.Element {
   const id = useId('merge-dialog');
 
-  const getRecords = React.useCallback(
+  const getChildren = React.useCallback(
     (resource: SpecifyResource<AnySchema>) => {
       const children = resource.getDependentResource(relationship.name);
       return relationshipIsToMany(relationship)
@@ -112,12 +113,12 @@ function MergeDialog({
   );
 
   const [mergedRecords, setMergedRecords] = React.useState(() =>
-    getRecords(merged)
+    getChildren(merged)
   );
 
   const [children, setChildren] = useChildren(
     mergedRecords,
-    getRecords,
+    getChildren,
     resources,
     relationship
   );
@@ -134,8 +135,9 @@ function MergeDialog({
 
   return (
     <MergeDialogContainer
-      header={relationship.label}
+      header={queryText('mergeFields', relationship.label)}
       id={id('form')}
+      onCancel={undefined}
       onClose={handleClose}
     >
       <MergeContainer
@@ -220,21 +222,21 @@ function MergeDialog({
  */
 function useChildren(
   mergedRecords: RA<SpecifyResource<AnySchema>>,
-  getRecords: (
+  getChildren: (
     resource: SpecifyResource<AnySchema>
   ) => RA<SpecifyResource<AnySchema>>,
-  resources: RA<SpecifyResource<AnySchema>>,
+  resources: RA<SpecifyResource<AnySchema> | undefined>,
   relationship: Relationship
 ): GetOrSet<RA<RA<SpecifyResource<AnySchema> | undefined>>> {
   return useTriggerState(
     React.useMemo<RA<RA<SpecifyResource<AnySchema> | undefined>>>(() => {
-      const children = resources.map(getRecords);
+      const children = resources.map((record) => f.maybe(record, getChildren));
       const maxCount = Math.max(
-        ...[mergedRecords, ...children].map(({ length }) => length)
+        ...[mergedRecords, ...children].map((children) => children?.length ?? 0)
       );
       return children
         .map((records) =>
-          records.reduce<
+          records?.reduce<
             readonly [
               RR<number, SpecifyResource<AnySchema>>,
               RA<string | undefined>
@@ -260,14 +262,16 @@ function useChildren(
             ]
           )
         )
-        .map(([mappings], index) => {
+        .map((results, index) => {
+          if (results === undefined) return [];
+          const [mappings] = results;
           const mapped = new Set(Object.values(mappings));
           return [
             ...Array.from({ length: maxCount }, (_, index) => mappings[index]),
-            ...children[index].filter((record) => !mapped.has(record)),
+            ...(children[index]?.filter((record) => !mapped.has(record)) ?? []),
           ];
         });
-    }, [getRecords, resources, relationship])
+    }, [getChildren, resources, relationship])
   );
 }
 

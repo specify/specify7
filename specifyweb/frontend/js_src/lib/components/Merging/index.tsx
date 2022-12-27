@@ -76,7 +76,11 @@ export function MergingDialog({
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
   return records === undefined ? null : (
-    <MergeDialogContainer id={id('form')} onClose={handleClose}>
+    <MergeDialogContainer
+      id={id('form')}
+      onClose={handleClose}
+      onCancel={handleClose}
+    >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
@@ -142,11 +146,13 @@ export function MergeDialogContainer({
   children,
   header = queryText('mergeRecords'),
   onClose: handleClose,
+  onCancel: handleCancel,
 }: {
   readonly header?: string;
   readonly id: string;
   readonly children: React.ReactNode;
   readonly onClose: () => void;
+  readonly onCancel?: () => void;
 }): JSX.Element {
   return (
     <Dialog
@@ -154,9 +160,11 @@ export function MergeDialogContainer({
         <>
           <ToggleMergeView />
           <span className="-ml-2 flex-1" />
-          <Button.BorderedGray onClick={handleClose}>
-            {commonText('cancel')}
-          </Button.BorderedGray>
+          {typeof handleCancel === 'function' && (
+            <Button.BorderedGray onClick={handleCancel}>
+              {commonText('cancel')}
+            </Button.BorderedGray>
+          )}
           <Submit.Blue form={id}>{treeText('merge')}</Submit.Blue>
         </>
       }

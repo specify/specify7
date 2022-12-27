@@ -329,6 +329,11 @@ export const queryText = createDictionary({
     'en-us': 'Preview',
     'ru-ru': 'Открыть',
   },
+  mergeFields: {
+    // Example: "Merge Addresses"
+    'en-us': (field: string) => `Merge ${field}`,
+    'ru-ru': (field: string) => `Объединить ${field}`,
+  },
   duplicateRecord: {
     'en-us': (index: number) => `Duplicate ${index}`,
     'ru-ru': (index: number) => `Дубликат ${index}`,

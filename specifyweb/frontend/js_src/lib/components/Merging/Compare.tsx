@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { deserializeResource } from '../../hooks/resource';
+import { useCachedState } from '../../hooks/useCachedState';
 import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -19,7 +20,6 @@ import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { autoMerge, resourceToGeneric } from './autoMerge';
 import { MergeSubviewButton } from './CompareSubView';
 import { MergeRow, MergingHeader } from './Header';
-import { useCachedState } from '../../hooks/useCachedState';
 
 export function CompareRecords({
   formId,
@@ -49,8 +49,8 @@ export function CompareRecords({
   return (
     <MergeContainer
       id={formId}
-      onSubmit={(): void => handleMerge(merged, resources)}
       recordCount={records.length}
+      onSubmit={(): void => handleMerge(merged, resources)}
     >
       <MergingHeader
         merged={merged}
@@ -178,6 +178,7 @@ export function CompareField({
     <MergeRow header={field.label}>
       <Field
         field={field}
+        isReadOnly={false}
         merged={undefined}
         resource={merged}
         resources={resources}
@@ -185,11 +186,11 @@ export function CompareField({
       {resources.map((resource, index) => (
         <Field
           field={field}
+          isReadOnly
           key={index}
           merged={merged}
           resource={resource}
           resources={resources}
-          isReadOnly
         />
       ))}
     </MergeRow>
@@ -205,7 +206,7 @@ function Field({
 }: {
   readonly field: LiteralField | Relationship;
   readonly resource: SpecifyResource<AnySchema> | undefined;
-  readonly resources: RA<SpecifyResource<AnySchema>>;
+  readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly merged: SpecifyResource<AnySchema> | undefined;
   readonly isReadOnly: boolean;
 }): JSX.Element {
@@ -242,8 +243,8 @@ function Field({
         </div>
       ) : (
         <MergeSubviewButton
-          relationship={field}
           merged={merged}
+          relationship={field}
           resource={resource}
           resources={resources}
         />

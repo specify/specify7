@@ -244,10 +244,10 @@ theories(toggleItem, {
 });
 
 theories(moveItem, {
-  'move up': { in: [[1, 2, 3], 1, 'up'], out: [1, 3, 2] },
-  'move down': { in: [[1, 2, 3], 1, 'down'], out: [2, 1, 3] },
-  'move up outside bounds': { in: [[1, 2, 3], 2, 'up'], out: [1, 2, 3] },
-  'move down outside bounds': { in: [[1, 2, 3], 0, 'down'], out: [1, 2, 3] },
+  'move up': { in: [[1, 2, 3], 1, 'up'], out: [2, 1, 3] },
+  'move down': { in: [[1, 2, 3], 1, 'down'], out: [1, 3, 2] },
+  'move up outside bounds': { in: [[1, 2, 3], 0, 'up'], out: [1, 2, 3] },
+  'move down outside bounds': { in: [[1, 2, 3], 2, 'down'], out: [1, 2, 3] },
 }),
   theories(replaceKey, {
     'replacing existing key': {
