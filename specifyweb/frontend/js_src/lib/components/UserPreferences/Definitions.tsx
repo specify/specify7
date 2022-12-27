@@ -103,7 +103,7 @@ export type GenericPreferencesCategories = IR<{
   readonly subCategories: IR<{
     readonly title: string;
     readonly description?: string;
-    readonly items: IR<PreferenceItem<any>>;
+    readonly items: RR<number | string | symbol, PreferenceItem<any>>;
   }>;
 }>;
 export const preferenceDefinitions = {
@@ -1637,4 +1637,4 @@ export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
 
 export type GenericPreferences = GenericPreferencesCategories;
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);
+ensure<GenericPreferences>()(preferenceDefinitions);

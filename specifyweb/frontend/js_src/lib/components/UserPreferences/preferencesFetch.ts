@@ -4,7 +4,7 @@ import type { RA } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { cachableUrl } from '../InitialContext';
 
-type Resource = {
+export type Resource = {
   readonly id: number;
   readonly metadata: string | null;
   readonly name: string;

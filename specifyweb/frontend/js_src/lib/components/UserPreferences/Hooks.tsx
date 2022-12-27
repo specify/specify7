@@ -9,9 +9,9 @@ import { usePref } from './usePref';
 export const prefEvents = eventListener<{
   readonly update:
     | {
-        readonly category: string;
-        readonly subcategory: string;
-        readonly item: string;
+        readonly category: string | number | symbol;
+        readonly subcategory: string | number | symbol;
+        readonly item: string | number | symbol;
         readonly definition: PreferenceItem<unknown>;
       }
     | undefined;

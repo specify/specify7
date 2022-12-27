@@ -3,7 +3,8 @@ import { preferencesText } from '../../localization/preferences';
 import { StatLayout } from '../Statistics/types';
 import { error } from '../Errors/assert';
 import React from 'react';
-import { defineItem } from './Definitions';
+import { defineItem, GenericPreferences } from './Definitions';
+import { ensure } from '../../utils/types';
 
 export const collectionPreferenceDefinitions = {
   statistics: {
@@ -38,3 +39,5 @@ export const collectionPreferenceDefinitions = {
     },
   },
 };
+
+ensure<GenericPreferences>()(collectionPreferenceDefinitions);
