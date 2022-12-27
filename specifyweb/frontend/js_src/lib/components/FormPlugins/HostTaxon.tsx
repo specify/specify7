@@ -56,9 +56,7 @@ export function HostTaxon({
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       fieldName="hostTaxon"
-      forceCollection={
-        rightSideCollection === false ? undefined : rightSideCollection
-      }
+      forceCollection={rightSideCollection}
       formType={formType}
       id={id}
       isRequired={isRequired}
