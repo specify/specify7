@@ -6,39 +6,30 @@
 
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { sortFunction } from '../../utils/utils';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import { strictGetModel } from '../DataModel/schema';
+import { f } from '../../utils/functools';
 import type { RR } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { H2, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { strictGetModel } from '../DataModel/schema';
+import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
-
-function TableResults({
-  tableName,
-  recordCount,
-}: {
-  readonly tableName: keyof Tables;
-  readonly recordCount: number;
-}): JSX.Element {
-  return (
-    <li className="flex items-center gap-1">
-      <TableIcon label={false} name={tableName} />
-      <span>{`${strictGetModel(tableName).label}: ${recordCount}`}</span>
-    </li>
-  );
-}
+import { CreateRecordSetButton, CreateRecordSetDialog } from './RecordSet';
 
 export function WbUploaded({
   recordCounts,
-  onClose: handleClose,
+  dataSetId,
+  dataSetName,
   isUploaded,
+  onClose: handleClose,
 }: {
   readonly recordCounts: RR<keyof Tables, number>;
-  readonly onClose: () => void;
+  readonly dataSetId: number;
+  readonly dataSetName: string;
   readonly isUploaded: boolean;
+  readonly onClose: () => void;
 }): JSX.Element {
   return (
     <div className="flex h-full w-60 flex-col gap-4">
@@ -65,7 +56,32 @@ export function WbUploaded({
             />
           ))}
       </Ul>
-      <Button.Small onClick={handleClose}>{commonText('close')}</Button.Small>
+      <div className="flex flex-wrap gap-2">
+        <CreateRecordSetButton
+          dataSetId={dataSetId}
+          dataSetName={dataSetName}
+          small
+          onClose={f.void}
+        />
+        <Button.Small className="flex-1" onClick={handleClose}>
+          {commonText('close')}
+        </Button.Small>
+      </div>
     </div>
+  );
+}
+
+function TableResults({
+  tableName,
+  recordCount,
+}: {
+  readonly tableName: keyof Tables;
+  readonly recordCount: number;
+}): JSX.Element {
+  return (
+    <li className="flex items-center gap-1">
+      <TableIcon label={false} name={tableName} />
+      <span>{`${strictGetModel(tableName).label}: ${recordCount}`}</span>
+    </li>
   );
 }

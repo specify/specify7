@@ -65,6 +65,7 @@ import {crash} from '../Errors/Crash';
 import {loadingBar} from '../Molecules';
 import {Http} from '../../utils/ajax/definitions';
 import {downloadDataSet} from './helpers';
+import {CreateRecordSetButton} from './RecordSet';
 
 const metaKeys = [
   'isNew',
@@ -1842,6 +1843,8 @@ export const WBView = Backbone.View.extend({
     this.uploadedView = new WbUploadedView({
       recordCounts: this.uploadResults.recordCounts,
       isUploaded: this.isUploaded,
+      dataSetId: this.dataset.id,
+      dataSetName: this.dataset.name,
       onClose: handleClose,
     }).render();
 
@@ -2539,7 +2542,19 @@ export const WBView = Backbone.View.extend({
       header: messages[this.refreshInitiatedBy].header,
       content: messages[this.refreshInitiatedBy].message,
       onClose: () => dialog.remove(),
-      buttons: commonText('close'),
+      buttons: (
+        <>
+          {cellCounts.invalidCells === 0 &&
+          this.refreshInitiatedBy === 'upload' ? (
+            <CreateRecordSetButton
+              dataSetId={this.dataset.id}
+              dataSetName={this.dataset.name}
+              onClose={() => dialog.remove()}
+            />
+          ) : undefined}
+          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+        </>
+      ),
     });
 
     this.refreshInitiatedBy = undefined;

@@ -18,11 +18,13 @@ export function EditRecordSet({
   isReadOnly,
   onClose: handleClose,
   onDeleted: handleDeleted,
+  onSaving: handleSaving,
 }: {
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
   readonly onDeleted?: () => void;
+  readonly onSaving?: () => false | undefined;
 }): JSX.Element {
   const navigate = useNavigate();
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();
@@ -65,6 +67,7 @@ export function EditRecordSet({
         handleDeleted?.();
         handleClose();
       }}
+      onSaving={handleSaving}
       onSaved={(): void => navigate(`/specify/record-set/${recordSet.id}/`)}
     />
   );

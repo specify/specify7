@@ -1035,6 +1035,10 @@ export const wbText = createDictionary({
     'ru-ru': `Выбранный набор данных не имеет плана загрузки. Выберите другой
       набор данных.`,
   },
+  recordSetName: {
+    'en-us': (dataSet: string) => `WB upload of "${dataSet}"`,
+    'ru-ru': (dataSet: string) => `WB загрузка "${dataSet}"`,
+  },
 });
 /* eslint-enable react/jsx-no-literals */
 /* eslint-enable @typescript-eslint/naming-convention */
