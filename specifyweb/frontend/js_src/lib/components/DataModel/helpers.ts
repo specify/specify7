@@ -32,15 +32,15 @@ export const specialFields = new Set([
   '_tableName',
 ]);
 
-/** Recursive helper for serializeResource */
-function serializeModel<SCHEMA extends AnySchema>(
-  resource: SerializedModel<SCHEMA>,
+// REFACTOR: get rid of the need for this
+export function resourceToModel<SCHEMA extends AnySchema = AnySchema>(
+  resource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>,
   tableName?: keyof Tables
-): SerializedResource<SCHEMA> {
-  const model = strictGetModel(
+) {
+  return strictGetModel(
     defined(
-      (tableName as SCHEMA['tableName']) ??
-        resource._tableName ??
+      tableName ??
+        (resource._tableName as keyof Tables) ??
         parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
       `Unable to serialize resource because table name is unknown.` +
         (process.env.NODE_ENV === 'test'
@@ -48,6 +48,15 @@ function serializeModel<SCHEMA extends AnySchema>(
           : '')
     )
   );
+}
+
+/** Recursive helper for serializeResource */
+function serializeModel<SCHEMA extends AnySchema>(
+  resource: SerializedModel<SCHEMA>,
+  tableName?: keyof Tables
+): SerializedResource<SCHEMA> {
+  const model = resourceToModel(resource, tableName);
+
   const fields = [...model.fields.map(({ name }) => name), model.idField.name];
 
   return addMissingFields(

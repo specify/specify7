@@ -10,7 +10,7 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import type { RA } from '../../utils/types';
-import { sortFunction } from '../../utils/utils';
+import { removeKey, sortFunction } from '../../utils/utils';
 import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
@@ -99,7 +99,7 @@ export function MergingDialog({
           const clones = resources.slice(1);
           loading(
             target
-              .bulkSet(merged.toJSON())
+              .bulkSet(removeKey(merged.toJSON(), 'version'))
               .save()
               .then(async () => {
                 /*

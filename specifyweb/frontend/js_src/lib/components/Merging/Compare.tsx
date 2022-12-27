@@ -113,7 +113,7 @@ export function useMergeConformation(
     // Don't display independent -to-many relationships
     const fields = model.fields.filter(
       (field) =>
-        !hiddenFields.has(field.name) &&
+        !unMergeableFields.has(field.name) &&
         (!field.isRelationship ||
           field.isDependent() ||
           !relationshipIsToMany(field))
@@ -122,7 +122,7 @@ export function useMergeConformation(
   }, [showMatching, model, records]);
 }
 
-const hiddenFields = new Set([
+export const unMergeableFields = new Set([
   ...specialFields,
   'timestampCreated',
   'timestampModified',
@@ -163,7 +163,7 @@ function findDiffering(
               )
           ).size > 1
       )
-      .filter(({ name }) => !hiddenFields.has(name));
+      .filter(({ name }) => !unMergeableFields.has(name));
 }
 
 export function CompareField({
@@ -304,7 +304,7 @@ export function MergeButton({
   const getValue = React.useCallback(
     (record: SpecifyResource<AnySchema>) =>
       field === undefined
-        ? resourceToGeneric(serializeResource(record))
+        ? resourceToGeneric(serializeResource(record), true)
         : record.get(field.name),
     [field]
   );
@@ -333,7 +333,7 @@ export function MergeButton({
       variant={className.blueButton}
       onClick={(): void =>
         field === undefined
-          ? void to.bulkSet(fromValue)
+          ? void to.bulkSet(resourceToGeneric(serializeResource(from), false))
           : void to.set(field.name, from.get(field.name))
       }
     >

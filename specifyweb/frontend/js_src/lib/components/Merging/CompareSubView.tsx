@@ -244,7 +244,7 @@ function useChildren(
           >(
             ([mappings, mergedRecords], record) => {
               const serialized = JSON.stringify(
-                resourceToGeneric(record.toJSON())
+                resourceToGeneric(record.toJSON(), true)
               );
               const matchIndex = mergedRecords.indexOf(serialized);
               return [
@@ -257,7 +257,7 @@ function useChildren(
             [
               {},
               mergedRecords
-                .map((record) => resourceToGeneric(record.toJSON()))
+                .map((record) => resourceToGeneric(record.toJSON(), true))
                 .map((resource) => JSON.stringify(resource)),
             ]
           )

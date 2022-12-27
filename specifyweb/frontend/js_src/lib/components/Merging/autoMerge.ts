@@ -2,7 +2,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
-import { specialFields } from '../DataModel/helpers';
+import { resourceToModel, specialFields } from '../DataModel/helpers';
 import type {
   AnySchema,
   SerializedModel,
@@ -11,6 +11,8 @@ import type {
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { unMergeableFields } from './Compare';
+import { getUniqueFields } from '../DataModel/resource';
 
 /**
  * Automatically merge n records into one. Used for smart defaults
@@ -73,7 +75,7 @@ function mergeField(
           .unique(
             records
               .flat()
-              .map(resourceToGeneric)
+              .map((value) => resourceToGeneric(value, false))
               .map((resource) => JSON.stringify(resource))
           )
           .map((resource) => JSON.parse(resource));
@@ -101,17 +103,23 @@ function mergeField(
 export const resourceToGeneric = <
   T extends SerializedModel<AnySchema> | SerializedResource<AnySchema>
 >(
-  resource: T
-): T =>
-  Object.fromEntries(
+  resource: T,
+  // Whether to also clear away unique fields
+  strong: boolean
+): T => {
+  const uniqueFields = new Set(
+    strong ? getUniqueFields(resourceToModel(resource)) : []
+  );
+  return Object.fromEntries(
     Object.entries(resource)
-      .filter(([key]) => !specialFields.has(key))
+      .filter(([key]) => !unMergeableFields.has(key) && !uniqueFields.has(key))
       .map(([key, value]) => [
         key,
         Array.isArray(value)
-          ? value.map(resourceToGeneric)
+          ? value.map((value) => resourceToGeneric(value, strong))
           : typeof value === 'object' && value !== null
-          ? resourceToGeneric(value)
+          ? resourceToGeneric(value, strong)
           : value,
       ])
   ) as T;
+};
