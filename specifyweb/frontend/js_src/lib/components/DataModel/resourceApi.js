@@ -13,6 +13,7 @@ import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
+import {specialFields} from './helpers';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -115,8 +116,7 @@ function eventHandlerForToOne(related, field) {
             var newResource = new this.constructor(
               removeKey(
                 this.attributes,
-                'resource_uri',
-                'id',
+                ...specialFields,
                 ...exemptFields
               )
             );

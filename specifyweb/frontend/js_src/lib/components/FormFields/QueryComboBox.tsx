@@ -166,7 +166,7 @@ function ProtectedQueryComboBox({
          * Even if don't have read permission (i.e, Agent for current
          * User)
          */
-        typeof resource.getDependentResource(field.name) === 'object'
+        field.isDependent()
           ? resource
               .rgetPromise<string, AnySchema>(field.name)
               .then((resource) =>

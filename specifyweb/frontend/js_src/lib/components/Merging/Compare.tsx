@@ -5,9 +5,9 @@ import { treeText } from '../../localization/tree';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Form, Input } from '../Atoms/Form';
+import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
-import { specialFields } from '../DataModel/helpers';
+import { serializeResource, specialFields } from '../DataModel/helpers';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
@@ -16,19 +16,18 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { FormField } from '../FormFields';
 import type { FieldTypes } from '../FormParse/fields';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { autoMerge } from './autoMerge';
+import { autoMerge, resourceToGeneric } from './autoMerge';
+import { MergeSubviewButton } from './CompareSubView';
 import { MergeRow, MergingHeader } from './Header';
-import { removeKey } from '../../utils/utils';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function CompareRecords({
-  showMatching,
   formId,
   model,
   records,
   onMerge: handleMerge,
   onDeleted: handleDeleted,
 }: {
-  readonly showMatching: boolean;
   readonly formId: string;
   readonly model: SpecifyModel;
   readonly records: RA<SerializedResource<AnySchema>>;
@@ -46,13 +45,45 @@ export function CompareRecords({
     () => records.map(deserializeResource),
     [records]
   );
-  const conformation = useConformation(showMatching, model, records);
+  const conformation = useMergeConformation(model, resources);
   return (
-    <Form
+    <MergeContainer
       id={formId}
       onSubmit={(): void => handleMerge(merged, resources)}
-      className="overflow-hidden"
+      recordCount={records.length}
     >
+      <MergingHeader
+        merged={merged}
+        resources={resources}
+        onDeleted={handleDeleted}
+      />
+      <tbody>
+        {conformation.map((field) => (
+          <CompareField
+            field={field}
+            key={field.name}
+            merged={merged}
+            resources={resources}
+          />
+        ))}
+      </tbody>
+    </MergeContainer>
+  );
+}
+
+export function MergeContainer({
+  id,
+  recordCount,
+  children,
+  onSubmit: handleSubmit,
+}: {
+  readonly id: string;
+  readonly recordCount: number;
+  readonly children: React.ReactNode;
+  readonly onSubmit: () => void;
+}): JSX.Element {
+  return (
+    <Form className="overflow-hidden" id={id} onSubmit={handleSubmit}>
       <table
         className={`
           grid-table grid-cols-[auto,repeat(var(--columns),minmax(15rem,1fr))]
@@ -60,39 +91,35 @@ export function CompareRecords({
         `}
         style={
           {
-            '--columns': records.length + 1,
+            '--columns': recordCount + 1,
           } as React.CSSProperties
         }
       >
-        <MergingHeader
-          merged={merged}
-          resources={resources}
-          onDeleted={handleDeleted}
-        />
-        <tbody>
-          {conformation.map((field) => (
-            <CompareField
-              field={field}
-              key={field.name}
-              merged={merged}
-              resources={resources}
-            />
-          ))}
-        </tbody>
+        {children}
       </table>
     </Form>
   );
 }
 
-function useConformation(
-  showMatching: boolean,
+export function useMergeConformation(
   model: SpecifyModel,
-  records: RA<SerializedResource<AnySchema>>
+  records: RA<SpecifyResource<AnySchema>>
 ): RA<LiteralField | Relationship> {
-  return React.useMemo(
-    () => (showMatching ? model.fields : findDiffering(model, records)),
-    [showMatching, model, records]
+  const [showMatching = false] = useCachedState(
+    'merging',
+    'showMatchingFields'
   );
+  return React.useMemo(() => {
+    // Don't display independent -to-many relationships
+    const fields = model.fields.filter(
+      (field) =>
+        !hiddenFields.has(field.name) &&
+        (!field.isRelationship ||
+          field.isDependent() ||
+          !relationshipIsToMany(field))
+    );
+    return showMatching ? fields : findDiffering(fields, records);
+  }, [showMatching, model, records]);
 }
 
 const hiddenFields = new Set([
@@ -102,107 +129,85 @@ const hiddenFields = new Set([
   'version',
 ]);
 
-const findDiffering = (
-  model: SpecifyModel,
-  records: RA<SerializedResource<AnySchema>>
-): RA<LiteralField | Relationship> =>
-  model.fields
-    .filter(
-      (field) =>
-        (!field.isRelationship ||
-          field.isDependent() ||
-          !relationshipIsToMany(field)) &&
-        new Set(
-          records
-            .map((record) => record[field.name])
-            .map((value) =>
-              value === null ||
-              value === undefined ||
-              (Array.isArray(value) && value.length === 0)
-                ? ''
-                : value
-            )
-        ).size > 1
-    )
-    .filter(({ name }) => !hiddenFields.has(name));
+function findDiffering(
+  fields: RA<LiteralField | Relationship>,
+  records: RA<SpecifyResource<AnySchema>>
+): RA<LiteralField | Relationship> {
+  if (records.length === 1) {
+    const nonEmptyFields = fields.filter((field) => {
+      const value =
+        field.isRelationship && field.isDependent()
+          ? records[0].getDependentResource(field.name)
+          : (records[0].get(field.name) as string);
+      return value !== undefined && value !== null && value !== '';
+    });
+    return nonEmptyFields.length === 0 ? fields : nonEmptyFields;
+  } else
+    return fields
+      .filter(
+        (field) =>
+          new Set(
+            records
+              .map((record) =>
+                field.isRelationship && field.isDependent()
+                  ? record.getDependentResource(field.name)?.toJSON()
+                  : record.get(field.name)
+              )
+              .map((value) =>
+                value === null ||
+                value === undefined ||
+                (Array.isArray(value) && value.length === 0)
+                  ? ''
+                  : value
+              )
+          ).size > 1
+      )
+      .filter(({ name }) => !hiddenFields.has(name));
+}
 
-function CompareField({
+export function CompareField({
   field,
   resources,
   merged,
 }: {
   readonly field: LiteralField | Relationship;
-  readonly resources: RA<SpecifyResource<AnySchema>>;
-  readonly merged: SpecifyResource<AnySchema>;
+  readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
+  readonly merged: SpecifyResource<AnySchema> | undefined;
 }): JSX.Element {
   return (
     <MergeRow header={field.label}>
-      <Field field={field} merged={undefined} resource={merged} />
+      <Field
+        field={field}
+        merged={undefined}
+        resource={merged}
+        resources={resources}
+      />
       {resources.map((resource, index) => (
-        <Field field={field} key={index} merged={merged} resource={resource} />
+        <Field
+          field={field}
+          key={index}
+          merged={merged}
+          resource={resource}
+          resources={resources}
+          isReadOnly
+        />
       ))}
     </MergeRow>
-  );
-}
-
-export function MergeButton({
-  field,
-  from,
-  to,
-}: {
-  readonly field: LiteralField | Relationship | undefined;
-  readonly from: SpecifyResource<AnySchema>;
-  readonly to: SpecifyResource<AnySchema>;
-}): JSX.Element {
-  const getValue = React.useCallback(
-    (record: SpecifyResource<AnySchema>) =>
-      field === undefined
-        ? removeKey(record.toJSON(), 'id', 'resource_uri')
-        : record.get(field.name),
-    [field]
-  );
-
-  const [fromValue, setFromValue] = React.useState(() => getValue(from));
-  React.useEffect(
-    () => resourceOn(from, 'changed', () => setFromValue(getValue(from)), true),
-    [from, field]
-  );
-
-  const [toValue, setToValue] = React.useState(() => getValue(to));
-  React.useEffect(
-    () => resourceOn(to, 'changed', () => setToValue(getValue(to)), true),
-    [to, field]
-  );
-
-  const isSame = React.useMemo(
-    () => JSON.stringify(fromValue) === JSON.stringify(toValue),
-    [fromValue, toValue]
-  );
-  return (
-    <Button.Small
-      aria-label={treeText('merge')}
-      disabled={isSame}
-      title={treeText('merge')}
-      variant={className.blueButton}
-      onClick={(): void =>
-        field === undefined
-          ? void to.bulkSet(fromValue)
-          : void to.set(field.name, from.get(field.name))
-      }
-    >
-      {icons.chevronLeft}
-    </Button.Small>
   );
 }
 
 function Field({
   field,
   resource,
+  resources,
   merged,
+  isReadOnly,
 }: {
   readonly field: LiteralField | Relationship;
-  readonly resource: SpecifyResource<AnySchema>;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly resources: RA<SpecifyResource<AnySchema>>;
   readonly merged: SpecifyResource<AnySchema> | undefined;
+  readonly isReadOnly: boolean;
 }): JSX.Element {
   const fieldDefinition = React.useMemo(
     () => ({
@@ -211,29 +216,36 @@ function Field({
     }),
     [field]
   );
-  return (
-    <td>
+  return resource === undefined ? (
+    <td />
+  ) : (
+    <td className="!items-stretch">
       {typeof merged === 'object' && (
         <MergeButton field={field} from={resource} to={merged} />
       )}
       {!field.isRelationship ||
       (!field.isDependent() && !relationshipIsToMany(field)) ? (
-        <div className="flex-1">
+        <div className="flex flex-1 items-center justify-center">
           <FormField
             fieldDefinition={fieldDefinition}
             fieldName={field.name}
-            formType="form"
+            /*
+             * Don't use auto grow text area, but do display query combo box
+             * controls
+             */
+            formType={field.isRelationship ? 'form' : 'formTable'}
             id={undefined}
             isRequired={false}
-            mode={merged === undefined ? 'edit' : 'view'}
+            mode={isReadOnly || merged === undefined ? 'edit' : 'view'}
             resource={resource}
           />
         </div>
       ) : (
-        <Input.Text
-          // FIXME: render this as a subview
-          value={JSON.stringify(resource.get(field.name))}
-          onChange={undefined}
+        <MergeSubviewButton
+          relationship={field}
+          merged={merged}
+          resource={resource}
+          resources={resources}
         />
       )}
     </td>
@@ -276,4 +288,54 @@ function fieldToDefinition(
       max: undefined,
       step: undefined,
     };
+}
+
+export function MergeButton({
+  field,
+  from,
+  to,
+}: {
+  readonly field: LiteralField | Relationship | undefined;
+  readonly from: SpecifyResource<AnySchema>;
+  readonly to: SpecifyResource<AnySchema>;
+}): JSX.Element {
+  const getValue = React.useCallback(
+    (record: SpecifyResource<AnySchema>) =>
+      field === undefined
+        ? resourceToGeneric(serializeResource(record))
+        : record.get(field.name),
+    [field]
+  );
+
+  const [fromValue, setFromValue] = React.useState(() => getValue(from));
+  React.useEffect(
+    () => resourceOn(from, 'changed', () => setFromValue(getValue(from)), true),
+    [from, field]
+  );
+
+  const [toValue, setToValue] = React.useState(() => getValue(to));
+  React.useEffect(
+    () => resourceOn(to, 'changed', () => setToValue(getValue(to)), true),
+    [to, field]
+  );
+
+  const isSame = React.useMemo(
+    () => JSON.stringify(fromValue) === JSON.stringify(toValue),
+    [fromValue, toValue]
+  );
+  return (
+    <Button.Small
+      aria-label={treeText('merge')}
+      disabled={isSame}
+      title={treeText('merge')}
+      variant={className.blueButton}
+      onClick={(): void =>
+        field === undefined
+          ? void to.bulkSet(fromValue)
+          : void to.set(field.name, from.get(field.name))
+      }
+    >
+      {icons.chevronLeft}
+    </Button.Small>
+  );
 }

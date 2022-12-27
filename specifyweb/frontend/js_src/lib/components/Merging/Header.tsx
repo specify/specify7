@@ -44,7 +44,8 @@ export function MergingHeader({
   );
 }
 
-const background = dialogClassNames.solidBackground;
+export const mergeCellBackground = dialogClassNames.solidBackground;
+export const mergeHeaderClassName = `sticky top-0 ${mergeCellBackground} z-[20]`;
 
 function HeaderLine({
   merged,
@@ -56,13 +57,9 @@ function HeaderLine({
   return (
     <thead>
       <tr>
-        <td className={background} />
+        <td className={mergeCellBackground} />
         {[merged, ...resources].map((resource, index) => (
-          <th
-            className={`sticky top-0 ${background} z-[20]`}
-            key={index}
-            scope="col"
-          >
+          <th className={mergeHeaderClassName} key={index} scope="col">
             <TableIcon label name={resource.specifyModel.name} />
             <FormattedResource asLink={false} resource={resource} />
           </th>
@@ -115,7 +112,7 @@ export function MergeRow({
   return (
     <tr>
       <th
-        className={`sticky left-0 text-left ${background} z-[10]`}
+        className={`sticky left-0 text-left ${mergeCellBackground} z-[10]`}
         scope="row"
       >
         {header}

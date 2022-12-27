@@ -328,7 +328,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
   }
 
   return (
-    <div className="flex gap-1">
+    <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
         <label>
           <span className="sr-only">{formsText('datePrecision')}</span>

@@ -279,6 +279,29 @@ export const toggleItem = <T>(array: RA<T>, item: T): RA<T> =>
     ? array.filter((value) => value !== item)
     : [...array, item];
 
+export const moveItem = <T>(
+  array: RA<T>,
+  index: number,
+  direction: 'down' | 'up'
+): RA<T> =>
+  direction === 'up'
+    ? index <= 0
+      ? array
+      : [
+          ...array.slice(0, index - 1),
+          array[index],
+          array[index - 1],
+          ...array.slice(index + 1),
+        ]
+    : index + 1 >= array.length
+    ? array
+    : [
+        ...array.slice(0, index),
+        array[index + 1],
+        array[index],
+        ...array.slice(index + 2),
+      ];
+
 /** Creates a new object with a given key replaced */
 export const replaceKey = <T extends IR<unknown>>(
   object: T,

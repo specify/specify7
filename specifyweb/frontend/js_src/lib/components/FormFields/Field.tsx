@@ -220,7 +220,10 @@ function Field({
       forwardRef={validationRef}
       name={field?.name}
       {...validationAttributes}
-      // This is undefined when resource.noValidation = true
+      /*
+       * Disable "text-align: right" in non webkit browsers
+       * as they don't support spinner's arrow customization
+       */
       className={
         validationAttributes.type === 'number' &&
         rightAlignNumberFields &&
@@ -230,17 +233,10 @@ function Field({
       }
       id={id}
       isReadOnly={isReadOnly}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
       required={'required' in validationAttributes && mode !== 'search'}
       tabIndex={isReadOnly ? -1 : undefined}
+      // This is undefined when resource.noValidation = true
       type={validationAttributes.type ?? 'text'}
-      /*
-       * Disable "text-align: right" in non webkit browsers
-       * as they don't support spinner's arrow customization
-       */
       value={
         field?.isRelationship === true
           ? formattedRelationship ?? commonText('loading')
@@ -249,6 +245,10 @@ function Field({
       onBlur={
         isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
       }
+      /*
+       * Update data model value before onBlur, as onBlur fires after onSubmit
+       * if form is submitted using the ENTER key
+       */
       onChange={(event): void => {
         const input = event.target as HTMLInputElement;
         /*

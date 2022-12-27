@@ -16,6 +16,7 @@ import {
   insertItem,
   lowerToHuman,
   mappedFind,
+  moveItem,
   multiSortFunction,
   removeItem,
   removeKey,
@@ -242,23 +243,29 @@ theories(toggleItem, {
   'remove duplicate item': { in: [[1, 2, 3, 1], 1], out: [2, 3] },
 });
 
-theories(replaceKey, {
-  'replacing existing key': {
-    in: [{ a: 'a', b: 'b' }, 'a', 'c'],
-    out: {
-      a: 'c',
-      b: 'b',
+theories(moveItem, {
+  'move up': { in: [[1, 2, 3], 1, 'up'], out: [1, 3, 2] },
+  'move down': { in: [[1, 2, 3], 1, 'down'], out: [2, 1, 3] },
+  'move up outside bounds': { in: [[1, 2, 3], 2, 'up'], out: [1, 2, 3] },
+  'move down outside bounds': { in: [[1, 2, 3], 0, 'down'], out: [1, 2, 3] },
+}),
+  theories(replaceKey, {
+    'replacing existing key': {
+      in: [{ a: 'a', b: 'b' }, 'a', 'c'],
+      out: {
+        a: 'c',
+        b: 'b',
+      },
     },
-  },
-  'replacing non-existed key': {
-    in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
-    out: {
-      a: 'a',
-      b: 'b',
-      c: 'c',
+    'replacing non-existed key': {
+      in: [{ a: 'a', b: 'b' }, 'c' as 'a', 'c'],
+      out: {
+        a: 'a',
+        b: 'b',
+        c: 'c',
+      },
     },
-  },
-});
+  });
 
 theories(index, [
   {

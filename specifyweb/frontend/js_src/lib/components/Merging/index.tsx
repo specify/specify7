@@ -65,10 +65,6 @@ export function MergingDialog({
   readonly onDeleted: (id: number) => void;
 }): JSX.Element | null {
   const records = useResources(model, ids);
-  const [showMatching = false, setShowMatching] = useCachedState(
-    'merging',
-    'showMatchingFields'
-  );
 
   // Close the dialog when resources are deleted/unselected
   React.useEffect(
@@ -80,34 +76,12 @@ export function MergingDialog({
   const loading = React.useContext(LoadingContext);
   const [error, setError] = React.useState<string | undefined>(undefined);
   return records === undefined ? null : (
-    <Dialog
-      buttons={
-        <>
-          <Label.Inline>
-            <Input.Checkbox
-              checked={!showMatching}
-              onValueChange={(checked): void => setShowMatching(!checked)}
-            />
-            {queryText('showConflictingFieldsOnly')}
-          </Label.Inline>
-          <span className="-ml-2 flex-1" />
-          <Button.BorderedGray onClick={handleClose}>
-            {commonText('cancel')}
-          </Button.BorderedGray>
-          <Submit.Blue form={id('form')}>{treeText('merge')}</Submit.Blue>
-        </>
-      }
-      header={queryText('mergeRecords')}
-      // Disable gradient because table headers have solid backgrounds
-      specialMode="noGradient"
-      onClose={handleClose}
-    >
+    <MergeDialogContainer id={id('form')} onClose={handleClose}>
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
         formId={id('form')}
         model={model}
         records={records}
-        showMatching={showMatching}
         onDeleted={handleDeleted}
         onMerge={(merged, rawResources): void => {
           /*
@@ -159,7 +133,56 @@ export function MergingDialog({
           );
         }}
       />
+    </MergeDialogContainer>
+  );
+}
+
+export function MergeDialogContainer({
+  id,
+  children,
+  header = queryText('mergeRecords'),
+  onClose: handleClose,
+}: {
+  readonly header?: string;
+  readonly id: string;
+  readonly children: React.ReactNode;
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <ToggleMergeView />
+          <span className="-ml-2 flex-1" />
+          <Button.BorderedGray onClick={handleClose}>
+            {commonText('cancel')}
+          </Button.BorderedGray>
+          <Submit.Blue form={id}>{treeText('merge')}</Submit.Blue>
+        </>
+      }
+      header={header}
+      // Disable gradient because table headers have solid backgrounds
+      specialMode="noGradient"
+      onClose={handleClose}
+    >
+      {children}
     </Dialog>
+  );
+}
+
+function ToggleMergeView(): JSX.Element {
+  const [showMatching = false, setShowMatching] = useCachedState(
+    'merging',
+    'showMatchingFields'
+  );
+  return (
+    <Label.Inline>
+      <Input.Checkbox
+        checked={!showMatching}
+        onValueChange={(checked): void => setShowMatching(!checked)}
+      />
+      {queryText('showConflictingFieldsOnly')}
+    </Label.Inline>
   );
 }
 

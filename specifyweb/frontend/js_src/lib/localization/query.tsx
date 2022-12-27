@@ -321,9 +321,25 @@ export const queryText = createDictionary({
     'en-us': 'Preview merged',
     'ru-ru': 'Посмотреть результат',
   },
+  mergedRecord: {
+    'en-us': 'Merged Record',
+    'ru-ru': 'Объединенная запись',
+  },
   preview: {
     'en-us': 'Preview',
     'ru-ru': 'Открыть',
+  },
+  duplicateRecord: {
+    'en-us': (index: number) => `Duplicate ${index}`,
+    'ru-ru': (index: number) => `Дубликат ${index}`,
+  },
+  nRecords: {
+    'en-us': (count: number) => `${count} records`,
+    'ru-ru': (count: number) => `${count} записей`,
+  },
+  subViewControls: {
+    'en-us': 'Sub-view Controls',
+    'ru-ru': 'Под-вид Контролы',
   },
 });
 /* eslint-enable react/jsx-no-literals */

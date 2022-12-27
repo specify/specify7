@@ -1,10 +1,13 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { specialFields } from '../DataModel/helpers';
-import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
+import type {
+  AnySchema,
+  SerializedModel,
+  SerializedResource,
+} from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -65,13 +68,15 @@ function mergeField(
         const records = nonNullValues as unknown as RA<
           RA<SerializedResource<AnySchema>>
         >;
-        const maxCount = Math.max(0, ...records.map(({ length }) => length));
-        return Array.from({ length: maxCount }, (_, index) =>
-          autoMerge(
-            field.relatedModel,
-            filterArray(records.map((record) => record[index]))
+        // Remove duplicates
+        return f
+          .unique(
+            records
+              .flat()
+              .map(resourceToGeneric)
+              .map((resource) => JSON.stringify(resource))
           )
-        );
+          .map((resource) => JSON.parse(resource));
       } else
         return autoMerge(
           field.relatedModel,
@@ -88,3 +93,25 @@ function mergeField(
     );
   else return firstValue;
 }
+
+/**
+ * Remove id and resource_uri from resource and sub resources. Useful when
+ * comparing whether two records are identical
+ */
+export const resourceToGeneric = <
+  T extends SerializedModel<AnySchema> | SerializedResource<AnySchema>
+>(
+  resource: T
+): T =>
+  Object.fromEntries(
+    Object.entries(resource)
+      .filter(([key]) => !specialFields.has(key))
+      .map(([key, value]) => [
+        key,
+        Array.isArray(value)
+          ? value.map(resourceToGeneric)
+          : typeof value === 'object' && value !== null
+          ? resourceToGeneric(value)
+          : value,
+      ])
+  ) as T;
