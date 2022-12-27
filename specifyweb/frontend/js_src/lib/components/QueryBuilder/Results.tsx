@@ -228,16 +228,23 @@ export function QueryResults({
 
   // TEST: try deleting while records are being fetched
   function handleDelete(recordId: number): void {
-    if (!Array.isArray(results) || totalCount === undefined) return;
-    const newResults = results.filter(
-      (result) => result?.[queryIdField] !== recordId
+    let removeCount = 0;
+    setResults((results) => {
+      if (!Array.isArray(results) || totalCount === undefined) return;
+      const newResults = results.filter(
+        (result) => result?.[queryIdField] !== recordId
+      );
+      removeCount = results.length - newResults.length;
+      resultsRef.current = newResults;
+      return newResults;
+    });
+    if (removeCount === 0) return;
+    setTotalCount((totalCount) =>
+      totalCount === undefined ? undefined : totalCount - removeCount
     );
-    const removeCount = newResults.length - results.length;
-    setTotalCount(totalCount - removeCount);
-    setResults(newResults);
-    resultsRef.current = newResults;
     setSelectedRows(
-      new Set(Array.from(selectedRows).filter((id) => id !== recordId))
+      (selectedRows) =>
+        new Set(Array.from(selectedRows).filter((id) => id !== recordId))
     );
   }
 

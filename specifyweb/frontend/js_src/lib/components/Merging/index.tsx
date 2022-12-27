@@ -19,9 +19,9 @@ import { LoadingContext } from '../Core/Contexts';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fetchResource } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
-import { Tables } from '../DataModel/types';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -43,8 +43,8 @@ export function RecordMerging({
       </Button.Small>
       {isOpen && (
         <MergingDialog
-          model={model}
           ids={selectedRows}
+          model={model}
           onClose={handleClose}
           onDeleted={handleDeleted}
         />
@@ -78,8 +78,8 @@ export function MergingDialog({
   return records === undefined ? null : (
     <MergeDialogContainer
       id={id('form')}
-      onClose={handleClose}
       onCancel={handleClose}
+      onClose={handleClose}
     >
       {typeof error === 'string' && <ErrorMessage>{error}</ErrorMessage>}
       <CompareRecords
