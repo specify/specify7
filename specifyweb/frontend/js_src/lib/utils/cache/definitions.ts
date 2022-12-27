@@ -15,7 +15,10 @@ import type {
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type { UserPreferences } from '../../components/UserPreferences/helpers';
+import type {
+  PartialUserPreference,
+  PartialCollectionPreference,
+} from '../../components/UserPreferences/helpers';
 import type { Conformations } from '../../components/TreeView/helpers';
 import type { IR, RA } from '../types';
 import { ensure } from '../types';
@@ -25,7 +28,11 @@ import {
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
 import { SortConfig } from '../../components/Molecules/Sorting';
-import { GenericPreferences } from '../../components/UserPreferences/Definitions';
+import {
+  GenericPreferences,
+  preferenceDefinitions,
+} from '../../components/UserPreferences/Definitions';
+import { collectionPreferenceDefinitions } from '../../components/UserPreferences/CollectionPreferenceDefinitions';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -113,15 +120,15 @@ export type CacheDefinitions = {
      * causing Specify to flash user its white mode, or font size to change
      * on the fly.
      */
-    readonly cached: GenericPreferences;
+    readonly cached: PartialUserPreference;
     /**
      * Admins may change default preferences. These defaults override original
      * defaults for items for which these are provided
      */
-    readonly defaultCached: GenericPreferences;
+    readonly defaultCached: PartialUserPreference;
   };
   readonly collectionPreferences: {
-    readonly cached: GenericPreferences;
+    readonly cached: PartialCollectionPreference;
   };
   readonly securityTool: {
     readonly policiesLayout: 'horizontal' | 'vertical';
