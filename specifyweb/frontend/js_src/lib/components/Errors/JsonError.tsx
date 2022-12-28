@@ -68,7 +68,7 @@ function BusinessRuleExceptionHeader({
   return (
     <>
       <div className="flex">
-        <TableIcon name={table} label={false}></TableIcon>
+        <TableIcon name={table} label={false} />
         <span>{'  '}</span>
         <h2 className={className.headerPrimary}>{response.exception}</h2>
       </div>
@@ -87,10 +87,7 @@ function formatBasicResponse(error: string): JSX.Element {
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
       <em className={className.label}>{response.message}</em>
-      <JsonBackendResponseFooter
-        hasData={false}
-        response={response}
-      ></JsonBackendResponseFooter>
+      <JsonBackendResponseFooter hasData={false} response={response} />
     </>
   );
 }
@@ -100,13 +97,8 @@ function formatBusinessRuleException(error: string): JSX.Element {
   const table: string = response.data.table;
   return (
     <>
-      <BusinessRuleExceptionHeader
-        table={table}
-        response={response}
-      ></BusinessRuleExceptionHeader>
-      <JsonBackendResponseFooter
-        response={response}
-      ></JsonBackendResponseFooter>
+      <BusinessRuleExceptionHeader table={table} response={response} />
+      <JsonBackendResponseFooter response={response} />
     </>
   );
 }
@@ -116,14 +108,8 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
   const table: string = response.data.tree;
   return (
     <>
-      <BusinessRuleExceptionHeader
-        table={table}
-        response={response}
-      ></BusinessRuleExceptionHeader>
-      <JsonBackendResponseFooter
-        response={response}
-        isDataOpen={true}
-      ></JsonBackendResponseFooter>
+      <BusinessRuleExceptionHeader table={table} response={response} />
+      <JsonBackendResponseFooter response={response} isDataOpen={true} />
     </>
   );
 }
