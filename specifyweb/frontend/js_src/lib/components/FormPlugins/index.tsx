@@ -1,30 +1,30 @@
 import React from 'react';
 
-import type { Tables } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
+import { f } from '../../utils/functools';
+import { Button } from '../Atoms/Button';
+import { AttachmentsPlugin } from '../Attachments/Plugin';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Tables } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode, FormType } from '../FormParse';
 import type { FieldTypes } from '../FormParse/fields';
 import type { UiPlugins } from '../FormParse/plugins';
+import { Dialog } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
-import { AttachmentsPlugin } from '../Attachments/Plugin';
-import { Button } from '../Atoms/Button';
 import { CollectionOneToManyPlugin } from './CollectionRelOneToMany';
 import { CollectionOneToOnePlugin } from './CollectionRelOneToOne';
-import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { GeoLocatePlugin } from './GeoLocate';
 import { HostTaxon } from './HostTaxon';
 import { LatLongUi } from './LatLongUi';
 import { LeafletPlugin } from './Leaflet';
-import { Dialog } from '../Molecules/Dialog';
 import { PaleoLocationMapPlugin } from './PaleoLocation';
 import { PartialDateUi } from './PartialDateUi';
 import { WebLink } from './WebLink';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
 
 function WrongTable({
   resource,
@@ -33,6 +33,7 @@ function WrongTable({
   readonly resource: SpecifyResource<AnySchema>;
   readonly allowedTable: keyof Tables;
 }): JSX.Element {
+  // REFACTOR: [form editor] log an error
   const [isVisible, handleShow, handleHide] = useBooleanState();
   return (
     <>
@@ -71,10 +72,10 @@ const pluginRenderers: {
       f.maybe(toTable(resource, 'Locality'), (locality) => (
         <LatLongUi
           id={id}
+          latLongType={latLongType}
           mode={mode}
           resource={locality}
           step={step}
-          latLongType={latLongType}
         />
       )) ?? <WrongTable allowedTable="Locality" resource={resource} />
     );
@@ -94,6 +95,7 @@ const pluginRenderers: {
   }) => {
     const field = dateField ?? fieldName;
     if (field === undefined) {
+      // REFACTOR: [form editor] add context about field position
       console.error(
         "Can't display PartialDateUi because initialize.df is not set"
       );
@@ -123,21 +125,23 @@ const pluginRenderers: {
         "Can't display CollectionRelOneToManyPlugin because initialize.relname is not set"
       );
       return null;
-    } else
-      return !hasTablePermission('CollectionRelationship', 'read') ||
-        !hasTablePermission('CollectionRelType', 'read')
-        ? null
-        : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
-            <ErrorBoundary dismissable>
-              <CollectionOneToManyPlugin
-                relationship={relationship}
-                resource={collectionObject}
-                formatting={formatting}
-              />
-            </ErrorBoundary>
-          )) ?? (
-            <WrongTable allowedTable="CollectionObject" resource={resource} />
-          );
+    }
+    if (
+      !hasTablePermission('CollectionRelationship', 'read') ||
+      !hasTablePermission('CollectionRelType', 'read')
+    )
+      return null;
+    return (
+      f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
+        <ErrorBoundary dismissable>
+          <CollectionOneToManyPlugin
+            formatting={formatting}
+            relationship={relationship}
+            resource={collectionObject}
+          />
+        </ErrorBoundary>
+      )) ?? <WrongTable allowedTable="CollectionObject" resource={resource} />
+    );
   },
   ColRelTypePlugin({
     resource,
@@ -156,9 +160,9 @@ const pluginRenderers: {
         : f.maybe(toTable(resource, 'CollectionObject'), (collectionObject) => (
             <ErrorBoundary dismissable>
               <CollectionOneToOnePlugin
+                formatting={formatting}
                 relationship={relationship}
                 resource={collectionObject}
-                formatting={formatting}
               />
             </ErrorBoundary>
           )) ?? (

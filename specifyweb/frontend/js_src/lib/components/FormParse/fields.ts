@@ -18,6 +18,7 @@ import type { PluginDefinition } from './plugins';
 import { parseUiPlugin } from './plugins';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR } from '../../utils/types';
+import { setLogContext } from '../Errors/interceptLogs';
 
 export type FieldTypes = {
   readonly Checkbox: State<
@@ -167,6 +168,7 @@ export function parseFormField(
     console.error('field is missing uiType', cell);
     uiType = 'text';
   }
+  setLogContext({ fieldType: 'uiType' });
 
   const isReadOnly =
     getBooleanAttribute(cell, 'readOnly') ??
@@ -178,8 +180,10 @@ export function parseFormField(
     parser = processFieldType.Text;
   }
 
+  const parseResult = parser(cell, getProperty);
+  setLogContext({ fieldType: undefined });
   return {
     isReadOnly,
-    ...parser(cell, getProperty),
+    ...parseResult,
   };
 }

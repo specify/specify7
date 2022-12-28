@@ -21,11 +21,12 @@ import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
+import { setLogContext } from '../Errors/interceptLogs';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
-  readonly model: SpecifyModel | undefined;
+  readonly model: SpecifyModel;
   readonly viewSetId?: number;
 };
 
@@ -91,6 +92,7 @@ export function parseViewDefinition(
   defaultType: FormType,
   originalMode: FormMode
 ): ViewDescription | undefined {
+  setLogContext({ viewName: view.name });
   const resolved = resolveViewDefinition(view, defaultType, originalMode);
   if (resolved === undefined) return undefined;
   const { mode, formType, viewDefinition, model } = resolved;
@@ -222,7 +224,7 @@ export type ParsedFormDefinition = {
 
 function parseFormTableDefinition(
   viewDefinition: Element,
-  model: SpecifyModel | undefined
+  model: SpecifyModel
 ): ParsedFormDefinition {
   const { rows } = parseFormDefinition(viewDefinition, model);
   const labelsForCells = Object.fromEntries(
@@ -289,11 +291,14 @@ function parseFormTableColumns(
  * Can't use querySelectorAll here because it is not supported in JSDom
  * See https://github.com/jsdom/jsdom/issues/2998
  */
-export const parseFormDefinition = (
+export function parseFormDefinition(
   viewDefinition: Element,
-  model: SpecifyModel | undefined
-): ParsedFormDefinition =>
-  postProcessFormDef(
+  model: SpecifyModel
+): ParsedFormDefinition {
+  setLogContext({
+    tableName: model.name,
+  });
+  return postProcessFormDef(
     processColumnDefinition(getColumnDefinitions(viewDefinition)),
     Array.from(
       Array.from(viewDefinition.children).find(
@@ -301,13 +306,20 @@ export const parseFormDefinition = (
       )?.children ?? []
     )
       .filter(({ tagName }) => tagName === 'row')
-      .map((row) =>
-        Array.from(row.children)
+      .map((row, index) => {
+        setLogContext({ row: index + 1 });
+
+        return Array.from(row.children)
           .filter(({ tagName }) => tagName === 'cell')
-          .map((cell) => parseFormCell(model, cell))
-      ),
+          .map((cell, index) => {
+            setLogContext({ cell: index + 1 });
+
+            return parseFormCell(model, cell);
+          });
+      }),
     model
   );
+}
 
 function getColumnDefinitions(viewDefinition: Element): string {
   const definition =

@@ -20,7 +20,7 @@ import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { filterArray, setDevelopmentGlobal } from '../../utils/types';
 import { mergeParsers, parserFromType } from '../../utils/parser/definitions';
-import { fail } from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 import { parseValue } from '../../utils/parser/parse';
 import { Http } from '../../utils/ajax/definitions';
 
@@ -193,7 +193,7 @@ function requestPreferencesSync(): void {
     if (typeof syncTimeoutInstance === 'number')
       globalThis.clearTimeout(syncTimeoutInstance);
     syncTimeoutInstance = globalThis.setTimeout(
-      (): void => void syncPreferences().catch(fail),
+      (): void => void syncPreferences().catch(softFail),
       syncTimeout
     );
   }
@@ -218,7 +218,7 @@ async function syncPreferences(): Promise<void> {
     }
   ).then(() => {
     // If there were additional changes while syncing
-    if (isSyncPending) syncPreferences().catch(fail);
+    if (isSyncPending) syncPreferences().catch(softFail);
     else {
       isSyncing = false;
       prefEvents.trigger('synchronized');

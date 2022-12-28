@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { error } from '../Errors/assert';
-import { f } from '../../utils/functools';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -16,6 +14,7 @@ import { ShowLoansCommand } from './ShowTransactions';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
+import { softFail } from '../Errors/Crash';
 
 export function GenerateLabel({
   resource,
@@ -62,53 +61,64 @@ const commandRenderers: {
   GenerateLabel,
   ShowLoans({ label, resource, id }) {
     const [showLoans, handleShow, handleHide] = useBooleanState();
+    const preparation = toTable(resource, 'Preparation');
+    if (preparation === undefined) {
+      softFail(
+        new Error('ShowLoans command can only be used on the preparation form')
+      );
+      return null;
+    }
     return (
-      f.maybe(toTable(resource, 'Preparation'), (preparation) => (
-        <>
-          <Button.Small
-            id={id}
-            onClick={handleShow}
-            disabled={resource.isNew() || !Boolean(resource.get('id'))}
-          >
-            {label}
-          </Button.Small>
-          {showLoans && (
-            <ErrorBoundary dismissable>
-              <ShowLoansCommand
-                preparation={preparation}
-                onClose={handleHide}
-              />
-            </ErrorBoundary>
-          )}
-        </>
-      )) ?? error('ShowLoans command can only be used on the preparation form')
+      <>
+        <Button.Small
+          id={id}
+          onClick={handleShow}
+          disabled={resource.isNew() || !Boolean(resource.get('id'))}
+        >
+          {label}
+        </Button.Small>
+        {showLoans && (
+          <ErrorBoundary dismissable>
+            <ShowLoansCommand preparation={preparation} onClose={handleHide} />
+          </ErrorBoundary>
+        )}
+      </>
     );
   },
   ReturnLoan({ id, label = '', resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
-    return hasTablePermission('LoanPreparation', 'update') &&
+    if (
+      !hasTablePermission('LoanPreparation', 'update') &&
       hasTablePermission('LoanReturnPreparation', 'update')
-      ? f.maybe(toTable(resource, 'Loan'), (loan) => (
-          <>
-            <Button.Small id={id} onClick={handleShow}>
-              {label}
-            </Button.Small>
-            {showDialog ? (
-              loan.isNew() || !Boolean(loan.get('id')) ? (
-                <Dialog
-                  buttons={commonText('close')}
-                  header={label}
-                  onClose={handleHide}
-                >
-                  {formsText('preparationsCanNotBeReturned')}
-                </Dialog>
-              ) : (
-                <LoanReturn resource={loan} onClose={handleHide} />
-              )
-            ) : undefined}
-          </>
-        )) ?? error('LoanReturnCommand can only be used with Loan resources')
-      : null;
+    )
+      return null;
+    const loan = toTable(resource, 'Loan');
+    if (loan === undefined) {
+      softFail(
+        new Error('LoanReturnCommand can only be used with Loan resources')
+      );
+      return null;
+    }
+    return (
+      <>
+        <Button.Small id={id} onClick={handleShow}>
+          {label}
+        </Button.Small>
+        {showDialog ? (
+          loan.isNew() || !Boolean(loan.get('id')) ? (
+            <Dialog
+              buttons={commonText('close')}
+              header={label}
+              onClose={handleHide}
+            >
+              {formsText('preparationsCanNotBeReturned')}
+            </Dialog>
+          ) : (
+            <LoanReturn resource={loan} onClose={handleHide} />
+          )
+        ) : undefined}
+      </>
+    );
   },
   Unsupported({ commandDefinition: { name = commonText('nullInline') }, id }) {
     const [isClicked, handleShow, handleHide] = useBooleanState();

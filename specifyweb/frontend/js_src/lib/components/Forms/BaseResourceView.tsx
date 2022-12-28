@@ -10,7 +10,7 @@ import { FormContext } from '../Core/Contexts';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
-import { fail } from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 import { FormMeta } from '../FormMeta';
 import type { FormMode } from '../FormParse';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -61,7 +61,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
                 setFormatted(title);
                 return undefined;
               })
-              .catch(fail);
+              .catch(softFail);
           },
           true
         )

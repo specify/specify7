@@ -140,7 +140,7 @@ export function PickListComboBox(
       updateValue(value);
     else if (props.pickList?.get('type') === PickListTypes.ITEMS)
       setPendingNewValue(value);
-    else throw new Error('adding item to wrong type of picklist');
+    else throw new Error('Adding item to wrong type of picklist');
   }
 
   const currentValue = items?.find((item) => item.value === value);

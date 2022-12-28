@@ -4,12 +4,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { f } from '../../utils/functools';
 import type { SpecifyModel } from '../DataModel/specifyModel';
-import { error } from '../Errors/assert';
 import type { FormMode, FormType, ViewDescription } from '../FormParse';
 import { fetchView, parseViewDefinition } from '../FormParse';
 import { webOnlyViews } from '../FormParse/webOnlyViews';
 import { usePref } from '../UserPreferences/usePref';
 import { autoGenerateViewDefinition } from './generateFormDefinition';
+import { softFail } from '../Errors/Crash';
 
 /**
  * By default, Specify 7 replaces all ObjectAttachment forms with
@@ -88,19 +88,22 @@ const fetchViewDefinition = async (
         ? parseViewDefinition(viewDefinition, formType, mode)
         : undefined
     )
-    .then((viewDefinition) =>
-      typeof viewDefinition === 'object'
-        ? viewDefinition.model === model
-          ? viewDefinition
-          : error('View definition model does not match resource model')
-        : f.maybe(
-            webOnlyViews()[viewName as keyof typeof webOnlyViews],
-            ({ columns, rows }) => ({
-              columns,
-              rows,
-              formType,
-              mode,
-              model,
-            })
-          )
-    );
+    .then((viewDefinition) => {
+      if (typeof viewDefinition === 'object') {
+        if (viewDefinition.model !== model)
+          softFail(
+            new Error('View definition model does not match resource model')
+          );
+        return viewDefinition;
+      } else
+        return f.maybe(
+          webOnlyViews()[viewName as keyof typeof webOnlyViews],
+          ({ columns, rows }) => ({
+            columns,
+            rows,
+            formType,
+            mode,
+            model,
+          })
+        );
+    });

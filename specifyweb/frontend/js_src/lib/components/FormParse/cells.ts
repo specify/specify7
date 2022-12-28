@@ -25,6 +25,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -104,10 +105,12 @@ export type CellTypes = {
 
 export const cellAlign = ['left', 'center', 'right'] as const;
 
+// FIXME: move detection of whether plugin is on correct form into parsing
+//   so that warnings are only emitted once
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: Element;
-    readonly model: SpecifyModel | undefined;
+    readonly model: SpecifyModel;
     readonly getProperty: (name: string) => string | undefined;
   }) => CellTypes[KEY];
 } = {
@@ -124,7 +127,11 @@ const processCellType: {
     )
       rawFieldName = parts.slice(1).join('.');
     const fields = model?.getFields(rawFieldName ?? '');
+
+    setLogContext({ field: rawFieldName });
     const fieldDefinition = parseFormField(cell, getProperty);
+    setLogContext({ field: undefined });
+
     /*
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
@@ -138,6 +145,7 @@ const processCellType: {
             ? fieldDefinition.pluginDefinition.dateField
             : undefined) ??
           (fields?.map(({ name }) => name).join('.') || rawFieldName);
+
     return {
       type: 'Field',
       // REFACTOR: consider changing this to an array
@@ -202,14 +210,26 @@ const processCellType: {
       sortField: formattedSortField,
     };
   },
-  Panel: ({ cell, model }) => ({
-    type: 'Panel',
-    ...parseFormDefinition(cell, model),
-    display:
-      getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
-        ? 'inline'
-        : 'block',
-  }),
+  Panel: ({ cell, model }) => {
+    const oldContext = getLogContext();
+    setLogContext(
+      {
+        parent: oldContext,
+      },
+      true
+    );
+    const definition = parseFormDefinition(cell, model);
+    setLogContext(oldContext, true);
+
+    return {
+      type: 'Panel',
+      ...definition,
+      display:
+        getParsedAttribute(cell, 'panelType')?.toLowerCase() === 'buttonbar'
+          ? 'inline'
+          : 'block',
+    };
+  },
   Command: ({ cell }) => ({
     type: 'Command',
     commandDefinition: parseUiCommand(cell),
@@ -248,15 +268,17 @@ const cellTypeTranslation: IR<keyof CellTypes> = {
  * Parse form cell XML into a JSON structure
  *
  * Does not depend on FormMode, FormType
- * Depends on SpecifyModel only for figuring out if field is required in
- * the schema
  */
 export function parseFormCell(
-  model: SpecifyModel | undefined,
+  model: SpecifyModel,
   cellNode: Element
 ): FormCellDefinition {
   const cellClass = getParsedAttribute(cellNode, 'type') ?? '';
   const cellType = cellTypeTranslation[cellClass.toLowerCase()];
+
+  const id = getParsedAttribute(cellNode, 'id');
+  setLogContext({ id, type: cellType });
+
   const parsedCell = processCellType[cellType] ?? processCellType.Unsupported;
   const properties = parseSpecifyProperties(
     getAttribute(cellNode, 'initialize') ?? ''
@@ -265,8 +287,10 @@ export function parseFormCell(
     properties[name.toLowerCase()];
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
+
+  // FIXME: add console.warn for all the small things
   return {
-    id: getParsedAttribute(cellNode, 'id'),
+    id,
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align

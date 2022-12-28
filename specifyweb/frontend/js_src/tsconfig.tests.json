@@ -4,6 +4,7 @@
   "compilerOptions": {
     "noEmit": false,
     "outDir": "./testBuild",
-    "sourceMap": false
+    "sourceMap": false,
+    "typeRoots": ["./node_modules/@types"]
   }
 }

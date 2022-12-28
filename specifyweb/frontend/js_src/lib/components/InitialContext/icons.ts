@@ -6,6 +6,7 @@
 
 import { load } from './index';
 import type { RA } from '../../utils/types';
+import { softFail } from '../Errors/Crash';
 
 const iconGroups = {} as Record<IconGroup, Document>;
 
@@ -53,8 +54,10 @@ function findIconInXml(
   xml: Document,
   cycleDetect: RA<string> = []
 ): Element | undefined {
-  if (cycleDetect.includes(icon))
-    throw new Error('Circular reference in icon definitions');
+  if (cycleDetect.includes(icon)) {
+    softFail(new Error('Circular reference in icon definitions'));
+    return undefined;
+  }
   const iconNode = xml.querySelector(`icon[name="${icon}"]`);
   const alias = iconNode?.getAttribute('alias');
   return typeof alias === 'string'

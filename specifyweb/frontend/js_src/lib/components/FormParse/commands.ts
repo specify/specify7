@@ -11,6 +11,7 @@ import { getParsedAttribute } from '../../utils/utils';
 import type { IR } from '../../utils/types';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { f } from '../../utils/functools';
+import { setLogContext } from '../Errors/interceptLogs';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -51,8 +52,13 @@ export function parseUiCommand(cell: Element): CommandDefinition {
     processUiCommand[commandTranslation[name ?? '']] ??
     processUiCommand[commandTranslation[label ?? '']] ??
     processUiCommand.Unsupported;
+
+  setLogContext({ command: label ?? name });
+  const definition = uiCommand(name);
+  setLogContext({ command: undefined });
+
   return {
-    commandDefinition: uiCommand(name),
+    commandDefinition: definition,
     label: f.maybe(label, legacyLocalize),
   };
 }

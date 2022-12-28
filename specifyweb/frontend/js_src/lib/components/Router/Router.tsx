@@ -19,6 +19,7 @@ import { useRouterBlocker } from './RouterBlocker';
 import { toReactRoutes } from './RouterUtils';
 import { routes } from './Routes';
 import { f } from '../../utils/functools';
+import { softFail } from '../Errors/Crash';
 
 let unsafeNavigateFunction: SafeNavigateFunction | undefined;
 export const unsafeNavigate = (
@@ -194,7 +195,7 @@ function Overlay({
 }
 
 function defaultOverlayContext() {
-  throw new Error('Tried to close Overlay outside of an overlay');
+  softFail(new Error('Tried to close Overlay outside of an overlay'));
 }
 
 export const isOverlay = (overlayContext: () => void): boolean =>

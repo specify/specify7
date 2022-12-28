@@ -13,6 +13,7 @@ import type { CoordinateType } from '../FormPlugins/LatLongUi';
 import { coordinateType } from '../FormPlugins/LatLongUi';
 import type { PartialDatePrecision } from '../FormPlugins/PartialDateUi';
 import { getParsedAttribute } from '../../utils/utils';
+import { setLogContext } from '../Errors/interceptLogs';
 
 export type UiPlugins = {
   readonly LatLonUI: State<
@@ -140,8 +141,10 @@ export function parseUiPlugin(
   getProperty: (name: string) => string | undefined,
   defaultValue: string | undefined
 ): PluginDefinition {
-  const uiCommand =
-    processUiPlugin[(getProperty('name') ?? '') as keyof UiPlugins] ??
-    processUiPlugin.Unsupported;
-  return uiCommand({ cell, getProperty, defaultValue });
+  const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
+  const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
+  setLogContext({ plugin: pluginName });
+  const result = uiCommand({ cell, getProperty, defaultValue });
+  setLogContext({ plugin: undefined });
+  return result;
 }

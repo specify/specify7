@@ -73,7 +73,7 @@ export class ErrorBoundary extends React.Component<
               'details'
             )?.value,
           })}
-          dismissable={this.props.dismissable}
+          dismissible={this.props.dismissable}
           onClose={(): void => this.setState({ type: 'Silenced' })}
         >
           {this.state.error?.toString()}

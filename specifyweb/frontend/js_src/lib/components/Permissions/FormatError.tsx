@@ -120,22 +120,17 @@ function CollectionName({
   readonly collectionId: number | undefined;
 }): JSX.Element {
   const [formatted] = useAsyncState(
-    React.useCallback(
-      () =>
-        typeof collectionId === 'number'
-          ? format(
-              f.maybe(
-                userInformation.availableCollections.find(
-                  ({ id }) => id === collectionId
-                ),
-                deserializeResource
-              ) ?? new schema.models.Collection.Resource({ id: collectionId }),
-              undefined,
-              true
-            )
-          : schema.models.Institution.label,
-      [collectionId]
-    ),
+    React.useCallback(() => {
+      if (collectionId === undefined) return schema.models.Institution.label;
+      const collection =
+        f.maybe(
+          userInformation.availableCollections.find(
+            ({ id }) => id === collectionId
+          ),
+          deserializeResource
+        ) ?? new schema.models.Collection.Resource({ id: collectionId });
+      return format(collection, undefined, true);
+    }, [collectionId]),
     false
   );
   return <>{formatted}</>;

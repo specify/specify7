@@ -142,7 +142,7 @@ export function WbStatus({
                 .then(({ data, status }) =>
                   status === Http.OK && ['ok', 'not running'].includes(data)
                     ? setAborted(true)
-                    : error('Invalid response')
+                    : error('Invalid WbStatus response', { status, data })
                 )
                 .catch(() => setAborted('failed'));
             }}

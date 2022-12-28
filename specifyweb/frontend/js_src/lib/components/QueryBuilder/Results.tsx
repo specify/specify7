@@ -19,7 +19,7 @@ import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { fail } from '../Errors/Crash';
+import { fail, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -165,8 +165,10 @@ export function QueryResults({
             process.env.NODE_ENV === 'development' &&
             newResults.length > fetchSize
           )
-            throw new Error(
-              `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+            softFail(
+              new Error(
+                `Returned ${newResults.length} results, when expected at most ${fetchSize}`
+              )
             );
 
           // Results might have changed while fetching

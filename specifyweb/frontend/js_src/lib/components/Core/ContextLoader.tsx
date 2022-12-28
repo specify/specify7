@@ -7,11 +7,13 @@ import { Main } from './Main';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { SplashScreen } from './SplashScreen';
+import { crash } from '../Errors/Crash';
 
 // Show loading splash screen if didn't finish load within 2 seconds
 const LOADING_TIMEOUT = 2000;
 
-const fetchContext = async (): Promise<true> => initialContext.then(f.true);
+const fetchContext = async (): Promise<true> =>
+  initialContext.catch(crash).then(f.true);
 
 /**
  * - Load initial context

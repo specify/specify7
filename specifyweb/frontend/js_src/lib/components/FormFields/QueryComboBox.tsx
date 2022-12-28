@@ -247,28 +247,31 @@ function ProtectedQueryComboBox({
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
-  const pendingValueToResource = (
+
+  function pendingValueToResource(
     relationship: Relationship
-  ): SpecifyResource<AnySchema> =>
-    new relationship.relatedModel.Resource(
+  ): SpecifyResource<AnySchema> {
+    const fieldName =
+      (typeof typeSearch === 'object'
+        ? typeSearch?.searchFields.find(
+            ([searchField]) =>
+              !searchField.isRelationship &&
+              searchField.model === relationship.relatedModel &&
+              !searchField.isReadOnly
+          )?.[0].name
+        : undefined) ??
+      getMainTableFields(relationship.relatedModel.name)[0]?.name;
+    return new relationship.relatedModel.Resource(
       /*
        * If some value is currently in the input field, try to figure out which
        * field it is intended for and populate that field in the new resource.
        * Most of the time, that field is determined based on the search field
        */
-      f.maybe(
-        (typeof typeSearch === 'object'
-          ? typeSearch.searchFields.find(
-              ([searchField]) =>
-                !searchField.isRelationship &&
-                searchField.model === relationship.relatedModel &&
-                !searchField.isReadOnly
-            )?.[0].name
-          : undefined) ??
-          getMainTableFields(relationship.relatedModel.name)[0]?.name,
-        (fieldName) => ({ [fieldName]: pendingValueRef.current })
-      ) ?? {}
+      typeof fieldName === 'string'
+        ? { [fieldName]: pendingValueRef.current }
+        : {}
     );
+  }
 
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> =>

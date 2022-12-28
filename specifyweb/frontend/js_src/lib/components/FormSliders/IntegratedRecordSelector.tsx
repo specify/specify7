@@ -15,7 +15,6 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { crash } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -26,6 +25,7 @@ import type {
 } from './RecordSelector';
 import { useRecordSelector } from './RecordSelector';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
+import { fail } from '../Errors/Crash';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -97,7 +97,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       collection
         .fetch()
         .then(() => setRecords(getRecords))
-        .catch(crash);
+        .catch(fail);
   }, [collection, isLazy, getRecords, index, records.length]);
 
   const state = useRecordSelector({

@@ -28,8 +28,8 @@ import { useId } from '../../hooks/useId';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, CommonFields } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
 import { useViewDefinition } from './useViewDefinition';
+import { fail } from '../Errors/Crash';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),

@@ -32,6 +32,7 @@ import {
   mappingPathToTableNames,
 } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { softFail } from '../Errors/Crash';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -285,13 +286,15 @@ export async function aggregate(
         className === collection.model.specifyModel.longName && isDefault
     );
 
-  if (aggregator === undefined) throw new Error('Aggregator not found');
+  if (aggregator === undefined) softFail(new Error('Aggregator not found'));
 
   if (!collection.isComplete()) console.error('Collection is incomplete');
 
   return Promise.all(
     collection.models.map(async (resource) =>
-      format(resource, aggregator.format)
+      format(resource, aggregator?.format)
     )
-  ).then((formatted) => filterArray(formatted).join(aggregator.separator));
+  ).then((formatted) =>
+    filterArray(formatted).join(aggregator?.separator ?? ', ')
+  );
 }

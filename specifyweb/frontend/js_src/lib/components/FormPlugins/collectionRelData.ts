@@ -11,6 +11,7 @@ import type {
   CollectionRelType,
 } from '../DataModel/types';
 import { format } from '../Forms/dataObjFormatters';
+import { softFail } from '../Errors/Crash';
 
 export type CollectionRelData = {
   readonly relationshipType: SpecifyResource<CollectionRelType>;
@@ -56,7 +57,7 @@ export async function fetchOtherCollectionData(
   resource: SpecifyResource<CollectionObject>,
   relationship: string,
   formatting: string | undefined
-): Promise<CollectionRelData> {
+): Promise<CollectionRelData | undefined> {
   const { relationshipType, left, right } = await fetchCollection(
     'CollectionRelType',
     { name: relationship, limit: 1 }
@@ -81,12 +82,18 @@ export async function fetchOtherCollectionData(
     side = 'right';
     otherSide = 'left';
     relatedCollection = left;
-  } else
-    throw new Error(
-      "Related collection plugin used with relation that doesn't match current collection"
+  } else {
+    softFail(
+      new Error(
+        "Related collection plugin used with relation that doesn't match current collection"
+      )
     );
-  if (relatedCollection === null)
-    throw new Error('Unable to determine collection for the other side');
+    return undefined;
+  }
+  if (relatedCollection === null) {
+    softFail(new Error('Unable to determine collection for the other side'));
+    return undefined;
+  }
 
   const otherCollection = relatedCollection;
   const formattedCollection = format(otherCollection);

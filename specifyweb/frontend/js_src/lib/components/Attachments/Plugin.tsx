@@ -51,31 +51,20 @@ export function AttachmentsPlugin({
     | State<'FileUpload', { readonly file: File }>
     | State<'Unavailable'>
   >(
-    React.useCallback(
-      async () =>
-        attachmentSettingsPromise.then(() =>
-          attachmentsAvailable()
-            ? (
-                f.maybe(
-                  f.maybe(resource, (resource) =>
-                    toTable(resource, 'Attachment')
-                  ),
-                  async (attachment) => attachment
-                ) ??
-                resource?.rgetPromise('attachment') ??
-                Promise.resolve(null)
-              ).then((attachment) => {
-                if (attachment === null) return { type: 'AddAttachment' };
-                const serialized = serializeResource(attachment);
-                return {
-                  type: 'DisplayAttachment',
-                  attachment: serialized,
-                };
-              })
-            : { type: 'Unavailable' }
-        ),
-      [resource]
-    ),
+    React.useCallback(async () => {
+      await attachmentSettingsPromise;
+      if (!attachmentsAvailable()) return { type: 'Unavailable' };
+      const attachment =
+        f.maybe(resource, (resource) => toTable(resource, 'Attachment')) ??
+        (await resource?.rgetPromise('attachment'));
+      if (attachment === undefined || attachment === null)
+        return { type: 'AddAttachment' };
+      const serialized = serializeResource(attachment);
+      return {
+        type: 'DisplayAttachment',
+        attachment: serialized,
+      };
+    }, [resource]),
     true
   );
   useErrorContext('attachmentPluginState', state);

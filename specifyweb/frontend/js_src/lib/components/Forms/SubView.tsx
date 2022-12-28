@@ -13,7 +13,7 @@ import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelecto
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
-import { fail } from '../Errors/Crash';
+import { fail, softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
 
@@ -94,12 +94,16 @@ export function SubView({
          */
         const resource = await parentResource.rgetPromise(relationship.name);
         const reverse = relationship.getReverse();
-        if (reverse === undefined)
-          throw new Error(
-            `Can't render a SubView for ` +
-              `${relationship.model.name}.${relationship.name} because ` +
-              `reverse relationship does not exist`
+        if (reverse === undefined) {
+          softFail(
+            new Error(
+              `Can't render a SubView for ` +
+                `${relationship.model.name}.${relationship.name} because ` +
+                `reverse relationship does not exist`
+            )
           );
+          return undefined;
+        }
         const collection = (
           relationship.isDependent()
             ? new relationship.relatedModel.DependentCollection({
