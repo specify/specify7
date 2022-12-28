@@ -17,7 +17,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { RA, RR } from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { schema } from '../DataModel/schema';
@@ -27,6 +27,8 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
 import { reParse } from '../../utils/relativeDate';
+import { Button } from '../Atoms/Button';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -180,17 +182,11 @@ function DateSplit({
 
 function DateQueryInputField({
   currentValue,
-  parser,
-  fieldName,
   onChange: handleChange,
 }: {
   readonly currentValue: string;
-  readonly fieldName: string;
-  readonly parser: Parser;
-  readonly label?: string;
-  readonly listInput?: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
-}): JSX.Element {
+}): JSX.Element | null {
   const parsed = React.useMemo(() => {
     if (reParse.test(currentValue)) {
       const parsedValue = reParse.exec(currentValue.toLowerCase())?.slice(1);
@@ -206,15 +202,7 @@ function DateQueryInputField({
   }, [currentValue]);
   return parsed !== undefined ? (
     <DateSplit onChange={handleChange} parsed={parsed} />
-  ) : (
-    <QueryInputField
-      currentValue={currentValue}
-      fieldName={fieldName}
-      parser={parser}
-      pickListItems={undefined}
-      onChange={handleChange}
-    />
-  );
+  ) : null;
 }
 
 function QueryInputField({
@@ -400,24 +388,93 @@ function SingleField({
 
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
-  return parser.type === 'date' ? (
-    <DateQueryInputField
-      currentValue={filter.startValue}
-      fieldName={fieldName}
-      label={label}
-      parser={parser}
-      onChange={handleChange}
-    />
-  ) : (
-    <QueryInputField
-      currentValue={filter.startValue}
-      fieldName={fieldName}
-      label={label}
-      parser={parser}
-      pickListItems={pickListItems}
-      onChange={handleChange}
-    />
+  const additionalInput = additionalInputGenerator(
+    parser,
+    fieldName,
+    filter,
+    handleChange
   );
+  const [isDefault, setIsDefault, setIsCustom, toggleIsDefault] =
+    useBooleanState(true);
+
+  return (
+    <div className="flex items-center">
+      {additionalInput !== undefined ? (
+        <>
+          <Button.Icon
+            title="switch"
+            icon="selector"
+            onClick={() => {
+              if (additionalInput.component !== undefined) {
+                toggleIsDefault();
+                handleChange?.(
+                  additionalInput.onSwitch(filter.startValue, isDefault)
+                );
+              }
+            }}
+          />
+          {!isDefault && additionalInput.component}
+        </>
+      ) : undefined}
+      {isDefault && (
+        <QueryInputField
+          currentValue={filter.startValue}
+          fieldName={fieldName}
+          label={label}
+          parser={parser}
+          pickListItems={pickListItems}
+          onChange={handleChange}
+        />
+      )}
+    </div>
+  );
+}
+
+function additionalInputGenerator(
+  parser: Parser,
+  fieldName: string,
+  filter: QueryField['filters'][number],
+  handleChange: ((newValue: string) => void) | undefined
+):
+  | {
+      readonly onSwitch: (oldValue: string, mode: boolean) => string;
+      readonly component: JSX.Element | null;
+    }
+  | undefined {
+  if (parser.type === 'date') {
+    return {
+      onSwitch: (oldValue, mode: boolean) =>
+        mode ? 'today + 3 day' : '2022-12-27',
+      component: (
+        <DateQueryInputField
+          currentValue={filter.startValue}
+          onChange={handleChange}
+        />
+      ),
+    };
+  }
+  if (fieldName.endsWith('specifyUser.name')) {
+    return {
+      onSwitch: (oldValue, mode) => (mode ? 'specifyUserName' : ''),
+      component: (
+        <PickListSimple
+          pickListItems={[
+            {
+              value: 'specifyUserName',
+              title: 'Specify User Name',
+            },
+          ]}
+          value={'specifyUserName'}
+          onBlur={({ target }) => {
+            const newValue = extractValuesSimple<string>(target);
+            handleChange?.(newValue);
+          }}
+          onChange={({ target }) => {}}
+        ></PickListSimple>
+      ),
+    };
+  }
+  return undefined;
 }
 
 function Between({
