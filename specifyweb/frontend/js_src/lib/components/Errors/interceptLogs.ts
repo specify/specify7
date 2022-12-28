@@ -15,12 +15,14 @@ const logTypes = [
   'info',
   'trace',
 ] as const;
-export const consoleLog: WritableArray<{
+
+export type LogMessage = {
   readonly message: RA<unknown>;
   readonly type: typeof logTypes[number];
   readonly date: string;
   readonly context: IR<unknown>;
-}> = [];
+};
+export const consoleLog: WritableArray<LogMessage> = [];
 
 let context: R<unknown> = {};
 let timeout: ReturnType<typeof setTimeout> | undefined = undefined;

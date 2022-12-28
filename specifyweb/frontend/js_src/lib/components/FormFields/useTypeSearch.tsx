@@ -20,7 +20,7 @@ const typeSearches = load<Element>(
 
 export function useTypeSearch(
   initialTypeSearch: Element | string | undefined,
-  field: LiteralField | Relationship | undefined,
+  field: LiteralField | Relationship,
   initialRelatedModel: SpecifyModel | undefined
 ): TypeSearch | false | undefined {
   const relatedModel =

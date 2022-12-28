@@ -5,6 +5,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { Link } from '../Atoms/Link';
 import {useAsyncState} from '../../hooks/useAsyncState';
 import {fetchOtherCollectionData} from './collectionRelData';
+import {softFail} from '../Errors/Crash';
 
 export function CollectionOneToOnePlugin({
   resource,
@@ -20,7 +21,7 @@ export function CollectionOneToOnePlugin({
       async () =>
         fetchOtherCollectionData(resource, relationship, formatting).catch(
           (error) => {
-            console.error(error);
+            softFail(error);
             return undefined;
           }
         ),

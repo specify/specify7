@@ -2,11 +2,11 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { FormType } from '../FormParse';
-import type { SpecifyModel } from '../DataModel/specifyModel';
 import { Label, Select } from '../Atoms/Form';
-import { OrderPicker } from '../UserPreferences/Renderers';
+import type { SpecifyModel } from '../DataModel/specifyModel';
+import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
+import { OrderPicker } from '../UserPreferences/Renderers';
 
 export function SubViewMeta({
   subView,
@@ -39,8 +39,22 @@ export function SubViewMeta({
         {formsText('orderBy')}
         <OrderPicker
           model={model}
-          order={sortField}
-          onChange={handleChangeSortField}
+          order={
+            sortField === undefined
+              ? undefined
+              : `${
+                  sortField.direction === 'desc' ? '-' : ''
+                }${sortField.fieldNames.join('.')}`
+          }
+          onChange={(sortField): void =>
+            handleChangeSortField({
+              fieldNames: (sortField.startsWith('-')
+                ? sortField.slice(1)
+                : sortField
+              ).split('.'),
+              direction: sortField.startsWith('-') ? 'desc' : 'asc',
+            })
+          }
         />
       </Label.Block>
     </>

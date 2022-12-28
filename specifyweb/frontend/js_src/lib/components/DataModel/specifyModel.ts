@@ -32,6 +32,7 @@ import {
   type RelationshipDefinition,
 } from './specifyField';
 import { getCache } from '../../utils/cache';
+import { schemaAliases } from './schemaExtras';
 
 type FieldAlias = {
   readonly vname: string;
@@ -136,7 +137,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
   public readonly searchDialog?: string;
 
-  public readonly fieldAliases: RA<FieldAlias>;
+  public readonly fieldAliases: IR<string>;
 
   /**
    * A Backbone model resource for accessing the API for items of this type.
@@ -204,7 +205,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     this.searchDialog = tableDefinition.searchDialog ?? undefined;
     this.tableId = tableDefinition.tableId;
     this.isSystem = tableDefinition.system;
-    this.fieldAliases = tableDefinition.fieldAliases;
+    this.fieldAliases = Object.fromEntries(
+      Object.entries({
+        ...Object.fromEntries(
+          tableDefinition.fieldAliases.map(({ aname, vname }) => [vname, aname])
+        ),
+        ...schemaAliases[''],
+        ...schemaAliases[this.name],
+      }).map(([alias, fieldName]) => [alias.toLowerCase(), fieldName])
+    );
 
     this.Resource = ResourceBase.extend(
       { __name__: `${this.name}Resource` },
@@ -317,10 +326,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       )
         return [this.idField];
 
-      const alias = this.fieldAliases.find(
-        (alias) => alias.vname.toLowerCase() === splitName[0]
-      );
-      if (typeof alias === 'object') fields = this.getFields(alias.aname);
+      const alias = this.fieldAliases[splitName[0]];
+      if (typeof alias === 'string')
+        fields = this.getFields([alias, ...splitName.slice(1)].join('.'));
     }
 
     // Handle calls like localityModel.getField('Locality.localityName')

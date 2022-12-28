@@ -1,7 +1,11 @@
 import React from 'react';
 
 import { serializeResource } from '../components/DataModel/helpers';
-import { removeKey } from '../utils/utils';
+import type {
+  AnySchema,
+  SerializedModel,
+  SerializedResource,
+} from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
 import { schema } from '../components/DataModel/schema';
@@ -9,16 +13,12 @@ import type {
   LiteralField,
   Relationship,
 } from '../components/DataModel/specifyField';
-import type { GetOrSet, IR } from '../utils/types';
 import {
   getValidationAttributes,
   resolveParser,
 } from '../utils/parser/definitions';
-import {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-} from '../components/DataModel/helperTypes';
+import type { GetOrSet, IR, RA } from '../utils/types';
+import { removeKey } from '../utils/utils';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -137,6 +137,7 @@ export function useValidationAttributes(
   return attributes;
 }
 
+// FIXME: replace usages with fetchDistantRelated
 export async function getResourceAndField(
   model: SpecifyResource<AnySchema>,
   fieldName: string | undefined
@@ -167,4 +168,41 @@ export async function getResourceAndField(
     console.error("resource doesn't exist");
   else return { resource, field };
   return undefined;
+}
+
+/**
+ * Example usage:
+ * resource: Collector
+ * fields: agent -> lastName
+ * Would return [agent, lastName] if agent exists
+ *
+ */
+/*
+ * FIXME: in all places before using this, check for permissions
+ * FIXME: add tests
+ */
+export async function fetchDistantRelated(
+  resource: SpecifyResource<AnySchema>,
+  fields: RA<LiteralField | Relationship> | undefined
+): Promise<
+  | {
+      readonly resource: SpecifyResource<AnySchema>;
+      readonly field: LiteralField | Relationship | undefined;
+    }
+  | undefined
+> {
+  const related =
+    fields === undefined || fields.length === 0
+      ? resource
+      : fields.length === 1
+      ? await resource.fetch()
+      : await resource.rgetPromise(
+          fields
+            .slice(0, -1)
+            .map(({ name }) => name)
+            .join('.')
+        );
+
+  const field = fields?.[0];
+  return related === undefined ? undefined : { resource: related, field };
 }

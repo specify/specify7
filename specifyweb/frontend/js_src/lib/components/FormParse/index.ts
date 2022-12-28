@@ -21,12 +21,13 @@ import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
-import { setLogContext } from '../Errors/interceptLogs';
+import { consoleLog, LogMessage, setLogContext } from '../Errors/interceptLogs';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
   readonly mode: FormMode;
   readonly model: SpecifyModel;
+  readonly errors?: RA<LogMessage>;
   readonly viewSetId?: number;
 };
 
@@ -98,12 +99,19 @@ export function parseViewDefinition(
   const { mode, formType, viewDefinition, model } = resolved;
   const parser =
     formType === 'formTable' ? parseFormTableDefinition : parseFormDefinition;
+
+  const logIndexBefore = consoleLog.length;
+  const parsed = parser(viewDefinition, model);
+  const errors = consoleLog.slice(logIndexBefore);
+  setLogContext({}, false);
+
   return {
     mode,
     formType,
     model,
     viewSetId: view.viewsetId ?? undefined,
-    ...parser(viewDefinition, model),
+    errors,
+    ...parsed,
   };
 }
 

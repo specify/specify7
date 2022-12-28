@@ -30,17 +30,17 @@ import { loadingBar } from '../Molecules';
 import { AttachmentCell } from './Cell';
 
 export function AttachmentsPlugin({
+  id,
+  name,
   resource,
   onUploadComplete: handleUploadComplete,
   mode = 'edit',
-  id,
-  name,
 }: {
+  readonly id?: string;
+  readonly name?: string;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly onUploadComplete?: (attachment: SpecifyResource<Attachment>) => void;
   readonly mode: FormMode;
-  readonly id?: string;
-  readonly name?: string;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
     | State<'AddAttachment'>

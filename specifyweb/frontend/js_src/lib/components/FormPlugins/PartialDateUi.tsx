@@ -344,7 +344,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
               if (precision === 'year') newMoment = newMoment.month(0);
 
               /*
-               * This avoids the following value in the console:
+               * This avoids the following message in the console:
                * "The specified value does not conform to the required format"
                */
               setInputValue('');

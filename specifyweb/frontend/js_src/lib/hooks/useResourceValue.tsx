@@ -16,6 +16,7 @@ import { useValidation } from './useValidation';
 import { useBooleanState } from './useBooleanState';
 import { AnySchema } from '../components/DataModel/helperTypes';
 import { parseValue } from '../utils/parser/parse';
+import {LiteralField, Relationship} from '../components/DataModel/specifyField';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource
@@ -38,8 +39,8 @@ export function useResourceValue<
   INPUT extends Input = HTMLInputElement
 >(
   resource: SpecifyResource<AnySchema>,
-  // If fieldName is undefined, this hook behaves pretty much like useValidation()
-  fieldName: string | undefined,
+  // If field is undefined, this hook behaves pretty much like useValidation()
+  field: LiteralField | Relationship | undefined,
   // Default parser is usually coming from the form definition
   defaultParser: Parser | undefined
 ): ReturnType<typeof useValidation> & {
@@ -56,18 +57,6 @@ export function useResourceValue<
   const [parser, setParser] = React.useState<Parser>({});
 
   const [value, setValue] = React.useState<T | undefined>(undefined);
-
-  const field = React.useMemo(() => {
-    if (typeof fieldName === 'string') {
-      const field = resource.specifyModel.getField(fieldName);
-      if (field === undefined)
-        console.error(
-          `${fieldName} does not exist on ${resource.specifyModel.name}`,
-          { resource }
-        );
-      return field;
-    } else return undefined;
-  }, [fieldName, resource]);
 
   const [{ triedToSubmit }] = React.useContext(FormContext);
 

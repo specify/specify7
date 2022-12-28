@@ -31,12 +31,12 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   type: 'Label',
   text: 'Text',
   title: 'a',
-  fieldName: 'catalogNumber',
+  fieldNames: ['catalogNumber'],
 });
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
 const divisionLabel = {
   ...labelCell,
-  fieldName: undefined,
+  fieldNames: undefined,
   text: undefined,
   title: undefined,
   id: 'divLabel',
@@ -58,7 +58,7 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
-  fieldName: 'catalogNumber',
+  fieldNames: ['catalogNumber'],
   isRequired: true,
   fieldDefinition: {
     defaultValue: undefined,
@@ -84,7 +84,7 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
   visible: false,
   ariaLabel: undefined,
   type: 'Field',
-  fieldName: 'catalogNumber',
+  fieldNames: ['catalogNumber'],
   isRequired: true,
   fieldDefinition: {
     defaultValue: undefined,
@@ -151,7 +151,7 @@ test('indexFields', () => {
   const divisionComboBox = {
     ...missingLabelTextField,
     id: 'text4',
-    fieldName: 'divisionCBX',
+    fieldName: 'division',
   };
   expect(
     indexFields(
@@ -163,12 +163,12 @@ test('indexFields', () => {
     )
   ).toEqual({
     [missingLabelTextField.id]: {
-      fieldName: missingLabelTextField.fieldName,
+      fieldNames: missingLabelTextField.fieldNames,
       labelOverride: undefined,
       altLabel: undefined,
     },
     [checkboxWithLabel.id]: {
-      fieldName: checkboxWithLabel.fieldName,
+      fieldNames: checkboxWithLabel.fieldNames,
       labelOverride: checkboxWithLabel.fieldDefinition.label,
       altLabel: undefined,
     },
@@ -271,12 +271,12 @@ theories(postProcessLabel, {
       {
         a: {
           labelOverride: 'b',
-          fieldName: 'field',
+          fieldNames: ['field'],
           altLabel: undefined,
         },
       },
     ],
-    out: { ...labelCell, fieldName: 'field', text: 'b', align: 'left' },
+    out: { ...labelCell, fieldNames: ['field'], text: 'b', align: 'left' },
   },
   'field alt text is used as a fallback': {
     in: [
@@ -285,7 +285,7 @@ theories(postProcessLabel, {
       {
         a: {
           labelOverride: undefined,
-          fieldName: undefined,
+          fieldNames: undefined,
           altLabel: 'b',
         },
       },
@@ -332,11 +332,11 @@ describe(addLabelTitle, () => {
         {
           ...labelCell,
           text: undefined,
-          fieldName: 'a',
+          fieldNames: ['a'],
         },
         schema.models.Accession
       )
-    ).toEqual({ ...labelCell, text: 'a', fieldName: 'a' }));
+    ).toEqual({ ...labelCell, text: 'a', fieldNames: ['a'] }));
 });
 
 theories(replaceBlankLabels, {

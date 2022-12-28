@@ -208,18 +208,6 @@ export const formsText = createDictionary({
       координаты и что палеоконтекст имеет географический возраст с
       заполнено как минимум время начала или время окончания.`,
   },
-  unsupportedFormDialogHeader: {
-    'en-us': 'Incorrect Form',
-    'ru-ru': 'Неправильная форма',
-  },
-  unsupportedFormDialogText: {
-    'en-us': `
-      This plugin cannot be used on this form. Try moving it to the locality,
-      collecting event or collection object forms.`,
-    'ru-ru': `
-      Этот плагин нельзя использовать в этой форме. Попробуй переместить его на
-      форму местности, события сбора или объекта коллекции.`,
-  },
   // DateParser
   invalidDate: {
     'en-us': 'Invalid Date',
@@ -421,6 +409,14 @@ export const formsText = createDictionary({
       </>
     ),
   },
+  wrongTableCommandDialogText: {
+    'en-us': (currentTable: string, correctTables: string) => `
+      The command cannot be used on the ${currentTable} form.
+      It can only be used on the ${correctTables} form.`,
+    'ru-ru': (currentTable: string, correctTables: string) => `
+      Команда не может быть использована на форме ${currentTable}.
+      Она может быть использована только на форме ${correctTables}.`,
+  },
   commandName: {
     'en-us': 'Command name:',
     'ru-ru': 'Имя команды:',
@@ -451,12 +447,12 @@ export const formsText = createDictionary({
     ),
   },
   wrongTablePluginDialogText: {
-    'en-us': (currentTable: string, correctTable: string) => `
+    'en-us': (currentTable: string, correctTables: string) => `
       The plugin cannot be used on the ${currentTable} form.
-      It can only be used on the ${correctTable} form.`,
-    'ru-ru': (currentTable: string, correctTable: string) => `
+      It can only be used on the ${correctTables} form.`,
+    'ru-ru': (currentTable: string, correctTables: string) => `
       Этот плагин нельзя использовать в форме ${currentTable}. Его можно
-      использовать только в форме ${correctTable}.`,
+      использовать только в форме ${correctTables}.`,
   },
   pluginName: {
     'en-us': 'Plugin name:',

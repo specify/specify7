@@ -6,6 +6,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
+import {softFail} from '../Errors/Crash';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 
@@ -88,7 +89,7 @@ function parseTreeTypes(
 function resolveField(model: SpecifyModel, fieldName: string): RA<string> {
   const field = model.strictGetField(fieldName);
   if (field.isRelationship) {
-    console.error('Upload plan has a column mapped to a relationship', {
+    softFail(new Error('Upload plan has a column mapped to a relationship'), {
       model,
       fieldName,
     });

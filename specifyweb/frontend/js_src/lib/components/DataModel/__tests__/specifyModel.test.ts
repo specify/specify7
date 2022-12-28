@@ -398,10 +398,18 @@ describe('getFields', () => {
     expect(() =>
       schema.models.CollectionObject.getFields(false as unknown as string)
     ).toThrow('Invalid field name'));
-  test('can get a field using alias', () =>
+  test('can get a field using schema alias', () =>
     expect(
       serialized(schema.models.Geography.getFields('acceptedParent'))
     ).toEqual(['[relationship acceptedGeography]']));
+  test('can get a field using schemaExtras alias', () =>
+    expect(serialized(schema.models.PickList.getFields('fieldsCBX'))).toEqual([
+      '[field fieldName]',
+    ]));
+  test('can get a field using global schemaExtras alias', () =>
+    expect(
+      serialized(schema.models.Accession.getFields('divisionCBX'))
+    ).toEqual(['[field division]']));
   test('can get a field even if mistakenly provided table name', () =>
     expect(
       serialized(schema.models.Locality.getFields('locality.localityName'))

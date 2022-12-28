@@ -1,20 +1,19 @@
 import React from 'react';
 
-import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import type { UiCommands } from '../FormParse/commands';
-import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
+import { formatList } from '../Atoms/Internationalization';
+import { toTable } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { Dialog } from '../Molecules/Dialog';
+import type { UiCommands } from '../FormParse/commands';
 import { LoanReturn } from '../Interactions/PrepReturnDialog';
+import { Dialog } from '../Molecules/Dialog';
 import { ReportsView } from '../Reports';
 import { ShowLoansCommand } from './ShowTransactions';
-import { useBooleanState } from '../../hooks/useBooleanState';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable } from '../DataModel/helpers';
-import { softFail } from '../Errors/Crash';
 
 export function GenerateLabel({
   resource,
@@ -28,7 +27,7 @@ export function GenerateLabel({
   const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
   const isDisabled = resource.isNew() || !Boolean(resource.get('id'));
-  return hasPermission('/report', 'execute') ? (
+  return (
     <>
       <Button.Small
         disabled={isDisabled}
@@ -47,7 +46,7 @@ export function GenerateLabel({
         />
       ) : undefined}
     </>
-  ) : null;
+  );
 }
 
 const commandRenderers: {
@@ -62,18 +61,12 @@ const commandRenderers: {
   ShowLoans({ label, resource, id }) {
     const [showLoans, handleShow, handleHide] = useBooleanState();
     const preparation = toTable(resource, 'Preparation');
-    if (preparation === undefined) {
-      softFail(
-        new Error('ShowLoans command can only be used on the preparation form')
-      );
-      return null;
-    }
-    return (
+    return preparation === undefined ? null : (
       <>
         <Button.Small
+          disabled={resource.isNew() || !Boolean(resource.get('id'))}
           id={id}
           onClick={handleShow}
-          disabled={resource.isNew() || !Boolean(resource.get('id'))}
         >
           {label}
         </Button.Small>
@@ -87,19 +80,8 @@ const commandRenderers: {
   },
   ReturnLoan({ id, label = '', resource }) {
     const [showDialog, handleShow, handleHide] = useBooleanState();
-    if (
-      !hasTablePermission('LoanPreparation', 'update') &&
-      hasTablePermission('LoanReturnPreparation', 'update')
-    )
-      return null;
     const loan = toTable(resource, 'Loan');
-    if (loan === undefined) {
-      softFail(
-        new Error('LoanReturnCommand can only be used with Loan resources')
-      );
-      return null;
-    }
-    return (
+    return loan === undefined ? null : (
       <>
         <Button.Small id={id} onClick={handleShow}>
           {label}
@@ -136,6 +118,29 @@ const commandRenderers: {
           {formsText('unavailableCommandDialogText')}
           <br />
           {`${formsText('commandName')} ${name}`}
+        </Dialog>
+      </>
+    );
+  },
+  Blank: () => null,
+  WrongTable({ resource, commandDefinition: { supportedTables } }) {
+    const [isVisible, handleShow, handleHide] = useBooleanState();
+    return (
+      <>
+        <Button.Small onClick={handleShow}>
+          {formsText('unavailableCommandButton')}
+        </Button.Small>
+        <Dialog
+          buttons={commonText('close')}
+          header={formsText('unavailableCommandDialogHeader')}
+          isOpen={isVisible}
+          onClose={handleHide}
+        >
+          {formsText(
+            'wrongTableCommandDialogText',
+            resource.specifyModel.name,
+            formatList(supportedTables)
+          )}
         </Dialog>
       </>
     );

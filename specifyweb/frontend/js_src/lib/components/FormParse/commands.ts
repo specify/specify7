@@ -8,10 +8,15 @@
 import type { State } from 'typesafe-reducer';
 
 import { getParsedAttribute } from '../../utils/utils';
-import type { IR } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import { f } from '../../utils/functools';
 import { setLogContext } from '../Errors/interceptLogs';
+import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { Tables } from '../DataModel/types';
+import { error } from '../Errors/assert';
+import { SpecifyModel } from '../DataModel/specifyModel';
+import { formatList } from '../Atoms/Internationalization';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -21,17 +26,39 @@ export type UiCommands = {
     'Unsupported',
     { readonly name: string | undefined }
   >;
+  readonly Blank: State<'Blank'>;
+  readonly WrongTable: State<
+    'WrongTable',
+    {
+      readonly supportedTables: RA<keyof Tables>;
+    }
+  >;
 };
 
 const processUiCommand: {
-  readonly [KEY in keyof UiCommands]: (
-    name: string | undefined
-  ) => UiCommands[KEY];
+  readonly [KEY in keyof UiCommands]: (payload: {
+    readonly name: string | undefined;
+    readonly model: SpecifyModel;
+  }) => UiCommands[KEY | 'Blank' | 'WrongTable'];
 } = {
-  GenerateLabel: () => ({ type: 'GenerateLabel' }),
-  ShowLoans: () => ({ type: 'ShowLoans' }),
-  ReturnLoan: () => ({ type: 'ReturnLoan' }),
-  Unsupported: (name) => ({ type: 'Unsupported', name }),
+  GenerateLabel: () =>
+    hasPermission('/report', 'execute')
+      ? { type: 'GenerateLabel' }
+      : { type: 'Blank' },
+  ShowLoans: ({ model }) =>
+    model.name === 'Preparation'
+      ? { type: 'ShowLoans' }
+      : { type: 'WrongTable', supportedTables: ['Preparation'] },
+  ReturnLoan: ({ model }) =>
+    !hasTablePermission('LoanPreparation', 'update') ||
+    !hasTablePermission('LoanReturnPreparation', 'update')
+      ? { type: 'Blank' }
+      : model.name === 'Loan'
+      ? { type: 'ReturnLoan' }
+      : { type: 'WrongTable', supportedTables: ['Loan'] },
+  Unsupported: ({ name }) => ({ type: 'Unsupported', name }),
+  Blank: () => ({ type: 'Blank' }),
+  WrongTable: () => error('This parser should not get called'),
 };
 
 const commandTranslation: IR<keyof UiCommands> = {
@@ -45,7 +72,10 @@ export type CommandDefinition = {
   readonly commandDefinition: UiCommands[keyof UiCommands];
 };
 
-export function parseUiCommand(cell: Element): CommandDefinition {
+export function parseUiCommand(
+  cell: Element,
+  model: SpecifyModel
+): CommandDefinition {
   const name = getParsedAttribute(cell, 'name');
   const label = getParsedAttribute(cell, 'label');
   const uiCommand =
@@ -54,7 +84,14 @@ export function parseUiCommand(cell: Element): CommandDefinition {
     processUiCommand.Unsupported;
 
   setLogContext({ command: label ?? name });
-  const definition = uiCommand(name);
+  const definition = uiCommand({ name, model });
+  if (definition.type === 'WrongTable')
+    console.error(
+      `Can't display ${label ?? name ?? 'plugin'} on ${
+        model.name
+      } form. Instead, try ` +
+        `displaying it on the ${formatList(definition.supportedTables)} form`
+    );
   setLogContext({ command: undefined });
 
   return {

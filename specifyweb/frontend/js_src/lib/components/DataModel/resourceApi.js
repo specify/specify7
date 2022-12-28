@@ -13,6 +13,7 @@ import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
+import {softFail} from '../Errors/Crash';
 
 function eventHandlerForToOne(related, field) {
         return function(event) {
@@ -152,7 +153,7 @@ function eventHandlerForToOne(related, field) {
         },
         viewUrl() {
             // returns the url for viewing this resource in the UI
-            if (!_.isNumber(this.id)) console.error("viewUrl called on resource w/out id", this);
+            if (!_.isNumber(this.id)) softFail(new Error("viewUrl called on resource w/out id"), this);
             return getResourceViewUrl(this.specifyModel.name, this.id);
         },
         get(attribute) {
@@ -341,7 +342,7 @@ function eventHandlerForToOne(related, field) {
                 this.trigger('change', this);
                 return undefined;
             }
-            console.error("unhandled setting of relationship field", fieldName,
+            softFail("unhandled setting of relationship field", fieldName,
                           "on", this, "value is", value);
             return value;
         },
@@ -420,7 +421,7 @@ function eventHandlerForToOne(related, field) {
             // otherwise we can't traverse any farther...
             if (!field || !field.isRelationship) {
                 if (path.length > 1) {
-                    console.error("expected related field");
+                    softFail("expected related field");
                     return undefined;
                 }
                 return value;
@@ -437,7 +438,7 @@ function eventHandlerForToOne(related, field) {
                 // is the related resource cached?
                 var toOne = this.dependentResources[fieldName];
                 if (!toOne) {
-                    _(value).isString() || console.error("expected URI, got", value);
+                    _(value).isString() || softFail("expected URI, got", value);
                     toOne = resourceFromUrl(value, {noBusinessRules: options.noBusinessRules});
                     if (field.isDependent()) {
                         console.warn("expected dependent resource to be in cache");
@@ -500,7 +501,7 @@ function eventHandlerForToOne(related, field) {
                     return (path.length === 1) ? value : value.rget(_.tail(path));
                 });
             default:
-                console.error("unhandled relationship type: " + field.type);
+                softFail("unhandled relationship type: " + field.type);
                 return Promise.reject('unhandled relationship type');
             }
         },

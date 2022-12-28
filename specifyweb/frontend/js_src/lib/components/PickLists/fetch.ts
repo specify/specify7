@@ -89,10 +89,8 @@ async function fetchPickListItems(
   else if (type === PickListTypes.FIELDS)
     items = await fetchFromField(pickList, limit);
   else {
-    if (type !== PickListTypes.ITEMS) {
-      console.error({ pickList });
-      softFail(new Error('Unknown picklist type'));
-    }
+    if (type !== PickListTypes.ITEMS)
+      softFail(new Error('Unknown picklist type'),{ pickList });
     return serializeResource(pickList).pickListItems ?? [];
   }
 

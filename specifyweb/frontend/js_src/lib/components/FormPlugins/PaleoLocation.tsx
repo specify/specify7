@@ -1,19 +1,20 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import type { Locality } from '../DataModel/types';
-import { f } from '../../utils/functools';
-import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { hasTablePermission } from '../Permissions/helpers';
+import { f } from '../../utils/functools';
 import { filterArray } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { formatList } from '../Atoms/Internationalization';
 import { LoadingContext } from '../Core/Contexts';
+import { toTable, toTables } from '../DataModel/helpers';
+import type { AnySchema } from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import type { Locality } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
-import { AnySchema } from '../DataModel/helperTypes';
-import { toTable, toTables } from '../DataModel/helpers';
+import { hasTablePermission } from '../Permissions/helpers';
 
 type States =
   | State<
@@ -52,14 +53,18 @@ export function PaleoLocationMapPlugin({
       {state.type === 'InvalidTableState' && (
         <Dialog
           buttons={commonText('close')}
-          header={formsText('unsupportedFormDialogHeader')}
+          header={formsText('unavailablePluginDialogHeader')}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
         >
-          {formsText('unsupportedFormDialogText')}
+          {formsText(
+            'wrongTablePluginDialogText',
+            resource.specifyModel.name,
+            formatList(paleoPluginTables)
+          )}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
@@ -91,15 +96,18 @@ export function PaleoLocationMapPlugin({
   ) : null;
 }
 
+export const paleoPluginTables = [
+  'Locality',
+  'CollectionObject',
+  'CollectingEvent',
+] as const;
+
 async function fetchPaleoData(
   anyResource: SpecifyResource<AnySchema>
 ): Promise<States> {
-  const resource = toTables(anyResource, [
-    'Locality',
-    'CollectionObject',
-    'CollectingEvent',
-  ]);
-  if (resource === undefined) return { type: 'InvalidTableState' };
+  const resource = toTables(anyResource, paleoPluginTables);
+  if (resource === undefined)
+    throw new Error('Trying to display PaleoMap unsupported form');
 
   const locality: SpecifyResource<Locality> | 'InvalidTableState' | undefined =
     toTable(resource, 'Locality') ??

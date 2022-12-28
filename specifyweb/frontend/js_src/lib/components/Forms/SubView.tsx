@@ -16,14 +16,17 @@ import { AnySchema } from '../DataModel/helperTypes';
 import { fail, softFail } from '../Errors/Crash';
 import { TableIcon } from '../Molecules/TableIcon';
 import { overwriteReadOnly } from '../../utils/types';
+import { SubViewSortField } from '../FormParse/cells';
 
 export const SubViewContext = React.createContext<
   | {
       readonly relationship: Relationship | undefined;
       readonly formType: FormType;
-      readonly sortField: string | undefined;
+      readonly sortField: SubViewSortField | undefined;
       readonly handleChangeFormType: (formType: FormType) => void;
-      readonly handleChangeSortField: (sortField: string | undefined) => void;
+      readonly handleChangeSortField: (
+        sortField: SubViewSortField | undefined
+      ) => void;
     }
   | undefined
 >(undefined);
@@ -48,7 +51,7 @@ export function SubView({
   readonly isButton: boolean;
   readonly icon: string | undefined;
   readonly viewName: string | undefined;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const [sortField, setSortField] = useTriggerState(initialSortField);
 
@@ -70,16 +73,17 @@ export function SubView({
                 field: relationship.getReverse(),
               }) as Collection<AnySchema>;
             if (sortField === undefined) return collection;
-            const isReverse = sortField.startsWith('-');
-            const fieldName = sortField.startsWith('-')
-              ? sortField.slice(1)
-              : sortField;
+            // BUG: this does not look into related tables
+            const field = sortField.fieldNames[0];
             // Overwriting the models on the collection
             overwriteReadOnly(
               collection,
               'models',
               Array.from(collection.models).sort(
-                sortFunction((resource) => resource.get(fieldName), isReverse)
+                sortFunction(
+                  (resource) => resource.get(field),
+                  sortField.direction === 'desc'
+                )
               )
             );
             return collection;

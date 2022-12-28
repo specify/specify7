@@ -44,26 +44,9 @@ import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
 
-export function QueryComboBox({
-  fieldName: initialFieldName = '',
-  ...props
-}: Omit<Parameters<typeof ProtectedQueryComboBox>[0], 'field'> & {
-  readonly fieldName: string | undefined;
-}): JSX.Element | null {
-  const field = props.resource.specifyModel.getField(initialFieldName);
-  if (field === undefined) {
-    console.error(
-      `Trying to render a query combo box on the ` +
-        `${props.resource.specifyModel.name} form with unknown field: ${initialFieldName}`,
-      { id: props.id }
-    );
-    return null;
-  } else return <ProtectedQueryComboBox {...props} field={field} />;
-}
-
 // REFACTOR: split this component
 // TEST: add tests for this
-function ProtectedQueryComboBox({
+export function QueryComboBox({
   id,
   resource,
   field,
@@ -123,7 +106,7 @@ function ProtectedQueryComboBox({
     collectionRelationships !== undefined &&
     typeSearch !== undefined;
   const { value, updateValue, validationRef, inputRef, parser } =
-    useResourceValue(resource, field.name, undefined);
+    useResourceValue(resource, field, undefined);
 
   /**
    * When resource is saved, a new instance of dependent resources is created.
@@ -496,10 +479,6 @@ function ProtectedQueryComboBox({
                             subViewRelationship,
                           })
                             .map(serializeResource)
-                            /*
-                             * Send special conditions to dialog
-                             * extremely skimpy. will work only for current known cases
-                             */
                             .map(({ fieldName, startValue }) =>
                               fieldName === 'rankId'
                                 ? {

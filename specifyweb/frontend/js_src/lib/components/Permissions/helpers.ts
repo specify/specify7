@@ -76,6 +76,7 @@ export const hasDerivedPermission = <
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
+// FIXME: refactor this to accept array of fields
 /** Check if user has a given permission for each table in a mapping path */
 export const hasPathPermission = (
   baseTableName: keyof Tables,

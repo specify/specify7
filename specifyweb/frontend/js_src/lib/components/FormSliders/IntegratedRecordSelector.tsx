@@ -26,6 +26,7 @@ import type {
 import { useRecordSelector } from './RecordSelector';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { fail } from '../Errors/Crash';
+import { SubViewSortField } from '../FormParse/cells';
 
 // REFACTOR: encapsulate common logic from FormTableCollection and this component
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
@@ -159,7 +160,7 @@ export function IntegratedRecordSelector({
   readonly viewName?: string;
   readonly urlParameter?: string;
   readonly onClose: () => void;
-  readonly sortField: string | undefined;
+  readonly sortField: SubViewSortField | undefined;
 }): JSX.Element {
   const isDependent = collection instanceof DependentCollection;
   const isToOne =

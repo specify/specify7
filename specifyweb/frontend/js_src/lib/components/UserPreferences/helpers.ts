@@ -310,7 +310,7 @@ export const preferencesPromise = contextUnlockedPromise.then(
                 status === Http.OK ? JSON.parse(data) : {}
               )
               .catch((error) => {
-                console.error(error);
+                softFail(error);
                 return {};
               }),
           })
