@@ -12,7 +12,7 @@ import { PermissionError } from '../Permissions/PermissionDenied';
 import { unsafeTriggerNotFound } from '../Router/Router';
 import { ErrorDialog } from './ErrorDialog';
 import { produceStackTrace } from './stackTrace';
-import { formatJSONBackendResponse } from './JSONError';
+import { formatJsonBackendResponse } from './JsonError';
 
 export function formatError(
   error: unknown,
@@ -112,7 +112,7 @@ export function formatError(
 /** Format error message as JSON, HTML or plain text */
 function formatErrorResponse(error: string): JSX.Element {
   try {
-    return formatJSONBackendResponse(error);
+    return formatJsonBackendResponse(error);
   } catch {
     // Failed parsing error message as JSON
   }

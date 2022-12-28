@@ -3,7 +3,7 @@ import { jsonStringify } from '../../utils/utils';
 import { className } from '../Atoms/className';
 import { TableIcon } from '../Molecules/TableIcon';
 
-type JSONResponse = {
+type JsonResponse = {
   exception: string;
   message: string;
   data: any;
@@ -11,7 +11,7 @@ type JSONResponse = {
   traceback: string;
 };
 
-function createJsonResponse(error: string): JSONResponse {
+function createJsonResponse(error: string): JsonResponse {
   const json = JSON.parse(error);
   const jsonResponse = {
     exception: json.exception,
@@ -23,7 +23,7 @@ function createJsonResponse(error: string): JSONResponse {
   return jsonResponse;
 }
 
-export function formatJSONBackendResponse(error: string): JSX.Element {
+export function formatJsonBackendResponse(error: string): JSX.Element {
   const response = createJsonResponse(error);
   if (response.exception == 'BusinessRuleException')
     return formatBusinessRuleException(error);
@@ -32,14 +32,14 @@ export function formatJSONBackendResponse(error: string): JSX.Element {
   else return formatBasicResponse(error);
 }
 
-function JSONBackendResponseFooter({
+function JsonBackendResponseFooter({
   response,
   hasData = true,
   isDataOpen = true,
 }: {
-  readonly response: JSONResponse;
+  readonly response: JsonResponse;
   readonly hasData?: boolean;
-  isDataOpen?: boolean;
+  readonly isDataOpen?: boolean;
 }): JSX.Element {
   return (
     <>
@@ -62,7 +62,7 @@ function BusinessRuleExceptionHeader({
   response,
 }: {
   readonly table: string;
-  readonly response: JSONResponse;
+  readonly response: JsonResponse;
 }): JSX.Element {
   const type: string = response.data.type;
   return (
@@ -87,10 +87,10 @@ function formatBasicResponse(error: string): JSX.Element {
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
       <em className={className.label}>{response.message}</em>
-      <JSONBackendResponseFooter
+      <JsonBackendResponseFooter
         hasData={false}
         response={response}
-      ></JSONBackendResponseFooter>
+      ></JsonBackendResponseFooter>
     </>
   );
 }
@@ -104,9 +104,9 @@ function formatBusinessRuleException(error: string): JSX.Element {
         table={table}
         response={response}
       ></BusinessRuleExceptionHeader>
-      <JSONBackendResponseFooter
+      <JsonBackendResponseFooter
         response={response}
-      ></JSONBackendResponseFooter>
+      ></JsonBackendResponseFooter>
     </>
   );
 }
@@ -120,10 +120,10 @@ function formatTreeBusinessRuleException(error: string): JSX.Element {
         table={table}
         response={response}
       ></BusinessRuleExceptionHeader>
-      <JSONBackendResponseFooter
+      <JsonBackendResponseFooter
         response={response}
         isDataOpen={true}
-      ></JSONBackendResponseFooter>
+      ></JsonBackendResponseFooter>
     </>
   );
 }
