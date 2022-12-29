@@ -20,8 +20,9 @@ export const backEndText = createDictionary({
   },
   failedParsingFloat: {
     'en-us': 'value "{value:string}" is not a valid floating point value',
-    'ru-ru':
-      'значение "{value:string}" не является допустимым числом с плавающей точкой',
+    'ru-ru': `
+      значение "{value:string}" не является допустимым числом с плавающей точкой
+    `,
   },
   failedParsingPickList: {
     'en-us': `

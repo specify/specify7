@@ -70,7 +70,7 @@ export const preferencesText = createDictionary({
   reduceTransparencyDescription: {
     'en-us': `
       Whether to disable translucent backgrounds for user interface components
-      whenever possible (for example, table headers in tree view)
+      whenever possible (e.g. table headers in tree view)
     `,
     'ru-ru': `
       Отключить ли полупрозрачный фон для пользовательского интерфейса, когда
