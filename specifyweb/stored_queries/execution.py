@@ -101,16 +101,27 @@ def filter_by_collection(model, query, collection):
 
 
 relative_date_re = "today\s*([+-])\s*(\d+)\s*(second|minute|hour|day|week|month|year)"
-def make_new(query_field):
-    if query_field.fieldspec.date_part is None:
+def apply_absolute_date(query_field):
+    if query_field.fieldspec.date_part is None or query_field.fieldspec.date_part != 'Full Date':
         return query_field
-    date_parse = re.findall(relative_date_re, query_field.value)
+
+    field_value = query_field.value
+    new_field_value = ','.join([relative_to_absolute_date(value_split) for value_split in field_value.split(',')])
+    return query_field._replace(value=new_field_value)
+
+#def apply_specify_user_name(query_field):
+ #   if query_field.fieldspec.get_field()
+
+
+def relative_to_absolute_date(raw_date_value):
+    date_parse = re.findall(relative_date_re, raw_date_value)
     if len(date_parse) == 0:
-        return query_field
+        return raw_date_value
+
     direction = date_parse[0][0]
     size = date_parse[0][1]
     type = date_parse[0][2]
-    offset = (1 if direction == '+' else -1)*int(size)
+    offset = (1 if direction == '+' else -1) * int(size)
     delta = timedelta()
     if type == 'second':
         delta = timedelta(seconds=offset)
@@ -123,15 +134,12 @@ def make_new(query_field):
     elif type == 'week':
         delta = timedelta(weeks=offset)
     elif type == 'month':
-        delta = timedelta(days=offset*30)
+        delta = timedelta(days=offset * 30)
     elif type == 'year':
-        delta = timedelta(days=offset*365)
+        delta = timedelta(days=offset * 365)
     timenow = datetime.now()
     newtime = timenow + delta
-    return query_field._replace(value = newtime.date().isoformat())
-
-
-
+    return newtime.date().isoformat()
 
 EphemeralField = namedtuple('EphemeralField', "stringId isRelFld operStart startValue isNot isDisplay sortType formatName")
 
@@ -143,12 +151,10 @@ def field_specs_from_json(json_fields):
     def ephemeral_field_from_json(json):
         return EphemeralField(**{field: json.get(field.lower(), None) for field in EphemeralField._fields})
 
-    x =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
+    field_specs =  [QueryField.from_spqueryfield(ephemeral_field_from_json(data))
             for data in sorted(json_fields, key=lambda field: field['position'])]
 
-
-    relative_date_mapped = [make_new(query_field) for query_field in x]
-    return relative_date_mapped
+    return field_specs
 
 def do_export(spquery, collection, user, filename, exporttype, host):
     """Executes the given deserialized query definition, sending the
@@ -590,6 +596,9 @@ def build_query(session, collection, user, tableid, field_specs,
     """
     model = models.models_by_tableid[tableid]
     id_field = getattr(model, model._id)
+
+    field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+
 
     query = QueryConstruct(
         collection=collection,
