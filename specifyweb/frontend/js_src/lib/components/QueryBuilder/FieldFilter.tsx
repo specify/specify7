@@ -406,20 +406,22 @@ const resolveItem = (
   currentValue;
 
 function SingleField({
-  filter,
+  currentValue,
   parser,
   pickListItems,
   fieldName,
   label = commonText('searchQuery'),
   terminatingField,
   onChange: handleChange,
+  listInput = false,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly label?: string;
   readonly fieldName: string;
   readonly terminatingField: LiteralField | Relationship | undefined;
+  readonly listInput?: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
   /*
    * This prop is not used here, but defined here because of "typeof SingleField"
@@ -431,7 +433,7 @@ function SingleField({
   if (parser.type === 'date') {
     return (
       <DateQueryInputField
-        currentValue={filter.startValue}
+        currentValue={currentValue}
         fieldName={fieldName}
         label={label}
         parser={parser}
@@ -446,18 +448,19 @@ function SingleField({
   ) {
     return (
       <SpecifyUserAutoComplete
-        startValue={filter.startValue}
+        startValue={currentValue}
         onChange={handleChange}
       />
     );
   }
   return (
     <QueryInputField
-      currentValue={filter.startValue}
+      currentValue={currentValue}
       fieldName={fieldName}
       label={label}
       parser={parser}
       pickListItems={pickListItems}
+      listInput={listInput}
       onChange={handleChange}
     />
   );
@@ -512,21 +515,26 @@ function SpecifyUserAutoComplete({
 }
 
 function Between({
-  filter,
+  currentValue,
   fieldName,
   parser: originalParser,
   pickListItems,
   onChange: handleChange,
+  terminatingField,
+  enforceLengthLimit,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
+  readonly terminatingField: LiteralField | Relationship | undefined;
+  readonly enforceLengthLimit: boolean;
+
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const splitValue = React.useMemo(
-    () => filter.startValue.split(','),
-    [filter.startValue]
+    () => currentValue.split(','),
+    [currentValue]
   );
   const [values, setValues] = useTriggerState(splitValue);
   const updateValues =
@@ -550,36 +558,40 @@ function Between({
   );
   return (
     <>
-      <QueryInputField
+      <SingleField
         currentValue={values[0] ?? ''}
-        fieldName={fieldName}
-        label={queryText('startValue')}
         parser={parser}
         pickListItems={pickListItems}
+        fieldName={fieldName}
+        terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 0)}
+        enforceLengthLimit={enforceLengthLimit}
+        label={queryText('startValue')}
       />
       <span className="flex items-center">{queryText('and')}</span>
-      <QueryInputField
+      <SingleField
         currentValue={values[1] ?? ''}
-        fieldName={fieldName}
-        label={queryText('endValue')}
         parser={parser}
         pickListItems={pickListItems}
+        label={queryText('endValue')}
+        fieldName={fieldName}
+        terminatingField={terminatingField}
         onChange={updateValues?.bind(undefined, 1)}
+        enforceLengthLimit={enforceLengthLimit}
       />
     </>
   );
 }
 
 function In({
-  filter,
+  currentValue,
   fieldName,
   parser,
   pickListItems,
   onChange: handleChange,
   enforceLengthLimit,
 }: {
-  readonly filter: QueryField['filters'][number];
+  readonly currentValue: string;
   readonly fieldName: string;
   readonly parser: Parser;
   readonly pickListItems: RA<PickListItemSimple> | undefined;
@@ -596,14 +608,16 @@ function In({
     [parser, enforceLengthLimit]
   );
   return (
-    <QueryInputField
-      currentValue={filter.startValue}
-      fieldName={fieldName}
-      label={queryText('startValue')}
-      listInput
+    <SingleField
+      currentValue={currentValue}
       parser={pluralizedParser}
       pickListItems={pickListItems}
+      label={queryText('startValue')}
+      fieldName={fieldName}
+      listInput
+      terminatingField={undefined}
       onChange={handleChange}
+      enforceLengthLimit={enforceLengthLimit}
     />
   );
 }
@@ -826,7 +840,7 @@ export function QueryLineFilter({
       <Component
         enforceLengthLimit={enforceLengthLimit}
         fieldName={fieldName}
-        filter={filter}
+        currentValue={filter.startValue}
         parser={parser}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
