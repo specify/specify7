@@ -71,12 +71,14 @@ export const mainText = createDictionary({
   },
   errorResolutionDescription: {
     'en-us': `
-      If this issue persists, please contact your IT support or if this is a
-      Specify Cloud database, contact <email />
+      If this issue persists, please contact your IT support. If this is a
+      Specify Cloud database, please download the error message and send it to
+      <email />.
     `,
     'ru-ru': `
-      Если проблема не исчезнет, обратитесь в вашу IT службу поддержки или
-      свяжитесь с нами: <email />
+      Если эта проблема не устраняется, обратитесь к вашей службе поддержки.
+      Если это база данных Specify Cloud, загрузите сообщение об ошибке и
+      отправьте его на <email />.
     `,
   },
   errorResolutionSecondDescription: {

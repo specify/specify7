@@ -8,6 +8,9 @@ const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 const outputPath = path.resolve(__dirname, 'dist');
 
+// 1MB in bytes
+const mb = 1024 * 1024;
+
 module.exports = (_env, argv) =>
   /** @type { import('webpack').Configuration } */ ({
     module: {
@@ -96,8 +99,8 @@ module.exports = (_env, argv) =>
     },
     performance: {
       // Disable bundle size warnings for bundles <2 MB
-      maxEntrypointSize: 2 * 1024 * 1024,
-      maxAssetSize: 2 * 1024 * 1024,
+      maxEntrypointSize: 2 * mb,
+      maxAssetSize: 2 * mb,
     },
     stats: {
       env: true,
