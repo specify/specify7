@@ -1,6 +1,6 @@
 import { csrfSafeMethod, isExternalUrl } from './helpers';
 import { csrfToken } from './csrfToken';
-import type { IR, RA } from '../types';
+import type { IR, R, RA } from '../types';
 import { handleAjaxResponse } from './response';
 import { Http } from './definitions';
 
@@ -25,6 +25,12 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
 };
 
 /**
+ * If making a GET request to a URL before previous request resolved, return
+ * the previous promise rather then make a new request.
+ */
+const pendingRequests: R<Promise<unknown> | undefined> = {};
+
+/**
  * All front-end network requests should go through this utility.
  *
  * Wraps native fetch in useful helpers
@@ -36,11 +42,12 @@ export type AjaxResponseObject<RESPONSE_TYPE> = {
  * Parsers JSON and XML responses
  * Handlers errors (including permission errors)
  */
-export const ajax = async <RESPONSE_TYPE = string>(
+export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
   {
     headers: { Accept: accept, ...headers },
+    method = 'GET',
     ...options
   }: Omit<RequestInit, 'body' | 'headers'> & {
     /**
@@ -70,67 +77,76 @@ export const ajax = async <RESPONSE_TYPE = string>(
      */
     readonly strict?: boolean;
   } = {}
-): Promise<AjaxResponseObject<RESPONSE_TYPE>> =>
+): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
   /**
    * When running in a test environment, mock the calls rather than make
    * actual requests
    */
   // REFACTOR: replace this with a mcok
-  process.env.NODE_ENV === 'test'
-    ? import('../../tests/ajax').then(async ({ ajaxMock }) =>
-        ajaxMock(
-          url,
-          {
-            headers: { Accept: accept, ...headers },
-            ...options,
-          },
-          { expectedResponseCodes }
-        )
-      )
-    : fetch(url, {
+  if (process.env.NODE_ENV === 'test') {
+    const { ajaxMock } = await import('../../tests/ajax');
+    return ajaxMock(
+      url,
+      {
+        headers: { Accept: accept, ...headers },
+        method,
         ...options,
-        body:
-          typeof options.body === 'object' &&
-          !(options.body instanceof FormData)
-            ? JSON.stringify(options.body)
-            : options.body,
-        headers: {
-          ...(typeof options.body === 'object' &&
-          !(options.body instanceof FormData)
-            ? {
-                'Content-Type': 'application/json',
-              }
-            : {}),
-          ...(csrfSafeMethod.has(options.method ?? 'GET') || isExternalUrl(url)
-            ? {}
-            : { 'X-CSRFToken': csrfToken }),
-          ...headers,
-          ...(typeof accept === 'string' ? { Accept: accept } : {}),
-        },
-      })
-        .then(async (response) => Promise.all([response, response.text()]))
-        .then(
-          ([response, text]: readonly [Response, string]) =>
-            handleAjaxResponse<RESPONSE_TYPE>({
-              expectedResponseCodes,
-              accept,
-              strict,
-              response,
-              text,
-            }),
-          // This happens when request is aborted (i.e, page is restarting)
-          (error) => {
-            console.error(error);
-            const response = new Response(undefined, {
-              status: Http.MISDIRECTED,
-            });
-            Object.defineProperty(response, 'url', { value: url });
-            return handleAjaxResponse({
-              expectedResponseCodes,
-              accept,
-              strict,
-              response,
-              text: error.toString(),
-            });
+      },
+      { expectedResponseCodes }
+    );
+  }
+  if (method === 'GET' && typeof pendingRequests[url] === 'object')
+    return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+  pendingRequests[url] = fetch(url, {
+    ...options,
+    method,
+    body:
+      typeof options.body === 'object' && !(options.body instanceof FormData)
+        ? JSON.stringify(options.body)
+        : options.body,
+    headers: {
+      ...(typeof options.body === 'object' &&
+      !(options.body instanceof FormData)
+        ? {
+            'Content-Type': 'application/json',
           }
-        );
+        : {}),
+      ...(csrfSafeMethod.has(method) || isExternalUrl(url)
+        ? {}
+        : { 'X-CSRFToken': csrfToken }),
+      ...headers,
+      ...(typeof accept === 'string' ? { Accept: accept } : {}),
+    },
+  })
+    .then(async (response) => Promise.all([response, response.text()]))
+    .then(
+      ([response, text]: readonly [Response, string]) =>
+        handleAjaxResponse<RESPONSE_TYPE>({
+          expectedResponseCodes,
+          accept,
+          strict,
+          response,
+          text,
+        }),
+      // This happens when request is aborted (i.e, page is restarting)
+      (error) => {
+        console.error(error);
+        const response = new Response(undefined, {
+          status: Http.MISDIRECTED,
+        });
+        Object.defineProperty(response, 'url', { value: url });
+        return handleAjaxResponse({
+          expectedResponseCodes,
+          accept,
+          strict,
+          response,
+          text: error.toString(),
+        });
+      }
+    )
+    .finally(() => {
+      pendingRequests[url] = undefined;
+    });
+
+  return pendingRequests[url] as Promise<AjaxResponseObject<RESPONSE_TYPE>>;
+}
