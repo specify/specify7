@@ -24,7 +24,7 @@ export function EditRecordSet({
   readonly isReadOnly: boolean;
   readonly onClose: () => void;
   readonly onDeleted?: () => void;
-  readonly onSaving?: () => false | undefined;
+  readonly onSaving?: Parameters<typeof ResourceView>[0]['onSaving'];
 }): JSX.Element {
   const navigate = useNavigate();
   const [isQuerying, handleOpenQuery, handleCloseQuery] = useBooleanState();

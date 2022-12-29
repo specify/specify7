@@ -73,7 +73,8 @@ function CreateRecordSetDialog({
       isReadOnly={false}
       recordSet={recordSet}
       onClose={handleClose}
-      onSaving={(): false => {
+      onSaving={(unsetUnloadProtect): false => {
+        unsetUnloadProtect();
         loading(
           ajax<number>(
             `/api/workbench/create_recordset/${dataSetId}/`,
