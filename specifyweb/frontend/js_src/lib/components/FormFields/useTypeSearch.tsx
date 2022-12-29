@@ -69,7 +69,7 @@ async function parseTypeSearch(
     .map((searchField) => relatedModel.getFields(searchField) ?? [])
     .filter(({ length }) => length > 0);
 
-  if(searchFields.length === 0) return false;
+  if (searchFields.length === 0) return false;
 
   /*
    * Can't use generateMappingPathPreview here as that function expects

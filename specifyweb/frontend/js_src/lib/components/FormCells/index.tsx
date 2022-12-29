@@ -19,7 +19,7 @@ import { SubView } from '../Forms/SubView';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
-import { fetchDistantRelated } from '../../hooks/resource';
+import { fetchDistantRelated } from '../DataModel/helpers';
 
 const cellRenderers: {
   readonly [KEY in keyof CellTypes]: (props: {

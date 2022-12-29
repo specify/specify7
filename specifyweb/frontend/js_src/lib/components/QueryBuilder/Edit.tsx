@@ -12,7 +12,6 @@ import { schema } from '../DataModel/schema';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { useNavigate } from 'react-router-dom';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -25,6 +24,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Http } from '../../utils/ajax/definitions';
+import { deserializeResource } from '../DataModel/helpers';
 
 export function QueryEditButton({
   query,

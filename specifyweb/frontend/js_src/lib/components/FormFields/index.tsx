@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { fetchDistantRelated } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
 import type { Parser } from '../../utils/parser/definitions';
@@ -20,6 +19,7 @@ import { PrintOnSave, SpecifyFormCheckbox } from './Checkbox';
 import { Combobox } from './ComboBox';
 import { UiField } from './Field';
 import { QueryComboBox } from './QueryComboBox';
+import { fetchDistantRelated } from '../DataModel/helpers';
 
 const fieldRenderers: {
   readonly [KEY in keyof FieldTypes]: (props: {

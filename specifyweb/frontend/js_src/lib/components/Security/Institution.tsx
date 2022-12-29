@@ -13,7 +13,6 @@ import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingContext } from '../Core/Contexts';
 import { downloadFile } from '../Molecules/FilePicker';
-import { deserializeResource } from '../../hooks/resource';
 import { ResourceView } from '../Forms/ResourceView';
 import { createLibraryRole } from './CreateLibraryRole';
 import { ImportExport } from './ImportExport';
@@ -30,6 +29,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { useTitle } from '../Molecules/AppTitle';
 import { policiesToTsv } from './registry';
+import { deserializeResource } from '../DataModel/helpers';
 
 export function SecurityInstitution(): JSX.Element | null {
   const { institution } = useOutletContext<SecurityOutlet>();

@@ -15,10 +15,10 @@ import { userInformation } from '../InitialContext/userInformation';
 import { NotFoundView } from '../Router/NotFoundView';
 import { ProtectedTool, ProtectedTree } from '../Permissions/PermissionDenied';
 import { QueryBuilder } from './Wrapped';
-import { deserializeResource } from '../../hooks/resource';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnyTree } from '../DataModel/helperTypes';
+import { deserializeResource } from '../DataModel/helpers';
 
 function useQueryRecordSet(): SpecifyResource<RecordSet> | false | undefined {
   const [recordsetid = ''] = useSearchParameter('recordsetid');

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useStableState } from '../../hooks/useContextState';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { commonText } from '../../localization/common';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
@@ -118,7 +118,7 @@ export function Contexts({
     [unloadProtects, handleChangeUnloadProtects]
   );
 
-  const menuContext = useStableState<MenuItemName | undefined>(undefined);
+  const menuContext = useStateForContext<MenuItemName | undefined>(undefined);
 
   return (
     <UnloadProtectsContext.Provider value={getSetUnloadProtect}>

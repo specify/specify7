@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useStableState } from '../../hooks/useContextState';
+import { useStateForContext } from '../../hooks/useStateForContext';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
@@ -70,7 +70,7 @@ export function useResourceView<SCHEMA extends AnySchema>({
 
   const id = useId('resource-view');
   const [form, setForm] = React.useState<HTMLFormElement | null>(null);
-  const formMeta = useStableState<FormMetaType>({
+  const formMeta = useStateForContext<FormMetaType>({
     triedToSubmit: false,
   });
 

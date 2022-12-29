@@ -11,10 +11,10 @@ import type { RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { Preparation } from '../DataModel/types';
+import { deserializeResource } from '../DataModel/helpers';
 
 function List({
   resources,

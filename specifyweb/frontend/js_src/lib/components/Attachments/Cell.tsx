@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
@@ -20,6 +19,7 @@ import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
+import { deserializeResource } from '../DataModel/helpers';
 
 export function AttachmentCell({
   attachment,

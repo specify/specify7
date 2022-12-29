@@ -3,12 +3,10 @@ import React from 'react';
 import { serializeResource } from '../components/DataModel/helpers';
 import type {
   AnySchema,
-  SerializedModel,
   SerializedResource,
 } from '../components/DataModel/helperTypes';
 import type { SpecifyResource } from '../components/DataModel/legacyTypes';
 import { resourceOn } from '../components/DataModel/resource';
-import { schema } from '../components/DataModel/schema';
 import type {
   LiteralField,
   Relationship,
@@ -17,8 +15,7 @@ import {
   getValidationAttributes,
   resolveParser,
 } from '../utils/parser/definitions';
-import type { GetOrSet, IR, RA } from '../utils/types';
-import { removeKey } from '../utils/utils';
+import type { GetOrSet, IR } from '../utils/types';
 
 /**
  * A wrapper for Backbone.Resource that integrates with React.useState for
@@ -80,18 +77,6 @@ export function useResource<SCHEMA extends AnySchema>(
   return [resource, setResource];
 }
 
-export const deserializeResource = <SCHEMA extends AnySchema>(
-  serializedResource: SerializedModel<SCHEMA> | SerializedResource<SCHEMA>
-): SpecifyResource<SCHEMA> =>
-  new schema.models[
-    /**
-     * This assertion, while not required by TypeScript, is needed to fix
-     * a typechecking performance issue (it was taking 5s to typecheck this
-     * line according to TypeScript trace analyzer)
-     */
-    serializedResource._tableName
-  ].Resource(removeKey(serializedResource, '_tableName'));
-
 /** Hook for getting save blockers for a model's field */
 export function useSaveBlockers({
   resource,
@@ -135,38 +120,4 @@ export function useValidationAttributes(
     setAttributes(getValidationAttributes(parser));
   }, [field]);
   return attributes;
-}
-
-// FIXME: add tests
-/**
- * Example usage:
- * resource: Collector
- * fields: agent -> lastName
- * Would return [agent, lastName] if agent exists
- *
- */
-export async function fetchDistantRelated(
-  resource: SpecifyResource<AnySchema>,
-  fields: RA<LiteralField | Relationship> | undefined
-): Promise<
-  | {
-      readonly resource: SpecifyResource<AnySchema>;
-      readonly field: LiteralField | Relationship | undefined;
-    }
-  | undefined
-> {
-  const related =
-    fields === undefined || fields.length === 0
-      ? resource
-      : fields.length === 1
-      ? await resource.fetch()
-      : await resource.rgetPromise(
-          fields
-            .slice(0, -1)
-            .map(({ name }) => name)
-            .join('.')
-        );
-
-  const field = fields?.[0];
-  return related === undefined ? undefined : { resource: related, field };
 }

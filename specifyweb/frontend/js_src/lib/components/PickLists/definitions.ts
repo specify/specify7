@@ -2,7 +2,6 @@
  * Fetch back-end pick lists and define front-end pick lists
  */
 
-import { deserializeResource } from '../../hooks/resource';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
@@ -15,6 +14,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
+import { deserializeResource } from '../DataModel/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
