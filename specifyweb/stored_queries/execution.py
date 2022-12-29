@@ -109,9 +109,11 @@ def apply_absolute_date(query_field):
     new_field_value = ','.join([relative_to_absolute_date(value_split) for value_split in field_value.split(',')])
     return query_field._replace(value=new_field_value)
 
-#def apply_specify_user_name(query_field):
- #   if query_field.fieldspec.get_field()
-
+def apply_specify_user_name(query_field, user):
+    if query_field.fieldspec.is_specify_username_end():
+        if query_field.value == 'currentSpecifyUserName':
+            return query_field._replace(value=user.name)
+    return query_field
 
 def relative_to_absolute_date(raw_date_value):
     date_parse = re.findall(relative_date_re, raw_date_value)
@@ -598,6 +600,7 @@ def build_query(session, collection, user, tableid, field_specs,
     id_field = getattr(model, model._id)
 
     field_specs = [apply_absolute_date(field_spec) for field_spec in field_specs]
+    field_specs = [apply_specify_user_name(field_spec, user) for field_spec in field_specs]
 
 
     query = QueryConstruct(
