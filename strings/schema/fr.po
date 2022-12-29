@@ -1,241 +1,290 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2022-12-30 00:50+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
+"fr/>\n"
+"Language: fr\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Table.tsx:45
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
 #: components/Toolbar/Schema.tsx:386
-#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "table"
-msgstr ""
+msgstr "Table"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:183
 #: components/Router/Routes.tsx:360
 #: components/SchemaConfig/Tables.tsx:55
-#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
+#, fuzzy
 msgid "tables"
-msgstr ""
+msgstr "les tables"
 
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/UserPreferences/Definitions.tsx:636
 #: components/WbPlanView/MapperComponents.tsx:436
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "tableName"
-msgstr ""
+msgstr "Nom de la table"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #: components/Header/userToolDefinitions.ts:38
 #: components/Router/Routes.tsx:334
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:33
 #: components/Security/registry.ts:192
 #: components/UserPreferences/Definitions.tsx:587
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#, fuzzy
 msgid "schemaConfig"
-msgstr ""
+msgstr "Configuration du schéma"
 
-#: components/SchemaConfig/index.tsx:72
 #. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:72
+#, fuzzy
 msgid "unsavedSchemaUnloadProtect"
-msgstr ""
+msgstr "Les modifications de schéma n'ont pas été enregistrées"
 
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:33
 #: components/WbPlanView/MapperComponents.tsx:318
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "changeBaseTable"
-msgstr ""
+msgstr "Changer la table de base"
 
-#: components/SchemaConfig/Field.tsx:42
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:42
+#, fuzzy
 msgid "field"
-msgstr ""
+msgstr "Domaine"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 #: components/FormMeta/CarryForward.tsx:264
 #: components/Forms/generateFormDefinition.ts:126
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
 #: components/Toolbar/Schema.tsx:221
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "fields"
-msgstr ""
+msgstr "Des champs"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/Schema.tsx:282
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "relationships"
-msgstr ""
+msgstr "Des relations"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:47
 #: components/SchemaConfig/Table.tsx:50
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+#, fuzzy
 msgid "caption"
-msgstr ""
+msgstr "Légende"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Field.tsx:57
 #: components/SchemaConfig/Table.tsx:60
 #: components/Security/Role.tsx:137
 #: components/Toolbar/Schema.tsx:171
 #: components/Toolbar/Schema.tsx:237
 #: components/Toolbar/Schema.tsx:393
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "description"
-msgstr ""
+msgstr "Description"
 
+#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:107
-#. Used in: Components > Schema Config > Table
+#, fuzzy
 msgid "hideTable"
-msgstr ""
+msgstr "Masquer le tableau"
 
-#: components/SchemaConfig/Field.tsx:86
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:86
+#, fuzzy
 msgid "hideField"
-msgstr ""
+msgstr "Masquer le champ"
 
+#. Used in: Components > Schema Config > Table
 #: components/SchemaConfig/Table.tsx:70
-#. Used in: Components > Schema Config > Table
+#, fuzzy
 msgid "tableFormat"
-msgstr ""
+msgstr "Format de tableau"
 
-#: components/SchemaConfig/Table.tsx:84
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:84
+#, fuzzy
 msgid "tableAggregation"
-msgstr ""
+msgstr "Agrégation de tableaux"
 
+#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:121
-#. Used in: Components > Schema Config > Helpers
+#, fuzzy
 msgid "oneToOne"
-msgstr ""
+msgstr "Un par un"
 
+#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:122
-#. Used in: Components > Schema Config > Helpers
+#, fuzzy
 msgid "oneToMany"
-msgstr ""
+msgstr "Un à plusieurs"
 
+#. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:123
-#. Used in: Components > Schema Config > Helpers
+#, fuzzy
 msgid "manyToOne"
-msgstr ""
+msgstr "Plusieurs à un"
 
-#: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:124
+#, fuzzy
 msgid "manyToMany"
-msgstr ""
+msgstr "plusieurs à plusieurs"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Field.tsx:67
 #: components/Toolbar/Schema.tsx:178
 #: components/Toolbar/Schema.tsx:399
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "fieldLength"
-msgstr ""
+msgstr "Longueur"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
 #: components/FormMeta/index.tsx:64
 #: components/Toolbar/Schema.tsx:174
 #: components/Toolbar/Schema.tsx:240
 #: components/Toolbar/Schema.tsx:395
-#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "readOnly"
-msgstr ""
+msgstr "Lecture seulement"
 
+#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:52
-#. Used in: Components > Schema Config > Format
+#, fuzzy
 msgid "fieldFormat"
-msgstr ""
+msgstr "Format de champ"
 
+#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:72
-#. Used in: Components > Schema Config > Format
+#, fuzzy
 msgid "formatted"
-msgstr ""
+msgstr "Formaté"
 
+#. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:95
-#. Used in: Components > Schema Config > Format
+#, fuzzy
 msgid "webLink"
-msgstr ""
+msgstr "Lien Web"
 
-#: components/SchemaConfig/Format.tsx:104
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:104
+#, fuzzy
 msgid "userDefined"
-msgstr ""
+msgstr "Défini par l'utilisateur"
 
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:349
 #: components/SchemaConfig/Languages.tsx:26
 #: components/SchemaConfig/Languages.tsx:72
-#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+#, fuzzy
 msgid "addLanguage"
-msgstr ""
+msgstr "Ajouter une langue"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:170
 #: components/Toolbar/Schema.tsx:236
 #: components/Toolbar/Schema.tsx:301
 #: components/Toolbar/Schema.tsx:387
 #: components/Toolbar/Schema.tsx:392
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "fieldLabel"
-msgstr ""
+msgstr "Étiquette"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:179
 #: components/Toolbar/Schema.tsx:244
 #: components/Toolbar/Schema.tsx:400
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "databaseColumn"
-msgstr ""
+msgstr "Colonne de base de données"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:245
 #: components/Toolbar/Schema.tsx:401
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "relatedModel"
-msgstr ""
+msgstr "Modèle associé"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:246
 #: components/Toolbar/Schema.tsx:402
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "otherSideName"
-msgstr ""
+msgstr "Nom de l'autre côté"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:247
 #: components/Toolbar/Schema.tsx:403
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "dependent"
-msgstr ""
+msgstr "Dépendant"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:357
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "downloadAsJson"
-msgstr ""
+msgstr "Télécharger au format JSON"
 
-#: components/Toolbar/Schema.tsx:368
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:368
+#, fuzzy
 msgid "downloadAsTsv"
-msgstr ""
+msgstr "Télécharger au format TSV"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:306
 #: components/Toolbar/Schema.tsx:390
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "tableId"
-msgstr ""
+msgstr "Identifiant du tableau"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:307
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "fieldCount"
-msgstr ""
+msgstr "Nombre de champs"
 
-#: components/Toolbar/Schema.tsx:308
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:308
+#, fuzzy
 msgid "relationshipCount"
-msgstr ""
+msgstr "Nombre de relations"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:97
 #: components/Router/Routes.tsx:34
 #: components/Router/Routes.tsx:38
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+#, fuzzy
 msgid "databaseSchema"
-msgstr ""
+msgstr "Schéma de base de données"
 
+#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:161
-#. Used in: Components > Toolbar > Query Tables Edit
+#, fuzzy
 msgid "selectedTables"
-msgstr ""
+msgstr "Tableaux sélectionnés"
 
-#: components/Toolbar/QueryTablesEdit.tsx:195
 #. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:195
+#, fuzzy
 msgid "possibleTables"
-msgstr ""
+msgstr "Tableaux possibles"
