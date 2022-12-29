@@ -5,26 +5,31 @@
  */
 
 import type hot from 'handsontable';
-import type { State } from 'typesafe-reducer';
+import type {State} from 'typesafe-reducer';
 
-import type { AppResourceFilters } from '../../components/AppResources/filtersHelpers';
-import type { AppResourcesConformation } from '../../components/AppResources/Aside';
-import type { SearchPreferences } from '../../components/WorkBench/AdvancedSearch';
+import type {
+  AppResourceFilters
+} from '../../components/AppResources/filtersHelpers';
+import type {
+  AppResourcesConformation
+} from '../../components/AppResources/Aside';
+import type {
+  SearchPreferences
+} from '../../components/WorkBench/AdvancedSearch';
 import type {
   Attachment,
   SpQuery,
   Tables,
 } from '../../components/DataModel/types';
-import type { UserPreferences } from '../../components/UserPreferences/helpers';
-import type { Conformations } from '../../components/TreeView/helpers';
-import type { IR, RA } from '../types';
-import { ensure } from '../types';
-import { AnyTree } from '../../components/DataModel/helperTypes';
+import type {UserPreferences} from '../../components/UserPreferences/helpers';
+import type {Conformations} from '../../components/TreeView/helpers';
+import type {IR, RA} from '../types';
+import {AnyTree} from '../../components/DataModel/helperTypes';
 import {
   LeafletCacheSalt,
   MarkerLayerName,
 } from '../../components/Leaflet/addOns';
-import { SortConfig } from '../../components/Molecules/Sorting';
+import {SortConfig} from '../../components/Molecules/Sorting';
 
 /** The types of cached values are defined here */
 export type CacheDefinitions = {
@@ -170,7 +175,6 @@ export type SortConfigs = {
     | 'tableId';
 };
 
-const cacheDefinitions = {} as unknown as CacheDefinitions;
 
 // Some circular types can't be expressed without interfaces
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -187,8 +191,10 @@ type CacheValue =
   | string
   | null
   | undefined;
+
 /**
  * This will trigger a TypeScript type error if any cache definition
  * contains a value that is not JSON-Serializable.
  */
-ensure<IR<IR<CacheValue>>>()(cacheDefinitions);
+const cacheDefinitions = {} as unknown as CacheDefinitions satisfies IR<IR<CacheValue>>;
+void cacheDefinitions;

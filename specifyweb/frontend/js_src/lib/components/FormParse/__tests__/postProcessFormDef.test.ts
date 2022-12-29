@@ -1,9 +1,8 @@
-import { requireContext } from '../../../tests/helpers';
-import { theories } from '../../../tests/utils';
-import { ensure } from '../../../utils/types';
-import { schema } from '../../DataModel/schema';
-import type { CellTypes, FormCellDefinition } from '../cells';
-import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
+import {requireContext} from '../../../tests/helpers';
+import {theories} from '../../../tests/utils';
+import {schema} from '../../DataModel/schema';
+import type {CellTypes, FormCellDefinition} from '../cells';
+import {exportsForTests, postProcessFormDef} from '../postProcessFormDef';
 
 requireContext();
 
@@ -21,7 +20,7 @@ const {
   addMissingLabel,
 } = exportsForTests;
 
-const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
+const labelCell = {
   id: 'test',
   colSpan: 3,
   align: 'right',
@@ -32,7 +31,7 @@ const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   text: 'Text',
   title: 'a',
   fieldNames: ['catalogNumber'],
-});
+} satisfies CellTypes['Label'] & FormCellDefinition;
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
 const divisionLabel = {
   ...labelCell,
@@ -51,7 +50,7 @@ const blankCell = {
   ariaLabel: undefined,
 } as const;
 
-const missingLabelCheckbox = ensure<FormCellDefinition>()({
+const missingLabelCheckbox = {
   id: 'test2',
   colSpan: 3,
   align: 'right',
@@ -67,17 +66,17 @@ const missingLabelCheckbox = ensure<FormCellDefinition>()({
     printOnSave: false,
     label: undefined,
   },
-} as const);
+} as const satisfies FormCellDefinition;
 
-const checkboxWithLabel = ensure<FormCellDefinition>()({
+const checkboxWithLabel = {
   ...missingLabelCheckbox,
   fieldDefinition: {
     ...missingLabelCheckbox.fieldDefinition,
     label: 'Catalog Number',
   },
-} as const);
+} as const satisfies FormCellDefinition;
 
-const missingLabelTextField = ensure<FormCellDefinition>()({
+const missingLabelTextField = {
   id: 'test3',
   colSpan: 3,
   align: 'right',
@@ -94,7 +93,7 @@ const missingLabelTextField = ensure<FormCellDefinition>()({
     step: undefined,
     type: 'Text',
   },
-} as const);
+} as const satisfies FormCellDefinition;
 
 test('postProcessFormDef', () =>
   expect(

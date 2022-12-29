@@ -1,9 +1,9 @@
-import { ensure, IR, RR } from '../../utils/types';
-import { AppResourceMode } from './helpers';
-import { icons } from '../Atoms/Icons';
-import { adminText } from '../../localization/admin';
-import { Tables } from '../DataModel/types';
-import { commonText } from '../../localization/common';
+import {IR, RR} from '../../utils/types';
+import {AppResourceMode} from './helpers';
+import {icons} from '../Atoms/Icons';
+import {adminText} from '../../localization/admin';
+import {Tables} from '../DataModel/types';
+import {commonText} from '../../localization/common';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
@@ -171,6 +171,4 @@ export const appResourceSubTypes = {
     icon: icons.document,
     label: adminText('otherAppResource'),
   },
-} as const;
-
-ensure<IR<AppResourceSubType>>()(appResourceSubTypes);
+} as const satisfies IR<AppResourceSubType>;

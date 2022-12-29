@@ -1,12 +1,11 @@
-import { f } from '../../utils/functools';
+import {f} from '../../utils/functools';
 import {
   autoGenerateViewDefinition,
   getFieldsForAutoView,
 } from '../Forms/generateFormDefinition';
-import type { ParsedFormDefinition } from './index';
-import { schema } from '../DataModel/schema';
-import type { IR } from '../../utils/types';
-import { ensure } from '../../utils/types';
+import type {ParsedFormDefinition} from './index';
+import {schema} from '../DataModel/schema';
+import type {IR} from '../../utils/types';
 
 /**
  * Definitions for front-end form views.
@@ -16,7 +15,7 @@ import { ensure } from '../../utils/types';
  * is specified in this file:
  */
 export const webOnlyViews = f.store(() =>
-  ensure<IR<ParsedFormDefinition>>()({
+  ({
     ObjectAttachment: {
       columns: [undefined],
       rows: [
@@ -81,7 +80,7 @@ export const webOnlyViews = f.store(() =>
       'edit',
       ['name', 'remarks']
     ),
-  } as const)
+  } as const satisfies IR<ParsedFormDefinition>)
 );
 
 export const spAppResourceView = '_SpAppResourceView_name';

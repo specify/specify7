@@ -1,13 +1,12 @@
-import { overrideAjax } from '../../../tests/ajax';
-import { requireContext } from '../../../tests/helpers';
-import { theories } from '../../../tests/utils';
-import type { RA } from '../../../utils/types';
-import { ensure } from '../../../utils/types';
-import { strictParseXml } from '../../AppResources/codeMirrorLinters';
-import { schema } from '../../DataModel/schema';
-import { getPref } from '../../InitialContext/remotePrefs';
-import type { FormCellDefinition } from '../cells';
-import type { ViewDefinition } from '../index';
+import {overrideAjax} from '../../../tests/ajax';
+import {requireContext} from '../../../tests/helpers';
+import {theories} from '../../../tests/utils';
+import type {RA} from '../../../utils/types';
+import {strictParseXml} from '../../AppResources/codeMirrorLinters';
+import {schema} from '../../DataModel/schema';
+import {getPref} from '../../InitialContext/remotePrefs';
+import type {FormCellDefinition} from '../cells';
+import type {ViewDefinition} from '../index';
 import {
   exportsForTests,
   fetchView,
@@ -16,10 +15,10 @@ import {
   parseViewDefinition,
   resolveViewDefinition,
 } from '../index';
-import { formatUrl } from '../../Router/queryString';
-import { removeKey } from '../../../utils/utils';
-import { Http } from '../../../utils/ajax/definitions';
-import { spAppResourceView } from '../webOnlyViews';
+import {formatUrl} from '../../Router/queryString';
+import {removeKey} from '../../../utils/utils';
+import {Http} from '../../../utils/ajax/definitions';
+import {spAppResourceView} from '../webOnlyViews';
 
 const {
   views,
@@ -33,7 +32,7 @@ const {
 
 requireContext();
 
-const altViews = ensure<ViewDefinition['altviews']>()({
+const altViews = {
   'Preparation Table View': {
     name: 'Preparation Table View',
     viewdef: 'Preparation Table',
@@ -55,7 +54,7 @@ const altViews = ensure<ViewDefinition['altviews']>()({
     mode: 'edit',
     default: 'true',
   },
-} as const);
+} as const satisfies ViewDefinition['altviews'];
 
 const formView =
   strictParseXml(`<viewdef type="form" class="edu.ku.brc.specify.datamodel.CollectionObject">
@@ -269,7 +268,7 @@ theories(parseFormTableDefinition, [
               isReadOnly: false,
               defaultValue: undefined,
             },
-            fieldName: undefined,
+            fieldNames: undefined,
             isRequired: false,
             ariaLabel: 'test',
           },
@@ -285,7 +284,7 @@ theories(parseFormTableDefinition, [
               defaultValue: false,
               isReadOnly: false,
             },
-            fieldName: undefined,
+            fieldNames: undefined,
             isRequired: false,
             ariaLabel: '2',
           },

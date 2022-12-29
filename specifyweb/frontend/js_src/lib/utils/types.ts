@@ -70,47 +70,6 @@ export const isFunction = <T>(
   typeof value === 'function';
 
 /**
- * Makes sure object extends a certain type
- *
- * @remarks
- * Call this function with a generic parameter of desired type.
- * The function returns another function which accepts an "as const" object.
- * If that object does not extend the type given specified the first function
- * a type error is thrown.
- *
- * The function has to return a function because typescript does not allow to
- * explicitly specify first generic, while leave the second implicit.
- *
- * The function is needed since `const value: SomeType = {...} as const;` would
- * cast the value to `SomeType` and lose the information from the `as const`
- * assertion.
- *
- * The disadvantage of this function is that "Go to definition" IDE feature
- * doesn't work as good when an `as const` object is wrapped in "ensure". For
- * use cases where that feature is important, instead of wrapping the
- * object in ensure, add an ensure line after object definition. A disadvantage
- * of not wrapping the object is that IDE won't be able to do autocompletion
- * inside the object from the type information and the type error, if present,
- * is going to be thrown at the "ensure" line, rather than in the exact place
- * inside the object where the error originated.
- *
- * @example Wrapping an `as const` object
- * ```ts
- * const tools = ensure<keoyf Tables>()(['CollectionObject','Locality'] as const);
- * ```
- *
- * @example Usage without wrapping
- * ```ts
- * const tools = ['CollectionObject', 'Locality'] as const;
- * ensure<RA<tools>>(tools);
- * ```
- */
-export const ensure =
-  <T>() =>
-  <V extends T>(value: V): V extends T ? V : never =>
-    value as V extends T ? V : never;
-
-/**
  * Allows to overwrite a read-only property in a type-safe way.
  * In most cases it is recommended to change the typing rather or use a callback
  * rather than use this utility.

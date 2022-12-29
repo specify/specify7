@@ -4,26 +4,26 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
-import { preferencesText } from '../../localization/preferences';
-import { queryText } from '../../localization/query';
-import type { Language } from '../../localization/utils';
-import { LANGUAGE } from '../../localization/utils';
-import { wbText } from '../../localization/workbench';
-import type { Parser } from '../../utils/parser/definitions';
-import type { IR, RA } from '../../utils/types';
-import { ensure, overwriteReadOnly, RR } from '../../utils/types';
-import { Link } from '../Atoms/Link';
-import type { JavaType } from '../DataModel/specifyField';
-import type { Collection } from '../DataModel/types';
-import { Tables } from '../DataModel/types';
-import { error } from '../Errors/assert';
+import {commonText} from '../../localization/common';
+import {formsText} from '../../localization/forms';
+import {preferencesText} from '../../localization/preferences';
+import {queryText} from '../../localization/query';
+import type {Language} from '../../localization/utils';
+import {LANGUAGE} from '../../localization/utils';
+import {wbText} from '../../localization/workbench';
+import type {Parser} from '../../utils/parser/definitions';
+import type {IR, RA} from '../../utils/types';
+import {overwriteReadOnly, RR} from '../../utils/types';
+import {Link} from '../Atoms/Link';
+import type {JavaType} from '../DataModel/specifyField';
+import type {Collection} from '../DataModel/types';
+import {Tables} from '../DataModel/types';
+import {error} from '../Errors/assert';
 import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type { WelcomePageMode } from './Renderers';
+import type {WelcomePageMode} from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
@@ -31,8 +31,8 @@ import {
   FontFamilyPreferenceItem,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import { TableFields } from '../DataModel/helperTypes';
-import { softFail } from '../Errors/Crash';
+import {TableFields} from '../DataModel/helperTypes';
+import {softFail} from '../Errors/Crash';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1562,7 +1562,7 @@ export const preferenceDefinitions = {
       },
     },
   },
-} as const;
+} as const satisfies GenericPreferencesCategories;
 
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')
@@ -1597,5 +1597,3 @@ import('../DataModel/schema')
 
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
-
-ensure<GenericPreferencesCategories>()(preferenceDefinitions);

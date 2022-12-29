@@ -1,12 +1,11 @@
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
-import { f } from '../../utils/functools';
-import type { IR, R, RA } from '../../utils/types';
-import { ensure } from '../../utils/types';
-import { lowerToHuman } from '../../utils/utils';
-import { schema } from '../DataModel/schema';
-import type { Tables } from '../DataModel/types';
+import {adminText} from '../../localization/admin';
+import {commonText} from '../../localization/common';
+import {queryText} from '../../localization/query';
+import {f} from '../../utils/functools';
+import type {IR, R, RA} from '../../utils/types';
+import {lowerToHuman} from '../../utils/utils';
+import {schema} from '../DataModel/schema';
+import type {Tables} from '../DataModel/types';
 import {
   frontEndPermissions,
   institutionPermissions,
@@ -179,12 +178,7 @@ export function policiesToTsv(): string {
  * have access to a tool
  */
 export const toolDefinitions = f.store(() =>
-  ensure<
-    IR<{
-      readonly label: string;
-      readonly tables: RA<keyof Tables>;
-    }>
-  >()({
+  ({
     schemaConfig: {
       label: commonText('schemaConfig'),
       tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
@@ -214,7 +208,10 @@ export const toolDefinitions = f.store(() =>
       label: schema.models.SpAuditLog.label,
       tables: ['SpAuditLog', 'SpAuditLogField'],
     },
-  } as const)
+  } as const satisfies IR<{
+      readonly label: string;
+      readonly tables: RA<keyof Tables>;
+    }>)
 );
 
 export const toolTables = f.store(

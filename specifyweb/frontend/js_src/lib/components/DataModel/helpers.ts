@@ -15,13 +15,14 @@ import { parseResourceUrl, resourceToJson } from './resource';
 import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Tables } from './types';
+import Promise = JQuery.Promise;
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    typeof resource.toJSON === 'function'
+    'toJSON' in resource
       ? resourceToJson(resource as SpecifyResource<SCHEMA>)
       : (resource as SerializedModel<SCHEMA>),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
@@ -42,7 +43,7 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = strictGetModel(
     defined(
       (tableName as SCHEMA['tableName']) ??
-        resource._tableName ??
+        ('_tableName' in resource ? resource._tableName : undefined) ??
         parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
       `Unable to serialize resource because table name is unknown.${
         process.env.NODE_ENV === 'test'
