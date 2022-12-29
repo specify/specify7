@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/ChooseCollection/index.tsx:168
 #: components/Core/Main.tsx:118
 #: components/Login/OicLogin.tsx:86
-#: components/Login/index.tsx:160
+#: components/Login/index.tsx:162
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
@@ -17,7 +17,7 @@ msgstr "Log In"
 msgid "username"
 msgstr "Username"
 
-#: components/Login/index.tsx:149
+#: components/Login/index.tsx:151
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -186,8 +186,9 @@ msgstr ""
 msgid "noPermission"
 msgstr "NO PERMISSION"
 
+#: components/Forms/DataTask.tsx:128
 #: components/Permissions/PermissionDenied.tsx:223
-#. Used in: Components > Permissions > Permission Denied
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
 msgstr "Permission denied error"
 
@@ -197,6 +198,11 @@ msgid "permissionDeniedDescription"
 msgstr ""
 "You don't have any policy or role that gives you permission to do the "
 "following action:"
+
+#: components/Forms/DataTask.tsx:131
+#. Used in: Components > Forms > Data Task
+msgid "emptyRecordSetsReadOnly"
+msgstr "Cannot open empty Record Set when in Read-Only mode"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error
@@ -241,7 +247,7 @@ msgstr "Save user first"
 msgid "mustBeManager"
 msgstr "User must be saved as Manager first"
 
-#: components/AppResources/tree.ts:182
+#: components/AppResources/tree.ts:211
 #: components/Security/CollectionRole.tsx:198
 #. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
@@ -259,8 +265,8 @@ msgstr "User Accounts Assigned to this Collection"
 
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
-#: components/Security/UserComponents.tsx:184
-#: components/Security/UserComponents.tsx:188
+#: components/Security/UserComponents.tsx:185
+#: components/Security/UserComponents.tsx:189
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Set Password"
@@ -314,12 +320,12 @@ msgstr "User Roles"
 msgid "collectionUserRoles"
 msgstr "Collection User Roles"
 
-#: components/Security/UserComponents.tsx:106
+#: components/Security/UserComponents.tsx:107
 #. Used in: Components > Security > User Components
 msgid "assignedUserRoles"
 msgstr "Assigned User Roles"
 
-#: components/Security/Role.tsx:151
+#: components/Security/Role.tsx:152
 #. Used in: Components > Security > Role
 msgid "rolePolicies"
 msgstr "Role Permission Policies"
@@ -334,7 +340,7 @@ msgstr "User Permission Policies"
 msgid "customUserPolices"
 msgstr "Custom Collection-level Policies (applies to this collection only)"
 
-#: components/Security/Role.tsx:113
+#: components/Security/Role.tsx:114
 #. Used in: Components > Security > Role
 msgid "role"
 msgstr "Role"
@@ -436,7 +442,7 @@ msgstr "Update existing roles:"
 msgid "unchangedRoles"
 msgstr "Unchanged roles:"
 
-#: components/Security/UserComponents.tsx:84
+#: components/Security/UserComponents.tsx:85
 #. Used in: Components > Security > User Components
 msgid "institutionAdmin"
 msgstr "Institution Admin"
@@ -465,12 +471,12 @@ msgstr ""
 "No external identity provider is configured. You can configure some in "
 "Specify 7 server settings"
 
-#: components/Security/UserComponents.tsx:236
+#: components/Security/UserComponents.tsx:237
 #. Used in: Components > Security > User Components
 msgid "legacyPermissions"
 msgstr "Specify 6 Permissions"
 
-#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:192
 #. Used in: Components > Security > User Components
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
@@ -492,7 +498,7 @@ msgstr "This agent is already associated with a different user."
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
-#: components/Security/UserComponents.tsx:204
+#: components/Security/UserComponents.tsx:205
 #. Used in: Components > Security > User Components
 msgid "externalIdentityProviders"
 msgstr "External identity providers:"
@@ -517,12 +523,12 @@ msgstr "(Specify 7 Admin)"
 msgid "legacyAdmin"
 msgstr "(Specify 6 Admin)"
 
-#: components/Security/Role.tsx:226
+#: components/Security/Role.tsx:227
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsers"
 msgstr "Delete role that has users?"
 
-#: components/Security/Role.tsx:229
+#: components/Security/Role.tsx:230
 #. Used in: Components > Security > Role
 msgid "deleteRoleWithUsersDescription"
 msgstr "Users will not be deleted, but they would lose this role."

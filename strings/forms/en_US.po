@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:572
+#: components/UserPreferences/Definitions.tsx:573
 #. Used in: Components > User Preferences > Definitions
 msgid "forms"
 msgstr "Forms"
@@ -61,7 +61,7 @@ msgid "record"
 msgstr "Record"
 
 #: components/Forms/DeleteBlocked.tsx:93
-#: components/Toolbar/Schema.tsx:397
+#: components/Toolbar/Schema.tsx:394
 #: components/WbPlanView/CustomSelectElement.tsx:283
 #. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Schema ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
@@ -172,7 +172,7 @@ msgid "noData"
 msgstr "No Data."
 
 #: components/FormSliders/RecordSet.tsx:299
-#: components/Toolbar/RecordSets.tsx:117
+#: components/Toolbar/RecordSets.tsx:118
 #. Used in: Components > Form Sliders > Record Set ⬤ Components > Toolbar > Record Sets
 msgid "recordSet"
 msgstr "Record Set"
@@ -192,14 +192,14 @@ msgstr "Save record first"
 
 #: components/FormSliders/Slider.tsx:31
 #: components/FormSliders/Slider.tsx:33
-#: components/UserPreferences/Definitions.tsx:946
+#: components/UserPreferences/Definitions.tsx:947
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "firstRecord"
 msgstr "First Record"
 
 #: components/FormSliders/Slider.tsx:97
 #: components/FormSliders/Slider.tsx:99
-#: components/UserPreferences/Definitions.tsx:950
+#: components/UserPreferences/Definitions.tsx:951
 #. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
 msgid "lastRecord"
 msgstr "Last Record"
@@ -363,37 +363,37 @@ msgstr "Required Format: {format:string}."
 msgid "inputTypeNumber"
 msgstr "Value must be a number"
 
-#: components/PickLists/definitions.ts:26
+#: components/PickLists/definitions.ts:27
 #. Used in: Components > Pick Lists > Definitions
 msgid "organization"
 msgstr "Organization"
 
-#: components/PickLists/definitions.ts:27
+#: components/PickLists/definitions.ts:28
 #. Used in: Components > Pick Lists > Definitions
 msgid "person"
 msgstr "Person"
 
-#: components/PickLists/definitions.ts:28
+#: components/PickLists/definitions.ts:29
 #. Used in: Components > Pick Lists > Definitions
 msgid "other"
 msgstr "Other"
 
-#: components/PickLists/definitions.ts:29
+#: components/PickLists/definitions.ts:30
 #. Used in: Components > Pick Lists > Definitions
 msgid "group"
 msgstr "Group"
 
-#: components/PickLists/definitions.ts:33
+#: components/PickLists/definitions.ts:34
 #. Used in: Components > Pick Lists > Definitions
 msgid "userDefinedItems"
 msgstr "User Defined Items"
 
-#: components/PickLists/definitions.ts:34
+#: components/PickLists/definitions.ts:35
 #. Used in: Components > Pick Lists > Definitions
 msgid "entireTable"
 msgstr "Entire Table"
 
-#: components/PickLists/definitions.ts:35
+#: components/PickLists/definitions.ts:36
 #. Used in: Components > Pick Lists > Definitions
 msgid "fieldFromTable"
 msgstr "Field From Table"
@@ -423,12 +423,12 @@ msgstr "You might want to save this record before navigating away."
 msgid "creatingNewRecord"
 msgstr "Creating new record"
 
-#: components/PickLists/definitions.ts:136
+#: components/PickLists/definitions.ts:137
 #. Used in: Components > Pick Lists > Definitions
 msgid "forward"
 msgstr "Forward"
 
-#: components/PickLists/definitions.ts:135
+#: components/PickLists/definitions.ts:136
 #. Used in: Components > Pick Lists > Definitions
 msgid "reverse"
 msgstr "Reverse"
@@ -574,13 +574,13 @@ msgstr "Find usages"
 msgid "usagesOfPickList"
 msgstr "Usages of \"{pickList:string}\" pick list"
 
-#: components/FormMeta/SubViewMeta.tsx:34
+#: components/FormMeta/SubViewMeta.tsx:35
 #. Used in: Components > Form Meta > Sub View Meta
 msgid "form"
 msgstr "Subform"
 
-#: components/FormMeta/SubViewMeta.tsx:35
-#: components/UserPreferences/Definitions.tsx:957
+#: components/FormMeta/SubViewMeta.tsx:36
+#: components/UserPreferences/Definitions.tsx:958
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "formTable"
 msgstr "Grid"

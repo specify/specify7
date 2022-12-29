@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:1326
+#: components/UserPreferences/Definitions.tsx:1327
 #: components/WorkBench/wbView.js:230
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
@@ -81,7 +81,7 @@ msgstr "Data Check"
 msgid "dataCheckOn"
 msgstr "Data Check: On"
 
-#: components/WorkBench/DataSetMeta.tsx:328
+#: components/WorkBench/DataSetMeta.tsx:318
 #: components/WorkBench/Template.tsx:193
 #. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
@@ -527,8 +527,8 @@ msgstr "Preview Dataset"
 msgid "errorImporting"
 msgstr "The following error(s) occurred while importing the file:"
 
-#: components/WbImport/helpers.ts:108
-#: components/WbImport/helpers.ts:131
+#: components/WbImport/helpers.ts:109
+#: components/WbImport/helpers.ts:132
 #. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
 msgstr "The file {fileName:string} is corrupt or contains no data!"
@@ -543,39 +543,39 @@ msgstr "Character encoding:"
 msgid "delimiter"
 msgstr "Delimiter:"
 
-#: components/UserPreferences/Definitions.tsx:1427
+#: components/UserPreferences/Definitions.tsx:1428
 #: components/WbImport/index.tsx:152
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
 msgstr "Comma"
 
-#: components/UserPreferences/Definitions.tsx:1435
+#: components/UserPreferences/Definitions.tsx:1436
 #: components/WbImport/index.tsx:154
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
 msgstr "Semicolon"
 
-#: components/UserPreferences/Definitions.tsx:1431
+#: components/UserPreferences/Definitions.tsx:1432
 #: components/WbImport/index.tsx:153
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
 msgstr "Tab"
 
-#: components/UserPreferences/Definitions.tsx:1439
+#: components/UserPreferences/Definitions.tsx:1440
 #: components/WbImport/index.tsx:155
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "space"
 msgstr "Space"
 
-#: components/UserPreferences/Definitions.tsx:1443
+#: components/UserPreferences/Definitions.tsx:1444
 #: components/WbImport/index.tsx:156
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "pipe"
 msgstr "Pipe"
 
-#: components/UserPreferences/Definitions.tsx:504
-#: components/UserPreferences/Definitions.tsx:525
-#: components/UserPreferences/Definitions.tsx:546
+#: components/UserPreferences/Definitions.tsx:505
+#: components/UserPreferences/Definitions.tsx:526
+#: components/UserPreferences/Definitions.tsx:547
 #: components/WbImport/index.tsx:193
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"
@@ -591,95 +591,95 @@ msgstr "Name for New Data Set:"
 msgid "firstRowIsHeader"
 msgstr "First Row is Header:"
 
-#: components/Toolbar/WbsDialog.tsx:172
+#: components/Toolbar/WbsDialog.tsx:173
 #: components/WbImport/index.tsx:238
 #. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
 msgstr "Import file"
 
-#: components/WbImport/helpers.ts:67
+#: components/WbImport/helpers.ts:68
 #. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Column {columnIndex:number}"
 
-#: components/Toolbar/WbsDialog.tsx:39
+#: components/Toolbar/WbsDialog.tsx:40
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
 msgstr "New Data Set {date}"
 
-#: components/Toolbar/WbsDialog.tsx:196
+#: components/Toolbar/WbsDialog.tsx:197
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "dataSets"
 msgstr "WorkBench Data Sets"
 
-#: components/Toolbar/WbsDialog.tsx:207
+#: components/Toolbar/WbsDialog.tsx:208
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "wbsDialogEmpty"
 msgstr "Currently no Data Sets exist."
 
-#: components/Toolbar/WbsDialog.tsx:208
+#: components/Toolbar/WbsDialog.tsx:209
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr "Use \"Import a file\" or \"Create New\" to make a new one."
 
-#: components/Toolbar/WbsDialog.tsx:183
+#: components/Toolbar/WbsDialog.tsx:184
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
 msgstr "Create New"
 
-#: components/WorkBench/DataSetMeta.tsx:65
+#: components/WorkBench/DataSetMeta.tsx:66
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
 msgstr "Data Set Properties"
 
 #: components/WbPlanView/Mapper.tsx:401
-#: components/WorkBench/DataSetMeta.tsx:98
+#: components/WorkBench/DataSetMeta.tsx:99
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
 msgstr "Data Set Name"
 
-#: components/WorkBench/DataSetMeta.tsx:123
+#: components/WorkBench/DataSetMeta.tsx:121
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Number of rows"
 
-#: components/WorkBench/DataSetMeta.tsx:129
+#: components/WorkBench/DataSetMeta.tsx:127
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Number of columns"
 
-#: components/WorkBench/DataSetMeta.tsx:228
+#: components/WorkBench/DataSetMeta.tsx:222
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Import file name"
 
-#: components/WorkBench/DataSetMeta.tsx:231
+#: components/WorkBench/DataSetMeta.tsx:225
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(no file name)"
 
-#: components/WorkBench/DataSetMeta.tsx:332
+#: components/WorkBench/DataSetMeta.tsx:322
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwner"
 msgstr "Change Data Set Owner"
 
-#: components/WorkBench/DataSetMeta.tsx:353
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "changeDataSetOwnerDescription"
 msgstr "Select New Owner:"
 
-#: components/WorkBench/DataSetMeta.tsx:317
-#: components/WorkBench/DataSetMeta.tsx:320
+#: components/WorkBench/DataSetMeta.tsx:307
+#: components/WorkBench/DataSetMeta.tsx:310
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetOwnerChanged"
 msgstr "Data Set owner changed"
 
-#: components/WorkBench/DataSetMeta.tsx:261
+#: components/WorkBench/DataSetMeta.tsx:255
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Data Set"
 
-#: components/WorkBench/DataSetMeta.tsx:265
+#: components/WorkBench/DataSetMeta.tsx:259
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Uploaded, Read-Only)"

@@ -57,7 +57,7 @@ msgstr ""
 #. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7, Copyright 2022, University of Kansas Center for Research. "
+"Specify 7, Copyright 2023, University of Kansas Center for Research. "
 "Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source "
 "software licensed under GNU General Public License v2."
 
@@ -92,7 +92,7 @@ msgid "databaseVersion"
 msgstr "Database Version:"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/Toolbar/Schema.tsx:349
+#: components/Toolbar/Schema.tsx:346
 #. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Schema
 msgid "schemaVersion"
 msgstr "DB Schema Version:"

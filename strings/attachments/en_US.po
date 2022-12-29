@@ -19,8 +19,8 @@ msgid "attachmentServerUnavailable"
 msgstr "Attachment server unavailable."
 
 #: components/Attachments/index.tsx:198
-#: components/FormMeta/SubViewMeta.tsx:40
-#: components/UserPreferences/Definitions.tsx:1071
+#: components/FormMeta/SubViewMeta.tsx:41
+#: components/UserPreferences/Definitions.tsx:1072
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
 msgstr "Order By"

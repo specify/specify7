@@ -1,0 +1,244 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Header/menuItemDefinitions.ts:66
+#: components/Interactions/InteractionsDialog.tsx:229
+#: components/Router/OverlayRoutes.tsx:60
+#: components/UserPreferences/Definitions.tsx:492
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
+msgid "interactions"
+msgstr "Взаимодействия"
+
+#: components/Interactions/InteractionDialog.tsx:244
+#: components/Interactions/PrepDialog.tsx:118
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "addItems"
+msgstr "Добавить элементы"
+
+#: components/Interactions/InteractionDialog.tsx:246
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "recordReturn"
+msgstr "Возврат {modelName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:247
+#: components/Interactions/PrepDialog.tsx:119
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+msgid "createRecord"
+msgstr "Создать {modelName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:191
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "missing"
+msgstr "Отсутствует:"
+
+#: components/Interactions/InteractionDialog.tsx:193
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "preparationsNotFound"
+msgstr "Никаких препаратов не обнаружено."
+
+#: components/Interactions/InteractionDialog.tsx:311
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "problemsFound"
+msgstr "Обнаружены ошибки:"
+
+#: components/Interactions/InteractionDialog.tsx:253
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
+msgid "byChoosingRecordSet"
+msgstr "Выбрав набор записей (доступно {count:number|formatted})"
+
+#: components/Interactions/InteractionDialog.tsx:259
+#. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
+msgid "byEnteringNumbers"
+msgstr "Ввести {fieldName:string}"
+
+#: components/Interactions/InteractionDialog.tsx:237
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "withoutPreparations"
+msgstr "Без подготовки"
+
+#: components/Interactions/InteractionDialog.tsx:233
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "addUnassociated"
+msgstr "Добавить несвязанный элемент"
+
+#: components/Interactions/PrepDialog.tsx:129
+#. Used in: Components > Interactions > Prep Dialog
+msgid "preparations"
+msgstr "Препараты"
+
+#: components/FormCommands/index.tsx:105
+#. Used in: Components > Form Commands > Index
+msgid "preparationsCanNotBeReturned"
+msgstr "Препараты не могут быть возвращены в этом контексте."
+
+#: components/Interactions/PrepReturnDialog.tsx:73
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "noUnresolvedPreparations"
+msgstr "Незавершенных приготовлений по этому кредиту нет."
+
+#: components/Interactions/PrepReturnDialog.tsx:228
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "unresolved"
+msgstr "Нерешенные"
+
+#: components/Interactions/PrepReturnDialog.tsx:231
+#: components/QueryBuilder/LoanReturn.tsx:163
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "return"
+msgstr "Возвращение"
+
+#: components/Interactions/PrepReturnDialog.tsx:234
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "resolve"
+msgstr "Разрешить"
+
+#: components/Interactions/PrepReturnDialog.tsx:117
+#. Used in: Components > Interactions > Prep Return Dialog
+msgid "returnAllPreparations"
+msgstr "Вернуть все препараты"
+
+#: components/Interactions/PrepReturnDialog.tsx:149
+#: components/QueryBuilder/LoanReturn.tsx:161
+#. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnSelectedPreparations"
+msgstr "Вернуть выбранные препараты"
+
+#: components/Interactions/PrepDialog.tsx:100
+#. Used in: Components > Interactions > Prep Dialog
+msgid "selectAllAvailablePreparations"
+msgstr "Выбрать все доступные препараты"
+
+#: components/FormMeta/CarryForward.tsx:228
+#: components/Interactions/PrepDialog.tsx:105
+#: components/Interactions/PrepDialog.tsx:188
+#: components/Interactions/PrepDialogRow.tsx:61
+#: components/Interactions/PrepDialogRow.tsx:63
+#: components/Interactions/PrepReturnDialog.tsx:129
+#: components/Interactions/PrepReturnRow.tsx:84
+#: components/Interactions/PrepReturnRow.tsx:86
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
+msgid "selectAll"
+msgstr "Выбрать все"
+
+#: components/Interactions/PrepDialogRow.tsx:78
+#: components/Interactions/PrepDialogRow.tsx:81
+#. Used in: Components > Interactions > Prep Dialog Row
+msgid "selectedAmount"
+msgstr "Выбранная сумма"
+
+#: components/Interactions/PrepReturnRow.tsx:105
+#: components/Interactions/PrepReturnRow.tsx:109
+#. Used in: Components > Interactions > Prep Return Row
+msgid "returnedAmount"
+msgstr "Возвращенно"
+
+#: components/Interactions/PrepReturnRow.tsx:125
+#: components/Interactions/PrepReturnRow.tsx:129
+#. Used in: Components > Interactions > Prep Return Row
+msgid "resolvedAmount"
+msgstr "Решенный"
+
+#: components/Interactions/PrepDialogRow.tsx:160
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
+msgid "prepReturnFormatter"
+msgstr "{tableName:string}: {resource: string}"
+
+#: components/FormCommands/ShowTransactions.tsx:113
+#. Used in: Components > Form Commands > Show Transactions
+msgid "resolvedLoans"
+msgstr "Решение Заемы"
+
+#: components/FormCommands/ShowTransactions.tsx:107
+#. Used in: Components > Form Commands > Show Transactions
+msgid "openLoans"
+msgstr "Открытые займы"
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#. Used in: Components > Form Commands > Show Transactions
+msgid "gifts"
+msgstr "Подарки"
+
+#: components/FormCommands/ShowTransactions.tsx:127
+#. Used in: Components > Form Commands > Show Transactions
+msgid "exchanges"
+msgstr "Обмены"
+
+#: components/Interactions/PrepReturnRow.tsx:41
+#. Used in: Components > Interactions > Prep Return Row
+msgid "unCataloged"
+msgstr "некаталогизированный"
+
+#: components/Interactions/InteractionDialog.tsx:200
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedPreparations"
+msgstr "Возвращенные препараты"
+
+#: components/Interactions/InteractionDialog.tsx:203
+#. Used in: Components > Interactions > Interaction Dialog
+msgid "returnedAndSaved"
+msgstr "{count:number|formatted} препарата возвращены и сохранены."
+
+#: components/FormMeta/CarryForward.tsx:249
+#: components/Interactions/PrepDialog.tsx:112
+#: components/Interactions/PrepReturnDialog.tsx:145
+#: components/QueryBuilder/Results.tsx:235
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
+msgid "deselectAll"
+msgstr "Отменить выбор"
+
+#: components/Interactions/PrepDialog.tsx:203
+#. Used in: Components > Interactions > Prep Dialog
+msgid "available"
+msgstr "В наличии"
+
+#: components/Interactions/PrepDialog.tsx:204
+#. Used in: Components > Interactions > Prep Dialog
+msgid "unavailable"
+msgstr "Недоступен"
+
+#: components/Interactions/InteractionsDialog.tsx:92
+#: components/QueryBuilder/LoanReturn.tsx:149
+#. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+msgid "returnLoan"
+msgstr "Возврат Заема"
+
+#: components/Interactions/InteractionsDialog.tsx:93
+#: components/Interactions/InteractionsDialog.tsx:102
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "printInvoice"
+msgstr "Распечатать Накладную"
+
+#: components/Interactions/InteractionsDialog.tsx:94
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparation"
+msgstr "Заем без Препаратов"
+
+#: components/Interactions/InteractionsDialog.tsx:96
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "loanWithoutPreparationDescription"
+msgstr "Создать Заем без препаратов"
+
+#: components/Interactions/InteractionsDialog.tsx:97
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createLoan"
+msgstr "Создать Заем"
+
+#: components/Interactions/InteractionsDialog.tsx:98
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editLoan"
+msgstr "Редактировать Заем"
+
+#: components/Interactions/InteractionsDialog.tsx:99
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createdGift"
+msgstr "Создать Дар"
+
+#: components/Interactions/InteractionsDialog.tsx:100
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "editGift"
+msgstr "Редактировать Дар"
+
+#: components/Interactions/InteractionsDialog.tsx:101
+#. Used in: Components > Interactions > Interactions Dialog
+msgid "createInformationRequest"
+msgstr "Создать Экспресс Запрос"

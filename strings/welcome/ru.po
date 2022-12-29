@@ -1,0 +1,121 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/HomePage/index.tsx:47
+#: components/Router/Routes.tsx:406
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
+msgid "pageTitle"
+msgstr "Добро пожаловать"
+
+#: components/Header/userToolDefinitions.ts:83
+#: components/HomePage/AboutSpecify.tsx:69
+#: components/Router/OverlayRoutes.tsx:164
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+msgid "aboutSpecify"
+msgstr "О Specify 7"
+
+#: components/HomePage/AboutSpecify.tsx:57
+#. Used in: Components > Home Page > About Specify
+msgid "downloadInformation"
+msgstr "Скачать информацию"
+
+#: components/HomePage/TaxonTiles.tsx:55
+#: components/UserPreferences/Renderers.tsx:193
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > User Preferences > Renderers
+msgid "taxonTiles"
+msgstr "Плитки таксонов"
+
+#: components/HomePage/TaxonTiles.tsx:51
+#. Used in: Components > Home Page > Taxon Tiles
+msgid "taxonTilesDescription"
+msgstr ""
+"Показаны таксоны с {count:number|formatted} или более коллекционными "
+"объектами"
+
+#: components/HomePage/AboutSpecify.tsx:76
+#. Used in: Components > Home Page > About Specify
+msgid "fullAddress"
+msgstr ""
+"Specify Collections Consortium <br />\n"
+"Biodiversity Institute <br />\n"
+"University of Kansas <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 USA"
+
+#: components/HomePage/AboutSpecify.tsx:91
+#. Used in: Components > Home Page > About Specify
+msgid "disclosure"
+msgstr ""
+"Specify software является продуктом консорциума Specify Collections. "
+"который управляется и финансируется организациями-членами. Члены-учредители "
+"консорциума включают: Commonwealth Scientific and Industrial Research "
+"Organisation (CSIRO), University of Michigan, University of Florida, "
+"Denmark Consortium of Museums и University of Kansas. Консорциум действует "
+"под некоммерческой организацией, 501(c)3, налоговым статусом США "
+"университета University of Kansas. Specify поддерживался с 1996 по 2018 год "
+"грантами фонда U.S. National Science Foundation."
+
+#: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
+msgid "licence"
+msgstr ""
+"Specify 7, Авторские права 2023, University of Kansas для исследования. "
+"Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное "
+"программное обеспечение с открытым исходным кодом под лицензией GNU General "
+"Public License v2."
+
+#: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
+msgid "systemInformation"
+msgstr "Системная информация"
+
+#: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
+msgid "specifyVersion"
+msgstr "Specify 7 Версия:"
+
+#: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
+msgid "gitSha"
+msgstr "Git SHA:"
+
+#: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
+msgid "buildDate"
+msgstr "Дата сборки:"
+
+#: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
+msgid "specifySixVersion"
+msgstr "Specify 6 Версия:"
+
+#: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
+msgid "databaseVersion"
+msgstr "Версия базы данных:"
+
+#: components/HomePage/AboutSpecify.tsx:108
+#: components/Toolbar/Schema.tsx:346
+#. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Schema
+msgid "schemaVersion"
+msgstr "Версия схемы базы данных:"
+
+#: components/HomePage/AboutSpecify.tsx:113
+#. Used in: Components > Home Page > About Specify
+msgid "databaseName"
+msgstr "Имя базы данных:"
+
+#: components/HomePage/AboutSpecify.tsx:135
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+msgid "isaNumber"
+msgstr "Номер ISA:"
+
+#: components/HomePage/AboutSpecify.tsx:138
+#. Used in: Components > Home Page > About Specify
+msgid "browser"
+msgstr "Браузер:"
+
+#: components/HomePage/AboutSpecify.tsx:117
+#. Used in: Components > Home Page > About Specify
+msgid "databaseCreationDate"
+msgstr "Дата создания базы данных:"

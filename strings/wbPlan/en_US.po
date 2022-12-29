@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/UserPreferences/Definitions.tsx:1450
+#: components/UserPreferences/Definitions.tsx:1451
 #: components/WorkBench/Template.tsx:118
 #: components/WorkBench/wbView.js:1861
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
@@ -348,12 +348,12 @@ msgstr "New Column {index:number}"
 msgid "noHeader"
 msgstr "(no header)"
 
-#: components/Toolbar/WbsDialog.tsx:194
+#: components/Toolbar/WbsDialog.tsx:195
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "copyPlan"
 msgstr "Copy plan from existing Data Set"
 
-#: components/Toolbar/WbsDialog.tsx:206
+#: components/Toolbar/WbsDialog.tsx:207
 #. Used in: Components > Toolbar > Wbs Dialog
 msgid "noPlansToCopyFrom"
 msgstr "There are no plans available, please continue to create an upload plan."
