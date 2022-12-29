@@ -86,8 +86,8 @@ export const commonText = createDictionary({
     'ru-ru': 'Инструменты',
   },
   loading: {
-    'en-us': 'Loading...',
-    'ru-ru': 'Загрузка...',
+    'en-us': 'Loading…',
+    'ru-ru': 'Загрузка…',
   },
   uploaded: {
     'en-us': 'Uploaded',
