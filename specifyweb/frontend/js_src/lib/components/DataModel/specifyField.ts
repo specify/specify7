@@ -113,7 +113,7 @@ abstract class FieldBase {
   // User friendly name of the field from the schema config.
   public readonly label: string;
 
-  public constructor(
+  protected constructor(
     model: SpecifyModel,
     fieldDefinition: Omit<FieldDefinition, 'type'> & {
       readonly type: JavaType | RelationshipType;

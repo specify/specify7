@@ -89,8 +89,6 @@ type Actions =
       }
     >
   | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
-  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
-  | Action<'FocusLineAction', { readonly line: number }>
   | Action<'FocusLineAction', { readonly line: number }>
   | Action<'LineMoveAction', { line: number; direction: 'up' | 'down' }>
   | Action<
@@ -98,7 +96,6 @@ type Actions =
       { readonly line: number; readonly direction: 'down' | 'up' }
     >
   | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>
-  | Action<'RunQueryAction'>
   | Action<'RunQueryAction'>
   | Action<'SavedQueryAction'>;
 
