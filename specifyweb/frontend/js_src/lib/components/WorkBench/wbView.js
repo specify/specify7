@@ -2283,13 +2283,15 @@ export const WBView = Backbone.View.extend({
     // Ignore these statuses
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
-      statusData.failures.forEach(([issueMessage, payload, column]) =>
+      statusData.failures.forEach((line) => {
+        const [issueMessage, payload, column] = line.length === 2 ? [line[0], {}, line[1]] : line;
         setMetaCallback(
           'issues',
           resolveValidationMessage(issueMessage,payload ?? {}),
           [column],
           resolveColumns
         )
+        }
       );
     else if (uploadStatus === 'NoMatch')
       setMetaCallback(
