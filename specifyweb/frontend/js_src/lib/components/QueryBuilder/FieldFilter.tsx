@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
@@ -17,18 +18,19 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import type { IR, RA, RR } from '../../utils/types';
+import { reParse } from '../../utils/relativeDate';
+import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
 import { Input, Select, selectMultipleSize } from '../Atoms/Form';
 import { schema } from '../DataModel/schema';
 import type { PickListItemSimple } from '../FormFields/ComboBox';
 import { hasNativeErrors } from '../Forms/validationHelpers';
+import { AutoComplete } from '../Molecules/AutoComplete';
 import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
-import { reParse } from '../../utils/relativeDate';
-import { Button } from '../Atoms/Button';
-import { useBooleanState } from '../../hooks/useBooleanState';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -182,9 +184,15 @@ function DateSplit({
 
 function DateQueryInputField({
   currentValue,
+  label,
+  parser,
   onChange: handleChange,
+  fieldName,
 }: {
   readonly currentValue: string;
+  readonly label?: string;
+  readonly parser: Parser;
+  readonly fieldName: string;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const parsed = React.useMemo(() => {
@@ -200,9 +208,39 @@ function DateQueryInputField({
     }
     return undefined;
   }, [currentValue]);
-  return parsed !== undefined ? (
-    <DateSplit onChange={handleChange} parsed={parsed} />
-  ) : null;
+
+  const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
+    parsed === undefined
+  );
+
+  return (
+    <div className="flex items-center">
+      <Button.Icon
+        icon="selector"
+        title="switch"
+        onClick={() => {
+          {
+            toggleAbsolute();
+            if (isAbsolute) {
+              handleChange?.('today + 3 day');
+            }
+          }
+        }}
+      />
+      {isAbsolute ? (
+        <QueryInputField
+          currentValue={currentValue}
+          fieldName={fieldName}
+          label={label}
+          parser={parser}
+          pickListItems={undefined}
+          onChange={handleChange}
+        />
+      ) : parsed !== undefined ? (
+        <DateSplit parsed={parsed} onChange={handleChange} />
+      ) : undefined}
+    </div>
+  );
 }
 
 function QueryInputField({
@@ -350,10 +388,10 @@ function QueryInputField({
       <Input.Generic
         {...commonProps}
         {...validationAttributes}
+        className={`!absolute inset-0 ${commonProps.className}`}
         type={listInput ? 'text' : validationAttributes.type}
         // This is the actual input that is visible to user
         value={value}
-        className={`!absolute inset-0 ${commonProps.className}`}
       />
     </span>
   );
@@ -373,6 +411,7 @@ function SingleField({
   pickListItems,
   fieldName,
   label = commonText('searchQuery'),
+  terminatingField,
   onChange: handleChange,
 }: {
   readonly filter: QueryField['filters'][number];
@@ -380,6 +419,7 @@ function SingleField({
   readonly pickListItems: RA<PickListItemSimple> | undefined;
   readonly label?: string;
   readonly fieldName: string;
+  readonly terminatingField: LiteralField | Relationship | undefined;
   readonly onChange: ((newValue: string) => void) | undefined;
   /*
    * This prop is not used here, but defined here because of "typeof SingleField"
@@ -388,93 +428,87 @@ function SingleField({
 
   readonly enforceLengthLimit: boolean;
 }): JSX.Element {
-  const additionalInput = additionalInputGenerator(
-    parser,
-    fieldName,
-    filter,
-    handleChange
-  );
-  const [isDefault, setIsDefault, setIsCustom, toggleIsDefault] =
-    useBooleanState(true);
-
+  if (parser.type === 'date') {
+    return (
+      <DateQueryInputField
+        currentValue={filter.startValue}
+        fieldName={fieldName}
+        label={label}
+        parser={parser}
+        onChange={handleChange}
+      />
+    );
+  }
+  if (
+    terminatingField?.isRelationship === false &&
+    terminatingField.name === 'name' &&
+    terminatingField.model.name === 'SpecifyUser'
+  ) {
+    return (
+      <SpecifyUserAutoComplete
+        startValue={filter.startValue}
+        onChange={handleChange}
+      />
+    );
+  }
   return (
-    <div className="flex items-center">
-      {additionalInput !== undefined ? (
-        <>
-          <Button.Icon
-            title="switch"
-            icon="selector"
-            onClick={() => {
-              if (additionalInput.component !== undefined) {
-                toggleIsDefault();
-                handleChange?.(
-                  additionalInput.onSwitch(filter.startValue, isDefault)
-                );
-              }
-            }}
-          />
-          {!isDefault && additionalInput.component}
-        </>
-      ) : undefined}
-      {isDefault && (
-        <QueryInputField
-          currentValue={filter.startValue}
-          fieldName={fieldName}
-          label={label}
-          parser={parser}
-          pickListItems={pickListItems}
-          onChange={handleChange}
-        />
-      )}
-    </div>
+    <QueryInputField
+      currentValue={filter.startValue}
+      fieldName={fieldName}
+      label={label}
+      parser={parser}
+      pickListItems={pickListItems}
+      onChange={handleChange}
+    />
   );
 }
 
-function additionalInputGenerator(
-  parser: Parser,
-  fieldName: string,
-  filter: QueryField['filters'][number],
-  handleChange: ((newValue: string) => void) | undefined
-):
-  | {
-      readonly onSwitch: (oldValue: string, mode: boolean) => string;
-      readonly component: JSX.Element | null;
-    }
-  | undefined {
-  if (parser.type === 'date') {
-    return {
-      onSwitch: (oldValue, mode: boolean) =>
-        mode ? 'today + 3 day' : '2022-12-27',
-      component: (
-        <DateQueryInputField
-          currentValue={filter.startValue}
-          onChange={handleChange}
-        />
-      ),
-    };
-  }
-  if (fieldName.endsWith('specifyUser.name')) {
-    return {
-      onSwitch: (oldValue, mode) => (mode ? 'specifyUserName' : ''),
-      component: (
-        <PickListSimple
-          pickListItems={[
-            {
-              value: 'specifyUserName',
-              title: 'Specify User Name',
-            },
-          ]}
-          value={'specifyUserName'}
-          onBlur={({ target }) => {
-            const newValue = extractValuesSimple<string>(target);
-            handleChange?.(newValue);
-          }}
-          onChange={({ target }) => {}}
-        ></PickListSimple>
-      ),
-    };
-  }
-  return undefined;
+function SpecifyUserAutoComplete({
+  startValue,
+  onChange: handleChange,
+}: {
+  readonly startValue: string;
+  readonly onChange: ((newValue: string) => void) | undefined;
+}): JSX.Element {
+  const valueRef = React.useRef<string>(startValue);
+  const items = [
+    {
+      label: 'Current Specify User Name',
+      searchValue: 'Current Specify User Name',
+      data: 'currentSpecifyUserName',
+    },
+  ];
+  const label =
+    items.find((item) => item.data === startValue)?.label ?? startValue;
+  return (
+    <div className="flex items-center">
+      <AutoComplete<string>
+        aria-label={undefined}
+        delay={0}
+        filterItems
+        inputProps={{
+          onBlur: () => {
+            const data =
+              items.find(
+                (item) =>
+                  item.label === valueRef.current ||
+                  item.searchValue === valueRef.current
+              )?.data ?? valueRef.current;
+            handleChange?.(data);
+          },
+        }}
+        minLength={0}
+        pendingValueRef={valueRef}
+        onChange={({ data }): void => handleChange?.(data)}
+        onNewValue={(data) => {
+          handleChange?.(data);
+        }}
+        source={items}
+        // OnCleared={}
+        value={label}
+      />
+    </div>
+  );
 }
 
 function Between({
@@ -733,12 +767,14 @@ export const queryFieldFilters: RR<
 export function QueryLineFilter({
   filter,
   fieldName,
+  terminatingField,
   parser: originalParser,
   enforceLengthLimit,
   onChange: handleChange,
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
+  readonly terminatingField: LiteralField | Relationship | undefined;
   readonly parser: Parser;
   readonly enforceLengthLimit: boolean;
   readonly onChange: ((newValue: string) => void) | undefined;
@@ -799,6 +835,7 @@ export function QueryLineFilter({
               : pickListItems
             : undefined
         }
+        terminatingField={terminatingField}
         onChange={handleChange}
       />
     </>
