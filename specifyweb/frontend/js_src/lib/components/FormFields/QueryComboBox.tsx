@@ -21,7 +21,6 @@ import {
   resourceOn,
 } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
-import { LiteralField } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode, FormType } from '../FormParse';
 import { format, getMainTableFields } from '../Forms/dataObjFormatters';
@@ -60,14 +59,14 @@ export function QueryComboBox({
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema>;
-  readonly field: LiteralField | Relationship;
+  readonly field: Relationship;
   readonly mode: FormMode;
   readonly formType: FormType;
   readonly isRequired: boolean;
   readonly hasCloneButton?: boolean;
   readonly typeSearch: Element | string | undefined;
   readonly forceCollection: number | undefined;
-  readonly relatedModel: SpecifyModel | undefined;
+  readonly relatedModel?: SpecifyModel | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     if (!resource.isNew()) return;
@@ -142,7 +141,6 @@ export function QueryComboBox({
   }>(
     React.useCallback(
       async () =>
-        !field.isRelationship ||
         hasTablePermission(field.relatedModel.name, 'read') ||
         /*
          * If related resource is already provided, can display it
@@ -170,11 +168,7 @@ export function QueryComboBox({
                     ).then((formatted) => ({
                       label:
                         formatted ??
-                        `${
-                          field.isRelationship
-                            ? field.relatedModel.label
-                            : resource.specifyModel.label
-                        }${
+                        `${field.relatedModel.label}${
                           typeof resource.id === 'number'
                             ? ` #${resource.id}`
                             : ''
@@ -265,9 +259,7 @@ export function QueryComboBox({
                 makeComboBoxQuery({
                   fieldName: fields.map(({ name }) => name).join('.'),
                   value,
-                  isTreeTable:
-                    field.isRelationship &&
-                    isTreeModel(field.relatedModel.name),
+                  isTreeTable: isTreeModel(field.relatedModel.name),
                   typeSearch,
                   specialConditions: getQueryComboBoxConditions({
                     resource,
@@ -317,12 +309,7 @@ export function QueryComboBox({
             responses
               .flatMap(({ data: { results } }) => results)
               .map(([id, label]) => ({
-                data: getResourceApiUrl(
-                  field.isRelationship
-                    ? field.relatedModel.name
-                    : resource.specifyModel.name,
-                  id
-                ),
+                data: getResourceApiUrl(field.relatedModel.name, id),
                 label,
               }))
           )
@@ -341,7 +328,6 @@ export function QueryComboBox({
   );
 
   const canAdd =
-    field?.isRelationship === true &&
     !RESTRICT_ADDING.has(field.relatedModel.name) &&
     hasTablePermission(field.relatedModel.name, 'create');
 
@@ -421,7 +407,6 @@ export function QueryComboBox({
             {canAdd ? (
               <DataEntry.Add
                 aria-pressed={state.type === 'AddResourceState'}
-                disabled={field?.isRelationship !== true}
                 onClick={(): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })

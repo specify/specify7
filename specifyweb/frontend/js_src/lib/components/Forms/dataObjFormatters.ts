@@ -203,11 +203,13 @@ async function formatField(
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
   const fields = resource.specifyModel.getFields(fieldName);
-  const field = fields.at(-1);
-  if (field === undefined)
+  if (fields === undefined)
     throw new Error(`Tried to get unknown field: ${fieldName}`);
-  else if (field.isRelationship)
-    throw new Error(`Unexpected formatting of a relationsh field ${fieldName}`);
+  const field = fields.at(-1)!;
+  if (field.isRelationship)
+    throw new Error(
+      `Unexpected formatting of a relationship field ${fieldName}`
+    );
 
   const hasPermission = hasPathPermission(
     resource.specifyModel,

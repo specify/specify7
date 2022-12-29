@@ -6,6 +6,7 @@ import type { SortConfigs } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { icons } from '../Atoms/Icons';
+import { SubViewSortField } from '../FormParse/cells';
 
 export type SortConfig<FIELD_NAMES extends string> = {
   readonly sortField: FIELD_NAMES;
@@ -30,9 +31,9 @@ export function SortIndicator<FIELD_NAMES extends string>({
         </span>
       )}
       {isSorted
-        ? (sortConfig.ascending
+        ? sortConfig.ascending
           ? icons.chevronUp
-          : icons.chevronDown)
+          : icons.chevronDown
         : undefined}
     </span>
   );
@@ -79,3 +80,16 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
   );
   return [sortConfig, handleClick, applySortConfig];
 }
+
+export const toSmallSortConfig = (sortConfig: SubViewSortField): string =>
+  `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join(
+    '.'
+  )}`;
+
+export const toLargeSortConfig = (sortConfig: string): SubViewSortField => ({
+  fieldNames: (sortConfig.startsWith('-')
+    ? sortConfig.slice(1)
+    : sortConfig
+  ).split('.'),
+  direction: sortConfig.startsWith('-') ? 'desc' : 'asc',
+});

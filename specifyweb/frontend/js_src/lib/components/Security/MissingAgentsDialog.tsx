@@ -140,13 +140,12 @@ export function MissingAgentsDialog({
             <Label.Block key={division.id}>
               {division.name}
               <QueryComboBox
-                fieldName="agent"
+                field={schema.models.Address.strictGetRelationship('agent')}
                 forceCollection={collections[0]}
                 formType="form"
                 id={undefined}
                 isRequired={isRequired}
                 mode={mode}
-                relatedModel={schema.models.Agent}
                 /*
                  * Since Agents are scoped to Division, scoping the query to any
                  * collection in that division would scope results to

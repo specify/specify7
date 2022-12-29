@@ -27,6 +27,7 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 import { hasPathPermission } from '../Permissions/helpers';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -202,11 +203,9 @@ const processCellType: {
     const hasAccess = !hasPathPermission(model, fields, 'read');
     if (!hasAccess) return { type: 'Blank' };
 
-    const rawSortField = getProperty('sortField') ?? '';
-    const sortFields = model.getFields(
-      rawSortField.startsWith('-') ? rawSortField.slice(1) : rawSortField
-    );
-    const isDescSort = rawSortField?.startsWith('-') ?? false;
+    const rawSortField = getProperty('sortField');
+    const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
+    const sortFields = model.getFields(parsedSort?.fieldNames.join('.') ?? '');
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     return {
       type: 'SubView',
@@ -219,7 +218,7 @@ const processCellType: {
         sortFields === undefined
           ? undefined
           : {
-              direction: isDescSort ? 'desc' : 'asc',
+              direction: parsedSort?.direction ?? 'asc',
               fieldNames: sortFields.map(({ name }) => name),
             },
     };

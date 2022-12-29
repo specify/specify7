@@ -21,6 +21,7 @@ import type { Collection } from '../DataModel/types';
 import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePref } from '../UserPreferences/usePref';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
@@ -64,19 +65,19 @@ function Wrapped({
   );
 
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const sortedCollections = React.useMemo(
-    () =>
-      Array.from(availableCollections).sort(
-        sortFunction(
-          (collection) => collection[toLowerCase(sortField)],
-          isReverseSort
-        )
-      ),
-    [availableCollections, isReverseSort, sortField]
-  );
+  const sortedCollections = React.useMemo(() => {
+    const { fieldNames, direction } = toLargeSortConfig(sortOrder);
+    return Array.from(availableCollections).sort(
+      sortFunction(
+        // FEATURE: support sorting by related model
+        (collection) =>
+          collection[
+            toLowerCase(fieldNames.join('.') as keyof Collection['fields'])
+          ],
+        direction === 'desc'
+      )
+    );
+  }, [availableCollections, sortOrder]);
 
   const [selectedCollection, setSelectedCollection] = React.useState<
     number | undefined

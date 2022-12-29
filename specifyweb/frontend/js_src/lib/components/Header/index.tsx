@@ -25,6 +25,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { toLargeSortConfig } from '../Molecules/Sorting';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -134,23 +135,21 @@ export function CollectionSelector(): JSX.Element {
   );
 
   const [sortOrder] = usePref('chooseCollection', 'general', 'sortOrder');
-  const isReverseSort = sortOrder.startsWith('-');
-  const sortField = (isReverseSort ? sortOrder.slice(1) : sortOrder) as string &
-    keyof Collection['fields'];
-  const sortedCollections = React.useMemo(
-    () =>
-      typeof collections === 'object'
-        ? Array.from(collections.available)
-            .sort(
-              sortFunction(
-                (collection) => collection[toLowerCase(sortField)],
-                isReverseSort
-              )
-            )
-            .map(serializeResource)
-        : undefined,
-    [collections, isReverseSort, sortField]
-  );
+  const sortedCollections = React.useMemo(() => {
+    if (collections === undefined) return undefined;
+    const { direction, fieldNames } = toLargeSortConfig(sortOrder);
+    return Array.from(collections.available)
+      .sort(
+        sortFunction(
+          (collection) =>
+            collection[
+              toLowerCase(fieldNames.join('.') as keyof Collection['fields'])
+            ],
+          direction === 'desc'
+        )
+      )
+      .map(serializeResource);
+  }, [collections, sortOrder]);
 
   const navigate = useNavigate();
   return (

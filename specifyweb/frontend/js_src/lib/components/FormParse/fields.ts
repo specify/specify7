@@ -195,6 +195,9 @@ const processFieldType: {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
       return { type: 'Blank' };
+    } else if (fields.at(-1)?.isRelationship !== true) {
+      console.error('QueryComboBox can only be used to display a relationship');
+      return { type: 'Blank' };
     } else
       return {
         type: 'QueryComboBox',

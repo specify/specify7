@@ -17,6 +17,13 @@ import { userInformation } from '../InitialContext/userInformation';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { FormTableCollection } from './FormTableCollection';
+import { SubViewSortField } from '../FormParse/cells';
+import { toSmallSortConfig } from '../Molecules/Sorting';
+
+const defaultOrder: SubViewSortField = {
+  fieldNames: ['timestampCreated'],
+  direction: 'desc',
+};
 
 export function FormTableInteraction(
   props: Omit<
@@ -63,8 +70,9 @@ export function FormTableInteraction(
               type: 0,
               dbTableId: schema.models.CollectionObject.tableId,
               domainFilter: true,
-              orderBy:
-                (props.sortField as '-timestampCreated') ?? '-timestampCreated',
+              orderBy: toSmallSortConfig(
+                props.sortField ?? defaultOrder
+              ) as 'name',
               limit: 5000,
             })
           )

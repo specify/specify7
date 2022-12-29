@@ -7,6 +7,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
 import { OrderPicker } from '../UserPreferences/Renderers';
+import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
 
 export function SubViewMeta({
   subView,
@@ -40,20 +41,10 @@ export function SubViewMeta({
         <OrderPicker
           model={model}
           order={
-            sortField === undefined
-              ? undefined
-              : `${
-                  sortField.direction === 'desc' ? '-' : ''
-                }${sortField.fieldNames.join('.')}`
+            sortField === undefined ? undefined : toSmallSortConfig(sortField)
           }
           onChange={(sortField): void =>
-            handleChangeSortField({
-              fieldNames: (sortField.startsWith('-')
-                ? sortField.slice(1)
-                : sortField
-              ).split('.'),
-              direction: sortField.startsWith('-') ? 'desc' : 'asc',
-            })
+            handleChangeSortField(toLargeSortConfig(sortField))
           }
         />
       </Label.Block>

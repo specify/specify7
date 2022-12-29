@@ -53,7 +53,9 @@ export function HostTaxon({
     <Input.Text isReadOnly />
   ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
-      fieldName="hostTaxon"
+      field={schema.models.CollectingEventAttribute.strictGetRelationship(
+        'hostTaxon'
+      )}
       forceCollection={rightSideCollection}
       formType={formType}
       id={id}

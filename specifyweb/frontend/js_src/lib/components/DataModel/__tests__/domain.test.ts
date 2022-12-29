@@ -23,7 +23,6 @@ describe('getCollectionForResource', () => {
      * Prevent Collection object from being associated with current collection
      * automatically
      */
-    // @ts-expect-error Unsetting a required field
     collectionObject.set('collection', null);
     expect(getCollectionForResource(collectionObject)).toBeUndefined();
   });
