@@ -75,11 +75,16 @@ export function Router(): JSX.Element {
   return (
     <>
       <UnloadProtect background={background} />
-      {isNotFound ? <NotFoundView /> : undefined}
-      {typeof overlay === 'object' && (
-        <Overlay background={background} overlay={overlay} />
+      {isNotFound ? (
+        <NotFoundView />
+      ) : (
+        <>
+          {typeof overlay === 'object' && (
+            <Overlay background={background} overlay={overlay} />
+          )}
+          {main}
+        </>
       )}
-      {main}
     </>
   );
 }
