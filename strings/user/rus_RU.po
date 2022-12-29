@@ -24,13 +24,13 @@ msgid "password"
 msgstr "Пароль"
 
 #: components/FormFields/QueryComboBox.tsx:543
-#: components/FormPlugins/CollectionRelOneToMany.tsx:177
+#: components/FormPlugins/CollectionRelOneToMany.tsx:182
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDenied"
 msgstr "У вас нет доступа к этой коллекции"
 
 #: components/FormFields/QueryComboBox.tsx:546
-#: components/FormPlugins/CollectionRelOneToMany.tsx:180
+#: components/FormPlugins/CollectionRelOneToMany.tsx:185
 #. Used in: Components > Form Fields > Query Combo Box ⬤ Components > Form Plugins > Collection Rel One To Many
 msgid "collectionAccessDeniedDescription"
 msgstr ""

@@ -59,8 +59,9 @@ msgstr ""
 #. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
-"If this issue persists, please contact your IT support or if this is a "
-"Specify Cloud database, contact <email />"
+"If this issue persists, please contact your IT support. If this is a "
+"Specify Cloud database, please download the error message and send it to "
+"<email />."
 
 #: components/Errors/ErrorDialog.tsx:36
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog

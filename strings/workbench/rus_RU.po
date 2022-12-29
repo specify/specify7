@@ -239,115 +239,115 @@ msgstr "Сохранение..."
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
 
-#: components/WorkBench/wbView.js:2297
+#: components/WorkBench/wbView.js:2299
 #. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr "Нет соответствующей записи для таблицы обязательного соответствия."
 
-#: components/WorkBench/wbView.js:2321
+#: components/WorkBench/wbView.js:2323
 #. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Это значение соответствует двум или более существующим записям базы данных "
 "и совпадению"
 
-#: components/WorkBench/wbView.js:2526
+#: components/WorkBench/wbView.js:2528
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrors"
 msgstr "Проверка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2528
+#: components/WorkBench/wbView.js:2530
 #. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу "
 "данных."
 
-#: components/WorkBench/wbView.js:2531
-#: components/WorkBench/wbView.js:2540
+#: components/WorkBench/wbView.js:2533
+#: components/WorkBench/wbView.js:2542
 #. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
 "Примечание: Если этот набор данных отредактирован и повторно сохранен, "
 "начать проверку снова, чтобы убедиться, что ошибок не было введено."
 
-#: components/WorkBench/wbView.js:2535
+#: components/WorkBench/wbView.js:2537
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
 msgstr "Проверка завершена с ошибками"
 
-#: components/WorkBench/wbView.js:2537
+#: components/WorkBench/wbView.js:2539
 #. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
 msgstr "Проверка обнаружила ошибки в наборе данных."
 
-#: components/WorkBench/wbView.js:2546
+#: components/WorkBench/wbView.js:2548
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessful"
 msgstr "Загрузка завершена без ошибок"
 
-#: components/WorkBench/wbView.js:2547
+#: components/WorkBench/wbView.js:2549
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
 "Нажмите кнопку «Результаты», чтобы увидеть количество новых записей "
 "добавлен в каждую таблицу базы данных"
 
-#: components/WorkBench/wbView.js:2550
+#: components/WorkBench/wbView.js:2552
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrors"
 msgstr "Ошибка загрузки из-за ошибок"
 
-#: components/WorkBench/wbView.js:2552
+#: components/WorkBench/wbView.js:2554
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
 
-#: components/WorkBench/wbView.js:2555
+#: components/WorkBench/wbView.js:2557
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Проверте набор данных и наведите указатель мыши на каждую ячейку с ошибкой, "
 "затем сделайте соответствующие исправления, сохраните и повторите попытку."
 
-#: components/WorkBench/wbView.js:2559
+#: components/WorkBench/wbView.js:2561
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollback"
 msgstr "Набор данных был успешно откат"
 
-#: components/WorkBench/wbView.js:2560
+#: components/WorkBench/wbView.js:2562
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
 "Этот набор данных отката сохранянен, и его можно редактировать или повторно "
 "загружать."
 
-#: components/WorkBench/wbView.js:2580
+#: components/WorkBench/wbView.js:2582
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
 msgstr "Проверка отменена"
 
-#: components/WorkBench/wbView.js:2586
+#: components/WorkBench/wbView.js:2588
 #. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
 msgstr "Проверка набора данных отменена."
 
-#: components/WorkBench/wbView.js:2582
+#: components/WorkBench/wbView.js:2584
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
 msgstr "Откат отменен"
 
-#: components/WorkBench/wbView.js:2588
+#: components/WorkBench/wbView.js:2590
 #. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
 msgstr "Откат набора данных отменен."
 
-#: components/WorkBench/wbView.js:2583
+#: components/WorkBench/wbView.js:2585
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceled"
 msgstr "Загрузка отменена"
 
-#: components/WorkBench/wbView.js:2589
+#: components/WorkBench/wbView.js:2591
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
 msgstr "Загрузка набора данных отменена."
@@ -368,7 +368,7 @@ msgid "emptyStringInline"
 msgstr "(пуста строка)"
 
 #: components/WorkBench/Template.tsx:133
-#: components/WorkBench/wbView.js:2421
+#: components/WorkBench/wbView.js:2423
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
 msgstr "The data set must be validated or uploaded"
@@ -380,12 +380,12 @@ msgstr ""
 "План загрузки должен быть определен до того, как этот набор данных может "
 "быть проверен"
 
-#: components/WorkBench/wbView.js:2416
+#: components/WorkBench/wbView.js:2418
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
 msgstr "Это действие требует сохранения всех изменений"
 
-#: components/WorkBench/wbView.js:2504
+#: components/WorkBench/wbView.js:2506
 #. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr "Загрузка недоступна, в то время как в некоторых ячейках есть ошибки проверки"
@@ -412,7 +412,7 @@ msgstr "Этот инструмент требует, чтобы столбцы 
 msgid "unavailableWhenUploaded"
 msgstr "Этот инструмент не работает с загруженными наборами данных"
 
-#: components/WorkBench/wbView.js:2427
+#: components/WorkBench/wbView.js:2429
 #. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedOrNotFound"
 msgstr "Набор данных был удален другим сеансом."
