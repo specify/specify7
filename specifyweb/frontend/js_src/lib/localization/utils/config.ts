@@ -10,20 +10,17 @@ import { setDevelopmentGlobal } from '../../utils/types';
  */
 export const languageCodeMapper = {
   'en-us': 'en_US',
-  'ru-ru': 'rus_RU',
-  // FIXME: uncomment
-  // 'uk-ua': 'ukr_UA',
+  'ru-ru': 'ru',
+  'uk-ua': 'uk',
+  'fr-fr': 'fr',
+  'es-es': 'es',
 } as const;
 
 export const languages = Object.keys(languageCodeMapper);
 
 /** This allows to hide unfinished localizations in production */
 export const disabledLanguages = new Set(
-  process.env.NODE_ENV === 'development'
-    ? []
-    : [
-        // Example: 'uk-ua'
-      ]
+  process.env.NODE_ENV === 'development' ? [] : ['uk-ua', 'fr-fr', 'es-es']
 );
 
 /**

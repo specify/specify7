@@ -30,7 +30,7 @@ jobs:
         run: |
           changed_files=`echo "${{steps.filter.outputs.backend_files}}" | tr " " "\n" | grep -v 'specifyweb/frontend/' || echo ""`
           echo "Changed back-end files: ${changed_files}"
-          echo "changed=$([[ -z "$changed_files" ]] && echo "1" || echo "")" >> $GITHUB_OUTPUT
+          echo "changed=$([[ -z "${changed_files}" ]] && echo "0" || echo "1")" >> $GITHUB_OUTPUT
 
   test-back-end:
     name: Run back-end tests

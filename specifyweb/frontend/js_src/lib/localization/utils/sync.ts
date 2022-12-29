@@ -7,6 +7,7 @@ import { camelToHuman } from '../../utils/utils';
 import { whitespaceSensitive } from './index';
 import type { DictionaryUsages } from './scanUsages';
 import { languageCodeMapper, languages } from './config';
+import { LocalizedString } from 'typesafe-i18n';
 
 function formatFilePath(filePath: string): string {
   const parts = filePath.split('/');
@@ -22,7 +23,7 @@ function formatFilePath(filePath: string): string {
 
 function formatComment(rawComment: string | undefined): string | undefined {
   if (rawComment === undefined) return undefined;
-  const comment = whitespaceSensitive(rawComment);
+  const comment = whitespaceSensitive(rawComment as LocalizedString);
   // Red emoji makes comment more prominent in Weblate's sidebar
   return `🟥${comment}${comment.endsWith('.') ? '' : '.'}`;
 }
@@ -60,7 +61,10 @@ const emitPoFiles = async (
                 {
                   msgid: key,
                   msgstr: [
-                    f.maybe(strings[language], whitespaceSensitive) ?? '',
+                    f.maybe(
+                      strings[language] as LocalizedString | undefined,
+                      whitespaceSensitive
+                    ) ?? '',
                   ],
                   comments: {
                     extracted: filterArray([
