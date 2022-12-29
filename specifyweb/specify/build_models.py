@@ -91,6 +91,14 @@ SPECIAL_DELETION_RULES = {
     'Spreport.appresource': models.CASCADE,
 }
 
+""" Any additional desired delete blockers 
+Of the form 'base_table': ['field_1_name', 'field_2_name', ...]
+Use the django attributes from the 'base_table' for field names
+"""
+ADDITIONAL_DELETE_BLOCKERS = {
+    "Agent" : [ "specifyuser" ]
+}
+
 def make_relationship(modelname, rel, datamodel):
     """Return a Django relationship field for the given relationship definition.
 
@@ -115,8 +123,11 @@ def make_relationship(modelname, rel, datamodel):
         on_delete = SPECIAL_DELETION_RULES["%s.%s" % (modelname.capitalize(), rel.name.lower())]
     except KeyError:
         reverse = datamodel.reverse_relationship(rel)
+
         if reverse and reverse.dependent:
             on_delete = models.CASCADE
+        elif modelname in ADDITIONAL_DELETE_BLOCKERS.keys():
+            on_delete = protect
         else:
             on_delete = protect
 
