@@ -130,7 +130,7 @@ export const getScopedAppResources = (
         discipline: discipline.resource_uri,
       });
     return {
-      label: discipline.name ?? '',
+      label: (discipline.name as LocalizedString) ?? '',
       key: `discipline_${discipline.id}`,
       directory,
       ...mergeDirectories(directories, resources),
@@ -158,7 +158,7 @@ const getDisciplineAppResources = (
           discipline: collection.discipline,
         });
       return {
-        label: collection.collectionName ?? '',
+        label: (collection.collectionName as LocalizedString) ?? '',
         key: `collection_${collection.id}`,
         directory,
         ...mergeDirectories(directories, resources),
@@ -237,7 +237,7 @@ const getUserResources = (
         });
 
       return {
-        label: user.name,
+        label: user.name as LocalizedString,
         key: `collection_${collection.id}_user_${user.id}`,
         directory,
         ...mergeDirectories(directories, resources),

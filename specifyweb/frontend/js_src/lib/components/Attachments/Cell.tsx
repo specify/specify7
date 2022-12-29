@@ -20,6 +20,7 @@ import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
 import { deserializeResource } from '../DataModel/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AttachmentCell({
   attachment,
@@ -41,7 +42,9 @@ export function AttachmentCell({
   );
 
   const [isMetaOpen, _, handleMetaClose, handleMetaToggle] = useBooleanState();
-  const title = attachment.title || thumbnail?.alt;
+  const title = (attachment.title || thumbnail?.alt) as
+    | LocalizedString
+    | undefined;
   const loading = React.useContext(LoadingContext);
 
   const resource = React.useMemo(

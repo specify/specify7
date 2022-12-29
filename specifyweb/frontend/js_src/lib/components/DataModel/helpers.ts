@@ -15,16 +15,13 @@ import { parseResourceUrl, resourceToJson } from './resource';
 import { schema, strictGetModel } from './schema';
 import type { LiteralField, Relationship } from './specifyField';
 import type { Tables } from './types';
-import Promise = JQuery.Promise;
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource
-      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
-      : (resource as SerializedModel<SCHEMA>),
+    'toJSON' in resource ? resourceToJson(resource) : resource,
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -140,7 +137,6 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
     serializedResource._tableName
   ].Resource(removeKey(serializedResource, '_tableName'));
 
-// FIXME: add tests
 /**
  * Example usage:
  * resource: Collector
