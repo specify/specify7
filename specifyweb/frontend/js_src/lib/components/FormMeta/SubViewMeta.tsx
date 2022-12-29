@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { Label, Select } from '../Atoms/Form';
 import type { SpecifyModel } from '../DataModel/specifyModel';
@@ -8,6 +7,8 @@ import type { FormType } from '../FormParse';
 import type { SubViewContext } from '../Forms/SubView';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
+import { attachmentsText } from '../../localization/attachments';
+import { schema } from '../DataModel/schema';
 
 export function SubViewMeta({
   subView,
@@ -24,20 +25,20 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {commonText('type')}
+        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
         <Select
           value={formType}
           onValueChange={(formType): void =>
             handleChangeFormType(formType as FormType)
           }
         >
-          <option value="form">{formsText('form')}</option>
-          <option value="formTable">{formsText('formTable')}</option>
+          <option value="form">{formsText.form()}</option>
+          <option value="formTable">{formsText.formTable()}</option>
         </Select>
       </Label.Block>
       {/* BUG: this change does not apply until you add/remove subview record */}
       <Label.Block>
-        {formsText('orderBy')}
+        {attachmentsText.orderBy()}
         <OrderPicker
           model={model}
           order={

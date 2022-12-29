@@ -5,7 +5,6 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -25,6 +24,7 @@ import {
   processColRelationships,
 } from './collectionRelData';
 import { softFail } from '../Errors/Crash';
+import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -78,7 +78,7 @@ export function CollectionOneToManyPlugin({
       <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
         <thead>
           <tr>
-            <th scope="col">{formsText('collectionObject')}</th>
+            <th scope="col">{schema.models.CollectionObject.label}</th>
             <th scope="col">{schema.models.Collection.label}</th>
             <td />
           </tr>
@@ -127,7 +127,7 @@ export function CollectionOneToManyPlugin({
                     {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
                         icon="trash"
-                        title={commonText('remove')}
+                        title={commonText.remove()}
                         onClick={(): void => {
                           if (data === undefined) return;
                           resource
@@ -149,7 +149,7 @@ export function CollectionOneToManyPlugin({
             )
           ) : (
             <tr>
-              <td colSpan={2}>{commonText('loading')}</td>
+              <td colSpan={2}>{commonText.loading()}</td>
             </tr>
           )}
         </tbody>
@@ -179,14 +179,13 @@ export function CollectionOneToManyPlugin({
       ) : undefined}
       {state.type === 'DeniedAccessState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={commonText('collectionAccessDenied')}
+          buttons={commonText.close()}
+          header={userText.collectionAccessDenied()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText(
-            'collectionAccessDeniedDescription',
-            state.collectionName
-          )}
+          {userText.collectionAccessDeniedDescription({
+            collectionName: state.collectionName,
+          })}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

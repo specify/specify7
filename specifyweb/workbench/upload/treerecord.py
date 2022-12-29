@@ -2,23 +2,20 @@
 For uploading tree records.
 """
 
-from itertools import dropwhile
-
 import logging
 from typing import List, Dict, Any, Tuple, NamedTuple, Optional, Union, Set
+
+from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
-from django.db import connection, transaction, IntegrityError
-from django.utils.translation import gettext as _
-
-from specifyweb.specify import models
-from specifyweb.specify.tree_extras import parent_joins, definition_joins
 from specifyweb.businessrules.exceptions import BusinessRuleException
-
-from .uploadable import Row, FilterPack, Disambiguation as DA, ScopedUploadable, Auditor
-from .upload_result import UploadResult, NullRecord, NoMatch, Matched, MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, TreeInfo
-from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
+from specifyweb.specify import models
 from .column_options import ColumnOptions, ExtendedColumnOptions
+from .parsing import ParseResult, ParseFailure, parse_many, filter_and_upload
+from .upload_result import UploadResult, NullRecord, NoMatch, Matched, \
+    MatchedMultiple, Uploaded, ParseFailures, FailedBusinessRule, ReportInfo, \
+    TreeInfo
+from .uploadable import Row, FilterPack, Disambiguation as DA, Auditor
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +68,7 @@ class ScopedTreeRecord(NamedTuple):
             filters = {k: v for result in presults for k, v in result.filter_on.items()}
             if filters.get('name', None) is None:
                 parseFails += [
-                    ParseFailure(f'this field must be empty if "{nameColumn.column}" is empty', result.column)
+                    ParseFailure('invalidPartialRecord',{'column':nameColumn.column}, result.column)
                     for result in presults
                     if any(v is not None for v in result.filter_on.values())
                 ]
@@ -275,7 +272,7 @@ class BoundTreeRecord(NamedTuple):
                 unmatched, new_match_result = self._match(placeholders + to_upload)
                 if isinstance(new_match_result, MatchedMultiple):
                     return UploadResult(
-                        FailedBusinessRule(_("There are multiple 'Uploaded' placeholder values in the tree!"), new_match_result.info),
+                        FailedBusinessRule('invalidTreeStructure', {}, new_match_result.info),
                         {}, {}
                     )
                 return self._upload(unmatched, new_match_result)
@@ -296,7 +293,8 @@ class BoundTreeRecord(NamedTuple):
             info = ReportInfo(tableName=self.name, columns=[r.column for r in after_skipped[0].results], treeInfo=None)
             return UploadResult(
                 FailedBusinessRule(
-                    _('Missing or unmapped required tree parent rank value for %(value)s.') % {'value':repr(names)},
+                    'missingRequiredTreeParent',
+                    {'names':repr(names)},
                     info
                 ),
                 {}, {}
@@ -305,7 +303,7 @@ class BoundTreeRecord(NamedTuple):
         missing_requireds = [
             # TODO: there should probably be a different structure for
             # missing required fields than ParseFailure
-            ParseFailure(r.missing_required, r.column)
+            ParseFailure(r.missing_required, {}, r.column)
             for tdiwpr in to_upload
             for r in tdiwpr.results
             if r.missing_required is not None
@@ -334,7 +332,7 @@ class BoundTreeRecord(NamedTuple):
                         **attrs,
                     )
                 except (BusinessRuleException, IntegrityError) as e:
-                    return UploadResult(FailedBusinessRule(str(e), info), parent_result, {})
+                    return UploadResult(FailedBusinessRule(str(e), {}, info), parent_result, {})
 
             self.auditor.insert(obj, self.uploadingAgentId, None)
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})

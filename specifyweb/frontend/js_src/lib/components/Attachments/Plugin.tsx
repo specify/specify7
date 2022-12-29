@@ -28,6 +28,7 @@ import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
 import { loadingBar } from '../Molecules';
 import { AttachmentCell } from './Cell';
+import { attachmentsText } from '../../localization/attachments';
 
 export function AttachmentsPlugin({
   id,
@@ -101,14 +102,14 @@ export function AttachmentsPlugin({
   const filePickerContainer = React.useRef<HTMLDivElement | null>(null);
 
   return state === undefined ? (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   ) : state.type === 'Unavailable' ? (
-    <div>{formsText('attachmentServerUnavailable')}</div>
+    <div>{attachmentsText.attachmentServerUnavailable()}</div>
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
       {state.type === 'AddAttachment' ? (
         mode === 'view' || !hasTablePermission('Attachment', 'create') ? (
-          <p>{formsText('noData')}</p>
+          <p>{formsText.noData()}</p>
         ) : (
           <FilePicker
             acceptedFormats={undefined}
@@ -127,7 +128,7 @@ export function AttachmentsPlugin({
       ) : state.type === 'FileUpload' ? (
         <Dialog
           buttons={undefined}
-          header={formsText('attachmentUploadDialogTitle')}
+          header={attachmentsText.uploadingInline()}
           onClose={undefined}
         >
           <div aria-live="polite">

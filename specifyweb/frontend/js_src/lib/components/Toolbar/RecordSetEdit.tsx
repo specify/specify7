@@ -6,12 +6,12 @@ import { ResourceView } from '../Forms/ResourceView';
 import { formsText } from '../../localization/forms';
 import { hasToolPermission } from '../Permissions/helpers';
 import { Button } from '../Atoms/Button';
-import { commonText } from '../../localization/common';
 import { getModelById } from '../DataModel/schema';
 import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
 import { QueryListDialog, useQueries } from './Query';
 import { formatUrl } from '../Router/queryString';
+import { queryText } from '../../localization/query';
 
 export function EditRecordSet({
   recordSet,
@@ -35,17 +35,16 @@ export function EditRecordSet({
   ) : (
     <ResourceView
       // BUG: the message is stale if record set is renamed
-      deletionMessage={formsText(
-        'recordSetDeletionWarning',
-        recordSet.get('name') ?? ''
-      )}
+      deletionMessage={formsText.recordSetDeletionWarning({
+        recordSetName: recordSet.get('name') ?? '',
+      })}
       dialog="modal"
       extraButtons={
         hasToolPermission('queryBuilder', 'read') && !recordSet.isNew() ? (
           <>
             <span className="-ml-2 flex-1" />
             <Button.Blue onClick={handleOpenQuery}>
-              {commonText('query')}
+              {queryText.query()}
             </Button.Blue>
           </>
         ) : undefined

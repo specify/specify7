@@ -19,7 +19,7 @@ exports[`Container.Base renders without errors 1`] = `
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:stable] bg-[color:var(--form-foreground)]
   rounded p-4 shadow-gray-400 shadow-lg"
   >
-    Title
+    View
   </section>
 </DocumentFragment>
 `;
@@ -32,7 +32,7 @@ exports[`Container.Center renders without errors 1`] = `
   rounded p-4 shadow-gray-400 shadow-lg max-w-[min(100%,var(--form-max-width))]
     mx-auto w-full text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]"
   >
-    Title
+    View
   </section>
 </DocumentFragment>
 `;
@@ -42,7 +42,7 @@ exports[`Container.Full renders without errors 1`] = `
   <section
     class="flex flex-col gap-4 h-full p-4"
   >
-    Title
+    View
   </section>
 </DocumentFragment>
 `;
@@ -52,7 +52,7 @@ exports[`Container.FullGray renders without errors 1`] = `
   <div
     class="flex flex-col gap-4 h-full p-4 bg-[color:var(--form-background)]"
   >
-    Title
+    View
   </div>
 </DocumentFragment>
 `;
@@ -63,7 +63,7 @@ exports[`ErrorMessage renders without errors 1`] = `
     class="flex flex-col gap-2 p-2 text-white bg-red-500 rounded"
     role="alert"
   >
-    Title
+    View
   </div>
 </DocumentFragment>
 `;
@@ -73,7 +73,7 @@ exports[`H2 renders without errors 1`] = `
   <h2
     class="font-semibold text-black dark:text-white"
   >
-    Title
+    View
   </h2>
 </DocumentFragment>
 `;
@@ -83,7 +83,7 @@ exports[`H3 renders without errors 1`] = `
   <h3
     class="text-gray-500 dark:text-neutral-400"
   >
-    Title
+    View
   </h3>
 </DocumentFragment>
 `;
@@ -93,7 +93,7 @@ exports[`Key renders without errors 1`] = `
   <kbd
     class="bg-gray-200 border-1 dark:border-none dark:bg-neutral-700 rounded-sm mx-1 p-0.5"
   >
-    Title
+    View
   </kbd>
 </DocumentFragment>
 `;
@@ -104,7 +104,7 @@ exports[`Ul renders without errors 1`] = `
     class=""
     role="list"
   >
-    Title
+    View
   </ul>
 </DocumentFragment>
 `;

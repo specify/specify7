@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import { wbText } from '../../localization/workbench';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -27,6 +26,7 @@ import type { QueryField } from './helpers';
 import { QuerySaveDialog } from './Save';
 import { ButtonWithConfirmation } from '../WbPlanView/Components';
 import { recordSetView } from '../FormParse/webOnlyViews';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export function SaveQueryButtons({
   isReadOnly,
@@ -92,7 +92,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('save') : undefined
           }
         >
-          {queryText('saveQuery')}
+          {queryText.saveQuery()}
         </QueryButton>
       )}
       {isReadOnly || queryResource.isNew() ? undefined : (
@@ -103,7 +103,7 @@ export function SaveQueryButtons({
             handleTriedToSave() && isValid() ? handleSave('saveAs') : undefined
           }
         >
-          {queryText('saveAs')}
+          {queryText.saveAs()}
         </QueryButton>
       )}
     </>
@@ -125,7 +125,9 @@ export function ToggleMappingViewButton({
       onClick={handleClick}
       disabled={fields.length === 0 && showMappingView}
     >
-      {showMappingView ? wbText('hideFieldMapper') : wbText('showFieldMapper')}
+      {showMappingView
+        ? wbPlanText.hideFieldMapper()
+        : wbPlanText.showFieldMapper()}
     </Button.Small>
   );
 }
@@ -145,14 +147,12 @@ export function QueryButton({
     <ButtonWithConfirmation
       dialogButtons={(confirm): JSX.Element => (
         <>
-          <Button.Orange onClick={confirm}>
-            {commonText('remove')}
-          </Button.Orange>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.Orange onClick={confirm}>{commonText.remove()}</Button.Orange>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
         </>
       )}
-      dialogHeader={queryText('queryDeleteIncompleteDialogHeader')}
-      dialogMessage={queryText('queryDeleteIncompleteDialogText')}
+      dialogHeader={queryText.queryDeleteIncomplete()}
+      dialogMessage={queryText.queryDeleteIncompleteDescription()}
       disabled={disabled}
       showConfirmation={showConfirmation}
       onConfirm={handleClick}
@@ -212,7 +212,7 @@ export function MakeRecordSetButton({
           setRecordSet(recordSet);
         }}
       >
-        {queryText('createRecordSet')}
+        {queryText.createRecordSet()}
       </QueryButton>
       {state === 'editing' || state === 'saving' ? (
         <>
@@ -247,10 +247,10 @@ export function MakeRecordSetButton({
 export const recordSetFromQueryLoading = (
   <Dialog
     buttons={undefined}
-    header={queryText('recordSetToQueryDialogHeader')}
+    header={queryText.recordSetToQuery()}
     onClose={undefined}
   >
-    {queryText('recordSetToQueryDialogText')}
+    {queryText.recordSetToQueryDescription()}
     {loadingBar}
   </Dialog>
 );
@@ -264,8 +264,8 @@ export function RecordSetCreated({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
-      header={queryText('recordSetCreatedDialogHeader')}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      header={queryText.recordSetCreated()}
       onClose={handleClose}
     >
       <Link.Default href={`/specify/record-set/${recordSet.id}/`}>

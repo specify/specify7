@@ -27,8 +27,8 @@ export function QueryImport({
   const navigate = useNavigate();
   return typeof queries === 'object' ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={commonText('import')}
+      buttons={commonText.cancel()}
+      header={commonText.import()}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
@@ -77,7 +77,7 @@ export function QueryImport({
         />
         {/* This button is never actually clicked. */}
         <Submit.Green className="sr-only" disabled>
-          {commonText('import')}
+          {commonText.import()}
         </Submit.Green>
       </Form>
     </Dialog>

@@ -129,7 +129,7 @@ function NewQuery({
   readonly model: SpecifyModel;
 }): JSX.Element | null {
   const query = React.useMemo<SpecifyResource<SpQuery>>(
-    () => createQuery(queryText('newQueryName'), model),
+    () => createQuery(queryText.newQueryName(), model),
     [model]
   );
 

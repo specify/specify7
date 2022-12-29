@@ -44,7 +44,7 @@ export function ContextLoader(): JSX.Element | null {
     <Main />
   ) : showLoadingScreen ? (
     <SplashScreen>
-      <h2 className="text-center">{commonText('loading')}</h2>
+      <h2 className="text-center">{commonText.loading()}</h2>
     </SplashScreen>
   ) : null;
 }

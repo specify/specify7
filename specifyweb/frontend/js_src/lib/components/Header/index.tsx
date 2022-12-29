@@ -26,6 +26,7 @@ import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { headerText } from '../../localization/header';
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -55,7 +56,7 @@ export function HeaderItems({
   const [activeMenuItem] = React.useContext(MenuContext);
   return (
     <nav
-      aria-label={commonText('primary')}
+      aria-label={commonText.primary()}
       className={`
         order-2 -mt-2 flex flex-1 flex-row flex-wrap
         px-2 lg:justify-center xl:m-0
@@ -154,16 +155,16 @@ export function CollectionSelector(): JSX.Element {
   const navigate = useNavigate();
   return (
     <Select
-      aria-label={commonText('currentCollection')}
+      aria-label={headerText.currentCollection()}
       className="flex-1"
-      title={commonText('currentCollection')}
+      title={headerText.currentCollection()}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
         switchCollection(navigate, Number.parseInt(value), '/specify/')
       }
     >
       {collections === undefined && (
-        <option disabled>{commonText('loading')}</option>
+        <option disabled>{commonText.loading()}</option>
       )}
       {sortedCollections?.map(({ id, collectionName }) => (
         <option key={id} value={id}>
@@ -192,17 +193,17 @@ export function ExpressSearch(): JSX.Element {
       }}
     >
       <Input.Generic
-        aria-label={commonText('search')}
+        aria-label={commonText.search()}
         autoComplete="on"
         className="flex-1"
         /* Name is for autocomplete purposes only */
         name="searchQuery"
-        placeholder={commonText('search')}
+        placeholder={commonText.search()}
         type="search"
         value={searchQuery}
         onValueChange={setSearchQuery}
       />
-      <Submit.Blue className="sr-only">{commonText('search')}</Submit.Blue>
+      <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
     </Form>
   );
 }

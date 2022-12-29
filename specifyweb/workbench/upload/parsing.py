@@ -4,17 +4,14 @@ import math
 import re
 from datetime import datetime
 from decimal import Decimal
-
 from typing import Dict, Any, Optional, List, NamedTuple, Tuple, Union, NoReturn
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import gettext as _
 
 from specifyweb.specify import models
 from specifyweb.specify.datamodel import datamodel, Table
 from specifyweb.specify.uiformatters import FormatMismatch
 from specifyweb.stored_queries.format import MYSQL_TO_YEAR, MYSQL_TO_MONTH
-
 from .column_options import ExtendedColumnOptions
 
 Row = Dict[str, str]
@@ -29,6 +26,7 @@ class PicklistAddition(NamedTuple):
 
 class ParseFailure(NamedTuple):
     message: str
+    payload: Dict[str, Any]
     column: str
 
     def to_json(self) -> List:
@@ -104,7 +102,11 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         if result is not None:
             if isinstance(result, ParseResult) and hasattr(field, 'length') and len(result.upload[fieldname]) > field.length:
                 return ParseFailure(
-                    f"value from picklist {colopts.picklist.name} longer than the max of {field.length} for field",
+                    'pickListValueTooLong',
+                    {
+                        'pickList': colopts.picklist.name,
+                        'maxLength': field.length,
+                    },
                     colopts.column
                 )
             return result
@@ -116,7 +118,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         try:
             parsed = colopts.uiformatter.parse(value)
         except FormatMismatch as e:
-            return ParseFailure(e.args[0], colopts.column)
+            return ParseFailure(e.args[0], {}, colopts.column)
 
         if colopts.uiformatter.needs_autonumber(parsed):
             canonicalized = colopts.uiformatter.autonumber_now(collection, getattr(models, tablename.capitalize()), parsed)
@@ -124,7 +126,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
             canonicalized = colopts.uiformatter.canonicalize(parsed)
 
         if hasattr(field, 'length') and len(canonicalized) > field.length:
-            return ParseFailure(f"value must not have length greater than {field.length}", colopts.column)
+            return ParseFailure('valueTooLong',{'maxLength':field.length}, colopts.column)
 
         return filter_and_upload({fieldname: canonicalized}, colopts.column)
 
@@ -147,7 +149,7 @@ def _parse(collection, tablename: str, fieldname: str, colopts: ExtendedColumnOp
         return parse_integer(fieldname, value, colopts.column)
 
     if hasattr(field, 'length') and len(value) > field.length:
-        return ParseFailure(f"value must not have length greater than {field.length}", colopts.column)
+        return ParseFailure('valueTooLong', {'maxLength':field.length}, colopts.column)
 
     return filter_and_upload({fieldname: value}, colopts.column)
 
@@ -158,7 +160,8 @@ def parse_boolean(fieldname: str, value: str, column: str) -> Union[ParseResult,
         result = False
     else:
         return ParseFailure(
-            _("value %(value)s not resolvable to True or False") % {'value': value},
+            'failedParsingBoolean',
+            {'value': value},
             column
         )
 
@@ -169,7 +172,8 @@ def parse_decimal(fieldname: str, value: str, column) -> Union[ParseResult, Pars
         result = Decimal(value)
     except Exception as e:
         return ParseFailure(
-            _("value $(value)s is not a valid decimal value") % {'value': value},
+            'failedParsingDecimal',
+            {'value': value},
             column
         )
 
@@ -179,7 +183,7 @@ def parse_float(fieldname: str, value: str, column) -> Union[ParseResult, ParseF
     try:
         result = float(value)
     except ValueError as e:
-        return ParseFailure(str(e), column)
+        return ParseFailure(str(e), {}, column)
 
     return filter_and_upload({fieldname: result}, column)
 
@@ -187,7 +191,7 @@ def parse_integer(fieldname: str, value: str, column: str) -> Union[ParseResult,
     try:
         result = int(value)
     except ValueError as e:
-        return ParseFailure(str(e), column)
+        return ParseFailure(str(e), {}, column)
 
     return filter_and_upload({fieldname: result}, column)
 
@@ -199,9 +203,8 @@ def parse_with_picklist(collection, picklist, fieldname: str, value: str, column
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return ParseFailure(
-                    _("\"%(value)s\" is not a legal value in this picklist field.\n"
-                    "Click on the arrow to choose among available "
-                    "options.") % {'value': value},
+                    'failedParsingPickList',
+                    {'value': value},
                     column
                 )
             else:
@@ -230,12 +233,12 @@ def parse_agenttype(value: str, column: str) -> Union[ParseResult, ParseFailure]
     try:
         agenttype = agenttypes.index(value)
     except ValueError:
-        return ParseFailure(_("bad agent type: %(bad_type)s. Expected one of %(valid_types)s") % {'bad_type': value, 'valid_types': agenttypes}, column)
+        return ParseFailure('failedParsingAgentType', {'bad_type': value, 'valid_types': agenttypes}, column)
     return filter_and_upload({'agenttype': agenttype}, column)
 
 def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column: str) -> Union[ParseResult, ParseFailure]:
     if re.search('[0-9]{4}', value) is None:
-        return ParseFailure("date value must contain four digit year: {}".format(value), column)
+        return ParseFailure('invalidYear',{'value':value}, column)
 
     dateformat = dateformat.replace('%y', '%Y')
     precision_field = table.get_field(fieldname + 'precision')
@@ -243,7 +246,7 @@ def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column
         try:
             date = datetime.strptime(value, dateformat).date()
         except ValueError:
-            return ParseFailure("bad date value: {} expected: {}".format(value, dateformat), column)
+            return ParseFailure('badDateFormat', {'value':value,'format':dateformat}, column)
         return filter_and_upload({fieldname: date}, column)
 
     date_formats = [
@@ -266,7 +269,7 @@ def parse_date(table: Table, fieldname: str, dateformat: str, value: str, column
         else:
             return filter_and_upload({fieldname: date.replace(day=1, month=1), precision_field.name.lower(): 3}, column)
 
-    return ParseFailure("bad date value: {} expected: {}".format(value, dateformat), column)
+    return ParseFailure('badDateFormat', {'value':value, 'format':dateformat}, column)
 
 def parse_string(value: str) -> Optional[str]:
     result = value.strip()
@@ -282,14 +285,14 @@ def parse_latlong(field, value: str, column: str) -> Union[ParseResult, ParseFai
     parsed = parse_coord(value)
 
     if parsed is None:
-        return ParseFailure('bad latitude or longitude value: {}'.format(value), column)
+        return ParseFailure('coordinateBadFormat', {'value':value}, column)
 
     coord, unit = parsed
     if field.name.startswith('lat') and abs(coord) >= 90:
-        return ParseFailure(f'latitude absolute value must be less than 90 degrees: {value}', column)
+        return ParseFailure('latitudeOutOfRange', {'value':value}, column)
 
     if field.name.startswith('long') and abs(coord) >= 180:
-        return ParseFailure(f'longitude absolute value must be less than 180 degrees: {value}', column)
+        return ParseFailure('longitudeOutOfRange', {'value': value}, column)
 
     text_filter = {field.name.replace('itude', '') + 'text': parse_string(value)}
     return ParseResult(

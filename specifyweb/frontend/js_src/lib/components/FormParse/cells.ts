@@ -28,6 +28,7 @@ import { filterArray } from '../../utils/types';
 import { getLogContext, setLogContext } from '../Errors/interceptLogs';
 import { hasPathPermission } from '../Permissions/helpers';
 import { toLargeSortConfig } from '../Molecules/Sorting';
+import { LocalizedString } from 'typesafe-i18n';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -61,8 +62,8 @@ export type CellTypes = {
   readonly Label: State<
     'Label',
     {
-      readonly text: string | undefined;
-      readonly title: string | undefined;
+      readonly text: LocalizedString | undefined;
+      readonly title: LocalizedString | undefined;
       readonly labelForCellId: string | undefined;
       readonly fieldNames: RA<string> | undefined;
     }
@@ -70,7 +71,7 @@ export type CellTypes = {
   readonly Separator: State<
     'Separator',
     {
-      readonly label: string | undefined;
+      readonly label: LocalizedString | undefined;
       readonly icon: string | undefined;
       readonly forClass: keyof Tables | undefined;
     }
@@ -269,7 +270,7 @@ export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;
   readonly visible: boolean;
-  readonly ariaLabel: string | undefined;
+  readonly ariaLabel: LocalizedString | undefined;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {

@@ -427,7 +427,7 @@ export function AutoComplete<T>({
               disabled
               value=""
             >
-              {commonText('loading')}
+              {commonText.loading()}
             </Combobox.Option>
           )}
           {itemSource.map((item, index) => {
@@ -511,7 +511,7 @@ export function AutoComplete<T>({
                 <li className={optionClassName(active, selected)}>
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
-                    {commonText('add')}
+                    {commonText.add()}
                   </div>
                 </li>
               )}
@@ -519,7 +519,7 @@ export function AutoComplete<T>({
           )}
           {!listHasItems && (
             <div className={`${optionClassName} cursor-auto`}>
-              {formsText('nothingFound')}
+              {formsText.nothingFound()}
             </div>
           )}
         </Combobox.Options>

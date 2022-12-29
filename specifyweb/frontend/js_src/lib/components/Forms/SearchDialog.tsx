@@ -30,6 +30,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema, CommonFields } from '../DataModel/helperTypes';
 import { useViewDefinition } from './useViewDefinition';
 import { fail } from '../Errors/Crash';
+import { LocalizedString } from 'typesafe-i18n';
 
 const dialogDefinitions = load<Element>(
   formatUrl('/context/app.resource', { name: 'DialogDefs' }),
@@ -91,7 +92,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
   const [results, setResults] = React.useState<
     | RA<{
         readonly id: number;
-        readonly formatted: string;
+        readonly formatted: LocalizedString;
         readonly resource: SpecifyResource<SCHEMA>;
       }>
     | undefined
@@ -101,16 +102,16 @@ export function SearchDialog<SCHEMA extends AnySchema>({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <ProtectedAction action="execute" resource="/querybuilder/query">
             <Button.Blue onClick={(): void => setViewName(false)}>
-              {queryText('queryBuilder')}
+              {queryText.queryBuilder()}
             </Button.Blue>
           </ProtectedAction>
-          <Submit.Green form={id('form')}>{commonText('search')}</Submit.Green>
+          <Submit.Green form={id('form')}>{commonText.search()}</Submit.Green>
         </>
       }
-      header={commonText('search')}
+      header={commonText.search()}
       modal={false}
       onClose={handleClose}
     >
@@ -124,9 +125,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 filterResults(resources, extraFilters).map(
                   async (resource) => ({
                     id: resource.id,
-                    formatted: await format(resource, undefined, true).then(
-                      (formatted) => formatted!
-                    ),
+                    formatted: await format(resource, undefined, true),
                     resource,
                   })
                 )
@@ -152,9 +151,9 @@ export function SearchDialog<SCHEMA extends AnySchema>({
           `}
         >
           {isLoading ? (
-            <li>{commonText('loading')}</li>
+            <li>{commonText.loading()}</li>
           ) : results === undefined ? undefined : results.length === 0 ? (
-            <li>{commonText('noResults')}</li>
+            <li>{commonText.noResults()}</li>
           ) : (
             <>
               {results.map(({ id, formatted, resource }) => (
@@ -177,7 +176,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
               {results.length === resourceLimit && (
                 <li>
                   <span className="sr-only">
-                    {formsText('additionalResultsOmitted')}
+                    {formsText.additionalResultsOmitted()}
                   </span>
                   ...
                 </li>
@@ -244,7 +243,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
   readonly multiple: boolean;
 }): JSX.Element {
   const query = React.useMemo(
-    () => createQuery(commonText('search'), model),
+    () => createQuery(commonText.search(), model),
     [model]
   );
   const [selected, setSelected] = React.useState<RA<number>>([]);
@@ -252,7 +251,7 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Blue
             disabled={
               selected.length === 0 || (selected.length > 1 && !multiple)
@@ -261,14 +260,14 @@ function QueryBuilderSearch<SCHEMA extends AnySchema>({
               handleSelected(selected.map((id) => new model.Resource({ id })))
             }
           >
-            {commonText('select')}
+            {commonText.select()}
           </Button.Blue>
         </>
       }
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={queryText('queryBuilder')}
+      header={queryText.queryBuilder()}
       onClose={handleClose}
     >
       <QueryBuilder

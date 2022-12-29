@@ -114,7 +114,7 @@ export function RecordSetsDialog({
               <tr>
                 <th scope="col">
                   <Button.LikeLink onClick={(): void => handleSort('name')}>
-                    {commonText('recordSet')}
+                    {formsText.recordSet()}
                     <SortIndicator fieldName="name" sortConfig={sortConfig} />
                   </Button.LikeLink>
                 </th>
@@ -122,14 +122,17 @@ export function RecordSetsDialog({
                   <Button.LikeLink
                     onClick={(): void => handleSort('timestampCreated')}
                   >
-                    {commonText('created')}
+                    {
+                      schema.models.RecordSet.strictGetField('timestampCreated')
+                        .label
+                    }
                     <SortIndicator
                       fieldName="timestampCreated"
                       sortConfig={sortConfig}
                     />
                   </Button.LikeLink>
                 </th>
-                <th scope="col">{commonText('size')}</th>
+                <th scope="col">{commonText.size()}</th>
                 <td />
               </tr>
             </thead>
@@ -157,7 +160,7 @@ export function RecordSetsDialog({
               ))}
               {data.totalCount !== data.records.length && (
                 <tr>
-                  <td colSpan={3}>{commonText('listTruncated')}</td>
+                  <td colSpan={3}>{commonText.listTruncated()}</td>
                 </tr>
               )}
             </tbody>
@@ -167,18 +170,21 @@ export function RecordSetsDialog({
           <Dialog
             buttons={
               <>
-                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 {!isReadOnly && hasToolPermission('recordSets', 'create') && (
                   <Button.Blue
                     onClick={(): void => setState({ type: 'CreateState' })}
                   >
-                    {commonText('new')}
+                    {commonText.new()}
                   </Button.Blue>
                 )}
                 {buttons}
               </>
             }
-            header={formsText('recordSetsDialogTitle', data.totalCount)}
+            header={commonText.countLine({
+              resource: commonText.recordSets(),
+              count: data.totalCount,
+            })}
             icon={<span className="text-blue-500">{icons.collection}</span>}
             onClose={handleClose}
           >
@@ -253,10 +259,7 @@ function Row({
       <td>
         <DateElement date={recordSet.timestampCreated} />
       </td>
-      <td
-        className="justify-end tabular-nums"
-        title={commonText('recordCount')}
-      >
+      <td className="justify-end tabular-nums" title={commonText.recordCount()}>
         {typeof count === 'number' ? `(${formatNumber(count)})` : undefined}
       </td>
       <td>
@@ -266,7 +269,7 @@ function Row({
         {typeof handleConfigure === 'function' && (
           <Button.Icon
             icon="cog"
-            title={commonText('edit')}
+            title={commonText.edit()}
             onClick={handleConfigure}
           />
         )}

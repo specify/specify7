@@ -188,12 +188,12 @@ export function TreeRow({
                 <span className="sr-only">
                   {isFocused
                     ? isLoading
-                      ? commonText('loading')
+                      ? commonText.loading()
                       : row.children === 0
-                      ? treeText('leafNode')
+                      ? treeText.leafNode()
                       : displayChildren
-                      ? treeText('opened')
-                      : treeText('closed')
+                      ? treeText.opened()
+                      : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
@@ -212,9 +212,9 @@ export function TreeRow({
                 <span
                   title={
                     typeof row.acceptedId === 'number'
-                      ? `${treeText('acceptedName')} ${
-                          row.acceptedName ?? row.acceptedId
-                        }`
+                      ? treeText.acceptedName({
+                          name: row.acceptedName ?? row.acceptedId.toString(),
+                        })
                       : undefined
                   }
                 >
@@ -222,9 +222,9 @@ export function TreeRow({
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
-                      {`${treeText('acceptedName')} ${
-                        row.acceptedName ?? row.acceptedId
-                      }`}
+                      {treeText.acceptedName({
+                        name: row.acceptedName ?? row.acceptedId.toString(),
+                      })}
                     </span>
                   )}
                 </span>

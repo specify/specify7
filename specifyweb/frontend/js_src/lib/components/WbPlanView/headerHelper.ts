@@ -4,7 +4,7 @@
  * @module
  */
 
-import { wbText } from '../../localization/workbench';
+import { wbPlanText } from '../../localization/wbPlan';
 import type { RA } from '../../utils/types';
 import { getUniqueName } from '../../utils/uniquifyName';
 import type { Tables } from '../DataModel/types';
@@ -16,7 +16,7 @@ export function uniquifyHeaders(
   headersToUniquify: RA<number> | false = false
 ): RA<string> {
   const headers = rawHeaders.map((header) =>
-    header.trim().length === 0 ? wbText('noHeader') : header
+    header.trim().length === 0 ? wbPlanText.noHeader() : header
   );
   headers.forEach((header, index) => {
     if (

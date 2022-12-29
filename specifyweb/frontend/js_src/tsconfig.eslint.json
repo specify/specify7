@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": ["**/*.ts", "**/*.tsx", "**/*.js"],
-  "exclude": ["node_modules", "testBuild"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "sourceMap": false,
     "typeRoots": ["./node_modules/@types"]

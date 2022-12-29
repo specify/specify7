@@ -11,7 +11,8 @@ import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import {useId} from '../../hooks/useId';
+import { useId } from '../../hooks/useId';
+import { schemaText } from '../../localization/schema';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -22,17 +23,17 @@ export function ChooseSchemaLanguage(): JSX.Element {
         <>
           {hasToolPermission('schemaConfig', 'create') && (
             <Link.Blue href="/specify/schema-config/add-language/">
-              {commonText('addLanguage')}
+              {schemaText.addLanguage()}
             </Link.Blue>
           )}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
-      header={commonText('schemaConfig')}
+      header={schemaText.schemaConfig()}
       onClose={(): void => navigate('/specify/')}
     >
-      {commonText('language')}
+      {commonText.language()}
       <Ul>
         {Object.entries(schemaData.languages).map(([code, label]) => (
           <li key={code}>
@@ -63,12 +64,12 @@ export function AddLanguage(): JSX.Element {
           <Button.Gray
             onClick={(): void => navigate('/specify/schema-config/')}
           >
-            {commonText('back')}
+            {commonText.back()}
           </Button.Gray>
-          <Submit.Blue form={id('form')}>{commonText('add')}</Submit.Blue>
+          <Submit.Blue form={id('form')}>{commonText.add()}</Submit.Blue>
         </>
       }
-      header={commonText('addLanguageDialogHeader')}
+      header={schemaText.addLanguage()}
       onClose={(): void => navigate('/specify/')}
     >
       <Form
@@ -83,7 +84,7 @@ export function AddLanguage(): JSX.Element {
         }}
       >
         <Label.Block>
-          {commonText('language')}
+          {commonText.language()}
           <Input.Text
             maxLength={2}
             minLength={2}
@@ -94,7 +95,7 @@ export function AddLanguage(): JSX.Element {
           />
         </Label.Block>
         <Label.Block>
-          {commonText('country')}
+          {commonText.country()}
           <Input.Text
             maxLength={2}
             minLength={2}

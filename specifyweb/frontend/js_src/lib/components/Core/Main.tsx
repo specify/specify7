@@ -22,9 +22,13 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import type { Preferences } from '../UserPreferences/Definitions';
+import { mainText } from '../../localization/main';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type UserTool = {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly url: string;
   readonly enabled?: () => Promise<boolean> | boolean;
 };
@@ -75,7 +79,7 @@ export function Main(): JSX.Element | null {
           mainRef.current.removeAttribute('tabindex');
         }}
       >
-        {commonText('skipToContent')}
+        {headerText.skipToContent()}
       </Button.Small>
 
       <header
@@ -94,7 +98,7 @@ export function Main(): JSX.Element | null {
                 className="h-16 hover:animate-hue-rotate"
                 src="/static/img/logo.svg"
               />
-              <span className="sr-only">{commonText('goToHomepage')}</span>
+              <span className="sr-only">{commonText.goToHomepage()}</span>
             </a>
           </h1>
           <div
@@ -111,7 +115,7 @@ export function Main(): JSX.Element | null {
                   href="/accounts/login/"
                   className={className.navigationHandled}
                 >
-                  {commonText('logIn')}
+                  {userText.logIn()}
                 </Link.Default>
               )}
               <CollectionSelector />
@@ -129,24 +133,23 @@ export function Main(): JSX.Element | null {
         <Dialog
           buttons={
             <Button.Orange onClick={(): void => setShowVersionMismatch(false)}>
-              {commonText('close')}
+              {commonText.close()}
             </Button.Orange>
           }
           forceToTop
-          header={commonText('versionMismatchDialogHeader')}
+          header={mainText.versionMismatch()}
           onClose={(): void => setShowVersionMismatch(false)}
         >
           <p>
-            {commonText(
-              'versionMismatchDialogText',
-              getSystemInfo().specify6_version,
-              getSystemInfo().database_version
-            )}
+            {mainText.versionMismatchDescription({
+              specifySixVersion: getSystemInfo().specify6_version,
+              databaseVersion: getSystemInfo().database_version,
+            })}
           </p>
-          <p>{commonText('versionMismatchSecondDialogText')}</p>
+          <p>{mainText.versionMismatchSecondDescription()}</p>
           <p>
             <Link.NewTab href="https://discourse.specifysoftware.org/t/resolve-specify-7-schema-version-mismatch/884">
-              {commonText('versionMismatchThirdDialogText')}
+              {mainText.versionMismatchInstructions()}
             </Link.NewTab>
           </p>
         </Dialog>
@@ -161,17 +164,17 @@ export function Main(): JSX.Element | null {
         <Dialog
           buttons={
             <Button.DialogClose component={Button.Red}>
-              {commonText('logOut')}
+              {userText.logOut()}
             </Button.DialogClose>
           }
           className={{
             container: `${dialogClassNames.narrowContainer}`,
           }}
           forceToTop
-          header={commonText('noAgent')}
+          header={userText.noAgent()}
           onClose={(): void => globalThis.location.assign('/accounts/logout/')}
         >
-          {commonText('noAgentDescription')}
+          {userText.noAgentDescription()}
         </Dialog>
       )}
     </>

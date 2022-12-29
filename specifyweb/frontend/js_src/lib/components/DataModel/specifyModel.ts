@@ -33,6 +33,7 @@ import {
 } from './specifyField';
 import { getCache } from '../../utils/cache';
 import { schemaAliases } from './schemaExtras';
+import { LocalizedString } from 'typesafe-i18n';
 
 type FieldAlias = {
   readonly vname: string;
@@ -192,7 +193,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly localization: SchemaLocalization;
 
   /** Localized name from the schema localization */
-  public readonly label: string;
+  public readonly label: LocalizedString;
 
   public constructor(tableDefinition: TableDefinition) {
     this.longName = tableDefinition.classname;
@@ -245,7 +246,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
         items: Object.fromEntries(
           Object.entries(this.localization.items).map(([fieldName, data]) => [
             fieldName,
-            { ...data, name: fieldName },
+            { ...data, name: fieldName as LocalizedString },
           ])
         ),
       };
@@ -253,7 +254,9 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     (this.localization.items as R<SchemaLocalization['items'][string]>)[
       tableDefinition.idFieldName.toLowerCase()
     ] ??= {
-      name: useLabels ? commonText('id') : tableDefinition.idFieldName,
+      name: useLabels
+        ? commonText.id()
+        : (tableDefinition.idFieldName as LocalizedString),
       desc: null,
       format: null,
       picklistname: null,
@@ -272,12 +275,14 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       readOnly: true,
     });
 
-    this.label = useLabels
-      ? typeof this.localization.name === 'string' &&
-        this.localization.name.length > 0
-        ? unescape(this.localization.name)
-        : camelToHuman(this.name)
-      : this.name;
+    this.label = (
+      useLabels
+        ? typeof this.localization.name === 'string' &&
+          this.localization.name.length > 0
+          ? unescape(this.localization.name)
+          : camelToHuman(this.name)
+        : this.name
+    ) as LocalizedString;
 
     this.isHidden = this.localization.ishidden;
 

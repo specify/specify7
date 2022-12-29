@@ -23,7 +23,11 @@ import {
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { FormMode, FormType } from '../FormParse';
-import { format, getMainTableFields } from '../Forms/dataObjFormatters';
+import {
+  format,
+  getMainTableFields,
+  naiveFormatter,
+} from '../Forms/dataObjFormatters';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
 import type { QueryComboBoxFilter } from '../Forms/SearchDialog';
 import { SearchDialog } from '../Forms/SearchDialog';
@@ -42,6 +46,8 @@ import {
 import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 // REFACTOR: split this component
 // TEST: add tests for this
@@ -133,10 +139,10 @@ export function QueryComboBox({
    * just been opened), the resource would be fetched and formatted separately
    */
   const formattedRef = React.useRef<
-    { readonly value: string; readonly formatted: string } | undefined
+    { readonly value: string; readonly formatted: LocalizedString } | undefined
   >(undefined);
   const [formatted] = useAsyncState<{
-    readonly label: string;
+    readonly label: LocalizedString;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }>(
     React.useCallback(
@@ -168,15 +174,11 @@ export function QueryComboBox({
                     ).then((formatted) => ({
                       label:
                         formatted ??
-                        `${field.relatedModel.label}${
-                          typeof resource.id === 'number'
-                            ? ` #${resource.id}`
-                            : ''
-                        }`,
+                        naiveFormatter(field.relatedModel.label, resource.id),
                       resource,
                     }))
               )
-          : { label: commonText('noPermission'), resource: undefined },
+          : { label: userText.noPermission(), resource: undefined },
       [version, value, resource, field, typeSearch]
     ),
     false
@@ -285,7 +287,9 @@ export function QueryComboBox({
               }))
               .map(async (query) =>
                 ajax<{
-                  readonly results: RA<readonly [id: number, label: string]>;
+                  readonly results: RA<
+                    readonly [id: number, label: LocalizedString]
+                  >;
                 }>('/stored_query/ephemeral/', {
                   method: 'POST',
                   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -361,10 +365,13 @@ export function QueryComboBox({
         value={
           formatted?.label ??
           formattedRef.current?.formatted ??
-          commonText('loading')
+          commonText.loading()
         }
         onChange={({ data, label }): void => {
-          formattedRef.current = { value: data, formatted: label.toString() };
+          formattedRef.current = {
+            value: data,
+            formatted: label.toString() as LocalizedString,
+          };
           updateValue(data);
         }}
         onCleared={(): void => updateValue('', false)}
@@ -498,14 +505,13 @@ export function QueryComboBox({
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={commonText('collectionAccessDenied')}
+          buttons={commonText.close()}
+          header={userText.collectionAccessDenied()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText(
-            'collectionAccessDeniedDescription',
-            state.collectionName
-          )}
+          {userText.collectionAccessDeniedDescription({
+            collectionName: state.collectionName,
+          })}
         </Dialog>
       )}
       {typeof formatted?.resource === 'object' &&

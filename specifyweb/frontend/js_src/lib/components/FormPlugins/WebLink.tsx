@@ -22,6 +22,7 @@ import { getIcon, unknownIcon } from '../InitialContext/icons';
 import { formatUrl } from '../Router/queryString';
 import { SpecifyModel } from '../DataModel/specifyModel';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const webLinks = load<Element>(
   formatUrl('/context/app.resource', { name: 'WebLinks' }),
@@ -161,7 +162,7 @@ export function WebLink({
 }
 
 type ParsedWebLink = {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly template: string;
   readonly args: RA<string>;
   readonly isExternal: boolean;
@@ -196,7 +197,9 @@ function useDefinition(
 
 export function parseWebLink(definition: Element): ParsedWebLink | undefined {
   const title =
-    definition?.querySelector(':scope > desc')?.textContent?.trim() ?? '';
+    (definition
+      ?.querySelector(':scope > desc')
+      ?.textContent?.trim() as LocalizedString) ?? '';
 
   const template =
     definition

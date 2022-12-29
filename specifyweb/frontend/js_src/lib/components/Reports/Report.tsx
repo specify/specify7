@@ -6,7 +6,6 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { useId } from '../../hooks/useId';
 import { useLiveState } from '../../hooks/useLiveState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -33,6 +32,8 @@ import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ReportForRecord } from './ForRecord';
 import { ReportRecordSets } from './RecordSets';
 import { unknownIcon } from '../InitialContext/icons';
+import { LocalizedString } from 'typesafe-i18n';
+import { reportsText } from '../../localization/report';
 
 export function Report({
   appResource,
@@ -109,21 +110,21 @@ export function Report({
   );
   return query === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('missingReportQueryDialogHeader')}
+      buttons={commonText.close()}
+      header={reportsText.missingReportQuery()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('missingReportQueryDialogText')}
+      {reportsText.missingReportQueryDescription()}
     </Dialog>
   ) : report === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={formsText('missingReportDialogHeader')}
+      buttons={commonText.close()}
+      header={reportsText.missingReport()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('missingReportDialogText')}
+      {reportsText.missingReportDescription()}
     </Dialog>
   ) : Array.isArray(missingAttachments) && typeof definition === 'object' ? (
     missingAttachments.length === 0 ? (
@@ -208,35 +209,35 @@ function FixImagesDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Orange onClick={handleIgnore}>
-            {commonText('ignore')}
+            {commonText.ignore()}
           </Button.Orange>
         </>
       }
-      header={formsText('reportProblemsDialogTitle')}
+      header={reportsText.reportProblems()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >
-      {formsText('reportsProblemsDialogText')}
-      <H3>{formsText('missingAttachments')}</H3>
+      {reportsText.reportProblemsDescription()}
+      <H3>{reportsText.missingAttachments()}</H3>
       <Ul>
         {missingAttachments.map((fileName, index) => (
           <Button.LikeLink
-            aria-label={formsText('fix')}
+            aria-label={reportsText.fix()}
             key={fileName}
-            title={formsText('fix')}
+            title={reportsText.fix()}
             onClick={(): void => setIndex(index)}
           >
-            {fileName}
+            {fileName as LocalizedString}
           </Button.LikeLink>
         ))}
       </Ul>
     </Dialog>
   ) : (
     <Dialog
-      buttons={commonText('cancel')}
-      header={formsText('missingAttachmentsFixDialogTitle')}
+      buttons={commonText.cancel()}
+      header={reportsText.chooseFile()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={(): void => setIndex(undefined)}
     >
@@ -322,11 +323,11 @@ function ParametersDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Submit.Green form={id('form')}>{commonText('save')}</Submit.Green>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Green form={id('form')}>{commonText.save()}</Submit.Green>
         </>
       }
-      header={formsText('reportParameters')}
+      header={reportsText.reportParameters()}
       icon={<span className="text-blue-500">{icons.documentReport}</span>}
       onClose={handleClose}
     >

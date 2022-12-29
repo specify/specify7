@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useLiveState } from '../../hooks/useLiveState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
@@ -27,6 +26,7 @@ import type { Policy } from './Policy';
 import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
+import { userText } from '../../localization/user';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -81,10 +81,10 @@ export function SetSuperAdmin({
           }
         }}
       />
-      {adminText('institutionAdmin')}
+      {userText.institutionAdmin()}
     </Label.Inline>
   ) : (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   );
 }
 
@@ -103,7 +103,7 @@ export function UserRoles({
     typeof userRoles[collectionId] === 'object' ? (
     <fieldset className="flex flex-col gap-2">
       <legend>
-        <span className="text-xl">{adminText('assignedUserRoles')}</span>
+        <span className="text-xl">{userText.assignedUserRoles()}</span>
       </legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {typeof collectionRoles === 'object' && typeof userRoles === 'object'
@@ -146,18 +146,18 @@ export function UserRoles({
                   {role.name}
                 </Label.Inline>
                 <Link.Icon
-                  aria-label={commonText('edit')}
+                  aria-label={commonText.edit()}
                   className={className.dataEntryEdit}
                   href={`/specify/security/collection/${collectionId}/role/${role.id}/`}
                   icon="pencil"
-                  title={commonText('edit')}
+                  title={commonText.edit()}
                 />
               </li>
             )) ??
             userRoles[collectionId]!.map(({ roleId, roleName }) => (
               <li key={roleId}>{roleName}</li>
             ))
-          : commonText('loading')}
+          : commonText.loading()}
       </Ul>
     </fieldset>
   ) : null;
@@ -179,16 +179,16 @@ export function SetPasswordPrompt({
     <Dialog
       buttons={
         <>
-          <Button.Red onClick={handleIgnore}>{commonText('ignore')}</Button.Red>
+          <Button.Red onClick={handleIgnore}>{commonText.ignore()}</Button.Red>
           <Button.Green onClick={handleSet}>
-            {adminText('setPassword')}
+            {userText.setPassword()}
           </Button.Green>
         </>
       }
-      header={adminText('setPassword')}
+      header={userText.setPassword()}
       onClose={handleClose}
     >
-      {adminText('setPasswordBeforeSavePrompt')}
+      {userText.setPasswordBeforeSavePrompt()}
     </Dialog>
   );
 }
@@ -201,7 +201,7 @@ export function UserIdentityProviders({
   return identityProviders === undefined ||
     Object.entries(identityProviders).length === 0 ? null : (
     <fieldset className="flex flex-col gap-2">
-      <legend>{adminText('externalIdentityProviders')}</legend>
+      <legend>{userText.externalIdentityProviders()}</legend>
       <Ul className="flex flex-col gap-1 pl-2">
         {Object.entries(identityProviders).map(([title, isEnabled], index) => (
           <li key={index}>
@@ -233,7 +233,7 @@ export function LegacyPermissions({
   const userType = schema.models.SpecifyUser.strictGetLiteralField('userType');
   return (
     <section className="flex flex-col gap-2">
-      <h4 className="text-xl">{adminText('legacyPermissions')}</h4>
+      <h4 className="text-xl">{userText.legacyPermissions()}</h4>
       {hasPermission('/permissions/list_admins', 'read') && (
         <div className="flex gap-2">
           <AdminStatusPlugin

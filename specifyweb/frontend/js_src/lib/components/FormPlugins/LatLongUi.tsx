@@ -11,6 +11,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { Locality } from '../DataModel/types';
 import type { FormMode } from '../FormParse';
 import { schema } from '../DataModel/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const coordinateType = ['Point', 'Line', 'Rectangle'] as const;
 export type CoordinateType = typeof coordinateType[number];
@@ -86,12 +87,12 @@ function Coordinate({
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;
-    setValidation(isValid ? '' : formsText('invalidValue'));
+    setValidation(isValid ? '' : formsText.invalidValue());
     handleFormatted(
       isValid
         ? hasValue
           ? parsed?.format(step) ?? ''
-          : commonText('notApplicable')
+          : commonText.notApplicable()
         : undefined
     );
 
@@ -150,25 +151,23 @@ function CoordinatePoint({
   step,
 }: {
   readonly resource: SpecifyResource<Locality>;
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly index: 1 | 2;
   readonly isReadOnly: boolean;
   readonly step: number | undefined;
 }): JSX.Element {
   const [latitude = '???', setLatitude] = React.useState<string | undefined>(
-    commonText('notApplicable')
+    commonText.notApplicable()
   );
   const [longitude = '???', setLongitude] = React.useState<string | undefined>(
-    commonText('notApplicable')
+    commonText.notApplicable()
   );
   return (
     <tr>
       <th scope="row">{label}</th>
       <td>
         <label>
-          <span className="sr-only">{`${localityText(
-            'latitude'
-          )} ${index}`}</span>
+          <span className="sr-only">{`${localityText.latitude()} ${index}`}</span>
           <Coordinate
             coordinateField={`latitude${index}`}
             coordinateTextField={`lat${index}text`}
@@ -182,9 +181,7 @@ function CoordinatePoint({
       </td>
       <td>
         <label>
-          <span className="sr-only">{`${localityText(
-            'longitude'
-          )} ${index}`}</span>
+          <span className="sr-only">{`${localityText.longitude()} ${index}`}</span>
           <Coordinate
             coordinateField={`longitude${index}`}
             coordinateTextField={`long${index}text`}
@@ -244,29 +241,27 @@ export function LatLongUi({
           <tr>
             <th scope="col">
               <label>
-                <span className="sr-only">
-                  {localityText('coordinateType')}
-                </span>
+                <span className="sr-only">{localityText.coordinateType()}</span>
                 <Select
                   disabled={mode === 'view'}
                   id={id}
                   name="type"
-                  title={localityText('coordinateType')}
+                  title={localityText.coordinateType()}
                   value={coordinateType}
                   onValueChange={(value): void => {
                     setCoordinateType(value as CoordinateType);
                     resource.set('latLongType', value);
                   }}
                 >
-                  <option value="Point">{localityText('point')}</option>
-                  <option value="Line">{localityText('line')}</option>
-                  <option value="Rectangle">{localityText('rectangle')}</option>
+                  <option value="Point">{localityText.point()}</option>
+                  <option value="Line">{localityText.line()}</option>
+                  <option value="Rectangle">{localityText.rectangle()}</option>
                 </Select>
               </label>
             </th>
-            <th scope="col">{localityText('latitude')}</th>
-            <th scope="col">{localityText('longitude')}</th>
-            <th scope="col">{localityText('parsed')}</th>
+            <th scope="col">{localityText.latitude()}</th>
+            <th scope="col">{localityText.longitude()}</th>
+            <th scope="col">{localityText.parsed()}</th>
           </tr>
         </thead>
         <tbody>
@@ -275,10 +270,10 @@ export function LatLongUi({
             isReadOnly={mode === 'view'}
             label={
               coordinateType === 'Point'
-                ? localityText('coordinates')
+                ? localityText.coordinates()
                 : coordinateType === 'Line'
-                ? commonText('start')
-                : localityText('northWestCorner')
+                ? commonText.start()
+                : localityText.northWestCorner()
             }
             resource={resource}
             step={step}
@@ -289,8 +284,8 @@ export function LatLongUi({
               isReadOnly={mode === 'view'}
               label={
                 coordinateType === 'Line'
-                  ? commonText('end')
-                  : localityText('southEastCorner')
+                  ? commonText.end()
+                  : localityText.southEastCorner()
               }
               resource={resource}
               step={step}

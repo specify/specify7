@@ -32,6 +32,9 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { FilterTablesByEndsWith } from '../DataModel/helperTypes';
 import { TableIcon } from '../Molecules/TableIcon';
+import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
+import { treeText } from '../../localization/tree';
 
 export function TreeSelectOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -39,7 +42,7 @@ export function TreeSelectOverlay(): JSX.Element {
     <TreeSelectDialog
       getLink={(tree): string => `/specify/tree/${tree.toLowerCase()}/`}
       permissionName="read"
-      title={commonText('trees')}
+      title={treeText.trees()}
       onClick={undefined}
       onClose={handleClose}
     />
@@ -56,8 +59,8 @@ export function TreeSelectDialog({
 }: {
   readonly onClose: () => void;
   readonly onClick: ((tree: string) => Promise<void> | void) | undefined;
-  readonly title: string;
-  readonly confirmationMessage?: string;
+  readonly title: LocalizedString;
+  readonly confirmationMessage?: LocalizedString;
   readonly getLink: (tree: string) => string;
   readonly permissionName: 'read' | 'repair';
 }): JSX.Element | null {
@@ -72,7 +75,7 @@ export function TreeSelectDialog({
     <Dialog
       buttons={
         <Button.Gray onClick={handleClose}>
-          {isFinished ? commonText('close') : commonText('cancel')}
+          {isFinished ? commonText.close() : commonText.cancel()}
         </Button.Gray>
       }
       header={title}
@@ -154,12 +157,12 @@ export function TreeRepairOverlay(): JSX.Element {
 
   return (
     <TreeSelectDialog
-      confirmationMessage={commonText('treeRepairComplete')}
+      confirmationMessage={headerText.treeRepairComplete()}
       getLink={(tree): string =>
         formatUrl('/specify/task/repair-tree/', { tree: tree.toLowerCase() })
       }
       permissionName="repair"
-      title={commonText('repairTree')}
+      title={headerText.repairTree()}
       onClick={setTree}
       onClose={handleClose}
     />

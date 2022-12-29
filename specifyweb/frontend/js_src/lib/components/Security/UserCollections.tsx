@@ -8,7 +8,6 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
@@ -33,6 +32,7 @@ import { collectionAccessResource } from '../Permissions/definitions';
 import { hasPermission } from '../Permissions/helpers';
 import type { Policy } from './Policy';
 import type { UserAgents } from './UserHooks';
+import { userText } from '../../localization/user';
 
 function UserCollectionsUi({
   userId,
@@ -68,13 +68,13 @@ function UserCollectionsUi({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           {hasPermission('/admin/user/sp6/collection_access', 'update') && (
-            <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+            <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
           )}
         </>
       }
-      header={adminText('configureCollectionAccess')}
+      header={userText.configureCollectionAccess()}
       onClose={handleClose}
     >
       <Form
@@ -126,16 +126,16 @@ export function UserCollections({
         }
         title={
           isAdmin
-            ? adminText('notAvailableOnAdmins')
+            ? userText.notAvailableOnAdmins()
             : user === undefined
-            ? commonText('loading')
+            ? commonText.loading()
             : user.isNew()
-            ? adminText('saveUserFirst')
+            ? userText.saveUserFirst()
             : undefined
         }
         onClick={handleOpen}
       >
-        {adminText('setCollections')}
+        {userText.setCollections()}
       </Button.Small>
       {isOpen && <UserCollectionsUi userId={user.id} onClose={handleClose} />}
     </>
@@ -263,7 +263,7 @@ export function CollectionAccess({
             }
             onValueChange={handleToggle}
           />
-          {adminText('collectionAccess')}
+          {userText.collectionAccess()}
         </Label.Inline>
       ) : undefined}
       <Label.Block className={className.limitedWidth}>
@@ -280,7 +280,7 @@ export function CollectionAccess({
             typeSearch={undefined}
           />
         ) : (
-          <Input.Text disabled value={commonText('loading')} />
+          <Input.Text disabled value={commonText.loading()} />
         )}
       </Label.Block>
     </div>

@@ -48,38 +48,37 @@ export function PaleoLocationMapPlugin({
         id={id}
         onClick={(): void => loading(fetchPaleoData(resource).then(setState))}
       >
-        {formsText('paleoMap')}
+        {formsText.paleoMap()}
       </Button.Small>
       {state.type === 'InvalidTableState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('unavailablePluginDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.pluginNotAvailable()}
           onClose={(): void =>
             setState({
               type: 'MainState',
             })
           }
         >
-          {formsText(
-            'wrongTablePluginDialogText',
-            resource.specifyModel.name,
-            formatList(paleoPluginTables)
-          )}
+          {formsText.wrongTableForPlugin({
+            currentTable: resource.specifyModel.name,
+            correctTable: formatList(paleoPluginTables),
+          })}
         </Dialog>
       )}
       {state.type === 'NoDataState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoRequiresGeographyDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.paleoRequiresGeography()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {formsText('paleoRequiresGeographyDialogText')}
+          {formsText.paleoRequiresGeographyDescription()}
         </Dialog>
       )}
       {state.type === 'LoadedState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('paleoMap')}
+          buttons={commonText.close()}
+          header={formsText.paleoMap()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
           <iframe
@@ -88,7 +87,7 @@ export function PaleoLocationMapPlugin({
               width: '800px',
               height: '600px',
             }}
-            title={formsText('paleoMap')}
+            title={formsText.paleoMap()}
           />
         </Dialog>
       )}

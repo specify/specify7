@@ -11,6 +11,8 @@ import type L from './extend';
 import type { LocalityData } from './helpers';
 import { leafletLayersPromise } from './layers';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { LocalizedString } from 'typesafe-i18n';
+import { localityText } from '../../localization/locality';
 
 const resizeThrottle = 250;
 
@@ -18,18 +20,18 @@ export function LeafletMap({
   localityPoints,
   onMarkerClick: handleMarkerClick,
   forwardRef,
-  header = commonText('geoMap'),
+  header = localityText.geoMap(),
   headerButtons,
-  buttons = commonText('close'),
+  buttons = commonText.close(),
   onClose: handleClose,
   modal = true,
 }: {
   readonly localityPoints: RA<LocalityData>;
   readonly onMarkerClick?: (index: number, event: L.LeafletEvent) => void;
   readonly forwardRef?: React.RefCallback<LeafletInstance>;
-  readonly header?: string;
+  readonly header?: LocalizedString;
   readonly headerButtons?: JSX.Element;
-  readonly buttons?: JSX.Element | string;
+  readonly buttons?: JSX.Element | LocalizedString;
   readonly onClose?: () => void;
   readonly modal?: boolean;
 }): JSX.Element {

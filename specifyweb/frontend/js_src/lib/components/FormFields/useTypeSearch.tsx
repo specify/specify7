@@ -12,6 +12,7 @@ import { load } from '../InitialContext';
 import { formatUrl } from '../Router/queryString';
 import { columnToFieldMapper } from './parseSelect';
 import type { TypeSearch } from './queryComboBoxUtils';
+import { commonText } from '../../localization/common';
 
 const typeSearches = load<Element>(
   formatUrl('/context/app.resource', { name: 'TypeSearches' }),
@@ -85,7 +86,10 @@ async function parseTypeSearch(
     );
 
   return {
-    title: queryText('queryBoxDescription', formatList(fieldTitles)),
+    title: commonText.colonLine({
+      label: queryText.searchFields(),
+      value: formatList(fieldTitles),
+    }),
     searchFields,
     relatedModel,
     dataObjectFormatter:

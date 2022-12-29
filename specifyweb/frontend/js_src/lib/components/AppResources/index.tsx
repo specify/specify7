@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import type { GetOrSet } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { ProtectedTable, ProtectedTool } from '../Permissions/PermissionDenied';
@@ -46,7 +46,7 @@ function AppResourcesView({
   return (
     <Container.FullGray>
       <div className="flex items-center gap-4">
-        <H2 className="text-2xl">{adminText('resources')}</H2>
+        <H2 className="text-2xl">{resourcesText.resources()}</H2>
         <div className="flex flex-wrap gap-2">
           <AppResourcesFilters initialResources={resources} />
         </div>

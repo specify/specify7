@@ -4,6 +4,7 @@ import { filterArray } from '../../utils/types';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { CellTypes, FormCellDefinition } from './cells';
 import type { ParsedFormDefinition } from './index';
+import { LocalizedString } from 'typesafe-i18n';
 
 type LabelCell = CellTypes['Label'] & FormCellDefinition;
 
@@ -78,9 +79,9 @@ function createLabelsPostProcessor(
 
 type IndexedField = {
   readonly fieldNames: RA<string> | undefined;
-  readonly labelOverride: string | undefined;
+  readonly labelOverride: LocalizedString | undefined;
   // An alternative label to use, only if label is missing
-  readonly altLabel: string | undefined;
+  readonly altLabel: LocalizedString | undefined;
 };
 
 /** Index fieldNames and labelOverride for all cells by cellId */
@@ -245,7 +246,7 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
         : undefined) ??
       (cell.fieldNames?.join('.').toLowerCase() === 'this'
         ? undefined
-        : cell.fieldNames?.join('.')) ??
+        : (cell.fieldNames?.join('.') as LocalizedString)) ??
       '',
     title: cell?.title ?? field?.getLocalizedDesc(),
   };

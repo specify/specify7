@@ -4,14 +4,10 @@
  * @module
  */
 
-import React from 'react';
-
 import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const welcomeText = createDictionary({
   pageTitle: {
     'en-us': 'Welcome',
@@ -30,38 +26,36 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Плитки таксонов',
   },
   taxonTilesDescription: {
-    'en-us': (count: number) =>
-      `Showing Taxa with ${count} or more Collection Objects`,
-    'ru-ru': (count: number) =>
-      `Показаны таксоны с ${count} или более коллекционными объектами`,
+    'en-us':
+      'Showing Taxa with {count:number|formatted} or more Collection Objects',
+    'ru-ru': `
+      Показаны таксоны с {count:number|formatted} или более коллекционными
+      объектами
+    `,
   },
   fullAddress: {
-    'en-us': (
-      <>
-        Specify Collections Consortium
-        <br />
-        Biodiversity Institute
-        <br />
-        University of Kansas
-        <br />
-        1345 Jayhawk Blvd.
-        <br />
-        Lawrence, KS 66045 USA
-      </>
-    ),
-    'ru-ru': (
-      <>
-        Specify Collections Consortium
-        <br />
-        Biodiversity Institute
-        <br />
-        University of Kansas
-        <br />
-        1345 Jayhawk Blvd.
-        <br />
-        Lawrence, KS 66045 USA
-      </>
-    ),
+    'en-us': `
+      Specify Collections Consortium <br />
+      
+      Biodiversity Institute <br />
+      
+      University of Kansas <br />
+      
+      1345 Jayhawk Blvd. <br />
+      
+      Lawrence, KS 66045 USA
+    `,
+    'ru-ru': `
+      Specify Collections Consortium <br />
+      
+      Biodiversity Institute <br />
+      
+      University of Kansas <br />
+      
+      1345 Jayhawk Blvd. <br />
+      
+      Lawrence, KS 66045 USA
+    `,
   },
   disclosure: {
     'en-us': `
@@ -72,7 +66,8 @@ export const welcomeText = createDictionary({
       Florida, University of Kansas, and University of Michigan. The Consortium
       operates under the non-profit, 501(c)3, U.S. tax status of the University
       of Kansas Center for Research. Specify was supported from 1996 to 2018 by
-      grants from the U.S. National Science Foundation.`,
+      grants from the U.S. National Science Foundation.
+    `,
     'ru-ru': `
       Specify software является продуктом консорциума Specify Collections.
       который управляется и финансируется организациями-членами.
@@ -82,18 +77,21 @@ export const welcomeText = createDictionary({
       Kansas. Консорциум действует под некоммерческой организацией, 501(c)3,
       налоговым статусом США университета University of Kansas. Specify
       поддерживался с 1996 по 2018 год грантами фонда U.S. National Science
-      Foundation.`,
+      Foundation.
+    `,
   },
   licence: {
     'en-us': `
       Specify 7, Copyright 2022, University of Kansas Center for Research.
       Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source
-      software licensed under GNU General Public License v2.`,
+      software licensed under GNU General Public License v2.
+    `,
     'ru-ru': `
       Specify 7, Авторские права 2022, University of Kansas для исследования.
-      Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это
-      бесплатное программное обеспечение с открытым исходным кодом под лицензией
-      GNU General Public License v2.`,
+      Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное
+      программное обеспечение с открытым исходным кодом под лицензией GNU
+      General Public License v2.
+    `,
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -128,6 +126,7 @@ export const welcomeText = createDictionary({
     'ru-ru': 'Имя базы данных:',
   },
   isaNumber: {
+    comment: 'I believe ISA stands for Institution Service Agreement',
     'en-us': 'ISA Number:',
     'ru-ru': 'Номер ISA:',
   },
@@ -139,6 +138,4 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Creation Date:',
     'ru-ru': 'Дата создания базы данных:',
   },
-});
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */
+} as const);

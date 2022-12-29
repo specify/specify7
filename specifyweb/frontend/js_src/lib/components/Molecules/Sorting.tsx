@@ -26,8 +26,8 @@ export function SortIndicator<FIELD_NAMES extends string>({
       {isSorted && (
         <span className="sr-only">
           {sortConfig.ascending
-            ? commonText('ascending')
-            : commonText('descending')}
+            ? commonText.ascending()
+            : commonText.descending()}
         </span>
       )}
       {isSorted

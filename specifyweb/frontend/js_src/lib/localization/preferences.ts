@@ -4,20 +4,27 @@
  * @module
  */
 
-import React from 'react';
-
-import { Key } from '../components/Atoms';
 import { createDictionary } from './utils';
-
-const altKeyName = globalThis.navigator?.appVersion.includes('Mac')
-  ? 'Option'
-  : 'Alt';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const preferencesText = createDictionary({
+  preferences: {
+    'en-us': 'Preferences',
+    'ru-ru': 'Настройки',
+  },
+  customization: {
+    'en-us': 'Customization',
+    'ru-ru': 'Настройка',
+  },
+  userPreferences: {
+    'en-us': 'User Preferences',
+    'ru-ru': 'Пользовательские настройки',
+  },
+  defaultUserPreferences: {
+    'en-us': 'Default User Preferences',
+    'ru-ru': 'Пользовательские настройки по умолчанию',
+  },
   general: {
     'en-us': 'General',
     'ru-ru': 'Основные',
@@ -30,7 +37,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Theme',
     'ru-ru': 'Тема',
   },
-  system: {
+  useSystemSetting: {
     'en-us': 'Use system setting',
     'ru-ru': 'Использовать системные настройки',
   },
@@ -39,10 +46,12 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Копирует значение из настроек вашей операционной системы',
   },
   light: {
+    comment: 'Light mode',
     'en-us': 'Light',
     'ru-ru': 'Белая',
   },
   dark: {
+    comment: 'Dark mode',
     'en-us': 'Dark',
     'ru-ru': 'Темная',
   },
@@ -59,10 +68,14 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Уменьшить прозрачность',
   },
   reduceTransparencyDescription: {
-    'en-us': `Whether to disable translucent backgrounds for user interface
-      components whenever possible (for example, table headers in tree view)`,
-    'ru-ru': `Отключить ли полупрозрачный фон для пользовательского интерфейса,
-      когда это возможно (например, заголовки таблиц в просмотрщике деревьев)`,
+    'en-us': `
+      Whether to disable translucent backgrounds for user interface components
+      whenever possible (for example, table headers in tree view)
+    `,
+    'ru-ru': `
+      Отключить ли полупрозрачный фон для пользовательского интерфейса, когда
+      это возможно (например, заголовки таблиц в просмотрщике деревьев)
+    `,
   },
   contrast: {
     'en-us': 'Contrast',
@@ -89,13 +102,16 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Шрифт',
   },
   fontFamilyDescription: {
-    'en-us': `You can specify any font that is on your computer, even if it is
-      not in the list. A comma separated list of fonts is also supported, where
-      second font would be used if first one is not available and so on`,
-    'ru-ru': `Вы можете указать любой шрифт, который есть на вашем компьютере,
-      даже если он нет в списке. Поддерживается список шрифтов, разделенных
-      запятыми, где второй шрифт будет использоваться, если первый не доступен
-      и т.д.`,
+    'en-us': `
+      You can specify any font that is on your computer, even if it is not in
+      the list. A comma separated list of fonts is also supported, where second
+      font would be used if first one is not available and so on
+    `,
+    'ru-ru': `
+      Вы можете указать любой шрифт, который есть на вашем компьютере, даже если
+      он нет в списке. Поддерживается список шрифтов, разделенных запятыми, где
+      второй шрифт будет использоваться, если первый не доступен и т.д
+    `,
   },
   defaultFont: {
     'en-us': '(default font)',
@@ -234,10 +250,12 @@ export const preferencesText = createDictionary({
     'en-us': 'Update page title',
     'ru-ru': 'Обновить заголовок страницы',
   },
-  updatePageTitleDialogDescription: {
+  updatePageTitleDescription: {
     'en-us': "Whether to update the title of the page to match dialog's header",
-    'ru-ru':
-      'Обновлять ли заголовок страницы в соответствии с заголовком диалогового окна',
+    'ru-ru': `
+      Обновлять ли заголовок страницы в соответствии с заголовком диалогового
+      окна
+    `,
   },
   updatePageTitleFormDescription: {
     'en-us': 'Whether to update the title of the page to match current record',
@@ -281,35 +299,39 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (с учетом регистра)',
   },
   containsDescription: {
-    'en-us':
-      'Search for values that contain a given query string (case-insensitive)',
-    'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (без учета регистра)',
+    'en-us': `
+      Search for values that contain a given query string (case-insensitive).
+    `,
+    'ru-ru': `
+      Поиск значений, содержащих заданную строку запроса (без учета регистра).
+    `,
   },
   containsCaseSensitiveDescription: {
     'en-us':
       'Search for values that contain a given query string (case-sensitive).',
-    'ru-ru':
-      'Поиск значений, содержащих заданную строку запроса (с учетом регистра).',
+    'ru-ru': `
+      Поиск значений, содержащих заданную строку запроса (с учетом регистра).
+    `,
   },
   containsSecondDescription: {
-    'en-us':
-      'Can use _ to match any single character or % to match any number of characters',
-    'ru-ru':
-      'Можно использовать _ для соответствия любому символу или % для соответствия любому количеству символов',
+    'en-us': `
+      Can use _ to match any single character or % to match any number of
+      characters
+    `,
+    'ru-ru': `
+      Можно использовать _ для соответствия любому символу или % для
+      соответствия любому количеству символов
+    `,
   },
   highlightMatch: {
     'en-us': 'Highlight matched substring',
     'ru-ru': 'Выделить совпадающую подстроку',
   },
-  language: {
-    'en-us': 'Language',
-    'ru-ru': 'Язык',
-  },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions',
-    'ru-ru':
-      'Определяет заголовки полей, примечания по использованию и заголовки таблиц',
+    'ru-ru': `
+      Определяет заголовки полей, примечания по использованию и заголовки таблиц
+    `,
   },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
@@ -370,12 +392,13 @@ export const preferencesText = createDictionary({
   },
   noRestrictionsModeWarning: {
     'en-us': `
-      WARNING: enabling this may lead to data loss or database
-      corruption. Please make sure you know what you are doing`,
+      WARNING: enabling this may lead to data loss or database corruption.
+      Please make sure you know what you are doing
+    `,
     'ru-ru': `
       ВНИМАНИЕ: включение этого параметра может привести к потере данных или
-      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что
-      делаете`,
+      повреждению базы данных. Пожалуйста, убедитесь, что вы знаете, что делаете
+    `,
   },
   adminsOnlyPreference: {
     'en-us': "You don't have permission to change this option",
@@ -442,30 +465,18 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Клавиша Enter начинает редактирование ячейки',
   },
   tabMoveDirection: {
-    'en-us': (
-      <span>
-        Direction of movement when <Key>Tab</Key> key is pressed
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Направление движения при нажатии клавиши <Key>Tab</Key>
-      </span>
-    ),
+    'en-us': 'Direction of movement when <key>Tab</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Tab</key>',
   },
   tabMoveDirectionDescription: {
-    'en-us': (
-      <span>
-        You can move in the opposite direction by pressing <Key>Shift</Key>+
-        <Key>Tab</Key>
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Вы можете двигаться в противоположном направлении, нажав{' '}
-        <Key>Shift</Key>+<Key>Tab</Key>
-      </span>
-    ),
+    'en-us': `
+      You can move in the opposite direction by pressing
+      <key>Shift</key>+<key>Tab</key>
+    `,
+    'ru-ru': `
+      Вы можете двигаться в противоположном направлении, нажав
+      <key>Shift</key>+<key>Tab</key>
+    `,
   },
   column: {
     'en-us': 'Column',
@@ -476,30 +487,18 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Ряд',
   },
   enterMoveDirection: {
-    'en-us': (
-      <span>
-        Direction of movement when <Key>Enter</Key> key is pressed
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Направление движения при нажатии клавиши <Key>Enter</Key>
-      </span>
-    ),
+    'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
+    'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
   },
   enterMoveDirectionDescription: {
-    'en-us': (
-      <span>
-        You can move in the opposite direction by pressing <Key>Shift</Key>+
-        <Key>Enter</Key>
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Вы можете двигаться в противоположном направлении, нажав{' '}
-        <Key>Shift</Key>+<Key>Enter</Key>
-      </span>
-    ),
+    'en-us': `
+      You can move in the opposite direction by pressing
+      <key>Shift</key>+<key>Enter</key>
+    `,
+    'ru-ru': `
+      Вы можете двигаться в противоположном направлении, нажав
+      <key>Shift</key>+<key>Enter</key>
+    `,
   },
   filterPickLists: {
     'en-us': 'Filter pick list items',
@@ -535,8 +534,9 @@ export const preferencesText = createDictionary({
   },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
-    'ru-ru':
-      'Разрешить автозаполнение расширяться настолько, насколько это необходимо',
+    'ru-ru': `
+      Разрешить автозаполнение расширяться настолько, насколько это необходимо
+    `,
   },
   tableNameInTitle: {
     'en-us': 'Include table name in the browser page title',
@@ -575,16 +575,8 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбцов в сетке подвидa',
   },
   closeOnEsc: {
-    'en-us': (
-      <span>
-        Close on <Key>ESC</Key> key press
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Закрыть при нажатии клавиши <Key>ESC</Key>
-      </span>
-    ),
+    'en-us': 'Close on <key>ESC</key> key press',
+    'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
   },
   closeOnOutsideClick: {
     'en-us': 'Close on outside click',
@@ -631,30 +623,21 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запись для открытия по умолчанию',
   },
   altClickToSupressNewTab: {
-    'en-us': (
-      <span>
-        <Key>{altKeyName}</Key>+<Key>Click</Key> to suppress new tab
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        <Key>{altKeyName}</Key>+<Key>Клик</Key>, чтобы скрыть новую вкладку
-      </span>
-    ),
+    'en-us':
+      '<key>{altKeyName:string}</key>+<key>Click</key> to suppress new tab',
+    'ru-ru': `
+      <key>{altKeyName:string}</key>+<key>Клик</key>, чтобы скрыть новую вкладку
+    `,
   },
   altClickToSupressNewTabDescription: {
-    'en-us': (
-      <span>
-        <Key>{altKeyName}</Key>+<Key>Click</Key> on a link that normally opens
-        in a new tab to open it in the current tab
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        <Key>{altKeyName}</Key>+<Key>Клик</Key> на ссылку, которая обычно
-        открывается в новой вкладке, чтобы открыть ее в текущей вкладке
-      </span>
-    ),
+    'en-us': `
+      <key>{altKeyName:string}</key>+<key>Click</key> on a link that normally
+      opens in a new tab to open it in the current tab
+    `,
+    'ru-ru': `
+      <key>{altKeyName:string}</key>+<key>Клик</key> на ссылку, которая обычно
+      открывается в новой вкладке, чтобы открыть ее в текущей вкладке
+    `,
   },
   makeFormDialogsModal: {
     'en-us': 'Make form dialogs gray out the background',
@@ -674,16 +657,8 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Размер отступа',
   },
   indentWithTab: {
-    'en-us': (
-      <span>
-        Indent with <Key>Tab</Key>
-      </span>
-    ),
-    'ru-ru': (
-      <span>
-        Используйте <Key>Tab</Key> для отступа
-      </span>
-    ),
+    'en-us': 'Indent with <key>Tab</key>',
+    'ru-ru': 'Используйте <key>Tab</key> для отступа',
   },
   formHeaderFormat: {
     'en-us': 'Form header format',
@@ -696,10 +671,6 @@ export const preferencesText = createDictionary({
   tableIcon: {
     'en-us': 'Table icon',
     'ru-ru': 'Иконка таблицы',
-  },
-  formTable: {
-    'en-us': 'Form table',
-    'ru-ru': 'Форма таблицы',
   },
   maxHeight: {
     'en-us': 'Max height',
@@ -759,6 +730,4 @@ export const preferencesText = createDictionary({
     'en-us': 'Don’t use',
     'ru-ru': 'Не использовать',
   },
-});
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */
+} as const);

@@ -1,26 +1,28 @@
 import {IR, RR} from '../../utils/types';
 import {AppResourceMode} from './helpers';
 import {icons} from '../Atoms/Icons';
-import {adminText} from '../../localization/admin';
+import {resourcesText} from '../../localization/resources';
 import {Tables} from '../DataModel/types';
-import {commonText} from '../../localization/common';
+import {preferencesText} from '../../localization/preferences';
+import {LocalizedString} from 'typesafe-i18n';
+import {reportsText} from '../../localization/report';
 
 export type AppResourceType = {
   readonly tableName: keyof Tables & ('SpAppResource' | 'SpViewSetObj');
   readonly icon: JSX.Element;
-  readonly label: string;
+  readonly label: LocalizedString;
 };
 
 export const appResourceTypes: RR<AppResourceMode, AppResourceType> = {
   appResources: {
     tableName: 'SpAppResource',
     icon: icons.cog,
-    label: adminText('appResource'),
+    label: resourcesText.appResource(),
   },
   viewSets: {
     tableName: 'SpViewSetObj',
     icon: icons.pencilAt,
-    label: commonText('formDefinitions'),
+    label: resourcesText.formDefinitions(),
   },
 };
 
@@ -29,7 +31,7 @@ export type AppResourceSubType = {
   readonly name: string | undefined;
   readonly documentationUrl: string | undefined;
   readonly icon: JSX.Element;
-  readonly label: string;
+  readonly label: LocalizedString;
 };
 
 /**
@@ -45,7 +47,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.ticket,
-    label: adminText('label'),
+    label: reportsText.label(),
   },
   report: {
     mimeType: 'jrxml/report',
@@ -53,7 +55,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.documentReport,
-    label: adminText('report'),
+    label: reportsText.report(),
   },
   userPreferences: {
     mimeType: 'application/json',
@@ -61,7 +63,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
-    label: adminText('userPreferences'),
+    label: preferencesText.userPreferences(),
   },
   defaultUserPreferences: {
     mimeType: 'application/json',
@@ -69,7 +71,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Setting-default-user-preferences',
     icon: icons.cog,
-    label: adminText('defaultUserPreferences'),
+    label: preferencesText.defaultUserPreferences(),
   },
   leafletLayers: {
     mimeType: 'application/json',
@@ -77,7 +79,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers',
     icon: icons.locationMarker,
-    label: adminText('leafletLayers'),
+    label: resourcesText.leafletLayers(),
   },
   rssExportFeed: {
     mimeType: 'text/xml',
@@ -85,7 +87,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify7/wiki/Darwin-Core-Archive-Publishing',
     icon: icons.upload,
-    label: adminText('rssExportFeed'),
+    label: resourcesText.rssExportFeed(),
   },
   expressSearchConfig: {
     mimeType: 'text/xml',
@@ -93,7 +95,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://discourse.specifysoftware.org/t/simple-search-config/183',
     icon: icons.search,
-    label: adminText('expressSearchConfig'),
+    label: resourcesText.expressSearchConfig(),
   },
   webLinks: {
     mimeType: 'text/xml',
@@ -101,7 +103,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/common/weblinks.xml',
     icon: icons.externalLink,
-    label: adminText('webLinks'),
+    label: resourcesText.webLinks(),
   },
   uiFormatters: {
     mimeType: 'text/xml',
@@ -109,7 +111,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/uiformatters.xml',
     icon: icons.hashtag,
-    label: adminText('uiFormatters'),
+    label: resourcesText.uiFormatters(),
   },
   dataObjectFormatters: {
     mimeType: 'text/xml',
@@ -117,7 +119,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/dataobj_formatters.xml',
     icon: icons.variable,
-    label: adminText('dataObjectFormatters'),
+    label: resourcesText.dataObjectFormatters(),
   },
   searchDialogDefinitions: {
     mimeType: 'text/xml',
@@ -125,7 +127,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/backstop/dialog_defs.xml',
     icon: icons.documentSearch,
-    label: adminText('searchDialogDefinitions'),
+    label: resourcesText.searchDialogDefinitions(),
   },
   dataEntryTables: {
     mimeType: 'text/xml',
@@ -133,7 +135,7 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/fish/dataentry_task.xml',
     icon: icons.pencilAt,
-    label: adminText('dataEntryTables'),
+    label: resourcesText.dataEntryTables(),
   },
   interactionsTables: {
     mimeType: 'text/xml',
@@ -141,34 +143,34 @@ export const appResourceSubTypes = {
     documentationUrl:
       'https://github.com/specify/specify6/blob/master/config/common/interactionstask.xml',
     icon: icons.chat,
-    label: adminText('interactionsTables'),
+    label: resourcesText.interactionsTables(),
   },
   otherXmlResource: {
     mimeType: 'text/xml',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.code,
-    label: adminText('otherXmlResource'),
+    label: resourcesText.otherXmlResource(),
   },
   otherJsonResource: {
     mimeType: 'application/json',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.adjustments,
-    label: adminText('otherJsonResource'),
+    label: resourcesText.otherJsonResource(),
   },
   otherPropertiesResource: {
     mimeType: 'text/x-java-properties',
     name: undefined,
     documentationUrl: undefined,
     icon: icons.viewList,
-    label: adminText('otherPropertiesResource'),
+    label: resourcesText.otherPropertiesResource(),
   },
   otherAppResources: {
     mimeType: undefined,
     name: undefined,
     documentationUrl: undefined,
     icon: icons.document,
-    label: adminText('otherAppResource'),
+    label: resourcesText.otherAppResource(),
   },
 } as const satisfies IR<AppResourceSubType>;

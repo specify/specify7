@@ -20,6 +20,7 @@ import { format } from './dataObjFormatters';
 import { RenderForm } from './SpecifyForm';
 import { useViewDefinition } from './useViewDefinition';
 import { LoadingScreen } from '../Molecules/Dialog';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type ResourceViewProps<SCHEMA extends AnySchema> = {
   readonly isLoading?: boolean;
@@ -33,8 +34,8 @@ export type ResourceViewState = {
   readonly formElement: HTMLFormElement | null;
   readonly formPreferences: JSX.Element;
   readonly form: (children?: JSX.Element, className?: string) => JSX.Element;
-  readonly title: string;
-  readonly formatted: string;
+  readonly title: LocalizedString;
+  readonly formatted: LocalizedString;
   readonly jsxFormatted: JSX.Element | string;
   readonly specifyNetworkBadge: JSX.Element | undefined;
 };
@@ -47,9 +48,9 @@ export function useResourceView<SCHEMA extends AnySchema>({
   isSubForm,
 }: ResourceViewProps<SCHEMA>): ResourceViewState {
   // Update title when resource changes
-  const [formatted, setFormatted] = React.useState('');
+  const [formatted, setFormatted] = React.useState<LocalizedString>('');
   React.useEffect(() => {
-    setFormatted(resource?.specifyModel.label ?? commonText('loading'));
+    setFormatted(resource?.specifyModel.label ?? commonText.loading());
     return typeof resource === 'object'
       ? resourceOn(
           resource,
@@ -57,8 +58,8 @@ export function useResourceView<SCHEMA extends AnySchema>({
           (): void => {
             if (resource === undefined) return undefined;
             format(resource)
-              .then((title = '') => {
-                setFormatted(title);
+              .then((title) => {
+                setFormatted(title ?? '');
                 return undefined;
               })
               .catch(softFail);
@@ -93,18 +94,24 @@ export function useResourceView<SCHEMA extends AnySchema>({
     ) : isLoading === true ? (
       <LoadingScreen />
     ) : (
-      <p>{formsText('noData')}</p>
+      <p>{formsText.noData()}</p>
     );
 
   const [tableNameInTitle] = usePref('form', 'behavior', 'tableNameInTitle');
   const [formHeaderFormat] = usePref('form', 'behavior', 'formHeaderFormat');
-  const title = `${
+  const formattedTableName =
     resource === undefined
       ? ''
       : resource.isNew()
-      ? commonText('newResourceTitle', resource.specifyModel.label)
-      : resource.specifyModel.label
-  }${formatted.length > 0 ? `: ${formatted}` : ''}`;
+      ? formsText.newResourceTitle({ tableName: resource.specifyModel.label })
+      : resource.specifyModel.label;
+  const title =
+    formatted.length > 0
+      ? commonText.colonLine({
+          label: formattedTableName,
+          value: formatted,
+        })
+      : formattedTableName;
 
   return {
     formatted: tableNameInTitle ? title : formatted,

@@ -1,7 +1,7 @@
 import { Tab } from '@headlessui/react';
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -24,6 +24,7 @@ import {
   AppResourceTextEditor,
   visualAppResourceEditors,
 } from './TabDefinitions';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AppResourcesTabs({
   label,
@@ -37,7 +38,7 @@ export function AppResourcesTabs({
   onExitFullScreen: handleExitFullScreen,
   onChange: handleChange,
 }: {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly isReadOnly: boolean;
   readonly showValidationRef: React.MutableRefObject<(() => void) | null>;
   readonly appResource: SpecifyResource<SpAppResource | SpViewSetObject>;
@@ -86,7 +87,7 @@ export function AppResourcesTabs({
     <Dialog
       buttons={
         <Button.Blue onClick={handleExitFullScreen}>
-          {commonText('close')}
+          {commonText.close()}
         </Button.Blue>
       }
       className={{
@@ -107,7 +108,7 @@ export function AppResourcesTabs({
 function useEditorTabs(
   resource: SerializedResource<SpAppResource | SpViewSetObject>
 ): RA<{
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly component: AppResourceTab;
 }> {
   const subType = f.maybe(
@@ -122,12 +123,12 @@ function useEditorTabs(
     return filterArray([
       typeof visualEditor === 'function'
         ? {
-            label: adminText('visualEditor'),
+            label: resourcesText.visualEditor(),
             component: visualEditor,
           }
         : undefined,
       {
-        label: adminText('textEditor'),
+        label: resourcesText.textEditor(),
         component: AppResourceTextEditor,
       },
     ]);

@@ -22,16 +22,17 @@ import {
   setDevelopmentGlobal,
 } from '../../utils/types';
 import { AnySchema, AnyTree } from './helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type SchemaLocalization = {
-  readonly name: string | null;
-  readonly desc: string | null;
+  readonly name: LocalizedString | null;
+  readonly desc: LocalizedString | null;
   readonly format: string | null;
   readonly aggregator: string | null;
   readonly ishidden: boolean;
   readonly items: IR<{
-    readonly name: string | null;
-    readonly desc: string | null;
+    readonly name: LocalizedString | null;
+    readonly desc: LocalizedString | null;
     readonly format: string | null;
     readonly picklistname: string | null;
     readonly weblinkname: string | null;

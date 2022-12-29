@@ -19,6 +19,7 @@ import {formatUrl} from '../../Router/queryString';
 import {removeKey} from '../../../utils/utils';
 import {Http} from '../../../utils/ajax/definitions';
 import {spAppResourceView} from '../webOnlyViews';
+import {LocalizedString} from 'typesafe-i18n';
 
 const {
   views,
@@ -270,7 +271,7 @@ theories(parseFormTableDefinition, [
             },
             fieldNames: undefined,
             isRequired: false,
-            ariaLabel: 'test',
+            ariaLabel: 'test' as LocalizedString,
           },
           {
             ...baseCell,
@@ -286,7 +287,7 @@ theories(parseFormTableDefinition, [
             },
             fieldNames: undefined,
             isRequired: false,
-            ariaLabel: '2',
+            ariaLabel: '2' as LocalizedString,
           },
         ],
       ],

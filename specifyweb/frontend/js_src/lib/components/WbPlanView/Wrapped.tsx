@@ -20,7 +20,8 @@ import { Mapper } from './Mapper';
 import { BaseTableSelection } from './State';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
-import {useTitle} from '../Molecules/AppTitle';
+import { useTitle } from '../Molecules/AppTitle';
+import { LocalizedString } from 'typesafe-i18n';
 
 // General definitions
 export type Status = {
@@ -44,7 +45,7 @@ export type Status = {
 
 export type DatasetBrief = {
   readonly id: number;
-  readonly name: string;
+  readonly name: LocalizedString;
   readonly uploadresult: {
     readonly success: boolean;
     readonly timestamp: string;

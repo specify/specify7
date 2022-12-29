@@ -149,7 +149,7 @@ exports[`DialogButton closes the dialog 1`] = `
     dark:bg-neutral-600 dark:text-gray-100 hover:dark:bg-neutral-500"
     type="button"
   >
-    Title
+    View
   </button>
 </DocumentFragment>
 `;
