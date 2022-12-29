@@ -12,7 +12,6 @@ import React from 'react';
 import type { Tables } from '../DataModel/types';
 import { camelToKebab, upperToKebab } from '../../utils/utils';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { getModel } from '../DataModel/schema';
 import { scrollIntoView } from '../TreeView/helpers';
 import type { IR, RA, RR } from '../../utils/types';
@@ -25,6 +24,8 @@ import {
   tableIconUndefined,
 } from '../Molecules/TableIcon';
 import { formsText } from '../../localization/forms';
+import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 type Properties =
   /*
@@ -144,7 +145,7 @@ type CustomSelectElementIconProps = {
   readonly optionLabel?: JSX.Element | string;
   // The value of the title HTML attribute
 
-  readonly title?: string;
+  readonly title?: LocalizedString;
   /*
    * True if option can be selected. False if option cannot be selected because
    * it was already selected
@@ -171,7 +172,7 @@ type CustomSelectElementOptionGroupProps = {
   // Group's name (used for styling)
   readonly selectGroupName?: string;
   // Group's label (shown to the user)
-  readonly selectGroupLabel?: string;
+  readonly selectGroupLabel?: LocalizedString;
   readonly selectOptionsData: IR<CustomSelectElementOptionProps>;
   readonly onClick?: (payload: {
     readonly newValue: string;
@@ -185,7 +186,7 @@ type CustomSelectElementOptionGroupProps = {
 
 type CustomSelectElementPropsBase = {
   // The label to use for the element
-  readonly selectLabel?: string;
+  readonly selectLabel?: LocalizedString;
   readonly customSelectType: CustomSelectType;
   readonly customSelectSubtype?: CustomSelectSubtype;
   readonly isOpen: boolean;
@@ -279,8 +280,8 @@ function Option({
 
   const fullTitle = filterArray([
     title ?? (typeof optionLabel === 'string' ? optionLabel : tableLabel),
-    isRelationship ? `(${formsText('relationship')})` : '',
-    isDefault ? `(${commonText('selected')})` : '',
+    isRelationship ? `(${formsText.relationship()})` : '',
+    isDefault ? `(${commonText.selected()})` : '',
   ]).join(' ');
 
   return (
@@ -312,17 +313,19 @@ function Option({
         />
       )}
       <span className="flex-1">
-        {optionLabel === '0' ? wbText('unmap') : optionLabel}
+        {optionLabel === '0' ? wbPlanText.unmap() : optionLabel}
       </span>
       {hasArrow &&
         (isRelationship ? (
           <span
-            aria-label={wbText('relationship', tableLabel ?? '')}
+            aria-label={wbPlanText.relationshipWithTable({
+              tableName: tableLabel ?? '',
+            })}
             className="print:hidden"
             role="img"
             title={
               typeof tableLabel === 'string'
-                ? wbText('relationship', tableLabel)
+                ? wbPlanText.relationshipWithTable({ tableName: tableLabel })
                 : undefined
             }
           >
@@ -601,7 +604,7 @@ export function CustomSelectElement({
           `}
         >
           {defaultOption.optionLabel === '0'
-            ? wbText('notMapped')
+            ? wbPlanText.notMapped()
             : defaultOption.optionLabel}
         </span>
         {has('arrow') && (
@@ -834,7 +837,7 @@ export function SuggestionBox({
     <CustomSelectElement
       customSelectOptionGroups={{
         suggestedMappings: {
-          selectGroupLabel: wbText('suggestedMappings'),
+          selectGroupLabel: wbPlanText.suggestedMappings(),
           selectOptionsData,
           hasIcon: false,
           hasArrow: false,

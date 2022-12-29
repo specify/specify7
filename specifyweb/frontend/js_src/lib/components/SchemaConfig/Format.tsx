@@ -15,8 +15,11 @@ import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { Link } from '../Atoms/Link';
 import { className } from '../Atoms/className';
 import { Input, Label } from '../Atoms/Form';
-import {useId} from '../../hooks/useId';
-import {SerializedResource} from '../DataModel/helperTypes';
+import { useId } from '../../hooks/useId';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -46,12 +49,12 @@ export function SchemaConfigFormat({
   )?.[KEY];
   return (
     <fieldset className="flex flex-col gap-1">
-      <legend>{commonText('fieldFormat')}</legend>
+      <legend>{schemaText.fieldFormat()}</legend>
       {Object.entries<
         RR<
           ItemType,
           {
-            readonly label: string;
+            readonly label: LocalizedString;
             readonly value: string | null;
             readonly values:
               | IR<RA<readonly [key: string, value: string]>>
@@ -61,12 +64,12 @@ export function SchemaConfigFormat({
         >
       >({
         none: {
-          label: commonText('none'),
+          label: commonText.none(),
           value: null,
           values: undefined,
         },
         formatted: {
-          label: commonText('formatted'),
+          label: schemaText.formatted(),
           value: item.format,
           values: {
             '': schemaData.uiFormatters
@@ -75,7 +78,13 @@ export function SchemaConfigFormat({
                   [
                     name,
                     `${name} ${value}${
-                      isSystem ? ` (${commonText('system')})` : ''
+                      isSystem
+                        ? ` (${
+                            schema.models.SpLocaleContainerItem.strictGetField(
+                              'isSystem'
+                            ).label
+                          })`
+                        : ''
                     }`,
                   ] as const
               )
@@ -83,37 +92,38 @@ export function SchemaConfigFormat({
           },
         },
         webLink: {
-          label: commonText('webLink'),
+          label: schemaText.webLink(),
           value: item.webLinkName,
           values: { '': schemaData.webLinks },
         },
         // REFACTOR: replace with a Query Combo Box?
         pickList: {
-          label: commonText('pickList'),
+          label: schema.models.PickList.label,
           value: item.pickListName,
           values: {
-            [commonText('userDefined')]: userPickLists,
-            [commonText('system')]: systemPickLists,
+            [schemaText.userDefined()]: userPickLists,
+            [schema.models.SpLocaleContainerItem.strictGetField('isSystem')
+              .label]: systemPickLists,
           },
           extraComponents: (
             <>
               {typeof currentPickListId === 'string' &&
               hasToolPermission('pickLists', 'read') ? (
                 <Link.Icon
-                  aria-label={commonText('edit')}
+                  aria-label={commonText.edit()}
                   className={className.dataEntryEdit}
                   href={`/specify/view/picklist/${currentPickListId}/`}
                   icon="pencil"
-                  title={commonText('edit')}
+                  title={commonText.edit()}
                 />
               ) : undefined}
               {hasToolPermission('pickLists', 'create') && (
                 <Link.Icon
-                  aria-label={commonText('add')}
+                  aria-label={commonText.add()}
                   className={className.dataEntryAdd}
                   href="/specify/view/picklist/new/"
                   icon="plus"
-                  title={commonText('add')}
+                  title={commonText.add()}
                 />
               )}
             </>

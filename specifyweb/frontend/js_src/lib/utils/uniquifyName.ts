@@ -4,6 +4,7 @@ import { f } from './functools';
 import { escapeRegExp } from './utils';
 import type { RA } from './types';
 import { filterArray } from './types';
+import { LocalizedString } from 'typesafe-i18n';
 
 const MAX_NAME_LENGTH = 64;
 
@@ -18,8 +19,8 @@ export function getUniqueName(
    * Can get this number from SQL schema for a given field
    */
   maxLength: number = Number.POSITIVE_INFINITY
-): string {
-  if (!usedNames.includes(name)) return name;
+): LocalizedString {
+  if (!usedNames.includes(name)) return name as LocalizedString;
   // FEATURE: allow customizing this?
   const suffix = / \((\d+)\)$/u.exec(name);
   const [{ length }, indexString] = suffix ?? ([[], '0'] as const);
@@ -42,7 +43,7 @@ export function getUniqueName(
       : `${strippedName}${uniquePart}`;
   return newName.length > maxLength
     ? getUniqueName(name.slice(0, -1 * uniquePart.length), usedNames, maxLength)
-    : newName;
+    : (newName as LocalizedString);
 }
 
 export async function uniquifyDataSetName(

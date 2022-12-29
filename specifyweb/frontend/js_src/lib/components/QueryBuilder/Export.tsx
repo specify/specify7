@@ -58,19 +58,19 @@ export function QueryExportButtons({
     <>
       {state === 'creating' ? (
         <Dialog
-          buttons={commonText('close')}
-          header={queryText('queryExportStartedDialogHeader')}
+          buttons={commonText.close()}
+          header={queryText.queryExportStarted()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText('queryExportStartedDialogText')}
+          {queryText.queryExportStartedDescription()}
         </Dialog>
       ) : state === 'warning' ? (
         <Dialog
-          buttons={commonText('close')}
-          header={queryText('unableToExportAsKmlDialogHeader')}
+          buttons={commonText.close()}
+          header={queryText.missingCoordinatesForKml()}
           onClose={(): void => setState(undefined)}
         >
-          {queryText('unableToExportAsKmlDialogText')}
+          {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
       ) : undefined}
       {hasPermission('/querybuilder/query', 'export_csv') && (
@@ -79,7 +79,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void => doQueryExport('/stored_query/exportcsv/')}
         >
-          {queryText('createCsv')}
+          {queryText.createCsv()}
         </QueryButton>
       )}
       {canUseKml && (
@@ -99,7 +99,7 @@ export function QueryExportButtons({
               : setState('warning')
           }
         >
-          {queryText('createKml')}
+          {queryText.createKml()}
         </QueryButton>
       )}
     </>

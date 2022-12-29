@@ -17,6 +17,7 @@ import type {
 } from '../DataModel/types';
 import { getAppResourceCount, getAppResourceMode } from './helpers';
 import { getAppResourceTree } from './tree';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type AppResources = {
   readonly directories: RA<SerializedResource<SpAppResourceDir>>;
@@ -58,7 +59,7 @@ export function useAppResources(): GetOrSet<AppResources | undefined> {
 }
 
 export type AppResourcesTree = RA<{
-  readonly label: string;
+  readonly label: LocalizedString;
   /*
    * A string that would be stable thought the lifecycle of an object.
    * Used to identify a tree node when storing conformation it in localStorage.

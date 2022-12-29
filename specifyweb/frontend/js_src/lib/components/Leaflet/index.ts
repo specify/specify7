@@ -141,7 +141,10 @@ export const formatLocalityData = (
       .map(([fieldName, field]) =>
         splitJoinedMappingPath(fieldName).includes('taxon')
           ? `<b>${field.value}</b>`
-          : `<b>${field.headerName}</b>: ${field.value}`
+          : commonText.colonLine({
+              label: `<b>${field.headerName}</b>`,
+              value: field.value.toString(),
+            })
       ),
     ...(typeof viewUrl === 'string'
       ? [
@@ -151,17 +154,17 @@ export const formatLocalityData = (
             href="${viewUrl}"
             target="_blank"
             class="${className.link}"
-            title="${commonText('opensInNewTab')}"
+            title="${commonText.opensInNewTab()}"
           >
-            ${commonText('viewRecord')}
+            ${commonText.viewRecord()}
             <span
-              title="${commonText('opensInNewTab')}"
-              aria-label="${commonText('opensInNewTab')}"
+              title="${commonText.opensInNewTab()}"
+              aria-label="${commonText.opensInNewTab()}"
             >${legacyNonJsxIcons.link}</span>
           </a>`,
         ]
       : []),
-    [...(isLoaded ? [] : [commonText('loading')])],
+    [...(isLoaded ? [] : [commonText.loading()])],
   ].join('<br>');
 
 export function getMarkersFromLocalityData({

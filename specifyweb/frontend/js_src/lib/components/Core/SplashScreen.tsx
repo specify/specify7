@@ -21,7 +21,7 @@ export function SplashScreen({
         `}
       >
         <header className="pb-2">
-          <h1 className="sr-only">{commonText('specifySeven')}</h1>
+          <h1 className="sr-only">{commonText.specifySeven()}</h1>
           <img
             alt=""
             className="max-w-xs hover:animate-hue-rotate"

@@ -118,9 +118,7 @@ export function ViewResource(): JSX.Element {
   const parsedTableName = getModel(tableName)?.name;
 
   return typeof parsedTableName === 'string' ? (
-    <ProtectedTable action="create" tableName={parsedTableName}>
-      <ViewResourceById id={id} tableName={parsedTableName} />
-    </ProtectedTable>
+    <ViewResourceById id={id} tableName={parsedTableName} />
   ) : (
     <NotFoundView />
   );

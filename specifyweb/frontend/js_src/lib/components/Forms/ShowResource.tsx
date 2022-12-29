@@ -15,8 +15,7 @@ import type { RecordSet } from '../DataModel/types';
 import { RecordSetWrapper } from '../FormSliders/RecordSet';
 import { useMenuItem } from '../Header';
 import { interactionTables } from '../Interactions/InteractionsDialog';
-import { hasTablePermission } from '../Permissions/helpers';
-import { TablePermissionDenied } from '../Permissions/PermissionDenied';
+import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { NotFoundView } from '../Router/NotFoundView';
 import { CheckLoggedInCollection, ViewResourceByGuid } from './DataTask';
 import { ResourceView } from './ResourceView';
@@ -128,22 +127,22 @@ export function ViewResourceById({
     (numericId === undefined && id?.toLowerCase() !== 'new') ||
     model === undefined ||
     resource === undefined
-  ) {
-    return <NotFoundView />;
-  } else if (
-    typeof numericId === 'number' &&
-    !hasTablePermission(model.name, 'read')
   )
-    return <TablePermissionDenied action="read" tableName={model.name} />;
+    return <NotFoundView />;
   else if (reGuid.test(id ?? ''))
     return <ViewResourceByGuid guid={id!} model={model} />;
   else
     return (
-      <CheckLoggedInCollection
-        resource={resource}
-        isInRecordSet={isInRecordSet}
+      <ProtectedTable
+        action={numericId === undefined ? 'create' : 'read'}
+        tableName={model.name}
       >
-        <ShowResource resource={resource} />
-      </CheckLoggedInCollection>
+        <CheckLoggedInCollection
+          resource={resource}
+          isInRecordSet={isInRecordSet}
+        >
+          <ShowResource resource={resource} />
+        </CheckLoggedInCollection>
+      </ProtectedTable>
     );
 }

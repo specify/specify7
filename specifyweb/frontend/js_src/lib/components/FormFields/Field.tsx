@@ -26,6 +26,7 @@ import { SpecifyFormCheckbox } from './Checkbox';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { userText } from '../../localization/user';
 
 export function UiField({
   id,
@@ -146,7 +147,7 @@ export function UiField({
       <Input.Text disabled id={id} value={aggregated?.toString() ?? ''} />
     )
   ) : (
-    <Input.Text disabled id={id} value={commonText('noPermission')} />
+    <Input.Text disabled id={id} value={userText.noPermission()} />
   );
 }
 
@@ -197,8 +198,8 @@ function Field({
                 >
               )
                 .then(format)
-                .then((value = '') => value)
-            : commonText('noPermission')
+                .then((value) => value ?? '')
+            : userText.noPermission()
           : undefined,
       /*
        * While "value" is not used in the hook, it is needed to update a
@@ -243,7 +244,7 @@ function Field({
        */
       value={
         field?.isRelationship === true
-          ? formattedRelationship ?? commonText('loading')
+          ? formattedRelationship ?? commonText.loading()
           : value?.toString() ?? ''
       }
       onBlur={

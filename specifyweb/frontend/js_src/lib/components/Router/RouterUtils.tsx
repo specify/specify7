@@ -5,6 +5,7 @@ import type { RouteObject } from 'react-router/lib/router';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { useTitle } from '../Molecules/AppTitle';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
@@ -19,7 +20,7 @@ export type EnhancedRoute = Readonly<
    * Add a title attribute for usage when displaying the route in user
    * preferences
    */
-  readonly title?: string;
+  readonly title?: LocalizedString;
   /*
    * Add an explicit way of opting out from displaying the path in user
    * preferences (this is the case implicitly if title is missing)
@@ -30,7 +31,7 @@ export type EnhancedRoute = Readonly<
 /** Convert EnhancedRoutes to RouteObjects */
 export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
-  title?: string
+  title?: LocalizedString
 ): WritableArray<RouteObject> =>
   enhancedRoutes.map(({ element, children, ...enhancedRoute }) => ({
     ...enhancedRoute,
@@ -58,7 +59,7 @@ export function Async({
   title,
 }: {
   readonly element: () => Promise<React.FunctionComponent>;
-  readonly title: string | undefined;
+  readonly title: LocalizedString | undefined;
 }): JSX.Element {
   useTitle(title);
 

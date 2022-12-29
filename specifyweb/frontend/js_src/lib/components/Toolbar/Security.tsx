@@ -9,7 +9,6 @@ import { fetchCollection } from '../DataModel/collection';
 import type { Institution, SpecifyUser } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
 import { index } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { schema } from '../DataModel/schema';
 import type { BackEndRole } from '../Security/utils';
@@ -25,6 +24,8 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { ActiveLink } from '../Router/ActiveLink';
 import { processPolicies } from '../Security/policyConverter';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type SecurityOutlet = {
   readonly institution: SerializedResource<Institution> | undefined;
@@ -90,13 +91,13 @@ export function SecurityPanel(): JSX.Element | null {
   };
 
   /*
-   * FEATURE: replace blank home page with a security dashabord
+   * FEATURE: replace blank home page with a security dashboard
    *    that includes: whether page is using https, how many super admins
    *    there are and etc
    */
   return (
     <Container.FullGray>
-      <H2 className="text-2xl">{adminText('securityPanel')}</H2>
+      <H2 className="text-2xl">{userText.securityPanel()}</H2>
       <div className="flex h-0 flex-1 gap-4">
         <Aside institution={institution} />
         <ErrorBoundary dismissable>
@@ -119,19 +120,19 @@ function Aside({
         <section>
           <H3>{schema.models.Institution.label}</H3>
           <ActiveLink href="/specify/security/institution">
-            {institution.name}
+            {institution.name as LocalizedString}
           </ActiveLink>
         </section>
       )}
       <section>
-        <H3>{adminText('collections')}</H3>
+        <H3>{userText.collections()}</H3>
         <ul>
           {availableCollections.map((collection, index) => (
             <li key={index}>
               <ActiveLink
                 href={`/specify/security/collection/${collection.id}/`}
               >
-                {collection.collectionName}
+                {collection.collectionName as LocalizedString}
               </ActiveLink>
             </li>
           ))}

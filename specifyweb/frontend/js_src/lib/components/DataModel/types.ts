@@ -17,7 +17,7 @@
  * 7. Change the "Schema version:" and "Date generated:" fields above.
  */
 `
-import { regenerate } from './tests/updatedatamodel';
+import { regenerate } from './tests/updateDataModel';
 // Call this function from the console once front-end is loaded
 globalThis.regenerateSchema = (): void => {
   document.body.textContent = regenerate();

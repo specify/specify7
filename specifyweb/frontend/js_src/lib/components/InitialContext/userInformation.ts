@@ -9,8 +9,10 @@ import { fetchContext as fetchSchema } from '../DataModel/schema';
 import type { RA, Writable } from '../../utils/types';
 import { setDevelopmentGlobal } from '../../utils/types';
 import { SerializedModel, SerializedResource } from '../DataModel/helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type UserInformation = SerializedModel<SpecifyUser> & {
+  readonly name: LocalizedString;
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
   readonly agent: SerializedModel<Agent>;

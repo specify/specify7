@@ -102,8 +102,8 @@ export function OrderPicker<SCHEMA extends AnySchema>({
         handleChange(newOrder as Exclude<typeof order, undefined>)
       }
     >
-      <option value="">{commonText('none')}</option>
-      <optgroup label={commonText('ascending')}>
+      <option value="">{commonText.none()}</option>
+      <optgroup label={commonText.ascending()}>
         {model.literalFields
           .filter(
             /*
@@ -118,7 +118,7 @@ export function OrderPicker<SCHEMA extends AnySchema>({
             </option>
           ))}
       </optgroup>
-      <optgroup label={commonText('descending')}>
+      <optgroup label={commonText.descending()}>
         {model.literalFields
           .filter(({ isHidden, name }) => !isHidden || order?.slice(1) === name)
           .map(({ name, label }) => (
@@ -142,9 +142,9 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
       () => [
         {
           label: (
-            <span className="font-sans">{preferencesText('defaultFont')}</span>
+            <span className="font-sans">{preferencesText.defaultFont()}</span>
           ),
-          searchValue: preferencesText('defaultFont'),
+          searchValue: preferencesText.defaultFont(),
           data: defaultFont,
         },
         ...getAvailableFonts().map((item) => ({
@@ -165,7 +165,7 @@ export const FontFamilyPreferenceItem: PreferenceItemComponent<string> =
         minLength={0}
         source={items}
         // OnCleared={}
-        value={value === defaultFont ? preferencesText('defaultFont') : value}
+        value={value === defaultFont ? preferencesText.defaultFont() : value}
         onChange={({ data }): void => handleChange(data)}
         onNewValue={handleChange}
       />
@@ -179,30 +179,30 @@ export type WelcomePageMode =
   | 'taxonTiles';
 export const defaultWelcomePageImage = '/static/img/splash_screen.svg';
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
-  title: preferencesText('content'),
+  title: preferencesText.content(),
   requiresReload: false,
   visible: true,
   defaultValue: 'default',
   values: [
     {
       value: 'default',
-      title: preferencesText('defaultImage'),
+      title: preferencesText.defaultImage(),
     },
     {
       value: 'taxonTiles',
-      title: welcomeText('taxonTiles'),
+      title: welcomeText.taxonTiles(),
     },
     {
       value: 'customImage',
-      title: preferencesText('customImage'),
-      description: preferencesText('customImageDescription'),
+      title: preferencesText.customImage(),
+      description: preferencesText.customImageDescription(),
     },
     // FEATURE: make documentation more user friendly and reEnable this:
     /*
      *{
      *  value: 'embeddedWebpage',
-     *  title: preferencesText('embeddedWebpage'),
-     *  description: preferencesText('embeddedWebpageDescription'),
+     *  title: preferencesText.embeddedWebpage(),
+     *  description: preferencesText.embeddedWebpageDescription(),
      *},
      */
   ],

@@ -2,15 +2,12 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { formatNumber } from '../Atoms/Internationalization';
 import { schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
@@ -36,6 +33,7 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 import { getResourceViewUrl } from '../DataModel/resource';
+import { localityText } from '../../localization/locality';
 
 export function QueryToMap({
   results,
@@ -58,7 +56,7 @@ export function QueryToMap({
   return localityMappings.length === 0 ? null : (
     <>
       <Button.Small disabled={results.length === 0} onClick={handleOpen}>
-        {commonText('geoMap')}
+        {localityText.geoMap()}
       </Button.Small>
       {isOpen && ids.length > 0 ? (
         <Dialog
@@ -230,19 +228,18 @@ function Dialog({
        * That is needed so that the map can zoom in to correct place
        */
       forwardRef={setMap}
-      header={`${commonText('geoMap')}${
+      header={
         typeof totalCount === 'number'
-          ? ` - ${
-              results.length === totalCount
-                ? queryText('queryMapAll', formatNumber(results.length))
-                : queryText(
-                    'queryMapSubset',
-                    formatNumber(results.length),
-                    formatNumber(totalCount)
-                  )
-            }`
-          : ''
-      }`}
+          ? results.length === totalCount
+            ? localityText.queryMapAll({
+                plotted: results.length,
+              })
+            : localityText.queryMapSubset({
+                plotted: results.length,
+                total: totalCount,
+              })
+          : localityText.geoMap()
+      }
       headerButtons={
         typeof totalCount === 'number' && totalCount !== results.length ? (
           <Progress

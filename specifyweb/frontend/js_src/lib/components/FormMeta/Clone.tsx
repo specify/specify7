@@ -28,7 +28,7 @@ export function CloneConfig({
           setGlobalDisabled(toggleItem(globalDisabled, model.name))
         }
       />
-      {formsText('cloneButtonEnabled')}
+      {formsText.cloneButtonEnabled()}
     </Label.Inline>
   ) : null;
 }
@@ -54,7 +54,7 @@ export function AddButtonConfig({
           setGlobalDisabled(toggleItem(globalDisabled, model.name))
         }
       />
-      {formsText('addButtonEnabled')}
+      {formsText.addButtonEnabled()}
     </Label.Inline>
   ) : null;
 }

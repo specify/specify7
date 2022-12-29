@@ -106,7 +106,7 @@ function DefaultComboBox(props: DefaultComboBoxProps): JSX.Element | null {
       disabled
       required={props.isRequired}
       // BUG: required has no effect while disabled. Need a better solution
-      value={pickList === false ? '' : commonText('loading')}
+      value={pickList === false ? '' : commonText.loading()}
     />
   );
 }

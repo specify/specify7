@@ -1,9 +1,11 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 import { toggleItem } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -45,7 +47,7 @@ export function AppResourcesFilters({
   return (
     <>
       <div className="flex gap-2 rounded bg-[color:var(--background)]">
-        <span className="sr-only">{adminText('filters')}</span>
+        <span className="sr-only">{resourcesText.filters()}</span>
         <RadioButton
           isPressed={filters.viewSets}
           onClick={(): void =>
@@ -55,7 +57,7 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('formDefinitions')}
+          {resourcesText.formDefinitions()}
         </RadioButton>
         <RadioButton
           isPressed={showAllResources}
@@ -67,11 +69,11 @@ export function AppResourcesFilters({
             })
           }
         >
-          {commonText('appResources')}
+          {resourcesText.appResources()}
         </RadioButton>
         <Button.Blue
-          aria-label={adminText('custom')}
-          title={adminText('custom')}
+          aria-label={resourcesText.custom()}
+          title={resourcesText.custom()}
           onClick={handleOpen}
         >
           {icons.cog}
@@ -79,8 +81,8 @@ export function AppResourcesFilters({
       </div>
       {isOpen && (
         <Dialog
-          buttons={commonText('close')}
-          header={adminText('custom')}
+          buttons={commonText.close()}
+          header={resourcesText.custom()}
           modal={false}
           onClose={handleClose}
         >
@@ -97,10 +99,13 @@ export function AppResourcesFilters({
                   }
                 />
                 {appResourceTypes.viewSets.icon}
-                {`${commonText('formDefinitions')} (${countAppResources(
-                  initialResources,
-                  { appResources: [], viewSets: true }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.formDefinitions(),
+                  count: countAppResources(initialResources, {
+                    appResources: [],
+                    viewSets: true,
+                  }),
+                })}
               </Label.Inline>
             </li>
             <li>
@@ -110,10 +115,13 @@ export function AppResourcesFilters({
                   onValueChange={handleToggleResources}
                 />
                 {appResourceTypes.appResources.icon}
-                {`${commonText('appResources')} (${countAppResources(
-                  initialResources,
-                  { appResources: allAppResources, viewSets: false }
-                )})`}
+                {commonText.countLine({
+                  resource: resourcesText.appResources(),
+                  count: countAppResources(initialResources, {
+                    appResources: allAppResources,
+                    viewSets: false,
+                  }),
+                })}
               </Label.Inline>
               <Ul className="pl-6">
                 {Object.entries(appResourceSubTypes).map(
@@ -133,16 +141,19 @@ export function AppResourcesFilters({
                           }
                         />
                         {icon}
-                        {`${label} (${countAppResources(initialResources, {
-                          appResources: [key],
-                          viewSets: false,
-                        })})`}
+                        {commonText.countLine({
+                          resource: label,
+                          count: countAppResources(initialResources, {
+                            appResources: [key],
+                            viewSets: false,
+                          }),
+                        })}
                         {typeof documentationUrl === 'string' && (
                           <Link.Icon
                             href={documentationUrl}
                             icon="externalLink"
                             target="_blank"
-                            title={commonText('documentation')}
+                            title={headerText.documentation()}
                           />
                         )}
                       </Label.Inline>
@@ -164,7 +175,7 @@ function RadioButton({
   onClick: handleClick,
 }: {
   readonly isPressed: boolean;
-  readonly children: string;
+  readonly children: LocalizedString;
   readonly onClick: () => void;
 }): JSX.Element {
   return (

@@ -6,6 +6,7 @@ import type { RA } from '../../utils/types';
 import { NotFoundView } from './NotFoundView';
 import type { EnhancedRoute } from './RouterUtils';
 import { toReactRoutes } from './RouterUtils';
+import { userText } from '../../localization/user';
 
 /* eslint-disable @typescript-eslint/promise-function-async */
 export const entrypointRoutes: RA<EnhancedRoute> = [
@@ -14,17 +15,17 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'login',
-        title: commonText('login'),
+        title: userText.logIn(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'legacy_login',
-        title: commonText('login'),
+        title: userText.logIn(),
         element: () => import('../Login').then(({ Login }) => Login),
       },
       {
         path: 'choose_collection',
-        title: commonText('chooseCollection'),
+        title: commonText.chooseCollection(),
         element: () =>
           import('../ChooseCollection').then(
             ({ ChooseCollection }) => ChooseCollection
@@ -32,7 +33,7 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'password_change',
-        title: commonText('changePassword'),
+        title: userText.changePassword(),
         element: () =>
           import('../PasswordChange').then(
             ({ PasswordChange }) => PasswordChange
@@ -42,7 +43,6 @@ export const entrypointRoutes: RA<EnhancedRoute> = [
   },
   {
     path: 'specify/*',
-    title: '',
     element: () =>
       import('../Core/ContextLoader').then(
         ({ ContextLoader }) => ContextLoader

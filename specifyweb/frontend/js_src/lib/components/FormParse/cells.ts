@@ -25,6 +25,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { LocalizedString } from 'typesafe-i18n';
 
 // Parse column width definitions
 export const processColumnDefinition = (
@@ -58,8 +59,8 @@ export type CellTypes = {
   readonly Label: State<
     'Label',
     {
-      readonly text: string | undefined;
-      readonly title: string | undefined;
+      readonly text: LocalizedString | undefined;
+      readonly title: LocalizedString | undefined;
       readonly labelForCellId: string | undefined;
       readonly fieldName: string | undefined;
     }
@@ -67,7 +68,7 @@ export type CellTypes = {
   readonly Separator: State<
     'Separator',
     {
-      readonly label: string | undefined;
+      readonly label: LocalizedString | undefined;
       readonly icon: string | undefined;
       readonly forClass: keyof Tables | undefined;
     }
@@ -112,7 +113,7 @@ const processCellType: {
   }) => CellTypes[KEY];
 } = {
   Field({ cell, model, getProperty }) {
-    let rawFieldName = getParsedAttribute(cell, 'name');
+    let rawFieldName: string | undefined = getParsedAttribute(cell, 'name');
     const parts = rawFieldName?.split('.') ?? [];
     /*
      * If model is attachment, and field name is attachment.type, replace it
@@ -231,7 +232,7 @@ export type FormCellDefinition = CellTypes[keyof CellTypes] & {
   readonly align: typeof cellAlign[number];
   readonly colSpan: number;
   readonly visible: boolean;
-  readonly ariaLabel: string | undefined;
+  readonly ariaLabel: LocalizedString | undefined;
 };
 
 const cellTypeTranslation: IR<keyof CellTypes> = {

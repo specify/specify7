@@ -63,7 +63,9 @@ export function extractHeader(
 ): { readonly rows: RA<RA<string>>; readonly header: RA<string> } {
   const header = hasHeader
     ? uniquifyHeaders(data[0].map(f.trim))
-    : Array.from(data[0], (_, index) => wbText('columnName', index + 1));
+    : Array.from(data[0], (_, index) =>
+        wbText.columnName({ columnIndex: index + 1 })
+      );
   const rows = hasHeader ? data.slice(1) : data;
   return { rows, header: Array.from(header) };
 }
@@ -103,7 +105,7 @@ export const parseCsv = async (
              */
             if (typeof error === 'object') reject(error);
             else if (maxWidth === 0 || rows.length === 0)
-              reject(new Error(wbText('corruptFile', file.name)));
+              reject(new Error(wbText.corruptFile({ fileName: file.name })));
             else
               resolve(
                 rows.map((row) => [
@@ -126,7 +128,7 @@ export const parseXls = async (
     worker.addEventListener('message', ({ data }) => {
       const rows = data as RA<RA<string>>;
       if (rows.length === 0 || rows[0].length === 0)
-        reject(new Error(wbText('corruptFile', file.name)));
+        reject(new Error(wbText.corruptFile({ fileName: file.name })));
       else resolve(rows);
     });
     worker.addEventListener('error', (error) =>
