@@ -22,11 +22,41 @@ server_time_delta = None
 class AttachmentError(Exception):
     pass
 
-def get_collection():
-    "Assumes that all collections are stored together."
+def get_collection(request=None):
+    """Return the collection name to pass to the asset server.
+
+    The asset server has an anti-feature that allows it to save assets
+    for different collections in different directories. The idea is
+    unsound, however, because some assets may be attached to records
+    which are shared by objects in different collections. For
+    instance, Localities may have attachments, but the same Locality
+    may be used by multiple collections. If we save a locality
+    attachment into a directory associated with the currently logged
+    in collection, it will be unavailable to other collections.
+
+    For this reason it is recommend to store all assets for a database
+    in the same directory. This can be accomplished for Sp6 by
+    configuring the asset server to map all collections to the same
+    folder. For Sp7 we often override the collection using the
+    WEB_ATTACHMENT_COLLECTION setting to use the database name. This
+    allows a single asset server to service multiple Sp7 instances.
+    """
+
     if settings.WEB_ATTACHMENT_COLLECTION:
+        # A specific collection name is defined in the settings.
         return settings.WEB_ATTACHMENT_COLLECTION
 
+    if request is not None:
+        # We use the client's logged in collection.
+        # This will work OK for saving and retrieving assets
+        # attached to records scoped to the collection level.
+        return request.specify_collection.collectionname
+
+    # If there's no request object to tell us which
+    # collection the client is logged into, we can't
+    # do any better than using the first collection
+    # and hoping that all the assets are in the same
+    # folder.
     from specifyweb.specify.models import Collection
     return Collection.objects.all()[0].collectionname
 
@@ -58,7 +88,7 @@ def get_settings(request):
         return HttpResponse("{}", content_type='application/json')
 
     data = {
-        'collection': get_collection(),
+        'collection': get_collection(request),
         'token_required_for_get': settings.WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET
         }
     data.update(server_urls)
@@ -130,6 +160,12 @@ def make_attachment_filename(filename):
 def delete_attachment_file(attch_loc):
     data = {
         'filename': attch_loc,
+        # Here we have no reference to the client's logged collection,
+        # if any.  Even if we did there would be no guarantee the
+        # asset was originally saved in that collection. The best we
+        # can do is hope all the assets are going to the same
+        # directory. Another option would be just to disable deletion
+        # and use some sort of asynchronous garbage collection.
         'coll': get_collection(),
         'token': generate_token(get_timestamp(), attch_loc)
         }
