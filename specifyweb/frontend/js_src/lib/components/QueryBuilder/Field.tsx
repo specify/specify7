@@ -438,6 +438,13 @@ export function QueryLine({
                     fieldName={mappingPathToString(field.mappingPath)}
                     filter={field.filters[index]}
                     parser={fieldMeta.parser}
+                    terminatingField={
+                      isFieldComplete
+                        ? schema.models[baseTableName].getField(
+                            mappingPathToString(field.mappingPath)
+                          )
+                        : undefined
+                    }
                     onChange={
                       typeof handleChange === 'function'
                         ? (startValue): void =>
