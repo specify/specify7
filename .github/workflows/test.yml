@@ -140,10 +140,9 @@ jobs:
         run: |
           npm run localizationTests -- --emit ./localization-strings
 
-      # FIXME: uncomment this:
-      # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
       - name: Clone branch that stores localization strings
-        if: github.ref == 'refs/heads/l10n-improvements'
+        # Listen for changes to production branch
+        if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
         uses: actions/checkout@v3
         with:
           path: weblate-localization
