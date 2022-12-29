@@ -345,7 +345,7 @@ export function AutoComplete<T>({
   const [currentItem, setCurrentItem] = React.useState<
     AutoCompleteItem<T> | string | undefined
   >(undefined);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const newCurrentItem = resultsRef.current?.find(
       ({ label, searchValue }) => (searchValue ?? label) === currentValue
     );
@@ -368,6 +368,7 @@ export function AutoComplete<T>({
       disabled={disabled}
       nullable
       value={currentItem}
+      // Triggers on enter or selects new item
       onChange={(
         value: AutoCompleteItem<T> | string | null | undefined
       ): void => {
