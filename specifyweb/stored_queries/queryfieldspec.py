@@ -208,7 +208,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
                 query, orm_model, table, field = self.build_join(query, self.join_path[:-1])
                 orm_field = query.objectformatter.aggregate(query, self.get_field(), orm_model, formatter)
         else:
-            #logger.warning('this branch was taken')
             query, orm_model, table, field = self.build_join(query, self.join_path)
             if self.tree_rank is not None:
                 query, orm_field = query.handle_tree_field(orm_model, table, self.tree_rank, self.tree_field)
@@ -238,8 +237,6 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
 
             f = op(orm_field, value)
             predicate = sql.not_(f) if negate else f
-           # logger.warning('predicate')
-           # logger.warning(predicate)
         else:
             predicate = None
 
