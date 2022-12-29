@@ -3,7 +3,6 @@ name: Tests
 on: [push]
 
 jobs:
-
   pull-localization:
     name: Pull localization from Weblate
     # Only run this for pushes from Weblate
@@ -20,8 +19,7 @@ jobs:
         with:
           path: specify7
           # Assumes the strings originally came from production branch
-          # FIXME: replace this with "production"
-          ref: l10n-improvements
+          ref: production
           fetch-depth: 0
 
       - uses: actions/setup-node@v3
