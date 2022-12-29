@@ -20,11 +20,7 @@ import { legacyLocalize } from '../InitialContext/legacyUiLocalization';
 import type { IR, RA } from '../../utils/types';
 import { setLogContext } from '../Errors/interceptLogs';
 import { SpecifyModel } from '../DataModel/specifyModel';
-import {
-  hasPathPermission,
-  hasPermission,
-  hasToolPermission,
-} from '../Permissions/helpers';
+import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
 import { specialPickListMapping } from '../FormFields/ComboBox';
 import { parserFromType } from '../../utils/parser/definitions';
@@ -195,23 +191,16 @@ const processFieldType: {
       step: f.parseFloat(getProperty('step')),
     };
   },
-  QueryComboBox({ getProperty, model, fields }) {
+  QueryComboBox({ getProperty, fields }) {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
       return { type: 'Blank' };
-    }
-    else
-      return hasPathPermission(
-        model.name,
-        fields.map(({ name }) => name),
-        'read'
-      )
-        ? {
-            type: 'QueryComboBox',
-            hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
-            typeSearch: getProperty('name'),
-          }
-        : { type: 'Blank' };
+    } else
+      return {
+        type: 'QueryComboBox',
+        hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
+        typeSearch: getProperty('name'),
+      };
   },
   Plugin: ({ cell, getProperty, model, fields }) => ({
     type: 'Plugin',
@@ -259,7 +248,7 @@ export function parseFormField({
 }): FormFieldDefinition {
   let uiType = getParsedAttribute(cell, 'uiType');
   if (uiType === undefined) {
-    console.error('Field is missing uiType', cell);
+    console.warn('Field is missing uiType', cell);
     uiType = 'text';
   }
   setLogContext({ fieldType: uiType });

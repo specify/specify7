@@ -11,7 +11,7 @@ import {
 import { index, sortFunction } from '../../utils/utils';
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import {softFail} from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 
 type Node = {
   readonly id: number;

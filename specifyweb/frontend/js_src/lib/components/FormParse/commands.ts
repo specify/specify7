@@ -56,7 +56,10 @@ const processUiCommand: {
       : model.name === 'Loan'
       ? { type: 'ReturnLoan' }
       : { type: 'WrongTable', supportedTables: ['Loan'] },
-  Unsupported: ({ name }) => ({ type: 'Unsupported', name }),
+  Unsupported: ({ name }) => {
+    console.error(`Unsupported command: ${name ?? '(null)'}`);
+    return { type: 'Unsupported', name };
+  },
   Blank: () => ({ type: 'Blank' }),
   WrongTable: () => error('This parser should not get called'),
 };

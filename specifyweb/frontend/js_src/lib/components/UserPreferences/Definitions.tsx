@@ -32,7 +32,7 @@ import {
   WelcomePageModePreferenceItem,
 } from './Renderers';
 import { TableFields } from '../DataModel/helperTypes';
-import {softFail} from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {

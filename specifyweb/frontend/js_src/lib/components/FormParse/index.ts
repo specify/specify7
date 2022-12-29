@@ -22,6 +22,7 @@ import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
 import { consoleLog, LogMessage, setLogContext } from '../Errors/interceptLogs';
+import { formatList } from '../Atoms/Internationalization';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -156,14 +157,22 @@ export function resolveViewDefinition(
       'Form definition does not contain a class attribute'
     )
   );
+  const resolvedFormType =
+    formType === 'formTable'
+      ? 'formTable'
+      : formTypes.find(
+          (type) => type.toLowerCase() === newFormType?.toLowerCase()
+        );
+  if (resolvedFormType === undefined)
+    console.warn(
+      `Unknown form type ${
+        newFormType ?? '(null)'
+      }. Expected one of ${formatList(formTypes)}`
+    );
+
   return {
     viewDefinition: actualViewDefinition,
-    formType:
-      formType === 'formTable'
-        ? 'formTable'
-        : formTypes.find(
-            (type) => type.toLowerCase() === newFormType?.toLowerCase()
-          ) ?? 'form',
+    formType: resolvedFormType ?? 'form',
     mode: mode === 'search' ? mode : altView.mode,
     model: strictGetModel(
       modelName === 'ObjectAttachmentIFace' ? 'Attachment' : modelName
@@ -264,7 +273,8 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldName ?? '')?.label ?? cell.fieldName
+          ? model?.getField(cell.fieldNames?.join('.') ?? '')?.label ??
+            cell.fieldNames?.join('.')
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'
@@ -335,10 +345,10 @@ function getColumnDefinitions(viewDefinition: Element): string {
       viewDefinition,
       getPref('form.definition.columnSource')
     ) ?? getColumnDefinition(viewDefinition, undefined);
-  return defined(
-    definition ?? getParsedAttribute(viewDefinition, 'colDef'),
-    'Form definition does not contain column definition'
-  );
+  const resolved = definition ?? getParsedAttribute(viewDefinition, 'colDef');
+  if (resolved === undefined)
+    console.warn('Form definition does not contain column definition');
+  return resolved ?? '';
 }
 
 const getColumnDefinition = (

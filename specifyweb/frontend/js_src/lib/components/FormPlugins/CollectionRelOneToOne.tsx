@@ -3,9 +3,9 @@ import React from 'react';
 import type { CollectionObject } from '../DataModel/types';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { Link } from '../Atoms/Link';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {fetchOtherCollectionData} from './collectionRelData';
-import {softFail} from '../Errors/Crash';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { fetchOtherCollectionData } from './collectionRelData';
+import { softFail } from '../Errors/Crash';
 
 export function CollectionOneToOnePlugin({
   resource,

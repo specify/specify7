@@ -27,10 +27,7 @@ import {
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
-import {
-  hasTablePermission,
-  mappingPathToTableNames,
-} from '../Permissions/helpers';
+import { hasPathPermission, hasTablePermission } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
 import { softFail } from '../Errors/Crash';
 
@@ -203,34 +200,38 @@ async function formatField(
   resource: SpecifyResource<AnySchema>,
   tryBest: boolean
 ): Promise<string> {
-  const field = resource.specifyModel.strictGetField(fieldName) as LiteralField;
   if (typeof fieldFormatter === 'string' && fieldFormatter === '') return '';
 
-  // Check if formatter contains a table withouth read access
-  const noAccessTable = mappingPathToTableNames(
-    resource.specifyModel.name,
-    fieldName.split('.'),
-    true
-  ).find((tableName) => !hasTablePermission(tableName, 'read'));
+  const fields = resource.specifyModel.getFields(fieldName);
+  const field = fields.at(-1);
+  if (field === undefined)
+    throw new Error(`Tried to get unknown field: ${fieldName}`);
+  else if (field.isRelationship)
+    throw new Error(`Unexpected formatting of a relationsh field ${fieldName}`);
 
-  const formatted =
-    typeof noAccessTable === 'string'
-      ? tryBest
-        ? naiveFormatter(resource)
-        : commonText('noPermission')
-      : await (
-          resource.rgetPromise(fieldName) as Promise<
-            SpecifyResource<AnySchema> | string | undefined
-          >
-        ).then(async (value) =>
-          formatter.length > 0 && typeof value === 'object'
-            ? (await format(value, formatter)) ?? ''
-            : fieldFormat(
-                field,
-                resolveParser(field),
-                value as string | undefined
-              )
-        );
+  const hasPermission = hasPathPermission(
+    resource.specifyModel,
+    fields,
+    'read'
+  );
+
+  const formatted = hasPermission
+    ? await (
+        resource.rgetPromise(fieldName) as Promise<
+          SpecifyResource<AnySchema> | string | undefined
+        >
+      ).then(async (value) =>
+        formatter.length > 0 && typeof value === 'object'
+          ? (await format(value, formatter)) ?? ''
+          : fieldFormat(
+              field,
+              resolveParser(field),
+              value as string | undefined
+            )
+      )
+    : tryBest
+    ? naiveFormatter(resource)
+    : commonText('noPermission');
   return formatted === '' ? '' : `${separator}${formatted}`;
 }
 

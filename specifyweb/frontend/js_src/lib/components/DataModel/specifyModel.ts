@@ -305,12 +305,14 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public getField(
     unparsedName: string
   ): LiteralField | Relationship | undefined {
-    return this.getFields(unparsedName).at(-1);
+    return this.getFields(unparsedName)?.at(-1);
   }
 
   // REFACTOR: use this where appropriate
-  public getFields(unparsedName: string): RA<LiteralField | Relationship> {
-    if (unparsedName === '') return [];
+  public getFields(
+    unparsedName: string
+  ): RA<LiteralField | Relationship> | undefined {
+    if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
     const splitName = unparsedName.toLowerCase().split('.');
@@ -327,8 +329,16 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
         return [this.idField];
 
       const alias = this.fieldAliases[splitName[0]];
-      if (typeof alias === 'string')
-        fields = this.getFields([alias, ...splitName.slice(1)].join('.'));
+      if (typeof alias === 'string') {
+        const aliasFields = this.getFields(
+          [alias, ...splitName.slice(1)].join('.')
+        );
+        if (Array.isArray(aliasFields)) fields = aliasFields;
+        else
+          console.warn(
+            `Alias ${unparsedName} was resolved to unknown field ${alias}`
+          );
+      }
     }
 
     // Handle calls like localityModel.getField('Locality.localityName')
@@ -339,14 +349,13 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       return this.getFields(splitName.slice(1).join('.'));
     if (splitName.length === 1) return fields;
     else if (fields.length === 0) return [];
-    else if (splitName.length > 1 && fields[0].isRelationship)
-      return [
-        ...fields,
-        ...defined(fields[0].relatedModel).getFields(
-          splitName.slice(1).join('.')
-        ),
-      ];
-    else throw new Error(`Field ${unparsedName} is not a relationship`);
+    else if (splitName.length > 1 && fields[0].isRelationship) {
+      const subFields = defined(fields[0].relatedModel).getFields(
+        splitName.slice(1).join('.')
+      );
+      if (subFields === undefined) return undefined;
+      return [...fields, ...subFields];
+    } else throw new Error(`Field ${unparsedName} is not a relationship`);
   }
 
   public strictGetField(unparsedName: string): LiteralField | Relationship {

@@ -122,7 +122,7 @@ const processCellType: {
     const rawFieldName = getParsedAttribute(cell, 'name');
     const fields = model?.getFields(rawFieldName ?? '');
     const fieldNames = fields?.map(({ name }) => name);
-    const fieldsString = fieldNames.join('.');
+    const fieldsString = fieldNames?.join('.');
 
     setLogContext({ field: fieldsString ?? rawFieldName });
 
@@ -137,22 +137,21 @@ const processCellType: {
      * Some plugins overwrite the fieldName. In such cases, the [name] attribute
      * is commonly "this"
      */
-    const resolvedFieldNames =
+    const resolvedFields =
       (fieldDefinition.type === 'Plugin' &&
       fieldDefinition.pluginDefinition.type === 'PartialDateUI'
-        ? fieldDefinition.pluginDefinition.dateFields
-        : undefined) ?? fieldNames;
+        ? model.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
+        : undefined) ?? fields;
 
-    // FIXME: use this everywhere
     const hasAccess =
-      resolvedFieldNames === undefined ||
-      !hasPathPermission(model.name, resolvedFieldNames, 'read');
+      resolvedFields === undefined ||
+      !hasPathPermission(model, resolvedFields, 'read');
 
     setLogContext({ field: undefined });
     if (hasAccess)
       return {
         type: 'Field',
-        fieldNames: resolvedFieldNames,
+        fieldNames: resolvedFields?.map(({ name }) => name),
         fieldDefinition,
         isRequired:
           (getBooleanAttribute(cell, 'isRequired') ?? false) ||
@@ -200,11 +199,7 @@ const processCellType: {
       return { type: 'Blank' };
     }
 
-    const hasAccess = !hasPathPermission(
-      model.name,
-      fields.map(({ name }) => name),
-      'read'
-    );
+    const hasAccess = !hasPathPermission(model, fields, 'read');
     if (!hasAccess) return { type: 'Blank' };
 
     const rawSortField = getProperty('sortField') ?? '';
@@ -259,10 +254,15 @@ const processCellType: {
    * cells than defined columns
    */
   Blank: () => ({ type: 'Blank' }),
-  Unsupported: ({ cell }) => ({
-    type: 'Unsupported',
-    cellType: getAttribute(cell, 'type'),
-  }),
+  Unsupported: ({ cell }) => {
+    console.warn(
+      `Unsupported cell type: ${getParsedAttribute(cell, 'type') ?? '(null)'}`
+    );
+    return {
+      type: 'Unsupported',
+      cellType: getAttribute(cell, 'type'),
+    };
+  },
 };
 
 export type FormCellDefinition = CellTypes[keyof CellTypes] & {
@@ -307,7 +307,6 @@ export function parseFormCell(
   const colSpan = f.parseInt(getParsedAttribute(cellNode, 'colSpan'));
   const align = getProperty('align')?.toLowerCase();
 
-  // FIXME: add console.warn for all the small things
   return {
     id,
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,

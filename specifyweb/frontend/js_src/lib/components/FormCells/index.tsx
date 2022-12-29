@@ -102,7 +102,7 @@ const cellRenderers: {
   },
   SubView({
     resource: rawResource,
-    mode,
+    mode: rawMode,
     formType: parentFormType,
     cellData: { fieldNames, formType, isButton, icon, viewName, sortField },
   }) {
@@ -132,12 +132,12 @@ const cellRenderers: {
             ? fetchView(viewName ?? relationship.relatedModel.view)
                 .then((viewDefinition) =>
                   typeof viewDefinition === 'object'
-                    ? resolveViewDefinition(viewDefinition, formType, mode)
+                    ? resolveViewDefinition(viewDefinition, formType, rawMode)
                     : undefined
                 )
                 .then((definition) => definition?.formType ?? 'form')
             : undefined,
-        [viewName, formType, mode, relationship]
+        [viewName, formType, rawMode, relationship]
       ),
       false
     );
@@ -161,6 +161,7 @@ const cellRenderers: {
       false
     );
 
+    const mode = rawResource === data?.resource ? rawMode : 'view';
     if (
       relationship === undefined ||
       data?.resource === undefined ||

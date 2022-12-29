@@ -240,7 +240,7 @@ export function FormField({
     <ErrorBoundary dismissable>
       {data === undefined ? undefined : (
         <Render
-          mode={isReadOnly ? 'view' : mode}
+          mode={isReadOnly || data.resource !== resource ? 'view' : mode}
           {...rest}
           field={data.field}
           name={fields?.map(({ name }) => name).join('.')}

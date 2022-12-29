@@ -6,7 +6,7 @@ import type { IR, RA, RR } from '../../utils/types';
 import { defaultColumnOptions } from './linesGetter';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
-import {softFail} from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
 

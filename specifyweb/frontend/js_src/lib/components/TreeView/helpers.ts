@@ -9,7 +9,7 @@ import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
 import type { RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { AnyTree } from '../DataModel/helperTypes';
-import {softFail} from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 
 export const fetchRows = async (fetchUrl: string) =>
   ajax<

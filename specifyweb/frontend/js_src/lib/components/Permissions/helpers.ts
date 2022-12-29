@@ -1,6 +1,5 @@
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
-import { filterArray } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
@@ -13,7 +12,10 @@ import {
   getTablePermissions,
 } from './index';
 import { getCache } from '../../utils/cache';
+import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { SpecifyModel } from '../DataModel/specifyModel';
 
+// FEATURE: use localized action and resource names in all these log messages
 // REFACTOR: use <ProtectedTable> and etc in favor of this function
 /**
  * Security errors are logged so that admins can see why a particular UI
@@ -76,36 +78,13 @@ export const hasDerivedPermission = <
     ? true
     : f.log(`No permission to ${action.toString()} ${resource}`) ?? false;
 
-// FIXME: refactor this to accept array of fields
 /** Check if user has a given permission for each table in a mapping path */
 export const hasPathPermission = (
-  baseTableName: keyof Tables,
-  mappingPath: RA<string>,
+  baseTable: SpecifyModel,
+  mappingPath: RA<LiteralField | Relationship>,
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  mappingPathToTableNames(baseTableName, mappingPath, true).every((tableName) =>
-    hasTablePermission(tableName, action, collectionId)
-  );
-
-export const mappingPathToTableNames = (
-  baseTableName: keyof Tables,
-  mappingPath: RA<string>,
-  ignoreBaseTable = false
-): RA<keyof Tables> =>
-  f.unique(
-    filterArray(
-      mappingPath.flatMap((_, index) => {
-        if (index === 0 && ignoreBaseTable) return undefined;
-        const field = schema.models[baseTableName].getField(
-          mappingPath.slice(index).join('.')
-        );
-        return typeof field === 'object'
-          ? [
-              field.model.name,
-              field.isRelationship ? field.relatedModel.name : undefined,
-            ]
-          : undefined;
-      })
-    )
+  [baseTable.name, ...mappingPath.map(({ model }) => model.name)].every(
+    (tableName) => hasTablePermission(tableName, action, collectionId)
   );

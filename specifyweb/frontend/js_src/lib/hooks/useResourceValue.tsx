@@ -16,7 +16,10 @@ import { useValidation } from './useValidation';
 import { useBooleanState } from './useBooleanState';
 import { AnySchema } from '../components/DataModel/helperTypes';
 import { parseValue } from '../utils/parser/parse';
-import {LiteralField, Relationship} from '../components/DataModel/specifyField';
+import {
+  LiteralField,
+  Relationship,
+} from '../components/DataModel/specifyField';
 
 /**
  * A hook to integrate an Input with a field on a Backbone resource

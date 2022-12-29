@@ -137,49 +137,13 @@ export function useValidationAttributes(
   return attributes;
 }
 
-// FIXME: replace usages with fetchDistantRelated
-export async function getResourceAndField(
-  model: SpecifyResource<AnySchema>,
-  fieldName: string | undefined
-): Promise<
-  | {
-      readonly resource: SpecifyResource<AnySchema>;
-      readonly field: LiteralField | Relationship;
-    }
-  | undefined
-> {
-  const path = fieldName?.split('.') ?? [];
-  const resource =
-    path.length === 0
-      ? undefined
-      : path.length === 1
-      ? await model.fetch()
-      : await model.rgetPromise(path.slice(0, -1).join('.'));
-
-  const field = model.specifyModel.getField(fieldName ?? '');
-  if (field === undefined)
-    console.error(`Unknown field ${fieldName ?? ''}`, { resource });
-  else if (resource === undefined || resource === null)
-    /*
-     * Actually this probably shouldn't be an error. it can
-     * happen, for instance, in the collectors list if
-     * the collector has not been defined yet.
-     */
-    console.error("resource doesn't exist");
-  else return { resource, field };
-  return undefined;
-}
-
+// FIXME: add tests
 /**
  * Example usage:
  * resource: Collector
  * fields: agent -> lastName
  * Would return [agent, lastName] if agent exists
  *
- */
-/*
- * FIXME: in all places before using this, check for permissions
- * FIXME: add tests
  */
 export async function fetchDistantRelated(
   resource: SpecifyResource<AnySchema>,

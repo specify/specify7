@@ -9,7 +9,6 @@ import {
     getResourceViewUrl,
     resourceFromUrl
 } from './resource';
-import {getResourceAndField} from '../../hooks/resource';
 import {hijackBackboneAjax} from '../../utils/ajax/backboneAjax';
 import {Http} from '../../utils/ajax/definitions';
 import {removeKey} from '../../utils/utils';
@@ -586,9 +585,6 @@ function eventHandlerForToOne(related, field) {
                 // When deleting we don't send any data so put the version in a header
                 options.headers = {'If-Match': resource.get('version')};
             return Backbone.sync(method, resource, options);
-        },
-        async getResourceAndField(fieldName) {
-            return getResourceAndField(this, fieldName);
         },
         async placeInSameHierarchy(other) {
             var self = this;

@@ -94,7 +94,9 @@ const processUiPlugin: {
     readonly defaultValue: string | undefined;
     readonly model: SpecifyModel;
     readonly fields: RA<LiteralField | Relationship> | undefined;
-  }) => UiPlugins[KEY | 'Blank' | 'WrongTable'];
+  }) => UiPlugins[KEY | 'Blank' | 'WrongTable'] & {
+    readonly ignoreFieldName?: boolean;
+  };
 } = {
   LatLonUI({ getProperty, model }) {
     if (model.name !== 'Locality')
@@ -110,6 +112,7 @@ const processUiPlugin: {
         coordinateType.find(
           (type) => type.toLowerCase() === latLongType.toLowerCase()
         ) ?? 'Point',
+      ignoreFieldName: true,
     };
   },
   PartialDateUI({ getProperty, defaultValue, model, fields }) {
@@ -138,6 +141,7 @@ const processUiPlugin: {
         : 'full',
       canChangePrecision:
         getProperty('canChangePrecision')?.toLowerCase().trim() !== 'false',
+      ignoreFieldName: false,
     };
   },
   CollectionRelOneToManyPlugin: ({ getProperty, cell, model }) => {
@@ -157,6 +161,7 @@ const processUiPlugin: {
         type: 'CollectionRelOneToManyPlugin',
         relationship,
         formatting: getParsedAttribute(cell, 'formatting'),
+        ignoreFieldName: true,
       };
     else return { type: 'WrongTable', supportedTables: ['CollectionObject'] };
   },
@@ -178,12 +183,13 @@ const processUiPlugin: {
         type: 'ColRelTypePlugin',
         relationship,
         formatting: getParsedAttribute(cell, 'formatting'),
+        ignoreFieldName: true,
       };
     else return { type: 'WrongTable', supportedTables: ['CollectionObject'] };
   },
   LocalityGeoRef: ({ model }) =>
     model.name === 'Locality'
-      ? { type: 'LocalityGeoRef' }
+      ? { type: 'LocalityGeoRef', ignoreFieldName: true }
       : {
           type: 'WrongTable',
           supportedTables: ['Locality'],
@@ -192,11 +198,11 @@ const processUiPlugin: {
     type: 'WebLinkButton',
     webLink: getProperty('webLink'),
     icon: getProperty('icon') ?? 'WebLink',
+    ignoreFieldName: false,
   }),
-  // FIXME: warn when field name is provided but ignored
   AttachmentPlugin: () =>
     hasTablePermission('Attachment', 'read')
-      ? { type: 'AttachmentPlugin' }
+      ? { type: 'AttachmentPlugin', ignoreFieldName: true }
       : { type: 'Blank' },
   HostTaxonPlugin: ({ getProperty, model }) =>
     hasTablePermission('CollectionRelType', 'read')
@@ -204,6 +210,7 @@ const processUiPlugin: {
         ? {
             type: 'HostTaxonPlugin',
             relationship: getProperty('relName'),
+            ignoreFieldName: true,
           }
         : {
             type: 'WrongTable',
@@ -212,22 +219,25 @@ const processUiPlugin: {
       : { type: 'Blank' },
   LocalityGoogleEarth: ({ model }) =>
     model.name === 'Locality'
-      ? { type: 'LocalityGoogleEarth' }
+      ? { type: 'LocalityGoogleEarth', ignoreFieldName: true }
       : {
           type: 'WrongTable',
           supportedTables: ['Locality'],
         },
   PaleoMap: ({ model }) =>
     f.includes(paleoPluginTables, model.name)
-      ? { type: 'PaleoMap' }
+      ? { type: 'PaleoMap', ignoreFieldName: true }
       : {
           type: 'WrongTable',
           supportedTables: paleoPluginTables,
         },
-  Unsupported: ({ getProperty }) => ({
-    type: 'Unsupported',
-    name: getProperty('name'),
-  }),
+  Unsupported: ({ getProperty }) => {
+    console.warn(`Unsupported plugin: ${getProperty('name') ?? '(null)'}`);
+    return {
+      type: 'Unsupported',
+      name: getProperty('name'),
+    };
+  },
   WrongTable: () => error('WrongTable parser should not get called'),
   Blank: () => ({ type: 'Blank' }),
 };
@@ -238,6 +248,7 @@ export function parseUiPlugin({
   cell,
   getProperty,
   model,
+  fields,
   ...rest
 }: {
   readonly cell: Element;
@@ -249,16 +260,29 @@ export function parseUiPlugin({
   const pluginName = (getProperty('name') ?? '') as keyof UiPlugins;
   const uiCommand = processUiPlugin[pluginName] ?? processUiPlugin.Unsupported;
 
-  if (uiCommand === processUiPlugin.Unsupported)
-    console.warn(`Unsupported plugin: ${pluginName}`);
-
   setLogContext({ plugin: pluginName });
-  const result = uiCommand({ cell, getProperty, model, ...rest });
+  const { ignoreFieldName, ...result } = uiCommand({
+    cell,
+    getProperty,
+    model,
+    fields,
+    ...rest,
+  });
   if (result.type === 'WrongTable')
     console.error(
       `Can't display ${pluginName} on ${model.name} form. Instead, try ` +
         `displaying it on the ${formatList(result.supportedTables)} form`
     );
+  if (ignoreFieldName === true && fields !== undefined)
+    console.warn(
+      `Field name of ${fields
+        .map(({ name }) => name)
+        .join(
+          '.'
+        )} was provided to ${pluginName}, but it is not used by the plugin.\n` +
+        `If you need it for a label, consider using an id instead`
+    );
+
   setLogContext({ plugin: undefined });
   return result;
 }

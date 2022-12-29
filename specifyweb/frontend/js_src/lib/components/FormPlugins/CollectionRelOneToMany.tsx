@@ -24,7 +24,7 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
-import {softFail} from '../Errors/Crash';
+import { softFail } from '../Errors/Crash';
 
 export function CollectionOneToManyPlugin({
   resource,
