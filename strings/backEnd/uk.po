@@ -1,0 +1,85 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/WorkBench/resultsParser.ts:170
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingBoolean"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:172
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingDecimal"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:174
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingFloat"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:176
+#: components/WorkBench/wbView.js:844
+#: components/WorkBench/wbView.js:846
+#: components/WorkBench/wbView.js:1339
+#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
+msgid "failedParsingPickList"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:180
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingAgentType"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:185
+#. Used in: Components > Work Bench > Results Parser
+msgid "pickListValueTooLong"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:190
+#. Used in: Components > Work Bench > Results Parser
+msgid "valueTooLong"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:194
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidYear"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:198
+#. Used in: Components > Work Bench > Results Parser
+msgid "badDateFormat"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:203
+#. Used in: Components > Work Bench > Results Parser
+msgid "coordinateBadFormat"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:207
+#. Used in: Components > Work Bench > Results Parser
+msgid "latitudeOutOfRange"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:211
+#. Used in: Components > Work Bench > Results Parser
+msgid "longitudeOutOfRange"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:215
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidPartialRecord"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:219
+#. Used in: Components > Work Bench > Results Parser
+msgid "fieldRequiredByUploadPlan"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:221
+#. Used in: Components > Work Bench > Results Parser
+msgid "invalidTreeStructure"
+msgstr ""
+
+#: components/WorkBench/resultsParser.ts:223
+#. Used in: Components > Work Bench > Results Parser
+msgid "missingRequiredTreeParent"
+msgstr ""

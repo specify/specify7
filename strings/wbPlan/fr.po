@@ -1,0 +1,346 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/UserPreferences/Definitions.tsx:1450
+#: components/WorkBench/Template.tsx:118
+#: components/WorkBench/wbView.js:1861
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+msgid "dataMapper"
+msgstr ""
+
+#: components/WbPlanView/State.tsx:37
+#: components/WorkBench/wbView.js:260
+#: components/WorkBench/wbView.js:1951
+#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
+msgid "noUploadPlan"
+msgstr ""
+
+#: components/WorkBench/wbView.js:274
+#: components/WorkBench/wbView.js:1952
+#. Used in: Components > Work Bench > Wb View
+msgid "noUploadPlanDescription"
+msgstr ""
+
+#: components/WorkBench/wbView.js:381
+#: components/WorkBench/wbView.js:382
+#. Used in: Components > Work Bench > Wb View
+msgid "unmappedColumn"
+msgstr ""
+
+#: components/WbPlanView/CustomSelectElement.tsx:607
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
+msgid "notMapped"
+msgstr ""
+
+#: components/Molecules/TableIcon.tsx:99
+#. Used in: Components > Molecules > Table Icon
+msgid "unmapped"
+msgstr ""
+
+#: components/Molecules/TableIcon.tsx:112
+#. Used in: Components > Molecules > Table Icon
+msgid "mapped"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:227
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchBehavior"
+msgstr ""
+
+#: components/WbPlanView/LineComponents.tsx:172
+#: components/WbPlanView/LineComponents.tsx:181
+#. Used in: Components > Wb Plan View > Line Components
+msgid "columnMapping"
+msgstr ""
+
+#: components/WbPlanView/CustomSelectElement.tsx:840
+#: components/WbPlanView/LineComponents.tsx:212
+#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
+msgid "suggestedMappings"
+msgstr ""
+
+#: components/WbPlanView/LineComponents.tsx:213
+#. Used in: Components > Wb Plan View > Line Components
+msgid "requiredFields"
+msgstr ""
+
+#: components/WbPlanView/LineComponents.tsx:214
+#. Used in: Components > Wb Plan View > Line Components
+msgid "optionalFields"
+msgstr ""
+
+#: components/WbPlanView/LineComponents.tsx:215
+#. Used in: Components > Wb Plan View > Line Components
+msgid "hiddenFields"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:285
+#: components/QueryBuilder/Toolbar.tsx:38
+#: components/WbPlanView/MapperComponents.tsx:60
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
+msgid "revealHiddenFormFields"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:572
+#: components/WbPlanView/Mapper.tsx:574
+#: components/WbPlanView/Mapper.tsx:582
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mappingOptions"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:231
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreWhenBlank"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:232
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreWhenBlankDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:235
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreAlways"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:236
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreAlwaysDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:239
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreNever"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:240
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreNeverDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:268
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "allowNullValues"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:285
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "useDefaultValue"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:294
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "defaultValue"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:302
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "defaultValueDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:52
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "addNewColumn"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:89
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "validationFailed"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:93
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "validationFailedDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:82
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "continueEditing"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:85
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "saveUnfinished"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:469
+#. Used in: Components > Wb Plan View > Mapper
+msgid "map"
+msgstr ""
+
+#: components/WbPlanView/CustomSelectElement.tsx:316
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "unmap"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:466
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mapButtonDescription"
+msgstr ""
+
+#: components/WbPlanView/CustomSelectElement.tsx:321
+#: components/WbPlanView/CustomSelectElement.tsx:328
+#. Used in: Components > Wb Plan View > Custom Select Element
+msgid "relationshipWithTable"
+msgstr ""
+
+#: components/WbPlanView/State.tsx:109
+#. Used in: Components > Wb Plan View > State
+msgid "selectBaseTable"
+msgstr ""
+
+#: components/WbPlanView/State.tsx:102
+#. Used in: Components > Wb Plan View > State
+msgid "chooseExistingPlan"
+msgstr ""
+
+#: components/SchemaConfig/Tables.tsx:75
+#: components/WbPlanView/State.tsx:121
+#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
+msgid "showAdvancedTables"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:412
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploaded"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:409
+#. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploadedDescription"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:402
+#: components/WbPlanView/MapperComponents.tsx:326
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
+msgid "baseTable"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:322
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTable"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:323
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTableDescription"
+msgstr ""
+
+#: components/WbPlanView/LineComponents.tsx:152
+#: components/WbPlanView/LineComponents.tsx:155
+#. Used in: Components > Wb Plan View > Line Components
+msgid "clearMapping"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:344
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapper"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:353
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "autoMapper"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:157
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "mappingEditor"
+msgstr ""
+
+#: components/QueryBuilder/Components.tsx:129
+#: components/WbPlanView/MapperComponents.tsx:368
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "hideFieldMapper"
+msgstr ""
+
+#: components/QueryBuilder/Components.tsx:130
+#: components/WbPlanView/MapperComponents.tsx:369
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "showFieldMapper"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:484
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mappings"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:299
+#. Used in: Components > Wb Plan View > Mapper
+msgid "clearMappings"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:196
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSet"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:200
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:203
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetSecondDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:348
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapperConfirmation"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:349
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "reRunAutoMapperConfirmationDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:419
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "changeMatchingLogic"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:427
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:423
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicUnavailable"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:405
+#: components/WbPlanView/MapperComponents.tsx:439
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "mustMatch"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:155
+#. Used in: Components > Wb Plan View > Mapper
+msgid "unloadProtectMessage"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:47
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "newHeaderName"
+msgstr ""
+
+#: components/WbPlanView/headerHelper.ts:19
+#. Used in: Components > Wb Plan View > Header Helper
+msgid "noHeader"
+msgstr ""
+
+#: components/Toolbar/WbsDialog.tsx:194
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "copyPlan"
+msgstr ""
+
+#: components/Toolbar/WbsDialog.tsx:206
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "noPlansToCopyFrom"
+msgstr ""
+
+#: components/WbPlanView/State.tsx:40
+#. Used in: Components > Wb Plan View > State
+msgid "invalidTemplatePlan"
+msgstr ""

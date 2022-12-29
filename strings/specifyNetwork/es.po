@@ -1,0 +1,18 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/SpecifyNetwork/index.tsx:235
+#: components/SpecifyNetwork/index.tsx:239
+#. Used in: Components > Specify Network > Index
+msgid "specifyNetwork"
+msgstr ""
+
+#: components/SpecifyNetwork/index.tsx:228
+#. Used in: Components > Specify Network > Index
+msgid "failedToOpenPopUp"
+msgstr ""
+
+#: components/SpecifyNetwork/index.tsx:231
+#. Used in: Components > Specify Network > Index
+msgid "failedToOpenPopUpDescription"
+msgstr ""

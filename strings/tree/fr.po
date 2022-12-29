@@ -1,0 +1,208 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Header/menuItemDefinitions.ts:58
+#: components/Router/OverlayRoutes.tsx:52
+#: components/Toolbar/TreeRepair.tsx:45
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+msgid "trees"
+msgstr ""
+
+#: components/DataModel/treeBusinessRules.ts:93
+#. Used in: Components > Data Model > Tree Business Rules
+msgid "badStructure"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:134
+#. Used in: Components > Tree View > Actions
+msgid "move"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:144
+#. Used in: Components > Tree View > Actions
+msgid "merge"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:163
+#. Used in: Components > Tree View > Actions
+msgid "undoSynonymy"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:163
+#. Used in: Components > Tree View > Actions
+msgid "synonymize"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:346
+#. Used in: Components > Tree View > Actions
+msgid "actionFailed"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:349
+#. Used in: Components > Tree View > Actions
+msgid "actionFailedDescription"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:368
+#: components/TreeView/Actions.tsx:379
+#. Used in: Components > Tree View > Actions
+msgid "moveNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:121
+#. Used in: Components > Tree View > Actions
+msgid "addChild"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:330
+#. Used in: Components > Tree View > Actions
+msgid "moveNodeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:389
+#. Used in: Components > Tree View > Actions
+msgid "nodeMoveMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:305
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:310
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:306
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveToSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:311
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeIntoSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:314
+#. Used in: Components > Tree View > Actions
+msgid "cantSynonymizeSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:289
+#. Used in: Components > Tree View > Actions
+msgid "nodeMoveHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:370
+#: components/TreeView/Actions.tsx:381
+#. Used in: Components > Tree View > Actions
+msgid "mergeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:332
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:291
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:395
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:372
+#: components/TreeView/Actions.tsx:383
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:334
+#. Used in: Components > Tree View > Actions
+msgid "makeSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:293
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:401
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:338
+#: components/TreeView/Actions.tsx:373
+#: components/TreeView/Actions.tsx:384
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:294
+#: components/TreeView/Actions.tsx:406
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNodeMessage"
+msgstr ""
+
+#: components/TreeView/Row.tsx:215
+#: components/TreeView/Row.tsx:225
+#. Used in: Components > Tree View > Row
+msgid "acceptedName"
+msgstr ""
+
+#: components/TreeView/index.tsx:99
+#. Used in: Components > Tree View > Index
+msgid "treeViewTitle"
+msgstr ""
+
+#: components/TreeView/Search.tsx:117
+#: components/TreeView/Search.tsx:118
+#: components/TreeView/Search.tsx:119
+#. Used in: Components > Tree View > Search
+msgid "searchTreePlaceholder"
+msgstr ""
+
+#: components/TreeView/Row.tsx:195
+#. Used in: Components > Tree View > Row
+msgid "opened"
+msgstr ""
+
+#: components/TreeView/Row.tsx:196
+#. Used in: Components > Tree View > Row
+msgid "closed"
+msgstr ""
+
+#: components/TreeView/Row.tsx:193
+#. Used in: Components > Tree View > Row
+msgid "leafNode"
+msgstr ""
+
+#: components/TreeView/helpers.ts:206
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
+msgid "nodeStats"
+msgstr ""
+
+#: components/TreeView/helpers.ts:205
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
+msgid "leafNodeStats"
+msgstr ""
+
+#: components/TreeView/helpers.ts:194
+#. Used in: Components > Tree View > Helpers
+msgid "directCollectionObjectCount"
+msgstr ""
+
+#: components/TreeView/helpers.ts:200
+#. Used in: Components > Tree View > Helpers
+msgid "indirectCollectionObjectCount"
+msgstr ""
+
+#: components/TreeView/index.tsx:176
+#. Used in: Components > Tree View > Index
+msgid "editRanks"
+msgstr ""

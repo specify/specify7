@@ -1,0 +1,143 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/QueryBuilder/Field.tsx:466
+#: components/QueryBuilder/Field.tsx:467
+#. Used in: Components > Query Builder > Field
+msgid "openMap"
+msgstr ""
+
+#: components/Leaflet/Map.tsx:23
+#: components/QueryBuilder/ToMap.tsx:59
+#: components/QueryBuilder/ToMap.tsx:241
+#: components/UserPreferences/Definitions.tsx:1524
+#: components/WorkBench/Template.tsx:235
+#. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
+msgid "geoMap"
+msgstr ""
+
+#: components/QueryBuilder/ToMap.tsx:237
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
+msgid "queryMapSubset"
+msgstr ""
+
+#: components/QueryBuilder/ToMap.tsx:234
+#. Used in: Components > Query Builder > To Map
+msgid "queryMapAll"
+msgstr ""
+
+#: components/Leaflet/addOns.ts:95
+#. Used in: Components > Leaflet > Add Ons
+msgid "polygonBoundaries"
+msgstr ""
+
+#: components/Leaflet/addOns.ts:96
+#. Used in: Components > Leaflet > Add Ons
+msgid "errorRadius"
+msgstr ""
+
+#: components/FormPlugins/Leaflet.tsx:81
+#. Used in: Components > Form Plugins > Leaflet
+msgid "showMap"
+msgstr ""
+
+#: components/FormPlugins/Leaflet.tsx:40
+#. Used in: Components > Form Plugins > Leaflet
+msgid "noCoordinates"
+msgstr ""
+
+#: components/FormPlugins/Leaflet.tsx:43
+#. Used in: Components > Form Plugins > Leaflet
+msgid "notEnoughInformationToMap"
+msgstr ""
+
+#: components/Leaflet/addOns.ts:93
+#. Used in: Components > Leaflet > Add Ons
+msgid "occurrencePoints"
+msgstr ""
+
+#: components/Leaflet/addOns.ts:94
+#. Used in: Components > Leaflet > Add Ons
+msgid "occurrencePolygons"
+msgstr ""
+
+#: components/FormPlugins/GeoLocate.tsx:122
+#: components/FormPlugins/GeoLocate.tsx:138
+#: components/FormPlugins/GeoLocate.tsx:221
+#: components/WorkBench/Template.tsx:225
+#: components/WorkBench/wbUtils.js:723
+#: components/WorkBench/wbUtils.js:731
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb Utils
+msgid "geoLocate"
+msgstr ""
+
+#: components/FormPlugins/GeoLocate.tsx:107
+#. Used in: Components > Form Plugins > Geo Locate
+msgid "geographyRequired"
+msgstr ""
+
+#: components/FormPlugins/GeoLocate.tsx:110
+#. Used in: Components > Form Plugins > Geo Locate
+msgid "geographyRequiredDescription"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:268
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "coordinates"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:271
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+msgid "northWestCorner"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:283
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+msgid "southEastCorner"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:239
+#: components/FormPlugins/LatLongUi.tsx:244
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "coordinateType"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:251
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "point"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:252
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "line"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:253
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "rectangle"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:259
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "parsed"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:165
+#: components/FormPlugins/LatLongUi.tsx:257
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "latitude"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:179
+#: components/FormPlugins/LatLongUi.tsx:258
+#. Used in: Components > Form Plugins > Lat Long Ui
+msgid "longitude"
+msgstr ""
+
+#: components/AppResources/Editor.tsx:95
+#: components/AppResources/Editor.tsx:97
+#: components/Leaflet/extend.ts:36
+#: components/Leaflet/extend.ts:37
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
+msgid "toggleFullScreen"
+msgstr ""

@@ -1,0 +1,628 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/UserPreferences/Definitions.tsx:572
+#. Used in: Components > User Preferences > Definitions
+msgid "forms"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:139
+#: components/Forms/Save.tsx:228
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save
+msgid "clone"
+msgstr ""
+
+#: components/Forms/Save.tsx:229
+#. Used in: Components > Forms > Save
+msgid "cloneDescription"
+msgstr ""
+
+#: components/DataModel/businessRules.js:190
+#. Used in: Components > Data Model > Business Rules
+msgid "valueMustBeUniqueToField"
+msgstr ""
+
+#: components/DataModel/businessRules.js:191
+#. Used in: Components > Data Model > Business Rules
+msgid "valueMustBeUniqueToDatabase"
+msgstr ""
+
+#: components/DataModel/businessRules.js:181
+#. Used in: Components > Data Model > Business Rules
+msgid "valuesOfMustBeUniqueToField"
+msgstr ""
+
+#: components/DataModel/businessRules.js:185
+#. Used in: Components > Data Model > Business Rules
+msgid "valuesOfMustBeUniqueToDatabase"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:106
+#. Used in: Components > Forms > Delete Button
+msgid "checkingIfResourceCanBeDeleted"
+msgstr ""
+
+#: components/Forms/DeleteBlocked.tsx:84
+#: components/Forms/DeleteButton.tsx:89
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Forms > Delete Button
+msgid "deleteBlocked"
+msgstr ""
+
+#: components/Forms/DeleteBlocked.tsx:87
+#. Used in: Components > Forms > Delete Blocked
+msgid "deleteBlockedDescription"
+msgstr ""
+
+#: components/Forms/DeleteBlocked.tsx:92
+#. Used in: Components > Forms > Delete Blocked
+msgid "record"
+msgstr ""
+
+#: components/Forms/DeleteBlocked.tsx:93
+#: components/Toolbar/Schema.tsx:397
+#: components/WbPlanView/CustomSelectElement.tsx:283
+#. Used in: Components > Forms > Delete Blocked ⬤ Components > Toolbar > Schema ⬤ Components > Wb Plan View > Custom Select Element
+msgid "relationship"
+msgstr ""
+
+#: components/FormPlugins/PaleoLocation.tsx:50
+#: components/FormPlugins/PaleoLocation.tsx:77
+#: components/FormPlugins/PaleoLocation.tsx:86
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoMap"
+msgstr ""
+
+#: components/FormPlugins/PaleoLocation.tsx:68
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeography"
+msgstr ""
+
+#: components/FormPlugins/PaleoLocation.tsx:71
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "paleoRequiresGeographyDescription"
+msgstr ""
+
+#: components/FormPlugins/PaleoLocation.tsx:55
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedForm"
+msgstr ""
+
+#: components/FormPlugins/PaleoLocation.tsx:62
+#. Used in: Components > Form Plugins > Paleo Location
+msgid "unsupportedFormDescription"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:304
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "invalidDate"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:131
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmation"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:55
+#. Used in: Components > Forms > Delete Button
+msgid "deleteConfirmationDescription"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:334
+#: components/FormPlugins/PartialDateUi.tsx:337
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "datePrecision"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:366
+#. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Partial Date Ui
+msgid "monthYear"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:382
+#. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Partial Date Ui
+msgid "yearPlaceholder"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:414
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "today"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:416
+#. Used in: Components > Form Plugins > Partial Date Ui
+msgid "todayButtonDescription"
+msgstr ""
+
+#: components/PickLists/index.tsx:300
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmation"
+msgstr ""
+
+#: components/PickLists/index.tsx:303
+#. Used in: Components > Pick Lists > Index
+msgid "addToPickListConfirmationDescription"
+msgstr ""
+
+#: components/PickLists/index.tsx:269
+#. Used in: Components > Pick Lists > Index
+msgid "invalidType"
+msgstr ""
+
+#: components/PickLists/index.tsx:272
+#. Used in: Components > Pick Lists > Index
+msgid "invalidNumericPicklistValue"
+msgstr ""
+
+#: components/Attachments/Plugin.tsx:124
+#: components/FormCells/FormTable.tsx:181
+#: components/Forms/BaseResourceView.tsx:97
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
+msgid "noData"
+msgstr ""
+
+#: components/FormSliders/RecordSet.tsx:299
+#: components/Toolbar/RecordSets.tsx:117
+#. Used in: Components > Form Sliders > Record Set ⬤ Components > Toolbar > Record Sets
+msgid "recordSet"
+msgstr ""
+
+#: components/Toolbar/RecordSetEdit.tsx:38
+#. Used in: Components > Toolbar > Record Set Edit
+msgid "recordSetDeletionWarning"
+msgstr ""
+
+#: components/FormCommands/index.tsx:39
+#: components/FormMeta/EditHistory.tsx:31
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History
+msgid "saveRecordFirst"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:31
+#: components/FormSliders/Slider.tsx:33
+#: components/UserPreferences/Definitions.tsx:946
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "firstRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:97
+#: components/FormSliders/Slider.tsx:99
+#: components/UserPreferences/Definitions.tsx:950
+#. Used in: Components > Form Sliders > Slider ⬤ Components > User Preferences > Definitions
+msgid "lastRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:39
+#: components/FormSliders/Slider.tsx:42
+#. Used in: Components > Form Sliders > Slider
+msgid "previousRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:88
+#: components/FormSliders/Slider.tsx:91
+#. Used in: Components > Form Sliders > Slider
+msgid "nextRecord"
+msgstr ""
+
+#: components/FormSliders/Slider.tsx:56
+#. Used in: Components > Form Sliders > Slider
+msgid "currentRecord"
+msgstr ""
+
+#: components/Forms/ResourceView.tsx:352
+#: components/Forms/Save.tsx:28
+#. Used in: Components > Forms > Resource View ⬤ Components > Forms > Save
+msgid "unsavedFormUnloadProtect"
+msgstr ""
+
+#: components/Forms/Save.tsx:265
+#. Used in: Components > Forms > Save
+msgid "saveConflict"
+msgstr ""
+
+#: components/Forms/Save.tsx:268
+#. Used in: Components > Forms > Save
+msgid "saveConflictDescription"
+msgstr ""
+
+#: components/Forms/Save.tsx:273
+#. Used in: Components > Forms > Save
+msgid "saveBlocked"
+msgstr ""
+
+#: components/Forms/Save.tsx:276
+#. Used in: Components > Forms > Save
+msgid "saveBlockedDescription"
+msgstr ""
+
+#: components/FormCommands/index.tsx:120
+#. Used in: Components > Form Commands > Index
+msgid "unavailableCommandButton"
+msgstr ""
+
+#: components/FormCommands/index.tsx:124
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailable"
+msgstr ""
+
+#: components/FormCommands/index.tsx:128
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableDescription"
+msgstr ""
+
+#: components/FormCommands/index.tsx:130
+#. Used in: Components > Form Commands > Index
+msgid "commandUnavailableSecondDescription"
+msgstr ""
+
+#: components/FormCommands/index.tsx:133
+#. Used in: Components > Form Commands > Index
+msgid "commandName"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:40
+#: components/FormPlugins/index.tsx:266
+#. Used in: Components > Form Plugins > Index
+msgid "unavailablePluginButton"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:44
+#: components/FormPlugins/index.tsx:270
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailable"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:274
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableDescription"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:276
+#. Used in: Components > Form Plugins > Index
+msgid "pluginNotAvailableSecondDescription"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:48
+#. Used in: Components > Form Plugins > Index
+msgid "wrongTableForPlugin"
+msgstr ""
+
+#: components/FormPlugins/index.tsx:279
+#. Used in: Components > Form Plugins > Index
+msgid "pluginName"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:161
+#: components/Atoms/DataEntry.tsx:164
+#. Used in: Components > Atoms > Data Entry
+msgid "visit"
+msgstr ""
+
+#: utils/parser/definitions.ts:91
+#: utils/parser/__tests__/definitions.test.ts:169
+#: utils/parser/__tests__/definitions.test.ts:171
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+msgid "illegalBool"
+msgstr ""
+
+#: utils/parser/parse.ts:30
+#: utils/parser/__tests__/parse.test.ts:60
+#: utils/parser/__tests__/parse.test.ts:78
+#: utils/parser/__tests__/parse.test.ts:188
+#: utils/parser/__tests__/parse.test.ts:190
+#. Used in: Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
+msgid "requiredField"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:85
+#: utils/parser/__tests__/definitions.test.ts:188
+#: utils/parser/__tests__/definitions.test.ts:190
+#: utils/parser/__tests__/definitions.test.ts:206
+#: utils/parser/__tests__/definitions.test.ts:208
+#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Parser > __tests__ > Definitions
+msgid "invalidValue"
+msgstr ""
+
+#: components/FormPlugins/PartialDateUi.tsx:301
+#: components/FormPlugins/PartialDateUi.tsx:303
+#: utils/parser/definitions.ts:179
+#: utils/parser/definitions.ts:181
+#: utils/parser/definitions.ts:302
+#: utils/parser/__tests__/definitions.test.ts:71
+#: utils/parser/__tests__/parse.test.ts:209
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Partial Date Ui ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+msgid "requiredFormat"
+msgstr ""
+
+#: utils/parser/definitions.ts:47
+#: utils/parser/__tests__/parse.test.ts:120
+#: utils/parser/__tests__/parse.test.ts:139
+#: utils/parser/__tests__/parse.test.ts:162
+#. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
+msgid "inputTypeNumber"
+msgstr ""
+
+#: components/PickLists/definitions.ts:26
+#. Used in: Components > Pick Lists > Definitions
+msgid "organization"
+msgstr ""
+
+#: components/PickLists/definitions.ts:27
+#. Used in: Components > Pick Lists > Definitions
+msgid "person"
+msgstr ""
+
+#: components/PickLists/definitions.ts:28
+#. Used in: Components > Pick Lists > Definitions
+msgid "other"
+msgstr ""
+
+#: components/PickLists/definitions.ts:29
+#. Used in: Components > Pick Lists > Definitions
+msgid "group"
+msgstr ""
+
+#: components/PickLists/definitions.ts:33
+#. Used in: Components > Pick Lists > Definitions
+msgid "userDefinedItems"
+msgstr ""
+
+#: components/PickLists/definitions.ts:34
+#. Used in: Components > Pick Lists > Definitions
+msgid "entireTable"
+msgstr ""
+
+#: components/PickLists/definitions.ts:35
+#. Used in: Components > Pick Lists > Definitions
+msgid "fieldFromTable"
+msgstr ""
+
+#: components/FormCells/index.tsx:235
+#. Used in: Components > Form Cells > Index
+msgid "unsupportedCellType"
+msgstr ""
+
+#: components/Forms/SearchDialog.tsx:179
+#. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Forms > Search Dialog
+msgid "additionalResultsOmitted"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:254
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtect"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:257
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "recordSelectorUnloadProtectDescription"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:210
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "creatingNewRecord"
+msgstr ""
+
+#: components/PickLists/definitions.ts:136
+#. Used in: Components > Pick Lists > Definitions
+msgid "forward"
+msgstr ""
+
+#: components/PickLists/definitions.ts:135
+#. Used in: Components > Pick Lists > Definitions
+msgid "reverse"
+msgstr ""
+
+#: components/QueryBuilder/AuditLogFormatter.tsx:44
+#. Used in: Components > Query Builder > Audit Log Formatter
+msgid "deletedInline"
+msgstr ""
+
+#: components/FormSliders/RecordSet.tsx:386
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItem"
+msgstr ""
+
+#: components/FormSliders/RecordSet.tsx:389
+#. Used in: Components > Form Sliders > Record Set
+msgid "duplicateRecordSetItemDescription"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:184
+#: components/FormSliders/RecordSelectorFromIds.tsx:188
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "addToRecordSet"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:197
+#: components/FormSliders/RecordSelectorFromIds.tsx:203
+#. Used in: Components > Form Sliders > Record Selector From Ids
+msgid "removeFromRecordSet"
+msgstr ""
+
+#: components/Molecules/AutoComplete.tsx:522
+#. Used in: Components > Molecules > Auto Complete
+msgid "nothingFound"
+msgstr ""
+
+#: components/Forms/Save.tsx:234
+#. Used in: Components > Forms > Save
+msgid "carryForward"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:111
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardEnabled"
+msgstr ""
+
+#: components/Forms/Save.tsx:235
+#. Used in: Components > Forms > Save
+msgid "carryForwardDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:114
+#: components/FormMeta/CarryForward.tsx:123
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:256
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardTableSettingsDescription"
+msgstr ""
+
+#: components/FormMeta/CarryForward.tsx:318
+#. Used in: Components > Form Meta > Carry Forward
+msgid "carryForwardUniqueField"
+msgstr ""
+
+#: components/FormMeta/Clone.tsx:31
+#. Used in: Components > Form Meta > Clone
+msgid "cloneButtonEnabled"
+msgstr ""
+
+#: components/FormMeta/Clone.tsx:57
+#. Used in: Components > Form Meta > Clone
+msgid "addButtonEnabled"
+msgstr ""
+
+#: components/Forms/Save.tsx:241
+#. Used in: Components > Forms > Save
+msgid "addButtonDescription"
+msgstr ""
+
+#: components/FormMeta/AutoNumbering.tsx:27
+#: components/FormMeta/AutoNumbering.tsx:92
+#. Used in: Components > Form Meta > Auto Numbering
+msgid "autoNumbering"
+msgstr ""
+
+#: components/FormMeta/Definition.tsx:129
+#. Used in: Components > Form Meta > Definition
+msgid "editFormDefinition"
+msgstr ""
+
+#: components/FormMeta/Definition.tsx:84
+#. Used in: Components > Form Meta > Definition
+msgid "useAutoGeneratedForm"
+msgstr ""
+
+#: components/FormMeta/Definition.tsx:116
+#. Used in: Components > Form Meta > Definition
+msgid "useFieldLabels"
+msgstr ""
+
+#: components/FormMeta/EditHistory.tsx:35
+#: components/FormMeta/EditHistory.tsx:58
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEdits"
+msgstr ""
+
+#: components/FormMeta/EditHistory.tsx:82
+#. Used in: Components > Form Meta > Edit History
+msgid "historyOfEditsQueryName"
+msgstr ""
+
+#: components/FormMeta/index.tsx:102
+#. Used in: Components > Form Meta > Index
+msgid "formConfiguration"
+msgstr ""
+
+#: components/FormMeta/index.tsx:134
+#. Used in: Components > Form Meta > Index
+msgid "formState"
+msgstr ""
+
+#: components/FormMeta/index.tsx:175
+#. Used in: Components > Form Meta > Index
+msgid "recordInformation"
+msgstr ""
+
+#: components/FormMeta/ShareRecord.tsx:49
+#. Used in: Components > Form Meta > Share Record
+msgid "shareRecord"
+msgstr ""
+
+#: components/FormMeta/PickListUsages.tsx:26
+#: components/FormMeta/QueryTreeUsages.tsx:22
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
+msgid "findUsages"
+msgstr ""
+
+#: components/FormMeta/PickListUsages.tsx:69
+#. Used in: Components > Form Meta > Pick List Usages
+msgid "usagesOfPickList"
+msgstr ""
+
+#: components/FormMeta/SubViewMeta.tsx:34
+#. Used in: Components > Form Meta > Sub View Meta
+msgid "form"
+msgstr ""
+
+#: components/FormMeta/SubViewMeta.tsx:35
+#: components/UserPreferences/Definitions.tsx:957
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+msgid "formTable"
+msgstr ""
+
+#: components/FormMeta/index.tsx:151
+#. Used in: Components > Form Meta > Index
+msgid "subviewConfiguration"
+msgstr ""
+
+#: components/Toolbar/FormTablesEdit.tsx:56
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "selectSourceOfTables"
+msgstr ""
+
+#: components/Toolbar/FormTablesEdit.tsx:77
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "inheritLegacySettings"
+msgstr ""
+
+#: components/Toolbar/FormTablesEdit.tsx:85
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "useCustomSettings"
+msgstr ""
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#: components/Header/UserTools.tsx:62
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
+msgid "disableReadOnly"
+msgstr ""
+
+#: components/FormMeta/ReadOnlyMode.tsx:19
+#. Used in: Components > Form Meta > Read Only Mode
+msgid "enableReadOnly"
+msgstr ""
+
+#: components/Toolbar/FormTablesEdit.tsx:125
+#. Used in: Components > Toolbar > Form Tables Edit
+msgid "configureDataEntryTables"
+msgstr ""
+
+#: components/FormMeta/index.tsx:57
+#: components/FormMeta/index.tsx:59
+#. Used in: Components > Form Meta > Index
+msgid "formMeta"
+msgstr ""
+
+#: components/AppResources/Editor.tsx:176
+#: components/Forms/BaseResourceView.tsx:106
+#: components/Forms/dataObjFormatters.ts:151
+#. Used in: Components > App Resources > Editor ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
+msgid "newResourceTitle"
+msgstr ""
+
+#: components/Forms/dataObjFormatters.ts:152
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Forms > Data Obj Formatters
+msgid "resourceFormatter"
+msgstr ""
+
+#: components/Forms/ResourceView.tsx:186
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeleted"
+msgstr ""
+
+#: components/Forms/ResourceView.tsx:189
+#. Used in: Components > Forms > Resource View
+msgid "resourceDeletedDescription"
+msgstr ""

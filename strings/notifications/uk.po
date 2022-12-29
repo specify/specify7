@@ -1,0 +1,71 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Header/Notifications.tsx:146
+#. Used in: Components > Header > Notifications
+msgid "notifications"
+msgstr ""
+
+#: components/Header/Notifications.tsx:134
+#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
+msgid "notificationsCount"
+msgstr ""
+
+#: components/Header/Notifications.tsx:137
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
+msgid "notificationsLoading"
+msgstr ""
+
+#: components/Header/Notifications.tsx:177
+#. Used in: Components > Header > Notifications
+msgid "mostRecentNotificationsTop"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:44
+#: components/Header/NotificationRenderers.tsx:72
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
+msgid "exception"
+msgstr ""
+
+#: components/AppResources/EditorComponents.tsx:125
+#: components/Header/NotificationRenderers.tsx:58
+#: components/Header/NotificationRenderers.tsx:86
+#: components/Header/NotificationRenderers.tsx:100
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
+msgid "download"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:24
+#. Used in: Components > Header > Notification Renderers
+msgid "feedItemUpdated"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:38
+#. Used in: Components > Header > Notification Renderers
+msgid "updateFeedFailed"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:52
+#. Used in: Components > Header > Notification Renderers
+msgid "dwcaExportCompleted"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:66
+#. Used in: Components > Header > Notification Renderers
+msgid "dwcaExportFailed"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:80
+#. Used in: Components > Header > Notification Renderers
+msgid "queryExportToCsvCompleted"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:94
+#. Used in: Components > Header > Notification Renderers
+msgid "queryExportToKmlCompleted"
+msgstr ""
+
+#: components/Header/NotificationRenderers.tsx:108
+#. Used in: Components > Header > Notification Renderers
+msgid "dataSetOwnershipTransferred"
+msgstr ""

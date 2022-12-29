@@ -1,0 +1,36 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Attachments/index.tsx:149
+#: components/Header/menuItemDefinitions.ts:109
+#: components/Router/Routes.tsx:164
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
+msgid "attachments"
+msgstr ""
+
+#: components/Attachments/index.tsx:209
+#. Used in: Components > Attachments > Index
+msgid "scale"
+msgstr ""
+
+#: components/Attachments/Plugin.tsx:119
+#. Used in: Components > Attachments > Plugin
+msgid "attachmentServerUnavailable"
+msgstr ""
+
+#: components/Attachments/index.tsx:198
+#: components/FormMeta/SubViewMeta.tsx:40
+#: components/UserPreferences/Definitions.tsx:1071
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+msgid "orderBy"
+msgstr ""
+
+#: components/Attachments/Plugin.tsx:143
+#. Used in: Components > Attachments > Plugin
+msgid "uploadingInline"
+msgstr ""
+
+#: components/Attachments/Gallery.tsx:77
+#. Used in: Components > Attachments > Gallery
+msgid "noAttachments"
+msgstr ""
