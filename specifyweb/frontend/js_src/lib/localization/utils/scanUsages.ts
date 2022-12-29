@@ -27,6 +27,7 @@ import { f } from '../../utils/functools';
 import { formatList } from '../../components/Atoms/Internationalization';
 import { testLogging } from './testLogging';
 import { DEFAULT_LANGUAGE, Language, languages } from './config';
+import { LocalizedString } from 'typesafe-i18n';
 
 if (process.argv[1] === undefined)
   throw new Error('Unable to find the path of the current directory');
@@ -208,7 +209,10 @@ export async function scanUsages(
                   {
                     strings: {
                       ...strings,
-                      comment: f.maybe(strings.comment, whitespaceSensitive),
+                      comment: f.maybe(
+                        strings.comment as LocalizedString,
+                        whitespaceSensitive
+                      ),
                     },
                     usages: [],
                   },

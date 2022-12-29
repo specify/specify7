@@ -170,6 +170,8 @@ export function resolveValidationMessage(
     return backEndText.failedParsingBoolean({ value: payload.value as string });
   else if (key === 'failedParsingDecimal')
     return backEndText.failedParsingDecimal({ value: payload.value as string });
+  else if (key === 'failedParsingFloat')
+    return backEndText.failedParsingFloat({ value: payload.value as string });
   else if (key === 'failedParsingPickList')
     return backEndText.failedParsingPickList({
       value: `"${payload.value as string}"`,

@@ -17,6 +17,7 @@ import { languageCodeMapper } from './config';
 import { gettextExtension } from './sync';
 import { group } from '../../utils/utils';
 import { f } from '../../utils/functools';
+import { LocalizedString } from 'typesafe-i18n';
 
 program
   .name('Pull localization')
@@ -184,7 +185,9 @@ const trimStrings = (
         Object.entries(values).map(([language, value]) => [
           language,
           whitespaceSensitive(
-            trimNewLine ? value! : value!.replaceAll('\n', '\n\n')
+            (trimNewLine
+              ? value!
+              : value!.replaceAll('\n', '\n\n')) as LocalizedString
           ).replaceAll('\n', '\n\n'),
         ])
       ),

@@ -86,8 +86,8 @@ export const commonText = createDictionary({
     'ru-ru': 'Инструменты',
   },
   loading: {
-    'en-us': 'Loading...',
-    'ru-ru': 'Загрузка...',
+    'en-us': 'Loading…',
+    'ru-ru': 'Загрузка…',
   },
   uploaded: {
     'en-us': 'Uploaded',
@@ -330,14 +330,16 @@ export const commonText = createDictionary({
     'ru-ru': '{resource:string} <wrap>({count:number|formatted})</wrap>',
   },
   colonLine: {
-    comment:
-      'Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"',
+    comment: `
+      Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"
+    `,
     'en-us': '{label:string}: {value:string}',
     'ru-ru': '{label:string}: {value:string}',
   },
   jsxColonLine: {
-    comment:
-      'Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"',
+    comment: `
+      Example usage: "Created by: Full Name" OR "Record Set: Record Set Name"
+    `,
     'en-us': '{label:string}: <wrap />',
     'ru-ru': '{label:string}: <wrap />',
   },

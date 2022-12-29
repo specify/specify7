@@ -206,12 +206,12 @@ export const queryText = createDictionary({
     comment: 'Explains the use of special symbols for the "like" query filter',
     'en-us': `
       Use "%" to match any number of characters.
-      
+
       Use "_" to match a single character
     `,
     'ru-ru': `
       Используйте «%» для соответствия любому количеству символов.
-      
+
       Используйте «_» для соответствия одному символу
     `,
   },

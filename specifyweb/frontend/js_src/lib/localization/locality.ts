@@ -19,10 +19,13 @@ export const localityText = createDictionary({
   },
   queryMapSubset: {
     comment: 'Used in GeoMap header while records are still being fetched',
-    'en-us':
-      'GeoMap - Plotted {plotted:number|formatted} of {total:number|formatted} records',
+    'en-us': `
+      GeoMap - Plotted {plotted:number|formatted} of {total:number|formatted}
+      records
+    `,
     'ru-ru': `
-      Карта - Отображено {plotted:number|formatted} из {total:number|formatted} записей
+      Карта - Отображено {plotted:number|formatted} из {total:number|formatted}
+      записей
     `,
   },
   queryMapAll: {

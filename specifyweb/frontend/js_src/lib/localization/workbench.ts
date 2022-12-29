@@ -340,8 +340,10 @@ export const wbText = createDictionary({
     'ru-ru': 'Выберите предпочтительный формат геокоординат',
   },
   emptyStringInline: {
-    comment:
-      'When empty string is used as a default value for a column, this is shown instead',
+    comment: `
+      When empty string is used as a default value for a column, this is shown
+      instead
+    `,
     'en-us': '(empty string)',
     'ru-ru': '(пуста строка)',
   },

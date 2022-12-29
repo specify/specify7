@@ -43,8 +43,10 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Выбрав набор записей (доступно {count:number|formatted})',
   },
   byEnteringNumbers: {
-    comment:
-      'Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers',
+    comment: `
+      Field name is localized. Coming from Schema Configuration. I.e, By
+      entering Catalog Numbers
+    `,
     'en-us': 'By entering {fieldName:string}s',
     'ru-ru': 'Ввести {fieldName:string}',
   },

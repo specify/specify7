@@ -36,24 +36,24 @@ export const welcomeText = createDictionary({
   fullAddress: {
     'en-us': `
       Specify Collections Consortium <br />
-      
+
       Biodiversity Institute <br />
-      
+
       University of Kansas <br />
-      
+
       1345 Jayhawk Blvd. <br />
-      
+
       Lawrence, KS 66045 USA
     `,
     'ru-ru': `
       Specify Collections Consortium <br />
-      
+
       Biodiversity Institute <br />
-      
+
       University of Kansas <br />
-      
+
       1345 Jayhawk Blvd. <br />
-      
+
       Lawrence, KS 66045 USA
     `,
   },

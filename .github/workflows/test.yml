@@ -28,8 +28,9 @@ jobs:
       - name: Check if any non-front-end files changed
         id: back-end-check
         run: |
-          changed_files=`echo "${{steps.filter.outputs.backend_files}}" | tr " " "\n" | grep -v 'frontend' || echo ""`
-          echo "changed=$([[ -z "$changed_files" ]] && echo "1" || echo "")" >> $GITHUB_OUTPUT
+          changed_files=`echo "${{steps.filter.outputs.backend_files}}" | tr " " "\n" | grep -v 'specifyweb/frontend/' || echo ""`
+          echo "Changed back-end files: ${changed_files}"
+          echo "changed=$([[ -z "${changed_files}" ]] && echo "0" || echo "1")" >> $GITHUB_OUTPUT
 
   test-back-end:
     name: Run back-end tests
@@ -140,10 +141,10 @@ jobs:
         run: |
           npm run localizationTests -- --emit ./localization-strings
 
-      # FIXME: uncomment this:
-      # if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
       - name: Clone branch that stores localization strings
-        if: github.ref == 'refs/heads/l10n-improvements'
+        # Listen for changes to production branch
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        id: weblate
         uses: actions/checkout@v3
         with:
           path: weblate-localization
@@ -152,7 +153,7 @@ jobs:
 
       - name: Sync localization strings with Weblate (only on production branch)
         # Only run this step if previous step was not skipped
-        if: success()
+        if: steps.weblate.outcome == 'success'
         working-directory: weblate-localization
         run: |
           # Replace old localization strings
@@ -175,7 +176,7 @@ jobs:
           fi
 
       - name: Make sure Weblate settings are up to date
-        if: success()
+        if: steps.weblate.outcome == 'success'
         working-directory: specifyweb/frontend/js_src
         env:
           WEBLATE_API_TOKEN: ${{ secrets.WEBLATE_API_TOKEN }}

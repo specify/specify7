@@ -198,12 +198,12 @@ export const wbPlanText = createDictionary({
   dataSetUploadedDescription: {
     'en-us': `
       You are viewing the mappings for an uploaded dataset.
-      
+
       To edit the mappings, rollback the uploaded data or create a new dataset
     `,
     'ru-ru': `
       Вы просматриваете сопоставления для загруженного набора данных.
-      
+
       Чтобы изменить сопоставления, откатите загруженные данные или создайте
       новый набор данных
     `,
