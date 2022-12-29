@@ -18,6 +18,11 @@ export const backEndText = createDictionary({
     'en-us': 'value "{value:string}" is not a valid decimal value',
     'ru-ru': 'значение "{value:string}" не является допустимым чеслом',
   },
+  failedParsingFloat: {
+    'en-us': 'value "{value:string}" is not a valid floating point value',
+    'ru-ru':
+      'значение "{value:string}" не является допустимым числом с плавающей точкой',
+  },
   failedParsingPickList: {
     'en-us': `
       {value:string} is not a legal value in this picklist field.
@@ -69,12 +74,12 @@ export const backEndText = createDictionary({
     'ru-ru': 'неверное значение широты или долготы: {value:string}',
   },
   latitudeOutOfRange: {
-    'en-us': 'latitude must be between -90 and 90. actual: {value:string}',
-    'ru-ru': 'широта должна быть между -90 и 90. фактически: {value:string}',
+    'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
+    'ru-ru': 'широта должна быть между -90 и 90. Фактически: {value:string}',
   },
   longitudeOutOfRange: {
-    'en-us': 'longitude must be between -180 and 180. actual: {value:string}',
-    'ru-ru': 'долгота должна быть между -180 и 180. фактически: {value:string}',
+    'en-us': 'longitude must be between -180 and 180. Actual: {value:string}',
+    'ru-ru': 'долгота должна быть между -180 и 180. Фактически: {value:string}',
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',

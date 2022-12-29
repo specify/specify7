@@ -164,7 +164,9 @@ export function DataSetMeta({
           </span>
           <span>
             <StringToJsx
-              string={commonText.uploaded()}
+              string={commonText.jsxColonLine({
+                label: commonText.uploaded(),
+              })}
               components={{
                 wrap: (
                   <i>
@@ -222,7 +224,9 @@ export function DataSetMeta({
           </span>
           <span>
             <StringToJsx
-              string={wbText.importedFileName()}
+              string={commonText.jsxColonLine({
+                label: wbText.importedFileName(),
+              })}
               components={{
                 wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
               }}
@@ -262,7 +266,11 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {schema.models.Workbench.strictGetLiteralField('remarks').label}
+        {
+          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
+            'metadata'
+          ).label
+        }
       </Button.Small>
       {showMeta && (
         <DataSetMeta

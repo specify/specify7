@@ -183,7 +183,7 @@ def parse_float(fieldname: str, value: str, column) -> Union[ParseResult, ParseF
     try:
         result = float(value)
     except ValueError as e:
-        return ParseFailure(str(e), {}, column)
+        return ParseFailure('failedParsingFloat', {'value': value}, column)
 
     return filter_and_upload({fieldname: result}, column)
 
@@ -191,7 +191,7 @@ def parse_integer(fieldname: str, value: str, column: str) -> Union[ParseResult,
     try:
         result = int(value)
     except ValueError as e:
-        return ParseFailure(str(e), {}, column)
+        return ParseFailure('failedParsingDecimal', {'value': value}, column)
 
     return filter_and_upload({fieldname: result}, column)
 
