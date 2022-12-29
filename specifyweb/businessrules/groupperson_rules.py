@@ -10,6 +10,7 @@ def agent_cannot_be_in_self(groupperson):
             'a group cannot be made a member of itself', 
             {"table" : "GroupPerson",
              "type" : "GROUPPERSION_CONTAINS_SELF", 
+             "fieldName" : "member",
              "groupid" : groupperson.group_id})
 
 @orm_signal_handler('pre_save', 'Groupperson')

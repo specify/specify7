@@ -38,6 +38,7 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
                 f"loan preparation quantity exceeds availability ({ipreparation.id}: {quantity - quantityresolved} {available})", 
                 {"table" : "LoanPreparation",
                  "type" : "LOAN_PREP_QUANTITY_GT_AVAIL", 
+                 "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 
                  "quantityresolved" : quantityresolved, 
@@ -53,6 +54,7 @@ def giftprep_quantity_must_be_lte_availability(ipreparation):
                 f"gift preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", 
                 {"table" : "GiftPreparation",
                  "type" : "GIFT_PREP_QUANTITY_GT_AVAIL",
+                 "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 
                  "available" : available})
@@ -67,6 +69,7 @@ def exchangeoutprep_quantity_must_be_lte_availability(ipreparation):
                 "exchangeout preparation quantity exceeds availability ({ipreparation.id}: {quantity} {available})", 
                 {"table" : "ExchangeOutPrep",
                  "type" : "EXHANGEOUT_PREP_QUANTITY_GT_AVAIL",
+                 "fieldName" : "quantity",
                  "preparationid" : ipreparation.id, 
                  "quantity" : quantity, 
                  "available" : available})

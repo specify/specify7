@@ -20,7 +20,8 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                 "{} must have unique {}".format(model.__name__, unique_field), 
                 {"table" : model.__name__,
                  "type" : "UNIQUENESS", 
-                 "field" : (unique_field, value), 
+                 "fieldName" : unique_field,
+                 "fieldData" : (unique_field, value), 
                  "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     else:
         @orm_signal_handler('pre_save', model_name)
@@ -43,7 +44,8 @@ def make_uniqueness_rule(model_name, parent_field, unique_field):
                     "{} must have unique {} in {}".format(model.__name__, unique_field, parent_field),
                     {"table" : model.__name__,
                      "type" : "UNIQUENESS",
-                     "field" : (unique_field, value),
+                     "fieldName" : unique_field,
+                     "fieldData" : (unique_field, value),
                      "within" : (parent_field, parent),
                      "conflicting" : list(conflicts.values_list('id', flat=True)[:100])})
     return check_unique
