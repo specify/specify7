@@ -67,15 +67,15 @@ function BusinessRuleExceptionHeader({
   const type: string = response.data.type;
   return (
     <>
-      <div className="flex">
+      <div className={`flex space-x-2`}>
         <TableIcon name={table} label={false} />
-        <span>{'  '}</span>
         <h2 className={className.headerPrimary}>{response.exception}</h2>
       </div>
-      <div className="flex">
-        <summary>{type}:</summary>
-        <span>{'   '}</span>
-        <em className={className.label}>{response.message}</em>
+      <div className={`flex space-x-2`}>
+        <summary aria-label={type}>{type}:</summary>
+        <em className={className.label} title={response.message}>
+          {response.message}
+        </em>
       </div>
     </>
   );
@@ -86,7 +86,9 @@ function formatBasicResponse(error: string): JSX.Element {
   return (
     <>
       <h2 className={className.headerPrimary}>{response.exception}</h2>
-      <em className={className.label}>{response.message}</em>
+      <em className={className.label} title={response.message}>
+        {response.message}
+      </em>
       <JsonBackendResponseFooter hasData={false} response={response} />
     </>
   );
