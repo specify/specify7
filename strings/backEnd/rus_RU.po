@@ -12,6 +12,11 @@ msgid "failedParsingDecimal"
 msgstr "значение \"{value:string}\" не является допустимым чеслом"
 
 #: components/WorkBench/resultsParser.ts:174
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingFloat"
+msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
+
+#: components/WorkBench/resultsParser.ts:176
 #: components/WorkBench/wbView.js:844
 #: components/WorkBench/wbView.js:846
 #: components/WorkBench/wbView.js:1339
@@ -21,66 +26,66 @@ msgstr ""
 "{value:string} не является допустимым значением в этом списке.\n"
 "Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
 
-#: components/WorkBench/resultsParser.ts:178
+#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "неверный тип агента: \"{badType:string}\". Ожидается один из "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:183
+#: components/WorkBench/resultsParser.ts:185
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "значение из списка {pickList:string} длиннее максимального значения "
 "{maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:188
+#: components/WorkBench/resultsParser.ts:190
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "значение не должно быть длиннее {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:192
+#: components/WorkBench/resultsParser.ts:194
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "значение даты должно содержать четырехзначный год: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:196
+#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "неверное значение даты: {value:string}. ожидается: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:201
+#: components/WorkBench/resultsParser.ts:203
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "неверное значение широты или долготы: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:207
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
-msgstr "широта должна быть между -90 и 90. фактически: {value:string}"
+msgstr "широта должна быть между -90 и 90. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:209
+#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
-msgstr "долгота должна быть между -180 и 180. фактически: {value:string}"
+msgstr "долгота должна быть между -180 и 180. Фактически: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:213
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "это поле должно быть пустым, если {column:string} пусто"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле обязательно для загрузки плана"
 
-#: components/WorkBench/resultsParser.ts:219
+#: components/WorkBench/resultsParser.ts:221
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "В дереве есть несколько веток с именем \"Uploaded\"!"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:223
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""

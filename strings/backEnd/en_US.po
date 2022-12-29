@@ -12,6 +12,11 @@ msgid "failedParsingDecimal"
 msgstr "value \"{value:string}\" is not a valid decimal value"
 
 #: components/WorkBench/resultsParser.ts:174
+#. Used in: Components > Work Bench > Results Parser
+msgid "failedParsingFloat"
+msgstr "value \"{value:string}\" is not a valid floating point value"
+
+#: components/WorkBench/resultsParser.ts:176
 #: components/WorkBench/wbView.js:844
 #: components/WorkBench/wbView.js:846
 #: components/WorkBench/wbView.js:1339
@@ -21,64 +26,64 @@ msgstr ""
 "{value:string} is not a legal value in this picklist field.\n"
 "Click on the arrow to choose among available options."
 
-#: components/WorkBench/resultsParser.ts:178
+#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr "bad agent type: \"{badType:string}\". Expected one of {validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:183
+#: components/WorkBench/resultsParser.ts:185
 #. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
 "value from picklist {pickList:string} longer than the max of "
 "{maxLength:number|formatted} for field"
 
-#: components/WorkBench/resultsParser.ts:188
+#: components/WorkBench/resultsParser.ts:190
 #. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr "value must not have length greater than {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:192
+#: components/WorkBench/resultsParser.ts:194
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidYear"
 msgstr "date value must contain four digit year: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:196
+#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "bad date value: {value:string}. expected: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:201
+#: components/WorkBench/resultsParser.ts:203
 #. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "bad latitude or longitude value: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:205
+#: components/WorkBench/resultsParser.ts:207
 #. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
-msgstr "latitude must be between -90 and 90. actual: {value:string}"
+msgstr "latitude must be between -90 and 90. Actual: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:209
+#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
 msgid "longitudeOutOfRange"
-msgstr "longitude must be between -180 and 180. actual: {value:string}"
+msgstr "longitude must be between -180 and 180. Actual: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:213
+#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "this field must be empty if {column:string} is empty"
 
-#: components/WorkBench/resultsParser.ts:217
+#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "field is required by upload plan mapping"
 
-#: components/WorkBench/resultsParser.ts:219
+#: components/WorkBench/resultsParser.ts:221
 #. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr "There are multiple \"Uploaded\" placeholder values in the tree!"
 
-#: components/WorkBench/resultsParser.ts:221
+#: components/WorkBench/resultsParser.ts:223
 #. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr "Missing or unmapped required tree parent rank value for \"{names:string}\"."
