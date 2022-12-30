@@ -124,8 +124,8 @@ const processUiPlugin: {
       );
       return { type: 'Blank' };
     }
-    if (dateFields.at(-1)?.isRelationship === false) {
-      console.log("Can't display PartialDateUi for a relationship field");
+    if (dateFields.at(-1)?.isRelationship === true) {
+      console.error("Can't display PartialDateUi for a relationship field");
       return { type: 'Blank' };
     }
 

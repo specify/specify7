@@ -13,7 +13,6 @@ import {
 } from './index';
 import { getCache } from '../../utils/cache';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
-import { SpecifyModel } from '../DataModel/specifyModel';
 
 // FEATURE: use localized action and resource names in all these log messages
 // REFACTOR: use <ProtectedTable> and etc in favor of this function
@@ -80,11 +79,12 @@ export const hasDerivedPermission = <
 
 /** Check if user has a given permission for each table in a mapping path */
 export const hasPathPermission = (
-  baseTable: SpecifyModel,
   mappingPath: RA<LiteralField | Relationship>,
   action: typeof tableActions[number],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  [baseTable.name, ...mappingPath.map(({ model }) => model.name)].every(
-    (tableName) => hasTablePermission(tableName, action, collectionId)
-  );
+  mappingPath
+    .map((field) =>
+      field.isRelationship ? field.relatedModel.name : field.model.name
+    )
+    .every((tableName) => hasTablePermission(tableName, action, collectionId));

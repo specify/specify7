@@ -146,8 +146,7 @@ const processCellType: {
         : undefined) ?? fields;
 
     const hasAccess =
-      resolvedFields === undefined ||
-      !hasPathPermission(model, resolvedFields, 'read');
+      resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
     setLogContext({ field: undefined });
     if (hasAccess)
@@ -201,7 +200,7 @@ const processCellType: {
       return { type: 'Blank' };
     }
 
-    const hasAccess = !hasPathPermission(model, fields, 'read');
+    const hasAccess = hasPathPermission(fields, 'read');
     if (!hasAccess) return { type: 'Blank' };
 
     const rawSortField = getProperty('sortField');

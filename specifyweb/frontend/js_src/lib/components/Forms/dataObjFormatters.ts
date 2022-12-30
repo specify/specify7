@@ -233,11 +233,7 @@ async function formatField(
       `Unexpected formatting of a relationship field ${fieldName}`
     );
 
-  const hasPermission = hasPathPermission(
-    resource.specifyModel,
-    fields,
-    'read'
-  );
+  const hasPermission = hasPathPermission(fields, 'read');
 
   const formatted = hasPermission
     ? await (

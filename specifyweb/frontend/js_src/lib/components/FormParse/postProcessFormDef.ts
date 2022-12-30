@@ -222,7 +222,7 @@ const postProcessLabel = (
           cell.text ??
           fieldsById[cell.labelForCellId]?.altLabel,
         // Get label fieldName from its field
-        fieldName:
+        fieldNames:
           fieldsById[cell.labelForCellId]?.fieldNames ?? cell.fieldNames,
       }
     : {}),
