@@ -243,10 +243,15 @@ function DateQueryInputField({
           toggleAbsolute();
           if (!isAbsolute) {
             if (reParse.test(currentValue)) {
-              const parsedDate = dayjs(parseRelativeDate(currentValue));
-              handleChange?.(parsedDate.format(databaseDateFormat));
+              const parsedDate = dayjs(parseRelativeDate(currentValue)).format(
+                databaseDateFormat
+              );
+              handleChange?.(parsedDate);
               setDate((oldState) => ({
-                ...oldState,
+                absolute:
+                  oldState.absolute === '' || oldState.absolute === undefined
+                    ? parsedDate
+                    : oldState.absolute,
                 relative: currentValue,
               }));
             }
