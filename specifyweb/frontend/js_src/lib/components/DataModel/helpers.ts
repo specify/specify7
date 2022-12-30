@@ -21,7 +21,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    typeof resource.toJSON === 'function'
+    'toJSON' in resource
       ? resourceToJson(resource as SpecifyResource<SCHEMA>)
       : (resource as SerializedModel<SCHEMA>),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
@@ -42,8 +42,14 @@ function serializeModel<SCHEMA extends AnySchema>(
   const model = strictGetModel(
     defined(
       (tableName as SCHEMA['tableName']) ??
-        ('_tableName' in resource ? resource._tableName : undefined) ??
-        parseResourceUrl((resource.resource_uri as string) ?? '')?.[0],
+        ('_tableName' in resource
+          ? (resource as SerializedResource<SCHEMA>)._tableName
+          : undefined) ??
+        parseResourceUrl(
+          'resource_uri' in resource
+            ? (resource as { readonly resource_uri: string }).resource_uri ?? ''
+            : ''
+        )?.[0],
       `Unable to serialize resource because table name is unknown.${
         process.env.NODE_ENV === 'test'
           ? `\nMake sure your test file calls requireContext();`
@@ -139,8 +145,9 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * a typechecking performance issue (it was taking 5s to typecheck this
      * line according to TypeScript trace analyzer)
      */
-    serializedResource._tableName
-  ].Resource(removeKey(serializedResource, '_tableName'));
+    (serializedResource as SerializedResource<SCHEMA>)
+      ._tableName as keyof Tables
+  ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
 
 /**
  * Example usage:
