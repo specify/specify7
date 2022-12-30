@@ -50,9 +50,10 @@ function useUnsafePref<
    * TEST: Stats Page might need testing since it had problems in past with too many state updates
    * causing glitching. isUpdated was added to fixed it, but the glitching is not reproducible at
    * the time of this comment.
+   *
    */
-  // Potential Fix for Stats Page Glitch: const isUpdated = React.useRef(false);
 
+  const isUpdated = React.useRef(false);
   React.useEffect(
     () =>
       prefEvents.on('update', (payload) => {
@@ -65,6 +66,7 @@ function useUnsafePref<
             payload.item !== item)
         )
           return;
+        if (isUpdated.current) return;
         const newValue = getPref(category, subcategory, item);
         setLocalPref(newValue);
       }),
@@ -91,12 +93,14 @@ function useUnsafePref<
 
       const newValue = setPref(category, subcategory, item, newValueRaw);
       setLocalPref(newValue);
+      isUpdated.current = true;
     },
     [category, subcategory, item, setPref, getPref]
   );
 
   return [pref, updatePref] as const;
 }
+
 export function usePref<
   CATEGORY extends keyof Preferences,
   SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
