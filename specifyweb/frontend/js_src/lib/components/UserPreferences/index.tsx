@@ -173,10 +173,11 @@ export function PreferencesContent({
                                  * Need to get default value via this
                                  * function as defaults may be changed
                                  */
-                                // @ts-expect-error
+
                                 (
                                   getPrefDefinition(
                                     category,
+                                    // @ts-expect-error
                                     subcategory,
                                     name
                                   ) as unknown as PreferenceItem<any>
