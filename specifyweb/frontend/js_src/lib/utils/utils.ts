@@ -4,6 +4,7 @@
  * @module
  */
 
+import { LocalizedString } from 'typesafe-i18n';
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -332,9 +333,9 @@ export const getAttribute = (cell: Element, name: string): string | undefined =>
 export const getParsedAttribute = (
   cell: Element,
   name: string
-): string | undefined =>
+): LocalizedString | undefined =>
   f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : value
+    value.length === 0 ? undefined : (value as LocalizedString)
   );
 
 export const getBooleanAttribute = (

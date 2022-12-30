@@ -3,7 +3,6 @@ import React from 'react';
 import { deserializeResource } from '../../hooks/resource';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { getUniqueName } from '../../utils/uniquifyName';
 import { Container } from '../Atoms';
@@ -36,6 +35,7 @@ import {
 import { getResourceType } from './filtersHelpers';
 import { useAppResourceData } from './hooks';
 import { AppResourcesTabs } from './Tabs';
+import { formsText } from '../../localization/forms';
 
 export function AppResourceEditor({
   resource,
@@ -92,9 +92,9 @@ export function AppResourceEditor({
       <AppResourceEditButton title={title}>{form()}</AppResourceEditButton>
       <AppTitle title={formatted} type="form" />
       <Button.Blue
-        aria-label={localityText('toggleFullScreen')}
+        aria-label={localityText.toggleFullScreen()}
         aria-pressed={isFullScreen}
-        title={localityText('toggleFullScreen')}
+        title={localityText.toggleFullScreen()}
         onClick={handleToggleFullScreen}
       >
         {isFullScreen ? icons.arrowsCollapse : icons.arrowsExpand}
@@ -173,10 +173,9 @@ export function AppResourceEditor({
                         name:
                           resource.name.length > 0
                             ? getUniqueName(resource.name, [resource.name])
-                            : commonText(
-                                'newResourceTitle',
-                                appResource.specifyModel.label
-                              ),
+                            : formsText.newResourceTitle({
+                                tableName: appResource.specifyModel.label,
+                              }),
                       },
                       isClone ? resourceData.id : undefined
                     );

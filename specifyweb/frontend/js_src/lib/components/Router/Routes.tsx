@@ -1,13 +1,17 @@
 import React from 'react';
 
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { welcomeText } from '../../localization/welcome';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { Redirect } from './Redirect';
 import type { EnhancedRoute } from './RouterUtils';
 import { WelcomeView } from '../HomePage';
+import { schemaText } from '../../localization/schema';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
+import { preferencesText } from '../../localization/preferences';
+import { attachmentsText } from '../../localization/attachments';
 
 // FEATURE: go over non-dynamic routes in all routers to make sure they have titles
 /* eslint-disable @typescript-eslint/promise-function-async */
@@ -18,7 +22,7 @@ export const routes: RA<EnhancedRoute> = [
       import('../Header/ExpressSearchTask').then(
         ({ ExpressSearchView }) => ExpressSearchView
       ),
-    title: commonText('expressSearch'),
+    title: headerText.expressSearch(),
     navigatable: false,
   },
   {
@@ -27,11 +31,11 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'data-model',
-    title: commonText('databaseSchema'),
+    title: schemaText.databaseSchema(),
     children: [
       {
         index: true,
-        title: commonText('databaseSchema'),
+        title: schemaText.databaseSchema(),
         element: () =>
           import('../Toolbar/Schema').then(
             ({ DataModelTables }) => DataModelTables
@@ -57,7 +61,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'security',
-    title: adminText('securityPanel'),
+    title: userText.securityPanel(),
     element: () =>
       import('../Toolbar/Security').then(({ SecurityPanel }) => SecurityPanel),
     children: [
@@ -128,7 +132,7 @@ export const routes: RA<EnhancedRoute> = [
             children: [
               {
                 path: 'create',
-                title: adminText('createRole'),
+                title: userText.createRole(),
                 element: () =>
                   import('../Security/CreateRole').then(
                     ({ CreateCollectionRole }) => CreateCollectionRole
@@ -136,7 +140,7 @@ export const routes: RA<EnhancedRoute> = [
               },
               {
                 path: 'new',
-                title: adminText('newRole'),
+                title: userText.newRole(),
                 element: () =>
                   import('../Security/CollectionRole').then(
                     ({ SecurityCollectionRole }) => SecurityCollectionRole
@@ -157,7 +161,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'attachments',
-    title: commonText('attachments'),
+    title: attachmentsText.attachments(),
     element: () =>
       import('../Attachments').then(({ AttachmentsView }) => AttachmentsView),
   },
@@ -171,7 +175,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'import',
-        title: wbText('importDataSet'),
+        title: wbText.importDataSet(),
         element: () =>
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
@@ -194,7 +198,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'resources',
-    title: commonText('appResources'),
+    title: resourcesText.appResources(),
     element: () =>
       import('../AppResources').then(
         ({ AppResourcesWrapper }) => AppResourcesWrapper
@@ -202,7 +206,7 @@ export const routes: RA<EnhancedRoute> = [
     children: [
       {
         path: 'create/:directoryKey',
-        title: adminText('addResource'),
+        title: resourcesText.addResource(),
         element: () =>
           import('../AppResources/Create').then(
             ({ CreateAppResource }) => CreateAppResource
@@ -319,7 +323,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'user-preferences',
-    title: commonText('preferences'),
+    title: preferencesText.preferences(),
     element: () =>
       import('../UserPreferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
@@ -327,7 +331,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     path: 'schema-config',
-    title: commonText('schemaConfig'),
+    title: schemaText.schemaConfig(),
     element: () =>
       import('../Toolbar/SchemaConfig').then(
         ({ SchemaConfig }) => SchemaConfig
@@ -342,7 +346,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'add-language',
-        title: commonText('addLanguageDialogHeader'),
+        title: schemaText.addLanguage(),
         element: () =>
           import('../SchemaConfig/Languages').then(
             ({ AddLanguage }) => AddLanguage
@@ -353,7 +357,7 @@ export const routes: RA<EnhancedRoute> = [
         children: [
           {
             index: true,
-            title: commonText('tables'),
+            title: schemaText.tables(),
             element: () =>
               import('../SchemaConfig/Tables').then(
                 ({ SchemaConfigTables }) => SchemaConfigTables
@@ -389,7 +393,7 @@ export const routes: RA<EnhancedRoute> = [
       },
       {
         path: 'clear-cache',
-        title: commonText('clearCache'),
+        title: headerText.clearCache(),
         element: () =>
           import('../RouterCommands/CacheBuster').then(
             ({ CacheBuster }) => CacheBuster
@@ -399,7 +403,7 @@ export const routes: RA<EnhancedRoute> = [
   },
   {
     index: true,
-    title: welcomeText('pageTitle'),
+    title: welcomeText.pageTitle(),
     element: <WelcomeView />,
   },
   /*

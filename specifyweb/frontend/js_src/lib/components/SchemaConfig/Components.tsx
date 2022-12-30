@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
+import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SchemaConfigHeader({
   languages,
@@ -22,16 +24,16 @@ export function SchemaConfigHeader({
   return (
     <header className="flex gap-2">
       <H2 className="flex items-center">
-        {commonText('schemaConfig')} (
+        {schemaText.schemaConfig()} (
         {languages[language]?.replaceAll(/[()]/g, '') ?? language})
       </H2>
       <Button.Small
         onClick={(): void => navigate(`/specify/schema-config/${language}/`)}
       >
-        {commonText('changeBaseTable')}
+        {schemaText.changeBaseTable()}
       </Button.Small>
       <span className="-ml-2 flex-1" />
-      <Button.Small onClick={handleSave}>{commonText('save')}</Button.Small>
+      <Button.Small onClick={handleSave}>{commonText.save()}</Button.Small>
     </header>
   );
 }
@@ -44,7 +46,7 @@ export function PickList({
   onChange: handleChange,
   className,
 }: {
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly value: string | null;
   readonly groups: IR<IR<string> | RA<readonly [string, string]>>;
   readonly disabled?: boolean;
@@ -63,11 +65,11 @@ export function PickList({
     >
       {Object.keys(groups).length === 0 ? (
         <option disabled value="0">
-          {commonText('noneAvailable')}
+          {commonText.noneAvailable()}
         </option>
       ) : (
         <>
-          <option value="0">{commonText('none')}</option>
+          <option value="0">{commonText.none()}</option>
           {/*
            * If current value is not present in the list, add it, and mark as
            * invalid
@@ -80,10 +82,9 @@ export function PickList({
                 : Object.values(group)
             )
             .includes(value) ? undefined : (
-            <option value={value}>{`${queryText(
-              'invalidPicklistValue',
-              value
-            )}`}</option>
+            <option value={value}>{`${queryText.invalidPicklistValue({
+              value,
+            })}`}</option>
           )}
           {Object.keys(groups).length === 1 ? (
             <Values values={Object.values(groups)[0]} />

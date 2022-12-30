@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useCachedState } from '../../hooks/useCachedState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -14,6 +13,8 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import type { Policy, PolicyScope } from './Policy';
 import { hasTableActions, SecurityPolicy } from './Policy';
 import { getAllActions } from './utils';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function SecurityPoliciesWrapper({
   policies,
@@ -22,7 +23,7 @@ export function SecurityPoliciesWrapper({
   children,
 }: {
   readonly policies: RA<Policy> | undefined;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly collapsable: boolean;
   readonly children: JSX.Element;
 }): JSX.Element {
@@ -37,8 +38,8 @@ export function SecurityPoliciesWrapper({
   );
   const buttonTitle =
     orientation === 'vertical'
-      ? adminText('switchToHorizontalLayout')
-      : adminText('switchToVerticalLayout');
+      ? userText.switchToHorizontalLayout()
+      : userText.switchToVerticalLayout();
   const switchButton =
     (!collapsable || isExpanded) && Array.isArray(policies) ? (
       <Button.Small
@@ -160,7 +161,7 @@ export function SecurityPolicies({
         ))}
       </Ul>
       {scope !== 'institution' && (
-        <p>{adminText('excludedInstitutionalPoliciesDescription')}</p>
+        <p>{userText.excludedInstitutionalPoliciesDescription()}</p>
       )}
       {!isReadOnly && (
         <div>
@@ -175,13 +176,13 @@ export function SecurityPolicies({
               ])
             }
           >
-            {commonText('add')}
+            {commonText.add()}
           </Button.Green>
         </div>
       )}
     </>
   ) : (
-    <>{commonText('loading')}</>
+    <>{commonText.loading()}</>
   );
 }
 

@@ -37,19 +37,18 @@ function WrongTable({
   return (
     <>
       <Button.Small onClick={handleShow}>
-        {formsText('unavailablePluginButton')}
+        {formsText.unavailablePluginButton()}
       </Button.Small>
       <Dialog
-        buttons={commonText('close')}
-        header={formsText('unavailablePluginDialogHeader')}
+        buttons={commonText.close()}
+        header={formsText.pluginNotAvailable()}
         isOpen={isVisible}
         onClose={handleHide}
       >
-        {formsText(
-          'wrongTablePluginDialogText',
-          resource.specifyModel.name,
-          allowedTable
-        )}
+        {formsText.wrongTableForPlugin({
+          currentTable: resource.specifyModel.name,
+          correctTable: allowedTable,
+        })}
       </Dialog>
     </>
   );
@@ -259,22 +258,27 @@ const pluginRenderers: {
     );
   },
   PaleoMap: PaleoLocationMapPlugin,
-  Unsupported({ pluginDefinition: { name = commonText('nullInline') }, id }) {
+  Unsupported({ pluginDefinition: { name = commonText.nullInline() }, id }) {
     const [isVisible, handleShow, handleHide] = useBooleanState();
     return (
       <>
         <Button.Small className="w-fit" id={id} onClick={handleShow}>
-          {formsText('unavailablePluginButton')}
+          {formsText.unavailablePluginButton()}
         </Button.Small>
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('unavailablePluginDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.pluginNotAvailable()}
           isOpen={isVisible}
           onClose={handleHide}
         >
-          {formsText('unavailablePluginDialogText')}
+          {formsText.pluginNotAvailableDescription()}
           <br />
-          {`${formsText('pluginName')} ${name}`}
+          {formsText.pluginNotAvailableSecondDescription()}
+          <br />
+          {commonText.colonLine({
+            label: formsText.pluginName(),
+            value: name,
+          })}
         </Dialog>
       </>
     );

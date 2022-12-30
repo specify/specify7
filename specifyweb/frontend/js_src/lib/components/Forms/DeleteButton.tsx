@@ -29,7 +29,7 @@ import { Http } from '../../utils/ajax/definitions';
  */
 export function DeleteButton<SCHEMA extends AnySchema>({
   resource,
-  deletionMessage = formsText('deleteConfirmationDialogText'),
+  deletionMessage = formsText.deleteConfirmationDescription(),
   deferred: initialDeferred = false,
   component: ButtonComponent = Button.Gray,
   onDeleted: handleDeleted,
@@ -63,24 +63,24 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   return (
     <>
       <ButtonComponent
-        title={isBlocked ? formsText('deleteBlockedDialogHeader') : undefined}
+        title={isBlocked ? formsText.deleteBlocked() : undefined}
         onClick={(): void => {
           handleOpen();
           setDeferred(false);
         }}
       >
         {isBlocked ? icons.exclamation : undefined}
-        {commonText('delete')}
+        {commonText.delete()}
       </ButtonComponent>
       {isOpen ? (
         blockers === undefined ? (
           <Dialog
-            buttons={commonText('cancel')}
+            buttons={commonText.cancel()}
             className={{ container: dialogClassNames.narrowContainer }}
-            header={commonText('loading')}
+            header={commonText.loading()}
             onClose={handleClose}
           >
-            {formsText('checkingIfResourceCanBeDeleted')}
+            {formsText.checkingIfResourceCanBeDeleted()}
             {loadingBar}
           </Dialog>
         ) : blockers.length === 0 ? (
@@ -96,19 +96,18 @@ export function DeleteButton<SCHEMA extends AnySchema>({
                     loading(resource.destroy().then(handleDeleted));
                   }}
                 >
-                  {commonText('delete')}
+                  {commonText.delete()}
                 </Button.Red>
                 <span className="-ml-2 flex-1" />
-                <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               </>
             }
             className={{
               container: dialogClassNames.narrowContainer,
             }}
-            header={formsText(
-              'deleteConfirmationDialogHeader',
-              resource.specifyModel.label
-            )}
+            header={formsText.deleteConfirmation({
+              tableName: resource.specifyModel.label,
+            })}
             onClose={handleClose}
           >
             {deletionMessage}

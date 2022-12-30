@@ -1,7 +1,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { formsText } from '../../localization/forms';
 import type { Preparations } from '../../utils/ajax/specifyApi';
 import { getInteractionsForPrepId } from '../../utils/ajax/specifyApi';
 import { syncFieldFormat } from '../../utils/fieldFormat';
@@ -13,6 +12,9 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
+import { LocalizedString } from 'typesafe-i18n';
+import { formatNumber } from '../Atoms/Internationalization';
+import { interactionsText } from '../../localization/interactions';
 
 export function PrepDialogRow({
   preparation,
@@ -36,7 +38,7 @@ export function PrepDialogRow({
             'ExchangeOut' | 'Gift' | 'Loan',
             RA<{
               readonly id: number;
-              readonly label: string;
+              readonly label: LocalizedString;
             }>
           >;
         }
@@ -55,9 +57,9 @@ export function PrepDialogRow({
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={interactionsText.selectAll()}
             checked={checked}
-            title={formsText('selectAll')}
+            title={interactionsText.selectAll()}
             onValueChange={(): void => handleChange(checked ? 0 : available)}
           />
         </td>
@@ -74,10 +76,10 @@ export function PrepDialogRow({
         <td>{preparation.prepType}</td>
         <td>
           <Input.Number
-            aria-label={formsText('selectedAmount')}
+            aria-label={interactionsText.selectedAmount()}
             max={preparation.available}
             min={0}
-            title={formsText('selectedAmount')}
+            title={interactionsText.selectedAmount()}
             value={selected}
             onValueChange={handleChange}
           />
@@ -103,7 +105,7 @@ export function PrepDialogRow({
                                 .map((object) => object.split('>|<'))
                                 .map(([id, label]) => ({
                                   id: Number.parseInt(id),
-                                  label,
+                                  label: label as LocalizedString,
                                 })) ?? []
                           );
                           const count =
@@ -137,7 +139,7 @@ export function PrepDialogRow({
                     : setState({ type: 'Main' })
                 }
               >
-                {unavailableCount}
+                {formatNumber(unavailableCount)}
               </Button.LikeLink>
             )
           }
@@ -155,7 +157,12 @@ export function PrepDialogRow({
                       resource: new schema.models[tableName].Resource({ id }),
                     })
                   }
-                >{`${schema.models[tableName].label}: ${label}`}</Button.LikeLink>
+                >
+                  {interactionsText.prepReturnFormatter({
+                    tableName: schema.models[tableName].label,
+                    resource: label,
+                  })}
+                </Button.LikeLink>
               ))
             )}
           </td>

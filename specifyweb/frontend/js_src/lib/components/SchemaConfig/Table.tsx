@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { Input, Label } from '../Atoms/Form';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
@@ -11,6 +10,8 @@ import { SchemaConfigColumn } from './Fields';
 import { filterFormatters } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
+import { schemaText } from '../../localization/schema';
+import { commonText } from '../../localization/common';
 
 export const maxSchemaValueLength =
   schema.models.SpLocaleItemStr.strictGetLiteralField('text').length;
@@ -40,10 +41,13 @@ export function SchemaConfigTable({
 }): JSX.Element {
   return (
     <SchemaConfigColumn
-      header={`${commonText('tableInline')} ${container.name}`}
+      header={commonText.colonLine({
+        label: schemaText.table(),
+        value: container.name,
+      })}
     >
       <Label.Block>
-        {commonText('caption')}
+        {schemaText.caption()}
         <Input.Text
           isReadOnly={isReadOnly || name === undefined}
           maxLength={maxSchemaValueLength}
@@ -53,7 +57,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('description')}
+        {schemaText.description()}
         <AutoGrowTextArea
           className="resize-y"
           isReadOnly={isReadOnly || desc === undefined}
@@ -63,7 +67,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('tableFormat')}
+        {schemaText.tableFormat()}
         <PickList
           disabled={isReadOnly}
           groups={{
@@ -77,7 +81,7 @@ export function SchemaConfigTable({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('tableAggregation')}
+        {schemaText.tableAggregation()}
         <PickList
           disabled={isReadOnly}
           groups={{
@@ -100,7 +104,7 @@ export function SchemaConfigTable({
             handleChange({ ...container, isHidden })
           }
         />
-        {commonText('hideTable')}
+        {schemaText.hideTable()}
       </Label.Inline>
     </SchemaConfigColumn>
   );

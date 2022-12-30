@@ -4,14 +4,15 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { usePref } from '../UserPreferences/usePref';
+import { mainText } from '../../localization/main';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AppTitle({
   title,
   type,
 }: {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly type?: 'form';
 }): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
@@ -20,7 +21,7 @@ export function AppTitle({
 }
 
 /** Set title of the webpage. Restores previous title on component destruction */
-export function useTitle(title: string | undefined): void {
+export function useTitle(title: LocalizedString | undefined): void {
   // Change page's title
   React.useEffect(() => {
     const id = {};
@@ -37,13 +38,13 @@ export function useTitle(title: string | undefined): void {
  * Store all tiles in a stack. This allows to restore previous title when curren
  * component is closed
  */
-const titleStack = new Map<unknown, string>();
+const titleStack = new Map<unknown, LocalizedString>();
 
-function setTitle(title: string): void {
+function setTitle(title: LocalizedString | ''): void {
   globalThis.document.title =
     title.length === 0
-      ? commonText('baseAppTitle')
-      : commonText('appTitle', title);
+      ? mainText.baseAppTitle()
+      : mainText.appTitle({ baseTitle: title });
 }
 
 const refreshTitle = (): void =>

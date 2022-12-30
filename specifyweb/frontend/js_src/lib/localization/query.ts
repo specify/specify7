@@ -4,20 +4,34 @@
  * @module
  */
 
-import { createDictionary, whitespaceSensitive } from './utils';
+import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const queryText = createDictionary({
+  query: {
+    'en-us': 'Query',
+    'ru-ru': 'Запрос',
+  },
+  queries: {
+    'en-us': 'Queries',
+    'ru-ru': 'Запросы',
+  },
+  queryBuilder: {
+    'en-us': 'Query Builder',
+    'ru-ru': 'Конструктор запросов',
+  },
   newQueryName: {
     'en-us': 'New Query',
     'ru-ru': 'Новый запрос',
   },
-  queryBoxDescription: {
-    'en-us': (fieldNames: string) => `Searches: ${fieldNames}`,
-    'ru-ru': (fieldNames: string) => `Поисковые запросы: ${fieldNames}`,
+  searchFields: {
+    comment: `
+      Used in a Query Combo Box's hover-over message to show which fields are
+      being searched on
+    `,
+    'en-us': 'Searched fields',
+    'ru-ru': 'Поля поиска',
   },
   any: {
     'en-us': 'Any',
@@ -35,93 +49,86 @@ export const queryText = createDictionary({
     'en-us': 'Save Query',
     'ru-ru': 'Сохранить запрос',
   },
-  saveQueryDialogText: {
-    'en-us': 'Enter a name for the new query.',
-    'ru-ru': 'Введите имя для нового запроса.',
-  },
-  saveClonedQueryDialogHeader: {
+  saveClonedQuery: {
     'en-us': 'Save query as...',
     'ru-ru': 'Сохранить запрос как...',
   },
-  saveClonedQueryDialogText: {
+  saveClonedQueryDescription: {
     'en-us': `
       The query will be saved with a new name leaving the current query
-      unchanged.`,
+      unchanged.
+    `,
     'ru-ru': `
       Запрос будет сохранен под новым именем, оставив текущий запрос без
-      изменений.`,
+      изменений.
+    `,
   },
-  queryName: {
-    'en-us': 'Query Name:',
-    'ru-ru': 'Имя запроса:',
-  },
-  queryDeleteIncompleteDialogHeader: {
+  queryDeleteIncomplete: {
     'en-us': 'Query definition contains incomplete fields',
     'ru-ru': 'Определение запроса содержит неполные поля',
   },
-  queryDeleteIncompleteDialogText: {
+  queryDeleteIncompleteDescription: {
     'en-us': `
       There are uncompleted fields in the query definition. Do you want to
-      remove them?`,
-    'ru-ru': `
-      В запросе есть незавершенные поля. Хотите удалить их?`,
+      remove them?
+    `,
+    'ru-ru': 'В запросе есть незавершенные поля. Хотите удалить их?',
   },
-  queryUnloadProtectDialogText: {
+  queryUnloadProtect: {
     'en-us': 'The new or modified query definition has not been saved',
     'ru-ru': 'Новый или измененный запрос не был сохранен',
   },
-  recordSetToQueryDialogHeader: {
+  recordSetToQuery: {
     'en-us': 'Creating a Record Set from Query',
     'ru-ru': 'Создание набор объектов из запроса',
   },
-  recordSetToQueryDialogText: {
+  recordSetToQueryDescription: {
     'en-us': 'Generating Record Set...',
     'ru-ru': 'Создание набора объектов...',
   },
-  recordSetCreatedDialogHeader: {
+  recordSetCreated: {
     'en-us': 'Record Set Created',
     'ru-ru': 'Набор Объектов Созданный',
   },
-  unableToExportAsKmlDialogHeader: {
+  missingCoordinatesForKml: {
     'en-us': 'Unable to export to KML',
     'ru-ru': 'Невозможно экспортировать в KML',
   },
-  unableToExportAsKmlDialogText: {
+  missingCoordinatesForKmlDescription: {
     'en-us': 'Please add latitude and longitude fields to the query.',
     'ru-ru': 'Пожалуйста, добавьте в запрос поля широты и долготы.',
   },
-  queryExportStartedDialogHeader: {
+  queryExportStarted: {
     'en-us': 'Export File Being Created',
     'ru-ru': 'Экспорт запроса запущен',
   },
-  queryExportStartedDialogText: {
+  queryExportStartedDescription: {
     'en-us': `
       A notification will appear when the export file is complete and ready for
-      download.`,
+      download.
+    `,
     'ru-ru': `
-      Запрос начал выполняться. Вы получите уведомление, когда
-      файл будет готов к загрузке.`,
+      Запрос начал выполняться. Вы получите уведомление, когда файл будет готов
+      к загрузке.
+    `,
   },
   invalidPicklistValue: {
-    'en-us': (value: string) => `${value} (current, invalid value)`,
-    'ru-ru': (value: string) => `${value} (текущее, недопустимое значение)`,
-  },
-  // QueryTask
-  queryTaskTitle: {
-    'en-us': (queryName: string) => `Query: ${queryName}`,
-    'ru-ru': (queryName: string) => `Запрос: ${queryName}`,
+    comment: 'Used when selected pick list value is not one of allowed values',
+    'en-us': '{value:string} (current, invalid value)',
+    'ru-ru': '{value:string} (текущее, недопустимое значение)',
   },
   queryRecordSetTitle: {
-    'en-us': (queryName: string, recordSetName: string) =>
-      `Query: "${queryName}" on Record Set: "${recordSetName}"`,
-    'ru-ru': (queryName: string, recordSetName: string) =>
-      `Запрос: "${queryName}" на наборе записей: "${recordSetName}"`,
+    comment: 'Used in query builder header when querying on record set',
+    'en-us':
+      'Query: "{queryName:string}" on Record Set: "{recordSetName:string}"',
+    'ru-ru': `
+      Запрос: "{queryName:string}" на наборе записей: "{recordSetName:string}"
+    `,
   },
   treeQueryName: {
-    'en-us': (tableName: string, nodeFullName: string) =>
-      `${tableName} using "${nodeFullName}"`,
-    'ru-ru': (tableName: string, nodeFullName: string) =>
-      `${tableName} с использованием "${nodeFullName}"`,
+    comment: 'Used in query builder header when querying on tree node usages',
+    'en-us': '{tableName:string} using "{nodeFullName:string}',
+    'ru-ru': '{tableName:string} с использованием "{nodeFullName:string}"',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
@@ -151,10 +158,17 @@ export const queryText = createDictionary({
     'en-us': 'Save As',
     'ru-ru': 'Сохранить как',
   },
-  // QueryField
   anyRank: {
     'en-us': '(any rank)',
     'ru-ru': '(любой ранг)',
+  },
+  moveUp: {
+    'en-us': 'Move Up',
+    'ru-ru': 'Переместить вверх',
+  },
+  moveDown: {
+    'en-us': 'Move Down',
+    'ru-ru': 'Переместить вниз',
   },
   sort: {
     'en-us': 'Sort',
@@ -176,12 +190,11 @@ export const queryText = createDictionary({
     'en-us': 'Show in results',
     'ru-ru': 'Показывать в результатах',
   },
-  // QueryResultsTable
-  aggregated: {
+  aggregatedInline: {
     'en-us': '(aggregated)',
     'ru-ru': '(совокупный)',
   },
-  formatted: {
+  formattedInline: {
     'en-us': '(formatted)',
     'ru-ru': '(отформатирован)',
   },
@@ -190,10 +203,17 @@ export const queryText = createDictionary({
     'ru-ru': 'Подобно',
   },
   likeDescription: {
-    'en-us': whitespaceSensitive(`Use "%" to match any number of
-      characters.<br>Use "_" to match a single character`),
-    'ru-ru': whitespaceSensitive(`Используйте «%» для соответствия любому
-      количеству символов.<br>Используйте «_» для соответствия одному символу`),
+    comment: 'Explains the use of special symbols for the "like" query filter',
+    'en-us': `
+      Use "%" to match any number of characters.
+
+      Use "_" to match a single character
+    `,
+    'ru-ru': `
+      Используйте «%» для соответствия любому количеству символов.
+
+      Используйте «_» для соответствия одному символу
+    `,
   },
   equal: {
     'en-us': 'Equal',
@@ -267,10 +287,6 @@ export const queryText = createDictionary({
     'en-us': 'Yes',
     'ru-ru': 'Да',
   },
-  queryBuilder: {
-    'en-us': 'Query Builder',
-    'ru-ru': 'Конструктор запросов',
-  },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
     'ru-ru': 'Нет нерешенных приготовлений к возвращению',
@@ -280,8 +296,12 @@ export const queryText = createDictionary({
     'ru-ru': 'Items have been returned',
   },
   queryResults: {
-    'en-us': (tableName: string) => `Query Results: ${tableName}`,
-    'ru-ru': (tableName: string) => `Результаты запроса: ${tableName}`,
+    'en-us': 'Query Results',
+    'ru-ru': 'Результаты запроса',
+  },
+  browseInForms: {
+    'en-us': 'Browse in Forms',
+    'ru-ru': 'Открыть записи',
   },
   editQuery: {
     'en-us': 'Edit Query',
@@ -291,61 +311,46 @@ export const queryText = createDictionary({
     'en-us': 'Configure visible query tables',
     'ru-ru': 'Настроить видимые таблицы запроса',
   },
-  openMap: {
-    'en-us': 'Open Map',
-    'ru-ru': 'Открыть карту',
+  exportQueryForDwca: {
+    'en-us': 'Export query for DwCA definition',
+    'ru-ru': 'Экспорт запрос для DwCA',
   },
-  queryMapSubset: {
-    'en-us': (plotted: string, total: string) =>
-      `Plotted ${plotted} of ${total} records`,
-    'ru-ru': (plotted: number, total: number) =>
-      `Отображено ${plotted} из ${total} записей`,
+  exportQueryAsReport: {
+    'en-us': 'Define report based on query',
+    'ru-ru': 'Определите отчет на основе запроса',
   },
-  queryMapAll: {
-    'en-us': (plotted: string) => `Plotted ${plotted} records`,
-    'ru-ru': (plotted: number) => `Отображено ${plotted} записей`,
+  exportQueryAsLabel: {
+    'en-us': 'Define label based on query',
+    'ru-ru': 'Определите метку на основе запроса',
   },
-  mergeRecords: {
-    'en-us': 'Merge Records',
-    'ru-ru': 'Объединить записи',
+  treeMerge: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Merge',
+    'ru-ru': 'Слияние узлов дерева',
   },
-  showConflictingFieldsOnly: {
-    'en-us': 'Show conflicting fields only',
-    'ru-ru': 'Показать только конфликтующие поля',
+  treeMove: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Move',
+    'ru-ru': 'Перемещение узла дерева',
   },
-  referencesToRecord: {
-    'en-us': 'References to this record',
-    'ru-ru': 'Ссылки на эту запись',
+  treeSynonymize: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Synonymize',
+    'ru-ru': 'Синонимизированный узел дерева',
   },
-  previewMerged: {
-    'en-us': 'Preview merged',
-    'ru-ru': 'Посмотреть результат',
+  treeDesynonymize: {
+    comment: 'Audit Log Action Type',
+    'en-us': 'Tree Desynonymize',
+    'ru-ru': 'Отменено синонимизацию узла дерева',
   },
-  mergedRecord: {
-    'en-us': 'Merged Record',
-    'ru-ru': 'Объединенная запись',
+  tooLongErrorMessage: {
+    'en-us': `
+      Field value is too long. Max allowed length is
+      {maxLength:number|formatted}
+    `,
+    'ru-ru': `
+      Значение поля слишком длинное. Максимально допустимая длина
+      {maxLength:number|formatted}
+    `,
   },
-  preview: {
-    'en-us': 'Preview',
-    'ru-ru': 'Открыть',
-  },
-  mergeFields: {
-    // Example: "Merge Addresses"
-    'en-us': (field: string) => `Merge ${field}`,
-    'ru-ru': (field: string) => `Объединить ${field}`,
-  },
-  duplicateRecord: {
-    'en-us': (index: number) => `Duplicate ${index}`,
-    'ru-ru': (index: number) => `Дубликат ${index}`,
-  },
-  nRecords: {
-    'en-us': (count: number) => `${count} records`,
-    'ru-ru': (count: number) => `${count} записей`,
-  },
-  subViewControls: {
-    'en-us': 'Sub-view Controls',
-    'ru-ru': 'Под-вид Контролы',
-  },
-});
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */
+} as const);

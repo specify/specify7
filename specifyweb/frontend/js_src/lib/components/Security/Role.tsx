@@ -6,7 +6,6 @@ import { useUnloadProtect } from '../../hooks/navigation';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
 import { useTriggerState } from '../../hooks/useTriggerState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -27,11 +26,16 @@ import type { UserRoles } from './Collection';
 import { ImportExport } from './ImportExport';
 import { SecurityPolicies, SecurityPoliciesWrapper } from './Policies';
 import type { Policy } from './Policy';
+import { mainText } from '../../localization/main';
+import { userText } from '../../localization/user';
+import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
 
 export type NewRole = {
   readonly id: number | undefined;
-  readonly name: string;
-  readonly description: string;
+  readonly name: LocalizedString;
+  readonly description: LocalizedString;
   readonly policies: RA<Policy>;
 };
 
@@ -55,7 +59,7 @@ export function RoleView({
   onAddUsers: handleAddUsers,
 }: {
   readonly role: NewRole | Role;
-  readonly parentName: string | undefined;
+  readonly parentName: LocalizedString | undefined;
   readonly userRoles: UserRoles | undefined;
   /*
    * All these are delegated to the parent resource so that the parent
@@ -80,7 +84,7 @@ export function RoleView({
   const navigate = useNavigate();
   const unsetUnloadProtect = useUnloadProtect(
     changesMade,
-    commonText('leavePageDialogText')
+    mainText.leavePageConfirmationDescription()
   );
   const [state, setState] = useLiveState<
     | State<'MainState'>
@@ -104,7 +108,12 @@ export function RoleView({
         handleSave(role);
       }}
     >
-      <h3 className="text-xl">{`${adminText('role')} ${role.name}`}</h3>
+      <h3 className="text-xl">
+        {commonText.colonLine({
+          label: userText.role(),
+          value: role.name,
+        })}
+      </h3>
       <AppTitle title={role.name} type="form" />
       <Link.Default href={closeUrl}>
         {icons.arrowLeft}
@@ -113,31 +122,33 @@ export function RoleView({
       <div className="flex flex-1 flex-col gap-2 overflow-auto">
         {!isReadOnly && (
           <Label.Block className={className.limitedWidth}>
-            {commonText('name')}
+            {schema.models.SpPermission.strictGetLiteralField('name').label}
             <Input.Text
               maxLength={roleNameMaxLength}
               required
               value={role.name}
               onValueChange={(name): void =>
-                setRole(replaceKey(role, 'name', name))
+                setRole(replaceKey(role, 'name', name as LocalizedString))
               }
             />
           </Label.Block>
         )}
         <Label.Block className={className.limitedWidth}>
-          {commonText('description')}
+          {schemaText.description()}
           <AutoGrowTextArea
             isReadOnly={isReadOnly}
             value={role.description}
             onValueChange={(description): void =>
-              setRole(replaceKey(role, 'description', description))
+              setRole(
+                replaceKey(role, 'description', description as LocalizedString)
+              )
             }
           />
         </Label.Block>
         {roleUsers}
         <SecurityPoliciesWrapper
           collapsable={false}
-          header={adminText('rolePolicies')}
+          header={userText.rolePolicies()}
           policies={role.policies}
         >
           <SecurityPolicies
@@ -167,7 +178,7 @@ export function RoleView({
                     })
             }
           >
-            {commonText('remove')}
+            {commonText.remove()}
           </Button.Red>
         ) : undefined}
         {changesMade ? (
@@ -179,10 +190,10 @@ export function RoleView({
               navigate(closeUrl);
             }}
           >
-            {commonText('cancel')}
+            {commonText.cancel()}
           </Link.Red>
         ) : (
-          <Link.Blue href={closeUrl}>{commonText('close')}</Link.Blue>
+          <Link.Blue href={closeUrl}>{commonText.close()}</Link.Blue>
         )}
         <span className="-ml-2 flex-1" />
         {typeof role.id === 'number' && (
@@ -198,7 +209,7 @@ export function RoleView({
         )}
         {!isReadOnly && (
           <Submit.Green disabled={!changesMade}>
-            {commonText('save')}
+            {commonText.save()}
           </Submit.Green>
         )}
       </div>
@@ -206,16 +217,16 @@ export function RoleView({
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Red onClick={handleDelete}>
-                {commonText('delete')}
+                {commonText.delete()}
               </Button.Red>
             </>
           }
-          header={adminText('deleteRoleWithUsers')}
+          header={userText.deleteRoleWithUsers()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {adminText('deleteRoleWithUsersDescription')}
+          {userText.deleteRoleWithUsersDescription()}
         </Dialog>
       )}
     </Form>

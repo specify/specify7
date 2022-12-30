@@ -12,7 +12,7 @@ import { f } from '../../utils/functools';
 import type { LocalityData } from '../Leaflet/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { commonText } from '../../localization/common';
-import { specifyNetworkText } from '../../localization/specifynetwork';
+import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { getUserPref } from '../UserPreferences/helpers';
 import type { OccurrenceData } from './map';
@@ -224,19 +224,19 @@ function SpecifyNetwork({
       {isPending && <LoadingScreen />}
       {hasFailure && (
         <Dialog
-          buttons={commonText('close')}
-          header={specifyNetworkText('failedToOpenPopUpDialogHeader')}
+          buttons={commonText.close()}
+          header={specifyNetworkText.failedToOpenPopUp()}
           onClose={handleNoFailure}
         >
-          {specifyNetworkText('failedToOpenPopUpDialogText')}
+          {specifyNetworkText.failedToOpenPopUpDescription()}
         </Dialog>
       )}
       <Link.Default
-        aria-label={specifyNetworkText('specifyNetwork')}
+        aria-label={`${specifyNetworkText.specifyNetwork()} ${commonText.opensInNewTab()}`}
         href={getLink()}
         rel="opener noreferrer"
         target="_blank"
-        title={specifyNetworkText('specifyNetwork')}
+        title={`${specifyNetworkText.specifyNetwork()} ${commonText.opensInNewTab()}`}
         onClick={(event): void => {
           event.preventDefault();
           if (occurrenceName === undefined) handlePending();

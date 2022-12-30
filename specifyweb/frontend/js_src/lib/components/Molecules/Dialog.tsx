@@ -22,6 +22,7 @@ import { Button, DialogContext } from '../Atoms/Button';
 import { useId } from '../../hooks/useId';
 import { useTitle } from './AppTitle';
 import { usePref } from '../UserPreferences/usePref';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Modal dialog with a loading bar
@@ -122,7 +123,7 @@ export function Dialog({
   forwardRef: { content: contentRef, container: externalContainerRef } = {},
 }: {
   readonly isOpen?: boolean;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly headerButtons?: React.ReactNode;
   readonly specialMode?: 'orangeBar' | 'noGradient';
   /*
@@ -132,7 +133,7 @@ export function Dialog({
    */
   readonly icon?: JSX.Element | keyof typeof dialogIconTriggers;
   // Have to explicitly pass undefined if you don't want buttons
-  readonly buttons: JSX.Element | string | undefined;
+  readonly buttons: JSX.Element | LocalizedString | undefined;
   readonly children: React.ReactNode;
   readonly modal?: boolean;
   /*

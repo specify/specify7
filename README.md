@@ -99,6 +99,7 @@ under GNU General Public License 2 (GPL2).
     - [Restarting Apache](#restarting-apache)
   - [Updating Specify 7](#updating-specify-7)
   - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+  - [Localizing Specify 7](#localizing-specify-7)
 
 ## Changelog
 
@@ -447,3 +448,11 @@ the [Installing Specify 6](#installing-specify-6) section of this guide for the
 new version of Specify 6.
 
 [![analytics](https://www.google-analytics.com/collect?v=1&t=pageview&dl=https%3A%2F%2Fgithub.com%2Fspecify%2Fspecify7&uid=readme&tid=UA-169822764-3)]()
+
+## Localizing Specify 7
+
+Specify 7 interface is localized to a few languages out of the box. We welcome
+contributions of new translations. We are using
+[Weblate](https://hosted.weblate.org/projects/specify-7/) continuous localization
+platform.
+[Instructions on how you can contribute](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)

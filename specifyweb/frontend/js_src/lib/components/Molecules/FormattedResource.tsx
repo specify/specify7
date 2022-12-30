@@ -10,13 +10,14 @@ import { strictGetModel } from '../DataModel/schema';
 import { softFail } from '../Errors/Crash';
 import { format } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function FormattedResourceUrl({
   resourceUrl,
-  fallback = commonText('loading'),
+  fallback = commonText.loading(),
 }: {
   readonly resourceUrl: string;
-  readonly fallback?: string;
+  readonly fallback?: LocalizedString;
 }): JSX.Element | null {
   const resource = React.useMemo(() => {
     const [tableName, id] = strictParseResourceUrl(resourceUrl);
@@ -28,11 +29,11 @@ export function FormattedResourceUrl({
 
 export function FormattedResource({
   resource,
-  fallback = commonText('loading'),
+  fallback = commonText.loading(),
   asLink = true,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
-  readonly fallback?: string;
+  readonly fallback?: LocalizedString;
   readonly asLink?: boolean;
 }): JSX.Element | null {
   const [formatted, setFormatted] = React.useState<string>(fallback);

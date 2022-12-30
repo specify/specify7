@@ -68,10 +68,8 @@ export function QueryFromMap({
     <LeafletMap
       buttons={
         <>
-          <Button.Gray onClick={handleClose}>
-            {commonText('cancel')}
-          </Button.Gray>
-          <Button.Blue onClick={handleSave}>{commonText('save')}</Button.Blue>
+          <Button.Gray onClick={handleClose}>{commonText.cancel()}</Button.Gray>
+          <Button.Blue onClick={handleSave}>{commonText.save()}</Button.Blue>
         </>
       }
       forwardRef={setMap}

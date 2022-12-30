@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { wbPlanText } from '../../localization/wbPlan';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
@@ -33,7 +33,7 @@ export function QueryToolbar({
           checked={showHiddenFields}
           onValueChange={handleToggleHidden}
         />
-        {commonText('revealHiddenFormFields')}
+        {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
       <span className="-ml-2 flex-1" />
       {hasPermission('/querybuilder/query', 'execute') && (
@@ -48,14 +48,14 @@ export function QueryToolbar({
                 checked={isDistinct}
                 onChange={handleToggleDistinct}
               />
-              {queryText('distinct')}
+              {queryText.distinct()}
             </Label.Inline>
           )}
           <Button.Small onClick={handleRunCountOnly}>
-            {queryText('countOnly')}
+            {queryText.countOnly()}
           </Button.Small>
           <Submit.Small onClick={handleSubmitClick}>
-            {commonText('query')}
+            {queryText.query()}
           </Submit.Small>
         </>
       )}

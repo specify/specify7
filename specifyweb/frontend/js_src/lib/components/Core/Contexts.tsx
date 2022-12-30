@@ -141,7 +141,7 @@ export function Contexts({
             <Dialog
               buttons={undefined}
               className={{ container: dialogClassNames.narrowContainer }}
-              header={commonText('loading')}
+              header={commonText.loading()}
               isOpen={isLoading}
               onClose={undefined}
             >

@@ -15,6 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
+import { queryText } from '../../localization/query';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -22,33 +23,33 @@ let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 export const unsafeGetPickLists = (): typeof pickLists => pickLists;
 
 const agentTypes = [
-  formsText('organization'),
-  formsText('person'),
-  formsText('other'),
-  formsText('group'),
+  formsText.organization(),
+  formsText.person(),
+  formsText.other(),
+  formsText.group(),
 ] as const;
 
 const pickListTypes = [
-  formsText('userDefinedItems'),
-  formsText('entireTable'),
-  formsText('fieldFromTable'),
+  formsText.userDefinedItems(),
+  formsText.entireTable(),
+  formsText.fieldFromTable(),
 ] as const;
 
 const auditLogActions = [
-  commonText('create'),
-  commonText('update'),
-  commonText('delete'),
-  formsText('treeMerge'),
-  formsText('treeMove'),
-  formsText('treeSynonymize'),
-  formsText('treeDesynonymize'),
+  commonText.create(),
+  commonText.update(),
+  commonText.delete(),
+  queryText.treeMerge(),
+  queryText.treeMove(),
+  queryText.treeSynonymize(),
+  queryText.treeDesynonymize(),
 ] as const;
 
-const pickListSortTypes = [
-  commonText('none'),
-  commonText('title'),
-  commonText('ordinal'),
-];
+const pickListSortTypes = f.store(() => [
+  commonText.none(),
+  schema.models.PickListItem.strictGetField('title').label,
+  commonText.ordinal(),
+]);
 
 export const userTypes = [
   'Manager',
@@ -131,8 +132,8 @@ export const getFrontEndPickLists = f.store<{
   };
 }>(() => {
   const fullNameDirection = definePicklist('_fullNameDirection', [
-    createPickListItem('-1', formsText('reverse')),
-    createPickListItem('1', formsText('forward')),
+    createPickListItem('-1', formsText.reverse()),
+    createPickListItem('1', formsText.forward()),
   ]);
 
   // Like pickListTablesPickList, but indexed by tableId
@@ -172,7 +173,7 @@ export const getFrontEndPickLists = f.store<{
       tableName: pickListTablesPickList(),
       sortType: definePicklist(
         '_PickListSortType',
-        pickListSortTypes.map((title, index) =>
+        pickListSortTypes().map((title, index) =>
           createPickListItem(index.toString(), title)
         )
       ),

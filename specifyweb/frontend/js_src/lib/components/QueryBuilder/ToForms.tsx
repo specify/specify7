@@ -40,7 +40,7 @@ export function QueryToForms({
         disabled={results.length === 0 || totalCount === undefined}
         onClick={handleOpen}
       >
-        {commonText('browseInForms')}
+        {queryText.browseInForms()}
       </Button.Small>
       {isOpen && typeof totalCount === 'number' ? (
         <RecordSelectorFromIds
@@ -53,7 +53,10 @@ export function QueryToForms({
           model={model}
           defaultIndex={0}
           newResource={undefined}
-          title={queryText('queryResults', model.label)}
+          title={commonText.colonLine({
+            label: queryText.queryResults(),
+            value: model.label,
+          })}
           totalCount={selectedRows.size === 0 ? totalCount : selectedRows.size}
           onAdd={undefined}
           onClone={undefined}

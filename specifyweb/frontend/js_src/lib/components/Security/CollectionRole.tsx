@@ -3,9 +3,7 @@ import { useOutletContext } from 'react-router';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
-import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, filterArray } from '../../utils/types';
@@ -21,12 +19,13 @@ import { SearchDialog } from '../Forms/SearchDialog';
 import { userInformation } from '../InitialContext/userInformation';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
-import { locationToState, useStableLocation } from '../Router/RouterState';
 import type { SecurityCollectionOutlet, UserRoles } from './Collection';
-import { createCollectionRole } from './CreateRole';
+import { userText } from '../../localization/user';
+import { NewRole, Role, RoleView } from './Role';
 import { decompressPolicies } from './policyConverter';
-import type { NewRole, Role } from './Role';
-import { RoleView } from './Role';
+import { locationToState, useStableLocation } from '../Router/RouterState';
+import { createCollectionRole } from './CreateRole';
+import { Http } from '../../utils/ajax/definitions';
 
 export const updateCollectionRole = async (
   [roles, setRoles]: GetOrSet<IR<Role> | undefined>,
@@ -195,7 +194,7 @@ function RoleUsers({
   return typeof role.id === 'number' &&
     hasPermission('/permissions/user/roles', 'read', collectionId) ? (
     <fieldset className="flex flex-col gap-2">
-      <legend>{adminText('users')}</legend>
+      <legend>{userText.users()}</legend>
       {typeof userRoles === 'object' ? (
         <>
           <Ul className="flex max-h-[theme(spacing.96)] flex-col gap-2 overflow-auto">
@@ -217,7 +216,7 @@ function RoleUsers({
           {hasPermission('/permissions/user/roles', 'update', collectionId) && (
             <div>
               <Button.Green onClick={handleAdding}>
-                {commonText('add')}
+                {commonText.add()}
               </Button.Green>
             </div>
           )}
@@ -239,7 +238,7 @@ function RoleUsers({
           )}
         </>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </fieldset>
   ) : null;

@@ -569,7 +569,7 @@ export const WBUtils = Backbone.View.extend({
       if (this.wbview.isUploaded)
         filterArray([geoLocaleButton, coordinateConverterButton]).map(
           (button) =>
-            button.setAttribute('title', wbText('unavailableWhenUploaded'))
+            button.setAttribute('title', wbText.unavailableWhenUploaded())
         );
       else {
         if (typeof geoLocaleButton === 'object')
@@ -720,15 +720,15 @@ export const WBUtils = Backbone.View.extend({
 
     const content = $('<div>');
     this.geoLocateDialog = showDialog({
-      header: localityText('geoLocate'),
+      header: localityText.geoLocate(),
       content,
-      buttons: commonText('close'),
+      buttons: commonText.close(),
       onClose: handleDelete,
     });
 
     const updateGeolocate = (localityIndex) =>
       content.html(`<iframe class="w-[914px] h-[627px]"
-        title="${localityText('geoLocate')}"
+        title="${localityText.geoLocate()}"
         src="${getGeoLocateQueryURL(localityIndex)}"
       ></iframe>`);
 
@@ -741,18 +741,18 @@ export const WBUtils = Backbone.View.extend({
       this.geoLocateDialog.updateProps({
         buttons: (
           <>
-            <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Button.Blue
               onClick={() => updateGeoLocate(localityIndex - 1)}
               disabled={selection.isFirst(localityIndex)}
             >
-              {commonText('previous')}
+              {commonText.previous()}
             </Button.Blue>
             <Button.Blue
               onClick={() => updateGeoLocate(localityIndex + 1)}
               disabled={selection.isLast(localityIndex)}
             >
-              {commonText('next')}
+              {commonText.next()}
             </Button.Blue>
           </>
         ),
@@ -1029,17 +1029,17 @@ export const WBUtils = Backbone.View.extend({
 
     this.wbview.coordinateConverterView = showDialog({
       modal: false,
-      header: wbText('coordinateConverterDialogTitle'),
+      header: wbText.coordinateConverter(),
       onClose: revertChanges,
       buttons: (
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={handleClose}>{commonText('apply')}</Button.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Blue onClick={handleClose}>{commonText.apply()}</Button.Blue>
         </>
       ),
       content: (
         <>
-          {wbText('coordinateConverterDialogHeader')}
+          {wbText.coordinateConverterDescription()}
           <Ul>
             {Object.values(options).map((entry, optionIndex) => (
               <li key={optionIndex}>
@@ -1067,7 +1067,7 @@ export const WBUtils = Backbone.View.extend({
                       handleChange();
                   }}
                 />
-                {wbText('includeDmsSymbols')}
+                {wbText.includeDmsSymbols()}
               </Label.Inline>
             </li>
             <li>
@@ -1080,7 +1080,7 @@ export const WBUtils = Backbone.View.extend({
                       handleChange();
                   }}
                 />
-                {commonText('applyAll')}
+                {commonText.applyAll()}
               </Label.Inline>
             </li>
           </Ul>

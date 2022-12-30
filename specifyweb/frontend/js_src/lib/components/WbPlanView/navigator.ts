@@ -299,7 +299,7 @@ export function getMappingLineData({
       const toManyLimit = isToOne ? 1 : Number.POSITIVE_INFINITY;
       const additional =
         maxMappedElementNumber < toManyLimit
-          ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText('add')]]
+          ? [[formatToManyIndex(maxMappedElementNumber + 1), commonText.add()]]
           : [];
 
       commitInstanceData(
@@ -345,7 +345,7 @@ export function getMappingLineData({
                 ? [
                     formatTreeRank(anyTreeRank),
                     {
-                      optionLabel: queryText('anyRank'),
+                      optionLabel: queryText.anyRank(),
                       isRelationship: true,
                       isDefault:
                         internalState.defaultValue ===
@@ -394,8 +394,8 @@ export function getMappingLineData({
                     formattedEntry,
                     {
                       optionLabel: relationshipIsToMany(parentRelationship)
-                        ? queryText('aggregated')
-                        : queryText('formatted'),
+                        ? queryText.aggregatedInline()
+                        : queryText.formattedInline(),
                       tableName: model.name,
                       isRelationship: false,
                       isDefault: internalState.defaultValue === formattedEntry,
@@ -418,7 +418,7 @@ export function getMappingLineData({
                 ? [
                     model.idField.name,
                     {
-                      optionLabel: commonText('id'),
+                      optionLabel: commonText.id(),
                       tableName: model.name,
                       isRelationship: false,
                       isDefault:
@@ -537,7 +537,10 @@ export function getMappingLineData({
                       : undefined,
                   };
                   return scope === 'queryBuilder' && field.isTemporal()
-                    ? Object.entries(dateParts)
+                    ? Object.entries({
+                        fullDate: commonText.fullDate(),
+                        ...dateParts,
+                      })
                         .map(
                           ([datePart, label]) =>
                             [

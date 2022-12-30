@@ -4,7 +4,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { formsText } from '../../localization/forms';
 import { Link } from '../Atoms/Link';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
-import {AnyTree} from '../DataModel/helperTypes';
+import { AnyTree } from '../DataModel/helperTypes';
 
 export function QueryTreeUsages({
   resource,
@@ -19,7 +19,7 @@ export function QueryTreeUsages({
         }/`}
         target="_blank"
       >
-        {formsText('findUsages')}
+        {formsText.findUsages()}
       </Link.Small>
     </ProtectedAction>
   );

@@ -85,7 +85,7 @@ describe('formatPickList', () => {
 
 test('formatValue resolves parser and formats value', () => {
   const field = { type: 'java.lang.Boolean' } as unknown as LiteralField;
-  expect(formatValue(field, undefined, true)).toBe(queryText('yes'));
+  expect(formatValue(field, undefined, true)).toBe(queryText.yes());
 });
 
 test('syncFieldFormat formats pick list synchronously', () => {

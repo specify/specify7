@@ -9,12 +9,13 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
+import { notificationsText } from '../../localization/notifications';
+import { LocalizedString } from 'typesafe-i18n';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
@@ -87,7 +88,7 @@ export function Notifications(): JSX.Element {
                   read,
                   timestamp,
                   type,
-                  payload: rest as IR<string>,
+                  payload: rest as IR<LocalizedString>,
                 })
               )
               // Make most recent notification first
@@ -129,21 +130,20 @@ export function Notifications(): JSX.Element {
         forwardRef={buttonRef}
         onClick={handleOpen}
       >
-        {commonText(
-          'notifications',
-          typeof notifications?.length === 'number'
-            ? formatNumber(notifications.length)
-            : '...'
-        )}
+        {typeof notifications?.length === 'number'
+          ? notificationsText.notificationsCount({
+              count: notifications.length,
+            })
+          : notificationsText.notificationsLoading()}
       </Button.Small>
       {Array.isArray(notifications) && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           className={{
             container: `${dialogClassNames.narrowContainer} min-w-[50%]`,
             content: `${dialogClassNames.flexContent} gap-3 divide-y divide-gray-500`,
           }}
-          header={commonText('notificationsDialogTitle')}
+          header={notificationsText.notifications()}
           isOpen={isOpen}
           onClose={(): void => {
             handleClose();
@@ -174,7 +174,7 @@ export function Notifications(): JSX.Element {
            * https://github.com/specify/specify7/issues/641
            * After it is fixed, this message can be removed
            */}
-          <p>{commonText('mostRecentNotificationsTop')}</p>
+          <p>{notificationsText.mostRecentNotificationsTop()}</p>
           {notifications.map((notification, index) => (
             <ErrorBoundary dismissable key={index}>
               <NotificationComponent
@@ -213,7 +213,7 @@ function NotificationComponent({
         <span className="-ml-2 flex-1" />
         <Button.Icon
           icon="x"
-          title={commonText('delete')}
+          title={commonText.delete()}
           onClick={(): void =>
             handleDelete(
               ping(

@@ -298,10 +298,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     } else {
       const validationMessage =
         precision === 'full'
-          ? formsText('requiredFormat', fullDateFormat())
+          ? formsText.requiredFormat({ format: fullDateFormat() })
           : precision === 'month-year'
-          ? formsText('requiredFormat', monthFormat())
-          : formsText('invalidDate');
+          ? formsText.requiredFormat({ format: monthFormat() })
+          : formsText.invalidDate();
       resource.saveBlockers?.add(
         `invaliddate:${dateField}`,
         dateField,
@@ -331,10 +331,10 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
     <div className="flex w-full gap-1">
       {!isReadOnly && canChangePrecision ? (
         <label>
-          <span className="sr-only">{formsText('datePrecision')}</span>
+          <span className="sr-only">{formsText.datePrecision()}</span>
           <Select
             className="!w-auto print:hidden"
-            title={formsText('datePrecision')}
+            title={formsText.datePrecision()}
             value={precision}
             onBlur={(): void => {
               if (moment === undefined) return;
@@ -362,8 +362,8 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
                 resource.set(precisionField, precisionIndex as never);
             }}
           >
-            <option value="full">{commonText('fullDate')}</option>
-            <option value="month-year">{formsText('monthYear')}</option>
+            <option value="full">{commonText.fullDate()}</option>
+            <option value="month-year">{formsText.monthYear()}</option>
             <option value="year">{dateParts.year}</option>
           </Select>
         </label>
@@ -379,7 +379,7 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
         {...(precision === 'year'
           ? {
               ...getValidationAttributes(resolveParser({}, { type: 'year' })),
-              placeholder: formsText('yearPlaceholder'),
+              placeholder: formsText.yearPlaceholder(),
             }
           : {
               ...(precision === 'month-year'
@@ -411,9 +411,9 @@ export function PartialDateUi<SCHEMA extends AnySchema>({
       ((precision === 'full' && !dateSupported) ||
         (precision === 'month-year' && !monthSupported)) ? (
         <Button.Icon
-          aria-label={formsText('today')}
+          aria-label={formsText.today()}
           icon="calendar"
-          title={formsText('todayButtonDescription')}
+          title={formsText.todayButtonDescription()}
           onClick={(): void => setMoment(dayjs())}
         />
       ) : undefined}

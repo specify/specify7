@@ -31,6 +31,8 @@ import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { EditFormTables, useFormModels } from '../Toolbar/FormTablesEdit';
 import { TableIcon } from '../Molecules/TableIcon';
+import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function FormsDialogOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -56,9 +58,9 @@ export function FormsDialog({
     <EditFormTables onClose={handleClose} />
   ) : Array.isArray(forms) ? (
     <Dialog
-      buttons={commonText('cancel')}
+      buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
-      header={commonText('dataEntry')}
+      header={headerText.dataEntry()}
       headerButtons={<DataEntry.Edit onClick={handleEditing} />}
       icon={<span className="text-blue-500">{icons.pencilAt}</span>}
       onClose={handleClose}
@@ -95,7 +97,7 @@ export function FormsDialog({
 
 export type FormEntry = {
   readonly iconName: string | undefined;
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly table: keyof Tables;
 };
 

@@ -28,11 +28,11 @@ export function EditHistory({
     <>
       <Button.Small
         disabled={resource.isNew()}
-        title={resource.isNew() ? formsText('saveRecordFirst') : undefined}
+        title={resource.isNew() ? formsText.saveRecordFirst() : undefined}
         onClick={handleOpen}
         className="normal-case"
       >
-        {formsText('historyOfEdits')}
+        {formsText.historyOfEdits()}
       </Button.Small>
       {isOpen && (
         <RecordHistoryDialog resource={resource} onClose={handleClose} />
@@ -51,11 +51,11 @@ function RecordHistoryDialog({
   const query = useEditHistoryQuery(resource);
   return typeof query === 'object' ? (
     <Dialog
-      buttons={<Button.DialogClose>{commonText('close')}</Button.DialogClose>}
+      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       className={{
         container: dialogClassNames.wideContainer,
       }}
-      header={formsText('historyOfEdits')}
+      header={formsText.historyOfEdits()}
       onClose={handleClose}
     >
       <QueryBuilder
@@ -79,7 +79,7 @@ function useEditHistoryQuery(
     () =>
       typeof formatted === 'string'
         ? createQuery(
-            formsText('historyOfEditsQueryName', formatted),
+            formsText.historyOfEditsQueryName({ formattedRecord: formatted }),
             schema.models.SpAuditLog
           ).set('fields', [
             QueryFieldSpec.fromPath('SpAuditLog', ['tableNum'])

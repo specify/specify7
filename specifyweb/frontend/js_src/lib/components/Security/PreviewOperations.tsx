@@ -14,15 +14,16 @@ import {
   resourceNameToLabel,
   resourceNameToParts,
 } from './utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type Tree = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: IR<Tree>;
   readonly resource: string;
   readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;
 };
 type WritableTree = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: R<WritableTree>;
   readonly resource: string;
   readonly actions: RA<Omit<PermissionsQueryItem, 'resource'>>;

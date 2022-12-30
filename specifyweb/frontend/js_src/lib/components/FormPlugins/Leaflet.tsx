@@ -36,11 +36,11 @@ function LeafletDialog({
 
   return localityData === undefined ? null : localityData === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={localityText('noCoordinates')}
+      buttons={commonText.close()}
+      header={localityText.noCoordinates()}
       onClose={handleClose}
     >
-      {localityText('notEnoughInformationToMap')}
+      {localityText.notEnoughInformationToMap()}
     </Dialog>
   ) : (
     <LeafletMap
@@ -78,7 +78,7 @@ export function LeafletPlugin({
         id={id}
         onClick={handleToggle}
       >
-        {localityText('showMap')}
+        {localityText.showMap()}
       </Button.Small>
       {isOpen && <LeafletDialog locality={locality} onClose={handleClose} />}
     </ErrorBoundary>

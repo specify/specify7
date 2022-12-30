@@ -20,7 +20,7 @@ export const loadingGif = (
       `}
       role="status"
     >
-      <span className="sr-only">{commonText('loading')}</span>
+      <span className="sr-only">{commonText.loading()}</span>
     </div>
   </div>
 );

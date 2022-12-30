@@ -3,15 +3,15 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
+import { fieldFormat } from '../../utils/fieldFormat';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { LoanPreparation } from '../DataModel/types';
-import type { PrepReturnRowState } from './PrepReturnDialog';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { fieldFormat } from '../../utils/fieldFormat';
+import type { PrepReturnRowState } from './PrepReturnDialog';
+import { interactionsText } from '../../localization/interactions';
 
 export function PrepReturnRow({
   preparation,
@@ -37,7 +37,7 @@ export function PrepReturnRow({
                 catalogNumber: '',
                 taxon:
                   preparation.get('descriptionOfMaterial')?.slice(0, 50) ??
-                  formsText('unCataloged'),
+                  interactionsText.unCataloged(),
                 prepType: '',
               }
             : {
@@ -72,15 +72,17 @@ export function PrepReturnRow({
   );
 
   const [showRemarks, _, __, handleToggle] = useBooleanState();
+  const remarksLabel =
+    schema.models.LoanReturnPreparation.strictGetLiteralField('remarks').label;
 
   return (
     <>
       <tr>
         <td>
           <Input.Checkbox
-            aria-label={formsText('selectAll')}
+            aria-label={interactionsText.selectAll()}
             checked={resolve > 0}
-            title={formsText('selectAll')}
+            title={interactionsText.selectAll()}
             onValueChange={(checked): void =>
               handleChange({
                 resolve: checked ? unresolved : 0,
@@ -91,19 +93,19 @@ export function PrepReturnRow({
             }
           />
         </td>
-        <td>{data?.catalogNumber ?? commonText('loading')}</td>
-        <td>{data?.taxon ?? commonText('loading')}</td>
+        <td>{data?.catalogNumber ?? commonText.loading()}</td>
+        <td>{data?.taxon ?? commonText.loading()}</td>
         <td className="text-center">
-          {data?.prepType ?? commonText('loading')}
+          {data?.prepType ?? commonText.loading()}
         </td>
         <td className="text-center">{unresolved}</td>
         <td>
           <Input.Number
-            aria-label={formsText('returnedAmount')}
+            aria-label={interactionsText.returnedAmount()}
             className="w-12"
             max={unresolved}
             min={0}
-            title={formsText('returnedAmount')}
+            title={interactionsText.returnedAmount()}
             value={returns}
             onValueChange={(returns): void =>
               handleChange({
@@ -119,11 +121,11 @@ export function PrepReturnRow({
         </td>
         <td>
           <Input.Number
-            aria-label={formsText('resolvedAmount')}
+            aria-label={interactionsText.resolvedAmount()}
             className="w-12"
             max={unresolved}
             min={returns}
-            title={formsText('resolvedAmount')}
+            title={interactionsText.resolvedAmount()}
             value={resolve}
             onValueChange={(resolve): void =>
               handleChange({
@@ -143,7 +145,7 @@ export function PrepReturnRow({
               aria-pressed={showRemarks}
               className="return-remark w-full"
               icon="annotation"
-              title={formsText('remarks')}
+              title={remarksLabel}
               onClick={handleToggle}
             />
           )}
@@ -154,11 +156,11 @@ export function PrepReturnRow({
           <td />
           <td className="col-span-7">
             <AutoGrowTextArea
-              aria-label={formsText('remarks')}
+              aria-label={remarksLabel}
               containerClassName="w-full"
               forwardRef={(target): void => target?.focus()}
-              placeholder={formsText('remarks')}
-              title={formsText('remarks')}
+              placeholder={remarksLabel}
+              title={remarksLabel}
               value={remarks}
               // Focus the input when toggled
               onValueChange={(remarks): void =>
@@ -175,5 +177,4 @@ export function PrepReturnRow({
       ) : undefined}
     </>
   );
-  // Hide show remarks field here
 }

@@ -24,6 +24,7 @@ import {
 } from './Hooks';
 import type { SchemaData } from './SetupHooks';
 import { SchemaConfigTable } from './Table';
+import { schemaText } from '../../localization/schema';
 
 export type SpLocaleItemString = SerializedResource<SpLocaleItemStr>;
 export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
@@ -68,7 +69,7 @@ export function SchemaConfigMain(): JSX.Element {
     isChanged || nameChanged || descChanged || changedItems.length > 0;
   const unsetUnloadProtect = useUnloadProtect(
     isModified,
-    commonText('unsavedSchemaUnloadProtect')
+    schemaText.unsavedSchemaUnloadProtect()
   );
 
   const canSave =
@@ -159,8 +160,8 @@ export function SchemaConfigMain(): JSX.Element {
             }
           />
         ) : (
-          <SchemaConfigColumn header={commonText('loading')}>
-            {commonText('loading')}
+          <SchemaConfigColumn header={commonText.loading()}>
+            {commonText.loading()}
           </SchemaConfigColumn>
         )}
       </div>

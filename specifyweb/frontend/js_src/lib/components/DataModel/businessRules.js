@@ -176,15 +176,19 @@ var enabled = true;
     };
 
     var getUniqueInInvalidReason = function(parentFldInfo, fldInfo) {
-        const fieldName = parentFldInfo ?
-          parentFldInfo.label :
-          formsText('database');
-        return fldInfo.length > 1 ?
-            formsText('valuesOfMustBeUniqueToField',
-              fieldName,
-              formatList(fldInfo.map(fld=>fld.label)),
-            ) :
-            formsText('valueMustBeUniqueToField',fieldName);
+        if (fldInfo.length > 1)
+          return parentFldInfo
+            ? formsText.valuesOfMustBeUniqueToField({
+                values: formatList(fldInfo.map((fld) => fld.label)),
+                fieldName: parentFldInfo.label,
+              })
+            : formsText.valuesOfMustBeUniqueToDatabase({
+                values: formatList(fldInfo.map((fld) => fld.label))
+              });
+        else
+          return parentFldInfo
+            ? formsText.valueMustBeUniqueToField({fieldName: parentFldInfo.label})
+            : formsText.valueMustBeUniqueToDatabase();
     };
 
     var uniqueIn = function(toOneField, resource, valueFieldArg) {

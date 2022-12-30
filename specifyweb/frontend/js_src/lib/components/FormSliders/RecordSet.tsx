@@ -295,7 +295,10 @@ function RecordSet<SCHEMA extends AnySchema>({
         mode={mode}
         model={currentRecord.specifyModel}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
-        title={`${commonText('recordSet')}: ${recordSet.get('name')}`}
+        title={commonText.colonLine({
+          label: formsText.recordSet(),
+          value: recordSet.get('name'),
+        })}
         totalCount={totalCount}
         onAdd={
           hasToolPermission('recordSets', 'create')
@@ -379,11 +382,11 @@ function RecordSet<SCHEMA extends AnySchema>({
       />
       {hasDuplicate && (
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('duplicateRecordSetItemDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.duplicateRecordSetItem()}
           onClose={handleDismissDuplicate}
         >
-          {formsText('duplicateRecordSetItemDialogText')}
+          {formsText.duplicateRecordSetItemDescription()}
         </Dialog>
       )}
     </>

@@ -1,6 +1,6 @@
 import { SpecifyModel } from '../DataModel/specifyModel';
 import { hijackBackboneAjax } from '../../utils/ajax/backboneAjax';
-import { format } from '../Forms/dataObjFormatters';
+import { format, naiveFormatter } from '../Forms/dataObjFormatters';
 import { hasTablePermission } from '../Permissions/helpers';
 import { Link } from '../Atoms/Link';
 import { RA } from '../../utils/types';
@@ -33,7 +33,7 @@ async function resourceToLink(
           hasTablePermission(resource.specifyModel.name, 'read') ? (
             <Link.NewTab href={resource.viewUrl()}>{string}</Link.NewTab>
           ) : (
-            string!
+            string
           )
         ),
     (status) => {
@@ -41,7 +41,7 @@ async function resourceToLink(
     }
   ).catch((error) => {
     if (errorHandled)
-      return `${model.name} #${id} ${formsText('deletedInline')}`;
+      return `${naiveFormatter(model.name, id)} ${formsText.deletedInline()}`;
     else throw error;
   });
 }
