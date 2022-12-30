@@ -5,7 +5,6 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useIsModified } from '../../hooks/useIsModified';
 import { formsText } from '../../localization/forms';
-import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
@@ -13,6 +12,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { SearchDialog } from '../Forms/SearchDialog';
 import { MergingDialog } from '../Merging';
+import { mergingText } from '../../localization/merging';
 
 export function MergeRecord({
   resource,
@@ -30,10 +30,10 @@ export function MergeRecord({
     <>
       <Button.Small
         disabled={isModified || resource.isNew()}
-        title={isModified ? formsText('saveRecordFirst') : undefined}
+        title={isModified ? formsText.saveRecordFirst() : undefined}
         onClick={handleOpen}
       >
-        {queryText('mergeRecords')}
+        {mergingText.mergeRecords()}
       </Button.Small>
       {ids.size > 0 ? (
         <MergingDialog

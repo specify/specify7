@@ -3,7 +3,6 @@ import React from 'react';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -18,6 +17,7 @@ import { dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { MergeButton } from './Compare';
+import { mergingText } from '../../localization/merging';
 
 export function MergingHeader({
   merged,
@@ -128,8 +128,8 @@ function UsagesLine({
   readonly resources: RA<SpecifyResource<AnySchema>>;
 }): JSX.Element {
   return (
-    <MergeRow header={queryText('referencesToRecord')}>
-      <td>{commonText('notApplicable')}</td>
+    <MergeRow header={mergingText.referencesToRecord()}>
+      <td>{commonText.notApplicable()}</td>
       {resources.map((resource, index) => (
         <ResourceBlockers key={index} resource={resource} />
       ))}
@@ -149,7 +149,7 @@ function ResourceBlockers({
   return (
     <td className="flex-col !items-start">
       {blockers === undefined ? (
-        commonText('loading')
+        commonText.loading()
       ) : (
         <DeleteBlockers
           blockers={blockers}
@@ -172,7 +172,7 @@ function PreviewLine({
   readonly onDeleted: (id: number) => void;
 }): JSX.Element {
   return (
-    <MergeRow header={queryText('preview')}>
+    <MergeRow header={mergingText.preview()}>
       {[merged, ...resources].map((resource, index) => (
         <RecordPreview
           index={index}
@@ -201,8 +201,8 @@ function RecordPreview({
 
   const title =
     index === 0
-      ? queryText('previewMerged')
-      : `${queryText('preview')} ${index}`;
+      ? mergingText.previewMerged()
+      : `${mergingText.preview()} ${index}`;
   return (
     <td className="!items-stretch">
       {typeof merged === 'object' && (

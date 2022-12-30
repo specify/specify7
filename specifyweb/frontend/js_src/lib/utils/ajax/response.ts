@@ -66,7 +66,6 @@ export function handleAjaxResponse<RESPONSE_TYPE = string>({
         responseText: text,
       };
     else {
-      console.error('Invalid response', text);
       throw {
         type: 'invalidResponseCode',
         statusText: filterArray([

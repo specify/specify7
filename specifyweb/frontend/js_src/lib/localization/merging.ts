@@ -29,6 +29,10 @@ export const mergingText = createDictionary({
     'en-us': 'Preview',
     'ru-ru': 'Открыть',
   },
+  previewMerged: {
+    'en-us': 'Preview merged record',
+    'ru-ru': 'Открыть объединенную запись',
+  },
   duplicateRecord: {
     'en-us': 'Duplicate {index:number|formatted}',
     'ru-ru': 'Дубликат {index:number|formatted}',

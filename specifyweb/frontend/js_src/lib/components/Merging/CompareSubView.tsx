@@ -4,7 +4,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import type { GetOrSet, RA, RR } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import {
@@ -34,6 +33,7 @@ import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer } from './index';
 import { f } from '../../utils/functools';
 import { serializeResource } from '../DataModel/helpers';
+import { mergingText } from '../../localization/merging';
 
 export function MergeSubviewButton({
   relationship,
@@ -76,7 +76,7 @@ export function MergeSubviewButton({
         className="flex-1"
         onClick={handleOpen}
       >
-        {queryText('nRecords', count)}
+        {mergingText.nRecords({ count })}
       </Button.Gray>
       {isOpen && (
         <MergeDialog
@@ -134,9 +134,30 @@ function MergeDialog({
     else merged.set(relationship.name, mergedRecords[0] as never);
   }, [merged, relationship, mergedRecords]);
 
+  const add = (
+    <tbody>
+      <tr>
+        <td />
+        <td>
+          <Button.Green
+            className="flex-1"
+            onClick={(): void =>
+              setMergedRecords([
+                ...mergedRecords,
+                new relationship.relatedModel.Resource(),
+              ])
+            }
+          >
+            {commonText.add()}
+          </Button.Green>
+        </td>
+      </tr>
+    </tbody>
+  );
+
   return (
     <MergeDialogContainer
-      header={queryText('mergeFields', relationship.label)}
+      header={mergingText.mergeFields({ field: relationship.label })}
       id={id('form')}
       onCancel={undefined}
       onClose={handleClose}
@@ -150,11 +171,11 @@ function MergeDialog({
           <tr>
             <td className={mergeHeaderClassName} />
             <th className={mergeHeaderClassName} scope="col">
-              {queryText('mergedRecord')}
+              {mergingText.mergedRecord()}
             </th>
             {resources.map((_, index) => (
               <th className={mergeHeaderClassName} key={index} scope="col">
-                {queryText('duplicateRecord', index + 1)}
+                {mergingText.duplicateRecord({ index: index + 1 })}
               </th>
             ))}
           </tr>
@@ -163,6 +184,16 @@ function MergeDialog({
           <SubViewLine
             isFirst={index === 0}
             isLast={index + 1 === maxCount}
+            extraJsx={
+              mergedRecords[index] === undefined &&
+              mergedRecords[index - 1] !== undefined ? (
+                add
+              ) : (
+                <tr aria-hidden>
+                  <td className="col-span-full my-8 border p-0" />
+                </tr>
+              )
+            }
             key={index}
             merged={mergedRecords[index]}
             resources={children.map((record) => record[index])}
@@ -194,24 +225,7 @@ function MergeDialog({
             }}
           />
         ))}
-        <tbody>
-          <tr>
-            <td />
-            <td>
-              <Button.Green
-                className="flex-1"
-                onClick={(): void =>
-                  setMergedRecords([
-                    ...mergedRecords,
-                    new relationship.relatedModel.Resource(),
-                  ])
-                }
-              >
-                {commonText('add')}
-              </Button.Green>
-            </td>
-          </tr>
-        </tbody>
+        {maxCount === mergedRecords.length && add}
       </MergeContainer>
     </MergeDialogContainer>
   );
@@ -281,6 +295,7 @@ function useChildren(
 function SubViewLine({
   isFirst,
   isLast,
+  extraJsx,
   merged,
   resources,
   onRemove: handleRemove,
@@ -288,6 +303,7 @@ function SubViewLine({
 }: {
   readonly isFirst: boolean;
   readonly isLast: boolean;
+  readonly extraJsx: JSX.Element;
   readonly merged: SpecifyResource<AnySchema> | undefined;
   readonly resources: RA<SpecifyResource<AnySchema> | undefined>;
   readonly onRemove: () => void;
@@ -307,9 +323,7 @@ function SubViewLine({
         onSlide={handleSlide}
       />
       <SubViewBody merged={merged} resources={resources} />
-      <tr aria-hidden>
-        <td className="col-span-full my-8 border p-0" />
-      </tr>
+      {extraJsx}
     </tbody>
   );
 }
@@ -332,7 +346,7 @@ function SubViewHeader({
   return (
     <tr>
       <th className={mergeCellBackground} scope="row">
-        <span className="sr-only">{queryText('subViewControls')}</span>
+        <span className="sr-only">{mergingText.subViewControls()}</span>
       </th>
       {[merged, ...resources].map((resource, index) =>
         resource === undefined ? (

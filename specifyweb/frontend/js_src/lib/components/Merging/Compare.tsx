@@ -327,9 +327,9 @@ export function MergeButton({
   );
   return (
     <Button.Small
-      aria-label={treeText('merge')}
+      aria-label={treeText.merge()}
       disabled={isSame}
-      title={treeText('merge')}
+      title={treeText.merge()}
       variant={className.blueButton}
       onClick={(): void =>
         field === undefined

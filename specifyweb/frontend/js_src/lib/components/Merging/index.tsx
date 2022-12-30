@@ -5,7 +5,6 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -22,6 +21,7 @@ import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Tables } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { CompareRecords } from './Compare';
+import { mergingText } from '../../localization/merging';
 
 const recordMergingTables = new Set<keyof Tables>(['Agent']);
 
@@ -39,7 +39,7 @@ export function RecordMerging({
   return recordMergingTables.has(model.name) ? (
     <>
       <Button.Small disabled={selectedRows.size === 0} onClick={handleToggle}>
-        {queryText('mergeRecords')}
+        {mergingText.mergeRecords()}
       </Button.Small>
       {isOpen && (
         <MergingDialog
@@ -144,7 +144,7 @@ export function MergingDialog({
 export function MergeDialogContainer({
   id,
   children,
-  header = queryText('mergeRecords'),
+  header = mergingText.mergeRecords(),
   onClose: handleClose,
   onCancel: handleCancel,
 }: {
@@ -163,12 +163,12 @@ export function MergeDialogContainer({
           {typeof handleCancel === 'function' ? (
             <>
               <Button.BorderedGray onClick={handleCancel}>
-                {commonText('cancel')}
+                {commonText.cancel()}
               </Button.BorderedGray>
-              <Submit.Blue form={id}>{treeText('merge')}</Submit.Blue>
+              <Submit.Blue form={id}>{treeText.merge()}</Submit.Blue>
             </>
           ) : (
-            <Submit.Gray form={id}>{commonText('close')}</Submit.Gray>
+            <Submit.Gray form={id}>{commonText.close()}</Submit.Gray>
           )}
         </>
       }
@@ -193,7 +193,7 @@ function ToggleMergeView(): JSX.Element {
         checked={!showMatching}
         onValueChange={(checked): void => setShowMatching(!checked)}
       />
-      {queryText('showConflictingFieldsOnly')}
+      {mergingText.showConflictingFieldsOnly()}
     </Label.Inline>
   );
 }

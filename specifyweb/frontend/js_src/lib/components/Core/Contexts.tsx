@@ -15,7 +15,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 
 // Stores errors that occurred before <Context> is rendered
-const pendingErrors: WritableArray<ErrorComponent> = [];
+let pendingErrors: WritableArray<ErrorComponent> = [];
 type ErrorComponent = (props: { readonly onClose: () => void }) => JSX.Element;
 let setError: (error: ErrorComponent) => void;
 
@@ -103,10 +103,11 @@ export function Contexts({
       }),
     []
   );
-  if (setError === undefined) {
+  React.useEffect(() => {
     setError = handleError;
     pendingErrors.forEach(handleError);
-  }
+    pendingErrors = [];
+  }, [handleError]);
 
   const [unloadProtects, setUnloadProtects] = React.useState<RA<string>>([]);
   const unloadProtectsRef = React.useRef(unloadProtects);
