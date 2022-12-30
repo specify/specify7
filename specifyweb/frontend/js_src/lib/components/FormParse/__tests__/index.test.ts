@@ -251,52 +251,50 @@ theories(resolveAltView, [
   },
 ]);
 
-theories(parseFormTableDefinition, [
-  {
-    in: [formView, undefined],
-    out: {
-      columns: [1, undefined, undefined],
-      rows: [
-        [
-          {
-            ...baseCell,
-            align: 'center',
-            colSpan: 2,
-            id: 'tt',
-            type: 'Field',
-            fieldDefinition: {
-              type: 'Text',
-              min: undefined,
-              max: undefined,
-              step: undefined,
-              isReadOnly: false,
-              defaultValue: undefined,
-            },
-            fieldNames: undefined,
-            isRequired: false,
-            ariaLabel: 'test' as LocalizedString,
+test('parseFormTableDefinition', () =>
+  expect(
+    parseFormTableDefinition(formView, schema.models.CollectionObject)
+  ).toEqual({
+    columns: [1, undefined, undefined],
+    rows: [
+      [
+        {
+          ...baseCell,
+          align: 'center',
+          colSpan: 2,
+          id: 'tt',
+          type: 'Field',
+          fieldDefinition: {
+            type: 'Text',
+            min: undefined,
+            max: undefined,
+            step: undefined,
+            isReadOnly: false,
+            defaultValue: undefined,
           },
-          {
-            ...baseCell,
-            align: 'center',
-            colSpan: 1,
-            type: 'Field',
-            fieldDefinition: {
-              type: 'Checkbox',
-              label: undefined,
-              printOnSave: false,
-              defaultValue: false,
-              isReadOnly: false,
-            },
-            fieldNames: undefined,
-            isRequired: false,
-            ariaLabel: '2' as LocalizedString,
+          fieldNames: undefined,
+          isRequired: false,
+          ariaLabel: 'test' as LocalizedString,
+        },
+        {
+          ...baseCell,
+          align: 'center',
+          colSpan: 1,
+          type: 'Field',
+          fieldDefinition: {
+            type: 'Checkbox',
+            label: undefined,
+            printOnSave: false,
+            defaultValue: false,
+            isReadOnly: false,
           },
-        ],
+          fieldNames: undefined,
+          isRequired: false,
+          ariaLabel: '2' as LocalizedString,
+        },
       ],
-    },
-  },
-]);
+    ],
+  }));
 
 const formTableColumns = [
   { colSpan: 1 },
@@ -318,12 +316,10 @@ theories(parseFormTableColumns, {
   },
 });
 
-theories(parseFormDefinition, [
-  {
-    in: [tinyFormView, undefined],
-    out: parsedTinyView,
-  },
-]);
+test('parseFormDefinition', () =>
+  expect(
+    parseFormDefinition(tinyFormView, schema.models.CollectionObject)
+  ).toEqual(parsedTinyView));
 
 describe('getColumnDefinitions', () => {
   requireContext();

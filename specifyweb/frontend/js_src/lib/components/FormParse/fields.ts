@@ -150,7 +150,7 @@ const processFieldType: {
       const pickListName =
         getParsedAttribute(cell, 'pickList') ??
         field?.getPickList() ??
-        specialPickListMapping[model.name as ''][field?.name ?? ''] ??
+        specialPickListMapping[model.name as '']?.[field?.name ?? ''] ??
         specialPickListMapping[''][field?.name ?? ''];
 
       if (typeof pickListName === 'string')
@@ -184,9 +184,13 @@ const processFieldType: {
       });
     else if (fieldType === 'checkbox') return processFieldType.Checkbox(props);
 
+    const defaults = withStringDefault(cell);
+    if (defaults.defaultValue === undefined && field === undefined)
+      return { type: 'Blank' };
+
     return {
       type: 'Text',
-      ...withStringDefault(cell),
+      ...defaults,
       min: f.parseInt(getProperty('min')),
       max: f.parseInt(getProperty('max')),
       step: f.parseFloat(getProperty('step')),
@@ -257,10 +261,6 @@ export function parseFormField({
   }
   setLogContext({ fieldType: uiType });
 
-  const isReadOnly =
-    getBooleanAttribute(cell, 'readOnly') ??
-    uiType.toLowerCase() === 'dsptextfield';
-
   let parser = processFieldType[fieldTypesTranslations[uiType.toLowerCase()]];
   if (parser === undefined) {
     console.error('unknown field uiType', { uiType, cell });
@@ -269,6 +269,12 @@ export function parseFormField({
 
   const parseResult = parser({ cell, getProperty, model, fields });
   setLogContext({ fieldType: undefined });
+
+  const isReadOnly =
+    (getBooleanAttribute(cell, 'readOnly') ??
+      uiType.toLowerCase() === 'dsptextfield') ||
+    parseResult.type === 'Blank';
+
   return {
     isReadOnly,
     ...parseResult,

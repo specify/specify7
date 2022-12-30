@@ -155,7 +155,7 @@ describe('parseFormCell', () => {
         align: 'right',
         visible: false,
         type: 'Field',
-        fieldName: 'catalogNumber',
+        fieldNames: ['catalogNumber'],
         isRequired: true,
         fieldDefinition: {
           defaultValue: undefined,
@@ -180,7 +180,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: true,
-        fieldName: 'collectionMemberId',
+        fieldNames: ['collectionMemberId'],
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -202,7 +202,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: false,
-        fieldName: 'this',
+        fieldNames: undefined,
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -227,7 +227,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         // The field is required by the data model
         isRequired: true,
-        fieldName: undefined,
+        fieldNames: undefined,
         fieldDefinition: {
           type: 'Plugin',
           isReadOnly: true,
@@ -253,7 +253,7 @@ describe('parseFormCell', () => {
         type: 'Field',
         // The field is required by the data model
         isRequired: false,
-        fieldName: 'agent.lastName',
+        fieldNames: ['agent', 'lastName'],
         fieldDefinition: {
           defaultValue: undefined,
           isReadOnly: false,
@@ -277,14 +277,15 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: false,
-        fieldName: 'catalogeddate',
+        fieldNames: ['catalogeDdate'],
         fieldDefinition: {
           type: 'Plugin',
           isReadOnly: false,
           pluginDefinition: {
             type: 'PartialDateUI',
             defaultValue: undefined,
-            dateField: 'catalogeddate',
+            dateFields: ['catalogeDdate'],
+            canChangePrecision: true,
             precisionField: undefined,
             defaultPrecision: 'full',
           },
@@ -306,7 +307,7 @@ describe('parseFormCell', () => {
         text: 'some text' as LocalizedString,
         title: undefined,
         labelForCellId: undefined,
-        fieldName: undefined,
+        fieldNames: undefined,
       })
     ));
 
@@ -323,7 +324,7 @@ describe('parseFormCell', () => {
         text: 'Find Next' as LocalizedString,
         title: undefined,
         labelForCellId: '42',
-        fieldName: undefined,
+        fieldNames: undefined,
       })
     ));
 
@@ -354,7 +355,7 @@ describe('parseFormCell', () => {
       cell({
         type: 'SubView',
         formType: 'form',
-        fieldName: 'determinations',
+        fieldNames: ['determinations'],
         viewName: undefined,
         isButton: false,
         icon: undefined,
@@ -374,11 +375,11 @@ describe('parseFormCell', () => {
       cell({
         type: 'SubView',
         formType: 'formTable',
-        fieldName: 'determinations',
+        fieldNames: ['determinations'],
         viewName: 'testView',
         isButton: true,
         icon: 'test',
-        sortField: '-isCurrent',
+        sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
       })
     ));
 
@@ -407,7 +408,7 @@ describe('parseFormCell', () => {
               align: 'right',
               labelForCellId: '42',
               type: 'Label',
-              fieldName: undefined,
+              fieldNames: undefined,
               text: 'Find Next' as LocalizedString,
               title: undefined,
             }),
@@ -453,7 +454,7 @@ describe('parseFormCell', () => {
           commandDefinition: {
             type: 'ReturnLoan',
           },
-          label: 'generateLabelBtn',
+          label: 'generateLabelBtn' as LocalizedString,
         },
       })
     ));

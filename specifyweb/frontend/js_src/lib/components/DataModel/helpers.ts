@@ -21,7 +21,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource
+    typeof resource.toJSON === 'function'
       ? resourceToJson(resource as SpecifyResource<SCHEMA>)
       : (resource as SerializedModel<SCHEMA>),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name

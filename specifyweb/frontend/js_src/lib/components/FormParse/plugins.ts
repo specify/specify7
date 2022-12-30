@@ -124,10 +124,11 @@ const processUiPlugin: {
       );
       return { type: 'Blank' };
     }
-    if (dateFields.at(-1)?.isRelationship !== false) {
+    if (dateFields.at(-1)?.isRelationship === false) {
       console.log("Can't display PartialDateUi for a relationship field");
       return { type: 'Blank' };
     }
+
     return {
       type: 'PartialDateUI',
       defaultValue: f.maybe(
@@ -232,7 +233,7 @@ const processUiPlugin: {
           supportedTables: paleoPluginTables,
         },
   Unsupported: ({ getProperty }) => {
-    console.warn(`Unsupported plugin: ${getProperty('name') ?? '(null)'}`);
+    console.error(`Unsupported plugin: ${getProperty('name') ?? '(null)'}`);
     return {
       type: 'Unsupported',
       name: getProperty('name'),

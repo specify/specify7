@@ -17,6 +17,7 @@ import { Tables } from '../DataModel/types';
 import { error } from '../Errors/assert';
 import { SpecifyModel } from '../DataModel/specifyModel';
 import { formatList } from '../Atoms/Internationalization';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type UiCommands = {
   readonly GenerateLabel: State<'GenerateLabel'>;
@@ -71,7 +72,7 @@ const commandTranslation: IR<keyof UiCommands> = {
 };
 
 export type CommandDefinition = {
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
 };
 

@@ -353,7 +353,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     )
       return this.getFields(splitName.slice(1).join('.'));
     if (splitName.length === 1) return fields;
-    else if (fields.length === 0) return [];
+    else if (fields.length === 0) return undefined;
     else if (splitName.length > 1 && fields[0].isRelationship) {
       const subFields = defined(fields[0].relatedModel).getFields(
         splitName.slice(1).join('.')

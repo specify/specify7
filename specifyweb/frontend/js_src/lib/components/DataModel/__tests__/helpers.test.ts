@@ -222,7 +222,7 @@ describe('fetchDistantRelated', () => {
   test('single field path', async () => {
     const resource = new schema.models.Collector.Resource({ id: collectorId });
     const field = schema.models.Collector.strictGetField('agent');
-    const data = await fetchDistantRelated(resource, [field]);
+    const data = (await fetchDistantRelated(resource, [field]))!;
     expect(data.resource).toBe(resource);
     expect(data.field).toBe(field);
     expect(data.resource.get('agent')).toBe(
@@ -236,7 +236,7 @@ describe('fetchDistantRelated', () => {
       schema.models.Collector.strictGetField('agent'),
       schema.models.Agent.strictGetField('lastName'),
     ];
-    const data = await fetchDistantRelated(resource, fields);
+    const data = (await fetchDistantRelated(resource, fields))!;
     expect(data.resource.toJSON()).toEqual(agent);
     expect(data.field).toBe(fields.at(-1));
   });
