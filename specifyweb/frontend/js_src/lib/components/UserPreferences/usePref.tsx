@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { GetOrSet } from '../../utils/types';
 import type {
+  CollectionPreferences,
   GenericPreferences,
   preferenceDefinitions,
   Preferences,
@@ -96,21 +97,18 @@ function useUnsafePref<
 
   return [pref, updatePref] as const;
 }
-
 export function usePref<
-  CATEGORY extends keyof typeof preferenceDefinitions,
+  CATEGORY extends keyof Preferences,
   SUBCATEGORY extends CATEGORY extends keyof typeof preferenceDefinitions
-    ? keyof typeof preferenceDefinitions[CATEGORY]['subCategories']
+    ? keyof Preferences[CATEGORY]['subCategories'] & string
     : never,
-  // @ts-expect-error
-  ITEM extends keyof typeof preferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+  ITEM extends keyof Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
 ): GetOrSet<
-  // @ts-expect-error
-  typeof preferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+  Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
   const [getPrefMain, setUserPref] = React.useContext(PreferencesContext) ?? [
     getPref.userPreferences,
@@ -121,8 +119,8 @@ export function usePref<
     category,
     subcategory,
     item,
-    getPrefMain,
     // @ts-expect-error
+    getPrefMain,
     setUserPref
   ) as unknown as GetOrSet<
     // @ts-expect-error
@@ -131,18 +129,17 @@ export function usePref<
 }
 
 export function useCollectionPref<
-  CATEGORY extends keyof typeof collectionPreferenceDefinitions,
+  CATEGORY extends keyof CollectionPreferences,
   SUBCATEGORY extends CATEGORY extends keyof typeof collectionPreferenceDefinitions
-    ? keyof typeof collectionPreferenceDefinitions[CATEGORY]['subCategories']
+    ? keyof CollectionPreferences[CATEGORY]['subCategories'] & string
     : never,
-  ITEM extends keyof typeof collectionPreferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items']
+  ITEM extends keyof CollectionPreferences[CATEGORY]['subCategories'][SUBCATEGORY]['items']
 >(
   category: CATEGORY,
   subcategory: SUBCATEGORY,
   item: ITEM
 ): GetOrSet<
-  // @ts-expect-error
-  typeof collectionPreferenceDefinitions[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
+  Preferences[CATEGORY]['subCategories'][SUBCATEGORY]['items'][ITEM]['defaultValue']
 > {
   const [getPrefMain, setUserPref] = React.useContext(
     CollectionPreferencesContext
@@ -152,8 +149,8 @@ export function useCollectionPref<
     category,
     subcategory,
     item,
-    getPrefMain,
     // @ts-expect-error
+    getPrefMain,
     setUserPref
   ) as unknown as GetOrSet<
     // @ts-expect-error
