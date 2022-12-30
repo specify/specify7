@@ -143,7 +143,7 @@ function ResourceBlockers({
   readonly resource: SpecifyResource<AnySchema>;
 }): JSX.Element {
   const [blockers] = useAsyncState<RA<DeleteBlocker>>(
-    React.useCallback(async () => fetchBlockers(resource), [resource]),
+    React.useCallback(async () => fetchBlockers(resource, true), [resource]),
     false
   );
   return (

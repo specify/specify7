@@ -19,6 +19,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { DeleteBlocker } from './DeleteBlocked';
 import { DeleteBlockers } from './DeleteBlocked';
+import { Http } from '../../utils/ajax/definitions';
 
 /**
  * A button to delele a resorce
@@ -126,7 +127,8 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 }
 
 export const fetchBlockers = async (
-  resource: SpecifyResource<AnySchema>
+  resource: SpecifyResource<AnySchema>,
+  expectFailure: boolean = false
 ): Promise<RA<DeleteBlocker>> =>
   ajax<
     RA<{
@@ -141,10 +143,17 @@ export const fetchBlockers = async (
     {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Accept: 'application/json' },
+    },
+    {
+      expectedResponseCodes: expectFailure
+        ? [Http.NOT_FOUND, Http.OK]
+        : [Http.OK],
     }
-  ).then(({ data }) =>
-    data.map(({ table, ...rest }) => ({
-      ...rest,
-      model: strictGetModel(table),
-    }))
+  ).then(({ data, status }) =>
+    status === Http.NOT_FOUND
+      ? []
+      : data.map(({ table, ...rest }) => ({
+          ...rest,
+          model: strictGetModel(table),
+        }))
   );
