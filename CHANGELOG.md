@@ -11,6 +11,9 @@ Specify 7 is now integrated with
 localization service. This paves the way for supporting dozens of languages in
 Specify 7. We will be adding Spanish and French localization in near future.
 
+- Specify now includes the ability to store different collections' assets
+  in separate folders. ([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By NHMD_)
+
 [More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
 
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
