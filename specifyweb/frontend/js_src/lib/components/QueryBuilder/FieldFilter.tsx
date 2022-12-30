@@ -18,7 +18,7 @@ import type {
   ValidParseResult,
 } from '../../utils/parser/parse';
 import { parseValue } from '../../utils/parser/parse';
-import { reParse } from '../../utils/relativeDate';
+import { reParse, parseRelativeDate } from '../../utils/relativeDate';
 import type { RA, RR } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -31,6 +31,8 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
 import { LiteralField, Relationship } from '../DataModel/specifyField';
+import { dayjs } from '../../utils/dayJs';
+import { databaseDateFormat } from '../../utils/dateFormat';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -121,6 +123,7 @@ function extractValuesSimple<TYPE>(
 function DateSplit({
   onChange: handleChange,
   parsed,
+  onLiveChange: handleLiveChange,
 }: {
   readonly parsed: {
     readonly direction: string;
@@ -128,6 +131,7 @@ function DateSplit({
     readonly size: number;
   };
   readonly onChange: ((newValue: string) => void) | undefined;
+  readonly onLiveChange: (() => void) | undefined;
 }): JSX.Element {
   const [values, setValues] = useTriggerState<{
     readonly direction: string;
@@ -151,18 +155,26 @@ function DateSplit({
         onChange={({ target }) => {
           const newValue = extractValuesSimple<string>(target);
           setValues({ ...values, direction: newValue });
+          handleLiveChange?.();
         }}
       />
       <Input.Number
         value={size}
         onBlur={({ target }) => {
-          const newValue = extractValuesSimple<string>(target);
-          setValues({ ...values, size: Number.parseInt(newValue) });
-          handleChange?.(`today ${direction} ${newValue} ${type}`);
+          const newSize = Number.parseInt(extractValuesSimple<string>(target));
+          if (!Number.isNaN(newSize) && newSize >= 0) {
+            setValues({ ...values, size: newSize });
+            handleChange?.(`today ${direction} ${newSize} ${type}`);
+          }
         }}
+        min={0}
         onChange={({ target }) => {
           const newValue = extractValuesSimple<number>(target);
-          setValues({ ...values, size: newValue });
+          setValues({
+            ...values,
+            size: newValue,
+          });
+          handleLiveChange?.();
         }}
       />
       <PickListSimple
@@ -176,6 +188,7 @@ function DateSplit({
         onChange={({ target }) => {
           const newValue = extractValuesSimple<string>(target);
           setValues({ ...values, type: newValue });
+          handleLiveChange?.();
         }}
       />
     </div>
@@ -195,9 +208,17 @@ function DateQueryInputField({
   readonly fieldName: string;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
+  const [date, setDate] = React.useState<{
+    readonly absolute: string | undefined;
+    readonly relative: string | undefined;
+  }>({
+    absolute: reParse.test(currentValue) ? undefined : currentValue,
+    relative: reParse.test(currentValue) ? currentValue : undefined,
+  });
+
   const parsed = React.useMemo(() => {
-    if (reParse.test(currentValue)) {
-      const parsedValue = reParse.exec(currentValue.toLowerCase())?.slice(1);
+    if (date.relative !== undefined) {
+      const parsedValue = reParse.exec(date.relative.toLowerCase())?.slice(1);
       return parsedValue !== undefined
         ? {
             direction: parsedValue[0],
@@ -207,7 +228,7 @@ function DateQueryInputField({
         : undefined;
     }
     return undefined;
-  }, [currentValue]);
+  }, [date.relative]);
 
   const [isAbsolute, _, __, toggleAbsolute] = useBooleanState(
     parsed === undefined
@@ -219,25 +240,51 @@ function DateQueryInputField({
         icon="selector"
         title="switch"
         onClick={() => {
-          {
-            toggleAbsolute();
-            if (isAbsolute) {
-              handleChange?.('today + 3 day');
+          toggleAbsolute();
+          if (!isAbsolute) {
+            if (reParse.test(currentValue)) {
+              const parsedDate = dayjs(parseRelativeDate(currentValue));
+              handleChange?.(parsedDate.format(databaseDateFormat));
+              setDate((oldState) => ({
+                ...oldState,
+                relative: currentValue,
+              }));
+            }
+          } else {
+            setDate((oldState) => ({
+              relative:
+                parsed === undefined ? 'today + 0 day' : oldState.relative,
+              absolute: currentValue,
+            }));
+            if (parsed === undefined) {
+              handleChange?.('today + 0 day');
             }
           }
         }}
       />
       {isAbsolute ? (
         <QueryInputField
-          currentValue={currentValue}
+          currentValue={date.absolute ?? currentValue}
           fieldName={fieldName}
           label={label}
           parser={parser}
           pickListItems={undefined}
           onChange={handleChange}
         />
-      ) : parsed !== undefined ? (
-        <DateSplit parsed={parsed} onChange={handleChange} />
+      ) : !isAbsolute && parsed !== undefined ? (
+        <DateSplit
+          parsed={parsed}
+          onChange={handleChange}
+          onLiveChange={
+            date.absolute === undefined
+              ? undefined
+              : (): void =>
+                  setDate((oldValue) => ({
+                    ...oldValue,
+                    absolute: undefined,
+                  }))
+          }
+        />
       ) : undefined}
     </div>
   );
