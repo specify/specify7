@@ -17,7 +17,7 @@
     "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
     "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
-    "typecheck": "tsc --build tsconfig.tests.json",
+    "typecheck": "tsc",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
     "unitTests:watch": "jest --watch",

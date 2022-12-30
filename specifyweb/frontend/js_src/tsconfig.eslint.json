@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js"],
-  "compilerOptions": {
-    "sourceMap": false
-  }
-}
