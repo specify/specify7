@@ -50,6 +50,12 @@ const transformedOverlays = toReactRoutes(overlayRoutes);
  * https://reactrouter.com/docs/en/v6/examples/modal
  */
 export function Router(): JSX.Element {
+  /*
+   * REFACTOR: replace usages of navigate with <a> where possible
+   * REFACTOR: replace <Button> with <Link> where possible
+   */
+  const navigate = useNavigate();
+
   const location = useLocation();
   unsafeLocation = location;
   const state = location.state;
@@ -60,13 +66,12 @@ export function Router(): JSX.Element {
     background?.state?.type === 'NotFoundPage';
   useErrorContext('location', location);
 
-  /*
-   * REFACTOR: replace usages of navigate with <a> where possible
-   * REFACTOR: replace <Button> with <Link> where possible
-   */
-  const navigate = useNavigate();
-  unsafeNavigateFunction = navigate;
-  React.useEffect(() => setDevelopmentGlobal('_goTo', navigate), [navigate]);
+  React.useEffect(() => {
+    unsafeNavigateFunction = navigate;
+    setDevelopmentGlobal('_goTo', navigate);
+    // If page was in 404 state and user reloaded it, then clear the 404 state
+    if (isNotFoundPage) navigate(locationToUrl(location), { replace: true });
+  }, []);
 
   useLinkIntercept(background);
 

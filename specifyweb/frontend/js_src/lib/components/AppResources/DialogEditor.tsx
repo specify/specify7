@@ -38,6 +38,7 @@ export function DialogEditor(): JSX.Element | null {
       resource={data.resource}
       onClone={undefined}
       onDeleted={undefined}
+      // FIXME: update list in schema config on this change
       onSaved={handleClose}
     >
       {({ headerString, headerButtons, form, footer }): JSX.Element => (
