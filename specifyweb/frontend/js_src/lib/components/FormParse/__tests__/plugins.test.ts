@@ -96,7 +96,7 @@ describe('parseUiPlugin', () => {
     ).toEqual({
       type: 'PartialDateUI',
       defaultValue: new Date('2022-09-03T03:37:10.400Z'),
-      dateFields: [],
+      dateFields: ['timestampCreated'],
       canChangePrecision: true,
       precisionField: 'test',
       defaultPrecision: 'month-year',

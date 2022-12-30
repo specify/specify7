@@ -68,8 +68,8 @@ const formView =
         <cell type="label" labelFor="tt" label="test" />
       </row> 
       <row>
-        <cell type="field" uiType="text" colSpan="4" align="right" id="tt" />
-        <cell type="field" uiType="checkbox" label="2" colSpan="1" align="right" />
+        <cell type="field" name=" catalogNumber " uiType="text" colSpan="4" align="right" id="tt" />
+        <cell type="field" name="accession.text1" uiType="checkbox" label="2" colSpan="1" align="right" />
       </row> 
     </rows>
   </viewdef>`);
@@ -197,6 +197,8 @@ describe('fetchView', () => {
 });
 
 test('parseViewDefinition', () => {
+  const consoleWarn = jest.fn();
+  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
   const result = parseViewDefinition(
     {
       ...viewDefinition,
@@ -211,6 +213,7 @@ test('parseViewDefinition', () => {
   expect(result.model?.name).toBe(schema.models.CollectionObject.name);
   expect(removeKey(result, 'model')).toEqual({
     ...parsedTinyView,
+    errors: [],
     mode: 'view',
     formType: 'form',
     viewSetId: undefined,
@@ -272,7 +275,7 @@ test('parseFormTableDefinition', () =>
             isReadOnly: false,
             defaultValue: undefined,
           },
-          fieldNames: undefined,
+          fieldNames: ['catalogNumber'],
           isRequired: false,
           ariaLabel: 'test' as LocalizedString,
         },
@@ -288,7 +291,7 @@ test('parseFormTableDefinition', () =>
             defaultValue: false,
             isReadOnly: false,
           },
-          fieldNames: undefined,
+          fieldNames: ['accession', 'text1'],
           isRequired: false,
           ariaLabel: '2' as LocalizedString,
         },
@@ -316,10 +319,13 @@ theories(parseFormTableColumns, {
   },
 });
 
-test('parseFormDefinition', () =>
+test('parseFormDefinition', () => {
+  const consoleWarn = jest.fn();
+  jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
   expect(
     parseFormDefinition(tinyFormView, schema.models.CollectionObject)
-  ).toEqual(parsedTinyView));
+  ).toEqual(parsedTinyView);
+});
 
 describe('getColumnDefinitions', () => {
   requireContext();

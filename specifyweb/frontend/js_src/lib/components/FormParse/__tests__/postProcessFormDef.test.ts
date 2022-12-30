@@ -149,11 +149,11 @@ test('createLabelsPostProcessor', () => {
 });
 
 test('indexFields', () => {
-  const divisionComboBox = {
+  const divisionComboBox = ensure<FormCellDefinition>()({
     ...missingLabelTextField,
     id: 'text4',
-    fieldName: 'division',
-  };
+    fieldNames: ['division'],
+  });
   expect(
     indexFields(
       [
@@ -174,7 +174,7 @@ test('indexFields', () => {
       altLabel: undefined,
     },
     [divisionComboBox.id]: {
-      fieldName: divisionComboBox.fieldName,
+      fieldNames: divisionComboBox.fieldNames,
       labelOverride: undefined,
       altLabel: schema.models.Accession.strictGetRelationship('division').label,
     },

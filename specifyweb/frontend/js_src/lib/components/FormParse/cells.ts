@@ -149,7 +149,7 @@ const processCellType: {
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
     setLogContext({ field: undefined });
-    if (hasAccess)
+    if (hasAccess && fieldDefinition.type !== 'Blank')
       return {
         type: 'Field',
         fieldNames: resolvedFields?.map(({ name }) => name),

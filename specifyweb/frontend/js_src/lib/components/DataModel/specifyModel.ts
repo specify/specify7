@@ -320,7 +320,7 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
     if (unparsedName === '') return undefined;
     if (typeof unparsedName !== 'string') throw new Error('Invalid field name');
 
-    const splitName = unparsedName.toLowerCase().split('.');
+    const splitName = unparsedName.toLowerCase().trim().split('.');
     let fields = filterArray([
       this.fields.find((field) => field.name.toLowerCase() === splitName[0]),
     ]);
@@ -352,8 +352,8 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
       splitName[0].toLowerCase() === this.name.toLowerCase()
     )
       return this.getFields(splitName.slice(1).join('.'));
-    if (splitName.length === 1) return fields;
     else if (fields.length === 0) return undefined;
+    else if (splitName.length === 1) return fields;
     else if (splitName.length > 1 && fields[0].isRelationship) {
       const subFields = defined(fields[0].relatedModel).getFields(
         splitName.slice(1).join('.')

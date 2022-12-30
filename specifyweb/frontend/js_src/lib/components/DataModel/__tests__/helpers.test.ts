@@ -190,17 +190,17 @@ describe('toTables', () => {
 });
 
 describe('fetchDistantRelated', () => {
-  test('empty path', () => {
+  test('empty path', async () => {
     const resource = new schema.models.Agent.Resource();
-    expect(fetchDistantRelated(resource, [])).toBe({
+    await expect(fetchDistantRelated(resource, [])).resolves.toEqual({
       resource,
       field: undefined,
     });
   });
 
-  test('undefined path', () => {
+  test('undefined path', async () => {
     const resource = new schema.models.Agent.Resource();
-    expect(fetchDistantRelated(resource, undefined)).toBe({
+    await expect(fetchDistantRelated(resource, undefined)).resolves.toEqual({
       resource,
       field: undefined,
     });

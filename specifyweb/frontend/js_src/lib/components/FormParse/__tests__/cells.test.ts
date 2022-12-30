@@ -110,7 +110,9 @@ const cell = (
 });
 
 describe('parseFormCell', () => {
-  test('base case', () =>
+  test('base case', () => {
+    const consoleWarn = jest.fn();
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
     expect(
       parseFormCell(schema.models.CollectionObject, strictParseXml('<cell />'))
     ).toEqual(
@@ -118,9 +120,12 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: undefined,
       })
-    ));
+    );
+  });
 
-  test('unsupported cell with some attributes', () =>
+  test('unsupported cell with some attributes', () => {
+    const consoleWarn = jest.fn();
+    jest.spyOn(console, 'warn').mockImplementation(consoleWarn);
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -138,7 +143,8 @@ describe('parseFormCell', () => {
         type: 'Unsupported',
         cellType: ' test2 ',
       })
-    ));
+    );
+  });
 
   test('invisible field', () =>
     expect(
@@ -200,42 +206,30 @@ describe('parseFormCell', () => {
       )
     ).toEqual(
       cell({
-        type: 'Field',
-        isRequired: false,
-        fieldNames: undefined,
-        fieldDefinition: {
-          defaultValue: undefined,
-          isReadOnly: false,
-          max: undefined,
-          min: undefined,
-          step: undefined,
-          type: 'Text',
-        },
+        type: 'Blank',
       })
     ));
 
-  test('fieldName unset by LatLonUI plugin', () =>
+  test('unknown field with default value', () =>
     expect(
       parseFormCell(
-        schema.models.Locality,
+        schema.models.CollectionObject,
         strictParseXml(
-          '<cell type="field" uiType="plugin" name="localityName" initialize=";;;name  =  LatLonUI;;;;" readOnly="true" />'
+          '<cell type="field" uiType="text" name="this" default="A" />'
         )
       )
     ).toEqual(
       cell({
         type: 'Field',
-        // The field is required by the data model
-        isRequired: true,
+        isRequired: false,
         fieldNames: undefined,
         fieldDefinition: {
-          type: 'Plugin',
-          isReadOnly: true,
-          pluginDefinition: {
-            type: 'LatLonUI',
-            step: undefined,
-            latLongType: 'Point',
-          },
+          defaultValue: 'A',
+          isReadOnly: false,
+          max: undefined,
+          min: undefined,
+          step: undefined,
+          type: 'Text',
         },
       })
     ));
@@ -277,14 +271,14 @@ describe('parseFormCell', () => {
       cell({
         type: 'Field',
         isRequired: false,
-        fieldNames: ['catalogeDdate'],
+        fieldNames: ['catalogedDate'],
         fieldDefinition: {
           type: 'Plugin',
           isReadOnly: false,
           pluginDefinition: {
             type: 'PartialDateUI',
             defaultValue: undefined,
-            dateFields: ['catalogeDdate'],
+            dateFields: ['catalogedDate'],
             canChangePrecision: true,
             precisionField: undefined,
             defaultPrecision: 'full',
@@ -368,7 +362,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         schema.models.CollectionObject,
         strictParseXml(
-          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
+          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-yesNO1 ;btn=true  ; icon=test" />'
         )
       )
     ).toEqual(
@@ -379,7 +373,7 @@ describe('parseFormCell', () => {
         viewName: 'testView',
         isButton: true,
         icon: 'test',
-        sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
+        sortField: { fieldNames: ['yesNo1'], direction: 'desc' },
       })
     ));
 
@@ -442,7 +436,7 @@ describe('parseFormCell', () => {
   test('Command', () =>
     expect(
       parseFormCell(
-        schema.models.CollectionObject,
+        schema.models.Loan,
         strictParseXml(
           '<cell type="command" name="ReturnLoan" label="generateLabelBtn" />'
         )
