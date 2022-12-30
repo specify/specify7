@@ -84,18 +84,18 @@ export function WbGeoLocate({
     <GenericGeoLocate
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Blue
             disabled={selection?.isFirst(localityIndex) ?? true}
             onClick={(): void => handleMove(localityIndex - 1)}
           >
-            {commonText('previous')}
+            {commonText.previous()}
           </Button.Blue>
           <Button.Blue
             disabled={selection?.isLast(localityIndex) ?? true}
             onClick={(): void => handleMove(localityIndex + 1)}
           >
-            {commonText('next')}
+            {commonText.next()}
           </Button.Blue>
         </>
       }

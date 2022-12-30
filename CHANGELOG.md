@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.8.2](https://github.com/specify/specify7/compare/v7.8.1...v7.8.2) (29 December 2022)
+
+Specify 7 is now integrated with
+[Weblate](https://hosted.weblate.org/projects/specify-7/) - a continuous
+localization service. This paves the way for supporting dozens of languages in
+Specify 7. We will be adding Spanish and French localization in near future.
+
+[More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
 
 - Attachments now uses a photo icon instead of a

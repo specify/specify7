@@ -103,12 +103,17 @@ export function FilePicker({
         ref={filePickerButton}
       >
         <span>
-          {commonText('filePickerMessage')}
+          {commonText.filePickerMessage()}
           {typeof fileName === 'string' && (
             <>
               <br />
               <br />
-              <b>{commonText('selectedFileName', fileName)}</b>
+              <b>
+                {commonText.colonLine({
+                  label: commonText.selectedFileName(),
+                  value: fileName,
+                })}
+              </b>
             </>
           )}
         </span>

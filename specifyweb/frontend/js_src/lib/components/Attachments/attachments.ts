@@ -68,7 +68,7 @@ function iconForMimeType(mimeType: string): {
       return { alt: iconName, src: getIcon(iconName) ?? unknownIcon };
   }
 
-  return { alt: commonText('unknown'), src: getIcon('unknown') ?? unknownIcon };
+  return { alt: commonText.unknown(), src: getIcon('unknown') ?? unknownIcon };
 }
 
 const fetchToken = async (filename: string): Promise<string | undefined> =>

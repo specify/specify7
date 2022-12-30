@@ -27,6 +27,8 @@ import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { formatUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
 import { Report } from './Report';
+import { reportsText } from '../../localization/report';
+import { schema } from '../DataModel/schema';
 
 export const reportsAvailable = ajax<{ readonly available: boolean }>(
   cachableUrl('/context/report_runner_status.json'),
@@ -125,14 +127,14 @@ export function ReportsView({
       </ErrorBoundary>
     ) : (
       <Dialog
-        buttons={commonText('cancel')}
-        header={commonText('reports')}
+        buttons={commonText.cancel()}
+        header={reportsText.reports()}
         icon={<span className="text-blue-500">{icons.documentReport}</span>}
         onClose={handleClose}
       >
         <div className="flex flex-col gap-4">
           <section>
-            <h2>{commonText('reports')}</h2>
+            <h2>{reportsText.reports()}</h2>
             <ReportRow
               cacheKey="listOfReports"
               icon="/images/Reports32x32.png"
@@ -141,7 +143,7 @@ export function ReportsView({
             />
           </section>
           <section>
-            <h2>{commonText('labels')}</h2>
+            <h2>{reportsText.labels()}</h2>
             <ReportRow
               cacheKey="listOfLabels"
               icon="/images/Label32x32.png"
@@ -179,14 +181,14 @@ function ReportRow({
     [sortConfig, unsortedResources]
   );
   return resources.length === 0 ? (
-    <p>{commonText('noResults')}</p>
+    <p>{commonText.noResults()}</p>
   ) : (
     <table className="grid-table grid-cols-[1fr_auto_auto_min-content] gap-2">
       <thead>
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {commonText('name')}
+              {schema.models.SpReport.strictGetField('name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -194,14 +196,16 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {commonText('created')}
+              {schema.models.SpReport.strictGetField('timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>{commonText('createdBy')}</th>
+          <th>
+            {schema.models.SpReport.strictGetField('createdByAgent').label}
+          </th>
           <td />
         </tr>
       </thead>
@@ -226,10 +230,10 @@ function ReportRow({
             </td>
             <td>
               <Link.Icon
-                aria-label={commonText('edit')}
+                aria-label={commonText.edit()}
                 href={`/specify/resources/app-resource/${resource.id}/`}
                 icon="pencil"
-                title={commonText('edit')}
+                title={commonText.edit()}
               />
             </td>
           </tr>

@@ -33,7 +33,7 @@ export function CreateRecordSetButton({
     <ProtectedAction action="create_recordset" resource="/workbench/dataset">
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
-          {queryText('createRecordSet')}
+          {queryText.createRecordSet()}
         </ButtonComponent>
         {isOpen && (
           <CreateRecordSetDialog
@@ -62,7 +62,7 @@ function CreateRecordSetDialog({
   const recordSet = React.useMemo(
     () =>
       new schema.models.RecordSet.Resource({
-        name: wbText('recordSetName', dataSetName),
+        name: wbText.recordSetName({ dataSet: dataSetName }),
       }),
     [dataSetId]
   );

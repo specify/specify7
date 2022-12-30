@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { SpLocaleContainerItem } from '../DataModel/types';
-import { commonText } from '../../localization/common';
 import { javaTypeToHuman } from './helpers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { ItemType } from './index';
@@ -11,8 +10,11 @@ import type { SchemaData } from './SetupHooks';
 import { maxSchemaValueLength } from './Table';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { Input, Label } from '../Atoms/Form';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {AutoGrowTextArea} from '../Molecules/AutoGrowTextArea';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
+import { schemaText } from '../../localization/schema';
+import { commonText } from '../../localization/common';
+import { schema } from '../DataModel/schema';
 
 export function SchemaConfigField({
   schemaData,
@@ -35,9 +37,14 @@ export function SchemaConfigField({
   const canChangeIsRequired =
     !field.overrides.isRequired && !field.isRelationship;
   return (
-    <SchemaConfigColumn header={`${commonText('field')}: ${item.name}`}>
+    <SchemaConfigColumn
+      header={commonText.colonLine({
+        label: schemaText.field(),
+        value: item.name,
+      })}
+    >
       <Label.Block>
-        {commonText('caption')}
+        {schemaText.caption()}
         <Input.Text
           isReadOnly={isReadOnly}
           maxLength={maxSchemaValueLength}
@@ -47,7 +54,7 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('description')}
+        {schemaText.description()}
         <AutoGrowTextArea
           className="resize-y"
           isReadOnly={isReadOnly}
@@ -57,11 +64,11 @@ export function SchemaConfigField({
         />
       </Label.Block>
       <Label.Block>
-        {commonText('length')}
+        {schemaText.fieldLength()}
         <Input.Number isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
-        {commonText('type')}
+        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
         <Input.Text
           isReadOnly
           value={javaTypeToHuman(
@@ -76,7 +83,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isHidden', value)}
         />
-        {commonText('hideField')}
+        {schemaText.hideField()}
       </Label.Inline>
       <Label.Inline>
         <Input.Checkbox
@@ -87,7 +94,7 @@ export function SchemaConfigField({
           isReadOnly={isReadOnly}
           onValueChange={(value): void => handleChange('isRequired', value)}
         />
-        {commonText('required')}
+        {schema.models.SpLocaleContainerItem.strictGetField('isRequired').label}
       </Label.Inline>
       <SchemaConfigFormat
         field={field}

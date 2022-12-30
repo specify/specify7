@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { sortFunction } from '../../utils/utils';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -13,6 +12,9 @@ import { schema } from '../DataModel/schema';
 import { Dialog } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export function SchemaConfigTables(): JSX.Element {
   const { language = '' } = useParams();
@@ -40,17 +42,17 @@ export function SchemaConfigTables(): JSX.Element {
               lang: language,
             })}
           >
-            {commonText('export')}
+            {commonText.export()}
           </Link.Green>
           <span className="-ml-2 flex-1" />
           <Button.Gray
             onClick={(): void => navigate('/specify/schema-config/')}
           >
-            {commonText('back')}
+            {commonText.back()}
           </Button.Gray>
         </>
       }
-      header={commonText('tables')}
+      header={schemaText.tables()}
       onClose={(): void => navigate('/specify')}
     >
       <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
@@ -60,7 +62,7 @@ export function SchemaConfigTables(): JSX.Element {
               href={`/specify/schema-config/${language}/${model.name}/`}
             >
               <TableIcon label={false} name={model.name} />
-              {model.name}
+              {model.name as LocalizedString}
             </Link.Default>
           </li>
         ))}
@@ -70,7 +72,7 @@ export function SchemaConfigTables(): JSX.Element {
           checked={showHiddenTables}
           onValueChange={setShowHiddenTables}
         />
-        {wbText('showAdvancedTables')}
+        {wbPlanText.showAdvancedTables()}
       </Label.Inline>
     </Dialog>
   );

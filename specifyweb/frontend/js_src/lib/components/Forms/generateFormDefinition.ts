@@ -1,5 +1,4 @@
 import { sortFunction, split } from '../../utils/utils';
-import { commonText } from '../../localization/common';
 import type {
   FormMode,
   FormType,
@@ -14,6 +13,7 @@ import { filterArray } from '../../utils/types';
 import { resolveParser } from '../../utils/parser/definitions';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { AnySchema, TableFields } from '../DataModel/helperTypes';
+import { schemaText } from '../../localization/schema';
 
 /**
  * If form definition is missing, this function will generate one on the fly
@@ -123,7 +123,7 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: commonText('fields'),
+              label: schemaText.fields(),
               icon: undefined,
               forClass: undefined,
               ...cellAttributes,
@@ -161,7 +161,7 @@ function generateForm(
         : [
             {
               type: 'Separator',
-              label: commonText('relationships'),
+              label: schemaText.relationships(),
               ...cellAttributes,
               icon: undefined,
               forClass: undefined,

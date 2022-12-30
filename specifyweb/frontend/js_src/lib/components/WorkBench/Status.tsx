@@ -61,34 +61,34 @@ export function WbStatus({
   }, [aborted, dataset.id]);
 
   const title = {
-    validating: wbText('wbStatusValidationDialogTitle'),
-    uploading: wbText('wbStatusUploadDialogTitle'),
-    unuploading: wbText('wbStatusUnuploadDialogTitle'),
+    validating: wbText.wbStatusValidation(),
+    uploading: wbText.wbStatusUpload(),
+    unuploading: wbText.wbStatusUnupload(),
   }[status.uploaderstatus.operation];
 
   // FEATURE: display upload progress in the title if tab is not focused
   useTitle(title);
 
   const mappedOperation = {
-    validating: wbText('validation'),
-    uploading: wbText('upload'),
-    unuploading: wbText('rollback'),
+    validating: wbText.validation(),
+    uploading: wbText.upload(),
+    unuploading: wbText.rollback(),
   }[status.uploaderstatus.operation];
 
   const standardizedOperation = {
-    validating: wbText('validating'),
-    uploading: wbText('uploading'),
-    unuploading: wbText('rollingBack'),
+    validating: wbText.validating(),
+    uploading: wbText.uploading(),
+    unuploading: wbText.rollingBack(),
   }[status.uploaderstatus.operation];
 
   if (aborted === 'failed')
     return (
       <Dialog
-        buttons={commonText('close')}
+        buttons={commonText.close()}
         header={title}
         onClose={(): void => setAborted(false)}
       >
-        {wbText('wbStatusAbortFailed', mappedOperation)}
+        {wbText.wbStatusAbortFailed({ operationName: mappedOperation })}
       </Dialog>
     );
 
@@ -98,28 +98,38 @@ export function WbStatus({
   const total =
     typeof status?.taskinfo === 'object' ? status.taskinfo?.total : 1;
 
-  if (aborted === 'pending') message = wbText('aborting');
+  if (aborted === 'pending') message = wbText.aborting();
   else if (status.taskstatus === 'PENDING')
-    message = wbText('wbStatusPendingDialogText', mappedOperation);
+    message = (
+      <>
+        {wbText.wbStatusPendingDescription({ operationName: mappedOperation })}
+        <br />
+        <br />
+        {wbText.wbStatusPendingSecondDescription({
+          operationName: mappedOperation,
+        })}
+      </>
+    );
   else if (status.taskstatus === 'PROGRESS') {
     if (current === total)
       message =
         status.uploaderstatus.operation === 'uploading'
-          ? wbText('updatingTrees')
-          : wbText('wbStatusOperationNoProgress', mappedOperation);
+          ? wbText.updatingTrees()
+          : wbText.wbStatusOperationNoProgress({
+              operationName: mappedOperation,
+            });
     else
-      message = wbText(
-        'wbStatusOperationProgress',
-        standardizedOperation,
+      message = wbText.wbStatusOperationProgress({
+        operationName: standardizedOperation,
         current,
-        total
-      );
+        total,
+      });
   }
   // FAILED
   else
     message = (
       <>
-        {wbText('wbStatusErrorDialogText', mappedOperation)}
+        {wbText.wbStatusError({ operationName: mappedOperation })}
         <pre>{JSON.stringify(status, null, 2)}</pre>
       </>
     );
@@ -147,7 +157,7 @@ export function WbStatus({
                 .catch(() => setAborted('failed'));
             }}
           >
-            {commonText('stop')}
+            {wbText.stop()}
           </Button.Red>
         ) : undefined
       }

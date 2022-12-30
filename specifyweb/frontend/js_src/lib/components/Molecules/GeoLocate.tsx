@@ -78,7 +78,7 @@ export function GenericGeoLocate({
           container.style.height = `${height}px`;
         },
       }}
-      header={localityText('geoLocate')}
+      header={localityText.geoLocate()}
       modal={false}
       onClose={handleClose}
       // REFACTOR: consider adding a hook to remember dialog size and position
@@ -87,7 +87,7 @@ export function GenericGeoLocate({
         setHeight(container.clientHeight);
       }}
     >
-      <iframe className="h-full" src={url} title={localityText('geoLocate')} />
+      <iframe className="h-full" src={url} title={localityText.geoLocate()} />
     </Dialog>
   );
 }

@@ -1,5 +1,7 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import type { RA } from '../../utils/types';
 import { className } from './className';
 import type { IconProps } from './Icons';
 import { icons } from './Icons';
@@ -36,6 +38,12 @@ const button = (name: string, className: string) =>
       readonly onClick:
         | ((event: React.MouseEvent<HTMLButtonElement>) => void)
         | undefined;
+      readonly children?:
+        | JSX.Element
+        | LocalizedString
+        | RA<JSX.Element | LocalizedString | undefined | false>;
+      readonly title?: LocalizedString | undefined;
+      readonly 'aria-label'?: LocalizedString | undefined;
     }
   >(name, 'button', className, (props) => ({
     ...props,

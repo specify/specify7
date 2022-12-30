@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
@@ -9,6 +8,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog } from '../Molecules/Dialog';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
+import { wbPlanText } from '../../localization/wbPlan';
 
 /**
  * Show upload plan as JSON. Available in Development only
@@ -34,7 +34,7 @@ export function DevShowPlan({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Green
             onClick={(): void => {
               const plan =
@@ -57,11 +57,11 @@ export function DevShowPlan({
               );
             }}
           >
-            {commonText('save')}
+            {commonText.save()}
           </Button.Green>
         </>
       }
-      header={wbText('dataMapper')}
+      header={wbPlanText.dataMapper()}
       onClose={handleClose}
     >
       <AutoGrowTextArea value={uploadPlan} onValueChange={setUploadPlane} />

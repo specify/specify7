@@ -16,6 +16,8 @@ import { ShowLoansCommand } from './ShowTransactions';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { AnySchema } from '../DataModel/helperTypes';
 import { toTable } from '../DataModel/helpers';
+import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 export function GenerateLabel({
   resource,
@@ -24,7 +26,7 @@ export function GenerateLabel({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
 }): JSX.Element | null {
   const [runReport, handleRunReport, handleHideReport] = useBooleanState();
 
@@ -34,7 +36,7 @@ export function GenerateLabel({
       <Button.Small
         disabled={isDisabled}
         id={id}
-        title={isDisabled ? formsText('saveRecordFirst') : undefined}
+        title={isDisabled ? formsText.saveRecordFirst() : undefined}
         onClick={handleRunReport}
       >
         {label}
@@ -55,7 +57,7 @@ const commandRenderers: {
   readonly [KEY in keyof UiCommands]: (props: {
     readonly resource: SpecifyResource<AnySchema>;
     readonly id: string | undefined;
-    readonly label: string | undefined;
+    readonly label: LocalizedString | undefined;
     readonly commandDefinition: UiCommands[KEY];
   }) => JSX.Element | null;
 } = {
@@ -96,11 +98,11 @@ const commandRenderers: {
             {showDialog ? (
               loan.isNew() || !Boolean(loan.get('id')) ? (
                 <Dialog
-                  buttons={commonText('close')}
+                  buttons={commonText.close()}
                   header={label}
                   onClose={handleHide}
                 >
-                  {formsText('preparationsCanNotBeReturned')}
+                  {interactionsText.preparationsCanNotBeReturned()}
                 </Dialog>
               ) : (
                 <LoanReturn resource={loan} onClose={handleHide} />
@@ -110,22 +112,27 @@ const commandRenderers: {
         )) ?? error('LoanReturnCommand can only be used with Loan resources')
       : null;
   },
-  Unsupported({ commandDefinition: { name = commonText('nullInline') }, id }) {
+  Unsupported({ commandDefinition: { name = commonText.nullInline() }, id }) {
     const [isClicked, handleShow, handleHide] = useBooleanState();
     return (
       <>
         <Button.Small id={id} onClick={handleShow}>
-          {formsText('unavailableCommandButton')}
+          {formsText.unavailableCommandButton()}
         </Button.Small>
         <Dialog
-          buttons={commonText('close')}
-          header={formsText('unavailableCommandDialogHeader')}
+          buttons={commonText.close()}
+          header={formsText.commandUnavailable()}
           isOpen={isClicked}
           onClose={handleHide}
         >
-          {formsText('unavailableCommandDialogText')}
+          {formsText.commandUnavailableDescription()}
           <br />
-          {`${formsText('commandName')} ${name}`}
+          {formsText.commandUnavailableSecondDescription()}
+          <br />
+          {commonText.colonLine({
+            label: formsText.commandName(),
+            value: name,
+          })}
         </Dialog>
       </>
     );
@@ -140,7 +147,7 @@ export function UiCommand({
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly id: string | undefined;
-  readonly label: string | undefined;
+  readonly label: LocalizedString | undefined;
   readonly commandDefinition: UiCommands[keyof UiCommands];
 }): JSX.Element | null {
   const Command = commandRenderers[

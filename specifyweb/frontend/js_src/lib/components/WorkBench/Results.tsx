@@ -17,6 +17,7 @@ import { strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { TableIcon } from '../Molecules/TableIcon';
 import { CreateRecordSetButton } from './RecordSet';
+import { formatNumber } from '../Atoms/Internationalization';
 
 export function WbUploaded({
   recordCounts,
@@ -36,13 +37,13 @@ export function WbUploaded({
       <div>
         <H2>
           {isUploaded
-            ? wbText('uploadResults')
-            : wbText('potentialUploadResults')}
+            ? wbText.uploadResults()
+            : wbText.potentialUploadResults()}
         </H2>
         <p>
           {isUploaded
-            ? wbText('wbUploadedDescription')
-            : wbText('wbUploadedPotentialDescription')}
+            ? wbText.wbUploadedDescription()
+            : wbText.wbUploadedPotentialDescription()}
         </p>
       </div>
       <Ul className="flex flex-1 flex-col gap-2">
@@ -66,7 +67,7 @@ export function WbUploaded({
           />
         )}
         <Button.Small className="flex-1" onClick={handleClose}>
-          {commonText('close')}
+          {commonText.close()}
         </Button.Small>
       </div>
     </div>
@@ -83,7 +84,12 @@ function TableResults({
   return (
     <li className="flex items-center gap-1">
       <TableIcon label={false} name={tableName} />
-      <span>{`${strictGetModel(tableName).label}: ${recordCount}`}</span>
+      <span>
+        {commonText.colonLine({
+          label: strictGetModel(tableName).label,
+          value: formatNumber(recordCount),
+        })}
+      </span>
     </li>
   );
 }

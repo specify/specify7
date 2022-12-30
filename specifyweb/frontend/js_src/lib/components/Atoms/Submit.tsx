@@ -1,11 +1,15 @@
 // Force passing children by nesting rather than through the [value] attribute
-import {className} from './className';
-import type {TagProps} from './wrapper';
-import { wrap} from './wrapper';
+import type { LocalizedString } from 'typesafe-i18n';
+
+import { className } from './className';
+import type { TagProps } from './wrapper';
+import { wrap } from './wrapper';
 
 type SubmitProps = {
-  readonly children: string;
+  readonly children: LocalizedString;
   readonly value?: undefined;
+  readonly title?: LocalizedString | undefined;
+  readonly 'aria-label'?: LocalizedString | undefined;
 };
 const submitButton = (name: string, buttonClassName: string) =>
   wrap<'input', SubmitProps>(
@@ -13,9 +17,9 @@ const submitButton = (name: string, buttonClassName: string) =>
     'input',
     buttonClassName,
     ({
-       children,
-       ...props
-     }: SubmitProps & TagProps<'input'>): TagProps<'input'> => ({
+      children,
+      ...props
+    }: SubmitProps & TagProps<'input'>): TagProps<'input'> => ({
       type: 'submit',
       ...props,
       value: children,

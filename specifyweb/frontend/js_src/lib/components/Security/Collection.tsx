@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
@@ -35,15 +34,17 @@ import {
 } from './CollectionHooks';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type RoleBase = {
   readonly roleId: number;
-  readonly roleName: string;
+  readonly roleName: LocalizedString;
 };
 
 export type UserRoles = RA<{
   readonly userId: number;
-  readonly userName: string;
+  readonly userName: LocalizedString;
   readonly roles: RA<RoleBase>;
 }>;
 
@@ -129,9 +130,10 @@ export function CollectionView({
         <>
           <div className="flex gap-2">
             <h3 className="text-2xl">
-              {`${schema.models.Collection.label}: ${
-                collection.collectionName ?? ''
-              }`}
+              {commonText.colonLine({
+                label: schema.models.Collection.label,
+                value: collection.collectionName ?? '',
+              })}
             </h3>
             {hasTablePermission('Collection', 'read') && (
               <ViewCollectionButton collection={collection} />
@@ -147,10 +149,10 @@ export function CollectionView({
               </CollectionRoles>
             )}
             <section className="flex flex-col gap-2">
-              <h4 className="text-xl">{adminText('collectionUsers')}</h4>
+              <h4 className="text-xl">{userText.collectionUsers()}</h4>
               {typeof mergedUsers === 'object' ? (
                 mergedUsers.length === 0 ? (
-                  commonText('none')
+                  commonText.none()
                 ) : (
                   <>
                     <Ul>
@@ -210,7 +212,7 @@ export function CollectionView({
                           });
                         }}
                       >
-                        {commonText('create')}
+                        {commonText.create()}
                       </Link.Green>
                     </div>
                   </>
@@ -220,7 +222,7 @@ export function CollectionView({
                   'read',
                   collection.id
                 ) ? (
-                commonText('loading')
+                commonText.loading()
               ) : (
                 <CurrentUserLink collectionId={collection.id} />
               )}

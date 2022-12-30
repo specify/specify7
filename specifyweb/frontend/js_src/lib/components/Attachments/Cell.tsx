@@ -10,7 +10,7 @@ import { LoadingContext } from '../Core/Contexts';
 import { fetchRelated } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { idFromUrl } from '../DataModel/resource';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { Attachment } from '../DataModel/types';
 import { ResourceView } from '../Forms/ResourceView';
@@ -89,7 +89,11 @@ export function AttachmentCell({
         aria-pressed={isMetaOpen}
         className="absolute top-0 right-0"
         icon="informationCircle"
-        title={commonText('metadata')}
+        title={
+          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
+            'metadata'
+          ).label
+        }
         onClick={handleMetaToggle}
       />
       {isMetaOpen && (
@@ -111,7 +115,7 @@ export function AttachmentCell({
         <AttachmentPreview attachment={attachment} thumbnail={thumbnail} />
       ) : (
         <div className="flex h-10 w-10 items-center justify-center">
-          {commonText('loading')}
+          {commonText.loading()}
         </div>
       )}
     </div>

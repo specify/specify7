@@ -14,9 +14,10 @@ import { useSchemaLanguages } from '../Toolbar/Language';
 import { webLinks } from '../FormPlugins/WebLink';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { SerializedResource } from '../DataModel/helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type SchemaData = {
-  readonly languages: IR<string>;
+  readonly languages: IR<LocalizedString>;
   readonly tables: IR<SerializedResource<SpLocaleContainer>>;
   readonly formatters: IR<DataObjectFormatter>;
   readonly aggregators: IR<DataObjectFormatter>;
@@ -29,7 +30,7 @@ export type SchemaData = {
 };
 
 export type DataObjectFormatter = {
-  readonly title: string;
+  readonly title: LocalizedString;
   readonly className: string;
 };
 

@@ -18,14 +18,14 @@ export function RollbackConfirmation({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
-      header={wbText('rollbackDialogHeader')}
+      header={wbText.beginRollback()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
       onClose={handleClose}
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Red
             onClick={() =>
               loading(
@@ -37,12 +37,12 @@ export function RollbackConfirmation({
               )
             }
           >
-            {wbText('rollback')}
+            {wbText.rollback()}
           </Button.Red>
         </>
       }
     >
-      {wbText('rollbackDialogText')}
+      {wbText.beginRollbackDescription()}
     </Dialog>
   );
 }

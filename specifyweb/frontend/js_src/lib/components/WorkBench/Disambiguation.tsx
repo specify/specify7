@@ -33,7 +33,7 @@ export function DisambiguationDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Blue
             disabled={selected === undefined}
             onClick={(): void => {
@@ -41,7 +41,7 @@ export function DisambiguationDialog({
               handleClose();
             }}
           >
-            {commonText('apply')}
+            {commonText.apply()}
           </Button.Blue>
           <Button.Blue
             disabled={selected === undefined}
@@ -50,11 +50,11 @@ export function DisambiguationDialog({
               handleClose();
             }}
           >
-            {commonText('applyAll')}
+            {commonText.applyAll()}
           </Button.Blue>
         </>
       }
-      header={wbText('disambiguationDialogTitle')}
+      header={wbText.disambiguateMatches()}
       onClose={handleClose}
     >
       {matches.map((resource) => (
@@ -86,11 +86,10 @@ function Row({
           ? (resource as SpecifyResource<Taxon>)
               .rgetPromise('parent')
               .then((parent) =>
-                wbText(
-                  'ambiguousTaxaChild',
-                  resource.get('fullname'),
-                  parent.get('fullName')
-                )
+                wbText.ambiguousTaxaChild({
+                  node: resource.get('fullname'),
+                  parent: parent.get('fullName'),
+                })
               )
           : false,
       [resource]
@@ -108,7 +107,7 @@ function Row({
       {fullName === false ? (
         <FormattedResource resource={resource} />
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </Label.Inline>
   );

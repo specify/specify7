@@ -104,18 +104,18 @@ function PreferencesDialog({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={wbText('configureSearchReplace')}
+      header={wbText.configureSearchReplace()}
       modal={false}
       onClose={handleClose}
     >
       <div>
-        <H2>{wbText('navigationOptions')}</H2>
+        <H2>{wbText.navigationOptions()}</H2>
         <Label.Block>
-          {wbText('cursorPriority')}
+          {wbText.cursorPriority()}
           <Select
             value={searchPreferences.navigation.direction}
             onValueChange={(value): void =>
@@ -128,48 +128,48 @@ function PreferencesDialog({
               })
             }
           >
-            <option value="columnFirst">{wbText('columnFirst')}</option>
-            <option value="rowFirst">{wbText('rowFirst')}</option>
+            <option value="columnFirst">{wbText.columnFirst()}</option>
+            <option value="rowFirst">{wbText.rowFirst()}</option>
           </Select>
         </Label.Block>
       </div>
 
       <div className="flex flex-col">
-        <H2>{wbText('searchOptions')}</H2>
+        <H2>{wbText.searchOptions()}</H2>
         <CheckboxLine
           property="fullMatch"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('findEntireCellsOnly')}
+          {wbText.findEntireCellsOnly()}
         </CheckboxLine>
         <CheckboxLine
           property="caseSensitive"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('matchCase')}
+          {wbText.matchCase()}
         </CheckboxLine>
         <CheckboxLine
           property="useRegex"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('useRegularExpression')}
+          {wbText.useRegularExpression()}
         </CheckboxLine>
         <CheckboxLine
           property="liveUpdate"
           setState={handleChange}
           state={searchPreferences}
         >
-          {wbText('liveUpdate')}
+          {wbText.liveUpdate()}
         </CheckboxLine>
       </div>
 
       <div>
-        <H2>{wbText('replaceOptions')}</H2>
+        <H2>{wbText.replaceOptions()}</H2>
         <Label.Block>
-          {wbText('replaceMode')}
+          {wbText.replaceMode()}
           <Select
             value={searchPreferences.replace.replaceMode}
             onValueChange={(value): void =>
@@ -182,8 +182,8 @@ function PreferencesDialog({
               })
             }
           >
-            <option value="replaceAll">{wbText('replaceAll')}</option>
-            <option value="replaceNext">{wbText('replaceNext')}</option>
+            <option value="replaceAll">{wbText.replaceAll()}</option>
+            <option value="replaceNext">{wbText.replaceNext()}</option>
           </Select>
         </Label.Block>
       </div>
@@ -211,9 +211,9 @@ export function WbAdvancedSearch({
     <ErrorBoundary dismissable>
       <Button.Small
         aria-haspopup="dialog"
-        aria-label={wbText('configureSearchReplace')}
+        aria-label={wbText.configureSearchReplace()}
         aria-pressed={isOpen}
-        title={wbText('configureSearchReplace')}
+        title={wbText.configureSearchReplace()}
         onClick={handleToggle}
       >
         {icons.cog}

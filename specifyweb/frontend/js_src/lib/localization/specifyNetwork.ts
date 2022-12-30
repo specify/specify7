@@ -8,21 +8,21 @@ import { createDictionary } from './utils';
 
 export const specifyNetworkText = createDictionary({
   specifyNetwork: {
-    'en-us': 'Specify Network (opens in new tab)',
-    'ru-ru': 'Specify Network (открывается в новой вкладке)',
+    'en-us': 'Specify Network',
+    'ru-ru': 'Specify Network',
   },
-  failedToOpenPopUpDialogHeader: {
+  failedToOpenPopUp: {
     'en-us': 'Failed to open Specify Network Page',
     'ru-ru': 'Не удалось открыть страницу Specify Network',
   },
-  failedToOpenPopUpDialogText: {
+  failedToOpenPopUpDescription: {
     'en-us': `
-      Please make sure your browser is not blocking pop-up windows and
-      try again
+      Please make sure your browser is not blocking pop-up windows and try
+      again.
     `,
     'ru-ru': `
-      Убедитесь, что ваш браузер не блокирует всплывающие окна, и
-      повторите попытку.
+      Убедитесь, что ваш браузер не блокирует всплывающие окна, и повторите
+      попытку.
     `,
   },
-});
+} as const);

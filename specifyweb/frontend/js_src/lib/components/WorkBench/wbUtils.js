@@ -21,6 +21,7 @@ import {LeafletMap} from '../Leaflet/Map';
 import {filterArray} from '../../utils/types';
 import {getSelectedLocalities, WbGeoLocate} from './GeoLocate';
 import {CoordinateConverter} from './CoordinateConverter';
+import {getSelectedLast, getVisualHeaders} from './hotHelpers';
 
 // REFACTOR: rewrite to React
 export const WBUtils = Backbone.View.extend({
@@ -241,7 +242,7 @@ export const WBUtils = Backbone.View.extend({
     const newState = this.el.classList.contains(cssClassName);
     const indicator =
       buttonContainer.getElementsByClassName('wb-navigation-text')[0];
-    indicator.setAttribute('aria-pressed', newState);
+    indicator.setAttribute('aria-pressed', newState ? 'true' : 'false');
     indicator.classList[newState ? 'add' : 'remove']('brightness-50');
     return newState;
   },
@@ -379,7 +380,7 @@ export const WBUtils = Backbone.View.extend({
       }
     }
 
-    navigationTotalElement.textContent = resultsCount;
+    navigationTotalElement.textContent = resultsCount.toString();
 
     // Navigate to the first search result when hitting Enter
     if (event.key === 'Enter')
@@ -550,7 +551,7 @@ export const WBUtils = Backbone.View.extend({
       if (this.wbview.isUploaded)
         filterArray([geoLocaleButton, coordinateConverterButton]).map(
           (button) =>
-            button.setAttribute('title', wbText('unavailableWhenUploaded'))
+            button.setAttribute('title', wbText.unavailableWhenUploaded())
         );
       else {
         if (typeof geoLocaleButton === 'object')
@@ -605,7 +606,7 @@ export const WBUtils = Backbone.View.extend({
       selection.visualRows.map((visualRow) =>
         this.wbview.hot.getDataAtRow(visualRow)
       ),
-      this.getVisualHeaders(),
+      getVisualHeaders(this.wbview.hot, this.wbview.dataset.columns),
       selection.visualRows
     );
 

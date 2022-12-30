@@ -30,7 +30,7 @@ export function GeoLocatePlugin({
         className="w-fit"
         onClick={handleToggle}
       >
-        {localityText('geoLocate')}
+        {localityText.geoLocate()}
       </Button.Small>
       {isOpen && <GeoLocate resource={resource} onClose={handleClose} />}
     </>
@@ -110,17 +110,17 @@ function GeoLocate({
 
   return data === undefined ? null : data === false ? (
     <Dialog
-      buttons={commonText('close')}
-      header={localityText('geographyRequiredDialogHeader')}
+      buttons={commonText.close()}
+      header={localityText.geographyRequired()}
       onClose={handleClose}
     >
-      {localityText('geographyRequiredDialogText')}
+      {localityText.geographyRequiredDescription()}
     </Dialog>
   ) : (
     <GenericGeoLocate
       buttons={
         <Button.DialogClose component={clicked ? Button.Blue : Button.Gray}>
-          {commonText('close')}
+          {commonText.close()}
         </Button.DialogClose>
       }
       data={data}

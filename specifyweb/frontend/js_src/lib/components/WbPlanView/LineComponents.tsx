@@ -7,7 +7,6 @@
 import React from 'react';
 
 import type { Tables } from '../DataModel/types';
-import { wbText } from '../../localization/workbench';
 import type { IR, R, RA } from '../../utils/types';
 import type { MappingLineData } from './navigator';
 import { Button } from '../Atoms/Button';
@@ -25,10 +24,12 @@ import {
 import { icons } from '../Atoms/Icons';
 import type { AutoMapperSuggestion } from './Mapper';
 import { useId } from '../../hooks/useId';
+import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 export type HtmlGeneratorFieldData = {
   readonly optionLabel: JSX.Element | string;
-  readonly title?: string;
+  readonly title?: LocalizedString;
   readonly isEnabled?: boolean;
   readonly isRequired?: boolean;
   readonly isHidden?: boolean;
@@ -148,10 +149,10 @@ export function MappingLineComponent({
     >
       <div className="border-t border-t-gray-500 py-2 print:hidden">
         <Button.Small
-          aria-label={wbText('clearMapping')}
+          aria-label={wbPlanText.clearMapping()}
           className="h-full w-full p-2"
           disabled={isReadOnly}
-          title={wbText('clearMapping')}
+          title={wbPlanText.clearMapping()}
           onClick={handleClearMapping}
         >
           {icons.backspace}
@@ -168,7 +169,7 @@ export function MappingLineComponent({
       </div>
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
-        aria-label={wbText('columnMapping')}
+        aria-label={wbPlanText.columnMapping()}
         className={`
           flex flex-wrap items-center gap-2 border-t border-t-gray-500
           py-2 print:gap-1
@@ -177,7 +178,7 @@ export function MappingLineComponent({
         ref={lineRef}
         role="list"
         tabIndex={0}
-        title={wbText('columnMapping')}
+        title={wbPlanText.columnMapping()}
         onClick={handleFocus}
         onKeyDown={({ key }): void => handleKeyDown(key)}
       >
@@ -208,10 +209,10 @@ export function MappingPathComponent({
 }
 
 const fieldGroupLabels = {
-  suggestedMappings: wbText('suggestedMappings'),
-  requiredFields: wbText('requiredFields'),
-  optionalFields: wbText('optionalFields'),
-  hiddenFields: wbText('hiddenFields'),
+  suggestedMappings: wbPlanText.suggestedMappings(),
+  requiredFields: wbPlanText.requiredFields(),
+  optionalFields: wbPlanText.optionalFields(),
+  hiddenFields: wbPlanText.hiddenFields(),
 } as const;
 
 export const mappingElementDividerClassName = `print:px-1 flex items-center px-2`;

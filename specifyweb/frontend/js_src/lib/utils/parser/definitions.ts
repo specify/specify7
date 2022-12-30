@@ -44,7 +44,7 @@ export const validators: IR<(value: unknown) => string | undefined> = {
     !Number.isNaN(value) &&
     (!Number.isInteger(value) || Number.isSafeInteger(value))
       ? undefined
-      : formsText('inputTypeNumber'),
+      : formsText.inputTypeNumber(),
 } as const;
 
 export type Parser = Partial<{
@@ -88,15 +88,15 @@ export const parsers = f.store(
     'java.lang.Boolean': {
       type: 'checkbox',
       pattern: /true|false|yes|no|nan|null|undefined/iu,
-      title: formsText('illegalBool'),
+      title: formsText.illegalBool(),
       formatters: [formatter.toLowerCase],
       parser: stringGuard((value) => ['yes', 'true'].includes(value)),
       printFormatter: (value) =>
         value === undefined
           ? ''
           : Boolean(value)
-          ? queryText('yes')
-          : commonText('no'),
+          ? queryText.yes()
+          : commonText.no(),
       value: false,
     },
 
@@ -176,9 +176,9 @@ export const parsers = f.store(
         (value): string | undefined =>
           typeof value === 'object' && (value as dayjs.Dayjs).isValid()
             ? undefined
-            : formsText('requiredFormat', fullDateFormat()),
+            : formsText.requiredFormat({ format: fullDateFormat() }),
       ],
-      title: formsText('requiredFormat', fullDateFormat()),
+      title: formsText.requiredFormat({ format: fullDateFormat() }),
       parser: (value) => (value as dayjs.Dayjs)?.format(databaseDateFormat),
       value: dayjs().format(databaseDateFormat),
     },
@@ -299,10 +299,9 @@ export function formatterToParser(
   formatter: UiFormatter
 ): Parser {
   const regExpString = formatter.parseRegExp();
-  const title = formsText(
-    'requiredFormat',
-    formatter.pattern() ?? formatter.valueOrWild()
-  );
+  const title = formsText.requiredFormat({
+    format: formatter.pattern() ?? formatter.valueOrWild(),
+  });
 
   const autoNumberingConfig = getUserPref(
     'form',

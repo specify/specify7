@@ -20,32 +20,32 @@ const options: RA<{
   readonly showCardinalDirection: boolean;
 }> = [
   {
-    label: localityText('degrees'),
+    label: localityText.degrees(),
     convertor: 'toDegs',
     showCardinalDirection: false,
   },
   {
-    label: localityText('degreesMinutes'),
+    label: localityText.degreesMinutes(),
     convertor: 'toDegsMins',
     showCardinalDirection: false,
   },
   {
-    label: localityText('degreesMinutesSeconds'),
+    label: localityText.degreesMinutesSeconds(),
     convertor: 'toDegsMinsSecs',
     showCardinalDirection: false,
   },
   {
-    label: localityText('degreesWithDirection'),
+    label: localityText.degreesWithDirection(),
     convertor: 'toDegs',
     showCardinalDirection: true,
   },
   {
-    label: localityText('degreesMinutesWithDirection'),
+    label: localityText.degreesMinutesWithDirection(),
     convertor: 'toDegsMins',
     showCardinalDirection: true,
   },
   {
-    label: localityText('degreesMinutesSecondsWithDirection'),
+    label: localityText.degreesMinutesSecondsWithDirection(),
     convertor: 'toDegsMinsSecs',
     showCardinalDirection: true,
   },
@@ -164,11 +164,11 @@ export function CoordinateConverter({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
-          <Button.Blue onClick={handleClose}>{commonText('apply')}</Button.Blue>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Blue onClick={handleClose}>{commonText.apply()}</Button.Blue>
         </>
       }
-      header={wbText('coordinateConverterDialogTitle')}
+      header={wbText.coordinateConverter()}
       modal={false}
       onClose={(): void => {
         hot.batch(() =>
@@ -177,7 +177,7 @@ export function CoordinateConverter({
         handleClose();
       }}
     >
-      {wbText('coordinateConverterDialogHeader')}
+      {wbText.coordinateConverterDescription()}
       <Ul>
         {Object.values(options).map(
           ({ label, convertor, showCardinalDirection }, optionIndex) => (
@@ -202,7 +202,7 @@ export function CoordinateConverter({
               defaultChecked={includeSymbols}
               onValueChange={setIncludeSymbols}
             />
-            {wbText('includeDmsSymbols')}
+            {wbText.includeDmsSymbols()}
           </Label.Inline>
         </li>
         <li>
@@ -211,7 +211,7 @@ export function CoordinateConverter({
               defaultChecked={applyAll}
               onValueChange={setApplyAll}
             />
-            {commonText('applyAll')}
+            {commonText.applyAll()}
           </Label.Inline>
         </li>
       </Ul>

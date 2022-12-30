@@ -1,4 +1,3 @@
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
@@ -23,6 +22,10 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
+import { resourcesText } from '../../localization/resources';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -37,15 +40,15 @@ export const getRegistriesFromPath = (
   );
 
 export type Registry = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: IR<Registry>;
   readonly actions: RA<string>;
-  readonly groupName: string;
+  readonly groupName: LocalizedString;
   readonly isInstitutional: boolean;
 };
 
 type WritableRegistry = {
-  readonly label: string;
+  readonly label: LocalizedString;
   readonly children: R<WritableRegistry>;
   readonly actions: RA<string>;
   readonly groupName: string;
@@ -61,13 +64,13 @@ const buildRegistry = f.store(
         .filter(({ name }) => !f.has(toolTables(), name))
         .map(({ name, label, isHidden, isSystem }) => ({
           resource: tableNameToResourceName(name),
-          localized: [adminText('table'), label],
+          localized: [schemaText.table(), label],
           actions: tableActions,
-          groupName: isSystem || isHidden ? adminText('advancedTables') : '',
+          groupName: isSystem || isHidden ? userText.advancedTables() : '',
         })),
       ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
         resource: partsToResourceName([toolPermissionPrefix, name]),
-        localized: [commonText('tool'), label],
+        localized: [commonText.tool(), label],
         actions: tableActions,
         groupName: '',
       })),
@@ -96,8 +99,8 @@ const buildRegistry = f.store(
                   : {
                       [anyResource]: {
                         label: tablePermissionsPrefix.includes(part)
-                          ? adminText('allTables')
-                          : commonText('all'),
+                          ? userText.allTables()
+                          : commonText.all(),
                         children: {},
                         actions: getAllActions(
                           partsToResourceName(resourceParts.slice(0, index + 1))
@@ -125,7 +128,7 @@ const buildRegistry = f.store(
       },
       {
         [anyResource]: {
-          label: commonText('all'),
+          label: commonText.all(),
           children: {},
           actions: getAllActions(partsToResourceName([])),
           groupName: '',
@@ -186,19 +189,19 @@ export const toolDefinitions = f.store(() =>
     }>
   >()({
     schemaConfig: {
-      label: commonText('schemaConfig'),
+      label: schemaText.schemaConfig(),
       tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
     },
     queryBuilder: {
-      label: queryText('queryBuilder'),
+      label: queryText.queryBuilder(),
       tables: ['SpQuery', 'SpQueryField'],
     },
     recordSets: {
-      label: commonText('recordSets'),
+      label: commonText.recordSets(),
       tables: ['RecordSet', 'RecordSetItem'],
     },
     resources: {
-      label: commonText('appResources'),
+      label: resourcesText.appResources(),
       tables: [
         'SpAppResource',
         'SpAppResourceData',
@@ -207,7 +210,7 @@ export const toolDefinitions = f.store(() =>
       ],
     },
     pickLists: {
-      label: commonText('pickList'),
+      label: schema.models.PickList.label,
       tables: ['PickList', 'PickListItem'],
     },
     auditLog: {

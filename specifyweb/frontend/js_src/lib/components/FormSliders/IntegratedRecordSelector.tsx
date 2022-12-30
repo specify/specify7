@@ -250,7 +250,7 @@ export function IntegratedRecordSelector({
             isSubForm={dialog === false}
             mode={mode}
             resource={resource}
-            title={`${relationship.label}`}
+            title={relationship.label}
             viewName={viewName}
             /*
              * Don't save the resource on save button click if it is a dependent

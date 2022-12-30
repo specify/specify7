@@ -61,25 +61,17 @@ export function QuerySaveDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      header={
-        isSaveAs
-          ? queryText('saveClonedQueryDialogHeader')
-          : queryText('saveQuery')
-      }
+      header={isSaveAs ? queryText.saveClonedQuery() : queryText.saveQuery()}
       onClose={handleClose}
     >
-      <p>
-        {isSaveAs
-          ? queryText('saveClonedQueryDialogText')
-          : queryText('saveQueryDialogText')}
-      </p>
+      {isSaveAs && <p>{queryText.saveClonedQueryDescription()}</p>}
       <Form
         className="contents"
         id={id('form')}
@@ -88,7 +80,7 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {queryText('queryName')}
+          {schema.models.SpQuery.strictGetLiteralField('name').label}
           <Input.Text
             autoComplete="on"
             maxLength={

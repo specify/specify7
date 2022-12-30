@@ -2,7 +2,6 @@
  * Format a resource using resource formatters defined in Specify 6
  */
 
-import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { fieldFormat } from '../../utils/fieldFormat';
 import { resolveParser } from '../../utils/parser/definitions';
@@ -32,6 +31,9 @@ import {
   mappingPathToTableNames,
 } from '../Permissions/helpers';
 import { formatUrl } from '../Router/queryString';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
+import { formsText } from '../../localization/forms';
 
 export type Formatter = {
   readonly name: string | undefined;
@@ -141,9 +143,27 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
     )
     .sort(sortFunction(({ isRequired }) => isRequired, true));
 
-export const naiveFormatter = (resource: SpecifyResource<AnySchema>): string =>
-  `${resource.specifyModel.label}${resource.isNew() ? '' : ` #${resource.id}`}`;
+export const naiveFormatter = (
+  tableLabel: string,
+  id: number | undefined
+): LocalizedString =>
+  id === undefined
+    ? formsText.newResourceTitle({ tableName: tableLabel })
+    : formsText.resourceFormatter({
+        tableName: tableLabel,
+        id,
+      });
 
+export async function format<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA> | undefined,
+  formatterName: string | undefined,
+  tryBest: true
+): Promise<LocalizedString>;
+export async function format<SCHEMA extends AnySchema>(
+  resource: SpecifyResource<SCHEMA> | undefined,
+  formatterName?: string,
+  tryBest?: false
+): Promise<LocalizedString | undefined>;
 export async function format<SCHEMA extends AnySchema>(
   resource: SpecifyResource<SCHEMA> | undefined,
   formatterName?: string,
@@ -151,8 +171,8 @@ export async function format<SCHEMA extends AnySchema>(
    * Format a resource even if no formatter is present, or some permissions
    * are missing
    */
-  tryBest = false
-): Promise<string | undefined> {
+  tryBest: boolean = false
+): Promise<LocalizedString | undefined> {
   if (typeof resource !== 'object' || resource === null) return undefined;
   if (hasTablePermission(resource.specifyModel.name, 'read'))
     await resource.fetch();
@@ -176,7 +196,9 @@ export async function format<SCHEMA extends AnySchema>(
         )?.fields ?? formatter.fields[0].fields
       : formatter.fields[0].fields;
 
-  const automaticFormatter = tryBest ? naiveFormatter(resource) : undefined;
+  const automaticFormatter = tryBest
+    ? naiveFormatter(resource.specifyModel.label, resource.id)
+    : undefined;
 
   /*
    * Don't format resource if all relevant fields are empty, or formatter has
@@ -189,7 +211,7 @@ export async function format<SCHEMA extends AnySchema>(
     ? automaticFormatter ?? undefined
     : Promise.all(
         fields.map((field) => formatField(field, resource, tryBest))
-      ).then((values) => values.join(''));
+      ).then((values) => values.join('') as LocalizedString);
 }
 
 async function formatField(
@@ -215,8 +237,8 @@ async function formatField(
   const formatted =
     typeof noAccessTable === 'string'
       ? tryBest
-        ? naiveFormatter(resource)
-        : commonText('noPermission')
+        ? naiveFormatter(schema.models[noAccessTable].label, resource.id)
+        : userText.noPermission()
       : await (
           resource.rgetPromise(fieldName) as Promise<
             SpecifyResource<AnySchema> | string | undefined

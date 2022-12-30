@@ -10,6 +10,7 @@ import { commonText } from '../../localization/common';
 import { Dialog } from '../Molecules/Dialog';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Http } from '../../utils/ajax/definitions';
+import { headerText } from '../../localization/header';
 
 export const clearCache = async (): Promise<true> =>
   Promise.all(
@@ -33,15 +34,15 @@ export function CacheBuster(): JSX.Element | null {
 
   return isLoaded === true ? (
     <Dialog
-      buttons={commonText('goToHomepage')}
+      buttons={commonText.goToHomepage()}
       /*
        * Can not simply reload the page here, as that would open the
        * cache buster dialog again causing a perpetual loop.
        */
-      header={commonText('clearCache')}
+      header={headerText.clearCache()}
       onClose={(): void => globalThis.location.replace('/specify/')}
     >
-      {commonText('clearedCacheDialogText')}
+      {headerText.cacheCleared()}
     </Dialog>
   ) : null;
 }

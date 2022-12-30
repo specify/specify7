@@ -31,13 +31,15 @@ import { Portal } from '../Molecules/Portal';
 import { replaceItem } from '../../utils/utils';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Dialog } from '../Molecules/Dialog';
+import { LocalizedString } from 'typesafe-i18n';
+import { wbPlanText } from '../../localization/wbPlan';
 
 function Navigation({
   name,
   label,
 }: {
   readonly name: string;
-  readonly label: string;
+  readonly label: LocalizedString;
 }): JSX.Element {
   return (
     <span
@@ -58,7 +60,7 @@ function Navigation({
           wb-navigation-text aria-handled grid grid-cols-[auto_1fr_auto_1fr_auto] items-center
           ring-0 hover:brightness-70
         `}
-        title={wbText('clickToToggle')}
+        title={wbText.clickToToggle()}
         variant="bg-inherit text-gray-800 dark:text-gray-100"
         onClick={f.never}
       >
@@ -101,7 +103,7 @@ function WbView({
           className="wb-show-toolkit"
           onClick={f.never}
         >
-          {commonText('tools')}
+          {commonText.tools()}
         </Button.Small>
         <span className="-ml-1 flex-1" />
         {/* This button is here for debugging only */}
@@ -116,7 +118,7 @@ function WbView({
         </Button.Small>
         {canUpdate || isMapped ? (
           <Link.Small href={`/specify/workbench/plan/${dataSetId}/`}>
-            {wbText('dataMapper')}
+            {wbPlanText.dataMapper()}
           </Link.Small>
         ) : undefined}
         {!isUploaded && hasPermission('/workbench/dataset', 'validate') && (
@@ -125,16 +127,16 @@ function WbView({
             className="wb-validate"
             onClick={undefined}
           >
-            {wbText('validate')}
+            {wbText.validate()}
           </Button.Small>
         )}
         <Button.Small
           aria-haspopup="tree"
           className="wb-show-upload-view"
-          title={wbText('wbUploadedUnavailable')}
+          title={wbText.wbUploadedUnavailable()}
           onClick={undefined}
         >
-          {commonText('results')}
+          {commonText.results()}
         </Button.Small>
         {isUploaded ? (
           hasPermission('/workbench/dataset', 'unupload') && (
@@ -143,7 +145,7 @@ function WbView({
               className="wb-unupload"
               onClick={f.never}
             >
-              {wbText('rollback')}
+              {wbText.rollback()}
             </Button.Small>
           )
         ) : (
@@ -154,7 +156,7 @@ function WbView({
                 className="wb-upload"
                 onClick={f.never}
               >
-                {wbText('upload')}
+                {wbText.upload()}
               </Button.Small>
             )}
             {hasPermission('/workbench/dataset', 'update') && (
@@ -164,14 +166,14 @@ function WbView({
                   className="wb-revert"
                   onClick={undefined}
                 >
-                  {wbText('revert')}
+                  {wbText.revert()}
                 </Button.Small>
                 <Button.Small
                   aria-haspopup="dialog"
                   className="wb-save"
                   onClick={undefined}
                 >
-                  {commonText('save')}
+                  {commonText.save()}
                 </Button.Small>
               </>
             )}
@@ -179,7 +181,7 @@ function WbView({
         )}
       </div>
       <div
-        aria-label={commonText('tools')}
+        aria-label={commonText.tools()}
         className="wb-toolkit flex flex-wrap gap-x-1 gap-y-2"
         role="toolbar"
         style={{ display: 'none' }}
@@ -191,11 +193,11 @@ function WbView({
             className="wb-change-data-set-owner"
             onClick={f.never}
           >
-            {wbText('changeOwner')}
+            {wbText.changeOwner()}
           </Button.Small>
         ) : undefined}
         <Button.Small className="wb-export-data-set" onClick={f.never}>
-          {commonText('export')}
+          {commonText.export()}
         </Button.Small>
         {hasPermission('/workbench/dataset', 'delete') && (
           <Button.Small
@@ -203,7 +205,7 @@ function WbView({
             className="wb-delete-data-set"
             onClick={f.never}
           >
-            {commonText('delete')}
+            {commonText.delete()}
           </Button.Small>
         )}
         <span className="-ml-1 flex-1" />
@@ -213,17 +215,17 @@ function WbView({
               aria-haspopup="dialog"
               className="wb-convert-coordinates"
               onClick={undefined}
-              title={wbText('unavailableWithoutLocality')}
+              title={wbText.unavailableWithoutLocality()}
             >
-              {wbText('convertCoordinates')}
+              {wbText.convertCoordinates()}
             </Button.Small>
             <Button.Small
               aria-haspopup="dialog"
               className="wb-geolocate"
               onClick={undefined}
-              title={wbText('unavailableWithoutLocality')}
+              title={wbText.unavailableWithoutLocality()}
             >
-              {localityText('geoLocate')}
+              {localityText.geoLocate()}
             </Button.Small>
           </>
         )}
@@ -231,9 +233,9 @@ function WbView({
           aria-haspopup="dialog"
           className="wb-leafletmap"
           onClick={undefined}
-          title={wbText('unavailableWithoutLocality')}
+          title={wbText.unavailableWithoutLocality()}
         >
-          {commonText('geoMap')}
+          {localityText.geoMap()}
         </Button.Small>
       </div>
       <div className="flex flex-1 gap-4 overflow-hidden">
@@ -241,42 +243,42 @@ function WbView({
         <aside aria-live="polite" className="wb-uploaded-view-wrapper hidden" />
       </div>
       <div
-        aria-label={wbText('navigation')}
+        aria-label={wbText.navigation()}
         className="flex flex-wrap justify-end gap-x-1 gap-y-2"
         role="toolbar"
       >
         <span className="contents" role="search">
           <div className="flex">
             <Input.Generic
-              aria-label={commonText('searchQuery')}
+              aria-label={commonText.searchQuery()}
               autoComplete="on"
               className="wb-search-query"
-              placeholder={commonText('search')}
+              placeholder={commonText.search()}
               spellCheck
-              title={commonText('searchQuery')}
+              title={commonText.searchQuery()}
               type="search"
             />
           </div>
           {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
             <div className="flex">
               <Input.Text
-                aria-label={wbText('replacementValue')}
+                aria-label={wbText.replacementValue()}
                 autoComplete="on"
                 className="wb-replace-value"
-                placeholder={wbText('replace')}
-                title={wbText('replacementValue')}
+                placeholder={wbText.replace()}
+                title={wbText.replacementValue()}
               />
             </div>
           ) : undefined}
           <span className="wb-advanced-search-wrapper" />
         </span>
-        <Navigation label={wbText('searchResults')} name="searchResults" />
+        <Navigation label={wbText.searchResults()} name="searchResults" />
         {!isUploaded && hasPermission('/workbench/dataset', 'update') ? (
-          <Navigation label={wbText('modifiedCells')} name="modifiedCells" />
+          <Navigation label={wbText.modifiedCells()} name="modifiedCells" />
         ) : undefined}
-        <Navigation label={wbText('newCells')} name="newCells" />
+        <Navigation label={wbText.newCells()} name="newCells" />
         {!isUploaded && (
-          <Navigation label={wbText('errorCells')} name="invalidCells" />
+          <Navigation label={wbText.errorCells()} name="invalidCells" />
         )}
       </div>
     </>
@@ -320,14 +322,14 @@ export function WorkBench(): JSX.Element | null {
   return dataSetId === undefined ? (
     <NotFoundView />
   ) : isDeleted ? (
-    <>{wbText('dataSetDeletedOrNotFound')}</>
+    <>{wbText.dataSetDeletedOrNotFound()}</>
   ) : isDeletedConfirmation ? (
     <Dialog
-      header={wbText('dataSetDeletedDialogHeader')}
+      header={wbText.dataSetDeleted()}
       onClose={(): void => navigate('/specify/', { replace: true })}
-      buttons={commonText('close')}
+      buttons={commonText.close()}
     >
-      {wbText('dataSetDeletedDialogText')}
+      {wbText.dataSetDeletedDescription()}
     </Dialog>
   ) : (
     <>
@@ -384,7 +386,7 @@ function useWbView(
   const wasAborted = React.useRef<boolean>(false);
 
   const [hasUnloadProtect, setUnloadProtect] = React.useState<boolean>(false);
-  useUnloadProtect(hasUnloadProtect, wbText('onExitDialogText'));
+  useUnloadProtect(hasUnloadProtect, wbText.wbUnloadProtect());
 
   React.useEffect(() => {
     if (!treeRanksLoaded || container === null || dataSet === undefined)
