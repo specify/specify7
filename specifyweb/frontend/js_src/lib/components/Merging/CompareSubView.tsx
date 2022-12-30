@@ -33,6 +33,7 @@ import {
 import { mergeCellBackground, mergeHeaderClassName } from './Header';
 import { MergeDialogContainer } from './index';
 import { f } from '../../utils/functools';
+import { serializeResource } from '../DataModel/helpers';
 
 export function MergeSubviewButton({
   relationship,
@@ -244,20 +245,22 @@ function useChildren(
           >(
             ([mappings, mergedRecords], record) => {
               const serialized = JSON.stringify(
-                resourceToGeneric(record.toJSON(), true)
+                resourceToGeneric(serializeResource(record), true)
               );
               const matchIndex = mergedRecords.indexOf(serialized);
               return [
                 { ...mappings, [matchIndex]: record },
                 matchIndex === -1
                   ? mergedRecords
-                  : removeItem(mergedRecords, matchIndex),
+                  : replaceItem(mergedRecords, matchIndex, undefined),
               ];
             },
             [
               {},
               mergedRecords
-                .map((record) => resourceToGeneric(record.toJSON(), true))
+                .map((record) =>
+                  resourceToGeneric(serializeResource(record), true)
+                )
                 .map((resource) => JSON.stringify(resource)),
             ]
           )

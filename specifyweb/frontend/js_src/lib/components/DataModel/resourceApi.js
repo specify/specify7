@@ -565,6 +565,7 @@ function eventHandlerForToOne(related, field) {
                     json[fieldName] = related ? related.toJSON() : null;
                 }
             });
+            json['_tableName'] = this.specifyModel.name;
             return json;
         },
         // Caches a reference to Promise so as not to start fetching twice

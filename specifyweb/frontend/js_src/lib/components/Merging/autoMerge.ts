@@ -3,11 +3,7 @@ import type { RA } from '../../utils/types';
 import { multiSortFunction, sortFunction } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { resourceToModel, specialFields } from '../DataModel/helpers';
-import type {
-  AnySchema,
-  SerializedModel,
-  SerializedResource,
-} from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
@@ -100,13 +96,11 @@ function mergeField(
  * Remove id and resource_uri from resource and sub resources. Useful when
  * comparing whether two records are identical
  */
-export const resourceToGeneric = <
-  T extends SerializedModel<AnySchema> | SerializedResource<AnySchema>
->(
-  resource: T,
+export const resourceToGeneric = (
+  resource: SerializedResource<AnySchema>,
   // Whether to also clear away unique fields
   strong: boolean
-): T => {
+): SerializedResource<AnySchema> => {
   const uniqueFields = new Set(
     strong ? getUniqueFields(resourceToModel(resource)) : []
   );
@@ -121,5 +115,5 @@ export const resourceToGeneric = <
           ? resourceToGeneric(value, strong)
           : value,
       ])
-  ) as T;
+  ) as SerializedResource<AnySchema>;
 };

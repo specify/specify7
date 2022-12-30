@@ -238,7 +238,7 @@ function Field({
             formType={field.isRelationship ? 'form' : 'formTable'}
             id={undefined}
             isRequired={false}
-            mode={isReadOnly || merged === undefined ? 'edit' : 'view'}
+            mode={isReadOnly || typeof merged === 'object' ? 'view' : 'edit'}
             resource={resource}
           />
         </div>
