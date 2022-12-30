@@ -28,9 +28,10 @@ export const preferenceResource = {
 };
 
 const getActions = (resourceName: string, url: string) => ({
-  getResources: ajax<RA<Resource>>(cachableUrl(url), {
-    headers: { Accept: 'application/json' },
-  }),
+  getResources: () =>
+    ajax<RA<Resource>>(cachableUrl(url), {
+      headers: { Accept: 'application/json' },
+    }),
   getResourceId: ({ data }: { readonly data: RA<Resource> }) =>
     data.find(
       ({ name, mimetype }) =>
@@ -67,11 +68,10 @@ const actions = Object.fromEntries(
   )
 );
 
-export const preferencesPromiseGenerator = Object.fromEntries(
-  Object.entries(actions).map(
-    ([resourceType, { getResources, getResourceId, fetchOrCreate }]) => [
-      resourceType,
-      getResources.then(getResourceId).then(fetchOrCreate),
-    ]
-  )
+export const preferencesPromiseGenerator = Object.entries(actions).map(
+  ([resourceType, { getResources, getResourceId, fetchOrCreate }]) => [
+    resourceType,
+    async (): Promise<ResourceWithData> =>
+      getResources().then(getResourceId).then(fetchOrCreate),
+  ]
 );

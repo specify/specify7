@@ -408,7 +408,16 @@ export const preferencesPromise = contextUnlockedPromise.then(
     entrypoint === 'main'
       ? f
           .all({
-            items: await f.all(preferencesPromiseGenerator),
+            items: Object.fromEntries(
+              await Promise.all(
+                preferencesPromiseGenerator.map(
+                  async ([resourceType, promiseGenerator]) => [
+                    resourceType,
+                    await promiseGenerator().then((data) => data),
+                  ]
+                )
+              )
+            ),
             defaultItems: ajax(
               formatUrl('/context/app.resource', {
                 name: defaultResourceName,
