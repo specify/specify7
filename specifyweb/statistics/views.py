@@ -127,7 +127,7 @@ def collection_global(request) -> http.HttpResponse:
     # PREP_BY_TYPE_LOTS
     cursor.execute(
         """
-        SELECT pt.Name, count(PreparationID), sum(countAmt) is null ? 0 : sum(countAmt)
+        SELECT pt.Name, count(PreparationID), if(sum(countAmt) is null, 0, sum(countAmt))
         FROM preparation p
                  INNER JOIN preptype pt ON pt.PrepTypeID = p.PrepTypeID
         WHERE CollectionMemberID = % s
