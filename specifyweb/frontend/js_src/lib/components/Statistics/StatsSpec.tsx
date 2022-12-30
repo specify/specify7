@@ -9,7 +9,6 @@ import type {
   BackendStatsResult,
   StatCategoryReturn,
 } from './types';
-import React from 'react';
 import { userInformation } from '../InitialContext/userInformation';
 
 const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
@@ -124,12 +123,12 @@ export const statsSpec: IR<StatsSpec> = {
     preparations: {
       label: statsText('preparations'),
       categories: (backendStatsResult) =>
-        modifyBackendResult<'preparations'>(
-          backendStatsResult,
-          (prepelement) =>
-            `${formatNumber(prepelement.lots)} / ${formatNumber(
-              prepelement.total
-            )}`
+        modifyBackendResult<'preparations'>(backendStatsResult, (prepelement) =>
+          prepelement.total === 0
+            ? formatNumber(prepelement.lots)
+            : `${formatNumber(prepelement.lots)} / ${formatNumber(
+                prepelement.total
+              )}`
         ),
     },
     loans: {
