@@ -3,41 +3,48 @@
  */
 
 import React from 'react';
-import {preferencesText} from '../../localization/preferences';
-import {queryText} from '../../localization/query';
-import {LocalizedString} from 'typesafe-i18n';
-import {JavaType} from '../DataModel/specifyField';
-import {Parser} from '../../utils/parser/definitions';
-import {defined, IR, overwriteReadOnly, RA, RR} from '../../utils/types';
-import {LANGUAGE, Language} from '../../localization/utils/config';
-import {commonText} from '../../localization/common';
-import {headerText} from '../../localization/header';
-import {wbText} from '../../localization/workbench';
+import { preferencesText } from '../../localization/preferences';
+import { queryText } from '../../localization/query';
+import { LocalizedString } from 'typesafe-i18n';
+import { JavaType } from '../DataModel/specifyField';
+import { Parser } from '../../utils/parser/definitions';
+import {
+  defined,
+  ensure,
+  IR,
+  overwriteReadOnly,
+  RA,
+  RR,
+} from '../../utils/types';
+import { LANGUAGE, Language } from '../../localization/utils/config';
+import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
+import { wbText } from '../../localization/workbench';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,
   defaultFont,
   FontFamilyPreferenceItem,
   WelcomePageMode,
-  WelcomePageModePreferenceItem
+  WelcomePageModePreferenceItem,
 } from './Renderers';
-import {TableFields} from '../DataModel/helperTypes';
+import { TableFields } from '../DataModel/helperTypes';
 import {
   LanguagePreferencesItem,
-  SchemaLanguagePreferenceItem
+  SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import {localityText} from '../../localization/locality';
-import {attachmentsText} from '../../localization/attachments';
-import {formsText} from '../../localization/forms';
-import {reportsText} from '../../localization/report';
-import {Collection, Tables} from '../DataModel/types';
-import {resourcesText} from '../../localization/resources';
-import {softFail} from '../Errors/Crash';
-import {schemaText} from '../../localization/schema';
-import {wbPlanText} from '../../localization/wbPlan';
-import {error, softError} from '../Errors/assert';
-import {interactionsText} from '../../localization/interactions';
-import {Link} from '../Atoms/Link';
+import { localityText } from '../../localization/locality';
+import { attachmentsText } from '../../localization/attachments';
+import { formsText } from '../../localization/forms';
+import { reportsText } from '../../localization/report';
+import { Collection, Tables } from '../DataModel/types';
+import { resourcesText } from '../../localization/resources';
+import { softFail } from '../Errors/Crash';
+import { schemaText } from '../../localization/schema';
+import { wbPlanText } from '../../localization/wbPlan';
+import { error, softError } from '../Errors/assert';
+import { interactionsText } from '../../localization/interactions';
+import { Link } from '../Atoms/Link';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1570,7 +1577,9 @@ export const preferenceDefinitions = {
       },
     },
   },
-} as const satisfies GenericPreferencesCategories;
+} as const;
+
+ensure<GenericPreferencesCategories>()(preferenceDefinitions);
 
 // Use tree table labels as titles for the tree editor sections
 import('../DataModel/schema')

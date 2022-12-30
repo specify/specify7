@@ -21,7 +21,9 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource ? resourceToJson(resource) : resource,
+    'toJSON' in resource
+      ? resourceToJson(resource as SpecifyResource<SCHEMA>)
+      : (resource as SerializedModel<SCHEMA>),
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -85,7 +87,10 @@ function serializeModel<SCHEMA extends AnySchema>(
                     tableName
                   )
                 )
-              : serializeModel(value as SerializedModel<AnySchema>, tableName),
+              : serializeModel(
+                  value as unknown as SerializedModel<AnySchema>,
+                  tableName
+                ),
           ];
         } else return [camelFieldName, value];
       })

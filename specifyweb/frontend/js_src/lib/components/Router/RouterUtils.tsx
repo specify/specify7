@@ -1,17 +1,20 @@
 import React from 'react';
-import { Outlet } from 'react-router';
-import type { RouteObject } from 'react-router/lib/router';
+import { Outlet, RouteObject } from 'react-router';
 
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { useTitle } from '../Molecules/AppTitle';
 import { LocalizedString } from 'typesafe-i18n';
+import {
+  IndexRouteObject,
+  NonIndexRouteObject,
+} from 'react-router/dist/lib/context';
 
 /**
  * A wrapper for native React Routes object. Makes everything readonly.
  */
 export type EnhancedRoute = Readonly<
-  Omit<RouteObject, 'children' | 'element'>
+  Omit<IndexRouteObject | NonIndexRouteObject, 'children' | 'element'>
 > & {
   readonly children?: RA<EnhancedRoute>;
   // Allow to define element as a function that returns an async
@@ -33,18 +36,21 @@ export const toReactRoutes = (
   enhancedRoutes: RA<EnhancedRoute>,
   title?: LocalizedString
 ): WritableArray<RouteObject> =>
-  enhancedRoutes.map(({ element, children, ...enhancedRoute }) => ({
-    ...enhancedRoute,
-    children: Array.isArray(children)
-      ? toReactRoutes(children, title)
-      : undefined,
-    element:
-      typeof element === 'function' ? (
-        <Async element={element} title={enhancedRoute.title ?? title} />
-      ) : (
-        element
-      ),
-  }));
+  enhancedRoutes.map<IndexRouteObject | NonIndexRouteObject>(
+    ({ element, children, ...enhancedRoute }) => ({
+      ...enhancedRoute,
+      index: enhancedRoute.index as unknown as false,
+      children: Array.isArray(children)
+        ? toReactRoutes(children, title)
+        : undefined,
+      element:
+        typeof element === 'function' ? (
+          <Async element={element} title={enhancedRoute.title ?? title} />
+        ) : (
+          element
+        ),
+    })
+  );
 
 /**
  * Using this allows Webpack to split code bundles.

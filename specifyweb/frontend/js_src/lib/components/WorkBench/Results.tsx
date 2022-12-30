@@ -37,6 +37,10 @@ function TableResults({
   );
 }
 
+const a = { a: 'b' } as const;
+const b = Object.keys(a);
+console.log(b);
+
 export function WbUploaded({
   recordCounts,
   onClose: handleClose,

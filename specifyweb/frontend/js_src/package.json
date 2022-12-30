@@ -13,15 +13,15 @@
   "main": "lib/main.ts",
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
-    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js",
     "//pullFromWeblate": "This is run by github action on the weblate-localization branch",
+    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
     "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc --build tsconfig.tests.json",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
-    "unitTests:watch": "jest --watch"
+    "unitTests:watch": "jest --watch",
+    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
@@ -47,7 +47,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-modal": "^3.16.1",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.6.1",
     "typesafe-i18n": "^5.17.1",
     "typesafe-reducer": "^1.0.3",
     "underscore": "~1.8.3",
@@ -110,7 +110,7 @@
     "tailwindcss": "^3.1.6",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.23",
-    "typescript": "^4.9.4",
+    "typescript": "^4.7.4",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
     "webpack-manifest-plugin": "^5.0.0",

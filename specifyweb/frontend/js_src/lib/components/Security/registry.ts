@@ -14,17 +14,17 @@ import {
   tablePermissionsPrefix,
   toolPermissionPrefix,
 } from './utils';
-import {schemaText} from '../../localization/schema';
-import {userText} from '../../localization/user';
-import {LocalizedString} from 'typesafe-i18n';
-import {resourcesText} from '../../localization/resources';
-import {IR, R, RA} from '../../utils/types';
-import {schema} from '../DataModel/schema';
-import {commonText} from '../../localization/common';
-import {f} from '../../utils/functools';
-import {lowerToHuman} from '../../utils/utils';
-import {queryText} from '../../localization/query';
-import {Tables} from '../DataModel/types';
+import { schemaText } from '../../localization/schema';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
+import { resourcesText } from '../../localization/resources';
+import { ensure, IR, R, RA } from '../../utils/types';
+import { schema } from '../DataModel/schema';
+import { commonText } from '../../localization/common';
+import { f } from '../../utils/functools';
+import { lowerToHuman } from '../../utils/utils';
+import { queryText } from '../../localization/query';
+import { Tables } from '../DataModel/types';
 
 /**
  * Convert a part like ['table','locality'] to an array of information for
@@ -56,52 +56,51 @@ type WritableRegistry = {
 };
 
 /** Build a registry of all permissions, their labels and possible actions */
-const buildRegistry = f.store(
-  (): IR<Registry> => {
-    const rules: RA<{
-      readonly resource: string,
-      readonly localized: RA<LocalizedString>,
-      readonly actions: RA<string>;
-      readonly groupName: LocalizedString,
-    }> = [
-      ...Object.values(schema.models)
-        .filter(({name}) => !f.has(toolTables(), name))
-        .map(({name, label, isHidden, isSystem}) => ({
-          resource: tableNameToResourceName(name),
-          localized: [schemaText.table(), label],
-          actions: tableActions,
-          groupName: isSystem || isHidden ? userText.advancedTables() : '',
-        })),
-      ...Object.entries(toolDefinitions()).map(([name, {label}]) => ({
-        resource: partsToResourceName([toolPermissionPrefix, name]),
-        localized: [commonText.tool(), label],
+const buildRegistry = f.store((): IR<Registry> => {
+  const rules: RA<{
+    readonly resource: string;
+    readonly localized: RA<LocalizedString>;
+    readonly actions: RA<string>;
+    readonly groupName: LocalizedString;
+  }> = [
+    ...Object.values(schema.models)
+      .filter(({ name }) => !f.has(toolTables(), name))
+      .map(({ name, label, isHidden, isSystem }) => ({
+        resource: tableNameToResourceName(name),
+        localized: [schemaText.table(), label],
         actions: tableActions,
-        groupName: '',
+        groupName: isSystem || isHidden ? userText.advancedTables() : '',
       })),
-      ...Object.entries(operationPolicies).map(([resource, actions]) => ({
-        resource,
-        localized: resourceNameToParts(resource).map(lowerToHuman),
-        actions,
-        groupName: '',
-      })),
-      ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
-        resource,
-        localized: resourceNameToParts(resource).map(lowerToHuman),
-        actions,
-        groupName: '',
-      })),
-    ];
-    return rules.reduce<R<WritableRegistry>>(
-      (registry, {resource, localized, groupName}) => {
-        const resourceParts = resourceNameToParts(resource);
-        resourceParts.reduce<R<WritableRegistry>>(
-          (place, part, index, {length}) => {
-            place[part] ??= {
-              label: localized[index],
-              children:
-                index + 1 === length
-                  ? {}
-                  : {
+    ...Object.entries(toolDefinitions()).map(([name, { label }]) => ({
+      resource: partsToResourceName([toolPermissionPrefix, name]),
+      localized: [commonText.tool(), label],
+      actions: tableActions,
+      groupName: '',
+    })),
+    ...Object.entries(operationPolicies).map(([resource, actions]) => ({
+      resource,
+      localized: resourceNameToParts(resource).map(lowerToHuman),
+      actions,
+      groupName: '',
+    })),
+    ...Object.entries(frontEndPermissions).map(([resource, actions]) => ({
+      resource,
+      localized: resourceNameToParts(resource).map(lowerToHuman),
+      actions,
+      groupName: '',
+    })),
+  ];
+  return rules.reduce<R<WritableRegistry>>(
+    (registry, { resource, localized, groupName }) => {
+      const resourceParts = resourceNameToParts(resource);
+      resourceParts.reduce<R<WritableRegistry>>(
+        (place, part, index, { length }) => {
+          place[part] ??= {
+            label: localized[index],
+            children:
+              index + 1 === length
+                ? {}
+                : {
                     [anyResource]: {
                       label: tablePermissionsPrefix.includes(part)
                         ? userText.allTables()
@@ -114,34 +113,34 @@ const buildRegistry = f.store(
                       isInstitutional: false,
                     },
                   },
-              groupName: index + 1 === length ? groupName : '',
-              actions:
-                index + 1 === length
-                  ? getAllActions(
+            groupName: index + 1 === length ? groupName : '',
+            actions:
+              index + 1 === length
+                ? getAllActions(
                     partsToResourceName(resourceParts.slice(0, index + 1))
                   )
-                  : [],
-              isInstitutional: true,
-            };
-            if (!institutionPermissions.has(resource))
-              place[part].isInstitutional = false;
-            return place[part].children;
-          },
-          registry
-        );
-        return registry;
-      },
-      {
-        [anyResource]: {
-          label: commonText.all(),
-          children: {},
-          actions: getAllActions(partsToResourceName([])),
-          groupName: '',
-          isInstitutional: false,
+                : [],
+            isInstitutional: true,
+          };
+          if (!institutionPermissions.has(resource))
+            place[part].isInstitutional = false;
+          return place[part].children;
         },
-      }
-    )
-  });
+        registry
+      );
+      return registry;
+    },
+    {
+      [anyResource]: {
+        label: commonText.all(),
+        children: {},
+        actions: getAllActions(partsToResourceName([])),
+        groupName: '',
+        isInstitutional: false,
+      },
+    }
+  );
+});
 
 /**
  * Convert registry of policies to a TSV format.
@@ -157,12 +156,12 @@ export function policiesToTsv(): string {
       key === '%'
         ? []
         : Object.keys(entry.children).length > 0
-          ? iterate(
+        ? iterate(
             entry.children,
             [...path, entry.label],
             isInstitutional || entry.isInstitutional
           )
-          : entry.actions.map((action) => [
+        : entry.actions.map((action) => [
             [...path, entry.label].join(' > '),
             actionToLabel(action),
             isInstitutional || entry.isInstitutional
@@ -187,7 +186,12 @@ export function policiesToTsv(): string {
  * have access to a tool
  */
 export const toolDefinitions = f.store(() =>
-  ({
+  ensure<
+    IR<{
+      readonly label: string;
+      readonly tables: RA<keyof Tables>;
+    }>
+  >()({
     schemaConfig: {
       label: schemaText.schemaConfig(),
       tables: ['SpLocaleContainer', 'SpLocaleContainerItem', 'SpLocaleItemStr'],
@@ -217,13 +221,10 @@ export const toolDefinitions = f.store(() =>
       label: schema.models.SpAuditLog.label,
       tables: ['SpAuditLog', 'SpAuditLogField'],
     },
-  } as const satisfies IR<{
-    readonly label: string;
-    readonly tables: RA<keyof Tables>;
-  }>)
+  } as const)
 );
 
 export const toolTables = f.store(
   () =>
-    new Set(Object.values(toolDefinitions()).flatMap(({tables}) => tables))
+    new Set(Object.values(toolDefinitions()).flatMap(({ tables }) => tables))
 );

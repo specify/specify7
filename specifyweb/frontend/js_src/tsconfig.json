@@ -2,7 +2,9 @@
   /* File Inclusion */
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx"],
-  "files": ["./lib/declarations.d.ts"],
+  "files": [
+    "./lib/declarations.d.ts"
+  ],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
@@ -27,7 +29,8 @@
      *
      * You can explicitly specify exceptions under "types"
      */
-    "typeRoots": [],
+    "typeRoots": [
+    ],
     "types": ["leaflet.markercluster"],
     "module": "CommonJS",
     "noEmit": true,

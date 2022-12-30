@@ -1,9 +1,10 @@
-import {requireContext} from '../../../tests/helpers';
-import {theories} from '../../../tests/utils';
-import {schema} from '../../DataModel/schema';
-import type {CellTypes, FormCellDefinition} from '../cells';
-import {exportsForTests, postProcessFormDef} from '../postProcessFormDef';
-import {LocalizedString} from 'typesafe-i18n';
+import { requireContext } from '../../../tests/helpers';
+import { theories } from '../../../tests/utils';
+import { schema } from '../../DataModel/schema';
+import type { CellTypes, FormCellDefinition } from '../cells';
+import { exportsForTests, postProcessFormDef } from '../postProcessFormDef';
+import { LocalizedString } from 'typesafe-i18n';
+import { ensure } from '../../../utils/types';
 
 requireContext();
 
@@ -21,7 +22,7 @@ const {
   addMissingLabel,
 } = exportsForTests;
 
-const labelCell = {
+const labelCell = ensure<CellTypes['Label'] & FormCellDefinition>()({
   id: 'test',
   colSpan: 3,
   align: 'right',
@@ -32,7 +33,7 @@ const labelCell = {
   text: 'Text' as LocalizedString,
   title: 'a' as LocalizedString,
   fieldNames: ['catalogNumber'],
-} satisfies CellTypes['Label'] & FormCellDefinition;
+});
 const looseLabel = { ...labelCell, labelForCellId: undefined } as const;
 const divisionLabel = {
   ...labelCell,
@@ -51,7 +52,7 @@ const blankCell = {
   ariaLabel: undefined,
 } as const;
 
-const missingLabelCheckbox = {
+const missingLabelCheckbox = ensure<FormCellDefinition>()({
   id: 'test2',
   colSpan: 3,
   align: 'right',
@@ -67,17 +68,17 @@ const missingLabelCheckbox = {
     printOnSave: false,
     label: undefined,
   },
-} as const satisfies FormCellDefinition;
+} as const);
 
-const checkboxWithLabel = {
+const checkboxWithLabel = ensure<FormCellDefinition>()({
   ...missingLabelCheckbox,
   fieldDefinition: {
     ...missingLabelCheckbox.fieldDefinition,
     label: 'Catalog Number' as LocalizedString,
   },
-} as const satisfies FormCellDefinition;
+} as const);
 
-const missingLabelTextField = {
+const missingLabelTextField = ensure<FormCellDefinition>()({
   id: 'test3',
   colSpan: 3,
   align: 'right',
@@ -94,7 +95,7 @@ const missingLabelTextField = {
     step: undefined,
     type: 'Text',
   },
-} as const satisfies FormCellDefinition;
+} as const);
 
 test('postProcessFormDef', () =>
   expect(
@@ -271,7 +272,7 @@ theories(postProcessLabel, {
       {
         a: {
           labelOverride: 'b' as LocalizedString,
-  fieldNames: ['field'],
+          fieldNames: ['field'],
           altLabel: undefined,
         },
       },

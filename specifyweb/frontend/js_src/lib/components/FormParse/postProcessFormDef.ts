@@ -238,8 +238,8 @@ function addLabelTitle(cell: LabelCell, model: SpecifyModel): LabelCell {
       cell.text ??
       field?.label ??
       /*
-       * Default Accession view doesn't have a label for
-       * Division ComboBox for some reason
+       * Default Accession view doesn't have a label for Division ComboBox for
+       * some reason
        */
       (cell.id === 'divLabel'
         ? model.getField('division')?.label
