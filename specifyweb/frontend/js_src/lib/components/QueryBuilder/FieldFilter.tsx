@@ -237,7 +237,7 @@ function DateQueryInputField({
   return (
     <div className="flex items-center">
       <Button.Icon
-        icon="selector"
+        icon="switch"
         title="switch"
         onClick={() => {
           toggleAbsolute();
