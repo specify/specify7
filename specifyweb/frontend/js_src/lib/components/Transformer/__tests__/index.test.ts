@@ -18,9 +18,9 @@ test('Data Object Formatter', () => {
 </format>`
   );
   const parsed = dataObjectFormatterParser(element);
-  dataObjectFormatterBuilder({
+  dataObjectFormatterBuilder(element, {
     ...parsed,
-    title: { value: '4', notes: parsed.title.notes },
+    title: '4',
   });
   expect(element).toEqual({});
 });

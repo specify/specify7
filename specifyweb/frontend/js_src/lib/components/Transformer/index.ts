@@ -4,63 +4,59 @@ import { parseJavaClassName } from '../DataModel/resource';
 import { getModel, strictGetModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 
-type Transformer<RAW, PARSED, NOTES = any> = {
-  readonly serializer: Serializer<RAW, PARSED, NOTES>;
-  readonly deserializer: Deserializer<PARSED, NOTES>;
+type Transformer<RAW, PARSED> = {
+  readonly serializer: Serializer<RAW, PARSED>;
+  readonly deserializer: Deserializer<PARSED>;
 };
 
 // FIXME: consider getting rid of notes and giving oldValue instead
-type Serializer<RAW, PARSED, NOTES> = (
-  input: RAW
-) => NOTES extends undefined
-  ? readonly [value: PARSED, notes?: NOTES]
-  : readonly [value: PARSED, notes: NOTES];
+type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
-type Deserializer<PARSED, NOTES> = (notes: NOTES, value: PARSED) => void;
+type Deserializer<PARSED> = (value: PARSED, element: Element) => void;
 
-const transformer = <RAW, PARSED, NOTES>(
-  serializer: Serializer<RAW, PARSED, NOTES>,
-  deserializer: Deserializer<PARSED, NOTES>
-): Transformer<RAW, PARSED, NOTES> => ({ serializer, deserializer });
+const transformer = <RAW, PARSED>(
+  serializer: Serializer<RAW, PARSED>,
+  deserializer: Deserializer<PARSED>
+): Transformer<RAW, PARSED> => ({ serializer, deserializer });
 
 const transformers = {
   xmlAttribute: (attribute: string, required: boolean) =>
-    transformer<Element, string | undefined, Element>(
+    transformer<Element, string | undefined>(
       (cell) => {
         const value = getParsedAttribute(cell, attribute);
         if (required && value === undefined)
           console.error(`Required attribute "${attribute} is missing`);
-        return [value, cell];
+        return value;
       },
       // FIXME: remove default attributes?
-      (cell, value) =>
-        typeof value === 'string' && required
+      (value, cell) =>
+        typeof value === 'string'
           ? cell.setAttribute(attribute, value)
           : cell.removeAttribute(attribute)
     ),
   default: <T>(defaultValue: T) =>
-    transformer<T | undefined, T, undefined>(
-      (value) => [value ?? defaultValue],
+    transformer<T | undefined, T>(
+      (value) => value ?? defaultValue,
       (value) => value
     ),
-  javaClassName: transformer<string, keyof Tables | undefined, undefined>(
+  javaClassName: transformer<string, keyof Tables | undefined>(
     (className: string) => {
       const tableName = parseJavaClassName(className);
       const parsedName = getModel(tableName ?? '')?.name;
       if (parsedName === undefined)
         // FIXME: add context to error messages
         console.error(`Unknown model: ${className ?? '(null)'}`);
-      return [parsedName];
+      return parsedName;
     },
-    (_oldValue, value) =>
+    (value) =>
       value === undefined ? undefined : strictGetModel(value).longName
   ),
-  toBoolean: transformer<string, boolean, undefined>(
-    (value) => [value.toLowerCase() === 'true'],
-    (_oldValue, value) => value.toString()
+  toBoolean: transformer<string, boolean>(
+    (value) => value.toLowerCase() === 'true',
+    (value) => value.toString()
   ),
   xmlChild: (tagName: string) =>
-    transformer<Element, Element | undefined, Element>(
+    transformer<Element, Element | undefined>(
       (cell: Element) => {
         const lowerTagName = tagName.toLowerCase();
         const children = Array.from(cell.children).filter(
@@ -69,9 +65,9 @@ const transformers = {
         if (children.length > 1) console.error('Expected at most one child');
         if (cell.children[0] === undefined)
           console.error(`Unable to find a <${tagName} /> child`);
-        return [cell.children[0], cell];
+        return cell.children[0];
       },
-      (cell, value) =>
+      (value, cell) =>
         value === undefined
           ? cell.children[1]?.remove()
           : cell.children.length === 0
@@ -116,19 +112,13 @@ function pipe<R1, R2, R3>(
 ): Transformer<R1, R3>;
 function pipe(
   ...transformers: RA<Transformer<unknown, unknown>>
-): Transformer<unknown, unknown, RA<unknown>> {
+): Transformer<unknown, unknown> {
   return {
-    serializer: (value: unknown) =>
-      transformers.reduce<readonly [unknown, RA<unknown>]>(
-        ([value, notes], { serializer }) => {
-          const [newValue, newNotes] = serializer(value);
-          return [newValue, [newNotes, ...notes]] as const;
-        },
-        [value, []]
-      ),
-    deserializer: (notes, value: unknown) =>
-      transformers.reduce(
-        (value, { deserializer }, index) => deserializer(notes[index], value),
+    serializer: (value) =>
+      transformers.reduce((value, { serializer }) => serializer(value), value),
+    deserializer: (value, element) =>
+      transformers.reduceRight(
+        (value, { deserializer }) => deserializer(value, element),
         value
       ),
   };
@@ -137,11 +127,10 @@ function pipe(
 type ObjectToJson<CONFORMATION extends IR<Transformer<Element, any>>> = {
   readonly [KEY in string &
     keyof CONFORMATION]: CONFORMATION[KEY] extends Transformer<
-    unknown,
-    infer PARSED,
-    infer NOTES
+    any,
+    infer PARSED
   >
-    ? { readonly value: PARSED; readonly notes: NOTES }
+    ? PARSED
     : never;
 };
 
@@ -181,16 +170,16 @@ const xmlParser =
 const xmlPropertyParser = <RAW, PARSED>(
   cell: RAW,
   { serializer }: Transformer<RAW, PARSED>
-): PARSED => serializer(cell)[0];
+): PARSED => serializer(cell);
 
 export const dataObjectFormatterParser = xmlParser(dataObjectFormatterSpec);
 
 const xmlBuilder =
   <CONFORMATION extends IR<Transformer<Element, any>>>(spec: CONFORMATION) =>
-  (out: ObjectToJson<CONFORMATION>): void =>
-    Object.entries(out).forEach(([key, { value, notes }]) => {
+  (element: Element, shape: ObjectToJson<CONFORMATION>): void =>
+    Object.entries(shape).forEach(([key, value]) => {
       const { deserializer } = spec[key as keyof CONFORMATION];
-      deserializer(notes, value);
+      deserializer(value, element);
     });
 
 export const dataObjectFormatterBuilder = xmlBuilder(dataObjectFormatterSpec);
