@@ -96,8 +96,10 @@ const xmlPropertyParser = <RAW, PARSED>(
 
 export const xmlBuilder =
   <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
-  (element: Element, shape: SpecToJson<SPEC>): void =>
+  (element: Element, shape: SpecToJson<SPEC>): Element => {
     Object.entries(shape).forEach(([key, value]) => {
       const { deserializer } = spec[key as keyof SPEC];
       deserializer(value, element);
     });
+    return element;
+  };

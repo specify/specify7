@@ -1,4 +1,4 @@
-# XML Transformer
+# XML Syncer
 
 Converts XML to JSON using a given schema.
 

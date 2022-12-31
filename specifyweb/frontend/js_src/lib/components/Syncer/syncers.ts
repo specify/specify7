@@ -12,11 +12,11 @@ import { syncer, xmlBuilder, xmlParser } from './index';
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
   return Array.from(cell.children).filter(
-    (name) => name.tagName.toLowerCase() === lowerTagName
+    ({ tagName }) => tagName.toLowerCase() === lowerTagName
   );
 }
 
-export const transformers = {
+export const syncers = {
   xmlAttribute: (attribute: string, required: boolean, trim = true) =>
     syncer<Element, LocalizedString | undefined>(
       (cell) => {
@@ -24,7 +24,7 @@ export const transformers = {
           ? getParsedAttribute(cell, attribute)
           : getAttribute(cell, attribute);
         if (required && value === undefined)
-          console.error(`Required attribute "${attribute} is missing`);
+          console.error(`Required attribute "${attribute}" is missing`);
         return value;
       },
       (value, cell) =>
@@ -69,15 +69,15 @@ export const transformers = {
         const children = getChildren(cell, tagName);
         if (children.length > 1)
           console.error(`Expected to find at most one <${tagName} /> child`);
-        if (cell.children[0] === undefined)
+        if (children[0] === undefined)
           console.error(`Unable to find a <${tagName} /> child`);
-        return cell.children[0];
+        return children[0];
       },
       (value, cell) => {
         const children = getChildren(cell, tagName);
         if (value === undefined) children[0]?.remove();
         else if (children.length === 0) cell.append(value);
-        else cell.replaceChild(cell.children[0], value);
+        else cell.replaceChild(children[0], value);
       }
     ),
   xmlChildren: (tagName: string) =>
