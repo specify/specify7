@@ -1,21 +1,46 @@
 import type { IR, RA } from '../../utils/types';
+import { strictParseXml } from '../AppResources/codeMirrorLinters';
+import { silenceConsole } from '../Errors/interceptLogs';
 
 /**
  * Transformer was the original name, but that clashes with Node.js
  */
-export type Syncer<RAW, PARSED> = {
+export type Syncer<RAW, PARSED, OLD_RAW extends RAW | undefined = RAW> = {
   readonly serializer: Serializer<RAW, PARSED>;
-  readonly deserializer: Deserializer<RAW, PARSED>;
+  readonly deserializer: Deserializer<RAW, PARSED, OLD_RAW>;
+};
+
+type SafeSyncerError =
+  'If you see this error, replace syncer() with safeSyncer()';
+
+/**
+ * This type of syncer can handle cases when old value is not available (i.e,
+ * because a new entry was added to JSON which was not previously serialized)
+ */
+export type SafeSyncer<RAW, PARSED> = Syncer<RAW, PARSED, RAW | undefined> & {
+  readonly error: SafeSyncerError;
 };
 
 type Serializer<RAW, PARSED> = (input: RAW) => PARSED;
 
-type Deserializer<RAW, PARSED> = (value: PARSED, oldInput: RAW) => RAW;
+type Deserializer<RAW, PARSED, OLD_RAW extends RAW | undefined = RAW> = (
+  value: PARSED,
+  oldInput: OLD_RAW
+) => RAW;
 
 export const syncer = <RAW, PARSED>(
   serializer: Serializer<RAW, PARSED>,
   deserializer: Deserializer<RAW, PARSED>
 ): Syncer<RAW, PARSED> => ({ serializer, deserializer });
+
+export const safeSyncer = <RAW, PARSED>(
+  serializer: Serializer<RAW, PARSED>,
+  deserializer: Deserializer<RAW, PARSED, RAW | undefined>
+): SafeSyncer<RAW, PARSED> => ({
+  serializer,
+  deserializer,
+  ...({} as { readonly error: SafeSyncerError }),
+});
 
 /**
  * Merge multiple syncers. If need to merge more than 6 at once, then
@@ -74,7 +99,31 @@ export function pipe(
 
 let oldInput: unknown = undefined;
 
-export type SpecToJson<SPEC extends IR<Syncer<Element, any>>> = {
+export type BaseSpec = IR<Syncer<Element, any>>;
+
+export function createSpec<SPEC extends BaseSpec>(spec: SPEC): SPEC {
+  /**
+   * Make sure spec can handle empty XML elements without exceptions.
+   * This is needed to simulate adding new nodes to the XML (i.e, when adding a
+   * new formatter, it runs all serializers with an empty formatter tag)
+   */
+  if (process.env.NODE_ENV === 'development') {
+    const parser = xmlParser(spec);
+    try {
+      silenceConsole(() => parser(strictParseXml(`<test />`)));
+    } catch (error) {
+      console.error(error);
+      throw new Error(
+        `Spec is unable to handle empty XML elements. Error: ${
+          (error as Error).message
+        }`
+      );
+    }
+  }
+  return spec;
+}
+
+export type SpecToJson<SPEC extends BaseSpec> = {
   readonly [KEY in string & keyof SPEC]: SPEC[KEY] extends Syncer<
     any,
     infer PARSED
@@ -83,14 +132,13 @@ export type SpecToJson<SPEC extends IR<Syncer<Element, any>>> = {
     : never;
 };
 
-export const createSpec = <SPEC extends IR<Syncer<Element, any>>>(
-  spec: SPEC
-): SPEC => spec;
+export const symbolOldInputs: unique symbol = Symbol('Previous inputs');
 
-const symbolIntermediates: unique symbol = Symbol('XML Cell');
-
+/**
+ * Don't call this directly. Call syncers.object(spec) instead
+ */
 export const xmlParser =
-  <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
+  <SPEC extends BaseSpec>(spec: SPEC) =>
   (cell: Element): SpecToJson<SPEC> => {
     const intermediates: Partial<Record<keyof SPEC, unknown>> = {};
     const object = Object.fromEntries(
@@ -102,9 +150,9 @@ export const xmlParser =
         return [key, newValue];
       })
     );
-    Object.defineProperty(cell, symbolIntermediates, {
+    Object.defineProperty(cell, symbolOldInputs, {
       value: intermediates,
-      enumerable: false,
+      enumerable: true,
     });
     return object;
   };
@@ -114,15 +162,16 @@ const xmlPropertyParser = <RAW, PARSED>(
   { serializer }: Syncer<RAW, PARSED>
 ): PARSED => serializer(cell);
 
+/**
+ * Don't call this directly. Call syncers.object(spec) instead
+ */
 export const xmlBuilder =
-  <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
-  (shape: SpecToJson<SPEC>, cell: Element): Element => {
-    const intermediates = (
-      cell as unknown as {
-        readonly [symbolIntermediates]: Record<keyof SPEC, unknown>;
-      }
-    )[symbolIntermediates];
-    if (intermediates === undefined) throw new Error('Broken object structure');
+  <SPEC extends BaseSpec>(spec: SPEC) =>
+  (
+    shape: SpecToJson<SPEC>,
+    cell: Element,
+    intermediates: Record<keyof SPEC, unknown>
+  ): Element => {
     Object.entries(shape).forEach(([key, value]) => {
       if (!(key in intermediates)) {
         console.error(`Unexpected key ${key}. It's not in the spec`, {

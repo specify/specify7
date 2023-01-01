@@ -3,7 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { schema } from '../DataModel/schema';
 import { createSpec, pipe } from './index';
-import { syncers } from './syncers';
+import { createXmlNode, syncers } from './syncers';
 
 export const formattersSpec = f.store(() =>
   createSpec({
@@ -13,7 +13,7 @@ export const formattersSpec = f.store(() =>
     ),
     aggregators: pipe(
       syncers.xmlChild('aggregators'),
-      syncers.default<Element>(() => document.createElement('aggregators')),
+      syncers.default(() => createXmlNode('aggregators')),
       syncers.xmlChildren('aggregator'),
       syncers.map(syncers.object(aggregatorSpec()))
     ),
@@ -38,7 +38,7 @@ export const formatterSpec = f.store(() =>
     ),
     definition: pipe(
       syncers.xmlChild('switch'),
-      syncers.default(() => document.createElement('switch') as Element)
+      syncers.default(() => createXmlNode('switch'))
     ),
   })
 );

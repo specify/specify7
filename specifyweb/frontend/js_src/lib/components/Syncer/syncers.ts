@@ -2,14 +2,20 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { f } from '../../utils/functools';
 import { parseBoolean } from '../../utils/parser/parse';
-import type { IR, RA } from '../../utils/types';
-import { defined } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import { getAttribute } from '../../utils/utils';
 import { parseJavaClassName } from '../DataModel/resource';
-import { getModel, strictGetModel } from '../DataModel/schema';
+import { getModel } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
-import type { SpecToJson, Syncer } from './index';
-import { syncer, xmlBuilder, xmlParser } from './index';
+import type { BaseSpec, SafeSyncer, SpecToJson } from './index';
+import {
+  safeSyncer,
+  symbolOldInputs,
+  syncer,
+  xmlBuilder,
+  xmlParser,
+} from './index';
+import { silenceConsole } from '../Errors/interceptLogs';
 
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
@@ -51,13 +57,13 @@ export const syncers = {
       ? never
       : T | (() => T)
   ) =>
-    syncer<T | undefined, T>(
+    safeSyncer<T | undefined, T>(
       (value) =>
         value ??
         (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
       (value) => value
     ),
-  javaClassName: syncer<string, keyof Tables | undefined>(
+  javaClassName: safeSyncer<string, keyof Tables | undefined>(
     (className: string) => {
       const tableName = parseJavaClassName(className);
       const parsedName = getModel(tableName ?? className)?.name;
@@ -66,11 +72,13 @@ export const syncers = {
         console.error(`Unknown model: ${className ?? '(null)'}`);
       return parsedName;
     },
-    (value) =>
-      strictGetModel(defined(value, 'Model name was not provided')).longName
+    (value, originalValue) =>
+      f.maybe(value, getModel)?.longName ?? originalValue ?? ''
   ),
-  toBoolean: syncer<string, boolean>(parseBoolean, (value) => value.toString()),
-  toDecimal: syncer<string, number | undefined>(
+  toBoolean: safeSyncer<string, boolean>(parseBoolean, (value) =>
+    value.toString()
+  ),
+  toDecimal: safeSyncer<string, number | undefined>(
     f.parseInt,
     (value) => value?.toString() ?? ''
   ),
@@ -84,18 +92,21 @@ export const syncers = {
           console.error(`Unable to find a <${tagName} /> child`);
         return children[0];
       },
-      (value, cell) => {
+      (rawChild, cell) => {
+        const child = f.maybe(rawChild, ensureTagName(tagName));
         const children = getChildren(cell, tagName);
-        if (value === undefined) children[0]?.remove();
-        else if (children.length === 0) cell.append(value);
-        else cell.replaceChild(children[0], value);
+        if (child === undefined) children[0]?.remove();
+        else if (children.length === 0) cell.append(child);
+        else cell.replaceChild(children[0], child);
         return cell;
       }
     ),
   xmlChildren: (tagName: string) =>
     syncer<Element, RA<Element>>(
       (cell) => getChildren(cell, tagName),
-      (newChildren, cell) => {
+      (rawNewChildren, cell) => {
+        const newChildren = rawNewChildren.map(ensureTagName(tagName));
+
         const children = getChildren(cell, tagName);
         /*
          * Try to replace as many as possible rather than removing and adding
@@ -109,25 +120,76 @@ export const syncers = {
           { length: children.length - newChildren.length },
           (_, index) => children[index].remove()
         );
-        Array.from(
-          { length: newChildren.length - children.length },
-          (_, index) => cell.append(newChildren[index])
+        const addedCount = newChildren.length - children.length;
+        Array.from({ length: addedCount }, (_, index) =>
+          cell.append(newChildren[addedCount + index])
         );
         return cell;
       }
     ),
-  object: <SPEC extends IR<Syncer<Element, any>>>(spec: SPEC) =>
-    syncer<Element, SpecToJson<SPEC>>(xmlParser(spec), xmlBuilder(spec)),
-  map: <SYNCER extends Syncer<any, any>>(syncerDefinition: SYNCER) =>
-    syncer<
+  object<SPEC extends BaseSpec>(spec: SPEC) {
+    const parser = xmlParser(spec);
+    const builder = xmlBuilder(spec);
+    return safeSyncer<Element, SpecToJson<SPEC>>(
+      parser,
+      (shape, originalCell): Element => {
+        const cell = originalCell ?? createXmlNode(temporaryNodeName);
+        if (originalCell === undefined) silenceConsole(() => parser(cell));
+
+        const intermediates = (
+          cell as unknown as {
+            readonly [symbolOldInputs]: Record<keyof SPEC, unknown>;
+          }
+        )[symbolOldInputs];
+        if (intermediates === undefined)
+          throw new Error('Bad object structure');
+
+        return builder(shape, cell, intermediates);
+      }
+    );
+  },
+  map: <SYNCER extends SafeSyncer<any, any>>(syncerDefinition: SYNCER) =>
+    safeSyncer<
       RA<Parameters<SYNCER['serializer']>[0]>,
       RA<ReturnType<SYNCER['serializer']>>
     >(
       (elements) => elements.map(syncerDefinition.serializer),
       (elements, cells) =>
-        // FIXME: handle new elements being added
         elements.map((element, index) =>
-          syncerDefinition.deserializer(element, cells[index])
+          syncerDefinition.deserializer(element, cells?.[index])
         )
     ),
 } as const;
+
+/**
+ * If a new node was created by a downstream deserializer, rename it to the
+ * desired tag name
+ */
+const ensureTagName =
+  (tagName: string) =>
+  (child: Element): Element =>
+    child.tagName === temporaryNodeName ? renameXmlNode(child, tagName) : child;
+
+const temporaryNodeName = 'temporary'.toUpperCase();
+
+/**
+ * Create a new XML element based on an old one, but with a different tagName.
+ * Old element is removed.
+ * Loosely based on https://stackoverflow.com/a/15086834/8584605
+ */
+function renameXmlNode(element: Element, newTagName: string): Element {
+  const newElement = createXmlNode(newTagName);
+  Array.from(element.children, (child) => newElement.append(child));
+
+  Array.from(element.attributes, (attribute) =>
+    newElement.attributes.setNamedItem(attribute.cloneNode() as Attr)
+  );
+
+  element.parentNode?.replaceChild(newElement, element);
+  element.remove();
+
+  return newElement;
+}
+
+export const createXmlNode = (name: string): Element =>
+  document.implementation.createDocument(null, name).children[0];

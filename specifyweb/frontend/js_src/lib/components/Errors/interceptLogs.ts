@@ -25,7 +25,7 @@ export type LogMessage = {
 export const consoleLog: WritableArray<LogMessage> = [];
 
 let context: R<unknown> = {};
-let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
+let contextTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
 export const getLogContext = (): IR<unknown> => context;
 
@@ -51,10 +51,10 @@ export function setLogContext(
    * Things like form parsing are done in a single cycle, so this works
    * perfectly.
    */
-  if (timeout === undefined)
-    timeout = setTimeout(() => {
+  if (contextTimeout === undefined)
+    contextTimeout = setTimeout(() => {
       context = {};
-      timeout = undefined;
+      contextTimeout = undefined;
     }, 0);
 }
 
@@ -69,6 +69,7 @@ const toSafeValue = (value: unknown): unknown =>
 
 export function interceptLogs(): void {
   logTypes.forEach((logType) => {
+    if (isSilenced) return;
     /**
      * Read this if you are coming here from DevTools:
      * DevTools would show this file as an originator of all console messages,
@@ -94,4 +95,17 @@ export function interceptLogs(): void {
       });
     };
   });
+}
+
+/**
+ * Allows to temporary silence log output
+ */
+let isSilenced = false;
+export function silenceConsole<T>(callback: () => T): T {
+  isSilenced = true;
+  try {
+    return callback();
+  } finally {
+    isSilenced = false;
+  }
 }

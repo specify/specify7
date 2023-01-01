@@ -1,7 +1,7 @@
 import { requireContext } from '../../../tests/helpers';
 import { strictParseXml } from '../../AppResources/codeMirrorLinters';
 import { formattersSpec } from '../dataObjectFormatter';
-import { xmlBuilder, xmlParser } from '../index';
+import { syncers } from '../syncers';
 
 requireContext();
 
@@ -24,27 +24,28 @@ test('Editing Data Object Formatter', () => {
 
   const spec = formattersSpec();
 
-  const parser = xmlParser(spec);
-  const parsed = parser(element);
+  const { serializer, deserializer } = syncers.object(spec);
+  const parsed = serializer(element);
 
-  const builder = xmlBuilder(spec);
-  builder(
+  jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+  jest.spyOn(console, 'error').mockImplementation(jest.fn());
+  deserializer(
     {
       ...parsed,
-      formatters: [
+      aggregators: [
         {
-          ...parsed.formatters[0],
-          title: 'Test',
+          ...parsed.aggregators[0],
+          tableName: 'Agent',
         },
+        ...parsed.aggregators,
       ],
-      aggregators: [],
     },
     element
   );
 
   expect(element.outerHTML).toMatchInlineSnapshot(`
     "<formatters>
-          <format name=\\"Accession\\" title=\\"Test\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
+          <format name=\\"Accession\\" title=\\"Accession\\" class=\\"edu.ku.brc.specify.datamodel.Accession\\" default=\\"true\\">
             <!-- this comment will be preserved -->
             <switch single=\\"true\\">
               <fields>
@@ -53,8 +54,8 @@ test('Editing Data Object Formatter', () => {
             </switch>
           </format>
           <aggregators>
-            
-          </aggregators>
+            <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.Agent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderfieldname=\\"\\" orderFieldName=\\"\\"/>
+          <aggregator name=\\"AccessionAgent\\" title=\\"AccessionAgent\\" class=\\"edu.ku.brc.specify.datamodel.AccessionAgent\\" default=\\"true\\" separator=\\"; \\" ending=\\"\\" count=\\"\\" format=\\"AccessionAgent\\" orderFieldName=\\"\\"/></aggregators>
         </formatters>"
   `);
 });
