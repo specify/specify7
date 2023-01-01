@@ -82,12 +82,12 @@ export const welcomeText = createDictionary({
   },
   licence: {
     'en-us': `
-      Specify 7, Copyright 2022, University of Kansas Center for Research.
+      Specify 7, Copyright 2023, University of Kansas Center for Research.
       Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source
       software licensed under GNU General Public License v2.
     `,
     'ru-ru': `
-      Specify 7, Авторские права 2022, University of Kansas для исследования.
+      Specify 7, Авторские права 2023, University of Kansas для исследования.
       Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное
       программное обеспечение с открытым исходным кодом под лицензией GNU
       General Public License v2.
