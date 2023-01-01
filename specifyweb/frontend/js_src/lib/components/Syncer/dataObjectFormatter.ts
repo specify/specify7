@@ -3,7 +3,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { f } from '../../utils/functools';
 import { schema } from '../DataModel/schema';
 import { createSpec, pipe } from './index';
-import { createXmlNode, syncers } from './syncers';
+import { syncers } from './syncers';
+import { createXmlNode } from './xmlUtils';
 
 export const formattersSpec = f.store(() =>
   createSpec({

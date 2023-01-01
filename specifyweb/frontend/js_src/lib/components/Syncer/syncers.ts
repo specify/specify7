@@ -16,6 +16,7 @@ import {
   xmlParser,
 } from './index';
 import { silenceConsole } from '../Errors/interceptLogs';
+import { createXmlNode, renameXmlNode } from './xmlUtils';
 
 function getChildren(cell: Element, tagName: string): RA<Element> {
   const lowerTagName = tagName.toLowerCase();
@@ -171,25 +172,3 @@ const ensureTagName =
     child.tagName === temporaryNodeName ? renameXmlNode(child, tagName) : child;
 
 const temporaryNodeName = 'temporary'.toUpperCase();
-
-/**
- * Create a new XML element based on an old one, but with a different tagName.
- * Old element is removed.
- * Loosely based on https://stackoverflow.com/a/15086834/8584605
- */
-function renameXmlNode(element: Element, newTagName: string): Element {
-  const newElement = createXmlNode(newTagName);
-  Array.from(element.children, (child) => newElement.append(child));
-
-  Array.from(element.attributes, (attribute) =>
-    newElement.attributes.setNamedItem(attribute.cloneNode() as Attr)
-  );
-
-  element.parentNode?.replaceChild(newElement, element);
-  element.remove();
-
-  return newElement;
-}
-
-export const createXmlNode = (name: string): Element =>
-  document.implementation.createDocument(null, name).children[0];
