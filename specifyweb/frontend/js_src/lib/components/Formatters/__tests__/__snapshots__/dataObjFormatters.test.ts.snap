@@ -4,1641 +4,2463 @@ exports[`formatters are fetched and parsed correctly 1`] = `
 {
   "aggregators": [
     {
-      "className": "edu.ku.brc.specify.datamodel.AccessionAgent",
-      "format": "AccessionAgent",
+      "ending": "",
+      "formatterName": "AccessionAgent",
       "isDefault": true,
+      "limit": undefined,
       "name": "AccessionAgent",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "AccessionAgent",
       "title": "AccessionAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AccessionAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "AccessionAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "AccessionAttachment",
       "title": "AccessionAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AccessionAuthorization",
-      "format": "AccessionAuthorization",
+      "ending": "",
+      "formatterName": "AccessionAuthorization",
       "isDefault": true,
+      "limit": undefined,
       "name": "AccessionAuthorization",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "AccessionAuthorization",
       "title": "AccessionAuthorization",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Address",
-      "format": "Address",
+      "ending": "",
+      "formatterName": "Address",
       "isDefault": true,
+      "limit": undefined,
       "name": "Address",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "Address",
       "title": "Address",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AgentAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "AgentAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "AgentAttachment",
       "title": "AgentAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Author",
-      "format": "Author",
+      "ending": "",
+      "formatterName": "Author",
       "isDefault": true,
+      "limit": undefined,
       "name": "Author",
       "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "tableName": "Author",
       "title": "Author",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.BorrowAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "BorrowAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "BorrowAttachment",
       "title": "BorrowAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObjectCitation",
-      "format": "Citation",
+      "ending": "",
+      "formatterName": "Citation",
       "isDefault": true,
+      "limit": 0,
       "name": "Citation",
       "separator": " | ",
+      "sortField": undefined,
+      "tableName": "CollectionObjectCitation",
       "title": "Citation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectingEventAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "CollectingEventAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "CollectingEventAttachment",
       "title": "CollectingEventAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObject",
-      "format": "CollectionObject",
+      "ending": "",
+      "formatterName": "CollectionObject",
       "isDefault": true,
+      "limit": undefined,
       "name": "CollectionObject",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "CollectionObject",
       "title": "CollectionObject",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObjectAttachment",
-      "format": "COattachment",
+      "ending": "",
+      "formatterName": "COattachment",
       "isDefault": true,
+      "limit": 0,
       "name": "CollectionObjectAttachment",
       "separator": " | ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "CollectionObjectAttachment",
       "title": "CollectionObjectAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Collector",
-      "format": "Collector",
+      "ending": "",
+      "formatterName": "Collector",
       "isDefault": true,
+      "limit": undefined,
       "name": "Collector",
       "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "tableName": "Collector",
       "title": "Collector",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.ConservDescriptionAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "ConservDescriptionAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "ConservDescriptionAttachment",
       "title": "ConservDescriptionAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.ConservEventAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "ConservEventAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "ConservEventAttachment",
       "title": "ConservEventAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DNASequenceAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "DNASequenceAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "DNASequenceAttachment",
       "title": "DNASequenceAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DNASequencingRunAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "DNASequencingRunAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "DNASequencingRunAttachment",
       "title": "DNASequencingRunAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DNASequence",
-      "format": "DNAsequence",
+      "ending": "",
+      "formatterName": "DNAsequence",
       "isDefault": true,
+      "limit": 0,
       "name": "DNAsequence",
       "separator": "| ",
+      "sortField": undefined,
+      "tableName": "DNASequence",
       "title": "DNAsequence",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Determination",
-      "format": "Determination",
+      "ending": "",
+      "formatterName": "Determination",
       "isDefault": true,
+      "limit": 1,
       "name": "Determination",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "Determination",
       "title": "Determination",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FieldNotebookAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "FieldNotebookAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "FieldNotebookAttachment",
       "title": "FieldNotebookAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FieldNotebookPageAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "FieldNotebookPageAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "FieldNotebookPageAttachment",
       "title": "FieldNotebookPageAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FieldNotebookPageSetAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "FieldNotebookPageSetAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "FieldNotebookPageSetAttachment",
       "title": "FieldNotebookPageSetAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FundingAgent",
-      "format": "FundingAgent",
+      "ending": "",
+      "formatterName": "FundingAgent",
       "isDefault": true,
+      "limit": undefined,
       "name": "FundingAgent",
       "separator": "; ",
+      "sortField": [
+        "[literalField orderNumber]",
+      ],
+      "tableName": "FundingAgent",
       "title": "FundingAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.GiftAttachment",
-      "format": "LoanAgent",
+      "ending": "",
+      "formatterName": "LoanAgent",
       "isDefault": true,
+      "limit": undefined,
       "name": "GiftAttachment",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "GiftAttachment",
       "title": "GiftAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanAgent",
-      "format": "LoanAgent",
+      "ending": "",
+      "formatterName": "LoanAgent",
       "isDefault": true,
+      "limit": undefined,
       "name": "LoanAgent",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "LoanAgent",
       "title": "LoanAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "LoanAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "LoanAttachment",
       "title": "LoanAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanPreparation",
-      "format": "LoanPreparation",
+      "ending": "",
+      "formatterName": "LoanPreparation",
       "isDefault": true,
+      "limit": 0,
       "name": "LoanPrep",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "LoanPreparation",
       "title": "LoanPrep",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanReturnPreparation",
-      "format": "LoanReturnPreparation",
+      "ending": "",
+      "formatterName": "LoanReturnPreparation",
       "isDefault": true,
+      "limit": 0,
       "name": "LoanReturnPrep",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "LoanReturnPreparation",
       "title": "Loan Return Prep",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LocalityAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "LocalityAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "LocalityAttachment",
       "title": "LocalityAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.PermitAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "PermitAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "PermitAttachment",
       "title": "PermitAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Preparation",
-      "format": "Preparation",
+      "ending": "",
+      "formatterName": "Preparation",
       "isDefault": true,
+      "limit": undefined,
       "name": "Preparation",
       "separator": "; ",
+      "sortField": undefined,
+      "tableName": "Preparation",
       "title": "Preparation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.PreparationAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "PreparationAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "PreparationAttachment",
       "title": "PreparationAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.ReferenceWorkAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "ReferenceWorkAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "ReferenceWorkAttachment",
       "title": "ReferenceWorkAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.RepositoryAgreementAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "RepositoryAgreementAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "RepositoryAgreementAttachment",
       "title": "RepositoryAgreementAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.TaxonAttachment",
-      "format": "identity",
+      "ending": "",
+      "formatterName": "identity",
       "isDefault": true,
+      "limit": undefined,
       "name": "TaxonAttachment",
       "separator": "; ",
+      "sortField": [
+        "[literalField ordinal]",
+      ],
+      "tableName": "TaxonAttachment",
       "title": "TaxonAttachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.VoucherRelationship",
-      "format": "Voucher relationship",
+      "ending": "",
+      "formatterName": "Voucher relationship",
       "isDefault": true,
+      "limit": 0,
       "name": "Voucher Relationship",
       "separator": ";",
+      "sortField": [
+        "[literalField institutionCode]",
+      ],
+      "tableName": "VoucherRelationship",
       "title": "VoucherRelationship",
     },
   ],
   "formatters": [
     {
-      "className": "edu.ku.brc.specify.datamodel.Accession",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "accessionNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField accessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Accession",
-      "switchFieldName": undefined,
+      "tableName": "Accession",
       "title": "Accession",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AccessionAgent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "agent",
-              "formatter": "Agent",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "role",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField role]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "AccessionAgent",
-      "switchFieldName": undefined,
+      "tableName": "AccessionAgent",
       "title": "AccessionAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AccessionAuthorization",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "accession.accessionNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship accession]",
+                  "[literalField accessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "AccessionAuthorization",
-      "switchFieldName": undefined,
+      "tableName": "AccessionAuthorization",
       "title": "AccessionAuthorization",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Address",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "address",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "address2",
-              "formatter": "",
-              "separator": " ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "city",
-              "formatter": "",
-              "separator": ", ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "state",
-              "formatter": "",
-              "separator": ", ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "postalCode",
-              "formatter": "",
-              "separator": " ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField address]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField address2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField city]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField state]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField postalCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Address",
-      "switchFieldName": undefined,
+      "tableName": "Address",
       "title": "Address",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Agent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "lastName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": "0",
-        },
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "lastName",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "firstName",
-              "formatter": "",
-              "separator": ", ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "middleInitial",
-              "formatter": "",
-              "separator": " ",
-            },
-          ],
-          "value": "1",
-        },
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "lastName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": "2",
-        },
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "lastName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": "3",
-        },
-      ],
+      "definition": {
+        "conditionField": [
+          "[literalField agentType]",
+        ],
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "0",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField firstName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField middleInitial]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "1",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "2",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField lastName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "3",
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Agent",
-      "switchFieldName": "agentType",
+      "tableName": "Agent",
       "title": "Agent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Attachment",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "attachmentLocation",
-              "formatter": "",
-              "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField attachmentLocation]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Attachment",
-      "switchFieldName": undefined,
+      "tableName": "Attachment",
       "title": "Attachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Author",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "agent",
-              "formatter": "Agent",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Author",
-      "switchFieldName": undefined,
+      "tableName": "Author",
       "title": "Author",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.AutoNumberingScheme",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "schemeName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField schemeName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "AutoNumberingScheme",
-      "switchFieldName": undefined,
+      "tableName": "AutoNumberingScheme",
       "title": "AutoNumberingScheme",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Borrow",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "receivedDate",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField receivedDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Borrow",
-      "switchFieldName": undefined,
+      "tableName": "Borrow",
       "title": "Borrow",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObjectAttachment",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "attachment.attachmentLocation",
-              "formatter": "",
-              "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship attachment]",
+                  "[literalField attachmentLocation]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "http://biimages.biodiversity.ku.edu/static/Ichthyology/originals/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "COattachment",
-      "switchFieldName": undefined,
+      "tableName": "CollectionObjectAttachment",
       "title": "COattachment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObjectCitation",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "referenceWork.url",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship referenceWork]",
+                  "[literalField url]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Citation",
-      "switchFieldName": undefined,
+      "tableName": "CollectionObjectCitation",
       "title": "Citation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectingEvent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "stationFieldNumber",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "startDate",
-              "formatter": "",
-              "separator": ": ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "locality.geography.fullName",
-              "formatter": "",
-              "separator": ": ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "locality.localityName",
-              "formatter": "",
-              "separator": ": ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "locality.latitude1",
-              "formatter": "",
-              "separator": ": ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "locality.longitude1",
-              "formatter": "",
-              "separator": ": ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
-      "isDefault": false,
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField stationFieldNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField startDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[relationship geography]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField localityName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField latitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship locality]",
+                  "[literalField longitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
+      "isDefault": null,
       "name": "CollectingEvent",
-      "switchFieldName": undefined,
+      "tableName": "CollectingEvent",
       "title": "CollectingEvent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectingEvent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "stationFieldNumber",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "startDate",
-              "formatter": "",
-              "separator": ", ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
-      "isDefault": false,
+      "definition": {
+        "conditionField": undefined,
+        "external": <external
+          class="edu.ku.brc.specify.ui.CollectingEventDataObjFmt"
+        >
+          
+        
+          <param
+            name="format"
+          >
+            FN; DT; LC; LA, LO; CO, ST, CT
+          </param>
+          
+      
+        </external>,
+        "fields": [],
+        "isSingle": undefined,
+      },
+      "isDefault": true,
+      "name": "CollectingEventDetail",
+      "tableName": "CollectingEvent",
+      "title": "CollectingEventDetail",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField stationFieldNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField startDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
+      "isDefault": null,
       "name": "CollectingEventSFN",
-      "switchFieldName": undefined,
+      "tableName": "CollectingEvent",
       "title": "CollectingEventSFN",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectingTrip",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "text1",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "text2",
-              "formatter": "",
-              "separator": ": ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "number1",
-              "formatter": "",
-              "separator": ": ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": <external
+          class="edu.ku.brc.specify.ui.CollectingEventDataObjFmt"
+        >
+          
+        
+          <param
+            name="format"
+          >
+            FN; DT; LC; LA, LO; CO, ST, CT
+          </param>
+          
+      
+        </external>,
+        "fields": [],
+        "isSingle": undefined,
+      },
+      "isDefault": null,
+      "name": "CollectingEventStartDate",
+      "tableName": "CollectingEvent",
+      "title": "CollectingEventStartDate",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField number1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ":",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "CollectingTrip",
-      "switchFieldName": undefined,
+      "tableName": "CollectingTrip",
       "title": "CollectingTrip",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Collection",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "collectionName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField collectionName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Collection",
-      "switchFieldName": undefined,
+      "tableName": "Collection",
       "title": "Collection",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionObject",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "catalogNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField catalogNumber]",
+                ],
+                "fieldFormatter": "CatalogNumber",
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "CollectionObject",
-      "switchFieldName": undefined,
+      "tableName": "CollectionObject",
       "title": "CollectionObject",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.CollectionRelType",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "CollectionRelType",
-      "switchFieldName": undefined,
+      "tableName": "CollectionRelType",
       "title": "CollectionRelType",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Collector",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "agent",
-              "formatter": "Agent",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Collector",
-      "switchFieldName": undefined,
+      "tableName": "Collector",
       "title": "Collector",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Container",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Container",
-      "switchFieldName": undefined,
+      "tableName": "Container",
       "title": "Container",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DNAPrimer",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "primerDesignator",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField primerDesignator]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "DNAPrimer",
-      "switchFieldName": undefined,
+      "tableName": "DNAPrimer",
       "title": "DNAPrimer",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DNASequence",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "text2",
-              "formatter": "",
-              "separator": "https://www.ncbi.nlm.nih.gov/nuccore/",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField text2]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "https://www.ncbi.nlm.nih.gov/nuccore/",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "DNAsequence",
-      "switchFieldName": undefined,
+      "tableName": "DNASequence",
       "title": "DNAsequence",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.DataType",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "DataType",
-      "switchFieldName": undefined,
+      "tableName": "DataType",
       "title": "DataType",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Deaccession",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "deaccessionNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField deaccessionNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Deaccession",
-      "switchFieldName": undefined,
+      "tableName": "Deaccession",
       "title": "Deaccession",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Determination",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "preferredTaxon.fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": "true",
-        },
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "taxon.fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": "false",
-        },
-      ],
+      "definition": {
+        "conditionField": [
+          "[literalField isCurrent]",
+        ],
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship preferredTaxon]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "true",
+          },
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship taxon]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": "false",
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Determination",
-      "switchFieldName": "isCurrent",
+      "tableName": "Determination",
       "title": "Determination",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Discipline",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Discipline",
-      "switchFieldName": undefined,
+      "tableName": "Discipline",
       "title": "Discipline",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Division",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Division",
-      "switchFieldName": undefined,
+      "tableName": "Division",
       "title": "Division",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FieldNotebookPage",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "pageNumber",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "pageSet.fieldNotebook.name",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField pageNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship pageSet]",
+                  "[relationship fieldNotebook]",
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "FieldNotebookPage",
-      "switchFieldName": undefined,
+      "tableName": "FieldNotebookPage",
       "title": "FieldNotebookPage",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.FundingAgent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "agent",
-              "formatter": "Agent",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "FundingAgent",
-      "switchFieldName": undefined,
+      "tableName": "FundingAgent",
       "title": "FundingAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Geography",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Geography",
-      "switchFieldName": undefined,
+      "tableName": "Geography",
       "title": "Geography",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.GeographyTreeDef",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "GeographyTreeDef",
-      "switchFieldName": undefined,
+      "tableName": "GeographyTreeDef",
       "title": "GeographyTreeDef",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.GeographyTreeDefItem",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "GeographyTreeDefItem",
-      "switchFieldName": undefined,
+      "tableName": "GeographyTreeDefItem",
       "title": "GeographyTreeDefItem",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.GeologicTimePeriod",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "GeologicTimePeriod",
-      "switchFieldName": undefined,
+      "tableName": "GeologicTimePeriod",
       "title": "GeologicTimePeriod",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.GeologicTimePeriodTreeDef",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "GeologicTimePeriodTreeDef",
-      "switchFieldName": undefined,
+      "tableName": "GeologicTimePeriodTreeDef",
       "title": "GeologicTimePeriodTreeDef",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Journal",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "journalName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField journalName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Journal",
-      "switchFieldName": undefined,
+      "tableName": "Journal",
       "title": "Journal",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LithoStrat",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "LithoStrat",
-      "switchFieldName": undefined,
+      "tableName": "LithoStrat",
       "title": "LithoStrat",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LithoStratTreeDef",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "LithoStratTreeDef",
-      "switchFieldName": undefined,
+      "tableName": "LithoStratTreeDef",
       "title": "LithoStratTreeDef",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LithoStratTreeDefItem",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "LithoStratTreeDefItem",
-      "switchFieldName": undefined,
+      "tableName": "LithoStratTreeDefItem",
       "title": "LithoStratTreeDefItem",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Loan",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "loanNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField loanNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Loan",
-      "switchFieldName": undefined,
+      "tableName": "Loan",
       "title": "Loan",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanAgent",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "agent",
-              "formatter": "Agent",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "role",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship agent]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "Agent",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField role]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "LoanAgent",
-      "switchFieldName": undefined,
+      "tableName": "LoanAgent",
       "title": "LoanAgent",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.LoanReturnPreparation",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "loanPreparation.preparation.prepType",
-              "formatter": "PrepType",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": "%d",
-              "fieldName": "quantityResolved",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [],
+        "isSingle": undefined,
+      },
+      "isDefault": true,
+      "name": "LoanPreparation",
+      "tableName": "LoanPreparation",
+      "title": "LoanPreparation",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship loanPreparation]",
+                  "[relationship preparation]",
+                  "[relationship prepType]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField quantityResolved]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "LoanReturnPreparation",
-      "switchFieldName": undefined,
+      "tableName": "LoanReturnPreparation",
       "title": "LoanReturnPreparation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Locality",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "localityName",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "geography.fullName",
-              "formatter": "",
-              "separator": "; ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "latitude1",
-              "formatter": "",
-              "separator": "; ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "longitude1",
-              "formatter": "",
-              "separator": ", ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField localityName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship geography]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ";",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField latitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ";",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField longitude1]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Locality",
-      "switchFieldName": undefined,
+      "tableName": "Locality",
       "title": "Locality",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.PaleoContext",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "paleoContextName",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "chronosStrat.fullName",
-              "formatter": "",
-              "separator": ", ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "lithoStrat.fullName",
-              "formatter": "",
-              "separator": ", ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": <external
+          class="edu.ku.brc.specify.ui.LocalityLatLonFormatter"
+        >
+          
+        
+          <param
+            name="type"
+          >
+            Latitude
+          </param>
+          
+        
+          <param
+            name="dir"
+          >
+            symbol
+          </param>
+          
+        
+          <param
+            name="dir"
+          >
+            DDDDDD
+          </param>
+          
+        
+          <param
+            name="which"
+          >
+            1
+          </param>
+          
+      
+        </external>,
+        "fields": [],
+        "isSingle": undefined,
+      },
+      "isDefault": null,
+      "name": "LocalityLatitude",
+      "tableName": "Locality",
+      "title": "LocalityLatitude",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": <external
+          class="edu.ku.brc.specify.ui.LocalityLatLonFormatter"
+        >
+          
+        
+          <param
+            name="type"
+          >
+            Longitude
+          </param>
+          
+        
+          <param
+            name="dir"
+          >
+            symbol
+          </param>
+          
+        
+          <param
+            name="dir"
+          >
+            DDDDDD
+          </param>
+          
+        
+          <param
+            name="which"
+          >
+            1
+          </param>
+          
+      
+        </external>,
+        "fields": [],
+        "isSingle": undefined,
+      },
+      "isDefault": null,
+      "name": "LocalityLongitude",
+      "tableName": "Locality",
+      "title": "LocalityLongitude",
+    },
+    {
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField paleoContextName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship chronosStrat]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship lithoStrat]",
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": ",",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "PaleoContext",
-      "switchFieldName": undefined,
+      "tableName": "PaleoContext",
       "title": "PaleoContext",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Permit",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "permitNumber",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField permitNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Permit",
-      "switchFieldName": undefined,
+      "tableName": "Permit",
       "title": "Permit",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.PrepType",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "PrepType",
-      "switchFieldName": undefined,
+      "tableName": "PrepType",
       "title": "PrepType",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Preparation",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "prepType",
-              "formatter": "PrepType",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "countAmt",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship prepType]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "PrepType",
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField countAmt]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Preparation",
-      "switchFieldName": undefined,
+      "tableName": "Preparation",
       "title": "Preparation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.ReferenceWork",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "title",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField title]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "ReferenceWork",
-      "switchFieldName": undefined,
+      "tableName": "ReferenceWork",
       "title": "ReferenceWork",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Shipment",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "shipmentDate",
-              "formatter": "",
-              "separator": "",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "shipmentNumber",
-              "formatter": "",
-              "separator": " - ",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "shipmentMethod",
-              "formatter": "",
-              "separator": " - ",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentDate]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField shipmentMethod]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "-",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Shipment",
-      "switchFieldName": undefined,
+      "tableName": "Shipment",
       "title": "Shipment",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Storage",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Storage",
-      "switchFieldName": undefined,
+      "tableName": "Storage",
       "title": "Storage",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.StorageTreeDef",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "StorageTreeDef",
-      "switchFieldName": undefined,
+      "tableName": "StorageTreeDef",
       "title": "StorageTreeDef",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.StorageTreeDefItem",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "StorageTreeDefItem",
-      "switchFieldName": undefined,
+      "tableName": "StorageTreeDefItem",
       "title": "StorageTreeDefItem",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Taxon",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "fullName",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField fullName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Taxon",
-      "switchFieldName": undefined,
+      "tableName": "Taxon",
       "title": "Taxon",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.TaxonCitation",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "referenceWork",
-              "formatter": "ReferenceWork",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[relationship referenceWork]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": "ReferenceWork",
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "TaxonCitation",
-      "switchFieldName": undefined,
+      "tableName": "TaxonCitation",
       "title": "TaxonCitation",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.TaxonTreeDef",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "TaxonTreeDef",
-      "switchFieldName": undefined,
+      "tableName": "TaxonTreeDef",
       "title": "TaxonTreeDef",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.TaxonTreeDefItem",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "name",
-              "formatter": "",
-              "separator": "",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField name]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "TaxonTreeDefItem",
-      "switchFieldName": undefined,
+      "tableName": "TaxonTreeDefItem",
       "title": "TaxonTreeDefItem",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.Project",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "projectNumber",
-              "formatter": "",
-              "separator": "institutionCode=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "grantAgency",
-              "formatter": "",
-              "separator": "&collectionCode=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "projectName",
-              "formatter": "",
-              "separator": "&catalogNumber=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "url",
-              "formatter": "",
-              "separator": "&accesspoint=",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField projectNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "institutionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField grantAgency]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&collectionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField projectName]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&catalogNumber=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField url]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&accesspoint=",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Voucher",
-      "switchFieldName": undefined,
+      "tableName": "Project",
       "title": "Voucher",
     },
     {
-      "className": "edu.ku.brc.specify.datamodel.VoucherRelationship",
-      "fields": [
-        {
-          "fields": [
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "institutionCode",
-              "formatter": "",
-              "separator": "institutionCode=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "collectionCode",
-              "formatter": "",
-              "separator": "&collectionCode=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "voucherNumber",
-              "formatter": "",
-              "separator": "&catalogNumber=",
-            },
-            {
-              "fieldFormatter": undefined,
-              "fieldName": "urlLink",
-              "formatter": "",
-              "separator": "&accesspoint=",
-            },
-          ],
-          "value": undefined,
-        },
-      ],
+      "definition": {
+        "conditionField": undefined,
+        "external": undefined,
+        "fields": [
+          {
+            "fields": [
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField institutionCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "institutionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField collectionCode]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&collectionCode=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField voucherNumber]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&catalogNumber=",
+              },
+              {
+                "aggregator": undefined,
+                "field": [
+                  "[literalField urlLink]",
+                ],
+                "fieldFormatter": undefined,
+                "formatter": undefined,
+                "separator": "&accesspoint=",
+              },
+            ],
+            "value": undefined,
+          },
+        ],
+        "isSingle": undefined,
+      },
       "isDefault": true,
       "name": "Voucher relationship",
-      "switchFieldName": undefined,
+      "tableName": "VoucherRelationship",
       "title": "VoucherRelationship",
     },
   ],

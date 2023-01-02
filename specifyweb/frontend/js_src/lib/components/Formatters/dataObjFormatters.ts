@@ -53,24 +53,6 @@ export const fetchFormatters: Promise<{
     : foreverFetch()
 );
 
-// FIXME: test this
-export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
-  schema.models[tableName].literalFields
-    .filter(
-      ({ type, overrides }) =>
-        type === 'java.lang.String' &&
-        !overrides.isHidden &&
-        !overrides.isReadOnly
-    )
-    .sort(
-      multiSortFunction(
-        ({ isRequired }) => isRequired,
-        true,
-        (field) => typeof field.getFormat() === 'string',
-        true
-      )
-    );
-
 export const naiveFormatter = (
   tableLabel: string,
   id: number | undefined
@@ -220,6 +202,7 @@ const findDefaultFormatter = (
     .filter(({ tableName }) => tableName === model.name)
     .sort(sortFunction(({ isDefault }) => isDefault, true))?.[KEY];
 
+const autoGenerateFields = 2;
 const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
   name: model.name,
   title: model.name,
@@ -232,16 +215,40 @@ const autoGenerateFormatter = (model: SpecifyModel): Formatter => ({
     fields: [
       {
         value: undefined,
-        fields: [
-          getMainTableFields(model.name).map((field) => ({
+        fields: getMainTableFields(model.name)
+          .slice(0, autoGenerateFields)
+          .map((field) => ({
             field: [field],
             separator: '',
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
-          }))[0],
-        ],
+          })),
       },
     ],
   },
 });
+
+/**
+ * Finds the most "Interesting" fields in a table (sorted by priority).
+ * If you need only at most x fields, do .slice(0,x) on the result.
+ */
+export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
+  schema.models[tableName].literalFields
+    .filter(
+      ({ type, isHidden, isReadOnly }) =>
+        type === 'java.lang.String' && !isHidden && !isReadOnly
+    )
+    .sort(
+      multiSortFunction(
+        ({ name }) => name.toLowerCase().includes('name'),
+        true,
+        ({ isRequired }) => isRequired,
+        true,
+        (field) => typeof field.getFormat() === 'string',
+        true,
+        ({ overrides, isVirtual }) =>
+          !isVirtual && !overrides.isHidden && !overrides.isReadOnly,
+        true
+      )
+    );
