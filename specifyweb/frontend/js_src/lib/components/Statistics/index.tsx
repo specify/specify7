@@ -27,6 +27,7 @@ import { CustomStat, DefaultStat, StatLayout } from './types';
 import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
+import { hasPermission } from '../Permissions/helpers';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -247,6 +248,9 @@ export function StatsPage(): JSX.Element | null {
   const pageLastUpdated = activePage.isCollection
     ? collectionLayout?.[activePage.pageIndex].lastUpdated
     : personalLayout?.[activePage.pageIndex].lastUpdated;
+  const canEdit =
+    !activePage.isCollection ||
+    hasPermission('/preferences/statistics', 'edit_protected');
   return collectionLayout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -318,19 +322,21 @@ export function StatsPage(): JSX.Element | null {
             <Submit.Blue>{commonText('save')}</Submit.Blue>
           </>
         ) : (
-          <Button.Blue
-            onClick={(): void => {
-              setState({
-                type: 'EditingState',
-              });
-              if (collectionLayout !== undefined)
-                previousCollectionLayout.current = collectionLayout;
-              if (personalLayout !== undefined)
-                previousLayout.current = personalLayout;
-            }}
-          >
-            {commonText('edit')}
-          </Button.Blue>
+          canEdit && (
+            <Button.Blue
+              onClick={(): void => {
+                setState({
+                  type: 'EditingState',
+                });
+                if (collectionLayout !== undefined)
+                  previousCollectionLayout.current = collectionLayout;
+                if (personalLayout !== undefined)
+                  previousLayout.current = personalLayout;
+              }}
+            >
+              {commonText('edit')}
+            </Button.Blue>
+          )
         )}
       </div>
       <div className="flex flex-col overflow-hidden">
