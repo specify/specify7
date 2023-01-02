@@ -24,6 +24,7 @@ export const formattersRoutes = toReactRoutes([
         path: ':tableName',
         children: [
           {
+            index: true,
             element: async () =>
               import('./List').then(({ FormatterList }) => FormatterList),
           },

@@ -144,9 +144,9 @@ export function Tabs({
           </Tab>
         ))}
       </Tab.List>
-      <Tab.Panels className="h-full overflow-auto border border-brand-300 dark:border-none">
+      <Tab.Panels className="flex flex-1 overflow-hidden border border-brand-300 dark:border-none">
         {Object.values(tabs).map((element, index) => (
-          <Tab.Panel className="h-full" key={index}>
+          <Tab.Panel className="flex flex-1 flex-col gap-2" key={index}>
             <ErrorBoundary dismissable>{element}</ErrorBoundary>
           </Tab.Panel>
         ))}

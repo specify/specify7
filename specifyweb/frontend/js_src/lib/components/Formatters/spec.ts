@@ -118,7 +118,7 @@ const fieldsSpec = (tableName: keyof Tables | undefined) =>
   createSpec({
     value: syncers.xmlAttribute('value', 'skip'),
     fields: pipe(
-      syncers.xmlChildren('fields'),
+      syncers.xmlChildren('field'),
       syncers.map(
         pipe(
           syncers.object(fieldSpec(tableName)),

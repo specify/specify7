@@ -203,7 +203,11 @@ export const syncers = {
   field: (tableName: keyof Tables | undefined) =>
     syncer<string | undefined, RA<LiteralField | Relationship> | undefined>(
       (fieldName) => {
-        if (fieldName === undefined || tableName === undefined)
+        if (
+          fieldName === undefined ||
+          fieldName === '' ||
+          tableName === undefined
+        )
           return undefined;
         const field = schema.models[tableName].getFields(fieldName);
         if (field === undefined) console.error(`Unknown field: ${fieldName}`);

@@ -101,10 +101,10 @@ export function TableList({
             <>
               <TableIcon label={false} name={model.name} />
               {model.name as LocalizedString}
-              {typeof extraContent === 'object' && (
+              {extraContent !== undefined && (
                 <>
                   <span className="-ml-2 flex-1" />
-                  {}
+                  {extraContent}
                 </>
               )}
             </>

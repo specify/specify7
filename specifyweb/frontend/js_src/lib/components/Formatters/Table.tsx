@@ -6,6 +6,7 @@ import { group } from '../../utils/utils';
 import { useRoutePart } from '../Router/useRoutePart';
 import { TableList } from '../SchemaConfig/Tables';
 import type { FormatterTypesOutlet } from './Types';
+import { formatNumber } from '../Atoms/Internationalization';
 
 export function FormatterTablesList(): JSX.Element {
   const [_, setTableName] = useRoutePart('tableName');
@@ -29,7 +30,9 @@ export function FormatterTablesList(): JSX.Element {
           setTableName(name)}
     >
       {({ name }): string | undefined =>
-        grouped[name] === undefined ? undefined : `(${grouped[name].length})`
+        grouped[name] === undefined
+          ? undefined
+          : `(${formatNumber(grouped[name].length)})`
       }
     </TableList>
   );

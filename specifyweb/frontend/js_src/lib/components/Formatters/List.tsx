@@ -1,18 +1,19 @@
 import React from 'react';
-import { Aggregator, Formatter } from './spec';
 import { useRoutePart } from '../Router/useRoutePart';
 import { useOutletContext } from 'react-router';
 import { FormatterTypesOutlet } from './Types';
 import { strictGetModel } from '../DataModel/schema';
+import { Ul } from '../Atoms';
 
-export function FormatterList<T extends Aggregator | Formatter>(): JSX.Element {
+export function FormatterList(): JSX.Element {
   const [tableName, setTableName] = useRoutePart('tableName');
   const {
     items: [items, setItems],
   } = useOutletContext<FormatterTypesOutlet>();
   return (
-    <div>
+    <>
       <h4>{strictGetModel(tableName).name}</h4>
-    </div>
+      <Ul className="flex flex-1 flex-col gap-1 overflow-y-auto"></Ul>
+    </>
   );
 }

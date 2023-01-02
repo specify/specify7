@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
  * For a URL like /specify/view/:tableName/:recordId,
  * Call this with name='tableName' and it will return the value of the tableName
  * as well as a callback to change it (changing it would clear :recordId)
- * FIXME: test this while overlay is open
  */
 export function useRoutePart<T extends string = string>(
   name: string

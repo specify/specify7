@@ -31,7 +31,8 @@ export function FormatterTypes(): JSX.Element {
   const resolvedType = type === 'formatter' ? 'formatters' : 'aggregators';
 
   /*
-   * FIXME: call serializer on save click / tab change, BUT only if made any changes.
+   * FIXME: call serializer on save click / tab change / full screen toggle,
+   *   BUT only if made any changes.
    *   same for user preferences
    */
   const { serializer, deserializer } = syncer();
@@ -56,7 +57,7 @@ export function FormatterTypes(): JSX.Element {
     />
   );
   return indexType === -1 ? (
-    <NotFoundView />
+    <NotFoundView container={false} />
   ) : (
     <Tabs
       index={[indexType, (index): void => setType(types[index])]}

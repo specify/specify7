@@ -3,9 +3,10 @@ import { resourcesText } from '../../localization/resources';
 import { parseXml } from '../AppResources/codeMirrorLinters';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import { createXmlNode } from '../Syncer/xmlUtils';
-import { useRoutes } from 'react-router-dom';
+import { useLocation, useRoutes } from 'react-router-dom';
 import { formattersRoutes } from './Routes';
 import { NotFoundView } from '../Router/NotFoundView';
+import { useStableLocation } from '../Router/RouterState';
 
 export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
   const payload = React.useMemo(() => {
@@ -19,7 +20,8 @@ export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
           element,
         };
   }, [props]);
-  const jsxElement = useRoutes(formattersRoutes);
+  const location = useStableLocation(useLocation());
+  const jsxElement = useRoutes(formattersRoutes, location);
 
   return typeof payload === 'string' ? (
     <>
@@ -28,7 +30,7 @@ export function DataObjectFormatter(props: AppResourceTabProps): JSX.Element {
     </>
   ) : (
     <FormattersContext.Provider value={payload}>
-      {jsxElement ?? <NotFoundView />}
+      {jsxElement ?? <NotFoundView container={false} />}
     </FormattersContext.Provider>
   );
 }
