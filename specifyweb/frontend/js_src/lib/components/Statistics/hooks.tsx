@@ -324,7 +324,8 @@ export function useValueLoad(
 
 export function useCacheValid(layout: StatLayout | undefined): boolean {
   return React.useMemo(() => {
-    if (layout === undefined || statsSpec === undefined) return false;
+    if (layout === undefined) return true;
+    if (statsSpec === undefined) return false;
     return layout.every((pageLayout) =>
       pageLayout.categories
         .map(({ items }) => items)
