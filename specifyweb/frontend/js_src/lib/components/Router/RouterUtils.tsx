@@ -52,6 +52,11 @@ export const toReactRoutes = (
     })
   );
 
+const map = new Map<
+  () => Promise<React.FunctionComponent>,
+  React.FunctionComponent
+>();
+
 /**
  * Using this allows Webpack to split code bundles.
  * React Suspense takes care of rendering a loading screen if component is
@@ -61,7 +66,7 @@ export const toReactRoutes = (
  * when any component is being loaded.
  */
 export function Async({
-  element,
+  element: getElement,
   title,
 }: {
   readonly element: () => Promise<React.FunctionComponent>;
@@ -69,9 +74,16 @@ export function Async({
 }): JSX.Element {
   useTitle(title);
 
-  const Element = React.lazy(async () =>
-    element().then((element) => ({ default: element }))
-  );
+  const cached = map.get(getElement);
+  const Element =
+    typeof cached === 'function'
+      ? cached
+      : React.lazy(async () =>
+          getElement().then((element) => {
+            map.set(getElement, element);
+            return { default: element };
+          })
+        );
 
   return (
     <React.Suspense fallback={<LoadingScreen />}>
