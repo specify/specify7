@@ -118,7 +118,6 @@ export function StatsPage(): JSX.Element | null {
     isCollection: true,
     pageIndex: 0,
   });
-  const isCollection = activePage.isCollection;
   const filters = React.useMemo(
     () => ({
       specifyUser: userInformation.id,
@@ -139,11 +138,9 @@ export function StatsPage(): JSX.Element | null {
 
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
-    collectionLayout as unknown as StatLayout | undefined
+    collectionLayout as unknown as StatLayout
   );
-  const previousLayout = React.useRef(
-    personalLayout as unknown as StatLayout | undefined
-  );
+  const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
 
   const setItemsUndefined = (layout: StatLayout): StatLayout =>
     layout.map((pageLayout) => ({
@@ -162,9 +159,6 @@ export function StatsPage(): JSX.Element | null {
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
     ): void => {
-      const layout = activePage.isCollection
-        ? collectionLayout
-        : personalLayout;
       const setLayout = activePage.isCollection
         ? setCollectionLayout
         : setPersonalLayout;
@@ -179,7 +173,12 @@ export function StatsPage(): JSX.Element | null {
             })
       );
     },
-    [activePage, setCollectionLayout]
+    [
+      activePage.isCollection,
+      activePage.pageIndex,
+      setCollectionLayout,
+      setPersonalLayout,
+    ]
   );
 
   const handleAdd = (
@@ -309,17 +308,19 @@ export function StatsPage(): JSX.Element | null {
                 setCollectionLayout(previousCollectionLayout.current);
                 setPersonalLayout(previousLayout.current);
                 setState({ type: 'DefaultState' });
-                setActivePage(
-                  isCollection
-                    ? previousCollectionLayout.current !== undefined &&
-                      activePage >= previousCollectionLayout.current.length
-                      ? previousCollectionLayout.current.length - 1
-                      : activePage
-                    : previousLayout.current !== undefined &&
-                      activePage >= previousLayout.current.length
-                    ? previousLayout.current.length - 1
-                    : activePage
-                );
+                setActivePage(({ isCollection, pageIndex }) => {
+                  const previousLayoutRef = isCollection
+                    ? previousCollectionLayout
+                    : previousLayout;
+                  const newIndex =
+                    pageIndex >= previousLayoutRef.current.length
+                      ? previousLayoutRef.current.length - 1
+                      : pageIndex;
+                  return {
+                    isCollection,
+                    pageIndex: newIndex,
+                  };
+                });
               }}
             >
               {commonText('cancel')}
@@ -332,8 +333,10 @@ export function StatsPage(): JSX.Element | null {
               setState({
                 type: 'EditingState',
               });
-              previousCollectionLayout.current = collectionLayout;
-              previousLayout.current = personalLayout;
+              if (collectionLayout !== undefined)
+                previousCollectionLayout.current = collectionLayout;
+              if (personalLayout !== undefined)
+                previousLayout.current = personalLayout;
             }}
           >
             {commonText('edit')}
@@ -398,30 +401,42 @@ export function StatsPage(): JSX.Element | null {
           </aside>
           {state.type === 'PageRenameState' && (
             <StatsPageEditing
-              onRemove={(): (() => void) | undefined => {
-                if (state.pageIndex === undefined) return undefined;
-                const setLayout = state.isCollection
-                  ? setCollectionLayout
-                  : setPersonalLayout;
-                const layout = state.isCollection
-                  ? collectionLayout
-                  : personalLayout;
-                if (layout !== undefined && layout.length > 1) {
-                  setLayout((oldLayout) =>
-                    oldLayout === undefined
-                      ? undefined
-                      : removeItem(oldLayout, state.pageIndex!)
-                  );
-                  setState({
-                    type: 'EditingState',
-                  });
-                  setActivePage({
-                    pageIndex: layout.length - 2,
-                    isCollection: state.isCollection,
-                  });
-                }
-                return undefined;
-              }}
+              onRemove={
+                state.pageIndex === undefined ||
+                (state.isCollection && collectionLayout.length === 1)
+                  ? undefined
+                  : () => {
+                      if (state.pageIndex === undefined) return undefined;
+                      const setLayout = state.isCollection
+                        ? setCollectionLayout
+                        : setPersonalLayout;
+                      const layout = state.isCollection
+                        ? collectionLayout
+                        : personalLayout;
+                      if (layout !== undefined) {
+                        setLayout((oldLayout) =>
+                          oldLayout === undefined
+                            ? undefined
+                            : removeItem(oldLayout, state.pageIndex!)
+                        );
+                        setState({
+                          type: 'EditingState',
+                        });
+                        setActivePage(
+                          !state.isCollection && layout.length === 1
+                            ? {
+                                pageIndex: 0,
+                                isCollection: true,
+                              }
+                            : {
+                                pageIndex: layout.length - 2,
+                                isCollection: state.isCollection,
+                              }
+                        );
+                      }
+                      return undefined;
+                    }
+              }
               onRename={
                 state.pageIndex === undefined
                   ? undefined
