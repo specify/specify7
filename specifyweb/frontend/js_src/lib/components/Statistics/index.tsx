@@ -27,7 +27,6 @@ import { CustomStat, DefaultStat, StatLayout } from './types';
 import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
-import { active } from 'd3';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -48,17 +47,6 @@ export function StatsPage(): JSX.Element | null {
     'statistics',
     'appearance',
     'defaultLayout'
-  );
-
-  const [lastUpdated, setLastUpdated] = usePref(
-    'statistics',
-    'appearance',
-    'lastUpdated'
-  );
-  const [lastCollectionUpdated, setLastCollectionUpdated] = useCollectionPref(
-    'statistics',
-    'appearance',
-    'lastUpdated'
   );
 
   const layout = [collectionLayout, personalLayout];
@@ -125,34 +113,30 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
-  //setCollectionLayout(defaultLayoutSpec);
-  /* Uncomment after every statsspec.tsx change
-
-
-                       React.useEffect(() => {
-                        if (isDefaultCacheValid) {
-                          setDefaultLayout(defaultLayoutSpec);
-                          setCollectionLayout(defaultLayoutSpec);
-                        }
-                      }, [isDefaultCacheValid]);*/
-
   const queries = useQueries(filters, false);
   const previousCollectionLayout = React.useRef(
     collectionLayout as unknown as StatLayout
   );
   const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
 
-  const setItemsUndefined = (layout: StatLayout): StatLayout =>
-    layout.map((pageLayout) => ({
+  const updatePage = (layout: StatLayout, pageIndex: number): StatLayout => {
+    const lastUpdatedDate = new Date();
+    return layout.map((pageLayout, index) => ({
       label: pageLayout.label,
       categories: pageLayout.categories.map((category) => ({
         label: category.label,
         items: category.items.map((item) => ({
           ...item,
-          itemValue: undefined,
+          itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
       })),
+      lastUpdated:
+        pageIndex === index
+          ? lastUpdatedDate.toString()
+          : pageLayout.lastUpdated,
     }));
+  };
+
   const handleChange = React.useCallback(
     (
       newCategories: (
@@ -201,7 +185,7 @@ export function StatsPage(): JSX.Element | null {
     );
   };
   const defaultStatsAddLeft = useDefaultStatsToAdd(
-    collectionLayout?.[activePage],
+    layout[activePage.isCollection ? 0 : 1]?.[activePage.pageIndex],
     defaultLayout
   );
   const handleDefaultLoad = React.useCallback(
@@ -260,7 +244,9 @@ export function StatsPage(): JSX.Element | null {
     },
     [handleChange]
   );
-
+  const pageLastUpdated = activePage.isCollection
+    ? collectionLayout?.[activePage.pageIndex].lastUpdated
+    : personalLayout?.[activePage.pageIndex].lastUpdated;
   return collectionLayout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -272,23 +258,26 @@ export function StatsPage(): JSX.Element | null {
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">{commonText('statistics')}</H2>
         <span className="-ml-2 flex-1" />
-        {lastCollectionUpdated !== undefined && (
+        {pageLastUpdated !== undefined && (
           <>
             <p>{`${statsText('lastUpdated')}`}</p>
-            <DateElement date={lastCollectionUpdated} />
+
+            <DateElement date={pageLastUpdated} />
           </>
         )}
         <Button.Blue
           onClick={(): void => {
-            const lastUpdatedDate = new Date();
-            setCollectionLayout(setItemsUndefined(collectionLayout));
-            setPersonalLayout(
-              personalLayout === undefined
-                ? undefined
-                : setItemsUndefined(personalLayout)
-            );
-            setLastCollectionUpdated(lastUpdatedDate.toString());
-            setLastUpdated(lastUpdatedDate.toString());
+            if (activePage.isCollection) {
+              setCollectionLayout(
+                updatePage(collectionLayout, activePage.pageIndex)
+              );
+            } else {
+              setPersonalLayout(
+                personalLayout === undefined
+                  ? undefined
+                  : updatePage(personalLayout, activePage.pageIndex)
+              );
+            }
           }}
         >
           {commonText('update')}
@@ -298,6 +287,7 @@ export function StatsPage(): JSX.Element | null {
             <Button.Red
               onClick={(): void => {
                 setCollectionLayout(defaultLayoutSpec);
+                setPersonalLayout(defaultLayoutSpec);
               }}
             >
               {commonText('reset')}
@@ -478,6 +468,7 @@ export function StatsPage(): JSX.Element | null {
                           {
                             label,
                             categories: [],
+                            lastUpdated: undefined,
                           },
                         ]);
                         setState({
@@ -621,7 +612,7 @@ export function StatsPage(): JSX.Element | null {
             setDefaultLayout((layout) =>
               layout === undefined
                 ? undefined
-                : layout.map(({ label, categories }) => ({
+                : layout.map(({ label, categories, lastUpdated }) => ({
                     label,
                     categories: categories.map(({ label, items }) => ({
                       label,
@@ -630,6 +621,7 @@ export function StatsPage(): JSX.Element | null {
                         absent: false,
                       })),
                     })),
+                    lastUpdated,
                   }))
             );
           }}
