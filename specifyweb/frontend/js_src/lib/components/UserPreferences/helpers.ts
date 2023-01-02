@@ -408,16 +408,12 @@ export const preferencesPromise = contextUnlockedPromise.then(
     entrypoint === 'main'
       ? f
           .all({
-            items: Object.fromEntries(
-              await Promise.all(
-                preferencesPromiseGenerator.map(
-                  async ([resourceType, promiseGenerator]) => [
-                    resourceType,
-                    await promiseGenerator().then((data) => data),
-                  ]
-                )
-              )
-            ),
+            items: f
+              .all({
+                user: preferencesPromiseGenerator.user(),
+                collection: preferencesPromiseGenerator.collection(),
+              })
+              .then((data) => data),
             defaultItems: ajax(
               formatUrl('/context/app.resource', {
                 name: defaultResourceName,
@@ -460,7 +456,7 @@ function initializePreferences(resource: IR<ResourceWithData>): void {
     preference: JSON.parse(resource.collection.data ?? '{}'),
   };
 
-  setDevelopmentGlobal('_preferences', preference); //Remove Id!
+  setDevelopmentGlobal('_preferences', preference);
   prefEvents.trigger('update', undefined);
   commitToCache();
   setCache('userPreferences', 'defaultCached', defaultPreferences);

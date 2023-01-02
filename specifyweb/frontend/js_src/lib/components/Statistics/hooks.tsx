@@ -23,7 +23,6 @@ import { deserializeResource } from '../../hooks/resource';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { statsText } from '../../localization/stats';
 import { keysToLowerCase, removeItem } from '../../utils/utils';
 
 /**
@@ -127,6 +126,7 @@ export function useDefaultStatsToAdd(
             })),
           }))
           .filter(({ items }) => items.length > 0),
+        lastUpdated: undefined,
       }))
       .filter(({ categories }) => categories.length > 0);
   }, [layout, defaultLayout]);
@@ -154,6 +154,7 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
             ),
           })
         ),
+        lastUpdated: undefined,
       })),
     [statsSpec]
   );
@@ -233,10 +234,14 @@ export function useResolvedSpec(
               fields: statSpecItem?.spec?.fields.map(
                 ({ path, ...field }, index) =>
                   serializeResource(
-                    makeQueryField(statSpecItem?.spec?.tableName, path, {
-                      ...field,
-                      position: index,
-                    })
+                    makeQueryField(
+                      (statSpecItem.spec as QueryBuilderStat).tableName,
+                      path,
+                      {
+                        ...field,
+                        position: index,
+                      }
+                    )
                   )
               ),
             })
@@ -312,6 +317,7 @@ export function useValueLoad(
       } else if (statSpecCalculated.type === 'BackendStat') {
         return statSpecCalculated.value;
       }
+      return undefined;
     }, [statSpecCalculated, itemValue]),
     false
   );

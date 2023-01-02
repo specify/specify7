@@ -432,68 +432,69 @@ export const statsSpec: IR<StatsSpec> = {
   [statsText('personal')]: {
     holdings: {
       label: statsText('collection'),
-      categories: () => ({
-        ordersCount: {
-          label: statsText('orders'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'Taxon',
-            fields: [
-              {
-                path: formattedEntry,
-              },
-              {
-                path: 'rankId',
-                operStart: queryFieldFilters.equal.id,
-                startValue: '100',
-                isDisplay: false,
-              },
-            ],
+      categories: () =>
+        ({
+          ordersCount: {
+            label: statsText('orders'),
+            spec: {
+              type: 'QueryBuilderStat',
+              tableName: 'Taxon',
+              fields: [
+                {
+                  path: formattedEntry,
+                },
+                {
+                  path: 'rankId',
+                  operStart: queryFieldFilters.equal.id,
+                  startValue: '100',
+                  isDisplay: false,
+                },
+              ],
+            },
           },
-        },
-        collectionObjectsCataloged: {
-          label: statsText('collectionObjectsCataloged'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'CollectionObject',
-            fields: [
-              {
-                path: 'cataloger.SpecifyUser.name',
-                startvalue: userInformation.name,
-                operstart: queryFieldFilters.equal.id,
-              },
-            ],
+          collectionObjectsCataloged: {
+            label: statsText('collectionObjectsCataloged'),
+            spec: {
+              type: 'QueryBuilderStat',
+              tableName: 'CollectionObject',
+              fields: [
+                {
+                  path: 'cataloger.SpecifyUser.name',
+                  startvalue: userInformation.name,
+                  operstart: queryFieldFilters.equal.id,
+                },
+              ],
+            },
           },
-        },
-        collectionObjectsDetermined: {
-          label: statsText('collectionObjectsDetermined'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'CollectionObject',
-            fields: [
-              {
-                path: 'determinations.determiner.SpecifyUser.name',
-                startvalue: userInformation.name,
-                operstart: queryFieldFilters.equal.id,
-              },
-            ],
+          collectionObjectsDetermined: {
+            label: statsText('collectionObjectsDetermined'),
+            spec: {
+              type: 'QueryBuilderStat',
+              tableName: 'CollectionObject',
+              fields: [
+                {
+                  path: 'determinations.determiner.SpecifyUser.name',
+                  startvalue: userInformation.name,
+                  operstart: queryFieldFilters.equal.id,
+                },
+              ],
+            },
           },
-        },
-        collectionObjectInventorized: {
-          label: statsText('collectionObjects'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'CollectionObject',
-            fields: [
-              {
-                path: 'inventorizedBy.SpecifyUser.name',
-                startvalue: userInformation.name,
-                operstart: queryFieldFilters.equal.id,
-              },
-            ],
+          collectionObjectInventorized: {
+            label: statsText('collectionObjects'),
+            spec: {
+              type: 'QueryBuilderStat',
+              tableName: 'CollectionObject',
+              fields: [
+                {
+                  path: 'inventorizedBy.SpecifyUser.name',
+                  startvalue: userInformation.name,
+                  operstart: queryFieldFilters.equal.id,
+                },
+              ],
+            },
           },
-        },
-      }),
+        } as const),
     },
   },
 };

@@ -21,14 +21,7 @@ export const collectionPreferenceDefinitions = {
             renderer: () => <>{error('This should not get called')}</>,
           }),
           defaultLayout: defineItem<StatLayout | undefined>({
-            title: 'Defines the layout of the default stats',
-            requiresReload: false,
-            visible: false,
-            defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
-          }),
-          lastUpdated: defineItem<string | undefined>({
-            title: 'Defines last cached date and time',
+            title: 'Defines the default layout of the stats page',
             requiresReload: false,
             visible: false,
             defaultValue: undefined,

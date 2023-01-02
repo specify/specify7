@@ -34,6 +34,7 @@ import {
 import { TableFields } from '../DataModel/helperTypes';
 
 import { StatLayout } from '../Statistics/types';
+import { collectionPreferenceDefinitions } from './CollectionPreferenceDefinitions';
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
   readonly category: string;
@@ -1537,13 +1538,6 @@ export const preferenceDefinitions = {
             defaultValue: undefined,
             renderer: () => <>{error('This should not get called')}</>,
           }),
-          lastUpdated: defineItem<string | undefined>({
-            title: 'Defines last cached date and time',
-            requiresReload: false,
-            visible: false,
-            defaultValue: undefined,
-            renderer: () => <>{error('This should not get called')}</>,
-          }),
         },
       },
     },
@@ -1636,5 +1630,7 @@ import('../DataModel/schema')
 export type Preferences = GenericPreferencesCategories &
   typeof preferenceDefinitions;
 
+export type CollectionPreferences = GenericPreferencesCategories &
+  typeof collectionPreferenceDefinitions;
 export type GenericPreferences = GenericPreferencesCategories;
 ensure<GenericPreferences>()(preferenceDefinitions);

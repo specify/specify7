@@ -68,10 +68,12 @@ const actions = Object.fromEntries(
   )
 );
 
-export const preferencesPromiseGenerator = Object.entries(actions).map(
-  ([resourceType, { getResources, getResourceId, fetchOrCreate }]) => [
-    resourceType,
-    async (): Promise<ResourceWithData> =>
-      getResources().then(getResourceId).then(fetchOrCreate),
-  ]
+export const preferencesPromiseGenerator = Object.fromEntries(
+  Object.entries(actions).map(
+    ([resourceType, { getResources, getResourceId, fetchOrCreate }]) => [
+      resourceType,
+      async (): Promise<ResourceWithData> =>
+        getResources().then(getResourceId).then(fetchOrCreate),
+    ]
+  )
 );
