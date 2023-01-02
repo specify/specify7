@@ -6,7 +6,7 @@ import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { useQueries } from '../Toolbar/Query';
-import { usePref } from '../UserPreferences/usePref';
+import { useCollectionPref, usePref } from '../UserPreferences/usePref';
 import { userInformation } from '../InitialContext/userInformation';
 import { awaitPrefsSynced } from '../UserPreferences/helpers';
 import { softFail } from '../Errors/Crash';
@@ -27,42 +27,65 @@ import { CustomStat, DefaultStat, StatLayout } from './types';
 import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
+import { active } from 'd3';
+
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
 
-  const [layout, setLayout] = usePref(
+  const [collectionLayout, setCollectionLayout] = useCollectionPref(
     'statistics',
     'appearance',
-    'layout',
-    'collectionPreferences'
+    'layout'
   );
 
-  const [defaultLayout, setDefaultLayout] = usePref(
+  const [personalLayout, setPersonalLayout] = usePref(
+    'statistics',
+    'appearance',
+    'layout'
+  );
+
+  const [defaultLayout, setDefaultLayout] = useCollectionPref(
     'statistics',
     'appearance',
     'defaultLayout'
   );
+
   const [lastUpdated, setLastUpdated] = usePref(
     'statistics',
     'appearance',
     'lastUpdated'
   );
+  const [lastCollectionUpdated, setLastCollectionUpdated] = useCollectionPref(
+    'statistics',
+    'appearance',
+    'lastUpdated'
+  );
 
-  const isCacheValid = useCacheValid(layout);
-  const statsSpec = useStatsSpec(isCacheValid || layout === undefined);
+  const layout = [collectionLayout, personalLayout];
 
-  const defaultStatsSpec = useStatsSpec(false, layout === undefined);
+  const isCollectionCacheValid = useCacheValid(collectionLayout);
+  const isPersonalCacheValid = useCacheValid(personalLayout);
+  const isCacheValid = isCollectionCacheValid && isPersonalCacheValid;
+  const statsSpec = useStatsSpec(isCacheValid);
+
+  const defaultStatsSpec = useStatsSpec(false, collectionLayout === undefined);
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
   const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
 
   React.useEffect(() => {
     if (isDefaultCacheValid) {
       setDefaultLayout(defaultLayoutSpec);
-      if (layout === undefined) {
-        setLayout(defaultLayoutSpec);
+      if (collectionLayout === undefined) {
+        setCollectionLayout(defaultLayoutSpec);
       }
     }
-  }, [isDefaultCacheValid, layout, setLayout, setDefaultLayout]);
+  }, [
+    isDefaultCacheValid,
+    collectionLayout,
+    setCollectionLayout,
+    setDefaultLayout,
+    defaultLayoutSpec,
+  ]);
 
   const [state, setState] = React.useState<
     | State<'EditingState'>
@@ -78,6 +101,7 @@ export function StatsPage(): JSX.Element | null {
         'PageRenameState',
         {
           readonly pageIndex: number | undefined;
+          readonly isCollection: boolean;
         }
       >
   >({ type: 'DefaultState' });
@@ -87,8 +111,14 @@ export function StatsPage(): JSX.Element | null {
     state.type === 'EditingState' ||
     isAddingItem ||
     state.type === 'PageRenameState';
-  const [activePageIndex, setActivePageIndex] = React.useState<number>(0);
-
+  const [activePage, setActivePage] = React.useState<{
+    readonly isCollection: boolean;
+    readonly pageIndex: number;
+  }>({
+    isCollection: true,
+    pageIndex: 0,
+  });
+  const isCollection = activePage.isCollection;
   const filters = React.useMemo(
     () => ({
       specifyUser: userInformation.id,
@@ -96,36 +126,60 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
-  //setLayout(defaultLayoutSpec);
+  //setCollectionLayout(defaultLayoutSpec);
   /* Uncomment after every statsspec.tsx change
 
 
-   React.useEffect(() => {
-    if (isDefaultCacheValid) {
-      setDefaultLayout(defaultLayoutSpec);
-      setLayout(defaultLayoutSpec);
-    }
-  }, [isDefaultCacheValid]);*/
+                       React.useEffect(() => {
+                        if (isDefaultCacheValid) {
+                          setDefaultLayout(defaultLayoutSpec);
+                          setCollectionLayout(defaultLayoutSpec);
+                        }
+                      }, [isDefaultCacheValid]);*/
 
   const queries = useQueries(filters, false);
-  const previousLayout = React.useRef(layout);
+  const previousCollectionLayout = React.useRef(
+    collectionLayout as unknown as StatLayout | undefined
+  );
+  const previousLayout = React.useRef(
+    personalLayout as unknown as StatLayout | undefined
+  );
 
+  const setItemsUndefined = (layout: StatLayout): StatLayout =>
+    layout.map((pageLayout) => ({
+      label: pageLayout.label,
+      categories: pageLayout.categories.map((category) => ({
+        label: category.label,
+        items: category.items.map((item) => ({
+          ...item,
+          itemValue: undefined,
+        })),
+      })),
+    }));
   const handleChange = React.useCallback(
     (
       newCategories: (
         oldCategory: StatLayout[number]['categories']
       ) => StatLayout[number]['categories']
     ): void => {
+      const layout = activePage.isCollection
+        ? collectionLayout
+        : personalLayout;
+      const setLayout = activePage.isCollection
+        ? setCollectionLayout
+        : setPersonalLayout;
       setLayout((oldLayout: StatLayout | undefined) =>
         oldLayout === undefined
           ? undefined
-          : replaceItem(oldLayout, activePageIndex, {
-              ...oldLayout[activePageIndex],
-              categories: newCategories(oldLayout[activePageIndex].categories),
+          : replaceItem(oldLayout, activePage.pageIndex, {
+              ...oldLayout[activePage.pageIndex],
+              categories: newCategories(
+                oldLayout[activePage.pageIndex].categories
+              ),
             })
       );
     },
-    [activePageIndex, setLayout]
+    [activePage, setCollectionLayout]
   );
 
   const handleAdd = (
@@ -148,7 +202,7 @@ export function StatsPage(): JSX.Element | null {
     );
   };
   const defaultStatsAddLeft = useDefaultStatsToAdd(
-    layout?.[activePageIndex],
+    collectionLayout?.[activePage],
     defaultLayout
   );
   const handleDefaultLoad = React.useCallback(
@@ -208,7 +262,7 @@ export function StatsPage(): JSX.Element | null {
     [handleChange]
   );
 
-  return layout === undefined ? null : (
+  return collectionLayout === undefined ? null : (
     <Form
       className={className.containerFullGray}
       onSubmit={(): void => {
@@ -218,41 +272,33 @@ export function StatsPage(): JSX.Element | null {
     >
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">{commonText('statistics')}</H2>
-
         <span className="-ml-2 flex-1" />
-
-        <p>
-          {`${statsText('lastUpdated')} `}
-          <DateElement date={lastUpdated} />
-        </p>
-
+        {lastCollectionUpdated !== undefined && (
+          <>
+            <p>{`${statsText('lastUpdated')}`}</p>
+            <DateElement date={lastCollectionUpdated} />
+          </>
+        )}
         <Button.Blue
           onClick={(): void => {
             const lastUpdatedDate = new Date();
-            setLayout(
-              layout.map((pageLayout) => ({
-                label: pageLayout.label,
-                categories: pageLayout.categories.map((category) => ({
-                  label: category.label,
-                  items: category.items.map((item) => ({
-                    ...item,
-                    itemValue: undefined,
-                  })),
-                })),
-              }))
+            setCollectionLayout(setItemsUndefined(collectionLayout));
+            setPersonalLayout(
+              personalLayout === undefined
+                ? undefined
+                : setItemsUndefined(personalLayout)
             );
-
+            setLastCollectionUpdated(lastUpdatedDate.toString());
             setLastUpdated(lastUpdatedDate.toString());
           }}
         >
           {commonText('update')}
         </Button.Blue>
-
         {isEditing ? (
           <>
             <Button.Red
               onClick={(): void => {
-                setLayout(defaultLayoutSpec);
+                setCollectionLayout(defaultLayoutSpec);
               }}
             >
               {commonText('reset')}
@@ -260,12 +306,19 @@ export function StatsPage(): JSX.Element | null {
 
             <Button.Red
               onClick={(): void => {
-                setLayout(previousLayout.current);
+                setCollectionLayout(previousCollectionLayout.current);
+                setPersonalLayout(previousLayout.current);
                 setState({ type: 'DefaultState' });
-                setActivePageIndex(
-                  activePageIndex >= previousLayout.current.length
+                setActivePage(
+                  isCollection
+                    ? previousCollectionLayout.current !== undefined &&
+                      activePage >= previousCollectionLayout.current.length
+                      ? previousCollectionLayout.current.length - 1
+                      : activePage
+                    : previousLayout.current !== undefined &&
+                      activePage >= previousLayout.current.length
                     ? previousLayout.current.length - 1
-                    : activePageIndex
+                    : activePage
                 );
               }}
             >
@@ -279,7 +332,8 @@ export function StatsPage(): JSX.Element | null {
               setState({
                 type: 'EditingState',
               });
-              previousLayout.current = layout;
+              previousCollectionLayout.current = collectionLayout;
+              previousLayout.current = personalLayout;
             }}
           >
             {commonText('edit')}
@@ -294,104 +348,164 @@ export function StatsPage(): JSX.Element | null {
                 md:sticky
             `}
           >
-            {layout.map(({ label }, pageIndex) => (
-              <StatsPageButton
-                key={pageIndex}
-                label={label}
-                isCurrent={pageIndex === activePageIndex}
-                onRename={
-                  isEditing
-                    ? (): void => {
-                        setState({
-                          type: 'PageRenameState',
+            {layout.map((parentLayout, index) =>
+              parentLayout === undefined ? undefined : (
+                <>
+                  {parentLayout.map(({ label }, pageIndex) => (
+                    <StatsPageButton
+                      key={pageIndex}
+                      label={label}
+                      isCurrent={
+                        activePage.pageIndex === pageIndex &&
+                        activePage.isCollection === (index === 0)
+                      }
+                      onRename={
+                        isEditing
+                          ? (): void => {
+                              setState({
+                                type: 'PageRenameState',
+                                isCollection: index === 0,
+                                pageIndex,
+                              });
+                            }
+                          : undefined
+                      }
+                      onClick={(): void => {
+                        setActivePage({
+                          isCollection: index === 0,
                           pageIndex,
                         });
-                      }
-                    : undefined
-                }
-                onClick={(): void => {
-                  setActivePageIndex(pageIndex);
-                }}
-              />
-            ))}
-            {isEditing && (
-              <StatsPageButton
-                onClick={(): void => {
-                  setState({
-                    type: 'PageRenameState',
-                    pageIndex: undefined,
-                  });
-                }}
-                isCurrent={false}
-                label={commonText('add')}
-                onRename={undefined}
-              />
+                      }}
+                    />
+                  ))}
+                  {isEditing && (
+                    <StatsPageButton
+                      onClick={(): void => {
+                        setState({
+                          type: 'PageRenameState',
+                          pageIndex: undefined,
+                          isCollection: index === 0,
+                        });
+                      }}
+                      isCurrent={false}
+                      label={commonText('add')}
+                      onRename={undefined}
+                    />
+                  )}
+                </>
+              )
             )}
           </aside>
           {state.type === 'PageRenameState' && (
             <StatsPageEditing
-              onRemove={
-                typeof state.pageIndex === 'number'
-                  ? layout.length > 1
-                    ? (): void => {
-                        setLayout((old) => removeItem(old, state.pageIndex!));
+              onRemove={(): (() => void) | undefined => {
+                if (state.pageIndex === undefined) return undefined;
+                const setLayout = state.isCollection
+                  ? setCollectionLayout
+                  : setPersonalLayout;
+                const layout = state.isCollection
+                  ? collectionLayout
+                  : personalLayout;
+                if (layout !== undefined && layout.length > 1) {
+                  setLayout((oldLayout) =>
+                    oldLayout === undefined
+                      ? undefined
+                      : removeItem(oldLayout, state.pageIndex!)
+                  );
+                  setState({
+                    type: 'EditingState',
+                  });
+                  setActivePage({
+                    pageIndex: layout.length - 2,
+                    isCollection: state.isCollection,
+                  });
+                }
+                return undefined;
+              }}
+              onRename={
+                state.pageIndex === undefined
+                  ? undefined
+                  : (value) => {
+                      if (state.pageIndex === undefined) return undefined;
+                      const setLayout = state.isCollection
+                        ? setCollectionLayout
+                        : setPersonalLayout;
+                      const layout = state.isCollection
+                        ? collectionLayout
+                        : personalLayout;
+                      if (layout !== undefined) {
+                        setLayout(
+                          replaceItem(layout, state.pageIndex, {
+                            ...layout[state.pageIndex],
+                            label: value,
+                          })
+                        );
                         setState({
                           type: 'EditingState',
                         });
-                        setActivePageIndex(layout.length - 2);
                       }
-                    : undefined
-                  : undefined
-              }
-              onRename={
-                typeof state.pageIndex === 'number'
-                  ? (value): void => {
-                      setLayout(
-                        replaceItem(layout, state.pageIndex!, {
-                          ...layout[state.pageIndex!],
-                          label: value,
-                        })
-                      );
-                      setState({
-                        type: 'EditingState',
-                      });
+                      return undefined;
                     }
-                  : undefined
               }
               onAdd={
                 typeof state.pageIndex === 'number'
                   ? undefined
                   : (label): void => {
-                      setLayout([
-                        ...layout,
-                        {
-                          label,
-                          categories: [],
-                        },
-                      ]);
-                      setState({
-                        type: 'EditingState',
-                      });
-                      setActivePageIndex(layout.length);
+                      const setLayout = state.isCollection
+                        ? setCollectionLayout
+                        : setPersonalLayout;
+                      const layout = state.isCollection
+                        ? collectionLayout
+                        : personalLayout;
+                      if (layout !== undefined) {
+                        setLayout([
+                          ...layout,
+                          {
+                            label,
+                            categories: [],
+                          },
+                        ]);
+                        setState({
+                          type: 'EditingState',
+                        });
+                        setActivePage({
+                          pageIndex: layout.length,
+                          isCollection: state.isCollection,
+                        });
+                      }
                     }
               }
               onClose={(): void => setState({ type: 'EditingState' })}
               label={
                 typeof state.pageIndex === 'number'
-                  ? layout[state.pageIndex].label
+                  ? state.isCollection
+                    ? collectionLayout[state.pageIndex].label
+                    : personalLayout?.[state.pageIndex].label
                   : undefined
               }
             />
           )}
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
+              pageLayout={
+                activePage.isCollection
+                  ? collectionLayout[activePage.pageIndex].categories ===
+                    undefined
+                    ? undefined
+                    : collectionLayout[activePage.pageIndex]
+                  : personalLayout?.[activePage.pageIndex].categories ===
+                    undefined
+                  ? undefined
+                  : personalLayout[activePage.pageIndex]
+              }
+              statsSpec={statsSpec}
               onAdd={
                 isEditing
                   ? (categoryindex): void =>
                       typeof categoryindex === 'number'
                         ? setState({
                             type: 'AddingState',
-                            pageIndex: activePageIndex,
+                            pageIndex: activePage.pageIndex,
                             categoryIndex: categoryindex,
                           })
                         : handleChange((oldCategory) => [
@@ -401,30 +515,6 @@ export function StatsPage(): JSX.Element | null {
                               items: [],
                             },
                           ])
-                  : undefined
-              }
-              pageLayout={
-                layout[activePageIndex].categories === undefined
-                  ? undefined
-                  : layout[activePageIndex]
-              }
-              statsSpec={statsSpec}
-              onClick={handleAdd}
-              onRemove={
-                isEditing
-                  ? (categoryIndex, itemIndex): void => {
-                      handleChange((oldCategory) =>
-                        typeof itemIndex === 'number'
-                          ? replaceItem(oldCategory, categoryIndex, {
-                              ...oldCategory[categoryIndex],
-                              items: removeItem(
-                                oldCategory[categoryIndex].items,
-                                itemIndex
-                              ),
-                            })
-                          : removeItem(oldCategory, categoryIndex)
-                      );
-                    }
                   : undefined
               }
               onCategoryRename={
@@ -438,6 +528,7 @@ export function StatsPage(): JSX.Element | null {
                       )
                   : undefined
               }
+              onClick={handleAdd}
               onItemRename={
                 isEditing
                   ? (categoryIndex, itemIndex, newLabel): void =>
@@ -456,29 +547,39 @@ export function StatsPage(): JSX.Element | null {
                       )
                   : undefined
               }
+              onRemove={
+                isEditing
+                  ? (categoryIndex, itemIndex): void => {
+                      handleChange((oldCategory) =>
+                        typeof itemIndex === 'number'
+                          ? replaceItem(oldCategory, categoryIndex, {
+                              ...oldCategory[categoryIndex],
+                              items: removeItem(
+                                oldCategory[categoryIndex].items,
+                                itemIndex
+                              ),
+                            })
+                          : removeItem(oldCategory, categoryIndex)
+                      );
+                    }
+                  : undefined
+              }
               onSpecChanged={(categoryIndex, itemIndex, fields): void =>
-                setLayout(
-                  replaceItem(layout, activePageIndex, {
-                    ...layout[activePageIndex],
-                    categories: replaceItem(
-                      layout[activePageIndex].categories,
-                      categoryIndex,
+                handleChange((oldCategory) =>
+                  replaceItem(oldCategory, categoryIndex, {
+                    ...oldCategory[categoryIndex],
+                    items: replaceItem(
+                      oldCategory[categoryIndex].items,
+                      itemIndex,
                       {
-                        ...layout[activePageIndex].categories[categoryIndex],
-                        items: replaceItem(
-                          layout[activePageIndex].categories[categoryIndex]
-                            .items,
-                          itemIndex,
-                          {
-                            ...layout[activePageIndex].categories[categoryIndex]
-                              .items[itemIndex],
-                            ...(layout[activePageIndex].categories[
-                              categoryIndex
-                            ].items[itemIndex].type === 'DefaultStat'
-                              ? {}
-                              : { fields, itemValue: undefined }),
-                          }
-                        ),
+                        ...oldCategory[categoryIndex].items[itemIndex],
+                        ...(oldCategory[categoryIndex].items[itemIndex].type ===
+                        'DefaultStat'
+                          ? {}
+                          : {
+                              fields,
+                              itemValue: undefined,
+                            }),
                       }
                     ),
                   })
@@ -509,7 +610,10 @@ export function StatsPage(): JSX.Element | null {
                     label,
                     categories: categories.map(({ label, items }) => ({
                       label,
-                      items: items.map((item) => ({ ...item, absent: false })),
+                      items: items.map((item) => ({
+                        ...item,
+                        absent: false,
+                      })),
                     })),
                   }))
             );
