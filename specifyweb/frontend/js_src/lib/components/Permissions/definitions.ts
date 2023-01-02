@@ -91,6 +91,7 @@ export const institutionPermissions = new Set([
  */
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
+  '/preferences/statistics': ['edit_protected'],
 } as const;
 
 /**
