@@ -10,6 +10,7 @@ import type {
   StatCategoryReturn,
 } from './types';
 import { userInformation } from '../InitialContext/userInformation';
+import { ensure } from '../../utils/types';
 
 const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
   backEndStats: BackendStatsResult[CATEGORY_NAME] | undefined,
@@ -432,16 +433,20 @@ export const statsSpec: IR<StatsSpec> = {
     holdings: {
       label: statsText('collection'),
       categories: () => ({
-        collectionObjectsModified: {
-          label: statsText('collectionObjectsModified'),
+        ordersCount: {
+          label: statsText('orders'),
           spec: {
             type: 'QueryBuilderStat',
-            tableName: 'CollectionObject',
+            tableName: 'Taxon',
             fields: [
               {
-                path: 'modifiedByAgent.SpecifyUser.name',
-                startvalue: userInformation.name,
-                operstart: queryFieldFilters.equal.id,
+                path: formattedEntry,
+              },
+              {
+                path: 'rankId',
+                operStart: queryFieldFilters.equal.id,
+                startValue: '100',
+                isDisplay: false,
               },
             ],
           },
@@ -488,42 +493,9 @@ export const statsSpec: IR<StatsSpec> = {
             ],
           },
         },
-        openLoansCount: {
-          label: statsText('openLoans'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'Loan',
-            fields: [
-              {
-                path: formattedEntry,
-              },
-              {
-                path: 'isClosed',
-                operStart: queryFieldFilters.falseOrNull.id,
-                isDisplay: false,
-              },
-            ],
-          },
-        },
-        georeferencedLocalityCount: {
-          label: statsText('georeferencedLocalities'),
-          spec: {
-            type: 'QueryBuilderStat',
-            tableName: 'Locality',
-            fields: [
-              {
-                path: formattedEntry,
-              },
-              {
-                path: 'latitude1',
-                operStart: queryFieldFilters.empty.id,
-                isNot: true,
-                isDisplay: false,
-              },
-            ],
-          },
-        },
       }),
     },
   },
 };
+
+ensure<IR<StatsSpec>>()(statsSpec);
