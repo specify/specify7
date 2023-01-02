@@ -140,7 +140,6 @@ async function determineFields<SCHEMA extends AnySchema>(
   );
 }
 
-// FIXME: add tests
 async function formatField(
   {
     field: fields,
@@ -252,3 +251,5 @@ export const getMainTableFields = (tableName: keyof Tables): RA<LiteralField> =>
         true
       )
     );
+
+export const exportsForTests = { formatField };
