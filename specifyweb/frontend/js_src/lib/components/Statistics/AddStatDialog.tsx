@@ -6,7 +6,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Button } from '../Atoms/Button';
 import { commonText } from '../../localization/common';
 import { statsText } from '../../localization/stats';
-import { H2, H3, Ul } from '../Atoms';
+import { H3, Ul } from '../Atoms';
 import { QueryList } from '../Toolbar/Query';
 import { Categories } from './Categories';
 import React from 'react';
@@ -22,7 +22,6 @@ export function AddStatDialog({
 }: {
   readonly queries: RA<SerializedResource<SpQuery>> | undefined;
   readonly defaultStatsAddLeft: StatLayout | undefined;
-  readonly layout: StatLayout;
   readonly statsSpec: StatsSpec;
   readonly onClose: () => void;
   readonly onAdd: (item: CustomStat | DefaultStat, itemIndex: number) => void;
@@ -76,7 +75,7 @@ export function AddStatDialog({
         )}
       </div>
       <div>
-        {defaultStatsAddLeft.length > 0 && (
+        {defaultStatsAddLeft !== undefined && defaultStatsAddLeft.length > 0 && (
           <div>
             <H3 className="text-xl">{statsText('selectFromDefault')}</H3>
             <Ul>
@@ -110,7 +109,7 @@ export function AddStatDialog({
                           value: number | string,
                           itemLabel: string
                         ) => {
-                          handleValueLoad(
+                          handleValueLoad?.(
                             categoryIndex,
                             itemIndex,
                             value,

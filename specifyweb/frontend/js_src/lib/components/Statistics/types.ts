@@ -32,8 +32,9 @@ export type StatLayout = RA<{
   readonly label: string;
   readonly categories: RA<{
     readonly label: string;
-    readonly items: RA<DefaultStat | CustomStat>;
+    readonly items: RA<CustomStat | DefaultStat>;
   }>;
+  readonly lastUpdated: string | undefined;
 }>;
 
 export type StatCategoryReturn =

@@ -3,12 +3,7 @@ import type { RA } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { StatsResult } from './StatsResult';
 import React from 'react';
-import {
-  useCustomStatsSpec,
-  useFrontEndStatsQuery,
-  useResolvedSpec,
-  useValueLoad,
-} from './hooks';
+import { useCustomStatsSpec, useResolvedSpec, useValueLoad } from './hooks';
 import type { CustomStat, DefaultStat, StatsSpec } from './types';
 
 export function StatItem({

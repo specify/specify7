@@ -49,7 +49,7 @@ export function StatsResult({
             required
             value={statLabel}
             onValueChange={(newname): void => {
-              handleItemRename(newname);
+              handleItemRename?.(newname);
             }}
           />
           <span className="self-center">
