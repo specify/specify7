@@ -32,10 +32,12 @@ import type {
 import type { MappingPath } from './Mapper';
 import {
   anyTreeRank,
+  FieldType,
   formatPartialField,
   formattedEntry,
   formatToManyIndex,
   formatTreeRank,
+  getFieldType,
   getGenericMappingPath,
   getNameFromTreeRankName,
   parsePartialField,
@@ -188,6 +190,7 @@ export function getMappingLineData({
   mappingPath,
   generateFieldData = 'all',
   getMappedFields,
+  allowedRelationships,
   showHiddenFields = false,
   mustMatchPreferences = {},
   scope = 'wbPlanView',
@@ -202,6 +205,7 @@ export function getMappingLineData({
    */
   readonly generateFieldData: 'all' | 'none' | 'selectedOnly';
   readonly getMappedFields?: (mappingPath: MappingPath) => RA<string>;
+  readonly allowedRelationships?: RA<FieldType>;
   readonly showHiddenFields?: boolean;
   readonly mustMatchPreferences?: IR<boolean>;
   // WbPlanView has readOnly fields removed
@@ -377,201 +381,200 @@ export function getMappingLineData({
     },
 
     // REFACTOR: make this more readable
-    handleSimpleFields: ({ model, parentRelationship }) =>
-      commitInstanceData(
-        'simple',
-        model,
-        generateFieldData === 'none'
-          ? []
-          : [
-              scope === 'queryBuilder' &&
-              ((generateFieldData === 'all' &&
-                (!isTreeModel(model.name) ||
-                  mappingPath[internalState.position - 1] ===
-                    formatTreeRank(anyTreeRank) ||
-                  queryBuilderTreeFields.has(formattedEntry))) ||
-                internalState.defaultValue === formattedEntry)
-                ? [
-                    formattedEntry,
-                    {
-                      optionLabel: relationshipIsToMany(parentRelationship)
-                        ? queryText.aggregatedInline()
-                        : queryText.formattedInline(),
-                      tableName: model.name,
-                      isRelationship: false,
-                      isDefault: internalState.defaultValue === formattedEntry,
-                      isEnabled:
-                        !internalState.mappedFields.includes(formattedEntry),
-                    },
-                  ]
+    handleSimpleFields({ model, parentRelationship }) {
+      if (generateFieldData === 'none')
+        return commitInstanceData('simple', model, []);
+
+      const formatted =
+        scope === 'queryBuilder' &&
+        ((generateFieldData === 'all' &&
+          (!isTreeModel(model.name) ||
+            mappingPath[internalState.position - 1] ===
+              formatTreeRank(anyTreeRank) ||
+            queryBuilderTreeFields.has(formattedEntry))) ||
+          internalState.defaultValue === formattedEntry)
+          ? ([
+              formattedEntry,
+              {
+                optionLabel: relationshipIsToMany(parentRelationship)
+                  ? queryText.aggregatedInline()
+                  : queryText.formattedInline(),
+                tableName: model.name,
+                isRelationship: false,
+                isDefault: internalState.defaultValue === formattedEntry,
+                isEnabled: !internalState.mappedFields.includes(formattedEntry),
+              },
+            ] as const)
+          : undefined;
+
+      /*
+       * Add ID field to the list if it is selected or hidden fields
+       * are visible
+       */
+      const showId =
+        internalState.defaultValue === model.idField.name ||
+        (generateFieldData === 'all' &&
+          isFieldVisible(
+            showHiddenFields,
+            model.idField.isHidden,
+            model.idField.name
+          ));
+      const idField = showId
+        ? ([
+            model.idField.name,
+            {
+              optionLabel: commonText.id(),
+              tableName: model.name,
+              isRelationship: false,
+              isDefault: internalState.defaultValue === model.idField.name,
+              isEnabled: !internalState.mappedFields.includes(
+                model.idField.name
+              ),
+              isHidden: true,
+            },
+          ] as const)
+        : undefined;
+
+      const fieldsData = [
+        formatted,
+        idField,
+        ...model.fields
+          .filter((field) => {
+            let isIncluded =
+              (generateFieldData === 'all' ||
+                field.name === internalState.parsedDefaultValue[0]) &&
+              isFieldVisible(
+                showHiddenFields,
+                scope === 'queryBuilder'
+                  ? field.isHidden
+                  : field.overrides.isHidden,
+                field.name
+              ) &&
+              (isNoRestrictionsMode ||
+                // Display read only fields in query builder only
+                scope === 'queryBuilder' ||
+                !field.overrides.isReadOnly) &&
+              // Hide most fields for non "any" tree ranks in query builder
+              (scope !== 'queryBuilder' ||
+                !isTreeModel(model.name) ||
+                mappingPath[internalState.position - 1] ===
+                  formatTreeRank(anyTreeRank) ||
+                queryBuilderTreeFields.has(field.name)) &&
+              getFrontEndOnlyFields()[model.name]?.includes(field.name) !==
+                true;
+            if (field.isRelationship) {
+              // eslint-disable-next-line unicorn/prefer-ternary
+              if (scope === 'wbPlanView') {
+                /*
+                 * Hide nested -to-many relationships as they are not
+                 * supported by the WorkBench
+                 */
+                isIncluded &&=
+                  (parentRelationship === undefined ||
+                    (!isCircularRelationship(parentRelationship, field) &&
+                      !(
+                        relationshipIsToMany(field) &&
+                        relationshipIsToMany(parentRelationship)
+                      ))) &&
+                  (!canDoWbUpload ||
+                    (isTreeModel(model.name)
+                      ? hasTreeAccess(model.name, 'create')
+                      : hasTablePermission(
+                          field.relatedModel.name,
+                          'create'
+                        )) ||
+                    getUserPref(
+                      'workBench',
+                      'wbPlanView',
+                      'showNoAccessTables'
+                    )) &&
+                  /*
+                   * Hide relationship from tree tables in WbPlanView as they
+                   * are not supported by the WorkBench
+                   */
+                  !isTreeModel(model.name) &&
+                  /*
+                   * Hide -to-many relationships to a tree table as they are
+                   * not supported by the WorkBench
+                   */
+                  (!relationshipIsToMany(field) ||
+                    !isTreeModel(field.relatedModel.name));
+              } else {
+                isIncluded &&=
+                  !canExecuteQuery ||
+                  (isTreeModel(model.name)
+                    ? hasTreeAccess(model.name, 'read')
+                    : hasTablePermission(field.relatedModel.name, 'read')) ||
+                  getUserPref('queryBuilder', 'general', 'showNoReadTables');
+              }
+              isIncluded &&=
+                allowedRelationships === undefined ||
+                allowedRelationships.includes(getFieldType(field));
+            }
+            return isIncluded;
+          })
+          .flatMap((field) => {
+            const fieldData = {
+              optionLabel: field.label,
+              // Enable field
+              isEnabled:
+                // If it is not mapped
+                !internalState.mappedFields.includes(field.name) ||
+                // Or is a relationship
+                field.isRelationship,
+              // All fields are optional in the query builder
+              isRequired:
+                scope !== 'queryBuilder' &&
+                field.overrides.isRequired &&
+                !mustMatchPreferences[model.name] &&
+                // Relationships to system tables are not required by the uploader
+                (!field.isRelationship ||
+                  !field.relatedModel.overrides.isSystem),
+              isHidden:
+                scope === 'queryBuilder'
+                  ? field.isHidden
+                  : field.overrides.isHidden,
+              isDefault: field.name === internalState.defaultValue,
+              isRelationship: field.isRelationship,
+              tableName: field.isRelationship
+                ? field.relatedModel.name
                 : undefined,
-              /*
-               * Add ID field to the list if it is selected or hidden fields
-               * are visible
-               */
-              internalState.defaultValue === model.idField.name ||
-              (generateFieldData === 'all' &&
-                isFieldVisible(
-                  showHiddenFields,
-                  model.idField.isHidden,
-                  model.idField.name
-                ))
-                ? [
-                    model.idField.name,
-                    {
-                      optionLabel: commonText.id(),
-                      tableName: model.name,
-                      isRelationship: false,
-                      isDefault:
-                        internalState.defaultValue === model.idField.name,
-                      isEnabled: !internalState.mappedFields.includes(
-                        model.idField.name
-                      ),
-                      isHidden: true,
-                    },
-                  ]
-                : undefined,
-              ...model.fields
-                .filter(
-                  (field) =>
-                    (generateFieldData === 'all' ||
-                      field.name === internalState.parsedDefaultValue[0]) &&
-                    (!field.isRelationship ||
-                      parentRelationship === undefined ||
-                      (!isCircularRelationship(parentRelationship, field) &&
-                        /*
-                         * Hide nested -to-many relationships as they are not
-                         * supported by the WorkBench
-                         */
-                        (scope === 'queryBuilder' ||
-                          !(
-                            relationshipIsToMany(field) &&
-                            relationshipIsToMany(parentRelationship)
-                          )))) &&
-                    isFieldVisible(
-                      showHiddenFields,
-                      scope === 'queryBuilder'
-                        ? field.isHidden
-                        : field.overrides.isHidden,
-                      field.name
-                    ) &&
-                    (!field.isRelationship ||
-                      (scope === 'queryBuilder'
-                        ? !canExecuteQuery ||
-                          (isTreeModel(model.name)
-                            ? hasTreeAccess(model.name, 'read')
-                            : hasTablePermission(
-                                field.relatedModel.name,
-                                'read'
-                              )) ||
-                          getUserPref(
-                            'queryBuilder',
-                            'general',
-                            'showNoReadTables'
-                          )
-                        : !canDoWbUpload ||
-                          (isTreeModel(model.name)
-                            ? hasTreeAccess(model.name, 'create')
-                            : hasTablePermission(
-                                field.relatedModel.name,
-                                'create'
-                              )) ||
-                          getUserPref(
-                            'workBench',
-                            'wbPlanView',
-                            'showNoAccessTables'
-                          ))) &&
-                    /*
-                     * Hide relationship from tree tables in WbPlanView as they
-                     * are not supported by the WorkBench
-                     */
-                    (scope === 'queryBuilder' ||
-                      !field.isRelationship ||
-                      !isTreeModel(model.name)) &&
-                    /*
-                     * Hide -to-many relationships to a tree table as they are
-                     * not supported by the WorkBench
-                     */
-                    (scope === 'queryBuilder' ||
-                      !field.isRelationship ||
-                      !relationshipIsToMany(field) ||
-                      !isTreeModel(field.relatedModel.name)) &&
-                    (isNoRestrictionsMode ||
-                      // Display read only fields in query builder only
-                      scope === 'queryBuilder' ||
-                      !field.overrides.isReadOnly) &&
-                    // Hide most fields for non "any" tree ranks in query builder
-                    (scope !== 'queryBuilder' ||
-                      !isTreeModel(model.name) ||
-                      mappingPath[internalState.position - 1] ===
-                        formatTreeRank(anyTreeRank) ||
-                      queryBuilderTreeFields.has(field.name)) &&
-                    getFrontEndOnlyFields()[model.name]?.includes(
-                      field.name
-                    ) !== true
-                )
-                .flatMap((field) => {
-                  const fieldData = {
-                    optionLabel: field.label,
-                    // Enable field
-                    isEnabled:
-                      // If it is not mapped
-                      !internalState.mappedFields.includes(field.name) ||
-                      // Or is a relationship
-                      field.isRelationship,
-                    // All fields are optional in the query builder
-                    isRequired:
-                      scope !== 'queryBuilder' &&
-                      field.overrides.isRequired &&
-                      !mustMatchPreferences[model.name] &&
-                      // Relationships to system tables are not required by the uploader
-                      (!field.isRelationship ||
-                        !field.relatedModel.overrides.isSystem),
-                    isHidden:
-                      scope === 'queryBuilder'
-                        ? field.isHidden
-                        : field.overrides.isHidden,
-                    isDefault: field.name === internalState.defaultValue,
-                    isRelationship: field.isRelationship,
-                    tableName: field.isRelationship
-                      ? field.relatedModel.name
-                      : undefined,
-                  };
-                  return scope === 'queryBuilder' && field.isTemporal()
-                    ? Object.entries({
-                        fullDate: commonText.fullDate(),
-                        ...dateParts,
-                      })
-                        .map(
-                          ([datePart, label]) =>
-                            [
-                              formatPartialField(field.name, datePart),
-                              {
-                                ...fieldData,
-                                optionLabel: `${fieldData.optionLabel}${
-                                  datePart === 'fullDate' ? '' : ` (${label})`
-                                }`,
-                                isDefault:
-                                  field.name ===
-                                    internalState.parsedDefaultValue[0] &&
-                                  datePart ===
-                                    internalState.parsedDefaultValue[1],
-                                isEnabled:
-                                  fieldData.isEnabled &&
-                                  !internalState.mappedFields.includes(
-                                    formatPartialField(field.name, datePart)
-                                  ),
-                              },
-                            ] as const
-                        )
-                        .filter(
-                          ([_fieldName, fieldData]) =>
-                            generateFieldData === 'all' || fieldData.isDefault
-                        )
-                    : ([[field.name, fieldData]] as const);
-                }),
-            ]
-      ),
+            };
+            return scope === 'queryBuilder' && field.isTemporal()
+              ? Object.entries({
+                  fullDate: commonText.fullDate(),
+                  ...dateParts,
+                })
+                  .map(
+                    ([datePart, label]) =>
+                      [
+                        formatPartialField(field.name, datePart),
+                        {
+                          ...fieldData,
+                          optionLabel: `${fieldData.optionLabel}${
+                            datePart === 'fullDate' ? '' : ` (${label})`
+                          }`,
+                          isDefault:
+                            field.name ===
+                              internalState.parsedDefaultValue[0] &&
+                            datePart === internalState.parsedDefaultValue[1],
+                          isEnabled:
+                            fieldData.isEnabled &&
+                            !internalState.mappedFields.includes(
+                              formatPartialField(field.name, datePart)
+                            ),
+                        },
+                      ] as const
+                  )
+                  .filter(
+                    ([_fieldName, fieldData]) =>
+                      generateFieldData === 'all' || fieldData.isDefault
+                  )
+              : ([[field.name, fieldData]] as const);
+          }),
+      ] as const;
+      return commitInstanceData('simple', model, fieldsData);
+    },
   };
 
   navigator({
