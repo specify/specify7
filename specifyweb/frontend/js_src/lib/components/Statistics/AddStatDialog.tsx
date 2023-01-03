@@ -83,7 +83,7 @@ export function AddStatDialog({
                 defaultLayoutPage.categories.every(({ items }) =>
                   items.every(
                     (item) =>
-                      item.type === 'DefaultStat' && item.absent === true
+                      item.type === 'DefaultStat' && item.isVisible === false
                   )
                 ) ? undefined : (
                   <li key={index}>
