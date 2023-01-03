@@ -145,9 +145,17 @@ export const commonText = createDictionary({
     'en-us': 'Expand',
     'ru-ru': 'Расширить',
   },
-  contract: {
-    'en-us': 'Contract',
+  collapse: {
+    'en-us': 'Collapse',
     'ru-ru': 'Свернуть',
+  },
+  expandAll: {
+    'en-us': 'Expand All',
+    'ru-ru': 'Развернуть все',
+  },
+  collapseAll: {
+    'en-us': 'Collapse All',
+    'ru-ru': 'Свернуть все',
   },
   fullDate: {
     'en-us': 'Full Date',
@@ -294,14 +302,6 @@ export const commonText = createDictionary({
   primary: {
     'en-us': 'Primary',
     'ru-ru': 'Основной',
-  },
-  expandAll: {
-    'en-us': 'Expand All',
-    'ru-ru': 'Развернуть все',
-  },
-  collapseAll: {
-    'en-us': 'Collapse All',
-    'ru-ru': 'Свернуть все',
   },
   reset: {
     'en-us': 'Reset',

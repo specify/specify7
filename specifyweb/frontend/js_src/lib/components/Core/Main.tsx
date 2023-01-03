@@ -7,16 +7,13 @@ import React from 'react';
 import { commonText } from '../../localization/common';
 import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { enableBusinessRules } from '../DataModel/businessRules';
 import { crash } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { CollectionSelector, ExpressSearch, HeaderItems } from '../Header';
+import { Header } from '../Header';
 import type { MenuItemName } from '../Header/menuItemDefinitions';
 import { menuItemsPromise } from '../Header/menuItemDefinitions';
-import { Notifications } from '../Header/Notifications';
-import { UserTools } from '../Header/UserTools';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -82,52 +79,7 @@ export function Main(): JSX.Element | null {
         {headerText.skipToContent()}
       </Button.Small>
 
-      <header
-        className={`
-          flex flex-col border-b-[5px]
-          border-b-brand-200 bg-gray-200 shadow-md shadow-gray-400 [z-index:1] 
-          dark:border-b-brand-400 dark:bg-neutral-800 print:hidden 2xl:flex-row
-          ${className.hasAltBackground}
-        `}
-      >
-        <div className="flex w-full items-center justify-between 2xl:contents">
-          <h1 className="contents">
-            <a className="order-1 m-4 flex items-center" href="/specify/">
-              <img
-                alt=""
-                className="h-16 hover:animate-hue-rotate"
-                src="/static/img/logo.svg"
-              />
-              <span className="sr-only">{commonText.goToHomepage()}</span>
-            </a>
-          </h1>
-          <div
-            className={`
-              2xl:w-max-[350px] order-3 m-4 flex min-w-[275px] flex-col gap-2
-            `}
-          >
-            <div className="flex items-center justify-end gap-2">
-              {/* FEATURE: display user tools for anonymous users */}
-              {userInformation.isauthenticated ? (
-                <UserTools />
-              ) : (
-                <Link.Default
-                  href="/accounts/login/"
-                  className={className.navigationHandled}
-                >
-                  {userText.logIn()}
-                </Link.Default>
-              )}
-              <CollectionSelector />
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Notifications />
-              <ExpressSearch />
-            </div>
-          </div>
-        </div>
-        <HeaderItems menuItems={menuItems} />
-      </header>
+      <Header menuItems={menuItems} />
 
       {showVersionMismatch && (
         <Dialog

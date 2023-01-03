@@ -5,27 +5,136 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ajax } from '../../utils/ajax';
-import type { Collection } from '../DataModel/types';
-import { serializeResource } from '../DataModel/helpers';
-import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
-import type { MenuItemName } from './menuItemDefinitions';
-import { formatUrl } from '../Router/queryString';
+import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
+import { ajax } from '../../utils/ajax';
 import type { RA, RR, WritableArray } from '../../utils/types';
 import { writable } from '../../utils/types';
-import { Form, Input, Select } from '../Atoms/Form';
+import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
+import { serializeResource } from '../DataModel/helpers';
+import type { SerializedModel } from '../DataModel/helperTypes';
+import type { Collection } from '../DataModel/types';
+import { userInformation } from '../InitialContext/userInformation';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
-import { useSearchParameter } from '../../hooks/navigation';
-import { Submit } from '../Atoms/Submit';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { SerializedModel } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
-import { useTriggerState } from '../../hooks/useTriggerState';
-import { headerText } from '../../localization/header';
+import type { MenuItemName } from './menuItemDefinitions';
+import { Notifications } from './Notifications';
+import { UserTools } from './UserTools';
+
+export function Header({
+  menuItems,
+}: {
+  readonly menuItems: RR<MenuItemName, MenuItem>;
+}): JSX.Element {
+  const [isCollapsed = false, setIsCollapsed] = useCachedState(
+    'header',
+    'isCollapsed'
+  );
+  const title = isCollapsed ? commonText.expand() : commonText.collapse();
+  return (
+    <header
+      className={`flex [z-index:1] print:hidden ${className.hasAltBackground}`}
+    >
+      <div
+        className={`
+        flex flex-1 flex-col bg-gray-200 dark:bg-neutral-800
+        ${isCollapsed ? '' : 'w-72 gap-2'}
+      `}
+      >
+        <h1 className="contents">
+          <a
+            className={`
+              flex items-center
+              ${isCollapsed ? '' : 'p-4'}
+            `}
+            href="/specify/"
+          >
+            <img
+              alt=""
+              className="over:animate-hue-rotate"
+              src={
+                isCollapsed
+                  ? '/static/img/short_logo.svg'
+                  : '/static/img/logo.svg'
+              }
+            />
+            <span className="sr-only">{commonText.goToHomepage()}</span>
+          </a>
+        </h1>
+        <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
+        <div
+          className={`
+            grid
+            ${isCollapsed ? '' : 'grid-cols-[1fr_min-content] gap-2 p-4'}
+          `}
+        >
+          <UserTools isCollapsed={isCollapsed} />
+          {!userInformation.isauthenticated ? (
+            isCollapsed ? (
+              <Link.Icon
+                className={`${className.navigationHandled} p-4`}
+                href="/accounts/login/"
+                icon="login"
+                title={userText.logIn()}
+              />
+            ) : (
+              <Link.Default
+                className={className.navigationHandled}
+                href="/accounts/login/"
+              >
+                {userText.logIn()}
+              </Link.Default>
+            )
+          ) : undefined}
+          <Notifications isCollapsed={isCollapsed} />
+          {isCollapsed ? (
+            <Button.Icon
+              className="p-4"
+              icon="archive"
+              title={commonText.chooseCollection()}
+              onClick={(): void => setIsCollapsed(false)}
+            />
+          ) : (
+            <CollectionSelector />
+          )}
+          {isCollapsed ? (
+            <Link.Icon
+              className="p-4"
+              href="/specify/express-search/"
+              icon="search"
+              title={commonText.search()}
+            />
+          ) : (
+            <Link.Small
+              aria-label={commonText.search()}
+              href="/specify/express-search/"
+              title={commonText.search()}
+            >
+              {icons.search}
+            </Link.Small>
+          )}
+        </div>
+      </div>
+      <button
+        aria-label={title}
+        className="h-full w-1.5 bg-brand-200 dark:bg-brand-400"
+        title={title}
+        type="button"
+        onClick={(): void => setIsCollapsed(!isCollapsed)}
+      />
+    </header>
+  );
+}
 
 let activeMenuItems: WritableArray<MenuItemName> = [];
 
@@ -49,20 +158,17 @@ export function useMenuItem(menuItem: MenuItemName): void {
 
 export function HeaderItems({
   menuItems,
+  isCollapsed,
 }: {
   readonly menuItems: RR<MenuItemName, MenuItem>;
+  readonly isCollapsed: boolean;
 }): JSX.Element {
   const [activeMenuItem] = React.useContext(MenuContext);
   return (
-    <nav
-      aria-label={commonText.primary()}
-      className={`
-        order-2 -mt-2 flex flex-1 flex-row flex-wrap
-        px-2 lg:justify-center xl:m-0
-      `}
-    >
+    <nav aria-label={commonText.primary()} className="flex flex-1 flex-col">
       {Object.entries(menuItems).map(([name, menuItem]) => (
         <MenuItemComponent
+          isCollapsed={isCollapsed}
           key={name}
           {...menuItem}
           isActive={name === activeMenuItem}
@@ -78,40 +184,27 @@ function MenuItemComponent({
   icon,
   visibilityKey,
   isActive,
-}: MenuItem & { readonly isActive: boolean }): JSX.Element | null {
+  isCollapsed,
+}: MenuItem & {
+  readonly isCollapsed: boolean;
+  readonly isActive: boolean;
+}): JSX.Element | null {
   const [isVisible] = usePref('header', 'menu', visibilityKey);
   return isVisible ? (
     <Link.Default
       aria-current={isActive ? 'page' : undefined}
+      aria-label={isCollapsed ? title : undefined}
       className={`
-        relative
-        inline-flex
-        items-center
-        gap-2
-        rounded
-        p-3
-        text-gray-700
-        active:bg-white
-        dark:text-neutral-300
+        relative p-4 text-gray-700 active:bg-white dark:text-neutral-300
         active:dark:bg-neutral-600
-        ${isActive ? 'bg-white dark:bg-neutral-600 lg:!bg-transparent' : ''}
-        lg:after:absolute
-        lg:after:-bottom-1
-        lg:after:left-0
-        lg:after:right-0
-        lg:after:h-2
-        lg:after:w-full
-        lg:after:bg-transparent
-        lg:hover:after:bg-gray-200
-        lg:hover:after:dark:bg-neutral-800
-        ${isActive ? 'lg:after:bg-gray-200' : ''}
-        ${isActive ? 'lg:after:dark:bg-neutral-800' : ''}
+        ${isActive ? 'bg-white dark:bg-neutral-600' : ''}
       `}
       href={url}
       key={url}
+      title={isCollapsed ? title : undefined}
     >
       {icon}
-      {title}
+      {isCollapsed ? undefined : title}
     </Link.Default>
   ) : null;
 }
@@ -173,38 +266,5 @@ export function CollectionSelector(): JSX.Element {
         </option>
       ))}
     </Select>
-  );
-}
-
-export function ExpressSearch(): JSX.Element {
-  const [urlSearchQuery] = useSearchParameter('q');
-  const [searchQuery = '', setSearchQuery] = useTriggerState(urlSearchQuery);
-  const navigate = useNavigate();
-  return (
-    <Form
-      className="contents"
-      role="search"
-      onSubmit={(): void => {
-        const query = searchQuery.trim();
-        if (query.length === 0) return;
-        const url = formatUrl('/specify/express-search/', {
-          q: query,
-        });
-        navigate(url);
-      }}
-    >
-      <Input.Generic
-        aria-label={commonText.search()}
-        autoComplete="on"
-        className="flex-1"
-        /* Name is for autocomplete purposes only */
-        name="searchQuery"
-        placeholder={commonText.search()}
-        type="search"
-        value={searchQuery}
-        onValueChange={setSearchQuery}
-      />
-      <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
-    </Form>
   );
 }

@@ -6,9 +6,12 @@ import React from 'react';
 
 import { useSearchParameter } from '../../hooks/navigation';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
 import type { IR, RA } from '../../utils/types';
-import { Container, H3 } from '../Atoms';
+import { Container, H2, H3 } from '../Atoms';
+import { Form, Input } from '../Atoms/Form';
+import { Submit } from '../Atoms/Submit';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { QueryResults } from '../QueryBuilder/Results';
@@ -22,10 +25,10 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
-import { headerText } from '../../localization/header';
 
 export function ExpressSearchView(): JSX.Element {
-  const [query = ''] = useSearchParameter('q');
+  const [query = '', setQuery] = useSearchParameter('q');
+  const [pendingQuery, setPendingQuery] = React.useState(query);
   const ajaxUrl = formatUrl('/express_search/', {
     q: query,
     limit: expressSearchFetchSize.toString(),
@@ -36,6 +39,22 @@ export function ExpressSearchView(): JSX.Element {
 
   return (
     <Container.Full>
+      <H2>{headerText.expressSearch()}</H2>
+      <Form onSubmit={(): void => setQuery(pendingQuery)}>
+        <Input.Generic
+          aria-label={commonText.search()}
+          autoComplete="on"
+          className="flex-1"
+          // Name is for autocomplete purposes only
+          name="searchQuery"
+          placeholder={commonText.search()}
+          required
+          type="search"
+          value={pendingQuery}
+          onValueChange={setPendingQuery}
+        />
+        <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
+      </Form>
       {primaryResults !== false && (
         <TableResults
           header={headerText.primarySearch()}

@@ -18,18 +18,32 @@ import { formsText } from '../../localization/forms';
 import { useCachedState } from '../../hooks/useCachedState';
 import { headerText } from '../../localization/header';
 
-export function UserTools(): JSX.Element {
-  // REFACTOR: get rid of usages of "px" units in the header
-  return (
+export function UserTools({
+  isCollapsed,
+}: {
+  readonly isCollapsed: boolean;
+}): JSX.Element {
+  return isCollapsed ? (
+    <Link.Icon
+      className="p-4"
+      title={headerText.userTools()}
+      icon="cog"
+      href="/specify/overlay/user-tools/"
+    />
+  ) : (
     <Link.Small
       className={`
-        text-overflow-ellipsis max-w-[110px] overflow-hidden
-        whitespace-nowrap normal-case
+        text-overflow-ellipsis flex-1
+        !justify-start overflow-hidden whitespace-nowrap normal-case
       `}
       href="/specify/overlay/user-tools/"
-      title={headerText.currentUser()}
+      title={
+        userInformation.isauthenticated ? headerText.currentUser() : undefined
+      }
     >
-      {userInformation.name}
+      {userInformation.isauthenticated
+        ? userInformation.name
+        : headerText.userTools()}
     </Link.Small>
   );
 }

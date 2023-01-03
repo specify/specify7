@@ -1,7 +1,9 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { notificationsText } from '../../localization/notifications';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
@@ -9,18 +11,22 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { formatNumber } from '../Atoms/Internationalization';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { GenericNotification } from './NotificationRenderers';
 import { notificationRenderers } from './NotificationRenderers';
-import { notificationsText } from '../../localization/notifications';
-import { LocalizedString } from 'typesafe-i18n';
 
 const INITIAL_INTERVAL = 5000;
 const INTERVAL_MULTIPLIER = 1.1;
 
-export function Notifications(): JSX.Element {
+export function Notifications({
+  isCollapsed,
+}: {
+  readonly isCollapsed: boolean;
+}): JSX.Element {
   const [notifications, setNotifications] = React.useState<
     RA<GenericNotification> | undefined
   >(undefined);
@@ -119,23 +125,34 @@ export function Notifications(): JSX.Element {
     };
   }, [isOpen]);
 
-  const hasUnread = notifications?.some(({ read }) => !read) ?? false;
-  const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+  const unreadCount = notifications?.filter(({ read }) => !read).length ?? 0;
+  const title =
+    typeof notifications?.length === 'number'
+      ? notificationsText.notificationsCount({
+          count: notifications.length,
+        })
+      : notificationsText.notificationsLoading();
+  const buttonProps = {
+    'aria-label': title,
+    'aria-live': 'polite',
+    className: `
+      ${unreadCount > 0 ? 'text-brand-300 dark:text-brand-400' : ''}
+      ${isCollapsed ? 'p-4' : ''}
+    `,
+    disabled: notificationCount === 0,
+    title,
+    onClick: handleOpen,
+  } as const;
   return (
     <>
-      <Button.Small
-        aria-live="polite"
-        className={`${hasUnread ? 'bg-brand-300 dark:bg-brand-400' : ''}`}
-        disabled={notificationCount === 0}
-        forwardRef={buttonRef}
-        onClick={handleOpen}
-      >
-        {typeof notifications?.length === 'number'
-          ? notificationsText.notificationsCount({
-              count: notifications.length,
-            })
-          : notificationsText.notificationsLoading()}
-      </Button.Small>
+      {isCollapsed ? (
+        <Button.Icon icon="bell" {...buttonProps} />
+      ) : (
+        <Button.Small {...buttonProps}>
+          {unreadCount > 0 ? formatNumber(unreadCount) : undefined}
+          {icons.bell}
+        </Button.Small>
+      )}
       {Array.isArray(notifications) && (
         <Dialog
           buttons={commonText.close()}

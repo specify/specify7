@@ -31,7 +31,7 @@ function entrypoint(): void {
       throw new Error('Unable to find root element');
     root.setAttribute(
       'class',
-      `flex flex-col h-screen overflow-hidden bg-[color:var(--background)]
+      `flex h-screen overflow-hidden bg-[color:var(--background)]
       text-neutral-900 dark:text-neutral-200`
     );
     portalRoot.setAttribute('class', 'text-neutral-900 dark:text-neutral-200');
