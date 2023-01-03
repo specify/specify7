@@ -377,8 +377,11 @@ export function StatsPage(): JSX.Element | null {
             `}
           >
             {Object.entries(layout).map(
-              ([parentLayoutName, parentLayout], index) =>
-                parentLayout === undefined ? undefined : (
+              ([parentLayoutName, parentLayout], index) => {
+                const canEditIndex =
+                  index !== 0 ||
+                  hasPermission('/preferences/statistics', 'edit_protected');
+                return parentLayout === undefined ? undefined : (
                   <div className="flex flex-col gap-2">
                     <H3 className="text-lg font-bold">{parentLayoutName}</H3>
                     {parentLayout.map(({ label }, pageIndex) => (
@@ -390,7 +393,7 @@ export function StatsPage(): JSX.Element | null {
                           activePage.isCollection === (index === 0)
                         }
                         onRename={
-                          isEditing
+                          isEditing && canEditIndex
                             ? (): void => {
                                 setState({
                                   type: 'PageRenameState',
@@ -408,7 +411,7 @@ export function StatsPage(): JSX.Element | null {
                         }}
                       />
                     ))}
-                    {isEditing && (
+                    {isEditing && canEditIndex && (
                       <StatsPageButton
                         onClick={(): void => {
                           setState({
@@ -423,7 +426,8 @@ export function StatsPage(): JSX.Element | null {
                       />
                     )}
                   </div>
-                )
+                );
+              }
             )}
           </aside>
           {state.type === 'PageRenameState' && (
@@ -543,7 +547,7 @@ export function StatsPage(): JSX.Element | null {
               }
               statsSpec={statsSpec}
               onAdd={
-                isEditing
+                isEditing && canEdit
                   ? (categoryindex): void =>
                       typeof categoryindex === 'number'
                         ? setState({
@@ -561,7 +565,7 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onCategoryRename={
-                isEditing
+                isEditing && canEdit
                   ? (newName, categoryIndex): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {
@@ -573,7 +577,7 @@ export function StatsPage(): JSX.Element | null {
               }
               onClick={handleAdd}
               onItemRename={
-                isEditing
+                isEditing && canEdit
                   ? (categoryIndex, itemIndex, newLabel): void =>
                       handleChange((oldCategory) =>
                         replaceItem(oldCategory, categoryIndex, {
@@ -591,7 +595,7 @@ export function StatsPage(): JSX.Element | null {
                   : undefined
               }
               onRemove={
-                isEditing
+                isEditing && canEdit
                   ? (categoryIndex, itemIndex): void => {
                       handleChange((oldCategory) =>
                         typeof itemIndex === 'number'
