@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from itertools import islice
 import time
 import logging
 import csv
@@ -6,9 +7,11 @@ from datetime import datetime, timezone
 import json
 from jsonschema import validate # type: ignore
 
-from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set
+from typing import List, Dict, Union, Callable, Optional, Sized, Tuple, Any, Set, \
+    Type, TypeVar, Iterable, Sequence
 
 from django.db import connection, transaction
+from django.db.models import Model as ModelBase
 from django.db.utils import OperationalError, IntegrityError
 from django.utils.translation import gettext as _
 
@@ -21,10 +24,9 @@ from .uploadable import ScopedUploadable, Row, Disambiguation, Auditor
 from .upload_result import Uploaded, UploadResult, ParseFailures, json_to_UploadResult
 from .upload_plan_schema import schema, parse_plan_with_basetable
 from . import disambiguation
-from ..models import Spdataset
+from ..models import Spdataset, Spdatasetrowresult
 
-Rows = Union[List[Row], csv.DictReader]
-Progress = Callable[[int, Optional[int]], None]
+Progress = Callable[[UploadResult], None]
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +36,23 @@ class RollbackFailure(Exception):
 class Rollback(Exception):
     def __init__(self, reason: str):
         self.reason = reason
+
+@contextmanager
+def create_connection():
+    from django.db import connections
+    from django.db.utils import DEFAULT_DB_ALIAS, load_backend
+    # TODO: The following can be replaced with connections.create_connection(...)
+    # after updating Django to a version with https://github.com/django/django/pull/9272
+    alias = DEFAULT_DB_ALIAS
+    connections.ensure_defaults(alias)
+    connections.prepare_test_settings(alias)
+    db = connections.databases[alias]
+    backend = load_backend(db['ENGINE'])
+    conn = backend.DatabaseWrapper(db, alias)
+    try:
+        yield conn
+    finally:
+        conn.close()
 
 @contextmanager
 def savepoint(description: str):
@@ -54,9 +73,8 @@ def no_savepoint():
 def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) -> None:
     if ds.rowresults is None:
         return
-    results = json.loads(ds.rowresults)
+    results = list(ds.rowresults.values_list('result', flat=True))
     total = len(results)
-    current = 0
     with transaction.atomic():
         if ds.uploadresult is not None:
             rsid = ds.uploadresult.get('recordsetid', None)
@@ -64,15 +82,15 @@ def unupload_dataset(ds: Spdataset, agent, progress: Optional[Progress]=None) ->
                 getattr(models, 'Recordset').objects.filter(id=rsid).delete()
 
 
-        for row in reversed(results):
-            logger.info(f"rolling back row {current} of {total}")
-            upload_result = json_to_UploadResult(row)
+        for i, row in enumerate(reversed(results)):
+            logger.info(f"rolling back row {i+1} of {total}")
+            upload_result = json_to_UploadResult(json.loads(row))
             if not upload_result.contains_failure():
                 unupload_record(upload_result, agent)
 
             current += 1
             if progress is not None:
-                progress(current, total)
+                progress(upload_result)
         ds.uploadresult = None
         ds.save(update_fields=['uploadresult'])
 
@@ -119,30 +137,62 @@ def do_upload_dataset(
         no_commit: bool,
         allow_partial: bool,
         progress: Optional[Progress]=None
-) -> List[UploadResult]:
+) -> None:
     assert not ds.was_uploaded(), "Already uploaded!"
-    ds.rowresults = None
-    ds.uploadresult = None
-    ds.save(update_fields=['rowresults', 'uploadresult'])
-
-    ncols = len(ds.columns)
-    rows = [dict(zip(ds.columns, row)) for row in ds.data]
-    disambiguation = [get_disambiguation_from_row(ncols, row) for row in ds.data]
     base_table, upload_plan = get_ds_upload_plan(collection, ds)
 
-    results = do_upload(collection, rows, upload_plan, uploading_agent_id, disambiguation, no_commit, allow_partial, progress)
-    success = not any(r.contains_failure() for r in results)
+    def rows():
+        last_rownumber = -1
+        while True:
+            rs = ds.rows.filter(rownumber__gt=last_rownumber)[:1000]
+            if not rs:
+                break
+            for r in rs:
+                last_rownumber = r.rownumber
+                yield r.data
+
+    with create_connection() as result_conn:
+        result_conn.set_autocommit(False)
+        cursor = result_conn.cursor()
+        cursor.execute("delete from spdatasetrowresult where spdataset_id = %s", [ds.id])
+
+        success = True
+        rowcount = 0
+        batch: List[Tuple[int, int, str]] = []
+        insert_batch = lambda: cursor.executemany("insert into spdatasetrowresult (spdataset_id, rownumber, result) values (%s, %s, %s)", batch)
+        def _progress(result: UploadResult) -> None:
+            nonlocal success, rowcount, batch
+            success = success and not result.contains_failure()
+            batch.append((ds.id, rowcount, json.dumps(result.to_json())))
+            if len(batch) >= 1000:
+                insert_batch()
+                batch = []
+            rowcount += 1
+            if progress is not None:
+                progress(result)
+
+        _do_upload(collection, ds.columns, rows(), upload_plan, uploading_agent_id, _progress, no_commit, allow_partial)
+        insert_batch()
+        result_conn.commit()
+
     if not no_commit:
-        rs = create_record_set(ds, base_table, results) if results and success else None
+        rs = create_record_set(ds, base_table) if success else None
         ds.uploadresult = {
             'success': success,
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'recordsetid': rs and rs.id,
             'uploadingAgentId': uploading_agent_id,
         }
-    ds.rowresults = json.dumps([r.to_json() for r in results])
-    ds.save(update_fields=['rowresults', 'uploadresult'])
-    return results
+        ds.save(update_fields=['uploadresult'])
+
+T = TypeVar('T', bound=ModelBase)
+def batch_create(Model: Type[T], iterable: Iterable[T]) -> None:
+    batch_size = 1000
+    while True:
+        batch = list(islice(iterable, batch_size))
+        if not batch:
+            break
+        Model.objects.bulk_create(batch, batch_size)
 
 def clear_disambiguation(ds: Spdataset) -> None:
     with transaction.atomic():
@@ -159,7 +209,7 @@ def clear_disambiguation(ds: Spdataset) -> None:
             row[ncols] = extra and json.dumps(extra)
         ds.save(update_fields=['data'])
 
-def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
+def create_record_set(ds: Spdataset, table: Table):
     rs = getattr(models, 'Recordset').objects.create(
         collectionmemberid=ds.collection.id,
         dbtableid=table.tableId,
@@ -167,17 +217,19 @@ def create_record_set(ds: Spdataset, table: Table, results: List[UploadResult]):
         specifyuser=ds.specifyuser,
         type=0,
     )
-    Rsi = getattr(models, 'Recordsetitem')
-    Rsi.objects.bulk_create([
-        Rsi(order=i, recordid=r.get_id(), recordset=rs)
-        for i, r in enumerate(results)
-        if isinstance(r.record_result, Uploaded)
-    ])
+    connection.cursor().execute("""
+    insert into recordsetitem (recordsetid, ordernumber, recordid)
+    select %s, rownumber, json_extract(result, "$.UploadResult.record_result.Uploaded.id") as recordid
+    from spdatasetrowresult where spdataset_id = %s having recordid is not null
+    """, [rs.id, ds.id])
     return rs
 
-def get_disambiguation_from_row(ncols: int, row: List) -> Disambiguation:
-    extra = json.loads(row[ncols]) if row[ncols] else None
-    return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
+def get_disambiguation_from_row(ncols: int, row: Sequence[str]) -> Disambiguation:
+    if len(row) > ncols:
+        extra = json.loads(row[ncols]) if row[ncols] else None
+        return disambiguation.from_json(extra['disambiguation']) if extra and 'disambiguation' in extra else None
+    else:
+        return None
 
 def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadable]:
     if ds.uploadplan is None:
@@ -195,45 +247,65 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> Tuple[Table, ScopedUploadab
 
 def do_upload(
         collection,
-        rows: Rows,
+        cols: Sequence[str],
+        rows: Iterable[Sequence[str]],
         upload_plan: ScopedUploadable,
         uploading_agent_id: int,
-        disambiguations: Optional[List[Disambiguation]]=None,
         no_commit: bool=False,
         allow_partial: bool=True,
         progress: Optional[Progress]=None
 ) -> List[UploadResult]:
+    results: List[UploadResult] = []
+
+    def _progress(result: UploadResult) -> None:
+        results.append(result)
+        if progress is not None:
+            progress(result)
+
+    _do_upload(collection, cols, rows, upload_plan, uploading_agent_id, _progress, no_commit, allow_partial)
+    return results
+
+def _do_upload(
+        collection,
+        cols: Sequence[str],
+        rows: Iterable[Sequence[str]],
+        upload_plan: ScopedUploadable,
+        uploading_agent_id: int,
+        progress: Progress,
+        no_commit: bool,
+        allow_partial: bool,
+) -> None:
     cache: Dict = {}
     _auditor = Auditor(collection=collection, audit_log=None if no_commit else auditlog)
-    total = len(rows) if isinstance(rows, Sized) else None
     with savepoint("main upload"):
         tic = time.perf_counter()
-        results: List[UploadResult] = []
+        changed_trees: Set[str] = set()
+
         for i, row in enumerate(rows):
             _cache = cache.copy() if cache is not None and allow_partial else cache
-            da = disambiguations[i] if disambiguations else None
+            da = get_disambiguation_from_row(len(cols), row)
             with savepoint("row upload") if allow_partial else no_savepoint():
-                bind_result = upload_plan.disambiguate(da).bind(collection, row, uploading_agent_id, _auditor, cache)
+                bind_result = upload_plan.disambiguate(da).bind(collection, dict(zip(cols, row)), uploading_agent_id, _auditor, cache)
                 result = UploadResult(bind_result, {}, {}) if isinstance(bind_result, ParseFailures) else bind_result.process_row()
-                results.append(result)
                 if progress is not None:
-                    progress(len(results), total)
-                logger.info(f"finished row {len(results)}, cache size: {cache and len(cache)}")
+                    progress(result)
                 if result.contains_failure():
                     cache = _cache
                     raise Rollback("failed row")
+                
+                changed_trees = changed_trees.union(
+                    tree for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage')
+                    if changed_tree(tree, result)
+                )
+                logger.info(f"finished row {i}")
 
         toc = time.perf_counter()
-        logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
+        logger.info(f"finished upload of {i+1} rows in {toc-tic}s")
 
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(upload_plan, results)
-
-    return results
-
-do_upload_csv = do_upload
+            fixup_trees(upload_plan, changed_trees)
 
 def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: int, row: Row, da: Disambiguation) -> UploadResult:
     retries = 3
@@ -253,14 +325,8 @@ def validate_row(collection, upload_plan: ScopedUploadable, uploading_agent_id: 
 
     return result
 
-def fixup_trees(upload_plan: ScopedUploadable, results: List[UploadResult]) -> None:
+def fixup_trees(upload_plan: ScopedUploadable, to_fix: Iterable[str]) -> None:
     treedefs = upload_plan.get_treedefs()
-
-    to_fix = [
-        tree
-        for tree in ('taxon', 'geography', 'geologictimeperiod', 'lithostrat', 'storage')
-        if any(changed_tree(tree, r) for r in results)
-    ]
 
     for tree in to_fix:
         tic = time.perf_counter()
