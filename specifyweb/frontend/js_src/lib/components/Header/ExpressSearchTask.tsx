@@ -29,12 +29,8 @@ import {
 export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
   const [pendingQuery, setPendingQuery] = React.useState(query);
-  const ajaxUrl = formatUrl('/express_search/', {
-    q: query,
-    limit: expressSearchFetchSize.toString(),
-  });
 
-  const primaryResults = usePrimarySearch(ajaxUrl);
+  const primaryResults = usePrimarySearch(query);
   const secondaryResults = useSecondarySearch(query);
 
   return (
@@ -61,10 +57,12 @@ export function ExpressSearchView(): JSX.Element {
           queryResults={primaryResults}
         />
       )}
-      <TableResults
-        header={headerText.secondarySearch()}
-        queryResults={secondaryResults}
-      />
+      {secondaryResults !== false && (
+        <TableResults
+          header={headerText.secondarySearch()}
+          queryResults={secondaryResults}
+        />
+      )}
     </Container.Full>
   );
 }
