@@ -1,16 +1,14 @@
 import type { CustomStat, DefaultStat, StatLayout, StatsSpec } from './types';
 import { H3, Ul } from '../Atoms';
 import { Input } from '../Atoms/Form';
-import { StatItem, QueryStat } from './StatItems';
+import { StatItem } from './StatItems';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { commonText } from '../../localization/common';
 import React from 'react';
 import { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
-import { SpQuery, SpQueryField } from '../DataModel/types';
-import { SpecifyResource } from '../DataModel/legacyTypes';
-import { checkMoveViolatesEnforced } from '../TreeView/helpers';
+import { SpQueryField } from '../DataModel/types';
 
 export function Categories({
   pageLayout,
@@ -71,9 +69,7 @@ export function Categories({
           (!checkEmptyItems ||
             items.some(
               (item) =>
-                item.type === 'CustomStat' ||
-                item.absent === false ||
-                item.absent === undefined
+                item.type === 'CustomStat' || item.isVisible === undefined
             )) && (
             <li
               className={`${
@@ -106,7 +102,7 @@ export function Categories({
                 }
               >
                 {items?.map((item, itemIndex) =>
-                  item.absent === false || item.absent === undefined ? (
+                  item.type === 'CustomStat' || item.isVisible === undefined ? (
                     <StatItem
                       item={item}
                       categoryIndex={categoryIndex}

@@ -1,7 +1,8 @@
 import type { State } from 'typesafe-reducer';
+
 import type { IR, RA } from '../../utils/types';
-import type { SpQueryField, Tables } from '../DataModel/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { SpQueryField, Tables } from '../DataModel/types';
 
 export type CustomStat = State<
   'CustomStat',
@@ -11,20 +12,20 @@ export type CustomStat = State<
     readonly fields: RA<
       Partial<SerializedResource<SpQueryField>> & { readonly path: string }
     >;
-    readonly itemValue?: string | number | undefined;
+    readonly itemValue?: number | string | undefined;
   }
 >;
 
 export type DefaultStat = State<
   'DefaultStat',
   {
-    readonly itemType: 'QueryStat' | 'BackendStat';
+    readonly itemType: 'BackendStat' | 'QueryStat';
     readonly pageName: string;
     readonly categoryName: string;
     readonly itemName: string;
     readonly itemLabel: string;
-    readonly itemValue: string | number | undefined;
-    readonly absent?: boolean;
+    readonly itemValue: number | string | undefined;
+    readonly isVisible?: boolean;
   }
 >;
 

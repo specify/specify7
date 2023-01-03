@@ -1,7 +1,7 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
-import { removeItem, replaceItem } from '../../utils/utils';
+import { removeItem, replaceItem, removeKey } from '../../utils/utils';
 import { H2 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
@@ -57,7 +57,10 @@ export function StatsPage(): JSX.Element | null {
   const isCacheValid = isCollectionCacheValid && isPersonalCacheValid;
   const statsSpec = useStatsSpec(isCacheValid);
 
-  const defaultStatsSpec = useStatsSpec(false, collectionLayout === undefined);
+  const defaultStatsSpec = useStatsSpec(
+    false,
+    collectionLayout === undefined || personalLayout === undefined
+  );
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
   const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
 
@@ -627,10 +630,11 @@ export function StatsPage(): JSX.Element | null {
                     label,
                     categories: categories.map(({ label, items }) => ({
                       label,
-                      items: items.map((item) => ({
-                        ...item,
-                        absent: false,
-                      })),
+                      items: items.map((item) =>
+                        item.type === 'DefaultStat'
+                          ? (removeKey(item, 'isVisible') as DefaultStat)
+                          : item
+                      ),
                     })),
                     lastUpdated,
                   }))

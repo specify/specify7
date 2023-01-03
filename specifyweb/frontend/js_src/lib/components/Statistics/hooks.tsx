@@ -120,9 +120,9 @@ export function useDefaultStatsToAdd(
                   itemName === defaultItem.itemName
               )
                 ? {
-                    absent: false,
+                    isVisible: undefined,
                   }
-                : { absent: true }),
+                : { isVisible: false }),
             })),
           }))
           .filter(({ items }) => items.length > 0),
