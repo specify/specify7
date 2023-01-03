@@ -393,20 +393,26 @@ export function statsToTsv(
   const statItems: WritableArray<WritableArray<number | string>> = [];
 
   Object.entries(layout as IR<StatLayout>).forEach(([sourceName, layouts]) =>
-    layouts.forEach((layout) =>
-      layout.categories.forEach((category) =>
+    layouts.forEach((layout) => {
+      if (layout === undefined) return;
+      const layoutLabel = layout.label === undefined ? '' : layout.label;
+      layout.categories.forEach((category) => {
+        if (category === undefined) return;
+        const categoryLabel =
+          category.label === undefined ? '' : category.label;
         category.items.forEach(({ itemLabel, itemValue }) => {
           if (itemValue === undefined) return;
+          const newItemLabel = itemLabel === undefined ? '' : itemLabel;
           statItems.push([
             sourceName,
-            layout.label,
-            category.label,
-            itemLabel,
+            layoutLabel,
+            categoryLabel,
+            newItemLabel,
             itemValue.toString(),
           ]);
-        })
-      )
-    )
+        });
+      });
+    })
   );
   return [headers, ...statItems].map((line) => line.join('\t')).join('\n');
 }
