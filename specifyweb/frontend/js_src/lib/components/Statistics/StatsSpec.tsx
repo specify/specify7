@@ -124,12 +124,12 @@ export const statsSpec: IR<StatsSpec> = {
     preparations: {
       label: statsText('preparations'),
       categories: (backendStatsResult) =>
-        modifyBackendResult<'preparations'>(backendStatsResult, (prepelement) =>
-          prepelement.total === 0
-            ? formatNumber(prepelement.lots)
-            : `${formatNumber(prepelement.lots)} / ${formatNumber(
-                prepelement.total
-              )}`
+        modifyBackendResult<'preparations'>(
+          backendStatsResult,
+          (prepelement) =>
+            `${formatNumber(prepelement.lots)} / ${formatNumber(
+              prepelement.total
+            )}`
         ),
     },
     loans: {
