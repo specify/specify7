@@ -1,245 +1,193 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2022-12-30 00:51+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
-"fr/>\n"
-"Language: fr\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:82
-#, fuzzy
+#. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 msgid "skipToContent"
-msgstr "Aller au contenu"
+msgstr ""
 
-#. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:30
-#, fuzzy
+#. Used in: Components > Header > User Tools
 msgid "currentUser"
-msgstr "Utilisateur actuel"
+msgstr ""
 
-#. Used in: Components > Header > Index
 #: components/Header/index.tsx:159
 #: components/Header/index.tsx:161
-#, fuzzy
+#. Used in: Components > Header > Index
 msgid "currentCollection"
-msgstr "Collection actuelle"
+msgstr ""
 
-#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/Forms.tsx:63
 #: components/Header/menuItemDefinitions.ts:46
 #: components/Router/OverlayRoutes.tsx:44
-#, fuzzy
+#. Used in: Components > Header > Forms ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 msgid "dataEntry"
-msgstr "Saisie des données"
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:71
 #: components/Router/OverlayRoutes.tsx:148
-#, fuzzy
-msgid "makeDwca"
-msgstr "Créer une archive DwC"
-
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+msgid "makeDwca"
+msgstr ""
+
 #: components/Header/userToolDefinitions.ts:76
 #: components/Router/OverlayRoutes.tsx:156
-#, fuzzy
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
-msgstr "Mettre à jour le flux RSS"
+msgstr ""
 
-#. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:49
-#, fuzzy
+#. Used in: Components > Toolbar > Force Update
 msgid "updateExportFeedConfirmation"
-msgstr "Mettre à jour le flux d'exportation ?"
+msgstr ""
 
-#. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:52
-#, fuzzy
+#. Used in: Components > Toolbar > Force Update
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?"
+msgstr ""
 
-#. Used in: Components > Toolbar > Force Update
 #: components/Toolbar/ForceUpdate.tsx:24
-#, fuzzy
-msgid "feedExportStarted"
-msgstr "La mise à jour du flux d'exportation a commencé"
-
 #. Used in: Components > Toolbar > Force Update
+msgid "feedExportStarted"
+msgstr ""
+
 #: components/Toolbar/ForceUpdate.tsx:27
-#, fuzzy
+#. Used in: Components > Toolbar > Force Update
 msgid "feedExportStartedDescription"
 msgstr ""
-"La mise à jour a commencé. Vous recevrez une notification pour chaque "
-"élément de flux mis à jour."
 
-#. Used in: Components > Toolbar > Dwca
 #: components/Toolbar/Dwca.tsx:121
-#, fuzzy
-msgid "dwcaExportStarted"
-msgstr "L'exportation DwCA a commencé"
-
 #. Used in: Components > Toolbar > Dwca
+msgid "dwcaExportStarted"
+msgstr ""
+
 #: components/Toolbar/Dwca.tsx:124
-#, fuzzy
+#. Used in: Components > Toolbar > Dwca
 msgid "dwcaExportStartedDescription"
 msgstr ""
-"L'exportation a commencé. Vous recevrez une notification lorsque "
-"l'exportation sera terminée."
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "labelName"
-msgstr "Nom de l'étiquette"
+msgstr ""
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "reportName"
-msgstr "Nom du rapport"
+msgstr ""
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:180
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "createLabel"
-msgstr "Créer une nouvelle étiquette"
+msgstr ""
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:180
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "createReport"
-msgstr "Créer un nouveau rapport"
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/userToolDefinitions.ts:57
 #: components/Router/OverlayRoutes.tsx:132
 #: components/Toolbar/TreeRepair.tsx:165
-#, fuzzy
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 msgid "repairTree"
-msgstr "Arbre de réparation"
+msgstr ""
 
-#. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:160
-#, fuzzy
+#. Used in: Components > Toolbar > Tree Repair
 msgid "treeRepairComplete"
-msgstr "La réparation de l'arbre est terminée."
+msgstr ""
 
-#. Used in: Components > Toolbar > Dwca
 #: components/Toolbar/Dwca.tsx:39
-#, fuzzy
-msgid "chooseDwca"
-msgstr "Choisissez DwCA"
-
 #. Used in: Components > Toolbar > Dwca
+msgid "chooseDwca"
+msgstr ""
+
 #: components/Toolbar/Dwca.tsx:49
-#, fuzzy
+#. Used in: Components > Toolbar > Dwca
 msgid "chooseMetadataResource"
-msgstr "Choisissez la ressource de métadonnées"
+msgstr ""
 
-#. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:25
-#, fuzzy
+#. Used in: Components > Router > Routes
 msgid "expressSearch"
-msgstr "Recherche express"
+msgstr ""
 
-#. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:41
-#, fuzzy
-msgid "primarySearch"
-msgstr "Recherche principale"
-
 #. Used in: Components > Header > Express Search Task
-#: components/Header/ExpressSearchTask.tsx:46
-#, fuzzy
-msgid "secondarySearch"
-msgstr "Recherche secondaire"
+msgid "primarySearch"
+msgstr ""
 
-#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
+#: components/Header/ExpressSearchTask.tsx:46
+#. Used in: Components > Header > Express Search Task
+msgid "secondarySearch"
+msgstr ""
+
 #: components/Header/UserTools.tsx:51
 #: components/Router/OverlayRoutes.tsx:36
-#, fuzzy
+#. Used in: Components > Header > User Tools ⬤ Components > Router > Overlay Routes
 msgid "userTools"
-msgstr "Outils utilisateur"
+msgstr ""
 
-#. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:77
 #: components/Toolbar/Language.tsx:107
-#, fuzzy
-msgid "helpLocalizeSpecify"
-msgstr "Aide Localiser Spécifier 7"
-
 #. Used in: Components > Toolbar > Language
+msgid "helpLocalizeSpecify"
+msgstr ""
+
 #: components/Toolbar/Language.tsx:85
-#, fuzzy
+#. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Nous vous serions très reconnaissants de votre aide pour la localisation de "
-"l'interface utilisateur Spécifiez 7. Si vous êtes intéressé, veuillez "
-"envoyer un e-mail à <emailLink />"
 
-#. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:105
-#, fuzzy
-msgid "tableApi"
-msgstr "API Tableaux"
-
 #. Used in: Components > Header > User Tool Definitions
-#: components/Header/userToolDefinitions.ts:109
-#, fuzzy
-msgid "operationsApi"
-msgstr "API des opérations"
+msgid "tableApi"
+msgstr ""
 
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
+#: components/Header/userToolDefinitions.ts:109
+#. Used in: Components > Header > User Tool Definitions
+msgid "operationsApi"
+msgstr ""
+
 #: components/AppResources/Create.tsx:94
 #: components/AppResources/Create.tsx:115
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
 #: components/UserPreferences/Definitions.tsx:403
-#, fuzzy
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
-msgstr "Documentation"
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:42
-#, fuzzy
+#. Used in: Components > Header > User Tool Definitions
 msgid "administration"
-msgstr "Outils administratifs"
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:95
-#, fuzzy
-msgid "developers"
-msgstr "Ressources pour les développeurs"
-
 #. Used in: Components > Header > User Tool Definitions
-#: components/Header/userToolDefinitions.ts:87
-#, fuzzy
-msgid "forum"
-msgstr "Forum de la communauté"
+msgid "developers"
+msgstr ""
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
+#: components/Header/userToolDefinitions.ts:87
+#. Used in: Components > Header > User Tool Definitions
+msgid "forum"
+msgstr ""
+
 #: components/Errors/ErrorDialog.tsx:128
 #: components/Header/userToolDefinitions.ts:101
 #: components/Router/Routes.tsx:396
 #: components/RouterCommands/CacheBuster.tsx:42
-#, fuzzy
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
-msgstr "Effacer le cache du navigateur"
+msgstr ""
 
-#. Used in: Components > Router Commands > Cache Buster
 #: components/RouterCommands/CacheBuster.tsx:45
-#, fuzzy
+#. Used in: Components > Router Commands > Cache Buster
 msgid "cacheCleared"
-msgstr "Le cache a été vidé. Veuillez recharger la page."
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:91
-#, fuzzy
+#. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
-msgstr "Documents techniques"
+msgstr ""
