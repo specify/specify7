@@ -1,5 +1,5 @@
 import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
-import type { IR, RA } from '../../utils/types';
+import type { IR, RA, WritableArray } from '../../utils/types';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import React from 'react';
@@ -24,6 +24,7 @@ import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
 import { keysToLowerCase, removeItem } from '../../utils/utils';
+import { statsText } from '../../localization/stats';
 
 /**
  * Fetch backend statistics from the API
@@ -375,4 +376,37 @@ export function useFrontEndStatsQuery(
       : () => undefined,
     [tableName, fields]
   );
+}
+
+export function statsToTsv(
+  layout: IR<StatLayout | undefined>
+): string | undefined {
+  if (Object.values(layout).some((layouts) => layouts === undefined))
+    return undefined;
+  const headers = [
+    statsText('source'),
+    statsText('pageName'),
+    statsText('categoryName'),
+    statsText('itemName'),
+    statsText('itemValue'),
+  ];
+  const statItems: WritableArray<WritableArray<number | string>> = [];
+
+  Object.entries(layout as IR<StatLayout>).forEach(([sourceName, layouts]) =>
+    layouts.forEach((layout) =>
+      layout.categories.forEach((category) =>
+        category.items.forEach(({ itemLabel, itemValue }) => {
+          if (itemValue === undefined) return;
+          statItems.push([
+            sourceName,
+            layout.label,
+            category.label,
+            itemLabel,
+            itemValue.toString(),
+          ]);
+        })
+      )
+    )
+  );
+  return [headers, ...statItems].map((line) => line.join('\t')).join('\n');
 }

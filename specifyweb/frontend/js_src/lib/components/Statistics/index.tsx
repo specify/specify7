@@ -2,7 +2,7 @@ import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { commonText } from '../../localization/common';
 import { removeItem, replaceItem, removeKey } from '../../utils/utils';
-import { H2 } from '../Atoms';
+import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { useQueries } from '../Toolbar/Query';
@@ -17,6 +17,7 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
+  statsToTsv,
 } from './hooks';
 import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
@@ -28,6 +29,7 @@ import { DateElement } from '../Molecules/DateElement';
 import { statsText } from '../../localization/stats';
 import { f } from '../../utils/functools';
 import { hasPermission } from '../Permissions/helpers';
+import { downloadFile } from '../Molecules/FilePicker';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -50,7 +52,10 @@ export function StatsPage(): JSX.Element | null {
     'defaultLayout'
   );
 
-  const layout = [collectionLayout, personalLayout];
+  const layout = {
+    [statsText('collection')]: collectionLayout,
+    [statsText('personal')]: personalLayout,
+  };
 
   const isCollectionCacheValid = useCacheValid(collectionLayout);
   const isPersonalCacheValid = useCacheValid(personalLayout);
@@ -194,7 +199,9 @@ export function StatsPage(): JSX.Element | null {
     );
   };
   const defaultStatsAddLeft = useDefaultStatsToAdd(
-    layout[activePage.isCollection ? 0 : 1]?.[activePage.pageIndex],
+    layout[
+      activePage.isCollection ? statsText('collection') : statsText('personal')
+    ]?.[activePage.pageIndex],
     defaultLayout
   );
   const handleDefaultLoad = React.useCallback(
@@ -271,11 +278,10 @@ export function StatsPage(): JSX.Element | null {
         <H2 className="text-2xl">{commonText('statistics')}</H2>
         <span className="-ml-2 flex-1" />
         {pageLastUpdated !== undefined && (
-          <>
-            <p>{`${statsText('lastUpdated')}`}</p>
-
+          <span>
+            {`${statsText('lastUpdated')} `}
             <DateElement date={pageLastUpdated} />
-          </>
+          </span>
         )}
         <Button.Blue
           onClick={(): void => {
@@ -294,6 +300,21 @@ export function StatsPage(): JSX.Element | null {
         >
           {commonText('update')}
         </Button.Blue>
+        {Object.values(layout).every((layouts) => layouts !== undefined) && (
+          <Button.Green
+            onClick={(): void => {
+              const date = new Date();
+              const fileName = `Specify 7 Statistics ${date.toDateString()} ${
+                date.toTimeString().split(' ')[0]
+              }.tsv`;
+              const statsTsv = statsToTsv(layout);
+              if (statsTsv === undefined) return;
+              downloadFile(fileName, statsTsv).catch(softFail);
+            }}
+          >
+            {statsText('downloadAsTSV')}
+          </Button.Green>
+        )}
         {isEditing ? (
           <>
             <Button.Red
@@ -355,52 +376,54 @@ export function StatsPage(): JSX.Element | null {
                 md:sticky
             `}
           >
-            {layout.map((parentLayout, index) =>
-              parentLayout === undefined ? undefined : (
-                <>
-                  {parentLayout.map(({ label }, pageIndex) => (
-                    <StatsPageButton
-                      key={pageIndex}
-                      label={label}
-                      isCurrent={
-                        activePage.pageIndex === pageIndex &&
-                        activePage.isCollection === (index === 0)
-                      }
-                      onRename={
-                        isEditing
-                          ? (): void => {
-                              setState({
-                                type: 'PageRenameState',
-                                isCollection: index === 0,
-                                pageIndex,
-                              });
-                            }
-                          : undefined
-                      }
-                      onClick={(): void => {
-                        setActivePage({
-                          isCollection: index === 0,
-                          pageIndex,
-                        });
-                      }}
-                    />
-                  ))}
-                  {isEditing && (
-                    <StatsPageButton
-                      onClick={(): void => {
-                        setState({
-                          type: 'PageRenameState',
-                          pageIndex: undefined,
-                          isCollection: index === 0,
-                        });
-                      }}
-                      isCurrent={false}
-                      label={commonText('add')}
-                      onRename={undefined}
-                    />
-                  )}
-                </>
-              )
+            {Object.entries(layout).map(
+              ([parentLayoutName, parentLayout], index) =>
+                parentLayout === undefined ? undefined : (
+                  <div className="flex flex-col gap-2">
+                    <H3 className="text-lg font-bold">{parentLayoutName}</H3>
+                    {parentLayout.map(({ label }, pageIndex) => (
+                      <StatsPageButton
+                        key={pageIndex}
+                        label={label}
+                        isCurrent={
+                          activePage.pageIndex === pageIndex &&
+                          activePage.isCollection === (index === 0)
+                        }
+                        onRename={
+                          isEditing
+                            ? (): void => {
+                                setState({
+                                  type: 'PageRenameState',
+                                  isCollection: index === 0,
+                                  pageIndex,
+                                });
+                              }
+                            : undefined
+                        }
+                        onClick={(): void => {
+                          setActivePage({
+                            isCollection: index === 0,
+                            pageIndex,
+                          });
+                        }}
+                      />
+                    ))}
+                    {isEditing && (
+                      <StatsPageButton
+                        onClick={(): void => {
+                          setState({
+                            type: 'PageRenameState',
+                            pageIndex: undefined,
+                            isCollection: index === 0,
+                          });
+                        }}
+                        isCurrent={false}
+                        label={commonText('add')}
+                        onRename={undefined}
+                      />
+                    )}
+                  </div>
+                )
             )}
           </aside>
           {state.type === 'PageRenameState' && (

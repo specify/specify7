@@ -162,5 +162,25 @@ export const statsText = createDictionary({
     'en-us': 'Last Updated',
     'ru-ru': 'Последнее обновление',
   },
+  source: {
+    'en-us': 'Source',
+    'ru-ru': 'Источник',
+  },
+  categoryName: {
+    'en-us': 'Category Name',
+    'ru-ru': 'Название категории',
+  },
+  itemName: {
+    'en-us': 'Item Name',
+    'ru-ru': 'Название предмета',
+  },
+  itemValue: {
+    'en-us': 'Item Value',
+    'ru-ru': 'Стоимость товара',
+  },
+  downloadAsTSV: {
+    'en-us': 'Download as TSV',
+    'ru-ru': 'Скачать как TSV',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
