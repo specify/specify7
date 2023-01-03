@@ -67,6 +67,9 @@ export function StatsPage(): JSX.Element | null {
       if (collectionLayout === undefined) {
         setCollectionLayout(defaultLayoutSpec);
       }
+      if (personalLayout === undefined) {
+        setPersonalLayout(defaultLayoutSpec);
+      }
     }
   }, [
     isDefaultCacheValid,
@@ -74,6 +77,8 @@ export function StatsPage(): JSX.Element | null {
     setCollectionLayout,
     setDefaultLayout,
     defaultLayoutSpec,
+    personalLayout,
+    setPersonalLayout,
   ]);
 
   const [state, setState] = React.useState<
