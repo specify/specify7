@@ -1,15 +1,16 @@
-from typing import List, Optional
+from typing import List, Optional, AnyStr
+import json
 
 from ..uploadable import Disambiguation
 from ..upload_result import Uploaded, UploadResult, Matched, MatchedMultiple, FailedBusinessRule, ReportInfo, TreeInfo
 from ..upload_table import UploadTable, ScopedUploadTable, _to_many_filters_and_excludes, BoundUploadTable
 from ..tomany import ToManyRecord
 from ..treerecord import TreeRecord, BoundTreeRecord, TreeDefItemWithParseResults
-from ..upload import do_upload, do_upload_csv, validate_row, get_disambiguation_from_row
+from ..upload import do_upload, validate_row, get_disambiguation_from_row
 from ..upload_plan_schema import parse_column_options, parse_plan
 from ..disambiguation import DisambiguationInfo
 
-from .base import UploadTestsBase, get_table
+from .base import UploadTestsBase, get_table, cols_and_rows
 
 class DisambiguationTests(UploadTestsBase):
 
@@ -63,23 +64,24 @@ class DisambiguationTests(UploadTestsBase):
             ]}
         ).apply_scoping(self.collection)
 
-        data = [
+        cols, rows = cols_and_rows([
             {'title': "A Natural History of Mung Beans 1", 'author1': "Philomungus", 'author2': "Mungophilius"},
             {'title': "A Natural History of Mung Beans 2", 'author1': "Mungophilius", 'author2': "Philomungus"},
             {'title': "A Natural History of Mung Beans 3", 'author1': "Mungophilius", 'author2': "Mungophilius"},
-        ]
+        ])
 
-        results = do_upload(self.collection, data, plan, self.agent.id)
+        results = do_upload(self.collection, cols, rows, plan, self.agent.id)
         for result in results:
             assert result.contains_failure()
 
-        disambiguations: Optional[List[Disambiguation]] = [
-            DisambiguationInfo({("authors", "#2", "agent"): senior.id}),
-            DisambiguationInfo({("authors", "#1", "agent"): junior.id}),
-            DisambiguationInfo({("authors", "#1", "agent"): senior.id, ("authors", "#2", "agent"): junior.id}),
+        disambiguations = [
+            {'.'.join(("authors", "#2", "agent")): senior.id},
+            {'.'.join(("authors", "#1", "agent")): junior.id},
+            {'.'.join(("authors", "#1", "agent")): senior.id, '.'.join(("authors", "#2", "agent")): junior.id},
         ]
+        rows_ = [r + [json.dumps(dict(disambiguation=da))] for r, da in zip(rows, disambiguations)]
 
-        results = do_upload(self.collection, data, plan, self.agent.id, disambiguations)
+        results = do_upload(self.collection, cols, rows_, plan, self.agent.id)
         for result in results:
             assert not result.contains_failure()
 
