@@ -25,6 +25,7 @@ import {
   usePrimarySearch,
   useSecondarySearch,
 } from './ExpressSearchHooks';
+import { WelcomeView } from '../HomePage';
 
 export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
@@ -34,34 +35,54 @@ export function ExpressSearchView(): JSX.Element {
   const secondaryResults = useSecondarySearch(query);
 
   return (
-    <Container.Full>
-      <H2>{headerText.expressSearch()}</H2>
-      <Form onSubmit={(): void => setQuery(pendingQuery)}>
-        <Input.Generic
-          aria-label={commonText.search()}
-          autoComplete="on"
-          className="flex-1"
-          // Name is for autocomplete purposes only
-          name="searchQuery"
-          placeholder={commonText.search()}
-          required
-          type="search"
-          value={pendingQuery}
-          onValueChange={setPendingQuery}
-        />
-        <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
-      </Form>
-      {primaryResults !== false && (
-        <TableResults
-          header={headerText.primarySearch()}
-          queryResults={primaryResults}
-        />
-      )}
-      {secondaryResults !== false && (
-        <TableResults
-          header={headerText.secondarySearch()}
-          queryResults={secondaryResults}
-        />
+    <Container.Full
+      className={`
+        p-0
+        ${
+          query.length === 0
+            ? 'grid h-full grid-cols-1 grid-rows-[1fr_auto_1fr]'
+            : ''
+        }
+      `}
+    >
+      <div className="flex flex-col gap-2 p-4">
+        <H2>{headerText.expressSearch()}</H2>
+        <Form onSubmit={(): void => setQuery(pendingQuery)}>
+          <Input.Generic
+            aria-label={commonText.search()}
+            autoComplete="on"
+            className="flex-1"
+            // Name is for autocomplete purposes only
+            name="searchQuery"
+            placeholder={commonText.search()}
+            required
+            type="search"
+            value={pendingQuery}
+            onValueChange={setPendingQuery}
+          />
+          <Submit.Blue className="sr-only">{commonText.search()}</Submit.Blue>
+        </Form>
+      </div>
+      {query.length > 0 ? (
+        <div className="p-4">
+          {primaryResults !== false && (
+            <TableResults
+              header={headerText.primarySearch()}
+              queryResults={primaryResults}
+            />
+          )}
+          {secondaryResults !== false && (
+            <TableResults
+              header={headerText.secondarySearch()}
+              queryResults={secondaryResults}
+            />
+          )}
+        </div>
+      ) : (
+        <>
+          <WelcomeView />
+          <div />
+        </>
       )}
     </Container.Full>
   );
