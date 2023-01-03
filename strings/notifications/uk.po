@@ -1,71 +1,96 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-03 18:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"notifications/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:146
-#. Used in: Components > Header > Notifications
+#, fuzzy
 msgid "notifications"
-msgstr ""
+msgstr "Сповіщення"
 
-#: components/Header/Notifications.tsx:134
 #. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:134
+#, fuzzy
 msgid "notificationsCount"
-msgstr ""
+msgstr "Сповіщення: {count:number|formatted}"
 
-#: components/Header/Notifications.tsx:137
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:137
+#, fuzzy
 msgid "notificationsLoading"
-msgstr ""
+msgstr "Сповіщення: …"
 
-#: components/Header/Notifications.tsx:177
 #. Used in: Components > Header > Notifications
+#: components/Header/Notifications.tsx:177
+#, fuzzy
 msgid "mostRecentNotificationsTop"
-msgstr ""
+msgstr "(У порядку від останнього до найстарішого.)"
 
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:44
 #: components/Header/NotificationRenderers.tsx:72
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "exception"
-msgstr ""
+msgstr "Помилка"
 
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 #: components/AppResources/EditorComponents.tsx:125
 #: components/Header/NotificationRenderers.tsx:58
 #: components/Header/NotificationRenderers.tsx:86
 #: components/Header/NotificationRenderers.tsx:100
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
+#, fuzzy
 msgid "download"
-msgstr ""
+msgstr "Завантажити"
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:24
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "feedItemUpdated"
-msgstr ""
+msgstr "Стрічку експорту RSS оновлено."
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:38
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "updateFeedFailed"
-msgstr ""
+msgstr "Не вдалося експортувати оновлення каналу."
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:52
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "dwcaExportCompleted"
-msgstr ""
+msgstr "Експорт DwCA завершено."
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:66
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "dwcaExportFailed"
-msgstr ""
+msgstr "Помилка експорту DwCA."
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:80
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "queryExportToCsvCompleted"
-msgstr ""
+msgstr "Експорт запиту в CSV завершено."
 
+#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:94
-#. Used in: Components > Header > Notification Renderers
+#, fuzzy
 msgid "queryExportToKmlCompleted"
-msgstr ""
+msgstr "Експорт запиту в KML завершено."
 
-#: components/Header/NotificationRenderers.tsx:108
 #. Used in: Components > Header > Notification Renderers
+#: components/Header/NotificationRenderers.tsx:108
+#, fuzzy
 msgid "dataSetOwnershipTransferred"
 msgstr ""
+"<userName /> передав вам право власності на набір даних <dataSetName />."
