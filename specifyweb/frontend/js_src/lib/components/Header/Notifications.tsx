@@ -136,7 +136,11 @@ export function Notifications({
     'aria-label': title,
     'aria-live': 'polite',
     className: `
-      ${unreadCount > 0 ? 'text-brand-300 dark:text-brand-400' : ''}
+      ${
+        unreadCount > 0
+          ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
+          : ''
+      }
       ${isCollapsed ? 'p-4' : ''}
     `,
     disabled: notificationCount === 0,
