@@ -125,4 +125,12 @@ export const resourcesText = createDictionary({
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
   },
+  globalPreferences: {
+    'en-us': 'Global Preferences',
+    'ru-ru': 'Глобальные настройки',
+  },
+  remotePreferences: {
+    'en-us': 'Remote Preferences',
+    'ru-ru': 'Удаленные настройки',
+  },
 } as const);
