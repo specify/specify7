@@ -146,11 +146,13 @@ export function Header({
       ) : (
         <button
           aria-label={title}
-          className="h-full w-1.5 bg-brand-200 dark:bg-brand-400"
+          className="flex h-full w-1.5 items-center bg-brand-200 dark:bg-brand-400"
           title={title}
           type="button"
           onClick={(): void => setIsCollapsed(!isCollapsed)}
-        />
+        >
+          <span className="h-6 w-6 rounded-full bg-brand-400 dark:bg-brand-500" />
+        </button>
       )}
     </header>
   );
