@@ -30,17 +30,38 @@ import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
+import { listen } from '../../utils/events';
+
+const collapseThreshold = 900;
 
 export function Header({
   menuItems,
 }: {
   readonly menuItems: RR<MenuItemName, MenuItem>;
 }): JSX.Element {
-  const [isCollapsed = false, setIsCollapsed] = useCachedState(
+  const [rawIsCollapsed = false, setIsCollapsed] = useCachedState(
     'header',
     'isCollapsed'
   );
+
+  // Collapse the menu on narrow screens
+  const [forceCollapse, setForceCollapse] = React.useState(false);
+  React.useEffect(() => {
+    if (rawIsCollapsed) {
+      setForceCollapse(false);
+      return undefined;
+    }
+    const handleChange = (): void =>
+      document.body.clientWidth < collapseThreshold
+        ? setForceCollapse(true)
+        : setForceCollapse(false);
+    handleChange();
+    return listen(window, 'resize', handleChange);
+  }, [rawIsCollapsed, setIsCollapsed]);
+
+  const isCollapsed = rawIsCollapsed || forceCollapse;
   const title = isCollapsed ? commonText.expand() : commonText.collapse();
+
   return (
     <header
       className={`flex [z-index:1] print:hidden ${className.hasAltBackground}`}
@@ -97,16 +118,11 @@ export function Header({
             )
           ) : undefined}
           <Notifications isCollapsed={isCollapsed} />
-          {isCollapsed ? (
-            <Button.Icon
-              className="p-4"
-              icon="archive"
-              title={commonText.chooseCollection()}
-              onClick={(): void => setIsCollapsed(false)}
-            />
-          ) : (
-            <CollectionSelector />
-          )}
+          <CollectionSelector
+            onClick={
+              isCollapsed ? (): void => setIsCollapsed(false) : undefined
+            }
+          />
           {isCollapsed ? (
             <Link.Icon
               className="p-4"
@@ -125,13 +141,17 @@ export function Header({
           )}
         </div>
       </div>
-      <button
-        aria-label={title}
-        className="h-full w-1.5 bg-brand-200 dark:bg-brand-400"
-        title={title}
-        type="button"
-        onClick={(): void => setIsCollapsed(!isCollapsed)}
-      />
+      {forceCollapse ? (
+        <div className="h-full w-1.5 bg-brand-200 dark:bg-brand-400" />
+      ) : (
+        <button
+          aria-label={title}
+          className="h-full w-1.5 bg-brand-200 dark:bg-brand-400"
+          title={title}
+          type="button"
+          onClick={(): void => setIsCollapsed(!isCollapsed)}
+        />
+      )}
     </header>
   );
 }
@@ -214,7 +234,11 @@ type Collections = {
   readonly current: number | null;
 };
 
-export function CollectionSelector(): JSX.Element {
+export function CollectionSelector({
+  onClick: handleClick,
+}: {
+  readonly onClick: (() => void) | undefined;
+}): JSX.Element {
   const [collections] = useAsyncState<Collections>(
     React.useCallback(
       async () =>
@@ -247,7 +271,14 @@ export function CollectionSelector(): JSX.Element {
   );
 
   const navigate = useNavigate();
-  return (
+  return typeof handleClick === 'function' ? (
+    <Button.Icon
+      className="p-4"
+      icon="archive"
+      title={commonText.chooseCollection()}
+      onClick={handleClick}
+    />
+  ) : (
     <Select
       aria-label={headerText.currentCollection()}
       className="flex-1"
