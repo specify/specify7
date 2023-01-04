@@ -200,7 +200,7 @@ export function useResolvedSpec(
 ):
   | {
       readonly type: 'QueryStat';
-      readonly query: SpecifyResource<SpQuery> | undefined;
+      readonly query: SpecifyResource<SpQuery>;
       readonly label: string;
     }
   | {

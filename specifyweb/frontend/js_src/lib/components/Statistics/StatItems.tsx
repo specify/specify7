@@ -58,10 +58,12 @@ export function StatItem({
   );
   return statsSpecCalculated?.type === 'QueryStat' ? (
     <StatsResult
+      isDefault={item.type === 'DefaultStat'}
       query={statsSpecCalculated.query}
       statLabel={statsSpecCalculated?.label}
       statValue={item.itemValue}
       onClick={handleClick}
+      onItemRename={handleItemRename}
       onRemove={handleRemove}
       onSpecChanged={
         handleSpecChanged !== undefined
@@ -70,17 +72,17 @@ export function StatItem({
             }
           : undefined
       }
-      onItemRename={handleItemRename}
     />
   ) : item.type === 'DefaultStat' ? (
     <StatsResult
+      isDefault
       query={undefined}
       statLabel={item.itemLabel}
       statValue={item.itemValue}
       onClick={handleClick}
+      onItemRename={handleItemRename}
       onRemove={handleRemove}
       onSpecChanged={undefined}
-      onItemRename={handleItemRename}
     />
   ) : null;
 }
