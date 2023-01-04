@@ -16,50 +16,29 @@ from django.db import connection
     'get': {
         'responses': {
             '200': {
-                'description': 'Returns Global Collection Stats for Specify that backend delivers',
+                'description': 'Returns Global Collection Holding Stats for Specify',
                 'content': {
                     'application/json': {
                         'schema': {
                             'type': 'object',
                             'properties': {
-                                'holdings': {
-                                    'type': 'object',
-                                    'properties': {
-                                        'familiesRepresented': {
-                                            'type': 'integer'
-                                        },
-                                        'generaRepresented': {
-                                            'type': 'integer'
-                                        },
-                                        'speciesRepresented': {
-                                            'type': 'integer'
-                                        }
-                                    }
+                                'familiesRepresented': {
+                                    'type': 'integer'
                                 },
-                                'preparations': {
-                                    'type': 'object',
-                                    'additionalProperties': True,
+                                'generaRepresented': {
+                                    'type': 'integer'
                                 },
-                                'typeSpecimens': {
-                                    'type': 'object',
-                                    'additionalProperties': True,
-                                },
-                                'localityGeography': {
-                                    'type': 'object',
-                                    'properties': {
-                                        'countries': {
-                                            'type': 'integer'
-                                        }
-                                    }
+                                'speciesRepresented': {
+                                    'type': 'integer'
                                 }
                             }
                         }
                     }
-                },
+                }
             }
         }
     }}, )
-def collection_global(request) -> http.HttpResponse:
+def collection_holdings(request) -> HttpResponse:
     cursor = connection.cursor()
     # Holdings
     # Families
@@ -104,7 +83,6 @@ def collection_global(request) -> http.HttpResponse:
     )
     holding_dict['generaRepresented'] = int(cursor.fetchone()[0])
 
-    # UNQ_SPEC
     cursor.execute(
         """
         SELECT count(DISTINCT tx.TaxonID)
@@ -123,7 +101,27 @@ def collection_global(request) -> http.HttpResponse:
         [request.specify_collection.id]
     )
     holding_dict['speciesRepresented'] = int(cursor.fetchone()[0])
+    return http.JsonResponse(holding_dict)
 
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns Global Collection Preparation Stats for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'additionalProperties': True,
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_preparations(request) -> HttpResponse:
+    cursor = connection.cursor()
     # PREP_BY_TYPE_LOTS
     cursor.execute(
         """
@@ -142,7 +140,32 @@ def collection_global(request) -> http.HttpResponse:
             'lots': int(lots),
             'total': int(total)
         }
+    return http.JsonResponse(preptypelotstotal_dict)
 
+
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns Global Collection Locality/Geography Stats for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'countries': {
+                                    'type': 'integer'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_locality_geography(request) -> HttpResponse:
+    cursor = connection.cursor()
     ####LOC_GEO
     # COUNTRIES
     geography_dict = {}
@@ -158,7 +181,27 @@ def collection_global(request) -> http.HttpResponse:
                 and GEO.nodenumber between g.nodenumber and g.HighestChildNodeNumber) As GEO2
         """)
     geography_dict['countries'] = int((cursor.fetchone()[0]))
+    return http.JsonResponse(geography_dict)
 
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns Global Collection Type Specimen Stats for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'additionalProperties': True,
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_type_specimens(request) -> HttpResponse:
+    cursor = connection.cursor()
     # TYPE_SPEC_CNT
     cursor.execute(
         """
@@ -174,13 +217,7 @@ def collection_global(request) -> http.HttpResponse:
     type_spec_dict = {}
     for (name, value) in list(type_specific_count_result):
         type_spec_dict[name] = int(value)
-
-    return_dict = {'holdings': holding_dict,
-                   'preparations': preptypelotstotal_dict,
-                   'typeSpecimens': type_spec_dict,
-                   'localityGeography': geography_dict}
-    return http.JsonResponse(return_dict)
-
+    return http.JsonResponse(type_spec_dict)
 
 def collection_user():
-    return 'r'
+    return http.Http404
