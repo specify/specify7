@@ -12,7 +12,6 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
-import { className } from '../Atoms/className';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
 import { Language } from '../../localization/utils/config';
@@ -77,7 +76,6 @@ export function OicLogin({
             href={formatUrl('/accounts/legacy_login/', {
               next,
             })}
-            className={className.navigationHandled}
           >
             {userText.legacyLogin()}
           </Link.Fancy>

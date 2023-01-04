@@ -133,7 +133,7 @@ function parseClickEvent(
     // Check if link already has an onClick that called event.preventDefault()
     !event.defaultPrevented &&
     link !== null &&
-    link.href.startsWith('/specify/') &&
+    link.getAttribute('href')?.startsWith('/specify/') === true &&
     link.getAttribute('download') === null &&
     !event.metaKey &&
     !event.shiftKey &&

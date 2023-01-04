@@ -6,7 +6,6 @@ import { isExternalUrl } from '../../utils/ajax/helpers';
 import type { IR, RA } from '../../utils/types';
 import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import type { UserTool } from '../Core/Main';
@@ -99,21 +98,10 @@ function UserToolsColumn({
             {userTools.map(({ title, url }) => {
               const isExternalLink = isExternalUrl(url);
               // Make links to another entrypoint trigger page reload
-              const isDifferentEntrypoint =
-                !isExternalLink && !url.startsWith('/specify');
               const LinkComponent = isExternalLink ? Link.NewTab : Link.Default;
               return (
                 <li key={url}>
-                  <LinkComponent
-                    className={
-                      isDifferentEntrypoint
-                        ? className.navigationHandled
-                        : undefined
-                    }
-                    href={url}
-                  >
-                    {title}
-                  </LinkComponent>
+                  <LinkComponent href={url}>{title}</LinkComponent>
                 </li>
               );
             })}
