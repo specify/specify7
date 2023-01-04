@@ -75,7 +75,7 @@ export function AddStatDialog({
         )}
       </div>
       <div>
-        {defaultStatsAddLeft !== undefined && defaultStatsAddLeft.length > 0 && (
+        {defaultStatsAddLeft !== undefined && (
           <div>
             <H3 className="text-xl">{statsText('selectFromDefault')}</H3>
             <Ul>

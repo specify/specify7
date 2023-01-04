@@ -105,31 +105,34 @@ export function useDefaultStatsToAdd(
     const listToUse = layout.categories.flatMap(({ items }) =>
       items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
     );
-    return defaultLayout
-      .map((defaultLayoutPage) => ({
-        label: defaultLayoutPage.label,
-        categories: defaultLayoutPage.categories
-          .map(({ label, items }) => ({
-            label,
-            items: items.map((defaultItem) => ({
-              ...defaultItem,
-              ...(defaultItem.type === 'DefaultStat' &&
-              !listToUse.some(
-                ({ pageName, categoryName, itemName }) =>
-                  pageName === defaultItem.pageName &&
-                  categoryName === defaultItem.categoryName &&
-                  itemName === defaultItem.itemName
-              )
-                ? {
-                    isVisible: undefined,
-                  }
-                : { isVisible: false }),
-            })),
-          }))
-          .filter(({ items }) => items.length > 0),
-        lastUpdated: undefined,
-      }))
-      .filter(({ categories }) => categories.length > 0);
+    let statNotFound = false;
+    const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
+      label: defaultLayoutPage.label,
+      categories: defaultLayoutPage.categories.map(({ label, items }) => ({
+        label,
+        items: items.map((defaultItem) => {
+          const defaultStatNotFound =
+            defaultItem.type === 'DefaultStat' &&
+            !listToUse.some(
+              ({ pageName, categoryName, itemName }) =>
+                pageName === defaultItem.pageName &&
+                categoryName === defaultItem.categoryName &&
+                itemName === defaultItem.itemName
+            );
+          if (!statNotFound) statNotFound = defaultStatNotFound;
+          return {
+            ...defaultItem,
+            ...(defaultStatNotFound
+              ? {
+                  isVisible: undefined,
+                }
+              : { isVisible: false }),
+          };
+        }),
+      })),
+      lastUpdated: undefined,
+    }));
+    return statNotFound ? defaultLayoutFlagged : undefined;
   }, [layout, defaultLayout]);
 }
 
