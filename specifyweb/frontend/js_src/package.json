@@ -11,6 +11,9 @@
   "author": "KU Biodiversity Institute",
   "homepage": "https://specifysoftware.org",
   "main": "lib/main.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
     "//pullFromWeblate": "This is run by github action on the weblate-localization branch",
