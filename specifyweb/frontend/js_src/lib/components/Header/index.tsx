@@ -9,28 +9,26 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
+import { listen } from '../../utils/events';
 import type { RA, RR } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Select } from '../Atoms/Form';
+import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
 import { serializeResource } from '../DataModel/helpers';
 import type { SerializedModel } from '../DataModel/helperTypes';
 import type { Collection } from '../DataModel/types';
-import { userInformation } from '../InitialContext/userInformation';
+import { formatUrl } from '../Router/queryString';
 import { switchCollection } from '../RouterCommands/SwitchCollection';
 import { usePref } from '../UserPreferences/usePref';
 import type { MenuItemName } from './menuItemDefinitions';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
-import { listen } from '../../utils/events';
-import { icons } from '../Atoms/Icons';
-import { formatUrl } from '../Router/queryString';
 
 const collapseThreshold = 900;
 
@@ -62,20 +60,6 @@ export function Header({
   const isCollapsed = rawIsCollapsed || forceCollapse;
   const title = isCollapsed ? commonText.expand() : commonText.collapse();
 
-  const logInProps = userInformation.isauthenticated
-    ? ({
-        href: '/accounts/logout/',
-        icon: 'logout',
-        title: userText.logIn(),
-        'aria-label': userText.logIn(),
-      } as const)
-    : ({
-        href: '/accounts/login/',
-        icon: 'login',
-        title: userText.logOut(),
-        'aria-label': userText.logOut(),
-      } as const);
-
   return (
     <header
       className={`flex [z-index:1] print:hidden ${className.hasAltBackground}`}
@@ -94,14 +78,22 @@ export function Header({
             `}
             href="/specify/"
           >
+            {/* Both logs are loaded to prevent flickering on collapse/expand */}
             <img
               alt=""
-              className="hover:animate-hue-rotate"
-              src={
-                isCollapsed
-                  ? '/static/img/short_logo.svg'
-                  : '/static/img/logo.svg'
-              }
+              className={`
+                hover:animate-hue-rotate
+                ${isCollapsed ? 'hidden' : ''}
+              `}
+              src="/static/img/logo.svg"
+            />
+            <img
+              alt=""
+              className={`
+                hover:animate-hue-rotate
+                ${isCollapsed ? '' : 'hidden'}
+              `}
+              src="/static/img/short_logo.svg"
             />
             <span className="sr-only">{commonText.goToHomepage()}</span>
           </a>
@@ -125,13 +117,8 @@ export function Header({
                 isCollapsed ? (): void => setIsCollapsed(false) : undefined
               }
             />
-            <Notifications isCollapsed={isCollapsed} />
             <UserTools isCollapsed={isCollapsed} />
-            {isCollapsed ? (
-              <Link.Icon className="p-4" {...logInProps} />
-            ) : (
-              <Link.Small {...logInProps}>{icons[logInProps.icon]}</Link.Small>
-            )}
+            <Notifications isCollapsed={isCollapsed} />
             {isCollapsed ? (
               <Link.Icon
                 className="p-4"
@@ -270,7 +257,7 @@ export function CollectionSelector({
   ) : (
     <Select
       aria-label={headerText.currentCollection()}
-      className="flex-1"
+      className="col-span-2 flex-1"
       title={headerText.currentCollection()}
       value={collections?.current ?? undefined}
       onValueChange={(value): void =>
@@ -307,8 +294,8 @@ function ExpressSearchLine(): JSX.Element {
       <Link.Small
         aria-label={commonText.search()}
         href={formatUrl('/specify/express-search/', { q: query })}
-        onClick={(): void => setQuery('')}
         title={commonText.search()}
+        onClick={(): void => setQuery('')}
       >
         {icons.search}
       </Link.Small>

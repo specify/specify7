@@ -16,15 +16,16 @@ import { userToolsPromise } from './userToolDefinitions';
 import { formsText } from '../../localization/forms';
 import { useCachedState } from '../../hooks/useCachedState';
 import { headerText } from '../../localization/header';
+import { userText } from '../../localization/user';
 
 export function UserTools({
   isCollapsed,
 }: {
   readonly isCollapsed: boolean;
 }): JSX.Element {
-  return isCollapsed ? (
+  const userTools = isCollapsed ? (
     <Link.Icon
-      className="p-4"
+      className="flex-1 p-4"
       title={headerText.userTools()}
       icon="cog"
       href="/specify/overlay/user-tools/"
@@ -44,6 +45,23 @@ export function UserTools({
         ? userInformation.name
         : headerText.userTools()}
     </Link.Small>
+  );
+  return userInformation.isauthenticated ? (
+    userTools
+  ) : (
+    <div className="flex gap-2">
+      {userTools}
+      {isCollapsed ? (
+        <Link.Icon
+          className="p-4"
+          href="/accounts/logout/"
+          icon="logout"
+          title={userText.logIn()}
+        />
+      ) : (
+        <Link.Small href="/accounts/logout/">{userText.logIn()}</Link.Small>
+      )}
+    </div>
   );
 }
 
