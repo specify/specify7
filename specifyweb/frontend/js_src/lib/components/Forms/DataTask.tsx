@@ -29,6 +29,10 @@ import { useSearchParameter } from '../../hooks/navigation';
 import { RA } from '../../utils/types';
 import { State } from 'typesafe-reducer';
 import { LoadingContext } from '../Core/Contexts';
+import { useCachedState } from '../../hooks/useCachedState';
+import { Dialog } from '../Molecules/Dialog';
+import { commonText } from '../../localization/common';
+import { userText } from '../../localization/user';
 
 export function ViewRecordSet(): JSX.Element {
   const { id, index } = useParams();
@@ -80,9 +84,17 @@ function DisplayRecordSet({
 }: {
   readonly recordSet: SpecifyResource<RecordSet>;
   readonly resourceIndex: number;
-}): null {
+}): null | JSX.Element {
   const [recordToOpen] = usePref('form', 'recordSet', 'recordToOpen');
   const navigate = useNavigate();
+
+  const [isReadOnly = false] = useCachedState(
+    'forms',
+    'readOnlyMode'
+  );
+
+  const [readOnlyState, setReadOnlyState] = React.useState(false);
+
   useAsyncState(
     React.useCallback(
       async () =>
@@ -92,6 +104,7 @@ function DisplayRecordSet({
           orderBy: recordToOpen === 'first' ? 'id' : '-id',
           limit: 1,
         }).then(({ records }) =>
+          isReadOnly === true && records.length === 0 ? setReadOnlyState(true) : 
           navigate(
             formatUrl(
               getResourceViewUrl(
@@ -104,12 +117,20 @@ function DisplayRecordSet({
               replace: true,
             }
           )
+          
         ),
       [recordSet, resourceIndex, recordToOpen]
     ),
     true
   );
-  return null;
+  return readOnlyState ? 
+  <>
+    <Dialog
+      buttons={commonText.close()}
+      header={userText.permissionDeniedError()}
+      onClose={(): void => navigate('/specify/')}
+    >{userText.emptyRecordSetsReadOnly()}</Dialog>
+  </> : null;
 }
 
 /** Begins the process of creating a new resource */

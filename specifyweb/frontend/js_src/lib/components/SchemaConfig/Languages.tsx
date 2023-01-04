@@ -13,6 +13,7 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { useId } from '../../hooks/useId';
 import { schemaText } from '../../localization/schema';
+export const languageSeparator = '-';
 
 export function ChooseSchemaLanguage(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -42,7 +43,7 @@ export function ChooseSchemaLanguage(): JSX.Element {
               href={`/specify/schema-config/${code}/`}
               role="link"
             >
-              {label}
+                {label.includes('(') ? label : `${label} (${code.split(languageSeparator).at(-1)})`}
             </Link.Default>
           </li>
         ))}
