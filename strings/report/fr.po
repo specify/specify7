@@ -1,105 +1,136 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-04 23:17+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/report/"
+"fr/>\n"
+"Language: fr\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:50
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "label"
-msgstr ""
+msgstr "Étiquette"
 
-#: components/Reports/index.tsx:146
 #. Used in: Components > Reports > Index
+#: components/Reports/index.tsx:146
+#, fuzzy
 msgid "labels"
-msgstr ""
+msgstr "Étiquettes"
 
-#: components/AppResources/types.tsx:58
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:58
+#, fuzzy
 msgid "report"
-msgstr ""
+msgstr "Rapport"
 
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 #: components/Header/menuItemDefinitions.ts:95
 #: components/Reports/Parameters.tsx:85
 #: components/Reports/index.tsx:131
 #: components/Reports/index.tsx:137
 #: components/Router/OverlayRoutes.tsx:111
 #: components/UserPreferences/Definitions.tsx:1309
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
+#, fuzzy
 msgid "reports"
-msgstr ""
+msgstr "Rapports"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:218
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "reportProblems"
-msgstr ""
+msgstr "Problèmes avec le rapport"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:222
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "reportProblemsDescription"
-msgstr ""
+msgstr "Le rapport sélectionné présente les problèmes suivants :"
 
-#: components/Reports/Report.tsx:223
 #. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:223
+#, fuzzy
 msgid "missingAttachments"
-msgstr ""
+msgstr "Pièces jointes manquantes"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:227
 #: components/Reports/Report.tsx:229
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "fix"
-msgstr ""
+msgstr "Réparer"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:240
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "chooseFile"
-msgstr ""
+msgstr "Choisir le fichier"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:330
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "reportParameters"
-msgstr ""
+msgstr "Paramètres du rapport"
 
-#: components/Reports/Parameters.tsx:82
 #. Used in: Components > Reports > Parameters
+#: components/Reports/Parameters.tsx:82
+#, fuzzy
 msgid "runReport"
-msgstr ""
+msgstr "Rapport d'exécution"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:114
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "missingReportQuery"
-msgstr ""
+msgstr "Requête de rapport manquante"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:118
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "missingReportQueryDescription"
-msgstr ""
+msgstr "Ce rapport n'a pas de requête associée"
 
+#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:123
-#. Used in: Components > Reports > Report
+#, fuzzy
 msgid "missingReport"
-msgstr ""
+msgstr "Rapport manquant"
 
-#: components/Reports/Report.tsx:127
 #. Used in: Components > Reports > Report
+#: components/Reports/Report.tsx:127
+#, fuzzy
 msgid "missingReportDescription"
 msgstr ""
+"Impossible de trouver un enregistrement SpReport pour cette ressource "
+"d'application"
 
-#: components/FormMeta/index.tsx:128
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:128
+#, fuzzy
 msgid "generateLabel"
-msgstr ""
+msgstr "Générer une étiquette"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #: components/FormMeta/index.tsx:145
 #: components/FormParse/fields.ts:97
 #: components/FormParse/__tests__/fields.test.ts:136
-#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
+#, fuzzy
 msgid "generateLabelOnSave"
-msgstr ""
+msgstr "Générer une étiquette lors de l'enregistrement"
 
+#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:127
-#. Used in: Components > Form Meta > Index
+#, fuzzy
 msgid "generateReport"
-msgstr ""
+msgstr "Générer un rapport"
 
-#: components/FormMeta/index.tsx:144
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:144
+#, fuzzy
 msgid "generateReportOnSave"
-msgstr ""
+msgstr "Générer un rapport lors de l'enregistrement"
