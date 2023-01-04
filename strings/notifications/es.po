@@ -1,96 +1,71 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-04 22:04+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"notifications/es/>\n"
-"Language: es\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Header > Notifications
 #: components/Header/Notifications.tsx:146
-#, fuzzy
-msgid "notifications"
-msgstr "Notificaciones"
-
-#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
-#: components/Header/Notifications.tsx:134
-#, fuzzy
-msgid "notificationsCount"
-msgstr "Notificaciones: {count:number|formatted}"
-
-#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
-#: components/Header/Notifications.tsx:137
-#, fuzzy
-msgid "notificationsLoading"
-msgstr "Notificaciones: …"
-
 #. Used in: Components > Header > Notifications
-#: components/Header/Notifications.tsx:177
-#, fuzzy
-msgid "mostRecentNotificationsTop"
-msgstr "(Ordenado de más reciente a más antiguo)."
+msgid "notifications"
+msgstr ""
 
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
+#: components/Header/Notifications.tsx:134
+#. 🟥Used for button label in the top menu. Used in: Components > Header > Notifications
+msgid "notificationsCount"
+msgstr ""
+
+#: components/Header/Notifications.tsx:137
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Header > Notifications
+msgid "notificationsLoading"
+msgstr ""
+
+#: components/Header/Notifications.tsx:177
+#. Used in: Components > Header > Notifications
+msgid "mostRecentNotificationsTop"
+msgstr ""
+
 #: components/Header/NotificationRenderers.tsx:44
 #: components/Header/NotificationRenderers.tsx:72
-#, fuzzy
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Header > Notification Renderers
 msgid "exception"
-msgstr "Error"
+msgstr ""
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 #: components/AppResources/EditorComponents.tsx:125
 #: components/Header/NotificationRenderers.tsx:58
 #: components/Header/NotificationRenderers.tsx:86
 #: components/Header/NotificationRenderers.tsx:100
-#, fuzzy
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Header > Notification Renderers
 msgid "download"
-msgstr "Descargar"
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:24
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "feedItemUpdated"
-msgstr "La fuente de exportación RSS se ha actualizado."
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:38
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "updateFeedFailed"
-msgstr "Error al actualizar el feed de exportación."
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:52
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportCompleted"
-msgstr "Exportación de DwCA completada."
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:66
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportFailed"
-msgstr "La exportación de DwCA falló."
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:80
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "queryExportToCsvCompleted"
-msgstr "Exportación de consultas a CSV completada."
+msgstr ""
 
-#. Used in: Components > Header > Notification Renderers
 #: components/Header/NotificationRenderers.tsx:94
-#, fuzzy
-msgid "queryExportToKmlCompleted"
-msgstr "Exportación de consultas a KML completada."
-
 #. Used in: Components > Header > Notification Renderers
+msgid "queryExportToKmlCompleted"
+msgstr ""
+
 #: components/Header/NotificationRenderers.tsx:108
-#, fuzzy
+#. Used in: Components > Header > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""
-"<userName /> te transfirió la propiedad del conjunto de datos <dataSetName "
-"/>."

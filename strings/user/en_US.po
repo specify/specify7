@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/ChooseCollection/index.tsx:168
 #: components/Core/Main.tsx:118
 #: components/Login/OicLogin.tsx:86
-#: components/Login/index.tsx:160
+#: components/Login/index.tsx:162
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:18
 #: components/Router/EntrypointRouter.tsx:23
@@ -17,7 +17,7 @@ msgstr "Log In"
 msgid "username"
 msgstr "Username"
 
-#: components/Login/index.tsx:149
+#: components/Login/index.tsx:151
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"

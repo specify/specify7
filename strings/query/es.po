@@ -1,504 +1,408 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-04 22:03+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
-"es/>\n"
-"Language: es\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 #: components/QueryBuilder/Header.tsx:66
 #: components/QueryBuilder/Toolbar.tsx:61
 #: components/Reports/RecordSets.tsx:99
 #: components/Toolbar/RecordSetEdit.tsx:47
 #: components/TreeView/Actions.tsx:78
 #: components/TreeView/Actions.tsx:81
-#, fuzzy
+#. Used in: Components > Query Builder > Header ⬤ Components > Query Builder > Toolbar ⬤ Components > Reports > Record Sets ⬤ Components > Toolbar > Record Set Edit ⬤ Components > Tree View > Actions
 msgid "query"
-msgstr "Consulta"
+msgstr ""
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 #: components/Header/menuItemDefinitions.ts:79
 #: components/Router/OverlayRoutes.tsx:80
 #: components/Toolbar/Query.tsx:95
-#, fuzzy
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query
 msgid "queries"
-msgstr "Consultas"
+msgstr ""
 
-#. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #: components/Forms/SearchDialog.tsx:108
 #: components/Forms/SearchDialog.tsx:270
 #: components/Security/registry.ts:196
 #: components/UserPreferences/Definitions.tsx:1240
-#, fuzzy
+#. Used in: Components > Forms > Search Dialog ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "queryBuilder"
-msgstr "Consultor de construcción"
+msgstr ""
 
-#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
 #: components/QueryBuilder/index.tsx:132
 #: components/Router/OverlayRoutes.tsx:95
 #: components/Toolbar/QueryTables.tsx:125
-#, fuzzy
+#. Used in: Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Query Tables
 msgid "newQueryName"
-msgstr "Nueva consulta"
+msgstr ""
 
-#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 #: components/FormFields/useTypeSearch.tsx:88
-#, fuzzy
+#. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Form Fields > Use Type Search
 msgid "searchFields"
-msgstr "Campos buscados"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:370
-#, fuzzy
-msgid "any"
-msgstr "Ninguna"
-
 #. Used in: Components > Query Builder > Field Filter
+msgid "any"
+msgstr ""
+
 #: components/QueryBuilder/FieldFilter.tsx:299
 #: components/QueryBuilder/FieldFilter.tsx:345
-#, fuzzy
-msgid "startValue"
-msgstr "Valor inicial"
-
 #. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:308
-#, fuzzy
-msgid "endValue"
-msgstr "Valor final"
+msgid "startValue"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
+#: components/QueryBuilder/FieldFilter.tsx:308
+#. Used in: Components > Query Builder > Field Filter
+msgid "endValue"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:95
 #: components/QueryBuilder/Save.tsx:71
-#, fuzzy
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 msgid "saveQuery"
-msgstr "Guardar consulta"
+msgstr ""
 
-#. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:71
-#, fuzzy
-msgid "saveClonedQuery"
-msgstr "Guardar consulta como..."
-
 #. Used in: Components > Query Builder > Save
+msgid "saveClonedQuery"
+msgstr ""
+
 #: components/QueryBuilder/Save.tsx:74
-#, fuzzy
+#. Used in: Components > Query Builder > Save
 msgid "saveClonedQueryDescription"
 msgstr ""
-"La consulta se guardará con un nuevo nombre dejando la consulta actual sin "
-"cambios."
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:154
-#, fuzzy
-msgid "queryDeleteIncomplete"
-msgstr "La definición de consulta contiene campos incompletos"
-
 #. Used in: Components > Query Builder > Components
+msgid "queryDeleteIncomplete"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:155
-#, fuzzy
+#. Used in: Components > Query Builder > Components
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
-"Hay campos sin completar en la definición de consulta. ¿Quieres eliminarlos?"
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:127
-#, fuzzy
+#. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
-msgstr "La definición de consulta nueva o modificada no se ha guardado"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:250
-#, fuzzy
+#. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
-msgstr "Creación de un conjunto de registros a partir de una consulta"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:253
-#, fuzzy
-msgid "recordSetToQueryDescription"
-msgstr "Generando conjunto de registros..."
-
 #. Used in: Components > Query Builder > Components
+msgid "recordSetToQueryDescription"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:268
-#, fuzzy
+#. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
-msgstr "Conjunto de registros creado"
+msgstr ""
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:70
-#, fuzzy
+#. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
-msgstr "No se puede exportar a KML"
+msgstr ""
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:73
-#, fuzzy
+#. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
-msgstr "Agregue campos de latitud y longitud a la consulta."
+msgstr ""
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:62
-#, fuzzy
-msgid "queryExportStarted"
-msgstr "Exportar archivo que se está creando"
-
 #. Used in: Components > Query Builder > Export
+msgid "queryExportStarted"
+msgstr ""
+
 #: components/QueryBuilder/Export.tsx:65
-#, fuzzy
+#. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
-"Aparecerá una notificación cuando el archivo de exportación esté completo y "
-"listo para descargar."
 
-#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 #: components/PickLists/index.tsx:205
 #: components/SchemaConfig/Components.tsx:85
-#, fuzzy
+#. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
-msgstr "{value:string} (valor actual no válido)"
+msgstr ""
 
-#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:61
-#, fuzzy
+#. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 msgid "queryRecordSetTitle"
 msgstr ""
-"Consulta: \"{queryName:string}\" en conjunto de registros: \""
-"{recordSetName:string}\""
 
-#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:181
-#, fuzzy
+#. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
-msgstr "{tableName:string} usando \"{nodeFullName:string}"
+msgstr ""
 
-#. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:386
-#, fuzzy
+#. Used in: Components > Query Builder > Wrapped
 msgid "newButtonDescription"
-msgstr "Agregar nuevo campo"
+msgstr ""
 
-#. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
-#, fuzzy
-msgid "countOnly"
-msgstr "Contar"
-
 #. Used in: Components > Query Builder > Toolbar
+msgid "countOnly"
+msgstr ""
+
 #: components/QueryBuilder/Toolbar.tsx:54
-#, fuzzy
+#. Used in: Components > Query Builder > Toolbar
 msgid "distinct"
-msgstr "Distinto"
+msgstr ""
 
-#. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:82
-#, fuzzy
-msgid "createCsv"
-msgstr "Crear CSV"
-
 #. Used in: Components > Query Builder > Export
-#: components/QueryBuilder/Export.tsx:102
-#, fuzzy
-msgid "createKml"
-msgstr "Crear archivo KML"
+msgid "createCsv"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results
+#: components/QueryBuilder/Export.tsx:102
+#. Used in: Components > Query Builder > Export
+msgid "createKml"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:215
 #: components/QueryBuilder/Results.tsx:499
-#, fuzzy
+#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Results
 msgid "createRecordSet"
-msgstr "Crear conjunto de registros"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:106
-#, fuzzy
+#. Used in: Components > Query Builder > Components
 msgid "saveAs"
-msgstr "Guardar como"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:348
-#, fuzzy
+#. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
-msgstr "(cualquier rango)"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 #: components/QueryBuilder/Field.tsx:520
 #: components/QueryBuilder/Field.tsx:521
 #: components/Toolbar/QueryTablesEdit.tsx:150
-#, fuzzy
-msgid "moveUp"
-msgstr "Ascender"
-
 #. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
+msgid "moveUp"
+msgstr ""
+
 #: components/QueryBuilder/Field.tsx:527
 #: components/QueryBuilder/Field.tsx:528
 #: components/Toolbar/QueryTablesEdit.tsx:156
-#, fuzzy
+#. Used in: Components > Query Builder > Field ⬤ Components > Toolbar > Query Tables Edit
 msgid "moveDown"
-msgstr "Mover hacia abajo"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field
 #: components/QueryBuilder/Field.tsx:495
 #: components/QueryBuilder/Field.tsx:503
-#, fuzzy
-msgid "sort"
-msgstr "Tipo"
-
 #. Used in: Components > Query Builder > Field
+msgid "sort"
+msgstr ""
+
 #: components/QueryBuilder/Field.tsx:492
 #: components/QueryBuilder/Field.tsx:500
-#, fuzzy
-msgid "ascendingSort"
-msgstr "orden ascendente"
-
 #. Used in: Components > Query Builder > Field
+msgid "ascendingSort"
+msgstr ""
+
 #: components/QueryBuilder/Field.tsx:494
 #: components/QueryBuilder/Field.tsx:502
-#, fuzzy
-msgid "descendingSort"
-msgstr "orden descendente"
-
 #. Used in: Components > Query Builder > Field
+msgid "descendingSort"
+msgstr ""
+
 #: components/QueryBuilder/Field.tsx:365
 #: components/QueryBuilder/Field.tsx:369
-#, fuzzy
-msgid "negate"
-msgstr "Negar"
-
 #. Used in: Components > Query Builder > Field
+msgid "negate"
+msgstr ""
+
 #: components/QueryBuilder/Field.tsx:475
 #: components/QueryBuilder/Field.tsx:478
-#, fuzzy
+#. Used in: Components > Query Builder > Field
 msgid "showButtonDescription"
-msgstr "Mostrar en resultados"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:397
-#, fuzzy
-msgid "aggregatedInline"
-msgstr "(agregado)"
-
 #. Used in: Components > Wb Plan View > Navigator
+msgid "aggregatedInline"
+msgstr ""
+
 #: components/WbPlanView/navigator.ts:398
-#, fuzzy
+#. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
-msgstr "(formateado)"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:377
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "like"
-msgstr "Me gusta"
+msgstr ""
 
-#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:378
-#, fuzzy
+#. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter
 msgid "likeDescription"
 msgstr ""
-"Utilice \"%\" para hacer coincidir cualquier número de caracteres.\n"
-"Use \"_\" para hacer coincidir un solo carácter"
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:386
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "equal"
-msgstr "Igual"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:395
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "greaterThan"
-msgstr "Mas grande que"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:404
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "lessThan"
-msgstr "Menos que"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:413
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "greaterOrEqualTo"
-msgstr "mayor o igual a"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:422
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "lessOrEqualTo"
-msgstr "menor o igual a"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:431
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "true"
-msgstr "Verdadero"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:439
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "false"
-msgstr "Falso"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:494
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "trueOrNull"
-msgstr "Verdadero o Vacío"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:502
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "falseOrNull"
-msgstr "Falso o Vacío"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:447
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "between"
-msgstr "Entre"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
 #: components/QueryBuilder/FieldFilter.tsx:456
-#, fuzzy
-msgid "in"
-msgstr "En"
-
 #. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:457
-#, fuzzy
-msgid "inDescription"
-msgstr "Una lista de valores separados por comas"
+msgid "in"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+#: components/QueryBuilder/FieldFilter.tsx:457
+#. Used in: Components > Query Builder > Field Filter
+msgid "inDescription"
+msgstr ""
+
 #: components/QueryBuilder/FieldFilter.tsx:469
 #: components/UserPreferences/Definitions.tsx:1132
-#, fuzzy
-msgid "contains"
-msgstr "Contiene"
-
-#. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:487
-#, fuzzy
-msgid "empty"
-msgstr "Vacío"
-
-#. Used in: Components > Query Builder > Field Filter
-#: components/QueryBuilder/FieldFilter.tsx:304
-#, fuzzy
-msgid "and"
-msgstr "y"
-
 #. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
+msgid "contains"
+msgstr ""
+
+#: components/QueryBuilder/FieldFilter.tsx:487
+#. Used in: Components > Query Builder > Field Filter
+msgid "empty"
+msgstr ""
+
+#: components/QueryBuilder/FieldFilter.tsx:304
+#. Used in: Components > Query Builder > Field Filter
+msgid "and"
+msgstr ""
+
 #: components/QueryBuilder/FieldFilter.tsx:478
 #: components/UserPreferences/Definitions.tsx:1128
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter ⬤ Components > User Preferences > Definitions
 msgid "startsWith"
-msgstr "Comienza con"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field
 #: components/QueryBuilder/Field.tsx:314
 #: components/QueryBuilder/Field.tsx:321
 #: components/QueryBuilder/Field.tsx:348
-#, fuzzy
+#. Used in: Components > Query Builder > Field
 msgid "or"
-msgstr "o"
+msgstr ""
 
-#. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 #: utils/__tests__/fieldFormat.test.ts:88
 #: utils/parser/definitions.ts:98
-#, fuzzy
+#. Used in: Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
 msgid "yes"
-msgstr "Sí"
+msgstr ""
 
-#. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:171
-#, fuzzy
-msgid "noPreparationsToReturn"
-msgstr "No hay elementos sin resolver para devolver"
-
 #. Used in: Components > Query Builder > Loan Return
+msgid "noPreparationsToReturn"
+msgstr ""
+
 #: components/QueryBuilder/LoanReturn.tsx:227
-#, fuzzy
+#. Used in: Components > Query Builder > Loan Return
 msgid "itemsReturned"
-msgstr "Los artículos han sido devueltos"
+msgstr ""
 
-#. Used in: Components > Query Builder > To Forms
 #: components/QueryBuilder/ToForms.tsx:58
-#, fuzzy
-msgid "queryResults"
-msgstr "Resultados de la consulta"
-
 #. Used in: Components > Query Builder > To Forms
+msgid "queryResults"
+msgstr ""
+
 #: components/QueryBuilder/ToForms.tsx:44
-#, fuzzy
+#. Used in: Components > Query Builder > To Forms
 msgid "browseInForms"
-msgstr "Navegar en Formularios"
+msgstr ""
 
-#. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:78
-#, fuzzy
+#. Used in: Components > Query Builder > Header
 msgid "editQuery"
-msgstr "Editar consulta"
+msgstr ""
 
-#. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:35
-#, fuzzy
+#. Used in: Components > Toolbar > Query Tables Edit
 msgid "configureQueryTables"
-msgstr "Configurar tablas de consulta visibles"
+msgstr ""
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:97
 #: components/QueryBuilder/Edit.tsx:150
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryForDwca"
-msgstr "Consulta de exportación para la definición de DwCA"
+msgstr ""
 
-#. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:102
-#, fuzzy
-msgid "exportQueryAsReport"
-msgstr "Definir informe basado en consulta"
-
 #. Used in: Components > Query Builder > Edit
+msgid "exportQueryAsReport"
+msgstr ""
+
 #: components/QueryBuilder/Edit.tsx:105
-#, fuzzy
+#. Used in: Components > Query Builder > Edit
 msgid "exportQueryAsLabel"
-msgstr "Definir etiqueta basada en consulta"
+msgstr ""
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:42
-#, fuzzy
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMerge"
-msgstr "Fusión de árboles"
+msgstr ""
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:43
-#, fuzzy
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 msgid "treeMove"
-msgstr "Mover árbol"
+msgstr ""
 
-#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:44
-#, fuzzy
-msgid "treeSynonymize"
-msgstr "Árbol Sinonimizar"
-
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
-#: components/PickLists/definitions.ts:45
-#, fuzzy
-msgid "treeDesynonymize"
-msgstr "Árbol Desinonimizar"
+msgid "treeSynonymize"
+msgstr ""
 
-#. Used in: Components > Query Builder > Field Filter
+#: components/PickLists/definitions.ts:45
+#. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
+msgid "treeDesynonymize"
+msgstr ""
+
 #: components/QueryBuilder/FieldFilter.tsx:112
-#, fuzzy
+#. Used in: Components > Query Builder > Field Filter
 msgid "tooLongErrorMessage"
 msgstr ""
-"El valor del campo es demasiado largo. La longitud máxima permitida es "
-"{maxLength:number|formatted}"
