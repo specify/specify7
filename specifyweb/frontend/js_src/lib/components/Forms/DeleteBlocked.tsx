@@ -14,6 +14,8 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { TableIcon } from '../Molecules/TableIcon';
 import { format } from './dataObjFormatters';
 import { ResourceView } from './ResourceView';
+import { Ul } from '../Atoms';
+import { idFromUrl } from '../DataModel/resource';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;
@@ -24,11 +26,13 @@ export type DeleteBlocker = {
 export function DeleteBlockers({
   resource: parentResource,
   blockers,
+  expand = false,
   onClose: handleClose,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly blockers: RA<DeleteBlocker>;
+  readonly expand?: boolean;
   readonly onClose: (() => void) | undefined;
   readonly onDeleted: () => void;
 }): JSX.Element | null {
@@ -67,9 +71,10 @@ export function DeleteBlockers({
       />
     );
   const children = data.map(({ formatted, field, resource }, index) => {
+    const fieldName = typeof field === 'object' ? field.name : field;
+    const fieldLabel = typeof field === 'object' ? field.label : field;
     const button = (
       <Button.LikeLink
-        key={index}
         // BUG: consider applying these styles everywhere
         className="max-w-full overflow-auto text-left"
         onClick={(): void =>
@@ -84,16 +89,21 @@ export function DeleteBlockers({
       </Button.LikeLink>
     );
     return isEmbedded ? (
-      button
+      <li key={index}>
+        {button}
+        {expand && (
+          <DependentResources fieldName={fieldName} resource={resource} />
+        )}
+      </li>
     ) : (
       <tr key={index}>
         <td>{button}</td>
-        <td>{typeof field === 'object' ? field.label : field}</td>
+        <td>{fieldLabel}</td>
       </tr>
     );
   });
   return isEmbedded ? (
-    <>{children}</>
+    <Ul className={expand ? undefined : 'pl-4'}>{children}</Ul>
   ) : (
     <Dialog
       buttons={commonText.close()}
@@ -139,8 +149,7 @@ export function useFormattedBlockers(
               blockers.map(async ({ model, field, id }) => {
                 const resource = new model.Resource({ id });
                 return f.all({
-                  field:
-                    parentResource.specifyModel.getRelationship(field) ?? field,
+                  field: model.getRelationship(field) ?? field,
                   resource,
                   formatted: (await format(resource, undefined, true))!,
                 });
@@ -149,6 +158,41 @@ export function useFormattedBlockers(
       [parentResource, blockers]
     ),
     loadingScreen
+  );
+}
+
+const importantRelationships = (model: SpecifyModel): RA<Relationship> =>
+  model.relationships.filter(
+    (relationship) =>
+      relationship.otherSideName !== undefined && !relationship.isDependent()
+  );
+
+function DependentResources({
+  fieldName,
+  resource,
+}: {
+  readonly fieldName: string;
+  readonly resource: SpecifyResource<AnySchema>;
+}): JSX.Element {
+  const dependent = React.useMemo(
+    () =>
+      importantRelationships(resource.specifyModel)
+        .filter(({ name }) => name !== fieldName)
+        .map((relationship) => ({
+          model: relationship.relatedModel,
+          field: relationship.name,
+          id: f.maybe(resource.get(relationship.name), idFromUrl)!,
+        }))
+        .filter(({ id }) => typeof id === 'number'),
+    [resource]
+  );
+  return (
+    <DeleteBlockers
+      resource={resource}
+      blockers={dependent}
+      onDeleted={f.void}
+      onClose={undefined}
+    />
   );
 }
 

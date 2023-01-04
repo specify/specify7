@@ -156,6 +156,7 @@ function ResourceBlockers({
           resource={resource}
           onClose={undefined}
           onDeleted={f.void}
+          expand
         />
       )}
     </td>
