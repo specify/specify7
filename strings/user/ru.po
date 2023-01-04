@@ -182,8 +182,9 @@ msgstr "У вас недостаточно прав для этого дейст
 msgid "noPermission"
 msgstr "ОТСУТСТВУЕТ РАЗРЕШЕНИЕ"
 
+#: components/Forms/DataTask.tsx:130
 #: components/Permissions/PermissionDenied.tsx:223
-#. Used in: Components > Permissions > Permission Denied
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
 msgstr "В доступе отказано"
 
@@ -193,6 +194,11 @@ msgid "permissionDeniedDescription"
 msgstr ""
 "У вас нет политики или роли, которая дает вам разрешение на выполнение "
 "следующих действий:"
+
+#: components/Forms/DataTask.tsx:132
+#. Used in: Components > Forms > Data Task
+msgid "emptyRecordSetsReadOnly"
+msgstr ""
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error

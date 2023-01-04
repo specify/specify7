@@ -1,446 +1,346 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-03 18:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/wbPlan/"
-"es/>\n"
-"Language: es\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #: components/UserPreferences/Definitions.tsx:1450
 #: components/WorkBench/Template.tsx:118
 #: components/WorkBench/wbView.js:1861
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
-msgstr "Mapeador de datos"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 #: components/WbPlanView/State.tsx:37
 #: components/WorkBench/wbView.js:260
 #: components/WorkBench/wbView.js:1951
-#, fuzzy
+#. Used in: Components > Wb Plan View > State ⬤ Components > Work Bench > Wb View
 msgid "noUploadPlan"
-msgstr "No se define ningún plan de carga"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:274
 #: components/WorkBench/wbView.js:1952
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "noUploadPlanDescription"
 msgstr ""
-"No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear "
-"una ahora?"
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:381
 #: components/WorkBench/wbView.js:382
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "unmappedColumn"
-msgstr "Columna sin asignar"
+msgstr ""
 
-#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:607
-#, fuzzy
+#. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 msgid "notMapped"
-msgstr "NO MAPEADO"
+msgstr ""
 
-#. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:99
-#, fuzzy
-msgid "unmapped"
-msgstr "sin mapear"
-
 #. Used in: Components > Molecules > Table Icon
+msgid "unmapped"
+msgstr ""
+
 #: components/Molecules/TableIcon.tsx:112
-#, fuzzy
+#. Used in: Components > Molecules > Table Icon
 msgid "mapped"
-msgstr "Mapeado"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:227
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
-msgstr "Comportamiento de coincidencia:"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:172
 #: components/WbPlanView/LineComponents.tsx:181
-#, fuzzy
+#. Used in: Components > Wb Plan View > Line Components
 msgid "columnMapping"
-msgstr "Asignación de columnas"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 #: components/WbPlanView/CustomSelectElement.tsx:840
 #: components/WbPlanView/LineComponents.tsx:212
-#, fuzzy
+#. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 msgid "suggestedMappings"
-msgstr "Asignaciones sugeridas:"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:213
-#, fuzzy
+#. Used in: Components > Wb Plan View > Line Components
 msgid "requiredFields"
-msgstr "Campos requeridos"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:214
-#, fuzzy
-msgid "optionalFields"
-msgstr "Campos opcionales"
-
 #. Used in: Components > Wb Plan View > Line Components
-#: components/WbPlanView/LineComponents.tsx:215
-#, fuzzy
-msgid "hiddenFields"
-msgstr "Campos Ocultos"
+msgid "optionalFields"
+msgstr ""
 
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/LineComponents.tsx:215
+#. Used in: Components > Wb Plan View > Line Components
+msgid "hiddenFields"
+msgstr ""
+
 #: components/FormMeta/CarryForward.tsx:285
 #: components/QueryBuilder/Toolbar.tsx:38
 #: components/WbPlanView/MapperComponents.tsx:60
-#, fuzzy
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
-msgstr "Revelar campos de formulario ocultos"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:572
 #: components/WbPlanView/Mapper.tsx:574
 #: components/WbPlanView/Mapper.tsx:582
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
-msgstr "Opciones de mapeo"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:231
-#, fuzzy
-msgid "ignoreWhenBlank"
-msgstr "Ignorar cuando esté en blanco"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreWhenBlank"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:232
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Cuando se establece en \"Ignorar cuando está en blanco\", los valores en "
-"blanco de esta columna no se tendrán en cuenta a efectos de coincidencia. "
-"Los valores en blanco se ignoran al hacer coincidir incluso si se "
-"proporciona un valor predeterminado"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:235
-#, fuzzy
-msgid "ignoreAlways"
-msgstr "Siempre ignorar"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreAlways"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:236
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Cuando se establece en \"Ignorar siempre\", el valor de esta columna nunca "
-"se considerará para propósitos de coincidencia, solo para cargar."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:239
-#, fuzzy
-msgid "ignoreNever"
-msgstr "nunca ignorar"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "ignoreNever"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:240
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
-"Esta columna siempre se consideraría a efectos de coincidencia, "
-"independientemente de su valor."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:268
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
-msgstr "Permitir valores nulos"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:285
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
-msgstr "Usar valor predeterminado"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:294
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
-msgstr "Valor por defecto"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:302
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
-msgstr "Este valor se usaría en lugar de celdas vacías"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:52
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
-msgstr "Agregar nueva columna"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:89
-#, fuzzy
-msgid "validationFailed"
-msgstr "La validación encontró asignaciones faltantes:"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "validationFailed"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:93
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailedDescription"
 msgstr ""
-"A este mapeo de datos le faltan uno o más campos de datos requeridos para "
-"cargar por su configuración de Especificar. Agregue las asignaciones "
-"faltantes que se muestran o guarde este plan de carga como inacabado."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:82
-#, fuzzy
-msgid "continueEditing"
-msgstr "Continua editando"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "continueEditing"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:85
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
-msgstr "Guardar sin terminar"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:469
-#, fuzzy
-msgid "map"
-msgstr "Mapa"
-
-#. Used in: Components > Wb Plan View > Custom Select Element
-#: components/WbPlanView/CustomSelectElement.tsx:316
-#, fuzzy
-msgid "unmap"
-msgstr "Desasignar"
-
 #. Used in: Components > Wb Plan View > Mapper
-#: components/WbPlanView/Mapper.tsx:466
-#, fuzzy
-msgid "mapButtonDescription"
-msgstr "Asignar el campo seleccionado al encabezado seleccionado"
+msgid "map"
+msgstr ""
 
+#: components/WbPlanView/CustomSelectElement.tsx:316
 #. Used in: Components > Wb Plan View > Custom Select Element
+msgid "unmap"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:466
+#. Used in: Components > Wb Plan View > Mapper
+msgid "mapButtonDescription"
+msgstr ""
+
 #: components/WbPlanView/CustomSelectElement.tsx:321
 #: components/WbPlanView/CustomSelectElement.tsx:328
-#, fuzzy
+#. Used in: Components > Wb Plan View > Custom Select Element
 msgid "relationshipWithTable"
-msgstr "Relación con la tabla {tableName:string}"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:109
-#, fuzzy
-msgid "selectBaseTable"
-msgstr "Seleccione una tabla base"
-
 #. Used in: Components > Wb Plan View > State
-#: components/WbPlanView/State.tsx:102
-#, fuzzy
-msgid "chooseExistingPlan"
-msgstr "Elija un plan existente"
+msgid "selectBaseTable"
+msgstr ""
 
-#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
+#: components/WbPlanView/State.tsx:102
+#. Used in: Components > Wb Plan View > State
+msgid "chooseExistingPlan"
+msgstr ""
+
 #: components/SchemaConfig/Tables.tsx:75
 #: components/WbPlanView/State.tsx:121
-#, fuzzy
+#. Used in: Components > Schema Config > Tables ⬤ Components > Wb Plan View > State
 msgid "showAdvancedTables"
-msgstr "Mostrar tablas avanzadas"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:412
-#, fuzzy
-msgid "dataSetUploaded"
-msgstr "Conjunto de datos subido. Este plan de carga no se puede cambiar"
-
 #. Used in: Components > Wb Plan View > Mapper
+msgid "dataSetUploaded"
+msgstr ""
+
 #: components/WbPlanView/Mapper.tsx:409
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
-"Está viendo las asignaciones de un conjunto de datos cargado.\n"
-"Para editar las asignaciones, revertir los datos cargados o crear un nuevo "
-"conjunto de datos"
 
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/Mapper.tsx:402
 #: components/WbPlanView/MapperComponents.tsx:326
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
-msgstr "Mesa base"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:322
-#, fuzzy
-msgid "goToBaseTable"
-msgstr "¿Cambiar la tabla base para mapear columnas de conjuntos de datos?"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "goToBaseTable"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:323
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTableDescription"
 msgstr ""
-"Si elige una tabla base diferente para la carga de un conjunto de datos, esa "
-"tabla se convertirá en el nuevo punto de partida para las asignaciones de "
-"campo de columna a datos y borrará las asignaciones existentes. El "
-"AutoMapper intentará asignar columnas a los nuevos campos de la tabla base."
 
-#. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:152
 #: components/WbPlanView/LineComponents.tsx:155
-#, fuzzy
+#. Used in: Components > Wb Plan View > Line Components
 msgid "clearMapping"
-msgstr "Borrar mapeo"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:344
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
-msgstr "Vuelva a ejecutar AutoMapper"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:353
-#, fuzzy
-msgid "autoMapper"
-msgstr "Asignador automático"
-
 #. Used in: Components > Wb Plan View > Mapper Components
-#: components/WbPlanView/MapperComponents.tsx:157
-#, fuzzy
-msgid "mappingEditor"
-msgstr "Explorador de mapas"
+msgid "autoMapper"
+msgstr ""
 
-#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:157
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "mappingEditor"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:129
 #: components/WbPlanView/MapperComponents.tsx:368
-#, fuzzy
-msgid "hideFieldMapper"
-msgstr "Ocultar asignador de campos"
-
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
+msgid "hideFieldMapper"
+msgstr ""
+
 #: components/QueryBuilder/Components.tsx:130
 #: components/WbPlanView/MapperComponents.tsx:369
-#, fuzzy
+#. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
-msgstr "Mostrar asignador de campos"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:484
-#, fuzzy
-msgid "mappings"
-msgstr "Asignaciones"
-
 #. Used in: Components > Wb Plan View > Mapper
+msgid "mappings"
+msgstr ""
+
 #: components/WbPlanView/Mapper.tsx:299
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper
 msgid "clearMappings"
-msgstr "Borrar asignaciones"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:196
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
-msgstr "Conjunto de datos vacío"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:200
-#, fuzzy
-msgid "emptyDataSetDescription"
-msgstr "Este conjunto de datos no tiene ninguna columna."
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "emptyDataSetDescription"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:203
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
-"Presione el botón \"Agregar nueva columna\" debajo de las líneas de mapeo "
-"para agregar nuevas columnas."
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:348
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
-msgstr "¿Automap para iniciar un nuevo plan de carga?"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:349
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
-msgstr "Esto borrará las asignaciones de campos de datos existentes."
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:419
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
-msgstr "Cambiar la lógica de coincidencia"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:427
-#, fuzzy
-msgid "matchingLogicDescription"
-msgstr "Requerir datos para que coincidan con los registros existentes"
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "matchingLogicDescription"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:423
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr ""
-"La lógica de coincidencia no está disponible para las asignaciones actuales"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:405
 #: components/WbPlanView/MapperComponents.tsx:439
-#, fuzzy
-msgid "mustMatch"
-msgstr "Debe coincidir con"
-
-#. Used in: Components > Wb Plan View > Mapper
-#: components/WbPlanView/Mapper.tsx:155
-#, fuzzy
-msgid "unloadProtectMessage"
-msgstr "Esta asignación no se ha guardado."
-
 #. Used in: Components > Wb Plan View > Mapper Components
+msgid "mustMatch"
+msgstr ""
+
+#: components/WbPlanView/Mapper.tsx:155
+#. Used in: Components > Wb Plan View > Mapper
+msgid "unloadProtectMessage"
+msgstr ""
+
 #: components/WbPlanView/MapperComponents.tsx:47
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
-msgstr "Nueva columna {index:number}"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
-#, fuzzy
+#. Used in: Components > Wb Plan View > Header Helper
 msgid "noHeader"
-msgstr "(sin encabezado)"
+msgstr ""
 
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:194
-#, fuzzy
-msgid "copyPlan"
-msgstr "Copie el plan del conjunto de datos existente"
-
 #. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:206
-#, fuzzy
-msgid "noPlansToCopyFrom"
-msgstr "No hay planes disponibles, continúe creando un plan de carga."
+msgid "copyPlan"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > State
+#: components/Toolbar/WbsDialog.tsx:206
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "noPlansToCopyFrom"
+msgstr ""
+
 #: components/WbPlanView/State.tsx:40
-#, fuzzy
+#. Used in: Components > Wb Plan View > State
 msgid "invalidTemplatePlan"
 msgstr ""
-"El conjunto de datos seleccionado no tiene un plan de carga. Seleccione uno "
-"diferente."

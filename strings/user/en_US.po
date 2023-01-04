@@ -186,8 +186,9 @@ msgstr ""
 msgid "noPermission"
 msgstr "NO PERMISSION"
 
+#: components/Forms/DataTask.tsx:130
 #: components/Permissions/PermissionDenied.tsx:223
-#. Used in: Components > Permissions > Permission Denied
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
 msgstr "Permission denied error"
 
@@ -197,6 +198,11 @@ msgid "permissionDeniedDescription"
 msgstr ""
 "You don't have any policy or role that gives you permission to do the "
 "following action:"
+
+#: components/Forms/DataTask.tsx:132
+#. Used in: Components > Forms > Data Task
+msgid "emptyRecordSetsReadOnly"
+msgstr "Cannot open empty Record Set when in Read-Only mode"
 
 #: components/Permissions/FormatError.tsx:115
 #. Used in: Components > Permissions > Format Error

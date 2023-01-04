@@ -1,53 +1,36 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-03 18:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"attachments/uk/>\n"
-"Language: uk\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 #: components/Attachments/index.tsx:149
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:164
-#, fuzzy
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
-msgstr "Додатки"
+msgstr ""
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:209
-#, fuzzy
+#. Used in: Components > Attachments > Index
 msgid "scale"
-msgstr "масштаб"
+msgstr ""
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:119
-#, fuzzy
+#. Used in: Components > Attachments > Plugin
 msgid "attachmentServerUnavailable"
-msgstr "Сервер вкладень недоступний."
+msgstr ""
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 #: components/Attachments/index.tsx:198
 #: components/FormMeta/SubViewMeta.tsx:40
 #: components/UserPreferences/Definitions.tsx:1071
-#, fuzzy
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
 msgid "orderBy"
-msgstr "Сортувати по"
+msgstr ""
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:143
-#, fuzzy
+#. Used in: Components > Attachments > Plugin
 msgid "uploadingInline"
-msgstr "Завантаження…"
+msgstr ""
 
-#. Used in: Components > Attachments > Gallery
 #: components/Attachments/Gallery.tsx:77
-#, fuzzy
+#. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
-msgstr "Додатків немає"
+msgstr ""
