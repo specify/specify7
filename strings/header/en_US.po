@@ -129,13 +129,13 @@ msgstr "Secondary Search"
 msgid "userTools"
 msgstr "User Tools"
 
-#: components/Toolbar/Language.tsx:77
-#: components/Toolbar/Language.tsx:107
+#: components/Toolbar/Language.tsx:78
+#: components/Toolbar/Language.tsx:108
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecify"
 msgstr "Help Localize Specify 7"
 
-#: components/Toolbar/Language.tsx:85
+#: components/Toolbar/Language.tsx:86
 #. Used in: Components > Toolbar > Language
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
