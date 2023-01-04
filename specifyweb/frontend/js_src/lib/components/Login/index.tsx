@@ -139,6 +139,8 @@ function LegacyLogin({
         <Label.Block>
           {userText.username()}
           <Input.Text
+            autoCapitalize="none"
+            autoCorrect="off"
             defaultValue=""
             forwardRef={validationRef}
             name="username"
