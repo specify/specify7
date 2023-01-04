@@ -56,6 +56,11 @@ export function overrideAjax(
   });
 }
 
+const basePathParts = process.cwd().split('/');
+const basePath = basePathParts
+  .slice(0, basePathParts.indexOf('js_src') + 1)
+  .join('/');
+
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
  *
@@ -101,8 +106,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     );
   }
 
-  // BUG: this fails if `npx jest` is run from non js_src directory
-  const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
+  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${url}`);
 
   // Find a directory that matches the part name in the URL
   const files = await fs.promises
