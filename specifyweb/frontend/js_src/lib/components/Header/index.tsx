@@ -76,13 +76,13 @@ export function Header({
           <a
             className={`
               flex items-center
-              ${isCollapsed ? '' : 'p-4'}
+              ${isCollapsed ? 'p-2' : 'p-4'}
             `}
             href="/specify/"
           >
             <img
               alt=""
-              className="over:animate-hue-rotate"
+              className="hover:animate-hue-rotate"
               src={
                 isCollapsed
                   ? '/static/img/short_logo.svg'
