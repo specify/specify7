@@ -5,7 +5,6 @@ import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
 import type { GetOrSet, RA } from '../../utils/types';
-import { Button } from '../Atoms/Button';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
@@ -15,7 +14,8 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { format } from './dataObjFormatters';
 import { ResourceView } from './ResourceView';
 import { Ul } from '../Atoms';
-import { idFromUrl } from '../DataModel/resource';
+import { getResourceViewUrl, idFromUrl } from '../DataModel/resource';
+import { Link } from '../Atoms/Link';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;
@@ -58,35 +58,25 @@ export function DeleteBlockers({
   );
 
   if (!Array.isArray(data)) return null;
-  else if (typeof preview === 'object')
-    return (
-      <BlockerPreview
-        field={preview.field}
-        parentResource={parentResource}
-        resource={preview.resource}
-        onClose={(): void => setPreview(undefined)}
-        onDeleted={(): void =>
-          setData(data.filter(({ resource }) => resource !== preview.resource))
-        }
-      />
-    );
   const children = data.map(({ formatted, field, resource }, index) => {
     const fieldName = typeof field === 'object' ? field.name : field;
     const fieldLabel = typeof field === 'object' ? field.label : field;
     const button = (
-      <Button.LikeLink
+      <Link.Default
         // BUG: consider applying these styles everywhere
         className="max-w-full overflow-auto text-left"
-        onClick={(): void =>
+        href={getResourceViewUrl(resource.specifyModel.name, resource.id)}
+        onClick={(event): void => {
+          event.preventDefault();
           setPreview({
             resource,
             field: typeof field === 'object' ? field : undefined,
-          })
-        }
+          });
+        }}
       >
         <TableIcon label name={resource.specifyModel.name} />
         {formatted}
-      </Button.LikeLink>
+      </Link.Default>
     );
     return isEmbedded ? (
       <li key={index}>
@@ -102,29 +92,46 @@ export function DeleteBlockers({
       </tr>
     );
   });
-  return isEmbedded ? (
-    <Ul className={expand ? undefined : 'pl-4'}>{children}</Ul>
-  ) : (
-    <Dialog
-      buttons={commonText.close()}
-      className={{
-        container: dialogClassNames.wideContainer,
-      }}
-      header={formsText.deleteBlocked()}
-      onClose={handleClose}
-    >
-      {formsText.deleteBlockedDescription()}
-      {/* BUG: apply these styles everywhere where necessary */}
-      <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
-        <thead>
-          <tr>
-            <th scope="col">{formsText.record()}</th>
-            <th scope="col">{formsText.relationship()}</th>
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </Dialog>
+  return (
+    <>
+      {isEmbedded ? (
+        <Ul className={expand ? undefined : 'pl-4'}>{children}</Ul>
+      ) : (
+        <Dialog
+          buttons={commonText.close()}
+          className={{
+            container: dialogClassNames.wideContainer,
+          }}
+          header={formsText.deleteBlocked()}
+          onClose={handleClose}
+        >
+          {formsText.deleteBlockedDescription()}
+          {/* BUG: apply these styles everywhere where necessary */}
+          <table className="grid-table grid-cols-[minmax(0,1fr),auto] gap-2">
+            <thead>
+              <tr>
+                <th scope="col">{formsText.record()}</th>
+                <th scope="col">{formsText.relationship()}</th>
+              </tr>
+            </thead>
+            <tbody>{children}</tbody>
+          </table>
+        </Dialog>
+      )}
+      {typeof preview === 'object' ? (
+        <BlockerPreview
+          field={preview.field}
+          parentResource={parentResource}
+          resource={preview.resource}
+          onClose={(): void => setPreview(undefined)}
+          onDeleted={(): void =>
+            setData(
+              data.filter(({ resource }) => resource !== preview.resource)
+            )
+          }
+        />
+      ) : undefined}
+    </>
   );
 }
 
