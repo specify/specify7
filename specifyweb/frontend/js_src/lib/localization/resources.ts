@@ -33,6 +33,10 @@ export const resourcesText = createDictionary({
     'en-us': 'Discipline Resources',
     'ru-ru': 'Ресурсы дисциплины',
   },
+  type: {
+    'en-us': 'Type',
+    'ru-ru': 'Тип',
+  },
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',

@@ -15,6 +15,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { schemaText } from '../../localization/schema';
 import { commonText } from '../../localization/common';
 import { schema } from '../DataModel/schema';
+import { resourcesText } from '../../localization/resources';
 
 export function SchemaConfigField({
   schemaData,
@@ -68,7 +69,7 @@ export function SchemaConfigField({
         <Input.Number isReadOnly value={field.length ?? ''} />
       </Label.Block>
       <Label.Block>
-        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
+        {resourcesText.type()}
         <Input.Text
           isReadOnly
           value={javaTypeToHuman(
