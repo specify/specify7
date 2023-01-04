@@ -35,6 +35,7 @@ import {
 } from '../../localization/utils/config';
 import { formatUrl } from '../Router/queryString';
 import { Http } from '../../utils/ajax/definitions';
+import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
   ping(
@@ -217,7 +218,7 @@ export function useSchemaLanguages(
               data.map(
                 ({ country, language }) =>
                   `${language}${
-                    country === null || country === '' ? '' : `-${country}`
+                    country === null || country === '' ? '' : `${languageSeparator}${country}`
                   }`
               )
             )
