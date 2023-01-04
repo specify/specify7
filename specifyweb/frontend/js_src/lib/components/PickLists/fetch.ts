@@ -125,7 +125,7 @@ async function fetchFromTable(
         true
       ).then((title) => ({
         value: record.id.toString(),
-        title: title!,
+        title,
       }))
     )
   );

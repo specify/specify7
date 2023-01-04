@@ -16,7 +16,7 @@ export function ReadOnlyMode(): JSX.Element {
         globalThis.location.reload();
       }}
     >
-      {isReadOnly ? formsText('disableReadOnly') : formsText('enableReadOnly')}
+      {isReadOnly ? formsText.disableReadOnly() : formsText.enableReadOnly()}
     </Button.Small>
   );
 }

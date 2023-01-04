@@ -8,9 +8,12 @@ import {
   mergeNodes,
   pairNodes,
 } from './taxonTileHelpers';
-import { getTreeDefinitionItems, treeRanksPromise } from '../InitialContext/treeRanks';
+import {
+  getTreeDefinitionItems,
+  treeRanksPromise,
+} from '../InitialContext/treeRanks';
 import type { RA } from '../../utils/types';
-import {useAsyncState} from '../../hooks/useAsyncState';
+import { useAsyncState } from '../../hooks/useAsyncState';
 
 export function TaxonTiles(): JSX.Element {
   const [container, setContainer] = React.useState<SVGElement | null>(null);
@@ -45,11 +48,11 @@ export function TaxonTiles(): JSX.Element {
         className="absolute top-3 left-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black"
         title={
           typeof treeData === 'object'
-            ? welcomeText('taxonTilesDescription', treeData.threshold)
+            ? welcomeText.taxonTilesDescription({ count: treeData.threshold })
             : undefined
         }
       >
-        {welcomeText('taxonTiles')}
+        {welcomeText.taxonTiles()}
       </p>
       {typeof title === 'string' && (
         <p className="absolute top-3 right-3 z-10 border bg-white px-2 py-0 opacity-80 dark:bg-black">

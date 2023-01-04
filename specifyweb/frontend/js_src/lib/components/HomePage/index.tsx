@@ -44,7 +44,7 @@ function WelcomeScreenContent(): JSX.Element {
     <iframe
       className="h-full w-full border-0"
       src={source}
-      title={welcomeText('pageTitle')}
+      title={welcomeText.pageTitle()}
     />
   ) : mode === 'default' ? (
     defaultSplashScreen

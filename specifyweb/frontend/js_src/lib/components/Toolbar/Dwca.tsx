@@ -20,6 +20,8 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpAppResource } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
 import { OverlayContext } from '../Router/Router';
+import { headerText } from '../../localization/header';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function MakeDwcaOverlay(): JSX.Element | null {
   const [resources] = useAppResources();
@@ -34,7 +36,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
   return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
-      header={commonText('chooseDwcaDialogTitle')}
+      header={headerText.chooseDwca()}
       resources={resources}
       onClose={handleClose}
       onSelected={(definition): void => setDefinition(definition?.name)}
@@ -44,7 +46,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
   ) : (
     <>
       <PickAppResource
-        header={commonText('chooseMetadataResource')}
+        header={headerText.chooseMetadataResource()}
         resources={resources}
         skippable
         onClose={(): void => setDefinition(undefined)}
@@ -71,7 +73,7 @@ function PickAppResource({
   onSelected: handleSelected,
 }: {
   readonly resources: AppResources;
-  readonly header: string;
+  readonly header: LocalizedString;
   readonly skippable?: boolean;
   readonly onSelected: (
     appResource: SerializedResource<SpAppResource> | undefined
@@ -83,13 +85,13 @@ function PickAppResource({
       buttons={
         skippable ? (
           <>
-            <Button.DialogClose>{commonText('back')}</Button.DialogClose>
+            <Button.DialogClose>{commonText.back()}</Button.DialogClose>
             <Button.Blue onClick={(): void => handleSelected(undefined)}>
-              {commonText('skip')}
+              {commonText.skip()}
             </Button.Blue>
           </>
         ) : (
-          commonText('back')
+          commonText.back()
         )
       }
       header={header}
@@ -115,11 +117,11 @@ function ExportStarted({
 }): JSX.Element {
   return (
     <Dialog
-      buttons={commonText('close')}
-      header={commonText('dwcaExportStartedDialogHeader')}
+      buttons={commonText.close()}
+      header={headerText.dwcaExportStarted()}
       onClose={handleClose}
     >
-      {commonText('dwcaExportStartedDialogText')}
+      {headerText.dwcaExportStartedDescription()}
     </Dialog>
   );
 }

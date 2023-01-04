@@ -9,8 +9,9 @@ import { fetchResource } from '../DataModel/resource';
 import { userInformation } from '../InitialContext/userInformation';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import type { UserRoles } from './Collection';
+import { LocalizedString } from 'typesafe-i18n';
 
-type User = { readonly userId: number; readonly userName: string };
+type User = { readonly userId: number; readonly userName: LocalizedString };
 
 export function useCollectionUsersWithPolicies(
   collectionId: number

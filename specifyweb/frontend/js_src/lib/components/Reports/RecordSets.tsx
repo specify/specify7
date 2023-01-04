@@ -1,7 +1,6 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 
-import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -14,6 +13,7 @@ import { parseSpecifyProperties } from '../FormParse/cells';
 import { userInformation } from '../InitialContext/userInformation';
 import { QueryParametersDialog } from './Parameters';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
+import { queryText } from '../../localization/query';
 
 export function ReportRecordSets({
   query,
@@ -96,7 +96,7 @@ export function ReportRecordSets({
         dialog(
           children,
           <Button.Blue onClick={(): void => setState({ type: 'Raw' })}>
-            {commonText('query')}
+            {queryText.query()}
           </Button.Blue>
         )
       }

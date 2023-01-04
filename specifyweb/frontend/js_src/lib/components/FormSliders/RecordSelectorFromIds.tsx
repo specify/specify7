@@ -18,6 +18,7 @@ import { useTriggerState } from '../../hooks/useTriggerState';
 import { UnloadProtectsContext } from '../Core/Contexts';
 import { unsetUnloadProtect } from '../../hooks/navigation';
 import { saveFormUnloadProtect } from '../Forms/Save';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * A Wrapper for RecordSelector that allows to specify list of records by their
@@ -52,7 +53,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly ids: RA<number | undefined>;
   readonly newResource: SpecifyResource<SCHEMA> | undefined;
   readonly defaultIndex?: number;
-  readonly title: string | undefined;
+  readonly title: LocalizedString | undefined;
   readonly headerButtons?: JSX.Element;
   readonly dialog: 'modal' | 'nonModal' | false;
   readonly isDependent: boolean;
@@ -180,15 +181,11 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
             typeof handleAdding === 'function' ? (
               <DataEntry.Add
                 aria-label={
-                  isInRecordSet
-                    ? formsText('addToRecordSet')
-                    : commonText('add')
+                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
                 }
                 disabled={mode === 'view'}
                 title={
-                  isInRecordSet
-                    ? formsText('addToRecordSet')
-                    : commonText('add')
+                  isInRecordSet ? formsText.addToRecordSet() : commonText.add()
                 }
                 onClick={handleAdding}
               />
@@ -197,20 +194,20 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               <DataEntry.Remove
                 aria-label={
                   isInRecordSet
-                    ? formsText('removeFromRecordSet')
-                    : commonText('delete')
+                    ? formsText.removeFromRecordSet()
+                    : commonText.delete()
                 }
                 disabled={resource === undefined || mode === 'view'}
                 title={
                   isInRecordSet
-                    ? formsText('removeFromRecordSet')
-                    : commonText('delete')
+                    ? formsText.removeFromRecordSet()
+                    : commonText.delete()
                 }
                 onClick={(): void => handleRemove('minusButton')}
               />
             ) : undefined}
             {typeof newResource === 'object' ? (
-              <p className="flex-1">{formsText('creatingNewRecord')}</p>
+              <p className="flex-1">{formsText.creatingNewRecord()}</p>
             ) : (
               <span
                 className={`flex-1 ${dialog === false ? '-ml-2' : '-ml-4'}`}
@@ -241,7 +238,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Orange
                 onClick={(): void => {
                   unsetUnloadProtect(setUnloadProtects, saveFormUnloadProtect);
@@ -250,14 +247,14 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
                   setUnloadProtect(undefined);
                 }}
               >
-                {commonText('proceed')}
+                {commonText.proceed()}
               </Button.Orange>
             </>
           }
-          header={formsText('recordSelectorUnloadProtectDialogHeader')}
+          header={formsText.recordSelectorUnloadProtect()}
           onClose={(): void => setUnloadProtect(undefined)}
         >
-          {formsText('recordSelectorUnloadProtectDialogText')}
+          {formsText.recordSelectorUnloadProtectDescription()}
         </Dialog>
       )}
     </>

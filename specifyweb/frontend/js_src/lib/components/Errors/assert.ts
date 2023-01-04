@@ -26,6 +26,14 @@ export function error(message: Error | string, ...rest: RA<unknown>): never {
 }
 
 /**
+ * Throw an error, but only if in development mode.
+ * Otherwise, log the error
+ * REFACTOR: use this instead of error whenever possible
+ */
+export const softError =
+  process.env.NODE_ENV === 'production' ? console.error : error;
+
+/**
  * Before an error is thrown, this function is called.
  *
  * Setting a breakpoint in this function would break on most front-end errors.

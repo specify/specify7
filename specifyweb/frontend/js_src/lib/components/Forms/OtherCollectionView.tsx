@@ -2,7 +2,6 @@ import React from 'react';
 
 import type { Collection } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
-import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -13,6 +12,8 @@ import { useErrorContext } from '../../hooks/useErrorContext';
 import { Button } from '../Atoms/Button';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { usePref } from '../UserPreferences/usePref';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 /**
  * Even though available collections do not change during lifecycle of a page,
@@ -51,13 +52,13 @@ export function OtherCollection({
     <Container.FullGray>
       <Container.Center>
         {collections.length === 0 ? (
-          commonText('noAccessToResource')
+          userText.noAccessToResource()
         ) : (
           <>
-            <p>{commonText('resourceInaccessible')}</p>
+            <p>{userText.resourceInaccessible()}</p>
             {collections.length > 1 ? (
               <>
-                <p>{commonText('selectCollection')}</p>
+                <p>{userText.selectCollection()}</p>
                 <Ul className="flex gap-2">
                   {collections.map(({ id, collectionName }) => (
                     <li key={id}>
@@ -66,7 +67,7 @@ export function OtherCollection({
                           switchCollection(navigate, collections[0].id)
                         }
                       >
-                        {collectionName}
+                        {collectionName as LocalizedString}
                       </Button.Blue>
                     </li>
                   ))}
@@ -74,14 +75,14 @@ export function OtherCollection({
               </>
             ) : (
               <>
-                <p>{commonText('loginToProceed')}</p>
+                <p>{userText.loginToProceed()}</p>
                 <div>
                   <Button.Blue
                     onClick={(): void =>
                       switchCollection(navigate, collections[0].id)
                     }
                   >
-                    {collections[0].collectionName}
+                    {collections[0].collectionName as LocalizedString}
                   </Button.Blue>
                 </div>
               </>

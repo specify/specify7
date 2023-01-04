@@ -10,10 +10,11 @@ import { SpecifyResource } from '../DataModel/legacyTypes';
 import { Button } from './Button';
 import { Link } from './Link';
 import { AnySchema } from '../DataModel/helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 const dataEntryButton = (
   className: string,
-  title: string,
+  title: LocalizedString,
   icon: keyof typeof icons
 ) =>
   function (
@@ -130,38 +131,37 @@ export const DataEntry = {
     })
   ),
   SubFormTitle: wrap('DataEntry.SubFormTitle', 'h3', `${className.formTitle}`),
-  Add: dataEntryButton(className.dataEntryAdd, commonText('add'), 'plus'),
-  View: dataEntryButton(className.dataEntryView, commonText('view'), 'eye'),
-  Edit: dataEntryButton(className.dataEntryEdit, commonText('edit'), 'pencil'),
+  Add: dataEntryButton(className.dataEntryAdd, commonText.add(), 'plus'),
+  View: dataEntryButton(className.dataEntryView, commonText.view(), 'eye'),
+  Edit: dataEntryButton(className.dataEntryEdit, commonText.edit(), 'pencil'),
   Clone: dataEntryButton(
     className.dataEntryClone,
-    formsText('clone'),
+    formsText.clone(),
     'clipboard'
   ),
   Search: dataEntryButton(
     className.dataEntrySearch,
-    commonText('search'),
+    commonText.search(),
     'search'
   ),
   Remove: dataEntryButton(
     className.dataEntryRemove,
-    commonText('remove'),
+    commonText.remove(),
     'minus'
   ),
   Visit({
+    className: localClassName = '',
     resource,
-    props,
   }: {
-    readonly props?: Exclude<TagProps<'a'>, 'aria-label' | 'href' | 'title'>;
+    readonly className?: string;
     readonly resource: SpecifyResource<AnySchema> | undefined;
   }): JSX.Element | null {
     return typeof resource === 'object' && !resource.isNew() ? (
       <Link.NewTab
-        {...props}
-        aria-label={formsText('visit')}
-        className={`${className.dataEntryVisit} ${props?.className ?? ''}`}
+        aria-label={formsText.visit()}
+        className={`${className.dataEntryVisit} ${localClassName}`}
         href={resource.viewUrl()}
-        title={formsText('visit')}
+        title={formsText.visit()}
       />
     ) : null;
   },

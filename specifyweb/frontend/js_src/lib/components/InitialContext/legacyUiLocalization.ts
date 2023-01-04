@@ -8,8 +8,9 @@
 
 import { mappedFind } from '../../utils/utils';
 import { load } from './index';
-import { LANGUAGE } from '../../localization/utils';
 import { getProperty } from '../../utils/javaProperties';
+import { LocalizedString } from 'typesafe-i18n';
+import { LANGUAGE } from '../../localization/utils/config';
 
 const bundleLanguages = ['en', 'ru', 'uk', 'pt'];
 const locale =
@@ -34,6 +35,6 @@ export const fetchContext = Promise.all(
   )
 );
 
-export const legacyLocalize = (key: string): string =>
-  mappedFind(Object.values(bundles), (content) => getProperty(content, key)) ??
-  key;
+export const legacyLocalize = (key: string): LocalizedString =>
+  (mappedFind(Object.values(bundles), (content) => getProperty(content, key)) ??
+    key) as LocalizedString;

@@ -21,6 +21,7 @@ import { parseFormCell, processColumnDefinition } from './cells';
 import { postProcessFormDef } from './postProcessFormDef';
 import { Http } from '../../utils/ajax/definitions';
 import { webOnlyViews } from './webOnlyViews';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type ViewDescription = ParsedFormDefinition & {
   readonly formType: FormType;
@@ -240,7 +241,7 @@ function parseFormTableDefinition(
     .flat()
     // FormTable consists of Fields and SubViews only
     .filter(({ type }) => type === 'Field' || type === 'SubView')
-    .map((cell) => ({
+    .map<FormCellDefinition>((cell) => ({
       ...cell,
       // Center all fields in each column
       align: 'center' as const,
@@ -254,7 +255,8 @@ function parseFormTableDefinition(
           : undefined) ??
         labelsForCells[cell.id ?? '']?.text ??
         (cell.type === 'Field' || cell.type === 'SubView'
-          ? model?.getField(cell.fieldName ?? '')?.label ?? cell.fieldName
+          ? model?.getField(cell.fieldName ?? '')?.label ??
+            (cell.fieldName as LocalizedString)
           : undefined),
       // Remove labels from checkboxes (as labels would be in the table header)
       ...(cell.type === 'Field' && cell.fieldDefinition.type === 'Checkbox'

@@ -1,16 +1,17 @@
 import hmac
 import json
 import logging
-import requests
 import time
+from os.path import splitext
+from uuid import uuid4
+from xml.etree import ElementTree
+
+import requests
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_http_methods
-from os.path import splitext
-from uuid import uuid4
-from xml.etree import ElementTree
 
 from specifyweb.specify.views import login_maybe_required, openapi
 
@@ -46,7 +47,7 @@ def get_collection(request=None):
         # A specific collection name is defined in the settings.
         return settings.WEB_ATTACHMENT_COLLECTION
 
-    if request is not None:
+    if request is not None and settings.SEPARATE_WEB_ATTACHMENT_FOLDERS:
         # We use the client's logged in collection.
         # This will work OK for saving and retrieving assets
         # attached to records scoped to the collection level.
@@ -172,6 +173,8 @@ def delete_attachment_file(attch_loc):
     r = requests.post(server_urls["delete"], data=data)
     update_time_delta(r)
     if r.status_code not in (200, 404):
+        # TODO: make back-end return localization keys that are resolved on the
+        #   front-end
         raise AttachmentError(_("Deletion failed: %(reason)s") % {'reason': r.text})
 
 def generate_token(timestamp, filename):

@@ -8,6 +8,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { MappingElement } from './LineComponents';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function ListOfBaseTables({
   onChange: handleChange,
@@ -61,7 +62,7 @@ export function ListOfBaseTables({
 
 export function ButtonWithConfirmation(props: {
   readonly children: React.ReactNode;
-  readonly dialogHeader: string;
+  readonly dialogHeader: LocalizedString;
   readonly dialogMessage: React.ReactNode;
   readonly dialogButtons: (
     confirm: () => void

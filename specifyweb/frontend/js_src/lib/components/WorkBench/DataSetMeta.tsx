@@ -32,6 +32,9 @@ import { FormattedResource } from '../Molecules/FormattedResource';
 import { useTitle } from '../Molecules/AppTitle';
 import { Http } from '../../utils/ajax/definitions';
 import { unsafeNavigate } from '../Router/Router';
+import { LocalizedString } from 'typesafe-i18n';
+import { schema } from '../DataModel/schema';
+import { StringToJsx } from '../../localization/utils';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -43,7 +46,7 @@ export function DataSetMeta({
   readonly dataset: Dataset;
   readonly getRowCount?: () => number;
   readonly onClose: () => void;
-  readonly onChange: (dataSetName: string) => void;
+  readonly onChange: (dataSetName: LocalizedString) => void;
 }): JSX.Element | null {
   const id = useId('data-set-meta');
   const [name, setName] = React.useState(dataset.name);
@@ -55,11 +58,11 @@ export function DataSetMeta({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
-          <Submit.Blue form={id('form')}>{commonText('save')}</Submit.Blue>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+          <Submit.Blue form={id('form')}>{commonText.save()}</Submit.Blue>
         </>
       }
-      header={wbText('dataSetMetaDialogTitle')}
+      header={wbText.dataSetMeta()}
       icon={<span className="text-blue-500">{icons.table}</span>}
       onClose={handleClose}
     >
@@ -84,7 +87,7 @@ export function DataSetMeta({
                       // REFACTOR: replace this with a callback
                       overwriteReadOnly(dataset, 'name', uniqueName);
                       overwriteReadOnly(dataset, 'remarks', remarks.trim());
-                      return uniqueName;
+                      return uniqueName as LocalizedString;
                     })
                 )
             ).then(handleChange)
@@ -92,73 +95,142 @@ export function DataSetMeta({
         }
       >
         <Label.Block>
-          <b>{wbText('dataSetName')}</b>
+          <b>{wbText.dataSetName()}</b>
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
             spellCheck="true"
             value={name}
-            onValueChange={setName}
+            onValueChange={(name): void => setName(name as LocalizedString)}
           />
         </Label.Block>
         <Label.Block>
-          <b>{wbText('remarks')}</b>
+          <b>
+            {schema.models.Workbench.strictGetLiteralField('remarks').label}:
+          </b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
-          <b>{commonText('metadataInline')}</b>
+          <b>
+            {
+              schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
+                'metadata'
+              ).label
+            }
+          </b>
           <span>
-            {wbText('numberOfRows')} <i>{formatNumber(getRowCount())}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfRows(),
+              value: formatNumber(getRowCount()),
+            })}
           </span>
           <span>
-            {wbText('numberOfColumns')}{' '}
-            <i>{formatNumber(dataset.columns.length)}</i>
+            {commonText.colonLine({
+              label: wbText.numberOfColumns(),
+              value: formatNumber(dataset.columns.length),
+            })}
           </span>
           <span>
-            {wbText('created')}{' '}
-            <i>
-              <DateElement date={dataset.timestampcreated} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('timestampCreated')
+                    .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampcreated} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('modified')}{' '}
-            <i>
-              <DateElement date={dataset.timestampmodified} flipDates />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('timestampModified')
+                    .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement date={dataset.timestampmodified} flipDates />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('uploaded')}{' '}
-            <i>
-              <DateElement
-                date={
-                  dataset.uploadresult?.success === true
-                    ? dataset.uploadresult?.timestamp
-                    : undefined
-                }
-                fallback={commonText('no')}
-                flipDates
-              />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: commonText.uploaded(),
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <DateElement
+                      date={
+                        dataset.uploadresult?.success === true
+                          ? dataset.uploadresult?.timestamp
+                          : undefined
+                      }
+                      fallback={commonText.no()}
+                      flipDates
+                    />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText('createdBy')}{' '}
-            <i>
-              <FormattedResource resourceUrl={dataset.createdbyagent} />
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('createdByAgent')
+                    .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    <FormattedResource resourceUrl={dataset.createdbyagent} />
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {commonText('modifiedBy')}{' '}
-            <i>
-              {typeof dataset.modifiedbyagent === 'string' ? (
-                <FormattedResource resourceUrl={dataset.modifiedbyagent} />
-              ) : (
-                commonText('notApplicable')
-              )}
-            </i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label:
+                  schema.models.Workbench.strictGetField('modifiedByAgent')
+                    .label,
+              })}
+              components={{
+                wrap: (
+                  <i>
+                    {typeof dataset.modifiedbyagent === 'string' ? (
+                      <FormattedResource
+                        resourceUrl={dataset.modifiedbyagent}
+                      />
+                    ) : (
+                      commonText.notApplicable()
+                    )}
+                  </i>
+                ),
+              }}
+            />
           </span>
           <span>
-            {wbText('importedFileName')}{' '}
-            <i>{dataset.importedfilename || wbText('noFileName')}</i>
+            <StringToJsx
+              string={commonText.jsxColonLine({
+                label: wbText.importedFileName(),
+              })}
+              components={{
+                wrap: <i>{dataset.importedfilename || wbText.noFileName()}</i>,
+              }}
+            />
           </span>
         </div>
       </Form>
@@ -185,12 +257,21 @@ function DataSetName({
         {dataset.uploadplan !== null && (
           <TableIcon label name={dataset.uploadplan.baseTableName} />
         )}
-        {`${wbText('dataSet')} ${name}`}
+        {commonText.colonLine({
+          label: wbText.dataSet(),
+          value: name,
+        })}
         {dataset.uploadresult?.success === true && (
-          <span className="text-red-600">{wbText('dataSetUploadedLabel')}</span>
+          <span className="text-red-600">{wbText.dataSetUploadedLabel()}</span>
         )}
       </h2>
-      <Button.Small onClick={handleOpen}>{commonText('metadata')}</Button.Small>
+      <Button.Small onClick={handleOpen}>
+        {
+          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
+            'metadata'
+          ).label
+        }
+      </Button.Small>
       {showMeta && (
         <DataSetMeta
           dataset={dataset}
@@ -232,23 +313,23 @@ function ChangeOwner({
 
   return users === undefined ? null : isChanged ? (
     <Dialog
-      buttons={commonText('close')}
-      header={wbText('dataSetOwnerChanged')}
+      buttons={commonText.close()}
+      header={wbText.dataSetOwnerChanged()}
       onClose={(): void => unsafeNavigate('/specify/', { replace: true })}
     >
-      <p>{wbText('dataSetOwnerChanged')}</p>
+      <p>{wbText.dataSetOwnerChanged()}</p>
     </Dialog>
   ) : (
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Submit.Blue disabled={newOwner === undefined} form={id('form')}>
-            {wbText('changeOwner')}
+            {wbText.changeOwner()}
           </Submit.Blue>
         </>
       }
-      header={wbText('changeDataSetOwnerDialogHeader')}
+      header={wbText.changeDataSetOwner()}
       onClose={handleClose}
     >
       <Form
@@ -269,7 +350,7 @@ function ChangeOwner({
         }
       >
         <Label.Block>
-          <p>{wbText('changeDataSetOwnerDialogText')}</p>
+          <p>{wbText.changeDataSetOwnerDescription()}</p>
           <Select
             size={10}
             value={newOwner}

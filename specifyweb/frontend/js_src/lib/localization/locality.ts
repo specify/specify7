@@ -8,10 +8,30 @@ import { createDictionary } from './utils';
 
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
-/* eslint-disable react/jsx-no-literals */
-/* eslint-disable @typescript-eslint/naming-convention */
 export const localityText = createDictionary({
-  // Leaflet
+  openMap: {
+    'en-us': 'Open Map',
+    'ru-ru': 'Открыть карту',
+  },
+  geoMap: {
+    'en-us': 'GeoMap',
+    'ru-ru': 'Карта',
+  },
+  queryMapSubset: {
+    comment: 'Used in GeoMap header while records are still being fetched',
+    'en-us': `
+      GeoMap - Plotted {plotted:number|formatted} of {total:number|formatted}
+      records
+    `,
+    'ru-ru': `
+      Карта - Отображено {plotted:number|formatted} из {total:number|formatted}
+      записей
+    `,
+  },
+  queryMapAll: {
+    'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
+    'ru-ru': 'Карта - Отображено {plotted:number|formatted} записей',
+  },
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
     'ru-ru': 'Границы многоугольника',
@@ -40,34 +60,33 @@ export const localityText = createDictionary({
     'en-us': 'Polygons',
     'ru-ru': 'Полигоны',
   },
-  // GeoLocate
   geoLocate: {
     'en-us': 'GEOLocate',
     'ru-ru': 'GEOLocate',
   },
-  geographyRequiredDialogHeader: {
+  geographyRequired: {
     'en-us': 'Geography must be mapped',
     'ru-ru': 'География должна быть связана',
   },
-  geographyRequiredDialogText: {
+  geographyRequiredDescription: {
     'en-us':
       'The GeoLocate plugin requires the geography field to be populated.',
     'ru-ru': 'Плагин GeoLocate требует, чтобы поле географии было заполнено.',
   },
-  // LatLongUI
   coordinates: {
     'en-us': 'Coordinates',
     'ru-ru': 'Координаты',
   },
   northWestCorner: {
+    comment: 'Represents coordinates. Careful with translation',
     'en-us': 'NW Corner',
     'ru-ru': 'СЗ Угол',
   },
   southEastCorner: {
+    comment: 'Represents coordinates. Careful with translation',
     'en-us': 'SE Corner',
     'ru-ru': 'ЮВ Угол',
   },
-  // LatLongUI
   coordinateType: {
     'en-us': 'Coordinate Type',
     'ru-ru': 'Тип координат',
@@ -100,6 +119,4 @@ export const localityText = createDictionary({
     'en-us': 'Toggle Full Screen',
     'ru-ru': 'Включить полноэкранный режим',
   },
-});
-/* eslint-enable react/jsx-no-literals */
-/* eslint-enable @typescript-eslint/naming-convention */
+} as const);

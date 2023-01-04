@@ -90,10 +90,10 @@ const defaultMarkerGroupsState: RR<MarkerLayerName, boolean> = {
 };
 
 const defaultLabels = {
-  marker: localityText('occurrencePoints'),
-  polygon: localityText('occurrencePolygons'),
-  polygonBoundary: localityText('polygonBoundaries'),
-  errorRadius: localityText('errorRadius'),
+  marker: localityText.occurrencePoints(),
+  polygon: localityText.occurrencePolygons(),
+  polygonBoundary: localityText.polygonBoundaries(),
+  errorRadius: localityText.errorRadius(),
 } as const;
 
 export type LeafletInstance = L.Map & {

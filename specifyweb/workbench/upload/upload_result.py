@@ -1,4 +1,5 @@
-from typing import List, Dict, Tuple, Any, NamedTuple, Optional, Union
+from typing import List, Dict, Any, NamedTuple, Optional, Union
+
 from typing_extensions import Literal
 
 from .parsing import ParseFailure
@@ -121,6 +122,7 @@ def json_to_NullRecord(json: Dict) -> NullRecord:
 
 class FailedBusinessRule(NamedTuple):
     message: str
+    payload: Dict[str, Any]
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -133,6 +135,7 @@ def json_to_FailedBusinessRule(json: Dict) -> FailedBusinessRule:
     r = json['FailedBusinessRule']
     return FailedBusinessRule(
         message=r['message'],
+        payload=r['payload'],
         info=json_to_ReportInfo(r['info'])
     )
 

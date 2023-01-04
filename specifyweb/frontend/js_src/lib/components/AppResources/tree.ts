@@ -7,23 +7,25 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { sortFunction } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
+import { resourcesText } from '../../localization/resources';
 import { userTypes } from '../PickLists/definitions';
 import type { RA } from '../../utils/types';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 export const getAppResourceTree = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: adminText('globalResources'),
+    label: resourcesText.globalResources(),
     key: 'globalResources',
     ...getGlobalAllResources(resources),
     subCategories: [],
   },
   {
-    label: adminText('disciplineResources'),
+    label: resourcesText.disciplineResources(),
     key: 'disciplineResources',
     directory: undefined,
     appResources: [],
@@ -169,7 +171,7 @@ const getCollectionResources = (
   resources: AppResources
 ): AppResourcesTree => [
   {
-    label: adminText('userTypes'),
+    label: resourcesText.userTypes(),
     key: 'userTypes',
     directory: undefined,
     appResources: [],
@@ -177,7 +179,7 @@ const getCollectionResources = (
     subCategories: sortTree(getUserTypeResources(collection, resources)),
   },
   {
-    label: adminText('users'),
+    label: userText.users(),
     key: 'users',
     directory: undefined,
     appResources: [],
@@ -205,7 +207,7 @@ const getUserTypeResources = (
         userType: userType.toLowerCase(),
       });
     return {
-      label: userType,
+      label: userType as LocalizedString,
       key: `collection_${collection.id}_userType_${userType}`,
       directory,
       ...mergeDirectories(directories, resources),
