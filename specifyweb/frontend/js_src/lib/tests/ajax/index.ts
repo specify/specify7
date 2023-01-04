@@ -101,6 +101,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     );
   }
 
+  // BUG: this fails if `npx jest` is run from non js_src directory
   const parsedPath = path.parse(`./lib/tests/ajax/static${url}`);
 
   // Find a directory that matches the part name in the URL
