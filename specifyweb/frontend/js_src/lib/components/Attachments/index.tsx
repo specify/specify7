@@ -16,13 +16,13 @@ import { Input, Label, Select } from '../Atoms/Form';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
 import { getModel, schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
-import { useMenuItem } from '../Header';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../UserPreferences/Renderers';
 import { AttachmentGallery } from './Gallery';
 import { schemaText } from '../../localization/schema';
 import { attachmentsText } from '../../localization/attachments';
+import { useMenuItem } from '../Header/useMenuItem';
 
 const allTablesWithAttachments = f.store(() =>
   filterArray(

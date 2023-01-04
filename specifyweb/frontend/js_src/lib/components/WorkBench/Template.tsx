@@ -17,7 +17,6 @@ import { treeRanksPromise } from '../InitialContext/treeRanks';
 import type { GetSet } from '../../utils/types';
 import { WBView } from './wbView';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -30,6 +29,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { legacyDialogs } from '../Molecules/LegacyDialog';
 import { LocalizedString } from 'typesafe-i18n';
 import { wbPlanText } from '../../localization/wbPlan';
+import { useMenuItem } from '../Header/useMenuItem';
 
 function Navigation({
   name,

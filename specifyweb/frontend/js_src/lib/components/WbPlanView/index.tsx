@@ -14,10 +14,10 @@ import { NotFoundView } from '../Router/NotFoundView';
 import type { Dataset } from './Wrapped';
 import { WbPlanView } from './Wrapped';
 import { useParams } from 'react-router-dom';
-import { useMenuItem } from '../Header';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { Http } from '../../utils/ajax/definitions';
+import { useMenuItem } from '../Header/useMenuItem';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
 

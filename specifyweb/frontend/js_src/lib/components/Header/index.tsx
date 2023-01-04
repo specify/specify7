@@ -11,13 +11,11 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { userText } from '../../localization/user';
 import { ajax } from '../../utils/ajax';
-import type { RA, RR, WritableArray } from '../../utils/types';
-import { writable } from '../../utils/types';
-import { removeItem, sortFunction, toLowerCase } from '../../utils/utils';
+import type { RA, RR } from '../../utils/types';
+import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Select } from '../Atoms/Form';
-import { icons } from '../Atoms/Icons';
+import { Form, Input, Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { MenuContext } from '../Core/Contexts';
 import type { MenuItem } from '../Core/Main';
@@ -31,6 +29,8 @@ import type { MenuItemName } from './menuItemDefinitions';
 import { Notifications } from './Notifications';
 import { UserTools } from './UserTools';
 import { listen } from '../../utils/events';
+import { icons } from '../Atoms/Icons';
+import { formatUrl } from '../Router/queryString';
 
 const collapseThreshold = 900;
 
@@ -61,6 +61,20 @@ export function Header({
 
   const isCollapsed = rawIsCollapsed || forceCollapse;
   const title = isCollapsed ? commonText.expand() : commonText.collapse();
+
+  const logInProps = userInformation.isauthenticated
+    ? ({
+        href: '/accounts/logout/',
+        icon: 'logout',
+        title: userText.logIn(),
+        'aria-label': userText.logIn(),
+      } as const)
+    : ({
+        href: '/accounts/login/',
+        icon: 'login',
+        title: userText.logOut(),
+        'aria-label': userText.logOut(),
+      } as const);
 
   return (
     <header
@@ -106,30 +120,18 @@ export function Header({
             ${isCollapsed ? '' : 'grid-cols-[1fr_min-content] gap-2 p-4'}
           `}
           >
-            <UserTools isCollapsed={isCollapsed} />
-            {!userInformation.isauthenticated ? (
-              isCollapsed ? (
-                <Link.Icon
-                  className={`${className.navigationHandled} p-4`}
-                  href="/accounts/login/"
-                  icon="login"
-                  title={userText.logIn()}
-                />
-              ) : (
-                <Link.Default
-                  className={className.navigationHandled}
-                  href="/accounts/login/"
-                >
-                  {userText.logIn()}
-                </Link.Default>
-              )
-            ) : undefined}
-            <Notifications isCollapsed={isCollapsed} />
             <CollectionSelector
               onClick={
                 isCollapsed ? (): void => setIsCollapsed(false) : undefined
               }
             />
+            <Notifications isCollapsed={isCollapsed} />
+            <UserTools isCollapsed={isCollapsed} />
+            {isCollapsed ? (
+              <Link.Icon className="p-4" {...logInProps} />
+            ) : (
+              <Link.Small {...logInProps}>{icons[logInProps.icon]}</Link.Small>
+            )}
             {isCollapsed ? (
               <Link.Icon
                 className="p-4"
@@ -138,13 +140,7 @@ export function Header({
                 title={commonText.search()}
               />
             ) : (
-              <Link.Small
-                aria-label={commonText.search()}
-                href="/specify/express-search/"
-                title={commonText.search()}
-              >
-                {icons.search}
-              </Link.Small>
+              <ExpressSearchLine />
             )}
           </div>
         </div>
@@ -166,27 +162,7 @@ export function Header({
   );
 }
 
-let activeMenuItems: WritableArray<MenuItemName> = [];
-
-/**
- * Marks the corresponding menu item as active while the component with this
- * hook is active
- */
-export function useMenuItem(menuItem: MenuItemName): void {
-  const [_menuItem, setMenuItem] = React.useContext(MenuContext);
-  React.useEffect(() => {
-    activeMenuItems.push(menuItem);
-    setMenuItem(menuItem);
-    return () => {
-      const index = activeMenuItems.lastIndexOf(menuItem);
-      if (index !== -1)
-        activeMenuItems = writable(removeItem(activeMenuItems, index));
-      setMenuItem(activeMenuItems.at(-1));
-    };
-  }, [menuItem, setMenuItem]);
-}
-
-export function HeaderItems({
+function HeaderItems({
   menuItems,
   isCollapsed,
 }: {
@@ -310,5 +286,32 @@ export function CollectionSelector({
         </option>
       ))}
     </Select>
+  );
+}
+
+function ExpressSearchLine(): JSX.Element {
+  const [query, setQuery] = React.useState('');
+  return (
+    <Form className="contents">
+      <Input.Generic
+        aria-label={commonText.search()}
+        autoComplete="on"
+        className="flex-1"
+        // Name is for autocomplete purposes only
+        name="searchQuery"
+        placeholder={commonText.search()}
+        type="search"
+        value={query}
+        onValueChange={setQuery}
+      />
+      <Link.Small
+        aria-label={commonText.search()}
+        href={formatUrl('/specify/express-search/', { q: query })}
+        onClick={(): void => setQuery('')}
+        title={commonText.search()}
+      >
+        {icons.search}
+      </Link.Small>
+    </Form>
   );
 }

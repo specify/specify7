@@ -17,7 +17,6 @@ import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Select } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
-import { useMenuItem } from '../Header';
 import { loadingGif } from '../Molecules';
 import type { AutoCompleteItem } from '../Molecules/AutoComplete';
 import { AutoComplete } from '../Molecules/AutoComplete';
@@ -34,6 +33,7 @@ import {
   wbImportPreviewSize,
 } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { useMenuItem } from '../Header/useMenuItem';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');
