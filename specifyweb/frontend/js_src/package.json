@@ -11,17 +11,20 @@
   "author": "KU Biodiversity Institute",
   "homepage": "https://specifysoftware.org",
   "main": "lib/main.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "//": "All of these should be executed from the js_src directory",
-    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
-    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js",
     "//pullFromWeblate": "This is run by github action on the weblate-localization branch",
+    "localizationTests": "node --loader ts-node/esm lib/localization/__tests__/scanUsages.js",
     "pullFromWeblate": "node --loader ts-node/esm lib/localization/utils/pull.js",
     "test": "npm run typecheck && npm run unitTests && npm run localizationTests",
     "typecheck": "tsc --build tsconfig.tests.json",
     "unitTests": "jest",
     "unitTests:coverage": "jest --coverage",
-    "unitTests:watch": "jest --watch"
+    "unitTests:watch": "jest --watch",
+    "validateWeblate": "node --loader ts-node/esm lib/localization/__tests__/validateWeblate.js"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
