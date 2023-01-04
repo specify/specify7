@@ -189,6 +189,9 @@ export const userText = createDictionary({
       следующих действий:
     `,
   },
+  emptyRecordSetsReadOnly: {
+    'en-us': `Cannot open empty Record Set when in Read-Only mode`
+  },
   permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
     'ru-ru': 'Разрешение не было дано при доступе к <url />',

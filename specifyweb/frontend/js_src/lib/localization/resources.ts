@@ -124,5 +124,5 @@ export const resourcesText = createDictionary({
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
-  },
+  }
 } as const);
