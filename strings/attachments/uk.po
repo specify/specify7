@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-04 23:17+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2023-01-05 02:50+0000\n"
+"Last-Translator: Max Patiiuk <max@patii.uk>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/uk/>\n"
 "Language: uk\n"
@@ -16,19 +16,16 @@ msgstr ""
 #: components/Attachments/index.tsx:149
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:164
-#, fuzzy
 msgid "attachments"
-msgstr "Додатки"
+msgstr "Вкладення"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:209
-#, fuzzy
 msgid "scale"
-msgstr "масштаб"
+msgstr "Масштаб"
 
 #. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:119
-#, fuzzy
 msgid "attachmentServerUnavailable"
 msgstr "Сервер вкладень недоступний."
 
@@ -36,18 +33,15 @@ msgstr "Сервер вкладень недоступний."
 #: components/Attachments/index.tsx:198
 #: components/FormMeta/SubViewMeta.tsx:40
 #: components/UserPreferences/Definitions.tsx:1071
-#, fuzzy
 msgid "orderBy"
 msgstr "Сортувати по"
 
 #. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:143
-#, fuzzy
 msgid "uploadingInline"
 msgstr "Завантаження…"
 
 #. Used in: Components > Attachments > Gallery
 #: components/Attachments/Gallery.tsx:77
-#, fuzzy
 msgid "noAttachments"
-msgstr "Додатків немає"
+msgstr "Вкладень немає"
