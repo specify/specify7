@@ -89,7 +89,7 @@ const formatterSpec = f.store(() =>
 const switchSpec = ({ table }: SpecToJson<ReturnType<typeof formatterSpec>>) =>
   createSpec({
     isSingle: pipe(
-      syncers.xmlAttribute('default', 'skip'),
+      syncers.xmlAttribute('single', 'skip'),
       syncers.maybe(syncers.toBoolean)
     ),
     conditionField: pipe(

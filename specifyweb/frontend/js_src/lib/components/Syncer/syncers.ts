@@ -104,7 +104,9 @@ export const syncers = {
         return cell;
       })
     ),
+  // FIXME: make sure to put new child after the last one
   xmlChildren: (tagName: string) =>
+    // FIXME: test creating new children
     syncer<Element, RA<Element>>(
       (cell) => getChildren(cell, tagName),
       ensureCell((rawNewChildren, cell) => {
