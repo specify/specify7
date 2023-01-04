@@ -92,53 +92,61 @@ export function Header({
             <span className="sr-only">{commonText.goToHomepage()}</span>
           </a>
         </h1>
-        <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
         <div
-          className={`
+          className={
+            isCollapsed
+              ? 'flex flex-1 flex-col gap-2 overflow-auto'
+              : 'contents'
+          }
+        >
+          <HeaderItems isCollapsed={isCollapsed} menuItems={menuItems} />
+          <div
+            className={`
             grid
             ${isCollapsed ? '' : 'grid-cols-[1fr_min-content] gap-2 p-4'}
           `}
-        >
-          <UserTools isCollapsed={isCollapsed} />
-          {!userInformation.isauthenticated ? (
-            isCollapsed ? (
+          >
+            <UserTools isCollapsed={isCollapsed} />
+            {!userInformation.isauthenticated ? (
+              isCollapsed ? (
+                <Link.Icon
+                  className={`${className.navigationHandled} p-4`}
+                  href="/accounts/login/"
+                  icon="login"
+                  title={userText.logIn()}
+                />
+              ) : (
+                <Link.Default
+                  className={className.navigationHandled}
+                  href="/accounts/login/"
+                >
+                  {userText.logIn()}
+                </Link.Default>
+              )
+            ) : undefined}
+            <Notifications isCollapsed={isCollapsed} />
+            <CollectionSelector
+              onClick={
+                isCollapsed ? (): void => setIsCollapsed(false) : undefined
+              }
+            />
+            {isCollapsed ? (
               <Link.Icon
-                className={`${className.navigationHandled} p-4`}
-                href="/accounts/login/"
-                icon="login"
-                title={userText.logIn()}
+                className="p-4"
+                href="/specify/express-search/"
+                icon="search"
+                title={commonText.search()}
               />
             ) : (
-              <Link.Default
-                className={className.navigationHandled}
-                href="/accounts/login/"
+              <Link.Small
+                aria-label={commonText.search()}
+                href="/specify/express-search/"
+                title={commonText.search()}
               >
-                {userText.logIn()}
-              </Link.Default>
-            )
-          ) : undefined}
-          <Notifications isCollapsed={isCollapsed} />
-          <CollectionSelector
-            onClick={
-              isCollapsed ? (): void => setIsCollapsed(false) : undefined
-            }
-          />
-          {isCollapsed ? (
-            <Link.Icon
-              className="p-4"
-              href="/specify/express-search/"
-              icon="search"
-              title={commonText.search()}
-            />
-          ) : (
-            <Link.Small
-              aria-label={commonText.search()}
-              href="/specify/express-search/"
-              title={commonText.search()}
-            >
-              {icons.search}
-            </Link.Small>
-          )}
+                {icons.search}
+              </Link.Small>
+            )}
+          </div>
         </div>
       </div>
       {forceCollapse ? (
@@ -187,7 +195,10 @@ export function HeaderItems({
 }): JSX.Element {
   const [activeMenuItem] = React.useContext(MenuContext);
   return (
-    <nav aria-label={commonText.primary()} className="flex flex-1 flex-col">
+    <nav
+      aria-label={commonText.primary()}
+      className={`flex flex-1 flex-col ${isCollapsed ? '' : 'overflow-auto'}`}
+    >
       {Object.entries(menuItems).map(([name, menuItem]) => (
         <MenuItemComponent
           isCollapsed={isCollapsed}
