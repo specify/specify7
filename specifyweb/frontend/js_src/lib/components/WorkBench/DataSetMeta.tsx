@@ -35,6 +35,7 @@ import { unsafeNavigate } from '../Router/Router';
 import { LocalizedString } from 'typesafe-i18n';
 import { schema } from '../DataModel/schema';
 import { StringToJsx } from '../../localization/utils';
+import { getField } from '../DataModel/helpers';
 
 // FEATURE: allow exporting/importing the mapping
 export function DataSetMeta({
@@ -105,17 +106,14 @@ export function DataSetMeta({
           />
         </Label.Block>
         <Label.Block>
-          <b>
-            {schema.models.Workbench.strictGetLiteralField('remarks').label}:
-          </b>
+          <b>{getField(schema.models.Workbench, 'remarks').label}:</b>
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
           <b>
             {
-              schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
-                'metadata'
-              ).label
+              getField(schema.models.WorkbenchTemplateMappingItem, 'metaData')
+                .label
             }
           </b>
           <span>
@@ -133,9 +131,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('timestampCreated')
-                    .label,
+                label: getField(schema.models.Workbench, 'timestampCreated')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -149,9 +146,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('timestampModified')
-                    .label,
+                label: getField(schema.models.Workbench, 'timestampModified')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -187,9 +183,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('createdByAgent')
-                    .label,
+                label: getField(schema.models.Workbench, 'createdByAgent')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -203,9 +198,8 @@ export function DataSetMeta({
           <span>
             <StringToJsx
               string={commonText.jsxColonLine({
-                label:
-                  schema.models.Workbench.strictGetField('modifiedByAgent')
-                    .label,
+                label: getField(schema.models.Workbench, 'modifiedByAgent')
+                  .label,
               })}
               components={{
                 wrap: (
@@ -266,11 +260,7 @@ function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {
-          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
-            'metadata'
-          ).label
-        }
+        {getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label}
       </Button.Small>
       {showMeta && (
         <DataSetMeta

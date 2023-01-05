@@ -17,6 +17,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { InteractionDialog } from '../Interactions/InteractionDialog';
 import { SerializedResource } from '../DataModel/helperTypes';
 import { FormTableCollection } from './FormTableCollection';
+import { getField } from '../DataModel/helpers';
 
 export function FormTableInteraction(
   props: Omit<
@@ -48,7 +49,8 @@ export function FormTableInteraction(
           }
           model={schema.models.CollectionObject}
           recordSetsPromise={recordSetsPromise}
-          searchField={schema.models.CollectionObject.strictGetLiteralField(
+          searchField={getField(
+            schema.models.CollectionObject,
             'catalogNumber'
           )}
           onClose={(): void => setRecordSetsPromise(undefined)}

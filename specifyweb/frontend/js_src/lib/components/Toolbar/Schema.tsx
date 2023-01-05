@@ -31,6 +31,7 @@ import { formsText } from '../../localization/forms';
 import { schemaText } from '../../localization/schema';
 import { LocalizedString } from 'typesafe-i18n';
 import { useTitle } from '../Molecules/AppTitle';
+import { getField } from '../DataModel/helpers';
 
 function Table<
   SORT_CONFIG extends
@@ -166,15 +167,14 @@ export function DataModelTable(): JSX.Element {
 const fieldColumns = f.store(
   () =>
     ({
-      name: schema.models.SpLocaleContainerItem.strictGetField('name').label,
+      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
       label: schemaText.fieldLabel(),
       description: schemaText.description(),
-      isHidden:
-        schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
+      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired:
-        schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
-      type: schema.models.SpLocaleContainerItem.strictGetField('type').label,
+      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
+        .label,
+      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
       length: schemaText.fieldLength(),
       databaseColumn: schemaText.databaseColumn(),
     } as const)
@@ -232,15 +232,14 @@ function DataModelFields({
 const relationshipColumns = f.store(
   () =>
     ({
-      name: schema.models.SpLocaleContainerItem.strictGetField('name').label,
+      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
       label: schemaText.fieldLabel(),
       description: schemaText.description(),
-      isHidden:
-        schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
+      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
-      isRequired:
-        schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
-      type: schema.models.SpLocaleContainerItem.strictGetField('type').label,
+      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
+        .label,
+      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
       databaseColumn: schemaText.databaseColumn(),
       relatedModel: schemaText.relatedModel(),
       otherSideName: schemaText.otherSideName(),
@@ -297,12 +296,10 @@ function DataModelRelationships({
 const tableColumns = f.store(
   () =>
     ({
-      name: schema.models.SpLocaleContainer.strictGetField('name').label,
+      name: getField(schema.models.SpLocaleContainer, 'name').label,
       label: schemaText.fieldLabel(),
-      isSystem:
-        schema.models.SpLocaleContainer.strictGetField('isSystem').label,
-      isHidden:
-        schema.models.SpLocaleContainer.strictGetField('isHidden').label,
+      isSystem: getField(schema.models.SpLocaleContainer, 'isSystem').label,
+      isHidden: getField(schema.models.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),
       fieldCount: schemaText.fieldCount(),
       relationshipCount: schemaText.relationshipCount(),
@@ -385,17 +382,17 @@ const dataModelToTsv = (): string =>
     [
       schemaText.table(),
       schemaText.fieldLabel(),
-      schema.models.SpLocaleContainer.strictGetField('isSystem').label,
-      schema.models.SpLocaleContainer.strictGetField('isHidden').label,
+      getField(schema.models.SpLocaleContainer, 'isSystem').label,
+      getField(schema.models.SpLocaleContainer, 'isHidden').label,
       schemaText.tableId(),
-      schema.models.SpLocaleContainerItem.strictGetField('name').label,
+      getField(schema.models.SpLocaleContainerItem, 'name').label,
       schemaText.fieldLabel(),
       schemaText.description(),
-      schema.models.SpLocaleContainerItem.strictGetField('isHidden').label,
+      getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
       schemaText.readOnly(),
-      schema.models.SpLocaleContainerItem.strictGetField('isRequired').label,
+      getField(schema.models.SpLocaleContainerItem, 'isRequired').label,
       formsText.relationship(),
-      schema.models.SpLocaleContainerItem.strictGetField('type').label,
+      getField(schema.models.SpLocaleContainerItem, 'type').label,
       schemaText.fieldLength(),
       schemaText.databaseColumn(),
       schemaText.relatedModel(),

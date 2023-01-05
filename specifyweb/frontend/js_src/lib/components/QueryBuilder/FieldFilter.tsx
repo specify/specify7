@@ -26,6 +26,7 @@ import { fetchPickList, getPickListItems } from '../PickLists/fetch';
 import { mappingElementDivider } from '../WbPlanView/LineComponents';
 import type { QueryField } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
+import { getField } from '../DataModel/helpers';
 
 /**
  * Formatters and aggregators don't yet support any filtering options.
@@ -333,7 +334,7 @@ function In({
     () => ({
       ...pluralizeParser(parser),
       maxLength: enforceLengthLimit
-        ? schema.models.SpQueryField.strictGetLiteralField('startValue').length
+        ? getField(schema.models.SpQueryField, 'startValue').length
         : undefined,
     }),
     [parser, enforceLengthLimit]

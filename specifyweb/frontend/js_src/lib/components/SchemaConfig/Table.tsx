@@ -12,9 +12,12 @@ import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './SetupHooks';
 import { schemaText } from '../../localization/schema';
 import { commonText } from '../../localization/common';
+import { getField } from '../DataModel/helpers';
 
-export const maxSchemaValueLength =
-  schema.models.SpLocaleItemStr.strictGetLiteralField('text').length;
+export const maxSchemaValueLength = getField(
+  schema.models.SpLocaleItemStr,
+  'text'
+).length;
 
 export function SchemaConfigTable({
   schemaData,

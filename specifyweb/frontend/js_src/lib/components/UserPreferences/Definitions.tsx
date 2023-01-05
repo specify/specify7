@@ -40,6 +40,7 @@ import { localityText } from '../../localization/locality';
 import { interactionsText } from '../../localization/interactions';
 import { resourcesText } from '../../localization/resources';
 import { attachmentsText } from '../../localization/attachments';
+import { getField } from '../DataModel/helpers';
 
 // Custom Renderer for a preference item
 export type PreferenceItemComponent<VALUE> = (props: {
@@ -1625,12 +1626,12 @@ import('../DataModel/schema')
         overwriteReadOnly(
           name,
           'title',
-          schema.models.Taxon.strictGetLiteralField('name').label
+          getField(schema.models.Taxon, 'name').label
         );
         overwriteReadOnly(
           fullName,
           'title',
-          schema.models.Taxon.strictGetLiteralField('fullName').label
+          getField(schema.models.Taxon, 'fullName').label
         );
       } else softError('Unable to replace the tree preferences item title');
     })

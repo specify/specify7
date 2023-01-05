@@ -13,6 +13,7 @@ import { schema } from '../DataModel/schema';
 import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { getField } from '../DataModel/helpers';
 
 async function doSave(
   query: SpecifyResource<SpQuery>,
@@ -80,12 +81,10 @@ export function QuerySaveDialog({
         }
       >
         <Label.Block>
-          {schema.models.SpQuery.strictGetLiteralField('name').label}
+          {getField(schema.models.SpQuery, 'name').label}
           <Input.Text
             autoComplete="on"
-            maxLength={
-              schema.models.SpQuery.strictGetLiteralField('name').length
-            }
+            maxLength={getField(schema.models.SpQuery, 'name').length}
             name="queryName"
             required
             spellCheck="true"
