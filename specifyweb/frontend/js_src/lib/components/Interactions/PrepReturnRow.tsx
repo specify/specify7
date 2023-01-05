@@ -12,6 +12,7 @@ import type { LoanPreparation } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { PrepReturnRowState } from './PrepReturnDialog';
 import { interactionsText } from '../../localization/interactions';
+import { getField } from '../DataModel/helpers';
 
 export function PrepReturnRow({
   preparation,
@@ -46,9 +47,7 @@ export function PrepReturnRow({
                   readonly taxon: string;
                 }>(async (collectionObject) => ({
                   catalogNumber: await fieldFormat(
-                    schema.models.CollectionObject.strictGetLiteralField(
-                      'catalogNumber'
-                    ),
+                    getField(schema.models.CollectionObject, 'catalogNumber'),
                     undefined,
                     collectionObject.get('catalogNumber')
                   ),
@@ -72,8 +71,10 @@ export function PrepReturnRow({
   );
 
   const [showRemarks, _, __, handleToggle] = useBooleanState();
-  const remarksLabel =
-    schema.models.LoanReturnPreparation.strictGetLiteralField('remarks').label;
+  const remarksLabel = getField(
+    schema.models.LoanReturnPreparation,
+    'remarks'
+  ).label;
 
   return (
     <>

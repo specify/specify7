@@ -9,6 +9,7 @@ import { schema } from './schema';
 import { LiteralField, Relationship } from './specifyField';
 import type { SpecifyModel } from './specifyModel';
 import type { Tables } from './types';
+import { getField } from './helpers';
 
 const treeDefinitionFields = [
   'fullNameSeparator',
@@ -109,14 +110,14 @@ export const schemaExtras: {
       [totalCountAmt, actualTotalCountAmt],
       [currentDetermination],
       (): void => {
-        const collection = model.strictGetRelationship('collection');
+        const collection = getField(model, 'collection');
         collection.otherSideName = 'collectionObjects';
 
         /*
          * Catalog number formatter is taken from the field on the collection,
          * if present
          */
-        const catalognumber = model.strictGetLiteralField('catalogNumber');
+        const catalognumber = getField(model, 'catalogNumber');
         catalognumber.getFormat = (): string | undefined =>
           schema.catalogNumFormatName ||
           LiteralField.prototype.getFormat.call(catalognumber);
@@ -185,7 +186,7 @@ export const schemaExtras: {
       [actualTotalCountAmt],
       [],
       (): void => {
-        model.strictGetRelationship('division').otherSideName = 'accessions';
+        getField(model, 'division').otherSideName = 'accessions';
       },
     ];
   },
@@ -308,7 +309,7 @@ export const schemaExtras: {
       [isOnLoan, actualCountAmt],
       [],
       (): void => {
-        const preptype = model.strictGetRelationship('preptype');
+        const preptype = getField(model, 'prepType');
         preptype.otherSideName = 'preparations';
       },
     ];

@@ -20,6 +20,7 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { PrepReturnRow } from './PrepReturnRow';
 import { interactionsText } from '../../localization/interactions';
+import { getField } from '../DataModel/helpers';
 
 export const loanReturnPrepForm = f.store(
   (): ViewDescription =>
@@ -213,22 +214,15 @@ function PreparationReturn({
               <td />
               <th className="text-center" scope="col">
                 {
-                  schema.models.CollectionObject.strictGetLiteralField(
-                    'catalogNumber'
-                  ).label
-                }
-              </th>
-              <th className="text-center" scope="col">
-                {
-                  schema.models.Determination.strictGetRelationship('taxon')
+                  getField(schema.models.CollectionObject, 'catalogNumber')
                     .label
                 }
               </th>
               <th className="text-center" scope="col">
-                {
-                  schema.models.Preparation.strictGetRelationship('prepType')
-                    .label
-                }
+                {getField(schema.models.Determination, 'taxon').label}
+              </th>
+              <th className="text-center" scope="col">
+                {getField(schema.models.Preparation, 'prepType').label}
               </th>
               <th className="text-center" scope="col">
                 {interactionsText.unresolved()}

@@ -22,7 +22,7 @@ export type Field<T extends Readonly<unknown>> = {
 
 export type LocalityData = IR<Field<number | string>>;
 
-export const getField = (
+export const getLocalityField = (
   row: RA<string>,
   headers: RA<string>,
   localityColumns: IR<string>,

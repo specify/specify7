@@ -33,6 +33,10 @@ export const resourcesText = createDictionary({
     'en-us': 'Discipline Resources',
     'ru-ru': 'Ресурсы дисциплины',
   },
+  type: {
+    'en-us': 'Type',
+    'ru-ru': 'Тип',
+  },
   userTypes: {
     'en-us': 'User Types',
     'ru-ru': 'Типы пользователей',
@@ -124,5 +128,13 @@ export const resourcesText = createDictionary({
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
-  }
+  },
+  globalPreferences: {
+    'en-us': 'Global Preferences',
+    'ru-ru': 'Глобальные настройки',
+  },
+  remotePreferences: {
+    'en-us': 'Remote Preferences',
+    'ru-ru': 'Удаленные настройки',
+  },
 } as const);

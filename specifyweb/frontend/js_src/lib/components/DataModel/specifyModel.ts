@@ -178,16 +178,15 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
   public readonly ToOneCollection: CollectionConstructor<SCHEMA>;
 
   /** All table non-relationship fields */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public literalFields: RA<LiteralField> = [];
+  public readonly literalFields: RA<LiteralField> = [];
 
   /** All table relationships */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public relationships: RA<Relationship> = [];
+  public readonly relationships: RA<Relationship> = [];
 
   /** All table literal fields and relationships */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  public fields: RA<LiteralField | Relationship> = [];
+  public readonly fields: RA<LiteralField | Relationship> = [];
+
+  public readonly field: IR<LiteralField | Relationship> = {};
 
   public readonly localization: SchemaLocalization;
 

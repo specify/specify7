@@ -27,6 +27,7 @@ import type { Role } from './Role';
 import { UserCollections } from './UserCollections';
 import { anyResource } from './utils';
 import { userText } from '../../localization/user';
+import { getField } from '../DataModel/helpers';
 
 export function SetSuperAdmin({
   institutionPolicies,
@@ -230,7 +231,7 @@ export function LegacyPermissions({
       [admins, userResource.id]
     )
   );
-  const userType = schema.models.SpecifyUser.strictGetLiteralField('userType');
+  const userType = getField(schema.models.SpecifyUser, 'userType');
   return (
     <section className="flex flex-col gap-2">
       <h4 className="text-xl">{userText.legacyPermissions()}</h4>

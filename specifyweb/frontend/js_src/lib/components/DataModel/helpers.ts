@@ -8,11 +8,14 @@ import type {
   SerializedModel,
   SerializedResource,
 } from './helperTypes';
+import { TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { parseResourceUrl, resourceToJson } from './resource';
 import { strictGetModel } from './schema';
 import type { Tables } from './types';
 import { addMissingFields } from './addMissingFields';
+import { SpecifyModel } from './specifyModel';
+import { LiteralField, Relationship } from './specifyField';
 
 /** Like resource.toJSON(), but keys are converted to camel case */
 export const serializeResource = <SCHEMA extends AnySchema>(
@@ -112,6 +115,21 @@ export const toResource = <TABLE_NAME extends keyof Tables>(
   resource._tableName === tableName
     ? (resource as SerializedResource<Tables[TABLE_NAME]>)
     : undefined;
+
+/**
+ * The model.field has a very broad type to reduce type conflicts in components
+ * that deal with generic schemas (accept AnySchema or a SCHEMA extends AnySchema)
+ */
+export const getField = <
+  SCHEMA extends Tables[keyof Tables],
+  FIELD extends TableFields<SCHEMA>
+>(
+  model: SpecifyModel<SCHEMA>,
+  name: FIELD
+): FIELD extends keyof SCHEMA['fields'] ? LiteralField : Relationship =>
+  model.field[name] as FIELD extends keyof SCHEMA['fields']
+    ? LiteralField
+    : Relationship;
 
 export const toTreeTable = (
   resource: SpecifyResource<AnySchema>

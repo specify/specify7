@@ -11,7 +11,7 @@ import { Button } from '../Atoms/Button';
 import { iconClassName, icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { attachmentSettingsPromise } from '../Attachments/attachments';
-import { serializeResource } from '../DataModel/helpers';
+import { getField, serializeResource } from '../DataModel/helpers';
 import type {
   SerializedModel,
   SerializedResource,
@@ -188,7 +188,7 @@ function ReportRow({
         <tr>
           <th>
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {schema.models.SpReport.strictGetField('name').label}
+              {getField(schema.models.SpReport, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -196,16 +196,14 @@ function ReportRow({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {schema.models.SpReport.strictGetField('timestampCreated').label}
+              {getField(schema.models.SpReport, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
               />
             </Button.LikeLink>
           </th>
-          <th>
-            {schema.models.SpReport.strictGetField('createdByAgent').label}
-          </th>
+          <th>{getField(schema.models.SpReport, 'createdByAgent').label}</th>
           <td />
         </tr>
       </thead>
