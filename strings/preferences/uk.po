@@ -1,461 +1,565 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-05 20:50+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"preferences/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
 #: components/Header/userToolDefinitions.ts:34
 #: components/Router/Routes.tsx:326
 #: components/UserPreferences/index.tsx:61
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > User Preferences > Index
+#, fuzzy
 msgid "preferences"
-msgstr ""
+msgstr "Уподобання"
 
-#: components/Header/userToolDefinitions.ts:32
 #. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:32
+#, fuzzy
 msgid "customization"
-msgstr ""
+msgstr "Налаштування"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:66
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "userPreferences"
-msgstr ""
+msgstr "Налаштування користувача"
 
-#: components/AppResources/types.tsx:74
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:74
+#, fuzzy
 msgid "defaultUserPreferences"
-msgstr ""
+msgstr "Параметри користувача за умовчанням"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:123
 #: components/UserPreferences/Definitions.tsx:398
 #: components/UserPreferences/Definitions.tsx:576
 #: components/UserPreferences/Definitions.tsx:1060
 #: components/UserPreferences/Definitions.tsx:1244
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "general"
-msgstr ""
+msgstr "Загальний"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:126
 #: components/UserPreferences/Definitions.tsx:674
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "ui"
-msgstr ""
+msgstr "Користувацький інтерфейс"
 
-#: components/UserPreferences/Definitions.tsx:136
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:136
+#, fuzzy
 msgid "theme"
-msgstr ""
+msgstr "Тема"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:143
 #: components/UserPreferences/Definitions.tsx:165
 #: components/UserPreferences/Definitions.tsx:187
 #: components/UserPreferences/Definitions.tsx:208
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useSystemSetting"
-msgstr ""
+msgstr "Використовуйте налаштування системи"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:144
 #: components/UserPreferences/Definitions.tsx:166
 #: components/UserPreferences/Definitions.tsx:188
 #: components/UserPreferences/Definitions.tsx:209
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "inheritOsSettings"
-msgstr ""
+msgstr "Копіює значення з налаштувань вашої операційної системи"
 
-#: components/UserPreferences/Definitions.tsx:148
 #. 🟥Light mode. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:148
+#, fuzzy
 msgid "light"
-msgstr ""
+msgstr "світло"
 
-#: components/UserPreferences/Definitions.tsx:152
 #. 🟥Dark mode. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:152
+#, fuzzy
 msgid "dark"
-msgstr ""
+msgstr "Темний"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:157
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "reduceMotion"
-msgstr ""
+msgstr "Зменшити рух"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:158
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "reduceMotionDescription"
-msgstr ""
+msgstr "Вимкніть необов'язкову анімацію та переходи"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:179
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "reduceTransparency"
-msgstr ""
+msgstr "Зменшити прозорість"
 
-#: components/UserPreferences/Definitions.tsx:180
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:180
+#, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
+"Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли "
+"це можливо (наприклад, заголовки таблиць у перегляді дерева)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:201
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "contrast"
-msgstr ""
+msgstr "Контраст"
 
-#: components/UserPreferences/Definitions.tsx:213
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:213
+#, fuzzy
 msgid "increase"
-msgstr ""
+msgstr "Збільшити"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:170
 #: components/UserPreferences/Definitions.tsx:192
 #: components/UserPreferences/Definitions.tsx:217
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "reduce"
-msgstr ""
+msgstr "Зменшити"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:174
 #: components/UserPreferences/Definitions.tsx:196
 #: components/UserPreferences/Definitions.tsx:221
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "noPreference"
-msgstr ""
+msgstr "Без переваг"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:226
 #: components/UserPreferences/Definitions.tsx:677
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "fontSize"
-msgstr ""
+msgstr "Розмір шрифту"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:246
 #: components/UserPreferences/Definitions.tsx:689
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "fontFamily"
-msgstr ""
+msgstr "Сімейство шрифтів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:247
 #: components/UserPreferences/Definitions.tsx:690
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
+"Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо "
+"його немає в списку. Також підтримується розділений комами список шрифтів, у "
+"якому використовуватиметься другий шрифт, якщо перший недоступний тощо."
 
+#. Used in: Components > User Preferences > Renderers
 #: components/UserPreferences/Renderers.tsx:145
 #: components/UserPreferences/Renderers.tsx:147
 #: components/UserPreferences/Renderers.tsx:168
-#. Used in: Components > User Preferences > Renderers
+#, fuzzy
 msgid "defaultFont"
-msgstr ""
+msgstr "(типовий шрифт)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:697
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "maxFormWidth"
-msgstr ""
+msgstr "Максимальна ширина форми"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:746
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "fieldBackgrounds"
-msgstr ""
+msgstr "Польові фони"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:749
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "fieldBackground"
-msgstr ""
+msgstr "Поле фону"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:756
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "disabledFieldBackground"
-msgstr ""
+msgstr "Вимкнений фон поля"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:763
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "invalidFieldBackground"
-msgstr ""
+msgstr "Недійсний фон поля"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:770
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "requiredFieldBackground"
-msgstr ""
+msgstr "Обов'язковий фон поля"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:777
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "darkFieldBackground"
-msgstr ""
+msgstr "Фон поля (темна тема)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:784
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "darkDisabledFieldBackground"
-msgstr ""
+msgstr "Вимкнений фон поля (темна тема)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:791
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr ""
+msgstr "Недійсний фон поля (темна тема)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:798
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "darkRequiredFieldBackground"
-msgstr ""
+msgstr "Обов’язковий фон поля (темна тема)"
 
-#: components/UserPreferences/Definitions.tsx:329
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:329
+#, fuzzy
 msgid "dialogs"
-msgstr ""
+msgstr "Діалоги"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:256
 #: components/UserPreferences/Definitions.tsx:807
 #: components/UserPreferences/Definitions.tsx:1296
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "appearance"
-msgstr ""
+msgstr "Зовнішній вигляд"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:340
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "translucentDialog"
-msgstr ""
+msgstr "Напівпрозорі діалоги"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:341
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "translucentDialogDescription"
-msgstr ""
+msgstr "Чи мають діалоги прозорий фон"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1063
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "alwaysPrompt"
-msgstr ""
+msgstr "Завжди підкажуть вибрати колекцію"
 
-#: components/UserPreferences/Definitions.tsx:1084
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:1084
+#, fuzzy
 msgid "treeEditor"
-msgstr ""
+msgstr "Редактор дерева"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1147
 #: components/UserPreferences/Definitions.tsx:1166
 #: components/UserPreferences/Definitions.tsx:1185
 #: components/UserPreferences/Definitions.tsx:1204
 #: components/UserPreferences/Definitions.tsx:1223
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "treeAccentColor"
-msgstr ""
+msgstr "Колір акценту дерева"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1154
 #: components/UserPreferences/Definitions.tsx:1173
 #: components/UserPreferences/Definitions.tsx:1192
 #: components/UserPreferences/Definitions.tsx:1211
 #: components/UserPreferences/Definitions.tsx:1230
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "synonymColor"
-msgstr ""
+msgstr "Синонім кольору"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1454
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showNewDataSetWarning"
-msgstr ""
+msgstr "Показати попередження про новий набір даних"
 
-#: components/UserPreferences/Definitions.tsx:1455
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:1455
+#, fuzzy
 msgid "showNewDataSetWarningDescription"
 msgstr ""
+"Показувати інформаційне повідомлення під час створення нового набору даних"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:426
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "header"
-msgstr ""
+msgstr "Меню верхнього рівня"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:429
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "menu"
-msgstr ""
+msgstr "Меню"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:432
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showDataEntry"
-msgstr ""
+msgstr "Показати введення даних"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:439
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showInteractions"
-msgstr ""
+msgstr "Показати взаємодії"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:446
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showTrees"
-msgstr ""
+msgstr "Показати дерева"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:453
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showRecordSets"
-msgstr ""
+msgstr "Показати набори записів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:460
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showQueries"
-msgstr ""
+msgstr "Показати запити"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:467
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showReports"
-msgstr ""
+msgstr "Показати звіти"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:474
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showAttachments"
-msgstr ""
+msgstr "Показати вкладення"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:481
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showWorkBench"
-msgstr ""
+msgstr "Показати WorkBench"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:317
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "application"
-msgstr ""
+msgstr "застосування"
 
-#: components/UserPreferences/Definitions.tsx:320
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:320
+#, fuzzy
 msgid "allowDismissingErrors"
-msgstr ""
+msgstr "Дозволити закривати повідомлення про помилки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:332
 #: components/UserPreferences/Definitions.tsx:611
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "updatePageTitle"
-msgstr ""
+msgstr "Оновити назву сторінки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:333
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "updatePageTitleDescription"
-msgstr ""
+msgstr "Чи оновлювати назву сторінки відповідно до заголовка діалогового вікна"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:612
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "updatePageTitleFormDescription"
-msgstr ""
+msgstr "Чи оновлювати назву сторінки відповідно до поточного запису"
 
-#: components/UserPreferences/Definitions.tsx:893
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:893
+#, fuzzy
 msgid "queryComboBox"
-msgstr ""
+msgstr "Поле зі списком запитів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:848
 #: components/UserPreferences/Definitions.tsx:896
 #: components/UserPreferences/Definitions.tsx:1122
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "searchAlgorithm"
-msgstr ""
+msgstr "Алгоритм пошуку"
 
-#: components/UserPreferences/Definitions.tsx:915
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:915
+#, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr ""
+msgstr "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:855
 #: components/UserPreferences/Definitions.tsx:903
 #: components/UserPreferences/Definitions.tsx:922
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "startsWithInsensitive"
-msgstr ""
+msgstr "Починається з (без урахування регістру)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:856
 #: components/UserPreferences/Definitions.tsx:904
 #: components/UserPreferences/Definitions.tsx:923
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "startsWithDescription"
-msgstr ""
+msgstr "Пошук значень, які починаються з заданого рядка запиту"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:860
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "startsWithCaseSensitive"
-msgstr ""
+msgstr "Починається з (з урахуванням регістру)"
 
-#: components/UserPreferences/Definitions.tsx:862
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:862
+#, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr ""
+msgstr "Пошук значень, які починаються з заданого рядка запиту."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:866
 #: components/UserPreferences/Definitions.tsx:908
 #: components/UserPreferences/Definitions.tsx:927
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "containsInsensitive"
-msgstr ""
+msgstr "Містить (незалежно від регістру)"
 
-#: components/UserPreferences/Definitions.tsx:871
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:871
+#, fuzzy
 msgid "containsCaseSensitive"
-msgstr ""
+msgstr "Містить (з урахуванням регістру)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:867
 #: components/UserPreferences/Definitions.tsx:910
 #: components/UserPreferences/Definitions.tsx:929
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "containsDescription"
 msgstr ""
+"Пошук значень, які містять заданий рядок запиту (незалежно від регістру)."
 
-#: components/UserPreferences/Definitions.tsx:872
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:872
+#, fuzzy
 msgid "containsCaseSensitiveDescription"
 msgstr ""
+"Пошук значень, які містять заданий рядок запиту (з урахуванням регістру)."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:910
 #: components/UserPreferences/Definitions.tsx:929
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "containsSecondDescription"
 msgstr ""
+"Можна використовувати _ для відповідності будь-якому одному символу або % "
+"для відповідності будь-якій кількості символів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:877
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "highlightMatch"
-msgstr ""
+msgstr "Виділіть відповідний підрядок"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:592
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "languageDescription"
-msgstr ""
+msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:355
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showDialogIcon"
-msgstr ""
+msgstr "Показати значок у заголовку"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:238
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "scaleInterface"
-msgstr ""
+msgstr "Інтерфейс масштабування"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:239
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "scaleInterfaceDescription"
-msgstr ""
+msgstr "Масштабуйте інтерфейс відповідно до розміру шрифту"
 
-#: components/UserPreferences/Definitions.tsx:395
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:395
+#, fuzzy
 msgid "welcomePage"
-msgstr ""
+msgstr "Домашня сторінка"
 
+#. Used in: Components > User Preferences > Definitions ⬤ Components > User Preferences > Renderers
 #: components/UserPreferences/Definitions.tsx:401
 #: components/UserPreferences/Renderers.tsx:182
-#. Used in: Components > User Preferences > Definitions ⬤ Components > User Preferences > Renderers
+#, fuzzy
 msgid "content"
-msgstr ""
+msgstr "Зміст"
 
+#. Used in: Components > User Preferences > Renderers
 #: components/UserPreferences/Renderers.tsx:189
-#. Used in: Components > User Preferences > Renderers
+#, fuzzy
 msgid "defaultImage"
-msgstr ""
+msgstr "Вкажіть логотип"
 
+#. Used in: Components > User Preferences > Renderers
 #: components/UserPreferences/Renderers.tsx:197
-#. Used in: Components > User Preferences > Renderers
+#, fuzzy
 msgid "customImage"
-msgstr ""
+msgstr "Спеціальне зображення"
 
+#. Used in: Components > User Preferences > Renderers
 #: components/UserPreferences/Renderers.tsx:198
-#. Used in: Components > User Preferences > Renderers
+#, fuzzy
 msgid "customImageDescription"
-msgstr ""
+msgstr "URL-адреса зображення, яке відображатиметься на домашній сторінці:"
 
+#. Used in: Components > User Preferences > Renderers
 #: components/UserPreferences/Renderers.tsx:204
-#. Used in: Components > User Preferences > Renderers
+#, fuzzy
 msgid "embeddedWebpage"
-msgstr ""
+msgstr "Вбудована веб-сторінка"
 
-#: components/UserPreferences/Renderers.tsx:205
 #. Used in: Components > User Preferences > Renderers
+#: components/UserPreferences/Renderers.tsx:205
+#, fuzzy
 msgid "embeddedWebpageDescription"
-msgstr ""
+msgstr "URL-адреса сторінки, яка буде вбудована на домашній сторінці:"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:378
 #: components/UserPreferences/Definitions.tsx:601
 #: components/UserPreferences/Definitions.tsx:1087
@@ -463,413 +567,504 @@ msgstr ""
 #: components/UserPreferences/Definitions.tsx:1313
 #: components/UserPreferences/Definitions.tsx:1492
 #: components/UserPreferences/Definitions.tsx:1528
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "behavior"
-msgstr ""
+msgstr "Поведінка"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1247
 #: components/UserPreferences/Definitions.tsx:1462
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "noRestrictionsMode"
-msgstr ""
+msgstr "Режим без обмежень"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1465
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "noRestrictionsModeWbDescription"
-msgstr ""
+msgstr "Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці."
 
-#: components/UserPreferences/Definitions.tsx:1250
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:1250
+#, fuzzy
 msgid "noRestrictionsModeQueryDescription"
-msgstr ""
+msgstr "Дозволяє запитувати дані з будь-якого поля будь-якої таблиці."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1253
 #: components/UserPreferences/Definitions.tsx:1468
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "noRestrictionsModeWarning"
 msgstr ""
+"ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або "
+"пошкодження бази даних. Переконайтеся, що ви знаєте, що робите"
 
-#: components/UserPreferences/index.tsx:204
 #. Used in: Components > User Preferences > Index
+#: components/UserPreferences/index.tsx:204
+#, fuzzy
 msgid "adminsOnlyPreference"
-msgstr ""
+msgstr "Ви не маєте дозволу змінювати цей параметр"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1282
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "stickyScrolling"
-msgstr ""
+msgstr "Липка смуга прокрутки"
 
-#: components/UserPreferences/Definitions.tsx:810
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:810
+#, fuzzy
 msgid "foreground"
-msgstr ""
+msgstr "Передній план"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:259
 #: components/UserPreferences/Definitions.tsx:817
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "background"
-msgstr ""
+msgstr "Фон"
 
-#: components/UserPreferences/Definitions.tsx:824
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:824
+#, fuzzy
 msgid "darkForeground"
-msgstr ""
+msgstr "Передній план (темна тема)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:266
 #: components/UserPreferences/Definitions.tsx:831
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "darkBackground"
-msgstr ""
+msgstr "Фон (темна тема)"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:273
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "accentColor1"
-msgstr ""
+msgstr "Акцентний колір 1"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:280
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "accentColor2"
-msgstr ""
+msgstr "Акцентний колір 2"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:287
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "accentColor3"
-msgstr ""
+msgstr "Акцентний колір 3"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:294
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "accentColor4"
-msgstr ""
+msgstr "Акцентний колір 4"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:301
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "accentColor5"
-msgstr ""
+msgstr "Акцентний колір 5"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1330
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "spreadsheet"
-msgstr ""
+msgstr "Електронна таблиця"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1333
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "minSpareRows"
-msgstr ""
+msgstr "Кількість порожніх рядків у кінці"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1344
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoWrapCols"
-msgstr ""
+msgstr "Перейдіть на іншу сторону, коли досягнете краю колонки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1351
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoWrapRows"
-msgstr ""
+msgstr "Перейдіть на іншу сторону, коли досягнете крайнього ряду"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1392
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "enterBeginsEditing"
-msgstr ""
+msgstr "Клавіша Enter починає редагування клітинки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1358
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "tabMoveDirection"
-msgstr ""
+msgstr "Напрямок руху при натисканні клавіші <key>Tab</key>."
 
-#: components/UserPreferences/Definitions.tsx:1359
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:1359
+#, fuzzy
 msgid "tabMoveDirectionDescription"
 msgstr ""
+"Ви можете рухатися в протилежному напрямку, натискаючи "
+"<key>Shift</key>+<key>Tab</key>"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1366
 #: components/UserPreferences/Definitions.tsx:1383
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "column"
-msgstr ""
+msgstr "Колонка"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1370
 #: components/UserPreferences/Definitions.tsx:1387
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "row"
-msgstr ""
+msgstr "рядок"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1375
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "enterMoveDirection"
-msgstr ""
+msgstr "Напрямок руху, коли натиснуто клавішу <key>Enter</key>."
 
-#: components/UserPreferences/Definitions.tsx:1376
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:1376
+#, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
+"Ви можете рухатися в протилежному напрямку, натиснувши "
+"<key>Shift</key>+<key>Enter</key>"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1401
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "filterPickLists"
-msgstr ""
+msgstr "Фільтр вибору елементів списку"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1421
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "exportFileDelimiter"
-msgstr ""
+msgstr "Роздільник файлу експорту"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1412
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "caseSensitive"
-msgstr ""
+msgstr "Чутливий до регістру"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1416
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "caseInsensitive"
-msgstr ""
+msgstr "Регістр не враховується"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1263
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showNoReadTables"
-msgstr ""
+msgstr "Показувати таблиці без доступу «Читання»."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1478
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "showNoAccessTables"
-msgstr ""
+msgstr "Показувати таблиці без доступу «Створити»."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:604
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "textAreaAutoGrow"
-msgstr ""
+msgstr "Текстові поля збільшуються автоматично"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1316
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "clearQueryFilters"
-msgstr ""
+msgstr "Скинути фільтри запитів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:884
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr ""
+msgstr "Дозвольте автозаповненню розширюватися настільки, наскільки це потрібно"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:619
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "tableNameInTitle"
-msgstr ""
+msgstr "Включіть назву таблиці в заголовок сторінки браузера"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1531
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "doubleClickZoom"
-msgstr ""
+msgstr "Двічі клацніть, щоб збільшити"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1538
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "closePopupOnClick"
-msgstr ""
+msgstr "Закрити спливаюче вікно при зовнішньому клацанні"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1545
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "animateTransitions"
-msgstr ""
+msgstr "Анімація переходів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1552
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "panInertia"
-msgstr ""
+msgstr "Інерція панорами"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1559
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "mouseDrags"
-msgstr ""
+msgstr "Мишка тягне"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1566
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "scrollWheelZoom"
-msgstr ""
+msgstr "Масштаб колеса прокрутки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:658
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "flexibleColumnWidth"
-msgstr ""
+msgstr "Гнучка ширина колонки"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:665
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr ""
+msgstr "Гнучка ширина стовпця сітки вкладеного перегляду"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:362
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "closeOnEsc"
-msgstr ""
+msgstr "Закрийте після натискання клавіші <key>ESC</key>."
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:369
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "closeOnOutsideClick"
-msgstr ""
+msgstr "Закрийте зовнішнім клацанням"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:716
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "specifyNetworkBadge"
-msgstr ""
+msgstr "Укажіть позначку мережі"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:723
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr ""
+msgstr "Використовуйте доступний повний засіб вибору дати"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:730
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr ""
+msgstr "Використовуйте доступний засіб вибору місяця"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:737
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "rightAlignNumberFields"
-msgstr ""
+msgstr "Вирівнювання по правому краю числових полів"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:308
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "roundedCorners"
-msgstr ""
+msgstr "Заокруглені кути"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:709
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "limitMaxFieldWidth"
-msgstr ""
+msgstr "Обмеження максимальної ширини поля"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1299
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "condenseQueryResults"
-msgstr ""
+msgstr "Згорнути результати запиту"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:348
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "blurContentBehindDialog"
-msgstr ""
+msgstr "Розмити вміст за діалоговим вікном"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1073
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "collectionSortOrderDescription"
-msgstr ""
+msgstr "Це визначає візуальний порядок колекцій"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:939
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr ""
+msgstr "Запис відкривається за умовчанням"
 
-#: components/UserPreferences/Definitions.tsx:381
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:381
+#, fuzzy
 msgid "altClickToSupressNewTab"
 msgstr ""
+"<key>{altKeyName:string}</key>+<key>Натисніть </key>, щоб закрити нову "
+"вкладку"
 
-#: components/UserPreferences/Definitions.tsx:382
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:382
+#, fuzzy
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
+"<key>{altKeyName:string}</key>+<key>Натисніть </key> посилання, яке зазвичай "
+"відкривається в новій вкладці, щоб відкрити його в поточній вкладці"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:646
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "makeFormDialogsModal"
-msgstr ""
+msgstr "Зробіть діалогові вікна форми сірими"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1090
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoScrollTree"
-msgstr ""
+msgstr "Автоматичне прокручування дерева до виділеного вузла"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1495
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "lineWrap"
-msgstr ""
+msgstr "Обтікання лініями"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1502
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "indentSize"
-msgstr ""
+msgstr "Розмір відступу"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1514
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "indentWithTab"
-msgstr ""
+msgstr "Відступ із <key>Tab</key>"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:626
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "formHeaderFormat"
-msgstr ""
+msgstr "Формат заголовка форми"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:633
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "iconAndTableName"
-msgstr ""
+msgstr "Значок і назва таблиці"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:641
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "tableIcon"
-msgstr ""
+msgstr "Значок таблиці"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:961
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "maxHeight"
-msgstr ""
+msgstr "Максимальна висота"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:840
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "autoComplete"
-msgstr ""
+msgstr "Автоматичне завершення"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1097
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "searchCaseSensitive"
-msgstr ""
+msgstr "Пошук з урахуванням регістру"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:1104
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "searchField"
-msgstr ""
+msgstr "Поле пошуку"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:495
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "createInteractions"
-msgstr ""
+msgstr "Створюйте взаємодії"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:498
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useSpaceAsDelimiter"
-msgstr ""
+msgstr "Використовуйте пробіл як роздільник"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:519
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useCommaAsDelimiter"
-msgstr ""
+msgstr "Використовуйте кому як роздільник"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:540
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useNewLineAsDelimiter"
-msgstr ""
+msgstr "Використовуйте новий рядок як роздільник"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:561
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "useCustomDelimiters"
-msgstr ""
+msgstr "Використовуйте спеціальні роздільники"
 
-#: components/UserPreferences/Definitions.tsx:562
 #. Used in: Components > User Preferences > Definitions
+#: components/UserPreferences/Definitions.tsx:562
+#, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
+"Список роздільників, які слід використовувати на додаток до визначених вище. "
+"Поставте один роздільник на рядок"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:506
 #: components/UserPreferences/Definitions.tsx:527
 #: components/UserPreferences/Definitions.tsx:548
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "detectAutomaticallyDescription"
-msgstr ""
+msgstr "Визначати автоматично на основі формату номера каталогу"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:510
 #: components/UserPreferences/Definitions.tsx:531
 #: components/UserPreferences/Definitions.tsx:552
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "use"
-msgstr ""
+msgstr "використання"
 
+#. Used in: Components > User Preferences > Definitions
 #: components/UserPreferences/Definitions.tsx:514
 #: components/UserPreferences/Definitions.tsx:535
 #: components/UserPreferences/Definitions.tsx:556
-#. Used in: Components > User Preferences > Definitions
+#, fuzzy
 msgid "dontUse"
-msgstr ""
+msgstr "Не використовуйте"
