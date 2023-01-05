@@ -3,11 +3,6 @@
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
-    <link rel="mask-icon" href="/static/img/safari-pinned-tab.svg" color="#F79244">
-    <link rel="shortcut icon" href="/static/img/favicon.ico">
-    <link rel="icon" href="/static/img/favicon-512x512.png" sizes="any">
-    <link rel="icon" href="/static/img/short_logo.svg" type="image/svg+xml">
     <meta charset="utf-8" />
     <script id="entrypoint-name">"main"</script>
     {% if use_raven %}
@@ -17,6 +12,11 @@
     </script>
     {% endif %}
     <script src="{% script_src 'main.js' %}"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png">
+    <link rel="mask-icon" href="/static/img/safari-pinned-tab.svg" color="#F79244">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <link rel="icon" href="/static/img/favicon-512x512.png" sizes="any">
+    <link rel="icon" href="/static/img/short_logo.svg" type="image/svg+xml">
   </head>
 
   <body>
