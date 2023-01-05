@@ -87,6 +87,10 @@ export const fetchView = async (
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
             : (JSON.parse(data) as ViewDefinition);
+        if (views[name] === undefined)
+          console.error(
+            `Unable to find a view definition for the "${name}" view`
+          );
         return views[name];
       });
 
@@ -362,7 +366,6 @@ const getColumnDefinition = (
 
 export const exportsForTests = {
   views,
-  fetchView,
   parseViewDefinitions,
   resolveAltView,
   parseFormTableDefinition,
