@@ -191,7 +191,9 @@ const processCellType: {
         }
       );
       return { type: 'Blank' };
-    } else if (fields.at(-1)?.isRelationship === false) {
+    }
+    const relationship = fields.at(-1);
+    if (relationship?.isRelationship === false) {
       console.error('SubView can only be used to display a relationship');
       return { type: 'Blank' };
     } else if (fields.at(-1)?.type === 'many-to-many') {
@@ -205,7 +207,9 @@ const processCellType: {
 
     const rawSortField = getProperty('sortField');
     const parsedSort = f.maybe(rawSortField, toLargeSortConfig);
-    const sortFields = model.getFields(parsedSort?.fieldNames.join('.') ?? '');
+    const sortFields = relationship!.relatedModel.getFields(
+      parsedSort?.fieldNames.join('.') ?? ''
+    );
     const formType = getParsedAttribute(cell, 'defaultType') ?? '';
     return {
       type: 'SubView',

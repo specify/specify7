@@ -362,7 +362,7 @@ describe('parseFormCell', () => {
       parseFormCell(
         schema.models.CollectionObject,
         strictParseXml(
-          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-yesNO1 ;btn=true  ; icon=test" />'
+          '<cell type="subView" name="determinations" defaultType="table" viewName="testView " initialize="sortField=-iscurrent ;btn=true  ; icon=test" />'
         )
       )
     ).toEqual(
@@ -373,7 +373,7 @@ describe('parseFormCell', () => {
         viewName: 'testView',
         isButton: true,
         icon: 'test',
-        sortField: { fieldNames: ['yesNo1'], direction: 'desc' },
+        sortField: { fieldNames: ['isCurrent'], direction: 'desc' },
       })
     ));
 
