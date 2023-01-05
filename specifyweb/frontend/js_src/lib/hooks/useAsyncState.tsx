@@ -1,4 +1,4 @@
-import { GetOrSet } from '../utils/types';
+import { GetOrSet, IR } from '../utils/types';
 import React from 'react';
 import { LoadingContext } from '../components/Core/Contexts';
 import { crash } from '../components/Errors/Crash';
@@ -55,6 +55,48 @@ export function useAsyncState<T>(
     let destructorCalled = false;
     return (): void => {
       destructorCalled = true;
+    };
+  }, [callback, loading, loadingScreen]);
+
+  return [state, setState];
+}
+
+/**
+ * Like useAsyncState, but cooler
+ *
+ */
+export function useMultipleAsyncState<T>(
+  callback: IR<() => Promise<T>> | undefined,
+  loadingScreen: boolean
+): GetOrSet<T | undefined> {
+  const [state, setState] = React.useState<T | undefined>(undefined);
+  const loading = React.useContext(LoadingContext);
+
+  React.useLayoutEffect(() => {
+    setState(undefined);
+    const wrapped = loadingScreen
+      ? loading
+      : (promise: Promise<unknown>): void => void promise.catch(crash);
+    if (callback === undefined) return;
+    const callbackEntries = Object.entries(callback);
+    const wrappedPromise = Promise.all(
+      callbackEntries.map(([key, promiseGenerator]) =>
+        promiseGenerator().then((data) => {
+          if (destructorCalled) return undefined;
+          // @ts-ignore
+          setState((oldState) => ({
+            ...oldState,
+            [key]: data,
+          }));
+          return undefined;
+        })
+      )
+    ).then(() => {});
+    wrapped(wrappedPromise);
+    let destructorCalled = false;
+    return (): void => {
+      destructorCalled = true;
+      console.log('destructor was called');
     };
   }, [callback, loading, loadingScreen]);
 
