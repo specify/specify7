@@ -1,52 +1,36 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-04 23:17+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"attachments/fr/>\n"
-"Language: fr\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 #: components/Attachments/index.tsx:149
 #: components/Header/menuItemDefinitions.ts:109
 #: components/Router/Routes.tsx:164
-#, fuzzy
+#. Used in: Components > Attachments > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Routes
 msgid "attachments"
-msgstr "Pièces jointes"
+msgstr ""
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:209
-#, fuzzy
+#. Used in: Components > Attachments > Index
 msgid "scale"
-msgstr "Échelle"
+msgstr ""
 
-#. Used in: Components > Attachments > Plugin
 #: components/Attachments/Plugin.tsx:119
-#, fuzzy
-msgid "attachmentServerUnavailable"
-msgstr "Serveur de pièces jointes indisponible."
-
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
-#: components/Attachments/index.tsx:198
-#: components/FormMeta/SubViewMeta.tsx:40
-#: components/UserPreferences/Definitions.tsx:1071
-#, fuzzy
-msgid "orderBy"
-msgstr "Commandé par"
-
 #. Used in: Components > Attachments > Plugin
-#: components/Attachments/Plugin.tsx:143
-#, fuzzy
-msgid "uploadingInline"
-msgstr "Téléchargement…"
+msgid "attachmentServerUnavailable"
+msgstr ""
 
-#. Used in: Components > Attachments > Gallery
+#: components/Attachments/index.tsx:198
+#: components/FormMeta/SubViewMeta.tsx:41
+#: components/UserPreferences/Definitions.tsx:1072
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > User Preferences > Definitions
+msgid "orderBy"
+msgstr ""
+
+#: components/Attachments/Plugin.tsx:143
+#. Used in: Components > Attachments > Plugin
+msgid "uploadingInline"
+msgstr ""
+
 #: components/Attachments/Gallery.tsx:77
-#, fuzzy
+#. Used in: Components > Attachments > Gallery
 msgid "noAttachments"
-msgstr "Il n'y a pas de pièces jointes"
+msgstr ""

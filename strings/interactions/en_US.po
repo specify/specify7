@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:66
 #: components/Interactions/InteractionsDialog.tsx:229
 #: components/Router/OverlayRoutes.tsx:60
-#: components/UserPreferences/Definitions.tsx:491
+#: components/UserPreferences/Definitions.tsx:492
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions
 msgid "interactions"
 msgstr "Interactions"
@@ -71,34 +71,34 @@ msgstr "Preparations"
 msgid "preparationsCanNotBeReturned"
 msgstr "Preparations cannot be returned in this context."
 
-#: components/Interactions/PrepReturnDialog.tsx:72
+#: components/Interactions/PrepReturnDialog.tsx:73
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "noUnresolvedPreparations"
 msgstr "There are no unresolved preparations for this loan."
 
-#: components/Interactions/PrepReturnDialog.tsx:234
+#: components/Interactions/PrepReturnDialog.tsx:228
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "unresolved"
 msgstr "Unresolved"
 
-#: components/Interactions/PrepReturnDialog.tsx:237
-#: components/QueryBuilder/LoanReturn.tsx:162
+#: components/Interactions/PrepReturnDialog.tsx:231
+#: components/QueryBuilder/LoanReturn.tsx:163
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "return"
 msgstr "Return"
 
-#: components/Interactions/PrepReturnDialog.tsx:240
+#: components/Interactions/PrepReturnDialog.tsx:234
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "resolve"
 msgstr "Resolve"
 
-#: components/Interactions/PrepReturnDialog.tsx:116
+#: components/Interactions/PrepReturnDialog.tsx:117
 #. Used in: Components > Interactions > Prep Return Dialog
 msgid "returnAllPreparations"
 msgstr "Return all preparations"
 
-#: components/Interactions/PrepReturnDialog.tsx:148
-#: components/QueryBuilder/LoanReturn.tsx:160
+#: components/Interactions/PrepReturnDialog.tsx:149
+#: components/QueryBuilder/LoanReturn.tsx:161
 #. Used in: Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnSelectedPreparations"
 msgstr "Return selected preparations"
@@ -111,34 +111,34 @@ msgstr "Select all available preparations"
 #: components/FormMeta/CarryForward.tsx:228
 #: components/Interactions/PrepDialog.tsx:105
 #: components/Interactions/PrepDialog.tsx:188
-#: components/Interactions/PrepDialogRow.tsx:60
-#: components/Interactions/PrepDialogRow.tsx:62
-#: components/Interactions/PrepReturnDialog.tsx:128
-#: components/Interactions/PrepReturnRow.tsx:83
-#: components/Interactions/PrepReturnRow.tsx:85
+#: components/Interactions/PrepDialogRow.tsx:61
+#: components/Interactions/PrepDialogRow.tsx:63
+#: components/Interactions/PrepReturnDialog.tsx:129
+#: components/Interactions/PrepReturnRow.tsx:84
+#: components/Interactions/PrepReturnRow.tsx:86
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Interactions > Prep Return Row
 msgid "selectAll"
 msgstr "Select All"
 
-#: components/Interactions/PrepDialogRow.tsx:79
-#: components/Interactions/PrepDialogRow.tsx:82
+#: components/Interactions/PrepDialogRow.tsx:78
+#: components/Interactions/PrepDialogRow.tsx:81
 #. Used in: Components > Interactions > Prep Dialog Row
 msgid "selectedAmount"
 msgstr "Selected Amount"
 
-#: components/Interactions/PrepReturnRow.tsx:104
-#: components/Interactions/PrepReturnRow.tsx:108
+#: components/Interactions/PrepReturnRow.tsx:105
+#: components/Interactions/PrepReturnRow.tsx:109
 #. Used in: Components > Interactions > Prep Return Row
 msgid "returnedAmount"
 msgstr "Returned Amount"
 
-#: components/Interactions/PrepReturnRow.tsx:124
-#: components/Interactions/PrepReturnRow.tsx:128
+#: components/Interactions/PrepReturnRow.tsx:125
+#: components/Interactions/PrepReturnRow.tsx:129
 #. Used in: Components > Interactions > Prep Return Row
 msgid "resolvedAmount"
 msgstr "Resolved Amount"
 
-#: components/Interactions/PrepDialogRow.tsx:161
+#: components/Interactions/PrepDialogRow.tsx:160
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource: string}"
@@ -163,7 +163,7 @@ msgstr "Gifts"
 msgid "exchanges"
 msgstr "Exchanges"
 
-#: components/Interactions/PrepReturnRow.tsx:40
+#: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
 msgid "unCataloged"
 msgstr "uncataloged"
@@ -180,24 +180,24 @@ msgstr "{count:number|formatted} preparations have been returned and saved."
 
 #: components/FormMeta/CarryForward.tsx:249
 #: components/Interactions/PrepDialog.tsx:112
-#: components/Interactions/PrepReturnDialog.tsx:144
+#: components/Interactions/PrepReturnDialog.tsx:145
 #: components/QueryBuilder/Results.tsx:235
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Return Dialog ⬤ Components > Query Builder > Results
 msgid "deselectAll"
 msgstr "Deselect all"
 
-#: components/Interactions/PrepDialog.tsx:210
+#: components/Interactions/PrepDialog.tsx:203
 #. Used in: Components > Interactions > Prep Dialog
 msgid "available"
 msgstr "Available"
 
-#: components/Interactions/PrepDialog.tsx:211
+#: components/Interactions/PrepDialog.tsx:204
 #. Used in: Components > Interactions > Prep Dialog
 msgid "unavailable"
 msgstr "Unavailable"
 
 #: components/Interactions/InteractionsDialog.tsx:92
-#: components/QueryBuilder/LoanReturn.tsx:148
+#: components/QueryBuilder/LoanReturn.tsx:149
 #. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 msgid "returnLoan"
 msgstr "Return Loan"

@@ -1,10 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/SchemaConfig/Table.tsx:45
+#: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
-#: components/Toolbar/Schema.tsx:386
+#: components/Toolbar/Schema.tsx:383
 #. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
 msgid "table"
 msgstr "Table"
@@ -16,7 +16,7 @@ msgstr "Table"
 msgid "tables"
 msgstr "Tables"
 
-#: components/UserPreferences/Definitions.tsx:636
+#: components/UserPreferences/Definitions.tsx:637
 #: components/WbPlanView/MapperComponents.tsx:436
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -27,7 +27,7 @@ msgstr "Table Name"
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:192
-#: components/UserPreferences/Definitions.tsx:587
+#: components/UserPreferences/Definitions.tsx:588
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "schemaConfig"
 msgstr "Schema Config"
@@ -43,7 +43,7 @@ msgstr "Schema changes have not been saved"
 msgid "changeBaseTable"
 msgstr "Change Base Table"
 
-#: components/SchemaConfig/Field.tsx:42
+#: components/SchemaConfig/Field.tsx:44
 #. Used in: Components > Schema Config > Field
 msgid "field"
 msgstr "Field"
@@ -60,43 +60,43 @@ msgstr "Fields"
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
-#: components/Toolbar/Schema.tsx:282
+#: components/Toolbar/Schema.tsx:281
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 msgid "relationships"
 msgstr "Relationships"
 
-#: components/SchemaConfig/Field.tsx:47
-#: components/SchemaConfig/Table.tsx:50
+#: components/SchemaConfig/Field.tsx:49
+#: components/SchemaConfig/Table.tsx:53
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 msgid "caption"
 msgstr "Caption"
 
-#: components/SchemaConfig/Field.tsx:57
-#: components/SchemaConfig/Table.tsx:60
-#: components/Security/Role.tsx:137
-#: components/Toolbar/Schema.tsx:171
+#: components/SchemaConfig/Field.tsx:59
+#: components/SchemaConfig/Table.tsx:63
+#: components/Security/Role.tsx:138
+#: components/Toolbar/Schema.tsx:172
 #: components/Toolbar/Schema.tsx:237
-#: components/Toolbar/Schema.tsx:393
+#: components/Toolbar/Schema.tsx:390
 #. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
 msgid "description"
 msgstr "Description"
 
-#: components/SchemaConfig/Table.tsx:107
+#: components/SchemaConfig/Table.tsx:110
 #. Used in: Components > Schema Config > Table
 msgid "hideTable"
 msgstr "Hide Table"
 
-#: components/SchemaConfig/Field.tsx:86
+#: components/SchemaConfig/Field.tsx:88
 #. Used in: Components > Schema Config > Field
 msgid "hideField"
 msgstr "Hide Field"
 
-#: components/SchemaConfig/Table.tsx:70
+#: components/SchemaConfig/Table.tsx:73
 #. Used in: Components > Schema Config > Table
 msgid "tableFormat"
 msgstr "Table Format"
 
-#: components/SchemaConfig/Table.tsx:84
+#: components/SchemaConfig/Table.tsx:87
 #. Used in: Components > Schema Config > Table
 msgid "tableAggregation"
 msgstr "Table Aggregation"
@@ -121,37 +121,37 @@ msgstr "Many-to-one"
 msgid "manyToMany"
 msgstr "many-to-many"
 
-#: components/SchemaConfig/Field.tsx:67
+#: components/SchemaConfig/Field.tsx:69
 #: components/Toolbar/Schema.tsx:178
-#: components/Toolbar/Schema.tsx:399
+#: components/Toolbar/Schema.tsx:396
 #. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
 msgid "fieldLength"
 msgstr "Length"
 
 #: components/FormMeta/index.tsx:64
 #: components/Toolbar/Schema.tsx:174
-#: components/Toolbar/Schema.tsx:240
-#: components/Toolbar/Schema.tsx:395
+#: components/Toolbar/Schema.tsx:239
+#: components/Toolbar/Schema.tsx:392
 #. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
 msgid "readOnly"
 msgstr "Read-only"
 
-#: components/SchemaConfig/Format.tsx:52
+#: components/SchemaConfig/Format.tsx:53
 #. Used in: Components > Schema Config > Format
 msgid "fieldFormat"
 msgstr "Field Format"
 
-#: components/SchemaConfig/Format.tsx:72
+#: components/SchemaConfig/Format.tsx:73
 #. Used in: Components > Schema Config > Format
 msgid "formatted"
 msgstr "Formatted"
 
-#: components/SchemaConfig/Format.tsx:95
+#: components/SchemaConfig/Format.tsx:97
 #. Used in: Components > Schema Config > Format
 msgid "webLink"
 msgstr "Web Link"
 
-#: components/SchemaConfig/Format.tsx:104
+#: components/SchemaConfig/Format.tsx:106
 #. Used in: Components > Schema Config > Format
 msgid "userDefined"
 msgstr "User Defined"
@@ -163,62 +163,62 @@ msgstr "User Defined"
 msgid "addLanguage"
 msgstr "Add Language"
 
-#: components/Toolbar/Schema.tsx:170
+#: components/Toolbar/Schema.tsx:171
 #: components/Toolbar/Schema.tsx:236
-#: components/Toolbar/Schema.tsx:301
-#: components/Toolbar/Schema.tsx:387
-#: components/Toolbar/Schema.tsx:392
+#: components/Toolbar/Schema.tsx:300
+#: components/Toolbar/Schema.tsx:384
+#: components/Toolbar/Schema.tsx:389
 #. Used in: Components > Toolbar > Schema
 msgid "fieldLabel"
 msgstr "Label"
 
 #: components/Toolbar/Schema.tsx:179
-#: components/Toolbar/Schema.tsx:244
-#: components/Toolbar/Schema.tsx:400
+#: components/Toolbar/Schema.tsx:243
+#: components/Toolbar/Schema.tsx:397
 #. Used in: Components > Toolbar > Schema
 msgid "databaseColumn"
 msgstr "Database Column"
 
-#: components/Toolbar/Schema.tsx:245
-#: components/Toolbar/Schema.tsx:401
+#: components/Toolbar/Schema.tsx:244
+#: components/Toolbar/Schema.tsx:398
 #. Used in: Components > Toolbar > Schema
 msgid "relatedModel"
 msgstr "Related Model"
 
-#: components/Toolbar/Schema.tsx:246
-#: components/Toolbar/Schema.tsx:402
+#: components/Toolbar/Schema.tsx:245
+#: components/Toolbar/Schema.tsx:399
 #. Used in: Components > Toolbar > Schema
 msgid "otherSideName"
 msgstr "Other side name"
 
-#: components/Toolbar/Schema.tsx:247
-#: components/Toolbar/Schema.tsx:403
+#: components/Toolbar/Schema.tsx:246
+#: components/Toolbar/Schema.tsx:400
 #. Used in: Components > Toolbar > Schema
 msgid "dependent"
 msgstr "Dependent"
 
-#: components/Toolbar/Schema.tsx:357
+#: components/Toolbar/Schema.tsx:354
 #. Used in: Components > Toolbar > Schema
 msgid "downloadAsJson"
 msgstr "Download as JSON"
 
-#: components/Toolbar/Schema.tsx:368
+#: components/Toolbar/Schema.tsx:365
 #. Used in: Components > Toolbar > Schema
 msgid "downloadAsTsv"
 msgstr "Download as TSV"
 
-#: components/Toolbar/Schema.tsx:306
-#: components/Toolbar/Schema.tsx:390
+#: components/Toolbar/Schema.tsx:303
+#: components/Toolbar/Schema.tsx:387
 #. Used in: Components > Toolbar > Schema
 msgid "tableId"
 msgstr "Table ID"
 
-#: components/Toolbar/Schema.tsx:307
+#: components/Toolbar/Schema.tsx:304
 #. Used in: Components > Toolbar > Schema
 msgid "fieldCount"
 msgstr "Field count"
 
-#: components/Toolbar/Schema.tsx:308
+#: components/Toolbar/Schema.tsx:305
 #. Used in: Components > Toolbar > Schema
 msgid "relationshipCount"
 msgstr "Relationship count"

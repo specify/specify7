@@ -66,22 +66,22 @@ msgstr "DwCA export started"
 msgid "dwcaExportStartedDescription"
 msgstr "Export started. You will receive a notification when the export is complete."
 
-#: components/QueryBuilder/Edit.tsx:216
+#: components/QueryBuilder/Edit.tsx:217
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Label Name"
 
-#: components/QueryBuilder/Edit.tsx:216
+#: components/QueryBuilder/Edit.tsx:217
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Report Name"
 
-#: components/QueryBuilder/Edit.tsx:180
+#: components/QueryBuilder/Edit.tsx:181
 #. Used in: Components > Query Builder > Edit
 msgid "createLabel"
 msgstr "Create new label"
 
-#: components/QueryBuilder/Edit.tsx:180
+#: components/QueryBuilder/Edit.tsx:181
 #. Used in: Components > Query Builder > Edit
 msgid "createReport"
 msgstr "Create new report"
@@ -152,11 +152,11 @@ msgstr "Tables API"
 msgid "operationsApi"
 msgstr "Operations API"
 
-#: components/AppResources/Create.tsx:94
-#: components/AppResources/Create.tsx:115
+#: components/AppResources/Create.tsx:91
+#: components/AppResources/Create.tsx:112
 #: components/AppResources/Filters.tsx:156
 #: components/Header/userToolDefinitions.ts:81
-#: components/UserPreferences/Definitions.tsx:403
+#: components/UserPreferences/Definitions.tsx:404
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > User Preferences > Definitions
 msgid "documentation"
 msgstr "Documentation"

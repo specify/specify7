@@ -6,14 +6,14 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/userToolDefinitions.ts:44
 #: components/Router/Routes.tsx:201
 #: components/Security/registry.ts:204
-#: components/UserPreferences/Definitions.tsx:1488
+#: components/UserPreferences/Definitions.tsx:1489
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 msgid "appResources"
 msgstr "App Resources"
 
 #: components/FormMeta/Definition.tsx:29
 #: components/FormMeta/Definition.tsx:55
-#: components/UserPreferences/Definitions.tsx:654
+#: components/UserPreferences/Definitions.tsx:655
 #. Used in: Components > Form Meta > Definition ⬤ Components > User Preferences > Definitions
 msgid "formDefinition"
 msgstr "Form Definition"
@@ -32,17 +32,23 @@ msgstr "Form Definitions"
 msgid "loadFile"
 msgstr "Load File"
 
-#: components/AppResources/tree.ts:22
+#: components/AppResources/tree.ts:23
 #. Used in: Components > App Resources > Tree
 msgid "globalResources"
 msgstr "Global Resources"
 
-#: components/AppResources/tree.ts:28
+#: components/AppResources/tree.ts:29
 #. Used in: Components > App Resources > Tree
 msgid "disciplineResources"
 msgstr "Discipline Resources"
 
-#: components/AppResources/tree.ts:174
+#: components/AppResources/Create.tsx:90
+#: components/SchemaConfig/Field.tsx:73
+#. Used in: Components > App Resources > Create ⬤ Components > Schema Config > Field
+msgid "type"
+msgstr "Type"
+
+#: components/AppResources/tree.ts:203
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "User Types"
@@ -156,8 +162,18 @@ msgstr "Text Editor"
 msgid "visualEditor"
 msgstr "Visual Editor"
 
-#: components/AppResources/Create.tsx:63
-#: components/AppResources/Create.tsx:85
+#: components/AppResources/Create.tsx:62
+#: components/AppResources/Create.tsx:84
 #. Used in: Components > App Resources > Create
 msgid "selectResourceType"
 msgstr "Select Resource Type"
+
+#: components/AppResources/tree.ts:101
+#. Used in: Components > App Resources > Tree
+msgid "globalPreferences"
+msgstr "Global Preferences"
+
+#: components/AppResources/tree.ts:103
+#. Used in: Components > App Resources > Tree
+msgid "remotePreferences"
+msgstr "Remote Preferences"

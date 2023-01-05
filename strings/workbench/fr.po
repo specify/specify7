@@ -1,931 +1,722 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-04 23:20+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"workbench/fr/>\n"
-"Language: fr\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 #: components/Header/menuItemDefinitions.ts:103
 #: components/Router/OverlayRoutes.tsx:117
-#: components/UserPreferences/Definitions.tsx:1326
+#: components/UserPreferences/Definitions.tsx:1327
 #: components/WorkBench/wbView.js:230
-#, fuzzy
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Wb View
 msgid "workBench"
-msgstr "Table de travail"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/Status.tsx:75
 #: components/WorkBench/Template.tsx:145
 #: components/WorkBench/wbView.js:1917
-#, fuzzy
+#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "rollback"
-msgstr "Retour en arriere"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 #: components/WbPlanView/Mapper.tsx:379
 #: components/WorkBench/Template.tsx:127
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Template
 msgid "validate"
-msgstr "Valider"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:73
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "validation"
-msgstr "Validation"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/Status.tsx:74
 #: components/WorkBench/Template.tsx:156
 #: components/WorkBench/wbView.js:1943
-#, fuzzy
+#. Used in: Components > Work Bench > Status ⬤ Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "upload"
-msgstr "Télécharger"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:81
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "rollingBack"
-msgstr "Reculer"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:80
-#, fuzzy
-msgid "uploading"
-msgstr "Téléchargement"
-
 #. Used in: Components > Work Bench > Status
+msgid "uploading"
+msgstr ""
+
 #: components/WorkBench/Status.tsx:79
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "validating"
-msgstr "Validation"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:542
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "disambiguate"
-msgstr "Désambiguïser"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:553
-#, fuzzy
-msgid "fillDown"
-msgstr "Remplissez"
-
 #. Used in: Components > Work Bench > Wb View
-#: components/WorkBench/wbView.js:561
-#, fuzzy
-msgid "fillUp"
-msgstr "Remplir"
+msgid "fillDown"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
+#: components/WorkBench/wbView.js:561
+#. Used in: Components > Work Bench > Wb View
+msgid "fillUp"
+msgstr ""
+
 #: components/WorkBench/Template.tsx:166
 #: components/WorkBench/wbView.js:2070
-#, fuzzy
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "revert"
-msgstr "Revenir"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2197
-#, fuzzy
-msgid "dataCheck"
-msgstr "Vérification des données"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "dataCheck"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2191
 #: components/WorkBench/wbView.js:2194
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "dataCheckOn"
-msgstr "Vérification des données : activée"
+msgstr ""
 
-#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
-#: components/WorkBench/DataSetMeta.tsx:328
+#: components/WorkBench/DataSetMeta.tsx:318
 #: components/WorkBench/Template.tsx:193
-#, fuzzy
+#. Used in: Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Template
 msgid "changeOwner"
-msgstr "Changer de propriétaire"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:217
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "convertCoordinates"
-msgstr "Convertir les coordonnées"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:243
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "navigation"
-msgstr "La navigation"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:265
-#, fuzzy
-msgid "replace"
-msgstr "Remplacer"
-
 #. Used in: Components > Work Bench > Template
+msgid "replace"
+msgstr ""
+
 #: components/WorkBench/Template.tsx:262
 #: components/WorkBench/Template.tsx:266
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "replacementValue"
-msgstr "Valeur de remplacement"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:272
-#, fuzzy
-msgid "searchResults"
-msgstr "Résultats de recherche"
-
 #. Used in: Components > Work Bench > Template
-#: components/WorkBench/Template.tsx:60
-#, fuzzy
-msgid "clickToToggle"
-msgstr "Cliquez pour basculer la visibilité"
+msgid "searchResults"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/Template.tsx:60
+#. Used in: Components > Work Bench > Template
+msgid "clickToToggle"
+msgstr ""
+
 #: components/WorkBench/AdvancedSearch.tsx:111
 #: components/WorkBench/AdvancedSearch.tsx:214
 #: components/WorkBench/AdvancedSearch.tsx:216
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "configureSearchReplace"
-msgstr "Configurer la recherche et le remplacement"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:274
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "modifiedCells"
-msgstr "Cellules modifiées"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:276
-#, fuzzy
-msgid "newCells"
-msgstr "Nouvelles cellules"
-
 #. Used in: Components > Work Bench > Template
+msgid "newCells"
+msgstr ""
+
 #: components/WorkBench/Template.tsx:278
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "errorCells"
-msgstr "Cellules d'erreur"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:386
-#, fuzzy
+#. Used in: Components > Wb Plan View > Mapper
 msgid "dataEditor"
-msgstr "Éditeur de données"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1581
-#, fuzzy
-msgid "noDisambiguationResults"
-msgstr "Impossible de lever l'ambiguïté"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "noDisambiguationResults"
+msgstr ""
+
 #: components/WorkBench/wbView.js:1582
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "noDisambiguationResultsDescription"
 msgstr ""
-"Aucun des enregistrements correspondants n'existe actuellement dans la base "
-"de données. Cela peut se produire si tous les enregistrements correspondants "
-"ont été supprimés depuis le processus de validation, ou si toutes les "
-"correspondances étaient ambiguës par rapport aux autres enregistrements de "
-"cet ensemble de données. Dans ce dernier cas, vous devrez ajouter des champs "
-"et des valeurs à l'ensemble de données pour résoudre l'ambiguïté."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1636
-#, fuzzy
-msgid "disambiguateMatches"
-msgstr "Désambiguïser plusieurs correspondances d'enregistrements"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "disambiguateMatches"
+msgstr ""
+
 #: components/WorkBench/wbView.js:1684
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "applyAllUnavailable"
 msgstr ""
-"\"Appliquer tout\" n'est pas disponible lorsque la vérification des données "
-"est en cours."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1900
-#, fuzzy
-msgid "beginRollback"
-msgstr "Commencer la restauration de l'ensemble de données ?"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "beginRollback"
+msgstr ""
+
 #: components/WorkBench/wbView.js:1901
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "beginRollbackDescription"
 msgstr ""
-"L'annulation supprimera les nouveaux enregistrements de données que cet "
-"ensemble de données a ajoutés à la base de données Spécifier. La "
-"restauration complète sera annulée si l'une des données téléchargées a été "
-"référencée (réutilisée) par d'autres enregistrements de données depuis leur "
-"téléchargement."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1931
-#, fuzzy
-msgid "startUpload"
-msgstr "Commencer le téléchargement de l'ensemble de données ?"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "startUpload"
+msgstr ""
+
 #: components/WorkBench/wbView.js:1932
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "startUploadDescription"
 msgstr ""
-"Le téléchargement de l'ensemble de données ajoutera les données à la base de "
-"données Spécifier."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2014
-#, fuzzy
-msgid "deleteDataSet"
-msgstr "Supprimer cet ensemble de données ?"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "deleteDataSet"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2015
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "deleteDataSetDescription"
 msgstr ""
-"La suppression d'un ensemble de données le supprime définitivement ainsi que "
-"son plan de téléchargement. Les mappages de données ne pourront plus être "
-"réutilisés avec d'autres ensembles de données. De plus, après la "
-"suppression, la restauration ne sera plus une option pour un ensemble de "
-"données téléchargé."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2034
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeleted"
-msgstr "Ensemble de données supprimé avec succès"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2035
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "dataSetDeletedDescription"
-msgstr "Ensemble de données supprimé avec succès."
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2063
-#, fuzzy
-msgid "revertChanges"
-msgstr "Annuler les modifications non enregistrées ?"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "revertChanges"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2064
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "revertChangesDescription"
 msgstr ""
-"Cette action annulera toutes les modifications apportées à l'ensemble de "
-"données depuis le dernier enregistrement."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2087
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "saving"
-msgstr "Économie..."
+msgstr ""
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:347
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "wbUnloadProtect"
 msgstr ""
-"Les modifications apportées à cet ensemble de données n'ont pas été "
-"enregistrées."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2299
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "noMatchErrorMessage"
 msgstr ""
-"Aucun enregistrement correspondant pour la table de correspondance "
-"obligatoire."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2323
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Cette valeur correspond à deux enregistrements de base de données existants "
-"ou plus et la correspondance doit être levée avant le téléchargement."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2528
-#, fuzzy
-msgid "validationNoErrors"
-msgstr "Valider terminé sans erreur"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "validationNoErrors"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2530
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationNoErrorsDescription"
 msgstr ""
-"La validation n'a trouvé aucune erreur, elle est prête à être téléchargée "
-"dans la base de données."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2533
 #: components/WorkBench/wbView.js:2542
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationReEditWarning"
 msgstr ""
-"Remarque : Si cet ensemble de données est modifié et réenregistré, la "
-"validation doit être exécutée à nouveau avant le téléchargement pour "
-"vérifier qu'aucune erreur n'a été introduite."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2537
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationErrors"
-msgstr "Valider terminé avec des erreurs"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2539
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationErrorsDescription"
-msgstr "La validation a détecté des erreurs dans l'ensemble de données."
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2548
-#, fuzzy
-msgid "uploadSuccessful"
-msgstr "Téléchargement terminé sans erreur"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "uploadSuccessful"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2549
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "uploadSuccessfulDescription"
 msgstr ""
-"Cliquez sur le bouton \"Résultats\" pour voir le nombre de nouveaux "
-"enregistrements ajoutés à chaque table de la base de données."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2552
-#, fuzzy
-msgid "uploadErrors"
-msgstr "Échec du téléchargement en raison de cellules d'erreur"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "uploadErrors"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2554
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsDescription"
 msgstr ""
-"Le téléchargement a échoué en raison d'une ou plusieurs erreurs de valeur de "
-"cellule."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2557
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Validez l'ensemble de données et passez en revue les conseils de survol de "
-"la souris pour chaque cellule d'erreur, puis apportez les corrections "
-"appropriées. Enregistrez et réessayez le téléchargement."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2561
-#, fuzzy
-msgid "dataSetRollback"
-msgstr "L'ensemble de données a été annulé avec succès"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "dataSetRollback"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2562
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "dataSetRollbackDescription"
 msgstr ""
-"Cet ensemble de données restauré est enregistré et peut être modifié ou "
-"rechargé."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2582
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationCanceled"
-msgstr "Validation annulée"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2588
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "validationCanceledDescription"
-msgstr "Validation de l'ensemble de données annulée."
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2584
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceled"
-msgstr "Restauration annulée"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2590
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "rollbackCanceledDescription"
-msgstr "Restauration de l'ensemble de données annulée."
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2585
-#, fuzzy
-msgid "uploadCanceled"
-msgstr "Téléchargement annulé"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "uploadCanceled"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2591
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "uploadCanceledDescription"
-msgstr "Téléchargement de l'ensemble de données annulé."
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb Utils
 #: components/WorkBench/wbUtils.js:1032
-#, fuzzy
-msgid "coordinateConverter"
-msgstr "Format de géocoordonnée"
-
 #. Used in: Components > Work Bench > Wb Utils
+msgid "coordinateConverter"
+msgstr ""
+
 #: components/WorkBench/wbUtils.js:1042
-#, fuzzy
+#. Used in: Components > Work Bench > Wb Utils
 msgid "coordinateConverterDescription"
-msgstr "Choisissez un format de géocoordonnées préféré"
+msgstr ""
 
-#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:667
-#, fuzzy
+#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Wb View
 msgid "emptyStringInline"
-msgstr "(chaîne vide)"
+msgstr ""
 
-#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/Template.tsx:133
 #: components/WorkBench/wbView.js:2423
-#, fuzzy
+#. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
-msgstr "L'ensemble de données doit être validé ou téléchargé"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:278
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "wbValidateUnavailable"
 msgstr ""
-"Un plan de téléchargement doit être défini avant que cet ensemble de données "
-"puisse être validé"
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:2418
-#, fuzzy
-msgid "unavailableWhileEditing"
-msgstr "Cette action nécessite que toutes les modifications soient enregistrées"
-
 #. Used in: Components > Work Bench > Wb View
+msgid "unavailableWhileEditing"
+msgstr ""
+
 #: components/WorkBench/wbView.js:2506
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "uploadUnavailableWhileHasErrors"
 msgstr ""
-"Le téléchargement n'est pas disponible alors que certaines cellules ont des "
-"erreurs de validation"
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1738
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileViewingResults"
 msgstr ""
-"Cette action n'est pas disponible lors de l'affichage des résultats de "
-"téléchargement"
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/wbView.js:1705
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileValidating"
 msgstr ""
-"Cette action n'est pas disponible lorsque la vérification des données est en "
-"cours"
 
-#. Used in: Components > Work Bench > Template
 #: components/WorkBench/Template.tsx:215
 #: components/WorkBench/Template.tsx:223
 #: components/WorkBench/Template.tsx:233
-#, fuzzy
+#. Used in: Components > Work Bench > Template
 msgid "unavailableWithoutLocality"
-msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
+msgstr ""
 
-#. Used in: Components > Work Bench > Wb Utils
 #: components/WorkBench/wbUtils.js:572
-#, fuzzy
-msgid "unavailableWhenUploaded"
-msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
-
-#. Used in: Components > Work Bench > Wb View
-#: components/WorkBench/wbView.js:2429
-#, fuzzy
-msgid "dataSetDeletedOrNotFound"
-msgstr "L'ensemble de données a été supprimé par une autre session."
-
 #. Used in: Components > Work Bench > Wb Utils
-#: components/WorkBench/wbUtils.js:1070
-#, fuzzy
-msgid "includeDmsSymbols"
-msgstr "Inclure les symboles DMS"
+msgid "unavailableWhenUploaded"
+msgstr ""
 
-#. Used in: Components > Work Bench > Results
-#: components/WorkBench/Results.tsx:54
-#, fuzzy
-msgid "uploadResults"
-msgstr "Télécharger les résultats"
-
-#. Used in: Components > Work Bench > Results
-#: components/WorkBench/Results.tsx:55
-#, fuzzy
-msgid "potentialUploadResults"
-msgstr "Résultats de téléchargement potentiels"
-
+#: components/WorkBench/wbView.js:2429
 #. Used in: Components > Work Bench > Wb View
+msgid "dataSetDeletedOrNotFound"
+msgstr ""
+
+#: components/WorkBench/wbUtils.js:1070
+#. Used in: Components > Work Bench > Wb Utils
+msgid "includeDmsSymbols"
+msgstr ""
+
+#: components/WorkBench/Results.tsx:54
+#. Used in: Components > Work Bench > Results
+msgid "uploadResults"
+msgstr ""
+
+#: components/WorkBench/Results.tsx:55
+#. Used in: Components > Work Bench > Results
+msgid "potentialUploadResults"
+msgstr ""
+
 #: components/WorkBench/wbView.js:468
-#, fuzzy
+#. Used in: Components > Work Bench > Wb View
 msgid "noUploadResultsAvailable"
-msgstr "Aucun résultat de téléchargement n'est disponible pour cette cellule"
+msgstr ""
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:59
-#, fuzzy
-msgid "wbUploadedDescription"
-msgstr "Nombre de nouveaux enregistrements créés dans chaque table :"
-
 #. Used in: Components > Work Bench > Results
+msgid "wbUploadedDescription"
+msgstr ""
+
 #: components/WorkBench/Results.tsx:60
-#, fuzzy
+#. Used in: Components > Work Bench > Results
 msgid "wbUploadedPotentialDescription"
 msgstr ""
-"Nombre de nouveaux enregistrements qui seraient créés dans chaque table :"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:116
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "navigationOptions"
-msgstr "Options de navigation"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:118
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "cursorPriority"
-msgstr "Priorité du curseur"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:131
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "columnFirst"
-msgstr "Colonne en premier"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "rowFirst"
-msgstr "Rangée en premier"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:138
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "searchOptions"
-msgstr "Options de recherche"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:144
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "findEntireCellsOnly"
-msgstr "Rechercher uniquement des cellules entières"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:151
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "matchCase"
-msgstr "Cas de correspondance"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:158
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "useRegularExpression"
-msgstr "Utiliser l'expression régulière"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:165
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "liveUpdate"
-msgstr "Recherche en direct"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:170
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceOptions"
-msgstr "Options de remplacement"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceMode"
-msgstr "Remplacer le mode"
+msgstr ""
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:185
-#, fuzzy
-msgid "replaceAll"
-msgstr "Remplacer toutes les correspondances"
-
 #. Used in: Components > Work Bench > Advanced Search
+msgid "replaceAll"
+msgstr ""
+
 #: components/WorkBench/AdvancedSearch.tsx:186
-#, fuzzy
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceNext"
-msgstr "Remplacer l'occurrence suivante"
+msgstr ""
 
-#. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:178
-#, fuzzy
+#. Used in: Components > Router > Routes
 msgid "importDataSet"
-msgstr "Importer un ensemble de données"
+msgstr ""
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:44
-#, fuzzy
+#. Used in: Components > Wb Import > Index
 msgid "wbImportHeader"
-msgstr "Importer un fichier pour créer un nouvel ensemble de données"
+msgstr ""
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:321
-#, fuzzy
-msgid "previewDataSet"
-msgstr "Aperçu de l'ensemble de données"
-
 #. Used in: Components > Wb Import > Index
+msgid "previewDataSet"
+msgstr ""
+
 #: components/WbImport/index.tsx:303
-#, fuzzy
+#. Used in: Components > Wb Import > Index
 msgid "errorImporting"
 msgstr ""
-"Les erreurs suivantes se sont produites lors de l'importation du fichier :"
 
+#: components/WbImport/helpers.ts:109
+#: components/WbImport/helpers.ts:132
 #. Used in: Components > Wb Import > Helpers
-#: components/WbImport/helpers.ts:108
-#: components/WbImport/helpers.ts:131
-#, fuzzy
 msgid "corruptFile"
 msgstr ""
-"Le fichier {fileName:string} est corrompu ou ne contient aucune donnée !"
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:137
-#, fuzzy
+#. Used in: Components > Wb Import > Index
 msgid "characterEncoding"
-msgstr "Encodage de caractère:"
+msgstr ""
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:178
-#, fuzzy
+#. Used in: Components > Wb Import > Index
 msgid "delimiter"
-msgstr "Délimiteur :"
+msgstr ""
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:1427
+#: components/UserPreferences/Definitions.tsx:1428
 #: components/WbImport/index.tsx:152
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "comma"
-msgstr "Virgule"
+msgstr ""
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:1435
+#: components/UserPreferences/Definitions.tsx:1436
 #: components/WbImport/index.tsx:154
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "semicolon"
-msgstr "Point-virgule"
+msgstr ""
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:1431
+#: components/UserPreferences/Definitions.tsx:1432
 #: components/WbImport/index.tsx:153
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "tab"
-msgstr "Languette"
+msgstr ""
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:1439
+#: components/UserPreferences/Definitions.tsx:1440
 #: components/WbImport/index.tsx:155
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "space"
-msgstr "Espacer"
+msgstr ""
 
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:1443
+#: components/UserPreferences/Definitions.tsx:1444
 #: components/WbImport/index.tsx:156
-#, fuzzy
-msgid "pipe"
-msgstr "Tuyau"
-
 #. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
-#: components/UserPreferences/Definitions.tsx:504
-#: components/UserPreferences/Definitions.tsx:525
-#: components/UserPreferences/Definitions.tsx:546
+msgid "pipe"
+msgstr ""
+
+#: components/UserPreferences/Definitions.tsx:505
+#: components/UserPreferences/Definitions.tsx:526
+#: components/UserPreferences/Definitions.tsx:547
 #: components/WbImport/index.tsx:193
-#, fuzzy
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Import > Index
 msgid "determineAutomatically"
-msgstr "Déterminer automatiquement"
+msgstr ""
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:261
-#, fuzzy
-msgid "chooseDataSetName"
-msgstr "Nom du nouvel ensemble de données :"
-
 #. Used in: Components > Wb Import > Index
+msgid "chooseDataSetName"
+msgstr ""
+
 #: components/WbImport/index.tsx:284
-#, fuzzy
+#. Used in: Components > Wb Import > Index
 msgid "firstRowIsHeader"
-msgstr "La première ligne est l'en-tête :"
+msgstr ""
 
-#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
-#: components/Toolbar/WbsDialog.tsx:172
+#: components/Toolbar/WbsDialog.tsx:173
 #: components/WbImport/index.tsx:238
-#, fuzzy
+#. Used in: Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import > Index
 msgid "importFile"
-msgstr "Importer le fichier"
+msgstr ""
 
+#: components/WbImport/helpers.ts:68
 #. Used in: Components > Wb Import > Helpers
-#: components/WbImport/helpers.ts:67
-#, fuzzy
 msgid "columnName"
-msgstr "Colonne {columnIndex:number}"
+msgstr ""
 
+#: components/Toolbar/WbsDialog.tsx:40
 #. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:39
-#, fuzzy
 msgid "newDataSetName"
-msgstr "Nouvel ensemble de données {date}"
+msgstr ""
 
+#: components/Toolbar/WbsDialog.tsx:197
 #. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:196
-#, fuzzy
 msgid "dataSets"
-msgstr "Ensembles de données WorkBench"
+msgstr ""
 
-#. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:207
-#, fuzzy
-msgid "wbsDialogEmpty"
-msgstr "Actuellement, aucun ensemble de données n'existe."
-
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:208
-#, fuzzy
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "wbsDialogEmpty"
+msgstr ""
+
+#: components/Toolbar/WbsDialog.tsx:209
+#. Used in: Components > Toolbar > Wbs Dialog
 msgid "createDataSetInstructions"
 msgstr ""
-"Utilisez \"Importer un fichier\" ou \"Créer un nouveau\" pour en créer un "
-"nouveau."
 
+#: components/Toolbar/WbsDialog.tsx:184
 #. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:183
-#, fuzzy
 msgid "createNew"
-msgstr "Créer un nouveau"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:66
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:65
-#, fuzzy
 msgid "dataSetMeta"
-msgstr "Propriétés de l'ensemble de données"
+msgstr ""
 
-#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/WbPlanView/Mapper.tsx:401
-#: components/WorkBench/DataSetMeta.tsx:98
-#, fuzzy
+#: components/WorkBench/DataSetMeta.tsx:99
+#. Used in: Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
-msgstr "Nom de l'ensemble de données"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:121
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:123
-#, fuzzy
 msgid "numberOfRows"
-msgstr "Nombre de rangées"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:127
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:129
-#, fuzzy
 msgid "numberOfColumns"
-msgstr "Le nombre de colonnes"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:222
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:228
-#, fuzzy
 msgid "importedFileName"
-msgstr "Importer le nom du fichier"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:225
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:231
-#, fuzzy
 msgid "noFileName"
-msgstr "(pas de nom de fichier)"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:322
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:332
-#, fuzzy
 msgid "changeDataSetOwner"
-msgstr "Modifier le propriétaire de l'ensemble de données"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:353
-#, fuzzy
 msgid "changeDataSetOwnerDescription"
-msgstr "Sélectionnez Nouveau propriétaire :"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:307
+#: components/WorkBench/DataSetMeta.tsx:310
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:317
-#: components/WorkBench/DataSetMeta.tsx:320
-#, fuzzy
 msgid "dataSetOwnerChanged"
-msgstr "Le propriétaire de l'ensemble de données a été modifié"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:255
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:261
-#, fuzzy
 msgid "dataSet"
-msgstr "Base de données"
+msgstr ""
 
+#: components/WorkBench/DataSetMeta.tsx:259
 #. Used in: Components > Work Bench > Data Set Meta
-#: components/WorkBench/DataSetMeta.tsx:265
-#, fuzzy
 msgid "dataSetUploadedLabel"
-msgstr "(Téléchargé, en lecture seule)"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:66
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusUnupload"
-msgstr "État de restauration de l'ensemble de données"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:65
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusUpload"
-msgstr "État du téléchargement de l'ensemble de données"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:64
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusValidation"
-msgstr "État de validation de l'ensemble de données"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:101
-#, fuzzy
-msgid "aborting"
-msgstr "Abandon..."
-
 #. Used in: Components > Work Bench > Status
+msgid "aborting"
+msgstr ""
+
 #: components/WorkBench/Status.tsx:91
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusAbortFailed"
-msgstr "Échec de l'abandon {operationName:string}. Veuillez réessayer plus tard"
+msgstr ""
 
-#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:118
-#, fuzzy
+#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 msgid "wbStatusOperationNoProgress"
-msgstr "{operationName:string}..."
+msgstr ""
 
-#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:122
-#, fuzzy
+#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 msgid "wbStatusOperationProgress"
 msgstr ""
-"{operationName:string} ligne "
-"{current:number|formatted}/{total:number|formatted}"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:105
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingDescription"
 msgstr ""
-"{operationName:string} de cet ensemble de données devrait commencer sous peu."
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:108
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
-"Si ce message persiste pendant plus de 30 secondes, le processus "
-"{operationName:string} est occupé avec un autre ensemble de données. "
-"Veuillez réessayer plus tard."
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:160
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "stop"
-msgstr "Arrêter"
+msgstr ""
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:132
-#, fuzzy
-msgid "wbStatusError"
-msgstr "Une erreur s'est produite pendant {operationName:string}"
-
 #. Used in: Components > Work Bench > Status
+msgid "wbStatusError"
+msgstr ""
+
 #: components/WorkBench/Status.tsx:117
-#, fuzzy
+#. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
-msgstr "Mise à jour des arbres..."
+msgstr ""

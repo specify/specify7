@@ -82,7 +82,7 @@ msgstr "Описание ошибки"
 msgid "leavePageConfirmation"
 msgstr "Вы уверены, что хотите покинуть эту страницу?"
 
-#: components/Security/Role.tsx:87
+#: components/Security/Role.tsx:88
 #. Used in: Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Несохраненные изменения будут потеряны, если вы покинете эту страницу."

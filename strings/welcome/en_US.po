@@ -92,7 +92,7 @@ msgid "databaseVersion"
 msgstr "Database Version:"
 
 #: components/HomePage/AboutSpecify.tsx:108
-#: components/Toolbar/Schema.tsx:349
+#: components/Toolbar/Schema.tsx:346
 #. Used in: Components > Home Page > About Specify ⬤ Components > Toolbar > Schema
 msgid "schemaVersion"
 msgstr "DB Schema Version:"

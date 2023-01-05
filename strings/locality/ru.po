@@ -10,7 +10,7 @@ msgstr "Открыть карту"
 #: components/Leaflet/Map.tsx:23
 #: components/QueryBuilder/ToMap.tsx:59
 #: components/QueryBuilder/ToMap.tsx:241
-#: components/UserPreferences/Definitions.tsx:1524
+#: components/UserPreferences/Definitions.tsx:1525
 #: components/WorkBench/Template.tsx:235
 #. Used in: Components > Leaflet > Map ⬤ Components > Query Builder > To Map ⬤ Components > User Preferences > Definitions ⬤ Components > Work Bench > Template
 msgid "geoMap"
