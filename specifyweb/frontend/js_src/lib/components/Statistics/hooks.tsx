@@ -1,7 +1,9 @@
-import { SpQuery, SpQueryField, Tables } from '../DataModel/types';
+import { SpQuery } from '../DataModel/types';
 import type { IR, RA, WritableArray } from '../../utils/types';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import { useAsyncState } from '../../hooks/useAsyncState';
+import {
+  useAsyncState,
+  useMultipleAsyncState,
+} from '../../hooks/useAsyncState';
 import React from 'react';
 import { f } from '../../utils/functools';
 import { ajax } from '../../utils/ajax';
@@ -23,36 +25,56 @@ import { deserializeResource } from '../../hooks/resource';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { schema } from '../DataModel/schema';
 import { makeQueryField } from '../QueryBuilder/fromTree';
-import { keysToLowerCase, removeItem } from '../../utils/utils';
+import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
+import { throttledAjax } from '../../utils/ajax/throttledAjax';
+
+export const urlSpec = {
+  holdings: '/statistics/collection/holdings/',
+  preparations: '/statistics/collection/preparations/',
+  typeSpecimens: '/statistics/collection/type_specimens/',
+  localityGeography: '/statistics/collection/locality_geography/',
+};
 
 /**
  * Fetch backend statistics from the API
  */
 export function useBackendApi(
-  isCacheValid: boolean,
+  categoryToFetch: RA<string>,
   showDialog = false
 ): BackendStatsResult | undefined {
-  const [backendStatObject] = useAsyncState(
-    React.useCallback(
-      isCacheValid
-        ? (): undefined => undefined
-        : async () =>
-            ajax<BackendStatsResult>('/statistics/collection/global/', {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
-              },
-            }).then(({ data }) => data),
-      [isCacheValid]
-    ),
+  const backEndStatPromises = React.useMemo(
+    () =>
+      categoryToFetch.length === 0
+        ? undefined
+        : backEndStatPromiseGenerator(categoryToFetch),
+    [categoryToFetch]
+  );
+  const [backendStat] = useMultipleAsyncState<BackendStatsResult>(
+    backEndStatPromises,
     showDialog
   );
-  return backendStatObject;
+  return backendStat;
 }
 
+const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
+  Object.fromEntries(
+    categoriesToFetch.map((key) => [
+      key,
+      async () =>
+        throttledAjax('backendStats', async () =>
+          ajax<BackendStatsResult>(urlSpec[key as keyof typeof urlSpec], {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          }).then(({ data }) => data)
+        ),
+    ])
+  );
+
 export function useStatsSpec(
-  isCacheValid: boolean,
+  categoryToFetch: RA<string>,
   showDialog = false
 ): IR<
   IR<{
@@ -60,7 +82,7 @@ export function useStatsSpec(
     readonly items: StatCategoryReturn;
   }>
 > {
-  const backEndResult = useBackendApi(isCacheValid, showDialog);
+  const backEndResult = useBackendApi(categoryToFetch, showDialog);
   return React.useMemo(
     () =>
       Object.fromEntries(
@@ -164,35 +186,23 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
   );
 }
 
-let activeNetworkRequest: RA<Promise<string | number | undefined>> = [];
-const VINNY_STAT_CONSTANT = 10;
-
-async function fetchQueryCount(query: SpecifyResource<SpQuery>) {
-  while (activeNetworkRequest.length > VINNY_STAT_CONSTANT) {
-    await Promise.any(activeNetworkRequest);
-  }
-  const statPromise = ajax<{
-    readonly count: number;
-  }>('/stored_query/ephemeral/', {
-    method: 'POST',
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json',
-    },
-    body: keysToLowerCase({
-      ...serializeResource(query),
-      countOnly: true,
-    }),
-  })
-    .then(({ data }) => formatNumber(data.count))
-    .finally(() => {
-      activeNetworkRequest = removeItem(
-        activeNetworkRequest,
-        activeNetworkRequest.indexOf(statPromise)
-      );
-    });
-  activeNetworkRequest = [...activeNetworkRequest, statPromise];
-  return statPromise;
+function queryCountPromiseGenerator(
+  query: SpecifyResource<SpQuery>
+): () => Promise<number | string | undefined> {
+  return async () =>
+    ajax<{
+      readonly count: number;
+    }>('/stored_query/ephemeral/', {
+      method: 'POST',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+      },
+      body: keysToLowerCase({
+        ...serializeResource(query),
+        countOnly: true,
+      }),
+    }).then(({ data }) => formatNumber(data.count));
 }
 
 export function useResolvedSpec(
@@ -229,7 +239,7 @@ export function useResolvedSpec(
           type: 'QueryStat',
           query: deserializeResource(
             addMissingFields('SpQuery', {
-              name: 'get Stat',
+              name: statSpecItem?.label,
               contextName: statSpecItem?.spec?.tableName,
               contextTableId:
                 schema.models[statSpecItem?.spec?.tableName].tableId,
@@ -317,7 +327,10 @@ export function useValueLoad(
         statSpecCalculated.type === 'QueryStat' &&
         statSpecCalculated.query !== undefined
       ) {
-        return fetchQueryCount(statSpecCalculated.query);
+        return throttledAjax(
+          'queryStats',
+          queryCountPromiseGenerator(statSpecCalculated.query)
+        );
       } else if (statSpecCalculated.type === 'BackendStat') {
         return statSpecCalculated.value;
       }
@@ -332,53 +345,26 @@ export function useValueLoad(
   }, [handleValueLoad, statSpecCalculated, count, itemValue]);
 }
 
-export function useCacheValid(layout: StatLayout | undefined): boolean {
+export function useCategoryToFetch(
+  layout: StatLayout | undefined
+): WritableArray<string> {
   return React.useMemo(() => {
-    if (layout === undefined) return true;
-    if (statsSpec === undefined) return false;
-    return layout.every((pageLayout) =>
-      pageLayout.categories
-        .map(({ items }) => items)
-        .flat()
-        .filter(
-          (item) =>
-            item.type === 'DefaultStat' && item.itemType === 'BackendStat'
-        )
-        .every((item) => item.itemValue !== undefined)
-    );
-  }, [layout]);
-}
-
-/** Build Queries for the QueryBuilderAPI */
-export function useFrontEndStatsQuery(
-  tableName: keyof Tables | undefined,
-  fields:
-    | RA<Partial<SerializedResource<SpQueryField>> & { readonly path: string }>
-    | undefined
-): SpecifyResource<SpQuery> | undefined {
-  return React.useMemo(
-    tableName !== undefined && fields !== undefined
-      ? () =>
-          deserializeResource(
-            addMissingFields('SpQuery', {
-              name: 'get Stat',
-              contextName: tableName,
-              contextTableId: schema.models[tableName].tableId,
-              countOnly: false,
-              selectDistinct: false,
-              fields: fields.map(({ path, ...field }, index) =>
-                serializeResource(
-                  makeQueryField(tableName, path, {
-                    ...field,
-                    position: index,
-                  })
-                )
-              ),
-            })
+    if (layout === undefined) return [];
+    const categoryToFetch: WritableArray<string> = [];
+    layout.forEach((pageLayout) =>
+      pageLayout.categories.forEach(({ items }) =>
+        items.forEach((item) => {
+          if (
+            item.type === 'DefaultStat' &&
+            item.itemType === 'BackendStat' &&
+            item.itemValue === undefined
           )
-      : () => undefined,
-    [tableName, fields]
-  );
+            categoryToFetch.push(item.categoryName);
+        })
+      )
+    );
+    return categoryToFetch;
+  }, [layout]);
 }
 
 export function statsToTsv(
