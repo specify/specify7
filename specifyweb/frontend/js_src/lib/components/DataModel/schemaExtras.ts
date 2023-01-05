@@ -133,7 +133,6 @@ export const schemaExtras: {
       relatedModelName: 'Accession',
       dependent: false,
     });
-    // FIXME: add virtual fields to types
     accessions.isHidden = true;
     accessions.overrides.isHidden = true;
     return [[], [accessions]];
