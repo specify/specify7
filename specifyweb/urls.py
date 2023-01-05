@@ -20,7 +20,8 @@ from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
 
 urlpatterns = [
-    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/fav_icon.png')),
+    # First draft, need to see how this is handled
+    url(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
 
     # just redirect root url to the main specify view
     url(r'^$', skip_collection_access_check(RedirectView.as_view(url='/specify/'))),
