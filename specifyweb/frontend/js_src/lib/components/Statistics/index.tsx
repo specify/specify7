@@ -1,37 +1,41 @@
 import React from 'react';
 import type { State } from 'typesafe-reducer';
+
 import { commonText } from '../../localization/common';
-import { removeItem, replaceItem, removeKey } from '../../utils/utils';
+import { statsText } from '../../localization/stats';
+import { f } from '../../utils/functools';
+import { removeItem, removeKey, replaceItem } from '../../utils/utils';
 import { H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { useQueries } from '../Toolbar/Query';
-import { useCollectionPref, usePref } from '../UserPreferences/usePref';
-import { userInformation } from '../InitialContext/userInformation';
-import { awaitPrefsSynced } from '../UserPreferences/helpers';
-import { softFail } from '../Errors/Crash';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
+import { softFail } from '../Errors/Crash';
+import { useMenuItem } from '../Header';
+import { userInformation } from '../InitialContext/userInformation';
+import { DateElement } from '../Molecules/DateElement';
+import { downloadFile } from '../Molecules/FilePicker';
+import { hasPermission } from '../Permissions/helpers';
+import { useQueries } from '../Toolbar/Query';
+import { awaitPrefsSynced } from '../UserPreferences/helpers';
+import { useCollectionPref, usePref } from '../UserPreferences/usePref';
+import { AddStatDialog } from './AddStatDialog';
+import { StatsPageButton } from './Buttons';
+import { Categories } from './Categories';
 import {
+  statsToTsv,
   useCategoryToFetch,
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
-  statsToTsv,
-  urlSpec,
 } from './hooks';
-import { Categories } from './Categories';
-import { AddStatDialog } from './AddStatDialog';
 import { StatsPageEditing } from './StatsPageEditing';
-import { StatsPageButton } from './Buttons';
-import { useMenuItem } from '../Header';
-import { CustomStat, DefaultStat, StatLayout } from './types';
-import { DateElement } from '../Molecules/DateElement';
-import { statsText } from '../../localization/stats';
-import { f } from '../../utils/functools';
-import { hasPermission } from '../Permissions/helpers';
-import { downloadFile } from '../Molecules/FilePicker';
-
+import type { CustomStat, DefaultStat, StatLayout } from './types';
+import { urlSpec } from './definitions';
+/*
+ * TODO: rename colleciton -> shared
+ *
+ */
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
   const [collectionLayout, setCollectionLayout] = useCollectionPref(
@@ -71,7 +75,7 @@ export function StatsPage(): JSX.Element | null {
   const statsSpec = useStatsSpec(testArray, false);
 
   const defaultStatsSpec = useStatsSpec(
-    testArray,
+    allKeys,
     collectionLayout === undefined || personalLayout === undefined
   );
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
@@ -98,7 +102,6 @@ export function StatsPage(): JSX.Element | null {
   ]);
 
   const [state, setState] = React.useState<
-    | State<'EditingState'>
     | State<
         'AddingState',
         {
@@ -106,7 +109,6 @@ export function StatsPage(): JSX.Element | null {
           readonly categoryIndex: number;
         }
       >
-    | State<'DefaultState'>
     | State<
         'PageRenameState',
         {
@@ -114,6 +116,8 @@ export function StatsPage(): JSX.Element | null {
           readonly isCollection: boolean;
         }
       >
+    | State<'DefaultState'>
+    | State<'EditingState'>
   >({ type: 'DefaultState' });
 
   const isAddingItem = state.type === 'AddingState';
@@ -223,7 +227,7 @@ export function StatsPage(): JSX.Element | null {
     (
       categoryIndex: number,
       itemIndex: number,
-      value: string | number,
+      value: number | string,
       itemName: string,
       pageIndex: number
     ) => {
@@ -259,7 +263,7 @@ export function StatsPage(): JSX.Element | null {
     (
       categoryIndex: number,
       itemIndex: number,
-      value: string | number,
+      value: number | string,
       itemLabel: string
     ) => {
       handleChange((oldCategory) =>
@@ -393,18 +397,24 @@ export function StatsPage(): JSX.Element | null {
               `}
           >
             {Object.entries(layout).map(
-              ([parentLayoutName, parentLayout], index) => {
-                return parentLayout === undefined ? undefined : (
+              ([parentLayoutName, parentLayout], index) =>
+                parentLayout === undefined ? undefined : (
                   <div className="flex flex-col gap-2">
                     <H3 className="text-lg font-bold">{parentLayoutName}</H3>
                     {parentLayout.map(({ label }, pageIndex) => (
                       <StatsPageButton
-                        key={pageIndex}
-                        label={label}
                         isCurrent={
                           activePage.pageIndex === pageIndex &&
                           activePage.isCollection === (index === 0)
                         }
+                        key={pageIndex}
+                        label={label}
+                        onClick={(): void => {
+                          setActivePage({
+                            isCollection: index === 0,
+                            pageIndex,
+                          });
+                        }}
                         onRename={
                           isEditing && canEditIndex(index === 0)
                             ? (): void => {
@@ -416,16 +426,12 @@ export function StatsPage(): JSX.Element | null {
                               }
                             : undefined
                         }
-                        onClick={(): void => {
-                          setActivePage({
-                            isCollection: index === 0,
-                            pageIndex,
-                          });
-                        }}
                       />
                     ))}
                     {isEditing && canEditIndex(index === 0) && (
                       <StatsPageButton
+                        isCurrent={false}
+                        label={commonText('add')}
                         onClick={(): void => {
                           setState({
                             type: 'PageRenameState',
@@ -433,18 +439,52 @@ export function StatsPage(): JSX.Element | null {
                             isCollection: index === 0,
                           });
                         }}
-                        isCurrent={false}
-                        label={commonText('add')}
                         onRename={undefined}
                       />
                     )}
                   </div>
-                );
-              }
+                )
             )}
           </aside>
           {state.type === 'PageRenameState' && (
             <StatsPageEditing
+              label={
+                typeof state.pageIndex === 'number'
+                  ? state.isCollection
+                    ? collectionLayout[state.pageIndex].label
+                    : personalLayout?.[state.pageIndex].label
+                  : undefined
+              }
+              onAdd={
+                typeof state.pageIndex === 'number'
+                  ? undefined
+                  : (label): void => {
+                      const setLayout = state.isCollection
+                        ? setCollectionLayout
+                        : setPersonalLayout;
+                      const layout = state.isCollection
+                        ? collectionLayout
+                        : personalLayout;
+                      if (layout !== undefined) {
+                        setLayout([
+                          ...layout,
+                          {
+                            label,
+                            categories: [],
+                            lastUpdated: undefined,
+                          },
+                        ]);
+                        setState({
+                          type: 'EditingState',
+                        });
+                        setActivePage({
+                          pageIndex: layout.length,
+                          isCollection: state.isCollection,
+                        });
+                      }
+                    }
+              }
+              onClose={(): void => setState({ type: 'EditingState' })}
               onRemove={
                 state.pageIndex === undefined ||
                 (state.isCollection && collectionLayout.length === 1)
@@ -505,43 +545,6 @@ export function StatsPage(): JSX.Element | null {
                       }
                       return undefined;
                     }
-              }
-              onAdd={
-                typeof state.pageIndex === 'number'
-                  ? undefined
-                  : (label): void => {
-                      const setLayout = state.isCollection
-                        ? setCollectionLayout
-                        : setPersonalLayout;
-                      const layout = state.isCollection
-                        ? collectionLayout
-                        : personalLayout;
-                      if (layout !== undefined) {
-                        setLayout([
-                          ...layout,
-                          {
-                            label,
-                            categories: [],
-                            lastUpdated: undefined,
-                          },
-                        ]);
-                        setState({
-                          type: 'EditingState',
-                        });
-                        setActivePage({
-                          pageIndex: layout.length,
-                          isCollection: state.isCollection,
-                        });
-                      }
-                    }
-              }
-              onClose={(): void => setState({ type: 'EditingState' })}
-              label={
-                typeof state.pageIndex === 'number'
-                  ? state.isCollection
-                    ? collectionLayout[state.pageIndex].label
-                    : personalLayout?.[state.pageIndex].label
-                  : undefined
               }
             />
           )}
@@ -654,8 +657,8 @@ export function StatsPage(): JSX.Element | null {
       {state.type === 'AddingState' && (
         <AddStatDialog
           defaultStatsAddLeft={defaultStatsAddLeft}
-          statsSpec={statsSpec}
           queries={queries}
+          statsSpec={statsSpec}
           onAdd={(item, itemIndex): void =>
             handleAdd(item, state.categoryIndex, itemIndex)
           }

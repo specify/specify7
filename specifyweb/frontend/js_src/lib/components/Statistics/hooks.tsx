@@ -28,13 +28,7 @@ import { makeQueryField } from '../QueryBuilder/fromTree';
 import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
-
-export const urlSpec = {
-  holdings: '/statistics/collection/holdings/',
-  preparations: '/statistics/collection/preparations/',
-  typeSpecimens: '/statistics/collection/type_specimens/',
-  localityGeography: '/statistics/collection/locality_geography/',
-};
+import { urlSpec } from './definitions';
 
 /**
  * Fetch backend statistics from the API
