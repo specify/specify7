@@ -24,6 +24,7 @@ import { StatsPageButton } from './Buttons';
 import { Categories } from './Categories';
 import {
   statsToTsv,
+  useBackendApi,
   useCategoryToFetch,
   useDefaultLayout,
   useDefaultStatsToAdd,
@@ -31,7 +32,7 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { urlSpec } from './definitions';
+import { unknownCategories, urlSpec } from './definitions';
 /*
  * TODO: rename colleciton -> shared
  *
@@ -72,17 +73,18 @@ export function StatsPage(): JSX.Element | null {
     () => (allCategoriesToFetch.length > 0 ? allKeys : []),
     [allCategoriesToFetch.length, allKeys]
   );
-  const statsSpec = useStatsSpec(testArray, false);
+  const backEndResponse = useBackendApi(testArray, false);
+  const statsSpec = useStatsSpec(backEndResponse);
 
-  const defaultStatsSpec = useStatsSpec(
-    allKeys,
-    collectionLayout === undefined || personalLayout === undefined
-  );
+  const defaultBackEndResponse = useBackendApi(allKeys, false);
+  const defaultStatsSpec = useStatsSpec(defaultBackEndResponse);
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-  const defaultCategoryToFetch = useCategoryToFetch(defaultLayoutSpec);
+  const areUnknownLoaded = unknownCategories.every((unknownCategory) =>
+    Object.keys(defaultBackEndResponse ?? {}).includes(unknownCategory)
+  );
 
   React.useEffect(() => {
-    if (defaultCategoryToFetch.length === 0) {
+    if (areUnknownLoaded) {
       setDefaultLayout(defaultLayoutSpec);
       if (collectionLayout === undefined) {
         setCollectionLayout(defaultLayoutSpec);
@@ -92,7 +94,7 @@ export function StatsPage(): JSX.Element | null {
       }
     }
   }, [
-    defaultCategoryToFetch,
+    areUnknownLoaded,
     collectionLayout,
     setCollectionLayout,
     setDefaultLayout,

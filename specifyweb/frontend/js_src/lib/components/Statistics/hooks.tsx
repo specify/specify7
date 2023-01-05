@@ -67,16 +67,12 @@ const backEndStatPromiseGenerator = (categoriesToFetch: RA<string>) =>
     ])
   );
 
-export function useStatsSpec(
-  categoryToFetch: RA<string>,
-  showDialog = false
-): IR<
+export function useStatsSpec(backEndResult: BackendStatsResult | undefined): IR<
   IR<{
     readonly label: string;
     readonly items: StatCategoryReturn;
   }>
 > {
-  const backEndResult = useBackendApi(categoryToFetch, showDialog);
   return React.useMemo(
     () =>
       Object.fromEntries(
