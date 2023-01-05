@@ -1,18 +1,33 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-05 20:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
+"specifyNetwork/fr/>\n"
+"Language: fr\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:235
 #: components/SpecifyNetwork/index.tsx:239
-#. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "specifyNetwork"
-msgstr ""
+msgstr "Spécifiez le réseau"
 
+#. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:228
-#. Used in: Components > Specify Network > Index
+#, fuzzy
 msgid "failedToOpenPopUp"
-msgstr ""
+msgstr "Échec de l'ouverture de la page Spécifier le réseau"
 
-#: components/SpecifyNetwork/index.tsx:231
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:231
+#, fuzzy
 msgid "failedToOpenPopUpDescription"
 msgstr ""
+"Assurez-vous que votre navigateur ne bloque pas les fenêtres pop-up et "
+"réessayez."
