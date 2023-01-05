@@ -13,11 +13,12 @@ import { softFail } from '../Errors/Crash';
 import { Form } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import {
-  useCacheValid,
+  useCategoryToFetch,
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
   statsToTsv,
+  urlSpec,
 } from './hooks';
 import { Categories } from './Categories';
 import { AddStatDialog } from './AddStatDialog';
@@ -33,7 +34,6 @@ import { downloadFile } from '../Molecules/FilePicker';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
-
   const [collectionLayout, setCollectionLayout] = useCollectionPref(
     'statistics',
     'appearance',
@@ -57,20 +57,28 @@ export function StatsPage(): JSX.Element | null {
     [statsText('personal')]: personalLayout,
   };
 
-  const isCollectionCacheValid = useCacheValid(collectionLayout);
-  const isPersonalCacheValid = useCacheValid(personalLayout);
-  const isCacheValid = isCollectionCacheValid && isPersonalCacheValid;
-  const statsSpec = useStatsSpec(isCacheValid);
+  const collectionCategoryToFetch = useCategoryToFetch(collectionLayout);
+  const personalCategoryToFetch = useCategoryToFetch(personalLayout);
+  const allCategoriesToFetch = React.useMemo(
+    () => f.unique([...collectionCategoryToFetch, ...personalCategoryToFetch]),
+    [collectionCategoryToFetch, personalCategoryToFetch]
+  );
+  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
+  const testArray = React.useMemo(
+    () => (allCategoriesToFetch.length > 0 ? allKeys : []),
+    [allCategoriesToFetch.length, allKeys]
+  );
+  const statsSpec = useStatsSpec(testArray, false);
 
   const defaultStatsSpec = useStatsSpec(
-    false,
+    testArray,
     collectionLayout === undefined || personalLayout === undefined
   );
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-  const isDefaultCacheValid = useCacheValid(defaultLayoutSpec);
+  const defaultCategoryToFetch = useCategoryToFetch(defaultLayoutSpec);
 
   React.useEffect(() => {
-    if (isDefaultCacheValid) {
+    if (defaultCategoryToFetch.length === 0) {
       setDefaultLayout(defaultLayoutSpec);
       if (collectionLayout === undefined) {
         setCollectionLayout(defaultLayoutSpec);
@@ -80,7 +88,7 @@ export function StatsPage(): JSX.Element | null {
       }
     }
   }, [
-    isDefaultCacheValid,
+    defaultCategoryToFetch,
     collectionLayout,
     setCollectionLayout,
     setDefaultLayout,
@@ -380,9 +388,9 @@ export function StatsPage(): JSX.Element | null {
         <div className="flex flex-col gap-2 overflow-y-hidden  md:flex-row">
           <aside
             className={`
-               top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
-                md:sticky
-            `}
+                 top-0 flex min-w-fit flex-1 flex-col divide-y-4 !divide-[color:var(--form-background)]
+                  md:sticky
+              `}
           >
             {Object.entries(layout).map(
               ([parentLayoutName, parentLayout], index) => {
