@@ -4,7 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { f } from '../../utils/functools';
-import type { GetOrSet, RA } from '../../utils/types';
+import { filterArray, GetOrSet, RA } from '../../utils/types';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
@@ -14,8 +14,11 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { format } from './dataObjFormatters';
 import { ResourceView } from './ResourceView';
 import { Ul } from '../Atoms';
-import { getResourceViewUrl, idFromUrl } from '../DataModel/resource';
+import { getResourceViewUrl, parseResourceUrl } from '../DataModel/resource';
 import { Link } from '../Atoms/Link';
+import { useBooleanState } from '../../hooks/useBooleanState';
+import { schema } from '../DataModel/schema';
+import { Tables } from '../DataModel/types';
 
 export type DeleteBlocker = {
   readonly model: SpecifyModel;
@@ -26,13 +29,11 @@ export type DeleteBlocker = {
 export function DeleteBlockers({
   resource: parentResource,
   blockers,
-  expand = false,
   onClose: handleClose,
   onDeleted: handleDeleted,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly blockers: RA<DeleteBlocker>;
-  readonly expand?: boolean;
   readonly onClose: (() => void) | undefined;
   readonly onDeleted: () => void;
 }): JSX.Element | null {
@@ -57,7 +58,8 @@ export function DeleteBlockers({
     [data, handleDeleted]
   );
 
-  if (!Array.isArray(data)) return null;
+  if (!Array.isArray(data))
+    return isEmbedded ? <>{commonText.loading()}</> : null;
   const children = data.map(({ formatted, field, resource }, index) => {
     const fieldName = typeof field === 'object' ? field.name : field;
     const fieldLabel = typeof field === 'object' ? field.label : field;
@@ -81,9 +83,7 @@ export function DeleteBlockers({
     return isEmbedded ? (
       <li key={index}>
         {button}
-        {expand && (
-          <DependentResources fieldName={fieldName} resource={resource} />
-        )}
+        <DependentResources fieldName={fieldName} resource={resource} />
       </li>
     ) : (
       <tr key={index}>
@@ -95,7 +95,7 @@ export function DeleteBlockers({
   return (
     <>
       {isEmbedded ? (
-        <Ul className={expand ? undefined : 'pl-4'}>{children}</Ul>
+        <Ul className="overflow-auto">{children}</Ul>
       ) : (
         <Dialog
           buttons={commonText.close()}
@@ -180,26 +180,77 @@ function DependentResources({
 }: {
   readonly fieldName: string;
   readonly resource: SpecifyResource<AnySchema>;
-}): JSX.Element {
+}): JSX.Element | null {
   const dependent = React.useMemo(
     () =>
-      importantRelationships(resource.specifyModel)
-        .filter(({ name }) => name !== fieldName)
-        .map((relationship) => ({
-          model: relationship.relatedModel,
-          field: relationship.name,
-          id: f.maybe(resource.get(relationship.name), idFromUrl)!,
-        }))
-        .filter(({ id }) => typeof id === 'number'),
+      filterArray(
+        filterArray(
+          importantRelationships(resource.specifyModel)
+            .filter(({ name }) => name !== fieldName)
+            .map((relationship) =>
+              f.maybe(resource.get(relationship.name), parseResourceUrl)
+            )
+        ).map(([modelName, id]) =>
+          id === undefined
+            ? undefined
+            : {
+                modelName,
+                id,
+              }
+        )
+      ),
     [resource]
   );
+  return dependent === undefined ? null : (
+    <Ul className="pl-4">
+      {dependent.map(({ modelName, id }, index) => (
+        <li key={index}>
+          <Formatted tableName={modelName} id={id} />
+        </li>
+      ))}
+    </Ul>
+  );
+}
+
+function Formatted({
+  tableName,
+  id,
+}: {
+  readonly tableName: keyof Tables;
+  readonly id: number;
+}): JSX.Element {
+  const resource = React.useMemo(
+    () => new schema.models[tableName].Resource({ id }),
+    [tableName, id]
+  );
+  const table = resource.specifyModel;
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
   return (
-    <DeleteBlockers
-      resource={resource}
-      blockers={dependent}
-      onDeleted={f.void}
-      onClose={undefined}
-    />
+    <>
+      <Link.Default
+        href={getResourceViewUrl(table.name, id)}
+        onClick={(event): void => {
+          event.preventDefault();
+          handleOpen();
+        }}
+      >
+        <TableIcon label={false} name={table.name} />
+        {table.label}
+      </Link.Default>
+      {isOpen && (
+        <ResourceView
+          dialog="modal"
+          isDependent={false}
+          isSubForm={false}
+          mode="view"
+          resource={resource}
+          onAdd={undefined}
+          onClose={handleClose}
+          onSaved={undefined}
+          onDeleted={undefined}
+        />
+      )}
+    </>
   );
 }
 

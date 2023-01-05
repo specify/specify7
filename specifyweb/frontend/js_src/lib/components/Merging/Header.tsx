@@ -112,7 +112,9 @@ export function MergeRow({
   return (
     <tr>
       <th
-        className={`sticky left-0 text-left ${mergeCellBackground} z-[10]`}
+        className={`
+          sticky left-0 text-left ${mergeCellBackground} z-[10]
+        `}
         scope="row"
       >
         {header}
@@ -147,7 +149,7 @@ function ResourceBlockers({
     false
   );
   return (
-    <td className="flex-col !items-start">
+    <td className="max-h-[theme(spacing.40)] flex-col !items-start">
       {blockers === undefined ? (
         commonText.loading()
       ) : (
@@ -156,7 +158,6 @@ function ResourceBlockers({
           resource={resource}
           onClose={undefined}
           onDeleted={f.void}
-          expand
         />
       )}
     </td>
