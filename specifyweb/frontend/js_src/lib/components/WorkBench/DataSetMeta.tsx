@@ -99,7 +99,7 @@ export function DataSetMeta({
           <Input.Text
             maxLength={getMaxDataSetLength()}
             required
-            spellCheck="true"
+            spellCheck
             value={name}
             onValueChange={(name): void => setName(name as LocalizedString)}
           />
