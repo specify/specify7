@@ -58,7 +58,7 @@ export function StatsPage(): JSX.Element | null {
   );
 
   const layout = {
-    [statsText('collection')]: collectionLayout,
+    [statsText('shared')]: collectionLayout,
     [statsText('personal')]: personalLayout,
   };
 

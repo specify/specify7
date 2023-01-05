@@ -182,5 +182,9 @@ export const statsText = createDictionary({
     'en-us': 'Download as TSV',
     'ru-ru': 'Скачать как TSV',
   },
+  shared: {
+    'en-us': 'Shared',
+    'ru-ru': 'Общий',
+  },
 });
 /* eslint-enable @typescript-eslint/naming-convention */
