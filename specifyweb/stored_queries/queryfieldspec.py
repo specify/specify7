@@ -143,8 +143,9 @@ class QueryFieldSpec(namedtuple("QueryFieldSpec", "root_table join_path table da
         return result
 
     def __init__(self, *args, **kwargs):
+        valid_date_parts = ('Full Date', 'Day', 'Month', 'Year', None)
         assert self.is_temporal() or self.date_part is None
-        assert self.date_part in ('Full Date', 'Day', 'Month', 'Year', None)
+        assert self.date_part in valid_date_parts, f"Invalid date part '{self.date_part}'. Expected one of {valid_date_parts}"
 
     def to_spquery_attrs(self):
         table_list = make_table_list(self)

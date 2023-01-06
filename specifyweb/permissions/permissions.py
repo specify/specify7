@@ -31,7 +31,7 @@ class PermissionTargetMeta(type):
     def __new__(cls, name, bases, attrs):
         if bases: # skip PermissionsTarget base class
             resource: str = attrs['resource']
-            assert resource not in registry
+            assert resource not in registry, f"Resource '{resource}' already in Permissions registry"
 
             actions = registry[resource] = []
 
@@ -90,7 +90,7 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if isinstance(actor, Agent):
         userid = actor.specifyuser_id
     else:
-        assert isinstance(actor, models.Specifyuser)
+        assert isinstance(actor, models.Specifyuser), f"Agent '{actor}' is not a SpecifyUser"
         userid = actor.id
 
     if userid is None:
@@ -99,7 +99,7 @@ def enforce(collection: Union[int, Model, None], actor, resources: List[str], ac
     if isinstance(collection, int) or collection is None:
         collectionid = collection
     else:
-        assert isinstance(collection, models.Collection)
+        assert isinstance(collection, models.Collection), f"Unexpted type of collection '{collection.__class__.__name__}'. Expected '{models.Collection.__class__.__name__}'"
         collectionid = collection.id
 
     perm_requests = [PermRequest(collectionid, userid, resource, action) for resource in resources]

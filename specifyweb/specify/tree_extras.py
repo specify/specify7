@@ -239,7 +239,7 @@ def merge(node, into, agent):
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
-    assert type(into) is model
+    assert type(into) is model, f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'"
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "merging across trees"
     if into.accepted_id is not None:
@@ -290,7 +290,7 @@ def merge(node, into, agent):
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
     model = type(node)
-    assert type(into) is model
+    assert type(into) is model, f"Unexpected type '{into.__class__.__name__}', during synonymize. Expected '{model.__class__.__name__}'"
     target = model.objects.select_for_update().get(id=into.id)
     assert node.definition_id == target.definition_id, "synonymizing across trees"
     if target.accepted_id is not None:
@@ -557,7 +557,8 @@ def renumber_tree(table):
         "join {table} p on t.parentid = p.{table}id\n"
         "where t.rankid <= p.rankid\n"
     ).format(table=table))
-    assert (0, ) == cursor.fetchone(), "bad tree structure"
+    bad_ranks_count, = cursor.fetchone()
+    assert bad_ranks_count == 0, "Bad Tree Structure: Found {} cases where node rank is not greater than it's parent".format(bad_ranks_count) 
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
