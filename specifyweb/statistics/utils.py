@@ -27,10 +27,21 @@ def first_bigger_value(number_list, number_to_check):
     return min(middle_value, next_value)
 
 
-def is_any_smaller(number_list, number_to_check):
+def is_any_smaller_or_equal(number_list, number_to_check):
     if len(number_list) == 0:
         return False
     middle_index = (len(number_list) - 1) // 2
-    if number_list[middle_index] < number_to_check:
+    if number_list[middle_index] <= number_to_check:
         return True
-    return is_any_smaller(number_list[0:middle_index], number_to_check)
+    return is_any_smaller_or_equal(number_list[0:middle_index], number_to_check)
+
+def count_occurrence_ranks(node_number_ranges, occurred_node_numbers):
+    rank_count = 0
+    for (node_number, highest_child_number) in node_number_ranges:
+        node_number_sup_index = first_bigger_index(occurred_node_numbers, node_number, 0, len(occurred_node_numbers)-1)
+        if node_number_sup_index == -1:
+            continue
+        rank_count += 1 if is_any_smaller_or_equal(occurred_node_numbers[node_number_sup_index: len(occurred_node_numbers)], highest_child_number) else 0
+    return rank_count
+
+
