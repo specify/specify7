@@ -14,6 +14,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { userText } from '../../localization/user';
 import { LocalizedString } from 'typesafe-i18n';
+import { getResourceApiUrl } from '../DataModel/resource';
 
 export const getAppResourceTree = (
   resources: AppResources
@@ -69,11 +70,39 @@ function getGlobalAllResources(resources: AppResources): {
    * global resource dirs, while having them separated in the UI would
    * suggest the opposite.
    */
+  const { appResources, viewSets } = mergeDirectories(
+    globalDirectories,
+    resources
+  );
   return {
     directory: mainDirectory,
-    ...mergeDirectories(globalDirectories, resources),
+    appResources: disambiguateGlobalPrefs(appResources, globalDirectories),
+    viewSets,
   };
 }
+
+const prefResource = 'preferences';
+const globalUserType = 'Global Prefs'.toLowerCase();
+const remoteUserType = 'Prefs'.toLowerCase();
+
+const disambiguateGlobalPrefs = (
+  appResources: RA<SerializedResource<SpAppResource>>,
+  directories: RA<SerializedResource<SpAppResourceDir>>
+): RA<SerializedResource<SpAppResource>> =>
+  appResources.map((resource) => {
+    if (resource.name !== prefResource) return resource;
+    const directory = directories.find(
+      ({ id }) =>
+        getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
+    );
+    if (!directory) return resource;
+    const userType = directory.userType?.toLowerCase();
+    if (userType === globalUserType)
+      return { ...resource, name: resourcesText.globalPreferences() };
+    else if (userType === remoteUserType)
+      return { ...resource, name: resourcesText.remotePreferences() };
+    else return resource;
+  });
 
 /**
  * Merge resources from several directories into a single one.

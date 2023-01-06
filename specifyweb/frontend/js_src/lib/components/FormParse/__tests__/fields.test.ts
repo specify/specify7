@@ -5,6 +5,7 @@ import { generateInit } from './helpers';
 import { LocalizedString } from 'typesafe-i18n';
 import { reportsText } from '../../../localization/report';
 import { schema } from '../../DataModel/schema';
+import { getField } from '../../DataModel/helpers';
 
 requireContext();
 
@@ -242,10 +243,7 @@ describe('parseFormField', () => {
   test('Text component is converted into partial date for data fields', () =>
     expect(
       parse('<cell uiType="text" />', {
-        // REFACTOR: use getField() instead
-        fields: [
-          schema.models.CollectionObject.strictGetField('timestampCreated'),
-        ],
+        fields: [getField(schema.models.CollectionObject, 'timestampCreated')],
       })
     ).toEqual({
       isReadOnly: false,

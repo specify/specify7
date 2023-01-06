@@ -99,20 +99,37 @@ export const fetchContext = f
           schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
         )?.(model as SpecifyModel<Agent>) ?? [[], []];
 
-        model.literalFields = processFields(
-          tableDefinition.fields.map(
-            (fieldDefinition) => new LiteralField(model, fieldDefinition)
-          ),
-          frontEndFields
+        overwriteReadOnly(
+          model,
+          'literalFields',
+
+          processFields(
+            tableDefinition.fields.map(
+              (fieldDefinition) => new LiteralField(model, fieldDefinition)
+            ),
+            frontEndFields
+          )
         );
-        model.relationships = processFields(
-          tableDefinition.relationships.map(
-            (relationshipDefinition) =>
-              new Relationship(model, relationshipDefinition)
-          ),
-          frontEndRelationships
+        overwriteReadOnly(
+          model,
+          'relationships',
+          processFields(
+            tableDefinition.relationships.map(
+              (relationshipDefinition) =>
+                new Relationship(model, relationshipDefinition)
+            ),
+            frontEndRelationships
+          )
         );
-        model.fields = [...model.literalFields, ...model.relationships];
+        overwriteReadOnly(model, 'fields', [
+          ...model.literalFields,
+          ...model.relationships,
+        ]);
+        overwriteReadOnly(
+          model,
+          'field',
+          Object.fromEntries(model.fields.map((field) => [field.name, field]))
+        );
 
         frontEndOnlyFields[model.name] = [
           ...frontEndFields,

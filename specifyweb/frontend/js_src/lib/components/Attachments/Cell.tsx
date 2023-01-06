@@ -19,7 +19,7 @@ import { fetchThumbnail } from './attachments';
 import { tablesWithAttachments } from './index';
 import { AttachmentPreview } from './Preview';
 import { originalAttachmentsView } from '../Forms/useViewDefinition';
-import { deserializeResource } from '../DataModel/helpers';
+import { deserializeResource, getField } from '../DataModel/helpers';
 import { LocalizedString } from 'typesafe-i18n';
 
 export function AttachmentCell({
@@ -93,9 +93,7 @@ export function AttachmentCell({
         className="absolute top-0 right-0"
         icon="informationCircle"
         title={
-          schema.models.WorkbenchTemplateMappingItem.strictGetLiteralField(
-            'metadata'
-          ).label
+          getField(schema.models.WorkbenchTemplateMappingItem, 'metaData').label
         }
         onClick={handleMetaToggle}
       />

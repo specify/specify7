@@ -3,7 +3,6 @@ import { useOutletContext } from 'react-router';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
-import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
@@ -13,7 +12,6 @@ import { Link } from '../Atoms/Link';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import { deserializeResource, serializeResource } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { schema } from '../DataModel/schema';
 import type { SpAppResourceDir } from '../DataModel/types';
 import {
   spAppResourceView,
@@ -28,6 +26,7 @@ import { useResourcesTree } from './hooks';
 import type { AppResourcesOutlet } from './index';
 import type { AppResourceType } from './types';
 import { appResourceSubTypes, appResourceTypes } from './types';
+import { headerText } from '../../localization/header';
 
 /**
  * Check if one type is a subtype of another
@@ -85,9 +84,7 @@ export function CreateAppResource(): JSX.Element {
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
           <tr>
-            <th scope="col">
-              {schema.models.SpAppResource.strictGetField('type').label}
-            </th>
+            <th scope="col">{resourcesText.type()}</th>
             <th scope="col">{headerText.documentation()}</th>
           </tr>
         </thead>

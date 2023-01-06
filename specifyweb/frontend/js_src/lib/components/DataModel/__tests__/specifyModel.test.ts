@@ -444,7 +444,7 @@ describe('strictGetLiteralField', () => {
     ).toBe('remarks'));
   test('throw if field is not found', () =>
     expect(() =>
-      schema.models.CollectionObject.strictGetLiteralField('accessions')
+      schema.models.CollectionObject.strictGetLiteralField('abc')
     ).toThrow('Tried to get unknown literal field'));
 });
 

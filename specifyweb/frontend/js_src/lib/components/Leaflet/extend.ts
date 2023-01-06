@@ -40,7 +40,8 @@ L.Control.FullScreen = L.Control.extend({
       'bg-white',
       'dark:bg-black',
       'p-2',
-      '!cursor-pointer'
+      '!cursor-pointer',
+      'rounded'
     );
     button.innerHTML = legacyNonJsxIcons.arrowsExpand;
 

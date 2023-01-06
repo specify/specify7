@@ -15,6 +15,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { LocalizedString } from 'typesafe-i18n';
 import { formatNumber } from '../Atoms/Internationalization';
 import { interactionsText } from '../../localization/interactions';
+import { getField } from '../DataModel/helpers';
 
 export function PrepDialogRow({
   preparation,
@@ -65,9 +66,7 @@ export function PrepDialogRow({
         </td>
         <td className="justify-end tabular-nums">
           {syncFieldFormat(
-            schema.models.CollectionObject.strictGetLiteralField(
-              'catalogNumber'
-            ),
+            getField(schema.models.CollectionObject, 'catalogNumber'),
             undefined,
             preparation.catalogNumber
           )}

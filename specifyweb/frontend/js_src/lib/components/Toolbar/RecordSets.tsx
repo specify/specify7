@@ -24,7 +24,7 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { hasToolPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
 import { EditRecordSet } from './RecordSetEdit';
-import { deserializeResource } from '../DataModel/helpers';
+import { deserializeResource, getField } from '../DataModel/helpers';
 
 export function RecordSetsOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -123,7 +123,7 @@ export function RecordSetsDialog({
                     onClick={(): void => handleSort('timestampCreated')}
                   >
                     {
-                      schema.models.RecordSet.strictGetField('timestampCreated')
+                      getField(schema.models.RecordSet, 'timestampCreated')
                         .label
                     }
                     <SortIndicator

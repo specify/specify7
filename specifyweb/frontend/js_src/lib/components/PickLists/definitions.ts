@@ -16,6 +16,7 @@ import type { PickList, PickListItem, Tables } from '../DataModel/types';
 import { hasToolPermission } from '../Permissions/helpers';
 import { deserializeResource } from '../DataModel/helpers';
 import { queryText } from '../../localization/query';
+import { getField } from '../DataModel/helpers';
 
 let pickLists: R<SpecifyResource<PickList> | undefined> = {};
 
@@ -47,7 +48,7 @@ const auditLogActions = [
 
 const pickListSortTypes = f.store(() => [
   commonText.none(),
-  schema.models.PickListItem.strictGetField('title').label,
+  getField(schema.models.PickListItem, 'title').label,
   commonText.ordinal(),
 ]);
 

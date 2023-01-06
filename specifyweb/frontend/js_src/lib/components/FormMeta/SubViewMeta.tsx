@@ -9,6 +9,7 @@ import { OrderPicker } from '../UserPreferences/Renderers';
 import { toLargeSortConfig, toSmallSortConfig } from '../Molecules/Sorting';
 import { attachmentsText } from '../../localization/attachments';
 import { schema } from '../DataModel/schema';
+import { getField } from '../DataModel/helpers';
 
 export function SubViewMeta({
   subView,
@@ -25,7 +26,7 @@ export function SubViewMeta({
   return (
     <>
       <Label.Block>
-        {schema.models.SpLocaleContainerItem.strictGetField('type').label}
+        {getField(schema.models.SpLocaleContainerItem, 'type').label}
         <Select
           value={formType}
           onValueChange={(formType): void =>

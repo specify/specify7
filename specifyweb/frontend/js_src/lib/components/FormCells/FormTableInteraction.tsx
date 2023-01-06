@@ -19,6 +19,7 @@ import { SerializedResource } from '../DataModel/helperTypes';
 import { FormTableCollection } from './FormTableCollection';
 import { SubViewSortField } from '../FormParse/cells';
 import { toSmallSortConfig } from '../Molecules/Sorting';
+import { getField } from '../DataModel/helpers';
 
 const defaultOrder: SubViewSortField = {
   fieldNames: ['timestampCreated'],
@@ -55,7 +56,8 @@ export function FormTableInteraction(
           }
           model={schema.models.CollectionObject}
           recordSetsPromise={recordSetsPromise}
-          searchField={schema.models.CollectionObject.strictGetLiteralField(
+          searchField={getField(
+            schema.models.CollectionObject,
             'catalogNumber'
           )}
           onClose={(): void => setRecordSetsPromise(undefined)}
