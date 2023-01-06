@@ -196,15 +196,6 @@ function WbView({
         <Button.Small className="wb-export-data-set" onClick={f.never}>
           {commonText.export()}
         </Button.Small>
-        {hasPermission('/workbench/dataset', 'delete') && (
-          <Button.Small
-            aria-haspopup="dialog"
-            className="wb-delete-data-set"
-            onClick={f.never}
-          >
-            {commonText.delete()}
-          </Button.Small>
-        )}
         <span className="-ml-1 flex-1" />
         {hasPermission('/workbench/dataset', 'update') && (
           <>
