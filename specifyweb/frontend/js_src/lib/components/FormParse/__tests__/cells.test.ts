@@ -198,7 +198,9 @@ describe('parseFormCell', () => {
       })
     ));
 
-  test('unknown field', () =>
+  test('unknown field', () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -208,9 +210,12 @@ describe('parseFormCell', () => {
       cell({
         type: 'Blank',
       })
-    ));
+    );
+  });
 
-  test('unknown field with default value', () =>
+  test('unknown field with default value', () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
     expect(
       parseFormCell(
         schema.models.CollectionObject,
@@ -232,7 +237,8 @@ describe('parseFormCell', () => {
           type: 'Text',
         },
       })
-    ));
+    );
+  });
 
   test('relationship field names are parsed correctly', () =>
     expect(

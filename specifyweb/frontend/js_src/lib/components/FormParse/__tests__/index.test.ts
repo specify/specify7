@@ -180,8 +180,11 @@ describe('fetchView', () => {
     }
   );
 
-  test('handles 404 errors gracefully', async () =>
-    expect(fetchView(notFoundViewName)).resolves.toBeUndefined());
+  test('handles 404 errors gracefully', async () => {
+    const consoleError = jest.fn();
+    jest.spyOn(console, 'error').mockImplementation(consoleError);
+    expect(fetchView(notFoundViewName)).resolves.toBeUndefined();
+  });
 
   const frontEndOnlyView = spAppResourceView;
   overrideAjax(

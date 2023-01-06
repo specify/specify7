@@ -173,7 +173,7 @@ export async function scanUsages(
                   .forEach((language) =>
                     error(
                       [
-                        `A string for an undefined language ${language} was `,
+                        `A string for an undefined language "${language}" was `,
                         `found for key ${dictionaryName}.${key}\n`,
                         `Defined languages: ${formatList(languages)}\n`,
                         `Allowed meta keys: ${formatList(

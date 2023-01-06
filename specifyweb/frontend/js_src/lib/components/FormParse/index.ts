@@ -87,7 +87,7 @@ export const fetchView = async (
           status === Http.NOT_FOUND || status === Http.NO_CONTENT
             ? undefined
             : (JSON.parse(data) as ViewDefinition);
-        if (views[name] === undefined)
+        if (status === Http.NOT_FOUND)
           console.error(
             `Unable to find a view definition for the "${name}" view`
           );
