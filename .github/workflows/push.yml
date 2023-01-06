@@ -7,7 +7,7 @@ jobs:
     name: Pull localization from Weblate
     # Only run this for pushes from Weblate
     # Note, this is not a secure check as git author can be changed easily
-    if: github.event.head_commit.committer.email == 'hosted@weblate.org'
+    #if: github.event.head_commit.committer.email == 'hosted@weblate.org'
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
           # Using a Personal Access Token from an admin account to bypass branch
           # protection rules and allow direct pushes to production. Inspirited
           # by: https://github.com/community/community/discussions/13836
-          token: ${{ secrets.GITHUB_PUSH_TOKEN_FOR_WEBLATE }}
+          token: ${{ secrets.WEBLATE_PUSH_TO_GITHUB }}
 
       - uses: actions/setup-node@v3
         with:
