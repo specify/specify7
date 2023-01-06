@@ -26,7 +26,7 @@ from django.db import connection
                                 'familieRepresented': {
                                     'type': 'integer'
                                 },
-                                'generaRepresented': {
+                                'generRepresented': {
                                     'type': 'integer'
                                 },
                                 'speciesRepresented': {
@@ -57,9 +57,14 @@ def collection_holdings(request) -> HttpResponse:
     """, [request.specify_collection.id])
     all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
     all_node_numbers_used.sort()
-    family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
-    holding_dict['familieRepresented'] = family_count
-    holding_dict['generaRepresented'] = 0
+   # family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
+    holding_dict['familieRepresented'] = 0
+    cursor.execute("""
+    select nodeNumber, highestChildNodeNumber from taxon where rankid = 180
+    """)
+    all_genera = list(cursor.fetchall())
+    genera_count = utils.count_occurrence_ranks(all_genera, all_node_numbers_used)
+    holding_dict['generRepresented'] = genera_count
     # Genera represented
     holding_dict['speciesRepresented'] = 0
     return http.JsonResponse(holding_dict)
