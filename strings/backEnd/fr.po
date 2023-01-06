@@ -1,127 +1,98 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-05 20:50+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
-"fr/>\n"
-"Language: fr\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:170
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingBoolean"
 msgstr "la valeur \"{value:string}\" ne peut pas être résolue en Vrai ou Faux"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:172
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingDecimal"
 msgstr "la valeur \"{value:string}\" n'est pas une valeur décimale valide"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:174
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingFloat"
-msgstr ""
-"la valeur \"{value:string}\" n'est pas une valeur à virgule flottante valide"
+msgstr "la valeur \"{value:string}\" n'est pas une valeur à virgule flottante valide"
 
-#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/resultsParser.ts:176
 #: components/WorkBench/wbView.js:844
 #: components/WorkBench/wbView.js:846
 #: components/WorkBench/wbView.js:1339
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} n'est pas une valeur légale dans ce champ de liste de "
 "sélection.\n"
 "Cliquez sur la flèche pour choisir parmi les options disponibles."
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:180
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "failedParsingAgentType"
 msgstr ""
 "mauvais type d'agent : \"{badType:string}\". Attendu l'un des "
 "{validTypes:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:185
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "pickListValueTooLong"
 msgstr ""
-"valeur de la liste de sélection {pickList:string} plus longue que le maximum "
-"de {maxLength:number|formatted} pour le champ"
+"valeur de la liste de sélection {pickList:string} plus longue que le "
+"maximum de {maxLength:number|formatted} pour le champ"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:190
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "valueTooLong"
 msgstr ""
 "la valeur ne doit pas avoir une longueur supérieure à "
 "{maxLength:number|formatted}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:194
-#, fuzzy
-msgid "invalidYear"
-msgstr ""
-"la valeur de date doit contenir l'année à quatre chiffres : {value:string}"
-
 #. Used in: Components > Work Bench > Results Parser
+msgid "invalidYear"
+msgstr "la valeur de date doit contenir l'année à quatre chiffres : {value:string}"
+
 #: components/WorkBench/resultsParser.ts:198
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "badDateFormat"
 msgstr "valeur de date incorrecte : {value:string}. attendu : {format:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:203
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "coordinateBadFormat"
 msgstr "mauvaise valeur de latitude ou de longitude : {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:207
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "latitudeOutOfRange"
 msgstr "la latitude doit être comprise entre -90 et 90. Réel : {value:string}"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:211
-#, fuzzy
-msgid "longitudeOutOfRange"
-msgstr ""
-"la longitude doit être comprise entre -180 et 180. Réelle : {value:string}"
-
 #. Used in: Components > Work Bench > Results Parser
+msgid "longitudeOutOfRange"
+msgstr "la longitude doit être comprise entre -180 et 180. Réelle : {value:string}"
+
 #: components/WorkBench/resultsParser.ts:215
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidPartialRecord"
 msgstr "ce champ doit être vide si {column:string} est vide"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:219
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "fieldRequiredByUploadPlan"
 msgstr "le champ est requis par le mappage du plan de téléchargement"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:221
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "invalidTreeStructure"
 msgstr ""
 "Il existe plusieurs valeurs d'espace réservé \"Téléchargées\" dans "
 "l'arborescence !"
 
-#. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:223
-#, fuzzy
+#. Used in: Components > Work Bench > Results Parser
 msgid "missingRequiredTreeParent"
 msgstr ""
-"Valeur de rang parent d'arborescence requise manquante ou non mappée pour \""
-"{names:string}\"."
+"Valeur de rang parent d'arborescence requise manquante ou non mappée pour "
+"\"{names:string}\"."
