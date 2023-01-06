@@ -1,4 +1,4 @@
-name: Tests
+name: Update localization
 
 on: [push]
 
@@ -21,6 +21,10 @@ jobs:
           # Assumes the strings originally came from production branch
           ref: production
           fetch-depth: 0
+          # Using a Personal Access Token from an admin account to bypass branch
+          # protection rules and allow direct pushes to production. Inspirited
+          # by: https://github.com/community/community/discussions/13836
+          token: ${{ secrets.GITHUB_PUSH_TOKEN_FOR_WEBLATE }}
 
       - uses: actions/setup-node@v3
         with:
