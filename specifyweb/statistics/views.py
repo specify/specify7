@@ -23,7 +23,7 @@ from django.db import connection
                         'schema': {
                             'type': 'object',
                             'properties': {
-                                'familiesRepresented': {
+                                'familieRepresented': {
                                     'type': 'integer'
                                 },
                                 'generaRepresented': {
@@ -58,7 +58,7 @@ def collection_holdings(request) -> HttpResponse:
     all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
     all_node_numbers_used.sort()
     family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
-    holding_dict['familiesRepresented'] = family_count
+    holding_dict['familieRepresented'] = family_count
     holding_dict['generaRepresented'] = 0
     # Genera represented
     holding_dict['speciesRepresented'] = 0
