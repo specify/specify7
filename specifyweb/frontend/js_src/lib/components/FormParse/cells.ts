@@ -145,6 +145,13 @@ const processCellType: {
         ? model.getFields(fieldDefinition.pluginDefinition.dateFields.join('.'))
         : undefined) ?? fields;
 
+    if (
+      resolvedFields === undefined &&
+      (fieldDefinition.type !== 'Plugin' ||
+        fieldDefinition.pluginDefinition.type === 'PartialDateUI')
+    )
+      console.error(`Unknown field: ${rawFieldName ?? '(null)'}`);
+
     const hasAccess =
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 

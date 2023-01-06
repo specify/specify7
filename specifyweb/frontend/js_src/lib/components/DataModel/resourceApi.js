@@ -294,6 +294,7 @@ function eventHandlerForToOne(related, field) {
             // BUG: check type of value
             const field = this.specifyModel.getField(fieldName);
             const relatedModel = field.relatedModel;
+            // BUG: don't do anything for virtual fields
 
             switch (field.type) {
             case 'one-to-many':

@@ -322,6 +322,7 @@ export const commonText = createDictionary({
   countLine: {
     comment: 'Example usage: Record Sets (1,234)',
     'en-us': '{resource:string} ({count:number|formatted})',
+    af: '{count:number|formatted} - {resource:string}',
     'ru-ru': '{resource:string} ({count:number|formatted})',
   },
   jsxCountLine: {

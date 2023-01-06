@@ -9,6 +9,14 @@ export function ReadOnlyMode(): JSX.Element {
     'forms',
     'readOnlyMode'
   );
+
+  const [useFieldLabels = false, setUseFieldLabels] = useCachedState(
+    'forms',
+    'useFieldLabels'
+  );
+
+  const [state, setState] = React.useState('defaultValue');
+
   return (
     <Button.Small
       onClick={(): void => {

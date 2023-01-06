@@ -60,6 +60,7 @@ export const withHandleBlur = <TYPE extends InputType>(
     handleBlur?.(event);
   },
 });
+
 export const Input = {
   Radio: wrap<
     'input',

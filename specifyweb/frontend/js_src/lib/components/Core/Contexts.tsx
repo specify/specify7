@@ -125,7 +125,7 @@ export function Contexts({
       <ErrorBoundary>
         <ErrorContext.Provider value={handleError}>
           {errors}
-          <LoadingContext.Provider key="loadingContext" value={loadingHandler}>
+          <LoadingContext.Provider value={loadingHandler}>
             <Dialog
               buttons={undefined}
               className={{ container: dialogClassNames.narrowContainer }}

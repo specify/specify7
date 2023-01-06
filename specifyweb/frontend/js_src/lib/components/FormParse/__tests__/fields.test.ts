@@ -239,6 +239,27 @@ describe('parseFormField', () => {
       },
     }));
 
+  test('Text component is converted into partial date for data fields', () =>
+    expect(
+      parse('<cell uiType="text" />', {
+        // REFACTOR: use getField() instead
+        fields: [
+          schema.models.CollectionObject.strictGetField('timestampCreated'),
+        ],
+      })
+    ).toEqual({
+      isReadOnly: false,
+      type: 'Plugin',
+      pluginDefinition: {
+        type: 'PartialDateUI',
+        defaultValue: undefined,
+        canChangePrecision: false,
+        dateFields: ['timestampCreated'],
+        precisionField: undefined,
+        defaultPrecision: 'full',
+      },
+    }));
+
   test('File picker', () =>
     expect(parse('<cell uiType="browse" />', {})).toEqual({
       isReadOnly: false,
