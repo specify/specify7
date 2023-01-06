@@ -59,45 +59,9 @@ def collection_holdings(request) -> HttpResponse:
     all_node_numbers_used.sort()
     family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
     holding_dict['familiesRepresented'] = family_count
-
+    holding_dict['generaRepresented'] = 0
     # Genera represented
-    cursor.execute(
-        """
-        SELECT count(DISTINCT tx.TaxonID)
-        FROM (SELECT DISTINCT tax.TaxonID, tax.nodenumber
-          FROM (SELECT TaxonID
-                FROM determination
-                WHERE CollectionMemberID = % s
-                  AND determination.IsCurrent <> 0) as Genera1,
-               taxon as tax
-          WHERE tax.isaccepted <> 0
-            and tax.TaxonID = Genera1.TaxonID) as Genera2,
-         taxon as tx
-        WHERE tx.rankid = 180
-        and Genera2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber
-       """,
-        [request.specify_collection.id]
-    )
-    holding_dict['generaRepresented'] = int(cursor.fetchone()[0])
-
-    cursor.execute(
-        """
-        SELECT count(DISTINCT tx.TaxonID)
-        FROM (SELECT DISTINCT tax.TaxonID, tax.nodenumber
-              FROM (SELECT TaxonID
-                    FROM determination
-                    WHERE CollectionMemberID = % s
-                      AND determination.IsCurrent <> 0) as Genera1,
-                   taxon as tax
-              WHERE tax.isaccepted <> 0
-                and tax.TaxonID = Genera1.TaxonID) as Genera2,
-             taxon as tx
-        WHERE tx.rankid = 220
-          and Genera2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber
-       """,
-        [request.specify_collection.id]
-    )
-    holding_dict['speciesRepresented'] = int(cursor.fetchone()[0])
+    holding_dict['speciesRepresented'] = 0
     return http.JsonResponse(holding_dict)
 
 @login_maybe_required
