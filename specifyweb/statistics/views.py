@@ -2,6 +2,7 @@ import json
 from django import http
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
+from . import utils
 
 from sqlalchemy.sql.expression import func, distinct
 
@@ -43,25 +44,21 @@ def collection_holdings(request) -> HttpResponse:
     # Holdings
     # Families
     holding_dict = {}
-    cursor.execute(
-        """
-        SELECT count(*)
-        FROM (SELECT DISTINCT tx.TaxonID
-              FROM (SELECT DISTINCT tax.TaxonID, tax.nodenumber
-                    FROM (SELECT TaxonID
-                          FROM determination
-                          WHERE CollectionMemberID = % s
-                            AND determination.IsCurrent = true) as Families1,
-                         taxon as tax
-                    WHERE tax.isaccepted <> 0
-                      and tax.TaxonID = Families1.TaxonID) as Families2,
-                   taxon as tx
-              WHERE tx.rankid = 140
-                and Families2.nodenumber between tx.nodenumber and tx.HighestChildNodeNumber) as Familes3
-        """,
-        [request.specify_collection.id]
-    )
-    holding_dict['familiesRepresented'] = int(cursor.fetchone()[0])
+
+    cursor.execute("""
+    select nodeNumber, highestChildNodeNumber from taxon where rankid = 140
+    """)
+    all_families = list(cursor.fetchall())
+    cursor.execute("""
+    SELECT distinct(taxon.nodenumber)
+        FROM determination join taxon using (taxonid)
+        WHERE CollectionMemberID = % s
+        AND determination.IsCurrent = true and taxon.IsAccepted <> 0
+    """, [request.specify_collection.id])
+    all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
+    all_node_numbers_used.sort()
+    family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
+    holding_dict['familiesRepresented'] = family_count
 
     # Genera represented
     cursor.execute(
@@ -169,6 +166,7 @@ def collection_locality_geography(request) -> HttpResponse:
     ####LOC_GEO
     # COUNTRIES
     geography_dict = {}
+    #don't need geographyid
     cursor.execute(
         """
         SELECT count(Name)
