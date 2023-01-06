@@ -4,6 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import { toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { idFromUrl } from '../DataModel/resource';

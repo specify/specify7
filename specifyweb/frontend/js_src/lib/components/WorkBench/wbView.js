@@ -15,15 +15,15 @@ import '../../../css/workbench.css';
 import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
-import {Backbone} from '../DataModel/backbone';
+import { Backbone } from '../DataModel/backbone';
 import Handsontable from 'handsontable';
 
-import {Button} from '../Atoms/Button';
-import {Link} from '../Atoms/Link';
-import {getModel, schema, strictGetModel} from '../DataModel/schema';
-import {DataSetNameView} from './DataSetMeta';
-import {WbUploaded} from './Results';
-import {WBUtils} from './wbUtils';
+import { Button } from '../Atoms/Button';
+import { Link } from '../Atoms/Link';
+import { getModel, schema, strictGetModel } from '../DataModel/schema';
+import { DataSetNameView } from './DataSetMeta';
+import { WbUploaded } from './Results';
+import { WBUtils } from './wbUtils';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -31,44 +31,44 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
-import {capitalize, clamp, mappedFind} from '../../utils/utils';
-import {getTableFromMappingPath} from '../WbPlanView/navigator';
-import {getIcon, unknownIcon} from '../InitialContext/icons';
-import {wbText} from '../../localization/workbench';
-import {commonText} from '../../localization/common';
-import {showDialog} from '../Molecules/LegacyDialog';
-import {dialogClassNames} from '../Molecules/Dialog';
-import {format} from '../Forms/dataObjFormatters';
-import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
-import {whitespaceSensitive} from '../../localization/utils';
-import {filterArray} from '../../utils/types';
-import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
-import {serializeResource} from '../DataModel/helpers';
-import {fetchPickList} from '../PickLists/fetch';
-import {ajax} from '../../utils/ajax';
-import {ping} from '../../utils/ajax/ping';
+import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
+import { capitalize, clamp, mappedFind } from '../../utils/utils';
+import { getTableFromMappingPath } from '../WbPlanView/navigator';
+import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
+import { showDialog } from '../Molecules/LegacyDialog';
+import { dialogClassNames } from '../Molecules/Dialog';
+import { format } from '../Forms/dataObjFormatters';
+import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
+import { whitespaceSensitive } from '../../localization/utils';
+import { filterArray } from '../../utils/types';
+import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
+import { serializeResource } from '../DataModel/helpers';
+import { fetchPickList } from '../PickLists/fetch';
+import { ajax } from '../../utils/ajax';
+import { ping } from '../../utils/ajax/ping';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import {wbViewTemplate} from './Template';
-import {legacyLoadingContext} from '../Core/Contexts';
-import {getCache, setCache} from '../../utils/cache';
-import {f} from '../../utils/functools';
-import {pathStartsWith} from '../WbPlanView/helpers';
-import {getUserPref} from '../UserPreferences/helpers';
-import {createBackboneView} from '../Core/reactBackboneExtend';
-import {WbStatus} from './Status';
-import {crash} from '../Errors/Crash';
-import {loadingBar} from '../Molecules';
-import {Http} from '../../utils/ajax/definitions';
-import {downloadDataSet} from './helpers';
-import {LANGUAGE} from '../../localization/utils/config';
-import {resolveValidationMessage} from './resultsParser';
-import {backEndText} from '../../localization/backEnd';
-import {wbPlanText} from '../../localization/wbPlan';
+import { wbViewTemplate } from './Template';
+import { legacyLoadingContext } from '../Core/Contexts';
+import { getCache, setCache } from '../../utils/cache';
+import { f } from '../../utils/functools';
+import { pathStartsWith } from '../WbPlanView/helpers';
+import { getUserPref } from '../UserPreferences/helpers';
+import { createBackboneView } from '../Core/reactBackboneExtend';
+import { WbStatus } from './Status';
+import { crash } from '../Errors/Crash';
+import { loadingBar } from '../Molecules';
+import { Http } from '../../utils/ajax/definitions';
+import { downloadDataSet } from './helpers';
+import { LANGUAGE } from '../../localization/utils/config';
+import { resolveValidationMessage } from './resultsParser';
+import { backEndText } from '../../localization/backEnd';
+import { wbPlanText } from '../../localization/wbPlan';
 
 const metaKeys = [
   'isNew',
@@ -275,7 +275,10 @@ export const WBView = Backbone.View.extend({
               });
               this.$('.wb-validate, .wb-data-check')
                 .prop('disabled', true)
-                .prop('title', whitespaceSensitive(wbText.wbValidateUnavailable()));
+                .prop(
+                  'title',
+                  whitespaceSensitive(wbText.wbValidateUnavailable())
+                );
             } else {
               this.$('.wb-validate, .wb-data-check').prop('disabled', false);
               this.$('.wb-show-upload-view')
@@ -841,9 +844,20 @@ export const WBView = Backbone.View.extend({
      * This is the only type of validation that is done on the front-end
      */
     const newIssues = f.unique([
-      ...(isValid ? [] : [whitespaceSensitive(backEndText.failedParsingPickList({value:`"${value}"`}))]),
+      ...(isValid
+        ? []
+        : [
+            whitespaceSensitive(
+              backEndText.failedParsingPickList({ value: `"${value}"` })
+            ),
+          ]),
       ...issues.filter(
-        (issue) => !issue.endsWith(whitespaceSensitive(backEndText.failedParsingPickList({value:''})))
+        (issue) =>
+          !issue.endsWith(
+            whitespaceSensitive(
+              backEndText.failedParsingPickList({ value: '' })
+            )
+          )
       ),
     ]);
     if (JSON.stringify(issues) !== JSON.stringify(newIssues))
@@ -1336,7 +1350,9 @@ export const WBView = Backbone.View.extend({
       physicalRow,
       physicalCol,
       'issues'
-    ).some((issue) => issue.endsWith(backEndText.failedParsingPickList({value:''})));
+    ).some((issue) =>
+      issue.endsWith(backEndText.failedParsingPickList({ value: '' }))
+    );
     if (hasFrontEndValidationErrors)
       /*
        * Since isModified state has higher priority then issues, we need to
@@ -2284,15 +2300,15 @@ export const WBView = Backbone.View.extend({
     if (['NullRecord', 'PropagatedFailure', 'Matched'].includes(uploadStatus)) {
     } else if (uploadStatus === 'ParseFailures')
       statusData.failures.forEach((line) => {
-        const [issueMessage, payload, column] = line.length === 2 ? [line[0], {}, line[1]] : line;
+        const [issueMessage, payload, column] =
+          line.length === 2 ? [line[0], {}, line[1]] : line;
         setMetaCallback(
           'issues',
-          resolveValidationMessage(issueMessage,payload ?? {}),
+          resolveValidationMessage(issueMessage, payload ?? {}),
           [column],
           resolveColumns
-        )
-        }
-      );
+        );
+      });
     else if (uploadStatus === 'NoMatch')
       setMetaCallback(
         'issues',
@@ -2303,7 +2319,7 @@ export const WBView = Backbone.View.extend({
     else if (uploadStatus === 'FailedBusinessRule')
       setMetaCallback(
         'issues',
-        resolveValidationMessage(statusData.message,statusData.payload ?? {}),
+        resolveValidationMessage(statusData.message, statusData.payload ?? {}),
         statusData.info.columns,
         resolveColumns
       );
@@ -2510,10 +2526,7 @@ export const WBView = Backbone.View.extend({
     ) {
       const hasErrors = cellCounts.invalidCells > 0;
       uploadButton.prop('disabled', hasErrors);
-      uploadButton.attr(
-        'title',
-        hasErrors ? title : undefined
-      );
+      uploadButton.attr('title', hasErrors ? title : undefined);
     }
 
     if (this.refreshInitiatedBy) this.operationCompletedMessage(cellCounts);
@@ -2526,21 +2539,25 @@ export const WBView = Backbone.View.extend({
         cellCounts.invalidCells === 0
           ? {
               header: wbText.validationNoErrors(),
-              message: <>
-                {wbText.validationNoErrorsDescription()}
-                <br />
-                <br />
-                {wbText.validationReEditWarning()}
-              </>,
+              message: (
+                <>
+                  {wbText.validationNoErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.validationReEditWarning()}
+                </>
+              ),
             }
           : {
               header: wbText.validationErrors(),
-              message: <>
-                {wbText.validationErrorsDescription()}
-                <br />
-                <br />
-                {wbText.validationReEditWarning()}
-              </>,
+              message: (
+                <>
+                  {wbText.validationErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.validationReEditWarning()}
+                </>
+              ),
             },
       upload:
         cellCounts.invalidCells === 0
@@ -2550,12 +2567,14 @@ export const WBView = Backbone.View.extend({
             }
           : {
               header: wbText.uploadErrors(),
-              message: <>
-                {wbText.uploadErrorsDescription()}
-                <br />
-                <br />
-                {wbText.uploadErrorsSecondDescription()}
-              </>,
+              message: (
+                <>
+                  {wbText.uploadErrorsDescription()}
+                  <br />
+                  <br />
+                  {wbText.uploadErrorsSecondDescription()}
+                </>
+              ),
             },
       unupload: {
         header: wbText.dataSetRollback(),

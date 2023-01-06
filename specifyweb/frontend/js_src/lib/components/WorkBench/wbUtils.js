@@ -15,21 +15,24 @@ import {
   getLocalityColumnsFromSelectedCells,
   getLocalityCoordinate,
 } from '../Leaflet/wbLocalityDataExtractor';
-import {Backbone} from '../DataModel/backbone';
-import {Ul} from '../Atoms';
-import {Button} from '../Atoms/Button';
-import {Input, Label} from '../Atoms/Form';
-import {Lat, Long} from '../../utils/latLong';
-import {camelToKebab, clamp, sortFunction} from '../../utils/utils';
-import {f} from '../../utils/functools';
-import {getInitialSearchPreferences, WbAdvancedSearch,} from './AdvancedSearch';
-import {wbText} from '../../localization/workbench';
-import {commonText} from '../../localization/common';
-import {showDialog} from '../Molecules/LegacyDialog';
-import {createBackboneView} from '../Core/reactBackboneExtend';
-import {LeafletMap} from '../Leaflet/Map';
-import {localityText} from '../../localization/locality';
-import {filterArray} from '../../utils/types';
+import { Backbone } from '../DataModel/backbone';
+import { Ul } from '../Atoms';
+import { Button } from '../Atoms/Button';
+import { Input, Label } from '../Atoms/Form';
+import { Lat, Long } from '../../utils/latLong';
+import { camelToKebab, clamp, sortFunction } from '../../utils/utils';
+import { f } from '../../utils/functools';
+import {
+  getInitialSearchPreferences,
+  WbAdvancedSearch,
+} from './AdvancedSearch';
+import { wbText } from '../../localization/workbench';
+import { commonText } from '../../localization/common';
+import { showDialog } from '../Molecules/LegacyDialog';
+import { createBackboneView } from '../Core/reactBackboneExtend';
+import { LeafletMap } from '../Leaflet/Map';
+import { localityText } from '../../localization/locality';
+import { filterArray } from '../../utils/types';
 
 const wbSearchView = createBackboneView(WbAdvancedSearch);
 const LeafletMapView = createBackboneView(LeafletMap);
@@ -481,7 +484,7 @@ export const WBUtils = Backbone.View.extend({
       nextCellOfType();
     }
   },
-  searchFunction(initialCellValue='') {
+  searchFunction(initialCellValue = '') {
     let cellValue = initialCellValue;
 
     if (this.searchQuery === undefined) return false;
@@ -1001,7 +1004,10 @@ export const WBUtils = Backbone.View.extend({
       const changes = originalState
         .map(([visualRow, visualCol, originalValue]) => {
           let value = originalValue;
-          if (originalValue !== null && (applyToAll || selectedCells[visualRow]?.has(visualCol))) {
+          if (
+            originalValue !== null &&
+            (applyToAll || selectedCells[visualRow]?.has(visualCol))
+          ) {
             const columnRole =
               this.wbview.mappings.coordinateColumns[toPhysicalCol[visualCol]];
             const coordinate = (columnRole === 'Lat' ? Lat : Long).parse(

@@ -9,13 +9,10 @@
  * @module
  */
 
-import type {
-  AutoMapperScope,
-  MappingPath,
-} from './Mapper';
+import type { AutoMapperScope, MappingPath } from './Mapper';
 import type { Tables } from '../DataModel/types';
 import type { RA, RR } from '../../utils/types';
-import {AnyTree, TableFields} from '../DataModel/helperTypes';
+import { AnyTree, TableFields } from '../DataModel/helperTypes';
 
 /*
  * AutoMapper does 2 passes though the schema whenever it is asked to map

@@ -218,7 +218,9 @@ export function useSchemaLanguages(
               data.map(
                 ({ country, language }) =>
                   `${language}${
-                    country === null || country === '' ? '' : `${languageSeparator}${country}`
+                    country === null || country === ''
+                      ? ''
+                      : `${languageSeparator}${country}`
                   }`
               )
             )

@@ -43,7 +43,9 @@ export function ChooseSchemaLanguage(): JSX.Element {
               href={`/specify/schema-config/${code}/`}
               role="link"
             >
-                {label.includes('(') ? label : `${label} (${code.split(languageSeparator).at(-1)})`}
+              {label.includes('(')
+                ? label
+                : `${label} (${code.split(languageSeparator).at(-1)})`}
             </Link.Default>
           </li>
         ))}

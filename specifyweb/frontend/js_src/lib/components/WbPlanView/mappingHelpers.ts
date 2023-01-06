@@ -4,11 +4,11 @@
  * @module
  */
 
-import type {MappingPath} from './Mapper';
-import {schemaBase as schema} from '../DataModel/schemaBase';
-import type {Relationship} from '../DataModel/specifyField';
-import type {R, RA, WritableArray} from '../../utils/types';
-import type {ColumnOptions} from './uploadPlanParser';
+import type { MappingPath } from './Mapper';
+import { schemaBase as schema } from '../DataModel/schemaBase';
+import type { Relationship } from '../DataModel/specifyField';
+import type { R, RA, WritableArray } from '../../utils/types';
+import type { ColumnOptions } from './uploadPlanParser';
 
 /**
  * Returns whether relationship is a -to-many

@@ -3,8 +3,8 @@ import React from 'react';
 import type { SerializedCollection } from '../components/DataModel/collection';
 import { f } from '../utils/functools';
 import { defined } from '../utils/types';
-import {useAsyncState} from './useAsyncState';
-import {AnySchema} from '../components/DataModel/helperTypes';
+import { useAsyncState } from './useAsyncState';
+import { AnySchema } from '../components/DataModel/helperTypes';
 
 /**
  * A hook for fetching a collection of resources in a paginated way
