@@ -11,7 +11,7 @@ from django.conf import settings
 from specifyweb.businessrules.exceptions import BusinessRuleException
 
 from  .auditcodes import TREE_MERGE, TREE_SYNONYMIZE, TREE_DESYNONYMIZE
-
+from time import perf_counter
 @contextmanager
 def validate_node_numbers(table, revalidate_after=True):
     try:
@@ -97,6 +97,7 @@ class Tree(models.Model):
 
 
 def open_interval(model, parent_node_number, size):
+    t1 = perf_counter()
     """Open a space of given size in a tree model under the given parent.
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
@@ -109,7 +110,9 @@ def open_interval(model, parent_node_number, size):
     # All intervals containing the insertion point get expanded by size.
     model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
         .update(highestchildnodenumber=F('highestchildnodenumber')+size)
-
+    t2 = perf_counter()
+    logger.warning('open interval took: ')
+    logger.warning(t2 - t1)
     return parent_node_number + 1
 
 def move_interval(model, old_node_number, old_highest_child_node_number, new_node_number):
@@ -117,11 +120,16 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
     to a new nodenumber range. There must be a gap of sufficient size
     at the destination. Leaves a gap at the old node number range.
     """
+    t1 = perf_counter()
     delta = new_node_number - old_node_number
     model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
         .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
+    t2 = perf_counter()
+    logger.warning('move interval took: ')
+    logger.warning(t2-t1)
 
 def close_interval(model, node_number, size):
+    t1 = perf_counter()
     """Close a gap where an interval was removed."""
     # All intervals containing the gap get reduced by size.
     model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
@@ -131,8 +139,12 @@ def close_interval(model, node_number, size):
         nodenumber=F('nodenumber')-size,
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
+    t2 = perf_counter()
+    logger.warning('move interval took: ')
+    logger.warning(t2-t1)
 
 def adding_node(node):
+    t1 = perf_counter()
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
@@ -147,9 +159,13 @@ def adding_node(node):
 
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
+    t2 = perf_counter()
+    logger.warning('adding node took: ')
+    logger.warning(t2-t1)
 
 def moving_node(to_save):
     logger.info('moving node %s', to_save)
+    t1 = perf_counter()
     model = type(to_save)
     current = model.objects.get(id=to_save.id)
     size = current.highestchildnodenumber - current.nodenumber + 1
@@ -169,12 +185,16 @@ def moving_node(to_save):
     current = model.objects.get(id=current.id)
     to_save.nodenumber = current.nodenumber
     to_save.highestchildnodenumber = current.highestchildnodenumber
+    t2 = perf_counter()
+    logger.warning('moving node took: ')
+    logger.warning(t2 - t1)
 
 def mutation_log(action, node, agent, parent, dirty_flds):
     from .auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
 def merge(node, into, agent):
+    t1 = perf_counter()
     from . import models
     logger.info('merging %s into %s', node, into)
     model = type(node)
@@ -201,6 +221,9 @@ def merge(node, into, agent):
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                          [{'field_name': model.specify_model.idFieldName, 'old_value': node.id, 'new_value': into.id}])
+            t2 = perf_counter()
+            logger.warning('merge took: ')
+            logger.warning(t2 - t1)
             return
         except ProtectedError as e:
             related_model_name, field_name = re.search(r"'(\w+)\.(\w+)'$", e.args[0]).groups()
@@ -212,6 +235,7 @@ def merge(node, into, agent):
 
 def synonymize(node, into, agent):
     logger.info('synonymizing %s to %s', node, into)
+    t1 = perf_counter()
     model = type(node)
     assert type(into) is model
     target = model.objects.select_for_update().get(id=into.id)
@@ -235,8 +259,12 @@ def synonymize(node, into, agent):
         node.determinations.update(preferredtaxon=target)
         from .models import Determination
         Determination.objects.filter(preferredtaxon=node).update(preferredtaxon=target)
+    t2 = perf_counter()
+    logger.warning('synonmize took: ')
+    logger.warning(t2 - t1)
 
 def desynonymize(node, agent):
+    t1 = perf_counter()
     logger.info('desynonmizing %s', node)
     model = type(node)
     old_acceptedid = node.accepted_id
@@ -249,6 +277,9 @@ def desynonymize(node, agent):
 
     if model._meta.db_table == 'taxon':
         node.determinations.update(preferredtaxon=F('taxon'))
+    t2 = perf_counter()
+    logger.warning('desynonymize took: ')
+    logger.warning(t2 - t1)
 
 EMPTY = "''"
 TRUE = "true"
@@ -395,6 +426,7 @@ def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
 
 
 def validate_tree_numbering(table):
+    t1 = perf_counter()
     logger.info('validating tree')
     cursor = connection.cursor()
     cursor.execute(
@@ -422,6 +454,9 @@ def validate_tree_numbering(table):
     not_nested_count, = cursor.fetchone()
     assert not_nested_count == 0, \
         "found {} nodenumbers not nested by parent".format(not_nested_count)
+    t2 = perf_counter()
+    logger.warning('validate tree number took: ')
+    logger.warning(t2-t1)
 
 def path_expr(table, depth):
     return CONCAT([ID(table, i) for i in reversed(list(range(depth)))], ',')
@@ -441,7 +476,7 @@ def print_paths(table, depth):
 def renumber_tree(table):
     logger.info('renumbering tree')
     cursor = connection.cursor()
-
+    t1 = perf_counter()
     # make sure rankids are set correctly
     cursor.execute((
         "update {table} t\n"
@@ -506,3 +541,6 @@ def renumber_tree(table):
     tree_model = datamodel.get_table(table)
     tasknames = [name.format(tree_model.name) for name in ("UpdateNodes{}", "BadNodes{}")]
     Sptasksemaphore.objects.filter(taskname__in=tasknames).update(islocked=False)
+    t2 = perf_counter()
+    logger.warning('renumbertree took: ')
+    logger.warning(t2 - t1)
