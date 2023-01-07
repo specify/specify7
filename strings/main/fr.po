@@ -1,119 +1,148 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-05 20:51+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/main/fr/"
+">\n"
+"Language: fr\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
-#: components/Molecules/AppTitle.tsx:47
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:47
+#, fuzzy
 msgid "appTitle"
 msgstr "{baseTitle:string} | Précisez 7"
 
-#: components/Molecules/AppTitle.tsx:46
 #. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:46
+#, fuzzy
 msgid "baseAppTitle"
 msgstr "Précisez 7"
 
+#. 🟥Used in title. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#. 🟥Used in title. Used in: Components > Router > Not Found View
+#, fuzzy
 msgid "pageNotFound"
 msgstr "Page non trouvée"
 
-#: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
+#, fuzzy
 msgid "nothingWasFound"
 msgstr "Oops! Rien n'a été trouvé"
 
-#: components/Router/NotFoundView.tsx:26
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
+#, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
 "La page que vous recherchez a peut-être été supprimée, a changé de nom ou "
 "est temporairement indisponible."
 
-#: components/Router/NotFoundView.tsx:29
 #. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
+#, fuzzy
 msgid "returnToHomepage"
 msgstr "Retour à la page d'accueil"
 
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:54
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:219
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+#, fuzzy
 msgid "errorOccurred"
 msgstr "Désolé, quelque chose s'est un peu mal passé"
 
-#: components/Errors/ErrorDialog.tsx:163
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:163
+#, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
 "Nous sommes désolés, il semble que vous ayez rencontré une erreur dans "
 "Spécifier 7 dont nous n'avons peut-être pas connaissance."
 
-#: components/Errors/ErrorDialog.tsx:164
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:164
+#, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Pour éviter de corrompre les enregistrements de données, nous devons "
 "recommencer à partir d'un endroit sûr : la page d'accueil."
 
-#: components/Errors/ErrorDialog.tsx:30
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:30
+#, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
-"Si ce problème persiste, veuillez contacter votre support informatique. "
-"S'il s'agit d'une base de données Spécifier le cloud, veuillez télécharger "
-"le message d'erreur et l'envoyer à <email />."
+"Si ce problème persiste, veuillez contacter votre support informatique. S'il "
+"s'agit d'une base de données Spécifier le cloud, veuillez télécharger le "
+"message d'erreur et l'envoyer à <email />."
 
-#: components/Errors/ErrorDialog.tsx:36
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:36
+#, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
 "Les utilisateurs des <memberLink>institutions membres</memberLink> peuvent "
 "rechercher des réponses aux questions et demander de l'aide sur notre "
 "<discourseLink>Forum communautaire</discourseLink>."
 
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 #: components/Core/__tests__/Contexts.test.tsx:37
 #: components/Errors/ErrorDialog.tsx:172
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
+#, fuzzy
 msgid "errorMessage"
 msgstr "Message d'erreur"
 
-#: components/Router/Router.tsx:297
 #. Used in: Components > Router > Router
+#: components/Router/Router.tsx:297
+#, fuzzy
 msgid "leavePageConfirmation"
 msgstr "Voulez-vous vraiment quitter cette page ?"
 
-#: components/Security/Role.tsx:88
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:88
+#, fuzzy
 msgid "leavePageConfirmationDescription"
 msgstr ""
-"Les modifications non enregistrées seront perdues si vous quittez cette "
-"page."
+"Les modifications non enregistrées seront perdues si vous quittez cette page."
 
-#: components/Router/Router.tsx:293
 #. Used in: Components > Router > Router
+#: components/Router/Router.tsx:293
+#, fuzzy
 msgid "leave"
 msgstr "Laisser"
 
+#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:140
-#. Used in: Components > Core > Main
+#, fuzzy
 msgid "versionMismatch"
-msgstr "La version spécifiée ne correspond pas à la version de la base de données"
+msgstr ""
+"La version spécifiée ne correspond pas à la version de la base de données"
 
-#: components/Core/Main.tsx:144
 #. Used in: Components > Core > Main
+#: components/Core/Main.tsx:144
+#, fuzzy
 msgid "versionMismatchDescription"
 msgstr ""
 "La version Spécifier {specifySixVersion:string} ne correspond pas à la "
 "version de la base de données {databaseVersion:string}."
 
-#: components/Core/Main.tsx:149
 #. Used in: Components > Core > Main
+#: components/Core/Main.tsx:149
+#, fuzzy
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Certaines fonctionnalités de Spécifier 7 peuvent donc ne pas fonctionner "
 "correctement."
 
-#: components/Core/Main.tsx:152
 #. Used in: Components > Core > Main
+#: components/Core/Main.tsx:152
+#, fuzzy
 msgid "versionMismatchInstructions"
 msgstr "Instructions pour résoudre l'incompatibilité de schéma Spécifier"

@@ -1,93 +1,120 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-05 20:50+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"backEnd/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
-#: components/WorkBench/resultsParser.ts:170
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:170
+#, fuzzy
 msgid "failedParsingBoolean"
 msgstr "значення \"{value:string}\" не можна розв’язати як True або False"
 
-#: components/WorkBench/resultsParser.ts:172
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:172
+#, fuzzy
 msgid "failedParsingDecimal"
 msgstr "значення \"{value:string}\" не є дійсним десятковим значенням"
 
-#: components/WorkBench/resultsParser.ts:174
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:174
+#, fuzzy
 msgid "failedParsingFloat"
 msgstr "значення \"{value:string}\" не є дійсним значенням з плаваючою комою"
 
+#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
 #: components/WorkBench/resultsParser.ts:176
 #: components/WorkBench/wbView.js:844
 #: components/WorkBench/wbView.js:846
 #: components/WorkBench/wbView.js:1339
-#. Used in: Components > Work Bench > Results Parser ⬤ Components > Work Bench > Wb View
+#, fuzzy
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} не є допустимим значенням у цьому полі списку вибору.\n"
 "Натисніть на стрілку, щоб вибрати серед доступних варіантів."
 
-#: components/WorkBench/resultsParser.ts:180
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:180
+#, fuzzy
 msgid "failedParsingAgentType"
 msgstr ""
 "поганий тип агента: \"{badType:string}\". Очікується один із "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:185
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:185
+#, fuzzy
 msgid "pickListValueTooLong"
 msgstr ""
-"значення зі списку вибору {pickList:string} більше, ніж максимальне "
-"значення {maxLength:number|formatted} для поля"
+"значення зі списку вибору {pickList:string} більше, ніж максимальне значення "
+"{maxLength:number|formatted} для поля"
 
-#: components/WorkBench/resultsParser.ts:190
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:190
+#, fuzzy
 msgid "valueTooLong"
 msgstr "довжина значення не повинна перевищувати {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:194
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:194
+#, fuzzy
 msgid "invalidYear"
 msgstr "значення дати має містити чотири цифри року: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:198
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:198
+#, fuzzy
 msgid "badDateFormat"
 msgstr "неправильне значення дати: {value:string}. очікується: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:203
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:203
+#, fuzzy
 msgid "coordinateBadFormat"
 msgstr "неправильне значення широти або довготи: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:207
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:207
+#, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "широта має бути між -90 і 90. Фактична: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:211
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:211
+#, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "довгота має бути між -180 і 180. Фактична: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:215
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:215
+#, fuzzy
 msgid "invalidPartialRecord"
 msgstr "це поле має бути порожнім, якщо {column:string} порожнє"
 
-#: components/WorkBench/resultsParser.ts:219
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:219
+#, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "поле є обов’язковим для зіставлення плану завантаження"
 
-#: components/WorkBench/resultsParser.ts:221
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:221
+#, fuzzy
 msgid "invalidTreeStructure"
 msgstr "У дереві є кілька значень заповнювача \"Завантажено\"!"
 
-#: components/WorkBench/resultsParser.ts:223
 #. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultsParser.ts:223
+#, fuzzy
 msgid "missingRequiredTreeParent"
 msgstr ""
-"Відсутнє або не зіставлене необхідне значення рангу батьківського дерева "
-"для \"{names:string}\"."
+"Відсутнє або не зіставлене необхідне значення рангу батьківського дерева для "
+"\"{names:string}\"."

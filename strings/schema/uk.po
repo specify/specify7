@@ -1,241 +1,291 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2023-01-05 20:50+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"schema/uk/>\n"
+"Language: uk\n"
+"Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
+#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Table.tsx:48
 #: components/Security/PreviewTables.tsx:68
 #: components/Security/registry.ts:67
 #: components/Toolbar/Schema.tsx:383
-#. Used in: Components > Schema Config > Table ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "table"
 msgstr "Таблиця"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #: components/Attachments/index.tsx:183
 #: components/Router/Routes.tsx:360
 #: components/SchemaConfig/Tables.tsx:55
-#. Used in: Components > Attachments > Index ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
+#, fuzzy
 msgid "tables"
 msgstr "Таблиці"
 
+#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
 #: components/UserPreferences/Definitions.tsx:637
 #: components/WbPlanView/MapperComponents.tsx:436
-#. Used in: Components > User Preferences > Definitions ⬤ Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "tableName"
 msgstr "Назва таблиці"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
 #: components/Header/userToolDefinitions.ts:38
 #: components/Router/Routes.tsx:334
 #: components/SchemaConfig/Components.tsx:27
 #: components/SchemaConfig/Languages.tsx:34
 #: components/Security/registry.ts:192
 #: components/UserPreferences/Definitions.tsx:588
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry ⬤ Components > User Preferences > Definitions
+#, fuzzy
 msgid "schemaConfig"
 msgstr "Конфігурація схеми"
 
-#: components/SchemaConfig/index.tsx:72
 #. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:72
+#, fuzzy
 msgid "unsavedSchemaUnloadProtect"
 msgstr "Зміни схеми не збережено"
 
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/SchemaConfig/Components.tsx:33
 #: components/WbPlanView/MapperComponents.tsx:318
-#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+#, fuzzy
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"
 
-#: components/SchemaConfig/Field.tsx:44
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:44
+#, fuzzy
 msgid "field"
 msgstr "Поле"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 #: components/FormMeta/CarryForward.tsx:264
 #: components/Forms/generateFormDefinition.ts:126
 #: components/SchemaConfig/Fields.tsx:35
 #: components/SchemaConfig/Fields.tsx:46
 #: components/Toolbar/Schema.tsx:221
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "fields"
 msgstr "поля"
 
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
 #: components/FormMeta/CarryForward.tsx:272
 #: components/Forms/generateFormDefinition.ts:164
 #: components/SchemaConfig/Fields.tsx:54
 #: components/Toolbar/Schema.tsx:281
-#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "relationships"
 msgstr "стосунки"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
 #: components/SchemaConfig/Field.tsx:49
 #: components/SchemaConfig/Table.tsx:53
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+#, fuzzy
 msgid "caption"
 msgstr "Підпис"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Field.tsx:59
 #: components/SchemaConfig/Table.tsx:63
 #: components/Security/Role.tsx:138
 #: components/Toolbar/Schema.tsx:172
 #: components/Toolbar/Schema.tsx:237
 #: components/Toolbar/Schema.tsx:390
-#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Security > Role ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "description"
 msgstr "опис"
 
-#: components/SchemaConfig/Table.tsx:110
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:110
+#, fuzzy
 msgid "hideTable"
 msgstr "Приховати таблицю"
 
-#: components/SchemaConfig/Field.tsx:88
 #. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:88
+#, fuzzy
 msgid "hideField"
 msgstr "Приховати поле"
 
-#: components/SchemaConfig/Table.tsx:73
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:73
+#, fuzzy
 msgid "tableFormat"
 msgstr "Формат таблиці"
 
-#: components/SchemaConfig/Table.tsx:87
 #. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:87
+#, fuzzy
 msgid "tableAggregation"
 msgstr "Агрегація таблиць"
 
-#: components/SchemaConfig/helpers.ts:121
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:121
+#, fuzzy
 msgid "oneToOne"
 msgstr "Один до одного"
 
-#: components/SchemaConfig/helpers.ts:122
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:122
+#, fuzzy
 msgid "oneToMany"
 msgstr "Один до багатьох"
 
-#: components/SchemaConfig/helpers.ts:123
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:123
+#, fuzzy
 msgid "manyToOne"
 msgstr "Багато-до-одного"
 
-#: components/SchemaConfig/helpers.ts:124
 #. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:124
+#, fuzzy
 msgid "manyToMany"
 msgstr "багато-до-багатьох"
 
+#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
 #: components/SchemaConfig/Field.tsx:69
 #: components/Toolbar/Schema.tsx:178
 #: components/Toolbar/Schema.tsx:396
-#. Used in: Components > Schema Config > Field ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "fieldLength"
 msgstr "Довжина"
 
+#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
 #: components/FormMeta/index.tsx:64
 #: components/Toolbar/Schema.tsx:174
 #: components/Toolbar/Schema.tsx:239
 #: components/Toolbar/Schema.tsx:392
-#. Used in: Components > Form Meta > Index ⬤ Components > Toolbar > Schema
+#, fuzzy
 msgid "readOnly"
 msgstr "Лише для читання"
 
-#: components/SchemaConfig/Format.tsx:53
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:53
+#, fuzzy
 msgid "fieldFormat"
 msgstr "Формат поля"
 
-#: components/SchemaConfig/Format.tsx:73
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:73
+#, fuzzy
 msgid "formatted"
 msgstr "Відформатований"
 
-#: components/SchemaConfig/Format.tsx:97
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:97
+#, fuzzy
 msgid "webLink"
 msgstr "Веб посилання"
 
-#: components/SchemaConfig/Format.tsx:106
 #. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:106
+#, fuzzy
 msgid "userDefined"
 msgstr "Визначений користувачем"
 
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
 #: components/Router/Routes.tsx:349
 #: components/SchemaConfig/Languages.tsx:27
 #: components/SchemaConfig/Languages.tsx:73
-#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+#, fuzzy
 msgid "addLanguage"
 msgstr "Додати мову"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:171
 #: components/Toolbar/Schema.tsx:236
 #: components/Toolbar/Schema.tsx:300
 #: components/Toolbar/Schema.tsx:384
 #: components/Toolbar/Schema.tsx:389
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "fieldLabel"
 msgstr "Мітка"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:179
 #: components/Toolbar/Schema.tsx:243
 #: components/Toolbar/Schema.tsx:397
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "databaseColumn"
 msgstr "Стовпець бази даних"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:244
 #: components/Toolbar/Schema.tsx:398
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "relatedModel"
 msgstr "Пов'язана модель"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:245
 #: components/Toolbar/Schema.tsx:399
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "otherSideName"
 msgstr "Інша сторона імені"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:246
 #: components/Toolbar/Schema.tsx:400
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "dependent"
 msgstr "Утриманець"
 
-#: components/Toolbar/Schema.tsx:354
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:354
+#, fuzzy
 msgid "downloadAsJson"
 msgstr "Завантажити як JSON"
 
-#: components/Toolbar/Schema.tsx:365
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:365
+#, fuzzy
 msgid "downloadAsTsv"
 msgstr "Завантажити як TSV"
 
+#. Used in: Components > Toolbar > Schema
 #: components/Toolbar/Schema.tsx:303
 #: components/Toolbar/Schema.tsx:387
-#. Used in: Components > Toolbar > Schema
+#, fuzzy
 msgid "tableId"
 msgstr "Ідентифікатор таблиці"
 
-#: components/Toolbar/Schema.tsx:304
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:304
+#, fuzzy
 msgid "fieldCount"
 msgstr "Підрахунок полів"
 
-#: components/Toolbar/Schema.tsx:305
 #. Used in: Components > Toolbar > Schema
+#: components/Toolbar/Schema.tsx:305
+#, fuzzy
 msgid "relationshipCount"
 msgstr "Кількість стосунків"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #: components/Header/userToolDefinitions.ts:97
 #: components/Router/Routes.tsx:34
 #: components/Router/Routes.tsx:38
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+#, fuzzy
 msgid "databaseSchema"
 msgstr "Схема бази даних"
 
-#: components/Toolbar/QueryTablesEdit.tsx:161
 #. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:161
+#, fuzzy
 msgid "selectedTables"
 msgstr "Вибрані таблиці"
 
-#: components/Toolbar/QueryTablesEdit.tsx:195
 #. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:195
+#, fuzzy
 msgid "possibleTables"
 msgstr "Можливі таблиці"
