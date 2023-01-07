@@ -39,6 +39,10 @@ const addBaseTableName = (
 export const uniqueMappingPaths = (
   mappingPaths: RA<MappingPath | undefined>
 ): RA<MappingPath> =>
+  /*
+   * See https://github.com/freaktechnik/eslint-plugin-array-func/issues/344
+   */
+  // eslint-disable-next-line array-func/from-map
   Array.from(
     new Set(filterArray(mappingPaths).map(mappingPathToString)),
     splitJoinedMappingPath

@@ -41,7 +41,7 @@ export const fetchResource = async <
 >(
   tableName: TABLE_NAME,
   id: number,
-  // @ts-expect-error Whether to trigger 404 on resource not foudn
+  // @ts-expect-error Whether to trigger 404 on resource not found
   strict: STRICT = true
 ): Promise<
   SerializedResource<SCHEMA> | (STRICT extends true ? never : undefined)
