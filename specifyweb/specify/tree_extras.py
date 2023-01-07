@@ -66,6 +66,8 @@ class Tree(models.Model):
         else:
             save()
 
+        t1 = perf_counter()
+
         try:
             model.objects.get(id=self.id, parent__rankid__lt=F('rankid'))
         except model.DoesNotExist:
@@ -82,7 +84,9 @@ class Tree(models.Model):
             or prev_self.parent_id != self.parent_id
         ):
             reset_fullnames(self.definition)
-
+        t2 = perf_counter()
+        logger.warning('time near the end block: ')
+        logger.warning(t2-t1)
     def accepted_id_attr(self):
         return 'accepted{}_id'.format(self._meta.db_table)
 
