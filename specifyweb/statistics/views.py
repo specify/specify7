@@ -11,6 +11,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
+from time import perf_counter
+
+
+def perf_time_wrapper(function_to_run, message):
+    t1 = perf_counter()
+    value_to_return = function_to_run()
+    t2 = perf_counter()
+    logger.warning(message)
+    logger.warning(t2-t1)
+    return value_to_return
 
 @login_maybe_required
 @openapi(schema={
@@ -41,14 +51,6 @@ from django.db import connection
     }}, )
 def collection_holdings(request) -> HttpResponse:
     cursor = connection.cursor()
-    # Holdings
-    # Families
-    holding_dict = {}
-
-    cursor.execute("""
-    select nodeNumber, highestChildNodeNumber from taxon where rankid = 140
-    """)
-    all_families = list(cursor.fetchall())
     cursor.execute("""
     SELECT distinct(taxon.nodenumber)
         FROM determination join taxon using (taxonid)
@@ -57,14 +59,23 @@ def collection_holdings(request) -> HttpResponse:
     """, [request.specify_collection.id])
     all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
     all_node_numbers_used.sort()
+    # Holdings
+    # Families
+    holding_dict = {}
    # family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
-    holding_dict['familieRepresented'] = 0
+    holding_dict['familiesRepresented'] = 0
     cursor.execute("""
     select nodeNumber, highestChildNodeNumber from taxon where rankid = 180
     """)
     all_genera = list(cursor.fetchall())
-    genera_count = utils.count_occurrence_ranks(all_genera, all_node_numbers_used)
-    holding_dict['generRepresented'] = genera_count
+    all_genera.sort()
+    genera_count = perf_time_wrapper(lambda: utils.count_occurrence_ranks(all_genera, all_node_numbers_used), 'basic version took: ')
+    genera_count_optimized = perf_time_wrapper(lambda: utils.count_occurence_optimized(all_genera, all_node_numbers_used), 'optimized version took: ')
+    logger.warning('genera count optimized: ')
+    logger.warning(genera_count_optimized)
+    logger.warning('normal genera count: ')
+    logger.warning(genera_count)
+    holding_dict['generaRepresented'] = genera_count
     # Genera represented
     holding_dict['speciesRepresented'] = 0
     return http.JsonResponse(holding_dict)
