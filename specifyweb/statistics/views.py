@@ -1,27 +1,13 @@
-import json
 from django import http
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
 from . import utils
-from . import utils_temp
-
-from sqlalchemy.sql.expression import func, distinct
 
 from specifyweb.specify.views import login_maybe_required
 import logging
 
 logger = logging.getLogger(__name__)
 from django.db import connection
-from time import perf_counter
-
-
-def perf_time_wrapper(function_to_run, message):
-    t1 = perf_counter()
-    value_to_return = function_to_run()
-    t2 = perf_counter()
-    logger.warning(message)
-    logger.warning(t2-t1)
-    return value_to_return
 
 @login_maybe_required
 @openapi(schema={
@@ -34,10 +20,10 @@ def perf_time_wrapper(function_to_run, message):
                         'schema': {
                             'type': 'object',
                             'properties': {
-                                'familieRepresented': {
+                                'familiesRepresented': {
                                     'type': 'integer'
                                 },
-                                'generRepresented': {
+                                'generaRepresented': {
                                     'type': 'integer'
                                 },
                                 'speciesRepresented': {
@@ -51,33 +37,11 @@ def perf_time_wrapper(function_to_run, message):
         }
     }}, )
 def collection_holdings(request) -> HttpResponse:
-    cursor = connection.cursor()
-    cursor.execute("""
-    SELECT distinct(taxon.nodenumber)
-        FROM determination join taxon using (taxonid)
-        WHERE CollectionMemberID = % s
-        AND determination.IsCurrent = true and taxon.IsAccepted <> 0 and taxon.rankid >= 180
-    """, [request.specify_collection.id])
-    all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
-    all_node_numbers_used.sort()
-   # logger.warning(all_node_numbers_used)
-    # Holdings
-    # Families
-    holding_dict = {}
-   # family_count = utils.count_occurrence_ranks(all_families, all_node_numbers_used)
-    holding_dict['familiesRepresented'] = 0
-    cursor.execute("""
-    select nodeNumber, highestChildNodeNumber from taxon where rankid = 180
-    """)
-    all_genera = list(cursor.fetchall())
-    all_genera.sort()
-    #logger.warning(all_genera)
-    genera_count_optimized = perf_time_wrapper(lambda: utils_temp.ddoc(all_genera, all_node_numbers_used), 'optimized version took: ')
-    logger.warning('genera count optimized: ')
-    logger.warning(genera_count_optimized)
-    holding_dict['generaRepresented'] = genera_count_optimized
-    # Genera represented
-    holding_dict['speciesRepresented'] = 0
+    holding_dict = {
+        'familiesRepresented': utils.get_tree_rank_stats(140, request), #families
+        'generaRepresented': utils.get_tree_rank_stats(180, request), #genera
+        'speciesRepresented': utils.get_tree_rank_stats(220, request) #species
+    }
     return http.JsonResponse(holding_dict)
 
 @login_maybe_required

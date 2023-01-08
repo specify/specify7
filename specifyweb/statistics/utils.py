@@ -1,7 +1,7 @@
 import logging
 
 logger = logging.getLogger(__name__)
-
+from django.db import connection
 
 def first_bigger_value_iter(number_list, threshold, start_index, finish_index, key=-1, strict=False):
     start_index = start_index
@@ -43,6 +43,8 @@ def last_smaller_value_iter(number_list, threshold, start_index, finish_index, k
             finish_index = mid_index - 1
     return return_index, return_value
 
+#Double Decked Binary Search Tree Counter
+#Uses a double-decked binary search algorithm to compute count of ordered intervals with values
 def double_decked_binary_counter(interval_list, node_number_list):
     il_start_index = 0
     il_end_index = len(interval_list) - 1
@@ -71,3 +73,25 @@ def double_decked_binary_counter(interval_list, node_number_list):
         nn_start_index = nn_next_index
         il_start_index = il_sup_index + 1
     return occurence_count
+
+def get_tree_rank_stats(rankid, request):
+    cursor = connection.cursor()
+    cursor.execute("""
+    SELECT distinct(taxon.nodenumber)
+        FROM determination join taxon using (taxonid)
+        WHERE CollectionMemberID = % s
+        AND determination.IsCurrent = true and taxon.IsAccepted <> 0 and taxon.rankid >= % s
+    """, [request.specify_collection.id, rankid])
+    all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
+    all_node_numbers_used.sort()
+
+    cursor.execute("""
+    select nodeNumber, highestChildNodeNumber from taxon where rankid = % s
+    """, [rankid])
+    source_intervals = list(cursor.fetchall())
+    source_intervals.sort()
+
+    rank_count = double_decked_binary_counter(source_intervals, all_node_numbers_used)
+    return rank_count
+
+
