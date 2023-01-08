@@ -3,6 +3,7 @@ from django import http
 from specifyweb.specify.views import openapi
 from django.http import HttpResponse
 from . import utils
+from . import utils_temp
 
 from sqlalchemy.sql.expression import func, distinct
 
@@ -55,10 +56,11 @@ def collection_holdings(request) -> HttpResponse:
     SELECT distinct(taxon.nodenumber)
         FROM determination join taxon using (taxonid)
         WHERE CollectionMemberID = % s
-        AND determination.IsCurrent = true and taxon.IsAccepted <> 0
+        AND determination.IsCurrent = true and taxon.IsAccepted <> 0 and taxon.rankid >= 180
     """, [request.specify_collection.id])
     all_node_numbers_used = [x[0] for x in list(cursor.fetchall())]
     all_node_numbers_used.sort()
+   # logger.warning(all_node_numbers_used)
     # Holdings
     # Families
     holding_dict = {}
@@ -69,13 +71,15 @@ def collection_holdings(request) -> HttpResponse:
     """)
     all_genera = list(cursor.fetchall())
     all_genera.sort()
-    genera_count = perf_time_wrapper(lambda: utils.count_occurrence_ranks(all_genera, all_node_numbers_used), 'basic version took: ')
-    genera_count_optimized = perf_time_wrapper(lambda: utils.count_occurence_optimized(all_genera, all_node_numbers_used), 'optimized version took: ')
+    #logger.warning(all_genera)
+    genera_count_optimized = perf_time_wrapper(lambda: utils_temp.ddoc(all_genera, all_node_numbers_used), 'optimized version took: ')
     logger.warning('genera count optimized: ')
-    logger.warning(genera_count_optimized)
+    logger.warning(genera_count_optimized[0])
+    genera_count = perf_time_wrapper(lambda : utils.count_occurrence_ranks(all_genera, all_node_numbers_used), 'non optimized took: ')
     logger.warning('normal genera count: ')
-    logger.warning(genera_count)
-    holding_dict['generaRepresented'] = genera_count
+    #logger.warning(len(genera_count[1]))
+    logger.warning(genera_count[0])
+    holding_dict['generaRepresented'] = genera_count[0]
     # Genera represented
     holding_dict['speciesRepresented'] = 0
     return http.JsonResponse(holding_dict)

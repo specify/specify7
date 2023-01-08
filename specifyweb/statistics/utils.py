@@ -44,12 +44,15 @@ def is_any_smaller_or_equal(number_list, number_to_check):
 
 def count_occurrence_ranks(node_number_ranges, occurred_node_numbers):
     rank_count = 0
+    list_found = []
     for (node_number, highest_child_number) in node_number_ranges:
         node_number_sup = first_bigger_value(occurred_node_numbers, node_number)
         if node_number_sup == -1:
             continue
         rank_count += 1 if node_number_sup <= highest_child_number else 0
-    return rank_count
+        if node_number_sup <= highest_child_number:
+            list_found.append((node_number, highest_child_number))
+    return rank_count, list_found
 
 def count_occurrence_ranks_aggregated(node_number_ranges, occurred_node_numbers):
     rank_count = 0
@@ -67,21 +70,29 @@ def count_occurrence_ranks_aggregated(node_number_ranges, occurred_node_numbers)
                 rank_count += 1
     return rank_count
 
-def count_occurence_optimized(interval_list, node_list):
+def count_occurence_optimized_recursive(interval_list, node_list):
     occurence_count = 0
     if len(interval_list) == 0:
         return occurence_count
     middle_index = (len(interval_list) - 1) // 2
     middle_node_number = interval_list[middle_index][0]
     middle_highest_child_nn = interval_list[middle_index][1]
-    occurence_counts_left = count_occurence_optimized(interval_list[0:middle_index], node_list)
+    occurence_counts_left = count_occurence_optimized_recursive(interval_list[0:middle_index], node_list)
     test_node_value = first_bigger_value(node_list, middle_node_number)
     if test_node_value == -1:
         return 0
-    occurence_counts_right = count_occurence_optimized(interval_list[middle_index+1: len(interval_list)], node_list)
+    occurence_counts_right = count_occurence_optimized_recursive(interval_list[middle_index + 1: len(interval_list)], node_list)
     occurence_count = occurence_counts_left + occurence_counts_right + (1 if test_node_value <= middle_highest_child_nn else 0)
     return occurence_count
 
 
-
-
+def get_difference(nn_range_1, nn_range_2):
+    diff = []
+    for (nn_1, hcnn_1) in nn_range_1:
+        match = False
+        for (nn_2, hcnn_2) in nn_range_2:
+            if nn_2 == nn_1 and hcnn_2 == hcnn_1:
+                match = True
+        if not match:
+            diff.append((nn_1, hcnn_1))
+    return diff
