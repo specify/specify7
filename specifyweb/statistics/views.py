@@ -74,12 +74,8 @@ def collection_holdings(request) -> HttpResponse:
     #logger.warning(all_genera)
     genera_count_optimized = perf_time_wrapper(lambda: utils_temp.ddoc(all_genera, all_node_numbers_used), 'optimized version took: ')
     logger.warning('genera count optimized: ')
-    logger.warning(genera_count_optimized[0])
-    genera_count = perf_time_wrapper(lambda : utils.count_occurrence_ranks(all_genera, all_node_numbers_used), 'non optimized took: ')
-    logger.warning('normal genera count: ')
-    #logger.warning(len(genera_count[1]))
-    logger.warning(genera_count[0])
-    holding_dict['generaRepresented'] = genera_count[0]
+    logger.warning(genera_count_optimized)
+    holding_dict['generaRepresented'] = genera_count_optimized
     # Genera represented
     holding_dict['speciesRepresented'] = 0
     return http.JsonResponse(holding_dict)

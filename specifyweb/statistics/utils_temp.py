@@ -50,7 +50,6 @@ def ddoc(interval_list, node_number_list):
     nn_start_index = 0
     nn_end_index = len(node_number_list) - 1
     occurence_count = 0
-    list_found = []
     while (il_start_index <= il_end_index and nn_start_index <= nn_end_index):
         node_number_detr = node_number_list[nn_start_index]
         il_sup_index, il_sup_value = last_smaller_value_iter(interval_list, node_number_detr, il_start_index, il_end_index, key=0)
@@ -59,7 +58,6 @@ def ddoc(interval_list, node_number_list):
             continue
         if il_sup_value[1] >= node_number_detr:
             occurence_count += 1
-            list_found.append(il_sup_value)
         else:
             nn_start_index += 1
             il_start_index += 1
@@ -73,4 +71,4 @@ def ddoc(interval_list, node_number_list):
             break
         nn_start_index = nn_next_index
         il_start_index = il_sup_index + 1
-    return occurence_count, list_found
+    return occurence_count
