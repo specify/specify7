@@ -84,7 +84,7 @@ under GNU General Public License 2 (GPL2).
     - [Table of Contents](#table-of-contents)
     - [Changelog](#changelog)
     - [Installation](#installation)
-        - [Docker installation](#docker-installation) (**Recommended**)
+        - [Docker installation](#docker-installation-recommended) (**Recommended**)
         - [Local installation](#local-installation)
             - [Installing system dependencies](#installing-system-dependencies)
             - [Installing Specify 6](#installing-specify-6)
