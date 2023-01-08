@@ -3,96 +3,71 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def first_bigger_value_iter(number_list, threshold, start_index, finish_index, key=-1, strict=False):
+    start_index = start_index
+    finish_index = finish_index
+    return_value = -1
+    return_index = -1
+    while start_index <= finish_index:
+        mid_index = (start_index + finish_index) // 2
+        mid_value = number_list[mid_index]
+        if key == -1:
+            mid_value_reduced = mid_value
+        else:
+            mid_value_reduced = mid_value[key]
+        if mid_value_reduced <= threshold if strict else mid_value_reduced <=threshold:
+            start_index = mid_index + 1
+        else:
+            return_value = mid_value
+            return_index = mid_index
+            finish_index = mid_index - 1
+    return return_index, return_value
 
-def first_bigger_index(number_list, number_to_check, start_index, final_index):
-    if len(number_list[start_index: final_index + 1]) == 0:
-        return -1
-    middle_index = (start_index + final_index) // 2
-    if number_list[middle_index] < number_to_check:
-        return first_bigger_index(number_list, number_to_check, middle_index + 1,
-                               final_index)
-    next_index = first_bigger_index(number_list, number_to_check, start_index,
-                                 middle_index - 1)
-    if next_index == -1:
-        return middle_index
-    return min(middle_index, next_index)
+def last_smaller_value_iter(number_list, threshold, start_index, finish_index, key=-1):
+    start_index = start_index
+    finish_index = finish_index
+    return_value = -1
+    return_index = -1
+    while start_index <= finish_index:
+        mid_index = (start_index + finish_index) // 2
+        mid_value = number_list[mid_index]
+        if key == -1:
+            mid_value_reduced = mid_value
+        else:
+            mid_value_reduced = mid_value[key]
+        if mid_value_reduced <= threshold:
+            return_value = mid_value
+            return_index = mid_index
+            start_index = mid_index + 1
+        else:
+            finish_index = mid_index - 1
+    return return_index, return_value
 
-
-def first_bigger_value(number_list, number_to_check):
-    if len(number_list) == 0:
-        return -1  # Assuming the values in the list are positive
-    middle_index = (len(number_list) - 1) // 2
-    middle_value = number_list[middle_index]
-    if middle_value < number_to_check:
-        return first_bigger_value(
-            number_list[middle_index + 1:len(number_list)], number_to_check)
-    next_value = first_bigger_value(number_list[0:middle_index],
-                                    number_to_check)
-    if next_value == -1:
-        return middle_value
-    return min(middle_value, next_value)
-
-
-def is_any_smaller_or_equal(number_list, number_to_check):
-    if len(number_list) == 0:
-        return False
-    middle_index = (len(number_list) - 1) // 2
-    if number_list[middle_index] <= number_to_check:
-        return True
-    return is_any_smaller_or_equal(number_list[0:middle_index], number_to_check)
-
-
-def count_occurrence_ranks(node_number_ranges, occurred_node_numbers):
-    rank_count = 0
-    list_found = []
-    for (node_number, highest_child_number) in node_number_ranges:
-        node_number_sup = first_bigger_value(occurred_node_numbers, node_number)
-        if node_number_sup == -1:
-            continue
-        rank_count += 1 if node_number_sup <= highest_child_number else 0
-        if node_number_sup <= highest_child_number:
-            list_found.append((node_number, highest_child_number))
-    return rank_count, list_found
-
-def count_occurrence_ranks_aggregated(node_number_ranges, occurred_node_numbers):
-    rank_count = 0
-    for (list1, list2) in node_number_ranges:
-        lowest_node_number = min(list1[0], list2[0])
-        highest_node_number = max(list1[1], list2[1])
-        occurred_node_sup_val = first_bigger_value(occurred_node_numbers,
-                                                    lowest_node_number)
-        if occurred_node_sup_val == -1:
-            continue
-        if occurred_node_sup_val <= highest_node_number:
-            if occurred_node_sup_val <= min(list1[1], list2[1]):
-                rank_count += 1
-            elif occurred_node_sup_val >= max(list1[0], list2[0]):
-                rank_count += 1
-    return rank_count
-
-def count_occurence_optimized_recursive(interval_list, node_list):
+def double_decked_binary_counter(interval_list, node_number_list):
+    il_start_index = 0
+    il_end_index = len(interval_list) - 1
+    nn_start_index = 0
+    nn_end_index = len(node_number_list) - 1
     occurence_count = 0
-    if len(interval_list) == 0:
-        return occurence_count
-    middle_index = (len(interval_list) - 1) // 2
-    middle_node_number = interval_list[middle_index][0]
-    middle_highest_child_nn = interval_list[middle_index][1]
-    occurence_counts_left = count_occurence_optimized_recursive(interval_list[0:middle_index], node_list)
-    test_node_value = first_bigger_value(node_list, middle_node_number)
-    if test_node_value == -1:
-        return 0
-    occurence_counts_right = count_occurence_optimized_recursive(interval_list[middle_index + 1: len(interval_list)], node_list)
-    occurence_count = occurence_counts_left + occurence_counts_right + (1 if test_node_value <= middle_highest_child_nn else 0)
+    while il_start_index <= il_end_index and nn_start_index <= nn_end_index:
+        node_number_detr = node_number_list[nn_start_index]
+        il_sup_index, il_sup_value = last_smaller_value_iter(interval_list, node_number_detr, il_start_index, il_end_index, key=0)
+        if il_sup_index == -1:
+            nn_start_index += 1
+            continue
+        if il_sup_value[1] >= node_number_detr:
+            occurence_count += 1
+        else:
+            nn_start_index += 1
+            il_start_index += 1
+            continue
+        il_sup_hcnn = il_sup_value[1]
+        if il_sup_hcnn == node_number_detr:
+            nn_start_index += 1
+            continue
+        nn_next_index, nn_next_value = first_bigger_value_iter(node_number_list, il_sup_hcnn, nn_start_index + 1, nn_end_index, strict=True)
+        if nn_next_index == -1:
+            break
+        nn_start_index = nn_next_index
+        il_start_index = il_sup_index + 1
     return occurence_count
-
-
-def get_difference(nn_range_1, nn_range_2):
-    diff = []
-    for (nn_1, hcnn_1) in nn_range_1:
-        match = False
-        for (nn_2, hcnn_2) in nn_range_2:
-            if nn_2 == nn_1 and hcnn_2 == hcnn_1:
-                match = True
-        if not match:
-            diff.append((nn_1, hcnn_1))
-    return diff
