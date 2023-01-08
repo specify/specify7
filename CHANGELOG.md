@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
+
+This update includes many bug fixes in addition to laying the groundwork for Specify's UI to support Spanish, French,
+Ukranian, and many more languages. If you are interested in helping support our localization effort, please see our
+guide
+on **[Getting Started with Specify 7 Localization](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)**
+and contact us at [support@specifysoftware.org](mailto:support@specifysoftware.org) if you have any questions or would
+like to help translate to a language we do not yet support.
+
+- Global Prefs and Remote User Prefs are now differentiated in the App Resources
+  viewer ([#2430](https://github.com/specify/specify7/issues/2430))
+- Usernames are no longer automatically capitalized in the navigation menu
+- Exchange In, Exchange Out, and Disposal attachments now function
+  properly ([#2525](https://github.com/specify/specify7/issues/2525) - _Requested by RBGE_)
+- GeoMap full screen icon now conforms to rounded corner
+  preference ([#2506](https://github.com/specify/specify7/issues/2506))
+- Language codes now appear next to the language name
+- Empty record sets now inform the user that it cannot be opened in read-only
+  mode ([#2698](https://github.com/specify/specify7/issues/2698))
+- Fixed app resource creation being blocked from trying to get an invalid field
+- Updated the copyright year to 2023
+
 ## [7.8.2](https://github.com/specify/specify7/compare/v7.8.1...v7.8.2) (29 December 2022)
 
 Specify 7 is now integrated with
@@ -12,7 +34,8 @@ localization service. This paves the way for supporting dozens of languages in
 Specify 7. We will be adding Spanish and French localization in near future.
 
 - Specify now includes the ability to store different collections' assets
-  in separate folders. ([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By NHMD_)
+  in separate folders. ([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By
+  NHMD_)
 
 [More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
 
@@ -97,7 +120,7 @@ improvements and fixes many bugs.
   Emory Herbarium_
 - Fix Specify using wrong pick list when there are multiple pick lists
   with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
-  - _Reported by Emory Herbarium, KU Fish and others_
+    - _Reported by Emory Herbarium, KU Fish and others_
 - Fix for query results fetcher not detecting scroll
   bar ([#2301](https://github.com/specify/specify7/issues/2301))
 

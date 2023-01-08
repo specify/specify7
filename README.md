@@ -81,41 +81,62 @@ under GNU General Public License 2 (GPL2).
 ## Table of Contents
 
 - [Specify 7](#specify-7)
-  - [Table of Contents](#table-of-contents)
-  - [Changelog](#changelog)
-  - [Docker installation](#docker-installation)
-  - [Installation](#installation)
-    - [Installing system dependencies](#installing-system-dependencies)
-    - [Installing Specify 6](#installing-specify-6)
-    - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
-    - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
-    - [Building](#building)
-    - [Adjusting settings files](#adjusting-settings-files)
-    - [Turning on debugging](#turning-on-debugging)
-    - [The development server](#the-development-server)
-    - [The Specify 7 worker](#the-specify-7-worker)
-    - [Installing production requirements](#installing-production-requirements)
-    - [Setting up Apache](#setting-up-apache)
-    - [Restarting Apache](#restarting-apache)
-  - [Updating Specify 7](#updating-specify-7)
-  - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
-  - [Localizing Specify 7](#localizing-specify-7)
+    - [Table of Contents](#table-of-contents)
+    - [Changelog](#changelog)
+    - [Installation](#installation)
+        - [Docker installation](#docker-installation) (**Recommended**)
+        - [Local installation](#local-installation)
+            - [Installing system dependencies](#installing-system-dependencies)
+            - [Installing Specify 6](#installing-specify-6)
+            - [Cloning Specify 7 source repository](#cloning-specify-7-source-repository)
+            - [Setting up Python Virtual Environment](#setting-up-python-virtual-environment)
+            - [Building](#building)
+            - [Adjusting settings files](#adjusting-settings-files)
+            - [Turning on debugging](#turning-on-debugging)
+            - [The development server](#the-development-server)
+            - [The Specify 7 worker](#the-specify-7-worker)
+            - [Installing production requirements](#installing-production-requirements)
+            - [Setting up Apache](#setting-up-apache)
+            - [Restarting Apache](#restarting-apache)
+    - [Updating Specify 7](#updating-specify-7)
+    - [Updating the database (Specify 6) version](#updating-the-database-specify-6-version)
+    - [Localizing Specify 7](#localizing-specify-7)
 
 ## Changelog
 
 Changelog is available in [CHANGELOG.md](./CHANGELOG.md)
 
-## Docker installation
+# Installation
 
-Beginning with version 7.6.0 the recommend deployment of Specify 7 is
-via Docker. Members can contact support@specifysoftware.org with your GitHub
-username and institution to recieve access to our Docker deployment instructions
-and repository.
+We encourage all users to read our documentation on the Community Forum regarding installing and deploying Specify – [**
+Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
 
-For existing non-Docker installations the relevant instructions have been
-updated below.
+If you are an existing Specify 6 user who is looking to evaluate Specify 7, you can
+contact [support@specifysoftware.org](mailto:support@specifysoftware.org) along with a copy of your database and we can
+configure a temporary deployment for evaluation purposes.
 
-## Installation
+## Docker Installation (Recommended)
+
+### Specify Collections Consortium (SCC) Members:
+
+We encourage members to use our  [Dockerized compositions](https://github.com/specify/docker-compositions)  of Specify
+7. You can choose your desired version, make the necessary adjustments and then run a single command to get everything
+working. It is very simple and can be easily updated when new versions are released. Documentation for deploying Specify
+using Docker is available within the repository.
+
+[**📨 Click here to request
+access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20)
+or email  [support@specifysoftware.org](mailto:support@specifysoftware.org)  with your GitHub username, member
+institution or collection, and any additional questions you have for us.
+
+### Non-Members:
+
+If your institution is not a member of the Specify Collections Consortium, you can follow
+the [local installation instructions](#local-installation) below or
+contact [membership@specifysoftware.org](mailto:membership@specifysoftware.org) to learn more about joining the SCC to
+recieving configuration assistance, support, and hosting services if you are interested.
+
+## Local Installation
 
 After completing these instructions you will be able to run the test
 server and interact with the Django based Specify webapp in your
