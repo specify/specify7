@@ -45,7 +45,11 @@ export function StatItem({
   const customStatsSpec = useCustomStatsSpec(item);
   const statsSpecCalculated = useResolvedSpec(
     item.type === 'DefaultStat'
-      ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
+      ? Object.keys(
+          statsSpec[item.pageName][item.categoryName]?.items ?? {}
+        ).includes(item.itemName)
+        ? statsSpec[item.pageName][item.categoryName]?.items?.[item.itemName]
+        : undefined
       : customStatsSpec,
     item.itemLabel
   );
