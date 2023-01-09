@@ -41,7 +41,7 @@ export const formsText = createDictionary({
   valueMustBeUniqueToDatabase: {
     'en-us': 'Value must be unique to database',
     'ru-ru': 'Значение должно быть уникальным в базе данных',
-    'es-es': 'El valor debe ser único para la base de datos.',
+    'es-es': 'El valor debe ser único para la base de datos',
     'fr-fr': 'La valeur doit être unique à la base de données',
     'uk-ua': 'Значення має бути унікальним для бази даних',
   },
@@ -798,7 +798,7 @@ export const formsText = createDictionary({
   carryForwardTableSettingsDescription: {
     'en-us': 'Configure fields to carry forward ({tableName: string})',
     'ru-ru': 'Настройте поля для клонирования ({tableName: string})',
-    'es-es': 'Configurar campos para transferir ({tableName: string})',
+    'es-es': 'Configurar los campos a transferir ({tableName: string})',
     'fr-fr': 'Configurer les champs à reporter ({tableName : string})',
     'uk-ua': 'Налаштувати поля для перенесення ({tableName: string})',
   },

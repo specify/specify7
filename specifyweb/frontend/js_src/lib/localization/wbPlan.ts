@@ -209,8 +209,8 @@ export const wbPlanText = createDictionary({
       от содержимое столбца
     `,
     'es-es': `
-      Esta columna siempre se consideraría a efectos de coincidencia,
-      independientemente de su valor.
+      Esta columna siempre se considerará a efectos de coincidencia,
+      independientemente del contenido de la columna
     `,
     'fr-fr': `
       Cette colonne serait toujours considérée à des fins de correspondance,
