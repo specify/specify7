@@ -33,6 +33,7 @@ import {
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
 import { unknownCategories, urlSpec } from './definitions';
+import { useBooleanState } from '../../hooks/useBooleanState';
 /*
  * TODO: rename colleciton -> shared
  *
@@ -62,18 +63,21 @@ export function StatsPage(): JSX.Element | null {
     [statsText('personal')]: personalLayout,
   };
 
+  const requestBackendStats = useBooleanState();
+
   const collectionCategoryToFetch = useCategoryToFetch(collectionLayout);
   const personalCategoryToFetch = useCategoryToFetch(personalLayout);
   const allCategoriesToFetch = React.useMemo(
     () => f.unique([...collectionCategoryToFetch, ...personalCategoryToFetch]),
     [collectionCategoryToFetch, personalCategoryToFetch]
   );
-  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
-  const testArray = React.useMemo(
-    () => (allCategoriesToFetch.length > 0 ? allKeys : []),
-    [allCategoriesToFetch.length, allKeys]
+  const [shouldFetch, setFetch, unSetFetch, toggleFetch] = useBooleanState(
+    allCategoriesToFetch.length > 0
   );
-  const backEndResponse = useBackendApi(testArray, false);
+
+  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
+
+  const backEndResponse = useBackendApi(shouldFetch ? allKeys : [], false);
   const statsSpec = useStatsSpec(backEndResponse);
 
   const defaultBackEndResponse = useBackendApi(allKeys, false);
@@ -82,7 +86,6 @@ export function StatsPage(): JSX.Element | null {
   const areUnknownLoaded = unknownCategories.every((unknownCategory) =>
     Object.keys(defaultBackEndResponse ?? {}).includes(unknownCategory)
   );
-
   React.useEffect(() => {
     if (areUnknownLoaded) {
       setDefaultLayout(defaultLayoutSpec);
@@ -317,6 +320,7 @@ export function StatsPage(): JSX.Element | null {
                   : updatePage(personalLayout, activePage.pageIndex)
               );
             }
+            setFetch();
           }}
         >
           {commonText('update')}
