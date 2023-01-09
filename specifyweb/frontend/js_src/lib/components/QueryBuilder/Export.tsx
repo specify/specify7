@@ -38,7 +38,7 @@ export function QueryExportButtons({
     undefined
   );
 
-  function doQueryExport(url: string, captions?: RA<string>): void {
+  function doQueryExport(url: string): void {
     if (typeof getQueryFieldRecords === 'function')
       queryResource.set('fields', getQueryFieldRecords());
     const serialized = queryResource.toJSON();
@@ -47,8 +47,12 @@ export function QueryExportButtons({
       method: 'POST',
       body: keysToLowerCase({
         ...serialized,
-        captions,
-        recordSetId:recordSetId,
+        captions: fields
+          .filter(({ isDisplay }) => isDisplay)
+          .map(({ mappingPath }) =>
+            generateMappingPathPreview(baseTableName, mappingPath)
+          ),
+        recordSetId: recordSetId,
       }),
     });
   }
@@ -92,14 +96,7 @@ export function QueryExportButtons({
           showConfirmation={showConfirmation}
           onClick={(): void =>
             hasLocalityColumns(fields)
-              ? doQueryExport(
-                  '/stored_query/exportkml/',
-                  fields
-                    .filter(({ isDisplay }) => isDisplay)
-                    .map(({ mappingPath }) =>
-                      generateMappingPathPreview(baseTableName, mappingPath)
-                    )
-                )
+              ? doQueryExport('/stored_query/exportkml/')
               : setState('warning')
           }
         >
