@@ -34,11 +34,11 @@ msgstr "Mostrando taxones con {count:number|formatted} o más objetos de colecci
 #. Used in: Components > Home Page > About Specify
 msgid "fullAddress"
 msgstr ""
-"Especificar consorcio de colecciones <br />\n"
+"Especificar consorcio de recolección <br />\n"
 "Instituto de Biodiversidad <br />\n"
 "Universidad de Kansas <br />\n"
-"1345 bulevar Jayhawk <br />\n"
-"Lawrence, KS 66045 EE. UU."
+"1345, Bulevar Jayhawk <br />\n"
+"Lawrence, KS 66045 Estados Unidos"
 
 #: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify

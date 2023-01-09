@@ -19,7 +19,7 @@ msgstr "Notificaciones: …"
 #: components/Header/Notifications.tsx:177
 #. Used in: Components > Header > Notifications
 msgid "mostRecentNotificationsTop"
-msgstr "(Ordenado de más reciente a más antiguo)."
+msgstr "(Ordenados del más reciente al más antiguo.)"
 
 #: components/Header/NotificationRenderers.tsx:44
 #: components/Header/NotificationRenderers.tsx:72
@@ -38,12 +38,12 @@ msgstr "Descargar"
 #: components/Header/NotificationRenderers.tsx:24
 #. Used in: Components > Header > Notification Renderers
 msgid "feedItemUpdated"
-msgstr "La fuente de exportación RSS se ha actualizado."
+msgstr "Se ha actualizado el feed RSS Export."
 
 #: components/Header/NotificationRenderers.tsx:38
 #. Used in: Components > Header > Notification Renderers
 msgid "updateFeedFailed"
-msgstr "Error al actualizar el feed de exportación."
+msgstr "Error al exportar actualizaciones de canales."
 
 #: components/Header/NotificationRenderers.tsx:52
 #. Used in: Components > Header > Notification Renderers
@@ -53,12 +53,12 @@ msgstr "Exportación de DwCA completada."
 #: components/Header/NotificationRenderers.tsx:66
 #. Used in: Components > Header > Notification Renderers
 msgid "dwcaExportFailed"
-msgstr "La exportación de DwCA falló."
+msgstr "No se pudo exportar DwCA."
 
 #: components/Header/NotificationRenderers.tsx:80
 #. Used in: Components > Header > Notification Renderers
 msgid "queryExportToCsvCompleted"
-msgstr "Exportación de consultas a CSV completada."
+msgstr "La exportación de la solicitud a CSV está completa."
 
 #: components/Header/NotificationRenderers.tsx:94
 #. Used in: Components > Header > Notification Renderers

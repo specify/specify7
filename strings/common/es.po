@@ -795,4 +795,4 @@ msgstr "{label:string}: {value:string}"
 #: components/WorkBench/DataSetMeta.tsx:221
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Work Bench > Data Set Meta
 msgid "jsxColonLine"
-msgstr "{label:string}: {value:string}"
+msgstr "{label:string}: <wrap />"

@@ -381,7 +381,7 @@ msgstr "(cuerda vacía)"
 #: components/WorkBench/wbView.js:2423
 #. Used in: Components > Work Bench > Template ⬤ Components > Work Bench > Wb View
 msgid "wbUploadedUnavailable"
-msgstr "El conjunto de datos debe ser validado o cargado."
+msgstr "El conjunto de datos debe validarse o cargarse"
 
 #: components/WorkBench/wbView.js:278
 #. Used in: Components > Work Bench > Wb View
@@ -393,7 +393,7 @@ msgstr ""
 #: components/WorkBench/wbView.js:2418
 #. Used in: Components > Work Bench > Wb View
 msgid "unavailableWhileEditing"
-msgstr "Esta acción requiere que se guarden todos los cambios."
+msgstr "Esta acción requiere que se guarden todos los cambios"
 
 #: components/WorkBench/wbView.js:2506
 #. Used in: Components > Work Bench > Wb View
