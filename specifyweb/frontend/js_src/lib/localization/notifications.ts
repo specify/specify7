@@ -37,7 +37,7 @@ export const notificationsText = createDictionary({
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
     'ru-ru': '(В порядке от самого последнего к самому старому.)',
-    'es-es': '(Ordenado de más reciente a más antiguo).',
+    'es-es': '(Ordenados del más reciente al más antiguo.)',
     'fr-fr': '(Classé du plus récent au plus ancien.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
   },
@@ -59,14 +59,14 @@ export const notificationsText = createDictionary({
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',
     'ru-ru': 'Элемент фида экспорта обновлен.',
-    'es-es': 'La fuente de exportación RSS se ha actualizado.',
+    'es-es': 'Se ha actualizado el feed RSS Export.',
     'fr-fr': "Le flux d'exportation RSS a été mis à jour.",
     'uk-ua': 'Стрічку експорту RSS оновлено.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
     'ru-ru': 'Не удалось обновить экспортный канал.',
-    'es-es': 'Error al actualizar el feed de exportación.',
+    'es-es': 'Error al exportar actualizaciones de canales.',
     'fr-fr': "Échec de la mise à jour du flux d'exportation.",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
   },
@@ -80,14 +80,14 @@ export const notificationsText = createDictionary({
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
     'ru-ru': 'Не удалось экспортировать DwCA.',
-    'es-es': 'La exportación de DwCA falló.',
+    'es-es': 'No se pudo exportar DwCA.',
     'fr-fr': "Échec de l'exportation DwCA.",
     'uk-ua': 'Помилка експорту DwCA.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
     'ru-ru': 'Экспорт запроса в CSV завершен.',
-    'es-es': 'Exportación de consultas a CSV completada.',
+    'es-es': 'La exportación de la solicitud a CSV está completa.',
     'fr-fr': 'Exportation de la requête vers CSV terminée.',
     'uk-ua': 'Експорт запиту в CSV завершено.',
   },

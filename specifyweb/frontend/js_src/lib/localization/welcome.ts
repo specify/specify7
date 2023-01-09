@@ -79,15 +79,15 @@ export const welcomeText = createDictionary({
       Lawrence, KS 66045 USA
     `,
     'es-es': `
-      Especificar consorcio de colecciones <br />
+      Especificar consorcio de recolección <br />
 
       Instituto de Biodiversidad <br />
 
       Universidad de Kansas <br />
 
-      1345 bulevar Jayhawk <br />
+      1345, Bulevar Jayhawk <br />
 
-      Lawrence, KS 66045 EE. UU.
+      Lawrence, KS 66045 Estados Unidos
     `,
     'fr-fr': `
       Spécifiez le consortium de collections <br />

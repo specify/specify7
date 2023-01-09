@@ -694,7 +694,7 @@ export const wbText = createDictionary({
   wbUploadedUnavailable: {
     'en-us': 'The data set must be validated or uploaded',
     'ru-ru': 'The data set must be validated or uploaded',
-    'es-es': 'El conjunto de datos debe ser validado o cargado.',
+    'es-es': 'El conjunto de datos debe validarse o cargarse',
     'fr-fr': "L'ensemble de données doit être validé ou téléchargé",
     'uk-ua': 'Набір даних має бути перевірений або завантажений',
   },
@@ -720,7 +720,7 @@ export const wbText = createDictionary({
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
     'ru-ru': 'Это действие требует сохранения всех изменений',
-    'es-es': 'Esta acción requiere que se guarden todos los cambios.',
+    'es-es': 'Esta acción requiere que se guarden todos los cambios',
     'fr-fr': `
       Cette action nécessite que toutes les modifications soient enregistrées
     `,

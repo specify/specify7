@@ -579,7 +579,7 @@ export const commonText = createDictionary({
     `,
     'en-us': '{label:string}: <wrap />',
     'ru-ru': '{label:string}: <wrap />',
-    'es-es': '{label:string}: {value:string}',
+    'es-es': '{label:string}: <wrap />',
     'fr-fr': '{label:string} : {value:string}',
     'uk-ua': '{label:string}: {value:string}',
   },
