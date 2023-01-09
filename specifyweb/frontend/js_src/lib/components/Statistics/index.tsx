@@ -62,17 +62,15 @@ export function StatsPage(): JSX.Element | null {
 
   const collectionCategoryToFetch = useCategoryToFetch(collectionLayout);
   const personalCategoryToFetch = useCategoryToFetch(personalLayout);
-  const allCategoriesToFetch = React.useMemo(
+  const categoriesToFetchInitially = React.useMemo(
     () => f.unique([...collectionCategoryToFetch, ...personalCategoryToFetch]),
     [collectionCategoryToFetch, personalCategoryToFetch]
   );
   const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
-  const [shouldFetch, setFetch] = React.useState<{
-    readonly fetch: RA<string>;
-  }>({
-    fetch: allCategoriesToFetch.length > 0 ? allKeys : [],
-  });
-  const backEndResponse = useBackendApi(shouldFetch.fetch, false);
+  const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
+    categoriesToFetchInitially
+  );
+  const backEndResponse = useBackendApi(categoriesToFetch, false);
   const statsSpec = useStatsSpec(backEndResponse);
 
   const defaultBackEndResponse = useBackendApi(allKeys, false);
@@ -83,11 +81,11 @@ export function StatsPage(): JSX.Element | null {
     setDefaultLayout(defaultLayoutSpec);
     if (collectionLayout === undefined) {
       setCollectionLayout(defaultLayoutSpec);
-      setFetch({ fetch: allKeys });
+      setCategoriesToFetch(allKeys);
     }
     if (personalLayout === undefined) {
       setPersonalLayout(defaultLayoutSpec);
-      setFetch({ fetch: allKeys });
+      setCategoriesToFetch(allKeys);
     }
   }, [
     collectionLayout,
@@ -96,7 +94,7 @@ export function StatsPage(): JSX.Element | null {
     defaultLayoutSpec,
     personalLayout,
     setPersonalLayout,
-    setFetch,
+    setCategoriesToFetch,
     allKeys,
   ]);
 
@@ -317,7 +315,7 @@ export function StatsPage(): JSX.Element | null {
                   : updatePage(personalLayout, activePage.pageIndex)
               );
             }
-            setFetch({ fetch: allCategoriesToFetch });
+            setCategoriesToFetch(Object.keys(urlSpec));
           }}
         >
           {commonText('update')}
