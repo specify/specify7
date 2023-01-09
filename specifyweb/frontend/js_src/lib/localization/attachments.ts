@@ -14,7 +14,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Вложения',
     'es-es': 'Archivos adjuntos',
     'fr-fr': 'Pièces jointes',
-    'uk-ua': 'Додатки',
+    'uk-ua': 'Прикріплення',
   },
   scale: {
     'en-us': 'Scale',
@@ -28,7 +28,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Сервер прикрепленных файлов недоступен.',
     'es-es': 'Servidor de archivos adjuntos no disponible.',
     'fr-fr': 'Serveur de pièces jointes indisponible.',
-    'uk-ua': 'Сервер вкладень недоступний.',
+    'uk-ua': 'Сервер прикріплень недоступний.',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -49,6 +49,6 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'В вашей коллекции нет вложений',
     'es-es': 'No hay archivos adjuntos',
     'fr-fr': "Il n'y a pas de pièces jointes",
-    'uk-ua': 'Додатків немає',
+    'uk-ua': 'Прикріплень нема',
   },
 } as const);
