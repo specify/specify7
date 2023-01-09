@@ -20,7 +20,8 @@ from .stored_queries import urls as query_urls
 from .workbench import urls as wb_urls
 
 urlpatterns = [
-    # First draft, need to see how this is handled
+
+    # This will redirect all browsers looking for the favicon to the SVG.
     url(r'^favicon.ico', RedirectView.as_view(url='/static/img/short_logo.svg')), 
 
     # just redirect root url to the main specify view
