@@ -21,7 +21,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { load } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { ProtectedAction } from '../Permissions/PermissionDenied';
@@ -135,7 +135,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 )
               )
             )
-            .catch(fail)
+            .catch(raise)
             .finally(handleLoaded);
         }}
       >
@@ -152,7 +152,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         >
           {isLoading ? (
             <li>{commonText.loading()}</li>
-          ) : (results === undefined ? undefined : results.length === 0 ? (
+          ) : results === undefined ? undefined : results.length === 0 ? (
             <li>{commonText.noResults()}</li>
           ) : (
             <>
@@ -182,11 +182,11 @@ export function SearchDialog<SCHEMA extends AnySchema>({
                 </li>
               )}
             </>
-          ))}
+          )}
         </Ul>
       </Form>
     </Dialog>
-  ) : (viewName === false ? (
+  ) : viewName === false ? (
     <QueryBuilderSearch
       forceCollection={forceCollection}
       model={templateResource.specifyModel}
@@ -197,7 +197,7 @@ export function SearchDialog<SCHEMA extends AnySchema>({
         handleClose();
       }}
     />
-  ) : null);
+  ) : null;
 }
 
 const filterResults = <SCHEMA extends AnySchema>(
@@ -215,7 +215,7 @@ const testFilter = <SCHEMA extends AnySchema>(
   operation === 'notBetween'
     ? (resource.get(field) ?? 0) < values[0] ||
       (resource.get(field) ?? 0) > values[1]
-    : (operation === 'in'
+    : operation === 'in'
     ? values.some(f.equal(resource.get(field)))
     : operation === 'notIn'
     ? values.every(f.notEqual(resource.get(field)))
@@ -228,7 +228,7 @@ const testFilter = <SCHEMA extends AnySchema>(
           values,
         },
         resource,
-      }));
+      });
 
 function QueryBuilderSearch<SCHEMA extends AnySchema>({
   forceCollection,

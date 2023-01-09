@@ -6,7 +6,7 @@ import { Container } from '../Atoms';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { ResourceView } from '../Forms/ResourceView';
 import { loadingGif } from '../Molecules';
@@ -33,7 +33,7 @@ export function AttachmentGallery({
       containerRef.current !== null &&
       containerRef.current.scrollTop + preFetchDistance >
         containerRef.current.scrollHeight - containerRef.current.clientHeight
-        ? handleFetchMore().catch(fail)
+        ? handleFetchMore().catch(raise)
         : undefined,
     [handleFetchMore]
   );
@@ -43,7 +43,7 @@ export function AttachmentGallery({
       // Fetch attachments while scroll bar is not visible
       void (containerRef.current?.scrollHeight ===
       containerRef.current?.clientHeight
-        ? fillPage().catch(fail)
+        ? fillPage().catch(raise)
         : undefined),
     [fillPage, attachments]
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LoadingContext } from '../components/Core/Contexts';
-import { fail } from '../components/Errors/Crash';
+import { raise } from '../components/Errors/Crash';
 import { f } from '../utils/functools';
 import type { GetOrSet } from '../utils/types';
 
@@ -49,7 +49,7 @@ export function useAsyncState<T>(
     wrapped(
       Promise.resolve(callback())
         .then((newState) => (destructorCalled ? undefined : setState(newState)))
-        .catch(fail)
+        .catch(raise)
     );
 
     let destructorCalled = false;

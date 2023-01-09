@@ -4,7 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import type { RA } from '../../utils/types';
 import { resourceOn } from '../DataModel/resource';
 import { getModel } from '../DataModel/schema';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import type {
   DefaultComboBoxProps,
   PickListItemSimple,
@@ -43,7 +43,7 @@ export function FormattersPickList(props: DefaultComboBoxProps): JSX.Element {
             .then(setItems)
             .catch((error) => {
               setItems(undefined);
-              fail(error);
+              raise(error);
             });
         },
         true

@@ -9,8 +9,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { StringToJsx } from '../../localization/utils';
-import type {
-  Language} from '../../localization/utils/config';
+import type { Language } from '../../localization/utils/config';
 import {
   devLanguage,
   devLanguages,
@@ -26,7 +25,7 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Select } from '../Atoms/Form';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { supportLink } from '../Errors/ErrorDialog';
 import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
@@ -58,7 +57,8 @@ export function LanguageSelection<LANGUAGES extends string>({
   languages,
   onChange: handleChange,
   isReadOnly = false,
-  showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV === 'development',
+  showDevLanguages: showDevelopmentLanguages = process.env.NODE_ENV ===
+    'development',
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
@@ -184,7 +184,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
            * This is why it has an independent state and manually triggers
            * save button
            */
-          handleLanguageChange(language).catch(fail);
+          handleLanguageChange(language).catch(raise);
           setLanguage(language);
           prefEvents.trigger('update', {
             category,

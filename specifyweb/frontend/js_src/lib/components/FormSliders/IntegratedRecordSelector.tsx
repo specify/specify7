@@ -15,7 +15,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
@@ -98,7 +98,7 @@ function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
       collection
         .fetch()
         .then(() => setRecords(getRecords))
-        .catch(fail);
+        .catch(raise);
   }, [collection, isLazy, getRecords, index, records.length]);
 
   const state = useRecordSelector({

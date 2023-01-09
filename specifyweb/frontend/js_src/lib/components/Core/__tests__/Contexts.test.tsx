@@ -12,6 +12,7 @@ import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Contexts';
+import { raise } from '../../Errors/Crash';
 
 jest.mock('../../Errors/Crash', () => ({
   ...jest.requireActual('../../Errors/Crash'),
@@ -74,11 +75,11 @@ test('<Contexts> provide a loading context', async () => {
   const newHeading = await findByRole('heading', {
     name: commonText.loading(),
   });
-  expect(fail).not.toHaveBeenCalled();
+  expect(raise).not.toHaveBeenCalled();
   jest.spyOn(console, 'error').mockImplementation();
   rejectedPromise.reject('error');
   await waitForElementToBeRemoved(newHeading);
-  expect(fail).toHaveBeenCalledTimes(1);
+  expect(raise).toHaveBeenCalledTimes(1);
 });
 
 test('<Contexts> is providing UnloadProtectsContext', () => {

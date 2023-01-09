@@ -19,7 +19,7 @@ import { createResource } from '../DataModel/resource';
 import { schema, strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import type { RecordSet, SpQuery, Tables } from '../DataModel/types';
-import { fail, softFail } from '../Errors/Crash';
+import { raise, softFail } from '../Errors/Crash';
 import { recordSetView } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
@@ -195,7 +195,7 @@ export function QueryResults({
             return handleFetchMore(index);
           return newResults;
         })
-        .catch(fail);
+        .catch(raise);
 
       return fetchersRef.current[fetchIndex];
     },
@@ -537,7 +537,7 @@ function CreateRecordSet({
               )
               .catch((error) => {
                 setState({ type: 'Main' });
-                fail(error);
+                raise(error);
               });
             return false;
           }}

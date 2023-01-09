@@ -1,7 +1,7 @@
 import { globalEvents } from '../../utils/ajax/specifyApi';
 import type { RA } from '../../utils/types';
 import { capitalize, takeBetween } from '../../utils/utils';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { getDomainResource } from '../InitialContext/treeRanks';
 import { hasTablePermission } from '../Permissions/helpers';
@@ -63,7 +63,7 @@ globalEvents.on('newResource', (resource) => {
       .then((preparations) =>
         preparations.add(new schema.models.Preparation.Resource())
       )
-      .catch(fail);
+      .catch(raise);
 
   if (
     getCollectionPref('CO_CREATE_DET', colId) &&
@@ -74,7 +74,7 @@ globalEvents.on('newResource', (resource) => {
       .then((determinations) =>
         determinations.add(new schema.models.Determination.Resource())
       )
-      .catch(fail);
+      .catch(raise);
 });
 
 /**

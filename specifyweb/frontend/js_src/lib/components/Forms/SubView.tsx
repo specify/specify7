@@ -11,7 +11,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyModel';
-import { fail, softFail } from '../Errors/Crash';
+import { raise, softFail } from '../Errors/Crash';
 import type { FormMode, FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
 import { IntegratedRecordSelector } from '../FormSliders/IntegratedRecordSelector';
@@ -165,7 +165,7 @@ export function SubView({
                 ? setCollection(collection)
                 : undefined
             )
-            .catch(fail);
+            .catch(raise);
         },
         true
       ),

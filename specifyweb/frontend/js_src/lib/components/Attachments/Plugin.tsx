@@ -17,7 +17,7 @@ import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Attachment } from '../DataModel/types';
 import { error } from '../Errors/assert';
-import { fail } from '../Errors/Crash';
+import { raise } from '../Errors/Crash';
 import type { FormMode } from '../FormParse';
 import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -44,10 +44,13 @@ export function AttachmentsPlugin({
   readonly mode: FormMode;
 }): JSX.Element {
   const [state, setState] = useAsyncState<
-    State<
+    | State<
         'DisplayAttachment',
         { readonly attachment: SerializedResource<Attachment> }
-      > | State<'AddAttachment'> | State<'FileUpload', { readonly file: File }> | State<'Unavailable'>
+      >
+    | State<'AddAttachment'>
+    | State<'FileUpload', { readonly file: File }>
+    | State<'Unavailable'>
   >(
     React.useCallback(async () => {
       await attachmentSettingsPromise;
@@ -89,7 +92,7 @@ export function AttachmentsPlugin({
             })
             .catch((error) => {
               setState({ type: 'Unavailable' });
-              fail(error);
+              raise(error);
             })
             .finally(() => setUploadProgress(undefined))
         : undefined,
@@ -100,7 +103,7 @@ export function AttachmentsPlugin({
 
   return state === undefined ? (
     <>{commonText.loading()}</>
-  ) : (state.type === 'Unavailable' ? (
+  ) : state.type === 'Unavailable' ? (
     <div>{attachmentsText.attachmentServerUnavailable()}</div>
   ) : (
     <div ref={filePickerContainer} tabIndex={-1}>
@@ -122,7 +125,7 @@ export function AttachmentsPlugin({
             }}
           />
         )
-      ) : (state.type === 'FileUpload' ? (
+      ) : state.type === 'FileUpload' ? (
         <Dialog
           buttons={undefined}
           header={attachmentsText.uploadingInline()}
@@ -146,7 +149,7 @@ export function AttachmentsPlugin({
         </div>
       ) : (
         error('Unhandled case', { state })
-      ))}
+      )}
     </div>
-  ));
+  );
 }

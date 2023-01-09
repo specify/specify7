@@ -17,42 +17,42 @@ import $ from 'jquery';
 import React from 'react';
 import _ from 'underscore';
 
-import { backEndText } from '../../localization/backEnd';
-import { commonText } from '../../localization/common';
-import { whitespaceSensitive } from '../../localization/utils';
-import { LANGUAGE } from '../../localization/utils/config';
-import { wbPlanText } from '../../localization/wbPlan';
-import { wbText } from '../../localization/workbench';
-import { ajax } from '../../utils/ajax';
-import { Http } from '../../utils/ajax/definitions';
-import { ping } from '../../utils/ajax/ping';
-import { getCache, setCache } from '../../utils/cache';
-import { f } from '../../utils/functools';
-import { filterArray } from '../../utils/types';
-import { capitalize, clamp, mappedFind } from '../../utils/utils';
-import { Button } from '../Atoms/Button';
-import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
-import { legacyLoadingContext } from '../Core/Contexts';
-import { createBackboneView } from '../Core/reactBackboneExtend';
-import { Backbone } from '../DataModel/backbone';
-import { serializeResource } from '../DataModel/helpers';
-import { getModel, schema, strictGetModel } from '../DataModel/schema';
-import { crash } from '../Errors/Crash';
-import { format } from '../Forms/dataObjFormatters';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
-import { strictGetTreeDefinitionItems } from '../InitialContext/treeRanks';
-import { loadingBar } from '../Molecules';
-import { dialogClassNames } from '../Molecules/Dialog';
-import { showDialog } from '../Molecules/LegacyDialog';
+import {backEndText} from '../../localization/backEnd';
+import {commonText} from '../../localization/common';
+import {whitespaceSensitive} from '../../localization/utils';
+import {LANGUAGE} from '../../localization/utils/config';
+import {wbPlanText} from '../../localization/wbPlan';
+import {wbText} from '../../localization/workbench';
+import {ajax} from '../../utils/ajax';
+import {Http} from '../../utils/ajax/definitions';
+import {ping} from '../../utils/ajax/ping';
+import {getCache, setCache} from '../../utils/cache';
+import {f} from '../../utils/functools';
+import {filterArray} from '../../utils/types';
+import {capitalize, clamp, mappedFind} from '../../utils/utils';
+import {Button} from '../Atoms/Button';
+import {iconClassName, legacyNonJsxIcons} from '../Atoms/Icons';
+import {Link} from '../Atoms/Link';
+import {legacyLoadingContext} from '../Core/Contexts';
+import {createBackboneView} from '../Core/reactBackboneExtend';
+import {Backbone} from '../DataModel/backbone';
+import {serializeResource} from '../DataModel/helpers';
+import {getModel, schema, strictGetModel} from '../DataModel/schema';
+import {crash, raise} from '../Errors/Crash';
+import {format} from '../Forms/dataObjFormatters';
+import {getIcon, unknownIcon} from '../InitialContext/icons';
+import {strictGetTreeDefinitionItems} from '../InitialContext/treeRanks';
+import {loadingBar} from '../Molecules';
+import {dialogClassNames} from '../Molecules/Dialog';
+import {showDialog} from '../Molecules/LegacyDialog';
 import {
   hasPermission,
   hasTablePermission,
   hasTreeAccess,
 } from '../Permissions/helpers';
-import { fetchPickList } from '../PickLists/fetch';
-import { getUserPref } from '../UserPreferences/helpers';
-import { pathStartsWith } from '../WbPlanView/helpers';
+import {fetchPickList} from '../PickLists/fetch';
+import {getUserPref} from '../UserPreferences/helpers';
+import {pathStartsWith} from '../WbPlanView/helpers';
 import {
   formatToManyIndex,
   formatTreeRank,
@@ -60,15 +60,15 @@ import {
   mappingPathToString,
   valueIsTreeRank,
 } from '../WbPlanView/mappingHelpers';
-import { getTableFromMappingPath } from '../WbPlanView/navigator';
-import { parseUploadPlan } from '../WbPlanView/uploadPlanParser';
-import { DataSetNameView } from './DataSetMeta';
-import { downloadDataSet } from './helpers';
-import { WbUploaded } from './Results';
-import { resolveValidationMessage } from './resultsParser';
-import { WbStatus } from './Status';
-import { wbViewTemplate } from './Template';
-import { WBUtils } from './wbUtils';
+import {getTableFromMappingPath} from '../WbPlanView/navigator';
+import {parseUploadPlan} from '../WbPlanView/uploadPlanParser';
+import {DataSetNameView} from './DataSetMeta';
+import {downloadDataSet} from './helpers';
+import {WbUploaded} from './Results';
+import {resolveValidationMessage} from './resultsParser';
+import {WbStatus} from './Status';
+import {wbViewTemplate} from './Template';
+import {WBUtils} from './wbUtils';
 
 const metaKeys = [
   'isNew',
@@ -2368,7 +2368,7 @@ export const WBView = Backbone.View.extend({
         ]);
       });
     } else
-      fail(new Error(
+      raise(new Error(
         `Trying to parse unknown uploadStatus type "${uploadStatus}" at
         row ${this.hot.toVisualRow(physicalRow)}`
       ));
