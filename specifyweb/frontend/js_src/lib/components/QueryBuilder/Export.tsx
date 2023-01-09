@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
@@ -20,6 +21,7 @@ export function QueryExportButtons({
   fields,
   queryResource,
   getQueryFieldRecords,
+  recordSetId,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -27,6 +29,7 @@ export function QueryExportButtons({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
+  readonly recordSetId: number | undefined;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -42,10 +45,11 @@ export function QueryExportButtons({
     setState('creating');
     void ping(url, {
       method: 'POST',
-      body: {
+      body: keysToLowerCase({
         ...serialized,
         captions,
-      },
+        recordSetId:recordSetId,
+      }),
     });
   }
 
