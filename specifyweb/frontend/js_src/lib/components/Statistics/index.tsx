@@ -32,12 +32,9 @@ import {
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
 import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { unknownCategories, urlSpec } from './definitions';
-import { useBooleanState } from '../../hooks/useBooleanState';
-/*
- * TODO: rename colleciton -> shared
- *
- */
+import { urlSpec } from './definitions';
+import { RA } from '../../utils/types';
+
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
   const [collectionLayout, setCollectionLayout] = useCollectionPref(
@@ -63,47 +60,44 @@ export function StatsPage(): JSX.Element | null {
     [statsText('personal')]: personalLayout,
   };
 
-  const requestBackendStats = useBooleanState();
-
   const collectionCategoryToFetch = useCategoryToFetch(collectionLayout);
   const personalCategoryToFetch = useCategoryToFetch(personalLayout);
   const allCategoriesToFetch = React.useMemo(
     () => f.unique([...collectionCategoryToFetch, ...personalCategoryToFetch]),
     [collectionCategoryToFetch, personalCategoryToFetch]
   );
-  const [shouldFetch, setFetch, unSetFetch, toggleFetch] = useBooleanState(
-    allCategoriesToFetch.length > 0
-  );
-
   const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
-
-  const backEndResponse = useBackendApi(shouldFetch ? allKeys : [], false);
+  const [shouldFetch, setFetch] = React.useState<{
+    readonly fetch: RA<string>;
+  }>({
+    fetch: allCategoriesToFetch.length > 0 ? allKeys : [],
+  });
+  const backEndResponse = useBackendApi(shouldFetch.fetch, false);
   const statsSpec = useStatsSpec(backEndResponse);
 
   const defaultBackEndResponse = useBackendApi(allKeys, false);
   const defaultStatsSpec = useStatsSpec(defaultBackEndResponse);
   const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-  const areUnknownLoaded = unknownCategories.every((unknownCategory) =>
-    Object.keys(defaultBackEndResponse ?? {}).includes(unknownCategory)
-  );
+
   React.useEffect(() => {
-    if (areUnknownLoaded) {
-      setDefaultLayout(defaultLayoutSpec);
-      if (collectionLayout === undefined) {
-        setCollectionLayout(defaultLayoutSpec);
-      }
-      if (personalLayout === undefined) {
-        setPersonalLayout(defaultLayoutSpec);
-      }
+    setDefaultLayout(defaultLayoutSpec);
+    if (collectionLayout === undefined) {
+      setCollectionLayout(defaultLayoutSpec);
+      setFetch({ fetch: allKeys });
+    }
+    if (personalLayout === undefined) {
+      setPersonalLayout(defaultLayoutSpec);
+      setFetch({ fetch: allKeys });
     }
   }, [
-    areUnknownLoaded,
     collectionLayout,
     setCollectionLayout,
     setDefaultLayout,
     defaultLayoutSpec,
     personalLayout,
     setPersonalLayout,
+    setFetch,
+    allKeys,
   ]);
 
   const [state, setState] = React.useState<
@@ -163,7 +157,7 @@ export function StatsPage(): JSX.Element | null {
       label: pageLayout.label,
       categories: pageLayout.categories.map((category) => ({
         label: category.label,
-        items: category.items.map((item) => ({
+        items: category.items?.map((item) => ({
           ...item,
           itemValue: pageIndex === index ? undefined : item.itemValue,
         })),
@@ -213,9 +207,9 @@ export function StatsPage(): JSX.Element | null {
         ...oldCategory[categoryIndex ?? -1],
         items:
           itemIndex === undefined || itemIndex === -1
-            ? [...oldCategory[categoryIndex ?? -1].items, item]
+            ? [...(oldCategory[categoryIndex ?? -1].items ?? []), item]
             : replaceItem(
-                oldCategory[categoryIndex ?? -1].items,
+                oldCategory[categoryIndex ?? -1].items ?? [],
                 itemIndex,
                 item
               ),
@@ -224,7 +218,7 @@ export function StatsPage(): JSX.Element | null {
   };
   const defaultStatsAddLeft = useDefaultStatsToAdd(
     layout[
-      activePage.isCollection ? statsText('collection') : statsText('personal')
+      activePage.isCollection ? statsText('shared') : statsText('personal')
     ]?.[activePage.pageIndex],
     defaultLayout
   );
@@ -246,12 +240,11 @@ export function StatsPage(): JSX.Element | null {
               {
                 ...oldValue[pageIndex].categories[categoryIndex],
                 items: replaceItem(
-                  oldValue[pageIndex].categories[categoryIndex].items,
+                  oldValue[pageIndex].categories[categoryIndex].items ?? [],
                   itemIndex,
                   {
-                    ...oldValue[pageIndex].categories[categoryIndex].items[
-                      itemIndex
-                    ],
+                    ...(oldValue[pageIndex].categories[categoryIndex].items ??
+                      [])[itemIndex],
                     itemValue: value,
                     itemLabel: itemName,
                   }
@@ -274,11 +267,15 @@ export function StatsPage(): JSX.Element | null {
       handleChange((oldCategory) =>
         replaceItem(oldCategory, categoryIndex, {
           ...oldCategory[categoryIndex],
-          items: replaceItem(oldCategory[categoryIndex].items, itemIndex, {
-            ...oldCategory[categoryIndex].items[itemIndex],
-            itemValue: value,
-            itemLabel,
-          }),
+          items: replaceItem(
+            oldCategory[categoryIndex].items ?? [],
+            itemIndex,
+            {
+              ...(oldCategory[categoryIndex].items ?? [])[itemIndex],
+              itemValue: value,
+              itemLabel,
+            }
+          ),
         })
       );
     },
@@ -320,7 +317,7 @@ export function StatsPage(): JSX.Element | null {
                   : updatePage(personalLayout, activePage.pageIndex)
               );
             }
-            setFetch();
+            setFetch({ fetch: allCategoriesToFetch });
           }}
         >
           {commonText('update')}
@@ -605,10 +602,12 @@ export function StatsPage(): JSX.Element | null {
                         replaceItem(oldCategory, categoryIndex, {
                           ...oldCategory[categoryIndex],
                           items: replaceItem(
-                            oldCategory[categoryIndex].items,
+                            oldCategory[categoryIndex].items ?? [],
                             itemIndex,
                             {
-                              ...oldCategory[categoryIndex].items[itemIndex],
+                              ...(oldCategory[categoryIndex].items ?? [])[
+                                itemIndex
+                              ],
                               itemLabel: newLabel,
                             }
                           ),
@@ -624,7 +623,7 @@ export function StatsPage(): JSX.Element | null {
                           ? replaceItem(oldCategory, categoryIndex, {
                               ...oldCategory[categoryIndex],
                               items: removeItem(
-                                oldCategory[categoryIndex].items,
+                                oldCategory[categoryIndex].items ?? [],
                                 itemIndex
                               ),
                             })
@@ -638,12 +637,12 @@ export function StatsPage(): JSX.Element | null {
                   replaceItem(oldCategory, categoryIndex, {
                     ...oldCategory[categoryIndex],
                     items: replaceItem(
-                      oldCategory[categoryIndex].items,
+                      oldCategory[categoryIndex].items ?? [],
                       itemIndex,
                       {
-                        ...oldCategory[categoryIndex].items[itemIndex],
-                        ...(oldCategory[categoryIndex].items[itemIndex].type ===
-                        'DefaultStat'
+                        ...(oldCategory[categoryIndex].items ?? [])[itemIndex],
+                        ...((oldCategory[categoryIndex].items ?? [])[itemIndex]
+                          .type === 'DefaultStat'
                           ? {}
                           : {
                               fields,
@@ -679,7 +678,7 @@ export function StatsPage(): JSX.Element | null {
                     label,
                     categories: categories.map(({ label, items }) => ({
                       label,
-                      items: items.map((item) =>
+                      items: items?.map((item) =>
                         item.type === 'DefaultStat'
                           ? (removeKey(item, 'isVisible') as DefaultStat)
                           : item

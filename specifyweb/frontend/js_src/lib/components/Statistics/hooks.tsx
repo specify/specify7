@@ -115,14 +115,16 @@ export function useDefaultStatsToAdd(
       return undefined;
     }
     const listToUse = layout.categories.flatMap(({ items }) =>
-      items.filter((item): item is DefaultStat => item.type === 'DefaultStat')
+      (items ?? []).filter(
+        (item): item is DefaultStat => item.type === 'DefaultStat'
+      )
     );
     let statNotFound = false;
     const defaultLayoutFlagged = defaultLayout.map((defaultLayoutPage) => ({
       label: defaultLayoutPage.label,
       categories: defaultLayoutPage.categories.map(({ label, items }) => ({
         label,
-        items: items.map((defaultItem) => {
+        items: items?.map((defaultItem) => {
           const defaultStatNotFound =
             defaultItem.type === 'DefaultStat' &&
             !listToUse.some(
@@ -156,18 +158,20 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => ({
             label,
-            items: Object.entries(items ?? {}).map(
-              ([itemName, { label, spec }]) => ({
-                type: 'DefaultStat',
-                pageName,
-                itemName,
-                categoryName,
-                itemLabel: label,
-                itemValue: spec.type === 'BackEndStat' ? spec.value : undefined,
-                itemType:
-                  spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
-              })
-            ),
+            items:
+              items === undefined
+                ? undefined
+                : Object.entries(items).map(([itemName, { label, spec }]) => ({
+                    type: 'DefaultStat',
+                    pageName,
+                    itemName,
+                    categoryName,
+                    itemLabel: label,
+                    itemValue:
+                      spec.type === 'BackEndStat' ? spec.value : undefined,
+                    itemType:
+                      spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
+                  })),
           })
         ),
         lastUpdated: undefined,
@@ -343,7 +347,7 @@ export function useCategoryToFetch(
     const categoryToFetch: WritableArray<string> = [];
     layout.forEach((pageLayout) =>
       pageLayout.categories.forEach(({ items }) =>
-        items.forEach((item) => {
+        (items ?? []).forEach((item) => {
           if (
             item.type === 'DefaultStat' &&
             item.itemType === 'BackendStat' &&
@@ -379,6 +383,7 @@ export function statsToTsv(
         if (category === undefined) return;
         const categoryLabel =
           category.label === undefined ? '' : category.label;
+        if (category.items === undefined) return;
         category.items.forEach(({ itemLabel, itemValue }) => {
           if (itemValue === undefined) return;
           const newItemLabel = itemLabel === undefined ? '' : itemLabel;

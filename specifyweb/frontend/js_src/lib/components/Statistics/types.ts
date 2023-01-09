@@ -33,7 +33,7 @@ export type StatLayout = RA<{
   readonly label: string;
   readonly categories: RA<{
     readonly label: string;
-    readonly items: RA<CustomStat | DefaultStat>;
+    readonly items: RA<CustomStat | DefaultStat> | undefined;
   }>;
   readonly lastUpdated: string | undefined;
 }>;

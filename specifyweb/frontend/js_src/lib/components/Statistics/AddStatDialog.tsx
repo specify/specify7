@@ -81,7 +81,7 @@ export function AddStatDialog({
             <Ul>
               {defaultStatsAddLeft.map((defaultLayoutPage, index) =>
                 defaultLayoutPage.categories.every(({ items }) =>
-                  items.every(
+                  (items ?? []).every(
                     (item) =>
                       item.type === 'DefaultStat' && item.isVisible === false
                   )

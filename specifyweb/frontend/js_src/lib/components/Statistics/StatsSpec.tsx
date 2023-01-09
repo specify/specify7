@@ -19,7 +19,7 @@ const modifyBackendResult = <CATEGORY_NAME extends keyof BackendStatsResult>(
   ) => BackEndStat['value']
 ): StatCategoryReturn =>
   backEndStats === undefined
-    ? {}
+    ? undefined
     : Object.fromEntries(
         Object.entries(backEndStats).map(([key, value]) => [
           key,
