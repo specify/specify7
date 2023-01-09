@@ -1,146 +1,117 @@
 msgid ""
-msgstr ""
-"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-01-05 20:51+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/main/"
-"es/>\n"
-"Language: es\n"
-"Content-Type: text/plain\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+msgstr "Content-Type: text/plain\n"
 
-#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:47
-#, fuzzy
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 msgid "appTitle"
 msgstr "{baseTitle:string} | Especificar 7"
 
-#. 🟥Default page title. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:46
-#, fuzzy
+#. 🟥Default page title. Used in: Components > Molecules > App Title
 msgid "baseAppTitle"
 msgstr "Especificar 7"
 
-#. 🟥Used in title. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
-#, fuzzy
+#. 🟥Used in title. Used in: Components > Router > Not Found View
 msgid "pageNotFound"
 msgstr "Página no encontrada"
 
-#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:25
-#, fuzzy
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 msgid "nothingWasFound"
 msgstr "¡Ups! no se encontró nada"
 
-#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
-#, fuzzy
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 msgid "pageNotFoundDescription"
 msgstr ""
 "Es posible que la página que está buscando haya sido eliminada, haya "
 "cambiado de nombre o no esté disponible temporalmente."
 
-#. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:29
-#, fuzzy
+#. Used in: Components > Router > Not Found View
 msgid "returnToHomepage"
 msgstr "Regresar a la página principal"
 
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:54
 #: components/Errors/FormatError.tsx:186
 #: components/Errors/FormatError.tsx:219
-#, fuzzy
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 msgid "errorOccurred"
 msgstr "Lo siento, algo salió un poco mal"
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:163
-#, fuzzy
+#. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Lo sentimos, parece que ha encontrado un error en Especificar 7 del que tal "
 "vez no tengamos conocimiento."
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:164
-#, fuzzy
+#. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "Para evitar corromper los registros de datos, debemos comenzar de nuevo "
 "desde un lugar seguro: la página de inicio."
 
-#. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:30
-#, fuzzy
+#. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionDescription"
 msgstr ""
 "Si este problema persiste, comuníquese con su soporte de TI. Si se trata de "
 "una base de datos de Especificar nube, descargue el mensaje de error y "
 "envíelo a <email />."
 
-#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:36
-#, fuzzy
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
-"Los usuarios de <memberLink>instituciones miembro</memberLink> pueden buscar "
-"respuestas a preguntas y pedir ayuda en nuestro <discourseLink>Foro de la "
-"comunidad</discourseLink>."
+"Los usuarios de <memberLink>instituciones miembro</memberLink> pueden "
+"buscar respuestas a preguntas y pedir ayuda en nuestro <discourseLink>Foro "
+"de la comunidad</discourseLink>."
 
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 #: components/Core/__tests__/Contexts.test.tsx:37
 #: components/Errors/ErrorDialog.tsx:172
-#, fuzzy
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog
 msgid "errorMessage"
 msgstr "Mensaje de error"
 
-#. Used in: Components > Router > Router
 #: components/Router/Router.tsx:297
-#, fuzzy
+#. Used in: Components > Router > Router
 msgid "leavePageConfirmation"
 msgstr "¿Seguro que quieres salir de esta página?"
 
-#. Used in: Components > Security > Role
 #: components/Security/Role.tsx:88
-#, fuzzy
+#. Used in: Components > Security > Role
 msgid "leavePageConfirmationDescription"
 msgstr "Los cambios no guardados se perderán si abandona esta página."
 
-#. Used in: Components > Router > Router
 #: components/Router/Router.tsx:293
-#, fuzzy
+#. Used in: Components > Router > Router
 msgid "leave"
 msgstr "Salir"
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:140
-#, fuzzy
+#. Used in: Components > Core > Main
 msgid "versionMismatch"
 msgstr "La versión especificada no coincide con la versión de la base de datos"
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:144
-#, fuzzy
+#. Used in: Components > Core > Main
 msgid "versionMismatchDescription"
 msgstr ""
 "La versión especificada {specifySixVersion:string} no coincide con la "
 "versión de la base de datos {databaseVersion:string}."
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:149
-#, fuzzy
+#. Used in: Components > Core > Main
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Por lo tanto, es posible que algunas funciones de Specific 7 no funcionen "
 "correctamente."
 
-#. Used in: Components > Core > Main
 #: components/Core/Main.tsx:152
-#, fuzzy
+#. Used in: Components > Core > Main
 msgid "versionMismatchInstructions"
 msgstr "Instrucciones para resolver Especificar discrepancia de esquema"
