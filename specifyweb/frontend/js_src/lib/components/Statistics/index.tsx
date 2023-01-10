@@ -29,11 +29,17 @@ import {
   useDefaultLayout,
   useDefaultStatsToAdd,
   useStatsSpec,
+  statSpecToItems,
 } from './hooks';
 import { StatsPageEditing } from './StatsPageEditing';
-import type { CustomStat, DefaultStat, StatLayout } from './types';
-import { urlSpec } from './definitions';
-import { RA } from '../../utils/types';
+import type {
+  CustomStat,
+  DefaultStat,
+  StatCategoryReturn,
+  StatLayout,
+} from './types';
+import { unknownCategories, urlSpec } from './definitions';
+import { R, RA } from '../../utils/types';
 
 export function StatsPage(): JSX.Element | null {
   useMenuItem('statistics');
@@ -59,44 +65,6 @@ export function StatsPage(): JSX.Element | null {
     [statsText('shared')]: collectionLayout,
     [statsText('personal')]: personalLayout,
   };
-
-  const collectionCategoryToFetch = useCategoryToFetch(collectionLayout);
-  const personalCategoryToFetch = useCategoryToFetch(personalLayout);
-  const categoriesToFetchInitially = React.useMemo(
-    () => f.unique([...collectionCategoryToFetch, ...personalCategoryToFetch]),
-    [collectionCategoryToFetch, personalCategoryToFetch]
-  );
-  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
-  const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
-    categoriesToFetchInitially
-  );
-  const backEndResponse = useBackendApi(categoriesToFetch, false);
-  const statsSpec = useStatsSpec(backEndResponse);
-
-  const defaultBackEndResponse = useBackendApi(allKeys, false);
-  const defaultStatsSpec = useStatsSpec(defaultBackEndResponse);
-  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
-
-  React.useEffect(() => {
-    setDefaultLayout(defaultLayoutSpec);
-    if (collectionLayout === undefined) {
-      setCollectionLayout(defaultLayoutSpec);
-      setCategoriesToFetch(allKeys);
-    }
-    if (personalLayout === undefined) {
-      setPersonalLayout(defaultLayoutSpec);
-      setCategoriesToFetch(allKeys);
-    }
-  }, [
-    collectionLayout,
-    setCollectionLayout,
-    setDefaultLayout,
-    defaultLayoutSpec,
-    personalLayout,
-    setPersonalLayout,
-    setCategoriesToFetch,
-    allKeys,
-  ]);
 
   const [state, setState] = React.useState<
     | State<
@@ -143,29 +111,55 @@ export function StatsPage(): JSX.Element | null {
     []
   );
 
-  const queries = useQueries(filters, false);
-  const previousCollectionLayout = React.useRef(
-    collectionLayout as unknown as StatLayout
+  const categoriesToFetchInitially = useCategoryToFetch(
+    activePage.isCollection ? collectionLayout : personalLayout
   );
-  const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
+  const allKeys = React.useMemo(() => Object.keys(urlSpec), []);
+  const [categoriesToFetch, setCategoriesToFetch] = React.useState<RA<string>>(
+    categoriesToFetchInitially.filter((categoryToFetch) =>
+      unknownCategories.includes(categoryToFetch as keyof typeof urlSpec)
+    )
+  );
+  const backEndResponse = useBackendApi(categoriesToFetch, false);
+  const statsSpec = useStatsSpec(backEndResponse);
 
-  const updatePage = (layout: StatLayout, pageIndex: number): StatLayout => {
-    const lastUpdatedDate = new Date();
-    return layout.map((pageLayout, index) => ({
-      label: pageLayout.label,
-      categories: pageLayout.categories.map((category) => ({
-        label: category.label,
-        items: category.items?.map((item) => ({
-          ...item,
-          itemValue: pageIndex === index ? undefined : item.itemValue,
-        })),
-      })),
-      lastUpdated:
-        pageIndex === index
-          ? lastUpdatedDate.toString()
-          : pageLayout.lastUpdated,
-    }));
-  };
+  const defaultBackEndResponse = useBackendApi(allKeys, false);
+  const defaultStatsSpec = useStatsSpec(defaultBackEndResponse);
+  const defaultLayoutSpec = useDefaultLayout(defaultStatsSpec);
+
+  /* Initial Load */
+  React.useEffect(() => {
+    setDefaultLayout(defaultLayoutSpec);
+    if (collectionLayout === undefined) {
+      setCollectionLayout(defaultLayoutSpec);
+    }
+    if (personalLayout === undefined) {
+      setPersonalLayout(defaultLayoutSpec);
+    }
+  }, [
+    collectionLayout,
+    setCollectionLayout,
+    setDefaultLayout,
+    defaultLayoutSpec,
+    personalLayout,
+    setPersonalLayout,
+    defaultStatsSpec,
+  ]);
+
+  const pageLastUpdated = activePage.isCollection
+    ? collectionLayout?.[activePage.pageIndex].lastUpdated
+    : personalLayout?.[activePage.pageIndex].lastUpdated;
+  const canEdit =
+    !activePage.isCollection ||
+    hasPermission('/preferences/statistics', 'edit_protected');
+
+  const pageLayout = activePage.isCollection
+    ? collectionLayout?.[activePage.pageIndex].categories === undefined
+      ? undefined
+      : collectionLayout[activePage.pageIndex]
+    : personalLayout?.[activePage.pageIndex].categories === undefined
+    ? undefined
+    : personalLayout[activePage.pageIndex];
 
   const handleChange = React.useCallback(
     (
@@ -194,6 +188,72 @@ export function StatsPage(): JSX.Element | null {
       setPersonalLayout,
     ]
   );
+  /* Listen for unknown categories updates */
+  React.useEffect(() => {
+    const categoriesFromSpec: R<{
+      readonly pageName: string;
+      readonly categoryName: string;
+      readonly items: StatCategoryReturn;
+    }> = {};
+    Object.entries(statsSpec).forEach(([pageName, pageSpec]) =>
+      Object.entries(pageSpec).forEach(([categoryName, { items }]) => {
+        if (categoriesToFetch.includes(categoryName)) {
+          categoriesFromSpec[categoryName] = {
+            pageName,
+            categoryName,
+            items,
+          };
+        }
+      })
+    );
+
+    handleChange((oldCategory) =>
+      oldCategory.map((unknownCategory) => ({
+        ...unknownCategory,
+        items:
+          unknownCategory.items ??
+          (unknownCategory.categoryToFetch === undefined
+            ? undefined
+            : statSpecToItems(
+                categoriesFromSpec[unknownCategory.categoryToFetch]
+                  .categoryName,
+                categoriesFromSpec[unknownCategory.categoryToFetch].pageName,
+                categoriesFromSpec[unknownCategory.categoryToFetch].items
+              )),
+      }))
+    );
+  }, [categoriesToFetch, handleChange, statsSpec]);
+
+  const queries = useQueries(filters, false);
+  const previousCollectionLayout = React.useRef(
+    collectionLayout as unknown as StatLayout
+  );
+  const previousLayout = React.useRef(personalLayout as unknown as StatLayout);
+
+  const defaultStatsAddLeft = useDefaultStatsToAdd(
+    layout[
+      activePage.isCollection ? statsText('shared') : statsText('personal')
+    ]?.[activePage.pageIndex],
+    defaultLayout
+  );
+
+  const updatePage = (layout: StatLayout, pageIndex: number): StatLayout => {
+    const lastUpdatedDate = new Date();
+    return layout.map((pageLayout, index) => ({
+      label: pageLayout.label,
+      categories: pageLayout.categories.map((category) => ({
+        label: category.label,
+        items: category.items?.map((item) => ({
+          ...item,
+          itemValue: pageIndex === index ? undefined : item.itemValue,
+        })),
+      })),
+      lastUpdated:
+        pageIndex === index
+          ? lastUpdatedDate.toString()
+          : pageLayout.lastUpdated,
+    }));
+  };
 
   const handleAdd = (
     item: CustomStat | DefaultStat,
@@ -214,12 +274,7 @@ export function StatsPage(): JSX.Element | null {
       })
     );
   };
-  const defaultStatsAddLeft = useDefaultStatsToAdd(
-    layout[
-      activePage.isCollection ? statsText('shared') : statsText('personal')
-    ]?.[activePage.pageIndex],
-    defaultLayout
-  );
+
   const handleDefaultLoad = React.useCallback(
     (
       categoryIndex: number,
@@ -279,12 +334,7 @@ export function StatsPage(): JSX.Element | null {
     },
     [handleChange]
   );
-  const pageLastUpdated = activePage.isCollection
-    ? collectionLayout?.[activePage.pageIndex].lastUpdated
-    : personalLayout?.[activePage.pageIndex].lastUpdated;
-  const canEdit =
-    !activePage.isCollection ||
-    hasPermission('/preferences/statistics', 'edit_protected');
+
   return collectionLayout === undefined ? null : (
     <Form
       className={className.containerFullGray}
@@ -551,17 +601,7 @@ export function StatsPage(): JSX.Element | null {
           )}
           <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-4 overflow-y-auto px-4 pb-6">
             <Categories
-              pageLayout={
-                activePage.isCollection
-                  ? collectionLayout[activePage.pageIndex].categories ===
-                    undefined
-                    ? undefined
-                    : collectionLayout[activePage.pageIndex]
-                  : personalLayout?.[activePage.pageIndex].categories ===
-                    undefined
-                  ? undefined
-                  : personalLayout[activePage.pageIndex]
-              }
+              pageLayout={pageLayout}
               statsSpec={statsSpec}
               onAdd={
                 isEditing && canEditIndex(activePage.isCollection)
