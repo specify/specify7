@@ -3,17 +3,17 @@ from typing import Optional, Dict
 from django import http
 from django.conf import settings
 
-class SpecifyExceptionWrapper(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
-        self.exception = self.args[0]
-        self.data = self.args[1] if len(self.args) > 1 else None
+class SpecifyExceptionWrapper():
+    def __init__(self, error : Exception) -> None:
+        self.exception = error
+        self.message = error.args[0] if len(error.args) > 0 else None
+        self.data = error.args[1]  if len(error.args) > 1 else None
         self.status_code = getattr(self.exception, "status_code") if hasattr(self.exception, "status_code") else 500
     
     def to_json(self) -> Dict:
         result = {
             'exception' : self.exception.__class__.__name__,
-            'message' : str(self.exception),
+            'message' : self.message,
             'data' : self.data,
             'traceback' : traceback.format_exc()
             }

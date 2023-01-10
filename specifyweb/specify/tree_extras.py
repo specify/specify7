@@ -91,7 +91,7 @@ class Tree(models.Model):
 
         if model.objects.filter(parent=self, parent__rankid__gte=F('rankid')).count() > 0:
             raise TreeBusinessRuleException(
-                "Tree node's rank is greater than some of its children",
+                "Tree node's rank is greater than or equal to some of its children",
                 {"tree" : self.__class__.__name__,
                  "type" : "TREE_RANK_INVARIANT_CHILDREN",
                  "node" : {
@@ -99,7 +99,7 @@ class Tree(models.Model):
                     "rankid" : self.rankid,
                     "fullName" : self.fullname,
                     "parentid": self.parent.id,
-                    "children": list(self.children.values('id', 'fullname'))
+                    "children": list(self.children.values('id', 'rankid', 'fullname').filter(parent=self, parent__rankid__gte=F('rankid')))
                  }})
 
         if prev_self is None:
@@ -553,12 +553,27 @@ def renumber_tree(table):
 
     # make sure there are no cycles
     cursor.execute((
-        "select count(*) from {table} t\n"
+        "select p.{table}id, p.fullname, t.{table}id, t.fullName, tdef.title\n"
+        "from {table} t\n"
         "join {table} p on t.parentid = p.{table}id\n"
+        "join {table}treedefitem tdef on t.{table}treedefitemid=tdef.{table}treedefitemid\n"
         "where t.rankid <= p.rankid\n"
     ).format(table=table))
-    bad_ranks_count, = cursor.fetchone()
-    assert bad_ranks_count == 0, "Bad Tree Structure: Found {} cases where node rank is not greater than it's parent".format(bad_ranks_count) 
+    results = cursor.fetchall()
+    formattedResults = [{
+        "parent" : {
+            f"{table.capitalize()} ID" : parentID,
+            "Full Name" : parentName
+        },
+        "child" : {
+            f"{table.capitalize()} ID" : childID,
+            "Full Name" : childName,
+            "Bad Rank" : childRank
+        }
+    }for parentID, parentName, childID, childName, childRank in results]
+   
+    bad_ranks_count = cursor.rowcount
+    if bad_ranks_count > 0 : raise AssertionError(f"Bad Tree Structure: Found {bad_ranks_count} case(s) where node rank is not greater than it's parent", formattedResults)
 
     # Get the tree ranks in leaf -> root order.
     cursor.execute("select distinct rankid from {} order by rankid desc".format(table))
