@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { formsText } from '../../localization/forms';
 import type { RA } from '../../utils/types';
 import { Container } from '../Atoms';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -11,6 +10,7 @@ import { loadingGif } from '../Molecules';
 import { AttachmentCell } from './Cell';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { fail } from '../Errors/Crash';
+import { attachmentsText } from '../../localization/attachments';
 
 const preFetchDistance = 200;
 
@@ -74,7 +74,7 @@ export function AttachmentGallery({
           />
         ))}
         {isComplete
-          ? attachments.length === 0 && <p>{formsText('noAttachments')}</p>
+          ? attachments.length === 0 && <p>{attachmentsText.noAttachments()}</p>
           : loadingGif}
       </Container.Base>
       {typeof viewRecord === 'object' && (

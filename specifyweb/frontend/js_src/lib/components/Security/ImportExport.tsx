@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { IR, RA, RR } from '../../utils/types';
@@ -23,12 +22,14 @@ import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
 import { hasPermission } from '../Permissions/helpers';
 import type { NewRole, Role } from './Role';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
 
 type Category = 'changed' | 'created' | 'unchanged';
 const categoryLabels = {
-  changed: adminText('updateExistingRoles'),
-  unchanged: adminText('unchangedRoles'),
-  created: adminText('createNewRoles'),
+  changed: userText.updateExistingRoles(),
+  unchanged: userText.unchangedRoles(),
+  created: userText.createNewRoles(),
 } as const;
 
 // REFACTOR: reduce size of this component
@@ -42,7 +43,7 @@ export function ImportExport({
   onCreateRole: handleCreateRole,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
   readonly collectionId: number;
   readonly permissionName: '/permissions/library/roles' | '/permissions/roles';
   readonly isReadOnly?: boolean;
@@ -69,7 +70,7 @@ export function ImportExport({
         (hasPermission(permissionName, 'update', collectionId) ||
           hasPermission(permissionName, 'create', collectionId)) && (
           <Button.Blue disabled={roles === undefined} onClick={handleOpen}>
-            {commonText('import')}
+            {commonText.import()}
           </Button.Blue>
         )}
       <ExportButton baseName={baseName} roles={roles} />
@@ -77,13 +78,13 @@ export function ImportExport({
         <Dialog
           buttons={
             <>
-              <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Submit.Green disabled={newRoles === undefined} form={id('form')}>
-                {commonText('import')}
+                {commonText.import()}
               </Submit.Green>
             </>
           }
-          header={commonText('import')}
+          header={commonText.import()}
           onClose={(): void => {
             setNewRoles(undefined);
             handleClose();
@@ -113,7 +114,7 @@ export function ImportExport({
                 <section key={category}>
                   <H3>{categoryLabels[category]}</H3>
                   {roles === undefined || roles.length === 0 ? (
-                    commonText('none')
+                    commonText.none()
                   ) : (
                     <Ul>
                       {Array.from(roles)
@@ -224,7 +225,7 @@ function ExportButton({
   baseName,
 }: {
   readonly roles: IR<Role> | undefined;
-  readonly baseName: string;
+  readonly baseName: LocalizedString;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   return (
@@ -233,15 +234,13 @@ function ExportButton({
       onClick={(): void =>
         loading(
           downloadFile(
-            `${adminText(
-              'userRoles'
-            )} - ${baseName} - ${new Date().toDateString()}.json`,
+            `${userText.userRoles()} - ${baseName} - ${new Date().toDateString()}.json`,
             JSON.stringify(Object.values(roles!), null, '\t')
           )
         )
       }
     >
-      {commonText('export')}
+      {commonText.export()}
     </Button.Blue>
   );
 }

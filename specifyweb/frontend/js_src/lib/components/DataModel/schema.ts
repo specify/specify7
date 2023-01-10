@@ -22,16 +22,17 @@ import {
   setDevelopmentGlobal,
 } from '../../utils/types';
 import { AnySchema, AnyTree } from './helperTypes';
+import { LocalizedString } from 'typesafe-i18n';
 
 export type SchemaLocalization = {
-  readonly name: string | null;
-  readonly desc: string | null;
+  readonly name: LocalizedString | null;
+  readonly desc: LocalizedString | null;
   readonly format: string | null;
   readonly aggregator: string | null;
   readonly ishidden: boolean;
   readonly items: IR<{
-    readonly name: string | null;
-    readonly desc: string | null;
+    readonly name: LocalizedString | null;
+    readonly desc: LocalizedString | null;
     readonly format: string | null;
     readonly picklistname: string | null;
     readonly weblinkname: string | null;
@@ -98,20 +99,37 @@ export const fetchContext = f
           schemaExtras[model.name] as typeof schemaExtras['Agent'] | undefined
         )?.(model as SpecifyModel<Agent>) ?? [[], []];
 
-        model.literalFields = processFields(
-          tableDefinition.fields.map(
-            (fieldDefinition) => new LiteralField(model, fieldDefinition)
-          ),
-          frontEndFields
+        overwriteReadOnly(
+          model,
+          'literalFields',
+
+          processFields(
+            tableDefinition.fields.map(
+              (fieldDefinition) => new LiteralField(model, fieldDefinition)
+            ),
+            frontEndFields
+          )
         );
-        model.relationships = processFields(
-          tableDefinition.relationships.map(
-            (relationshipDefinition) =>
-              new Relationship(model, relationshipDefinition)
-          ),
-          frontEndRelationships
+        overwriteReadOnly(
+          model,
+          'relationships',
+          processFields(
+            tableDefinition.relationships.map(
+              (relationshipDefinition) =>
+                new Relationship(model, relationshipDefinition)
+            ),
+            frontEndRelationships
+          )
         );
-        model.fields = [...model.literalFields, ...model.relationships];
+        overwriteReadOnly(model, 'fields', [
+          ...model.literalFields,
+          ...model.relationships,
+        ]);
+        overwriteReadOnly(
+          model,
+          'field',
+          Object.fromEntries(model.fields.map((field) => [field.name, field]))
+        );
 
         frontEndOnlyFields[model.name] = [
           ...frontEndFields,

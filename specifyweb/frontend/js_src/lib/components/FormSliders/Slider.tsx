@@ -28,18 +28,18 @@ export function Slider({
   return count > 0 ? (
     <div className="flex justify-center gap-2 print:hidden">
       <Button.Small
-        aria-label={formsText('firstRecord')}
+        aria-label={formsText.firstRecord()}
         disabled={value === 0 || handleChange === undefined}
-        title={formsText('firstRecord')}
+        title={formsText.firstRecord()}
         onClick={(): void => handleChange?.(0)}
       >
         ≪
       </Button.Small>
       <Button.Small
-        aria-label={formsText('previousRecord')}
+        aria-label={formsText.previousRecord()}
         className="px-4 dark:bg-neutral-500"
         disabled={value === 0 || handleChange === undefined}
-        title={formsText('previousRecord')}
+        title={formsText.previousRecord()}
         onClick={(): void => handleChange?.(value - 1)}
       >
         {'<'}
@@ -52,7 +52,9 @@ export function Slider({
           `}
           data-value={value}
         >
-          <span className="sr-only">{formsText('currentRecord', count)}</span>
+          <span className="sr-only">
+            {formsText.currentRecord({ total: count })}
+          </span>
           <Input.Number
             className={`
               no-arrows absolute top-0 left-0 h-full bg-white
@@ -83,18 +85,18 @@ export function Slider({
         <span>{count}</span>
       </div>
       <Button.Small
-        aria-label={formsText('nextRecord')}
+        aria-label={formsText.nextRecord()}
         className="px-4 dark:bg-neutral-500"
         disabled={value + 1 === count || handleChange === undefined}
-        title={formsText('nextRecord')}
+        title={formsText.nextRecord()}
         onClick={(): void => handleChange?.(value + 1)}
       >
         {'>'}
       </Button.Small>
       <Button.Small
-        aria-label={formsText('lastRecord')}
+        aria-label={formsText.lastRecord()}
         disabled={value + 1 === count || handleChange === undefined}
-        title={formsText('lastRecord')}
+        title={formsText.lastRecord()}
         onClick={(): void => handleChange?.(count - 1)}
       >
         ≫

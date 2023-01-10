@@ -4,47 +4,66 @@
 
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { ping } from '../../utils/ajax/ping';
-import { formData } from '../../utils/ajax/helpers';
-import { csrfToken } from '../../utils/ajax/csrfToken';
-import { f } from '../../utils/functools';
-import { sortFunction } from '../../utils/utils';
-import { cachableUrl } from '../InitialContext';
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
-import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
+import { headerText } from '../../localization/header';
+import { StringToJsx } from '../../localization/utils';
+import { ajax } from '../../utils/ajax';
+import { csrfToken } from '../../utils/ajax/csrfToken';
+import { ping } from '../../utils/ajax/ping';
+import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
+import { fail } from '../Errors/Crash';
+import { supportLink } from '../Errors/ErrorDialog';
+import { cachableUrl } from '../InitialContext';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type {
   PreferenceItem,
   PreferenceItemComponent,
 } from '../UserPreferences/Definitions';
 import { PreferencesContext, prefEvents } from '../UserPreferences/Hooks';
-import { Select } from '../Atoms/Form';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { supportLink } from '../Errors/ErrorDialog';
-import { fail } from '../Errors/Crash';
+import { LocalizedString } from 'typesafe-i18n';
+import {
+  devLanguage,
+  devLanguages,
+  disabledLanguages,
+  Language,
+  LANGUAGE,
+  languages,
+} from '../../localization/utils/config';
+import { formatUrl } from '../Router/queryString';
+import { Http } from '../../utils/ajax/definitions';
+import { languageSeparator } from '../SchemaConfig/Languages';
 
 export const handleLanguageChange = async (language: Language): Promise<void> =>
-  ping('/context/language/', {
-    method: 'POST',
-    body: formData({
-      language,
-      csrfmiddlewaretoken: csrfToken,
-    }),
-  }).then(f.void);
+  ping(
+    '/context/language/',
+    {
+      method: 'POST',
+      body: {
+        language,
+        csrfmiddlewaretoken: csrfToken,
+      },
+    },
+    {
+      expectedResponseCodes: [Http.NO_CONTENT],
+    }
+  ).then(f.void);
 
 export function LanguageSelection<LANGUAGES extends string>({
   value,
   languages,
   onChange: handleChange,
   isReadOnly = false,
+  showDevLanguages = process.env.NODE_ENV === 'development',
 }: {
   readonly value: LANGUAGES;
   readonly languages: IR<string> | undefined;
   readonly onChange: (language: LANGUAGES) => void;
   readonly isReadOnly?: boolean;
+  readonly showDevLanguages?: boolean;
 }): JSX.Element {
   const [showSupportDialog, setShowSupportDialog] = React.useState(false);
 
@@ -52,19 +71,26 @@ export function LanguageSelection<LANGUAGES extends string>({
     <>
       {showSupportDialog && (
         <Dialog
-          buttons={commonText('close')}
+          buttons={commonText.close()}
           className={{
             container: dialogClassNames.narrowContainer,
           }}
-          header={commonText('helpLocalizeSpecify')}
+          header={headerText.helpLocalizeSpecify()}
           onClose={(): void => setShowSupportDialog(false)}
         >
-          <p>{commonText('helpLocalizeSpecifyDialogText', supportLink)}</p>
+          <p>
+            <StringToJsx
+              components={{
+                emailLink: supportLink,
+              }}
+              string={headerText.helpLocalizeSpecifyDescription()}
+            />
+          </p>
         </Dialog>
       )}
       {typeof languages === 'object' ? (
         <Select
-          aria-label={commonText('language')}
+          aria-label={commonText.language()}
           disabled={isReadOnly}
           value={value}
           onChange={({ target }): void =>
@@ -79,15 +105,28 @@ export function LanguageSelection<LANGUAGES extends string>({
             </option>
           ))}
           <option value="supportLocalization">
-            {commonText('helpLocalizeSpecify')}
+            {headerText.helpLocalizeSpecify()}
           </option>
+          {showDevLanguages && (
+            <optgroup label="Development languages">
+              {Object.entries(devLanguages).map(([code, name]) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </Select>
       ) : undefined}
     </>
   );
 }
 
-const url = cachableUrl('/context/language/');
+const url = cachableUrl(
+  formatUrl('/context/language/', {
+    languages: languages.join(','),
+  })
+);
 export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
   function LanguagePreferencesItem({
     isReadOnly,
@@ -111,7 +150,10 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
           }).then(({ data }) =>
             Object.fromEntries(
               Object.entries(data)
-                .filter(([code]) => f.includes(enabledLanguages, code))
+                .filter(
+                  ([code]) =>
+                    !f.has(disabledLanguages, code) || code === language
+                )
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 .map(([code, { name_local }]) => [code, name_local])
             )
@@ -120,7 +162,9 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
       ),
       false
     );
-    const [language, setLanguage] = React.useState(LANGUAGE);
+    const [language, setLanguage] = React.useState(
+      (devLanguage as Language) ?? LANGUAGE
+    );
 
     /**
      * When editing someone else's user preferences, disable the language
@@ -130,7 +174,7 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
     return (
       <LanguageSelection<Language>
         isReadOnly={isReadOnly || isRedirecting || languages === undefined}
-        languages={languages ?? { loading: commonText('loading') }}
+        languages={languages ?? { loading: commonText.loading() }}
         value={language}
         onChange={(language): void => {
           /*
@@ -154,8 +198,8 @@ export const LanguagePreferencesItem: PreferenceItemComponent<Language> =
 
 export function useSchemaLanguages(
   loadingScreen: boolean
-): IR<string> | undefined {
-  const [languages] = useAsyncState<IR<string>>(
+): IR<LocalizedString> | undefined {
+  const [languages] = useAsyncState<IR<LocalizedString>>(
     React.useCallback(
       async () =>
         ajax<
@@ -174,7 +218,7 @@ export function useSchemaLanguages(
               data.map(
                 ({ country, language }) =>
                   `${language}${
-                    country === null || country === '' ? '' : `-${country}`
+                    country === null || country === '' ? '' : `${languageSeparator}${country}`
                   }`
               )
             )
@@ -187,9 +231,9 @@ export function useSchemaLanguages(
                   (language) =>
                     [
                       language,
-                      new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
+                      (new Intl.DisplayNames(LANGUAGE, { type: 'language' }).of(
                         language
-                      ) ?? language,
+                      ) ?? language) as LocalizedString,
                     ] as const
                 )
                 .sort(sortFunction(([_code, localized]) => localized))
@@ -212,9 +256,10 @@ export const SchemaLanguagePreferenceItem: PreferenceItemComponent<string> =
     return (
       <LanguageSelection<string>
         isReadOnly={isReadOnly || languages === undefined}
-        languages={languages ?? { loading: commonText('loading') }}
+        languages={languages ?? { loading: commonText.loading() }}
         value={value}
         onChange={handleChange}
+        showDevLanguages={false}
       />
     );
   };

@@ -21,6 +21,7 @@ import { formatUrl } from '../Router/queryString';
 import { scrollIntoView } from '../TreeView/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { SplashScreen } from '../Core/SplashScreen';
+import { userText } from '../../localization/user';
 
 export function ChooseCollection(): JSX.Element {
   return React.useMemo(
@@ -120,7 +121,7 @@ function Wrapped({
   return (
     <SplashScreen>
       <Form forwardRef={formRef} method="post">
-        <h2>{commonText('chooseCollection')}:</h2>
+        <h2>{commonText.chooseCollection()}:</h2>
         {errors.length > 0 && <ErrorMessage>{errors}</ErrorMessage>}
         {hasAccess ? (
           <>
@@ -145,13 +146,13 @@ function Wrapped({
             />
             <input name="next" type="hidden" value={nextUrl} />
             <Submit.Fancy forwardRef={submitRef}>
-              {commonText('open')}
+              {commonText.open()}
             </Submit.Fancy>
           </>
         ) : (
           <>
             <ErrorMessage>
-              <span>{commonText('noAccessToCollections')}</span>
+              <span>{userText.noAccessToCollections()}</span>
             </ErrorMessage>
             <Button.Fancy
               onClick={(): void =>
@@ -164,7 +165,7 @@ function Wrapped({
                 )
               }
             >
-              {commonText('login')}
+              {userText.logIn()}
             </Button.Fancy>
           </>
         )}

@@ -27,7 +27,7 @@ export function parseValue(
       ? {
           value,
           isValid: false,
-          reason: formsText('requiredField'),
+          reason: formsText.requiredField(),
         }
       : {
           value,

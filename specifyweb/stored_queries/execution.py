@@ -130,7 +130,8 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         field_specs = field_specs_from_json(spquery['fields'])
         if exporttype == 'csv':
             query_to_csv(session, collection, user, tableid, field_specs, path,
-                         recordsetid=recordsetid, add_header=True, strip_id=True,
+                         recordsetid=recordsetid, 
+                         captions=spquery['captions'], strip_id=True,
                          distinct=spquery['selectdistinct'])
         elif exporttype == 'kml':
             query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
@@ -158,7 +159,7 @@ def stored_query_to_csv(query_id, collection, user, path):
         query_to_csv(session, collection, user, tableid, field_specs, path, distinct=spquery['selectdistinct'])
 
 def query_to_csv(session, collection, user, tableid, field_specs, path,
-                 recordsetid=None, add_header=False, strip_id=False, row_filter=None,
+                 recordsetid=None, captions=False, strip_id=False, row_filter=None,
                  distinct=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -173,8 +174,8 @@ def query_to_csv(session, collection, user, tableid, field_specs, path,
 
     with open(path, 'w', newline='', encoding='utf-8') as f:
         csv_writer = csv.writer(f)
-        if add_header:
-            header = [fs.fieldspec.to_stringid() for fs in field_specs if fs.display]
+        if captions:
+            header = captions
             if not strip_id and not distinct:
                 header = ['id'] + header
             csv_writer.writerow(header)
@@ -196,7 +197,7 @@ def row_has_geocoords(coord_cols, row):
 
 
 def query_to_kml(session, collection, user, tableid, field_specs, path, captions, host,
-                 recordsetid=None, add_header=False, strip_id=False):
+                 recordsetid=None, strip_id=False):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a kml file at the given
     file path.

@@ -5,7 +5,6 @@ import type { SpAppResourceDir } from '../DataModel/types';
 import { serializeResource } from '../DataModel/helpers';
 import { f } from '../../utils/functools';
 import { mappedFind } from '../../utils/utils';
-import { adminText } from '../../localization/admin';
 import { commonText } from '../../localization/common';
 import { userInformation } from '../InitialContext/userInformation';
 import type { AppResourcesOutlet } from './index';
@@ -29,6 +28,8 @@ import {
   spAppResourceView,
   spViewSetNameView,
 } from '../FormParse/webOnlyViews';
+import { headerText } from '../../localization/header';
+import { resourcesText } from '../../localization/resources';
 
 /**
  * Check if one type is a subtype of another
@@ -57,8 +58,8 @@ export function CreateAppResource(): JSX.Element {
     <NotFoundView container={false} />
   ) : type === undefined ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={adminText('selectResourceType')}
+      buttons={commonText.cancel()}
+      header={resourcesText.selectResourceType()}
       onClose={(): void => navigate('/specify/resources/')}
     >
       <Ul className="flex flex-col">
@@ -79,15 +80,15 @@ export function CreateAppResource(): JSX.Element {
     </Dialog>
   ) : mimeType === undefined ? (
     <Dialog
-      buttons={commonText('cancel')}
-      header={adminText('selectResourceType')}
+      buttons={commonText.cancel()}
+      header={resourcesText.selectResourceType()}
       onClose={(): void => navigate('/specify/resources/')}
     >
       <table className="grid-table grid-cols-2 gap-2">
         <thead>
           <tr>
-            <th scope="col">{commonText('type')}</th>
-            <th scope="col">{commonText('documentation')}</th>
+            <th scope="col">{resourcesText.type()}</th>
+            <th scope="col">{headerText.documentation()}</th>
           </tr>
         </thead>
         <tbody>
@@ -108,7 +109,7 @@ export function CreateAppResource(): JSX.Element {
                 <td>
                   {typeof documentationUrl === 'string' && (
                     <Link.NewTab href={documentationUrl}>
-                      {commonText('documentation')}
+                      {headerText.documentation()}
                     </Link.NewTab>
                   )}
                 </td>

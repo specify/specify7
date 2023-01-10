@@ -228,8 +228,15 @@ const cellRenderers: {
   Blank() {
     return null;
   },
-  Unsupported({ cellData: { cellType = commonText('nullInline') } }) {
-    return <>{`${formsText('unsupportedCellType')} ${cellType}`}</>;
+  Unsupported({ cellData: { cellType = commonText.nullInline() } }) {
+    return (
+      <>
+        {commonText.colonLine({
+          label: formsText.unsupportedCellType(),
+          value: cellType,
+        })}
+      </>
+    );
   },
 };
 

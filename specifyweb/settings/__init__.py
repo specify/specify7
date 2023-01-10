@@ -95,7 +95,6 @@ LOCALE_PATHS = (
 LANGUAGES = [
     ('en-us', 'English'),
     ('ru-ru', 'русский'),
-    ('ca', 'català')
 ]
 
 SITE_ID = 1

@@ -3,8 +3,6 @@ import { omit } from 'underscore';
 
 import { deserializeResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import { jsonStringify } from '../../utils/utils';
 import { serializeResource } from '../DataModel/helpers';
@@ -16,6 +14,9 @@ import { userInformation } from '../InitialContext/userInformation';
 import { actionToLabel, resourceNameToLongLabel } from '../Security/utils';
 import { institutionPermissions } from './definitions';
 import type { PermissionErrorSchema } from './PermissionDenied';
+import { userText } from '../../localization/user';
+import { StringToJsx } from '../../localization/utils';
+import { commonText } from '../../localization/common';
 
 export function formatPermissionsError(
   response: string,
@@ -23,8 +24,11 @@ export function formatPermissionsError(
 ):
   | readonly [errorObject: JSX.Element | undefined, errorMessage: string]
   | undefined {
-  if (response.length === 0)
-    return [undefined, commonText('sessionTimeOutDialogHeader')];
+  /*
+   * If this is a permission error, back-end would provide a JSON object
+   * In cases of session time out, back-end returns empty response
+   */
+  if (response.length === 0) return [undefined, userText.sessionTimeOut()];
 
   let parsed: PermissionErrorSchema | undefined = undefined;
   try {
@@ -53,13 +57,13 @@ export function FormatPermissionError({
 }): JSX.Element {
   return (
     <div className="flex h-full flex-col gap-2">
-      <p>{commonText('permissionDeniedDialogText')}</p>
+      <p>{userText.permissionDeniedDescription()}</p>
       <table className="grid-table grid-cols-4 rounded border border-gray-500">
         <thead>
           <tr>
             {[
-              adminText('action'),
-              adminText('resource'),
+              userText.action(),
+              userText.resource(),
               schema.models.Collection.label,
               schema.models.SpecifyUser.label,
             ].map((label, index, { length }) => (
@@ -107,7 +111,12 @@ export function FormatPermissionError({
       </table>
       {typeof url === 'string' && (
         <p>
-          {commonText('permissionDeniedDialogSecondText', <code>{url}</code>)}
+          <StringToJsx
+            string={userText.permissionDeniedForUrl()}
+            components={{
+              url: <code>{url}</code>,
+            }}
+          />
         </p>
       )}
     </div>
@@ -138,7 +147,7 @@ function CollectionName({
     ),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }
 
 function UserName({ userId }: { readonly userId: number }): JSX.Element {
@@ -165,5 +174,5 @@ function UserName({ userId }: { readonly userId: number }): JSX.Element {
     ),
     false
   );
-  return <>{formatted}</>;
+  return <>{formatted ?? commonText.loading()}</>;
 }

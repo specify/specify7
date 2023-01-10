@@ -5,7 +5,6 @@ import type { State } from 'typesafe-reducer';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { removeItem, sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -24,6 +23,7 @@ import {
   fetchOtherCollectionData,
   processColRelationships,
 } from './collectionRelData';
+import { userText } from '../../localization/user';
 
 export function CollectionOneToManyPlugin({
   resource,
@@ -68,11 +68,16 @@ export function CollectionOneToManyPlugin({
   const loading = React.useContext(LoadingContext);
   const navigate = useNavigate();
   return data === false ? null : (
-    <div className="w-fit rounded bg-[color:var(--form-background)] p-2">
-      <table className="grid-table grid-cols-[repeat(3,auto)] gap-2">
+    <div
+      className={`
+        w-fit rounded bg-[color:var(--form-background)] p-2
+        ring-1 ring-gray-500 dark:ring-0
+      `}
+    >
+      <table className={`grid-table grid-cols-[repeat(3,auto)] gap-2`}>
         <thead>
           <tr>
-            <th scope="col">{formsText('collectionObject')}</th>
+            <th scope="col">{schema.models.CollectionObject.label}</th>
             <th scope="col">{schema.models.Collection.label}</th>
             <td />
           </tr>
@@ -121,7 +126,7 @@ export function CollectionOneToManyPlugin({
                     {hasTablePermission('CollectionRelationship', 'delete') && (
                       <Button.Icon
                         icon="trash"
-                        title={commonText('remove')}
+                        title={commonText.remove()}
                         onClick={(): void => {
                           if (data === undefined) return;
                           resource
@@ -143,7 +148,7 @@ export function CollectionOneToManyPlugin({
             )
           ) : (
             <tr>
-              <td colSpan={2}>{commonText('loading')}</td>
+              <td colSpan={2}>{commonText.loading()}</td>
             </tr>
           )}
         </tbody>
@@ -173,14 +178,13 @@ export function CollectionOneToManyPlugin({
       ) : undefined}
       {state.type === 'DeniedAccessState' && (
         <Dialog
-          buttons={commonText('close')}
-          header={commonText('collectionAccessDenied')}
+          buttons={commonText.close()}
+          header={userText.collectionAccessDenied()}
           onClose={(): void => setState({ type: 'MainState' })}
         >
-          {commonText(
-            'collectionAccessDeniedDescription',
-            state.collectionName
-          )}
+          {userText.collectionAccessDeniedDescription({
+            collectionName: state.collectionName,
+          })}
         </Dialog>
       )}
       {state.type === 'SearchState' && typeof data === 'object' && (

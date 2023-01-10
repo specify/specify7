@@ -20,6 +20,8 @@ import { QueryEditButton } from './Edit';
 import { smoothScroll } from './helpers';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { commonText } from '../../localization/common';
+import { getField } from '../DataModel/helpers';
 
 export function QueryHeader({
   recordSet,
@@ -57,8 +59,14 @@ export function QueryHeader({
       <TableIcon label name={state.baseTableName} />
       <H2 className="overflow-x-auto">
         {typeof recordSet === 'object'
-          ? queryText('queryRecordSetTitle', query.name, recordSet.get('name'))
-          : queryText('queryTaskTitle', query.name)}
+          ? queryText.queryRecordSetTitle({
+              queryName: query.name,
+              recordSetName: recordSet.get('name'),
+            })
+          : commonText.colonLine({
+              label: queryText.query(),
+              value: query.name,
+            })}
       </H2>
       {!queryResource.isNew() && <QueryEditButton query={query} />}
       <span className="ml-2 flex-1" />
@@ -68,7 +76,7 @@ export function QueryHeader({
             form === null ? undefined : smoothScroll(form, 0)
           }
         >
-          {queryText('editQuery')}
+          {queryText.editQuery()}
         </Button.Small>
       )}
       {state.baseTableName === 'LoanPreparation' && (
@@ -109,8 +117,8 @@ export function QueryHeader({
           onTriedToSave={(): boolean => {
             handleTriedToSave();
             const fieldLengthLimit =
-              schema.models.SpQueryField.strictGetLiteralField('startValue')
-                .length ?? Number.POSITIVE_INFINITY;
+              getField(schema.models.SpQueryField, 'startValue').length ??
+              Number.POSITIVE_INFINITY;
             return state.fields.every((field) =>
               field.filters.every(
                 ({ startValue }) => startValue.length < fieldLengthLimit

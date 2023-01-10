@@ -19,11 +19,15 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile } from '../Molecules/FilePicker';
 import { hasTablePermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
+import { StringToJsx } from '../../localization/utils';
+import { LocalizedString } from 'typesafe-i18n';
 
 export function AboutOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return <AboutDialog isOpen onClose={handleClose} />;
 }
+
+const websiteUrl = 'www.specifysoftware.org' as LocalizedString;
 
 function AboutDialog({
   isOpen,
@@ -50,11 +54,11 @@ function AboutDialog({
               )
             }
           >
-            {welcomeText('downloadInformation')}
+            {welcomeText.downloadInformation()}
           </Button.Green>
           {/* REFACTOR: replace span elements like this with a separator */}
           <span className="-ml-2 flex-1" />
-          <Button.DialogClose>{commonText('close')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
         </>
       }
       className={{
@@ -62,51 +66,55 @@ function AboutDialog({
         content: `${dialogClassNames.flexContent} pr-4`,
         header: 'text-3xl',
       }}
-      header={welcomeText('aboutSpecify')}
+      header={welcomeText.aboutSpecify()}
       isOpen={isOpen}
       onClose={handleClose}
     >
       <p>
-        <b>{welcomeText('fullAddress')}</b>
+        <b>
+          <StringToJsx
+            string={welcomeText.fullAddress()}
+            components={{
+              br: <br />,
+            }}
+          />
+        </b>
       </p>
       <address>
         <p>
           <Link.NewTab href="https://specifysoftware.org" rel="noreferrer">
-            www.specifysoftware.org
+            {websiteUrl}
           </Link.NewTab>
         </p>
         <p>{supportLink}</p>
       </address>
-      <p className="text-justify">{welcomeText('disclosure')}</p>
-      <p className="text-justify">{welcomeText('licence')}</p>
+      <p className="text-justify">{welcomeText.disclosure()}</p>
+      <p className="text-justify">{welcomeText.licence()}</p>
 
       <section>
-        <H3>{welcomeText('systemInformation')}</H3>
+        <H3>{welcomeText.systemInformation()}</H3>
         <table className="grid-table grid-cols-[auto,auto] gap-1">
           <tbody>
             {[
-              [welcomeText('specifyVersion'), getSystemInfo().version],
-              [welcomeText('gitSha'), <GitSha />],
-              [welcomeText('buildDate'), <BuildDate />],
+              [welcomeText.specifyVersion(), getSystemInfo().version],
+              [welcomeText.gitSha(), <GitSha />],
+              [welcomeText.buildDate(), <BuildDate />],
               [
-                welcomeText('specifySixVersion'),
+                welcomeText.specifySixVersion(),
                 getSystemInfo().specify6_version,
               ],
+              [welcomeText.databaseVersion(), getSystemInfo().database_version],
               [
-                welcomeText('databaseVersion'),
-                getSystemInfo().database_version,
-              ],
-              [
-                welcomeText('schemaVersion'),
+                welcomeText.schemaVersion(),
                 <Link.Default href="/specify/datamodel/" key="link">
-                  {getSystemInfo().schema_version}
+                  {getSystemInfo().schema_version as LocalizedString}
                 </Link.Default>,
               ],
-              [welcomeText('databaseName'), getSystemInfo().database],
+              [welcomeText.databaseName(), getSystemInfo().database],
               ...(hasTablePermission('SpVersion', 'read')
                 ? [
                     [
-                      welcomeText('databaseCreationDate'),
+                      welcomeText.databaseCreationDate(),
                       <DatabaseCreationDate key="" />,
                     ],
                   ]
@@ -120,14 +128,14 @@ function AboutDialog({
                 getSystemInfo().discipline,
               ],
               [
-                `${schema.models.Collection.label}: `,
+                `${schema.models.Collection.label}:`,
                 getSystemInfo().collection,
               ],
               [
-                welcomeText('isaNumber'),
-                getSystemInfo().isa_number ?? commonText('notApplicable'),
+                welcomeText.isaNumber(),
+                getSystemInfo().isa_number ?? commonText.notApplicable(),
               ],
-              [welcomeText('browser'), globalThis.navigator.userAgent],
+              [welcomeText.browser(), globalThis.navigator.userAgent],
             ].map(([label, value], index) => (
               <tr key={index}>
                 <th className="justify-end whitespace-nowrap" scope="row">
@@ -154,7 +162,7 @@ function DatabaseCreationDate(): JSX.Element {
     ),
     false
   );
-  return <DateElement date={date} fallback={commonText('loading')} flipDates />;
+  return <DateElement date={date} fallback={commonText.loading()} flipDates />;
 }
 
 function GitSha(): JSX.Element {
@@ -172,7 +180,7 @@ function GitSha(): JSX.Element {
             expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
           }
         ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? false : data
+          status === Http.NOT_FOUND ? false : (data as LocalizedString)
         ),
       []
     ),
@@ -181,7 +189,7 @@ function GitSha(): JSX.Element {
   return (
     <>
       {gitSha === false ? (
-        commonText('unknown')
+        commonText.unknown()
       ) : typeof gitSha === 'string' ? (
         <Link.NewTab
           className="break-all"
@@ -190,7 +198,7 @@ function GitSha(): JSX.Element {
           {gitSha}
         </Link.NewTab>
       ) : (
-        commonText('loading')
+        commonText.loading()
       )}
     </>
   );
@@ -211,11 +219,11 @@ function BuildDate(): JSX.Element {
             expectedResponseCodes: [Http.OK, Http.NOT_FOUND],
           }
         ).then(({ data, status }) =>
-          status === Http.NOT_FOUND ? commonText('unknown') : data
+          status === Http.NOT_FOUND ? commonText.unknown() : data
         ),
       []
     ),
     false
   );
-  return <DateElement date={buildDate} fallback={commonText('loading')} />;
+  return <DateElement date={buildDate} fallback={commonText.loading()} />;
 }

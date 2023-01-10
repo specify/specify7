@@ -6,7 +6,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { R, RA } from '../../utils/types';
@@ -36,12 +35,14 @@ import { sortTypes } from './helpers';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { LocalizedString } from 'typesafe-i18n';
+import { interactionsText } from '../../localization/interactions';
 
 export type QueryResultRow = RA<number | string | null>;
 
 export function QueryResults({
   model,
-  label = commonText('results'),
+  label = commonText.results(),
   hasIdField,
   queryResource,
   fetchSize,
@@ -57,7 +58,7 @@ export function QueryResults({
   tableClassName = '',
 }: {
   readonly model: SpecifyModel;
-  readonly label?: string;
+  readonly label?: LocalizedString;
   readonly hasIdField: boolean;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   /**
@@ -226,12 +227,12 @@ export function QueryResults({
       <div className="flex items-center items-stretch gap-2">
         <H3>{`${label}: (${
           selectedRows.size === 0
-            ? totalCount ?? commonText('loading')
-            : `${selectedRows.size}/${totalCount ?? commonText('loading')}`
+            ? totalCount ?? commonText.loading()
+            : `${selectedRows.size}/${totalCount ?? commonText.loading()}`
         })`}</H3>
         {selectedRows.size > 0 && (
           <Button.Small onClick={(): void => setSelectedRows(new Set())}>
-            {formsText('deselectAll')}
+            {interactionsText.deselectAll()}
           </Button.Small>
         )}
         <div className="-ml-2 flex-1" />
@@ -495,7 +496,7 @@ function CreateRecordSet({
           });
         }}
       >
-        {queryText('createRecordSet')}
+        {queryText.createRecordSet()}
       </Button.Small>
       {state.type === 'Editing' && (
         <ResourceView

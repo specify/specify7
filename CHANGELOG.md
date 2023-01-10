@@ -1,19 +1,66 @@
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.8.3](https://github.com/specify/specify7/compare/v7.8.2...v7.8.3) (9 January 2023)
+
+This update includes many bug fixes in addition to laying the groundwork for Specify's UI to support Spanish, French,
+Ukranian, and many more languages. If you are interested in helping support our localization effort, please see our
+guide
+on **[Getting Started with Specify 7 Localization](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)**
+and contact us at [support@specifysoftware.org](mailto:support@specifysoftware.org) if you have any questions or would
+like to help translate to a language we do not yet support.
+
+### Changed
+- Global Prefs and Remote User Prefs are now differentiated in the App Resources
+  viewer ([#2430](https://github.com/specify/specify7/issues/2430))
+- Usernames are no longer automatically capitalized in the navigation menu
+- Language codes now appear next to the language name ([#1903](https://github.com/specify/specify7/issues/1903))
+- Empty record sets now inform the user that it cannot be opened in read-only
+  mode ([#2698](https://github.com/specify/specify7/issues/2698))
+
+### Fixed
+- Exchange In, Exchange Out, and Disposal attachments now function
+  properly ([#2525](https://github.com/specify/specify7/issues/2525) - _Requested by RBGE_)
+- GeoMap full screen icon now conforms to rounded corner
+  preference ([#2506](https://github.com/specify/specify7/issues/2506))
+- Fixed app resource creation being blocked because of it trying to get an invalid field
+
+### Updated
+- Updated the copyright year to 2023
+
+## [7.8.2](https://github.com/specify/specify7/compare/v7.8.1...v7.8.2) (29 December 2022)
+
+Specify 7 is now integrated with
+[Weblate](https://hosted.weblate.org/projects/specify-7/) - a continuous
+localization service. This paves the way for supporting dozens of languages in
+Specify 7. We will be adding Spanish and French localization in near future.
+
+Additionally, specify now includes the ability to store different
+collections' assets in separate folders.
+([#1056](https://github.com/specify/specify7/issues/1056#issuecomment-1368093439) - _Requested By
+  NHMD_)
+
+[More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
 
-- Attachments now uses a photo icon instead of a link ([#2530](https://github.com/specify/specify7/issues/2530))
+### Changed
+- Attachments now uses a photo icon instead of a
+  link ([#2530](https://github.com/specify/specify7/issues/2530))
 - Animated shadows are now used when viewing attachments
-- The log in button now operates correctly when accessing the database via an anonymous user ([#2651](https://github.com/specify/specify7/issues/2651))
+
+### Fixed
+- The log in button now operates correctly when accessing the database via an
+  anonymous user ([#2651](https://github.com/specify/specify7/issues/2651))
 
 ## [7.8.0](https://github.com/specify/specify7/compare/v7.7.5...v7.8.0) (13 December 2022)
 
-This update introduces a new Form “Meta Menu”, reimplements the App Resource Editor, introduces spatial search in the Query Builder, adds numerous usability improvements and fixes many bugs.
+This update introduces a new Form “Meta Menu”, reimplements the App Resource
+Editor, introduces spatial search in the Query Builder, adds numerous usability
+improvements and fixes many bugs.
 
 [Full Release Notes](https://discourse.specifysoftware.org/t/specify-7-8-release-notes/)
 
@@ -25,14 +72,17 @@ This update introduces a new Form “Meta Menu”, reimplements the App Resource
 
 ### Fixed
 
-- Fix query result table formatting to use correct formatter ([#2271](https://github.com/specify/specify7/pull/2271))
-- Fix DatePicker not allowing to change precision ([#2323](https://github.com/specify/specify7/pull/2323))
-
+- Fix query result table formatting to use correct
+  formatter ([#2271](https://github.com/specify/specify7/pull/2271))
+- Fix DatePicker not allowing to change
+  precision ([#2323](https://github.com/specify/specify7/pull/2323))
 
 ## [7.7.4.1](https://github.com/specify/specify7/compare/v7.7.4...v7.7.4.1) (12 October 2022)
 
 ### Fixed
-- Fix an infinite fetch loop in FormTable ([#2309](https://github.com/specify/specify7/issues/2309))
+
+- Fix an infinite fetch loop in
+  FormTable ([#2309](https://github.com/specify/specify7/issues/2309))
 
 ## [7.7.4](https://github.com/specify/specify7/compare/v7.7.3...v7.7.4) (12 October 2022)
 
@@ -79,7 +129,7 @@ This update introduces a new Form “Meta Menu”, reimplements the App Resource
   Emory Herbarium_
 - Fix Specify using wrong pick list when there are multiple pick lists
   with the same name ([#2285](https://github.com/specify/specify7/issues/2285))
-  - _Reported by Emory Herbarium, KU Fish and others_
+    - _Reported by Emory Herbarium, KU Fish and others_
 - Fix for query results fetcher not detecting scroll
   bar ([#2301](https://github.com/specify/specify7/issues/2301))
 
@@ -589,7 +639,7 @@ of Paleomap for Specify.
 
 [Bug fixes and new features](https://github.com/specify/specify7/compare/v7.0.1...v7.0.2)
 
-## [7.0.1](https://github.com/specify/specify7/compare/v7.0.0...v7.0.1) (20 April 2015
+## [7.0.1](https://github.com/specify/specify7/compare/v7.0.0...v7.0.1) (20 April 2015)
 
 [Bug fixes and new features](https://github.com/specify/specify7/compare/v7.0.0...v7.0.1)
 

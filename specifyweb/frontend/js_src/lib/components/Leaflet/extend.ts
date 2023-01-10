@@ -33,14 +33,15 @@ L.Icon.Default.mergeOptions({
 L.Control.FullScreen = L.Control.extend({
   onAdd() {
     const button = L.DomUtil.create('button') as HTMLImageElement;
-    button.title = localityText('toggleFullScreen');
-    button.ariaLabel = localityText('toggleFullScreen');
+    button.title = localityText.toggleFullScreen();
+    button.ariaLabel = localityText.toggleFullScreen();
     button.classList.add(
       className.button,
       'bg-white',
       'dark:bg-black',
       'p-2',
-      '!cursor-pointer'
+      '!cursor-pointer',
+      'rounded'
     );
     button.innerHTML = legacyNonJsxIcons.arrowsExpand;
 
@@ -80,8 +81,10 @@ L.Control.PrintMap = L.Control.extend({
       className.button,
       'leaflet-print-map',
       'p-2',
-      'bg-black',
+      'bg-white',
+      'dark:bg-black',
       '!cursor-pointer',
+      'rounded',
       // Hidden by default, until map enters the full-screen mode
       'hidden'
     );

@@ -7,8 +7,6 @@ import { useParams } from 'react-router-dom';
 
 import type { SortConfigs } from '../../utils/cache/definitions';
 import { f } from '../../utils/functools';
-import { adminText } from '../../localization/admin';
-import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { getModel, schema } from '../DataModel/schema';
 import {
@@ -30,6 +28,10 @@ import { TableIcon } from '../Molecules/TableIcon';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { syncFieldFormat } from '../../utils/fieldFormat';
 import { formsText } from '../../localization/forms';
+import { schemaText } from '../../localization/schema';
+import { LocalizedString } from 'typesafe-i18n';
+import { useTitle } from '../Molecules/AppTitle';
+import { getField } from '../DataModel/helpers';
 
 function Table<
   SORT_CONFIG extends
@@ -44,7 +46,7 @@ function Table<
   getLink,
 }: {
   readonly sortName: SORT_CONFIG;
-  readonly headers: RR<FIELD_NAME, string>;
+  readonly headers: RR<FIELD_NAME, LocalizedString>;
   readonly data: RA<Row<FIELD_NAME>>;
   readonly getLink: ((row: Row<FIELD_NAME>) => string) | undefined;
 }): JSX.Element {
@@ -151,6 +153,7 @@ const booleanFormatter = (value: boolean): string =>
 export function DataModelTable(): JSX.Element {
   const { tableName = '' } = useParams();
   const model = getModel(tableName);
+  useTitle(model?.name);
   return model === undefined ? (
     <NotFoundView />
   ) : (
@@ -161,17 +164,21 @@ export function DataModelTable(): JSX.Element {
   );
 }
 
-const fieldColumns = {
-  name: commonText('name'),
-  label: commonText('label'),
-  description: commonText('description'),
-  isHidden: commonText('hidden'),
-  isReadOnly: commonText('readOnly'),
-  isRequired: commonText('required'),
-  type: commonText('type'),
-  length: commonText('length'),
-  databaseColumn: commonText('databaseColumn'),
-} as const;
+const fieldColumns = f.store(
+  () =>
+    ({
+      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
+      label: schemaText.fieldLabel(),
+      description: schemaText.description(),
+      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isReadOnly: schemaText.readOnly(),
+      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
+        .label,
+      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      length: schemaText.fieldLength(),
+      databaseColumn: schemaText.databaseColumn(),
+    } as const)
+);
 
 type Value =
   | number
@@ -179,7 +186,9 @@ type Value =
   | readonly [number | string | undefined, JSX.Element]
   | undefined;
 type Row<COLUMNS extends string> = RR<COLUMNS, Value>;
-const getFields = (model: SpecifyModel): RA<Row<keyof typeof fieldColumns>> =>
+const getFields = (
+  model: SpecifyModel
+): RA<Row<keyof ReturnType<typeof fieldColumns>>> =>
   model.literalFields.map((field) => ({
     name: field.name,
     label: field.label,
@@ -209,34 +218,38 @@ function DataModelFields({
         <TableIcon label={false} name={model.name} />
         <H2 className="text-2xl">{model.name}</H2>
       </div>
-      <H3>{commonText('fields')}</H3>
+      <H3>{schemaText.fields()}</H3>
       <Table
         data={data}
         getLink={undefined}
-        headers={fieldColumns}
+        headers={fieldColumns()}
         sortName="dataModelFields"
       />
     </>
   );
 }
 
-const relationshipColumns = {
-  name: commonText('name'),
-  label: commonText('label'),
-  description: commonText('description'),
-  isHidden: commonText('hidden'),
-  isReadOnly: commonText('readOnly'),
-  isRequired: commonText('required'),
-  type: commonText('type'),
-  databaseColumn: commonText('databaseColumn'),
-  relatedModel: commonText('relatedModel'),
-  otherSideName: commonText('otherSideName'),
-  isDependent: commonText('dependent'),
-} as const;
+const relationshipColumns = f.store(
+  () =>
+    ({
+      name: getField(schema.models.SpLocaleContainerItem, 'name').label,
+      label: schemaText.fieldLabel(),
+      description: schemaText.description(),
+      isHidden: getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      isReadOnly: schemaText.readOnly(),
+      isRequired: getField(schema.models.SpLocaleContainerItem, 'isRequired')
+        .label,
+      type: getField(schema.models.SpLocaleContainerItem, 'type').label,
+      databaseColumn: schemaText.databaseColumn(),
+      relatedModel: schemaText.relatedModel(),
+      otherSideName: schemaText.otherSideName(),
+      isDependent: schemaText.dependent(),
+    } as const)
+);
 
 const getRelationships = (
   model: SpecifyModel
-): RA<Row<keyof typeof relationshipColumns>> =>
+): RA<Row<keyof ReturnType<typeof relationshipColumns>>> =>
   model.relationships.map((field) => ({
     name: field.name,
     label: field.label,
@@ -265,7 +278,7 @@ function DataModelRelationships({
   const data = React.useMemo(() => getRelationships(model), [model]);
   return (
     <>
-      <H3>{commonText('relationships')}</H3>
+      <H3>{schemaText.relationships()}</H3>
       <Table
         data={data}
         getLink={({ relatedModel }): string =>
@@ -273,23 +286,26 @@ function DataModelRelationships({
             (relatedModel as readonly [string, JSX.Element])[0]
           }/`
         }
-        headers={relationshipColumns}
+        headers={relationshipColumns()}
         sortName="dataModelRelationships"
       />
     </>
   );
 }
 
-const tableColumns = {
-  name: commonText('name'),
-  label: commonText('label'),
-  isSystem: commonText('system'),
-  isHidden: commonText('hidden'),
-  tableId: commonText('tableId'),
-  fieldCount: commonText('fieldCount'),
-  relationshipCount: commonText('relationshipCount'),
-} as const;
-const getTables = (): RA<Row<keyof typeof tableColumns>> =>
+const tableColumns = f.store(
+  () =>
+    ({
+      name: getField(schema.models.SpLocaleContainer, 'name').label,
+      label: schemaText.fieldLabel(),
+      isSystem: getField(schema.models.SpLocaleContainer, 'isSystem').label,
+      isHidden: getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      tableId: schemaText.tableId(),
+      fieldCount: schemaText.fieldCount(),
+      relationshipCount: schemaText.relationshipCount(),
+    } as const)
+);
+const getTables = (): RA<Row<keyof ReturnType<typeof tableColumns>>> =>
   Object.values(schema.models).map((model) => ({
     name: [
       model.name.toLowerCase(),
@@ -327,7 +343,7 @@ export function DataModelTables(): JSX.Element {
     <Container.Full>
       <div className="flex items-center gap-2">
         <H2 className="text-2xl">
-          {`${welcomeText('schemaVersion')} ${getSystemInfo().schema_version}`}
+          {`${welcomeText.schemaVersion()} ${getSystemInfo().schema_version}`}
         </H2>
         <span className="-ml-2 flex-1" />
         <Link.Green
@@ -335,7 +351,7 @@ export function DataModelTables(): JSX.Element {
           download
           href="/context/datamodel.json"
         >
-          {commonText('downloadAsJson')}
+          {schemaText.downloadAsJson()}
         </Link.Green>
         <Button.Green
           className="print:hidden"
@@ -346,7 +362,7 @@ export function DataModelTables(): JSX.Element {
             ).catch(softFail)
           }
         >
-          {commonText('downloadAsTsv')}
+          {schemaText.downloadAsTsv()}
         </Button.Green>
       </div>
       <Table
@@ -354,7 +370,7 @@ export function DataModelTables(): JSX.Element {
         getLink={({ name }): string =>
           `/specify/datamodel/${(name as readonly [string, JSX.Element])[0]}/`
         }
-        headers={tableColumns}
+        headers={tableColumns()}
         sortName="dataModelTables"
       />
     </Container.Full>
@@ -364,24 +380,24 @@ export function DataModelTables(): JSX.Element {
 const dataModelToTsv = (): string =>
   [
     [
-      adminText('table'),
-      commonText('label'),
-      commonText('system'),
-      commonText('hidden'),
-      commonText('tableId'),
-      commonText('name'),
-      commonText('label'),
-      commonText('description'),
-      commonText('hidden'),
-      commonText('readOnly'),
-      commonText('required'),
-      formsText('relationship'),
-      commonText('type'),
-      commonText('length'),
-      commonText('databaseColumn'),
-      commonText('relatedModel'),
-      commonText('otherSideName'),
-      commonText('dependent'),
+      schemaText.table(),
+      schemaText.fieldLabel(),
+      getField(schema.models.SpLocaleContainer, 'isSystem').label,
+      getField(schema.models.SpLocaleContainer, 'isHidden').label,
+      schemaText.tableId(),
+      getField(schema.models.SpLocaleContainerItem, 'name').label,
+      schemaText.fieldLabel(),
+      schemaText.description(),
+      getField(schema.models.SpLocaleContainerItem, 'isHidden').label,
+      schemaText.readOnly(),
+      getField(schema.models.SpLocaleContainerItem, 'isRequired').label,
+      formsText.relationship(),
+      getField(schema.models.SpLocaleContainerItem, 'type').label,
+      schemaText.fieldLength(),
+      schemaText.databaseColumn(),
+      schemaText.relatedModel(),
+      schemaText.otherSideName(),
+      schemaText.dependent(),
     ],
     ...Object.values(schema.models).flatMap((model) => {
       const commonColumns = [

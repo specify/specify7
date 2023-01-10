@@ -10,7 +10,7 @@ import { fetchCollection } from '../DataModel/collection';
 import type { SpQuery } from '../DataModel/types';
 import { commonText } from '../../localization/common';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
-import { getModelById } from '../DataModel/schema';
+import { getModelById, schema } from '../DataModel/schema';
 import type { RA } from '../../utils/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { icons } from '../Atoms/Icons';
@@ -22,10 +22,12 @@ import { SafeOutlet } from '../Router/RouterUtils';
 import { DateElement } from '../Molecules/DateElement';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import {useAsyncState} from '../../hooks/useAsyncState';
-import {SerializedResource} from '../DataModel/helperTypes';
-import {TableIcon} from '../Molecules/TableIcon';
-import {SortIndicator, useSortConfig} from '../Molecules/Sorting';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { SerializedResource } from '../DataModel/helperTypes';
+import { TableIcon } from '../Molecules/TableIcon';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
+import { queryText } from '../../localization/query';
+import { getField } from '../DataModel/helpers';
 
 export function QueriesOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
@@ -83,14 +85,17 @@ export function QueryListDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>{commonText('cancel')}</Button.DialogClose>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {(hasToolPermission('queryBuilder', 'create') ||
             hasPermission('/querybuilder/query', 'execute')) && (
-            <Link.Blue href={newQueryUrl}>{commonText('new')}</Link.Blue>
+            <Link.Blue href={newQueryUrl}>{commonText.new()}</Link.Blue>
           )}
         </>
       }
-      header={commonText('queriesDialogTitle', queries.length)}
+      header={commonText.countLine({
+        resource: queryText.queries(),
+        count: queries.length,
+      })}
       icon={<span className="text-blue-500">{icons.documentSearch}</span>}
       onClose={handleClose}
     >
@@ -132,7 +137,7 @@ function QueryList({
             scope="col"
           >
             <Button.LikeLink onClick={(): void => handleSort('name')}>
-              {commonText('name')}
+              {getField(schema.models.SpQuery, 'name').label}
               <SortIndicator fieldName="name" sortConfig={sortConfig} />
             </Button.LikeLink>
           </th>
@@ -140,7 +145,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampCreated')}
             >
-              {commonText('created')}
+              {getField(schema.models.SpQuery, 'timestampCreated').label}
               <SortIndicator
                 fieldName="timestampCreated"
                 sortConfig={sortConfig}
@@ -151,7 +156,7 @@ function QueryList({
             <Button.LikeLink
               onClick={(): void => handleSort('timestampModified')}
             >
-              {commonText('modified')}
+              {getField(schema.models.SpQuery, 'timestampModified').label}
               <SortIndicator
                 fieldName="timestampModified"
                 sortConfig={sortConfig}

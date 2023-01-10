@@ -4,23 +4,23 @@
 
 import React from 'react';
 
-import { commonText } from '../../localization/common';
-import type { Language } from '../../localization/utils';
-import { enabledLanguages, LANGUAGE } from '../../localization/utils';
 import { formatUrl } from '../Router/queryString';
 import type { RA } from '../../utils/types';
 import { useSearchParameter } from '../../hooks/navigation';
-import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import { Form } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { Button } from '../Atoms/Button';
 import { SplashScreen } from '../Core/SplashScreen';
 import { className } from '../Atoms/className';
+import { userText } from '../../localization/user';
+import { LocalizedString } from 'typesafe-i18n';
+import { Language } from '../../localization/utils/config';
+import { LoginLanguageChooser } from './index';
 
 export type OicProvider = {
   readonly provider: string;
-  readonly title: string;
+  readonly title: LocalizedString;
 };
 
 export function OicLogin({
@@ -40,19 +40,13 @@ export function OicLogin({
   const [next = ''] = useSearchParameter('next');
   return (
     <SplashScreen>
-      <LanguageSelection<Language>
-        languages={Object.fromEntries(
-          data.languages.filter(([code]) => enabledLanguages.includes(code))
-        )}
-        value={LANGUAGE}
-        onChange={handleLanguageChange}
-      />
+      <LoginLanguageChooser languages={data.languages} />
       <Form forwardRef={formRef} method="post">
         {typeof data.inviteToken === 'object' && (
           <p>
-            {commonText('helloMessage', data.inviteToken.username)}
+            {userText.helloMessage({ userName: data.inviteToken.username })}
             <br />
-            {commonText('oicWelcomeMessage')}
+            {userText.oicWelcomeMessage()}
           </p>
         )}
         <input
@@ -85,11 +79,11 @@ export function OicLogin({
             })}
             className={className.navigationHandled}
           >
-            {commonText('legacyLogin')}
+            {userText.legacyLogin()}
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />
-        <Submit.Fancy className="sr-only">{commonText('login')}</Submit.Fancy>
+        <Submit.Fancy className="sr-only">{userText.logIn()}</Submit.Fancy>
       </Form>
     </SplashScreen>
   );

@@ -4,6 +4,7 @@
  * @module
  */
 
+import { LocalizedString } from 'typesafe-i18n';
 import type { KeysToLowerCase } from '../components/DataModel/helperTypes';
 import { f } from './functools';
 import type { IR, RA, RR } from './types';
@@ -309,9 +310,9 @@ export const getAttribute = (cell: Element, name: string): string | undefined =>
 export const getParsedAttribute = (
   cell: Element,
   name: string
-): string | undefined =>
+): LocalizedString | undefined =>
   f.maybe(getAttribute(cell, name)?.trim(), (value) =>
-    value.length === 0 ? undefined : value
+    value.length === 0 ? undefined : (value as LocalizedString)
   );
 
 export const getBooleanAttribute = (
@@ -331,7 +332,11 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
     Object.entries(resource).map(([key, value]) => [
       key.toLowerCase(),
       Array.isArray(value)
-        ? value.map(keysToLowerCase)
+        ? value.map((value) =>
+          typeof value === 'object'  && value !== null ?
+            keysToLowerCase(value)
+          : (value as KeysToLowerCase<OBJECT>)
+          )
         : typeof value === 'object' && value !== null
         ? keysToLowerCase(value as IR<unknown>)
         : value,

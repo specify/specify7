@@ -114,9 +114,9 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
         }}
         forwardRef={forwardRef}
         inputProps={{
-          'aria-label': treeText('searchTreePlaceholder'),
-          placeholder: treeText('searchTreePlaceholder'),
-          title: treeText('searchTreePlaceholder'),
+          'aria-label': treeText.searchTreePlaceholder(),
+          placeholder: treeText.searchTreePlaceholder(),
+          title: treeText.searchTreePlaceholder(),
         }}
       />
     </div>

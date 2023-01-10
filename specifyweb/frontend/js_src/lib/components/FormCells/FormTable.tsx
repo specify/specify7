@@ -29,13 +29,14 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
 import { FormCell } from './index';
+import { LocalizedString } from 'typesafe-i18n';
 
 const cellToLabel = (
   model: SpecifyModel,
   cell: FormCellDefinition
 ): {
-  readonly text: string | undefined;
-  readonly title: string | undefined;
+  readonly text: LocalizedString | undefined;
+  readonly title: LocalizedString | undefined;
 } => ({
   text: cell.ariaLabel,
   title:
@@ -125,7 +126,10 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const isToOne = !relationshipIsToMany(relationship);
   const disableAdding = isToOne && resources.length > 0;
-  const header = `${relationship.label} (${totalCount ?? resources.length})`;
+  const header = commonText.countLine({
+    resource: relationship.label,
+    count: totalCount ?? resources.length,
+  });
   const viewDefinition = useViewDefinition({
     model: relationship.relatedModel,
     viewName,
@@ -172,9 +176,9 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const children =
     viewDefinition === undefined ? (
-      commonText('loading')
+      commonText.loading()
     ) : resources.length === 0 ? (
-      <p>{formsText('noData')}</p>
+      <p>{formsText.noData()}</p>
     ) : (
       <div className="overflow-x-auto">
         <DataEntry.Grid
@@ -195,7 +199,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         >
           <div className={headerIsVisible ? 'contents' : 'sr-only'} role="row">
             <div className={cellClassName} role="columnheader">
-              <span className="sr-only">{commonText('expand')}</span>
+              <span className="sr-only">{commonText.expand()}</span>
             </div>
             {viewDefinition.rows[0].map((cell, index) => {
               const { text, title } = cellToLabel(
@@ -238,7 +242,7 @@ export function FormTable<SCHEMA extends AnySchema>({
               );
             })}
             <div className={cellClassName} role="columnheader">
-              <span className="sr-only">{commonText('actions')}</span>
+              <span className="sr-only">{commonText.actions()}</span>
             </div>
           </div>
           <div className="contents" ref={rowsRef} role="rowgroup">
@@ -249,8 +253,8 @@ export function FormTable<SCHEMA extends AnySchema>({
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
-                          aria-label={formsText('contract')}
-                          title={formsText('contract')}
+                          aria-label={commonText.contract()}
+                          title={commonText.contract()}
                           className="h-full"
                           onClick={(): void =>
                             setExpandedRecords({
@@ -280,9 +284,9 @@ export function FormTable<SCHEMA extends AnySchema>({
                     <>
                       <div className="h-full" role="cell">
                         <Button.Small
-                          aria-label={commonText('expand')}
+                          aria-label={commonText.expand()}
                           className="h-full"
-                          title={commonText('expand')}
+                          title={commonText.expand()}
                           onClick={(): void =>
                             setExpandedRecords({
                               ...isExpanded,
@@ -324,9 +328,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                   <div className="flex h-full flex-col gap-2" role="cell">
                     {displayViewButton && isExpanded[resource.cid] ? (
                       <DataEntry.Visit
-                        props={{
-                          className: `flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`,
-                        }}
+                        className={`flex-1 ${className.smallButton} ${className.defaultSmallButtonVariant}`}
                         resource={resource}
                       />
                     ) : undefined}
@@ -337,7 +339,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                         'delete'
                       )) ? (
                       <Button.Small
-                        aria-label={commonText('remove')}
+                        aria-label={commonText.remove()}
                         className="h-full"
                         disabled={
                           !resource.isNew() &&
@@ -346,7 +348,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             'delete'
                           )
                         }
-                        title={commonText('remove')}
+                        title={commonText.remove()}
                         onClick={(): void => handleDelete(resource)}
                       >
                         {icons.trash}
@@ -420,7 +422,7 @@ export function FormTable<SCHEMA extends AnySchema>({
     </DataEntry.SubForm>
   ) : (
     <Dialog
-      buttons={commonText('close')}
+      buttons={commonText.close()}
       header={header}
       headerButtons={addButton}
       modal={dialog === 'modal'}

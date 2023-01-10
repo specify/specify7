@@ -124,7 +124,7 @@ export function QueryBuilder({
 
   const unsetUnloadProtect = useUnloadProtect(
     saveRequired,
-    queryText('queryUnloadProtectDialogText')
+    queryText.queryUnloadProtect()
   );
 
   const handleAddField = (mappingPath = state.mappingView): void =>
@@ -380,10 +380,10 @@ export function QueryBuilder({
             >
               {isReadOnly ? undefined : (
                 <Button.Small
-                  aria-label={commonText('add')}
+                  aria-label={commonText.add()}
                   className="justify-center p-2"
                   disabled={!mapButtonEnabled}
-                  title={queryText('newButtonDescription')}
+                  title={queryText.newButtonDescription()}
                   onClick={f.zero(handleAddField)}
                 >
                   {icons.plus}
@@ -499,6 +499,7 @@ export function QueryBuilder({
                   fields={state.fields}
                   getQueryFieldRecords={getQueryFieldRecords}
                   queryResource={queryResource}
+                  recordSetId={recordSet?.id}
                 />
               )
             }
