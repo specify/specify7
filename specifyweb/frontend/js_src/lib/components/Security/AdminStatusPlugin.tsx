@@ -43,11 +43,11 @@ export function AdminStatusPlugin({
       title={
         resource.isNew()
           ? userText.saveUserFirst()
-          : (isAdmin && isCurrentUser
+          : isAdmin && isCurrentUser
           ? userText.canNotRemoveYourself()
           : user.userType === 'Manager'
           ? undefined
-          : userText.mustBeManager())
+          : userText.mustBeManager()
       }
       onClick={(): void =>
         loading(

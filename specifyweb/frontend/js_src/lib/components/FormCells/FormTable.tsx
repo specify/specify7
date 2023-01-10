@@ -24,7 +24,7 @@ import { RenderForm } from '../Forms/SpecifyForm';
 import { useViewDefinition } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
-import type { SortConfig} from '../Molecules/Sorting';
+import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator } from '../Molecules/Sorting';
 import { hasTablePermission } from '../Permissions/helpers';
 import { usePref } from '../UserPreferences/usePref';
@@ -184,7 +184,7 @@ export function FormTable<SCHEMA extends AnySchema>({
   const children =
     viewDefinition === undefined ? (
       commonText.loading()
-    ) : (resources.length === 0 ? (
+    ) : resources.length === 0 ? (
       <p>{formsText.noData()}</p>
     ) : (
       <div className="overflow-x-auto">
@@ -384,7 +384,7 @@ export function FormTable<SCHEMA extends AnySchema>({
           </div>
         </DataEntry.Grid>
       </div>
-    ));
+    );
   const addButton =
     typeof handleAddResources === 'function' &&
     mode !== 'view' &&
@@ -397,7 +397,7 @@ export function FormTable<SCHEMA extends AnySchema>({
         onClick={
           disableAdding
             ? undefined
-            : (isDependent
+            : isDependent
             ? (): void => {
                 const resource = new relationship.relatedModel.Resource();
                 handleAddResources([resource]);
@@ -406,7 +406,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                 setState({
                   type: 'SearchState',
                   resource: new relationship.relatedModel.Resource(),
-                }))
+                })
         }
       />
     ) : undefined;

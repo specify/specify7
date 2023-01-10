@@ -179,9 +179,9 @@ function UserView({
   );
   const collectionId =
     rawCollectionId === -1
-      ? (Array.isArray(collections)
+      ? Array.isArray(collections)
         ? collections[0].id
-        : -1)
+        : -1
       : rawCollectionId;
 
   const mode = augmentMode('edit', userResource.isNew(), 'SpecifyUser');
@@ -469,7 +469,7 @@ function UserView({
                           type: 'SettingAgents',
                           response: JSON.parse(data),
                         })
-                      : (Array.isArray(institutionPolicies) &&
+                      : Array.isArray(institutionPolicies) &&
                         changedInstitutionPolicies
                       ? ajax(
                           `/permissions/user_policies/institution/${userResource.id}/`,
@@ -508,7 +508,7 @@ function UserView({
                           } else return true;
                           return undefined;
                         })
-                      : true)
+                      : true
                   )
                   .then((canContinue) =>
                     canContinue === true

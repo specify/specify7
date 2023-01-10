@@ -240,11 +240,11 @@ function Layout({
       </div>
       {typeof preview === 'string' ? (
         <BadImport error={preview} />
-      ) : (Array.isArray(preview) ? (
+      ) : Array.isArray(preview) ? (
         <Preview hasHeader={hasHeader} preview={preview} />
       ) : (
         loadingGif
-      ))}
+      )}
     </>
   );
 }

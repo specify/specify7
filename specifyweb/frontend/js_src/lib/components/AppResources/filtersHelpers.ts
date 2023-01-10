@@ -43,11 +43,11 @@ export const filterAppResources = (
   appResources:
     filters.appResources.length === 0
       ? []
-      : (hasAllAppResources(filters.appResources)
+      : hasAllAppResources(filters.appResources)
       ? resources.appResources
       : resources.appResources.filter((resource) =>
           filters.appResources.includes(getAppResourceType(resource))
-        )),
+        ),
 });
 
 export const getResourceType = (

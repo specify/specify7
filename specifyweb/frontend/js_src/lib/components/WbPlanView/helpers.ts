@@ -296,9 +296,9 @@ export function mutateMappingPath({
         ...mappingPath.slice(0, index + 1),
         ...(mappingPath.length > index + 1
           ? mappingPath.slice(index + 1)
-          : (ignoreToMany && isNewToMany
+          : ignoreToMany && isNewToMany
           ? [formatToManyIndex(1), '0']
-          : ['0'])),
+          : ['0']),
       ]
     : mappingPath;
 }

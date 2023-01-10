@@ -210,7 +210,14 @@ export const fetchRows = async <
 
 type FieldsToTypes<
   FIELDS extends IR<RA<'boolean' | 'null' | 'number' | 'string'>>
-> = { readonly
-  [FIELD in keyof FIELDS]:
-    FIELDS[FIELD][number] extends 'boolean' ? boolean : FIELDS[FIELD][number] | never extends 'null' ? null : FIELDS[FIELD][number] | never extends 'number' ? number : FIELDS[FIELD][number] | never extends 'string' ? string : never;
+> = {
+  readonly [FIELD in keyof FIELDS]: FIELDS[FIELD][number] extends 'boolean'
+    ? boolean
+    : FIELDS[FIELD][number] | never extends 'null'
+    ? null
+    : FIELDS[FIELD][number] | never extends 'number'
+    ? number
+    : FIELDS[FIELD][number] | never extends 'string'
+    ? string
+    : never;
 };

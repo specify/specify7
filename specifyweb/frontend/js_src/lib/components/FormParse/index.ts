@@ -17,7 +17,7 @@ import { parseJavaClassName } from '../DataModel/resource';
 import { strictGetModel } from '../DataModel/schema';
 import type { SpecifyModel } from '../DataModel/specifyModel';
 import { error } from '../Errors/assert';
-import type { LogMessage} from '../Errors/interceptLogs';
+import type { LogMessage } from '../Errors/interceptLogs';
 import { consoleLog, setLogContext } from '../Errors/interceptLogs';
 import { cachableUrl } from '../InitialContext';
 import { getPref } from '../InitialContext/remotePrefs';

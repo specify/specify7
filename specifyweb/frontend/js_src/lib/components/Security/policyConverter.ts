@@ -68,7 +68,7 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
             resource: tableNameToResourceName(tableName),
             actions: policy.actions,
           }))
-        : (policy.resource === anyResource &&
+        : policy.resource === anyResource &&
           getAllActions(anyResource).every((action) =>
             policy.actions.includes(action)
           )
@@ -77,7 +77,7 @@ export function decompressPolicies(rawPolicies: RA<Policy>): IR<RA<string>> {
             resource: anyResource,
             actions: [anyAction],
           }
-        : policy)
+        : policy
     );
   return Object.fromEntries(
     // If has collection access, add other basic policies

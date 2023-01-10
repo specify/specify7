@@ -358,7 +358,7 @@ export const userText = createDictionary({
     `,
     'fr-fr': `
       Vous ne disposez d'aucune stratégie ni d'aucun rôle vous autorisant à
-      effectuer l'action suivante :
+      effectuer l'action suivante:
     `,
     'uk-ua': `
       У вас немає жодної політики чи ролі, які дають вам дозвіл виконувати такі
@@ -617,7 +617,7 @@ export const userText = createDictionary({
       actualizar la vista previa
     `,
     'fr-fr': `
-      Remarque : l'aperçu peut être obsolète. Enregistrer les modifications pour
+      Remarque: l'aperçu peut être obsolète. Enregistrer les modifications pour
       mettre à jour l'aperçu
     `,
     'uk-ua': `

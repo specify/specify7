@@ -333,11 +333,15 @@ export const keysToLowerCase = <OBJECT extends IR<unknown>>(
     Object.entries(resource).map(([key, value]) => [
       key.toLowerCase(),
       Array.isArray(value)
+<<<<<<< HEAD
         ? value.map((value) =>
             typeof value === 'object' && value !== null
               ? keysToLowerCase(value)
               : (value as KeysToLowerCase<OBJECT>)
           )
+=======
+        ? value.map(keysToLowerCase)
+>>>>>>> c8a6773f7 (Run prettier on all files)
         : typeof value === 'object' && value !== null
         ? keysToLowerCase(value as IR<unknown>)
         : value,

@@ -207,7 +207,7 @@ const processUiPlugin: {
       : { type: 'Blank' },
   HostTaxonPlugin: ({ getProperty, model }) =>
     hasTablePermission('CollectionRelType', 'read')
-      ? (model.name === 'CollectingEventAttribute'
+      ? model.name === 'CollectingEventAttribute'
         ? {
             type: 'HostTaxonPlugin',
             relationship: getProperty('relName'),
@@ -216,7 +216,7 @@ const processUiPlugin: {
         : {
             type: 'WrongTable',
             supportedTables: ['CollectingEventAttribute'],
-          })
+          }
       : { type: 'Blank' },
   LocalityGoogleEarth: ({ model }) =>
     model.name === 'Locality'

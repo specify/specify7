@@ -177,9 +177,9 @@ export const getRelatedCollectionId = (
 ): number | undefined =>
   (fieldName === 'rightSide'
     ? left
-    : (fieldName === 'leftSide'
+    : fieldName === 'leftSide'
     ? right
-    : undefined)
+    : undefined
   )?.find(
     ({ id }) =>
       id ===

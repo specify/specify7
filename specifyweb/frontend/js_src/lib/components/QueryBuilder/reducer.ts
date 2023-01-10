@@ -66,13 +66,15 @@ export const getInitialState = ({
 });
 
 type Actions =
-  Action<
+  | Action<
       'ChangeFieldAction',
       { readonly line: number; readonly field: QueryField }
-    > | Action<
+    >
+  | Action<
       'ChangeOpenedElementAction',
       { readonly line: number; readonly index: number | undefined }
-    > | Action<
+    >
+  | Action<
       'ChangeSelectElementValueAction',
       {
         readonly line: number | 'mappingView';
@@ -84,10 +86,21 @@ type Actions =
         readonly newTableName: keyof Tables | undefined;
         readonly currentTableName: keyof Tables | undefined;
       }
-    > | Action<
+    >
+  | Action<
       'LineMoveAction',
       { readonly line: number; readonly direction: 'down' | 'up' }
-    > | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }> | Action<'FocusLineAction', { readonly line: number }> | Action<'LineMoveAction', { readonly line: number; readonly direction: 'down' | 'up' }> | Action<'ResetStateAction', { readonly state: MainState }> | Action<'RunQueryAction'> | Action<'SavedQueryAction'> | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
+    >
+  | Action<'ChangeFieldsAction', { readonly fields: RA<QueryField> }>
+  | Action<'FocusLineAction', { readonly line: number }>
+  | Action<
+      'LineMoveAction',
+      { readonly line: number; readonly direction: 'down' | 'up' }
+    >
+  | Action<'ResetStateAction', { readonly state: MainState }>
+  | Action<'RunQueryAction'>
+  | Action<'SavedQueryAction'>
+  | Action<'ToggleMappingViewAction', { readonly isVisible: boolean }>;
 
 export const reducer = generateReducer<MainState, Actions>({
   ResetStateAction: ({ action: { state } }) => state,

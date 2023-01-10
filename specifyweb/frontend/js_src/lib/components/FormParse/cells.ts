@@ -156,14 +156,16 @@ const processCellType: {
       resolvedFields === undefined || hasPathPermission(resolvedFields, 'read');
 
     setLogContext({ field: undefined });
-    return hasAccess && fieldDefinition.type !== 'Blank' ? {
-        type: 'Field',
-        fieldNames: resolvedFields?.map(({ name }) => name),
-        fieldDefinition,
-        isRequired:
-          (getBooleanAttribute(cell, 'isRequired') ?? false) ||
-          (fields?.at(-1)?.localization.isrequired ?? false),
-      } : { type: 'Blank' };
+    return hasAccess && fieldDefinition.type !== 'Blank'
+      ? {
+          type: 'Field',
+          fieldNames: resolvedFields?.map(({ name }) => name),
+          fieldDefinition,
+          isRequired:
+            (getBooleanAttribute(cell, 'isRequired') ?? false) ||
+            (fields?.at(-1)?.localization.isrequired ?? false),
+        }
+      : { type: 'Blank' };
   },
   Label: ({ cell }) => ({
     type: 'Label',
@@ -320,9 +322,9 @@ export function parseFormCell(
     colSpan: typeof colSpan === 'number' ? Math.ceil(colSpan / 2) : 1,
     align: f.includes(cellAlign, align)
       ? align
-      : (cellType === 'Label'
+      : cellType === 'Label'
       ? 'right'
-      : 'left'),
+      : 'left',
     /*
      * Specify 6 has `initialize="visible=false"` and
      * `initialize="vis=false"` attributes for some cell definitions.

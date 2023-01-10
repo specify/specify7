@@ -86,9 +86,9 @@ function useSelectedResults(
   return React.useMemo(
     () =>
       isOpen
-        ? (selectedRows.size === 0
+        ? selectedRows.size === 0
           ? (results.map((row) => row?.[queryIdField]) as RA<number>)
-          : Array.from(selectedRows))
+          : Array.from(selectedRows)
         : [],
     [results, isOpen, selectedRows]
   );

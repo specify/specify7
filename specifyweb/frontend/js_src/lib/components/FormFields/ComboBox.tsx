@@ -46,7 +46,10 @@ export const specialPickLists = {
   _tableNamePickList: TablesPickList,
 } as const;
 
-export const specialPickListMapping: RR<'', IR<keyof typeof specialPickLists>> & {
+export const specialPickListMapping: RR<
+  '',
+  IR<keyof typeof specialPickLists>
+> & {
   readonly [TABLE_NAME in keyof Tables]?: Partial<
     RR<TableFields<Tables[TABLE_NAME]>, keyof typeof specialPickLists>
   >;

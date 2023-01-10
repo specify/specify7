@@ -230,14 +230,14 @@ function Dialog({
       forwardRef={setMap}
       header={
         typeof totalCount === 'number'
-          ? (results.length === totalCount
+          ? results.length === totalCount
             ? localityText.queryMapAll({
                 plotted: results.length,
               })
             : localityText.queryMapSubset({
                 plotted: results.length,
                 total: totalCount,
-              }))
+              })
           : localityText.geoMap()
       }
       headerButtons={

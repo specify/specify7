@@ -36,9 +36,9 @@ export type AutoCompleteItem<T> = {
 const getScrollParent = (node: Element | undefined): Element =>
   node === undefined
     ? document.body
-    : (node.scrollHeight > node.clientHeight
+    : node.scrollHeight > node.clientHeight
     ? node
-    : getScrollParent(node.parentElement ?? undefined));
+    : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
   p-0.5 active:bg-brand-100 dark:active:bg-brand-500
@@ -121,7 +121,7 @@ export function AutoComplete<T>({
     (newResults: RA<AutoCompleteItem<T>>, pendingValue: string) =>
       pendingValue.length === 0
         ? newResults
-        : (shouldFilterItems
+        : shouldFilterItems
         ? newResults.filter(({ label, searchValue }) => {
             let searchString =
               typeof label === 'string' ? label : searchValue ?? '';
@@ -150,7 +150,7 @@ export function AutoComplete<T>({
               ) === 0
             );
           })
-        : newResults),
+        : newResults,
     [shouldFilterItems, searchAlgorithm]
   );
 

@@ -125,7 +125,7 @@ export function addMarkersToMap(
           style="background-color: hsl(${hue}deg, 50%, 50%, 0.7)"
         ><span>${childCount}</span></div>`,
         className: `marker-cluster marker-cluster-${
-          childCount < 10 ? 'small' : (childCount < 100 ? 'medium' : 'large')
+          childCount < 10 ? 'small' : childCount < 100 ? 'medium' : 'large'
         }`,
         iconSize: new L.Point(40, 40),
       });

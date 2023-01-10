@@ -124,7 +124,7 @@ function Attachments(): JSX.Element {
           },
           filter.type === 'unused'
             ? { tableId__isNull: 'true' }
-            : (filter.type === 'byTable'
+            : filter.type === 'byTable'
             ? {
                 tableId: schema.models[filter.tableName].tableId,
               }
@@ -135,7 +135,7 @@ function Attachments(): JSX.Element {
                 tableId__in: tablesWithAttachments()
                   .map(({ tableId }) => tableId)
                   .join(','),
-              })
+              }
         ),
       [order, filter]
     )

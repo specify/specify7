@@ -277,10 +277,10 @@ export class SpecifyModel<SCHEMA extends AnySchema = AnySchema> {
 
     this.label = (
       useLabels
-        ? (typeof this.localization.name === 'string' &&
+        ? typeof this.localization.name === 'string' &&
           this.localization.name.length > 0
           ? unescape(this.localization.name)
-          : camelToHuman(this.name))
+          : camelToHuman(this.name)
         : this.name
     ) as LocalizedString;
 

@@ -63,7 +63,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     const timePassed = endTime - startTime;
     // A very crude detection mechanism
     const isCached = timePassed < 100;
-     
+
     console.log(
       `${path} %c[${
         isCached

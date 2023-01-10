@@ -138,9 +138,9 @@ function navigator({
 
   const nextTable = isSpecial
     ? model
-    : (typeof nextField === 'object' && nextField.isRelationship
+    : typeof nextField === 'object' && nextField.isRelationship
     ? nextField.relatedModel
-    : undefined);
+    : undefined;
 
   if (typeof nextTable === 'object' && nextField?.isRelationship !== false)
     navigator({

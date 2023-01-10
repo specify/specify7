@@ -96,9 +96,9 @@ function parsePref(
       : undefined;
   return (
     typeof parsed === 'object'
-      ? (parsed.isValid
+      ? parsed.isValid
         ? parsed.parsed
-        : defaultValue)
+        : defaultValue
       : value ?? defaultValue
   ) as boolean | number | string;
 }

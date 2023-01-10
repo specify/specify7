@@ -12,7 +12,7 @@ import { schema } from '../../DataModel/schema';
 import { getPref } from '../../InitialContext/remotePrefs';
 import { formatUrl } from '../../Router/queryString';
 import type { FormCellDefinition } from '../cells';
-import type {   ParsedFormDefinition,ViewDefinition } from '../index';
+import type { ParsedFormDefinition, ViewDefinition } from '../index';
 import {
   exportsForTests,
   fetchView,

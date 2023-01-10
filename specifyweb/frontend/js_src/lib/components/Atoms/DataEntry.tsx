@@ -11,7 +11,7 @@ import { Button } from './Button';
 import { className } from './className';
 import type { icons } from './Icons';
 import { Link } from './Link';
-import type { TagProps} from './wrapper';
+import type { TagProps } from './wrapper';
 import { wrap } from './wrapper';
 
 const dataEntryButton = (
@@ -112,9 +112,9 @@ export const DataEntry = {
         alignItems:
           align === 'right'
             ? 'flex-end'
-            : (align === 'center'
+            : align === 'center'
             ? 'center'
-            : undefined),
+            : undefined,
         ...props.style,
       },
     })

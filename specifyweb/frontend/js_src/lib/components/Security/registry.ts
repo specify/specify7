@@ -157,7 +157,7 @@ export function policiesToTsv(): string {
     Object.entries(data).flatMap(([key, entry]) =>
       key === '%'
         ? []
-        : (Object.keys(entry.children).length > 0
+        : Object.keys(entry.children).length > 0
         ? iterate(
             entry.children,
             [...path, entry.label],
@@ -170,7 +170,7 @@ export function policiesToTsv(): string {
               ? 'Institution'
               : 'Collection',
             entry.groupName,
-          ]))
+          ])
     );
 
   return [

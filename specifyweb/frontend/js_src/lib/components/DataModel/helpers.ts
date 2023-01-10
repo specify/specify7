@@ -23,9 +23,7 @@ export const serializeResource = <SCHEMA extends AnySchema>(
   resource: SerializedModel<SCHEMA> | SpecifyResource<SCHEMA>
 ): SerializedResource<SCHEMA> =>
   serializeModel<SCHEMA>(
-    'toJSON' in resource
-      ? resourceToJson(resource )
-      : (resource ),
+    'toJSON' in resource ? resourceToJson(resource) : resource,
     (resource as SpecifyResource<SCHEMA>)?.specifyModel?.name
   );
 
@@ -162,8 +160,7 @@ export const deserializeResource = <SCHEMA extends AnySchema>(
      * a typechecking performance issue (it was taking 5s to typecheck this
      * line according to TypeScript trace analyzer)
      */
-    (serializedResource as SerializedResource<SCHEMA>)
-      ._tableName 
+    (serializedResource as SerializedResource<SCHEMA>)._tableName
   ].Resource(removeKey(serializedResource, '_tableName' as 'id'));
 
 /**
@@ -186,14 +183,14 @@ export async function fetchDistantRelated(
   const related =
     fields === undefined || fields.length === 0
       ? resource
-      : (fields.length === 1
+      : fields.length === 1
       ? await resource.fetch()
       : await resource.rgetPromise(
           fields
             .slice(0, -1)
             .map(({ name }) => name)
             .join('.')
-        ));
+        );
 
   const field = fields?.at(-1);
   return related === undefined ? undefined : { resource: related, field };

@@ -169,9 +169,9 @@ export function getPickListItems(pickList: SpecifyResource<PickList>): RA<{
   return (
     pickList.get('sortType') === PickListSortType.TITLE_SORT
       ? Array.from(items).sort(sortFunction(({ title }) => title))
-      : (pickList.get('sortType') === PickListSortType.ORDINAL_SORT
+      : pickList.get('sortType') === PickListSortType.ORDINAL_SORT
       ? Array.from(items).sort(sortFunction(({ ordinal }) => ordinal))
-      : items)
+      : items
   ).map(({ value, title }) => ({
     value: value ?? title,
     title: title ?? value,

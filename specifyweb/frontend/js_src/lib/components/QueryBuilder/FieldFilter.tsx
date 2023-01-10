@@ -89,11 +89,11 @@ function QueryInputField({
     target: HTMLInputElement | HTMLSelectElement
   ): RA<string> =>
     listInput
-      ? (Array.isArray(pickListItems)
+      ? Array.isArray(pickListItems)
         ? Array.from(target.querySelectorAll('option'))
             .filter(({ selected }) => selected)
             .map(({ value }) => value)
-        : target.value.split(','))
+        : target.value.split(',')
       : [target.value];
 
   /*
@@ -560,7 +560,7 @@ export function QueryLineFilter({
   }, [pickListItems, filter]);
 
   const Component = queryFieldFilters[filter.type].component;
-  return Component === undefined ? null : (pickListItems === undefined ? (
+  return Component === undefined ? null : pickListItems === undefined ? (
     <>{commonText.loading()}</>
   ) : (
     <>
@@ -572,13 +572,13 @@ export function QueryLineFilter({
         parser={parser}
         pickListItems={
           queryFieldFilters[filter.type].renderPickList
-            ? (pickListItems === false
+            ? pickListItems === false
               ? undefined
-              : pickListItems)
+              : pickListItems
             : undefined
         }
         onChange={handleChange}
       />
     </>
-  ));
+  );
 }

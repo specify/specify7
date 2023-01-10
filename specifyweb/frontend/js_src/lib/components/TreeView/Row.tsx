@@ -157,9 +157,9 @@ export function TreeRow({
                 ${
                   isAction
                     ? 'outline outline-1 outline-red-500'
-                    : (isFocused
+                    : isFocused
                     ? 'outline outline-1 outline-blue-500'
-                    : '')
+                    : ''
                 }
               `}
               forwardRef={isFocused ? handleRef : undefined}
@@ -187,22 +187,22 @@ export function TreeRow({
               <span className="-mr-2">
                 <span className="sr-only">
                   {isFocused
-                    ? (isLoading
+                    ? isLoading
                       ? commonText.loading()
                       : row.children === 0
                       ? treeText.leafNode()
                       : displayChildren
                       ? treeText.opened()
-                      : treeText.closed())
+                      : treeText.closed()
                     : undefined}
                 </span>
                 {isLoading
                   ? icons.clock
-                  : (row.children === 0
+                  : row.children === 0
                   ? icons.blank
                   : displayChildren
                   ? icons.chevronDown
-                  : icons.chevronRight)}
+                  : icons.chevronRight}
               </span>
               <span
                 className={

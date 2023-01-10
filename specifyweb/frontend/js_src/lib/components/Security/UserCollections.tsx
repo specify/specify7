@@ -127,11 +127,11 @@ export function UserCollections({
         title={
           isAdmin
             ? userText.notAvailableOnAdmins()
-            : (user === undefined
+            : user === undefined
             ? commonText.loading()
             : user.isNew()
             ? userText.saveUserFirst()
-            : undefined)
+            : undefined
         }
         onClick={handleOpen}
       >

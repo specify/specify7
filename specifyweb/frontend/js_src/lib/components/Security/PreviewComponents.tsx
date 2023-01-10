@@ -95,9 +95,9 @@ export function PermissionExplanation({
                 ${
                   index === 0
                     ? 'rounded-l'
-                    : (index + 1 === length
+                    : index + 1 === length
                     ? 'rounded-r'
-                    : '')
+                    : ''
                 }
               `}
               key={index}
@@ -151,9 +151,9 @@ export function PermissionExplanation({
                 ${
                   index === 0
                     ? 'rounded-l'
-                    : (index + 1 === length
+                    : index + 1 === length
                     ? 'rounded-r'
-                    : '')
+                    : ''
                 }
               `}
               key={index}

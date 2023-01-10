@@ -174,14 +174,14 @@ export function ImportExport({
                                   .map((newRole) => {
                                     const groupName =
                                       typeof newRole.id === 'number'
-                                        ? (JSON.stringify(
+                                        ? JSON.stringify(
                                             removeKey(roles![newRole.id], 'id')
                                           ) ===
                                           JSON.stringify(
                                             removeKey(newRole, 'id')
                                           )
                                           ? 'unchanged'
-                                          : 'changed')
+                                          : 'changed'
                                         : 'created';
                                     return (groupName === 'changed' &&
                                       !hasPermission(

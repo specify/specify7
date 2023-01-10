@@ -53,7 +53,7 @@ export function CreateAppResource(): JSX.Element {
   const [mimeType, setMimeType] = React.useState<string | undefined>(undefined);
   return directory === undefined ? (
     <NotFoundView container={false} />
-  ) : (type === undefined ? (
+  ) : type === undefined ? (
     <Dialog
       buttons={commonText.cancel()}
       header={resourcesText.selectResourceType()}
@@ -123,7 +123,7 @@ export function CreateAppResource(): JSX.Element {
       name={name}
       type={type}
     />
-  ));
+  );
 }
 
 export const findAppResourceDirectory = (

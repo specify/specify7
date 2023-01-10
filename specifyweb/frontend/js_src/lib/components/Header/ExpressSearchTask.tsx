@@ -62,13 +62,13 @@ function TableResults({
       <H3>{header}</H3>
       {queryResults === undefined ? (
         <p aria-live="polite">{commonText.running()}</p>
-      ) : (Object.keys(queryResults).length === 0 ? (
+      ) : Object.keys(queryResults).length === 0 ? (
         <p aria-live="polite">{commonText.noMatches()}</p>
       ) : (
         queryResults.map((results, index) => (
           <TableResult key={index} {...results} />
         ))
-      ))}
+      )}
     </section>
   );
 }

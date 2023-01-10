@@ -46,7 +46,7 @@ export function Wrapper({
   const baseHref = `/specify/resources/${
     mode === 'appResources' ? 'app-resource' : 'view-set'
   }`;
-  return initialData === undefined ? null : (resource === undefined ||
+  return initialData === undefined ? null : resource === undefined ||
     directory === undefined ? (
     <NotFoundView container={false} />
   ) : (
@@ -92,7 +92,7 @@ export function Wrapper({
         navigate(`${baseHref}/${appResource.id}/`);
       }}
     />
-  ));
+  );
 }
 
 function useAppResource(

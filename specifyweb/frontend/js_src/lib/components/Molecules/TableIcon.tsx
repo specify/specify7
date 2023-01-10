@@ -59,9 +59,9 @@ export function TableIcon({
   const resolvedTableLabel =
     label === false
       ? undefined
-      : (typeof label === 'string'
+      : typeof label === 'string'
       ? label
-      : getModel(name)?.label ?? '');
+      : getModel(name)?.label ?? '';
   const role = typeof resolvedTableLabel === 'string' ? 'img' : undefined;
   const ariaHidden = resolvedTableLabel === undefined;
   if (typeof tableIconSource === 'string')

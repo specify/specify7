@@ -68,11 +68,11 @@ export function SecurityLibraryRole(): JSX.Element {
         )
       }
     />
-  ) : (role === false ? (
+  ) : role === false ? (
     <NotFoundView container={false} />
   ) : (
     <LoadingScreen />
-  ));
+  );
 }
 
 function useRole(

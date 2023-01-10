@@ -117,7 +117,7 @@ export function Report({
     >
       {reportsText.missingReportQueryDescription()}
     </Dialog>
-  ) : (report === false ? (
+  ) : report === false ? (
     <Dialog
       buttons={commonText.close()}
       header={reportsText.missingReport()}
@@ -144,7 +144,7 @@ export function Report({
         onRefresh={(): void => setRunCount(runCount + 1)}
       />
     )
-  ) : null);
+  ) : null;
 }
 
 const reImage = /\$P\{\s*RPT_IMAGE_DIR\s*\}\s*\+\s*"\/"\s*\+\s*"(.*?)"/u;

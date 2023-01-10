@@ -188,9 +188,9 @@ export function ProtectedTree({
       action={action}
       tableName={
         hasTablePermission(treeName, action)
-          ? (hasTablePermission(`${treeName}TreeDef`, action)
+          ? hasTablePermission(`${treeName}TreeDef`, action)
             ? `${treeName}TreeDefItem`
-            : `${treeName}TreeDef`)
+            : `${treeName}TreeDef`
           : treeName
       }
     />

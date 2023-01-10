@@ -31,9 +31,9 @@ export function SortIndicator<FIELD_NAMES extends string>({
         </span>
       )}
       {isSorted
-        ? (sortConfig.ascending
+        ? sortConfig.ascending
           ? icons.chevronUp
-          : icons.chevronDown)
+          : icons.chevronDown
         : undefined}
     </span>
   );

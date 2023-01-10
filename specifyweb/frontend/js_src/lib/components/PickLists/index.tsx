@@ -67,9 +67,9 @@ export function PickListComboBox(
         props.field.name,
         (value === '' && !props.isRequired
           ? null
-          : (validationAttributes?.type === 'number'
+          : validationAttributes?.type === 'number'
           ? f.parseInt(value) ?? null
-          : value)) as never
+          : value) as never
       ),
     [props.field.name, validationAttributes, props.isRequired, props.resource]
   );
@@ -189,22 +189,22 @@ export function PickListComboBox(
           onValueChange={(newValue): void =>
             newValue === ''
               ? updateValue('')
-              : (items?.some(({ value }) => value === newValue) === true
+              : items?.some(({ value }) => value === newValue) === true
               ? updateValue(newValue)
-              : undefined)
+              : undefined
           }
         >
           {isExistingValue ? (
             isRequired ? undefined : (
               <option key="nullValue" />
             )
-          ) : (value === null ? (
+          ) : value === null ? (
             <option key="nullValue" />
           ) : (
             <option key="invalidValue">
               {queryText.invalidPicklistValue({ value })}
             </option>
-          ))}
+          )}
           {items?.map(({ title, value }) => (
             // If pick list has duplicate values, this triggers React warnings
             <option key={value} value={value}>

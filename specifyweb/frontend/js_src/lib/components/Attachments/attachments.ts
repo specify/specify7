@@ -98,7 +98,7 @@ export const fetchThumbnail = async (
         width: scale,
         height: scale,
       }
-    : (typeof attachment.attachmentLocation === 'string'
+    : typeof attachment.attachmentLocation === 'string'
     ? fetchToken(attachment.attachmentLocation).then((token) =>
         typeof settings === 'object'
           ? {
@@ -115,7 +115,7 @@ export const fetchThumbnail = async (
             }
           : undefined
       )
-    : undefined);
+    : undefined;
 
 export const formatAttachmentUrl = (
   attachment: SerializedResource<Attachment>,

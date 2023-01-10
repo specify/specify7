@@ -94,9 +94,9 @@ export const parsers = f.store(
       printFormatter: (value) =>
         value === undefined
           ? ''
-          : (Boolean(value)
+          : Boolean(value)
           ? queryText.yes()
-          : commonText.no()),
+          : commonText.no(),
       value: false,
     },
 

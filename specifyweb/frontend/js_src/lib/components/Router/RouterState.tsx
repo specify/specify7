@@ -17,41 +17,47 @@ import { isOverlay, OverlayContext } from './Router';
  * state must be serializable
  */
 type PureLocationState =
-  State<
+  | State<
       'AppResource',
       {
         readonly resource?: SerializedResource<SpAppResource | SpViewSetObject>;
         readonly directoryKey?: string;
         readonly initialDataFrom?: number;
       }
-    > | State<
+    >
+  | State<
       'BackgroundLocation',
       {
         readonly location: SafeLocation;
       }
-    > | State<
+    >
+  | State<
       'Command',
       {
         readonly nextUrl: string;
       }
-    > | State<
+    >
+  | State<
       'RecordSet',
       {
         readonly resource: SerializedResource<AnySchema> | undefined;
         readonly recordSetItemIndex?: number;
       }
-    > | State<
+    >
+  | State<
       'SecurityRole',
       {
         readonly role?: NewRole | Role;
       }
-    > | State<
+    >
+  | State<
       'SecurityUser',
       {
         readonly user?: SerializedResource<SpecifyUser>;
         readonly initialCollectionId?: number;
       }
-    > | State<'NotFoundPage'>;
+    >
+  | State<'NotFoundPage'>;
 export type SafeLocationState = PureLocationState | undefined;
 
 /**

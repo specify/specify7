@@ -129,10 +129,10 @@ const processFieldType: {
       ...withStringDefault(cell),
       rows:
         rows === undefined
-          ? (getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
+          ? getParsedAttribute(cell, 'uiType')?.toLowerCase() ===
             'textareabrief'
             ? 1
-            : undefined)
+            : undefined
           : rows,
     };
   },
@@ -178,9 +178,9 @@ const processFieldType: {
         getProperty: (name: string) =>
           name === 'name'
             ? 'PartialDateUI'
-            : (name === 'canChangePrecision'
+            : name === 'canChangePrecision'
             ? 'false'
-            : getProperty(name)),
+            : getProperty(name),
       });
     else if (fieldType === 'checkbox') return processFieldType.Checkbox(props);
 
@@ -200,12 +200,13 @@ const processFieldType: {
     if (fields === undefined) {
       console.error('Trying to render a query combobox without a field name');
       return { type: 'Blank' };
-    } else if (fields.at(-1)?.isRelationship === true) {return {
+    } else if (fields.at(-1)?.isRelationship === true) {
+      return {
         type: 'QueryComboBox',
         hasCloneButton: getProperty('cloneBtn')?.toLowerCase() === 'true',
         typeSearch: getProperty('name'),
-      };} else
-      {
+      };
+    } else {
       console.error('QueryComboBox can only be used to display a relationship');
       return { type: 'Blank' };
     }

@@ -75,9 +75,9 @@ function RecordSetView({
     <CheckLoggedInCollection resource={recordSet}>
       <DisplayRecordSet recordSet={recordSet} resourceIndex={resourceIndex} />
     </CheckLoggedInCollection>
-  ) : (recordSet === false ? (
+  ) : recordSet === false ? (
     <NotFoundView />
-  ) : null);
+  ) : null;
 }
 
 function DisplayRecordSet({
@@ -124,12 +124,12 @@ function DisplayRecordSet({
   );
   return readOnlyState ? (
     <Dialog
-        buttons={commonText.close()}
-        header={userText.permissionDeniedError()}
-        onClose={(): void => navigate('/specify/')}
-      >
-        {userText.emptyRecordSetsReadOnly()}
-      </Dialog>
+      buttons={commonText.close()}
+      header={userText.permissionDeniedError()}
+      onClose={(): void => navigate('/specify/')}
+    >
+      {userText.emptyRecordSetsReadOnly()}
+    </Dialog>
   ) : null;
 }
 
@@ -276,7 +276,9 @@ export function CheckLoggedInCollection({
   readonly isInRecordSet?: boolean;
 }): JSX.Element | null {
   const [otherCollections, setOtherCollections] = React.useState<
-    State<'Accessible'> | State<'Inaccessible', { readonly collectionIds: RA<number> }> | State<'Loading'>
+    | State<'Accessible'>
+    | State<'Inaccessible', { readonly collectionIds: RA<number> }>
+    | State<'Loading'>
   >({ type: 'Loading' });
   const loading = React.useContext(LoadingContext);
   React.useEffect(() => {
@@ -311,7 +313,7 @@ export function CheckLoggedInCollection({
 
   return otherCollections.type === 'Accessible' ? (
     children
-  ) : (otherCollections.type === 'Inaccessible' ? (
+  ) : otherCollections.type === 'Inaccessible' ? (
     <OtherCollection collectionIds={otherCollections.collectionIds} />
-  ) : null);
+  ) : null;
 }

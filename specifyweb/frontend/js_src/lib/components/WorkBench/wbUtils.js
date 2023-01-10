@@ -179,12 +179,12 @@ export const WBUtils = Backbone.View.extend({
 
     const compareCols =
       direction === 'next'
-        ? (matchCurrentCell
+        ? matchCurrentCell
           ? (visualCol) => visualCol >= currentTransposedCol
-          : (visualCol) => visualCol > currentTransposedCol)
-        : (matchCurrentCell
+          : (visualCol) => visualCol > currentTransposedCol
+        : matchCurrentCell
         ? (visualCol) => visualCol <= currentTransposedCol
-        : (visualCol) => visualCol < currentTransposedCol);
+        : (visualCol) => visualCol < currentTransposedCol;
 
     let matchedCell;
     let cellIsTypeCount = 0;
@@ -1002,11 +1002,11 @@ export const WBUtils = Backbone.View.extend({
       const stripCardinalDirections = (finalValue) =>
         showCardinalDirection
           ? finalValue
-          : (endsWith(finalValue, 'SW')
+          : endsWith(finalValue, 'SW')
           ? `-${removeLastChar(finalValue)}`
           : endsWith(finalValue, 'NE')
           ? removeLastChar(finalValue)
-          : finalValue);
+          : finalValue;
 
       const selectedCells = getSelectedCells();
       const changes = originalState

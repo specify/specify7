@@ -250,9 +250,9 @@ async function formatField(
               value as string | undefined
             )
       )
-    : (tryBest
+    : tryBest
     ? naiveFormatter(resource.specifyModel.name, resource.id)
-    : userText.noPermission());
+    : userText.noPermission();
 
   return formatted === '' ? '' : `${separator}${formatted}`;
 }

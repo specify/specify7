@@ -21,15 +21,8 @@ import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import type { Parser } from '../../utils/parser/definitions';
-import type {
-  IR,
-  RA,
-  RR} from '../../utils/types';
-import {
-  defined,
-  ensure,
-  overwriteReadOnly
-} from '../../utils/types';
+import type { IR, RA, RR } from '../../utils/types';
+import { defined, ensure, overwriteReadOnly } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
@@ -41,8 +34,7 @@ import {
   LanguagePreferencesItem,
   SchemaLanguagePreferenceItem,
 } from '../Toolbar/Language';
-import type {
-  WelcomePageMode} from './Renderers';
+import type { WelcomePageMode } from './Renderers';
 import {
   CollectionSortOrderPreferenceItem,
   ColorPickerPreferenceItem,

@@ -19,9 +19,9 @@ export const treeBusinessRules = async (
 ): Promise<BusinessRuleResult | undefined> =>
   fieldName === 'parent'
     ? predictFullName(resource, true)
-    : (fieldName === 'name' || fieldName.toLowerCase() === 'definitionitem'
+    : fieldName === 'name' || fieldName.toLowerCase() === 'definitionitem'
     ? predictFullName(resource, false)
-    : undefined);
+    : undefined;
 
 export type BusinessRuleResult = {
   readonly key: string;

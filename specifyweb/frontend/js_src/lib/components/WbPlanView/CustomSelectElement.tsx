@@ -570,13 +570,13 @@ export function CustomSelectElement({
           ${
             defaultOption?.isRequired === true
               ? 'custom-select-input-required bg-[color:var(--custom-select-b2)]'
-              : (defaultOption?.isHidden === true
+              : defaultOption?.isHidden === true
               ? `custom-select-input-hidden bg-[color:var(--custom-select-b2)]
                  dark:!border-solid`
               : customSelectType === 'OPTIONS_LIST' &&
                 defaultOption?.isRelationship === true
               ? 'bg-yellow-250 dark:bg-yellow-900'
-              : customSelectElementBackground)
+              : customSelectElementBackground
           }
           ${isOpen ? 'rounded-b-none [z-index:3]' : ''}
         `}
@@ -737,7 +737,7 @@ export function CustomSelectElement({
       `}
       ref={customSelectElementRef}
       role={role}
-      tabIndex={has('tabIndex') ? 0 : (has('interactive') ? -1 : undefined)}
+      tabIndex={has('tabIndex') ? 0 : has('interactive') ? -1 : undefined}
       title={selectLabel}
       onBlur={
         has('interactive')

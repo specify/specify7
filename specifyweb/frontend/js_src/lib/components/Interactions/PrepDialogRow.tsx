@@ -116,9 +116,9 @@ export function PrepDialogRow({
                                   type: 'ResourceDialog',
                                   resource: new (loans.length === 1
                                     ? schema.models.Loan
-                                    : (gifts.length === 1
+                                    : gifts.length === 1
                                     ? schema.models.Gift
-                                    : schema.models.ExchangeOut)
+                                    : schema.models.ExchangeOut
                                   ).Resource({
                                     id: [...loans, ...gifts, ...exchangeOuts][0]
                                       .id,

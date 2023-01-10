@@ -108,9 +108,9 @@ export function QueryFields({
                 : handleLineFocus?.(
                     target === 'previous'
                       ? line - 1
-                      : (target === 'current'
+                      : target === 'current'
                       ? line
-                      : line + 1)
+                      : line + 1
                   )
             }
             onMappingChange={handleMappingChange?.bind(undefined, line)}

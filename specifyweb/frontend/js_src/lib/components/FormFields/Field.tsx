@@ -44,11 +44,11 @@ export function UiField({
     React.useCallback(
       async () =>
         typeof field === 'object'
-          ? ('models' in resource
+          ? 'models' in resource
             ? aggregate(resource as unknown as Collection<AnySchema>)
             : field.isRelationship && relationshipIsToMany(field)
             ? resource.rgetCollection(field.name).then(aggregate)
-            : false)
+            : false
           : undefined,
       [resource.specifyModel.name, resource, field]
     ),
@@ -112,7 +112,7 @@ function Field({
     React.useCallback(
       () =>
         field?.isRelationship === true
-          ? (hasTablePermission(field.relatedModel.name, 'read')
+          ? hasTablePermission(field.relatedModel.name, 'read')
             ? (
                 resource.rgetPromise(field.name) as Promise<
                   SpecifyResource<AnySchema> | undefined
@@ -120,7 +120,7 @@ function Field({
               )
                 .then(format)
                 .then((value) => value ?? '')
-            : userText.noPermission())
+            : userText.noPermission()
           : undefined,
       /*
        * While "value" is not used in the hook, it is needed to update a

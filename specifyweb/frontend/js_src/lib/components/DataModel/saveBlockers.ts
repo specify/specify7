@@ -37,9 +37,7 @@ export class SaveBlockers<SCHEMA extends AnySchema> {
   // eslint-disable-next-line functional/prefer-readonly-type
   public blockers: R<Blocker> = {};
 
-   
-  public readonly blockingResources =
-    new Set<SpecifyResource<AnySchema>>();
+  public readonly blockingResources = new Set<SpecifyResource<AnySchema>>();
 
   public constructor(resource: SpecifyResource<SCHEMA>) {
     this.resource = resource;

@@ -108,7 +108,7 @@ export function useUserInstitutionalPolicies(
       async () =>
         userResource.isNew()
           ? []
-          : (hasDerivedPermission(
+          : hasDerivedPermission(
               '/permissions/institutional_policies/user',
               'read'
             )
@@ -122,7 +122,7 @@ export function useUserInstitutionalPolicies(
               initialInstitutionPolicies.current = policies;
               return policies;
             })
-          : undefined),
+          : undefined,
       [userResource]
     ),
     false

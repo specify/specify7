@@ -44,7 +44,7 @@ export function useCollection<SCHEMA extends AnySchema>(
        * time
        */
       currentCallback.current === callback
-        ? (typeof fetchRef.current === 'object'
+        ? typeof fetchRef.current === 'object'
           ? callback().then(f.undefined)
           : callback().then((result) =>
               // If fetch function changed while fetching, discard the results
@@ -57,7 +57,7 @@ export function useCollection<SCHEMA extends AnySchema>(
                     totalCount: defined(collection).totalCount,
                   }))
                 : undefined
-            ))
+            )
         : undefined,
     [callback, collection]
   );

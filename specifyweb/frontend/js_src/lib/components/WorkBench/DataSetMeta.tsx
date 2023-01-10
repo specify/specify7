@@ -301,7 +301,7 @@ function ChangeOwner({
   const [isChanged, setIsChanged] = React.useState(false);
   const loading = React.useContext(LoadingContext);
 
-  return users === undefined ? null : (isChanged ? (
+  return users === undefined ? null : isChanged ? (
     <Dialog
       buttons={commonText.close()}
       header={wbText.dataSetOwnerChanged()}
@@ -357,7 +357,7 @@ function ChangeOwner({
         </Label.Block>
       </Form>
     </Dialog>
-  ));
+  );
 }
 
 const WrappedDataSetName = createBackboneView(DataSetName);

@@ -243,7 +243,7 @@ function getFieldDefinition(
             label: field.label,
             printOnSave: false,
           }
-        : (typeof parser.pickListName === 'string'
+        : typeof parser.pickListName === 'string'
         ? {
             type: 'ComboBox',
             defaultValue: undefined,
@@ -261,7 +261,7 @@ function getFieldDefinition(
             min: parser.min,
             max: parser.max,
             step: parser.step,
-          })),
+          }),
     },
   };
 }

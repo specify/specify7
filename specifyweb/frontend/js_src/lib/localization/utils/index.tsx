@@ -47,7 +47,9 @@ export function createDictionary<DICT extends LocalizationDictionary>(
             value[LANGUAGE] ?? value[DEFAULT_LANGUAGE],
           ])
         )
-      : handleDevelopmentLanguage(dictionary)) as ExtractLanguage<typeof dictionary>,
+      : handleDevelopmentLanguage(dictionary)) as ExtractLanguage<
+      typeof dictionary
+    >,
     formatters
   );
   // @ts-expect-error This is used by ./__tests__/localization.ts
@@ -58,7 +60,9 @@ export function createDictionary<DICT extends LocalizationDictionary>(
 /**
  * Generate special testing-only languages on the fly
  */
-function handleDevelopmentLanguage(dictionary: LocalizationDictionary): IR<string> {
+function handleDevelopmentLanguage(
+  dictionary: LocalizationDictionary
+): IR<string> {
   if (devLanguage === 'underscore')
     return Object.fromEntries(
       Object.entries(dictionary).map(([key, value]) => [
@@ -112,9 +116,9 @@ export const whitespaceSensitive = (string: LocalizedString): string =>
     .map(f.trim)
     .map((part, index, items) =>
       part.length === 0
-        ? (index + 1 === items.length || index === 0
+        ? index + 1 === items.length || index === 0
           ? ''
-          : '\n')
+          : '\n'
         : `${index === 0 || items[index - 1] === '' ? '' : ' '}${part}`
     )
     .filter(Boolean)

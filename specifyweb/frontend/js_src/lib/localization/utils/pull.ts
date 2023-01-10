@@ -11,14 +11,10 @@ import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { group } from '../../utils/utils';
-import type {
-  ExtractedStrings} from '../utils/scanUsages';
-import {
-  dictionaryExtension,
-  extractStrings,
-} from '../utils/scanUsages';
+import type { ExtractedStrings } from '../utils/scanUsages';
+import { dictionaryExtension, extractStrings } from '../utils/scanUsages';
 import { languageCodeMapper } from './config';
-import type { LocalizationEntry} from './index';
+import type { LocalizationEntry } from './index';
 import { whitespaceSensitive } from './index';
 import { gettextExtension } from './sync';
 import { testLogging } from './testLogging';
@@ -217,8 +213,9 @@ const mergeStrings = (
 
 const updateLocalFiles = async (merged: ExtractedStrings): Promise<void> =>
   Promise.all(
-    Object.entries(merged).map(async ([component, { dictionaryName, strings }]) =>
-      updateLocalFile(component, dictionaryName, strings)
+    Object.entries(merged).map(
+      async ([component, { dictionaryName, strings }]) =>
+        updateLocalFile(component, dictionaryName, strings)
     )
   ).then(f.void);
 

@@ -47,13 +47,13 @@ export function ShowResource({
   useMenuItem(
     typeof recordSet === 'object'
       ? 'recordSets'
-      : (interactionTables.has(resource.specifyModel.name)
+      : interactionTables.has(resource.specifyModel.name)
       ? 'interactions'
-      : 'dataEntry')
+      : 'dataEntry'
   );
 
   const navigate = useNavigate();
-  return recordSet === undefined ? null : (typeof recordSet === 'object' ? (
+  return recordSet === undefined ? null : typeof recordSet === 'object' ? (
     <RecordSetWrapper
       recordSet={recordSet}
       resource={resource}
@@ -86,7 +86,7 @@ export function ShowResource({
       onDeleted={f.void}
       onSaved={(): void => navigate(resource.viewUrl())}
     />
-  ));
+  );
 }
 
 const reGuid = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/u;

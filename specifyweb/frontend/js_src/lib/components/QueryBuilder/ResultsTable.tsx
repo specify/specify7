@@ -225,9 +225,9 @@ function Cell({
     >
       {value === null
         ? undefined
-        : (fieldSpec === undefined || typeof value === 'object'
+        : fieldSpec === undefined || typeof value === 'object'
         ? value
-        : formatted)}
+        : formatted}
     </span>
   );
 }

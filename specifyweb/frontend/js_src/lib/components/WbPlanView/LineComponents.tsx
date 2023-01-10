@@ -223,7 +223,7 @@ export const mappingElementDivider = (
 );
 
 const getFieldGroupName = (isHidden: boolean, isRequired: boolean): string =>
-  isHidden ? 'hiddenFields' : (isRequired ? 'requiredFields' : 'optionalFields');
+  isHidden ? 'hiddenFields' : isRequired ? 'requiredFields' : 'optionalFields';
 
 export function MappingElement({
   fieldsData,

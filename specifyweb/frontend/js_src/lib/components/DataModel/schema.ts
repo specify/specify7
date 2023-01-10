@@ -22,7 +22,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaBase } from './schemaBase';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { type TableDefinition,SpecifyModel } from './specifyModel';
+import { type TableDefinition, SpecifyModel } from './specifyModel';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {

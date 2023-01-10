@@ -34,7 +34,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
   const [isExporting, handleExporting] = useBooleanState();
 
-  return resources === undefined ? null : (definition === undefined ? (
+  return resources === undefined ? null : definition === undefined ? (
     <PickAppResource
       header={headerText.chooseDwca()}
       resources={resources}
@@ -57,7 +57,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
       />
       ;
     </>
-  ));
+  );
 }
 
 const initialFilters: AppResourceFilters = {

@@ -190,7 +190,7 @@ function GitSha(): JSX.Element {
     <>
       {gitSha === false ? (
         commonText.unknown()
-      ) : (typeof gitSha === 'string' ? (
+      ) : typeof gitSha === 'string' ? (
         <Link.NewTab
           className="break-all"
           href={`https://github.com/specify/specify7/commit/${gitSha}`}
@@ -199,7 +199,7 @@ function GitSha(): JSX.Element {
         </Link.NewTab>
       ) : (
         commonText.loading()
-      ))}
+      )}
     </>
   );
 }

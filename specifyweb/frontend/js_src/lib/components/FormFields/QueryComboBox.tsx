@@ -212,7 +212,7 @@ export function QueryComboBox({
   const handleOpenRelated = (): void =>
     state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
       ? setState({ type: 'MainState' })
-      : (typeof relatedCollectionId === 'number' &&
+      : typeof relatedCollectionId === 'number' &&
         !userInformation.availableCollections.some(
           ({ id }) => id === relatedCollectionId
         )
@@ -224,7 +224,7 @@ export function QueryComboBox({
             })
           )
         )
-      : setState({ type: 'ViewResourceState' }));
+      : setState({ type: 'ViewResourceState' });
 
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
   const pendingValueRef = React.useRef('');
@@ -390,7 +390,7 @@ export function QueryComboBox({
         }
       />
       <span className="contents print:hidden">
-        {formType === 'formTable' ? undefined : (mode === 'view' ? (
+        {formType === 'formTable' ? undefined : mode === 'view' ? (
           formatted?.resource === undefined ||
           hasTablePermission(formatted.resource.specifyModel.name, 'read') ? (
             <DataEntry.View
@@ -480,7 +480,7 @@ export function QueryComboBox({
                                     operation: 'lessThan',
                                     values: [startValue],
                                   }
-                                : (fieldName === 'nodeNumber'
+                                : fieldName === 'nodeNumber'
                                 ? {
                                     field: 'nodeNumber',
                                     operation: 'notBetween',
@@ -495,7 +495,7 @@ export function QueryComboBox({
                                 : f.error(`extended filter not created`, {
                                     fieldName,
                                     startValue,
-                                  }))
+                                  })
                             )
                         ),
                       })
@@ -503,7 +503,7 @@ export function QueryComboBox({
               }
             />
           </>
-        ))}
+        )}
       </span>
       {state.type === 'AccessDeniedState' && (
         <Dialog
@@ -537,7 +537,7 @@ export function QueryComboBox({
               : (): void => setState({ type: 'MainState' })
           }
         />
-      ) : (state.type === 'AddResourceState' ? (
+      ) : state.type === 'AddResourceState' ? (
         <ResourceView
           dialog="nonModal"
           isDependent={false}
@@ -561,7 +561,7 @@ export function QueryComboBox({
               : undefined
           }
         />
-      ) : undefined)}
+      ) : undefined}
       {state.type === 'SearchState' ? (
         <SearchDialog
           extraFilters={state.extraConditions}

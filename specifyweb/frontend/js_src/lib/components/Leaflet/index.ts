@@ -10,8 +10,7 @@ import { className } from '../Atoms/className';
 import { legacyNonJsxIcons } from '../Atoms/Icons';
 import { getUserPref } from '../UserPreferences/helpers';
 import { splitJoinedMappingPath } from '../WbPlanView/mappingHelpers';
-import type {
-  LeafletInstance} from './addOns';
+import type { LeafletInstance } from './addOns';
 import {
   addMarkersToMap,
   addPrintMapButton,

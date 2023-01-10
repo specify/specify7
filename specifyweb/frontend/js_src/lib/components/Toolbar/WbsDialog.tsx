@@ -24,7 +24,7 @@ import { getField } from '../DataModel/helpers';
 import { schema } from '../DataModel/schema';
 import { DateElement } from '../Molecules/DateElement';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type { SortConfig} from '../Molecules/Sorting';
+import type { SortConfig } from '../Molecules/Sorting';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { hasPermission } from '../Permissions/helpers';
 import { OverlayContext } from '../Router/Router';
@@ -153,9 +153,9 @@ export function DataSetsDialog({
         ({ name, timestampcreated, uploadresult }) =>
           sortConfig.sortField === 'name'
             ? name
-            : (sortConfig.sortField === 'dateCreated'
+            : sortConfig.sortField === 'dateCreated'
             ? timestampcreated
-            : uploadresult?.timestamp ?? '')
+            : uploadresult?.timestamp ?? ''
       )
     : undefined;
 

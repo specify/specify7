@@ -155,11 +155,11 @@ export function useCodeMirrorExtensions(
     const language =
       mode === 'json'
         ? [json(), jsonLinter(handleLinted)]
-        : (mode === 'properties'
+        : mode === 'properties'
         ? [StreamLanguage.define(properties)]
         : mode === 'jrxml' || mode === 'xml'
         ? [xml(), xmlLinter(handleLinted)]
-        : []);
+        : [];
     setExtensions([
       ...language,
       ...(lineWrap ? [EditorView.lineWrapping] : []),

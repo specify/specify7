@@ -50,7 +50,7 @@ const fieldRenderers: {
         name={name}
         text={label}
       />
-    ) : (field?.isRelationship ? null : (
+    ) : field?.isRelationship ? null : (
       <SpecifyFormCheckbox
         defaultValue={defaultValue}
         field={field}
@@ -60,7 +60,7 @@ const fieldRenderers: {
         resource={resource}
         text={label}
       />
-    ));
+    );
   },
   TextArea({
     id,

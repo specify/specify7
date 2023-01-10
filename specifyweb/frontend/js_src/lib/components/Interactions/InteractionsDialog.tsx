@@ -126,7 +126,7 @@ const fetchEntries = f.store(
           const table =
             action === 'NEW_GIFT'
               ? 'Gift'
-              : (action === 'NEW_LOAN'
+              : action === 'NEW_LOAN'
               ? 'Loan'
               : defined(
                   (await f
@@ -138,7 +138,7 @@ const fetchEntries = f.store(
                     )) ??
                     getModel(getParsedAttribute(entry, 'table') ?? '')?.name,
                   'Failed to get table name for interaction item. Set table or view attributes'
-                ));
+                );
           return {
             action: f.includes(supportedActions, action) ? action : undefined,
             table,
@@ -186,11 +186,11 @@ function Interactions({
         const actionModel =
           table.toLowerCase() === 'loan'
             ? schema.models.Loan
-            : (table.toLowerCase() === 'gift'
+            : table.toLowerCase() === 'gift'
             ? schema.models.Gift
             : table.toLowerCase() === 'disposal'
             ? schema.models.Disposal
-            : undefined);
+            : undefined;
         if (actionModel === undefined) {
           softFail(new Error(`Unknown interaction table: ${table}`));
           return;
@@ -274,16 +274,16 @@ function Interactions({
                     ? stringLocalization[
                         label as keyof typeof stringLocalization
                       ] ?? label
-                    : (typeof table === 'string'
+                    : typeof table === 'string'
                     ? getModel(table)?.label
-                    : (action as LocalizedString))}
+                    : (action as LocalizedString)}
                 </Link.Default>
               </li>
             ) : undefined
           )}
       </Ul>
     </Dialog>
-  ) : (state.type === 'InteractionState' ? (
+  ) : state.type === 'InteractionState' ? (
     <InteractionDialog
       action={{ model: state.actionModel, name: state.action }}
       model={schema.models[state.table]}
@@ -291,9 +291,9 @@ function Interactions({
       searchField={strictGetModel(state.table).strictGetLiteralField(
         state.table === 'Loan'
           ? 'loanNumber'
-          : (state.table === 'Disposal'
+          : state.table === 'Disposal'
           ? 'disposalNumber'
-          : 'catalogNumber')
+          : 'catalogNumber'
       )}
       onClose={handleClose}
     />
@@ -306,7 +306,7 @@ function Interactions({
     />
   ) : (
     error('Invalid state')
-  ));
+  );
 }
 
 export function InteractionsOverlay(): JSX.Element | null {

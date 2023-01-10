@@ -100,9 +100,11 @@ export function getItemType(
 ): ItemType {
   if (item.webLinkName !== null) return 'webLink';
   else if (item.pickListName !== null) return 'pickList';
-   
-  else if (item.format === null) {return 'none';}
-  else {return 'formatted';}
+  else if (item.format === null) {
+    return 'none';
+  } else {
+    return 'formatted';
+  }
 }
 
 const webLinkTypes = new Set<JavaType>(['text', 'java.lang.String']);

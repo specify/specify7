@@ -217,7 +217,7 @@ export function CollectionView({
                     </div>
                   </>
                 )
-              ) : (hasPermission(
+              ) : hasPermission(
                   '/permissions/user/roles',
                   'read',
                   collection.id
@@ -225,7 +225,7 @@ export function CollectionView({
                 commonText.loading()
               ) : (
                 <CurrentUserLink collectionId={collection.id} />
-              ))}
+              )}
             </section>
           </div>
         </>

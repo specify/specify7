@@ -287,14 +287,14 @@ function ActiveAction<SCHEMA extends AnyTree>({
   const title =
     type === 'move'
       ? treeText.nodeMoveHintMessage({ nodeName: actionRow.fullName })
-      : (type === 'merge'
+      : type === 'merge'
       ? treeText.mergeNodeHintMessage({ nodeName: actionRow.fullName })
       : type === 'synonymize'
       ? treeText.synonymizeNodeHintMessage({ nodeName: actionRow.fullName })
       : treeText.desynonymizeNodeMessage({
           nodeName: actionRow.fullName,
           synonymName: focusedRow.fullName,
-        }));
+        });
   let disabled: string | false = false;
   if (type === 'move') {
     if (isSameRecord) disabled = title;
@@ -326,7 +326,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
       >
         {typeof disabled === 'string'
           ? disabled
-          : (type === 'move'
+          : type === 'move'
           ? treeText.moveNodeHere({ nodeName: actionRow.fullName })
           : type === 'merge'
           ? treeText.mergeNodeHere({ nodeName: actionRow.fullName })
@@ -335,7 +335,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
               nodeName: actionRow.fullName,
               synonymName: focusedRow.fullName,
             })
-          : treeText.desynonymizeNode())}
+          : treeText.desynonymizeNode()}
       </Button.Small>
       <Button.Small onClick={handleCancelAction}>
         {commonText.cancel()}
@@ -350,7 +350,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
           <br />
           {error}
         </Dialog>
-      ) : (showPrompt ? (
+      ) : showPrompt ? (
         <Dialog
           buttons={
             <>
@@ -366,22 +366,22 @@ function ActiveAction<SCHEMA extends AnyTree>({
               >
                 {type === 'move'
                   ? treeText.moveNode()
-                  : (type === 'merge'
+                  : type === 'merge'
                   ? treeText.mergeNode()
                   : type === 'synonymize'
                   ? treeText.synonymizeNode()
-                  : treeText.desynonymizeNode())}
+                  : treeText.desynonymizeNode()}
               </Button.Blue>
             </>
           }
           header={
             type === 'move'
               ? treeText.moveNode()
-              : (type === 'merge'
+              : type === 'merge'
               ? treeText.mergeNode()
               : type === 'synonymize'
               ? treeText.synonymizeNode()
-              : treeText.desynonymizeNode())
+              : treeText.desynonymizeNode()
           }
           onClose={handleCancelAction}
         >
@@ -391,7 +391,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                 nodeName: actionRow.fullName,
                 parentName: focusedRow.fullName,
               })
-            : (type === 'merge'
+            : type === 'merge'
             ? treeText.mergeNodeMessage({
                 treeName,
                 nodeName: actionRow.fullName,
@@ -406,9 +406,9 @@ function ActiveAction<SCHEMA extends AnyTree>({
             : treeText.desynonymizeNodeMessage({
                 nodeName: actionRow.fullName,
                 synonymName: focusedRow.fullName,
-              }))}
+              })}
         </Dialog>
-      ) : undefined)}
+      ) : undefined}
     </menu>
   );
 }

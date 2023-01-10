@@ -11,8 +11,7 @@ import {
   getPrepsAvailableForLoanRs,
 } from '../../utils/ajax/specifyApi';
 import { f } from '../../utils/functools';
-import type {
-  Parser} from '../../utils/parser/definitions';
+import type { Parser } from '../../utils/parser/definitions';
 import {
   getValidationAttributes,
   pluralizeParser,
@@ -20,10 +19,9 @@ import {
 } from '../../utils/parser/definitions';
 import type {
   InvalidParseResult,
-  ValidParseResult} from '../../utils/parser/parse';
-import {
-  parseValue
+  ValidParseResult,
 } from '../../utils/parser/parse';
+import { parseValue } from '../../utils/parser/parse';
 import type { IR, RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
@@ -143,12 +141,12 @@ export function InteractionDialog({
       let index = 0;
       let offsetIndex = 0;
       while (offsetIndex < entries.length && index < prepsData.length) {
-        if (entries[offsetIndex] == prepsData[index][0])
-          {
+        if (entries[offsetIndex] == prepsData[index][0]) {
           const value = prepsData[index][0];
           while (++index < prepsData.length && prepsData[index][0] == value);
+        } else {
+          missing.push(entries[offsetIndex]);
         }
-        else {missing.push(entries[offsetIndex]);}
         offsetIndex += 1;
       }
       if (offsetIndex < entries.length)
@@ -204,7 +202,7 @@ export function InteractionDialog({
     >
       {interactionsText.returnedAndSaved({ count: state.result })}
     </Dialog>
-  ) : (state.type === 'PreparationSelectState' &&
+  ) : state.type === 'PreparationSelectState' &&
     Object.keys(state.problems).length === 0 ? (
     <PrepDialog
       action={action}
@@ -234,19 +232,19 @@ export function InteractionDialog({
                 >
                   {interactionsText.addUnassociated()}
                 </Button.Blue>
-              ) : (model.name === 'Loan' || action.model.name === 'Loan' ? (
+              ) : model.name === 'Loan' || action.model.name === 'Loan' ? (
                 <Link.Blue href={getResourceViewUrl('Loan')}>
                   {interactionsText.withoutPreparations()}
                 </Link.Blue>
-              ) : undefined)}
+              ) : undefined}
             </>
           }
           header={
             typeof itemCollection === 'object'
               ? interactionsText.addItems()
-              : (model.name === 'Loan'
+              : model.name === 'Loan'
               ? interactionsText.recordReturn({ modelName: model.label })
-              : interactionsText.createRecord({ modelName: action.model.name }))
+              : interactionsText.createRecord({ modelName: action.model.name })
           }
           onClose={handleClose}
         >
@@ -340,7 +338,7 @@ export function InteractionDialog({
         </Dialog>
       )}
     </RecordSetsDialog>
-  ));
+  );
 }
 
 function useParser(searchField: LiteralField | undefined): {

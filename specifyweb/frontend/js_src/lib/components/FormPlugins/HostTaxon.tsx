@@ -51,7 +51,7 @@ export function HostTaxon({
   );
   return rightSideCollection === undefined ? (
     <Input.Text isReadOnly />
-  ) : (hasTreeAccess('Taxon', 'read') ? (
+  ) : hasTreeAccess('Taxon', 'read') ? (
     <QueryComboBox
       field={schema.models.CollectingEventAttribute.strictGetRelationship(
         'hostTaxon'
@@ -65,5 +65,5 @@ export function HostTaxon({
       resource={resource}
       typeSearch={hostTaxonTypeSearch}
     />
-  ) : null);
+  ) : null;
 }

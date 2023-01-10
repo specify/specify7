@@ -56,7 +56,7 @@ export function FormsDialog({
 
   return isEditing ? (
     <EditFormTables onClose={handleClose} />
-  ) : (Array.isArray(forms) ? (
+  ) : Array.isArray(forms) ? (
     <Dialog
       buttons={commonText.cancel()}
       className={{ container: dialogClassNames.narrowContainer }}
@@ -92,7 +92,7 @@ export function FormsDialog({
         </Ul>
       </nav>
     </Dialog>
-  ) : null);
+  ) : null;
 }
 
 export type FormEntry = {

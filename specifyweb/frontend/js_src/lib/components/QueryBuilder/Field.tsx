@@ -157,12 +157,12 @@ export function QueryLine({
                   isNot: false,
                   startValue: '',
                 } as const)
-              : (filter.type === 'any' && filter.isNot
+              : filter.type === 'any' && filter.isNot
               ? {
                   ...filter,
                   isNot: false,
                 }
-              : filter);
+              : filter;
           })
         : [];
       const anyFilter =
@@ -404,12 +404,12 @@ export function QueryLine({
                       const startValue =
                         queryFieldFilters[newFilter].component === undefined
                           ? ''
-                          : (filter.type === 'any' &&
+                          : filter.type === 'any' &&
                             filtersWithDefaultValue.has(newFilter) &&
                             filter.startValue === '' &&
                             typeof fieldMeta.parser?.value === 'string'
                           ? fieldMeta.parser.value
-                          : filter.startValue);
+                          : filter.startValue;
 
                       /*
                        * When going from "in" to another filter type, throw away
@@ -490,17 +490,17 @@ export function QueryLine({
           aria-label={
             field.sortType === 'ascending'
               ? queryText.ascendingSort()
-              : (field.sortType === 'descending'
+              : field.sortType === 'descending'
               ? queryText.descendingSort()
-              : queryText.sort())
+              : queryText.sort()
           }
           className={isFieldComplete ? undefined : 'invisible'}
           title={
             field.sortType === 'ascending'
               ? queryText.ascendingSort()
-              : (field.sortType === 'descending'
+              : field.sortType === 'descending'
               ? queryText.descendingSort()
-              : queryText.sort())
+              : queryText.sort()
           }
           onClick={handleChange?.bind(undefined, {
             ...field,
@@ -512,9 +512,9 @@ export function QueryLine({
         >
           {field.sortType === 'ascending'
             ? icons.arrowCircleUp
-            : (field.sortType === 'descending'
+            : field.sortType === 'descending'
             ? icons.arrowCircleDown
-            : icons.circle)}
+            : icons.circle}
         </Button.Small>
         <Button.Small
           aria-label={queryText.moveUp()}
