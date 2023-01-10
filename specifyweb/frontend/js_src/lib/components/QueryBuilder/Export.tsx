@@ -4,6 +4,7 @@ import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
+import { keysToLowerCase } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpQuery, SpQueryField, Tables } from '../DataModel/types';
@@ -14,13 +15,13 @@ import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
-import { keysToLowerCase } from '../../utils/utils';
 
 export function QueryExportButtons({
   baseTableName,
   fields,
   queryResource,
   getQueryFieldRecords,
+  recordSetId,
 }: {
   readonly baseTableName: keyof Tables;
   readonly fields: RA<QueryField>;
@@ -28,6 +29,7 @@ export function QueryExportButtons({
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
+  readonly recordSetId: number | undefined;
 }): JSX.Element {
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
@@ -50,6 +52,7 @@ export function QueryExportButtons({
           .map(({ mappingPath }) =>
             generateMappingPathPreview(baseTableName, mappingPath)
           ),
+        recordSetId,
       }),
     });
   }
