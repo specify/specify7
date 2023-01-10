@@ -28,7 +28,7 @@ import { makeQueryField } from '../QueryBuilder/fromTree';
 import { keysToLowerCase } from '../../utils/utils';
 import { statsText } from '../../localization/stats';
 import { throttledAjax } from '../../utils/ajax/throttledAjax';
-import { urlSpec } from './definitions';
+import { unknownCategories, urlSpec } from './definitions';
 
 /**
  * Fetch backend statistics from the API
@@ -150,6 +150,23 @@ export function useDefaultStatsToAdd(
   }, [layout, defaultLayout]);
 }
 
+export const statSpecToItems = (
+  categoryName: string,
+  pageName: string,
+  items: StatCategoryReturn | undefined
+): RA<DefaultStat> | undefined =>
+  items === undefined
+    ? undefined
+    : Object.entries(items).map(([itemName, { label, spec }]) => ({
+        type: 'DefaultStat',
+        pageName,
+        itemName,
+        categoryName,
+        itemLabel: label,
+        itemValue: spec.type === 'BackEndStat' ? spec.value : undefined,
+        itemType: spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
+      }));
+
 export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
   return React.useMemo(
     () =>
@@ -158,20 +175,12 @@ export function useDefaultLayout(statsSpec: StatsSpec): StatLayout {
         categories: Object.entries(pageStatsSpec).map(
           ([categoryName, { label, items }]) => ({
             label,
-            items:
-              items === undefined
-                ? undefined
-                : Object.entries(items).map(([itemName, { label, spec }]) => ({
-                    type: 'DefaultStat',
-                    pageName,
-                    itemName,
-                    categoryName,
-                    itemLabel: label,
-                    itemValue:
-                      spec.type === 'BackEndStat' ? spec.value : undefined,
-                    itemType:
-                      spec.type === 'BackEndStat' ? 'BackendStat' : 'QueryStat',
-                  })),
+            items: statSpecToItems(categoryName, pageName, items),
+            categoryToFetch: unknownCategories.includes(
+              categoryName as keyof typeof urlSpec
+            )
+              ? (categoryName as keyof typeof urlSpec)
+              : undefined,
           })
         ),
         lastUpdated: undefined,
@@ -343,21 +352,25 @@ export function useCategoryToFetch(
   layout: StatLayout | undefined
 ): WritableArray<string> {
   return React.useMemo(() => {
-    if (layout === undefined) return [];
-    const categoryToFetch: WritableArray<string> = [];
+    if (layout === undefined)
+      return Object.keys(urlSpec) as WritableArray<string>;
+    const categoriesToFetch: WritableArray<string> = [];
     layout.forEach((pageLayout) =>
-      pageLayout.categories.forEach(({ items }) =>
+      pageLayout.categories.forEach(({ items, categoryToFetch }) => {
+        if (items === undefined && categoryToFetch !== undefined) {
+          categoriesToFetch.push(categoryToFetch);
+        }
         (items ?? []).forEach((item) => {
           if (
             item.type === 'DefaultStat' &&
             item.itemType === 'BackendStat' &&
             item.itemValue === undefined
           )
-            categoryToFetch.push(item.categoryName);
-        })
-      )
+            categoriesToFetch.push(item.categoryName);
+        });
+      })
     );
-    return categoryToFetch;
+    return categoriesToFetch;
   }, [layout]);
 }
 
