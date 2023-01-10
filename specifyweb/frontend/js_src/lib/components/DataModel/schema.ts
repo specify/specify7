@@ -22,7 +22,7 @@ import type { AnySchema, AnyTree } from './helperTypes';
 import { schemaBase } from './schemaBase';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
-import { type TableDefinition, SpecifyModel } from './specifyModel';
+import { SpecifyModel, type TableDefinition } from './specifyModel';
 import type { Agent, Tables } from './types';
 
 export type SchemaLocalization = {
@@ -157,6 +157,9 @@ export function getModel(name: string): SpecifyModel | undefined {
     : schema.models[name as keyof Tables] ??
         Object.values(schema.models as unknown as IR<SpecifyModel>).find(
           (model) => model.name.toLowerCase() === lowerCase
+        ) ??
+        Object.values(schema.models as unknown as IR<SpecifyModel>).find(
+          (model) => model.longName.toLowerCase() === lowerCase
         );
 }
 
