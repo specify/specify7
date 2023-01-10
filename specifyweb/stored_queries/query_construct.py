@@ -23,7 +23,10 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
     def handle_tree_field(self, node, table, tree_rank, tree_field):
         query = self
-        assert query.collection is not None, f"No Collection found in Query for {table}" # Not sure it makes sense to query across collections
+        if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
+            f"No Collection found in Query for {table}",
+            {"table" : table,
+             "localizationKey" : "noCollectionInQuery"}) 
         logger.info('handling treefield %s rank: %s field: %s', table, tree_rank, tree_field)
 
         treedefitem_column = table.name + 'TreeDefItemID'

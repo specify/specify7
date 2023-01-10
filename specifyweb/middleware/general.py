@@ -4,10 +4,10 @@ from django import http
 from django.conf import settings
 
 class SpecifyExceptionWrapper():
-    def __init__(self, error : Exception) -> None:
-        self.exception = error
-        self.message = error.args[0] if len(error.args) > 0 else None
-        self.data = error.args[1]  if len(error.args) > 1 else None
+    def __init__(self, exception : Exception) -> None:
+        self.exception = exception
+        self.message = exception.args[0] if len(exception.args) > 0 else None
+        self.data = exception.args[1]  if len(exception.args) > 1 else None
         self.status_code = getattr(self.exception, "status_code") if hasattr(self.exception, "status_code") else 500
     
     def to_json(self) -> Dict:

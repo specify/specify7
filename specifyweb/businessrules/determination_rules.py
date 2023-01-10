@@ -16,7 +16,7 @@ def determination_pre_save(det):
         while acceptedtaxon_id is not None:
             if acceptedtaxon_id == taxon_id: break
             limit -= 1
-            assert limit > 0, f"Could not find accepted taxon for synonymized taxon (id ='{taxon_id}')" # in case of cycles or pathologically long synonym chains
+            if not limit > 0: raise AssertionError(f"Could not find accepted taxon for synonymized taxon (id ='{taxon_id}')", {"taxonId" : taxon_id, "localizationKey" : "limitReachedDeterminingAccepted"})
             taxon_id = acceptedtaxon_id
             acceptedtaxon_id = Taxon.objects.select_for_update().values_list('acceptedtaxon_id', flat=True).get(id=taxon_id)
 

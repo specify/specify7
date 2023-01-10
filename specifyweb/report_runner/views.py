@@ -115,7 +115,9 @@ def create(request):
 
 @transaction.atomic
 def create_report(user_id, discipline_id, query_id, mimetype, name):
-    assert mimetype in ("jrxml/label", "jrxml/report"), "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'"
+    if mimetype not in ("jrxml/label", "jrxml/report"): raise AssertionError(
+        "Can not create report: mimetype not 'jrxml/label' or 'jrxml/report'", 
+        {"localizationKey" : "invalidReportMimetype"})
     query = Spquery.objects.get(id=query_id)
     try:
         spappdir = Spappresourcedir.objects.get(discipline_id=discipline_id, collection_id=None)

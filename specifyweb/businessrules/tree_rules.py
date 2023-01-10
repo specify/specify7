@@ -12,6 +12,7 @@ def cannot_delete_root_treedefitem(sender, obj):
             raise TreeBusinessRuleException(
                 "cannot delete root level tree definition item", 
                 {"tree" : obj.__class__.__name__,
+                 "localizationKey" : 'deletingTreeRoot',
                  "type" : "DELETE_TREE_ROOT", 
                  "node" : {
                     "id" : obj.id

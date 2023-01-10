@@ -36,7 +36,12 @@ def upload(self, collection_id: int, uploading_agent_id: int, ds_id: int, no_com
             logger.info("dataset is not assigned to this task")
             return
 
-        assert ds.uploaderstatus['operation'] == ("validating" if no_commit else "uploading"), f"Invalid status '{ds.uploaderstatus['operation']}' for upload. Expected 'validating' or 'uploading'"
+        if not (ds.uploaderstatus['operation'] == ("validating" if no_commit else "uploading")): raise AssertionError(
+            f"Invalid status '{ds.uploaderstatus['operation']}' for upload. Expected 'validating' or 'uploading'",
+            {"uploadStatus" : ds.uploaderstatus['operation'],
+             "operation" : "upload",
+             "expectedUploadStatus" : 'validating , uploading',
+             "localizationKey" : "invalidUploadStatus"})
 
         do_upload_dataset(collection, uploading_agent_id, ds, no_commit, allow_partial, progress)
 
@@ -62,7 +67,12 @@ def unupload(self, ds_id: int, agent_id: int) -> None:
             logger.info("dataset is not assigned to this task")
             return
 
-        assert ds.uploaderstatus['operation'] == "unuploading", f"Invalid status '{ds.uploaderstatus['operation']}' for unupload. Expected 'unuploading'"
+        if not (ds.uploaderstatus['operation'] == "unuploading"): raise AssertionError(
+            f"Invalid status '{ds.uploaderstatus['operation']}' for unupload. Expected 'unuploading'",
+            {"uploadStatus" : ds.uploaderstatus['operation'],
+             "operation" : "unupload",
+             "expectedUploadStatus" : "unuoloading",
+             "localizationKey" : "invalidUploadStatus"})
 
         unupload_dataset(ds, agent, progress)
 

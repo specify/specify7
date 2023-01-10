@@ -719,7 +719,10 @@ def field_to_schema(field: Field) -> Dict:
         OpenAPI schema's schema object for a field of a table
     """
     if field.is_relationship:
-        assert isinstance(field, Relationship), f"Field '{field.name}' is not a Relationship"
+        if not isinstance(field, Relationship): raise AssertionError(
+            f"Field '{field.name}' is not a Relationship", 
+            {"field" : field.name, 
+            "localizaitonKey" : "fieldNotRelationship"})
         if field.dependent:
             if (
                 field.type == "one-to-one"
