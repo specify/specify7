@@ -25,6 +25,7 @@ import { smoothScroll } from '../QueryBuilder/helpers';
 import { usePref } from '../UserPreferences/usePref';
 import { FormContext } from './BaseResourceView';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
+import { FormContext } from './BaseResourceView';
 
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 

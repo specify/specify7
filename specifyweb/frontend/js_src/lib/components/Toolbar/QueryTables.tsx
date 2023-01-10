@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { commonText } from '../../localization/common';
 import type { GetSet, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';

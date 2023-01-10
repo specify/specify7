@@ -5,6 +5,7 @@ import { commonText } from '../../../localization/common';
 import { mainText } from '../../../localization/main';
 import { LeakContext, mount } from '../../../tests/reactUtils';
 import { flippedPromise } from '../../../utils/promise';
+import { crash } from '../../Errors/Crash';
 import {
   Contexts,
   ErrorContext,
@@ -12,7 +13,6 @@ import {
   SetUnloadProtectsContext,
   UnloadProtectsContext,
 } from '../Contexts';
-import { raise } from '../../Errors/Crash';
 
 jest.mock('../../Errors/Crash', () => ({
   ...jest.requireActual('../../Errors/Crash'),
@@ -75,11 +75,11 @@ test('<Contexts> provide a loading context', async () => {
   const newHeading = await findByRole('heading', {
     name: commonText.loading(),
   });
-  expect(raise).not.toHaveBeenCalled();
+  expect(crash).not.toHaveBeenCalled();
   jest.spyOn(console, 'error').mockImplementation();
   rejectedPromise.reject('error');
   await waitForElementToBeRemoved(newHeading);
-  expect(raise).toHaveBeenCalledTimes(1);
+  expect(crash).toHaveBeenCalledTimes(1);
 });
 
 test('<Contexts> is providing UnloadProtectsContext', () => {

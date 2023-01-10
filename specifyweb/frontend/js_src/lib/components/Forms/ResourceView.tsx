@@ -17,6 +17,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Tables } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import type { FormMode } from '../FormParse';
+import { AppTitle } from '../Molecules/AppTitle';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasTablePermission } from '../Permissions/helpers';
 import { ReportsView } from '../Reports';
@@ -26,7 +27,6 @@ import { usePref } from '../UserPreferences/usePref';
 import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
-import { AppTitle } from '../Molecules/AppTitle';
 
 /**
  * There is special behavior required when creating one of these resources,

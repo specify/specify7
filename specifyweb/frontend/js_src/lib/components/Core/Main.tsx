@@ -9,8 +9,8 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { mainText } from '../../localization/main';
 import { userText } from '../../localization/user';
-import type { RR } from '../../utils/types';
-import { GetOrSet } from '../../utils/types';
+import { f } from '../../utils/functools';
+import type { GetOrSet, RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
@@ -27,7 +27,6 @@ import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { Router } from '../Router/Router';
 import type { Preferences } from '../UserPreferences/Definitions';
-import { f } from '../../utils/functools';
 
 export type UserTool = {
   readonly title: LocalizedString;
