@@ -8,6 +8,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { mainText } from '../../localization/main';
 import { UnloadProtectsContext } from '../Core/Contexts';
 import { usePref } from '../UserPreferences/usePref';
+import { UnloadProtectsContext } from '../Core/Contexts';
 
 export function AppTitle({ title }: { readonly title: LocalizedString }): null {
   const [updateTitle] = usePref('form', 'behavior', 'updatePageTitle');
