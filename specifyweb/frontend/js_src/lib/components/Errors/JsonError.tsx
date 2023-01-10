@@ -34,17 +34,16 @@ export function formatJsonBackendResponse(error: string): JSX.Element {
 
 function JsonBackendResponseFooter({
   response,
-  hasData = true,
   isDataOpen = true,
 }: {
   readonly response: JsonResponse;
-  readonly hasData?: boolean;
   readonly isDataOpen?: boolean;
 }): JSX.Element {
+  const hasData = response.data == null ? false : true;
   return (
     <>
       {hasData && (
-        <details open={isDataOpen === true ? true : false}>
+        <details open={isDataOpen}>
           <summary>Data</summary>
           <pre>{response.formattedData}</pre>
         </details>
@@ -89,7 +88,7 @@ function formatBasicResponse(error: string): JSX.Element {
       <em className={className.label} title={response.message}>
         {response.message}
       </em>
-      <JsonBackendResponseFooter hasData={false} response={response} />
+      <JsonBackendResponseFooter isDataOpen={true} response={response} />
     </>
   );
 }
